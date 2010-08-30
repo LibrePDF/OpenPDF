@@ -13,4 +13,4 @@ To do so:
  ant jar.rups
  ant jar.rtf
 
-Additionally, version 5.0 breaks binary compatibility by changing package names from `com.lowagie` to `com.itextpdf`. To offer compatibility with compatibly-licensed code targeting 5.0, I've also produced a jar of 4.2.0 using `com.itextpdf`. See the Downloads tab. You can find the source in the `com.lowagie` branch of the repository. You can compile with the instructions above.
+Additionally, version 5.0 breaks binary compatibility by changing package names from ``com.lowagie`` to ``com.itextpdf``. To offer compatibility with compatibly-licensed code targeting 5.0, I've also produced a jar of 4.2.0 using ``com.itextpdf``. See the Downloads tab. You can find the source in the `com.lowagie` branch of the repository. You can compile with the instructions above.
