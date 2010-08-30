@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- iText, a JAVA - PDF library                                      -->
+<!-- $Id: site.xml 3954 2009-06-08 00:50:15Z xlv $         -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<project name="iText.site" default="help" basedir=".">
+	
+	<property file="local.properties" />
+	<property file="${user.home}/.ant.properties" />
+	<property file=".ant.properties" />
+
+	<path id="itext.classpath">
+	    <pathelement location="${itext.bin}"/>
+	    <pathelement path="${itext.lib}/bcmail-${bc.jdk}-${bc.version}.jar"/>
+	    <pathelement path="${itext.lib}/bcprov-${bc.jdk}-${bc.version}.jar"/>
+	    <pathelement path="${itext.lib}/bctsp-${bc.jdk}-${bc.version}.jar"/>
+	    <pathelement path="${itext.lib}/dom4j-1.6.1.jar"/>
+	    <pathelement path="${itext.lib}/pdf-renderer.jar"/>
+	</path>
+	
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Help                                                             -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="help" description="--> shows the help screen">
+        <echo>BUILDING THE iText SITE (site.xml)</echo>
+        <echo>ant lowagie.com: Building the lowagie.com pages</echo>
+        <echo>ant javadoc: Building the API documentation</echo>
+        <echo>ant docs.tar.gz: Building and jarring the API documentation</echo>
+        <echo>ant tutorial: creates the tutorial pages (without the examples)</echo>
+        <echo>ant tutorial.tar.gz: creates the tutorial and makes tar.gz files</echo>
+        <echo />
+	</target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Building the pages for lowagie.com                               -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="lowagie.com" description="--> building the pages for lowagie.com">
+        <mkdir dir="${itext.lowagie}" />
+		<copy todir="${itext.lowagie}/images" overwrite="no">
+			<fileset dir="${itext.src.lowagie}/images" />
+		</copy>
+		<copy todir="${itext.lowagie}/ant" overwrite="no">
+			<fileset dir="${itext.src}/ant" />
+		</copy>
+		<copy file="${itext.src}/build.xml" todir="${itext.lowagie}" overwrite="no" />
+		<copy file="${itext.src.lowagie}/style.css" todir="${itext.lowagie}" overwrite="no" />
+		<copy file="${itext.src.lowagie}/MPL-1.1.txt" todir="${itext.lowagie}" overwrite="no" />
+		<copy file="${itext.src.lowagie}/lgpl.txt" todir="${itext.lowagie}" overwrite="no" />
+        <xslt basedir="${itext.src.lowagie}" destdir="${itext.lowagie}" extension=".html" style="${itext.src.lowagie}/lowagie.xsl" includes="*.xml">
+			<param name="releasenumber" expression="${releasenumber}"/>
+			<param name="releasedate" expression="${releasedate}"/>
+		</xslt>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Building the API documentation                                   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+    <target name="javadoc" description="--> generates the complete documentation with javadoc">
+        <mkdir dir="${itext.docs}" />
+        <javadoc
+            destdir="${itext.docs}"
+            author="true" maxmemory="128m"
+            private="true">
+			<packageset dir="${itext.src}/core" defaultexcludes="yes">
+      			<include name="com/lowagie/**" />
+		    </packageset>
+			<packageset dir="${itext.src}/rtf" defaultexcludes="yes">
+      			<include name="com/lowagie/**" />
+		    </packageset>
+			<packageset dir="${itext.src}/rups" defaultexcludes="yes">
+      			<include name="com/lowagie/**" />
+		    </packageset>
+			<packageset dir="${itext.src}/toolbox" defaultexcludes="yes">
+      			<include name="com/lowagie/**" />
+		    </packageset>
+        	<classpath refid="itext.classpath"/>
+            <link href="http://java.sun.com/j2se/1.4/docs/api/" />
+        	<link href="http://www.bouncycastle.org/docs/docs1.4/" />
+        	<link href="http://www.dom4j.org/apidocs/" />
+        	<link href="https://pdf-renderer.dev.java.net/nonav/demos/latest/javadoc/" />
+        	<header>&lt;a href="http://www.1t3xt.com/docs/book.php" target="_blank"&gt;&lt;img src="http://www.1t3xt.com/img/book/lowagie_3d.jpg" border="0" /&gt;&lt;/a&gt;</header>
+			<footer>Hosted by &lt;a href="http://www.hostbasket.com/"&gt;Hostbasket&lt;/a&gt;</footer>
+        </javadoc>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Building and archiving the API documentation                     -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="docs.tar.gz" depends="javadoc" description="--> makes a tar.gz-file with the complete javadoc documentation">
+        <mkdir dir="${itext.dist}" />
+        <mkdir dir="${itext.downloads}" />
+        <tar tarfile="${itext.downloads}/docs.tar" basedir="${itext.docs}" />
+        <gzip zipfile="${itext.dist}/docs.tar.gz" src="${itext.downloads}/docs.tar" />
+        <delete file="${itext.downloads}/docs.tar" />
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Building the tutorial                                            -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="tutorial" description="--> building the pages for lowagie.com">
+        <mkdir dir="${itext.tutorial}" />
+        <mkdir dir="${itext.tutorial}/images" />
+        <mkdir dir="${itext.examples}" />
+		<copy file="${itext.src.tutorial}/style.css" todir="${itext.tutorial}" overwrite="no" />
+        <copy todir="${itext.examples}" overwrite="yes">
+            <fileset dir="${itext.src.examples}">
+            	<include name="**/*.java"/>	
+                <include name="**/*.xml"/>	
+                <include name="**/*.mpg"/>
+                <include name="**/*.tiff"/>
+        		<include name="**/*.tif"/>
+        		<include name="**/*.gif"/>
+        		<include name="**/*.bmp"/>
+        		<include name="**/*.wmf"/>
+        		<include name="**/*.jpg"/>
+        		<include name="**/*.png"/>
+                <include name="**/*.pdf"/>
+        		<include name="**/*.otf"/>
+        		<include name="**/*.xfdf"/>
+            </fileset>
+        </copy>
+        <copy todir="${itext.tutorial}/images" overwrite="yes">
+            <fileset dir="${itext.src.tutorial}/images">
+                <include name="**/*.*"/>
+            </fileset>
+        </copy>
+		<java classname="com.lowagie.tools.BuildTutorial" dir="${basedir}/${itext.src.tutorial}" fork="true">
+			<arg value="${basedir}/${itext.src.tutorial}" />
+			<arg value="${basedir}/${itext.build}" />
+			<arg value="examples.xsl" />
+			<arg value="tutorial.xsl" />
+	        <classpath>
+    	        <pathelement location="${itext.jar}" />
+    	        <pathelement location="${itext.lib}/crimson.jar" />
+        	</classpath>
+		</java>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Building and archiving the tutorial                              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="tutorial.tar.gz" depends="tutorial" description="--> makes a tar.gz-file with the complete javadoc documentation">
+		<ant antfile="${itext.tutorial}/build.xml" inheritAll="false" />
+        <mkdir dir="${itext.dist}" />
+        <mkdir dir="${itext.downloads}" />
+        <tar tarfile="${itext.downloads}/tutorial.tar" basedir="${itext.build}" includes="tutorial/**" />
+        <gzip zipfile="${itext.dist}/tutorial.tar.gz" src="${itext.downloads}/tutorial.tar" />
+        <delete file="${itext.downloads}/tutorial.tar" />
+        <tar tarfile="${itext.downloads}/examples.tar" basedir="${itext.build}" includes="examples/**" />
+        <gzip zipfile="${itext.dist}/examples.tar.gz" src="${itext.downloads}/examples.tar" />
+        <delete file="${itext.downloads}/examples.tar" />
+    </target>
+	
+</project>

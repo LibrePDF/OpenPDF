@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Optional Content</site:title>
+		<site:summary>Add optional content to a PDF file.</site:summary>
+		<site:keywords>PDF, JAVA, iText, examples, optional content, OCG, Lowagie, Bruno</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="1932394796">iText in Action</site:book>
+			<site:book asin="0321304748">PDF Reference (4th Edition)</site:book>
+			<site:keyword>JAVA</site:keyword>
+			<site:keyword>PDF</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-04-18 16:50:32 -0400 (Fri, 18 Apr 2008) $</site:updated>
+		<site:author>Bruno Lowagie</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="OrderedLayers" standalone="yes" />
+			<site:result>orderedlayers.pdf</site:result>
+			<site:description>Ordering Optional Content Groups</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="ContentGroups" standalone="yes" />
+			<site:result>contentgroups.pdf</site:result>
+			<site:description>Grouping Optional Content</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="OptionalContent" standalone="yes" />
+			<site:result>optionalcontent.pdf</site:result>
+			<site:externalresource>pngnow.png</site:externalresource>
+			<site:description>Changing the visibility using an Action</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="NestedLayers" standalone="yes" />
+			<site:result>nestedlayers.pdf</site:result>
+			<site:description>Nesting Optional Content</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="Automatic" standalone="yes" />
+			<site:result>automatic.pdf</site:result>
+			<site:description>Automatic grouping and nesting of Optional Content</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="Layers" standalone="yes" />
+			<site:result>layers.pdf</site:result>
+			<site:description>Zooming and radio groups</site:description>
+		</site:example>
+	</site:examples>
+	
+	<site:chapter>
+	
+	<site:section name="inaction">
+		<site:sectiontitle>In the book</site:sectiontitle>
+		<div>
+		<site:book>
+			<site:bookchapter chapter="12" />
+		</site:book>
+		</div>
+	</site:section>
+	<site:section name="ocg">
+		<site:sectiontitle>Optional Content Groups</site:sectiontitle>
+<div>
+Optional content is discussed in section 4.10 of the PDF Reference Manual:
+<blockquote><i>Optional Content</i> refers to sections of content in a PDF
+document that can be selectively viewed or hidden by document authors or
+consumers. This capability is useful in items such as CAD drawings,
+layered artwork, maps and multi-language documents.</blockquote>
+Graphics that can be made visible/invisible dynamically are grouped in
+<i>optional content groups</i>. Content that belongs to a certain group is visible
+when the group is ON and invisible when the group is OFF.<br />
+In iText, we call such groups 'layers'. You can create a
+<site:doc class="com.lowagie.text.pdf.PdfLayer">PdfLayer</site:doc> object
+and when adding content to a <site:doc class="com.lowagie.text.pdf.PdfContentByte">PdfContentByte</site:doc>-object,
+we are going to specify in which layer (= Content Group) the content should be shown (or hidden).
+<pre class="commandline">PdfContentByte cb = writer.getDirectContent();
+PdfLayer l = new PdfLayer("My Layer", writer);
+cb.beginLayer(l);
+// add content to 'My Layer' here
+cb.endLayer();</pre>
+You can combine different PdfLayers in a <site:doc class="com.lowagie.text.pdf.PdfLayerMembership">PdfLayerMembership</site:doc>:
+<pre class="commandline">PdfContentByte cb = writer.getDirectContent();
+PdfLayer l1 = new PdfLayer("Layer 1", writer);
+PdfLayer l2 = new PdfLayer("Layer 2", writer);
+PdfLayerMembership m = new PdfLayerMembership(writer);
+m.addMember(l1);
+m.addMember(l2);
+cb.beginLayer(m);
+// add content to 'Layer 1' and 'Layer 2' here
+cb.endLayer();</pre>
+This is a simple example:
+<site:source class="OrderedLayers" />
+As you see, you have a pane to your right in Acrobat Reader with all the available layers.
+Two of them are grouped in 'A group of two'. You can click on the eye-symbol to make a layer invisible.<br />
+Remark that we have set the PDF version to 1.5 just after creating the writer (because OCG was only introduced since version 1.5)
+and we have also set the Viewer Preferences to <span class="commandline">PageModeUseOC</span>.
+<pre class="commandline">writer.setPdfVersion(PdfWriter.VERSION_1_5);
+writer.setViewerPreferences(PdfWriter.PageModeUseOC);</pre>
+Every writer object has a <site:doc class="com.lowagie.text.pdf.PdfOCProperties">PdfOCProperties</site:doc> dictionary.
+You can get this dictonary with <site:doc class="com.lowagie.text.pdf.PdfWriter" target="getOCProperties()">getOCProperties()</site:doc>
+as is done in the example above.
+Dictionaries are objects that are used a lot in PDF (other specific PDF objects are PdfArray, PdfString, PdfNull, PdfName, PdfNumber,...).
+iText creates lots of these objects behind the scenes.
+If you want to use the <site:doc class="com.lowagie.text.pdf.PdfOCProperties">PdfOCProperties</site:doc> dictionary,
+you have a chance to get a better understanding of the iText internals (this is an euphemism meaning it's rather complex stuff).
+The code below gets the OC Properties from the writer, creates an ORDER-array and adds the layers l1, l2 and l3 to this order array,
+with l2 and l3 inside a 'group of two':
+<pre class="commandline">PdfOCProperties ocp = writer.getOCProperties();
+PdfArray order = new PdfArray();
+order.add(l1.getRef());
+PdfArray group = new PdfArray();
+group.add(new PdfString("A group of two", PdfObject.TEXT_UNICODE));
+group.add(l2.getRef());
+group.add(l3.getRef());
+order.add(group);
+PdfDictionary dict = new PdfDictionary();
+dict.put(PdfName.ORDER, order);
+ocp.put(PdfName.D, d);</pre>
+Just take a look at the resulting PDF to see the effect:
+<site:source class="ContentGroups" />
+With some small changes, we can 'nest' the layers instead of grouping them:
+<site:source class="NestedLayers" />
+You may find all this rather elaborate and complex.
+I'm sorry, I've been pulling your leg in order to show how iText works.
+There are far more simpler ways to order, group or nest OCGs:
+just use the methods
+<site:doc class="com.lowagie.text.pdf.PdfLayer" target="createTitle(java.lang.String,%20com.lowagie.text.pdf.PdfWriter)">PdfLayer.createTitle</site:doc>
+and <site:doc class="com.lowagie.text.pdf.PdfLayer" target="addChild(com.lowagie.text.pdf.PdfLayer)">PdfLayer.addChild</site:doc>,
+and iText will do all the difficult work for you.
+<site:source class="Automatic" />
+You might want to take a look at the other methods in class
+<site:doc class="com.lowagie.text.pdf.PdfLayer">PdfLayer</site:doc>:
+<site:doc class="com.lowagie.text.pdf.PdfLayer" target="setZoom(float,%20float)">PdfLayer.setZoom</site:doc>
+might be handy if you are drawing a map: you can specify between which maximum and minimum zoom factor the content should be visible.
+<site:doc class="com.lowagie.text.pdf.PdfLayer" target="setPrint(java.lang.String,%20boolean)">PdfLayer.setPrint</site:doc>
+if you want to add content that is intended for use in printing.
+<site:doc class="com.lowagie.text.pdf.PdfLayer" target="">PdfLayer.setOn</site:doc> sets the initial visibility of the layer.
+<site:doc class="com.lowagie.text.pdf.PdfLayer" target="setOnPanel(boolean)">PdfLayer.setOnPanel</site:doc> sets the visibility of the layer in Acrobat's layer panel. If set to false the layer cannot be directly manipulated by the user.
+These methods are used in this example:
+<site:source class="Layers" />
+There are lots of other methods in class PdfLayer. But let's look at one final example:
+<site:source class="OptionalContent" />
+As you can see toggling layers can be done in the layers panel in Acrobat Reader,
+but you can also make an action that changes the visibility status of the layers.
+<pre class="commandline">ArrayList state = new ArrayList();
+state.add("toggle");
+state.add(l1);
+state.add(l2);
+state.add(l3);
+state.add(l4);
+PdfAction action = PdfAction.setOCGstate(state, true);
+Chunk ck = new Chunk("Click here to toggle the layers").setAction(action);</pre>
+The different possibilities are "ON", "OFF" or "Toggle" (see also the API for
+<site:doc class="com.lowagie.text.pdf.PdfAction" target="setOCGstate(java.util.ArrayList,%20boolean)">PdfAction.setOCGstate</site:doc>).
+</div>
+	</site:section>
+	</site:chapter>
+
+</site:page>

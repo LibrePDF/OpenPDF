@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Extended font support</site:title>
+		<site:summary>Extensions to the basic iText font system.</site:summary>
+		<site:keywords>JAVA, iText, RTF, examples</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="0596004753">RTF Pocket Guide</site:book>
+			<site:keyword>JAVA</site:keyword>
+			<site:keyword>RTF</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
+		<site:author>Mark Hall</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="ExtendedFont" standalone="yes" />
+			<site:result>ExtendedFont.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
+			<site:description>Generates a simple document using the RtfFont class</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="ExtendedFontStyles" standalone="yes" />
+			<site:result>ExtendedFontStyles.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
+			<site:description>Generates a simple document using the additional font styles in the RtfFont class</site:description>
+		</site:example>
+	</site:examples>
+
+	<site:chapter>
+    <site:section name="extendedfont">
+    	<site:sectiontitle>Extended font support</site:sectiontitle>
+    	<div>
+    	  iText provides a number of built-in fonts and these can be extended by embedding
+    	  further fonts. Unfortunately embedding fonts is not supported in the RTF package
+    	  and the <site:doc class="com.lowagie.text.rtf.style.RtfFont">RtfFont</site:doc>
+    	  closes this gap.<br /><br />
+    	  
+    	  The RtfFont extends the the basic iText <site:doc class="com.lowagie.text.Font">Font</site:doc>
+    	  and can thus be used anywhere that the Font can be used. Using it is simple,
+    	  you just specify the name of the font that you wish to use and then use the
+    	  RtfFont like any other Font. The important thing is that the name of the font
+    	  specified exactly matches the name of the font on the target system, otherwise
+    	  it will not be used.
+    	  
+    	  <pre class="commandline">
+// Create a RtfFont with the desired font name.
+RtfFont msComicSans = new RtfFont("Comic Sans MS");
+            
+// Use the RtfFont like any other Font.
+document.add(new Paragraph("This paragraph uses the" +
+    " Comic Sans MS font.", msComicSans));
+    	  </pre>
+    	  
+    	  The example above only demonstrates setting the font name, but there are also
+    	  constructors with which you can specify font size, font style and colour.
+    	  
+    	  <site:source class="ExtendedFont" />
+    	  
+    	  One thing to keep in mind when using the RtfFont is that the font is NOT embedded.
+    	  This means that for it to be used when displaying the RTF document, the desired font
+    	  has to be available on the system that displays the font. Whether the font is
+    	  available on the system that generated the RTF document is irrelevant.
+    	</div>
+    </site:section>
+    
+    <site:section name="extendedfontstyles">
+    	<site:sectiontitle>Extended font styles</site:sectiontitle>
+    	<div>
+    	  In addition to providing access to further font names, the
+    	  <site:doc class="com.lowagie.text.rtf.style.RtfFont">RtfFont</site:doc>
+    	  provides a number of additional font styles that can be used when generating
+    	  RTF documents. These styles can be used in place of the styles provided by
+    	  <site:doc class="com.lowagie.text.Font">Font</site:doc> or combined with them.<br /><br />
+    	  
+    	  The following extra styles are provides:<br />
+    	  
+		  <ul>
+			<li>STYLE_DOUBLE_STRIKETHROUGH: A double strikethrough line.</li>
+			<li>STYLE_SHADOW: Text with a shadow.</li>
+			<li>STYLE_OUTLINE: Outlined text.</li>
+			<li>STYLE_EMBOSSED: Embossed text.</li>
+			<li>STYLE_ENGRAVED: Engraved text.</li>
+			<li>STYLE_HIDDEN: Text that is initially hidden from user view.</li>
+		  </ul>
+		  
+		  <pre class="commandline">
+// Use the RtfFont.STYLE_* instead of the Font styles.
+RtfFont doubleStrikethrough = new RtfFont("Arial", RtfFont.UNDEFINED,
+    RtfFont.STYLE_DOUBLE_STRIKETHROUGH);
+
+// Or combine them with Font styles.
+RtfFont engravedItalic = new RtfFont("Arial", RtfFont.UNDEFINED,
+    RtfFont.STYLE_ENGRAVED | Font.ITALIC);
+
+// The hidden style is special since it hides text.
+RtfFont hidden = new RtfFont("Arial", RtfFont.UNDEFINED,
+    RtfFont.STYLE_HIDDEN);
+
+Paragraph paragraph = new Paragraph("This text is ", new RtfFont("Arial", 12));
+            
+// Use the RtfFonts when creating the text.
+paragraph.add(new Chunk("deleted,", doubleStrikethrough));
+paragraph.add(new Chunk(" engraved and italic", engravedItalic));
+paragraph.add(" and");
+paragraph.add(new Chunk(" you won't see this", hidden));
+paragraph.add(" nothing.");
+            
+document.add(paragraph);
+		  </pre>
+		  
+		  <site:source class="ExtendedFontStyles"/>
+    	</div>
+    </site:section>
+	</site:chapter>
+</site:page>

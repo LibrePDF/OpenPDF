@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  leave out Doctype declaration until implications are fully understood
+  (or bugs in suns jnlp dtd are fixed)
+ <!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc//DTD JNLP Discriptor 6.0//EN" "http://java.sun.com/dtd/JNLP-6.0.dtd">
+
+  iText JavaWebStart file
+-->
+<jnlp spec="1.1+" codebase="http://www.1t3xt.com/jnlp/" href="toolbox.jnlp" version="$Id: toolbox.jnlp 3954 2009-06-08 00:50:15Z xlv $">
+  <information>
+    <title>iText Toolbox</title>
+    <vendor>1T3XT BVBA</vendor>
+    <homepage href="http://1t3xt.com/products/toolbox.php"/>
+    <description>A FrameWork that can be used to plug in iText tools</description>
+    <description kind="short">iText Toolbox</description>
+    <icon href="http://www.1t3xt.com/img/jnlplogo.gif"/>
+    <offline-allowed/>
+    <shortcut online="true" >
+      <!-- put a shortcut on the desktop -->
+      <desktop/>
+      <!-- put shortcut in start menu too -->
+      <menu submenu="iText Toolbox"/>
+    </shortcut>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+  <update check="always" policy="prompt-update"></update>
+  <resources>
+    <j2se version="1.6+" initial-heap-size="128m" max-heap-size="512m"/>
+    <jar href="http://www.1t3xt.com/jnlp/iText-toolbox.jar" main="true" download="eager"/>
+    <jar href="http://www.1t3xt.com/jnlp/iText.jar" main="false" download="eager"/>
+    <jar href="http://www.1t3xt.com/jnlp/bcmail-jdk14-138.jar" main="false" download="eager"/>
+    <jar href="http://www.1t3xt.com/jnlp/bcprov-jdk14-138.jar" main="false" download="eager"/>
+    <jar href="http://www.1t3xt.com/jnlp/bctsp-jdk14-138.jar" main="false" download="eager"/>
+  </resources>
+  <application-desc main-class="com.lowagie.toolbox.Toolbox"/>
+</jnlp>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Direct Content</site:title>
+		<site:summary>Support for direct content in RTF.</site:summary>
+		<site:keywords>JAVA, iText, RTF, examples</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="0596004753">RTF Pocket Guide</site:book>
+			<site:keyword>JAVA</site:keyword>
+			<site:keyword>RTF</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
+		<site:author>Mark Hall</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="SoftLineBreak" standalone="yes" />
+			<site:result>SoftLineBreak.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
+			<site:description>Generates a document demonstrating the use of soft linebreaks</site:description>
+		</site:example>
+	</site:examples>
+
+	<site:chapter>
+    <site:section name="pagenumbering">
+    	<site:sectiontitle>Direct Content</site:sectiontitle>
+    	<div>
+    	  The RtfWriter2 provides components for most of the RTF specification,
+    	  but not for everything. This is where the <site:doc class="com.lowagie.text.rtf.direct.RtfDirectContent">RtfDirectContent</site:doc>
+    	  comes into play. Using this object arbitrary RTF code can be added into the document "as is". The
+    	  <site:doc class="com.lowagie.text.rtf.direct.RtfDirectContent">RtfDirectContent</site:doc> provides no further
+    	  support for adding RTF content and it is up to the creator to specify correct RTF code.<br /><br />
+    	  
+    	  The <site:doc class="com.lowagie.text.rtf.direct.RtfDirectContent">RtfDirectContent</site:doc> provides
+    	  one predefined constant and that is the RTF code for a soft line-break.
+    	  
+    	  <pre class="commandline">
+// Add the contents before the linebreak
+par.add("This paragraph contains a soft linebreak");
+
+// Add the soft linebreak
+par.add(RtfDirectContent.DIRECT_SOFT_LINEBREAK);
+
+// Add the contents after the linebreak
+par.add("just before the just.");
+    	  </pre>
+
+    	  <site:source class="SoftLineBreak" />
+    	</div>
+    </site:section>
+    
+    <site:section name="importing">
+    	<site:sectiontitle>Importing RTF documents</site:sectiontitle>
+    	<div>
+    	  The RtfWriter2 also provides an interface for importing existing RTF documents via two
+    	  methods
+    	  <ul>
+    	    <li><b>RtfWriter2.importRtfDocument</b>: Imports a complete RTF document. Will attempt
+    	      to automagically translate the font and colour numbers in the original RTF document
+    	      into the font and colour numbers used in the new RTF document.</li>
+    	    <li><b>RtfWriter2.importRtfFragment</b>: Imports an RTF fragment. A <site:doc class="com.lowagie.text.rtf.direct.RtfImportMappings">RtfImportMappings</site:doc>
+    	      must be provided that describes the mappings between the font and colour numbers in the imported
+    	      RTF fragment to actual colours and font names.</li>
+    	  </ul><br />
+    	  
+    	  While the <span class="commandline">importRtfFragment</span> method is stable, the
+    	  <span class="commandline">importRtfDocument</span> should currently be considered alpha quality code.
+    	  Simple RTF documents should work, but complex documents can lead to problems.<br /><br />
+    	  
+    	  More detailed documentation will be forthcoming, when the stability of the code improves.
+    	</div>
+    </site:section>
+
+	</site:chapter>
+</site:page>

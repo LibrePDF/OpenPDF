@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Graphics State</site:title>
+		<site:summary>Add graphics directly to the PDF file using the PdfContentByte class.</site:summary>
+		<site:keywords>PDF, JAVA, iText, examples, PdfContentByte, Graphics, Lowagie, Bruno</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="1932394796">iText in Action</site:book>
+			<site:book asin="0321304748">PDF Reference (4th Edition)</site:book>
+			<site:keyword>PDF</site:keyword>
+			<site:keyword>PostScript</site:keyword>
+			<site:keyword>Graphics</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-04-18 16:50:32 -0400 (Fri, 18 Apr 2008) $</site:updated>
+		<site:author>Bruno Lowagie</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="Literal" standalone="yes" />
+			<site:result>literal.pdf</site:result>
+			<site:description>Writing PDF Syntax directly to iText</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="State" standalone="yes" />
+			<site:result>state.pdf</site:result>
+			<site:description>Changing the Graphics State with saveState and restoreState</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="GState" standalone="yes" />
+			<site:result>gstate.pdf</site:result>
+			<site:description>Changing the Graphics State with setGState</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="Circles" standalone="yes" />
+			<site:result>circles.pdf</site:result>
+			<site:description>Draws some concentric circles</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="Shapes" standalone="yes" />
+			<site:result>shapes.pdf</site:result>
+			<site:description>Draws some shapes</site:description>
+		</site:example>
+	</site:examples>
+	
+	<site:chapter>
+	<site:section name="inaction">
+		<site:sectiontitle>In the book</site:sectiontitle>
+		<div>
+		<site:book>
+			<site:bookchapter chapter="10" />
+		</site:book>
+		</div>
+	</site:section>
+	<site:section name="pdfsyntax">
+		<site:sectiontitle>PDF Syntax</site:sectiontitle>
+<div>
+PDF Syntax looks like this:
+<pre class="commandline">0.3 g
+15.000 27.000 m
+7.947 5.292 l
+26.413 18.708 l
+3.587 18.708 l
+22.053 5.292 l
+f
+45.000 57.000 m
+37.947 35.292 l
+56.413 48.708 l
+33.587 48.708 l
+52.053 35.292 l
+f
+0.7 g
+15.000 57.000 m
+7.947 35.292 l
+26.413 48.708 l
+3.587 48.708 l
+22.053 35.292 l
+f
+45.000 27.000 m
+37.947 5.292 l
+56.413 18.708 l
+33.587 18.708 l
+52.053 5.292 l
+f</pre>
+The example above draws 4 little stars in 2 different grayscales in the lower left corner of your page.
+You could write all this syntax by hand, there's even some methods
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setLiteral(String)">PdfContentByte.setLiteral</site:doc>
+that allow you to do this in iText, but trust me: that's not an easy job. If you want to write a complete PDF file from scratch,
+you also need to know a lot about the byte position of every object.
+I have set compression to false in the first example, so you can read the PDF file with a plain text editor,
+just to convince you, you really shouldn't start writing PDFs manually.
+<site:source class="Literal" />
+The PDF syntax of the example can be generated using simple iText methods such as
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setGrayFill(float)">setGrayFill(float)</site:doc> (the lines ending with g),
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="moveTo(float,%20float)">moveTo(float, float)</site:doc> (the lines ending with m),
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="lineTo(float,%20float)">lineTo(float, float)</site:doc> (the lines ending with l)
+and <site:doc class="com.lowagie.text.pdf.PdfContentByte" target="fill()">fill()</site:doc> (the f).<br />
+All these methods are described in this chapter.
+</div>
+	</site:section>
+
+	<site:section name="state">
+		<site:sectiontitle>Graphics State</site:sectiontitle>
+<div>
+The graphics state is initialized at the beginning of each page.
+All parameters, such as current color (one for filling and one for stroking),
+current line width, current dash pattern,... have default values.
+When using iText, you can change most of these defaults with methods in class
+<site:doc class="com.lowagie.text.pdf.PdfContentByte">PdfContentByte</site:doc>.
+Some of the parameters can only be changed with the
+<site:doc class="com.lowagie.text.pdf.PdfGState">PdfGState</site:doc> object,
+which is a special <site:doc class="com.lowagie.text.pdf.PdfDictionary">PdfDictionary</site:doc>
+(the Graphics State dictionary).<br /><br />
+The Graphics State is stored in a stack. If you need to change the Graphics State,
+you can save the current state with
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="saveState()">PdfContentByte.saveState()</site:doc>
+and return to that state later on with
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="restoreState()">PdfContentByte.restoreState()</site:doc>.
+<site:source class="State" />
+In the example, we first draw a circle with a radius of 250pts and
+we see how the default fill-color is black.
+<pre class="commandline">cb.circle(260.0f, 500.0f, 250.0f);
+cb.fill();
+</pre>
+We save this state and change the
+fill-color to red.
+<pre class="commandline">cb.saveState();
+cb.setColorFill(Color.red);
+cb.circle(260.0f, 500.0f, 200.0f);
+cb.fill();
+</pre>
+The circle with a radius of 200pts is drawn in red. We save
+this second state and change the fill-color to blue.
+<pre class="commandline">cb.saveState();
+cb.setColorFill(Color.blue);
+cb.circle(260.0f, 500.0f, 150.0f);
+cb.fill();
+</pre>
+The circle with radius 150pts is drawn in red. We restore the state to the second state (with fill-color red).
+<pre class="commandline">cb.restoreState();
+cb.circle(260.0f, 500.0f, 100.0f);
+cb.fill();
+</pre>
+As you can see, the circle with radius 100pts is drawn in red. Than we restore the
+original state and the circle with radius 50pts is drawn in black.
+<pre class="commandline">cb.restoreState();
+cb.circle(260.0f, 500.0f, 50.0f);
+cb.fill();
+</pre>
+Note that the saveState and restoreState must be balanced.
+An exception will be thrown if you try to restore a graphics state before
+you have called saveState.<br /><br />
+The next example shows you how to use the
+<site:doc class="com.lowagie.text.pdf.PdfGState">PdfGState</site:doc> object
+to change the state.
+<site:source class="GState" />
+</div>
+	</site:section>
+	
+	<site:section name="parameters">
+		<site:sectiontitle>Methods to change the parameters</site:sectiontitle>
+<div>
+Tables 4.2 and 4.3 in the PDF Reference Manual (section 4.3) give you all the available graphic
+state parameters. In the following tables, I sum up all these parameters and I'll
+add the methods that can be used in iText to change their values (if such
+a method is available).<br /><br />
+<div class="subtitle">Device-independent graphics state parameters</div>
+<table border="1" width="100%">
+<tr>
+<td class="small" valign="top">CTM</td>
+<td>When you are adding an Image or a PdfTemplate, you will in some cases also add the
+(a, b, c, d, e, f) values for the transformation matrix. The meaning of these values will
+be explained elsewhere in this tutorial.</td>
+</tr>
+<tr>
+<td class="small" valign="top">clipping path</td>
+<td>Methods <site:doc class="com.lowagie.text.pdf.PdfContentByte" target="clip()">clip()</site:doc>
+and <site:doc class="com.lowagie.text.pdf.PdfContentByte" target="eoClip()">eoClip()</site:doc>
+can be used to clip output.</td>
+</tr>
+<tr>
+<td class="small" valign="top">color space</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setDefaultColorspace(com.lowagie.text.pdf.PdfName,%20com.lowagie.text.pdf.PdfObject)">setDefaultColorspace(com.lowagie.text.pdf.PdfName, com.lowagie.text.pdf.PdfObject)</site:doc><br />
+Note that the different setColor methods change the colorspace automatically.
+Please go to the chapter on <site:tutorial chapter="/directcontent/colors">colors</site:tutorial> for more info and some examples.</td>
+</tr>
+<tr>
+<td class="small" valign="top">color</td>
+<td>
+<b>RGB colors (device dependent!):</b><br />
+These methods change the color space to DeviceRGB automatically:
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setRGBColorFill(int,%20int,%20int)">setRGBColorFill(int, int, int)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setRGBColorFillF(float,%20float,%20float)">setRGBColorFillF(float, float, float)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="resetRGBColorFill()">resetRGBColorFill()</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setRGBColorStroke(int,%20int,%20int)">setRGBColorStroke(int, int, int)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setRGBColorStrokeF(float,%20float,%20float)">setRGBColorStrokeF(float, float, float)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="resetRGBColorStroke()">resetRGBColorStroke()</site:doc><br />
+Methods that take integers as parameter, usually expect a value between 0x00 and 0xFF.
+Methods that take a float, expect a value between 0f and 1f. (default = black)<br />
+<b>CMYK colors (device dependent):</b><br />
+These methods change the color space to DeviceCMYK automatically:
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setCMYKColorFill(int,int,%20int,%20int)">setCMYKColorFill(int, int, int, int)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setCMYKColorFillF(float,%20float,%20float,%20float)">setCMYKColorFillF(float, float, float, float)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="resetCMYKColorFill()">resetCMYKColorFill()</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setCMYKColorStroke(int,%20int,%20int,%20int)">setCMYKColorStroke(int, int, int, int)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setCMYKColorStrokeF(float,%20float,%20float,%20float)">setCMYKColorStrokeF(float, float, float, float)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="resetCMYKColorStroke()">resetCMYKColorStroke()</site:doc><br />
+<b>Grayfill:</b><br />
+These methods change the color space to DeviceGray automatically (= the default):
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setGrayFill(float)">setGrayFill(float)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="resetGrayFill()">resetGrayFill()</site:doc>.<br />
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setGrayStroke(float)">setGrayStroke(float)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="resetGrayStroke()">resetGrayStroke()</site:doc>.
+float is a value between 0 (black) and 1 (white)<br />
+<b>Spotcolors (device independent):</b><br />
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setColorFill(com.lowagie.text.pdf.PdfSpotColor,%20float)">setColorFill(com.lowagie.text.pdf.PdfSpotColor, float)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setColorStroke(com.lowagie.text.pdf.PdfSpotColor,%20float)">setColorStroke(com.lowagie.text.pdf.PdfSpotColor, float)</site:doc><br />
+<b>Extended Color:</b><br />
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setColorFill(java.awt.Color)">setColorFill(java.awt.Color)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setColorStroke(java.awt.Color)">setColorStroke(java.awt.Color)</site:doc><br />
+Please go to the chapter on <site:tutorial chapter="/directcontent/colors">colors</site:tutorial> for more info and some examples.
+</td>
+</tr>
+<tr>
+<td class="small" valign="top">text state</td>
+<td>See the chapter on text.</td>
+</tr>
+<tr>
+<td class="small" valign="top">line width</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setLineWidth(float)">setLineWidth(float)</site:doc><br />
+The parameter represents the thickness of the line (default = 1).</td>
+</tr>
+<tr>
+<td class="small" valign="top">line cap</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setLineCap(int)">setLineCap(int)</site:doc><br />
+The parameter can be <site:doc class="com.lowagie.text.pdf.PdfContentByte" target="LINE_CAP_BUTT">PdfContentByte.LINE_CAP_BUTT</site:doc> (default),
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="LINE_CAP_ROUND">PdfContentByte.LINE_CAP_ROUND</site:doc>
+or <site:doc class="com.lowagie.text.pdf.PdfContentByte" target="LINE_CAP_PROJECTING_SQUARE">PdfContentByte.LINE_CAP_PROJECTING_SQUARE</site:doc>.</td>
+</tr>
+<tr>
+<td class="small" valign="top">line join</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setLineJoin(int)">setLineJoin(int)</site:doc><br />
+The parameter can be <site:doc class="com.lowagie.text.pdf.PdfContentByte" target="LINE_JOIN_MITER">PdfContentByte.LINE_JOIN_MITER</site:doc> (default),
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="LINE_JOIN_ROUND">PdfContentByte.LINE_JOIN_ROUND</site:doc>
+or <site:doc class="com.lowagie.text.pdf.PdfContentByte" target="LINE_JOIN_BEVEL">PdfContentByte.LINE_JOIN_BEVEL</site:doc>.</td>
+</tr>
+<tr>
+<td class="small" valign="top">miter limit</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setMiterLimit(float)">setMiterLimit(float)</site:doc><br />
+The parameter is a limit for joining lines, when exceeded, the join is converted from a miter to a bevel.</td>
+</tr>
+<tr>
+<td class="small" valign="top">dash pattern</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setLineDash(float)">setLineDash(float)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setLineDash(float[],%20float)">setLineDash(float[], float)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setLineDash(float,%20float)">setLineDash(float, float)</site:doc> or
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setLineDash(float,%20float,%20float)">setLineDash(float, float, float)</site:doc>.<br />
+The parameters describe a <i>dash pattern</i> (default = a solid line).</td>
+</tr>
+<tr>
+<td class="small" valign="top">rendering intent</td>
+<td>Used internally when rendering PNG Images.</td>
+</tr>
+<tr>
+<td class="small" valign="top">stroke adjustment</td>
+<td>not implemented in iText</td>
+</tr>
+<tr>
+<td class="small" valign="top">blend mode</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfGState" target="setBlendMode(com.lowagie.text.pdf.PdfName)">setBlendMode(com.lowagie.text.pdf.PdfName)</site:doc><br />
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_NORMAL">PdfGState.BM_NORMAL</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_COMPATIBLE">PdfGState.BM_COMPATIBLE</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_MULTIPLY">PdfGState.BM_MULTIPLY</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_SCREEN">PdfGState.BM_SCREEN</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_OVERLAY">PdfGState.BM_OVERLAY</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_DARKEN">PdfGState.BM_DARKEN</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_LIGHTEN">PdfGState.BM_LIGHTEN</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_COLORDODGE">PdfGState.BM_COLORDODGE</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_COLORBURN">PdfGState.BM_COLORBURN</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_HARDLIGHT">PdfGState.BM_HARDLIGHT</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_SOFTLIGHT">PdfGState.BM_SOFTLIGHT</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_DIFFERENCE">PdfGState.BM_DIFFERENCE</site:doc> or
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="BM_EXCLUSION">PdfGState.BM_EXCLUSION</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">soft mask</td>
+<td><site:doc class="com.lowagie.text.Image" target="makeMask()">Image.makeMask()</site:doc>
+and <site:doc class="com.lowagie.text.Image" target="setImageMask(com.lowagie.text.Image)">Image.setImageMask(com.lowagie.text.Image)</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">alpha constant</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfGState" target="setFillOpacity(float)">setFillOpacity(float)</site:doc>
+and <site:doc class="com.lowagie.text.pdf.PdfGState" target="setStrokeOpacity(float)">setStrokeOpacity(float)</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">alpha source</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfGState" target="setAlphaIsShape(boolean)">setAlphaIsShape(boolean)</site:doc></td>
+</tr>
+</table>
+<br /><br />
+
+<div class="subtitle">Device-dependent graphics state parameters</div>
+<table border="1" width="100%">
+<tr>
+<td class="small" valign="top">overprint</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfGState" target="setOverPrintStroking(boolean)">setOverPrintStroking(boolean)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.PdfGState" target="setOverPrintNonStroking(boolean)">setOverPrintNonStroking(boolean)</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">overprint mode</td>
+<td>not implemented</td>
+</tr>
+<tr>
+<td class="small" valign="top">black generation</td>
+<td>not implemented</td>
+</tr>
+<tr>
+<td class="small" valign="top">undercolor removal</td>
+<td>not implemented</td>
+</tr>
+<tr>
+<td class="small" valign="top">transfer</td>
+<td>not implemented</td>
+</tr>
+<tr valign="top">
+<td class="small">halftone</td>
+<td>not implemented</td>
+</tr>
+<tr>
+<td class="small" valign="top">flatness</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setFlatness(float)">setFlatness(float)</site:doc><br />
+The parameter is a distance in device pixels.</td>
+</tr>
+<tr>
+<td class="small" valign="top">smootness</td>
+<td>not implemented</td>
+</tr>
+</table>
+</div>
+	</site:section>
+	
+	<site:section name="paths">
+		<site:sectiontitle>Path construction and painting</site:sectiontitle>
+<div>
+<br />
+<div class="subtitle">construction</div>
+Section 4.4 of the PDF Reference Manual deals with paths (p194):
+<blockquote>Paths define shapes, trajectories and regions of all sorts.
+They are used to draw lines, define the shapes of filled areas,
+and specify boundaries for clipping other graphics.</blockquote>
+Table 4.9 in the reference manual gives you an overview of the path construction operators.
+In the following table, I sum up all these operators with their corresponding method in
+the iText class <site:doc class="com.lowagie.text.pdf.PdfContentByte">PdfContentByte</site:doc>.
+<table border="1" width="100%">
+<tr>
+<td class="small" valign="top">m</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="moveTo(float,%20float)">moveTo(float, float)</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">l</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="lineTo(float,%20float)">lineTo(float, float)</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">c</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="curveTo(float,%20float,%20float,%20float,%20float,%20float)">curveTo(float, float, float, float, float float)</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">v</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="curveTo(float,%20float,%20float,%20float)">curveTo(float, float, float, float)</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">y</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="curveFromTo(float,%20float,%20float,%20float)">curveFromTo(float, float, float, float)</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">h</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="closePath()">closePath()</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">re</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="rectangle(float,%20float,%20float,%20float)">rectangle(float, float, float, float)</site:doc>
+</td>
+</tr>
+</table>
+For more info on these methods (especially the curveTo-ones), please read the
+PDF Reference Manual section 4.4.1 or consult the API documentation.<br />
+For ease of use, some extra methods were added in iText:
+<ul>
+<li><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="circle(float,%20float,%20float)">circle(float, float, float)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="ellipse(float,%20float,%20float,%20float)">ellipse(float, float, float, float)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="arc(float,%20float,%20float,%20float,%20float,%20float)">arc(float, float, float, float, float, float)</site:doc>
+allow you to draw some specific curves.</li>
+<li><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="rectangle(com.lowagie.text.Rectangle)">rectangle(com.lowagie.text.Rectangle)</site:doc> not only draws
+the rectangle as is done with <site:doc class="com.lowagie.text.pdf.PdfContentByte" target="rectangle(float,%20float,%20float,%20float)">rectangle(float, float, float, float)</site:doc>,
+but also fills it with colors and takes into account some other attributes of class <site:doc class="com.lowagie.text.Rectangle)">com.lowagie.text.Rectangle</site:doc>.<br />
+The same goes for <site:doc class="com.lowagie.text.pdf.PdfContentByte" target="variableRectangle(com.lowagie.text.Rectangle)">variableRectangle(com.lowagie.text.Rectangle)</site:doc></li>
+</ul>
+<br />
+<div class="subtitle">painting</div>
+It is very important to understand that constructing a path doesn't paint the path!
+When you construct a path, the PDF interpreter doesn't know what you plan to do with it.
+If you want to paint it, you will have to use a path painting operator.
+These operators are listed in Table 4.10 of the Reference manual.
+Again I will sum them up with their corresponding iText method.
+<table border="1" width="100%">
+<tr>
+<td class="small" valign="top">S</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="stroke()">stroke()</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">s</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="closePathStroke()">closePathStroke()</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">f</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="fill()">fill()</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">F</td>
+<td>not used (as described in the reference manual).</td>
+</tr>
+<tr>
+<td class="small" valign="top">f*</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="eoFill()">eoFill()</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">B</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="fillStroke()">fillStroke()</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">B*</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="eoFillStroke()">eoFillStroke()</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">b</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="closePathFillStroke()">closePathFillStroke()</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">b*</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="closePathEoFillStroke()">closePathEoFillStroke()</site:doc></td>
+</tr>
+<tr>
+<td class="small" valign="top">n</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="newPath()">newPath()</site:doc></td>
+</tr>
+</table><br />
+<div class="subtitle">Using PdfContentByte</div>
+These are some simple examples demonstrating some of the methods mentioned above:
+<site:source class="Shapes" />
+<site:source class="Circles" />
+</div>
+	</site:section>
+	</site:chapter>
+
+</site:page>

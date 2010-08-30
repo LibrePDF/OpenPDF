@@ -1,0 +1,1 @@
+<% response.sendRedirect("http://itextdocs.lowagie.com/tutorial/general/webapp/"); %>

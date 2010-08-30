@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">RTF generation settings</site:title>
+		<site:summary>How to configure settings for the RTF generation.</site:summary>
+		<site:keywords>JAVA, iText, RTF, examples</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="0596004753">RTF Pocket Guide</site:book>
+			<site:keyword>JAVA</site:keyword>
+			<site:keyword>RTF</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
+		<site:author>Mark Hall</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="DocumentSettings" standalone="yes" />
+			<site:result>DocumentSettings.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
+			<site:description>Generates a simple document with modified document settings</site:description>
+		</site:example>
+	</site:examples>
+
+	<site:chapter>
+    <site:section name="settings">
+    	<site:sectiontitle>RTF generation settings</site:sectiontitle>
+    	<div>
+    	  The RtfWriter2 supports a set of configuration switches that can be used to
+    	  tailor the RTF generated.
+    	  <dl>
+    	    <dt style="font-weight: bold;">outputTableRowDefinitionAfter (Boolean)</dt>
+    	    <dd>Whether to write the table row definitions both before and after
+    	      the table data. Set to <span class="commandline">true</span> if you
+    	      are generating RTF documents that need to be read with Word 2000.
+    	      Set to <span class="commandline">false</span> if you are generating
+    	      RTF documents that need to be read with OpenOffice.org Writer. By
+    	      default table row definitions are written both before and after.</dd>
+    	    <dt style="font-weight: bold;">alwaysGenerateSoftLinebreaks (Boolean)</dt>
+    	    <dd>Whether \n characters should be written as hard or soft linebreaks.
+    	      By default only \n characters in lists and table cells are written as
+    	      soft linebreaks. Setting this property to <span class="commandline">true</span>
+    	      causes all \n characters to be written as soft linebreaks.s</dd>
+    	    <dt style="font-weight: bold;">alwaysUseUnicode (Boolean)</dt>
+    	    <dd>Whether all characters bigger than 'z' should be written as unicode escapes
+    	      or whether the original character should be written. The default is to escape
+    	      everything, which leads to larger RTF files. Setting this property to 
+    	      <span class="commandline">false</span> reduces RTF file size, but may lead
+    	      to characters being displayed incorrectly.</dd>
+    	    <dt style="font-weight: bold;">dataCacheStyle (Integer)</dt>
+    	    <dd>Specifies where the RTF document is cached during document generation. Valid
+    	      values are specified in the <site:doc class="com.lowagie.text.rtf.document.output.RtfDataCache">RtfDataCache</site:doc>.
+    	      <ul>
+    	        <li>CACHE_MEMORY: The default keeps the whole document in memory. This increases
+    	          the generation speed, but places a maximum size on the document.</li>
+    	        <li>CACHE_MEMORY_EFFICIENT: The document is kept in memory, but the use of memory
+    	          is minimised. Depending on how your document is structured, using this might
+    	          slightly slow down the generation speed, but should reduce the memory footprint
+    	          by at least 50%.</li>
+    	        <li>Cache_DISK: The document is cached on disk. This decreases the document generation
+    	          speed, but the maximum document size is increased to the amount of space free
+    	          on the disk.</li>
+    	      </ul>
+    	      You can only set this property before calling <span class="commandline">document.open()</span>.
+    	    </dd>
+    	    <dt style="font-weight: bold;">outputDebugLineBreaks (Boolean)</dt>
+    	    <dd>This setting is primarily for debugging purposes and leads to slightly larger,
+    	      but more readable RTF files. Set it to <span class="commandline">false</span>
+    	      to decrease the RTF file size.</dd>
+    	    <dt style="font-weight: bold;">imagePDFConformance (Boolean)</dt>
+    	    <dd>This setting controls whether images are scaled so that the result is equivalent to
+    	      the PDF display. Defaults to <span class="commandline">true</span>. The result of this
+    	      is that images are added at 72 DPI and if any other resolution is required, this must
+    	      be achieved through scaling. Set it to <span class="commandline">false</span> to 
+    	      add images with the default RTF resolution.</dd>
+    	    <dt style="font-weight: bold;">writeImageScalingInformation (Boolean)</dt>
+    	    <dd>Whether to write additional styling information that is required to display scaled
+    	      images correctly in Word 2000, Word 97 and Word for Mac. Defaults to
+    	      <span class="commandline">false</span>. If you want images to be scaled correctly
+    	      in Word 2000, Word 97 and Word for Mac set this setting to <span class="commandline">true</span>.
+    	      Must be <span class="commandline">false</span> for images to be displayed correctly
+    	      in Word XP.</dd>
+            <dt style="font-weight: bold;">imageWrittenAsBinary (Boolean)</dt>
+            <dd>This setting controls whether images are written as binary data in the RTF document, or are
+              hex encoded. Defaults to <span class="commandline">true</span> for document size reasons. Set to
+              <span class="commandline">false</span> if you want hex encoded image data.</dd>
+    	  </dl>
+    	  You access these generation settings by getting the <span class="commandline">RtfDocumentSettings</span>
+    	  object from the <span class="commandline">RtfWriter2</span>.
+    	  <pre class="commandline">
+Document document = new Document();
+RtfWriter2 writer2 = RtfWriter2.getInstance(document,
+	new FileOutputStream("rtfDocumentSettings.rtf"));
+
+// Access the RtfDocumentSettings and set the desired properties	
+writer2.getRtfDocumentSettings().setDataCacheStyle(RtfDataCache.CACHE_DISK);
+
+document.open();
+...
+document.close();
+    	  </pre>
+          <site:source class="DocumentSettings" />
+    	</div>
+    </site:section>
+    
+    <site:section name="shortcuts">
+    	<site:sectiontitle>Viewer version settings</site:sectiontitle>
+    	<div>
+    	  The <site:doc class="com.lowagie.text.rtf.document.RtfDocumentSettings">RtfDocumentSettings</site:doc> also provides a number of
+    	  methods to set generation options for specific viewers. These act as shortcuts to
+    	  set a number of the generation settings listed above. Methods for the following viewers
+    	  are provided
+    	  <ul>
+    	    <li><b>Word 2000 and 97</b>: Sets the options for Word 2000 and Word 97 compliance -
+    	      <span class="commandline">outputTableRowDefinitionAfter = true</span> and
+    	      <span class="commandline">writeImageScalingInformation = true</span></li>
+    	    <li><b>Word for Mac</b>: Sets the options for Word for Mac compliance - 
+    	      <span class="commandline">writeImageScalingInformation = true</span></li>
+    	    <li><b>Word XP</b>: Sets the options for Word XP compliance - 
+    	      <span class="commandline">writeImageScalingInformation = false</span></li>
+    	    <li><b>OpenOffice.org</b>: Sets the options for OpenOffice.org compliance - 
+    	      <span class="commandline">outputTableRowDefinitionAfter = true</span></li>
+    	  </ul><br />
+    	  
+    	  You should only call one of these methods as they are partially mutually exclusive.
+    	</div>
+    </site:section>
+    </site:chapter>
+    
+</site:page>

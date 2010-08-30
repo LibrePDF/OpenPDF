@@ -1,0 +1,177 @@
+(1)
+
+ExceptionConverter:
+The original version of this class was published in an article by Heinz Kabutz.
+Read http://www.javaspecialists.co.za/archive/newsletter.do?issue=033&print=yes&locale=en_US
+"This material from The Java(tm) Specialists' Newsletter by Maximum Solutions
+(South Africa). Please contact Maximum Solutions  for more information.
+
+(2)
+
+SimpleXMLParser:
+The original version of this class was published in a JavaWorld article by Steven Brandt:
+http://www.javaworld.com/javaworld/javatips/jw-javatip128.html
+Jennifer Orr (JavaWorld) wrote: "You have permission to use the code appearing in
+Steven Brandt's JavaWorld article, 'Java Tip 128: Create a quick-and-dirty XML parser.'
+We ask that you reference the author as the creator and JavaWorld as the original publisher
+of the code." Steven Brandt also agreed with the use of this class.
+
+(3)
+
+The following files contain material that was copyrighted by SUN:
+
+com/lowagie/text/pdf/LZWDecoder.java (first appearance in iText: 2002-02-08)
+com/lowagie/text/pdf/codec/BmpImage.java (first appearance in iText: 2003-06-20)
+com/lowagie/text/pdf/codec/PngImage.java (first appearance in iText: 2003-04-25)
+com/lowagie/text/pdf/codec/TIFFDirectory.java (first appearance in iText: 2003-04-09)
+com/lowagie/text/pdf/codec/TIFFFaxDecoder.java (first appearance in iText: 2003-04-09)
+com/lowagie/text/pdf/codec/TIFFField.java (first appearance in iText: 2003-04-09)
+com/lowagie/text/pdf/codec/TIFFLZWDecoder.java (first appearance in iText: 2003-04-09)
+
+The original code was released under the BSD license, and contained the following
+extra restriction: "You acknowledge that Software is not designed, licensed or intended
+for use in the design, construction, operation or maintenance of any nuclear facility."
+
+In a mail sent to Bruno Lowagie on January 23, 2008, Brian Burkhalter (@sun.com)
+writes: "This code is under a BSD license and supersedes the older codec packages
+on which your code is based. It also includes numerous fixes among them being the
+ability to handle a lot of 'broken' TIFFs."
+
+Note that numerous fixes were applied to the code used in iText by Paulo Soares,
+but apart from the fixes there were no essential changes between the code that
+was originally adapted and the code that is now available under the following
+license:
+
+ Copyright (c) 2005 Sun Microsystems, Inc. All  Rights Reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met: 
+ 
+ - Redistribution of source code must retain the above copyright 
+   notice, this  list of conditions and the following disclaimer.
+ 
+ - Redistribution in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in 
+   the documentation and/or other materials provided with the
+   distribution.
+ 
+ Neither the name of Sun Microsystems, Inc. or the names of 
+ contributors may be used to endorse or promote products derived 
+ from this software without specific prior written permission.
+ 
+ This software is provided "AS IS," without a warranty of any 
+ kind. ALL EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND 
+ WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, 
+ FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY
+ EXCLUDED. SUN MIDROSYSTEMS, INC. ("SUN") AND ITS LICENSORS SHALL 
+ NOT BE LIABLE FOR ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF 
+ USING, MODIFYING OR DISTRIBUTING THIS SOFTWARE OR ITS
+ DERIVATIVES. IN NO EVENT WILL SUN OR ITS LICENSORS BE LIABLE FOR 
+ ANY LOST REVENUE, PROFIT OR DATA, OR FOR DIRECT, INDIRECT, SPECIAL,
+ CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND
+ REGARDLESS OF THE THEORY OF LIABILITY, ARISING OUT OF THE USE OF OR
+ INABILITY TO USE THIS SOFTWARE, EVEN IF SUN HAS BEEN ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGES. 
+ 
+ You acknowledge that this software is not designed or intended for 
+ use in the design, construction, operation or maintenance of any 
+ nuclear facility.
+
+The main difference can be found in the final paragraph: the restriction
+that the source code is not "licensed" in this particular situation has
+been removed.
+
+FYI: Brian also added: "A bit of history might be in order.
+The codec classes that you used originally were based on some
+classes included with JAI but not strictly part of JAI.
+As of Java SE 1.4 an official Image I/O framework was
+added in javax.imageio.... This frameork supports these formats:
+
+Java 1.4: GIF (read only), JPEG, PNG
+Java 1.5: Added support for BMP and WBMP
+Java 1.6: Added support for writing GIF
+
+The JAI Image I/O Tools packages (jai-imageio-core) were created
+to support formats handled by JAI but not included in Java SE
+as well as some new things like JPEG2000."
+
+(4) the file com/lowagie/text/pdf/codec/TIFFConstants
+and some other TIFF related code is derived from LIBTIFF:
+
+ Copyright (c) 1988-1997 Sam Leffler
+ Copyright (c) 1991-1997 Silicon Graphics, Inc.
+
+ Permission to use, copy, modify, distribute, and sell this software and 
+ its documentation for any purpose is hereby granted without fee, provided
+ that (i) the above copyright notices and this permission notice appear in
+ all copies of the software and related documentation, and (ii) the names of
+ Sam Leffler and Silicon Graphics may not be used in any advertising or
+ publicity relating to the software without the specific, prior written
+ permission of Sam Leffler and Silicon Graphics.
+ 
+ THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
+ EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
+ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
+ 
+ IN NO EVENT SHALL SAM LEFFLER OR SILICON GRAPHICS BE LIABLE FOR
+ ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
+ OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF 
+ LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
+ OF THIS SOFTWARE.
+
+(5)
+
+BidiOrder:
+As stated in the Javadoc comments, materials from Unicode.org
+are used in the class com/lowagie/text/pdf/BidiOrder.java
+The following license applies to these materials:
+ http://www.unicode.org/copyright.html#Exhibit1
+  
+ EXHIBIT 1
+ UNICODE, INC. LICENSE AGREEMENT - DATA FILES AND SOFTWARE
+ 
+ Unicode Data Files include all data files under the directories
+ http://www.unicode.org/Public/, http://www.unicode.org/reports/,
+ and http://www.unicode.org/cldr/data/ .
+ Unicode Software includes any source code published in the Unicode Standard
+ or under the directories http://www.unicode.org/Public/, http://www.unicode.org/reports/,
+ and http://www.unicode.org/cldr/data/.
+ 
+ NOTICE TO USER: Carefully read the following legal agreement. BY DOWNLOADING,
+ INSTALLING, COPYING OR OTHERWISE USING UNICODE INC.'S DATA FILES ("DATA FILES"),
+ AND/OR SOFTWARE ("SOFTWARE"), YOU UNEQUIVOCALLY ACCEPT, AND AGREE TO BE BOUND BY,
+ ALL OF THE TERMS AND CONDITIONS OF THIS AGREEMENT. IF YOU DO NOT AGREE, DO NOT
+ DOWNLOAD, INSTALL, COPY, DISTRIBUTE OR USE THE DATA FILES OR SOFTWARE.
+ 
+ COPYRIGHT AND PERMISSION NOTICE
+ Copyright (C) 1991-2007 Unicode, Inc. All rights reserved. Distributed under
+ the Terms of Use in http://www.unicode.org/copyright.html.
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of the Unicode data files and any associated documentation (the "Data Files")
+ or Unicode software and any associated documentation (the "Software") to deal
+ in the Data Files or Software without restriction, including without limitation
+ the rights to use, copy, modify, merge, publish, distribute, and/or sell copies
+ of the Data Files or Software, and to permit persons to whom the Data Files
+ or Software are furnished to do so, provided that (a) the above copyright
+ notice(s) and this permission notice appear with all copies of the Data Files
+ or Software, (b) both the above copyright notice(s) and this permission notice
+ appear in associated documentation, and (c) there is clear notice in each
+ modified Data File or in the Software as well as in the documentation associated
+ with the Data File(s) or Software that the data or software has been modified.
+ 
+ THE DATA FILES AND SOFTWARE ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS.
+ IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE BE
+ LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY
+ DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+ CONNECTION WITH THE USE OR PERFORMANCE OF THE DATA FILES OR SOFTWARE.
+ 
+ Except as contained in this notice, the name of a copyright holder shall not
+ be used in advertising or otherwise to promote the sale, use or other dealings
+ in these Data Files or Software without prior written authorization of the
+ copyright holder.

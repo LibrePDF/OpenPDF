@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Text</site:title>
+		<site:summary>Add text content directly to the PDF file using the PdfContentByte class.</site:summary>
+		<site:keywords>PDF, JAVA, iText, examples, PdfContentByte, Graphics, absolute positions, Lowagie, Bruno</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="1932394796">iText in Action</site:book>
+			<site:book asin="0321304748">PDF Reference (4th Edition)</site:book>
+			<site:keyword>PDF</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-04-18 16:50:32 -0400 (Fri, 18 Apr 2008) $</site:updated>
+		<site:author>Bruno Lowagie</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="Text" standalone="yes" />
+			<site:result>text.pdf</site:result>
+			<site:description>Adding text at absolute positions</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="Logo" standalone="yes" />
+			<site:result>logo.pdf</site:result>
+			<site:description>Draws the iText logo</site:description>
+		</site:example>
+	</site:examples>
+	
+	<site:chapter>
+
+	<site:section name="inaction">
+		<site:sectiontitle>In the book</site:sectiontitle>
+		<div>
+		<site:book>
+			<site:bookchapter chapter="11" />
+		</site:book>
+		</div>
+	</site:section>
+	<site:section name="pdfsyntax">
+		<site:sectiontitle>PDF Syntax</site:sectiontitle>
+<div>
+PDF Syntax to write text looks like this:
+<pre class="commandline">BT
+  /F13 12 Tf
+  288 720 Td
+  (ABC) Tj
+ET</pre>
+The example above write ABC (Tj) at a certain position (Tj) using a certain font (/F13) with a certain size (12).
+Text State is a subset of the graphics state and again iText offers lots of methods so that you don't have to write PDF syntax manually,
+but before looking at the lists of the text state, text positioning and text showing operators,
+you must know about the text object operators:
+<table>
+<tr>
+<td>BT</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="beginText()">beginText()</site:doc></td>
+</tr>
+<tr>
+<td>ET</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="endText()">endText()</site:doc></td>
+</tr>
+</table>
+If you use any method mentioned below outside a beginText/endText block, your PDF reader will give you a 'damaged PDF file' warning or error.
+Don't forget to use these methods!
+</div>
+	</site:section>
+	
+	<site:section name="text">
+		<site:sectiontitle>Text State</site:sectiontitle>
+<div>
+There are 9 graphics state parameters that only affect text (see table 5.1 in the PDF Reference Manual).
+In the table below, I sum up the parameters (italic), the corresponding operators (bold, see table 5.2 in the Reference Manual)
+and the corresponding iText method to change the text state.
+<table width="100%" border="1">
+<tr>
+<td><i>Tc</i></td>
+<td><b>Tc</b></td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setCharacterSpacing(float)">setCharacterSpacing(float)</site:doc></td>
+</tr>
+<tr>
+<td><i>Tw</i></td>
+<td><b>Tw</b></td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setWordSpacing(float)">setWordSpacing(float)</site:doc></td>
+</tr>
+<tr>
+<td><i>Th</i></td>
+<td><b>Th</b></td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setHorizontalScaling(float)">setHorizontalScaling(float)</site:doc></td>
+</tr>
+<tr>
+<td><i>Tl</i></td>
+<td><b>TL</b></td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setLeading(float)">setLeading(float)</site:doc></td>
+</tr>
+<tr>
+<td><i>Tf</i></td>
+<td rowspan="2"><b>Tf</b></td>
+<td rowspan="2"><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setFontAndSize(com.lowagie.text.pdf.BaseFont,%20float)">setFontAndSize(com.lowagie.text.pdf.BaseFont, float)</site:doc></td>
+</tr>
+<tr><td><i>Tfs</i></td></tr>
+<tr>
+<td><i>Tmode</i></td>
+<td><b>Tr</b></td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setTextRenderingMode(int)">setTextRenderingMode(int)</site:doc><br />
+The text rendering mode is one of the following values:
+<ul>
+<li><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="TEXT_RENDER_MODE_FILL">PdfContentByte.TEXT_RENDER_MODE_FILL</site:doc></li>
+<li><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="TEXT_RENDER_MODE_STROKE">PdfContentByte.TEXT_RENDER_MODE_STROKE</site:doc></li>
+<li><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="TEXT_RENDER_MODE_FILL_STROKE">PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE</site:doc></li>
+<li><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="TEXT_RENDER_MODE_INVISIBLE">PdfContentByte.TEXT_RENDER_MODE_INVISIBLE</site:doc></li>
+<li><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="TEXT_RENDER_MODE_FILL_CLIP">PdfContentByte.TEXT_RENDER_MODE_FILL_CLIP</site:doc></li>
+<li><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="TEXT_RENDER_MODE_STROKE_CLIP">PdfContentByte.TEXT_RENDER_MODE_STROKE_CLIP</site:doc></li>
+<li><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="TEXT_RENDER_MODE_FILL_STROKE_CLIP">PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE_CLIP</site:doc></li>
+<li><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="TEXT_RENDER_MODE_CLIP">PdfContentByte.TEXT_RENDER_MODE_CLIP</site:doc></li>
+</ul>
+See the chapter on <site:tutorial chapter="/objects/chunk" target="rendering">Chunks</site:tutorial> for an example.
+</td>
+</tr>
+<tr>
+<td><i>Trise</i></td>
+<td><b>Ts</b></td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setTextRise(float)">setTextRise(float)</site:doc></td>
+</tr>
+<tr>
+<td><i>Tk</i></td>
+<td></td>
+<td><site:doc class="com.lowagie.text.pdf.PdfGState" target="setTextKnockout(boolean)">PdfGState.setTextKnockout(boolean)</site:doc></td>
+</tr>
+</table>
+Text also has it's own coordinate system: <i>text space</i>.
+It is defined by the text matrix <i>Tm</i> and the text state parameters <i>Tfs</i>, <i>Th</i> and <i>Trise</i>,
+which together form the transformation matrix text space to user space. This is the list of Text-positioning parameters
+(see also Table 5.5 in the PDF Reference Manual):
+<table width="100%" border="1">
+<tr>
+<td>Td</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="moveText(float,%20float)">moveText(float, float)</site:doc></td>
+</tr>
+<tr>
+<td>Td</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="moveTextWithLeading(float,%20float)">moveTextWithLeading(float, float)</site:doc></td>
+</tr>
+<tr>
+<td>Tm</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setTextMatrix(float,%20float)">setTextMatrix(float, float)</site:doc>
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="setTextMatrix(float,%20float,%20float,%20float,%20float,%20float)">setTextMatrix(float, float, float, float, float, float)</site:doc></td>
+</tr>
+<tr>
+<td>T*</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="newlineText()">newlineText()</site:doc></td>
+</tr>
+</table>
+Finally there are some text-showing operators (see Table 5.6 of the PDF Reference Manual).
+<table width="100%" border="1">
+<tr>
+<td>Tj</td>
+<td>
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="showText(java.lang.String)">showText(java.lang.String)</site:doc>
+</td>
+</tr>
+<tr>
+<td>'</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="newlineShowText(java.lang.String)">newlineShowText(java.lang.String)</site:doc>
+</td>
+</tr>
+<tr>
+<td>"</td>
+<td><site:doc class="com.lowagie.text.pdf.PdfContentByte" target="newlineShowText(float,%20float,%20java.lang.String))">newlineShowText(float, float, java.lang.String)</site:doc></td>
+</tr>
+<tr>
+<td>TJ</td>
+<td>
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="showText(com.lowagie.text.pdf.PdfTextArray)">showText(com.lowagie.text.pdf.PdfTextArray)</site:doc></td>
+</tr>
+</table>
+iText also adds some extra methods that combine different methods that are summed up above:
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="showTextKerned(java.lang.String))">showTextKerned(java.lang.String)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="showTextAligned(int,%20java.lang.String,%20float,%20float,%20float)">showTextAligned(int,%20java.lang.String,%20float,%20float,%20float)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.PdfContentByte" target="showTextAlignedKerned(int,%20java.lang.String,%20float,%20float,%20float)">showTextAlignedKerned(int,%20java.lang.String,%20float,%20float,%20float)</site:doc>.<br/>
+This is a simple examples that writes some text at absolute positions:
+<site:source class="Text" />
+In this example, you see that graphics state methods also apply to text state:
+text glyphs are shapes and if you want to change the color, you have to change the 'colorfill':
+<site:source class="Logo" />
+</div>
+	</site:section>
+	
+	<site:section name="fonts">
+		<site:sectiontitle>Fonts</site:sectiontitle>
+<div>
+The first part of Chapter 5 of the PDF Reference Manual deals with
+<site:tutorial chapter="/directcontent/text">Text State</site:tutorial>;
+the second part (starting with section 5.4) tells you all about fonts.<br />
+In this tutorial fonts are discussed in 3 chapters of a <site:tutorial chapter="" section="part3">separate part</site:tutorial>:
+<ol>
+<li><site:tutorial chapter="/fonts">Font objects</site:tutorial></li>
+<li><site:tutorial chapter="/fonts/styles">Font characteristics</site:tutorial></li>
+<li><site:tutorial chapter="/fonts/getting">Getting Fonts</site:tutorial></li>
+</ol>
+</div>
+	</site:section>
+	</site:chapter>
+
+</site:page>

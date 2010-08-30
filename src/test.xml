@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- iText, a JAVA - PDF library                                      -->
+<!-- $Id: test.xml 3954 2009-06-08 00:50:15Z xlv $                    -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<project name="iText.test" default="help" basedir=".">
+
+	<property file="ant/local.properties" />
+	<property file="${user.home}/.ant.properties" />
+	<property file="ant/.ant.test.properties" />
+	<property file="ant/.ant.properties" />
+
+	<path id="itext.examples.classpath">
+	    <pathelement location="${itext.jar}"/>
+	    <pathelement location="${jfreechart.jar}"/>
+	    <pathelement location="${jcommon.jar}"/>
+	    <pathelement location="${servlet.jar}"/>
+	    <pathelement path="${itext.lib}/bcmail-${bc.jdk}-${bc.version}.jar"/>
+	    <pathelement path="${itext.lib}/bcprov-${bc.jdk}-${bc.version}.jar"/>
+	    <pathelement path="${itext.lib}/bctsp-${bc.jdk}-${bc.version}.jar"/>
+	</path>
+	
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Help                                                             -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="help" description="--> shows the help screen">
+        <echo>TESTING iText (test.xml)</echo>
+	</target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Compiling the examples                                           -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="compile.examples" description="--> compiles the iText examples">
+        <ant antfile="build.xml">
+            <target name="jar"/>
+            <target name="jar.rtf"/>
+        </ant>
+        <mkdir dir="${itext.bin.examples}" />
+        <javac source="${itext.jdk.examples}" target="${itext.jdk.examples}" srcdir="${itext.src.examples}" destdir="${itext.bin.examples}">
+		<exclude name="com/lowagie/examples/rtf/**"/>
+		<exclude name="com/lowagie/examples/fonts/styles/ExtraStyles.java"/>
+		<exclude name="com/lowagie/examples/general/HelloWorldMultiple.java"/>
+		<exclude name="com/lowagie/examples/general/webapp/HelloWorldServlet.java"/>
+		<exclude name="com/lowagie/examples/objects/tables/alternatives/TablePdfPTable.java"/>
+        	<classpath refid="itext.examples.classpath"/>
+    	</javac>
+    </target>
+	
+    <path id="itext.test.classpath">
+        <pathelement location="${itext.jar}"/>
+        <pathelement location="${itext.bin.examples}"/>
+        <pathelement location="${itext.bin.test}"/>
+        <pathelement location="${itext.lib}/iTextAsian.jar"/>
+        <pathelement location="${jfreechart.jar}"/>
+        <pathelement location="${jcommon.jar}"/>
+        <pathelement location="${servlet.jar}"/>
+        <pathelement location="${junit.jar}"/>
+        <pathelement path="${itext.lib}/bcmail-${bc.jdk}-${bc.version}.jar"/>
+        <pathelement path="${itext.lib}/bcprov-${bc.jdk}-${bc.version}.jar"/>
+        <pathelement path="${itext.lib}/bctsp-${bc.jdk}-${bc.version}.jar"/>
+    </path>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Compiling and running the tests                                  -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="test.setup" depends="compile.examples" description="--> compiles and runs the iText tests">
+        <mkdir dir="${itext.bin.test}" />
+    	
+        <mkdir dir="${itext.bin.data}" />
+        <mkdir dir="${itext.reports}/xml" />
+        <copy flatten="yes" todir="${itext.bin.data}">
+            <fileset dir="${itext.src.examples}">
+                <include name="**/*.bmp"/>
+                <include name="**/*.gif"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.otf"/>
+                <include name="**/*.pdf"/>
+                <include name="**/*.png"/>
+                <include name="**/*.tif"/>
+                <include name="**/*.wmf"/>
+                <include name="**/*.xfdf"/>
+                <include name="**/*.xml"/>
+            </fileset>
+            <fileset dir="${itext.src.test}">
+                <include name="**/*.pdf"/>
+                <include name="**/*.xfdf"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="test" depends="test.setup" description="--> compiles and runs the iText tests">
+        <javac source="${itext.jdk.test}" target="${itext.jdk.test}" srcdir="${itext.src.test}/core" destdir="${itext.bin.test}">
+            <classpath refid="itext.test.classpath"/>
+        </javac>
+    	
+        <junit printsummary="yes" showoutput="no" filtertrace="no" haltonfailure="yes" dir="${itext.bin.data}">
+            <sysproperty key="java.awt.headless" value="true"/>
+            <classpath refid="itext.test.classpath" />
+            <batchtest fork="yes" todir="${itext.reports}/xml">
+                <fileset dir="${itext.src.test}/core">
+                    <include name="**/*.java" />
+                </fileset>
+            </batchtest>
+            <formatter type="xml" />
+        </junit>
+        <junitreport todir="${itext.reports}/xml">
+            <fileset dir="${itext.reports}/xml">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="${itext.reports}/junit" />
+        </junitreport>
+    </target>
+
+    <target name="test.swing" depends="test.setup" description="--> compiles and runs the iText Swing tests">
+        <javac source="${itext.jdk.test}" target="${itext.jdk.test}" srcdir="${itext.src.test}/swing" destdir="${itext.bin.test}">
+            <classpath refid="itext.test.classpath"/>
+        </javac>
+    	
+        <junit printsummary="yes" showoutput="no" filtertrace="no" haltonfailure="yes" dir="${itext.bin.data}">
+            <classpath refid="itext.test.classpath" />
+            <batchtest fork="yes" todir="${itext.reports}/xml">
+                <fileset dir="${itext.src.test}/swing">
+                    <include name="**/*.java" />
+                </fileset>
+            </batchtest>
+            <formatter type="xml" />
+        </junit>
+        <junitreport todir="${itext.reports}/xml">
+            <fileset dir="${itext.reports}/xml">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="${itext.reports}/junit" />
+        </junitreport>
+    </target>
+
+    <target name="test.rtf" depends="test.setup" description="--> compiles and runs the iText rtf tests">
+        <mkdir dir="${itext.rtf.test}" />
+        <javac source="${itext.jdk.test}" target="${itext.jdk.test}" destdir="${itext.rtf.test}">
+		<src path="${itext.src.test}/rtf"/>
+		<src path="${itext.src.examples}"/>
+		<include name="com/lowagie/text/rtf/**"/>
+		<include name="com/lowagie/examples/rtf/**"/>
+		<include name="com/lowagie/examples/fonts/styles/ExtraStyles.java"/>
+		<include name="com/lowagie/examples/general/HelloWorldMultiple.java"/>
+		<include name="com/lowagie/examples/objects/tables/alternatives/TablePdfPTable.java"/>
+            <classpath>
+                <path refid="itext.test.classpath"/>
+                <pathelement location="${itext.rtf.jar}"/>
+            </classpath>
+        </javac>
+
+        <junit printsummary="yes" showoutput="no" filtertrace="no" haltonfailure="yes" dir="${itext.bin.data}">
+            <classpath>
+                <path refid="itext.test.classpath"/>
+                <pathelement location="${itext.rtf.test}"/>
+                <pathelement location="${itext.rtf.jar}"/>
+            </classpath>
+            <batchtest fork="yes" todir="${itext.reports}/xml">
+                <fileset dir="${itext.src.test}/rtf">
+                    <include name="**/*.java" />
+                </fileset>
+            </batchtest>
+            <formatter type="xml" />
+        </junit>
+        <junitreport todir="${itext.reports}/xml">
+            <fileset dir="${itext.reports}/xml">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="${itext.reports}/junit" />
+        </junitreport>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Generates jdiff report against previous version                  -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->	
+
+	<target name="jdiff" description="--> generates jdiff report against previous version">
+		<fail unless="JDIFF_HOME" message="JDIFF_HOME must be defined" />
+		<fail unless="itext.previous.version" message="itext.previous.version must be defined" /> 	 
+		<fail unless="itext.previous.location" message="itext.previous.location must be defined" />
+			
+		<taskdef name="jdiff" classname="jdiff.JDiffAntTask" classpath="${JDIFF_HOME}/antjdiff.jar" />
+
+		<mkdir dir="${itext.reports}/jdiff"/>
+
+		<!-- jdiff task split to have extra arguments for memory and classpath -->
+		<javadoc version="true" author="true" source="${itext.jdk.rups}" private="true" maxmemory="128m"
+				destdir="${itext.reports}/jdiff/${itext.previous.version}"
+				sourcepath="${itext.previous.location}/core:${itext.previous.location}/rtf:${itext.previous.location}/rups:${itext.previous.location}/toolbox"
+				classpath="${itext.lib}/bcmail-${bc.jdk}-${bc.version}.jar:${itext.lib}/bcprov-${bc.jdk}-${bc.version}.jar:${itext.lib}/bctsp-${bc.jdk}-${bc.version}.jar:${itext.lib}/pdf-renderer.jar:${itext.lib}/dom4j-1.6.1.jar" >
+		</javadoc>
+
+		<javadoc version="true" author="true" source="${itext.jdk.rups}" private="true" maxmemory="128m"
+				destdir="${itext.reports}/jdiff/${releasenumber}"
+				sourcepath="${itext.src}/core:${itext.src}/rtf:${itext.src}/rups:${itext.src}/toolbox"
+				classpath="${itext.lib}/bcmail-${bc.jdk}-${bc.version}.jar:${itext.lib}/bcprov-${bc.jdk}-${bc.version}.jar:${itext.lib}/bctsp-${bc.jdk}-${bc.version}.jar:${itext.lib}/pdf-renderer.jar:${itext.lib}/dom4j-1.6.1.jar" >
+		</javadoc>
+
+		<javadoc version="true" author="true" source="${itext.jdk.rups}" private="true" maxmemory="128m"
+				destdir="${itext.reports}/jdiff"
+				sourcepath="${itext.previous.location}/core:${itext.previous.location}/rtf:${itext.previous.location}/rups:${itext.previous.location}/toolbox"
+				classpath="${itext.lib}/bcmail-${bc.jdk}-${bc.version}.jar:${itext.lib}/bcprov-${bc.jdk}-${bc.version}.jar:${itext.lib}/bctsp-${bc.jdk}-${bc.version}.jar:${itext.lib}/pdf-renderer.jar:${itext.lib}/dom4j-1.6.1.jar" >
+			<doclet name="jdiff.JDiff" path="${JDIFF_HOME}/jdiff.jar:${JDIFF_HOME}/xerces.jar">
+				<param name="-apiname" value="${itext.previous.version}"/>
+				<param name="-baseURI" value="http://www.w3.org"/>
+				<param name="-apidir" value="${itext.reports}/jdiff"/>
+			</doclet>
+		</javadoc>
+
+		<javadoc version="true" author="true" source="${itext.jdk.rups}" private="true" maxmemory="128m"
+				destdir="${itext.reports}/jdiff"
+				sourcepath="${itext.src}/core:${itext.src}/rtf:${itext.src}/rups:${itext.src}/toolbox"
+				classpath="${itext.lib}/bcmail-${bc.jdk}-${bc.version}.jar:${itext.lib}/bcprov-${bc.jdk}-${bc.version}.jar:${itext.lib}/bctsp-${bc.jdk}-${bc.version}.jar:${itext.lib}/pdf-renderer.jar:${itext.lib}/dom4j-1.6.1.jar" >
+			<doclet name="jdiff.JDiff" path="${JDIFF_HOME}/jdiff.jar:${JDIFF_HOME}/xerces.jar">
+				<param name="-apiname" value="${releasenumber}"/>
+				<param name="-baseURI" value="http://www.w3.org"/>
+				<param name="-apidir" value="${itext.reports}/jdiff"/>
+			</doclet>
+		</javadoc>
+
+		<javadoc private="true" source="${itext.jdk.rups}" maxmemory="128m"
+				destdir="${itext.reports}/jdiff"
+				sourcefiles="${JDIFF_HOME}/Null.java" >
+			<doclet name="jdiff.JDiff" path="${JDIFF_HOME}/jdiff.jar:${JDIFF_HOME}/xerces.jar">
+				<param name="-oldapi" value="${itext.previous.version}"/>
+				<param name="-newapi" value="${releasenumber}"/>
+				<param name="-oldapidir" value="${itext.reports}/jdiff"/>
+				<param name="-newapidir" value="${itext.reports}/jdiff"/>
+				<param name="-javadocold" value="../${itext.previous.version}/"/>
+				<param name="-javadocnew" value="../${releasenumber}/"/>
+				<param name="-stats"/>
+				<param name="-docchanges"/>
+			</doclet>
+		</javadoc>
+
+		<copy overwrite="true" file="${itext.reports}/jdiff/missingSinces.txt"
+			tofile="${itext.reports}/jdiff/missingSinces.err" >
+
+			<filterchain>
+				<striplinecomments>
+					<comment value="OK: "/>
+				</striplinecomments>
+			</filterchain>
+		</copy>
+
+		<concat>
+			<filelist dir="${itext.reports}/jdiff" files="missingSinces.err"/>
+		</concat>
+
+		<fail message="missing @since tags">
+			<condition>
+				<length file="${itext.reports}/jdiff/missingSinces.err" when="greater" length="0" />
+			</condition>
+		</fail>
+	</target>
+
+</project>

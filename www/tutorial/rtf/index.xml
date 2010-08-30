@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Rich Text Format</site:title>
+		<site:summary>How-to generate RTF documents using iText.</site:summary>
+		<site:keywords>PDF, JAVA, iText, RTF, examples, Lowagie, Bruno</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="0596004753">RTF Pocket Guide</site:book>
+			<site:keyword>JAVA</site:keyword>
+			<site:keyword>RTF</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
+		<site:author>Mark Hall</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="HelloWorld" standalone="yes" />
+			<site:result>HelloWorld.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
+			<site:description>Generates a simple 'Hello World!' RTF file</site:description>
+		</site:example>
+	</site:examples>
+	
+	<site:chapter>
+	<site:section name="rtfpackage">
+		<site:sectiontitle>The RTF Package</site:sectiontitle>
+		<div>
+		  The RTF package is an extension of the iText library and allows iText
+		  to output Rich Text Files in additon to PDF files. These files can then
+		  be viewed and edited with RTF viewers such as Microsoft Word or OpenOffice.org
+		  Writer.
+		</div>
+		<div>
+		  The main class for generating RTF documents is the <site:doc class="com.lowagie.text.rtf.RtfWriter2">RtfWriter2</site:doc>.
+		  It supports most of iText's features with the exception of those features listed
+		  under the <a href="#unsupported">unsupported features</a>. In addition to this
+		  there are a number of extensions to the core iText classes that provide access
+		  to RTF specific functionality:<br /><br />
+		  <ul>
+		    <li>Extensions to core classes
+		      <ul>
+		        <li><site:tutorial chapter="/rtf/extensions/font">Extended font support</site:tutorial></li>
+		        <li><site:tutorial chapter="/rtf/extensions/hf">Extended header/footer support</site:tutorial></li>
+		        <li><site:tutorial chapter="/rtf/extensions/table">Extended table cell support</site:tutorial></li>
+		      </ul>
+		    </li>
+		    <li>RTF specific features
+		      <ul>
+		        <li><site:tutorial chapter="/rtf/features/styles">Paragraph stylesheets</site:tutorial></li>
+		        <li><site:tutorial chapter="/rtf/features/tabs">Tab support</site:tutorial></li>
+		        <li><site:tutorial chapter="/rtf/features/toc">Table of contents</site:tutorial></li>
+		        <li><site:tutorial chapter="/rtf/features/pagenumber">Page numbering</site:tutorial></li>
+		        <li><site:tutorial chapter="/rtf/features/shape">Drawing objects</site:tutorial></li>
+		        <li><site:tutorial chapter="/rtf/features/direct">Direct content</site:tutorial></li>
+		      </ul>
+		    </li>
+		    <li><site:tutorial chapter="/rtf/documentsettings">RTF generation settings</site:tutorial></li>
+		  </ul>
+		</div>
+	</site:section>
+
+    <site:section name="introduction">
+        <site:sectiontitle>Introduction to RTF</site:sectiontitle>
+        <div>
+          RTF is the Rich Text Format developed by Microsoft with the aim of providing
+          a cross-platform text-based document format. The main advantage that it has
+          over PDF is that it can easily be edited with most word processing software.
+          Its biggest disadvantage is that it is rendered by the word processing software
+          when the RTF document is opened and not when the RTF document is generated.
+          This leads to the situation that the document can look slightly different on
+          different platforms.<br /><br />
+          It is important to remember that RTF is a document description format and
+          when iText creates a RTF document, only the description of the document is
+          generated. NO RENDERING TAKES PLACE. It is thus impossible to provide access
+          to such things as page numbers or page events.<br /><br />
+          Apart from these considerations creating an RTF document works just like
+          creating any other document with iText.
+        </div>
+    </site:section>
+    
+    <site:section name="creatingrtf">
+        <site:sectiontitle>Creating a basic RTF document</site:sectiontitle>
+        <div>
+          Creating a basic RTF document works just like creating a basic PDF document:
+          <pre class="commandline">
+Document document = new Document();
+RtfWriter2.getInstance(document,
+	new FileOutputStream("testRTFdocument.rtf"));
+document.open();
+document.add(new Paragraph("Hello World!"));
+document.close();
+          </pre>
+          <site:source class="HelloWorld" />
+          You can then use the objects described in <site:tutorial chapter="/" section="part2">Using High Level Objects</site:tutorial>
+          to create more complex RTF documents.
+        </div>
+    </site:section>
+    
+    <site:section name="unsupported">
+        <site:sectiontitle>Unsupported iText features</site:sectiontitle>
+        <div>
+          A number of iText features are not supported in the RtfWriter2 due to the fact
+          that they either have not been implemented or are not supported by the
+          RTF format itself. The following list may not be complete, since the development
+          of the RtfWriter2 sometimes lags behind the development of the core library.<br />
+          <dl>
+            <dt style="font-weight: bold">Images other than JPEG, PNG, BMP, GIF and WMF</dt>
+            <dd>Only these image types are supported natively in the RTF format.</dd>
+            <dt style="font-weight: bold">Rotated images</dt>
+            <dd></dd>
+            <dt style="font-weight: bold">Nested tables</dt>
+            <dd></dd>
+            <dt style="font-weight: bold">Embedded fonts</dt>
+            <dd></dd>
+            <dt style="font-weight: bold">Table.setSpaceInsideCell and Table.setSpaceBetweenCells</dt>
+            <dd></dd>
+            <dt style="font-weight: bold">Table.padding</dt>
+            <dd></dd>
+            <dt style="font-weight: bold">Watermarks</dt>
+            <dd></dd>
+            <dt style="font-weight: bold">Encryption</dt>
+            <dd></dd>
+            <dt style="font-weight: bold">Viewer preferences</dt>
+            <dd>These only apply to the Adobe Acrobat Viewer.</dd>
+            <dt style="font-weight: bold">Image borders</dt>
+            <dd></dd>
+            <dt style="font-weight: bold">Forms</dt>
+            <dd></dd>
+          </dl>
+        </div>
+    </site:section>
+    
+	</site:chapter>
+
+</site:page>

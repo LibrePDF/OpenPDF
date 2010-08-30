@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Anchors, Actions and Annotations</site:title>
+		<site:summary>Deals with all the RemoteGoto, LocalGoto, Action, Annotation,... functionality</site:summary>
+		<site:keywords>PDF, JAVA, iText, examples, anchors, remoteGoto, LocalGoto, Actions, Annotations, Lowagie, Bruno</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="1932394796">iText in Action</site:book>
+			<site:book asin="0321304748">PDF Reference (4th Edition)</site:book>
+			<site:book asin="0321305310">Adobe Reader 7 Revealed</site:book>
+			<site:book asin="3540608540">Postscript and Acrobat/Pdf Bible: Applications, Troubleshooting and Cross-Platform Publishing</site:book>
+			<site:keyword>PDF</site:keyword>
+			<site:keyword>JAVA</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-04-18 16:50:32 -0400 (Fri, 18 Apr 2008) $</site:updated>
+		<site:author>Bruno Lowagie</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="LocalGoto" standalone="yes" />
+			<site:result>LocalGoto.pdf</site:result>
+			<site:description>Creates a document with a local goto and a local destination</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="LocalDestination" standalone="yes" />
+			<site:result>LocalDestination.pdf</site:result>
+			<site:description>Creates a document that jumps to a local destination upon opening</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="RemoteGoto" standalone="yes" />
+			<site:result>DocumentA.pdf</site:result>
+			<site:result>DocumentB.pdf</site:result>
+			<site:description>Creates two documents with links to eachother and to an external URL</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="AHref" standalone="yes" />
+			<site:result>AHref.pdf</site:result>
+			<site:result>AHref.html</site:result>
+			<site:description>Using the Anchor object</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="NamedActions" standalone="yes" />
+			<site:result>NamedActions.pdf</site:result>
+			<site:description>Creates a document with named actions.</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="JavaScriptAction" standalone="yes" />
+			<site:result>JavaScriptAction.pdf</site:result>
+			<site:description>Creates a document with a Javascript action.</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="Actions" standalone="yes" />
+			<site:result>Actions.pdf</site:result>
+			<site:result>remote.pdf</site:result>
+			<site:description>Creates a document with some goto actions</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="ChainedActions" standalone="yes" />
+			<site:result>ChainedActions.pdf</site:result>
+			<site:description>Creates a document with chained actions.</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="OpenApplication" standalone="yes" />
+			<site:argument>C://windows/</site:argument>
+			<site:result>OpenApplication.pdf</site:result>
+			<site:description>Creates a document with a link to open an external application.</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="SimpleAnnotations" standalone="yes" />
+			<site:externalresource>cards.mpg</site:externalresource>
+			<site:externalresource>iText.gif</site:externalresource>
+			<site:result>SimpleAnnotations1.pdf</site:result>
+			<site:result>SimpleAnnotations2.pdf</site:result>
+			<site:description>Creates two documents with different types of annotations</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="Annotations" standalone="yes" />
+			<site:externalresource>cards.mpg</site:externalresource>
+			<site:result>Annotations.pdf</site:result>
+			<site:description>Creates a document with some PdfAnnotations</site:description>
+		</site:example>
+	</site:examples>
+	
+	<site:chapter>
+			
+	<site:section name="inaction">
+		<site:sectiontitle>In the book</site:sectiontitle>
+		<div>
+		<site:book>
+			<site:bookchapter chapter="4" />
+			<site:bookchapter chapter="13" />
+			<site:bookchapter chapter="15" />
+		</site:book>
+		</div>
+	</site:section>
+	<site:section name="localgoto">
+		<site:sectiontitle>Local Goto and Local Destination</site:sectiontitle>
+<div>
+Sometimes you need a link to allow the reader of your document to jump from one position (LocalGoto) in the text to another (LocalDestination).
+You can achieve this with two methods of class Chunk: <site:doc class="com.lowagie.text.Chunk" target="setLocalGoto(java.lang.String)">setLocalGoto</site:doc> and <site:doc class="com.lowagie.text.Chunk" target="setLocalDestination(java.lang.String)">setLocalDestination</site:doc>.
+Both methods take 1 parameter: this is the unique name you want to give to the destination.
+<pre class="commandline">new Chunk("localgoto").setLocalGoto("test");
+new Chunk("localdestination").setLocalDestination("test");</pre>
+The HTML equivalent of the first line is <span class="commandline">&lt;A HREF="#test"&gt;localgoto&lt;A&gt;</span>;
+The equivalent of the second is <span class="commandline">&lt;A NAME="test"&gt;localdestination&lt;A&gt;</span>.
+However if we want to produce HTML (with <site:tutorial chapter="/html">HtmlWriter</site:tutorial>), we will use the <site:tutorial chapter="/objects/anchors" section="anchor">Anchor object</site:tutorial>.
+<site:source class="LocalGoto" />
+A LocalGoto-chunk isn't the only way to reach a LocalDestination.
+As you will see later on in this chapter and in the chapter on <site:tutorial chapter="/objects/bookmarks">bookmarks</site:tutorial>, local destinations can be used in actions too.
+<site:source class="LocalDestination" />
+</div>
+	</site:section>
+	<site:section name="remotegoto">
+		<site:sectiontitle>Remote Goto</site:sectiontitle>
+<div>
+If you have defined a local destination in a certain document (see <site:tutorial chapter="/objects/anchors" section="localgoto">above</site:tutorial>),
+you can jump to this destination from another document. This is done with the method
+<site:doc class="com.lowagie.text.Chunk" target="setRemoteGoto(java.lang.String,%20java.lang.String)">setRemoteGoto(String filename, String name)</site:doc>.
+You don't necessarily need a local destination in the other document. You can also jump to a certain page with<site:doc class="com.lowagie.text.Chunk" target="setRemoteGoto(java.lang.String,%20int)">setRemoteGoto(String filename, int page)</site:doc>.
+<pre class="commandline">new Chunk("go to a destination in document B")
+	.setRemoteGoto("DocumentB.pdf", "test");
+new Chunk("go to page 3 in document B")
+	.setRemoteGoto("DocumentB.pdf", 3);</pre>
+<site:source class="RemoteGoto" />
+</div>
+	</site:section>
+	<site:section name="anchor">
+		<site:sectiontitle>the Anchor object</site:sectiontitle>
+<div>
+There as some alternative ways to add external links such as <span class="commandline">&lt;A HREF="http://www.lowagie.com/iText/"&gt;Bruno's site&lt;A&gt;</span>
+or internal links such as <span class="commandline">&lt;A NAME="top"&gt;top of the page&lt;A&gt;</span> and
+<span class="commandline">&lt;A HREF="#top"&gt;goto top&lt;A&gt;</span>.
+One of them is using the <site:doc class="com.lowagie.text.Anchor">Anchor object</site:doc>.
+This is a very simple class and the beauty of it is that it works, not only in PDF, but also in HTML and RTF.<br />
+This is the code to create an external link:
+<pre>Anchor anchor = new Anchor("website");
+anchor.setReference("http://www.lowagie.com/iText/");
+anchor.setName("website");</pre>
+This is the code for an internal link:
+<pre>Anchor anchor1 = new Anchor("This is an internal link");
+anchor1.setName("link1");
+Anchor anchor2 = new Anchor("Go to the internal link");
+anchor.setReference("#link1");</pre>
+<site:source class="AHref" />
+</div>
+	</site:section>
+	<site:section name="actions">
+		<site:sectiontitle>Actions</site:sectiontitle>
+<div>
+A PDF document can have a certain interactivity: you can create several 'actions',
+for instance to jump to another page or location,
+to start an other application, to invoke a JavaScript function,...
+In the next subsections, some actions that are supported in iText will be explained; see the javadocs (<site:doc class="com.lowagie.text.PdfAction">class PdfAction</site:doc>) for more types of actions.
+Note that many of the action can be constructed in two alternative ways: with the constructor or with a static method that calls the constructor.<br /><br />
+<div class="subtitle">Named Actions</div>
+There are 5 predefined named actions in iText:
+<ul>
+<li>PdfAction.<b>FIRSTPAGE</b>: jumps to the first page</li>
+<li>PdfAction.<b>PREVPAGE</b>: jumps to the previous page</li>
+<li>PdfAction.<b>NEXTPAGE</b>: jumps to the next page</li>
+<li>PdfAction.<b>LASTPAGE</b>: jumps to the last page</li>
+<li>PdfAction.<b>PRINTDIALOG</b>: opens a PrintDialog</li>
+</ul>
+It is very easy to use one of these named destinations:
+<pre class="commandline">new Chunk("First Page")
+	.setAction(new PdfAction(PdfAction.FIRSTPAGE));</pre>
+<site:source class="NamedActions" />
+<div class="subtitle">JavaScript</div>
+Acrobat JavaScript is a programming language based
+on the JavaScript, aka ECMAScript, originally developed by Netscape Communications.
+Acrobat JavaScript adds new objects, methods and properties to the JavaScript language.
+These Acrobat-specific objects can allow you to handle file attachments, manage
+document security, perform form manipulations, etc, etc...<br />
+Acrobat JavaScript does not have access to objects within an HTML page and
+HTML JavaScript cannot access objects within a PDF file. For instance: Acrobat JavaScript cannot access the Window object
+(e.g. the browser window in which the Acrobat plugin is embedded).<br />
+You will have to read the Acrobat JavaScript Scripting Reference (Adobe Inc.)
+and the Client-Side JavaScript Reference (Netscape Communications Corporation);
+these documents and other JavaScript guides and references are available through
+the Adobe Web pages <a href="http://partners.adobe.com/NSjscript/">http://partners.adobe.com/NSjscript/</a>
+and <a href="http://partners.adobe.com/public/developer/acrobat/sdk/index_doc.html#js">http://partners.adobe.com/public/developer/acrobat/sdk/index_doc.html</a>.
+<pre class="commandline">new Chunk("Click to say Hello")
+	.setAction(
+		PdfAction.javaScript("app.alert('Hello');\r", writer));</pre>
+The code above, adds an alert action to a Chunk. If you click the text in the Chunk,
+an alert is triggered with the message 'Hello'.
+<site:source class="JavaScriptAction" />
+<div class="subtitle">Goto Actions</div>
+If you want to jump to another document or URL, as yet another alternative way
+to do what we did in the previous sections, you can create a PdfAction
+using one of the following constructors:
+<ul>
+<li><site:doc class="com.lowagie.text.pdf.PdfAction" target="PdfAction(java.lang.String,%20java.lang.String)">PdfAction(String filename, String name)</site:doc></li>
+<li><site:doc class="com.lowagie.text.pdf.PdfAction" target="PdfAction(java.lang.String,%20int)">PdfAction(String filename, int page)</site:doc></li>
+<li><site:doc class="com.lowagie.text.pdf.PdfAction" target="PdfAction(java.net.URL)">PdfAction(URL url)</site:doc></li>
+<li><site:doc class="com.lowagie.text.pdf.PdfAction" target="PdfAction(java.lang.String)">PdfAction(String url)</site:doc></li>
+</ul>
+<site:doc class="com.lowagie.text.pdf.PdfAction" target="gotoLocalPage(int,%20com.lowagie.text.pdf.PdfDestination,%20com.lowagie.text.pdf.PdfWriter)">PdfAction.gotoLocalPage(int page, PdfDestination dest, PdfWriter writer)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfAction" target="gotoLocalPage(java.lang.String,%20boolean)">PdfAction.gotoLocalPage(String dest, boolean isName)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.PdfAction" target="gotoRemotePage(java.lang.String,%20java.lang.String,%20boolean,%20boolean)">PdfAction.gotoRemotePage(String filename, String dest, boolean isName, boolean newWindow)</site:doc>
+are the alternative static methods to construct Goto actions.<br />
+<span class="commandline">PdfAction.gotoRemotePage("remote.pdf", "test", false, true)</span>
+creates an action that goes to the destination "test" in remote.pdf in a new window.<br />
+<site:image source="newwindow.gif">Open Action New Window</site:image><br />
+<site:source class="Actions" />
+<div class="subtitle">Open Actions</div>
+We've already used an 'Open Action' twice.
+In the previous example with the method <site:doc class="com.lowagie.text.pdf.PdfWriter" target="setOpenAction(com.lowagie.text.pdf.PdfAction)">setOpenAction(PdfAction action)</site:doc>
+and in an earlier example with the method <site:doc class="com.lowagie.text.pdf.PdfWriter" target="setOpenAction(java.lang.String)">setOpenAction(String name)</site:doc>:
+<site:source class="LocalDestination" />
+<div class="subtitle">Chained Actions</div>
+If you want to trigger two or more actions after eachother, you can chain them using
+<site:doc class="com.lowagie.text.pdf.PdfAction" target="next(com.lowagie.text.pdf.PdfAction)">next(PdfAction action)</site:doc>.
+<pre class="commandline">PdfAction action = PdfAction.javaScript("app.alert('Welcome');\r", writer);
+action.next(new PdfAction("http://www.lowagie.com/iText/"));</pre>
+<site:source class="ChainedActions" />
+<div class="subtitle">Launching an Application</div>
+You can open an application from a PDF file using a Launch Action.
+Be careful: this is a very platformdependent feature and it isn't very safe to use.
+Read the Javadocs on method <site:doc class="com.lowagie.text.pdf.PdfAction" target="PdfAction(java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String)">PdfAction(String application, String parameters, String operation, String defaultDir)</site:doc>
+for more information concerning the parameters. In the example below, we launch NOTEPAD (only on Windows, change the param if WINROOT does not equal C://windows/).
+<pre class="commandline">new Chunk("Click to open NOTEPAD")
+	.setAction(new PdfAction("C://WINDOWS/notepad.exe", null, null, null));</pre>
+The alternative static method to construct this Action is
+<site:doc class="com.lowagie.text.pdf.PdfAction" target="createLaunch(java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String)">PdfAction.createLaunch(String application, String parameters, String operation, String defaultDir)</site:doc>
+<site:source class="OpenApplication" />
+</div>
+	</site:section>
+	<site:section name="annotation">
+		<site:sectiontitle>Annotations</site:sectiontitle>
+<div>
+Yes, using Annotations is yet another alternative to jump to a specific local or remote destination.
+Lets take a look at some simple things you can do with the class <site:doc class="com.lowagie.text.Annotation">Annotation</site:doc>
+<ul>
+
+<li>
+<b>Text:</b> you can add small pieces of text to your document that are not
+really part of the content. Annotations have a title and some content.
+<pre class="commandline">Annotation a = new Annotation(
+	"authors",
+	"Maybe it's because I wanted to be an author myself that I wrote iText.",
+	100f, 700f, 200f, 800f);</pre>
+</li>
+
+<li>
+<b>External links:</b> you have to specify a clickable rectangle and a String (representing the URL) or an URL-object.
+<pre class="commandline">Annotation annot = new Annotation(
+	100f, 700f, 200f, 800f,
+	new URL("http://www.lowagie.com/iText/"));
+Annotation annot = new Annotation(
+	100f, 700f, 200f, 800f,
+	"http://www.lowagie.com/iText");</pre>
+</li>
+
+<li><b>External PDF file:</b> you have to specify a clickable rectangle and a String (the filename) and a destination or pagenumber.
+<pre class="commandline">Annotation annot = new Annotation(
+	100f, 700f, 200f, 800f,	"other.pdf", "mark");
+Annotation annot = new Annotation(
+	100f, 700f, 200f, 800f,	"other.pdf", 2);</pre>
+</li>
+
+<li><b>Named action:</b> you have to specify a clickable rectangle and a named action:
+<pre class="commandline">Annotation annot = new Annotation(
+	100f, 700f, 200f, 800f, PdfAction.FIRSTPAGE);</pre>
+</li>
+
+<li><b>Application:</b> you have to specify a clickable rectangle and an application:
+<pre class="commandline">Annotation annot = new Annotation(
+	300f, 700f, 400f, 800f,
+	"C://windows/notepad.exe", null, null, null);</pre>
+</li>
+<li>
+<b>Media Clip:</b> you can specify a rectangle and a movie file and its MIMETYPE. You also need to specify if the clips needs to be shown on display of the page (since PDF 1.5).
+<pre class="commandline">new Annotation(200f, 700f, 300f, 800f, "cards.mpg", "video/mpeg", true);</pre>
+</li>
+
+</ul>
+<site:source class="SimpleAnnotations" />
+As an alternative for using the <site:doc class="com.lowagie.text.Annotation" target="constructor_summary">Annotation constructors</site:doc>,
+you can use the constructor in <site:doc class="com.lowagie.text.pdf.PdfAnnotation" target="PdfAnnotation(com.lowagie.text.pdf.PdfWriter,%20float,%20float,%20float,%20float,%20com.lowagie.text.pdf.PdfAction)">class PdfAnnotation</site:doc>.
+As you can pass any action to this constructor, you have a more options than with class <site:doc class="com.lowagie.text.Annotation">Annotation</site:doc>.
+<site:doc class="com.lowagie.text.pdf.PdfAnnotation">PdfAnnotation</site:doc> also has lots of static methods that allow you to create specific annotations.
+In the example below some more complex features are presented using the constructor and static methods
+of PdfAnnotation, but keep in mind that some of these features only work since PDF version 1.5.
+<site:source class="Annotations" />
+</div>
+	</site:section>
+	</site:chapter>
+</site:page>

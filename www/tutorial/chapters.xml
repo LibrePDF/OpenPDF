@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:bookchapters
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site">
+	<site:bookchapter chapter="1">iText, when and why</site:bookchapter>
+	<site:bookchapter chapter="2">PDF engine jump-start</site:bookchapter>
+	<site:bookchapter chapter="3">PDF, why and when</site:bookchapter>
+	<site:bookchapter chapter="4">Composing text elements</site:bookchapter>
+	<site:bookchapter chapter="5">Inserting images</site:bookchapter>
+	<site:bookchapter chapter="6">Constructing tables</site:bookchapter>
+	<site:bookchapter chapter="7">Constructing columns</site:bookchapter>
+	<site:bookchapter chapter="8">Choosing the right font</site:bookchapter>
+	<site:bookchapter chapter="9">Using fonts</site:bookchapter>
+	<site:bookchapter chapter="10">Constructing and painting paths</site:bookchapter>
+	<site:bookchapter chapter="11">Adding color and text</site:bookchapter>
+	<site:bookchapter chapter="12">Drawing to Java Graphics2D</site:bookchapter>
+	<site:bookchapter chapter="13">Browsing a PDF document</site:bookchapter>
+	<site:bookchapter chapter="14">Automating PDF creation</site:bookchapter>
+	<site:bookchapter chapter="15">Creating annotations and fields</site:bookchapter>
+	<site:bookchapter chapter="16">Filling and signing AcroForms</site:bookchapter>
+	<site:bookchapter chapter="17">iText in web applications</site:bookchapter>
+	<site:bookchapter chapter="18">Under the hood</site:bookchapter>
+</site:bookchapters>

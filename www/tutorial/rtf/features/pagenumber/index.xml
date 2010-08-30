@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Page numbering</site:title>
+		<site:summary>Support for RTF page numbering.</site:summary>
+		<site:keywords>JAVA, iText, RTF, examples</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="0596004753">RTF Pocket Guide</site:book>
+			<site:keyword>JAVA</site:keyword>
+			<site:keyword>RTF</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
+		<site:author>Mark Hall</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="PageNumber" standalone="yes" />
+			<site:result>PageNumber.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
+			<site:description>Generates a document with page numbers in the footer</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="TotalPageNumber" standalone="yes" />
+			<site:result>TotalPageNumber.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
+			<site:description>Generates a document with page numbers and total number of pages in the header</site:description>
+		</site:example>
+	</site:examples>
+
+	<site:chapter>
+    <site:section name="pagenumbering">
+    	<site:sectiontitle>Page Numbering</site:sectiontitle>
+    	<div>
+    	  Since RTF is rendered by the viewer and not on creation, the <site:doc class="com.lowagie.text.rtf.RtfWriter2">RtfWriter2</site:doc>
+    	  cannot calculate which page is currently being written. The <site:doc class="com.lowagie.text.rtf.field.RtfPageNumber">RtfPageNumber</site:doc>
+    	  provides the functionality to overcome this with one limitation:
+    	  
+    	  <ul>
+    	    <li>It can only be used within the header or footer. In the main document it will not update correctly.</li>
+    	  </ul><br />
+    	  
+    	  The <site:doc class="com.lowagie.text.rtf.field.RtfPageNumber">RtfPageNumber</site:doc> should not be used alone,
+    	  but always wrapped in for example a <site:doc class="com.lowagie.text.Paragraph">Paragraph</site:doc> or
+    	  <site:doc class="com.lowagie.text.Table">Table</site:doc> (see the example in the <site:tutorial chapter="/rtf/extensions/hf">header/footers section</site:tutorial>).
+    	  This can then set as the header/footer via a <site:doc class="com.lowagie.text.rtf.hf.RtfHeaderFooter">RtfHeaderFooter</site:doc>.
+    	  
+    	  <pre class="commandline">
+// Create a new Paragraph for the footer
+Paragraph par = new Paragraph("Page ");
+par.setAlignment(Element.ALIGN_RIGHT);
+
+// Add the RtfPageNumber to the Paragraph
+par.add(new RtfPageNumber());
+            
+// Create an RtfHeaderFooter with the Paragraph and set it
+// as a footer for the document
+RtfHeaderFooter footer = new RtfHeaderFooter(par);
+document.setFooter(footer);
+    	  </pre>
+
+    	  <site:source class="PageNumber" />
+    	</div>
+    </site:section>
+    
+    <site:section name="totalpagenumber">
+    	<site:sectiontitle>Total Number of Pages</site:sectiontitle>
+    	<div>
+    	  If the total number of pages should also be displayed, then a <site:doc class="com.lowagie.text.rtf.field.RtfTotalPageNumber">RtfTotalPageNumber</site:doc>
+    	  can be added to the <site:doc class="com.lowagie.text.Paragraph">Paragraph</site:doc>.
+    	  
+    	  <pre class="commandline">
+// Add the RtfTotalPageNumber to the Paragraph
+par.add(" of ");
+par.add(new RtfTotalPageNumber());
+
+// Create an RtfHeaderFooter with the Paragraph and set it
+// as a header for the document
+RtfHeaderFooter header = new RtfHeaderFooter(par);
+document.setHeader(header);
+    	  </pre>
+    	  
+    	  One caveat here though:
+    	  <ul>
+    	    <li>The total number of pages is not always updated immediately. This is because Word uses a lazy
+    	      approach to counting the total number of pages. Only if you scroll down the document, will the
+    	      total page number be calculated correctly.</li>
+    	  </ul>
+    	  
+    	  <site:source class="TotalPageNumber" />
+    	</div>
+    </site:section>
+
+	</site:chapter>
+</site:page>

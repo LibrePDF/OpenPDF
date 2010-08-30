@@ -1,0 +1,31 @@
+# This is a list of tools that are available for the iText toolbox
+# $Id: tools.txt 3277 2008-04-19 00:47:48Z xlv $
+
+# Made by Bruno Lowagie:
+
+Bookmarks.Bookmarks2XML: com.lowagie.toolbox.plugins.Bookmarks2XML
+Manipulate.Burst: com.lowagie.toolbox.plugins.Burst
+Manipulate.Watermarker: com.lowagie.toolbox.plugins.Watermarker
+Manipulate.CompressDecompress: com.lowagie.toolbox.plugins.CompressDecompressPageContent
+Manipulate.Concat: com.lowagie.toolbox.plugins.Concat
+Encryption.Decrypt: com.lowagie.toolbox.plugins.Decrypt
+Manipulate.Divide: com.lowagie.toolbox.plugins.Divide
+Various.DvdCover: com.lowagie.toolbox.plugins.DvdCover
+Encryption.Encrypt: com.lowagie.toolbox.plugins.Encrypt
+Various.ExtractAttachments: com.lowagie.toolbox.plugins.ExtractAttachments
+Various.Handouts: com.lowagie.toolbox.plugins.Handouts
+Bookmarks.HtmlBookmarks: com.lowagie.toolbox.plugins.HtmlBookmarks
+Properties.ImageXRefViewer: com.lowagie.toolbox.plugins.ImageXRefViewer
+Properties.InspectPDF: com.lowagie.toolbox.plugins.InspectPDF
+Convert2Pdf.KnitTiff: com.lowagie.toolbox.plugins.KnitTiff
+Manipulate.N-up: com.lowagie.toolbox.plugins.NUp
+Convert2Pdf.PhotoAlbum: com.lowagie.toolbox.plugins.PhotoAlbum
+Various.RemoveLaunchApplication: com.lowagie.toolbox.plugins.RemoveLaunchApplication
+Manipulate.ReversePages: com.lowagie.toolbox.plugins.ReversePages
+Manipulate.SelectedPages: com.lowagie.toolbox.plugins.SelectedPages
+Manipulate.Split: com.lowagie.toolbox.plugins.Split
+Convert2Pdf.Tiff2Pdf: com.lowagie.toolbox.plugins.Tiff2Pdf
+Convert2Pdf.Txt2Pdf: com.lowagie.toolbox.plugins.Txt2Pdf
+Bookmarks.XML2Bookmarks: com.lowagie.toolbox.plugins.XML2Bookmarks
+Manipulate.Normalize: com.lowagie.toolbox.plugins.Normalize
+Manipulate.Add3D: com.lowagie.toolbox.plugins.Add3D

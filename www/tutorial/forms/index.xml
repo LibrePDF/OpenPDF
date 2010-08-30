@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title>Interactive Forms</site:title>
+		<site:summary>Step for step creation of an Acroform.</site:summary>
+		<site:keywords>PDF, JAVA, iText, examples, Acroforms, Interactive PDF forms, Lowagie, Bruno</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="1932394796">iText in Action</site:book>
+			<site:book asin="0321304748">PDF Reference (4th Edition)</site:book>
+			<site:keyword>PDF</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-04-18 16:50:32 -0400 (Fri, 18 Apr 2008) $</site:updated>
+		<site:author>Bruno Lowagie</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="FormPushButton" standalone="yes" />
+			<site:result>pushbutton.pdf</site:result>
+			<site:description>Generates a PDF with an Acroform containing a pushbutton</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="FormCheckbox" standalone="yes" />
+			<site:result>checkbox.pdf</site:result>
+			<site:description>Generates a PDF with an Acroform containing a checkbox</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="FormRadioButton" standalone="yes" />
+			<site:result>radiobutton.pdf</site:result>
+			<site:description>Generates a PDF with an Acroform containing a radiobutton</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="FormTextField" standalone="yes" />
+			<site:result>textfield.pdf</site:result>
+			<site:description>Generates a PDF with an Acroform containing a text field</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="SimpleRegistrationForm" standalone="yes" />
+			<site:result>SimpleRegistrationForm.pdf</site:result>
+			<site:description>Generates a PdfPTable with some TextFields</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="FormCombo" standalone="yes" />
+			<site:result>combo.pdf</site:result>
+			<site:description>Generates a PDF with an Acroform containing a combobox</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="FormList" standalone="yes" />
+			<site:result>list.pdf</site:result>
+			<site:description>Generates a PDF with an Acroform containing a list</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="TextFields" standalone="yes" />
+			<site:result>TextFields.pdf</site:result>
+			<site:description>Generates a PDF with an Acroform containing text fields</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="FormSignature" standalone="yes" />
+			<site:result>signature.pdf</site:result>
+			<site:description>Generates a PDF with an Acroform containing a signature</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="ListFields" standalone="yes" />
+			<site:argument>pushbutton.pdf</site:argument>
+			<site:argument>radiobutton.pdf</site:argument>
+			<site:argument>checkbox.pdf</site:argument>
+			<site:argument>textfield.pdf</site:argument>
+			<site:argument>SimpleRegistrationForm.pdf</site:argument>
+			<site:argument>combo.pdf</site:argument>
+			<site:argument>list.pdf</site:argument>
+			<site:argument>TextFields.pdf</site:argument>
+			<site:argument>signature.pdf</site:argument>
+			<site:result>listfields.txt</site:result>
+			<site:description>Reads different pdf fields and lists the acrofields</site:description>
+		</site:example>
+	</site:examples>
+	
+	<site:chapter>
+		
+	<site:section name="inaction">
+		<site:sectiontitle>In the book</site:sectiontitle>
+		<div>
+		<site:book>
+			<site:bookchapter chapter="15" />
+			<site:bookchapter chapter="16" />
+		</site:book>
+		</div>
+	</site:section>
+	<site:section name="acroform">
+		<site:sectiontitle>Acroform</site:sectiontitle>
+<div>
+Extract from the Portable Document Format Reference Manual Version 1.6 (section 8.6 'Interactive Forms' page 634):
+<blockquote>An <i>interactive form (PDF 1.2)</i>&#150;sometimes referred to as an <i>Acroform</i>&#150;is a collection
+of <i>fields</i> for gathering information interactively from the user. A PDF document may contain any number of fields
+appearing on any combination of pages, all of which make up a single, global interactive form spanning the entire document.</blockquote>
+Do not confuse Acroforms with HTML forms (&lt;form&gt;-tags). They share some of the same purposes (e.g. getting userdata in an interactive way),
+but they are completely different. You can't have more than one form in a PDF document. Fields in an acroform can be organized
+hierarchically and can inherit attributes from their ancestors in the field hierarchy. Each field has a name
+(See the Portable Document Format Reference Manual Version 1.6 section 8.6.2 'Field Dictionaries' page 638):
+<blockquote>The <i>fully qualified filed name</i> is not explicitly defined
+but is constructed from the partial field names of the field and all of its
+ancestors. For a field with no parent, the partial and fully qualified names are the same.
+For a field that is the child of another field, the fully qualified name is formed by appending
+the child field's partial name to the parent's fully qualified name, separated by a period (.):
+<pre class="commandline">  parent's_full_name.child's_partial_name</pre>
+For example, if a field with the partial field name <span class="commandline">PersonalData</span> has a child whose partial name is <span class="commandline">Address</span>,
+which in turn has a child with the partial name <span class="commandline">ZipCode</span>, the fully qualified name of this last field is
+<pre class="commandline">PersonalData.Address.ZipCode</pre>
+Thus, all fields descended from a common ancestor share the ancestor's fully qualified field name
+as a common prefix in their own filly qualified names.</blockquote>
+</div>
+	</site:section>
+	<site:section name="Fieldtypes">
+		<site:sectiontitle>Field types</site:sectiontitle>
+<div>
+The Portable Document Format Reference Manual Version 1.6
+(section 8.6.3 'Field Types' page 647) distinguishes four types of fields:
+<ol>
+<li><b>Btn:</b> Button Fields</li>
+<li><b>Tx:</b> Text Fields</li>
+<li><b>Ch:</b> Choice</li>
+<li><b>Sig:</b> Signature</li>
+</ol>
+<div class="subtitle">Button Fields</div>
+<blockquote>Button fields represent interactive controls on the screen that the user can
+manipulate with the mouse. They include pushbuttons, check boxes, and radio
+buttons.</blockquote>
+You can create all these button fields with the methods
+<site:doc class="com.lowagie.text.pdf.PdfFormField" target="createPushButton(com.lowagie.text.pdf.PdfWriter)">PdfFormField.createPushButton(PdfWriter writer)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.PdfFormField" target="createCheckBox(com.lowagie.text.pdf.PdfWriter)">PdfFormField.createCheckBox(PdfWriter writer)</site:doc> and/or
+<site:doc class="com.lowagie.text.pdf.PdfFormField" target="createRadioButton(com.lowagie.text.pdf.PdfWriter,%20boolean)">PdfFormField.getRadioButton(PdfWriter writer, boolean noToggleToOff)</site:doc>.
+You are going to create a <site:doc class="com.lowagie.text.pdf.PdfAppearance">PdfAppearance</site:doc> for every mouse operation:
+<ul>
+<li><site:doc class="com.lowagie.text.pdf.PdfAnnotation" target="APPEARANCE_NORMAL">PdfAnnotation.APPEARANCE_NORMAL:</site:doc> the normal appearance (no mouse action)</li>
+<li><site:doc class="com.lowagie.text.pdf.PdfAnnotation" target="APPEARANCE_ROLLOVER">PdfAnnotation.APPEARANCE_ROLLOVER:</site:doc> the appearance when the mouse is pointed at the button (mouseover)</li>
+<li><site:doc class="com.lowagie.text.pdf.PdfAnnotation" target="APPEARANCE_DOWN">PdfAnnotation.APPEARANCE_APPEARANCE_DOWN:</site:doc> the appearance when the button is pushed down</li>
+</ul>
+Remark: the syntax to create this appearance is the same as for
+<site:doc class="com.lowagie.text.pdf.PdfContentByte">PdfContentByte</site:doc>
+as described in <site:tutorial chapter="/" section="part4">Part IV</site:tutorial> of the tutorial.
+To visualize the button, you will set its widget annotations with
+<site:doc class="com.lowagie.text.pdf.PdfFormField" target="setWidget(com.lowagie.text.Rectangle,%20com.lowagie.text.pdf.PdfName)">setWidget(Rectangle rect, PdfName highlight)</site:doc>. Parameter <span class="commandline">rect</span>
+defines the position on the page, <span class="commandline">highlight</span> is one of the following values:
+<ul>
+<li><site:doc class="com.lowagie.text.pdf.PdfAnnotation" target="HIGHLIGHT_NONE">PdfAnnotation.HIGHLIGHT_NONE:</site:doc> no highlighting.</li>
+<li><site:doc class="com.lowagie.text.pdf.PdfAnnotation" target="HIGHLIGHT_INVERT">PdfAnnotation.HIGHLIGHT_INVERT:</site:doc> invert the contents of the highlighted field.</li>
+<li><site:doc class="com.lowagie.text.pdf.PdfAnnotation" target="HIGHLIGHT_OUTLINE">PdfAnnotation.HIGHLIGHT_OUTLINE:</site:doc> invert the border of the field.</li>
+<li><site:doc class="com.lowagie.text.pdf.PdfAnnotation" target="HIGHLIGHT_PUSH">PdfAnnotation.HIGHLIGHT_PUSH:</site:doc> Display the down appearance, if any.
+If no down appearance is defined, offset the contents of the annotation rectangle to appear as if it were being
+pushed below the surface of the page.</li>
+<li><site:doc class="com.lowagie.text.pdf.PdfAnnotation" target="HIGHLIGHT_TOGGLE">PdfAnnotation.HIGHLIGHT_TOGGLE:</site:doc> Same as PdfAnnotation.HIGHLIGHT_PUSH (which is preferred).</li>
+</ul>
+<site:source class="FormPushButton" />
+<site:source class="FormCheckbox" />
+<site:source class="FormRadioButton" />
+<div class="subtitle">Text Fields</div>
+<blockquote>Text fields are boxes or spaces in which the user can enter text from the keyboard.</blockquote>
+<site:doc class="com.lowagie.text.pdf.TextField">TextField</site:doc>
+<site:source class="FormTextField" />
+<site:source class="SimpleRegistrationForm" />
+<div class="subtitle">Choice</div>
+<blockquote>Choice fields contain several text items, at most one of which may be selected as
+the field value. They include scrollable list boxes and combo boxes.</blockquote>
+<site:source class="FormList" />
+<site:source class="FormCombo" />
+<site:source class="TextFields" />
+<div class="subtitle">Signature</div>
+<blockquote>Signature fields represent electronic signatures for authenticating the identity of
+a user and the validity of the document’s contents.</blockquote>
+<site:source class="FormSignature" />
+</div>
+	</site:section>
+	</site:chapter>
+
+</site:page>

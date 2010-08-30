@@ -1,0 +1,90 @@
+<tagmap>
+	<tag name="itext" alias="PLAY" />
+	<tag name="newpage" alias="NEWPAGE" />
+	<tag name="newline" alias="NEWLINE" />
+	<tag name="paragraph" alias="PLAYTITLE">
+		<attribute name="size" value="18" />
+		<attribute name="align" value="Center" />
+	</tag>
+	<tag name="paragraph" alias="FM">
+		<attribute name="leading" value="11" />
+		<attribute name="align" value="Center" />
+	</tag>
+	<tag name="paragraph" alias="P">
+		<attribute name="size" value="9" />
+	</tag>
+	<tag name="paragraph" alias="DRAMATISPERSONAE" content="Dramatis Personae">
+		<attribute name="size" value="14" />
+		<attribute name="align" value="Center" />
+	</tag>
+	<tag name="list" alias="PERSONAE">
+		<attribute name="numbered" value="false" />
+		<attribute name="symbolindent" value="20" />
+		<attribute name="listsymbol" value="o" />
+		<attribute name="align" value="Left" />
+	</tag>
+	<tag name="list" alias="PGROUP">
+		<attribute name="numbered" value="false" />
+		<attribute name="symbolindent" value="0" />
+		<attribute name="listsymbol" value="" />
+	</tag>
+	<tag name="listitem" alias="PERSONA">
+		<attribute name="size" value="11" />
+		<attribute name="align" value="Left" />
+	</tag>
+	<tag name="listitem" alias="GRPDESCR">
+		<attribute name="size" value="10" />
+		<attribute name="style" value="italic" />
+		<attribute name="align" value="Right" />
+	</tag>
+	<tag name="paragraph" alias="SCNDESCR">
+		<attribute name="size" value="11" />
+		<attribute name="style" value="italic" />
+		<attribute name="align" value="Justify" />
+	</tag>
+	<tag name="paragraph" alias="PLAYSUBT">
+		<attribute name="size" value="16" />
+		<attribute name="align" value="Center" />
+	</tag>
+	<tag name="title" alias="TITLE">
+		<attribute name="size" value="14" />
+		<attribute name="align" value="Center" />
+	</tag>
+	<tag name="chapter" alias="ACT">
+		<attribute name="numberdepth" value="0" />
+	</tag>
+	<tag name="section" alias="PROLOGUE">
+		<attribute name="numberdepth" value="0" />
+	</tag>
+	<tag name="section" alias="SCENE">
+		<attribute name="numberdepth" value="0" />
+	</tag>
+	<tag name="section" alias="EPILOGUE">
+		<attribute name="numberdepth" value="0" />
+	</tag>
+	<tag name="paragraph" alias="SUBTITLE">
+		<attribute name="size" value="12" />
+		<attribute name="style" value="bold" />
+		<attribute name="align" value="Center" />
+	</tag>
+	<tag name="paragraph" alias="SPEECH">
+		<attribute name="leading" value="14" />
+		<attribute name="align" value="Left" />
+	</tag>
+	<tag name="paragraph" alias="SPEAKER" content="Speaker: ">
+		<attribute name="leading" value="16" />
+		<attribute name="size" value="10" />
+		<attribute name="style" value="bold" />
+	</tag>
+	<tag name="paragraph" alias="LINE">
+		<attribute name="leading" value="15" />
+		<attribute name="size" value="11" />
+		<attribute name="align" value="Left" />
+	</tag>
+	<tag name="paragraph" alias="STAGEDIR">
+		<attribute name="leading" value="14" />
+		<attribute name="size" value="10" />
+		<attribute name="style" value="italic" />
+		<attribute name="align" value="Right" />
+	</tag>
+</tagmap>

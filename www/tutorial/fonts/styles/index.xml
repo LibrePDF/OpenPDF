@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Font characteristics</site:title>
+		<site:summary>Changing the style of a Font.</site:summary>
+		<site:keywords>PDF, JAVA, iText, examples, Fonts, Lowagie, Bruno</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="1932394796">iText in Action</site:book>
+			<site:book asin="0321304748">PDF Reference (4th Edition)</site:book>
+			<site:keyword>Fonts</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
+		<site:author>Bruno Lowagie</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="WidthHeight" standalone="yes" />
+			<site:result>widthheight.pdf</site:result>
+			<site:description>Asking a font for the width/height of a textstring</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="FixedFontWidth" standalone="yes" />
+			<site:result>fixedfontwidth.pdf</site:result>
+			<site:description>Changing the width of the font glyphs</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="FontStylePropagation" standalone="yes" />
+			<site:result>FontStylePropagation.pdf</site:result>
+			<site:description>Explains the mechanism of Font Style Propagation</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="ExtraStyles" standalone="yes" />
+			<site:result>ExtraStyles.pdf</site:result>
+			<site:result>ExtraStyles.rtf</site:result>
+			<site:result>ExtraStyles.html</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
+			<site:description>Demonstrates how to underline or strike through text</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="FontColor" standalone="yes" />
+			<site:result>FontColor.pdf</site:result>
+			<site:description>Shows how to change the color of a font</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="RightToLeft" standalone="yes" />
+			<site:result>righttoleft.pdf</site:result>
+			<site:description>Writing text from left to right</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="ComplexText" standalone="yes" />
+			<site:result>complextext.pdf</site:result>
+			<site:description>Writing text from left to right at absolute positions</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="Vertical" standalone="yes" />
+			<site:result>vertical.pdf</site:result>
+			<site:extrajar>iTextAsian.jar</site:extrajar>
+			<site:description>Writing vertical text</site:description>
+		</site:example>
+	</site:examples>
+	
+	<site:chapter>
+		
+	<site:section name="inaction">
+		<site:sectiontitle>In the book</site:sectiontitle>
+		<div>
+		<site:book>
+			<site:bookchapter chapter="8" />
+			<site:bookchapter chapter="9" />
+		</site:book>
+		</div>
+	</site:section>
+	<site:section name="measuring">
+		<site:sectiontitle>Width and heigths of glyphs</site:sectiontitle>
+<div>
+When getting a font from the FontFactory or when constructing a Font directly,
+you always specify a <i>font size</i>. This size is an indication of the height
+of the glyphs in points. It doesn't tell you how height each glyph will be and
+it doesn't tell you anything about the width.<br />
+The width and heights of each glyph are defined in the font file.
+If you need to fit some text into a certain area, you may want to know the width and
+height of some textstring in advance. You can ask the width from class
+<site:tutorial chapter="objects/chunk" section="measure">Chunk</site:tutorial>,
+but you can also ask a basefont for its dimensions, using
+<site:doc class="com.lowagie.text.pdf.BaseFont" target="getWidthPoint(java.lang.String,%20float)">BaseFont.getWidthPoint(java.lang.String, float)</site:doc>,
+<site:doc class="com.lowagie.text.pdf.BaseFont" target="getAscentPoint(java.lang.String,%20float)">BaseFont.getAscentPoint(java.lang.String, float)</site:doc> and
+<site:doc class="com.lowagie.text.pdf.BaseFont" target="getDescentPoint(java.lang.String,%20float)">getDescentPoint(java.lang.String, float)</site:doc>.<br />
+Text is written on a 'baseline'. The ascent is the maximum height above reached by the glyphs in your text
+above this baseline. It is always a positive value. The descent is the maximum depth below the baseline.
+It is always a negative value. The height of your text is (ascent - descent).
+Take a look at the example below to see how the basic methods work
+and check the API if you need some more methods to get widths, ascents and descents.
+<site:source class="WidthHeight" />
+In some cases you may want full control over the width of each glyph.
+No problem, just use <site:doc class="com.lowagie.text.pdf.BaseFont" target="getWidths()">BaseFont.getWidths()</site:doc>,
+change the widths and and force the basefont to use these changed widths with <site:doc class="com.lowagie.text.pdf.BaseFont" target="setForceWidthsOutput(boolean)">BaseFont.setForceWidthsOutput(boolean)</site:doc>.
+<site:source class="FixedFontWidth" />
+</div>
+	</site:section>
+	<site:section name="styles">
+		<site:sectiontitle>Font Styles</site:sectiontitle>
+<div>
+<div class="subtitle">Fonts that don't have the style bold and/or italic</div>
+Some font families don't have font definitions to show the font in bold or italic.
+In this case, iText can simulate a bold font by changing the way glyphs are
+rendered (see <site:tutorial chapter="/objects/chunk">Stroking vs. Filling</site:tutorial>).
+Italic can be simulated by <site:tutorial chapter="/objects/chunk">skewing</site:tutorial> chunks.<br /><br />
+<div class="subtitle">Font Style Propagation</div>
+There are some rules you should know about 'font propagation'.<br />
+When you create a Phrase or a Paragraph  with some content in a certain font (NOT THE DEFAULT FONT) and you add some more content. The fontstyle of the initial object can be propagated if you want to. This is what happens in 'Hello 1!' and 'Hello 2' of the example.
+<pre class="commandline">Phrase myPhrase =
+  new Phrase("Hello 1! ",
+    new Font(Font.TIMES_ROMAN, 8, Font.BOLD));
+myPhrase.add(
+  new Phrase("some other font ",
+    new Font(Font.HELVETICA, 8)));
+myPhrase.add(
+  new Phrase("This is the end of the sentence.\n",
+    new Font(Font.TIMES_ROMAN, 8, Font.ITALIC)));</pre> 
+The initial Phrase with the text 'Hello 1!' was bold, some italic text was added, but style bold is propagated, so the style of the printed text is now bold and italic.<br />
+If the Font(style) of the initial Phrase is undefined, the font is not propagated:
+<pre class="commandline">myPhrase = new Phrase(12);
+myPhrase.add(
+  new Phrase("Hello 2! ",
+    new Font(Font.TIMES_ROMAN, 8, Font.BOLD)));
+myPhrase.add(
+  new Phrase("This is the end of the sentence.\n",
+    new Font(Font.TIMES_ROMAN, 8, Font.ITALIC)));</pre>
+As you can see, 'This is the end of the sentence' is italic, but not bold. The font wasn't propagated.
+The same applies if you use <site:doc class="com.lowagie.text.FontFactory">FontFactory</site:doc>
+to get the Font-object. This is because the FontFactory uses another technique to construct a font.
+<pre class="commandline">myPhrase =
+  new Phrase("Hello 3! ",
+    FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD));
+myPhrase.add(
+  new Phrase("some other font ",
+    FontFactory.getFont(FontFactory.HELVETICA, 8)));
+myPhrase.add(
+  new Phrase("This is the end of the sentence.\n",
+    FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.ITALIC)));</pre>
+As mentioned earlier: FontFactory is the safest way to get a Font. It will always give you the font style you are expecting,
+regardless of the font style that was used before. Font Propagation can be useful in some cases, but it's a rather quirky feature.
+<site:source class="FontStylePropagation"/>
+<div class="subtitle">Underline and strike through</div>
+Allthough underlining and striking through text isn't really font-related,
+both 'style-types' are added to the <site:doc class="com.lowagie.text.Font">Font</site:doc>-class:
+<site:doc class="com.lowagie.text.Font" target="UNDERLINE">Font.UNDERLINE</site:doc> and
+<site:doc class="com.lowagie.text.Font" target="STRIKETHRU">Font.STRIKETHRU</site:doc>.
+In the example, we generate PDF, RTF and HTML. If however, you only need to generate PDF,
+it is much better to use <site:tutorial chapter="/objects/chunk" section="underline">Chunk-functionality</site:tutorial>.
+Font.UNDERLINE and Font.STRIKETHRU use some default values of this functionality.
+If you want complete control over the height, width, color,... of the line,
+you should use the method <site:doc class="com.lowagie.text.Chunk" target="setUnderline(java.awt.Color,%20float,%20float,%20float,%20float,%20int)">Chunk.setUnderline</site:doc>
+as described in the chapter on <site:tutorial chapter="/objects/chunk" section="underline">Chunks</site:tutorial>.
+<site:source class="ExtraStyles" />
+<div class="subtitle">Font Color</div>
+If you want to change the font color, just ask the
+<site:doc class="com.lowagie.text.FontFactory">FontFactory</site:doc>
+for another font with the color of your choice:
+<pre class="commandline">font red =
+  FontFactory.getFont(
+    FontFactory.COURIER,
+    Font.DEFAULTSIZE,
+    Font.NORMAL,
+    new Color(0xFF, 0x00, 0x00));</pre>
+It's a little more complicated if you want to change the color of some
+text you want to add at an <site:tutorial chapter="" section="part4">absolute position</site:tutorial>.
+As you can read in the <site:tutorial chapter="/directcontent/text" section="text">Text State chapter</site:tutorial>,
+you have to use class <site:doc class="com.lowagie.text.pdf.BaseFont">BaseFont</site:doc>
+and this class doesn't have a color value. In this case, you have to know that, according to
+the PDF specs, characters are seen as 'shapes'. Those shapes are filled with a certain color.
+So if you want to change the color of the font, you need to change the color with the 'ColorFill'
+of your choice in <site:doc class="com.lowagie.text.pdf.PdfContentByte">PdfContentByte</site:doc>:
+<pre class="commandline">BaseFont bf =
+  FontFactory.getFont(FontFactory.COURIER).getCalculatedBaseFont();
+cb.beginText();
+cb.setRGBColorFill(new Color(0x00, 0x00, 0xFF));
+cb.setFontAndSize(bf, 12);
+cb.showTextAligned(PdfContentByte.ALIGN_CENTER, text + "This text is centered", 250, 700, 0);
+cb.endText();</pre>
+<site:source class="FontColor" />
+</div>
+	</site:section>
+	<site:section name="direction">
+		<site:sectiontitle>Direction</site:sectiontitle>
+<div>
+When adding objects to a document, iText always writes text from left to right by default.
+Of course there are languages that are written in another direction.
+Arabic and Hebrew for instance are written from right to left.
+Most Asian characters should be written vertically.
+Japanese for instance, is written in columns starting on the right top of a page.<br /><br />
+<div class="subtitle">Changing the run direction</div>
+There are two objects in iText that allow you to change the run direction of the text:
+<site:tutorial chapter="/objects/tables">tables</site:tutorial>
+and <site:tutorial chapter="/objects/columns">columns</site:tutorial>.
+Both objects have a method
+(<site:doc class="com.lowagie.text.pdf.ColumnText" target="setRunDirection(int)">ColumnText.setRunDirection(int)</site:doc>
+and <site:doc class="com.lowagie.text.pdf.PdfPTable" target="setRunDirection(int)">PdfPTable.setRunDirection(int)</site:doc>)
+to change the run direction to one of the following values:
+<ul>
+<li><site:doc class="com.lowagie.text.pdf.PdfWriter" target="RUN_DIRECTION_DEFAULT">PdfWriter.RUN_DIRECTION_DEFAULT:</site:doc> the default run direction</li>
+<li><site:doc class="com.lowagie.text.pdf.PdfWriter" target="RUN_DIRECTION_NO_BIDI">PdfWriter.RUN_DIRECTION_NO_BIDI:</site:doc> do not use bidirectional reordering</li>
+<li><site:doc class="com.lowagie.text.pdf.PdfWriter" target="RUN_DIRECTION_LTR">PdfWriter.RUN_DIRECTION_LTR:</site:doc> use bidirectional reordering with left-to-right preferential run direction.</li>
+<li><site:doc class="com.lowagie.text.pdf.PdfWriter" target="RUN_DIRECTION_RTL">PdfWriter.RUN_DIRECTION_RTL:</site:doc> use bidirectional reordering with right-to-left preferential run direction.</li>
+</ul>
+In the following example, the use of NO_BIDI and RTL is demonstrated with ColumnText (first page)
+and PdfPTable (second page).
+<site:source class="RightToLeft" />
+If you're adding RTL text at absolute positions, you should always use a ColumnText object.
+In the next example, some RTL text is added with a rotation of 20 degrees.
+<site:source class="ComplexText" />
+<div class="subtitle">Vertical text</div>
+If you want to add vertical text to a PDF document, you will have to use the
+<site:doc class="com.lowagie.text.pdf.VerticalText">VerticalText</site:doc> object.
+It writes Text vertically. Note that the naming is done according to horizontal text although it referrs to vertical text. A line with the alignment Element.LEFT_ALIGN will actually be top aligned.
+Take a look at the example to see how it's done:
+<site:source class="Vertical" />
+</div>
+	</site:section>
+	
+	</site:chapter>
+
+</site:page>

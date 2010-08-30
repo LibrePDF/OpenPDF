@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Extended table cell support</site:title>
+		<site:summary>Using the extended table cell support available in the RTF package.</site:summary>
+		<site:keywords>PDF, JAVA, iText, RTF, examples, Lowagie, Bruno</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="0596004753">RTF Pocket Guide</site:book>
+			<site:keyword>JAVA</site:keyword>
+			<site:keyword>RTF</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
+		<site:author>Mark Hall</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="ExtendedTableCell" standalone="yes" />
+			<site:result>ExtendedTableCell.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
+			<site:description>Generates an RTF document with a Table with specific borders per cell</site:description>
+		</site:example>
+	</site:examples>
+	
+	<site:chapter>
+	<site:section name="extendedhf">
+		<site:sectiontitle>Extended table cell support</site:sectiontitle>
+		<div>
+		  Similarly to the situation with headers and footers it is not possible to create
+		  advanced cell borders using page events in the RTF package.<br /><br />
+		  
+		  To overcome this the <site:doc class="com.lowagie.text.rtf.table.RtfCell">RtfCell</site:doc>
+		  class exists, which makes it possible to specify advanced borders. To do this
+		  create a <site:doc class="com.lowagie.text.rtf.table.RtfBorderGroup">RtfBorderGroup</site:doc>
+		  and specify the style for that <site:doc class="com.lowagie.text.rtf.table.RtfBorderGroup">RtfBorderGroup</site:doc>,
+		  then apply it to the <site:doc class="com.lowagie.text.rtf.table.RtfCell">RtfCell</site:doc>.
+		  
+		  <pre class="commandline">
+// Create a simple RtfCell with a dotted border.
+RtfCell cellDotted = new RtfCell("Dotted border");
+cellDotted.setBorders(new RtfBorderGroup(Rectangle.BOX,
+        RtfBorder.BORDER_DOTTED, 1, new Color(0, 0, 0)));
+		  </pre>
+		  
+		  You can also create <site:doc class="com.lowagie.text.rtf.table.RtfCell">RtfCell</site:doc>s
+		  that have a border on only one side
+		  
+		  <pre class="commandline">
+// Create a simple RtfCell that only has a border on the bottom side.
+RtfCell bottomBorder = new RtfCell("Bottom border");
+bottomBorder.setBorders(new RtfBorderGroup(Rectangle.BOTTOM,
+        RtfBorder.BORDER_SINGLE, 2, new Color(255, 0, 0)));
+		  </pre>
+		  
+		  or that have different borders on different sides of the <site:doc class="com.lowagie.text.rtf.table.RtfCell">RtfCell</site:doc>.
+
+          <pre class="commandline">
+// Create a simple RtfCell that has different borders
+// on the left and bottom sides.
+RtfCell mixedBorder = new RtfCell("Mixed border");
+RtfBorderGroup mixedBorders = new RtfBorderGroup();
+mixedBorders.addBorder(Rectangle.RIGHT,
+        RtfBorder.BORDER_DOUBLE_WAVY, 2, Color.GREEN);
+mixedBorders.addBorder(Rectangle.BOTTOM,
+        RtfBorder.BORDER_DOT_DASH, 1, Color.BLUE);
+mixedBorder.setBorders(mixedBorders);
+          </pre>
+          
+          Finally if you want a <site:doc class="com.lowagie.text.rtf.table.RtfCell">RtfCell</site:doc>
+          without any borders simply set an empty <site:doc class="com.lowagie.text.rtf.table.RtfBorderGroup">RtfBorderGroup</site:doc>.
+          
+          <pre class="commandline">
+// Create a simple RtfCell with no border.
+RtfCell cellNoBorder = new RtfCell("No border");
+cellNoBorder.setBorders(new RtfBorderGroup());
+          </pre>
+          
+          For a full list of the border styles that are available, please check the javadoc
+          for the <site:doc class="com.lowagie.text.rtf.table.RtfBorder">RtfBorder</site:doc> class.
+		  <site:source class="ExtendedTableCell"/>
+		</div>
+	</site:section>
+	</site:chapter>
+</site:page>

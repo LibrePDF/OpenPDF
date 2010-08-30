@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<site:page
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:site="http://www.lowagie.com/iText/site" >
+	<site:metadata>
+		<site:title status="finished">Hello World</site:title>
+		<site:summary>How-to generate a PDF document with iText in 5 easy steps.</site:summary>
+		<site:keywords>PDF, JAVA, iText, examples, Lowagie, Bruno</site:keywords>
+		<site:amazonbooks>
+			<site:book asin="1932394796">iText in Action</site:book>
+			<site:book asin="3540608540">Postscript and Acrobat/Pdf Bible: Applications, Troubleshooting and Cross-Platform Publishing</site:book>
+			<site:book asin="0321304748">PDF Reference (4th Edition)</site:book>
+			<site:book asin="0321305310">Adobe Reader 7 Revealed</site:book>
+			<site:keyword>JAVA</site:keyword>
+			<site:keyword>PDF</site:keyword>
+		</site:amazonbooks>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
+		<site:author>Bruno Lowagie</site:author>
+	</site:metadata>
+	
+	<site:examples>
+		<site:example>
+			<site:java src="HelloWorld" standalone="yes" />
+			<site:result>HelloWorld.pdf</site:result>
+			<site:description>Generates a simple 'Hello World' PDF file</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="DefaultPageSize" standalone="yes" />
+			<site:result>DefaultPageSize.pdf</site:result>
+			<site:description>Generates a PDF document with the default page size and some other predefined standard pagesizes</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="LandscapePortrait" standalone="yes" />
+			<site:result>LandscapePortrait.pdf</site:result>
+			<site:description>Generates a PDF document with the first page in Lanscape; the second page in Portrait</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="CustomPageSize" standalone="yes" />
+			<site:result>CustomPageSize.pdf</site:result>
+			<site:description>Generates a PDF document with a custom pagesize and backgroundcolor</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="Margins" standalone="yes" />
+			<site:result>Margins.pdf</site:result>
+			<site:description>Demonstrates the margin functionality</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="HelloSystemOut" standalone="yes" />
+			<site:result>HelloWorld.txt</site:result>
+			<site:description>Writes PDF output to System.out</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="HelloWorldMultiple" standalone="yes" />
+			<site:result>HelloWorldPdf.pdf</site:result>
+			<site:result>HelloWorldRtf.rtf</site:result>
+			<site:result>HelloWorldHtml.html</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
+			<site:description>Writing to different writers at the same time; using pause() and resume()</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="HelloEncrypted" standalone="yes" />
+			<site:result>HelloEncrypted.pdf</site:result>
+			<site:extrajar>bcprov-jdk14-138.jar</site:extrajar>
+			<site:description>Again a PDF with the text 'Hello World', but this time the document is encrypted. To read it, you need to know the userpassword: 'Hello'</site:description>
+		</site:example>
+		<site:example>
+			<site:java src="HelloWorldMeta" standalone="yes" />
+			<site:result>HelloWorldMeta.pdf</site:result>
+			<site:description>Adding metadata to a new PDF document</site:description>
+		</site:example>
+	</site:examples>
+	
+	<site:chapter>
+	
+	<site:section name="inaction">
+		<site:sectiontitle>In the book</site:sectiontitle>
+		<div>
+		<site:book>
+			<site:bookchapter chapter="2" />
+			<site:bookchapter chapter="3" />
+		</site:book>
+		</div>
+	</site:section>
+	<site:section name="5steps">
+		<site:sectiontitle>Creating a document in 5 steps.</site:sectiontitle>
+<div>
+When I learned my first programming language (some old BASIC dialect
+on a <a href="http://www.99er.net/">TI-99/4A Home Compiter</a>),
+one of the first programs I made was a 'Hello World' example.
+The year was 1982, my age: 12. Now, more than 20 years later,
+I am still writing the same program: a standalone example that
+prints 'Hello World', this time not on the cyan colored Texas Instruments screen,
+but in a PDF document file.<br />
+This example shows you the 5 basic steps you have to take for every
+new PDF document you are creating from scratch with iText:
+<ul>
+<li><b>Step 1:</b> Create an <site:doc class="com.lowagie.text.Document" target="constructor_summary">instance</site:doc> of <site:doc class="com.lowagie.text.Document" />:
+<div class="commandline"></div>Document document = new Document();</li>
+<li><b>Step 2:</b> Create a Writer (for instance <site:doc class="com.lowagie.text.pdf.PdfWriter" />) that listens to this document and writes the document to the OutputStream of your choice:
+<div class="commandline">PdfWriter.getInstance(document, new FileOutputStream("HelloWorld.pdf"));</div></li>
+<li><b>Step 3:</b> Open the document:
+<div class="commandline">document.open();</div></li>
+<li><b>Step 4:</b> Add content to the document:
+<div class="commandline">document.add(new Paragraph("Hello World"));</div></li>
+<li><b>Step 5:</b> Closes the document:
+<div class="commandline">document.close();</div></li>
+</ul>
+<site:source class="HelloWorld" />
+In the following sections, we will take a closer look into each step.
+</div>
+	</site:section>
+	
+	<site:section name="step1">
+		<site:sectiontitle>step 1: the Document object</site:sectiontitle>
+<div>
+Class <site:doc class="com.lowagie.text.Document" /> has <site:doc class="com.lowagie.text.Document" target="constructor_summary">3 constructors</site:doc>:
+<pre class="commandline">public Document();
+public Document(Rectangle pageSize);
+public Document(Rectangle pageSize,
+   int marginLeft,
+   int marginRight,
+   int marginTop,
+   int marginBottom);</pre>
+The first constructor calls the second one, with <site:doc class="com.lowagie.text.PageSize" target="A4">PageSize.A4</site:doc> as parameter.
+The second constructor calls the third one, with 36 as value for each margin.<br /><br />
+<div class="subtitle">Pagesize</div>
+The default PageSize is DIN A4 (iText is a European library; A4 is the most common format overhere),
+but for your convenience class <site:doc class="com.lowagie.text.PageSize" /> offers you a very complete list of standard PageSizes:
+A0-A10, LEGAL, LETTER, HALFLETTER, _11x17, LEDGER, NOTE, B0-B5, ARCH_A-ARCH_E, FLSA and FLSE.
+<site:source class="DefaultPageSize" />
+Most these standard pageSizes are in PORTRAIT-format.
+To create a document in landscape format, just make the height smaller than the width.
+With the standard pagesizes all you have to do is <site:doc class="com.lowagie.text.Rectangle" target="rotate()">rotate()</site:doc> the Rectangle:
+<div class="commandline">Document document = new Document(PageSize.A4.rotate());</div>
+<site:source class="LandscapePortrait" />
+Of course you aren't limited to this list. You can create pages of any size you want.
+(Although there is a maximum of 200 by 200 inches; 45 by 45 inches for Acrobat 3.0 compatibility).
+With the PageSize, there is also the possibility to define a backgroundcolor.
+In the following example, we create a long, narrow document with a yellowish backgroundcolor:
+<site:source class="CustomPageSize" />
+If you want to know more about the measurement unit, see the <site:tutorial chapter="/general/faq" section="measurements">FAQ</site:tutorial>.<br /><br />
+<div class="subtitle">Margins</div>
+In step 4, you will be adding content to the document. If you use high level objects,
+you needn't worry about margins and page layout. The high level objects take care of that
+for you. Of course you will have to define the margins first. That is: if you want other
+margins than the standard 36 points (half an inch).<br />
+You can also change the margins while you are adding content. Note that the changes
+will only be noticed on the NEXT page. If you want the margins mirrored (odd and even pages),
+you can do this with this method: <site:doc class="com.lowagie.text.Document" target="setMarginMirroring(boolean)">setMarginMirroring(true)</site:doc>.
+<site:source class="Margins" />
+If you want to know more about the measurement unit, see the <site:tutorial chapter="/general/faq" section="measurements">FAQ</site:tutorial>.<br /><br />
+<div class="subtitle">Why getPagenumber doesn't work.</div>
+Class Document is all about content, not about presentation.
+Different writers can listen to the same Document object,
+so it makes absolutely no sense asking the Document object for its current pagenumber.
+Which number would the Document have to return? The pagenumber of the PDF representation
+or the one of the HTML (this makes even less sense)? In short: you should ask the specific writer
+for the pagenumber, NOT the Document object.
+</div>
+	</site:section>
+	
+	<site:section name="step2">
+		<site:sectiontitle>step 2: the Writer object</site:sectiontitle>
+		<div>
+Once our <site:doc class="com.lowagie.text.Document">Document</site:doc> is created,
+we can create one or more instances of writers that listen to this document.
+All writers should be derived from the abstract class <site:doc class="com.lowagie.text.DocWriter" />.
+For the moment there are three kinds of writers supported:
+<dl>
+<dt><site:doc class="com.lowagie.text.pdf.PdfWriter" target="getInstance(com.lowagie.text.Document,%20java.io.OutputStream)">PdfWriter</site:doc></dt>
+<dd>Generates documents in the Portable Document Format</dd>
+<dt><site:doc class="com.lowagie.text.rtf.RtfWriter2" target="getInstance(com.lowagie.text.Document,%20java.io.OutputStream)">RtfWriter</site:doc></dt>
+<dd>Generates documents in RTF. Read more about this in the chapter '<site:tutorial chapter="/rtf">RTF</site:tutorial>'</dd>
+<dt><site:doc class="com.lowagie.text.html.HtmlWriter" target="getInstance(com.lowagie.text.Document,%20java.io.OutputStream)">HtmlWriter</site:doc></dt>
+<dd>Generates documents in HTML. This writer was initially written for debugging purposes (see <site:tutorial chapter="/html">Generating HTML with iText</site:tutorial>).</dd>
+</dl>
+All these Writers are derived from the abstract class <site:doc class="com.lowagie.text.DocWriter">DocWriter</site:doc>.
+The constructors of the writer-classes are protected. You can only create an instance with a static method:
+<site:doc class="com.lowagie.text.pdf.PdfWriter" target="getInstance(com.lowagie.text.Document,%20java.io.OutputStream)">PdfWriter.getInstance</site:doc>,
+<site:doc class="com.lowagie.text.rtf.RtfWriter2" target="getInstance(com.lowagie.text.Document,%20java.io.OutputStream)">RtfWriter2.getInstance</site:doc>
+or <site:doc class="com.lowagie.text.html.HtmlWriter" target="getInstance(com.lowagie.text.Document,%20java.io.OutputStream)">HtmlWriter.getInstance</site:doc>:
+<div class="commandline">public static xxxWriter getInstance(Document document, OutputStream os) throws DocumentException</div>
+(xxx being Pdf, Rtf or Html). For instance:
+<div class="commandline">PdfWriter.getInstance(document, new FileOutputStream("HelloWorld.pdf"));</div>
+It may surprise you that there seems to be 'no object'. You probably expect something like this:
+<div class="commandline">PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("HelloWorld.pdf"));</div>
+Actually there IS a writer object in both cases, but in simple applications you will never need it.<br />
+<br />
+The first parameter of the getInstance method is the <site:doc class="com.lowagie.text.Document" /> object
+created in <a href="#step1">step 1</a>. The second parameter can be any java.io.OutputStream object.
+In this tutorial we always use a java.io.FileOutputStream, but you can also use
+a java.io.ByteArrayOutputStream to create PDF files in memory or a javax.servlet.ServletOutputStream
+(see <site:tutorial chapter="/general/webapp">iText in a Web Application</site:tutorial>).
+You can even write output to System.out if you want to (but it's not very nice to look at):<br />
+<site:image source="systemout.gif">DOSBOX System.out</site:image><br />
+<site:source class="HelloSystemOut" />
+Remark that you can have different writers listening to the same document at the same time.
+For instance: if you want to sent a PDF to a browser directly from a servlet, but keep a copy
+of the PDF in a file on the server, you could invoke getInstance twice with the same document-object,
+but a different output stream.<br />
+At Ghent University, we write sheets with information on Study Programmes for the Course Catalogue
+in 2 versions: one in HTML for the website and one in PDF for printing. This is done simultaneously
+using the same source code, even using the same document object. The only difference is that at some
+point, we pause the PdfWriter and we add a link from the HTML page to the PDF document. This is
+demonstrated in the next example:
+<site:source class="HelloWorldMultiple" />
+		</div>
+	</site:section>
+	
+	<site:section name="step3">
+		<site:sectiontitle>step 3: opening the document</site:sectiontitle>
+		<div>
+It is important to call <site:doc class="com.lowagie.text.Document" target="open()">Document.open()</site:doc>.
+iText will throw an exception if you try adding content before the document is open.
+This is a design choice. There are several initialisations that should be done BEFORE you open
+a Document. Most of them will be covered elsewhere in this tutorial.
+We have a quick glance at two of them now:<br /><br />
+<div class="subtitle">Simple encryption</div>
+if you want to generate an encrypted document, you should call
+<site:doc class="com.lowagie.text.pdf.PdfWriter" target="setEncryption(boolean,%20java.lang.String,%20java.lang.String,%20int)">setEncryption</site:doc>
+BEFORE opening the Document-object. If you try setting the encryption after Document.open(),
+a <site:doc class="com.lowagie.text.DocumentException">DocumentException</site:doc>
+will be thrown with the message <span class="commandline">Encryption can only be added before opening the document</span>.
+<site:source class="HelloEncrypted" />
+<div class="subtitle">metadata</div>
+if we look at the Document Properties in Acrobat (under File in the menu),
+we see that several fields are empty by default:<br />
+<site:image source="metadata.gif">HelloWorld without metadata</site:image><br />
+<br />
+Only two metadata methods are called by default:
+<site:doc class="com.lowagie.text.Document" target="addProducer()">addProducer()</site:doc>
+and
+<site:doc class="com.lowagie.text.Document" target="addCreationDate()">addCreationDate()</site:doc>.
+It's possible to change the producer and creation date, but you shouldn't.<br />
+We'll only document the methods to change the rest of the metadata in the
+'Description' area:<br />
+<table border="1" cellpadding="3">
+<tr><td>Title:</td><td><site:doc class="com.lowagie.text.Document" target="addTitle(java.lang.String)">addTitle(java.lang.String)</site:doc></td></tr>
+<tr><td>Author:</td><td><site:doc class="com.lowagie.text.Document" target="addAuthor(java.lang.String)">addAuthor(java.lang.String)</site:doc></td></tr>
+<tr><td>Subject:</td><td><site:doc class="com.lowagie.text.Document" target="addSubject(java.lang.String)">addSubject(java.lang.String)</site:doc></td></tr>
+<tr><td>Keywords:</td><td><site:doc class="com.lowagie.text.Document" target="addKeywords(java.lang.String)">addKeywords(java.lang.String)</site:doc></td></tr>
+<tr><td>Application:</td><td><site:doc class="com.lowagie.text.Document" target="addCreator(java.lang.String)">addCreator(java.lang.String)</site:doc></td></tr>
+</table><br />
+This is a small code sample:
+<pre class="commandline">document.addTitle("Hello World example");
+document.addAuthor("Bruno Lowagie");
+document.addSubject("This example explains how to add metadata.");
+document.addKeywords("iText, Hello World, step 3, metadata");
+document.addCreator("My program using iText");
+</pre>
+Compare the result on this screenshot:<br />
+<site:image source="meta.gif">HelloWorld with metadata</site:image><br />
+<site:source class="HelloWorldMeta" />
+If you study the API, you will see there is also a generic method
+<site:doc class="com.lowagie.text.Document" target="addHeader(java.lang.String,%20java.lang.String)">addHeader(java.lang.String, java.lang.String)</site:doc>.
+That method has no effect on PdfWriter, but you can use it with
+<site:tutorial chapter="/html" section="metadata">HtmlWriter</site:tutorial>.
+		</div>
+	</site:section>
+	
+	<site:section name="step4">
+		<site:sectiontitle>step 4: adding content</site:sectiontitle>
+		<div>
+There are different ways to add content to a PDF file.
+The easiest way is to use <site:tutorial chapter="" section="part2">high level objects</site:tutorial>
+such as Chunk, Phrase, Paragraph,...
+It is very important to realize that not all types of these objects are supported
+in all types of writers. For instance:  the <site:docs class="com.lowagie.text.pdf.PdfPTable">PdfPTable</site:docs>-object
+is only supported in PDF, not in RTF or HTML. If you add a <site:docs class="com.lowagie.text.pdf.PdfPTable">PdfPTable</site:docs>
+to a Document, the listening <site:docs class="com.lowagie.text.rtf.RtfWriter2">RtfWriter</site:docs>s or <site:docs class="com.lowagie.text.html.HtmlWriter">HtmlWriter</site:docs>s
+will ignore this.<br />
+If you don't need RTF or HTML, you can also add content at
+<site:tutorial chapter="" section="part4">absolute positions</site:tutorial>.
+A lot of the standard PDF syntax is supported in iText, so you can do some
+very powerful things with the library.<br />
+Adding content using the <site:docs class="com.lowagie.text.pdf.PdfGraphics2D">PdfGraphics2D</site:docs>-object
+(extends <a href="http://java.sun.com/j2se/1.3/docs/api/java/awt/Graphics2D.html">java.awt.Graphics2D</a>) is
+also possible. You can read more about this elsewhere in the tutorial.
+		</div>
+	</site:section>
+	
+	<site:section name="step5">
+		<site:sectiontitle>step 5: closing the document</site:sectiontitle>
+		<div>
+ Closing the document is very important, because it flushes and closes the outputstream to which the writer is writing. The close-method is called in the finalize-method, but you shouldn't count on that. You should always close the document yourself!
+		</div>
+	</site:section>
+	
+	</site:chapter>
+
+</site:page>
