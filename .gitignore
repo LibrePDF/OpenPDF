@@ -1,0 +1,7 @@
+/target
+*.pdf
+*.rtf
+*.html
+.classpath
+.project
+.settings
