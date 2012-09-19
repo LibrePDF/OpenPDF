@@ -50,4 +50,10 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<name>iText-4.2.0</name>
+	<url>https://github.com/weiyeh/iText-4.2.0</url>
+	<description>This is a build of the last MPL version of iText.  </description>
+	<scm>
+		<url>https://github.com/weiyeh/iText-4.2.0</url>
+	</scm>
 </project>
