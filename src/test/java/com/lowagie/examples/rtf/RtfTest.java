@@ -116,7 +116,7 @@ public class RtfTest {
             a.setReference("http://www.uni-klu.ac.at");
             doc.add(a);
 
-            Image img = Image.getInstance("pngnow.png");
+            Image img = Image.getInstance("www/lowagie/images/pngnow.png");
             doc.add(new Chunk(img, 0, 0));
             doc.add(new Annotation("Mark", "This works!"));
 
