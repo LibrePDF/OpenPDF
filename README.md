@@ -4,7 +4,7 @@
 
 Beginning with version 5.0 the developers have moved to the AGPL to improve their ability to sell commercial licenses. I fully respect the developers' wishes and rights. To assist those desiring to stick with the old license I'm making the final MPL/LGPL version more easily available.
 
-## [Javacos](http://ymasory.github.com/iText-4.2.0/) ##
+## [Javadocs](http://ymasory.github.com/iText-4.2.0/) ##
 
 ## Download ##
 
