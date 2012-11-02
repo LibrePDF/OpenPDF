@@ -8,7 +8,7 @@ Beginning with version 5.0 the developers have moved to the AGPL to improve thei
 
 ## Download ##
 
-I have compiled the project using Java 6. The jars are available under the Downloads tab.
+I have compiled the project using Java 6. The jars are available under the [Downloads tab](https://github.com/ymasory/iText-4.2.0/downloads).
 
 ## Compile ##
 
