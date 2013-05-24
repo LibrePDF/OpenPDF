@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.lowagie</groupId>
 	<artifactId>itext</artifactId>
-	<version>4.2.0</version>
+	<version>4.2.1</version>
 	<licenses>
     <license>
       <name>GNU General Lesser Public License (LGPL) version 3.0</name>
@@ -119,7 +119,7 @@
 		</dependency>
 	</dependencies>
 
-	<name>iText-4.2.0</name>
+	<name>iText-4.2.1</name>
 	<url>https://github.com/weiyeh/iText-4.2.0</url>
 	<description>This is a build of the last MPL version of iText.  </description>
 	<scm>
