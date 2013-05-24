@@ -470,7 +470,7 @@ public class PdfPTable implements LargeElement{
 
         skipColsWithRowspanAbove();
         
-        if (currentRowIdx >= currentRow.length) {
+        while (currentRowIdx >= currentRow.length) {
         	int numCols = getNumberOfColumns();
             if (runDirection == PdfWriter.RUN_DIRECTION_RTL) {
                 PdfPCell rtlRow[] = new PdfPCell[numCols];
@@ -492,6 +492,7 @@ public class PdfPTable implements LargeElement{
             rows.add(row);
             currentRow = new PdfPCell[numCols];
             currentRowIdx = 0;
+            skipColsWithRowspanAbove();
             rowCompleted = true;
         }
         
@@ -525,7 +526,7 @@ public class PdfPTable implements LargeElement{
     	
     	if ((currCol >= getNumberOfColumns()) 
     			|| (currCol < 0) 
-    			|| (currRow == 0))
+    			|| (currRow < 1))
     		return false;
     	
     	int row = currRow - 1;
@@ -864,7 +865,7 @@ public class PdfPTable implements LargeElement{
         	tmprow = (PdfPRow)rows.get(idx - rs);
         	cell = tmprow.getCells()[i];
         	float tmp = 0;
-        	if (cell.getRowspan() == rs + 1) {
+        	if (cell != null && cell.getRowspan() == rs + 1) {
         		tmp = cell.getMaxHeight();
         		while (rs > 0) {
         			tmp -= getRowHeight(idx - rs);
