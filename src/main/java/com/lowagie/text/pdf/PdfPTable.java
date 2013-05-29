@@ -876,7 +876,7 @@ public class PdfPTable implements LargeElement{
         	tmprow = (PdfPRow)rows.get(idx - rs);
         	cell = tmprow.getCells()[i];
         	float tmp = 0;
-        	if ( cell.getRowspan() == rs + 1) {
+        	if (cell != null && cell.getRowspan() == rs + 1) {
         		tmp = cell.getMaxHeight();
         		while (rs > 0) {
         			tmp -= getRowHeight(idx - rs);
