@@ -1637,7 +1637,10 @@ public class PdfReader implements PdfViewerPreferences {
                 PRIndirectReference ref = new PRIndirectReference(this, num, tokens.getGeneration());
                 return ref;
             case PRTokeniser.TK_ENDOFFILE:
-                throw new IOException(MessageLocalization.getComposedMessage("unexpected.end.of.file"));
+                if (readDepth == 0) {
+                    return new PdfNull();
+                } //else
+                return PdfNull.PDFNULL;
             default:
                 String sv = tokens.getStringValue();
                 if ("null".equals(sv)) {
@@ -2549,7 +2552,7 @@ public class PdfReader implements PdfViewerPreferences {
     public HashMap getNamedDestinationFromNames() {
     	return getNamedDestinationFromNames(false);
     }
-    
+
     /**
      * Gets the named destinations from the /Dests key in the catalog as an <CODE>HashMap</CODE>. The key is the name
      * and the value is the destinations array.
@@ -2717,7 +2720,7 @@ public class PdfReader implements PdfViewerPreferences {
                 pageRefs.releasePage(k);
         }
     }
-    
+
     /**
      * Converts a remote named destination GoToR with a local named destination
      * if there's a corresponding name.
