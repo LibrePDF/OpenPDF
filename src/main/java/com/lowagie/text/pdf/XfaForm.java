@@ -530,6 +530,8 @@ public class XfaForm {
          * @return the escaped string
          */
         public static String escapeSom(String s) {
+            if(s==null)
+                return "";
             int idx = s.indexOf('.');
             if (idx < 0)
                 return s;
