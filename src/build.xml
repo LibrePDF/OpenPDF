@@ -40,6 +40,10 @@
 		<ant antfile="ant/compile.xml" inheritAll="false" target="compile.toolbox" />
 	</target>
 	
+	<target name="jar.debug">
+		<ant antfile="ant/compile.xml" inheritAll="false" target="jar.debug" />
+	</target>
+	
 	<target name="jar">
 		<ant antfile="ant/compile.xml" inheritAll="false" target="jar" />
 	</target>
