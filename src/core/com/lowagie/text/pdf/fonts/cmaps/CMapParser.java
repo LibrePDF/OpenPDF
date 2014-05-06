@@ -267,7 +267,13 @@ public class CMapParser
                     while( theNextByte != -1 && theNextByte != '>' )
                     {
                         int intValue = 0;
-                        if( theNextByte >= '0' && theNextByte <= '9' )
+						if (theNextByte == ' ' || theNextByte == '\t' || theNextByte == '\n' || theNextByte == '\r'
+							|| theNextByte == '\f')
+						{
+							theNextByte = is.read();
+							continue;
+						}
+						else if (theNextByte >= '0' && theNextByte <= '9')
                         {
                             intValue = theNextByte - '0';
                         }
