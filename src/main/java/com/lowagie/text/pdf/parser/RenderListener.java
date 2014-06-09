@@ -1,5 +1,7 @@
 /*
  * Copyright 2009 by Kevin Day.
+ * 
+ * Contributions copyright 2014 Tizra Inc.
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -48,18 +50,19 @@ package com.lowagie.text.pdf.parser;
 
 /**
  * Callback interface for render operations during {@link PdfContentStreamProcessor} execution
- * @since    2.1.6
+ * 
+ * @since 2.1.6
  */
-public interface RenderListener {
+public interface RenderListener extends TextAssembler {
+	/**
+	 * Resets the internal state of the RenderListener
+	 */
+	public void reset();
 
-    /**
-     * Called when text should be rendered
-     * @param renderInfo information specifying what to render
-     */
-    public void renderText(TextRenderInfo renderInfo);
-
-    /**
-     * Resets the internal state of the RenderListener
-     */
-    public void reset();
+	/**
+	 * Returns the result so far.
+	 * 
+	 * @return a String with the resulting text.
+	 */
+	public String getResultantText();
 }
