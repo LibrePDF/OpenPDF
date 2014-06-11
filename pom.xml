@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.lowagie</groupId>
 	<artifactId>itext</artifactId>
-	<version>4.2.1</version>
+    <version>4.2.0-alt-tizra</version>
 	<licenses>
     <license>
       <name>GNU General Lesser Public License (LGPL) version 3.0</name>
@@ -38,8 +38,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -60,26 +60,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2</version>			
+				<version>2.2</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-repository-plugin</artifactId>
 				<version>2.3.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-          			<execution>
-            			<id>sign-artifacts</id>
-            			<phase>verify</phase>
-            			<goals>
-              				<goal>sign</goal>
-            			</goals>
-          			</execution>
-        		</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -91,9 +77,14 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>bouncycastle</groupId>
-			<artifactId>bctsp-jdk14</artifactId>
-			<version>138</version>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bctsp-jdk16</artifactId>
+			<version>1.46</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk16</artifactId>
+			<version>1.46</version>
 		</dependency>
 		<dependency>
 			<groupId>dom4j</groupId>
@@ -118,13 +109,13 @@
 		</dependency>
 	</dependencies>
 
-	<name>iText-4.2.1</name>
+	<name>iText-4.2.0-alt-tizra</name>
 	<url>https://github.com/weiyeh/iText-4.2.0</url>
 	<description>This is a build of the last MPL version of iText.  </description>
 	<scm>
-		<url>scm:git:https://github.com/weiyeh/iText-4.2.0.git</url>
-		<connection>scm:git:https://github.com/weiyeh/iText-4.2.0.git</connection>
-		<developerConnection>scm:git:https://github.com/weiyeh/iText-4.2.0.git</developerConnection>
+       <url>scm:git:https://github.com/daviddurand/iText-4.2.0.git</url>
+       <connection>scm:git:https://github.com/daviddurand/iText-4.2.0.git</connection>
+       <developerConnection>scm:git:https://github.com/daviddurand/iText-4.2.0.git</developerConnection>
 	</scm>
-	
+
 </project>
