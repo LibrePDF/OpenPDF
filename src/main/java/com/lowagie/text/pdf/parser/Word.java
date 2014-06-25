@@ -133,12 +133,14 @@ public class Word extends ParsedTextImpl {
 
 		float height = getAscent();
 		float heightPercent = height / pageHeight * 100.0f;
-		result.append("<div class=\"t-word\" style=\"bottom: ")
+		String myId = assembler.getWordId();
+		result.append("<span class=\"t-word\" style=\"bottom: ")
 				.append(bottomPercent).append("%; left: ").append(leftPercent)
 				.append("%; width: ").append(widthPercent)
 				.append("%; height: ").append(heightPercent).append("%;\"")
-				.append(">").append(getText().trim());
-		result.append("</div> ");
+				.append(" id=\"t-word-id").append(myId).append("\">")
+				.append(getText().trim()).append(" ");
+		result.append("</span> ");
 
 		return result.toString();
 	}

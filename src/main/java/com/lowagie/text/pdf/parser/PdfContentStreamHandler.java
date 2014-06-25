@@ -632,6 +632,8 @@ public class PdfContentStreamHandler {
 	/** Text line matrix. */
 	public Matrix textLineMatrix;
 
+	boolean useContainerMarkup;
+
 	/**
 	 * detail parser for text within a marked section. used by TextAssembler
 	 */
@@ -839,7 +841,7 @@ public class PdfContentStreamHandler {
 			// System.out.println("Skipping operator " + operator);
 			return;
 		}
-
+		System.err.println(operands);
 		op.invoke(operands, this, resources);
 	}
 
@@ -865,9 +867,6 @@ public class PdfContentStreamHandler {
 	 */
 	void popContext() {
 		String contextName = contextNames.pop();
-		// unparsedTextFragments2.append("</")
-		// .append(contextName)
-		// .append('>');
 		Collection<TextAssemblyBuffer> newBuffer = textFragmentStreams.pop();
 		// put together set of unparsed text fragments
 		renderListener.reset();

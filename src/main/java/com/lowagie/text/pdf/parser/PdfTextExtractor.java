@@ -94,6 +94,19 @@ public class PdfTextExtractor {
 	}
 
 	/**
+	 * Creates a new Text Extractor object, using a {@link TextAssembler} as the
+	 * render listener
+	 * 
+	 * @param reader
+	 *            the reader with the PDF
+	 * @param usePdfMarkupElements
+	 *            should we use higher level tags for PDF markup entities?
+	 */
+	public PdfTextExtractor(PdfReader reader, boolean usePdfMarkupElements) {
+		this(reader, new MarkedUpTextAssembler(reader, usePdfMarkupElements));
+	}
+
+	/**
 	 * Creates a new Text Extractor object.
 	 * 
 	 * @param reader
@@ -183,6 +196,23 @@ public class PdfTextExtractor {
 	 *             on error
 	 */
 	public String getTextFromPage(int page) throws IOException {
+		return getTextFromPage(page, false);
+	}
+
+	/**
+	 * get the text from the page
+	 * 
+	 * @param page
+	 *            page number we are interested in
+	 * @param useContainerMarkup
+	 *            should we put tags in for PDf markup container elements (not
+	 *            really HTML at the moment).
+	 * @return result of extracting the text, with tags as requested.
+	 * @throws IOException
+	 *             on error
+	 */
+	public String getTextFromPage(int page, boolean useContainerMarkup)
+			throws IOException {
 		PdfDictionary pageDict = reader.getPageN(page);
 		PdfDictionary resources = pageDict.getAsDict(PdfName.RESOURCES);
 

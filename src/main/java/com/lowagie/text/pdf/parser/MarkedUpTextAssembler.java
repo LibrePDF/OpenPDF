@@ -59,6 +59,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
 	private ParsedTextImpl _inProgress = null;
 	int _page;
 	private int word_id_counter = 1;
+	private boolean _usePdfMarkupElements = false;
 
 	/**
 	 * our result may be partially processed already, in which case we'll just
@@ -76,6 +77,11 @@ public class MarkedUpTextAssembler implements TextAssembler {
 
 	MarkedUpTextAssembler(PdfReader reader) {
 		_reader = reader;
+	}
+
+	MarkedUpTextAssembler(PdfReader reader, boolean usePdfMarkupElements) {
+		_reader = reader;
+		_usePdfMarkupElements = usePdfMarkupElements;
 	}
 
 	/**
@@ -129,13 +135,13 @@ public class MarkedUpTextAssembler implements TextAssembler {
 
 	private FinalText concatenateResult(String containingElementName) {
 		StringBuffer res = new StringBuffer();
-		if (containingElementName != null) {
+		if (containingElementName != null && _usePdfMarkupElements) {
 			res.append('<').append(containingElementName).append('>');
 		}
 		for (FinalText item : result) {
 			res.append(item.getText());
 		}
-		if (containingElementName != null) {
+		if (containingElementName != null && _usePdfMarkupElements) {
 			res.append("</");
 			int spacePos = containingElementName.indexOf(' ');
 			if (spacePos >= 0) {
@@ -188,10 +194,6 @@ public class MarkedUpTextAssembler implements TextAssembler {
 	/**
 	 * Captures text using a simplified algorithm for inserting hard returns and
 	 * spaces
-	 * 
-	 * @param textBuffer
-	 *            TODO
-	 * 
 	 * @see com.lowagie.text.pdf.parser.AbstractRenderListener#renderText(java.lang.String,
 	 *      com.lowagie.text.pdf.parser.GraphicsState,
 	 *      com.lowagie.text.pdf.parser.Matrix,
