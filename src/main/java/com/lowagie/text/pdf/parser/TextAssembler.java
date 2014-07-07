@@ -54,22 +54,31 @@ public interface TextAssembler {
 	 * @param completed
 	 *            process a complete chunk -- just add this subsection into the
 	 *            proper place.
+	 * @param contextName
+	 *            Name of the element context we are in. Null value if it's an
+	 *            Artifact.
 	 */
-	public void process(FinalText completed);
+	public void process(FinalText completed, String contextName);
 
 	/**
 	 * @param completed
 	 *            process a complete chunk -- just add this subsection into the
 	 *            proper place.
+	 * @param contextName
+	 *            Name of the element context we are in. Null value if it's an
+	 *            Artifact.
 	 */
-	public void process(Word completed);
+	public void process(Word completed, String contextName);
 
 	/**
 	 * @param parsed
 	 *            process one of a number of raw pdf text chunks, with
 	 *            placement, font, etc.
+	 * @param contextName
+	 *            Name of the element context we are in. Null value if it's an
+	 *            Artifact.
 	 */
-	public void process(ParsedText parsed);
+	public void process(ParsedText parsed, String contextName);
 
 	/**
 	 * @param completed

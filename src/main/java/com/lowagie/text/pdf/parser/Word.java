@@ -72,8 +72,8 @@ public class Word extends ParsedTextImpl {
 	 */
 
 	@Override
-	public void accumulate(TextAssembler p) {
-		p.process(this);
+	public void accumulate(TextAssembler p, String contextName) {
+		p.process(this, contextName);
 	}
 
 	/**

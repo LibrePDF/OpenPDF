@@ -38,10 +38,11 @@ public interface TextAssemblyBuffer {
 	 * 
 	 * @param p
 	 *            the assembler that is visiting us.
+	 * @param contextName TODO
 	 * 
-	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#accumulate(com.lowagie.text.pdf.parser.TextAssembler)
+	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#accumulate(com.lowagie.text.pdf.parser.TextAssembler, String)
 	 */
-	public abstract void accumulate(TextAssembler p);
+	public abstract void accumulate(TextAssembler p, String contextName);
 
 	/**
 	 * @param p

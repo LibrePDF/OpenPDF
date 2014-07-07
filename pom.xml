@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.lowagie</groupId>
 	<artifactId>itext</artifactId>
-    <version>4.2.0-tizra-2</version>
+    <version>4.2.0-tizra-3</version>
 	<licenses>
     <license>
       <name>GNU General Lesser Public License (LGPL) version 3.0</name>

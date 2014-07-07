@@ -87,13 +87,12 @@ public class MarkedUpTextAssembler implements TextAssembler {
 	/**
 	 * Remember an unassembled chunk until we hit the end of this element, or we
 	 * hit an assembled chunk, and need to pull things together.
-	 * 
 	 * @param unassembled
 	 *            chunk of text rendering instruction to contribute to final
 	 *            text
 	 */
 	@Override
-	public void process(ParsedText unassembled) {
+	public void process(ParsedText unassembled, String contextName) {
 		partialWords.addAll(unassembled.getAsPartialWords());
 	}
 
@@ -105,7 +104,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
 	 *            This is a chunk from a nested element
 	 */
 	@Override
-	public void process(FinalText completed) {
+	public void process(FinalText completed, String contextName) {
 		clearAccumulator();
 		result.add(completed);
 
@@ -113,10 +112,10 @@ public class MarkedUpTextAssembler implements TextAssembler {
 
 	/**
 	 * @param completed
-	 * @see com.lowagie.text.pdf.parser.TextAssembler#process(com.lowagie.text.pdf.parser.Word)
+	 * @see com.lowagie.text.pdf.parser.TextAssembler#process(com.lowagie.text.pdf.parser.Word, String)
 	 */
 	@Override
-	public void process(Word completed) {
+	public void process(Word completed, String contextName) {
 		partialWords.add(completed);
 	}
 
@@ -134,6 +133,12 @@ public class MarkedUpTextAssembler implements TextAssembler {
 	}
 
 	private FinalText concatenateResult(String containingElementName) {
+		// null element means that this is a formatting artifact, not content.
+		if (containingElementName == null) {
+			// at some point, we may want to extract alternate text for some
+			// artifacts.
+			return null;
+		}
 		StringBuffer res = new StringBuffer();
 		if (containingElementName != null && _usePdfMarkupElements) {
 			res.append('<').append(containingElementName).append('>');
@@ -194,6 +199,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
 	/**
 	 * Captures text using a simplified algorithm for inserting hard returns and
 	 * spaces
+	 * 
 	 * @see com.lowagie.text.pdf.parser.AbstractRenderListener#renderText(java.lang.String,
 	 *      com.lowagie.text.pdf.parser.GraphicsState,
 	 *      com.lowagie.text.pdf.parser.Matrix,

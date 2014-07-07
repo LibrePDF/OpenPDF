@@ -28,11 +28,11 @@ public class FinalText implements TextAssemblyBuffer {
 
 	/**
 	 * @param p
-	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#accumulate(com.lowagie.text.pdf.parser.TextAssembler)
+	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#accumulate(com.lowagie.text.pdf.parser.TextAssembler, String)
 	 */
 	@Override
-	public void accumulate(TextAssembler p) {
-		p.process(this);
+	public void accumulate(TextAssembler p, String contextName) {
+		p.process(this, contextName);
 	}
 
 	/**

@@ -841,7 +841,7 @@ public class PdfContentStreamHandler {
 			// System.out.println("Skipping operator " + operator);
 			return;
 		}
-		System.err.println(operands);
+		// System.err.println(operands);
 		op.invoke(operands, this, resources);
 	}
 
@@ -871,9 +871,12 @@ public class PdfContentStreamHandler {
 		// put together set of unparsed text fragments
 		renderListener.reset();
 		for (TextAssemblyBuffer fragment : textFragments) {
-			fragment.accumulate(renderListener);
+			fragment.accumulate(renderListener, contextName);
 		}
-		newBuffer.add(renderListener.endParsingContext(contextName));
+		FinalText contextResult = renderListener.endParsingContext(contextName);
+		if (contextResult != null) {
+			newBuffer.add(contextResult);
+		}
 		textFragments = newBuffer;
 	}
 
