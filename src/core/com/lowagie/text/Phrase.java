@@ -340,6 +340,7 @@ public class Phrase extends ArrayList implements TextElementArray {
                 case Element.MARKED:
                 case Element.ANCHOR:
                 case Element.ANNOTATION:
+                case Element.FOOTNOTE:
                 case Element.TABLE: // case added by David Freels
                 case Element.PTABLE: // case added by mr. Karen Vardanyan
                 	// This will only work for PDF!!! Not for RTF/HTML
