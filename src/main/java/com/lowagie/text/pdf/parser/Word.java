@@ -119,7 +119,7 @@ public class Word extends ParsedTextImpl {
 			}
 		}
 		float xOffset = clipBox.getLeft() - mediaBox.getLeft();
-		float yOffset = clipBox.getTop() - mediaBox.getTop(); // opposite order
+		float yOffset = clipBox.getTop() - mediaBox.getTop();
 		Vector startPoint = getStartPoint();
 		Vector endPoint = getEndPoint();
 		float pageWidth = clipBox.getWidth();

@@ -715,6 +715,10 @@ public class PdfContentStreamHandler {
 			PdfName name = (PdfName) operands.get(0);
 			StringBuffer tagName = new StringBuffer(name.toString()
 					.substring(1));
+			if ("Artifact".equals(tagName)) {
+				handler.pushContext(null);
+				return;
+			}
 
 			PdfObject o = operands.get(1);
 			if (o.isName()) {
