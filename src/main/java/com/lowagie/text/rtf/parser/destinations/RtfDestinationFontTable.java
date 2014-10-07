@@ -49,10 +49,8 @@
  
 package com.lowagie.text.rtf.parser.destinations;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Properties;
+import java.util.Map;
 
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
@@ -563,52 +561,15 @@ public final class RtfDestinationFontTable extends RtfDestination {
 	 * @since 2.0.8
 	 */
 	private void importSystemFonts() {
-		Properties pr = null;
+		Map<String, String> pr = null;
 		try {
-			pr = getEnvironmentVariables();
+			pr = System.getenv();
 		} catch (Throwable e) {
 		}
-		String systemRoot = pr.getProperty("SystemRoot");
-		Runtime runtime = Runtime.getRuntime();
+		String systemRoot = pr.get("SystemRoot");
 		String fileSeperator = System.getProperty("file.separator");
 		int r = FontFactory.registerDirectory(systemRoot + fileSeperator + "fonts");
 	}
 	
-	/**
-	 * Utility method to load the environment variables.
-	 * 
-	 * @return Properties object with environment variable information
-	 * @throws Throwable
-	 * 
-	 * @since 2.0.8
-	 */
-	 private Properties getEnvironmentVariables() throws Throwable {
-		Properties environmentVariables = new Properties();
-		String operatingSystem = System.getProperty("os.name").toLowerCase();
-		Runtime runtime = Runtime.getRuntime();
-		Process process = null;
-		if (operatingSystem.indexOf("windows 95") > -1
-				|| operatingSystem.indexOf("windows 98") > -1
-				|| operatingSystem.indexOf("me") > -1) {
-			process = runtime.exec("command.com /c set");
-		} else if ((operatingSystem.indexOf("nt") > -1)
-				|| (operatingSystem.indexOf("windows 2000") > -1)
-				|| (operatingSystem.indexOf("windows xp") > -1)
-				|| (operatingSystem.indexOf("windows 2003") > -1)
-				|| (operatingSystem.indexOf("windows vista") > -1)) {
-			process = runtime.exec("cmd.exe /c set");
-		} else {
-			process = runtime.exec("env");
-		}
-		BufferedReader environmentStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
-		String inputLine = "";
-		int idx = -1;
-		while ((inputLine = environmentStream.readLine()) != null) {
-			idx = inputLine.indexOf('=');
-			environmentVariables.setProperty(inputLine.substring(0, idx),
-					inputLine.substring(idx + 1));
-		}
-		return environmentVariables;
-	}
 
 }
