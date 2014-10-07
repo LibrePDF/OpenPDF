@@ -87,6 +87,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
 	/**
 	 * Remember an unassembled chunk until we hit the end of this element, or we
 	 * hit an assembled chunk, and need to pull things together.
+	 * 
 	 * @param unassembled
 	 *            chunk of text rendering instruction to contribute to final
 	 *            text
@@ -112,7 +113,8 @@ public class MarkedUpTextAssembler implements TextAssembler {
 
 	/**
 	 * @param completed
-	 * @see com.lowagie.text.pdf.parser.TextAssembler#process(com.lowagie.text.pdf.parser.Word, String)
+	 * @see com.lowagie.text.pdf.parser.TextAssembler#process(com.lowagie.text.pdf.parser.Word,
+	 *      String)
 	 */
 	@Override
 	public void process(Word completed, String contextName) {
@@ -126,6 +128,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
 		for (TextAssemblyBuffer partialWord : partialWords) {
 			partialWord.assemble(this);
 		}
+		partialWords.clear();
 		if (_inProgress != null) {
 			result.add(_inProgress.getFinalText(_reader, _page, this));
 			_inProgress = null;
@@ -140,13 +143,15 @@ public class MarkedUpTextAssembler implements TextAssembler {
 			return null;
 		}
 		StringBuffer res = new StringBuffer();
-		if (containingElementName != null && _usePdfMarkupElements) {
+		if (_usePdfMarkupElements) {
 			res.append('<').append(containingElementName).append('>');
 		}
 		for (FinalText item : result) {
 			res.append(item.getText());
 		}
-		if (containingElementName != null && _usePdfMarkupElements) {
+		// important, as the stuff buffered in the result is now used up!
+		result.clear();
+		if (_usePdfMarkupElements) {
 			res.append("</");
 			int spacePos = containingElementName.indexOf(' ');
 			if (spacePos >= 0) {
@@ -155,7 +160,6 @@ public class MarkedUpTextAssembler implements TextAssembler {
 			}
 			res.append(containingElementName).append('>');
 		}
-		result = new ArrayList<FinalText>();
 		return new FinalText(res.toString());
 	}
 
@@ -189,6 +193,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
 	public void reset() {
 		result.clear();
 		partialWords.clear();
+		_inProgress = null;
 	}
 
 	@Override

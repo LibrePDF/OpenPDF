@@ -712,13 +712,13 @@ public class PdfContentStreamHandler {
 		@Override
 		public void invoke(ArrayList<PdfObject> operands,
 				PdfContentStreamHandler handler, PdfDictionary resources) {
-			PdfName name = (PdfName) operands.get(0);
-			StringBuffer tagName = new StringBuffer(name.toString()
-					.substring(1));
-			if ("Artifact".equals(tagName)) {
+			String tagName = ((PdfName) operands.get(0)).toString()
+					.substring(1);
+			if ("Artifact".equals(tagName) || "PlacedPDF".equals(tagName)) {
 				handler.pushContext(null);
 				return;
 			}
+			StringBuffer openTag = new StringBuffer(tagName);
 
 			PdfObject o = operands.get(1);
 			if (o.isName()) {
@@ -737,14 +737,18 @@ public class PdfContentStreamHandler {
 				for (Object x : attrs.getKeys()) {
 					PdfName attname = (PdfName) x;
 					PdfObject value = attrs.getDirectObject(attname);
-					tagName.append(' ');
-					tagName.append(attname.toString().substring(1));
-					tagName.append("=\"");
-					tagName.append(value.toString());
-					tagName.append("\"");
+					openTag.append(' ');
+					openTag.append(attname.toString().substring(1));
+					openTag.append("=\"");
+					if (value instanceof PdfString) {
+						openTag.append(((PdfString) value).toUnicodeString());
+					} else {
+						// ignore crap attributes for now
+					}
+					openTag.append("\"");
 				}
 			}
-			handler.pushContext(tagName.toString());
+			handler.pushContext(openTag.toString());
 		}
 	}
 
@@ -878,7 +882,7 @@ public class PdfContentStreamHandler {
 			fragment.accumulate(renderListener, contextName);
 		}
 		FinalText contextResult = renderListener.endParsingContext(contextName);
-		if (contextResult != null) {
+		if (contextResult != null && contextResult.getText().length() > 0) {
 			newBuffer.add(contextResult);
 		}
 		textFragments = newBuffer;
