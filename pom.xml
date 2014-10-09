@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.lowagie</groupId>
 	<artifactId>itext</artifactId>
-	<version>4.2.1</version>
+	<version>4.2.1-j2</version>
 	<licenses>
     <license>
       <name>GNU General Lesser Public License (LGPL) version 3.0</name>
@@ -67,20 +67,6 @@
 				<artifactId>maven-repository-plugin</artifactId>
 				<version>2.3.1</version>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-          			<execution>
-            			<id>sign-artifacts</id>
-            			<phase>verify</phase>
-            			<goals>
-              				<goal>sign</goal>
-            			</goals>
-          			</execution>
-        		</executions>
-			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -118,13 +104,13 @@
 		</dependency>
 	</dependencies>
 
-	<name>iText-4.2.1</name>
-	<url>https://github.com/weiyeh/iText-4.2.0</url>
-	<description>This is a build of the last MPL version of iText.  </description>
+	<name>iText-j2</name>
+	<url>https://github.com/gskathol/iText-4.2.0</url>
+	<description>This is a build of the last MPL version of iText with changes.</description>
 	<scm>
-		<url>scm:git:https://github.com/weiyeh/iText-4.2.0.git</url>
-		<connection>scm:git:https://github.com/weiyeh/iText-4.2.0.git</connection>
-		<developerConnection>scm:git:https://github.com/weiyeh/iText-4.2.0.git</developerConnection>
+		<url>scm:git:https://github.com/gskathol/iText-4.2.0.git</url>
+		<connection>scm:git:https://github.com/gskathol/iText-4.2.0.git</connection>
+		<developerConnection>scm:git:https://github.com/gskathol/iText-4.2.0.git</developerConnection>
 	</scm>
 	
 </project>
