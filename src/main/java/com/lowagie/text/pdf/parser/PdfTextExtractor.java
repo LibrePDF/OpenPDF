@@ -237,7 +237,7 @@ public class PdfTextExtractor {
 	 */
 	public void processContent(byte[] contentBytes, PdfDictionary resources,
 			PdfContentStreamHandler handler) {
-		handler.pushContext("page");
+		handler.pushContext("div class='t-extracted-page'");
 		try {
 			PdfContentParser ps = new PdfContentParser(new PRTokeniser(
 					contentBytes));

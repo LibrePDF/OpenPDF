@@ -246,6 +246,9 @@ public class MarkedUpTextAssembler implements TextAssembler {
 		if (hardReturn || partialWord.getText().startsWith(" ")) {
 			result.add(_inProgress.getFinalText(_reader, _page, this));
 			result.add(new FinalText("\n"));
+			if (_usePdfMarkupElements) {
+				result.add(new FinalText("<br class='t-pdf' />"));
+			}
 			_inProgress = partialWord;
 			// System.out.println("<< Hard Return >>");
 		} else if (spacing < partialWord.getSingleSpaceWidth() / 2.5) {

@@ -616,8 +616,6 @@ public class PdfContentStreamHandler {
 
 	Stack<String> contextNames = new Stack<String>();
 
-	StringBuffer textContent = new StringBuffer();
-
 	Collection<TextAssemblyBuffer> textFragments = new ArrayList<TextAssemblyBuffer>();
 
 	/** A map with all supported operators operators (PDF syntax). */
@@ -713,13 +711,35 @@ public class PdfContentStreamHandler {
 		public void invoke(ArrayList<PdfObject> operands,
 				PdfContentStreamHandler handler, PdfDictionary resources) {
 			String tagName = ((PdfName) operands.get(0)).toString()
-					.substring(1);
-			if ("Artifact".equals(tagName) || "PlacedPDF".equals(tagName)) {
-				handler.pushContext(null);
-				return;
+					.substring(1).toLowerCase();
+			if ("artifact".equals(tagName) || "placedpdf".equals(tagName)
+					|| handler.contextNames.peek() == null) {
+				tagName = null;
+			} else if ("l".equals(tagName)) {
+				tagName = "ul";
 			}
-			StringBuffer openTag = new StringBuffer(tagName);
+			PdfDictionary attrs = getBDCDictionary(operands, resources);
+			if (attrs != null) {
+				PdfString alternateText = attrs.getAsString(PdfName.E);
+				if (alternateText != null) {
+					handler.pushContext(tagName);
+					handler.textFragments.add(new FinalText(alternateText
+							.toString()));
+					handler.popContext();
+					handler.pushContext(null);
+					return;
+				}
+			}
+			handler.pushContext(tagName);
+		}
 
+		/**
+		 * @param operands
+		 * @param resources
+		 * @return
+		 */
+		private PdfDictionary getBDCDictionary(ArrayList<PdfObject> operands,
+				PdfDictionary resources) {
 			PdfObject o = operands.get(1);
 			if (o.isName()) {
 				PdfDictionary properties = resources
@@ -733,22 +753,7 @@ public class PdfContentStreamHandler {
 				}
 			}
 			PdfDictionary attrs = (PdfDictionary) o;
-			if (attrs != null) {
-				for (Object x : attrs.getKeys()) {
-					PdfName attname = (PdfName) x;
-					PdfObject value = attrs.getDirectObject(attname);
-					openTag.append(' ');
-					openTag.append(attname.toString().substring(1));
-					openTag.append("=\"");
-					if (value instanceof PdfString) {
-						openTag.append(((PdfString) value).toUnicodeString());
-					} else {
-						// ignore crap attributes for now
-					}
-					openTag.append("\"");
-				}
-			}
-			handler.pushContext(openTag.toString());
+			return attrs;
 		}
 	}
 
@@ -849,30 +854,11 @@ public class PdfContentStreamHandler {
 			// System.out.println("Skipping operator " + operator);
 			return;
 		}
+		// System.err.println(operator);
 		// System.err.println(operands);
 		op.invoke(operands, this, resources);
 	}
 
-	/**
-	 * Registers a content operator that will be called when the specified
-	 * operator string is encountered during content processing. Each operator
-	 * may be registered only once (it is not legal to have multiple operators
-	 * with the same operatorString)
-	 * 
-	 * @param operatorString
-	 *            the operator id
-	 * @param operator
-	 *            the operator that will receive notification when the operator
-	 *            is encountered
-	 * @since 2.1.7
-	 * @Override public void registerContentOperator(String operatorString,
-	 *           ContentOperator operator) { if
-	 *           (_handler.operators.containsKey(operatorString)) { throw new
-	 *           IllegalArgumentException
-	 *           (MessageLocalization.getComposedMessage
-	 *           ("operator.1.already.registered", operatorString)); }
-	 *           _handler.operators.put(operatorString, operator); }
-	 */
 	void popContext() {
 		String contextName = contextNames.pop();
 		Collection<TextAssemblyBuffer> newBuffer = textFragmentStreams.pop();
@@ -980,7 +966,9 @@ public class PdfContentStreamHandler {
 		String unicode = decode(string);
 
 		ParsedText renderInfo = new ParsedText(unicode, gs(), textMatrix);
-		textFragments.add(renderInfo);
+		if (contextNames.peek() != null) {
+			textFragments.add(renderInfo);
+		}
 		textMatrix = new Matrix(renderInfo.getUnscaledWidth(gs()), 0)
 				.multiply(textMatrix);
 	}
