@@ -5,9 +5,12 @@
 Beginning with version 5.0 the developers have moved to the AGPL to improve their ability to sell commercial licenses. I fully respect the developers' wishes and rights. To assist those desiring to stick with the old license I'm making the final MPL/LGPL version more easily available.
 
 ## Changes ##
-This repo has the following changes from forked https://github.com/daviddurand/iText-4.2.0:
+This repo has the following changes from forked and merged repositories:
  - upgraded compilation for java 8
  - repackaged together with bouncy castle 1.46 to quickly avoid conflicts with bouncy castle changed API (via class relocation to old.* package)
+ - in case of unexpected end of PDF file the IOException is thrown (not PDFNull)
+ - merged patch from Steven to fix NPE in XFA Form (escapeSom method)
+
 
 ## Contributing ##
 This is a static mirror!
