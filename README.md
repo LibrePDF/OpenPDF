@@ -4,6 +4,11 @@
 
 Beginning with version 5.0 the developers have moved to the AGPL to improve their ability to sell commercial licenses. I fully respect the developers' wishes and rights. To assist those desiring to stick with the old license I'm making the final MPL/LGPL version more easily available.
 
+## Made changes ##
+This repo has the following changes from forked https://github.com/daviddurand/iText-4.2.0:
+ - upgraded compilation for java 8
+ - repackaged together with bouncy castle 1.46 to quickly avoid conflicts with bouncy castle changed API (via class relocation to old.* package)
+
 ## Contributing ##
 This is a static mirror!
 iText has moved on to its new license, and it's not my intention to continue to develop this repo as a fork.
@@ -17,26 +22,3 @@ Good luck!
 
 ## [Javadocs](http://ymasory.github.com/iText-4.2.0/) ##
 
-## Download ##
-
-I have compiled the project using Java 6. The jars are available under the [Downloads tab](https://github.com/ymasory/iText-4.2.0/downloads).
-
-## Compile ##
-
-Since iText 4.2.0 is compatible with JDK 4+, you may wish to recompile yourself to get JDK 4/5 compatiblity.
-To do so:
-
-```sh
-cd iText-4.2.0/src
-ant jar
-ant jar.rups
-ant jar.rtf
-```
-
-## Maintaining binary compatability with iText 5+ ##
-
-Additionally, version 5.0 breaks binary compatibility by changing package names from ``com.lowagie`` to ``com.itextpdf``.
-To offer compatibility with compatibly-licensed code targeting 5.0, I've also produced a jar of 4.2.0 using ``com.itextpdf``.
-See the [Downloads tab](https://github.com/ymasory/iText-4.2.0/downloads).
-You can find the source in the [``com.itextpdf``](https://github.com/ymasory/iText-4.2.0/tree/com.itextpdf) branch of the repository.
-You can compile with the instructions above.

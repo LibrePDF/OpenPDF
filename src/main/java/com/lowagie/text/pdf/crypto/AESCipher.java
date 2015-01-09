@@ -48,20 +48,21 @@
  */
 package com.lowagie.text.pdf.crypto;
 
-import org.bouncycastle.crypto.BlockCipher;
-import org.bouncycastle.crypto.engines.AESFastEngine;
-import org.bouncycastle.crypto.modes.CBCBlockCipher;
-import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
-import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.crypto.params.ParametersWithIV;
+import old.org.bouncycastle.crypto.BlockCipher;
+import old.org.bouncycastle.crypto.engines.AESFastEngine;
+import old.org.bouncycastle.crypto.modes.CBCBlockCipher;
+import old.org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import old.org.bouncycastle.crypto.params.KeyParameter;
+import old.org.bouncycastle.crypto.params.ParametersWithIV;
 
 /**
  * Creates an AES Cipher with CBC and padding PKCS5/7.
+ * 
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class AESCipher {
-    private PaddedBufferedBlockCipher bp;
-    
+    private final PaddedBufferedBlockCipher bp;
+
     /** Creates a new instance of AESCipher */
     public AESCipher(boolean forEncryption, byte[] key, byte[] iv) {
         BlockCipher aes = new AESFastEngine();
@@ -71,7 +72,7 @@ public class AESCipher {
         ParametersWithIV piv = new ParametersWithIV(kp, iv);
         bp.init(forEncryption, piv);
     }
-    
+
     public byte[] update(byte[] inp, int inpOff, int inpLen) {
         int neededLen = bp.getUpdateOutputSize(inpLen);
         byte[] outp = null;
@@ -82,7 +83,7 @@ public class AESCipher {
         bp.processBytes(inp, inpOff, inpLen, outp, 0);
         return outp;
     }
-    
+
     public byte[] doFinal() {
         int neededLen = bp.getOutputSize(0);
         byte[] outp = new byte[neededLen];
@@ -96,9 +97,8 @@ public class AESCipher {
             byte[] outp2 = new byte[n];
             System.arraycopy(outp, 0, outp2, 0, n);
             return outp2;
-        }
-        else
+        } else
             return outp;
     }
-    
+
 }
