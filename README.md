@@ -10,6 +10,7 @@ This repo has the following changes from forked and merged repositories:
  - repackaged together with bouncy castle 1.46 to quickly avoid conflicts with bouncy castle changed API (via class relocation to old.* package)
  - in case of unexpected end of PDF file the IOException is thrown (not PDFNull)
  - merged patch from Steven to fix NPE in XFA Form (escapeSom method)
+ - merged UnembedFontPdfSmartCopy functionality from Vicente Alencar
 
 
 ## Contributing ##
@@ -23,5 +24,5 @@ Here are some options:
 
 Good luck!
 
-## [Javadocs](http://ymasory.github.com/iText-4.2.0/) ##
+## [Javadocs](http://kulatamicuda.github.com/iText-4.2.0/) ##
 
