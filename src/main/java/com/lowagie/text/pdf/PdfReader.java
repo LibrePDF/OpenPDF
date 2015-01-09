@@ -2634,13 +2634,27 @@ public class PdfReader implements PdfViewerPreferences {
         return name.equals(value);
     }
 
+    static String getFontNameFromDescriptor(PdfDictionary dic) {
+        return getFontName(dic, PdfName.FONTNAME);
+    }
+
     static String getFontName(PdfDictionary dic) {
+        return getFontName(dic, PdfName.BASEFONT);
+    }
+
+    static String getFontName(PdfDictionary dic, PdfName property) {
         if (dic == null)
             return null;
-        PdfObject type = getPdfObjectRelease(dic.get(PdfName.BASEFONT));
+        PdfObject type = getPdfObjectRelease(dic.get(property));
         if (type == null || !type.isName())
             return null;
         return PdfName.decodeName(type.toString());
+    }
+
+    static boolean isFontSubset(String fontName) {
+        return fontName != null 
+            && fontName.length() >= 8
+            && fontName.charAt(6) == '+';
     }
 
     static String getSubsetPrefix(PdfDictionary dic) {

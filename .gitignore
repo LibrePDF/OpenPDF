@@ -1,3 +1,6 @@
+*.class
+*.jar
+/build/
 /target
 *.pdf
 *.rtf
