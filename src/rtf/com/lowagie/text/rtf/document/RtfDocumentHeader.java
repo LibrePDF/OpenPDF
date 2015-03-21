@@ -125,6 +125,12 @@ public class RtfDocumentHeader extends RtfElement {
      * The page settings
      */
     private RtfPageSetting pageSetting = null;
+    
+    /**
+     * Footnote settings
+     */
+    private RtfFootnoteSetting footnoteSetting = null;
+    
     /**
      * The current RtfHeaderFooterGroup for the header
      */
@@ -155,6 +161,7 @@ public class RtfDocumentHeader extends RtfElement {
         this.infoGroup = new RtfInfoGroup(this.document);
         this.protectionSetting = new RtfProtectionSetting(this.document);
         this.pageSetting = new RtfPageSetting(this.document);
+        this.footnoteSetting = new RtfFootnoteSetting(this.document);
         this.header = new RtfHeaderFooterGroup(this.document, RtfHeaderFooter.TYPE_HEADER);
         this.footer = new RtfHeaderFooterGroup(this.document, RtfHeaderFooter.TYPE_FOOTER);
         this.generator = new RtfGenerator(this.document);
@@ -178,8 +185,9 @@ public class RtfDocumentHeader extends RtfElement {
             this.generator.writeContent(result);
             this.infoGroup.writeContent(result);
             this.protectionSetting.writeDefinition(result);
-            this.pageSetting.writeDefinition(result);
-            
+            this.pageSetting.writeDefinition(result);                        
+            this.footnoteSetting.writeDefinition(result);
+
             writeSectionDefinition(result);
         } catch(IOException ioe) {
             ioe.printStackTrace();
