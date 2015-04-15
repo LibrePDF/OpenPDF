@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.class
 *.jar
 /build/
@@ -9,3 +10,8 @@
 .project
 .settings
 .DS_Store
+=======
+/nbproject/private/
+/build/
+/dist/
+>>>>>>> ubermichael/master

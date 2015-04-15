@@ -57,6 +57,7 @@ import com.lowagie.text.Chapter;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.Footnote;
 import com.lowagie.text.Image;
 import com.lowagie.text.List;
 import com.lowagie.text.ListItem;
@@ -77,6 +78,7 @@ import com.lowagie.text.rtf.table.RtfTable;
 import com.lowagie.text.rtf.text.RtfAnnotation;
 import com.lowagie.text.rtf.text.RtfChapter;
 import com.lowagie.text.rtf.text.RtfChunk;
+import com.lowagie.text.rtf.text.RtfFootnote;
 import com.lowagie.text.rtf.text.RtfNewPage;
 import com.lowagie.text.rtf.text.RtfParagraph;
 import com.lowagie.text.rtf.text.RtfPhrase;
@@ -156,6 +158,9 @@ public class RtfMapper {
     			break;
     		case Element.ANNOTATION:
     		    rtfElements.add(new RtfAnnotation(rtfDoc, (Annotation) element));
+    			break;
+    		case Element.FOOTNOTE:
+    		    rtfElements.add(new RtfFootnote(rtfDoc, (Footnote) element));
     			break;
             case Element.IMGRAW:
             case Element.IMGTEMPLATE:

@@ -190,6 +190,10 @@ public interface Element {
 	 */
 	public static final int YMARK = 55;
 
+	/** This is a possible type of <CODE>Element</CODE>.
+	 */
+	public static final int FOOTNOTE = 56;
+
 	// static membervariables (alignment)
 
 	/**
