@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.lowagie</groupId>
 	<artifactId>itext</artifactId>
-	<version>4.2.0-pds-1</version>
+	<version>4.2.0-pds-2</version>
 	<licenses>
 		<license>
 			<name>GNU General Lesser Public License (LGPL) version 3.0</name>
@@ -20,7 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.test.failure.ignore>false</maven.test.failure.ignore>
-		<java.version>1.8</java.version>
+		<java.version>1.7</java.version>
 		<maven.source.version>2.4</maven.source.version>
 		<maven.javadoc.plugin.version>2.10.1</maven.javadoc.plugin.version>
 		<maven.clean.plugin.version>2.6.1</maven.clean.plugin.version>
@@ -169,15 +169,20 @@
 			<version>2.5</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		  <groupId>org.bouncycastle</groupId>
+		  <artifactId>bcprov-jdk15on</artifactId>
+		  <version>1.52</version>
+		</dependency>
 	</dependencies>
 
-	<name>iText-4.2.0 -- we had to fork it!</name>
-	<url>https://github.com/daviddurand/iText-4.2.0</url>
-	<description>This is a build of the last MPL version of iText.  </description>
+	<name>iText-4.2.0-pds-2 -- we had to fork it!</name>
+	<url>https://github.com/kulatamicuda/iText-4.2.0</url>
+	<description>This is a build of the last MPL version of iText with some improvements.</description>
 	<scm>
-		<url>scm:git:https://github.com/daviddurand/iText-4.2.0.git</url>
-		<connection>scm:git:https://github.com/daviddurand/iText-4.2.0.git</connection>
-		<developerConnection>scm:git:https://github.com/daviddurand/iText-4.2.0.git</developerConnection>
+		<url>scm:git:https://github.com/kulatamicuda/iText-4.2.0</url>
+		<connection>scm:git:https://github.com/kulatamicuda/iText-4.2.0.git</connection>
+		<developerConnection>scm:git:https://github.com/kulatamicuda/iText-4.2.0.git</developerConnection>
 	</scm>
 
 </project>
