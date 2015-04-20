@@ -7,10 +7,11 @@ Beginning with version 5.0 the developers have moved to the AGPL to improve thei
 ## Changes ##
 This repo has the following changes from forked and merged repositories:
  - upgraded compilation for java 8
- - repackaged together with bouncy castle 1.46 to quickly avoid conflicts with bouncy castle changed API (via class relocation to old.* package)
  - in case of unexpected end of PDF file the IOException is thrown (not PDFNull)
  - merged patch from Steven to fix NPE in XFA Form (escapeSom method)
  - merged UnembedFontPdfSmartCopy functionality from Vicente Alencar
+ - merged RTF Footer functionality from ubermichael
+ - compatibility fix to work with the newest (1.52) bouncy castle libraries based on flex-developments fixes
 
 
 ## Contributing ##
