@@ -189,5 +189,23 @@
 		<connection>scm:git:https://github.com/kulatamicuda/iText-4.2.0.git</connection>
 		<developerConnection>scm:git:https://github.com/kulatamicuda/iText-4.2.0.git</developerConnection>
 	</scm>
+	
+	<!-- 
+    *****************************************************
+    **         DEPLOYMENT                              **
+    ***************************************************** 
+  -->
+  <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <name>Releases</name>
+      <url>http://10.0.60.100:8081/nexus/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>Internal Snapshots</name>
+      <url>http://10.0.60.100:8081/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
 </project>
