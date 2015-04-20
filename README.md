@@ -5,18 +5,18 @@
 Beginning with version 5.0 the developers have moved to the AGPL to improve their ability to sell commercial licenses. I fully respect the developers' wishes and rights. To assist those desiring to stick with the old license I'm making the final MPL/LGPL version more easily available.
 
 ## Changes ##
-This repo has the following changes from forked and merged repositories:
- - upgraded compilation for java 8
- - in case of unexpected end of PDF file the IOException is thrown (not PDFNull)
+This repo has the following changes from the old "original" 4.2.0 version:
+ - compilation now supports also java 8, but compatibility level is in maven pom set to java 7
+ - in the case of unexpected end of PDF file the IOException is thrown (not PDFNull)
  - merged patch from Steven to fix NPE in XFA Form (escapeSom method)
  - merged UnembedFontPdfSmartCopy functionality from Vicente Alencar
  - merged RTF Footer functionality from ubermichael
- - compatibility fix to work with the newest (1.52) bouncy castle libraries based on flex-developments fixes
-
+ - compatibility fix to support the newest (1.52) bouncy castle libraries based/inspired by flex-developments fixes
+ - some NPE fixes and tweaked maven support
 
 ## Contributing ##
-This is a static mirror!
-iText has moved on to its new license, and it's not my intention to continue to develop this repo as a fork.
+iText has moved on to its new license, and it's not my intention to continue to develop this repo as a fork. I only 
+sometimes fixing obvious bugs and compatibility problems with the newest libraries.
 If you'd like to contribute to iText, that's awesome! I encourage you to!
 
 Here are some options:
