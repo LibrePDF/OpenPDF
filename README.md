@@ -3,7 +3,7 @@
 ## Background ##
 
 Beginning with version 5.0 the developers have moved to the AGPL to improve their ability to sell commercial licenses.
-I fully respect the developers' wishes and rights.  However, I also respect open-source software.  The plan is to pick up
+I fully respect the developers' wishes and rights.  However, I also respect open-source software.  The plan is to
 keep things free and open.  One of the other intents is to boil this code down to the essentials.  Anything outside
 of creating PDF documents will be moved to an extension library.  This library is for core PDF needs and concerns.
 
