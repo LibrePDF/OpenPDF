@@ -14,17 +14,16 @@
 
 package com.lowagie.examples.fonts.styles;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
-import com.lowagie.text.html.HtmlWriter;
 import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.rtf.RtfWriter2;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+
+import static org.junit.Assert.*;
 
 /**
  * Demonstrates how to underline and strike through text.
@@ -36,24 +35,16 @@ public class ExtraStyles {
 
 	/**
 	 * Underline or strike through text.
-	 * 
-	 * @param args no arguments needed here
 	 */
-	public static void main(String[] args) {
+    @Test
+	public void testUnderlineAndStrikeThrough() throws Exception {
 
-		System.out.println("Underline and Strike through.");
-
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            // step 1: creation of a document-object
+            Document document = new Document();
 			// step 2:
 			// we create a writer that listens to the document
-			PdfWriter.getInstance(document,
-					new FileOutputStream("ExtraStyles.pdf"));
-			HtmlWriter.getInstance(document,
-					new FileOutputStream("ExtraStyles.html"));
-			RtfWriter2.getInstance(document,
-					new FileOutputStream("ExtraStyles.rtf"));
+			PdfWriter.getInstance(document, baos);
 
 			// step 3: we open the document
 			document.open();
@@ -69,14 +60,13 @@ public class ExtraStyles {
 			font = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.STRIKETHRU);
 			chunk = new Chunk("strike through", font);
 			document.add(chunk);
-			
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
+
+            // step 5: we close the document
+            document.close();
+
+            assertFalse(baos.size() == 0);
+
 		}
 
-		// step 5: we close the document
-		document.close();
 	}
 }

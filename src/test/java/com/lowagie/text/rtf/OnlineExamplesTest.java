@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 
+import com.lowagie.examples.general.HelloWorldPdf;
 import org.junit.Test;
 
 public class OnlineExamplesTest {
@@ -26,11 +27,8 @@ public class OnlineExamplesTest {
 
     @Test
     public void testRtfExamples() {
-        runSingleTest(com.lowagie.examples.general.HelloWorldMultiple.class);
         runSingleTest(com.lowagie.examples.objects.tables.alternatives.TablePdfPTable.class);
-        runSingleTest(com.lowagie.examples.fonts.styles.ExtraStyles.class);
 
-        runSingleTest(com.lowagie.examples.rtf.HelloWorld.class);
         runSingleTest(com.lowagie.examples.rtf.extensions.hf.ExtendedHeaderFooter.class);
         runSingleTest(com.lowagie.examples.rtf.extensions.hf.ChapterHeaderFooter.class);
         runSingleTest(com.lowagie.examples.rtf.extensions.hf.MultipleHeaderFooter.class);

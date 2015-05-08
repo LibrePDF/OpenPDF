@@ -11,7 +11,6 @@ public class SwingExamplesTest {
     public static void main(String args[]) throws Exception {
         SwingExamplesTest r = new SwingExamplesTest();
         r.testJTable2Pdf();
-        r.testAwtImage();
     }
     
     public void runSingleTest(Class c, String... args) {
@@ -27,11 +26,6 @@ public class SwingExamplesTest {
     @Test
     public void testJTable2Pdf() {
         runSingleTest(com.lowagie.examples.objects.tables.alternatives.JTable2Pdf.class);
-    }
-
-    @Test
-    public void testAwtImage() {
-        runSingleTest(com.lowagie.examples.objects.images.AwtImage.class);
     }
 
 }

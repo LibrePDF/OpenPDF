@@ -13,38 +13,39 @@
  */
 package com.lowagie.examples.objects.images;
 
-import java.awt.Color;
-import java.awt.Toolkit;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import org.junit.Test;
+
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+
+import static org.junit.Assert.*;
+
 /**
  * Using the java.awt.Image object.
  */
 public class AwtImage {
+
     /**
      * Uses a java.awt.Image object to construct a com.lowagie.text.Image object.
-     * @param args no arguments needed
      */
-    public static void main(String[] args) {
-        
-        System.out.println("Images using java.awt.image");
-        
-        // step 1: creation of a document-object
-        Document document = new Document();
-        
-        try {
-            
+    @Test
+    public void testAwtImage() throws Exception {
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+            // step 1: creation of a document-object
+            Document document = new Document();
+
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("awt_image.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, baos);
             
             // step 3: we open the document
             document.open();
@@ -54,7 +55,7 @@ public class AwtImage {
                 document.add(new Phrase("Who is this? "));
             }
             PdfContentByte cb = writer.getDirectContent();
-            java.awt.Image awtImage = Toolkit.getDefaultToolkit().createImage("H.gif");
+            java.awt.Image awtImage = Toolkit.getDefaultToolkit().createImage(ClassLoader.getSystemResource("H.gif").getPath());
             Image image = Image.getInstance(awtImage, null);
             image.setAbsolutePosition(100, 500);
             cb.addImage(image);
@@ -67,15 +68,12 @@ public class AwtImage {
             Image img2 = Image.getInstance(awtImage, new Color(0xFF, 0xFF, 0x00), false);
             img2.setAbsolutePosition(300, 200);
             cb.addImage(img2);
+
+            // step 5: we close the document
+            document.close();
+
+            assertFalse(baos.size() == 0);
+
         }
-        catch(DocumentException de) {
-            System.err.println(de.getMessage());
-        }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
-        // step 5: we close the document
-        document.close();
     }
 }

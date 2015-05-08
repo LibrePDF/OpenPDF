@@ -14,46 +14,37 @@
 
 package com.lowagie.examples.general;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.html.HtmlWriter;
 import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.rtf.RtfWriter2;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+
+import static org.junit.Assert.assertFalse;
 
 /**
- * Generates simple 'Hello World' PDF, RTF and HTML files.
+ * Generates a simple 'Hello World' PDF.
  * 
  * @author blowagie
  */
 
-public class HelloWorldMultiple {
+public class HelloWorldPdf {
 
 	/**
 	 * Generates simple PDF, RTF and HTML files using only one Document object.
-	 * 
-	 * @param args no arguments needed here
 	 */
-	public static void main(String[] args) {
+    @Test
+	public void testHelloWorld() throws Exception {
 
-		System.out.println("Hello World in PDF, RTF and HTML");
-
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            // step 1: creation of a document-object
+            Document document = new Document();
 			// step 2:
 			// we create 3 different writers that listen to the document
-			PdfWriter pdf = PdfWriter.getInstance(document,
-					new FileOutputStream("HelloWorldPdf.pdf"));
-			RtfWriter2 rtf = RtfWriter2.getInstance(document,
-					new FileOutputStream("HelloWorldRtf.rtf"));
-			HtmlWriter.getInstance(document,
-					new FileOutputStream("HelloWorldHtml.html"));
+			PdfWriter pdf = PdfWriter.getInstance(document, baos);
 
 			// step 3: we open the document
 			document.open();
@@ -68,20 +59,16 @@ public class HelloWorldMultiple {
 			// we add the references, but only to the HTML page:
 			
 			pdf.pause();
-			rtf.pause();
 			document.add(pdfRef);
 			document.add(Chunk.NEWLINE);
 			document.add(rtfRef);
 			pdf.resume();
-			rtf.resume();
-			
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
+
+            // step 5: we close the document
+            document.close();
+
+            assertFalse(baos.size() == 0);
 		}
 
-		// step 5: we close the document
-		document.close();
 	}
 }
