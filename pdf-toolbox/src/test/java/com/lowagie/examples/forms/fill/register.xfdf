@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xfdf xmlns="http://ns.adobe.com/xfdf/" xml:space="preserve">
+<fields>
+<field name="name">
+<value>Bruno Lowagie</value>
+</field>
+<field name="address">
+<value>Baeyensstraat 121, Sint-Amandsberg</value>
+</field>
+<field name="postal_code">
+<value>9040</value>
+</field>
+<field name="email">
+<value>bruno@lowagie.com</value>
+</field>
+</fields>
+<f href="SimpleRegistrationForm.pdf"/>
+</xfdf>

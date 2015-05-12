@@ -1,7 +1,0 @@
-# Portuguese - Portugal
-1.at.file.pointer.2={1} na posição de ficheiro {2}
-error.reading.string=Erro na leitura de string.
-fdf.header.not.found=Início de FDF não encontrado.
-greaterthan.not.expected='>' inesperado
-pdf.header.not.found=Início de PDF não encontrado.
-pdf.startxref.not.found=startxref de PDF não encontrado.
