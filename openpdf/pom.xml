@@ -5,11 +5,11 @@
 
     <parent>
         <groupId>openpdf</groupId>
-        <artifactId>openpdf</artifactId>
+        <artifactId>openpdf-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>pdf-core</artifactId>
+    <artifactId>openpdf</artifactId>
 
     <dependencies>
 
