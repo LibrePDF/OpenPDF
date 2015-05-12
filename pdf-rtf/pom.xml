@@ -9,19 +9,16 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>openpdf</artifactId>
+    <artifactId>pdf-rtf</artifactId>
 
     <dependencies>
+
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.52</version>
+            <groupId>openpdf</groupId>
+            <artifactId>pdf-xml</artifactId>
+            <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.52</version>
-        </dependency>
+        
     </dependencies>
 
 </project>
