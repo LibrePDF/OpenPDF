@@ -281,6 +281,14 @@ public class PRTokeniser {
                 }
             }
         }
+		// http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=687669#20
+        if (level > 0) {
+            type = TK_NUMBER;
+            file.seek(ptr);
+            stringValue = n1;
+            return;
+        }
+        throwError("Unexpected end of file");
         // if we hit here, the file is either corrupt (stream ended unexpectedly),
         // or the last token ended exactly at the end of a stream.  This last
         // case can occur inside an Object Stream.
