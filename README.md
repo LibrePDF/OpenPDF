@@ -20,3 +20,27 @@ This repo has the following changes from the old "original" 4.2.0 version:
 ## Contributing ##
 Release the hounds!  Please send all pull requests.
 
+## Dependencies ##
+
+### Required: ###
+
+BouncyCastle:
+  Provider
+  PKIX/CMS
+
+PDFRenderer
+
+DOM4j
+
+### Optional: ###
+JUnit 4 - for unit testing
+
+JFreeChart: - for testing graphical examples
+  JFreeChart
+  JCommon
+  Servlet
+
+
+
+
+  
