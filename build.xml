@@ -6,6 +6,7 @@
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="OpenPDF">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
+    <property name="jdk" value="1.6"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <path id="JUnit 4.libraryclasspath">
@@ -85,7 +86,7 @@
               	
     <target name="build-project" depends="init">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac compiler="javac1.6" debug="true" debuglevel="${debuglevel}" destdir="build" includeantruntime="false" source="${source}" target="${target}">
+        <javac compiler="javac${jdk}" debug="true" debuglevel="${debuglevel}" destdir="build" includeantruntime="false" source="${source}" target="${target}">
             <classpath refid="OpenPDF.classpath"/>
             <src path="openpdf/src/main/java"/>
             <src path="pdf-html/src/main/java"/>
@@ -96,7 +97,7 @@
         </javac>
     </target>
               	
-	<target name="build-jar" depends="build">
+	<target name="build-jar" depends="cleanall,build">
 		<jar destfile="openpdf.jar">
 			<fileset dir="build">
 				<include name="**"/>
@@ -104,4 +105,12 @@
 		</jar>
 	</target>
               	
+	<target name="build-src" depends="">
+		<jar destfile="openpdf-src.jar">
+			<fileset dir=".">
+				<include name="**/*.java"/>
+			</fileset>
+		</jar>
+	</target>
+
 </project>
