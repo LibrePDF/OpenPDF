@@ -6,8 +6,8 @@
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="OpenPDF">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.7"/>
-    <property name="source" value="1.7"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
     <path id="JUnit 4.libraryclasspath">
         <pathelement location="../../../../opt/eclipse/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
         <pathelement location="../../../../opt/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
@@ -85,7 +85,7 @@
               	
     <target name="build-project" depends="init">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="build" includeantruntime="false" source="${source}" target="${target}">
+        <javac compiler="javac1.6" debug="true" debuglevel="${debuglevel}" destdir="build" includeantruntime="false" source="${source}" target="${target}">
             <classpath refid="OpenPDF.classpath"/>
             <src path="openpdf/src/main/java"/>
             <src path="pdf-html/src/main/java"/>

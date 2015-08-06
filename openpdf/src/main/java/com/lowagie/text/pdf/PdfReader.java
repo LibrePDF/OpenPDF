@@ -829,7 +829,10 @@ public class PdfReader implements PdfViewerPreferences {
       X509CertificateHolder structuratedCert;
       try {
         structuratedCert = new X509CertificateHolder(certificate.getEncoded());
-      } catch (CertificateEncodingException | IOException f) {
+      //} catch (CertificateEncodingException | IOException f) {  //only if Java SE 1.6
+      } catch (CertificateEncodingException f) {
+        throw new ExceptionConverter(f);
+      } catch (IOException f) {
         throw new ExceptionConverter(f);
       }
       // ******************************************************************************
