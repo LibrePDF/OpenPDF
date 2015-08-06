@@ -38,8 +38,10 @@ public class ExtraStyles {
 	 */
     @Test
 	public void testUnderlineAndStrikeThrough() throws Exception {
-
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        //fix for Java SE 6 which doesn't have a autoclosable ByteArrayOutputStream better to have "try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {"
+        ByteArrayOutputStream baos;
+		try {
+		    baos = new ByteArrayOutputStream();
             // step 1: creation of a document-object
             Document document = new Document();
 			// step 2:
@@ -66,6 +68,8 @@ public class ExtraStyles {
 
             assertFalse(baos.size() == 0);
 
+		}
+		finally {
 		}
 
 	}
