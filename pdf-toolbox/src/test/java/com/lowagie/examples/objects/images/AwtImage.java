@@ -36,10 +36,9 @@ public class AwtImage {
      */
     @Test
     public void testAwtImage() throws Exception {
-        //fix for Java SE 6 which doesn't have a autoclosable ByteArrayOutputStream better to have "try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {"
-        ByteArrayOutputStream baos;
-        try {
-            baos = new ByteArrayOutputStream();
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
             // step 1: creation of a document-object
             Document document = new Document();
 
@@ -75,8 +74,6 @@ public class AwtImage {
 
             assertFalse(baos.size() == 0);
 
-        }
-        finally {
         }
     }
 }

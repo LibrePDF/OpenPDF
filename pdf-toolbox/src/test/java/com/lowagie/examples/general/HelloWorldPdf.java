@@ -38,10 +38,8 @@ public class HelloWorldPdf {
 	 */
     @Test
 	public void testHelloWorld() throws Exception {
-        //fix for Java SE 6 which doesn't have a autoclosable ByteArrayOutputStream better to have "try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {"
-        ByteArrayOutputStream baos;
-		try {
-		    baos = new ByteArrayOutputStream();
+
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             // step 1: creation of a document-object
             Document document = new Document();
 			// step 2:
@@ -70,8 +68,6 @@ public class HelloWorldPdf {
             document.close();
 
             assertFalse(baos.size() == 0);
-		} 
-		finally {
 		}
 
 	}
