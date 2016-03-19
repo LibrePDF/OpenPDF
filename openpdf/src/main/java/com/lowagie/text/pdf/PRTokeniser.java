@@ -241,7 +241,7 @@ public class PRTokeniser {
         String n1 = null;
         String n2 = null;
         int ptr = 0;
-        while (nextToken()) {
+        while (nextToken() || level == 2) {
             if (type == TK_COMMENT)
                 continue;
             switch (level) {
@@ -288,6 +288,13 @@ public class PRTokeniser {
             stringValue = n1;
             return;
         }
+//                if (type == TK_ENDOFFILE && level > 0)
+//        	        {
+//        	            file.seek(ptr);
+//        	            type = TK_NUMBER;
+//        	            stringValue = n1;
+//        	        }
+
         throwError("Unexpected end of file");
         // if we hit here, the file is either corrupt (stream ended unexpectedly),
         // or the last token ended exactly at the end of a stream.  This last
