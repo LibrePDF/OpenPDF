@@ -214,6 +214,9 @@ public class PdfTextExtractor {
 	public String getTextFromPage(int page, boolean useContainerMarkup)
 			throws IOException {
 		PdfDictionary pageDict = reader.getPageN(page);
+		if (pageDict == null) {
+			return ""; 
+		}
 		PdfDictionary resources = pageDict.getAsDict(PdfName.RESOURCES);
 
 		renderListener.reset();
