@@ -103,12 +103,12 @@ public class Document implements DocListener {
     /**
      * @since	2.1.6
      */
-	private static final String ITEXT = "OpenPDF";
+	private static final String OPENPDF = "OpenPDF";
     /**
      * @since	2.1.6
      */
 	private static final String RELEASE = "1.0.0-SNAPSHOT";
-	private static final String ITEXT_VERSION = ITEXT + " " + RELEASE;
+	private static final String OPENPDF_VERSION = OPENPDF + " " + RELEASE;
     
 	/**
 	 * Allows the pdf documents to be produced without compression for debugging
@@ -779,7 +779,7 @@ public class Document implements DocListener {
      * @since	2.1.6
      */    
     public static final String getProduct() {
-        return ITEXT;
+        return OPENPDF;
     }
     
 	/**
@@ -796,7 +796,7 @@ public class Document implements DocListener {
      * @return iText version
      */    
     public static final String getVersion() {
-        return ITEXT_VERSION;
+        return OPENPDF_VERSION;
     }
 
 	/**
