@@ -14,7 +14,7 @@ This repo has the following changes from the old "original" 4.2.0 version:
  - merged patch from Steven to fix NPE in XFA Form (escapeSom method)
  - merged UnembedFontPdfSmartCopy functionality from Vicente Alencar
  - merged RTF Footer functionality from ubermichael
- - compatibility fix to support the newest (1.52) bouncy castle libraries based/inspired by flex-developments fixes
+ - compatibility fix to support the newest (1.54) bouncy castle libraries based/inspired by flex-developments fixes
  - some NPE fixes and tweaked maven support
 
 ## Contributing ##
