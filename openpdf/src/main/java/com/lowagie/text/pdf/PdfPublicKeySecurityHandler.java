@@ -286,7 +286,7 @@ public class PdfPublicKeySecurityHandler {
     IssuerAndSerialNumber issuerandserialnumber = new IssuerAndSerialNumber(
         tbscertificatestructure.getIssuer(), tbscertificatestructure
             .getSerialNumber().getValue());
-    Cipher cipher = Cipher.getInstance(algorithmidentifier.getObjectId()
+    Cipher cipher = Cipher.getInstance(algorithmidentifier.getAlgorithm()
         .getId());
     cipher.init(1, x509certificate);
     DEROctetString deroctetstring = new DEROctetString(cipher.doFinal(abyte0));

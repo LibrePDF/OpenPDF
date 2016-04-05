@@ -101,17 +101,14 @@ public class Document implements DocListener {
     
     // membervariables
     /**
-     * This constant may only be changed by Paulo Soares and/or Bruno Lowagie.
      * @since	2.1.6
      */
-	private static final String ITEXT = "iText";
+	private static final String ITEXT = "OpenPDF";
     /**
-     * This constant may only be changed by Paulo Soares and/or Bruno Lowagie.
      * @since	2.1.6
      */
-	private static final String RELEASE = "4.2.0";
-	/** This constant may only be changed by Paulo Soares and/or Bruno Lowagie. */
-	private static final String ITEXT_VERSION = ITEXT + " " + RELEASE + " by 1T3XT";
+	private static final String RELEASE = "1.0.0-SNAPSHOT";
+	private static final String ITEXT_VERSION = ITEXT + " " + RELEASE;
     
 	/**
 	 * Allows the pdf documents to be produced without compression for debugging
@@ -778,7 +775,6 @@ public class Document implements DocListener {
     
 	/**
 	 * Gets the product name.
-	 * This method may only be changed by Paulo Soares and/or Bruno Lowagie.
      * @return the product name
      * @since	2.1.6
      */    
@@ -788,7 +784,6 @@ public class Document implements DocListener {
     
 	/**
 	 * Gets the release number.
-	 * This method may only be changed by Paulo Soares and/or Bruno Lowagie.
      * @return the product name
      * @since	2.1.6
      */    
@@ -798,7 +793,6 @@ public class Document implements DocListener {
     
 	/**
 	 * Gets the iText version.
-	 * This method may only be changed by Paulo Soares and/or Bruno Lowagie.
      * @return iText version
      */    
     public static final String getVersion() {
