@@ -42,5 +42,10 @@ JFreeChart: - for testing graphical examples
 
 
 
+## License ##
+
+GNU General Lesser Public License (LGPL) version 3.0 - http://www.gnu.org/licenses/lgpl.html
+
+Mozilla Public License Version 2.0 - http://www.mozilla.org/MPL/2.0/
 
   
