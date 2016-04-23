@@ -186,6 +186,12 @@
             <email>rtfarte@gmail.com</email>
             <organizationUrl>https://github.com/rtfarte</organizationUrl>
         </developer>
+        <developer>
+            <name>Andreas Røsdal</name>
+            <email>andreas.rosdal@nospam-gmail.com</email>
+            <organizationUrl>https://github.com/andreasrosdal</organizationUrl>
+            <url>https://www.twitter.com/andreasrosdal</url>
+        </developer>
     </developers>
 
 </project>
