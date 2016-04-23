@@ -10,13 +10,8 @@
 
     <licenses>
         <license>
-            <name>GNU General Lesser Public License (LGPL) version 3.0</name>
-            <url>http://www.gnu.org/licenses/lgpl.html</url>
-            <distribution>repo</distribution>
-        </license>
-        <license>
-            <name>Mozilla Public License Version 2.0</name>
-            <url>http://www.mozilla.org/MPL/2.0/</url>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -155,6 +150,21 @@
                 <artifactId>maven-repository-plugin</artifactId>
                 <version>${maven.plugin.repository.version}</version>
             </plugin>
+            <!-- GPG signing config -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -169,5 +179,13 @@
         </dependency>
 
     </dependencies>
+
+    <developers>
+        <developer>
+            <name>Art Krahenbuhl</name>
+            <email>rtfarte@gmail.com</email>
+            <organizationUrl>https://github.com/rtfarte</organizationUrl>
+        </developer>
+    </developers>
 
 </project>
