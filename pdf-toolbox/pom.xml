@@ -14,12 +14,12 @@
     <dependencies>
 
         <dependency>
-            <groupId>openpdf</groupId>
+            <groupId>com.github.rtfarte</groupId>
             <artifactId>pdf-html</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>openpdf</groupId>
+            <groupId>com.github.rtfarte</groupId>
             <artifactId>pdf-rtf</artifactId>
             <version>${project.version}</version>
         </dependency>

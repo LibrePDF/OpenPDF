@@ -2,6 +2,7 @@
 *.jar
 /build/
 */target
+/target
 *.pdf
 *.rtf
 *.html

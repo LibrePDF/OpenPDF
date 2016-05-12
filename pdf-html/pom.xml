@@ -14,7 +14,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>openpdf</groupId>
+            <groupId>com.github.rtfarte</groupId>
             <artifactId>pdf-xml</artifactId>
             <version>${project.version}</version>
         </dependency>
