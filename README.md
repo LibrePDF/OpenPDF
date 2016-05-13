@@ -1,8 +1,18 @@
 # OpenPDF is a Java PDF library, forked from the venerable iText #
 
+OpenPDF is a MIT licensed library for creating and editing PDF files.
+
+## OpenPDF version 1.0 released 2016-05-13##
+Get it here: https://github.com/rtfarte/OpenPDF/releases/tag/1.0
+
+## License ##
+
+MIT License - http://www.opensource.org/licenses/mit-license.php
+
+
 ## Background ##
 
-Beginning with version 5.0 the developers have moved to the AGPL to improve their ability to sell commercial licenses.
+Beginning with version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell commercial licenses.
 I fully respect the developers' wishes and rights.  However, I also respect open-source software.  The plan is to
 keep things free and open.  One of the other intents is to boil this code down to the essentials.  Anything outside
 of creating PDF documents will be moved to an extension library.  This library is for core PDF needs and concerns.
@@ -40,10 +50,5 @@ JFreeChart: - for testing graphical examples
   JCommon
   Servlet
 
-
-
-## License ##
-
-MIT License - http://www.opensource.org/licenses/mit-license.php
 
   
