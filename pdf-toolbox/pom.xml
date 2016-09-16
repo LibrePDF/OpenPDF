@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.github.rtfarte</groupId>
+        <groupId>com.github.bengolder</groupId>
         <artifactId>openpdf-parent</artifactId>
         <version>1.0</version>
     </parent>
@@ -14,12 +14,12 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.github.rtfarte</groupId>
+            <groupId>com.github.bengolder</groupId>
             <artifactId>pdf-html</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.rtfarte</groupId>
+            <groupId>com.github.bengolder</groupId>
             <artifactId>pdf-rtf</artifactId>
             <version>${project.version}</version>
         </dependency>
