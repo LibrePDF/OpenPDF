@@ -10,6 +10,22 @@ Get version 1.0 here - https://github.com/rtfarte/OpenPDF/releases/tag/1.0
 MIT License - http://www.opensource.org/licenses/mit-license.php
 
 
+## Use OpenPDF as Maven dependency
+Add this to your pom.xml file:
+
+        <dependency>
+            <groupId>com.github.bengolder</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.54</version>
+        </dependency>
+
+
+
 ## Background ##
 
 Beginning with version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell commercial licenses.
