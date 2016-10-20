@@ -21,7 +21,7 @@ Add this to your pom.xml file:
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.54</version>
+            <version>1.55</version>
         </dependency>
 
 
