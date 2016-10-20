@@ -349,6 +349,9 @@ public class PRTokeniser {
             case '<':
             {
                 int v1 = file.read();
+                while (isWhitespace(v1)) {
+                    v1 = file.read();
+                }
                 if (v1 == '<') {
                     type = TK_START_DIC;
                     break;
