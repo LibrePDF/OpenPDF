@@ -1,9 +1,9 @@
-# OpenPDF is a Java PDF library, forked from the venerable iText #
+# OpenPDF is a Java PDF library, forked from iText #
 
-OpenPDF is a Java library for creating and editing PDF files.
+OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source license. OpenPDF is based on a fork of iText 4. We welcome contributions from other developers. Please feel free to submit pull-requests and bugreports to this GitHub repository.
 
 ## OpenPDF version 1.0 released 2016-05-13##
-Get version 1.0 here - https://github.com/rtfarte/OpenPDF/releases/tag/1.0
+Get version 1.0 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.0
 
 ## License ##
 
@@ -25,22 +25,6 @@ Add this to your pom.xml file:
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.55</version>
         </dependency>
-
-
-## Use OpenPDF as Maven dependency
-Add this to your pom.xml file:
-
-        <dependency>
-            <groupId>com.github.bengolder</groupId>
-            <artifactId>openpdf</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.54</version>
-        </dependency>
-
 
 ## Background ##
 
