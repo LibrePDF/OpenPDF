@@ -10,8 +10,13 @@
 
     <licenses>
         <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <name>GNU General Lesser Public License (LGPL) version 3.0</name>
+            <url>http://www.gnu.org/licenses/lgpl.html</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>Mozilla Public License Version 2.0</name>
+            <url>http://www.mozilla.org/MPL/2.0/</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
