@@ -52,6 +52,7 @@
         <maven.release.plugin.version>2.5.1</maven.release.plugin.version>
         <maven.jar.plugin.version>2.5</maven.jar.plugin.version>
         <maven.plugin.repository.version>2.3.1</maven.plugin.repository.version>
+        <maven.plugin.bundle.version>3.2.0</maven.plugin.bundle.version>
     </properties>
     <!-- Support for compilation under java 8 -->
     <profiles>
@@ -149,6 +150,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven.jar.plugin.version}</version>
+                <configuration>
+                    <!-- Use the Bnd generated MANIFEST.MF in the jar -->
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -180,6 +187,31 @@
                  <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                  <autoReleaseAfterClose>false</autoReleaseAfterClose>
               </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${maven.plugin.bundle.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <!-- bind the manifest.mf generation after the 'compile' phase -->
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- unpack bundle, so humans can see the manifest without unpacking the jar -->
+                    <unpackBundle>true</unpackBundle>
+                    <!-- All com.lowagie.* packages are 'public' -->
+                    <instructions>
+                        <Export-Package>com.lowagie.*</Export-Package>
+                    </instructions>
+                </configuration>
             </plugin>
         </plugins>
     </build>
