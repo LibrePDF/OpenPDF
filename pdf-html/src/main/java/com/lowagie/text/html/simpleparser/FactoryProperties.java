@@ -50,25 +50,27 @@
 
 package com.lowagie.text.html.simpleparser;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Element;
 import com.lowagie.text.ElementTags;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.FontProvider;
 import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.html.Markup;
 import com.lowagie.text.html.HtmlTags;
+import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.HyphenationAuto;
 import com.lowagie.text.pdf.HyphenationEvent;
-import com.lowagie.text.FontProvider;
+
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
 /**
  *
  * @author  psoares
@@ -324,8 +326,8 @@ public class FactoryProperties {
 	 * @param cprops
 	 * @since 2.1.3
 	 */
-	public static void insertStyle(HashMap h, ChainedProperties cprops) {
-		String style = (String) h.get("style");
+	public static void insertStyle(final Map<String, String> h, final ChainedProperties cprops) {
+		final String style = h.get("style");
 		if (style == null)
 			return;
 		Properties prop = Markup.parseAttributes(style);
@@ -381,7 +383,12 @@ public class FactoryProperties {
 					h.put("leading", "0,1.5");
 					return;
 				}
-				h.put("leading", v + ",0");
+                // Covering a case of line-height being a number
+                if (v != 0 && Character.isDigit(ss.charAt(ss.length() - 1))) {
+                    h.put("leading", "0," + v);
+                } else {
+                    h.put("leading", v + ",0");
+                }
 			} else if (key.equals(Markup.CSS_KEY_TEXTALIGN)) {
 				String ss = prop.getProperty(key).trim().toLowerCase();
 				h.put("align", ss);
