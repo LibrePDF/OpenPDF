@@ -193,7 +193,11 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.6.1</version>
+        </dependency>
     </dependencies>
 
     <developers>
