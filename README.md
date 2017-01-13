@@ -2,6 +2,8 @@
 
 OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source license. OpenPDF is based on a fork of iText 4. We welcome contributions from other developers. Please feel free to submit pull-requests and bugreports to this GitHub repository.
 
+[![Build Status](https://api.travis-ci.org/LibrePDF/OpenPDF.png)](https://travis-ci.org/LibrePDF/OpenPDF)
+
 ## OpenPDF version 1.0 released 2016-05-13##
 Get version 1.0 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.0
 

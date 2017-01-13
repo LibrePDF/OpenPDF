@@ -1,1 +1,2 @@
 language: java
+install: mvn install -Dgpg.skip
