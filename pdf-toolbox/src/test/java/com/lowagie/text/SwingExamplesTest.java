@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
+@Ignore  //ignored until we can fix headless GUI on Travis CI.
 public class SwingExamplesTest {
 
     public static void main(String args[]) throws Exception {
