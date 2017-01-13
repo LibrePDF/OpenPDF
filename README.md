@@ -68,5 +68,3 @@ JFreeChart: - for testing graphical examples
   JCommon
   Servlet
 
-
- 
