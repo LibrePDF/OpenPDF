@@ -4,9 +4,11 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore public class SwingExamplesTest {
+@Ignore
+public class SwingExamplesTest {
 
     public static void main(String args[]) throws Exception {
         SwingExamplesTest r = new SwingExamplesTest();
