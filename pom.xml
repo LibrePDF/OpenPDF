@@ -31,12 +31,12 @@
     </modules>
 
     <name>OpenPDF - Free and Open PDF</name>
-    <url>https://github.com/rtfarte/OpenPDF</url>
+    <url>https://github.com/LibrePDF/OpenPDF</url>
     <description>Open and Free PDF library.</description>
     <scm>
-        <url>scm:git:https://github.com/rtfarte/OpenPDF</url>
-        <connection>scm:git:https://github.com/rtfarte/OpenPDF</connection>
-        <developerConnection>scm:git:https://github.com/rtfarte/OpenPDF</developerConnection>
+        <url>scm:git:https://github.com/LibrePDF/OpenPDF</url>
+        <connection>scm:git:https://github.com/LibrePDF/OpenPDF</connection>
+        <developerConnection>scm:git:https://github.com/LibrePDF/OpenPDF</developerConnection>
     </scm>
 
     <properties>
