@@ -3,7 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.bengolder</groupId>
+    <groupId>com.github.librepdf</groupId>
     <artifactId>openpdf-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0.1-SNAPSHOT</version>
