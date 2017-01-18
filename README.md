@@ -52,7 +52,7 @@ Release the hounds!  Please send all pull requests.
 
 ### Required: ###
 
-BouncyCastle:
+BouncyCastle 1.56:
   Provider
   PKIX/CMS
 
@@ -67,4 +67,3 @@ JFreeChart: - for testing graphical examples
   JFreeChart
   JCommon
   Servlet
-
