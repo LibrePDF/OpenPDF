@@ -212,7 +212,7 @@
                     <unpackBundle>true</unpackBundle>
                     <!-- All com.lowagie.* packages are 'public' -->
                     <instructions>
-                        <Export-Package>com.lowagie.*</Export-Package>
+                        <Export-Package>com.lowagie.*;version="${project.version}"</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
