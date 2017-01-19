@@ -34,9 +34,9 @@
                     <unpackBundle>true</unpackBundle>
                     <instructions>
                         <!-- All com.lowagie.text.* packages are 'public' -->
-                        <Export-Package>com.lowagie.text.*</Export-Package>
+                        <Export-Package>com.lowagie.text.*;version="${project.version}"</Export-Package>
                         <!-- Declare the Bouncycastle dependencies as optional -->
-                        <Import-Package>org.bouncycastle.*;resolution:=optional,*</Import-Package>
+                        <Import-Package>org.bouncycastle.*;resolution:=optional,!com.lowagie.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
