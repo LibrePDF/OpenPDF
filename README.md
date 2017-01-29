@@ -21,7 +21,7 @@ Mozilla Public License Version 2.0 - http://www.mozilla.org/MPL/2.0/
 Add this to your pom.xml file:
 
         <dependency>
-            <groupId>com.github.bengolder</groupId>
+            <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
             <version>1.0.1</version>
         </dependency>
