@@ -4,8 +4,11 @@ OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL
 
 [![Build Status](https://api.travis-ci.org/LibrePDF/OpenPDF.png)](https://travis-ci.org/LibrePDF/OpenPDF) [![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%203.0-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-3.0) [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
 
-## OpenPDF version 1.0 released 2016-05-13##
-Get version 1.0 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.0
+## OpenPDF version 1.0.1 released 2017-01-28##
+Get version 1.0.1 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.1
+
+### Previous Versions
+- [Version 1.0](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0) _released 2016-05-03_
 
 ## License ##
 
@@ -20,7 +23,7 @@ Add this to your pom.xml file:
         <dependency>
             <groupId>com.github.bengolder</groupId>
             <artifactId>openpdf</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
