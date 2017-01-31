@@ -25,18 +25,12 @@ Add this to your pom.xml file:
             <artifactId>openpdf</artifactId>
             <version>1.0.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.56</version>
-        </dependency>
+
 
 ## Background ##
 
-Beginning with version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell commercial licenses.
-I fully respect the developers' wishes and rights.  However, I also respect open-source software.  The plan is to
-keep things free and open.  One of the other intents is to boil this code down to the essentials.  Anything outside
-of creating PDF documents will be moved to an extension library.  This library is for core PDF needs and concerns.
+Beginning with version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell commercial licenses. 
+This project is a form of iText 4, with a LGPL and MPL open source license.
 
 ## Changes ##
 This repo has the following changes from the old "original" 4.2.0 version:
