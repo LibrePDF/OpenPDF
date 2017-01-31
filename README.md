@@ -30,7 +30,7 @@ Add this to your pom.xml file:
 ## Background ##
 
 Beginning with version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell commercial licenses. 
-This project is a form of iText 4, with a LGPL and MPL open source license.
+The OpenPDF project is a fork of iText 4, with a LGPL and MPL open source license.
 
 ## Changes ##
 This repo has the following changes from the old "original" 4.2.0 version:
