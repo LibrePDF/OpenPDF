@@ -186,10 +186,18 @@ public class PdfGraphics2D extends Graphics2D {
     }
     
     /**
+     * Shortcut constructor for PDFGraphics2D.
+     *
+     */
+    public PdfGraphics2D(PdfContentByte cb, float width, float height) {
+        this(cb, width, height, null, false, false, 0);
+    }
+    
+    /**
      * Constructor for PDFGraphics2D.
      *
      */
-    PdfGraphics2D(PdfContentByte cb, float width, float height, FontMapper fontMapper, boolean onlyShapes, boolean convertImagesToJPEG, float quality) {
+    public PdfGraphics2D(PdfContentByte cb, float width, float height, FontMapper fontMapper, boolean onlyShapes, boolean convertImagesToJPEG, float quality) {
         super();
         dg2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
