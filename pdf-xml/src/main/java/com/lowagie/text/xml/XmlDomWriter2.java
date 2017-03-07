@@ -28,10 +28,11 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 /**
+ * TODO: consider to remove this class. This is a duplicate of com.lowagie.text.xml.XmlDomWriter.
  *
  * @author psoares
  */
-public class XmlDomWriter2 {
+@Deprecated public class XmlDomWriter2 {
     
     /** Print writer. */
     protected PrintWriter fOut;
