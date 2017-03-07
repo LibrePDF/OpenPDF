@@ -31,7 +31,7 @@ import java.io.UnsupportedEncodingException;
  *
  * @author psoares
  */
-public class XmlDomWriter {
+public class XmlDomWriter2 {
     
     /** Print writer. */
     protected PrintWriter fOut;
@@ -47,10 +47,10 @@ public class XmlDomWriter {
     //
     
     /** Default constructor. */
-    public XmlDomWriter() {
+    public XmlDomWriter2() {
     } // <init>()
     
-    public XmlDomWriter(boolean canonical) {
+    public XmlDomWriter2(boolean canonical) {
         fCanonical = canonical;
     } // <init>(boolean)
     
