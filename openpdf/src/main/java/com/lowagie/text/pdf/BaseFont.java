@@ -852,8 +852,9 @@ public abstract class BaseFont {
 		}
 		if (cached) {
 			fontCache.putIfAbsent(key, fontBuilt);
+      return fontCache.get(key);
 		}
-		return fontCache.get(key);
+		return fontBuilt;
 	}
 
 	/**
