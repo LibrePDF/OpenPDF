@@ -684,9 +684,9 @@ public class PdfContentStreamHandler {
 		@Override
 		public void invoke(ArrayList<PdfObject> operands,
 				PdfContentStreamHandler handler, PdfDictionary resources) {
-			PdfName name = (PdfName) operands.get(0);
-			String realName = name.toString().substring(1);
-			if ("Artifact".equals(realName)) {
+			PdfName tagName = (PdfName) operands.get(0);
+			String realName = tagName.toString().substring(1).toLowerCase();
+			if ("artifact".equals(tagName) || "placedpdf".equals(tagName)) {
 				handler.pushContext(null);
 			} else {
 				handler.pushContext(realName);
@@ -710,8 +710,8 @@ public class PdfContentStreamHandler {
 		@Override
 		public void invoke(ArrayList<PdfObject> operands,
 				PdfContentStreamHandler handler, PdfDictionary resources) {
-			String tagName = operands.get(0).toString()
-					.substring(1).toLowerCase();
+			String tagName = ((PdfName) operands.get(0)).toString().substring(1)
+					.toLowerCase();
 			if ("artifact".equals(tagName) || "placedpdf".equals(tagName)
 					|| handler.contextNames.peek() == null) {
 				tagName = null;
@@ -719,15 +719,20 @@ public class PdfContentStreamHandler {
 				tagName = "ul";
 			}
 			PdfDictionary attrs = getBDCDictionary(operands, resources);
-			if (attrs != null) {
+			if (attrs != null && tagName != null) {
 				PdfString alternateText = attrs.getAsString(PdfName.E);
 				if (alternateText != null) {
 					handler.pushContext(tagName);
-					handler.textFragments.add(new FinalText(alternateText
-							.toString()));
+					handler.textFragments
+							.add(new FinalText(alternateText.toString()));
 					handler.popContext();
+					// ignore rest of the content of this element
 					handler.pushContext(null);
 					return;
+				} else if (attrs.get(PdfName.TYPE) != null) {
+					// ignore tag for non-tag marked content that sometimes
+					// shows up.
+					tagName = "";
 				}
 			}
 			handler.pushContext(tagName);
