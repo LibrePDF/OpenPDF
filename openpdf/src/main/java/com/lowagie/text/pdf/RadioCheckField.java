@@ -137,7 +137,7 @@ public class RadioCheckField extends BaseField {
     public RadioCheckField(PdfWriter writer, Rectangle box, String fieldName, String onValue) {
         super(writer, box, fieldName);
         setOnValue(onValue);
-        setCheckType(TYPE_CIRCLE);
+        setCheckType(TYPE_CHECK);
     }
     
     /**
@@ -160,7 +160,7 @@ public class RadioCheckField extends BaseField {
      */
     public void setCheckType(int checkType) {
         if (checkType < TYPE_CHECK || checkType > TYPE_STAR)
-            checkType = TYPE_CIRCLE;
+            checkType = TYPE_CHECK;
         this.checkType = checkType;
         setText(typeChars[checkType - 1]);
         try {
@@ -376,8 +376,7 @@ public class RadioCheckField extends BaseField {
                 field.setFieldFlags(PdfFormField.FF_READ_ONLY);
             if ((options & REQUIRED) != 0)
                 field.setFieldFlags(PdfFormField.FF_REQUIRED);
-            field.setValueAsName(checked ? onValue : "Off");
-            setCheckType(TYPE_CHECK);
+            field.setValueAsName(checked ? onValue : "Off");            
         }
         if (text != null)
             field.setMKNormalCaption(text);
