@@ -49,7 +49,7 @@ Release the hounds!  Please send all pull requests.
 
 ### Required: ###
 
-BouncyCastle 1.56:
+BouncyCastle 1.57:
   Provider
   PKIX/CMS
 
