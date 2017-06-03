@@ -151,7 +151,7 @@ public class RtfCtrlWordData implements Cloneable {
 	}
 	
 	public Object clone() throws CloneNotSupportedException{
-		Object cl = (RtfCtrlWordData)super.clone();
+		Object cl = super.clone();
 		return cl;
 	}
 }

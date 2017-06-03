@@ -77,7 +77,8 @@ public class PRAcroForm extends PdfDictionary {
         public String getName() { return name; }
         public PdfDictionary getInfo() { return info; }
         public PRIndirectReference getRef() { return ref; }
-    };
+    }
+
     ArrayList fields;
     ArrayList stack;
     HashMap fieldByName;

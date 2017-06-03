@@ -64,7 +64,7 @@ public interface TSAClient {
      * returned by getTimeStampToken() _prior_ to actual getTimeStampToken() call.
      * @return	an estimate of the token size
      */
-    public int getTokenSizeEstimate();
+    int getTokenSizeEstimate();
     
     /**
      * Get RFC 3161 timeStampToken.
@@ -74,6 +74,6 @@ public interface TSAClient {
      * @return byte[] - encoded, TSA signed data of the timeStampToken
      * @throws Exception - TSA request failed
      */
-    public byte[] getTimeStampToken(PdfPKCS7 caller, byte[] imprint) throws Exception;
+    byte[] getTimeStampToken(PdfPKCS7 caller, byte[] imprint) throws Exception;
     
 }

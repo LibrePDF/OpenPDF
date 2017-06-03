@@ -66,22 +66,22 @@ public interface RtfDataCache
     /**
      * Constant for caching efficiently into memory.
      */
-    public static final int CACHE_MEMORY_EFFICIENT = 3;
+    int CACHE_MEMORY_EFFICIENT = 3;
     /**
      * Constant for caching into memory.
      */
-    public static final int CACHE_MEMORY = 2;
+    int CACHE_MEMORY = 2;
     /**
      * Constant for caching to the disk.
      */
-    public static final int CACHE_DISK = 1;
+    int CACHE_DISK = 1;
     
     /**
      * Get the OutputStream that the RtfDocument can write to.
      * 
      * @return The OutputStream the RtfDocument can use.
      */
-    public OutputStream getOutputStream();
+    OutputStream getOutputStream();
     
     /**
      * Write the content of the cache into the OutputStream.
@@ -89,5 +89,5 @@ public interface RtfDataCache
      * @param target The OutputStream to write the content into.
      * @throws IOException If an error occurs reading/writing.
      */
-    public void writeTo(OutputStream target) throws IOException;
+    void writeTo(OutputStream target) throws IOException;
 }

@@ -225,7 +225,7 @@ public class PdfPageLabels {
 					prefix = "";
 				}
 				if (d.contains(PdfName.S)) {
-					type = ((PdfName) d.get(PdfName.S)).toString()
+					type = d.get(PdfName.S).toString()
 														.charAt(1);
 				}
 			}
@@ -288,7 +288,7 @@ public class PdfPageLabels {
 				prefix = "";
 			}
 			if (d.contains(PdfName.S)) {
-				char type = ((PdfName) d.get(PdfName.S)).toString()
+				char type = d.get(PdfName.S).toString()
 														.charAt(1);
 				switch (type) {
 					case 'R':

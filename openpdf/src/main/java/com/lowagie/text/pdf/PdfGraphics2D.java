@@ -696,17 +696,9 @@ public class PdfGraphics2D extends Graphics2D {
                 if (nStroke.getDashPhase() != oStroke.getDashPhase()) {
                     makeDash = true;
                 }
-                else if (!java.util.Arrays.equals(nStroke.getDashArray(), oStroke.getDashArray())) {
-                    makeDash = true;
-                }
-                else
-                    makeDash = false;
+                else makeDash = !java.util.Arrays.equals(nStroke.getDashArray(), oStroke.getDashArray());
             }
-            else if (oStroke.getDashArray() != null) {
-                makeDash = true;
-            }
-            else
-                makeDash = false;
+            else makeDash = oStroke.getDashArray() != null;
         }
         else {
             makeDash = true;
@@ -1468,7 +1460,7 @@ public class PdfGraphics2D extends Graphics2D {
                 ImageWriteParam iwparam = new JPEGImageWriteParam(Locale.getDefault());
                 iwparam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
                 iwparam.setCompressionQuality(jpegQuality);//Set here your compression rate
-                ImageWriter iw = (ImageWriter)ImageIO.getImageWritersByFormatName("jpg").next();
+                ImageWriter iw = ImageIO.getImageWritersByFormatName("jpg").next();
                 ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
                 iw.setOutput(ios);
                 iw.write(null, new IIOImage(scaled, null, null), iwparam);

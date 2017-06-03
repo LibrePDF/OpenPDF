@@ -67,13 +67,13 @@ public interface ContentOperator {
      * @param resources
      *            TODO
      */
-    public void invoke(ArrayList<PdfObject> operands,
-	    PdfContentStreamHandler handler, PdfDictionary resources);
+    void invoke(ArrayList<PdfObject> operands,
+                PdfContentStreamHandler handler, PdfDictionary resources);
 
     /**
      * @return the name of the operator as it will be recognized in the pdf
      *         stream
      */
-    public String getOperatorName();
+    String getOperatorName();
 
 }

@@ -421,7 +421,7 @@ public class HtmlWriter extends DocWriter {
         writeStart(HtmlTags.META);
         switch(meta.type()) {
             case Element.HEADER:
-                write(HtmlTags.NAME, ((Header) meta).getName());
+                write(HtmlTags.NAME, meta.getName());
                 break;
             case Element.SUBJECT:
                 write(HtmlTags.NAME, HtmlTags.SUBJECT);
@@ -532,12 +532,10 @@ public class HtmlWriter extends DocWriter {
     public boolean isOtherFont(Font font) {
         try {
             Font cFont = (Font) currentfont.peek();
-            if (cFont.compareTo(font) == 0) return false;
-            return true;
+            return cFont.compareTo(font) != 0;
         }
         catch(EmptyStackException ese) {
-            if (standardfont.compareTo(font) == 0) return false;
-            return true;
+            return standardfont.compareTo(font) != 0;
         }
     }
     

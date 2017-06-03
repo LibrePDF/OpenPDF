@@ -106,24 +106,23 @@ public final class RtfDestinationDocument extends RtfDestination implements RtfP
 	 */
 	private int tableLevel = 0;
 	
-	private static final List IMPORT_IGNORED_CTRLWORDS = Arrays.asList(new String[]{
-		"rtf",
-		"ansicpg",
-		"deff",
-		"ansi",
-		"mac",
-		"pca",
-		"pc",
-		"stshfdbch",
-		"stshfloch",
-		"stshfhich",
-		"stshfbi",
-		"deflang",
-		"deflangfe",
-		"adeflang",
-		"adeflangfe"});
+	private static final List IMPORT_IGNORED_CTRLWORDS = Arrays.asList("rtf",
+            "ansicpg",
+            "deff",
+            "ansi",
+            "mac",
+            "pca",
+            "pc",
+            "stshfdbch",
+            "stshfloch",
+            "stshfhich",
+            "stshfbi",
+            "deflang",
+            "deflangfe",
+            "adeflang",
+            "adeflangfe");
 
-	private static final List CONVERT_IGNORED_CTRLWORDS = Arrays.asList(new String[]{"rtf"});
+	private static final List CONVERT_IGNORED_CTRLWORDS = Arrays.asList("rtf");
 
 	private Paragraph iTextParagraph = null;
 	

@@ -61,9 +61,9 @@ public interface RtfPropertyListener extends EventListener {
 	/**
 	 * 
 	 */
-	public void beforePropertyChange(String propertyName);
+    void beforePropertyChange(String propertyName);
 	/**
 	 * 
 	 */
-	public void afterPropertyChange(String propertyName);
+    void afterPropertyChange(String propertyName);
 }

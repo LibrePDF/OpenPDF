@@ -127,9 +127,9 @@ public class RtfCtrlWordHandler implements Cloneable {
 	 * @see com.lowagie.text.rtf.parser.ctrlwords.RtfCtrlWordHandler#RtfCtrlWordHandler(RtfParser rtfParser, String ctrlWord, int defaultParameterValue, boolean passDefaultParameterValue, int ctrlWordType, String prefix, String suffix, String specialHandler)
 	 * @since 2.0.8
 	 */
-	private RtfCtrlWordHandler(){};
-	
-	/**
+	private RtfCtrlWordHandler(){}
+
+    /**
 	 * Constructor:
 	 *
 	 * @param rtfParser

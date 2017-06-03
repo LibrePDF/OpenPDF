@@ -13,5 +13,5 @@ public interface TextProvidingRenderListener extends RenderListener {
      * Returns the result so far.
      * @return  a String with the resulting text.
      */
-    public String getResultantText();
+    String getResultantText();
 }

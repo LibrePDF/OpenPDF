@@ -456,7 +456,7 @@ public class PdfStamper
      * @throws PdfException on error
      * @throws DocumentException on error
      */    
-    public void setThumbnail(Image image, int page) throws PdfException, DocumentException {
+    public void setThumbnail(Image image, int page) throws DocumentException {
         stamper.setThumbnail(image, page);
     }
     

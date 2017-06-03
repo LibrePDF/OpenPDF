@@ -457,10 +457,7 @@ public class Phrase extends ArrayList implements TextElementArray {
      * @return	true if the leading is defined
      */ 
     public boolean hasLeading() {
-        if (Float.isNaN(leading)) {
-            return false;
-        }
-        return true;
+        return !Float.isNaN(leading);
     }
 
 	/**
@@ -496,11 +493,8 @@ public class Phrase extends ArrayList implements TextElementArray {
                 return true;
             case 1:
                 Element element = (Element) get(0);
-                if (element.type() == Element.CHUNK && ((Chunk) element).isEmpty()) {
-                    return true;
-                }
-                return false;
-                default:
+                return element.type() == Element.CHUNK && ((Chunk) element).isEmpty();
+            default:
                     return false;
         }
     }
@@ -568,7 +562,7 @@ public class Phrase extends ArrayList implements TextElementArray {
             while((index = SpecialSymbol.index(string)) > -1) {
                 if (index > 0) {
                     String firstPart = string.substring(0, index);
-                    ((ArrayList)p).add(new Chunk(firstPart, font));
+                    p.add(new Chunk(firstPart, font));
                     string = string.substring(index);
                 }
                 Font symbol = new Font(Font.SYMBOL, font.getSize(), font.getStyle(), font.getColor());
@@ -579,11 +573,11 @@ public class Phrase extends ArrayList implements TextElementArray {
                     buf.append(SpecialSymbol.getCorrespondingSymbol(string.charAt(0)));
                     string = string.substring(1);
                 }
-                ((ArrayList)p).add(new Chunk(buf.toString(), symbol));
+                p.add(new Chunk(buf.toString(), symbol));
             }
         }
         if (string != null && string.length() != 0) {
-        	((ArrayList)p).add(new Chunk(string, font));
+        	p.add(new Chunk(string, font));
         }
     	return p;
     }

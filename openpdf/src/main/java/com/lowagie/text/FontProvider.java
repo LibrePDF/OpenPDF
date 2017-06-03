@@ -61,7 +61,7 @@ public interface FontProvider {
 	 * @param   fontname    the name of the font that has to be checked.
 	 * @return  true if the font is found
 	 */
-	public boolean isRegistered(String fontname);
+    boolean isRegistered(String fontname);
 
 	/**
 	 * Constructs a <CODE>Font</CODE>-object.
@@ -74,5 +74,5 @@ public interface FontProvider {
 	 * @param	color	    the <CODE>Color</CODE> of this font.
 	 * @return the Font constructed based on the parameters
 	 */
-	public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color);
+    Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color);
 }

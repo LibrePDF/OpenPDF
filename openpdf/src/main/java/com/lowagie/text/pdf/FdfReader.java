@@ -180,7 +180,7 @@ public class FdfReader extends PdfReader {
         if (v == null)
             return null;
         if (v.isName())
-            return PdfName.decodeName(((PdfName)v).toString());
+            return PdfName.decodeName(v.toString());
         else if (v.isString()) {
             PdfString vs = (PdfString)v;
             if (encoding == null || vs.getEncoding() != null)

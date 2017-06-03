@@ -2345,7 +2345,7 @@ public class PdfDocument extends Document {
 //	[U8] thumbnail images
 
     protected PdfIndirectReference thumb;
-    void setThumbnail(Image image) throws PdfException, DocumentException {
+    void setThumbnail(Image image) throws DocumentException {
         thumb = writer.getImageReference(writer.addDirectImageSimple(image));
     }
 
@@ -2406,7 +2406,7 @@ public class PdfDocument extends Document {
      * @throws DocumentException on error
      */
 
-    protected void add(Image image) throws PdfException, DocumentException {
+    protected void add(Image image) throws DocumentException {
 
         if (image.hasAbsoluteY()) {
             graphics.addImage(image);
@@ -2636,9 +2636,9 @@ public class PdfDocument extends Document {
 
             return false;
         }
-    };
+    }
 
-	/**
+    /**
 	 * Adds a new table to the document.
 	 * @param t				Table to add.  Rendered rows will be deleted after processing.
 	 * @throws DocumentException

@@ -364,7 +364,7 @@ public class PdfLine {
     public String toString() {
         StringBuffer tmp = new StringBuffer();
         for (Iterator i = line.iterator(); i.hasNext(); ) {
-            tmp.append(((PdfChunk) i.next()).toString());
+            tmp.append(i.next().toString());
         }
         return tmp.toString();
     }

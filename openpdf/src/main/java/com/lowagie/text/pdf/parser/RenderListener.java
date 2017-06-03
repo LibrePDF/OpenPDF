@@ -57,12 +57,12 @@ public interface RenderListener extends TextAssembler {
 	/**
 	 * Resets the internal state of the RenderListener
 	 */
-	public void reset();
+    void reset();
 
 	/**
 	 * Returns the result so far.
 	 * 
 	 * @return a String with the resulting text.
 	 */
-	public String getResultantText();
+    String getResultantText();
 }

@@ -243,7 +243,7 @@ public abstract class Image extends Rectangle {
 	 * @throws IOException
 	 */
 	public static Image getInstance(URL url) throws BadElementException,
-			MalformedURLException, IOException {
+            IOException {
 		InputStream is = null;
 		try {
 			is = url.openStream();
@@ -341,7 +341,7 @@ public abstract class Image extends Rectangle {
 	 * @throws IOException
 	 */
 	public static Image getInstance(String filename)
-			throws BadElementException, MalformedURLException, IOException {
+			throws BadElementException, IOException {
 		return getInstance(Utilities.toURL(filename));
 	}
     
@@ -356,7 +356,7 @@ public abstract class Image extends Rectangle {
 	 * @throws IOException
 	 */
 	public static Image getInstance(byte imgb[]) throws BadElementException,
-			MalformedURLException, IOException {
+            IOException {
 		InputStream is = null;
 		try {
 			is = new java.io.ByteArrayInputStream(imgb);
@@ -965,8 +965,8 @@ public abstract class Image extends Rectangle {
 		try {
 			Class cs = image.getClass();
 			Constructor constructor = cs
-					.getDeclaredConstructor(new Class[] { Image.class });
-			return (Image) constructor.newInstance(new Object[] { image });
+					.getDeclaredConstructor(Image.class);
+			return (Image) constructor.newInstance(image);
 		} catch (Exception e) {
 			throw new ExceptionConverter(e);
 		}

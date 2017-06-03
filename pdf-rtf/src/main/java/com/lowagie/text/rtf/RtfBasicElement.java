@@ -68,49 +68,49 @@ public interface RtfBasicElement extends RtfElementInterface {
     /**
      * Constant for the beginning of a rtf group
      */
-    public static final byte[] OPEN_GROUP = DocWriter.getISOBytes("{");
+    byte[] OPEN_GROUP = DocWriter.getISOBytes("{");
     /**
      * Constant for the end of an rtf group
      */
-    public static final byte[] CLOSE_GROUP = DocWriter.getISOBytes("}");
+    byte[] CLOSE_GROUP = DocWriter.getISOBytes("}");
     /**
      * Constant for a delimiter in rtf
      */
-    public static final byte[] DELIMITER = DocWriter.getISOBytes(" ");
+    byte[] DELIMITER = DocWriter.getISOBytes(" ");
     /**
      * Constant for a comma delimiter in rtf
      */
-    public static final byte[] COMMA_DELIMITER = DocWriter.getISOBytes(";");
+    byte[] COMMA_DELIMITER = DocWriter.getISOBytes(";");
     /**
      * The factor to use for translating from iText to rtf measurements
      */
-    public static final double TWIPS_FACTOR = 20;
+    double TWIPS_FACTOR = 20;
 
     /**
      * Writes the element content to the given output stream.
      * 
      * @param out The <code>OutputStream</code> to write the content to
      */
-    public void writeContent(OutputStream out) throws IOException;
+    void writeContent(OutputStream out) throws IOException;
     
     /**
      * Sets the RtfDocument this RtfElement belongs to
      * 
      * @param doc The @link{com.lowagie.text.rtf.document.RtfDocument} this <code>RtfElement</code> belongs to
      */
-    public void setRtfDocument(RtfDocument doc);
+    void setRtfDocument(RtfDocument doc);
     
     /**
      * Sets whether this RtfBasicElement is in a table
      * 
      * @param inTable Whether this RtfBasicElement is in a table
      */
-    public void setInTable(boolean inTable);
+    void setInTable(boolean inTable);
     
     /**
      * Sets whether this RtfBasicElement is in a header
      * 
      * @param inHeader Whether this RtfBasicElement is in a header
      */
-    public void setInHeader(boolean inHeader);
+    void setInHeader(boolean inHeader);
 }

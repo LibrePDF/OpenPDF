@@ -58,5 +58,5 @@ public interface OcspClient {
 	 * Gets an encoded byte array.
 	 * @return	a byte array
 	 */
-    public byte[] getEncoded();
+    byte[] getEncoded();
 }

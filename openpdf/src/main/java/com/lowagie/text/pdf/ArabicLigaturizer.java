@@ -768,7 +768,7 @@ public class ArabicLigaturizer {
             char vowel;
             int lignum;           /* is a ligature with lignum aditional characters */
             int numshapes = 1;
-        };
+        }
 
 
 }

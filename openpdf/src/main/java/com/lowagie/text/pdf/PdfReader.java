@@ -2306,7 +2306,7 @@ public class PdfReader implements PdfViewerPreferences {
     }
     String name;
     for (int j = 0; j < filters.size(); ++j) {
-      name = ((PdfName) getPdfObjectRelease((PdfObject) filters.get(j)))
+      name = getPdfObjectRelease((PdfObject) filters.get(j))
           .toString();
       if (name.equals("/FlateDecode") || name.equals("/Fl")) {
         b = FlateDecode(b);

@@ -97,12 +97,12 @@ public class BidiLine {
     public BidiLine(BidiLine org) {
         runDirection = org.runDirection;
         pieceSize = org.pieceSize;
-        text = (char[])org.text.clone();
-        detailChunks = (PdfChunk[])org.detailChunks.clone();
+        text = org.text.clone();
+        detailChunks = org.detailChunks.clone();
         totalTextLength = org.totalTextLength;
 
-        orderLevels = (byte[])org.orderLevels.clone();
-        indexChars = (int[])org.indexChars.clone();
+        orderLevels = org.orderLevels.clone();
+        indexChars = org.indexChars.clone();
 
         chunks = new ArrayList(org.chunks);
         indexChunk = org.indexChunk;
@@ -110,12 +110,12 @@ public class BidiLine {
         currentChar = org.currentChar;
 
         storedRunDirection = org.storedRunDirection;
-        storedText = (char[])org.storedText.clone();
-        storedDetailChunks = (PdfChunk[])org.storedDetailChunks.clone();
+        storedText = org.storedText.clone();
+        storedDetailChunks = org.storedDetailChunks.clone();
         storedTotalTextLength = org.storedTotalTextLength;
 
-        storedOrderLevels = (byte[])org.storedOrderLevels.clone();
-        storedIndexChars = (int[])org.storedIndexChars.clone();
+        storedOrderLevels = org.storedOrderLevels.clone();
+        storedIndexChars = org.storedIndexChars.clone();
 
         storedIndexChunk = org.storedIndexChunk;
         storedIndexChunkChar = org.storedIndexChunkChar;

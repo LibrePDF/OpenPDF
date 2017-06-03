@@ -291,7 +291,7 @@ public class RtfTable extends RtfElement {
      * @return The proportional widths of this RtfTable.
      */
     protected float[] getProportionalWidths() {
-        return (float[]) proportionalWidths.clone();
+        return proportionalWidths.clone();
     }
     
     /**

@@ -68,7 +68,7 @@ public class ToolboxAvailable {
 	    } else
 		try {
 			Class c = Class.forName("com.lowagie.toolbox.Toolbox");
-			Method toolboxMain = c.getMethod("main", new Class[] {args.getClass()});
+			Method toolboxMain = c.getMethod("main", args.getClass());
 			toolboxMain.invoke(null, new Object[] {args} );
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null,

@@ -209,9 +209,9 @@ public class RtfList extends RtfElement implements RtfExtendedElement {
     /**
      * The RtfList lists managed by this RtfListTable
      */
-    private ArrayList listLevels = null;;
+    private ArrayList listLevels = null;
 
-    
+
     /**
      * Constructs an empty RtfList object.
      * @since 2.1.3
@@ -461,7 +461,7 @@ public class RtfList extends RtfElement implements RtfExtendedElement {
                 }
                 this.document.outputDebugLinebreak(result);
             } else if(thisRtfElement instanceof RtfList) {
-            	((RtfList)thisRtfElement).writeContent(result);
+            	thisRtfElement.writeContent(result);
 //            	((RtfList)thisRtfElement).writeListBeginning(result);
                 writeListNumbers(result);
                 this.document.outputDebugLinebreak(result);

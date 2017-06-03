@@ -1810,7 +1810,7 @@ public class PdfPKCS7 {
      */
     public ArrayList getFieldArray(String name) {
       ArrayList vs = (ArrayList) values.get(name);
-      return vs == null ? null : vs;
+      return vs;
     }
 
     /**

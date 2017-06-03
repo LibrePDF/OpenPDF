@@ -656,7 +656,7 @@ public class PdfPRow {
 		}
 		calculateHeights();
 		PdfPRow split = new PdfPRow(newCells);
-		split.widths = (float[]) widths.clone();
+		split.widths = widths.clone();
 		split.calculateHeights();
 		return split;
 	}

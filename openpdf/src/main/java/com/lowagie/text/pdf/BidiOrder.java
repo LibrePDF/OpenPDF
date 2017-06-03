@@ -243,7 +243,7 @@ public final class BidiOrder {
     public BidiOrder(byte[] types) {
         validateTypes(types);
         
-        this.initialTypes = (byte[])types.clone(); // client type array remains unchanged
+        this.initialTypes = types.clone(); // client type array remains unchanged
         
         runAlgorithm();
     }
@@ -260,7 +260,7 @@ public final class BidiOrder {
         validateTypes(types);
         validateParagraphEmbeddingLevel(paragraphEmbeddingLevel);
         
-        this.initialTypes = (byte[])types.clone(); // client type array remains unchanged
+        this.initialTypes = types.clone(); // client type array remains unchanged
         this.paragraphEmbeddingLevel = paragraphEmbeddingLevel;
         
         runAlgorithm();
@@ -292,7 +292,7 @@ public final class BidiOrder {
         
         // Initialize output types.
         // Result types initialized to input types.
-        resultTypes = (byte[])initialTypes.clone();
+        resultTypes = initialTypes.clone();
         
         
         // 1) determining the paragraph level
@@ -851,7 +851,7 @@ public final class BidiOrder {
         
         validateLineBreaks(linebreaks, textLength);
         
-        byte[] result = (byte[])resultLevels.clone(); // will be returned to caller
+        byte[] result = resultLevels.clone(); // will be returned to caller
         
         // don't worry about linebreaks since if there is a break within
         // a series of WS values preceding S, the linebreak itself

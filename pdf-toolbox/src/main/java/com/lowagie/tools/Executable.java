@@ -256,8 +256,8 @@ public class Executable {
 		try {
 			if (isMac()) {
 				Class macUtils = Class.forName("com.apple.mrj.MRJFileUtils");
-				Method openURL = macUtils.getDeclaredMethod("openURL", new Class[] {String.class});
-				openURL.invoke(null, new Object[] {url});
+				Method openURL = macUtils.getDeclaredMethod("openURL", String.class);
+				openURL.invoke(null, url);
 			}
 			else if (isWindows())
 				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);

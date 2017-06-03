@@ -53,9 +53,8 @@ public class U3DFilter extends FileFilter {
      */
     public boolean accept(File f) {
 		if (f.isDirectory()) return true;
-		if (f.getName().toLowerCase().endsWith(".u3d")) return true;
-		return false;
-	}
+        return f.getName().toLowerCase().endsWith(".u3d");
+    }
 
     /**
      *

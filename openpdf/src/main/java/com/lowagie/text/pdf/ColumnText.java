@@ -1163,7 +1163,7 @@ public class ColumnText {
                     boolean createHere = false;
                     if (compositeColumn == null) {
                         compositeColumn = new ColumnText(canvas);
-                        compositeColumn.setUseAscender(firstPass ? useAscender : false);
+                        compositeColumn.setUseAscender(firstPass && useAscender);
                         compositeColumn.setAlignment(para.getAlignment());
                         compositeColumn.setIndent(para.getIndentationLeft() + para.getFirstLineIndent());
                         compositeColumn.setExtraParagraphSpace(para.getExtraParagraphSpace());
@@ -1259,7 +1259,7 @@ public class ColumnText {
                             continue main_loop;
                         }
                         compositeColumn = new ColumnText(canvas);
-                        compositeColumn.setUseAscender(firstPass ? useAscender : false);
+                        compositeColumn.setUseAscender(firstPass && useAscender);
                         compositeColumn.setAlignment(item.getAlignment());
                         compositeColumn.setIndent(item.getIndentationLeft() + listIndentation + item.getFirstLineIndent());
                         compositeColumn.setExtraParagraphSpace(item.getExtraParagraphSpace());

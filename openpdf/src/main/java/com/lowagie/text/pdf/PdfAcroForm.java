@@ -526,7 +526,7 @@ public class PdfAcroForm extends PdfDictionary {
     public PdfFormField addRadioButton(PdfFormField radiogroup, String value, float llx, float lly, float urx, float ury) {
         PdfFormField radio = PdfFormField.createEmpty(writer);
         radio.setWidget(new Rectangle(llx, lly, urx, ury), PdfAnnotation.HIGHLIGHT_TOGGLE);
-        String name = ((PdfName)radiogroup.get(PdfName.V)).toString().substring(1);
+        String name = radiogroup.get(PdfName.V).toString().substring(1);
         if (name.equals(value)) {
             radio.setAppearanceState(value);
         }

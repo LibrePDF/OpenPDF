@@ -198,10 +198,7 @@ public abstract class DocWriter implements DocListener {
  */
 
     public boolean newPage() {
-        if (!open) {
-            return false;
-        }
-        return true;
+        return open;
     }
 
 /**

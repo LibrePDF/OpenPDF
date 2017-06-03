@@ -133,7 +133,7 @@ public class TableBorders {
 	}
 
     private static void makeTestPage(Font tableFont, Rectangle borders, PdfWriter writer, Document document,
-                              float padding, boolean ascender, boolean descender) throws BadElementException, DocumentException {
+                              float padding, boolean ascender, boolean descender) throws DocumentException {
         document.newPage();
         PdfPTable table = null;
         table = new PdfPTable(4);

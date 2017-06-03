@@ -64,14 +64,14 @@ public interface PdfDocumentActions {
      * this name.
      * @param name the name of the destination to jump to
      */
-    public void setOpenAction(String name);
+    void setOpenAction(String name);
     
     /**
      * When the document opens this <CODE>action</CODE> will be
      * invoked.
      * @param action the action to be invoked
      */
-    public void setOpenAction(PdfAction action);
+    void setOpenAction(PdfAction action);
     
     /**
      * Additional-actions defining the actions to be taken in
@@ -84,6 +84,6 @@ public interface PdfDocumentActions {
      * @param action the action to execute in response to the trigger
      * @throws DocumentException on invalid action type
      */
-    public void setAdditionalAction(PdfName actionType, PdfAction action) throws DocumentException;
+    void setAdditionalAction(PdfName actionType, PdfAction action) throws DocumentException;
 
 }

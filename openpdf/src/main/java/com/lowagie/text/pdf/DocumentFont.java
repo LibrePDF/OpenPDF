@@ -294,7 +294,7 @@ public class DocumentFont extends BaseFont {
                         if (obj.isNumber())
                             currentNumber = ((PdfNumber)obj).intValue();
                         else {
-                            int c[] = GlyphList.nameToUnicode(PdfName.decodeName(((PdfName)obj).toString()));
+                            int c[] = GlyphList.nameToUnicode(PdfName.decodeName(obj.toString()));
                             if (c != null && c.length > 0) {
                                 uni2byte.put(c[0], currentNumber);
                                 diffmap.put(c[0], currentNumber);

@@ -1612,7 +1612,7 @@ public class PdfSignatureAppearance {
      * @param sig
      *          the signature dictionary
      */
-    public void getSignatureDictionary(PdfDictionary sig);
+    void getSignatureDictionary(PdfDictionary sig);
   }
 
   private int certificationLevel = NOT_CERTIFIED;

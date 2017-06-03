@@ -58,7 +58,7 @@ public interface TextAssembler {
 	 *            Name of the element context we are in. Null value if it's an
 	 *            Artifact.
 	 */
-	public void process(FinalText completed, String contextName);
+    void process(FinalText completed, String contextName);
 
 	/**
 	 * @param completed
@@ -68,7 +68,7 @@ public interface TextAssembler {
 	 *            Name of the element context we are in. Null value if it's an
 	 *            Artifact.
 	 */
-	public void process(Word completed, String contextName);
+    void process(Word completed, String contextName);
 
 	/**
 	 * @param parsed
@@ -78,21 +78,21 @@ public interface TextAssembler {
 	 *            Name of the element context we are in. Null value if it's an
 	 *            Artifact.
 	 */
-	public void process(ParsedText parsed, String contextName);
+    void process(ParsedText parsed, String contextName);
 
 	/**
 	 * @param completed
 	 *            process a complete chunk -- just add this subsection into the
 	 *            proper place.
 	 */
-	public void renderText(FinalText completed);
+    void renderText(FinalText completed);
 
 	/**
 	 * @param parsed
 	 *            process one of a number of raw pdf text chunks, with
 	 *            placement, font, etc.
 	 */
-	public void renderText(ParsedTextImpl parsed);
+    void renderText(ParsedTextImpl parsed);
 
 	/**
 	 * @param containingElementName
@@ -100,7 +100,7 @@ public interface TextAssembler {
 	 * @return the final text for the set of fragments and fully parsed items we
 	 *         were passed during processing.
 	 */
-	public FinalText endParsingContext(String containingElementName);
+    FinalText endParsingContext(String containingElementName);
 
 	/**
 	 * assembler can caluclate an identifier for each word on a page, for use in
@@ -108,7 +108,7 @@ public interface TextAssembler {
 	 * 
 	 * @return the new unique id.
 	 */
-	public String getWordId();
+    String getWordId();
 
 	/**
 	 * @param page

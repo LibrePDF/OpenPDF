@@ -29,5 +29,5 @@ import javax.swing.Icon;
  */
 public interface IconActionListener extends ActionListener {
 	/** Returns an Icon. */
-	public Icon getIcon();
+    Icon getIcon();
 }

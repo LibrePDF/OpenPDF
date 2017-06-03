@@ -145,12 +145,12 @@ public class PdfEncryption {
 
 	public PdfEncryption(PdfEncryption enc) {
 		this();
-		mkey = (byte[]) enc.mkey.clone();
-		ownerKey = (byte[]) enc.ownerKey.clone();
-		userKey = (byte[]) enc.userKey.clone();
+		mkey = enc.mkey.clone();
+		ownerKey = enc.ownerKey.clone();
+		userKey = enc.userKey.clone();
 		permissions = enc.permissions;
 		if (enc.documentID != null)
-			documentID = (byte[]) enc.documentID.clone();
+			documentID = enc.documentID.clone();
 		revision = enc.revision;
 		keyLength = enc.keyLength;
 		encryptMetadata = enc.encryptMetadata;

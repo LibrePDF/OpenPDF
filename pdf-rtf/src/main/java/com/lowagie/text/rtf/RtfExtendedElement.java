@@ -67,5 +67,5 @@ public interface RtfExtendedElement extends RtfBasicElement
      * 
      * @param out The <code>OutputStream</code> to write the element definition to
      */
-    public void writeDefinition(OutputStream out) throws IOException;
+    void writeDefinition(OutputStream out) throws IOException;
 }

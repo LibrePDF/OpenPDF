@@ -62,15 +62,15 @@ public interface RtfCtrlWordListener extends EventListener {
 	 * 
 	 * @return null or modified copy of the ctrlWordData object
 	 */
-	public RtfCtrlWordData beforeCtrlWord(RtfCtrlWordData ctrlWordData);
+    RtfCtrlWordData beforeCtrlWord(RtfCtrlWordData ctrlWordData);
 	/**
 	 * 
 	 * @return null or modified copy of the ctrlWordData object
 	 */
-	public RtfCtrlWordData onCtrlWord(RtfCtrlWordData ctrlWordData);
+    RtfCtrlWordData onCtrlWord(RtfCtrlWordData ctrlWordData);
 	/**
 	 * 
 	 * @return null or modified copy of the ctrlWordData object
 	 */
-	public RtfCtrlWordData afterCtrlWord(RtfCtrlWordData ctrlWordData);
+    RtfCtrlWordData afterCtrlWord(RtfCtrlWordData ctrlWordData);
 }

@@ -60,8 +60,8 @@ public interface ExtraEncoding {
      * @param encoding the requested encoding. It's mainly of use if the same class
      * supports more than one encoding.
      * @return the conversion or <CODE>null</CODE> if no conversion is supported
-     */    
-    public byte[] charToByte(String text, String encoding);
+     */
+    byte[] charToByte(String text, String encoding);
     
     /**
      * Converts an Unicode char to a byte array according to some encoding.
@@ -69,8 +69,8 @@ public interface ExtraEncoding {
      * @param encoding the requested encoding. It's mainly of use if the same class
      * supports more than one encoding.
      * @return the conversion or <CODE>null</CODE> if no conversion is supported
-     */    
-    public byte[] charToByte(char char1, String encoding);
+     */
+    byte[] charToByte(char char1, String encoding);
     
     /**
      * Converts a byte array to an Unicode string according to some encoding.
@@ -79,5 +79,5 @@ public interface ExtraEncoding {
      * supports more than one encoding.
      * @return the conversion or <CODE>null</CODE> if no conversion is supported
      */
-    public String byteToChar(byte b[], String encoding);   
+    String byteToChar(byte b[], String encoding);
 }

@@ -69,5 +69,5 @@ public interface TextElementArray extends Element {
    * @param	o			an object that has to be added
    * @return	<CODE>true</CODE> if the addition succeeded; <CODE>false</CODE> otherwise
    */
-    public boolean add(Object o);
+  boolean add(Object o);
 }

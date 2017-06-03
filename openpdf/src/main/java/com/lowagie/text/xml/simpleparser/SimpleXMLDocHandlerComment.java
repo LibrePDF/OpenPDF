@@ -54,6 +54,6 @@ public interface SimpleXMLDocHandlerComment {
     /**
      * Called when a comment is found.
      * @param text the comment text
-     */    
-    public void comment(String text);
+     */
+    void comment(String text);
 }

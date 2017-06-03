@@ -68,7 +68,7 @@ public interface PdfPageEvent {
  * @param writer the <CODE>PdfWriter</CODE> for this document
  * @param document the document
  */
-    public void onOpenDocument(PdfWriter writer, Document document);
+void onOpenDocument(PdfWriter writer, Document document);
     
 /**
  * Called when a page is initialized.
@@ -80,7 +80,7 @@ public interface PdfPageEvent {
  * @param writer the <CODE>PdfWriter</CODE> for this document
  * @param document the document
  */
-    public void onStartPage(PdfWriter writer, Document document);
+void onStartPage(PdfWriter writer, Document document);
     
 /**
  * Called when a page is finished, just before being written to the document.
@@ -88,7 +88,7 @@ public interface PdfPageEvent {
  * @param writer the <CODE>PdfWriter</CODE> for this document
  * @param document the document
  */
-    public void onEndPage(PdfWriter writer, Document document);
+void onEndPage(PdfWriter writer, Document document);
     
 /**
  * Called when the document is closed.
@@ -99,7 +99,7 @@ public interface PdfPageEvent {
  * @param writer the <CODE>PdfWriter</CODE> for this document
  * @param document the document
  */
-    public void onCloseDocument(PdfWriter writer, Document document);
+void onCloseDocument(PdfWriter writer, Document document);
     
 /**
  * Called when a Paragraph is written.
@@ -112,7 +112,7 @@ public interface PdfPageEvent {
  * @param document the document
  * @param paragraphPosition the position the paragraph will be written to
  */
-    public void onParagraph(PdfWriter writer, Document document, float paragraphPosition);
+void onParagraph(PdfWriter writer, Document document, float paragraphPosition);
     
 /**
  * Called when a Paragraph is written.
@@ -123,7 +123,7 @@ public interface PdfPageEvent {
  * @param document the document
  * @param paragraphPosition the position of the end of the paragraph
  */
-    public void onParagraphEnd(PdfWriter writer,Document document,float paragraphPosition);
+void onParagraphEnd(PdfWriter writer, Document document, float paragraphPosition);
     
 /**
  * Called when a Chapter is written.
@@ -136,7 +136,7 @@ public interface PdfPageEvent {
  * @param paragraphPosition the position the chapter will be written to
  * @param title             the title of the Chapter
  */
-    public void onChapter(PdfWriter writer,Document document,float paragraphPosition, Paragraph title);
+void onChapter(PdfWriter writer, Document document, float paragraphPosition, Paragraph title);
     
 /**
  * Called when the end of a Chapter is reached.
@@ -147,7 +147,7 @@ public interface PdfPageEvent {
  * @param document          the document
  * @param paragraphPosition the position the chapter will be written to
  */
-    public void onChapterEnd(PdfWriter writer,Document document,float paragraphPosition);
+void onChapterEnd(PdfWriter writer, Document document, float paragraphPosition);
     
 /**
  * Called when a Section is written.
@@ -161,7 +161,7 @@ public interface PdfPageEvent {
  * @param depth				the number depth of the section
  * @param title             the title of the section
  */
-    public void onSection(PdfWriter writer,Document document,float paragraphPosition, int depth, Paragraph title);
+void onSection(PdfWriter writer, Document document, float paragraphPosition, int depth, Paragraph title);
     
 /**
  * Called when the end of a Section is reached.
@@ -172,7 +172,7 @@ public interface PdfPageEvent {
  * @param document          the document
  * @param paragraphPosition the position the section will be written to
  */
-    public void onSectionEnd(PdfWriter writer,Document document,float paragraphPosition);
+void onSectionEnd(PdfWriter writer, Document document, float paragraphPosition);
     
 /**
  * Called when a <CODE>Chunk</CODE> with a generic tag is written.
@@ -185,5 +185,5 @@ public interface PdfPageEvent {
  * @param rect the <CODE>Rectangle</CODE> containing the <CODE>Chunk</CODE>
  * @param text the text of the tag
  */
-    public void onGenericTag(PdfWriter writer, Document document, Rectangle rect, String text);
+void onGenericTag(PdfWriter writer, Document document, Rectangle rect, String text);
 }

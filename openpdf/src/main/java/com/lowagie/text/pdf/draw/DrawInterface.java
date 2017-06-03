@@ -68,5 +68,5 @@ public interface DrawInterface {
 	 * @param	ury		the y coordinate of the top page margin
 	 * @param	y		the current y position on the page
 	 */
-    public void draw(PdfContentByte canvas, float llx, float lly, float urx, float ury, float y);    
+    void draw(PdfContentByte canvas, float llx, float lly, float urx, float ury, float y);
 }

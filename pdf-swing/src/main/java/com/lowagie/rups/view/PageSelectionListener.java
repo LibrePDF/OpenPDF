@@ -34,5 +34,5 @@ public interface PageSelectionListener {
 	 * @return	the resulting page number.
 	 * 		Can be different from pageNumber if pageNumber doesn't exist.
 	 */
-	public int gotoPage(int pageNumber);
+    int gotoPage(int pageNumber);
 }

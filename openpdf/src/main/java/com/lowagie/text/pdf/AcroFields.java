@@ -291,7 +291,7 @@ public class AcroFields {
             if (dic == null)
                 continue;
             for (Iterator it = dic.getKeys().iterator(); it.hasNext();) {
-                String name = PdfName.decodeName(((PdfName)it.next()).toString());
+                String name = PdfName.decodeName(it.next().toString());
                 names.put(name, null);
             }
         }

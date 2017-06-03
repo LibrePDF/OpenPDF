@@ -2692,7 +2692,7 @@ public class PdfWriter extends DocWriter implements
      * @throws PdfException on error
      * @throws DocumentException or error
      */
-    public void setThumbnail(Image image) throws PdfException, DocumentException {
+    public void setThumbnail(Image image) throws DocumentException {
         pdf.setThumbnail(image);
     }
 
@@ -2955,7 +2955,7 @@ public class PdfWriter extends DocWriter implements
      * @throws PdfException on error
      * @throws DocumentException on error
      */
-    public PdfName addDirectImageSimple(Image image) throws PdfException, DocumentException {
+    public PdfName addDirectImageSimple(Image image) throws DocumentException {
         return addDirectImageSimple(image, null);
     }
 
@@ -2970,7 +2970,7 @@ public class PdfWriter extends DocWriter implements
      * @throws PdfException on error
      * @throws DocumentException on error
      */
-    public PdfName addDirectImageSimple(Image image, PdfIndirectReference fixedRef) throws PdfException, DocumentException {
+    public PdfName addDirectImageSimple(Image image, PdfIndirectReference fixedRef) throws DocumentException {
         PdfName name;
         // if the images is already added, just retrieve the name
         if (images.containsKey(image.getMySerialId())) {

@@ -520,7 +520,7 @@ public class ElementFactory {
 	 * @return an Image
 	 */
 	public static Image getImage(Properties attributes)
-			throws BadElementException, MalformedURLException, IOException {
+			throws BadElementException, IOException {
 		String value;
 
 		value = attributes.getProperty(ElementTags.URL);

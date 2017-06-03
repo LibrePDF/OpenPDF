@@ -65,7 +65,7 @@ public interface FontMapper {
      * @return	a BaseFont which has similar properties to the provided Font
      */
 
-    public BaseFont awtToPdf(Font font);
+    BaseFont awtToPdf(Font font);
 
     /**
      * Returns an AWT Font which can be used to represent the given BaseFont
@@ -75,6 +75,6 @@ public interface FontMapper {
      * @return	a Font which has similar properties to the provided BaseFont
      */
 
-    public Font pdfToAwt(BaseFont font, int size);
+    Font pdfToAwt(BaseFont font, int size);
 
 }

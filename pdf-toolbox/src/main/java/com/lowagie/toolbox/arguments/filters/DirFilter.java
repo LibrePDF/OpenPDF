@@ -52,9 +52,8 @@ public class DirFilter extends FileFilter {
      * @return boolean
      */
     public boolean accept(File f) {
-		if (f.isDirectory()) return true;
-		return false;
-	}
+        return f.isDirectory();
+    }
 
     /**
      *

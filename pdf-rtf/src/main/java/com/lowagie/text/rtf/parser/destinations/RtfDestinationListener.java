@@ -63,37 +63,37 @@ public interface RtfDestinationListener extends EventListener {
 	/**
 	 * 
 	 */
-	public RtfCtrlWordData beforeCtrlWord(RtfCtrlWordData ctrlWordData);
+    RtfCtrlWordData beforeCtrlWord(RtfCtrlWordData ctrlWordData);
 	/**
 	 * 
 	 */
-	public RtfCtrlWordData onCtrlWord(RtfCtrlWordData ctrlWordData);
+    RtfCtrlWordData onCtrlWord(RtfCtrlWordData ctrlWordData);
 	/**
 	 * 
 	 */
-	public RtfCtrlWordData afterCtrlWord(RtfCtrlWordData ctrlWordData);
+    RtfCtrlWordData afterCtrlWord(RtfCtrlWordData ctrlWordData);
 	/**
 	 * 
 	 */
-	public int beforeCharacter(int ch);
+    int beforeCharacter(int ch);
 	/**
 	 * 
 	 */
-	public int onCharacter(int ch);
+    int onCharacter(int ch);
 	/**
 	 * 
 	 */
-	public int afterCharacter(int ch);
-	/**
-	 * 
-	 * @return true if all went well
-	 */
-	public boolean onOpenGroup();
+    int afterCharacter(int ch);
 	/**
 	 * 
 	 * @return true if all went well
 	 */
-	public boolean onCloseGroup();
+    boolean onOpenGroup();
+	/**
+	 * 
+	 * @return true if all went well
+	 */
+    boolean onCloseGroup();
 	
 
 }

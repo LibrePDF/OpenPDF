@@ -98,7 +98,7 @@ public class ImgWMF extends Image {
      * @throws IOException on error
      */
     
-    public ImgWMF(String filename) throws BadElementException, MalformedURLException, IOException {
+    public ImgWMF(String filename) throws BadElementException, IOException {
         this(Utilities.toURL(filename));
     }
     

@@ -63,8 +63,8 @@ interface PdfPageElement {
  *
  * @param	reference			an indirect reference to a <CODE>PdfPages</CODE>-object
  */
-    
-    public void setParent(PdfIndirectReference reference);
+
+void setParent(PdfIndirectReference reference);
     
 /**
  * Checks if this page element is a tree of pages.
@@ -72,6 +72,6 @@ interface PdfPageElement {
  * @return	<CODE>true</CODE> if it's a tree of pages;
  *			<CODE>false</CODE> if it's a single page
  */
-    
-    public boolean isParent();
+
+boolean isParent();
 }

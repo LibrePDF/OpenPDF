@@ -70,9 +70,9 @@ public abstract class RtfDestination {
 	protected boolean modified = false;
 
 	/** The last control word handled by this destination */
-	protected RtfCtrlWordData lastCtrlWord = null;;
-	
-	/** The <code>RtfDestinationListener</code>. */
+	protected RtfCtrlWordData lastCtrlWord = null;
+
+     /** The <code>RtfDestinationListener</code>. */
     private static ArrayList listeners = new ArrayList();
     
 	/**

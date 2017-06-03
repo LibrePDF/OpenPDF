@@ -69,6 +69,6 @@ public interface ElementListener extends EventListener {
  * @return	<CODE>true</CODE> if the element was added, <CODE>false</CODE> if not.
  * @throws	DocumentException	when a document isn't open yet, or has been closed
  */
-    
-    public boolean add(Element element) throws DocumentException; // [L0]
+
+boolean add(Element element) throws DocumentException; // [L0]
 }

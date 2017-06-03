@@ -808,7 +808,7 @@ public class BarcodeDatamatrix {
         int dataSize;
         int dataBlock;
         int errorBlock;
-    };
+    }
 
     /**
      * Gets the generated image. The image is represented as a stream of bytes, each byte representing

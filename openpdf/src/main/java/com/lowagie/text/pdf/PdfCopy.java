@@ -80,7 +80,8 @@ public class PdfCopy extends PdfWriter {
         void setCopied() { hasCopied = true; }
         boolean getCopied() { return hasCopied; }
         PdfIndirectReference getRef() { return theRef; }
-    };
+    }
+
     protected HashMap indirects;
     protected HashMap indirectMap;
     protected int currentObjectNum = 1;
@@ -293,7 +294,7 @@ public class PdfCopy extends PdfWriter {
                 //                return in;
             default:
                 if (in.type < 0) {
-                    String lit = ((PdfLiteral)in).toString();
+                    String lit = in.toString();
                     if (lit.equals("true") || lit.equals("false")) {
                         return new PdfBoolean(lit);
                     }

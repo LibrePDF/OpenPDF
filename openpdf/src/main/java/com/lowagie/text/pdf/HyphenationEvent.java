@@ -55,8 +55,8 @@ public interface HyphenationEvent {
 
     /** Gets the hyphen symbol.
      * @return the hyphen symbol
-     */    
-    public String getHyphenSymbol();
+     */
+    String getHyphenSymbol();
     
     /** Hyphenates a word and returns the first part of it. To get
      * the second part of the hyphenated word call <CODE>getHyphenatedWordPost()</CODE>.
@@ -66,13 +66,13 @@ public interface HyphenationEvent {
      * @param remainingWidth the width available to fit this word in
      * @return the first part of the hyphenated word including
      * the hyphen symbol, if any
-     */    
-    public String getHyphenatedWordPre(String word, BaseFont font, float fontSize, float remainingWidth);
+     */
+    String getHyphenatedWordPre(String word, BaseFont font, float fontSize, float remainingWidth);
     
     /** Gets the second part of the hyphenated word. Must be called
      * after <CODE>getHyphenatedWordPre()</CODE>.
      * @return the second part of the hyphenated word
-     */    
-    public String getHyphenatedWordPost();
+     */
+    String getHyphenatedWordPost();
 }
 

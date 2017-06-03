@@ -302,8 +302,8 @@ public class MultiColumnText implements Element {
                 float[] right = currentDef.resolvePositions(Rectangle.RIGHT);
                 if (document.isMarginMirroring() && document.getPageNumber() % 2 == 0){
                     float delta = document.rightMargin() - document.left();
-                    left = (float[])left.clone();
-                    right = (float[])right.clone();
+                    left = left.clone();
+                    right = right.clone();
                     for (int i = 0; i < left.length; i += 2) {
                         left[i] -= delta;
                     }

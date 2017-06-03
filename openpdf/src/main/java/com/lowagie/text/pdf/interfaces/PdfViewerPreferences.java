@@ -132,7 +132,7 @@ public interface PdfViewerPreferences {
      * @param preferences the viewer preferences
 	 * @see PdfViewerPreferences#addViewerPreference
      */
-    public void setViewerPreferences(int preferences);
+    void setViewerPreferences(int preferences);
     
     /**
      * Adds a viewer preference.
@@ -196,5 +196,5 @@ public interface PdfViewerPreferences {
      * @param value	the value of the viewer preference
 	 * @see PdfViewerPreferences#setViewerPreferences
      */
-    public void addViewerPreference(PdfName key, PdfObject value);    	
+    void addViewerPreference(PdfName key, PdfObject value);
 }

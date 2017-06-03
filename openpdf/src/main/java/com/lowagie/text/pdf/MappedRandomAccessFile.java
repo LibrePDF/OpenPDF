@@ -77,7 +77,7 @@ public class MappedRandomAccessFile {
      * @throws IOException
      */
     public MappedRandomAccessFile(String filename, String mode)
-    throws FileNotFoundException, IOException {
+    throws IOException {
         
         if (mode.equals("rw"))
             init(

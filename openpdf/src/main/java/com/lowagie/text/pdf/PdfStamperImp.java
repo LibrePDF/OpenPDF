@@ -995,7 +995,7 @@ class PdfStamperImp extends PdfWriter {
 					continue;
 
 				PdfDictionary annDic = (PdfDictionary)annoto;
- 				if (!((PdfName)annDic.get(PdfName.SUBTYPE)).equals(PdfName.FREETEXT))
+ 				if (!annDic.get(PdfName.SUBTYPE).equals(PdfName.FREETEXT))
 					continue;
 				PdfNumber ff = annDic.getAsNumber(PdfName.F);
                 int flags = (ff != null) ? ff.intValue() : 0;
@@ -1529,7 +1529,7 @@ class PdfStamperImp extends PdfWriter {
         throw new UnsupportedOperationException(MessageLocalization.getComposedMessage("use.pdfstamper.setthumbnail"));
     }
 
-    void setThumbnail(Image image, int page) throws PdfException, DocumentException {
+    void setThumbnail(Image image, int page) throws DocumentException {
         PdfIndirectReference thumb = getImageReference(addDirectImageSimple(image));
         reader.resetReleasePage();
         PdfDictionary dic = reader.getPageN(page);

@@ -556,9 +556,9 @@ public class PdfPTable implements LargeElement{
 
     	if (aboveCell == null) {
         	int col = currCol - 1;
-        	aboveCell = (PdfPCell)obtainCell(row,col);
+        	aboveCell = obtainCell(row,col);
         	while ((aboveCell == null) && (row > 0))
-        		aboveCell = (PdfPCell)obtainCell(row,--col);
+        		aboveCell = obtainCell(row,--col);
         	return aboveCell != null && aboveCell.getRowspan() > distance;
     	}
     	
@@ -566,9 +566,9 @@ public class PdfPTable implements LargeElement{
         	int col = currCol - 1;
         	aboveRow = (PdfPRow)rows.get(row + 1);
         	distance--;
-        	aboveCell = (PdfPCell)aboveRow.getCells()[col];
+        	aboveCell = aboveRow.getCells()[col];
         	while ((aboveCell == null) && (col > 0))
-        		aboveCell = (PdfPCell)aboveRow.getCells()[--col];
+        		aboveCell = aboveRow.getCells()[--col];
     	}
     	
     	return aboveCell != null && aboveCell.getRowspan() > distance;

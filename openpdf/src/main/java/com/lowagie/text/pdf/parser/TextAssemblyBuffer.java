@@ -14,7 +14,7 @@ public interface TextAssemblyBuffer {
 	/**
 	 * @return the text to render
 	 */
-	public abstract String getText();
+    String getText();
 
 	/**
 	 * @param reader
@@ -27,8 +27,8 @@ public interface TextAssemblyBuffer {
 	 *            various sorts.
 	 * @return
 	 */
-	public abstract FinalText getFinalText(PdfReader reader, int page,
-			TextAssembler assembler);
+    FinalText getFinalText(PdfReader reader, int page,
+                           TextAssembler assembler);
 
 	/**
 	 * We pass ourselves to the assembler, which is a visitor, so that it can
@@ -42,12 +42,12 @@ public interface TextAssemblyBuffer {
 	 * 
 	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#accumulate(com.lowagie.text.pdf.parser.TextAssembler, String)
 	 */
-	public abstract void accumulate(TextAssembler p, String contextName);
+    void accumulate(TextAssembler p, String contextName);
 
 	/**
 	 * @param p
 	 *            we may pass ourselves to this assembler again during the final
 	 *            assembly process.
 	 */
-	public abstract void assemble(TextAssembler p);
+    void assemble(TextAssembler p);
 }

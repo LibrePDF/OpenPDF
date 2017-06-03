@@ -33,5 +33,5 @@ public interface OutputStreamResource {
 	 * @param os	the OutputStream to which the XML is written.
 	 * @throws IOException	usual exception when there's a problem writing to an OutputStream
 	 */
-	public void writeTo(OutputStream os) throws IOException;
+    void writeTo(OutputStream os) throws IOException;
 }

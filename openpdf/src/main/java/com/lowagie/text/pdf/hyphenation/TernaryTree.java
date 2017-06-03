@@ -348,10 +348,10 @@ public class TernaryTree implements Cloneable, Serializable {
 
     public Object clone() {
         TernaryTree t = new TernaryTree();
-        t.lo = (char[])this.lo.clone();
-        t.hi = (char[])this.hi.clone();
-        t.eq = (char[])this.eq.clone();
-        t.sc = (char[])this.sc.clone();
+        t.lo = this.lo.clone();
+        t.hi = this.hi.clone();
+        t.eq = this.eq.clone();
+        t.sc = this.sc.clone();
         t.kv = (CharVector)this.kv.clone();
         t.root = this.root;
         t.freenode = this.freenode;

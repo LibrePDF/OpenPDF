@@ -60,7 +60,7 @@ public interface PdfAnnotations {
      * Use this method only if you know what you're doing
      * @return the PdfAcroform object of the PdfDocument
      */
-    public PdfAcroForm getAcroForm();
+    PdfAcroForm getAcroForm();
     
     /**
      * Use this methods to add a <CODE>PdfAnnotation</CODE> or a <CODE>PdfFormField</CODE>
@@ -68,17 +68,17 @@ public interface PdfAnnotations {
      * needs to be added.
      * @param annot the <CODE>PdfAnnotation</CODE> or the <CODE>PdfFormField</CODE> to add
      */
-    public void addAnnotation(PdfAnnotation annot);
+    void addAnnotation(PdfAnnotation annot);
     /**
      * Use this method to adds the <CODE>PdfAnnotation</CODE>
      * to the calculation order array.
      * @param annot the <CODE>PdfAnnotation</CODE> to be added
      */
-    public void addCalculationOrder(PdfFormField annot);
+    void addCalculationOrder(PdfFormField annot);
     
     /**
      * Use this method to set the signature flags.
      * @param f the flags. This flags are ORed with current ones
      */
-    public void setSigFlags(int f);
+    void setSigFlags(int f);
 }

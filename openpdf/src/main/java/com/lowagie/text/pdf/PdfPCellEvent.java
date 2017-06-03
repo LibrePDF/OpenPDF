@@ -69,6 +69,6 @@ public interface PdfPCellEvent {
      * @param cell the cell
      * @param position the coordinates of the cell
      * @param canvases an array of <CODE>PdfContentByte</CODE>
-     */    
-    public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases);
+     */
+    void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases);
 }

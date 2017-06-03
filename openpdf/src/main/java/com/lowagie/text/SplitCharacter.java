@@ -92,5 +92,5 @@ public interface SplitCharacter {
      * If shorter than <CODE>end</CODE> the last element is used
      * @return <CODE>true</CODE> if the character(s) can split a line
      */
-    public boolean isSplitCharacter(int start, int current, int end, char cc[], PdfChunk ck[]);
+    boolean isSplitCharacter(int start, int current, int end, char cc[], PdfChunk ck[]);
 }

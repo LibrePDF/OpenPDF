@@ -263,7 +263,7 @@ public class RtfDestinationListTable extends RtfDestination {
 							skipCtrlWord = true;
 							result = true;
 						} else if (ctrlWordData.ctrlWord.equals("levellegal")) {
-							this.currentListLevel.setLegal(ctrlWordData.param=="1"?true:false);
+							this.currentListLevel.setLegal(ctrlWordData.param == "1");
 							skipCtrlWord = true;
 							result = true;
 						} else if (ctrlWordData.ctrlWord.equals("levelnorestart")) {

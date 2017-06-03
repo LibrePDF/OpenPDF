@@ -188,7 +188,7 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
         if ( tag.equals("value") ) {
             String	fName = "";
             for (int k = 0; k < fieldNames.size(); ++k) {
-                fName += "." + (String)fieldNames.elementAt(k);
+                fName += "." + fieldNames.elementAt(k);
             }
             if (fName.startsWith("."))
                 fName = fName.substring(1);
