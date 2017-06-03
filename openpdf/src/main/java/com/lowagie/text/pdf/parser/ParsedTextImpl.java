@@ -60,7 +60,7 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
 	 *            font ascent above baseline
 	 * @param descent
 	 *            font descent below the baseling
-	 * @param width
+	 * @param spaceWidth
 	 *            What is the width of the space in this font....
 	 */
 	ParsedTextImpl(String text, Vector startPoint, Vector endPoint,

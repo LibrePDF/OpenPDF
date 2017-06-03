@@ -223,7 +223,7 @@ public class OcspClientBouncyCastle implements OcspClient {
 
   /**
    * @return a byte array
-   * @see com.itextpdf.text.pdf.OcspClient#getEncoded()
+   * @see com.lowagie.text.pdf.OcspClient
    */
   @Override
   public byte[] getEncoded() {

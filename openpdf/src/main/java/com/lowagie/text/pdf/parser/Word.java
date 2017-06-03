@@ -57,7 +57,7 @@ public class Word extends ParsedTextImpl {
 	 * @param descent
 	 *            TODO
 	 * @param startPoint
-	 * @param width
+	 * @param spaceWidth
 	 */
 	Word(String text, float ascent, float descent, Vector startPoint,
 			Vector endPoint, float spaceWidth) {
@@ -65,10 +65,10 @@ public class Word extends ParsedTextImpl {
 	}
 
 	/**
-	 * @param string
-	 * @param leading
-	 * @param baselinePositionInUserCoords
-	 * @param f
+	 *
+	 * @param p the assembler that is visiting us.
+	 * @param contextName TODO
+	 *
 	 */
 
 	@Override

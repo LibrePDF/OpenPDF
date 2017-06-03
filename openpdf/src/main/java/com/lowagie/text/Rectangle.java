@@ -288,7 +288,7 @@ public class Rectangle implements Element {
   }
 
   /**
-   * @see com.itextpdf.text.Element#isContent()
+   * @see com.lowagie.text.Element#isContent()
    * @since iText 2.0.8
    */
   @Override
@@ -297,7 +297,7 @@ public class Rectangle implements Element {
   }
 
   /**
-   * @see com.itextpdf.text.Element#isNestable()
+   * @see com.lowagie.text.Element#isNestable()
    * @since iText 2.0.8
    */
   @Override

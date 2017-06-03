@@ -170,16 +170,16 @@ public final class MessageLocalization {
     public static String getComposedMessage(String key, Object p1, Object p2, Object p3, Object p4) {
         String msg = getMessage(key);
         if (p1 != null) {
-            msg = msg.replaceAll("\\{1\\}", p1.toString());
+            msg = msg.replaceAll("\\{1}", p1.toString());
         }
         if (p2 != null) {
-            msg = msg.replaceAll("\\{2\\}", p2.toString());
+            msg = msg.replaceAll("\\{2}", p2.toString());
         }
         if (p3 != null) {
-            msg = msg.replaceAll("\\{3\\}", p3.toString());
+            msg = msg.replaceAll("\\{3}", p3.toString());
         }
         if (p4 != null) {
-            msg = msg.replaceAll("\\{4\\}", p4.toString());
+            msg = msg.replaceAll("\\{4}", p4.toString());
         }
         return msg;
     }
