@@ -46,6 +46,34 @@ This repo has the following changes from the old "original" 4.2.0 version:
 ## Contributing ##
 Release the hounds!  Please send all pull requests.
 
+### c9.io Development mini guide ###
+ - fork this repo
+ - login with github credentials to https://c9.io
+ - create new workspace
+ - use your forked repo git url
+ - select public
+ - select Blank machine
+ - start workspace
+ - (in workspace terminal) update jdk and maven
+
+       sudo apt update 
+       sudo apt remove maven2 -y
+       sudo apt install -y maven
+       sudo apt install -y openjdk-7-jdk
+       echo export MAVEN_OPTS=\"-Xmx256m\" >> ~/.bashrc
+       mvn clean package -Dmaven.javadoc.skip=true
+
+ - if test fails due to X11 error in pdf-toolbox test
+
+       Caused by: java.awt.HeadlessException: 
+       No X11 DISPLAY variable was set, but this program performed an operation which requires it.
+               at java.awt.GraphicsEnvironment.checkHeadless(GraphicsEnvironment.java:207)
+
+- then run mvn with 'xvfb-run' virtual x frame buffer
+
+       sudo apt install -y xvfb
+       xvfb-run mvn clean package -Dmaven.javadoc.skip=true
+
 ## Dependencies ##
 
 ### Required: ###
