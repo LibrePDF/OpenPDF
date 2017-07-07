@@ -85,10 +85,14 @@ public class Word extends ParsedTextImpl {
 		p.renderText(this);
 	}
 
+	private static String formatPercent(float f) {
+		return String.format("%f.2%%", f);
+	}
+
 	/**
 	 * Generate markup for this word. send the assembler a strings representing
 	 * a CSS style that will format us nicely.
-	 * 
+	 *
 	 * @param text
 	 *            passed in because we may have wanted to alter it, e.g. by
 	 *            trimming white space, or filtering characters or something.
@@ -124,7 +128,8 @@ public class Word extends ParsedTextImpl {
 		Vector endPoint = getEndPoint();
 		float pageWidth = clipBox.getWidth();
 		float pageHeight = clipBox.getHeight();
-		float leftPercent = (float) ((startPoint.get(0) - xOffset) / pageWidth * 100.0);
+		float leftPercent = (float) ((startPoint.get(0) - xOffset) / pageWidth
+				* 100.0);
 		float bottom = endPoint.get(1) + yOffset - getDescent();
 		float bottomPercent = bottom / pageHeight * 100f;
 		StringBuilder result = new StringBuilder();
@@ -135,9 +140,10 @@ public class Word extends ParsedTextImpl {
 		float heightPercent = height / pageHeight * 100.0f;
 		String myId = assembler.getWordId();
 		result.append("<span class=\"t-word\" style=\"bottom: ")
-				.append(bottomPercent).append("%; left: ").append(leftPercent)
-				.append("%; width: ").append(widthPercent)
-				.append("%; height: ").append(heightPercent).append("%;\"")
+				.append(formatPercent(bottomPercent)).append("; left: ")
+				.append(formatPercent(leftPercent)).append("; width: ")
+				.append(formatPercent(widthPercent)).append("; height: ")
+				.append(formatPercent(heightPercent)).append(";\"")
 				.append(" id=\"").append(myId).append("\">")
 				.append(escapeHTML(text)).append(" ");
 		result.append("</span> ");
@@ -158,8 +164,8 @@ public class Word extends ParsedTextImpl {
 	@Override
 	public FinalText getFinalText(PdfReader reader, int page,
 			TextAssembler assembler) {
-		return new FinalText(wordMarkup(getText().trim(), reader, page,
-				assembler));
+		return new FinalText(
+				wordMarkup(getText().trim(), reader, page, assembler));
 	}
 
 	@Override
