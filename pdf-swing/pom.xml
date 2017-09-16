@@ -15,7 +15,7 @@
 
         <dependency>
             <groupId>com.github.librepdf</groupId>
-            <artifactId>pdf-html</artifactId>
+            <artifactId>openpdf</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -28,7 +28,7 @@
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
         </dependency>
-        
+
     </dependencies>
 
 </project>
