@@ -15,10 +15,15 @@
 
         <dependency>
             <groupId>com.github.librepdf</groupId>
-            <artifactId>pdf-xml</artifactId>
+            <artifactId>openpdf</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
