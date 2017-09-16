@@ -57,8 +57,7 @@ public class ViewerPreferences {
 					new FileOutputStream("NoScaling.pdf"));
 			// step 3:
 			writer1.setViewerPreferences(PdfWriter.PageLayoutTwoColumnLeft);
-			writer2.setViewerPreferences(PdfWriter.HideMenubar
-					| PdfWriter.HideMenubar);
+			writer2.setViewerPreferences(PdfWriter.HideMenubar);
 			writer3.setViewerPreferences(PdfWriter.PageLayoutTwoColumnRight
 					| PdfWriter.PageModeFullScreen
 					| PdfWriter.NonFullScreenPageModeUseThumbs);

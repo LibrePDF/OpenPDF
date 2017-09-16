@@ -36,7 +36,6 @@
 package com.lowagie.toolbox.plugins;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JInternalFrame;
@@ -104,7 +103,7 @@ public class InspectPDF extends AbstractTool {
 			System.out.println("Rebuilt? " + reader.isRebuilt());
 			// Some metadata
 			System.out.println("=== Metadata ===");
-			HashMap<String, String> info = reader.getInfo();
+			Map<String, String> info = reader.getInfo();
 			String key;
 			String value;
 			for (Map.Entry<String, String> entry: info.entrySet()) {

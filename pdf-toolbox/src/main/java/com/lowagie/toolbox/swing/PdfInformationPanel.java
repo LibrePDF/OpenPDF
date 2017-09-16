@@ -39,7 +39,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -99,9 +99,9 @@ public class PdfInformationPanel extends JPanel implements PropertyChangeListene
 
 			try {
 				reader = new PdfReader(new RandomAccessFileOrArray(file.getAbsolutePath()), null);
-				HashMap<String, String> pdfinfo = reader.getInfo();
+				Map<String, String> pdfinfo = reader.getInfo();
 
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				sb.append("<html>=== Document Information ===<p>");
 				sb.append(reader.getCropBox(page).getHeight() + "*"
 						+ reader.getCropBox(page).getWidth() + "<p>");

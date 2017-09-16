@@ -48,13 +48,15 @@
  */
 
 package com.lowagie.text.pdf;
+
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import com.lowagie.text.error_messages.MessageLocalization;
+import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.Annotation;
 import com.lowagie.text.DocumentException;
@@ -63,6 +65,7 @@ import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Image;
 import com.lowagie.text.ImgJBIG2;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.exceptions.IllegalPdfSyntaxException;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfXConformanceImp;
@@ -178,11 +181,9 @@ public class PdfContentByte {
     /** This is the GraphicState in use */
     protected GraphicState state = new GraphicState();
 
+    private static Map<PdfName, String> abrev = new HashMap<>();
     /** The list were we save/restore the state */
-    protected ArrayList stateList = new ArrayList();
-
-    /** The list were we save/restore the layer depth */
-    protected ArrayList layerDepth;
+    protected List<GraphicState> stateList = new ArrayList<>();
 
     /** The separator between commands.
      */
@@ -190,8 +191,8 @@ public class PdfContentByte {
     
     private int mcDepth = 0;
     private boolean inText = false;
-
-    private static HashMap abrev = new HashMap();
+    /** The list were we save/restore the layer depth */
+    protected List<Integer> layerDepth;
 
     static {
         abrev.put(PdfName.BITSPERCOMPONENT, "/BPC ");
@@ -1134,6 +1135,146 @@ public class PdfContentByte {
     }
 
     /**
+     * Generates an array of bezier curves to draw an arc.
+     * <P>
+     * (x1, y1) and (x2, y2) are the corners of the enclosing rectangle.
+     * Angles, measured in degrees, start with 0 to the right (the positive X
+     * axis) and increase counter-clockwise.  The arc extends from startAng
+     * to startAng+extent.  I.e. startAng=0 and extent=180 yields an openside-down
+     * semi-circle.
+     * <P>
+     * The resulting coordinates are of the form float[]{x1,y1,x2,y2,x3,y3, x4,y4}
+     * such that the curve goes from (x1, y1) to (x4, y4) with (x2, y2) and
+     * (x3, y3) as their respective Bezier control points.
+     * <P>
+     * Note: this code was taken from ReportLab (www.reportlab.org), an excellent
+     * PDF generator for Python (BSD license: http://www.reportlab.org/devfaq.html#1.3 ).
+     *
+     * @param x1 a corner of the enclosing rectangle
+     * @param y1 a corner of the enclosing rectangle
+     * @param x2 a corner of the enclosing rectangle
+     * @param y2 a corner of the enclosing rectangle
+     * @param startAng starting angle in degrees
+     * @param extent angle extent in degrees
+     * @return a list of float[] with the bezier curves
+     */
+    public static List<float[]> bezierArc(float x1, float y1, float x2, float y2, float startAng, float extent) {
+        float tmp;
+        if (x1 > x2) {
+            tmp = x1;
+            x1 = x2;
+            x2 = tmp;
+        }
+        if (y2 > y1) {
+            tmp = y1;
+            y1 = y2;
+            y2 = tmp;
+        }
+
+        float fragAngle;
+        int Nfrag;
+        if (Math.abs(extent) <= 90f) {
+            fragAngle = extent;
+            Nfrag = 1;
+        }
+        else {
+            Nfrag = (int)(Math.ceil(Math.abs(extent)/90f));
+            fragAngle = extent / Nfrag;
+        }
+        float x_cen = (x1+x2)/2f;
+        float y_cen = (y1+y2)/2f;
+        float rx = (x2-x1)/2f;
+        float ry = (y2-y1)/2f;
+        float halfAng = (float)(fragAngle * Math.PI / 360.);
+        float kappa = (float)(Math.abs(4. / 3. * (1. - Math.cos(halfAng)) / Math.sin(halfAng)));
+        List<float[]> pointList = new ArrayList<>();
+        for (int i = 0; i < Nfrag; ++i) {
+            float theta0 = (float)((startAng + i*fragAngle) * Math.PI / 180.);
+            float theta1 = (float)((startAng + (i+1)*fragAngle) * Math.PI / 180.);
+            float cos0 = (float)Math.cos(theta0);
+            float cos1 = (float)Math.cos(theta1);
+            float sin0 = (float)Math.sin(theta0);
+            float sin1 = (float)Math.sin(theta1);
+            if (fragAngle > 0f) {
+                pointList.add(new float[]{x_cen + rx * cos0,
+                y_cen - ry * sin0,
+                x_cen + rx * (cos0 - kappa * sin0),
+                y_cen - ry * (sin0 + kappa * cos0),
+                x_cen + rx * (cos1 + kappa * sin1),
+                y_cen - ry * (sin1 - kappa * cos1),
+                x_cen + rx * cos1,
+                y_cen - ry * sin1});
+            }
+            else {
+                pointList.add(new float[]{x_cen + rx * cos0,
+                y_cen - ry * sin0,
+                x_cen + rx * (cos0 + kappa * sin0),
+                y_cen - ry * (sin0 - kappa * cos0),
+                x_cen + rx * (cos1 - kappa * sin1),
+                y_cen - ry * (sin1 + kappa * cos1),
+                x_cen + rx * cos1,
+                y_cen - ry * sin1});
+            }
+        }
+        return pointList;
+    }
+
+    /**
+     * Makes this <CODE>PdfContentByte</CODE> empty.
+     * Calls <code>reset( true )</code>
+     */
+    public void reset() {
+        reset( true );
+    }
+
+    /**
+     * Makes this <CODE>PdfContentByte</CODE> empty.
+     * @param validateContent will call <code>sanityCheck()</code> if true.
+     * @since 2.1.6
+     */
+    public void reset( boolean validateContent ) {
+        content.reset();
+        if (validateContent) {
+        	sanityCheck();
+        }
+        state = new GraphicState();
+    }
+
+    
+    /**
+     * Starts the writing of text.
+     */
+    public void beginText() {
+    	if (inText) {
+    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
+    	}
+    	inText = true;
+        state.xTLM = 0;
+        state.yTLM = 0;
+        content.append("BT").append_i(separator);
+    }
+
+    /**
+     * Ends the writing of text and makes the current font invalid.
+     */
+    public void endText() {
+    	if (!inText) {
+    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
+    	}
+    	inText = false;
+        content.append("ET").append_i(separator);
+    }
+
+    /**
+     * Saves the graphic state. <CODE>saveState</CODE> and
+     * <CODE>restoreState</CODE> must be balanced.
+     */
+    public void saveState() {
+        content.append("q").append_i(separator);
+        stateList.add(new GraphicState(state));
+    }
+
+    /**
      * Adds an <CODE>Image</CODE> to the page. The positioning of the <CODE>Image</CODE>
      * is done with the transformation matrix. To position an <CODE>image</CODE> at (x,y)
      * use addImage(image, image_width, 0, 0, image_height, x, y). The image can be placed inline.
@@ -1180,15 +1321,15 @@ public class PdfContentByte {
                     for (Iterator it = pimage.getKeys().iterator(); it.hasNext();) {
                         PdfName key = (PdfName)it.next();
                         PdfObject value = pimage.get(key);
-                        String s = (String)abrev.get(key);
+                        String s = abrev.get(key);
                         if (s == null)
                             continue;
                         content.append(s);
                         boolean check = true;
                         if (key.equals(PdfName.COLORSPACE) && value.isArray()) {
                             PdfArray ar = (PdfArray)value;
-                            if (ar.size() == 4 
-                                && PdfName.INDEXED.equals(ar.getAsName(0)) 
+                            if (ar.size() == 4
+                                && PdfName.INDEXED.equals(ar.getAsName(0))
                                 && ar.getPdfObject(1).isName()
                                 && ar.getPdfObject(2).isNumber()
                                 && ar.getPdfObject(3).isString()
@@ -1261,74 +1402,6 @@ public class PdfContentByte {
         catch (Exception ee) {
             throw new DocumentException(ee);
         }
-    }
-
-    /**
-     * Makes this <CODE>PdfContentByte</CODE> empty.
-     * Calls <code>reset( true )</code>
-     */
-    public void reset() {
-        reset( true );
-    }
-
-    /**
-     * Makes this <CODE>PdfContentByte</CODE> empty.
-     * @param validateContent will call <code>sanityCheck()</code> if true.
-     * @since 2.1.6
-     */
-    public void reset( boolean validateContent ) {
-        content.reset();
-        if (validateContent) {
-        	sanityCheck();
-        }
-        state = new GraphicState();
-    }
-
-    
-    /**
-     * Starts the writing of text.
-     */
-    public void beginText() {
-    	if (inText) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
-    	}
-    	inText = true;
-        state.xTLM = 0;
-        state.yTLM = 0;
-        content.append("BT").append_i(separator);
-    }
-
-    /**
-     * Ends the writing of text and makes the current font invalid.
-     */
-    public void endText() {
-    	if (!inText) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
-    	}
-    	inText = false;
-        content.append("ET").append_i(separator);
-    }
-
-    /**
-     * Saves the graphic state. <CODE>saveState</CODE> and
-     * <CODE>restoreState</CODE> must be balanced.
-     */
-    public void saveState() {
-        content.append("q").append_i(separator);
-        stateList.add(new GraphicState(state));
-    }
-
-    /**
-     * Restores the graphic state. <CODE>saveState</CODE> and
-     * <CODE>restoreState</CODE> must be balanced.
-     */
-    public void restoreState() {
-        content.append("Q").append_i(separator);
-        int idx = stateList.size() - 1;
-        if (idx < 0)
-            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
-        state = (GraphicState)stateList.get(idx);
-        stateList.remove(idx);
     }
 
     /**
@@ -1777,88 +1850,16 @@ public class PdfContentByte {
     }
 
     /**
-     * Generates an array of bezier curves to draw an arc.
-     * <P>
-     * (x1, y1) and (x2, y2) are the corners of the enclosing rectangle.
-     * Angles, measured in degrees, start with 0 to the right (the positive X
-     * axis) and increase counter-clockwise.  The arc extends from startAng
-     * to startAng+extent.  I.e. startAng=0 and extent=180 yields an openside-down
-     * semi-circle.
-     * <P>
-     * The resulting coordinates are of the form float[]{x1,y1,x2,y2,x3,y3, x4,y4}
-     * such that the curve goes from (x1, y1) to (x4, y4) with (x2, y2) and
-     * (x3, y3) as their respective Bezier control points.
-     * <P>
-     * Note: this code was taken from ReportLab (www.reportlab.org), an excellent
-     * PDF generator for Python (BSD license: http://www.reportlab.org/devfaq.html#1.3 ).
-     *
-     * @param x1 a corner of the enclosing rectangle
-     * @param y1 a corner of the enclosing rectangle
-     * @param x2 a corner of the enclosing rectangle
-     * @param y2 a corner of the enclosing rectangle
-     * @param startAng starting angle in degrees
-     * @param extent angle extent in degrees
-     * @return a list of float[] with the bezier curves
+     * Restores the graphic state. <CODE>saveState</CODE> and
+     * <CODE>restoreState</CODE> must be balanced.
      */
-    public static ArrayList bezierArc(float x1, float y1, float x2, float y2, float startAng, float extent) {
-        float tmp;
-        if (x1 > x2) {
-            tmp = x1;
-            x1 = x2;
-            x2 = tmp;
-        }
-        if (y2 > y1) {
-            tmp = y1;
-            y1 = y2;
-            y2 = tmp;
-        }
-
-        float fragAngle;
-        int Nfrag;
-        if (Math.abs(extent) <= 90f) {
-            fragAngle = extent;
-            Nfrag = 1;
-        }
-        else {
-            Nfrag = (int)(Math.ceil(Math.abs(extent)/90f));
-            fragAngle = extent / Nfrag;
-        }
-        float x_cen = (x1+x2)/2f;
-        float y_cen = (y1+y2)/2f;
-        float rx = (x2-x1)/2f;
-        float ry = (y2-y1)/2f;
-        float halfAng = (float)(fragAngle * Math.PI / 360.);
-        float kappa = (float)(Math.abs(4. / 3. * (1. - Math.cos(halfAng)) / Math.sin(halfAng)));
-        ArrayList pointList = new ArrayList();
-        for (int i = 0; i < Nfrag; ++i) {
-            float theta0 = (float)((startAng + i*fragAngle) * Math.PI / 180.);
-            float theta1 = (float)((startAng + (i+1)*fragAngle) * Math.PI / 180.);
-            float cos0 = (float)Math.cos(theta0);
-            float cos1 = (float)Math.cos(theta1);
-            float sin0 = (float)Math.sin(theta0);
-            float sin1 = (float)Math.sin(theta1);
-            if (fragAngle > 0f) {
-                pointList.add(new float[]{x_cen + rx * cos0,
-                y_cen - ry * sin0,
-                x_cen + rx * (cos0 - kappa * sin0),
-                y_cen - ry * (sin0 + kappa * cos0),
-                x_cen + rx * (cos1 + kappa * sin1),
-                y_cen - ry * (sin1 - kappa * cos1),
-                x_cen + rx * cos1,
-                y_cen - ry * sin1});
-            }
-            else {
-                pointList.add(new float[]{x_cen + rx * cos0,
-                y_cen - ry * sin0,
-                x_cen + rx * (cos0 + kappa * sin0),
-                y_cen - ry * (sin0 - kappa * cos0),
-                x_cen + rx * (cos1 - kappa * sin1),
-                y_cen - ry * (sin1 + kappa * cos1),
-                x_cen + rx * cos1,
-                y_cen - ry * sin1});
-            }
-        }
-        return pointList;
+    public void restoreState() {
+        content.append("Q").append_i(separator);
+        int idx = stateList.size() - 1;
+        if (idx < 0)
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
+        state = stateList.get(idx);
+        stateList.remove(idx);
     }
 
     /**
@@ -1874,13 +1875,13 @@ public class PdfContentByte {
      * @param extent angle extent in degrees
      */
     public void arc(float x1, float y1, float x2, float y2, float startAng, float extent) {
-        ArrayList ar = bezierArc(x1, y1, x2, y2, startAng, extent);
+        List<float[]> ar = bezierArc(x1, y1, x2, y2, startAng, extent);
         if (ar.isEmpty())
             return;
-        float pt[] = (float [])ar.get(0);
+        float pt[] = ar.get(0);
         moveTo(pt[0], pt[1]);
-        for (int k = 0; k < ar.size(); ++k) {
-            pt = (float [])ar.get(k);
+        for (float[] anAr : ar) {
+            pt = anAr;
             curveTo(pt[2], pt[3], pt[4], pt[5], pt[6], pt[7]);
         }
     }
@@ -2471,20 +2472,18 @@ public class PdfContentByte {
         if (state.fontDetails == null)
             throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         content.append("[");
-        ArrayList arrayList = text.getArrayList();
+        List arrayList = text.getArrayList();
         boolean lastWasNumber = false;
-        for (int k = 0; k < arrayList.size(); ++k) {
-            Object obj = arrayList.get(k);
+        for (Object obj : arrayList) {
             if (obj instanceof String) {
-                showText2((String)obj);
+                showText2((String) obj);
                 lastWasNumber = false;
-            }
-            else {
+            } else {
                 if (lastWasNumber)
                     content.append(' ');
                 else
                     lastWasNumber = true;
-                content.append(((Float)obj).floatValue());
+                content.append((Float) obj);
             }
         }
         content.append("]TJ").append_i(separator);
@@ -2943,9 +2942,9 @@ public class PdfContentByte {
         if ((layer instanceof PdfLayer) && ((PdfLayer)layer).getTitle() != null)
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("a.title.is.not.a.layer"));
         if (layerDepth == null)
-            layerDepth = new ArrayList();
+            layerDepth = new ArrayList<>();
         if (layer instanceof PdfLayerMembership) {
-            layerDepth.add(new Integer(1));
+            layerDepth.add(1);
             beginLayer2(layer);
             return;
         }
@@ -2958,7 +2957,7 @@ public class PdfContentByte {
             }
             la = la.getParent();
         }
-        layerDepth.add(new Integer(n));
+        layerDepth.add(n);
     }
 
     private void beginLayer2(PdfOCG layer) {
@@ -2974,7 +2973,7 @@ public class PdfContentByte {
     public void endLayer() {
         int n = 1;
         if (layerDepth != null && !layerDepth.isEmpty()) {
-            n = ((Integer)layerDepth.get(layerDepth.size() - 1)).intValue();
+            n = layerDepth.get(layerDepth.size() - 1);
             layerDepth.remove(layerDepth.size() - 1);
         } else {
         	throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.layer.operators"));

@@ -53,7 +53,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Font;
@@ -88,8 +88,8 @@ public class PdfOutline extends PdfDictionary {
     /** The <CODE>PdfAction</CODE> for this outline.
      */
     private PdfAction action;
-       
-    protected ArrayList kids = new ArrayList();
+
+    protected List<PdfOutline> kids = new ArrayList<>();
     
     protected PdfWriter writer;
     
@@ -268,9 +268,9 @@ public class PdfOutline extends PdfDictionary {
      */
     public PdfOutline(PdfOutline parent, PdfAction action, Paragraph title, boolean open) {
         super();
-        StringBuffer buf = new StringBuffer();
-        for (Iterator i = title.getChunks().iterator(); i.hasNext(); ) {
-            Chunk chunk = (Chunk) i.next();
+        StringBuilder buf = new StringBuilder();
+        for (Object o : title.getChunks()) {
+            Chunk chunk = (Chunk) o;
             buf.append(chunk.getContent());
         }
         this.action = action;
@@ -304,9 +304,9 @@ public class PdfOutline extends PdfDictionary {
      */
     public PdfOutline(PdfOutline parent, PdfDestination destination, Paragraph title, boolean open) {
         super();
-        StringBuffer buf = new StringBuffer();
-        for (Iterator i = title.getChunks().iterator(); i.hasNext(); ) {
-            Chunk chunk = (Chunk) i.next();
+        StringBuilder buf = new StringBuilder();
+        for (Object o : title.getChunks()) {
+            Chunk chunk = (Chunk) o;
             buf.append(chunk.getContent());
         }
         this.destination = destination;
@@ -449,7 +449,7 @@ public class PdfOutline extends PdfDictionary {
      * Returns the kids of this outline
      * @return an ArrayList with PdfOutlines
      */
-    public ArrayList getKids() {
+    public List<PdfOutline> getKids() {
         return kids;
     }
     
@@ -457,7 +457,7 @@ public class PdfOutline extends PdfDictionary {
      * Sets the kids of this outline
      * @param kids
      */
-    public void setKids(ArrayList kids) {
+    public void setKids(List<PdfOutline> kids) {
         this.kids = kids;
     }
     
