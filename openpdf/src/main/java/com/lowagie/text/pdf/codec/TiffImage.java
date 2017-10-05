@@ -325,11 +325,12 @@ public class TiffImage {
             if (dir.isTagPresent(TIFFConstants.TIFFTAG_PLANARCONFIG)
                 && dir.getFieldAsLong(TIFFConstants.TIFFTAG_PLANARCONFIG) == TIFFConstants.PLANARCONFIG_SEPARATE)
                 throw new IllegalArgumentException(MessageLocalization.getComposedMessage("planar.images.are.not.supported"));
-            if (dir.isTagPresent(TIFFConstants.TIFFTAG_EXTRASAMPLES))
-                throw new IllegalArgumentException(MessageLocalization.getComposedMessage("extra.samples.are.not.supported"));
             int samplePerPixel = 1;
             if (dir.isTagPresent(TIFFConstants.TIFFTAG_SAMPLESPERPIXEL)) // 1,3,4
                 samplePerPixel = (int)dir.getFieldAsLong(TIFFConstants.TIFFTAG_SAMPLESPERPIXEL);
+            if (dir.isTagPresent(TIFFConstants.TIFFTAG_EXTRASAMPLES))
+                if(samplePerPixel != 4) // TIFFTAG_EXTRASAMPLES is supposed to be set when RGB image data has an alpha channel (the 4th channel in this case).
+                    throw new IllegalArgumentException(MessageLocalization.getComposedMessage("extra.samples.are.not.supported"));
             int bitsPerSample = 1;
             if (dir.isTagPresent(TIFFConstants.TIFFTAG_BITSPERSAMPLE))
                 bitsPerSample = (int)dir.getFieldAsLong(TIFFConstants.TIFFTAG_BITSPERSAMPLE);
