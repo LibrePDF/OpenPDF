@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.librepdf</groupId>
         <artifactId>openpdf-parent</artifactId>
-        <version>1.0.4-SNAPSHOT</version>
+        <version>1.0.4</version>
     </parent>
 
     <artifactId>pdf-swing</artifactId>
@@ -15,7 +15,7 @@
 
         <dependency>
             <groupId>com.github.librepdf</groupId>
-            <artifactId>pdf-html</artifactId>
+            <artifactId>openpdf</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -28,7 +28,7 @@
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
         </dependency>
-        
+
     </dependencies>
 
 </project>
