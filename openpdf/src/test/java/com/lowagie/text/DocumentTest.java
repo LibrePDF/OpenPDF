@@ -13,11 +13,11 @@ public class DocumentTest {
 
     @Test
     public void testThatVersionIsCorrect() throws IOException {
-        // Compare Version with
-        String versionString = getVersionFromPom();
-
-        final String version = Document.getVersion();
-        Assert.assertTrue("Version number in code is not the same as pom.", version.endsWith(versionString));
+        // Given
+        String versionFromPom = getVersionFromPom();
+        String versionInCode = Document.getVersion();
+        // Then
+        Assert.assertTrue("Version number in code (" + versionInCode + ") is not the same as pom (" + versionFromPom + ").", versionInCode.endsWith(versionFromPom));
     }
 
     private String getVersionFromPom() throws IOException {
