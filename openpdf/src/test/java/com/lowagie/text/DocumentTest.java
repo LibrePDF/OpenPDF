@@ -1,6 +1,9 @@
 package com.lowagie.text;
 
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,22 +17,20 @@ public class DocumentTest {
     @Test
     public void testThatVersionIsCorrect() throws IOException {
         // Given
-        String versionFromPom = getVersionFromPom();
+        String versionFromPom = getProjectVersion();
         String versionInCode = Document.getVersion();
         // Then
         Assert.assertTrue("Version number in code (" + versionInCode + ") is not the same as pom (" + versionFromPom + ").", versionInCode.endsWith(versionFromPom));
     }
 
-    private String getVersionFromPom() throws IOException {
-        String versionString = "1.0.0-SNAPSHOT";
-        final List<String> strings = Files.readAllLines(Paths.get("pom.xml"), StandardCharsets.UTF_8);
-        for (String string : strings) {
-            if (string != null && string.contains("<version>")) {
-                versionString = string.replaceAll("^.*<version>(.*)</version>.*", "$1");
-                break;
-            }
+    private String getProjectVersion() {
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("version.txt");
+        String version = null;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            version = reader.readLine();
+        } catch (IOException ignored) {
         }
-        return versionString;
+        return version;
     }
 
 }
