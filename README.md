@@ -52,18 +52,16 @@ Release the hounds!  Please send all pull requests.
 
 ### Required: ###
 
-BouncyCastle 1.57:
-  Provider
-  PKIX/CMS
-
-PDFRenderer
-
-DOM4j
+ - BouncyCastle 1.57
+   - Provider
+   - PKIX/CMS
+ - PDFRenderer
+ - DOM4j
 
 ### Optional: ###
-JUnit 4 - for unit testing
 
-JFreeChart: - for testing graphical examples
-  JFreeChart
-  JCommon
-  Servlet
+ - JUnit 4 - for unit testing
+ - JFreeChart - for testing graphical examples
+   - JFreeChart
+   - JCommon
+   - Servlet
