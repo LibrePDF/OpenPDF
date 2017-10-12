@@ -52,6 +52,7 @@ package com.lowagie.text;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 
@@ -126,7 +127,7 @@ public class Document implements DocListener {
     public static float wmfFontCorrection = 0.86f;
     
 	/** The DocListener. */
-    private java.util.List<DocListener> listeners = new ArrayList<>();
+    private List<DocListener> listeners = new ArrayList<>();
     
 	/** Is the document open or not? */
     protected boolean open;
@@ -185,41 +186,38 @@ public class Document implements DocListener {
     
     // constructor
     
-	/**
-	 * Constructs a new <CODE>Document</CODE> -object.
- */
-    
+    /**
+     * Constructs a new <CODE>Document</CODE> -object.
+     */
     public Document() {
         this(PageSize.A4);
     }
     
-	/**
-	 * Constructs a new <CODE>Document</CODE> -object.
- *
-	 * @param pageSize
-	 *            the pageSize
- */
-    
+    /**
+     * Constructs a new <CODE>Document</CODE> -object.
+     *
+     * @param pageSize
+     *            the pageSize
+     */
     public Document(Rectangle pageSize) {
         this(pageSize, 36, 36, 36, 36);
     }
     
-	/**
-	 * Constructs a new <CODE>Document</CODE> -object.
- *
-	 * @param pageSize
-	 *            the pageSize
-	 * @param marginLeft
-	 *            the margin on the left
-	 * @param marginRight
-	 *            the margin on the right
-	 * @param marginTop
-	 *            the margin on the top
-	 * @param marginBottom
-	 *            the margin on the bottom
- */
-    
-	public Document(Rectangle pageSize, float marginLeft, float marginRight,
+    /**
+     * Constructs a new <CODE>Document</CODE> -object.
+     *
+     * @param pageSize
+     *            the pageSize
+     * @param marginLeft
+     *            the margin on the left
+     * @param marginRight
+     *            the margin on the right
+     * @param marginTop
+     *            the margin on the top
+     * @param marginBottom
+     *            the margin on the bottom
+     */
+    public Document(Rectangle pageSize, float marginLeft, float marginRight,
 			float marginTop, float marginBottom) {
         this.pageSize = pageSize;
         this.marginLeft = marginLeft;
@@ -230,24 +228,22 @@ public class Document implements DocListener {
     
     // listener methods
     
-	/**
- * Adds a <CODE>DocListener</CODE> to the <CODE>Document</CODE>.
- *
-	 * @param listener
-	 *            the new DocListener.
- */
-    
+    /**
+     * Adds a <CODE>DocListener</CODE> to the <CODE>Document</CODE>.
+     *
+     * @param listener
+     *            the new DocListener.
+     */
     public void addDocListener(DocListener listener) {
         listeners.add(listener);
     }
     
-	/**
- * Removes a <CODE>DocListener</CODE> from the <CODE>Document</CODE>.
- *
-	 * @param listener
-	 *            the DocListener that has to be removed.
- */
-    
+    /**
+     * Removes a <CODE>DocListener</CODE> from the <CODE>Document</CODE>.
+     *
+     * @param listener
+     *            the DocListener that has to be removed.
+     */
     public void removeDocListener(DocListener listener) {
         listeners.remove(listener);
     }
