@@ -60,6 +60,7 @@ import java.util.LinkedHashMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -1327,14 +1328,14 @@ public class PdfWriter extends DocWriter implements
          return directContent.getRootOutline();
      }
 
-     protected java.util.List newBookmarks;
+     protected List newBookmarks;
 
     /**
      * Sets the bookmarks. The list structure is defined in
      * {@link SimpleBookmark}.
      * @param outlines the bookmarks or <CODE>null</CODE> to remove any
      */
-    public void setOutlines(java.util.List outlines) {
+    public void setOutlines(List outlines) {
         newBookmarks = outlines;
     }
 
