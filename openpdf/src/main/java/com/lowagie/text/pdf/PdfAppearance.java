@@ -58,7 +58,7 @@ import com.lowagie.text.Rectangle;
 
 public class PdfAppearance extends PdfTemplate {
 
-    static final Map<String, PdfName> stdFieldFontNames = new HashMap<>();
+    public static final Map<String, PdfName> stdFieldFontNames = new HashMap<>();
     static {
         stdFieldFontNames.put("Courier-BoldOblique", new PdfName("CoBO"));
         stdFieldFontNames.put("Courier-Bold", new PdfName("CoBo"));
