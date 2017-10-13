@@ -1135,146 +1135,6 @@ public class PdfContentByte {
     }
 
     /**
-     * Generates an array of bezier curves to draw an arc.
-     * <P>
-     * (x1, y1) and (x2, y2) are the corners of the enclosing rectangle.
-     * Angles, measured in degrees, start with 0 to the right (the positive X
-     * axis) and increase counter-clockwise.  The arc extends from startAng
-     * to startAng+extent.  I.e. startAng=0 and extent=180 yields an openside-down
-     * semi-circle.
-     * <P>
-     * The resulting coordinates are of the form float[]{x1,y1,x2,y2,x3,y3, x4,y4}
-     * such that the curve goes from (x1, y1) to (x4, y4) with (x2, y2) and
-     * (x3, y3) as their respective Bezier control points.
-     * <P>
-     * Note: this code was taken from ReportLab (www.reportlab.org), an excellent
-     * PDF generator for Python (BSD license: http://www.reportlab.org/devfaq.html#1.3 ).
-     *
-     * @param x1 a corner of the enclosing rectangle
-     * @param y1 a corner of the enclosing rectangle
-     * @param x2 a corner of the enclosing rectangle
-     * @param y2 a corner of the enclosing rectangle
-     * @param startAng starting angle in degrees
-     * @param extent angle extent in degrees
-     * @return a list of float[] with the bezier curves
-     */
-    public static List<float[]> bezierArc(float x1, float y1, float x2, float y2, float startAng, float extent) {
-        float tmp;
-        if (x1 > x2) {
-            tmp = x1;
-            x1 = x2;
-            x2 = tmp;
-        }
-        if (y2 > y1) {
-            tmp = y1;
-            y1 = y2;
-            y2 = tmp;
-        }
-
-        float fragAngle;
-        int Nfrag;
-        if (Math.abs(extent) <= 90f) {
-            fragAngle = extent;
-            Nfrag = 1;
-        }
-        else {
-            Nfrag = (int)(Math.ceil(Math.abs(extent)/90f));
-            fragAngle = extent / Nfrag;
-        }
-        float x_cen = (x1+x2)/2f;
-        float y_cen = (y1+y2)/2f;
-        float rx = (x2-x1)/2f;
-        float ry = (y2-y1)/2f;
-        float halfAng = (float)(fragAngle * Math.PI / 360.);
-        float kappa = (float)(Math.abs(4. / 3. * (1. - Math.cos(halfAng)) / Math.sin(halfAng)));
-        List<float[]> pointList = new ArrayList<>();
-        for (int i = 0; i < Nfrag; ++i) {
-            float theta0 = (float)((startAng + i*fragAngle) * Math.PI / 180.);
-            float theta1 = (float)((startAng + (i+1)*fragAngle) * Math.PI / 180.);
-            float cos0 = (float)Math.cos(theta0);
-            float cos1 = (float)Math.cos(theta1);
-            float sin0 = (float)Math.sin(theta0);
-            float sin1 = (float)Math.sin(theta1);
-            if (fragAngle > 0f) {
-                pointList.add(new float[]{x_cen + rx * cos0,
-                y_cen - ry * sin0,
-                x_cen + rx * (cos0 - kappa * sin0),
-                y_cen - ry * (sin0 + kappa * cos0),
-                x_cen + rx * (cos1 + kappa * sin1),
-                y_cen - ry * (sin1 - kappa * cos1),
-                x_cen + rx * cos1,
-                y_cen - ry * sin1});
-            }
-            else {
-                pointList.add(new float[]{x_cen + rx * cos0,
-                y_cen - ry * sin0,
-                x_cen + rx * (cos0 + kappa * sin0),
-                y_cen - ry * (sin0 - kappa * cos0),
-                x_cen + rx * (cos1 - kappa * sin1),
-                y_cen - ry * (sin1 + kappa * cos1),
-                x_cen + rx * cos1,
-                y_cen - ry * sin1});
-            }
-        }
-        return pointList;
-    }
-
-    /**
-     * Makes this <CODE>PdfContentByte</CODE> empty.
-     * Calls <code>reset( true )</code>
-     */
-    public void reset() {
-        reset( true );
-    }
-
-    /**
-     * Makes this <CODE>PdfContentByte</CODE> empty.
-     * @param validateContent will call <code>sanityCheck()</code> if true.
-     * @since 2.1.6
-     */
-    public void reset( boolean validateContent ) {
-        content.reset();
-        if (validateContent) {
-        	sanityCheck();
-        }
-        state = new GraphicState();
-    }
-
-    
-    /**
-     * Starts the writing of text.
-     */
-    public void beginText() {
-    	if (inText) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
-    	}
-    	inText = true;
-        state.xTLM = 0;
-        state.yTLM = 0;
-        content.append("BT").append_i(separator);
-    }
-
-    /**
-     * Ends the writing of text and makes the current font invalid.
-     */
-    public void endText() {
-    	if (!inText) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
-    	}
-    	inText = false;
-        content.append("ET").append_i(separator);
-    }
-
-    /**
-     * Saves the graphic state. <CODE>saveState</CODE> and
-     * <CODE>restoreState</CODE> must be balanced.
-     */
-    public void saveState() {
-        content.append("q").append_i(separator);
-        stateList.add(new GraphicState(state));
-    }
-
-    /**
      * Adds an <CODE>Image</CODE> to the page. The positioning of the <CODE>Image</CODE>
      * is done with the transformation matrix. To position an <CODE>image</CODE> at (x,y)
      * use addImage(image, image_width, 0, 0, image_height, x, y). The image can be placed inline.
@@ -1402,6 +1262,74 @@ public class PdfContentByte {
         catch (Exception ee) {
             throw new DocumentException(ee);
         }
+    }
+
+    /**
+     * Makes this <CODE>PdfContentByte</CODE> empty.
+     * Calls <code>reset( true )</code>
+     */
+    public void reset() {
+        reset( true );
+    }
+
+    /**
+     * Makes this <CODE>PdfContentByte</CODE> empty.
+     * @param validateContent will call <code>sanityCheck()</code> if true.
+     * @since 2.1.6
+     */
+    public void reset( boolean validateContent ) {
+        content.reset();
+        if (validateContent) {
+            sanityCheck();
+        }
+        state = new GraphicState();
+    }
+
+
+    /**
+     * Starts the writing of text.
+     */
+    public void beginText() {
+        if (inText) {
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
+        }
+        inText = true;
+        state.xTLM = 0;
+        state.yTLM = 0;
+        content.append("BT").append_i(separator);
+    }
+
+    /**
+     * Ends the writing of text and makes the current font invalid.
+     */
+    public void endText() {
+        if (!inText) {
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
+        }
+        inText = false;
+        content.append("ET").append_i(separator);
+    }
+
+    /**
+     * Saves the graphic state. <CODE>saveState</CODE> and
+     * <CODE>restoreState</CODE> must be balanced.
+     */
+    public void saveState() {
+        content.append("q").append_i(separator);
+        stateList.add(new GraphicState(state));
+    }
+
+    /**
+     * Restores the graphic state. <CODE>saveState</CODE> and
+     * <CODE>restoreState</CODE> must be balanced.
+     */
+    public void restoreState() {
+        content.append("Q").append_i(separator);
+        int idx = stateList.size() - 1;
+        if (idx < 0)
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
+        state = stateList.get(idx);
+        stateList.remove(idx);
     }
 
     /**
@@ -1850,16 +1778,88 @@ public class PdfContentByte {
     }
 
     /**
-     * Restores the graphic state. <CODE>saveState</CODE> and
-     * <CODE>restoreState</CODE> must be balanced.
+     * Generates an array of bezier curves to draw an arc.
+     * <P>
+     * (x1, y1) and (x2, y2) are the corners of the enclosing rectangle.
+     * Angles, measured in degrees, start with 0 to the right (the positive X
+     * axis) and increase counter-clockwise.  The arc extends from startAng
+     * to startAng+extent.  I.e. startAng=0 and extent=180 yields an openside-down
+     * semi-circle.
+     * <P>
+     * The resulting coordinates are of the form float[]{x1,y1,x2,y2,x3,y3, x4,y4}
+     * such that the curve goes from (x1, y1) to (x4, y4) with (x2, y2) and
+     * (x3, y3) as their respective Bezier control points.
+     * <P>
+     * Note: this code was taken from ReportLab (www.reportlab.org), an excellent
+     * PDF generator for Python (BSD license: http://www.reportlab.org/devfaq.html#1.3 ).
+     *
+     * @param x1 a corner of the enclosing rectangle
+     * @param y1 a corner of the enclosing rectangle
+     * @param x2 a corner of the enclosing rectangle
+     * @param y2 a corner of the enclosing rectangle
+     * @param startAng starting angle in degrees
+     * @param extent angle extent in degrees
+     * @return a list of float[] with the bezier curves
      */
-    public void restoreState() {
-        content.append("Q").append_i(separator);
-        int idx = stateList.size() - 1;
-        if (idx < 0)
-            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
-        state = stateList.get(idx);
-        stateList.remove(idx);
+    public static List<float[]> bezierArc(float x1, float y1, float x2, float y2, float startAng, float extent) {
+        float tmp;
+        if (x1 > x2) {
+            tmp = x1;
+            x1 = x2;
+            x2 = tmp;
+        }
+        if (y2 > y1) {
+            tmp = y1;
+            y1 = y2;
+            y2 = tmp;
+        }
+
+        float fragAngle;
+        int Nfrag;
+        if (Math.abs(extent) <= 90f) {
+            fragAngle = extent;
+            Nfrag = 1;
+        }
+        else {
+            Nfrag = (int)(Math.ceil(Math.abs(extent)/90f));
+            fragAngle = extent / Nfrag;
+        }
+        float x_cen = (x1+x2)/2f;
+        float y_cen = (y1+y2)/2f;
+        float rx = (x2-x1)/2f;
+        float ry = (y2-y1)/2f;
+        float halfAng = (float)(fragAngle * Math.PI / 360.);
+        float kappa = (float)(Math.abs(4. / 3. * (1. - Math.cos(halfAng)) / Math.sin(halfAng)));
+        List<float[]> pointList = new ArrayList<>();
+        for (int i = 0; i < Nfrag; ++i) {
+            float theta0 = (float)((startAng + i*fragAngle) * Math.PI / 180.);
+            float theta1 = (float)((startAng + (i+1)*fragAngle) * Math.PI / 180.);
+            float cos0 = (float)Math.cos(theta0);
+            float cos1 = (float)Math.cos(theta1);
+            float sin0 = (float)Math.sin(theta0);
+            float sin1 = (float)Math.sin(theta1);
+            if (fragAngle > 0f) {
+                pointList.add(new float[]{x_cen + rx * cos0,
+                        y_cen - ry * sin0,
+                        x_cen + rx * (cos0 - kappa * sin0),
+                        y_cen - ry * (sin0 + kappa * cos0),
+                        x_cen + rx * (cos1 + kappa * sin1),
+                        y_cen - ry * (sin1 - kappa * cos1),
+                        x_cen + rx * cos1,
+                        y_cen - ry * sin1});
+            }
+            else {
+                pointList.add(new float[]{x_cen + rx * cos0,
+                        y_cen - ry * sin0,
+                        x_cen + rx * (cos0 + kappa * sin0),
+                        y_cen - ry * (sin0 - kappa * cos0),
+                        x_cen + rx * (cos1 - kappa * sin1),
+                        y_cen - ry * (sin1 + kappa * cos1),
+                        x_cen + rx * cos1,
+                        y_cen - ry * sin1});
+            }
+        }
+        return pointList;
     }
 
     /**

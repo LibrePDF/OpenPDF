@@ -185,14 +185,14 @@ public class Document implements DocListener {
     protected int chapternumber = 0;
     
     // constructor
-    
+
     /**
      * Constructs a new <CODE>Document</CODE> -object.
      */
     public Document() {
         this(PageSize.A4);
     }
-    
+
     /**
      * Constructs a new <CODE>Document</CODE> -object.
      *
@@ -202,7 +202,7 @@ public class Document implements DocListener {
     public Document(Rectangle pageSize) {
         this(pageSize, 36, 36, 36, 36);
     }
-    
+
     /**
      * Constructs a new <CODE>Document</CODE> -object.
      *
@@ -227,7 +227,7 @@ public class Document implements DocListener {
     }
     
     // listener methods
-    
+
     /**
      * Adds a <CODE>DocListener</CODE> to the <CODE>Document</CODE>.
      *
@@ -237,7 +237,7 @@ public class Document implements DocListener {
     public void addDocListener(DocListener listener) {
         listeners.add(listener);
     }
-    
+
     /**
      * Removes a <CODE>DocListener</CODE> from the <CODE>Document</CODE>.
      *
@@ -251,45 +251,15 @@ public class Document implements DocListener {
     // methods implementing the DocListener interface
 
     /**
-     * Gets the product name.
-     *
-     * @return the product name
-     * @since 2.1.6
-     */
-    public static String getProduct() {
-        return OPENPDF;
-    }
-
-    /**
-     * Gets the release number.
-     *
-     * @return the product name
-     * @since 2.1.6
-     */
-    public static String getRelease() {
-        return RELEASE;
-    }
-
-    /**
-     * Gets the iText version.
-     *
-     * @return iText version
-     */
-    public static String getVersion() {
-        return OPENPDF_VERSION;
-    }
-
-    /**
      * Adds an <CODE>Element</CODE> to the <CODE>Document</CODE>.
- *
-	 * @param element
-	 *            the <CODE>Element</CODE> to add
-	 * @return <CODE>true</CODE> if the element was added, <CODE>false
-	 *         </CODE> if not
-	 * @throws DocumentException
-	 *             when a document isn't open yet, or has been closed
- */
-
+     *
+     * @param element
+     *            the <CODE>Element</CODE> to add
+     * @return <CODE>true</CODE> if the element was added, <CODE>false
+     *         </CODE> if not
+     * @throws DocumentException
+     *             when a document isn't open yet, or has been closed
+     */
     public boolean add(Element element) throws DocumentException {
         if (close) {
 			throw new DocumentException(MessageLocalization.getComposedMessage("the.document.has.been.closed.you.can.t.add.any.elements"));
@@ -311,15 +281,14 @@ public class Document implements DocListener {
 		}
         return success;
     }
-    
-	/**
- * Opens the document.
- * <P>
-	 * Once the document is opened, you can't write any Header- or
-	 * Meta-information anymore. You have to open the document before you can
-	 * begin to add content to the body of the document.
- */
 
+    /**
+     * Opens the document.
+     * <P>
+     * Once the document is opened, you can't write any Header- or
+     * Meta-information anymore. You have to open the document before you can
+     * begin to add content to the body of the document.
+     */
     public void open() {
 		if (!close) {
             open = true;
@@ -339,7 +308,6 @@ public class Document implements DocListener {
 	 *            the new pagesize
  * @return	a <CODE>boolean</CODE>
  */
-
     public boolean setPageSize(Rectangle pageSize) {
         this.pageSize = pageSize;
         for (DocListener listener : listeners) {
@@ -361,7 +329,6 @@ public class Document implements DocListener {
 	 *            the margin on the bottom
  * @return	a <CODE>boolean</CODE>
  */
-
 	public boolean setMargins(float marginLeft, float marginRight,
 			float marginTop, float marginBottom) {
         this.marginLeft = marginLeft;
@@ -381,7 +348,6 @@ public class Document implements DocListener {
 	 * @return <CODE>true</CODE> if the page was added, <CODE>false</CODE>
 	 *         if not.
  */
-
     public boolean newPage() {
         if (!open || close) {
             return false;
@@ -398,7 +364,6 @@ public class Document implements DocListener {
 	 * @param header
 	 *            the new header
  */
-
     public void setHeader(HeaderFooter header) {
         this.header = header;
         for (DocListener listener : listeners) {
@@ -409,7 +374,6 @@ public class Document implements DocListener {
 	/**
  * Resets the header of this document.
  */
-
     public void resetHeader() {
         this.header = null;
         for (DocListener listener : listeners) {
@@ -423,7 +387,6 @@ public class Document implements DocListener {
 	 * @param footer
 	 *            the new footer
  */
-
     public void setFooter(HeaderFooter footer) {
         this.footer = footer;
         for (DocListener listener : listeners) {
@@ -432,26 +395,62 @@ public class Document implements DocListener {
     }
 
     /**
- * Returns the current page number.
- *
- * @return the current page number
- */
-    
-    public int getPageNumber() {
-        return this.pageN;
-    }
-
-    /**
      * Resets the footer of this document.
      */
-
     public void resetFooter() {
         this.footer = null;
         for (DocListener listener : listeners) {
             listener.resetFooter();
         }
     }
-    
+
+    /**
+     * Sets the page number to 0.
+     */
+    public void resetPageCount() {
+        pageN = 0;
+        for (DocListener listener : listeners) {
+            listener.resetPageCount();
+        }
+    }
+
+    /**
+     * Sets the page number.
+     *
+     * @param pageN the new page number
+     */
+    public void setPageCount(int pageN) {
+        this.pageN = pageN;
+        for (DocListener listener : listeners) {
+            listener.setPageCount(pageN);
+        }
+    }
+
+    /**
+     * Returns the current page number.
+     *
+     * @return the current page number
+     */
+    public int getPageNumber() {
+        return this.pageN;
+    }
+
+    /**
+     * Closes the document.
+     * <p>
+     * Once all the content has been written in the body, you have to close the
+     * body. After that nothing can be written to the body anymore.
+     */
+    public void close() {
+        if (!close) {
+            open = false;
+            close = true;
+        }
+        for (DocListener listener : listeners) {
+            listener.close();
+        }
+    }
+
     // methods concerning the header or some meta information
     
 	/**
@@ -733,44 +732,32 @@ public class Document implements DocListener {
     }
 
     /**
-     * Sets the page number to 0.
-     */
-
-    public void resetPageCount() {
-        pageN = 0;
-        for (DocListener listener : listeners) {
-            listener.resetPageCount();
-        }
-    }
-
-    /**
-     * Sets the page number.
+     * Gets the product name.
      *
-     * @param pageN the new page number
+     * @return the product name
+     * @since 2.1.6
      */
-
-    public void setPageCount(int pageN) {
-        this.pageN = pageN;
-        for (DocListener listener : listeners) {
-            listener.setPageCount(pageN);
-        }
+    public static String getProduct() {
+        return OPENPDF;
     }
 
     /**
-     * Closes the document.
-     * <p>
-     * Once all the content has been written in the body, you have to close the
-     * body. After that nothing can be written to the body anymore.
+     * Gets the release number.
+     *
+     * @return the product name
+     * @since 2.1.6
      */
+    public static String getRelease() {
+        return RELEASE;
+    }
 
-    public void close() {
-        if (!close) {
-            open = false;
-            close = true;
-        }
-        for (DocListener listener : listeners) {
-            listener.close();
-        }
+    /**
+     * Gets the iText version.
+     *
+     * @return iText version
+     */
+    public static String getVersion() {
+        return OPENPDF_VERSION;
     }
 
 	/**
