@@ -3,26 +3,25 @@ package com.lowagie.text.pdf;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
-import com.lowagie.text.Rectangle;
 
-public class PdfTestBase {
+class PdfTestBase {
 
-	public static Document createPdf(String filename)
-			throws FileNotFoundException, DocumentException {
-		// create a new document
-		Rectangle rec = new Rectangle(PageSize.A4.getWidth(),
-				PageSize.A4.getHeight());
-		Document document = new Document(rec);
-
+	static Document createPdf(String filename) throws FileNotFoundException, DocumentException {
 		// create a new file
-		FileOutputStream fileOs = new FileOutputStream(new File(filename));
+		return createPdf(new FileOutputStream(new File(filename)));
+	}
+
+	static Document createPdf(OutputStream outputStream) throws DocumentException {
+		// create a new document
+		Document document = new Document(PageSize.A4);
 
 		// generate file
-		PdfWriter.getInstance(document, fileOs);
+		PdfWriter.getInstance(document, outputStream);
 		return document;
 	}
 
