@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <CODE>PdfTextArray</CODE> defines an array with displacements and <CODE>PdfString</CODE>-objects.
@@ -62,7 +63,7 @@ import java.util.ArrayList;
  */
 
 public class PdfTextArray{
-    ArrayList arrayList = new ArrayList();
+    private List<Object> arrayList = new ArrayList<>();
     
     // To emit a more efficient array, we consolidate
     // repeated numbers or strings into single array entries.
@@ -92,14 +93,14 @@ public class PdfTextArray{
     public void add(float number) {
         if (number != 0) {
             if (lastNum != null) {
-                lastNum = new Float(number + lastNum.floatValue());
-                if (lastNum.floatValue() != 0) {
+                lastNum = number + lastNum;
+                if (lastNum != 0) {
                     replaceLast(lastNum);
                 } else {
                     arrayList.remove(arrayList.size() - 1);
                 }
             } else {
-                lastNum = new Float(number);
+                lastNum = number;
                 arrayList.add(lastNum);
             }
             
@@ -121,8 +122,8 @@ public class PdfTextArray{
         }
         // adding an empty string doesn't modify the TextArray at all
     }
-    
-    ArrayList getArrayList() {
+
+    List getArrayList() {
         return arrayList;
     }
     

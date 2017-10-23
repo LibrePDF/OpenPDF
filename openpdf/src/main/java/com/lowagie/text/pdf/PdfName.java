@@ -51,7 +51,9 @@ package com.lowagie.text.pdf;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
@@ -1726,7 +1728,7 @@ public class PdfName extends PdfObject implements Comparable{
      * map strings to all known static names
      * @since 2.1.6
      */
-    public static Map staticNames;
+    public static Map<String, PdfName> staticNames;
 
     /**
      * Use reflection to cache all the static public final names so
@@ -1738,7 +1740,7 @@ public class PdfName extends PdfObject implements Comparable{
 
     static {
         Field fields[] = PdfName.class.getDeclaredFields();
-        staticNames = new HashMap( fields.length );
+        staticNames = new HashMap<>(fields.length);
         final int flags = Modifier.STATIC | Modifier.PUBLIC | Modifier.FINAL;
         try {
             for (int fldIdx = 0; fldIdx < fields.length; ++fldIdx) {

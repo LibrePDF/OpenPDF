@@ -48,13 +48,15 @@
  */
 
 package com.lowagie.text.pdf;
+
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import com.lowagie.text.error_messages.MessageLocalization;
+import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.Annotation;
 import com.lowagie.text.DocumentException;
@@ -63,6 +65,7 @@ import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Image;
 import com.lowagie.text.ImgJBIG2;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.exceptions.IllegalPdfSyntaxException;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfXConformanceImp;
@@ -178,11 +181,9 @@ public class PdfContentByte {
     /** This is the GraphicState in use */
     protected GraphicState state = new GraphicState();
 
+    private static Map<PdfName, String> abrev = new HashMap<>();
     /** The list were we save/restore the state */
-    protected ArrayList stateList = new ArrayList();
-
-    /** The list were we save/restore the layer depth */
-    protected ArrayList layerDepth;
+    protected List<GraphicState> stateList = new ArrayList<>();
 
     /** The separator between commands.
      */
@@ -190,8 +191,8 @@ public class PdfContentByte {
     
     private int mcDepth = 0;
     private boolean inText = false;
-
-    private static HashMap abrev = new HashMap();
+    /** The list were we save/restore the layer depth */
+    protected List<Integer> layerDepth;
 
     static {
         abrev.put(PdfName.BITSPERCOMPONENT, "/BPC ");
@@ -1180,15 +1181,15 @@ public class PdfContentByte {
                     for (Iterator it = pimage.getKeys().iterator(); it.hasNext();) {
                         PdfName key = (PdfName)it.next();
                         PdfObject value = pimage.get(key);
-                        String s = (String)abrev.get(key);
+                        String s = abrev.get(key);
                         if (s == null)
                             continue;
                         content.append(s);
                         boolean check = true;
                         if (key.equals(PdfName.COLORSPACE) && value.isArray()) {
                             PdfArray ar = (PdfArray)value;
-                            if (ar.size() == 4 
-                                && PdfName.INDEXED.equals(ar.getAsName(0)) 
+                            if (ar.size() == 4
+                                && PdfName.INDEXED.equals(ar.getAsName(0))
                                 && ar.getPdfObject(1).isName()
                                 && ar.getPdfObject(2).isNumber()
                                 && ar.getPdfObject(3).isString()
@@ -1279,20 +1280,20 @@ public class PdfContentByte {
     public void reset( boolean validateContent ) {
         content.reset();
         if (validateContent) {
-        	sanityCheck();
+            sanityCheck();
         }
         state = new GraphicState();
     }
 
-    
+
     /**
      * Starts the writing of text.
      */
     public void beginText() {
-    	if (inText) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
-    	}
-    	inText = true;
+        if (inText) {
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
+        }
+        inText = true;
         state.xTLM = 0;
         state.yTLM = 0;
         content.append("BT").append_i(separator);
@@ -1302,10 +1303,10 @@ public class PdfContentByte {
      * Ends the writing of text and makes the current font invalid.
      */
     public void endText() {
-    	if (!inText) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
-    	}
-    	inText = false;
+        if (!inText) {
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
+        }
+        inText = false;
         content.append("ET").append_i(separator);
     }
 
@@ -1327,7 +1328,7 @@ public class PdfContentByte {
         int idx = stateList.size() - 1;
         if (idx < 0)
             throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
-        state = (GraphicState)stateList.get(idx);
+        state = stateList.get(idx);
         stateList.remove(idx);
     }
 
@@ -1800,7 +1801,7 @@ public class PdfContentByte {
      * @param extent angle extent in degrees
      * @return a list of float[] with the bezier curves
      */
-    public static ArrayList bezierArc(float x1, float y1, float x2, float y2, float startAng, float extent) {
+    public static List<float[]> bezierArc(float x1, float y1, float x2, float y2, float startAng, float extent) {
         float tmp;
         if (x1 > x2) {
             tmp = x1;
@@ -1829,7 +1830,7 @@ public class PdfContentByte {
         float ry = (y2-y1)/2f;
         float halfAng = (float)(fragAngle * Math.PI / 360.);
         float kappa = (float)(Math.abs(4. / 3. * (1. - Math.cos(halfAng)) / Math.sin(halfAng)));
-        ArrayList pointList = new ArrayList();
+        List<float[]> pointList = new ArrayList<>();
         for (int i = 0; i < Nfrag; ++i) {
             float theta0 = (float)((startAng + i*fragAngle) * Math.PI / 180.);
             float theta1 = (float)((startAng + (i+1)*fragAngle) * Math.PI / 180.);
@@ -1839,23 +1840,23 @@ public class PdfContentByte {
             float sin1 = (float)Math.sin(theta1);
             if (fragAngle > 0f) {
                 pointList.add(new float[]{x_cen + rx * cos0,
-                y_cen - ry * sin0,
-                x_cen + rx * (cos0 - kappa * sin0),
-                y_cen - ry * (sin0 + kappa * cos0),
-                x_cen + rx * (cos1 + kappa * sin1),
-                y_cen - ry * (sin1 - kappa * cos1),
-                x_cen + rx * cos1,
-                y_cen - ry * sin1});
+                        y_cen - ry * sin0,
+                        x_cen + rx * (cos0 - kappa * sin0),
+                        y_cen - ry * (sin0 + kappa * cos0),
+                        x_cen + rx * (cos1 + kappa * sin1),
+                        y_cen - ry * (sin1 - kappa * cos1),
+                        x_cen + rx * cos1,
+                        y_cen - ry * sin1});
             }
             else {
                 pointList.add(new float[]{x_cen + rx * cos0,
-                y_cen - ry * sin0,
-                x_cen + rx * (cos0 + kappa * sin0),
-                y_cen - ry * (sin0 - kappa * cos0),
-                x_cen + rx * (cos1 - kappa * sin1),
-                y_cen - ry * (sin1 + kappa * cos1),
-                x_cen + rx * cos1,
-                y_cen - ry * sin1});
+                        y_cen - ry * sin0,
+                        x_cen + rx * (cos0 + kappa * sin0),
+                        y_cen - ry * (sin0 - kappa * cos0),
+                        x_cen + rx * (cos1 - kappa * sin1),
+                        y_cen - ry * (sin1 + kappa * cos1),
+                        x_cen + rx * cos1,
+                        y_cen - ry * sin1});
             }
         }
         return pointList;
@@ -1874,13 +1875,13 @@ public class PdfContentByte {
      * @param extent angle extent in degrees
      */
     public void arc(float x1, float y1, float x2, float y2, float startAng, float extent) {
-        ArrayList ar = bezierArc(x1, y1, x2, y2, startAng, extent);
+        List<float[]> ar = bezierArc(x1, y1, x2, y2, startAng, extent);
         if (ar.isEmpty())
             return;
-        float pt[] = (float [])ar.get(0);
+        float pt[] = ar.get(0);
         moveTo(pt[0], pt[1]);
-        for (int k = 0; k < ar.size(); ++k) {
-            pt = (float [])ar.get(k);
+        for (float[] anAr : ar) {
+            pt = anAr;
             curveTo(pt[2], pt[3], pt[4], pt[5], pt[6], pt[7]);
         }
     }
@@ -2471,20 +2472,18 @@ public class PdfContentByte {
         if (state.fontDetails == null)
             throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         content.append("[");
-        ArrayList arrayList = text.getArrayList();
+        List arrayList = text.getArrayList();
         boolean lastWasNumber = false;
-        for (int k = 0; k < arrayList.size(); ++k) {
-            Object obj = arrayList.get(k);
+        for (Object obj : arrayList) {
             if (obj instanceof String) {
-                showText2((String)obj);
+                showText2((String) obj);
                 lastWasNumber = false;
-            }
-            else {
+            } else {
                 if (lastWasNumber)
                     content.append(' ');
                 else
                     lastWasNumber = true;
-                content.append(((Float)obj).floatValue());
+                content.append((Float) obj);
             }
         }
         content.append("]TJ").append_i(separator);
@@ -2943,9 +2942,9 @@ public class PdfContentByte {
         if ((layer instanceof PdfLayer) && ((PdfLayer)layer).getTitle() != null)
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("a.title.is.not.a.layer"));
         if (layerDepth == null)
-            layerDepth = new ArrayList();
+            layerDepth = new ArrayList<>();
         if (layer instanceof PdfLayerMembership) {
-            layerDepth.add(new Integer(1));
+            layerDepth.add(1);
             beginLayer2(layer);
             return;
         }
@@ -2958,7 +2957,7 @@ public class PdfContentByte {
             }
             la = la.getParent();
         }
-        layerDepth.add(new Integer(n));
+        layerDepth.add(n);
     }
 
     private void beginLayer2(PdfOCG layer) {
@@ -2974,7 +2973,7 @@ public class PdfContentByte {
     public void endLayer() {
         int n = 1;
         if (layerDepth != null && !layerDepth.isEmpty()) {
-            n = ((Integer)layerDepth.get(layerDepth.size() - 1)).intValue();
+            n = layerDepth.get(layerDepth.size() - 1);
             layerDepth.remove(layerDepth.size() - 1);
         } else {
         	throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.layer.operators"));

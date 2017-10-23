@@ -51,6 +51,7 @@ package com.lowagie.text.pdf;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,7 +59,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
@@ -82,11 +82,11 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.Section;
 import com.lowagie.text.SimpleTable;
 import com.lowagie.text.Table;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.draw.DrawInterface;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-import java.text.DecimalFormat;
 
 /**
  * <CODE>PdfDocument</CODE> is the class that is used by <CODE>PdfWriter</CODE>
@@ -1920,7 +1920,7 @@ public class PdfDocument extends Document {
      * Recursive method to update the count in the outlines.
      */
     void traverseOutlineCount(PdfOutline outline) {
-        ArrayList kids = outline.getKids();
+        java.util.List<PdfOutline> kids = outline.getKids();
         PdfOutline parent = outline.parent();
         if (kids.isEmpty()) {
             if (parent != null) {
@@ -1929,7 +1929,7 @@ public class PdfDocument extends Document {
         }
         else {
             for (int k = 0; k < kids.size(); ++k) {
-                traverseOutlineCount((PdfOutline)kids.get(k));
+                traverseOutlineCount(kids.get(k));
             }
             if (parent != null) {
                 if (outline.isOpen()) {
@@ -1960,22 +1960,22 @@ public class PdfDocument extends Document {
         outline.setIndirectReference(writer.getPdfIndirectReference());
         if (outline.parent() != null)
             outline.put(PdfName.PARENT, outline.parent().indirectReference());
-        ArrayList kids = outline.getKids();
+        java.util.List<PdfOutline> kids = outline.getKids();
         int size = kids.size();
         for (int k = 0; k < size; ++k)
-            outlineTree((PdfOutline)kids.get(k));
+            outlineTree(kids.get(k));
         for (int k = 0; k < size; ++k) {
             if (k > 0)
-                ((PdfOutline)kids.get(k)).put(PdfName.PREV, ((PdfOutline)kids.get(k - 1)).indirectReference());
+                kids.get(k).put(PdfName.PREV, kids.get(k - 1).indirectReference());
             if (k < size - 1)
-                ((PdfOutline)kids.get(k)).put(PdfName.NEXT, ((PdfOutline)kids.get(k + 1)).indirectReference());
+                kids.get(k).put(PdfName.NEXT, kids.get(k + 1).indirectReference());
         }
         if (size > 0) {
-            outline.put(PdfName.FIRST, ((PdfOutline)kids.get(0)).indirectReference());
-            outline.put(PdfName.LAST, ((PdfOutline)kids.get(size - 1)).indirectReference());
+            outline.put(PdfName.FIRST, kids.get(0).indirectReference());
+            outline.put(PdfName.LAST, kids.get(size - 1).indirectReference());
         }
         for (int k = 0; k < size; ++k) {
-            PdfOutline kid = (PdfOutline)kids.get(k);
+            PdfOutline kid = kids.get(k);
             writer.addToBody(kid, kid.indirectReference());
         }
     }

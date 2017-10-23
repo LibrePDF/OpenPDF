@@ -110,7 +110,7 @@ public class PdfReader implements PdfViewerPreferences {
   protected HashMap objStmMark;
   protected IntHashtable objStmToOffset;
   protected boolean newXrefType;
-  private ArrayList xrefObj;
+  private List<PdfObject> xrefObj;
   PdfDictionary rootPages;
   protected PdfDictionary trailer;
   protected PdfDictionary catalog;
@@ -340,10 +340,10 @@ public class PdfReader implements PdfViewerPreferences {
       this.decrypt = new PdfEncryption(reader.decrypt);
     this.pValue = reader.pValue;
     this.rValue = reader.rValue;
-    this.xrefObj = new ArrayList(reader.xrefObj);
+    this.xrefObj = new ArrayList<>(reader.xrefObj);
     for (int k = 0; k < reader.xrefObj.size(); ++k) {
       this.xrefObj.set(k,
-          duplicatePdfObject((PdfObject) reader.xrefObj.get(k), this));
+              duplicatePdfObject(reader.xrefObj.get(k), this));
     }
     this.pageRefs = new PageRefs(reader.pageRefs, this);
     this.trailer = (PdfDictionary) duplicatePdfObject(reader.trailer, this);
@@ -540,26 +540,26 @@ public class PdfReader implements PdfViewerPreferences {
    * 
    * @return content of the document information dictionary
    */
-  public HashMap getInfo() {
-    HashMap map = new HashMap();
+  public Map<String, String> getInfo() {
+    Map<String, String> map = new HashMap<>();
     PdfDictionary info = trailer.getAsDict(PdfName.INFO);
     if (info == null)
       return map;
-    for (Iterator it = info.getKeys().iterator(); it.hasNext();) {
-      PdfName key = (PdfName) it.next();
+    for (Object o : info.getKeys()) {
+      PdfName key = (PdfName) o;
       PdfObject obj = getPdfObject(info.get(key));
       if (obj == null)
         continue;
       String value = obj.toString();
       switch (obj.type()) {
-      case PdfObject.STRING: {
-        value = ((PdfString) obj).toUnicodeString();
-        break;
-      }
-      case PdfObject.NAME: {
-        value = PdfName.decodeName(value);
-        break;
-      }
+        case PdfObject.STRING: {
+          value = ((PdfString) obj).toUnicodeString();
+          break;
+        }
+        case PdfObject.NAME: {
+          value = PdfName.decodeName(value);
+          break;
+        }
       }
       map.put(PdfName.decodeName(key.toString()), value);
     }
@@ -1115,8 +1115,8 @@ public class PdfReader implements PdfViewerPreferences {
   }
 
   protected void readDocObjPartial() throws IOException {
-    xrefObj = new ArrayList(xref.length / 2);
-    xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
+    xrefObj = new ArrayList<>(xref.length / 2);
+    xrefObj.addAll(Collections.<PdfObject>nCopies(xref.length / 2, null));
     readDecryptedDocObj();
     if (objStmToOffset != null) {
       int keys[] = objStmToOffset.getKeys();
@@ -1224,8 +1224,8 @@ public class PdfReader implements PdfViewerPreferences {
 
   protected void readDocObj() throws IOException {
     ArrayList streams = new ArrayList();
-    xrefObj = new ArrayList(xref.length / 2);
-    xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
+    xrefObj = new ArrayList<>(xref.length / 2);
+    xrefObj.addAll(Collections.<PdfObject>nCopies(xref.length / 2, null));
     for (int k = 2; k < xref.length; k += 2) {
       int pos = xref[k];
       if (pos <= 0 || xref[k + 1] > 0)
@@ -2434,8 +2434,8 @@ public class PdfReader implements PdfViewerPreferences {
     sharedStreams = false;
     if (pageRefs.size() == 1)
       return;
-    ArrayList newRefs = new ArrayList();
-    ArrayList newStreams = new ArrayList();
+    List<PdfObject> newRefs = new ArrayList<>();
+    List<PdfObject> newStreams = new ArrayList<>();
     IntHashtable visited = new IntHashtable();
     for (int k = 1; k <= pageRefs.size(); ++k) {
       PdfDictionary page = pageRefs.getPageN(k);

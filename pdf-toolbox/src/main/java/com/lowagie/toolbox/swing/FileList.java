@@ -33,6 +33,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -116,7 +117,7 @@ public class FileList
 
     Transferable transferable = dtde.getTransferable();
     try {
-      java.util.List<File> filelist = (java.util.List<File>) transferable.getTransferData(
+      List<File> filelist = (List<File>) transferable.getTransferData(
           DataFlavor.javaFileListFlavor);
       for (File f: filelist) {
         filevector.add(new RowContainer(f));

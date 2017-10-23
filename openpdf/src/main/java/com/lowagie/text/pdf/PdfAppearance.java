@@ -46,7 +46,9 @@
  */
 
 package com.lowagie.text.pdf;
+
 import java.util.HashMap;
+import java.util.Map;
 
 import com.lowagie.text.Rectangle;
 
@@ -55,8 +57,8 @@ import com.lowagie.text.Rectangle;
  */
 
 public class PdfAppearance extends PdfTemplate {
-    
-    public static final HashMap stdFieldFontNames = new HashMap();
+
+    public static final Map<String, PdfName> stdFieldFontNames = new HashMap<>();
     static {
         stdFieldFontNames.put("Courier-BoldOblique", new PdfName("CoBO"));
         stdFieldFontNames.put("Courier-Bold", new PdfName("CoBo"));
@@ -120,8 +122,8 @@ public class PdfAppearance extends PdfTemplate {
     public static PdfAppearance createAppearance(PdfWriter writer, float width, float height) {
         return createAppearance(writer, width, height, null);
     }
-    
-    static PdfAppearance createAppearance(PdfWriter writer, float width, float height, PdfName forcedName) {
+
+    private static PdfAppearance createAppearance(PdfWriter writer, float width, float height, PdfName forcedName) {
         PdfAppearance template = new PdfAppearance(writer);
         template.setWidth(width);
         template.setHeight(height);
@@ -143,7 +145,7 @@ public class PdfAppearance extends PdfTemplate {
         }
         else
             state.fontDetails = writer.addSimple(bf);
-        PdfName psn = (PdfName)stdFieldFontNames.get(bf.getPostscriptFontName());
+        PdfName psn = stdFieldFontNames.get(bf.getPostscriptFontName());
         if (psn == null) {
             if (bf.isSubset() && bf.getFontType() == BaseFont.FONT_TYPE_TTUNI)
                 psn = state.fontDetails.getFontName();

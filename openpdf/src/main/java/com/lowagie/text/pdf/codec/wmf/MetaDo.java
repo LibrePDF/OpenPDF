@@ -49,6 +49,7 @@
  */
 
 package com.lowagie.text.pdf.codec.wmf;
+
 import java.awt.Color;
 import java.awt.Point;
 import java.io.ByteArrayInputStream;
@@ -57,11 +58,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import com.lowagie.text.error_messages.MessageLocalization;
+import java.util.List;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.codec.BmpImage;
@@ -297,8 +298,7 @@ public class MetaDo {
                     int lens[] = new int[numPoly];
                     for (int k = 0; k < lens.length; ++k)
                         lens[k] = in.readWord();
-                    for (int j = 0; j < lens.length; ++j) {
-                        int len = lens[j];
+                    for (int len : lens) {
                         int sx = in.readShort();
                         int sy = in.readShort();
                         cb.moveTo(state.transformX(sx), state.transformY(sy));
@@ -366,14 +366,14 @@ public class MetaDo {
                     arc2 -= arc1;
                     if (arc2 <= 0)
                         arc2 += 360;
-                    ArrayList ar = PdfContentByte.bezierArc(l, b, r, t, arc1, arc2);
+                    List<float[]> ar = PdfContentByte.bezierArc(l, b, r, t, arc1, arc2);
                     if (ar.isEmpty())
                         break;
-                    float pt[] = (float [])ar.get(0);
+                    float pt[] = ar.get(0);
                     cb.moveTo(cx, cy);
                     cb.lineTo(pt[0], pt[1]);
-                    for (int k = 0; k < ar.size(); ++k) {
-                        pt = (float [])ar.get(k);
+                    for (float[] anAr : ar) {
+                        pt = anAr;
                         cb.curveTo(pt[2], pt[3], pt[4], pt[5], pt[6], pt[7]);
                     }
                     cb.lineTo(cx, cy);
@@ -399,15 +399,15 @@ public class MetaDo {
                     arc2 -= arc1;
                     if (arc2 <= 0)
                         arc2 += 360;
-                    ArrayList ar = PdfContentByte.bezierArc(l, b, r, t, arc1, arc2);
+                    List<float[]> ar = PdfContentByte.bezierArc(l, b, r, t, arc1, arc2);
                     if (ar.isEmpty())
                         break;
-                    float pt[] = (float [])ar.get(0);
+                    float pt[] = ar.get(0);
                     cx = pt[0];
                     cy = pt[1];
                     cb.moveTo(cx, cy);
                     for (int k = 0; k < ar.size(); ++k) {
-                        pt = (float [])ar.get(k);
+                        pt = ar.get(k);
                         cb.curveTo(pt[2], pt[3], pt[4], pt[5], pt[6], pt[7]);
                     }
                     cb.lineTo(cx, cy);
