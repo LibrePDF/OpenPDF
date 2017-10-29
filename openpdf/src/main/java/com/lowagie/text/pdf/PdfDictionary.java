@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -102,7 +103,7 @@ public class PdfDictionary extends PdfObject {
     private PdfName dictionaryType = null;
     
     /** This is the hashmap that contains all the values and keys of the dictionary */
-    protected HashMap hashMap;
+    protected Map<PdfName, PdfObject> hashMap;
     
     // CONSTRUCTORS
     
@@ -111,7 +112,7 @@ public class PdfDictionary extends PdfObject {
      */
     public PdfDictionary() {
         super(DICTIONARY);
-        hashMap = new HashMap();
+        hashMap = new HashMap<PdfName, PdfObject>();
     }
     
     /**
@@ -139,14 +140,10 @@ public class PdfDictionary extends PdfObject {
         os.write('<');
         os.write('<');
         // loop over all the object-pairs in the HashMap
-        PdfName key;
-        PdfObject value;
-        int type = 0;
-        for (Iterator i = hashMap.keySet().iterator(); i.hasNext(); ) {
-            key = (PdfName) i.next();
-            value = (PdfObject) hashMap.get(key);
-            key.toPdf(writer, os);
-            type = value.type();
+        for (PdfName pdfName : hashMap.keySet()) {
+            PdfObject value = hashMap.get(pdfName);
+            pdfName.toPdf(writer, os);
+            int type = value.type();
             if (type != PdfObject.ARRAY && type != PdfObject.DICTIONARY && type != PdfObject.NAME && type != PdfObject.STRING)
                 os.write(' ');
             value.toPdf(writer, os);
@@ -345,8 +342,7 @@ public class PdfDictionary extends PdfObject {
     }
     
     public void mergeDifferent(PdfDictionary other) {
-        for (Iterator i = other.hashMap.keySet().iterator(); i.hasNext();) {
-            Object key = i.next();
+        for (PdfName key : other.hashMap.keySet()) {
             if (!hashMap.containsKey(key))
                 hashMap.put(key, other.hashMap.get(key));
         }

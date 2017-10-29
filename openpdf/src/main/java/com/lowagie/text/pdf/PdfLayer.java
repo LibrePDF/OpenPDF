@@ -58,7 +58,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  */
 public class PdfLayer extends PdfDictionary implements PdfOCG {
     protected PdfIndirectReference ref;
-    protected ArrayList children;
+    protected ArrayList<PdfLayer> children;
     protected PdfLayer parent;
     protected String title;
 
@@ -115,7 +115,7 @@ public class PdfLayer extends PdfDictionary implements PdfOCG {
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.layer.1.already.has.a.parent", ((PdfString)child.get(PdfName.NAME)).toUnicodeString()));
         child.parent = this;
         if (children == null)
-            children = new ArrayList();
+            children = new ArrayList<>();
         children.add(child);
     }
 
@@ -132,7 +132,7 @@ public class PdfLayer extends PdfDictionary implements PdfOCG {
      * Gets the children layers.
      * @return the children layers or <CODE>null</CODE> if the layer has no children
      */    
-    public ArrayList getChildren() {
+    public ArrayList<PdfLayer> getChildren() {
         return children;
     }
     
