@@ -1,5 +1,6 @@
 language: java
 jdk:
   - oraclejdk8
+  - openjdk7
 
 install: mvn install -Dgpg.skip
