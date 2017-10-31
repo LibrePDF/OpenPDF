@@ -49,6 +49,7 @@ package com.lowagie.text.pdf;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Content typically belongs to a single optional content group,
@@ -80,7 +81,7 @@ public class PdfLayerMembership extends PdfDictionary implements PdfOCG {
 
     PdfIndirectReference ref;
     PdfArray members = new PdfArray();
-    HashSet layers = new HashSet();
+    Set<PdfLayer> layers = new HashSet<>();
     
     /**
      * Creates a new, empty, membership layer.
