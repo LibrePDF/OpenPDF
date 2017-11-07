@@ -12,7 +12,6 @@
     <artifactId>pdf-html</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>pdf-xml</artifactId>
@@ -24,7 +23,8 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- For Test -->
+        <!-- Test Dependencies -->
+
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
@@ -35,7 +35,5 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
 </project>
