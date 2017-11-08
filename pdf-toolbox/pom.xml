@@ -12,7 +12,6 @@
     <artifactId>pdf-toolbox</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>pdf-html</artifactId>
@@ -58,5 +57,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>

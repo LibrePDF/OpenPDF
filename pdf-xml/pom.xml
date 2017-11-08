@@ -12,13 +12,10 @@
     <artifactId>pdf-xml</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
     </dependencies>
-
 </project>

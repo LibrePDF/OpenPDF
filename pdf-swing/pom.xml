@@ -12,7 +12,6 @@
     <artifactId>pdf-swing</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
@@ -28,7 +27,5 @@
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
         </dependency>
-
     </dependencies>
-
 </project>
