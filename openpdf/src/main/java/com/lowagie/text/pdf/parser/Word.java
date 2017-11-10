@@ -86,7 +86,7 @@ public class Word extends ParsedTextImpl {
 	}
 
 	private static String formatPercent(float f) {
-		return String.format("%f.2%%", f);
+		return String.format("%.2f%%", f);
 	}
 
 	/**
