@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,8 +15,10 @@ public class DocumentTest {
         // Given
         String versionFromPom = getProjectVersion();
         String versionInCode = Document.getVersion();
+        // maven-bundle-plugin transforms 1.0.5-SNAPSHOT to 1.0.5.SNAPSHOT
+        String versionFromPomNormalized = versionFromPom.replace('-', '.');
         // Then
-        Assert.assertTrue("Version number in code (" + versionInCode + ") is not the same as pom (" + versionFromPom + ").", versionInCode.endsWith(versionFromPom));
+        Assert.assertTrue("Version number in code (" + versionInCode + ") is not the same as pom (" + versionFromPom + ").", versionInCode.endsWith(versionFromPomNormalized));
     }
 
     private String getProjectVersion() {
