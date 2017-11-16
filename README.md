@@ -53,7 +53,7 @@ Release the hounds!  Please send all pull requests.
 
 ### Required: ###
 
- - BouncyCastle 1.57
+ - BouncyCastle 1.58
    - Provider
    - PKIX/CMS
  - PDFRenderer
