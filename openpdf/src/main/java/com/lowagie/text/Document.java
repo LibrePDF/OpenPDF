@@ -108,7 +108,7 @@ public class Document implements DocListener {
     /**
      * @since	2.1.6
      */
-    private static final String RELEASE = "1.0.5-SNAPSHOT";
+    private static final String RELEASE = "1.0.5";
     private static final String OPENPDF_VERSION = OPENPDF + " " + RELEASE;
     
 	/**
