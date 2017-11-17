@@ -2,12 +2,13 @@
 
 OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source license. OpenPDF is based on a fork of iText 4. We welcome contributions from other developers. Please feel free to submit pull-requests and bugreports to this GitHub repository.
 
-[![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF) [![Build Status](https://api.travis-ci.org/LibrePDF/OpenPDF.png)](https://travis-ci.org/LibrePDF/OpenPDF) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf) [![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%203.0-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-3.0) [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
+[![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF) [![Build Status](https://travis-ci.org/LibrePDF/OpenPDF.svg?branch=master)](https://travis-ci.org/LibrePDF/OpenPDF) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf) [![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%203.0-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-3.0) [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
 
-## OpenPDF version 1.0.4 released 2017-10-11 ##
-Get version 1.0.4 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.4
+## OpenPDF version 1.0.5 released 2017-11-16 ##
+Get version 1.0.5 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.5
 
 ### Previous Versions
+- [Version 1.0.4](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.4) _released 2017-10-11_
 - [Version 1.0.3](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.3) _released 2017-07-24_
 - [Version 1.0.2](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.2) _released 2017-06-03_
 - [Version 1.0.1](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.1) _released 2017-01-28_
@@ -26,7 +27,7 @@ Add this to your pom.xml file:
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </dependency>
 
 
@@ -52,7 +53,7 @@ Release the hounds!  Please send all pull requests.
 
 ### Required: ###
 
- - BouncyCastle 1.57
+ - BouncyCastle 1.58
    - Provider
    - PKIX/CMS
  - PDFRenderer
