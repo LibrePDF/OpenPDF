@@ -50,8 +50,10 @@
 package com.lowagie.text.pdf;
 
 import java.awt.Color;
+import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.print.PrinterJob;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1435,7 +1437,15 @@ public class PdfContentByte {
         showText2(text);
         content.append("Tj").append_i(separator);
     }
-
+    
+	// TIBCO Software #4 : Part 1 - START
+	public void showText(GlyphVector glyphVector) {
+		byte[] b = state.fontDetails.convertToBytes(glyphVector);
+		escapeString(b, content);
+		content.append("Tj").append_i(separator);
+	}
+	// TIBCO Software #4 : Part 1 - END
+	
     /**
      * Constructs a kern array for a text in a certain font
      * @param text the text
@@ -3015,6 +3025,13 @@ public class PdfContentByte {
      * @param struc the tagging structure
      */
     public void beginMarkedContentSequence(PdfStructureElement struc) {
+    	// TIBCO Software #4 : Part 1 - START
+    	PdfDictionary dict = new PdfDictionary();
+    	beginMarkedContentSequence(struc, dict);
+    }
+    
+    public void beginMarkedContentSequence(PdfStructureElement struc, PdfDictionary dict) {
+    	// TIBCO Software #4 : Part 1 - END
         PdfObject obj = struc.get(PdfName.K);
         int mark = pdf.getMarkPoint();
         if (obj != null) {
@@ -3043,7 +3060,18 @@ public class PdfContentByte {
         }
         pdf.incMarkPoint();
         mcDepth++;
-        content.append(struc.get(PdfName.S).getBytes()).append(" <</MCID ").append(mark).append(">> BDC").append_i(separator);
+        // TIBCO Software #4 : Part 1 - START
+        //content.append(struc.get(PdfName.S).getBytes()).append(" <</MCID ").append(mark).append(">> BDC").append_i(separator);
+        dict.put(PdfName.MCID, new PdfNumber(mark));
+        content.append(struc.get(PdfName.S).getBytes()).append(" ");
+        try {
+        	dict.toPdf(writer, content);
+        }
+        catch (IOException e) {
+        	throw new ExceptionConverter(e);
+        }
+        content.append(" BDC").append_i(separator);
+        // TIBCO Software #4 : Part 1 - END
     }
 
     /**

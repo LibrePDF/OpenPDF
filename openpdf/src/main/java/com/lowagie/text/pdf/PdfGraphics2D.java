@@ -909,6 +909,9 @@ public class PdfGraphics2D extends Graphics2D {
         g2.paint = this.paint;
         g2.fillGState = this.fillGState;
         g2.currentFillGState = this.currentFillGState;
+        // TIBCO Software #3 : Part 1 - START
+        g2.currentStrokeGState = this.currentStrokeGState;
+        // TIBCO Software #3 : Part 1 - END
         g2.strokeGState = this.strokeGState;
         g2.background = this.background;
         g2.mediaTracker = this.mediaTracker;
@@ -1086,7 +1089,10 @@ public class PdfGraphics2D extends Graphics2D {
             followPath(s, CLIP);
         }
         paintFill = paintStroke = null;
-        currentFillGState = currentStrokeGState = 255;
+        // TIBCO Software #1 : Part 1 - START
+        //currentFillGState = currentStrokeGState = 255;
+        currentFillGState = currentStrokeGState = -1; // 255;
+        // TIBCO Software #1 : Part 1 - END
         oldStroke = strokeOne;
     }
     
@@ -1487,7 +1493,10 @@ public class PdfGraphics2D extends Graphics2D {
         } catch (Exception ex) {
             throw new IllegalArgumentException();
         }
-        if (currentFillGState != 255) {
+        // TIBCO Software #1 : Part 2 - START
+        //if (currentFillGState != 255) {
+        if (currentFillGState != 255 && currentFillGState != -1) {
+        	// TIBCO Software #1 : Part 2 - END
             PdfGState gs = fillGState[currentFillGState];
             cb.setGState(gs);
         }        
@@ -1613,10 +1622,28 @@ public class PdfGraphics2D extends Graphics2D {
                 PdfPatternPainter pattern = cb.createPattern(width, height);
                 image.setAbsolutePosition(0,0);
                 pattern.addImage(image);
-                if (fill)
+                // TIBCO Software #2 : Part 1 - START
+                //if (fill)
+                //    cb.setPatternFill(pattern);
+                //else
+                //    cb.setPatternStroke(pattern);
+                if (fill) {
+                	if (currentFillGState != 255){
+                		currentFillGState = 255;
+                		PdfGState gs = fillGState[255];
+						if (gs == null) {
+							gs = new PdfGState();
+							gs.setFillOpacity(1);
+							fillGState[255] = gs;
+						}
+						cb.setGState(gs);
+					}
                     cb.setPatternFill(pattern);
-                else
+                }
+                else {
                     cb.setPatternStroke(pattern);
+                }
+                // TIBCO Software #2 : Part 1 - END
             } catch (Exception ex) {
                 if (fill)
                     cb.setColorFill(Color.gray);
