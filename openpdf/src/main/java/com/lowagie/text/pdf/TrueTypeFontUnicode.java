@@ -75,9 +75,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      */    
     boolean vertical = false;
     
-    // TIBCO Software #4 : Part 1 - START
     Map inverseCmap;
-    // TIBCO Software #4 : Part 1 - END
     
     /**
      * Creates a new TrueType font addressed by Unicode characters. The font
@@ -125,7 +123,6 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         vertical = enc.endsWith("V");
     }
     
-    // TIBCO Software #4 : Part 1 - START
 	void readCMaps() throws DocumentException, IOException {
 		super.readCMaps();
 
@@ -151,7 +148,6 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
 		return inverseCmap == null ? null : (Integer) inverseCmap.get(Integer.valueOf(code));
     }
     
-	// TIBCO Software #4 : Part 1 - END
 	
     /**
      * Gets the width of a <CODE>char</CODE> in normalized 1000 units.
@@ -210,9 +206,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      * @return the stream representing this CMap or <CODE>null</CODE>
      */    
     private PdfStream getToUnicode(Object metrics[]) {
-    	// TIBCO Software #4 : Part 1 - START
     	metrics = filterCmapMetrics(metrics);
-    	// TIBCO Software #4 : Part 1 - END
         if (metrics.length == 0)
             return null;
         StringBuffer buf = new StringBuffer(
@@ -254,7 +248,6 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         return stream;
     }
     
-    // TIBCO Software #4 : Part 1 - START
 	private Object[] filterCmapMetrics(Object[] metrics) {
 		if (metrics.length == 0) {
 			return metrics;
@@ -278,7 +271,6 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
 
 		return cmapMetrics.toArray();
 	}
-	// TIBCO Software #4 : Part 1 - END
 	
     private static String toHex4(int n) {
         String s = "0000" + Integer.toHexString(n);

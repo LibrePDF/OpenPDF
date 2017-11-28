@@ -672,9 +672,6 @@ class TrueTypeFont extends BaseFont {
                 readCMaps();
                 readKerning();
                 readBbox();
-                // TIBCO Software #4 : Part 1 - START
-                // GlyphWidths = null;
-                // TIBCO Software #4 : Part 1 - END
             }
         }
         finally {

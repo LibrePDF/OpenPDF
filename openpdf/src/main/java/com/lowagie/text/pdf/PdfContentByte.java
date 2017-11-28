@@ -1438,13 +1438,11 @@ public class PdfContentByte {
         content.append("Tj").append_i(separator);
     }
     
-	// TIBCO Software #4 : Part 1 - START
 	public void showText(GlyphVector glyphVector) {
 		byte[] b = state.fontDetails.convertToBytes(glyphVector);
 		escapeString(b, content);
 		content.append("Tj").append_i(separator);
 	}
-	// TIBCO Software #4 : Part 1 - END
 	
     /**
      * Constructs a kern array for a text in a certain font
@@ -3025,13 +3023,11 @@ public class PdfContentByte {
      * @param struc the tagging structure
      */
     public void beginMarkedContentSequence(PdfStructureElement struc) {
-    	// TIBCO Software #4 : Part 1 - START
     	PdfDictionary dict = new PdfDictionary();
     	beginMarkedContentSequence(struc, dict);
     }
     
     public void beginMarkedContentSequence(PdfStructureElement struc, PdfDictionary dict) {
-    	// TIBCO Software #4 : Part 1 - END
         PdfObject obj = struc.get(PdfName.K);
         int mark = pdf.getMarkPoint();
         if (obj != null) {
@@ -3060,8 +3056,6 @@ public class PdfContentByte {
         }
         pdf.incMarkPoint();
         mcDepth++;
-        // TIBCO Software #4 : Part 1 - START
-        //content.append(struc.get(PdfName.S).getBytes()).append(" <</MCID ").append(mark).append(">> BDC").append_i(separator);
         dict.put(PdfName.MCID, new PdfNumber(mark));
         content.append(struc.get(PdfName.S).getBytes()).append(" ");
         try {
@@ -3071,7 +3065,6 @@ public class PdfContentByte {
         	throw new ExceptionConverter(e);
         }
         content.append(" BDC").append_i(separator);
-        // TIBCO Software #4 : Part 1 - END
     }
 
     /**
