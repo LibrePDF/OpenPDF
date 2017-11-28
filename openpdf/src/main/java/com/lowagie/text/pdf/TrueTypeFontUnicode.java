@@ -75,7 +75,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      */    
     boolean vertical = false;
     
-    Map inverseCmap;
+    Map<Integer, Integer> inverseCmap;
     
     /**
      * Creates a new TrueType font addressed by Unicode characters. The font
@@ -139,13 +139,13 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
 				Map.Entry entry = (Map.Entry) iterator.next();
 				Integer code = (Integer) entry.getKey();
 				int[] metrics = (int[]) entry.getValue();
-				inverseCmap.put(Integer.valueOf(metrics[0]), code);
+				inverseCmap.put(metrics[0], code);
 			}
 		}
 	}
     
 	protected Integer getCharacterCode(int code) {
-		return inverseCmap == null ? null : (Integer) inverseCmap.get(Integer.valueOf(code));
+		return inverseCmap == null ? null : inverseCmap.get(code);
     }
     
 	
