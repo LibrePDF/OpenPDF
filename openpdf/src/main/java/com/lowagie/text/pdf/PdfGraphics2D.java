@@ -909,6 +909,7 @@ public class PdfGraphics2D extends Graphics2D {
         g2.paint = this.paint;
         g2.fillGState = this.fillGState;
         g2.currentFillGState = this.currentFillGState;
+        g2.currentStrokeGState = this.currentStrokeGState;
         g2.strokeGState = this.strokeGState;
         g2.background = this.background;
         g2.mediaTracker = this.mediaTracker;
@@ -1086,7 +1087,7 @@ public class PdfGraphics2D extends Graphics2D {
             followPath(s, CLIP);
         }
         paintFill = paintStroke = null;
-        currentFillGState = currentStrokeGState = 255;
+        currentFillGState = currentStrokeGState = -1;
         oldStroke = strokeOne;
     }
     
@@ -1487,7 +1488,7 @@ public class PdfGraphics2D extends Graphics2D {
         } catch (Exception ex) {
             throw new IllegalArgumentException();
         }
-        if (currentFillGState != 255) {
+        if (currentFillGState != 255 && currentFillGState != -1) {
             PdfGState gs = fillGState[currentFillGState];
             cb.setGState(gs);
         }        
@@ -1613,10 +1614,23 @@ public class PdfGraphics2D extends Graphics2D {
                 PdfPatternPainter pattern = cb.createPattern(width, height);
                 image.setAbsolutePosition(0,0);
                 pattern.addImage(image);
-                if (fill)
+
+                if (fill) {
+                	if (currentFillGState != 255){
+                		currentFillGState = 255;
+                		PdfGState gs = fillGState[255];
+						if (gs == null) {
+							gs = new PdfGState();
+							gs.setFillOpacity(1);
+							fillGState[255] = gs;
+						}
+						cb.setGState(gs);
+					}
                     cb.setPatternFill(pattern);
-                else
+                }
+                else {
                     cb.setPatternStroke(pattern);
+                }
             } catch (Exception ex) {
                 if (fill)
                     cb.setColorFill(Color.gray);

@@ -49,6 +49,7 @@
 
 package com.lowagie.text.pdf;
 
+import java.awt.font.GlyphVector;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
@@ -243,6 +244,42 @@ class FontDetails {
         }
         return b;
     }
+    
+	byte[] convertToBytes(GlyphVector glyphVector) {
+		if (fontType != BaseFont.FONT_TYPE_TTUNI || symbolic) {
+			throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
+		}
+
+		char[] glyphs = new char[glyphVector.getNumGlyphs()];
+		int glyphCount = 0;
+		for (int i = 0; i < glyphs.length; i++) {
+			int code = glyphVector.getGlyphCode(i);
+			if (code == 0xFFFE || code == 0xFFFF) {// considered non-glyphs by
+													// AWT
+				continue;
+			}
+
+			glyphs[glyphCount++] = (char) code;// FIXME supplementary plane?
+
+			Integer codeKey = Integer.valueOf(code);
+			if (!longTag.containsKey(codeKey)) {
+				int glyphWidth = ttu.getGlyphWidth(code);
+				Integer charCode = ttu.getCharacterCode(code);
+				int[] metrics = charCode != null ? new int[] { code, glyphWidth, charCode.intValue() } : new int[] {
+						code, glyphWidth };
+				longTag.put(codeKey, metrics);
+			}
+		}
+
+		String s = new String(glyphs, 0, glyphCount);
+		try {
+			byte[] b = s.getBytes(CJKFont.CJK_ENCODING);
+			return b;
+		} catch (UnsupportedEncodingException e) {
+			throw new ExceptionConverter(e);
+		}
+	}
+	
     
     /**
      * Writes the font definition to the document.

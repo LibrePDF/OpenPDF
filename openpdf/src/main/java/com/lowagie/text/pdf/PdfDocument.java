@@ -1399,7 +1399,10 @@ public class PdfDocument extends Document {
                         hangingCorrection = width - oldWidth;
                     }
                 }
-                float baseFactor = width / (ratio * numberOfSpaces + lineLen - 1);
+                // if there's a single word on the line and we are using NO_SPACE_CHAR_RATIO,
+                // we don't want any character spacing
+                float baseFactor = (numberOfSpaces == 0 && ratio == PdfWriter.NO_SPACE_CHAR_RATIO) 
+                		? 0f : width / (ratio * numberOfSpaces + lineLen - 1);
                 baseWordSpacing = ratio * baseFactor;
                 baseCharacterSpacing = baseFactor;
                 lastBaseFactor = baseFactor;
