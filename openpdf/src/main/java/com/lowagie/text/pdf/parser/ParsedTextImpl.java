@@ -51,27 +51,44 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
 	private Vector _startPoint;
 	private Vector _endPoint;
 	float _spaceWidth;
+    /**
+     * We track a vector representing our baseline, left->right, so that calculations of line-
+     * change can be accurate, even with 0-length words (representing lone spaces, when
+     * those are rendered by the PDF).
+     */
+    Vector _baseline;
 
-	/**
-	 * @param text
-	 * @param startPoint
-	 *            Initial rendering spot
-	 * @param ascent
-	 *            font ascent above baseline
-	 * @param descent
-	 *            font descent below the baseling
-	 * @param spaceWidth
-	 *            What is the width of the space in this font....
-	 */
-	ParsedTextImpl(String text, Vector startPoint, Vector endPoint,
-			float ascent, float descent, float spaceWidth) {
-		this.text = text;
-		_startPoint = startPoint;
-		_endPoint = endPoint;
-		_ascent = ascent;
-		_descent = descent;
-		_spaceWidth = spaceWidth;
-	}
+    /**
+     * @param text
+     *            characters to be rendered for this string
+     * @param startPoint
+     *            Initial rendering spot on baseline
+     * @param endPoint
+     *            ending render position on baseline
+     * @param baseline
+     *            vector representing baseline (needed for 0-length strings)
+     * @param ascent
+     *            font ascent above baseline
+     * @param descent
+     *            font descent below the baseling
+     * @param spaceWidth
+     *            What is the width of the space in this font....
+     */
+    ParsedTextImpl(String text,
+                   Vector startPoint,
+                   Vector endPoint,
+                   Vector baseline,
+                   float ascent,
+                   float descent,
+                   float spaceWidth) {
+        _baseline = baseline;
+        this.text = text;
+        _startPoint = startPoint;
+        _endPoint = endPoint;
+        _ascent = ascent;
+        _descent = descent;
+        _spaceWidth = spaceWidth;
+    }
 
 	/**
 	 * @return
@@ -117,4 +134,26 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
 	public Vector getEndPoint() {
 		return _endPoint;
 	}
+    
+    /**
+     * Return the vector representing the baseline of this text chunk, even if the length
+     * of the text is zero.
+     *
+     * @see ParsedTextImpl#_baseline
+     * @return baseline
+     */
+    public Vector getBaseline() {
+        return _baseline;
+    }
+
+    /**
+     * @return true if this was extracted from a string containing spaces, in which case,
+     * we assume further splitting is not needed.
+     */
+    public abstract boolean shouldNotSplit();
+    
+    /**
+     * @return true if this was a space or other item that should force a space before it.
+     */
+    public abstract boolean breakBefore();
 }

@@ -87,11 +87,11 @@ public interface TextAssembler {
 	 */
     void renderText(FinalText completed);
 
-	/**
-	 * @param parsed
-	 *            process one of a number of raw pdf text chunks, with
-	 *            placement, font, etc.
-	 */
+    /**
+     * @param parsed
+     *            process one of a number of raw pdf text chunks, with
+     *            placement, font, etc.
+     */
     void renderText(ParsedTextImpl parsed);
 
 	/**

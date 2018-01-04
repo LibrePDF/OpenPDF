@@ -126,6 +126,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
 	 */
 	private void clearAccumulator() {
 		for (TextAssemblyBuffer partialWord : partialWords) {
+		    // Visit each partialWord, calling renderText 
 			partialWord.assemble(this);
 		}
 		partialWords.clear();
@@ -201,67 +202,66 @@ public class MarkedUpTextAssembler implements TextAssembler {
 		result.add(finalText);
 	}
 
-	/**
-	 * Captures text using a simplified algorithm for inserting hard returns and
-	 * spaces
-	 *
-	 * @see com.lowagie.text.pdf.parser.AbstractRenderListener#renderText(java.lang.String,
-	 *      com.lowagie.text.pdf.parser.GraphicsState,
-	 *      com.lowagie.text.pdf.parser.Matrix,
-	 *      com.lowagie.text.pdf.parser.Matrix)
-	 */
-	@Override
-	public void renderText(ParsedTextImpl partialWord) {
-		if (partialWord.getText().trim().isEmpty()) {
-			return;
-		}
-		boolean firstRender = _inProgress == null;
-		boolean hardReturn = false;
-		if (firstRender) {
-			_inProgress = partialWord;
-			return;
-		}
-		Vector start = partialWord.getStartPoint();
-		Vector lastStart = _inProgress.getStartPoint();
-		Vector lastEnd = _inProgress.getEndPoint();
+    /**
+     * Captures text using a simplified algorithm for inserting hard returns and
+     * spaces
+     *
+     * @see com.lowagie.text.pdf.parser.AbstractRenderListener#renderText(java.lang.String,
+     *      com.lowagie.text.pdf.parser.GraphicsState,
+     *      com.lowagie.text.pdf.parser.Matrix,
+     *      com.lowagie.text.pdf.parser.Matrix)
+     */
+    @Override
+    public void renderText(ParsedTextImpl partialWord) {
+        boolean firstRender = _inProgress == null;
+        boolean hardReturn = false;
+        if (firstRender) {
+            _inProgress = partialWord;
+            return;
+        }
+        Vector start = partialWord.getStartPoint();
+        Vector lastStart = _inProgress.getStartPoint();
+        Vector lastEnd = _inProgress.getEndPoint();
 
-		// see
-		// http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
-		float dist = lastEnd.subtract(lastStart)
-				.cross(lastStart.subtract(start)).lengthSquared()
-				/ lastEnd.subtract(lastStart).lengthSquared();
+        // see
+        // http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
+        float dist = _inProgress.getBaseline().subtract(lastStart)
+                .cross(lastStart.subtract(start)).lengthSquared()
+                / _inProgress.getBaseline().subtract(lastStart).lengthSquared();
 
-		float sameLineThreshold = partialWord.getAscent() * 0.25f;
-		// let's try using 25% of current leading for vertical slop.
-		if (dist > sameLineThreshold) {
-			hardReturn = true;
-		}
-		/*
-		 * Note: Technically, we should check both the start and end positions,
-		 * in case the angle of the text changed without any displacement but
-		 * this sort of thing probably doesn't happen much in reality, so we'll
-		 * leave it alone for now
-		 */
-		float spacing = lastEnd.subtract(start).length();
-		if (hardReturn || partialWord.getText().startsWith(" ")) {
-			result.add(_inProgress.getFinalText(_reader, _page, this));
-			result.add(new FinalText("\n"));
-			if (_usePdfMarkupElements) {
-				result.add(new FinalText("<br class='t-pdf' />"));
-			}
-			_inProgress = partialWord;
-			// System.out.println("<< Hard Return >>");
-		} else if (spacing < partialWord.getSingleSpaceWidth() / 2.5) {
-			_inProgress = new Word(_inProgress.getText().trim()
-					+ partialWord.getText().trim(), partialWord.getAscent(),
-					partialWord.getDescent(), lastStart,
-					partialWord.getEndPoint(),
-					partialWord.getSingleSpaceWidth());
-		} else {
-			result.add(_inProgress.getFinalText(_reader, _page, this));
-			_inProgress = partialWord;
-		}
-	}
+        float sameLineThreshold = partialWord.getAscent() * 0.5f;
+        // let's try using 25% of current leading for vertical slop.
+        if (dist > sameLineThreshold||Float.isNaN(dist)) {
+            hardReturn = true;
+        }
+        /*
+         * Note: Technically, we should check both the start and end positions,
+         * in case the angle of the text changed without any displacement but
+         * this sort of thing probably doesn't happen much in reality, so we'll
+         * leave it alone for now
+         */
+        float spacing = lastEnd.subtract(start).length();
+        if (hardReturn || partialWord.breakBefore()) {
+            result.add(_inProgress.getFinalText(_reader, _page, this));
+            if (hardReturn) {
+                result.add(new FinalText("\n"));
+                if (_usePdfMarkupElements) {
+                    result.add(new FinalText("<br class='t-pdf' />"));
+                }
+            }
+            _inProgress = partialWord;
+            // System.out.println("<< Hard Return >>");
+        } else if (spacing < partialWord.getSingleSpaceWidth() / 2.3 || _inProgress.shouldNotSplit()) {
+            _inProgress = new Word(_inProgress.getText()
+                                   + partialWord.getText().trim(), partialWord.getAscent(),
+                                   partialWord.getDescent(), lastStart,
+                                   partialWord.getEndPoint(),
+                                   _inProgress.getBaseline(), partialWord.getSingleSpaceWidth(), _inProgress.shouldNotSplit(), _inProgress.breakBefore());
+        } else {
+            result.add(_inProgress.getFinalText(_reader, _page, this));
+            _inProgress = partialWord;
+        }
+    }
 
 	/**
 	 * Getter.

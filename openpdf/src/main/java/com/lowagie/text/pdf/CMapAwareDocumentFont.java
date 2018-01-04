@@ -200,7 +200,7 @@ public class CMapAwareDocumentFont extends DocumentFont {
 	 *         font's encoding.
 	 */
 	private String decodeSingleCID(byte[] bytes, int offset, int len) {
-		if (toUnicodeCmap != null) {
+		if (hasUnicodeCMAP()) {
 			if (offset + len > bytes.length) {
 				throw new ArrayIndexOutOfBoundsException(
 						MessageLocalization.getComposedMessage(
@@ -216,32 +216,87 @@ public class CMapAwareDocumentFont extends DocumentFont {
 		throw new Error("Multi-byte glyphs not implemented yet");
 	}
 
-	/**
-	 * Decodes a string of bytes (encoded in the font's encoding) into a unicode
-	 * string This will use the ToUnicode map of the font, if available,
-	 * otherwise it uses the font's encoding
-	 * 
-	 * @param cidbytes
-	 *            the bytes that need to be decoded
-	 * @return the unicode String that results from decoding
-	 * @since 2.1.7
-	 */
-	public String decode(byte[] cidbytes, final int offset, final int len) {
-		StringBuffer sb = new StringBuffer(); // it's a shame we can't make this
-												// StringBuilder
-		for (int i = offset; i < offset + len; i++) {
-			String rslt = decodeSingleCID(cidbytes, i, 1);
-			if (rslt == null && i + 1 < offset + len) {
-				rslt = decodeSingleCID(cidbytes, i, 2);
-				i++;
-			}
-			if (rslt != null) {
-				sb.append(rslt);
-			}
-		}
+    /**
+     * @return true if this font has unicode information available.
+     */
+    public boolean hasUnicodeCMAP() {
+        return toUnicodeCmap != null;
+    }
 
-		return sb.toString();
-	}
+    /**
+     * Decodes a string of bytes (encoded in the font's encoding) into a unicode string. This will
+     * use the ToUnicode map of the font, if available, otherwise it uses the font's encoding
+     *
+     * @param cidbytes
+     *            the bytes that need to be decoded
+     * @return the unicode String that results from decoding
+     * @since 2.1.7
+     */
+    public String decode(byte[] cidbytes,
+                         final int offset,
+                         final int len) {
+        StringBuffer sb = new StringBuffer(); // it's a shame we can't make this
+                                             // StringBuilder
+        for (int i = offset; i < offset + len; i++ ) {
+            String rslt = decodeSingleCID(cidbytes, i, 1);
+            if (rslt == null && i + 1 < offset + len) {
+                rslt = decodeSingleCID(cidbytes, i, 2);
+                i++ ;
+            }
+            if (rslt != null) {
+                sb.append(rslt);
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Decodes a string. This is a normal Java string, but if the range of character values
+     * exceeds the range of the encoding for the font, this will fail. Required since we need to
+     * process the characters of strings, and we can't determine the character boundaries in
+     * advance, especially because of Identity-H encoded fonts which have two-byte character
+     * indexes.
+     * 
+     * PdfString is used to hold character code points, even though the bytes may not map 1-1. It's
+     * not possible to change the encoding once a string is in place. 
+     * 
+     * @param chars
+     *            the Characters that need to be decoded
+     * @return the unicode String that results from decoding
+     * @since 2.1.
+     */
+    public String decode(String chars) {
+        StringBuffer sb = new StringBuffer(); // it's a shame we can't make this
+                                             // StringBuilder
+        for (char c : chars.toCharArray()) {
+            String result = decode(c);
+            if (result != null) {
+                sb.append(result);
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Decode  single character whose value represents a code point in this font. Will fail if
+     * the characters do not have values that correspond to valid code points for the font.
+     * @param c character to decode
+     * @return Unicode character corresponding to the remapped code according to the font's current encoding.
+     * @throws Error if the the character is out of range
+     */
+    public String decode(char c) throws Error {
+        String result;
+        if (hasUnicodeCMAP()) {
+            result = toUnicodeCmap.lookup(c);
+        } else if (c <= 0xff) {
+            result = new String(cidbyte2uni, 0xff & c, 1);
+        } else {
+            throw new Error("Multi-byte glyphs not implemented yet");
+        }
+        return result;
+    }
 
 	/**
 	 * Encodes bytes to a String.

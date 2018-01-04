@@ -80,6 +80,26 @@ public class CMap
 
     /**
      * This will perform a lookup into the map.
+     * 
+     * Some characters (e.g. ligatures) decode to character sequences.
+     *
+     * @param code The code used to lookup.
+     * @return The string that matches the lookup.
+     */
+    public String lookup(char code)
+    {
+        String result = null;
+        if (hasTwoByteMappings()) {
+            result = (String) doubleByteMappings.get(new Integer(code));
+        }
+        if (result == null && code <= 0xff && hasOneByteMappings()) {
+            result = (String) singleByteMappings.get(new Integer(code & 0xff));
+        }
+        return result;
+    }
+
+    /**
+     * This will perform a lookup into the map.
      *
      * @param code The code used to lookup.
      * @param offset The offset into the byte array.
