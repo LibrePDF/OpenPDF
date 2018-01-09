@@ -605,7 +605,7 @@ public class PdfEncodings {
 	 *            the conversion class
 	 */
 	public static void addExtraEncoding(String name, ExtraEncoding enc) {
-		extraEncodings.putIfAbsent(name, enc);
+		extraEncodings.putIfAbsent(name.toLowerCase(), enc);
 	}
 
 	private static class WingdingsConversion implements ExtraEncoding {
