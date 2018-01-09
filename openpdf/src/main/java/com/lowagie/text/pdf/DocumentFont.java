@@ -152,6 +152,7 @@ public class DocumentFont extends BaseFont {
 	                    return;
 	                }
 	            }
+	            encoding = enc;
 	            if (PdfName.TYPE0.equals(subType) && enc.equals("Identity-H")) {
 	                processType0(font);
 	                isType0 = true;
