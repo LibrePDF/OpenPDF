@@ -343,12 +343,14 @@ public class ParsedText extends ParsedTextImpl {
         for (int i = 0; i < chars.length; i++ ) {
             char c = chars[i];
             hasSpace[i] = false;
-            for (char cFinal : gs.font.decode(c)
-                                      .toCharArray())
-                if (Character.isSpaceChar(cFinal)) {
-                    wordsAreComplete = true;
-                    hasSpace[i] = true;
-                }
+            String charValue = gs.font.decode(c);
+
+            if (charValue != null)
+                for (char cFinal : charValue.toCharArray())
+                    if (Character.isSpaceChar(cFinal)) {
+                        wordsAreComplete = true;
+                        hasSpace[i] = true;
+                    }
         }
         return wordsAreComplete;
     }
