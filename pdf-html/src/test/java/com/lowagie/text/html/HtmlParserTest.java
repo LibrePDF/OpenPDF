@@ -31,7 +31,7 @@ public class HtmlParserTest {
 	public void testParse_tableWithSpaces() {
 		Document doc1 = new Document();
 		doc1.open();
-		HtmlParser.parse(doc1, new StringReader("<table> <tr><td>test</td></tr></table>")); // fails
+		HtmlParser.parse(doc1, new StringReader("<table> <tr><td>test</td></tr></table>")); // was throwin exception
 		assertNotNull(doc1);
 	}
 
