@@ -58,10 +58,10 @@ public class Text {
             cb.moveTo(50, 600);
             cb.lineTo(400, 600);
             cb.stroke();
-            
+
             // we tell the ContentByte we're ready to draw text
             cb.beginText();
-            
+
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
             cb.setFontAndSize(bf, 12);
             String text = "Sample text for alignment";
@@ -69,19 +69,19 @@ public class Text {
             cb.showTextAligned(PdfContentByte.ALIGN_CENTER, text + " Center", 250, 700, 0);
             cb.showTextAligned(PdfContentByte.ALIGN_RIGHT, text + " Right", 250, 650, 0);
             cb.showTextAligned(PdfContentByte.ALIGN_LEFT, text + " Left", 250, 600, 0);
-            
+
             // we draw some text on a certain position
             cb.setTextMatrix(100, 400);
             cb.showText("Text at position 100,400.");
-            
+
             // we draw some rotated text on a certain position
             cb.setTextMatrix(0, 1, -1, 0, 100, 300);
             cb.showText("Text at position 100,300, rotated 90 degrees.");
-            
+
             // we draw some mirrored, rotated text on a certain position
             cb.setTextMatrix(0, 1, 1, 0, 200, 200);
             cb.showText("Text at position 200,200, mirrored and rotated 90 degrees.");
-            
+
             // we tell the contentByte, we've finished drawing text
             cb.endText();
             
