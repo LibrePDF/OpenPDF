@@ -206,6 +206,10 @@ public class SAXiTextHandler extends DefaultHandler {
         handleStartingTags(name, attributes);
     }
 
+    private boolean isNotBlank(String text) {
+    	return text != null && !text.trim().isEmpty();
+    }
+    
     /**
      * This method deals with the starting tags.
      * 
@@ -223,7 +227,7 @@ public class SAXiTextHandler extends DefaultHandler {
         }
 
         // maybe there is some meaningful data that wasn't between tags
-        if (currentChunk != null) {
+        if (currentChunk != null && isNotBlank(currentChunk.getContent())) {
             TextElementArray current;
             try {
                 current = (TextElementArray) stack.pop();
