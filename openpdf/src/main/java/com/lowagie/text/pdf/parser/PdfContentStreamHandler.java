@@ -41,24 +41,33 @@
  */
 package com.lowagie.text.pdf.parser;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Stack;
+
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.CMapAwareDocumentFont;
 import com.lowagie.text.pdf.PRIndirectReference;
+import com.lowagie.text.pdf.PRStream;
+import com.lowagie.text.pdf.PRTokeniser;
 import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfContentParser;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfLiteral;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Stack;
 
 /**
  * @author dgd
@@ -631,7 +640,7 @@ public class PdfContentStreamHandler {
 	public Matrix textLineMatrix;
 
 	boolean useContainerMarkup;
-
+	
 	/**
 	 * detail parser for text within a marked section. used by TextAssembler
 	 */
@@ -780,6 +789,75 @@ public class PdfContentStreamHandler {
 			handler.popContext();
 		}
 	}
+	
+	private  class Do implements ContentOperator {
+		/**
+		 * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
+		 */
+		@Override
+		public String getOperatorName() {
+			return "Do";
+		}
+		
+		@Override
+		public void invoke(ArrayList<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
+			PdfObject firstOperand = operands.get(0);
+			if (firstOperand instanceof PdfName) {
+				PdfName name = (PdfName) firstOperand;
+				PdfDictionary dictionary = resources.getAsDict(PdfName.XOBJECT);
+				if (dictionary == null) {
+					return;
+				}
+				PdfStream stream = (PdfStream) dictionary.getDirectObject(name);
+				PdfName subType = stream.getAsName(PdfName.SUBTYPE);
+				if (PdfName.FORM.equals(subType)) {
+					PdfDictionary resources2 = stream.getAsDict(PdfName.RESOURCES);
+					byte[] data = null;
+					try {
+						data = getContentBytesFromPdfObject(stream);
+					} catch (IOException ex) {
+						throw new ExceptionConverter(ex);
+					}
+					new PushGraphicsState().invoke(operands, handler, resources);			
+					processContent(data, resources2);
+					new PopGraphicsState().invoke(operands, handler, resources);
+				}
+			}
+			
+		}
+		private void processContent(byte[] contentBytes, PdfDictionary resources) {
+			try {
+				PdfContentParser ps = new PdfContentParser(new PRTokeniser(contentBytes));
+				ArrayList<PdfObject> operands = new ArrayList<PdfObject>();
+				while (ps.parse(operands).size() > 0) {
+					PdfLiteral operator = (PdfLiteral) operands.get(operands.size() - 1);
+					invokeOperator(operator, operands, resources);
+				}
+			} catch (Exception e) {
+				throw new ExceptionConverter(e);
+			}
+		}
+
+
+		private byte[] getContentBytesFromPdfObject(PdfObject object) throws IOException {
+			switch (object.type()) {
+			case PdfObject.INDIRECT:
+				return getContentBytesFromPdfObject(PdfReader.getPdfObject(object));
+			case PdfObject.STREAM:
+				return PdfReader.getStreamBytes((PRStream) PdfReader.getPdfObject(object));
+			case PdfObject.ARRAY:
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ListIterator<PdfObject> iter = ((PdfArray) object).listIterator();
+				while (iter.hasNext()) {
+					PdfObject element = iter.next();
+					baos.write(getContentBytesFromPdfObject(element));
+				}
+				return baos.toByteArray();
+			default:
+				throw new IllegalStateException("Unsupported type: " + object.getClass().getCanonicalName());
+			}
+		}
+	}
 
 	/**
 	 * Loads all the supported graphics and text state operators in a map.
@@ -827,6 +905,8 @@ public class PdfContentStreamHandler {
 		registerContentOperator(new BeginMarked());
 		registerContentOperator(new BeginMarkedDict());
 		registerContentOperator(new EndMarked());
+		
+		registerContentOperator(new Do());
 	}
 
 	/**
