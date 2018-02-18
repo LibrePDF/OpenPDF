@@ -49,6 +49,7 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Creates a number tree.
@@ -66,7 +67,7 @@ public class PdfNumberTree {
      * @throws IOException on error
      * @return the dictionary with the number tree.
      */    
-    public static PdfDictionary writeTree(HashMap items, PdfWriter writer) throws IOException {
+    public static PdfDictionary writeTree(Map items, PdfWriter writer) throws IOException {
         if (items.isEmpty())
             return null;
         Integer numbers[] = new Integer[items.size()];

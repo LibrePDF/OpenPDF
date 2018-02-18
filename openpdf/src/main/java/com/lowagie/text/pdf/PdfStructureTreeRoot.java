@@ -49,9 +49,9 @@
 package com.lowagie.text.pdf;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The structure tree root corresponds to the highest hierarchy level in a tagged PDF.
@@ -59,7 +59,7 @@ import java.util.Iterator;
  */
 public class PdfStructureTreeRoot extends PdfDictionary {
     
-    private HashMap parentTree = new HashMap();
+    private Map<Integer,PdfArray> parentTree = new HashMap<>();
     private PdfIndirectReference reference;
 
     /**
@@ -107,8 +107,8 @@ public class PdfStructureTreeRoot extends PdfDictionary {
     }
     
     void setPageMark(int page, PdfIndirectReference struc) {
-        Integer i = new Integer(page);
-        PdfArray ar = (PdfArray)parentTree.get(i);
+        Integer i = page;
+        PdfArray ar = parentTree.get(i);
         if (ar == null) {
             ar = new PdfArray();
             parentTree.put(i, ar);
@@ -118,9 +118,9 @@ public class PdfStructureTreeRoot extends PdfDictionary {
     
     private void nodeProcess(PdfDictionary struc, PdfIndirectReference reference) throws IOException {
         PdfObject obj = struc.get(PdfName.K);
-        if (obj != null && obj.isArray() && !((PdfArray)obj).getArrayList().get(0).isNumber()) {
+        if (obj != null && obj.isArray() && !((PdfArray)obj).getElements().get(0).isNumber()) {
             PdfArray ar = (PdfArray)obj;
-            ArrayList a = ar.getArrayList();
+            List<PdfObject> a = ar.getElements();
             for (int k = 0; k < a.size(); ++k) {
                 PdfStructureElement e = (PdfStructureElement)a.get(k);
                 a.set(k, e.getReference());
@@ -132,10 +132,9 @@ public class PdfStructureTreeRoot extends PdfDictionary {
     }
     
     void buildTree() throws IOException {
-        HashMap numTree = new HashMap();
-        for (Iterator it = parentTree.keySet().iterator(); it.hasNext();) {
-            Integer i = (Integer)it.next();
-            PdfArray ar = (PdfArray)parentTree.get(i);
+        Map<Integer, PdfIndirectReference> numTree = new HashMap<>();
+        for (Integer i : parentTree.keySet()) {
+            PdfArray ar = parentTree.get(i);
             numTree.put(i, writer.addToBody(ar).getIndirectReference());
         }
         PdfDictionary dicTree = PdfNumberTree.writeTree(numTree, writer);
