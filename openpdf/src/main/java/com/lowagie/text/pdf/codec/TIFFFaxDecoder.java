@@ -1,6 +1,6 @@
 /*
  * Copyright 2003-2009 by Paulo Soares.
- * 
+ *
  * This code was originally released in 2001 by SUN (see class
  * com.sun.media.imageioimpl.plugins.tiff.TIFFFaxDecompressor.java)
  * using the BSD license in a specific wording. In a mail dating from
@@ -8,68 +8,68 @@
  * to use the code under the following version of the BSD license:
  *
  * Copyright (c) 2005 Sun Microsystems, Inc. All  Rights Reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
- * are met: 
- * 
- * - Redistribution of source code must retain the above copyright 
+ * are met:
+ *
+ * - Redistribution of source code must retain the above copyright
  *   notice, this  list of conditions and the following disclaimer.
- * 
+ *
  * - Redistribution in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in 
+ *   notice, this list of conditions and the following disclaimer in
  *   the documentation and/or other materials provided with the
  *   distribution.
- * 
- * Neither the name of Sun Microsystems, Inc. or the names of 
- * contributors may be used to endorse or promote products derived 
+ *
+ * Neither the name of Sun Microsystems, Inc. or the names of
+ * contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
- * This software is provided "AS IS," without a warranty of any 
- * kind. ALL EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND 
- * WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, 
+ *
+ * This software is provided "AS IS," without a warranty of any
+ * kind. ALL EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND
+ * WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY
- * EXCLUDED. SUN MIDROSYSTEMS, INC. ("SUN") AND ITS LICENSORS SHALL 
- * NOT BE LIABLE FOR ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF 
+ * EXCLUDED. SUN MIDROSYSTEMS, INC. ("SUN") AND ITS LICENSORS SHALL
+ * NOT BE LIABLE FOR ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF
  * USING, MODIFYING OR DISTRIBUTING THIS SOFTWARE OR ITS
- * DERIVATIVES. IN NO EVENT WILL SUN OR ITS LICENSORS BE LIABLE FOR 
+ * DERIVATIVES. IN NO EVENT WILL SUN OR ITS LICENSORS BE LIABLE FOR
  * ANY LOST REVENUE, PROFIT OR DATA, OR FOR DIRECT, INDIRECT, SPECIAL,
  * CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND
  * REGARDLESS OF THE THEORY OF LIABILITY, ARISING OUT OF THE USE OF OR
  * INABILITY TO USE THIS SOFTWARE, EVEN IF SUN HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGES. 
- * 
- * You acknowledge that this software is not designed or intended for 
- * use in the design, construction, operation or maintenance of any 
- * nuclear facility. 
+ * POSSIBILITY OF SUCH DAMAGES.
+ *
+ * You acknowledge that this software is not designed or intended for
+ * use in the design, construction, operation or maintenance of any
+ * nuclear facility.
  */
 package com.lowagie.text.pdf.codec;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 
 public class TIFFFaxDecoder {
-    
+
     private int bitPointer, bytePointer;
     private byte[] data;
     private int w, h;
     private int fillOrder;
-    
+
     // Data structures needed to store changing elements for the previous
     // and the current scanline
     private int changingElemSize = 0;
     private int prevChangingElems[];
     private int currChangingElems[];
-    
+
     // Element at which to start search in getNextChangingElement
     private int lastChangingElement = 0;
-    
+
     private int compression = 2;
-    
+
     // Variables set by T4Options
     private int uncompressedMode = 0;
     private int fillBits = 0;
     private int oneD;
-    
+
     static int table1[] = {
         0x00, // 0 bits are left in first byte - SHOULD NOT HAPPEN
         0x01, // 1 bits are left in first byte
@@ -81,7 +81,7 @@ public class TIFFFaxDecoder {
         0x7f, // 7 bits are left in first byte
         0xff  // 8 bits are left in first byte
     };
-    
+
     static int table2[] = {
         0x00, // 0
         0x80, // 1
@@ -93,7 +93,7 @@ public class TIFFFaxDecoder {
         0xfe, // 7
         0xff  // 8
     };
-    
+
     // Table to be used when fillOrder = 2, for flipping bytes.
     static byte flipTable[] = {
         0,  -128,    64,   -64,    32,   -96,    96,   -32,
@@ -129,7 +129,7 @@ public class TIFFFaxDecoder {
         15,  -113,    79,   -49,    47,   -81,   111,   -17,
         31,   -97,    95,   -33,    63,   -65,   127,    -1,
     };
-    
+
     // The main 10 bit white runs lookup table
     static short white[] = {
         // 0 - 7
@@ -389,7 +389,7 @@ public class TIFFFaxDecoder {
         // 1016 - 1023
         232,    232,    232,    232,    232,    232,    232,    232,
     };
-    
+
     // Additional make up codes for both White and Black runs
     static short additionalMakeup[] = {
         28679,  28679,  31752,  (short)32777,
@@ -397,7 +397,7 @@ public class TIFFFaxDecoder {
         (short)29703,  (short)29703,  (short)30727,  (short)30727,
         (short)37897,  (short)38921,  (short)39945,  (short)40969
     };
-    
+
     // Initial black run look up table, uses the first 4 bits of a code
     static short initBlack[] = {
         // 0 - 7
@@ -405,10 +405,10 @@ public class TIFFFaxDecoder {
         // 8 - 15
         100,    100,    100,    100,    68,     68,     68,     68
     };
-    
+
     //
     static short twoBitBlack[] = {292, 260, 226, 226};   // 0 - 3
-    
+
     // Main black run table, using the last 9 bits of possible 13 bit code
     static short black[] = {
         // 0 - 7
@@ -540,7 +540,7 @@ public class TIFFFaxDecoder {
         // 504 - 511
         390,    390,    390,    390,    390,    390,    390,    390,
     };
-    
+
     static byte twoDCodes[] = {
         // 0 - 7
         80,     88,     23,     71,     30,     30,     62,     62,
@@ -575,7 +575,7 @@ public class TIFFFaxDecoder {
         // 120 - 127
         41,     41,     41,     41,     41,     41,     41,     41,
     };
-    
+
     /**
      * @param fillOrder   The fill order of the compressed data bytes.
      * @param w
@@ -585,13 +585,13 @@ public class TIFFFaxDecoder {
         this.fillOrder = fillOrder;
         this.w = w;
         this.h = h;
-        
+
         this.bitPointer = 0;
         this.bytePointer = 0;
         this.prevChangingElems = new int[w];
         this.currChangingElems = new int[w];
     }
-    
+
     /**
       * Reverses the bits in the array
       * @param b the bits to reverse
@@ -604,43 +604,43 @@ public class TIFFFaxDecoder {
     }
 
     // One-dimensional decoding methods
-    
+
     public void decode1D(byte[] buffer, byte[] compData,
     int startX, int height) {
         this.data = compData;
-        
+
         int lineOffset = 0;
         int scanlineStride = (w + 7)/8;
-        
+
         bitPointer = 0;
         bytePointer = 0;
-        
+
         for (int i = 0; i < height; i++) {
             decodeNextScanline(buffer, lineOffset, startX);
             lineOffset += scanlineStride;
         }
     }
-    
+
     public void decodeNextScanline(byte[] buffer,
     int lineOffset, int bitOffset) {
         int bits = 0, code = 0, isT = 0;
         int current, entry, twoBits;
         boolean isWhite = true;
-        
+
         // Initialize starting of the changing elements array
         changingElemSize = 0;
-        
+
         // While scanline not complete
         while (bitOffset < w) {
             while (isWhite) {
                 // White run
                 current = nextNBits(10);
                 entry = white[current];
-                
+
                 // Get the 3 fields from the entry
                 isT = entry & 0x0001;
                 bits = (entry >>> 1) & 0x0f;
-                
+
                 if (bits == 12) {          // Additional Make up code
                     // Get the next 2 bits
                     twoBits = nextLesserThan8Bits(2);
@@ -650,7 +650,7 @@ public class TIFFFaxDecoder {
                     bits = (entry >>> 1) & 0x07;     // 3 bits 0000 0111
                     code  = (entry >>> 4) & 0x0fff;  // 12 bits
                     bitOffset += code; // Skip white run
-                    
+
                     updatePointer(4 - bits);
                 } else if (bits == 0) {     // ERROR
                     throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.code.encountered"));
@@ -660,7 +660,7 @@ public class TIFFFaxDecoder {
                     // 11 bits - 0000 0111 1111 1111 = 0x07ff
                     code = (entry >>> 5) & 0x07ff;
                     bitOffset += code;
-                    
+
                     updatePointer(10 - bits);
                     if (isT == 0) {
                         isWhite = false;
@@ -668,7 +668,7 @@ public class TIFFFaxDecoder {
                     }
                 }
             }
-            
+
             // Check whether this run completed one width, if so
             // advance to next byte boundary for compression = 2.
             if (bitOffset == w) {
@@ -677,26 +677,26 @@ public class TIFFFaxDecoder {
                 }
                 break;
             }
-            
+
             while (!isWhite) {
                 // Black run
                 current = nextLesserThan8Bits(4);
                 entry = initBlack[current];
-                
+
                 // Get the 3 fields from the entry
                 isT = entry & 0x0001;
                 bits = (entry >>> 1) & 0x000f;
                 code = (entry >>> 5) & 0x07ff;
-                
+
                 if (code == 100) {
                     current = nextNBits(9);
                     entry = black[current];
-                    
+
                     // Get the 3 fields from the entry
                     isT = entry & 0x0001;
                     bits = (entry >>> 1) & 0x000f;
                     code = (entry >>> 5) & 0x07ff;
-                    
+
                     if (bits == 12) {
                         // Additional makeup codes
                         updatePointer(5);
@@ -704,10 +704,10 @@ public class TIFFFaxDecoder {
                         entry = additionalMakeup[current];
                         bits = (entry >>> 1) & 0x07;     // 3 bits 0000 0111
                         code  = (entry >>> 4) & 0x0fff;  // 12 bits
-                        
+
                         setToBlack(buffer, lineOffset, bitOffset, code);
                         bitOffset += code;
-                        
+
                         updatePointer(4 - bits);
                     } else if (bits == 15) {
                         // EOL code
@@ -715,7 +715,7 @@ public class TIFFFaxDecoder {
                     } else {
                         setToBlack(buffer, lineOffset, bitOffset, code);
                         bitOffset += code;
-                        
+
                         updatePointer(9 - bits);
                         if (isT == 0) {
                             isWhite = true;
@@ -728,10 +728,10 @@ public class TIFFFaxDecoder {
                     entry = twoBitBlack[current];
                     code = (entry >>> 5) & 0x07ff;
                     bits = (entry >>> 1) & 0x0f;
-                    
+
                     setToBlack(buffer, lineOffset, bitOffset, code);
                     bitOffset += code;
-                    
+
                     updatePointer(2 - bits);
                     isWhite = true;
                     currChangingElems[changingElemSize++] = bitOffset;
@@ -739,13 +739,13 @@ public class TIFFFaxDecoder {
                     // Is a Terminating code
                     setToBlack(buffer, lineOffset, bitOffset, code);
                     bitOffset += code;
-                    
+
                     updatePointer(4 - bits);
                     isWhite = true;
                     currChangingElems[changingElemSize++] = bitOffset;
                 }
             }
-            
+
             // Check whether this run completed one width
             if (bitOffset == w) {
                 if (compression == 2) {
@@ -754,12 +754,12 @@ public class TIFFFaxDecoder {
                 break;
             }
         }
-        
+
         currChangingElems[changingElemSize++] = bitOffset;
     }
-    
+
     // Two-dimensional decoding methods
-    
+
     public void decode2D(byte[] buffer,
     byte compData[],
     int startX,
@@ -767,100 +767,100 @@ public class TIFFFaxDecoder {
     long tiffT4Options) {
         this.data = compData;
         compression = 3;
-        
+
         bitPointer = 0;
         bytePointer = 0;
-        
+
         int scanlineStride = (w + 7)/8;
-        
+
         int a0, a1, b1, b2;
         int[] b = new int[2];
         int entry, code, bits;
         boolean isWhite;
         int currIndex = 0;
         int temp[];
-        
+
         // fillBits - dealt with this in readEOL
         // 1D/2D encoding - dealt with this in readEOL
-        
+
         // uncompressedMode - haven't dealt with this yet.
-        
-        
+
+
         oneD = (int)(tiffT4Options & 0x01);
         uncompressedMode = (int)((tiffT4Options & 0x02) >> 1);
         fillBits = (int)((tiffT4Options & 0x04) >> 2);
-        
+
         // The data must start with an EOL code
         if (readEOL(true) != 1) {
             throw new RuntimeException(MessageLocalization.getComposedMessage("first.scanline.must.be.1d.encoded"));
         }
-        
+
         int lineOffset = 0;
         int bitOffset;
-        
+
         // Then the 1D encoded scanline data will occur, changing elements
         // array gets set.
         decodeNextScanline(buffer, lineOffset, startX);
         lineOffset += scanlineStride;
-        
+
         for (int lines = 1; lines < height; lines++) {
-            
+
             // Every line must begin with an EOL followed by a bit which
             // indicates whether the following scanline is 1D or 2D encoded.
             if (readEOL(false) == 0) {
                 // 2D encoded scanline follows
-                
+
                 // Initialize previous scanlines changing elements, and
                 // initialize current scanline's changing elements array
                 temp = prevChangingElems;
                 prevChangingElems = currChangingElems;
                 currChangingElems = temp;
                 currIndex = 0;
-                
+
                 // a0 has to be set just before the start of this scanline.
                 a0 = -1;
                 isWhite = true;
                 bitOffset = startX;
-                
+
                 lastChangingElement = 0;
-                
+
                 while (bitOffset < w) {
                     // Get the next changing element
                     getNextChangingElement(a0, isWhite, b);
-                    
+
                     b1 = b[0];
                     b2 = b[1];
-                    
+
                     // Get the next seven bits
                     entry = nextLesserThan8Bits(7);
-                    
+
                     // Run these through the 2DCodes table
                     entry = twoDCodes[entry] & 0xff;
-                    
+
                     // Get the code and the number of bits used up
                     code = (entry & 0x78) >>> 3;
                     bits = entry & 0x07;
-                    
+
                     if (code == 0) {
                         if (!isWhite) {
                             setToBlack(buffer, lineOffset, bitOffset,
                             b2 - bitOffset);
                         }
                         bitOffset = a0 = b2;
-                        
+
                         // Set pointer to consume the correct number of bits.
                         updatePointer(7 - bits);
                     } else if (code == 1) {
                         // Horizontal
                         updatePointer(7 - bits);
-                        
+
                         // identify the next 2 codes.
                         int number;
                         if (isWhite) {
                             number = decodeWhiteCodeWord();
                             bitOffset += number;
                             currChangingElems[currIndex++] = bitOffset;
-                            
+
                             number = decodeBlackCodeWord();
                             setToBlack(buffer, lineOffset, bitOffset, number);
                             bitOffset += number;
@@ -870,19 +870,19 @@ public class TIFFFaxDecoder {
                             setToBlack(buffer, lineOffset, bitOffset, number);
                             bitOffset += number;
                             currChangingElems[currIndex++] = bitOffset;
-                            
+
                             number = decodeWhiteCodeWord();
                             bitOffset += number;
                             currChangingElems[currIndex++] = bitOffset;
                         }
-                        
+
                         a0 = bitOffset;
                     } else if (code <= 8) {
                         // Vertical
                         a1 = b1 + (code - 5);
-                        
+
                         currChangingElems[currIndex++] = a1;
-                        
+
                         // We write the current color till a1 - 1 pos,
                         // since a1 is where the next color starts
                         if (!isWhite) {
@@ -891,13 +891,13 @@ public class TIFFFaxDecoder {
                         }
                         bitOffset = a0 = a1;
                         isWhite = !isWhite;
-                        
+
                         updatePointer(7 - bits);
                     } else {
                         throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.code.encountered.while.decoding.2d.group.3.compressed.data"));
                     }
                 }
-                
+
                 // Add the changing element beyond the current scanline for the
                 // other color too
                 currChangingElems[currIndex++] = bitOffset;
@@ -906,11 +906,11 @@ public class TIFFFaxDecoder {
                 // 1D encoded scanline follows
                 decodeNextScanline(buffer, lineOffset, startX);
             }
-            
+
             lineOffset += scanlineStride;
         }
     }
-    
+
     public void decodeT6(byte[] buffer,
     byte[] compData,
     int startX,
@@ -918,44 +918,44 @@ public class TIFFFaxDecoder {
     long tiffT6Options) {
         this.data = compData;
         compression = 4;
-        
+
         bitPointer = 0;
         bytePointer = 0;
-        
+
         int scanlineStride = (w + 7)/8;
-        
+
         int a0, a1, b1, b2;
         int entry, code, bits;
         boolean isWhite;
         int currIndex;
         int temp[];
-        
+
         // Return values from getNextChangingElement
         int[] b = new int[2];
-        
+
         // uncompressedMode - have written some code for this, but this
         // has not been tested due to lack of test images using this optional
-        
+
         uncompressedMode = (int)((tiffT6Options & 0x02) >> 1);
-        
+
         // Local cached reference
         int[] cce = currChangingElems;
-        
+
         // Assume invisible preceding row of all white pixels and insert
         // both black and white changing elements beyond the end of this
         // imaginary scanline.
         changingElemSize = 0;
         cce[changingElemSize++] = w;
         cce[changingElemSize++] = w;
-        
+
         int lineOffset = 0;
         int bitOffset;
-        
+
         for (int lines = 0; lines < height; lines++) {
             // a0 has to be set just before the start of the scanline.
             a0 = -1;
             isWhite = true;
-            
+
             // Assign the changing elements of the previous scanline to
             // prevChangingElems and start putting this new scanline's
             // changing elements into the currChangingElems.
@@ -963,29 +963,29 @@ public class TIFFFaxDecoder {
             prevChangingElems = currChangingElems;
             cce = currChangingElems = temp;
             currIndex = 0;
-            
+
             // Start decoding the scanline at startX in the raster
             bitOffset = startX;
-            
+
             // Reset search start position for getNextChangingElement
             lastChangingElement = 0;
-            
+
             // Till one whole scanline is decoded
             while (bitOffset < w) {
                 // Get the next changing element
                 getNextChangingElement(a0, isWhite, b);
                 b1 = b[0];
                 b2 = b[1];
-                
+
                 // Get the next seven bits
                 entry = nextLesserThan8Bits(7);
                 // Run these through the 2DCodes table
                 entry = twoDCodes[entry] & 0xff;
-                
+
                 // Get the code and the number of bits used up
                 code = (entry & 0x78) >>> 3;
                 bits = entry & 0x07;
-                
+
                 if (code == 0) { // Pass
                     // We always assume WhiteIsZero format for fax.
                     if (!isWhite) {
@@ -993,13 +993,13 @@ public class TIFFFaxDecoder {
                         b2 - bitOffset);
                     }
                     bitOffset = a0 = b2;
-                    
+
                     // Set pointer to only consume the correct number of bits.
                     updatePointer(7 - bits);
                 } else if (code == 1) { // Horizontal
                     // Set pointer to only consume the correct number of bits.
                     updatePointer(7 - bits);
-                    
+
                     // identify the next 2 alternating color codes.
                     int number;
                     if (isWhite) {
@@ -1007,7 +1007,7 @@ public class TIFFFaxDecoder {
                         number = decodeWhiteCodeWord();
                         bitOffset += number;
                         cce[currIndex++] = bitOffset;
-                        
+
                         number = decodeBlackCodeWord();
                         setToBlack(buffer, lineOffset, bitOffset, number);
                         bitOffset += number;
@@ -1018,17 +1018,17 @@ public class TIFFFaxDecoder {
                         setToBlack(buffer, lineOffset, bitOffset, number);
                         bitOffset += number;
                         cce[currIndex++] = bitOffset;
-                        
+
                         number = decodeWhiteCodeWord();
                         bitOffset += number;
                         cce[currIndex++] = bitOffset;
                     }
-                    
+
                     a0 = bitOffset;
                 } else if (code <= 8) { // Vertical
                     a1 = b1 + (code - 5);
                     cce[currIndex++] = a1;
-                    
+
                     // We write the current color till a1 - 1 pos,
                     // since a1 is where the next color starts
                     if (!isWhite) {
@@ -1037,38 +1037,38 @@ public class TIFFFaxDecoder {
                     }
                     bitOffset = a0 = a1;
                     isWhite = !isWhite;
-                    
+
                     updatePointer(7 - bits);
                 } else if (code == 11) {
                     if (nextLesserThan8Bits(3) != 7) {
                         throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.code.encountered.while.decoding.2d.group.4.compressed.data"));
                     }
-                    
+
                     int zeros = 0;
                     boolean exit = false;
-                    
+
                     while (!exit) {
                         while (nextLesserThan8Bits(1) != 1) {
                             zeros++;
                         }
-                        
+
                         if (zeros > 5) {
                             // Exit code
-                            
+
                             // Zeros before exit code
                             zeros = zeros - 6;
-                            
+
                             if (!isWhite && (zeros > 0)) {
                                 cce[currIndex++] = bitOffset;
                             }
-                            
+
                             // Zeros before the exit code
                             bitOffset += zeros;
                             if (zeros > 0) {
                                 // Some zeros have been written
                                 isWhite = true;
                             }
-                            
+
                             // Read in the bit which specifies the color of
                             // the following run
                             if (nextLesserThan8Bits(1) == 0) {
@@ -1082,29 +1082,29 @@ public class TIFFFaxDecoder {
                                 }
                                 isWhite = false;
                             }
-                            
+
                             exit = true;
                         }
-                        
+
                         if (zeros == 5) {
                             if (!isWhite) {
                                 cce[currIndex++] = bitOffset;
                             }
                             bitOffset += zeros;
-                            
+
                             // Last thing written was white
                             isWhite = true;
                         } else {
                             bitOffset += zeros;
-                            
+
                             cce[currIndex++] = bitOffset;
                             setToBlack(buffer, lineOffset, bitOffset, 1);
                             ++bitOffset;
-                            
+
                             // Last thing written was black
                             isWhite = false;
                         }
-                        
+
                     }
                 } else {
                 	//micah_tessler@yahoo.com
@@ -1115,28 +1115,28 @@ public class TIFFFaxDecoder {
                 	updatePointer(7 - bits);
                 }
             }
-            
+
             // Add the changing element beyond the current scanline for the
             // other color too
             //make sure that the index does not exceed the bounds of the array
-            if(currIndex < cce.length) 
+            if(currIndex < cce.length)
             cce[currIndex++] = bitOffset;
-            
+
             // Number of changing elements in this scanline.
             changingElemSize = currIndex;
-            
+
             lineOffset += scanlineStride;
         }
     }
-    
+
     private void setToBlack(byte[] buffer,
     int lineOffset, int bitOffset,
     int numBits) {
         int bitNum = 8*lineOffset + bitOffset;
         int lastBit = bitNum + numBits;
-        
+
         int byteNum = bitNum >> 3;
-        
+
         // Handle bits in first byte
         int shift = bitNum & 0x7;
         if (shift > 0) {
@@ -1149,14 +1149,14 @@ public class TIFFFaxDecoder {
             }
             buffer[byteNum] = val;
         }
-        
+
         // Fill in 8 bits at a time
         byteNum = bitNum >> 3;
         while (bitNum < lastBit - 7) {
             buffer[byteNum++] = (byte)255;
             bitNum += 8;
         }
-        
+
         // Fill in remaining bits
         while (bitNum < lastBit) {
             byteNum = bitNum >> 3;
@@ -1164,21 +1164,21 @@ public class TIFFFaxDecoder {
             ++bitNum;
         }
     }
-    
+
     // Returns run length
     private int decodeWhiteCodeWord() {
         int current, entry, bits, isT, twoBits, code = -1;
         int runLength = 0;
         boolean isWhite = true;
-        
+
         while (isWhite) {
             current = nextNBits(10);
             entry = white[current];
-            
+
             // Get the 3 fields from the entry
             isT = entry & 0x0001;
             bits = (entry >>> 1) & 0x0f;
-            
+
             if (bits == 12) {           // Additional Make up code
                 // Get the next 2 bits
                 twoBits = nextLesserThan8Bits(2);
@@ -1192,7 +1192,11 @@ public class TIFFFaxDecoder {
             } else if (bits == 0) {     // ERROR
                 throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.code.encountered"));
             } else if (bits == 15) {    // EOL
-                throw new RuntimeException(MessageLocalization.getComposedMessage("eol.code.word.encountered.in.white.run"));
+                if ( runLength == 0 ) {
+                  isWhite = false;
+                } else {
+                  throw new RuntimeException(MessageLocalization.getComposedMessage("eol.code.word.encountered.in.white.run"));
+                }
             } else {
                 // 11 bits - 0000 0111 1111 1111 = 0x07ff
                 code = (entry >>> 5) & 0x07ff;
@@ -1203,34 +1207,34 @@ public class TIFFFaxDecoder {
                 }
             }
         }
-        
+
         return runLength;
     }
-    
+
     // Returns run length
     private int decodeBlackCodeWord() {
         int current, entry, bits, isT, code = -1;
         int runLength = 0;
         boolean isWhite = false;
-        
+
         while (!isWhite) {
             current = nextLesserThan8Bits(4);
             entry = initBlack[current];
-            
+
             // Get the 3 fields from the entry
             isT = entry & 0x0001;
             bits = (entry >>> 1) & 0x000f;
             code = (entry >>> 5) & 0x07ff;
-            
+
             if (code == 100) {
                 current = nextNBits(9);
                 entry = black[current];
-                
+
                 // Get the 3 fields from the entry
                 isT = entry & 0x0001;
                 bits = (entry >>> 1) & 0x000f;
                 code = (entry >>> 5) & 0x07ff;
-                
+
                 if (bits == 12) {
                     // Additional makeup codes
                     updatePointer(5);
@@ -1239,11 +1243,15 @@ public class TIFFFaxDecoder {
                     bits = (entry >>> 1) & 0x07;     // 3 bits 0000 0111
                     code  = (entry >>> 4) & 0x0fff;  // 12 bits
                     runLength += code;
-                    
+
                     updatePointer(4 - bits);
                 } else if (bits == 15) {
                     // EOL code
-                    throw new RuntimeException(MessageLocalization.getComposedMessage("eol.code.word.encountered.in.black.run"));
+                    if ( runLength == 0 ) {
+                        isWhite = true;
+                    } else {
+                          throw new RuntimeException(MessageLocalization.getComposedMessage("eol.code.word.encountered.in.black.run"));
+                    }
                 } else {
                     runLength += code;
                     updatePointer(9 - bits);
@@ -1267,24 +1275,24 @@ public class TIFFFaxDecoder {
                 isWhite = true;
             }
         }
-        
+
         return runLength;
     }
-    
+
     private int readEOL(boolean isFirstEOL) {
         if (fillBits == 0) {
             int next12Bits = nextNBits(12);
             if (isFirstEOL && next12Bits == 0) {
-                
+
                 // Might have the case of EOL padding being used even
                 // though it was not flagged in the T4Options field.
                 // This was observed to be the case in TIFFs produced
                 // by a well known vendor who shall remain nameless.
-                
+
                 if(nextNBits(4) == 1) {
-                    
+
                     // EOL must be padded: reset the fillBits flag.
-                    
+
                     fillBits = 1;
                     return 1;
                 }
@@ -1293,17 +1301,17 @@ public class TIFFFaxDecoder {
                 throw new RuntimeException(MessageLocalization.getComposedMessage("scanline.must.begin.with.eol.code.word"));
             }
         } else if (fillBits == 1) {
-            
+
             // First EOL code word xxxx 0000 0000 0001 will occur
             // As many fill bits will be present as required to make
             // the EOL code of 12 bits end on a byte boundary.
-            
+
             int bitsLeft = 8 - bitPointer;
-            
+
             if (nextNBits(bitsLeft) != 0) {
                 throw new RuntimeException(MessageLocalization.getComposedMessage("all.fill.bits.preceding.eol.code.must.be.0"));
             }
-            
+
             // If the number of bitsLeft is less than 8, then to have a 12
             // bit EOL sequence, two more bytes are certainly going to be
             // required. The first of them has to be all zeros, so ensure
@@ -1313,20 +1321,20 @@ public class TIFFFaxDecoder {
                     throw new RuntimeException(MessageLocalization.getComposedMessage("all.fill.bits.preceding.eol.code.must.be.0"));
                 }
             }
-            
+
             // There might be a random number of fill bytes with 0s, so
             // loop till the EOL of 0000 0001 is found, as long as all
             // the bytes preceding it are 0's.
             int n;
             while ((n = nextNBits(8)) != 1) {
-                
+
                 // If not all zeros
                 if (n != 0) {
                     throw new RuntimeException(MessageLocalization.getComposedMessage("all.fill.bits.preceding.eol.code.must.be.0"));
                 }
             }
         }
-        
+
         // If one dimensional encoding mode, then always return 1
         if (oneD == 0) {
             return 1;
@@ -1336,12 +1344,12 @@ public class TIFFFaxDecoder {
             return nextLesserThan8Bits(1);
         }
     }
-    
+
     private void getNextChangingElement(int a0, boolean isWhite, int[] ret) {
         // Local copies of instance variables
         int[] pce = this.prevChangingElems;
         int ces = this.changingElemSize;
-        
+
         // If the previous match was at an odd element, we still
         // have to search the preceeding element.
         // int start = lastChangingElement & ~0x1;
@@ -1351,7 +1359,7 @@ public class TIFFFaxDecoder {
         } else {
             start |= 0x1; // Search odd numbered elements
         }
-        
+
         int i = start;
         for (; i < ces; i += 2) {
             int temp = pce[i];
@@ -1361,20 +1369,20 @@ public class TIFFFaxDecoder {
                 break;
             }
         }
-        
+
         if (i + 1 < ces) {
             ret[1] = pce[i + 1];
         }
     }
-    
+
     private int nextNBits(int bitsToGet) {
         byte b, next, next2next;
         int l = data.length - 1;
         int bp = this.bytePointer;
-        
+
         if (fillOrder == 1) {
             b = data[bp];
-            
+
             if (bp == l) {
                 next = 0x00;
                 next2next = 0x00;
@@ -1387,7 +1395,7 @@ public class TIFFFaxDecoder {
             }
         } else if (fillOrder == 2) {
             b = flipTable[data[bp] & 0xff];
-            
+
             if (bp == l) {
                 next = 0x00;
                 next2next = 0x00;
@@ -1401,7 +1409,7 @@ public class TIFFFaxDecoder {
         } else {
             throw new RuntimeException(MessageLocalization.getComposedMessage("tiff.fill.order.tag.must.be.either.1.or.2"));
         }
-        
+
         int bitsLeft = 8 - bitPointer;
         int bitsFromNextByte = bitsToGet - bitsLeft;
         int bitsFromNext2NextByte = 0;
@@ -1409,12 +1417,12 @@ public class TIFFFaxDecoder {
             bitsFromNext2NextByte = bitsFromNextByte - 8;
             bitsFromNextByte = 8;
         }
-        
+
         bytePointer++;
-        
+
         int i1 = (b & table1[bitsLeft]) << (bitsToGet - bitsLeft);
         int i2 = (next & table2[bitsFromNextByte]) >>> (8 - bitsFromNextByte);
-        
+
         int i3 = 0;
         if (bitsFromNext2NextByte != 0) {
             i2 <<= bitsFromNext2NextByte;
@@ -1431,16 +1439,16 @@ public class TIFFFaxDecoder {
                 bitPointer = bitsFromNextByte;
             }
         }
-        
+
         int i = i1 | i2;
         return i;
     }
-    
+
     private int nextLesserThan8Bits(int bitsToGet) {
         byte b, next;
         int l = data.length - 1;
         int bp = this.bytePointer;
-        
+
         if (fillOrder == 1) {
             b = data[bp];
             if (bp == l) {
@@ -1458,10 +1466,10 @@ public class TIFFFaxDecoder {
         } else {
             throw new RuntimeException(MessageLocalization.getComposedMessage("tiff.fill.order.tag.must.be.either.1.or.2"));
         }
-        
+
         int bitsLeft = 8 - bitPointer;
         int bitsFromNextByte = bitsToGet - bitsLeft;
-        
+
         int shift = bitsLeft - bitsToGet;
         int i1, i2;
         if (shift >= 0) {
@@ -1474,19 +1482,19 @@ public class TIFFFaxDecoder {
         } else {
             i1 = (b & table1[bitsLeft]) << (-shift);
             i2 = (next & table2[bitsFromNextByte]) >>> (8 - bitsFromNextByte);
-            
+
             i1 |= i2;
             bytePointer++;
             bitPointer = bitsFromNextByte;
         }
-        
+
         return i1;
     }
-    
+
     // Move pointer backwards by given amount of bits
     private void updatePointer(int bitsToMoveBack) {
         int i = bitPointer - bitsToMoveBack;
-        
+
         if (i < 0) {
             bytePointer--;
             bitPointer = 8 + i;
@@ -1494,15 +1502,14 @@ public class TIFFFaxDecoder {
             bitPointer = i;
         }
     }
-    
+
     // Move to the next byte boundary
     private boolean advancePointer() {
         if (bitPointer != 0) {
             bytePointer++;
             bitPointer = 0;
         }
-        
+
         return true;
     }
 }
-
