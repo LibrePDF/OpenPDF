@@ -290,6 +290,14 @@ public class PdfSignatureAppearance {
     this.filter = filter;
   }
 
+  /**
+   * Sets the cryptographic parameters.
+   * @deprecated use {@link #setCrypto(PrivateKey, X509Certificate, CRL, PdfName)}
+   */
+  public void setCrypto(PrivateKey privKey, Certificate[] certChain, CRL[] crlList, PdfName filter) {
+    setCrypto(privKey, (X509Certificate) certChain[0], crlList != null ? crlList[0] : null, filter);
+  }
+
   // OJO... Modificacion de
   // flopez-------------------------------------------------
   public void setVisibleSignature(Rectangle pageRect, int page) {
