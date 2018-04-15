@@ -53,6 +53,7 @@
         <maven.jar.plugin.version>2.5</maven.jar.plugin.version>
         <maven.plugin.repository.version>2.3.1</maven.plugin.repository.version>
         <maven.plugin.bundle.version>3.2.0</maven.plugin.bundle.version>
+        <bouncycastle.version>1.58</bouncycastle.version>
     </properties>
     <!-- Support for compilation under java 8 -->
     <profiles>
@@ -235,6 +236,16 @@
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk15on</artifactId>
+                <version>${bouncycastle.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 /**
@@ -71,7 +72,7 @@ public class PdfArray extends PdfObject {
 	// CLASS VARIABLES
 
 	/** this is the actual array of PdfObjects */
-	protected ArrayList<PdfObject> arrayList;
+	protected List<PdfObject> arrayList;
 
 	// constructors
 
@@ -80,7 +81,7 @@ public class PdfArray extends PdfObject {
 	 */
 	public PdfArray() {
 		super(ARRAY);
-		arrayList = new ArrayList<PdfObject>();
+		arrayList = new ArrayList<>();
 	}
 
 	/**
@@ -91,8 +92,7 @@ public class PdfArray extends PdfObject {
 	 *            a <CODE>PdfObject</CODE> that has to be added to the array
 	 */
 	public PdfArray(PdfObject object) {
-		super(ARRAY);
-		arrayList = new ArrayList<PdfObject>();
+		this();
 		arrayList.add(object);
 	}
 
@@ -107,8 +107,7 @@ public class PdfArray extends PdfObject {
 	 *            an array of <CODE>float</CODE> values to be added
 	 */
 	public PdfArray(float values[]) {
-		super(ARRAY);
-		arrayList = new ArrayList<PdfObject>();
+		this();
 		add(values);
 	}
 
@@ -123,27 +122,23 @@ public class PdfArray extends PdfObject {
 	 *            an array of <CODE>int</CODE> values to be added
 	 */
 	public PdfArray(int values[]) {
-		super(ARRAY);
-		arrayList = new ArrayList<PdfObject>();
+		this();
 		add(values);
 	}
 
 	/**
 	 * Constructs a <CODE>PdfArray</CODE>, containing all elements of a
-	 * specified <CODE>ArrayList</CODE>.
-	 * 
-	 * @param l
-	 *            an <CODE>ArrayList</CODE> with <CODE>PdfObject</CODE>s to be
+	 * specified <CODE>List</CODE>.
+	 *
+	 * @param pdfObjectList
+	 *            an <CODE>List</CODE> with <CODE>PdfObject</CODE>s to be
 	 *            added to the array
-	 * @throws ClassCastException
-	 *             if the <CODE>ArrayList</CODE> contains something that isn't a
-	 *             <CODE>PdfObject</CODE>
 	 * @since 2.1.3
 	 */
-	public PdfArray(ArrayList l) {
+	public PdfArray(List<PdfObject> pdfObjectList) {
 		this();
-		for (Iterator i = l.iterator(); i.hasNext();) {
-			add((PdfObject) i.next());
+		if (pdfObjectList != null) {
+			arrayList.addAll(pdfObjectList);
 		}
 	}
 
@@ -155,8 +150,7 @@ public class PdfArray extends PdfObject {
 	 *            a <CODE>PdfArray</CODE> to be added to the array
 	 */
 	public PdfArray(PdfArray array) {
-		super(ARRAY);
-		arrayList = new ArrayList<PdfObject>(array.arrayList);
+		this(array.getElements());
 	}
 
 	// METHODS OVERRIDING SOME PDFOBJECT METHODS
@@ -176,7 +170,7 @@ public class PdfArray extends PdfObject {
 
 		Iterator<PdfObject> i = arrayList.iterator();
 		PdfObject object;
-		int type = 0;
+		int type;
 		if (i.hasNext()) {
 			object = i.next();
 			if (object == null) {
@@ -250,20 +244,29 @@ public class PdfArray extends PdfObject {
 	}
 
 	/**
-	 * Get the internal arrayList for this PdfArray. Not Recommended.
-	 * 
-	 * @deprecated
-	 * @return the internal ArrayList. Naughty Naughty.
+	 * Get a copy the internal list for this PdfArray.
+	 *
+	 * @deprecated Please use getElements() instead.
+	 * @return a copy of the the internal List.
 	 */
 	@Deprecated
-	public ArrayList<PdfObject> getArrayList() {
-		return arrayList;
+	public List<PdfObject> getArrayList() {
+		return getElements();
+	}
+
+	/**
+	 * Get a copy the internal list for this PdfArray.
+	 *
+	 * @return a copy of the the internal List.
+	 */
+	public List<PdfObject> getElements() {
+		return new ArrayList<>(arrayList);
 	}
 
 	/**
 	 * Returns the number of entries in the array.
-	 * 
-	 * @return the size of the ArrayList
+	 *
+	 * @return the size of the List
 	 */
 	public int size() {
 		return arrayList.size();

@@ -49,13 +49,14 @@
 
 package com.lowagie.text.pdf;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import com.lowagie.text.error_messages.MessageLocalization;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <CODE>PdfPages</CODE> is the PDF Pages-object.
@@ -141,7 +142,7 @@ public class PdfPages {
                 PdfDictionary top = new PdfDictionary(PdfName.PAGES);
                 top.put(PdfName.COUNT, new PdfNumber(thisLeaf));
                 PdfArray kids = new PdfArray();
-                ArrayList internal = kids.getArrayList();
+                List<PdfObject> internal = kids.getElements();
                 internal.addAll(tPages.subList(p * stdCount, p * stdCount + count));
                 top.put(PdfName.KIDS, kids);
                 if (tParents.size() > 1) {
