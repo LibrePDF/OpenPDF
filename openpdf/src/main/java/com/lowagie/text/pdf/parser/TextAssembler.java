@@ -112,7 +112,7 @@ public interface TextAssembler {
 
 	/**
 	 * @param page
-	 *            TODO
+	 *            NUmber of the page we are assembling
 	 * 
 	 */
 	void setPage(int page);

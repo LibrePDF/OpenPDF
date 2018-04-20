@@ -180,13 +180,16 @@ public class Word extends ParsedTextImpl {
 
 	/**
 	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getFinalText(PdfReader,
-	 *      int, TextAssembler)
+	 *      int, TextAssembler, boolean)
 	 */
 	@Override
 	public FinalText getFinalText(PdfReader reader, int page,
-			TextAssembler assembler) {
-		return new FinalText(
-				wordMarkup(getText(), reader, page, assembler));
+			TextAssembler assembler, boolean useMarkup) {
+	    if (useMarkup) {
+	        return new FinalText(wordMarkup(getText(), reader, page, assembler));
+	    } else { 
+	        return new FinalText(getText() + " ");
+	    }
 	}
 
 	@Override

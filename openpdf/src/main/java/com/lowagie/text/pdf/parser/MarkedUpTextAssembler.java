@@ -131,7 +131,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
 		}
 		partialWords.clear();
 		if (_inProgress != null) {
-			result.add(_inProgress.getFinalText(_reader, _page, this));
+			result.add(_inProgress.getFinalText(_reader, _page, this, _usePdfMarkupElements));
 			_inProgress = null;
 		}
 	}
@@ -242,7 +242,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
          */
         float spacing = lastEnd.subtract(start).length();
         if (hardReturn || partialWord.breakBefore()) {
-            result.add(_inProgress.getFinalText(_reader, _page, this));
+            result.add(_inProgress.getFinalText(_reader, _page, this, _usePdfMarkupElements));
             if (hardReturn) {
                 result.add(new FinalText("\n"));
                 if (_usePdfMarkupElements) {
@@ -258,7 +258,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
                                    partialWord.getEndPoint(),
                                    _inProgress.getBaseline(), partialWord.getSingleSpaceWidth(), _inProgress.shouldNotSplit(), _inProgress.breakBefore());
         } else {
-            result.add(_inProgress.getFinalText(_reader, _page, this));
+            result.add(_inProgress.getFinalText(_reader, _page, this, _usePdfMarkupElements));
             _inProgress = partialWord;
         }
     }

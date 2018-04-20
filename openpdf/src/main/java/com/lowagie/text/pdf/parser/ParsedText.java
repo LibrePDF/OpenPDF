@@ -475,11 +475,11 @@ public class ParsedText extends ParsedTextImpl {
 
     /**
 	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getFinalText(com.lowagie.text.pdf.PdfReader,
-	 *      int, com.lowagie.text.pdf.parser.TextAssembler)
+	 *      int, com.lowagie.text.pdf.parser.TextAssembler, boolean)
 	 */
 	@Override
 	public FinalText getFinalText(PdfReader reader, int page,
-			TextAssembler assembler) {
+			TextAssembler assembler, boolean useMarkup) {
 		throw new RuntimeException(
 				"Final text should never be called on unprocessed word fragment.");
 	}
