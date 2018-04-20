@@ -22,8 +22,6 @@ import org.junit.Test;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-
 import static org.junit.Assert.*;
 
 /**

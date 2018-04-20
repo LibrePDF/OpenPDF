@@ -18,8 +18,6 @@ package com.lowagie.examples.forms;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
-
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 
