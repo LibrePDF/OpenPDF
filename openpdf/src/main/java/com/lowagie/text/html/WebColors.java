@@ -51,6 +51,7 @@ package com.lowagie.text.html;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import com.lowagie.text.error_messages.MessageLocalization;
 
@@ -253,7 +254,7 @@ public class WebColors extends HashMap {
             }
             return new Color(c[0], c[1], c[2], c[3]);
         }
-		name = name.toLowerCase();
+		name = name.toLowerCase(Locale.ROOT);
 		if (!NAMES.containsKey(name))
 			throw new IllegalArgumentException("Color '" + name
 					+ "' not found.");

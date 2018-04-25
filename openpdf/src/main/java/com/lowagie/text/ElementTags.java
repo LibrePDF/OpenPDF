@@ -52,6 +52,8 @@
 
 package com.lowagie.text;
 
+import java.util.Locale;
+
 /**
  * A class that contains all the possible tagnames and their attributes.
  */
@@ -191,19 +193,19 @@ public class ElementTags {
     public static final String BLUE = "blue";
     
     /** attribute of the chunk tag */
-    public static final String SUBSUPSCRIPT = Chunk.SUBSUPSCRIPT.toLowerCase();
+    public static final String SUBSUPSCRIPT = Chunk.SUBSUPSCRIPT.toLowerCase(Locale.ROOT);
     
     /** attribute of the chunk tag */
-    public static final String LOCALGOTO = Chunk.LOCALGOTO.toLowerCase();
+    public static final String LOCALGOTO = Chunk.LOCALGOTO.toLowerCase(Locale.ROOT);
     
     /** attribute of the chunk tag */
-    public static final String REMOTEGOTO = Chunk.REMOTEGOTO.toLowerCase();
+    public static final String REMOTEGOTO = Chunk.REMOTEGOTO.toLowerCase(Locale.ROOT);
     
     /** attribute of the chunk tag */
-    public static final String LOCALDESTINATION = Chunk.LOCALDESTINATION.toLowerCase();
+    public static final String LOCALDESTINATION = Chunk.LOCALDESTINATION.toLowerCase(Locale.ROOT);
     
     /** attribute of the chunk tag */
-    public static final String GENERICTAG = Chunk.GENERICTAG.toLowerCase();
+    public static final String GENERICTAG = Chunk.GENERICTAG.toLowerCase(Locale.ROOT);
     
     // tables/cells
     

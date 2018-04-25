@@ -145,6 +145,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Locale;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
@@ -303,17 +305,17 @@ public final class Pfm2afm {
         }
 
         out.print("\nWeight ");
-        if (weight > 475 || fname.toLowerCase().indexOf("bold") >= 0)
+        if (weight > 475 || fname.toLowerCase(Locale.ROOT).indexOf("bold") >= 0)
            out.print("Bold");
-        else if ((weight < 325 && weight != 0) || fname.toLowerCase().indexOf("light") >= 0)
+        else if ((weight < 325 && weight != 0) || fname.toLowerCase(Locale.ROOT).indexOf("light") >= 0)
             out.print("Light");
-        else if (fname.toLowerCase().indexOf("black") >= 0)
+        else if (fname.toLowerCase(Locale.ROOT).indexOf("black") >= 0)
             out.print("Black");
         else 
             out.print("Medium");
 
         out.print("\nItalicAngle ");
-        if (italic != 0 || fname.toLowerCase().indexOf("italic") >= 0)
+        if (italic != 0 || fname.toLowerCase(Locale.ROOT).indexOf("italic") >= 0)
             out.print("-12.00");
             /* this is a typical value; something else may work better for a
                specific font */

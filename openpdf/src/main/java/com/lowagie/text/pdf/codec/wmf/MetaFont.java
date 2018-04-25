@@ -51,6 +51,7 @@ package com.lowagie.text.pdf.codec.wmf;
 import com.lowagie.text.Document;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
@@ -127,7 +128,7 @@ public class MetaFont extends MetaObject {
         catch (UnsupportedEncodingException e) {
             faceName = new String(name, 0, k);
         }
-        faceName = faceName.toLowerCase();
+        faceName = faceName.toLowerCase(Locale.ROOT);
     }
     
     public BaseFont getFont() {

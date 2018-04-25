@@ -53,6 +53,7 @@
 package com.lowagie.text.html;
 
 import java.awt.Color;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -419,7 +420,7 @@ public class Markup {
 	public static Color decodeColor(String s) {
 		if (s == null)
 			return null;
-		s = s.toLowerCase().trim();
+		s = s.toLowerCase(Locale.ROOT).trim();
 		try {
 			return WebColors.getRGBColor(s);
 		}
@@ -459,7 +460,7 @@ public class Markup {
 				value = value.substring(1);
 			if (value.endsWith("\""))
 				value = value.substring(0, value.length() - 1);
-			result.setProperty(key.toLowerCase(), value);
+			result.setProperty(key.toLowerCase(Locale.ROOT), value);
 		}
 		return result;
 	}
