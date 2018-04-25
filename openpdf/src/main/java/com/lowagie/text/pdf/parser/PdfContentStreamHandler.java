@@ -48,6 +48,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 
@@ -694,7 +695,7 @@ public class PdfContentStreamHandler {
 		public void invoke(ArrayList<PdfObject> operands,
 				PdfContentStreamHandler handler, PdfDictionary resources) {
 			PdfName tagName = (PdfName) operands.get(0);
-			String realName = tagName.toString().substring(1).toLowerCase();
+			String realName = tagName.toString().substring(1).toLowerCase(Locale.ROOT);
 			if ("artifact".equals(tagName) || "placedpdf".equals(tagName)) {
 				handler.pushContext(null);
 			} else {
@@ -720,7 +721,7 @@ public class PdfContentStreamHandler {
 		public void invoke(ArrayList<PdfObject> operands,
 				PdfContentStreamHandler handler, PdfDictionary resources) {
 			String tagName = ((PdfName) operands.get(0)).toString().substring(1)
-					.toLowerCase();
+					.toLowerCase(Locale.ROOT);
 			if ("artifact".equals(tagName) || "placedpdf".equals(tagName)
 					|| handler.contextNames.peek() == null) {
 				tagName = null;
