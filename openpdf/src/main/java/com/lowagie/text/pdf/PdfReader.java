@@ -62,6 +62,7 @@ import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,7 +87,7 @@ import java.util.zip.InflaterInputStream;
  * @author Paulo Soares (psoares@consiste.pt)
  * @author Kazuya Ujihara
  */
-public class PdfReader implements PdfViewerPreferences {
+public class PdfReader implements PdfViewerPreferences, Closeable {
 
   static final PdfName pageInhCandidates[] = { PdfName.MEDIABOX,
       PdfName.ROTATE, PdfName.RESOURCES, PdfName.CROPBOX };
