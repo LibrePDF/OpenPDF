@@ -16,7 +16,6 @@ package com.lowagie.examples.objects.tables;
 import java.awt.Color;
 import java.io.FileOutputStream;
 
-import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;

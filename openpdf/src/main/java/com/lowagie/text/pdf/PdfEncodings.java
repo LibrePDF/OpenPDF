@@ -56,6 +56,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -163,7 +164,7 @@ public class PdfEncodings {
 			}
 			return b;
 		}
-		ExtraEncoding extra = extraEncodings.get(encoding.toLowerCase());
+		ExtraEncoding extra = extraEncodings.get(encoding.toLowerCase(Locale.ROOT));
 		if (extra != null) {
 			byte b[] = extra.charToByte(text, encoding);
 			if (b != null) {
@@ -237,7 +238,7 @@ public class PdfEncodings {
 		if (encoding == null || encoding.length() == 0) {
 			return new byte[] { (byte) char1 };
 		}
-		ExtraEncoding extra = extraEncodings.get(encoding.toLowerCase());
+		ExtraEncoding extra = extraEncodings.get(encoding.toLowerCase(Locale.ROOT));
 		if (extra != null) {
 			byte b[] = extra.charToByte(char1, encoding);
 			if (b != null) {
@@ -300,7 +301,7 @@ public class PdfEncodings {
 			}
 			return new String(c);
 		}
-		ExtraEncoding extra = extraEncodings.get(encoding.toLowerCase());
+		ExtraEncoding extra = extraEncodings.get(encoding.toLowerCase(Locale.ROOT));
 		if (extra != null) {
 			String text = extra.byteToChar(bytes, encoding);
 			if (text != null) {
@@ -605,7 +606,7 @@ public class PdfEncodings {
 	 *            the conversion class
 	 */
 	public static void addExtraEncoding(String name, ExtraEncoding enc) {
-		extraEncodings.putIfAbsent(name, enc);
+		extraEncodings.putIfAbsent(name.toLowerCase(Locale.ROOT), enc);
 	}
 
 	private static class WingdingsConversion implements ExtraEncoding {

@@ -63,9 +63,9 @@ public interface ContentOperator {
      * @param operands
      *            the operands that come with the operator
      * @param handler
-     *            TODO
+     *            content stream handler that is invoking us
      * @param resources
-     *            TODO
+     *            Pdf Resources found in the file containing the stream.
      */
     void invoke(ArrayList<PdfObject> operands,
                 PdfContentStreamHandler handler, PdfDictionary resources);

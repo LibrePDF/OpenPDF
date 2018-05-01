@@ -48,6 +48,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 
@@ -694,7 +695,7 @@ public class PdfContentStreamHandler {
 		public void invoke(ArrayList<PdfObject> operands,
 				PdfContentStreamHandler handler, PdfDictionary resources) {
 			PdfName tagName = (PdfName) operands.get(0);
-			String realName = tagName.toString().substring(1).toLowerCase();
+			String realName = tagName.toString().substring(1).toLowerCase(Locale.ROOT);
 			if ("artifact".equals(tagName) || "placedpdf".equals(tagName)) {
 				handler.pushContext(null);
 			} else {
@@ -720,7 +721,7 @@ public class PdfContentStreamHandler {
 		public void invoke(ArrayList<PdfObject> operands,
 				PdfContentStreamHandler handler, PdfDictionary resources) {
 			String tagName = ((PdfName) operands.get(0)).toString().substring(1)
-					.toLowerCase();
+					.toLowerCase(Locale.ROOT);
 			if ("artifact".equals(tagName) || "placedpdf".equals(tagName)
 					|| handler.contextNames.peek() == null) {
 				tagName = null;
@@ -1020,21 +1021,6 @@ public class PdfContentStreamHandler {
 	}
 
 	/**
-	 * Decodes a PdfString (which will contain glyph ids encoded in the font's
-	 * encoding) based on the active font, and determine the unicode equivalent
-	 * 
-	 * @param in
-	 *            the String that needs to be encoded
-	 * 
-	 * @return the encoded String
-	 * @since 2.1.7
-	 */
-	protected String decode(PdfString in) {
-		byte[] bytes = in.getBytes();
-		return getCurrentFont().decode(bytes, 0, bytes.length);
-	}
-
-	/**
 	 * @return current font in processing state
 	 */
 	public CMapAwareDocumentFont getCurrentFont() {
@@ -1048,13 +1034,11 @@ public class PdfContentStreamHandler {
 	 *            the text to display
 	 */
 	void displayPdfString(PdfString string) {
-		String unicode = decode(string);
-
-		ParsedText renderInfo = new ParsedText(unicode, gs(), textMatrix);
+		ParsedText renderInfo = new ParsedText(string, gs(), textMatrix);
 		if (contextNames.peek() != null) {
 			textFragments.add(renderInfo);
 		}
-		textMatrix = new Matrix(renderInfo.getUnscaledWidth(gs()), 0)
+		textMatrix = new Matrix(renderInfo.getUnscaledTextWidth(gs()), 0)
 				.multiply(textMatrix);
 	}
 

@@ -47,10 +47,10 @@ public class FinalText implements TextAssemblyBuffer {
 	/**
 	 * @return
 	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getFinalText(PdfReader,
-	 *      int, TextAssembler)
+	 *      int, TextAssembler, boolean)
 	 */
 	@Override
-	public FinalText getFinalText(PdfReader reader, int page, TextAssembler assembler) {
+	public FinalText getFinalText(PdfReader reader, int page, TextAssembler assembler, boolean useMarkup) {
 		return this;
 	}
 

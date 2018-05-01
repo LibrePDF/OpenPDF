@@ -117,6 +117,19 @@ public class Vector {
     }
     
     /**
+     * Computes the sum of this vector and the specified vector
+     * @param v the vector to subtract from this one
+     * @return the results of the subtraction
+     */
+    public Vector add(Vector v){
+        float x = vals[I1] + v.vals[I1];
+        float y = vals[I2] + v.vals[I2];
+        float z = vals[I3] + v.vals[I3];
+        
+        return new Vector(x, y, z);
+    }
+    
+    /**
      * Computes the cross product of this vector and the specified vector
      * @param with the vector to cross this vector with
      * @return the cross product
