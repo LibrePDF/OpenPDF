@@ -33,12 +33,19 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox.plugins;
+package com.lowagie.toolbox.plugins.watermarker;
 
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfGState;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.decode;
+import static java.lang.Float.parseFloat;
+import static java.lang.Integer.parseInt;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+
+import javax.swing.*;
+
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.toolbox.AbstractTool;
@@ -49,29 +56,19 @@ import com.lowagie.toolbox.arguments.IntegerArgument;
 import com.lowagie.toolbox.arguments.StringArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
 /**
  * This tool lets you add a text watermark to all pages of a document.
  * 
  * @since 2.1.1 (imported from itexttoolbox project)
  */
-public class Watermarker extends AbstractTool {
+public class WatermarkerTool extends AbstractTool {
 
-	static {
-		addVersion("$Id: Watermarker.java 3271 2008-04-18 20:39:42Z xlv $");
-	}
-
-	FileArgument destfile = null;
+	FileArgument destfile;
 
 	/**
 	 * This tool lets you add a text watermark to all pages of a document.
 	 */
-	public Watermarker() {
+	public WatermarkerTool() {
 		super();
 		FileArgument inputfile = new FileArgument(this, "srcfile",
 				"The file you want to watermark", false, new PdfFilter());
@@ -86,6 +83,8 @@ public class Watermarker extends AbstractTool {
 				"The file to which the watermarked PDF has to be written",
 				true, new PdfFilter());
 		arguments.add(destfile);
+		arguments.add(new StringArgument(this, "color",
+				"The color of the watermark text"));
 		inputfile.addPropertyChangeListener(destfile);
 	}
 
@@ -118,44 +117,28 @@ public class Watermarker extends AbstractTool {
 				throw new InstantiationException(
 						"You need to add a text for the watermark");
 			}
-			int fontsize = Integer.parseInt((String) getValue("fontsize"));
-			float opacity = Float.parseFloat((String) getValue("opacity"));
-			BaseFont bf = BaseFont.createFont("Helvetica", BaseFont.WINANSI,
-					false);
-			PdfReader reader = new PdfReader(
-					((File) getValue("srcfile")).getAbsolutePath());
-			int pagecount = reader.getNumberOfPages();
-			PdfGState gs1 = new PdfGState();
-			gs1.setFillOpacity(opacity);
+            if (getValue("fontsize") == null) {
+                throw new InstantiationException(
+                        "You need to add a fontsize for the watermark");
+            }
+            if (getValue("opacity") == null) {
+                throw new InstantiationException(
+                        "You need to add a opacity for the watermark");
+            }
+
+            Color color = BLACK;
+            if (getValue("color") != null) {
+                color = decode((String) getValue("color"));
+            }
+
+			PdfReader reader = new PdfReader(((File) getValue("srcfile")).getAbsolutePath());
+			PdfStamper stamp = new PdfStamper(reader, new FileOutputStream((File) getValue("destfile")));
 			String text = (String) getValue("watermark");
-			PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(
-					(File) getValue("destfile")));
-			float txtwidth = bf.getWidthPoint(text, fontsize);
-			for (int i = 1; i <= pagecount; i++) {
-				PdfContentByte seitex = stamp.getOverContent(i);
-				Rectangle recc = reader.getCropBox(i);
-				recc.normalize();
-				float winkel = (float) Math.atan(recc.getHeight()
-						/ recc.getWidth());
-				float m1 = (float) Math.cos(winkel);
-				float m2 = (float) -Math.sin(winkel);
-				float m3 = (float) Math.sin(winkel);
-				float m4 = (float) Math.cos(winkel);
-				float xoff = (float) (-Math.cos(winkel) * txtwidth / 2 - Math
-						.sin(winkel) * fontsize / 2);
-				float yoff = (float) (Math.sin(winkel) * txtwidth / 2 - Math
-						.cos(winkel) * fontsize / 2);
-				seitex.saveState();
-				seitex.setGState(gs1);
-				seitex.beginText();
-				seitex.setFontAndSize(bf, fontsize);
-				seitex.setTextMatrix(m1, m2, m3, m4,
-						xoff + recc.getWidth() / 2, yoff + recc.getHeight() / 2);
-				seitex.showText(text);
-				seitex.endText();
-				seitex.restoreState();
-			}
-			stamp.close();
+			int fontsize = parseInt((String) getValue("fontsize"));
+			float opacity = parseFloat((String) getValue("opacity"));
+
+			Writer writer = new Writer(reader, stamp, text, fontsize, opacity, color);
+			writer.write();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(internalFrame, e.getMessage(), e
 					.getClass().getName(), JOptionPane.ERROR_MESSAGE);
@@ -163,7 +146,7 @@ public class Watermarker extends AbstractTool {
 		}
 	}
 
-	/**
+    /**
 	 * Gets the PDF file that should be generated (or null if the output isn't a
 	 * PDF file).
 	 * 
@@ -203,7 +186,7 @@ public class Watermarker extends AbstractTool {
 	 * 
 	 * <p>
 	 * Call it like this from command line: java
-	 * com.lowagie.tools.plugins.Watermarker input.pdf Draft 230 0.2 output.pdf
+	 * com.lowagie.tools.plugins.Watermarker input.pdf Draft 230 0.2 output.pdf #FF000000
 	 * 
 	 * <p>
 	 * "input.pdf" is the input file name to be processed
@@ -216,23 +199,26 @@ public class Watermarker extends AbstractTool {
 	 * "0.2" is the opacity (1.0 completely opaque, 0.0 completely transparent)
 	 * <p>
 	 * "output.pdf" is the output file name
+	 * <p>
+	 * (Optional) "#FF0000" is the color (in hex format like #nnnnnn or 0xnnnnnn), #000000 (black) by default
 	 * 
 	 * <p>
 	 * Call it from within other Java code:
 	 * 
 	 * <p>
 	 * Watermarker.main(new
-	 * String[]{"input.pdf","Draft","230","0.2","output.pdf"});
+	 * String[]{"input.pdf","Draft","230","0.2","output.pdf","#FF000000"});
 	 * 
 	 * @param args
 	 *            the srcfile, watermark text and destfile
 	 */
 	public static void main(String[] args) {
-		Watermarker watermarker = new Watermarker();
-		if (args.length != 5) {
-			System.err.println(watermarker.getUsage());
+		WatermarkerTool watermarkerTool = new WatermarkerTool();
+		if (args.length < 5 || args.length > 6) {
+			System.err.println(watermarkerTool.getUsage());
 		}
-		watermarker.setMainArguments(args);
-		watermarker.execute();
+		watermarkerTool.setMainArguments(args);
+		watermarkerTool.execute();
 	}
+
 }

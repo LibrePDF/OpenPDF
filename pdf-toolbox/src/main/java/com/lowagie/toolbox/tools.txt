@@ -5,7 +5,7 @@
 
 Bookmarks.Bookmarks2XML: com.lowagie.toolbox.plugins.Bookmarks2XML
 Manipulate.Burst: com.lowagie.toolbox.plugins.Burst
-Manipulate.Watermarker: com.lowagie.toolbox.plugins.Watermarker
+Manipulate.Watermarker: com.lowagie.toolbox.plugins.watermarker.Watermarker
 Manipulate.CompressDecompress: com.lowagie.toolbox.plugins.CompressDecompressPageContent
 Manipulate.Concat: com.lowagie.toolbox.plugins.Concat
 Encryption.Decrypt: com.lowagie.toolbox.plugins.Decrypt
