@@ -419,7 +419,7 @@ public class PdfGraphics2D extends Graphics2D {
 			
             // Check if we need to simulate a bold font.
             // Do nothing if the BaseFont is already bold. This test is not foolproof but it will work most of the times.
-            if (baseFont.getPostscriptFontName().toLowerCase().indexOf("bold") < 0) { 
+            if (baseFont.getPostscriptFontName().toLowerCase(Locale.ROOT).indexOf("bold") < 0) { 
                 // Get the weight of the font so we can detect fonts with a weight
                 // that makes them bold, but the Font.isBold() value is false.
                 Float weight = (Float) font.getAttributes().get(TextAttribute.WEIGHT);
