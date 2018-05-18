@@ -129,7 +129,7 @@ public class PdfSignatureAppearance {
   private int page = 1;
   private String fieldName;
   private PrivateKey privKey;
-  private CRL crl;
+  private CRL[] crlList;
   private PdfName filter;
   private boolean newField;
   private ByteBuffer sigout;
@@ -148,10 +148,7 @@ public class PdfSignatureAppearance {
   private String digestEncryptionAlgorithm;
   private HashMap exclusionLocations;
 
-  // OJO... Modificacion de
-  // flopez--------------------------------------------------
-  // private Certificate[] certChain;
-  private X509Certificate certificate;
+  private Certificate[] certChain;
 
   // ******************************************************************************
 
@@ -285,17 +282,25 @@ public class PdfSignatureAppearance {
   public void setCrypto(PrivateKey privKey, X509Certificate certificate,
       CRL crl, PdfName filter) {
     this.privKey = privKey;
-    this.certificate = certificate;
-    this.crl = crl;
+    if (certificate == null)
+        throw new IllegalArgumentException("Null certificate not allowed");
+    this.certChain = new Certificate[1];
+    this.certChain[0] = certificate;
+    if (crl != null) {
+    	this.crlList = new CRL[1];
+    	this.crlList[0] = crl;    	
+    }
     this.filter = filter;
   }
 
   /**
    * Sets the cryptographic parameters.
-   * @deprecated use {@link #setCrypto(PrivateKey, X509Certificate, CRL, PdfName)}
    */
   public void setCrypto(PrivateKey privKey, Certificate[] certChain, CRL[] crlList, PdfName filter) {
-    setCrypto(privKey, (X509Certificate) certChain[0], crlList != null ? crlList[0] : null, filter);
+	  this.privKey = privKey;
+	  this.certChain = certChain;
+	  this.crlList = crlList;
+	  this.filter = filter;
   }
 
   // OJO... Modificacion de
@@ -475,7 +480,7 @@ public class PdfSignatureAppearance {
       if (layer2Text == null) {
         StringBuilder buf = new StringBuilder();
         buf.append("Digitally signed by ")
-            .append(PdfPKCS7.getSubjectFields(certificate).getField("CN"))
+            .append(PdfPKCS7.getSubjectFields((X509Certificate) certChain[0]).getField("CN"))
             .append('\n');
         SimpleDateFormat sd = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z");
         buf.append("Date: ").append(sd.format(signDate.getTime()));
@@ -534,7 +539,7 @@ public class PdfSignatureAppearance {
       }
 
       if (render == SignatureRenderNameAndDescription) {
-        String signedBy = PdfPKCS7.getSubjectFields(certificate).getField("CN");
+        String signedBy = PdfPKCS7.getSubjectFields((X509Certificate) certChain[0]).getField("CN");
         Rectangle sr2 = new Rectangle(signatureRect.getWidth() - MARGIN,
             signatureRect.getHeight() - MARGIN);
         float signedSize = fitText(font, signedBy, sr2, -1, runDirection);
@@ -812,8 +817,8 @@ public class PdfSignatureAppearance {
    * 
    * @return the certificate revocation list
    */
-  public java.security.cert.CRL getCrl() {
-    return this.crl;
+  public java.security.cert.CRL[] getCrlList() {
+    return this.crlList;
   }
 
   /**
@@ -1064,17 +1069,6 @@ public class PdfSignatureAppearance {
       if (getContact() != null)
         sigStandard.setContact(getContact());
       sigStandard.put(PdfName.M, new PdfDate(getSignDate()));
-
-      // OJO... Modificacion de
-      // flopez--------------------------------------------------
-      // sigStandard.setSignInfo(getPrivKey(), getCertChain(), getCrlList());
-      Certificate[] certChain = new Certificate[1];
-      certChain[0] = this.certificate;
-      CRL[] crlList = null;
-      if (crl == null) {
-        crlList = new CRL[1];
-        crlList[0] = this.crl;
-      }
       sigStandard.setSignInfo(getPrivKey(), certChain, crlList);
       // ******************************************************************************
       PdfString contents = (PdfString) sigStandard.get(PdfName.CONTENTS);
