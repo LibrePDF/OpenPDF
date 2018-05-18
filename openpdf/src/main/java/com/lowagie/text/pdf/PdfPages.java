@@ -56,7 +56,6 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <CODE>PdfPages</CODE> is the PDF Pages-object.
@@ -141,9 +140,7 @@ public class PdfPages {
                     count = stdCount;
                 PdfDictionary top = new PdfDictionary(PdfName.PAGES);
                 top.put(PdfName.COUNT, new PdfNumber(thisLeaf));
-                PdfArray kids = new PdfArray();
-                List<PdfObject> internal = kids.getElements();
-                internal.addAll(tPages.subList(p * stdCount, p * stdCount + count));
+                PdfArray kids = new PdfArray(tPages.subList(p * stdCount, p * stdCount + count));
                 top.put(PdfName.KIDS, kids);
                 if (tParents.size() > 1) {
                     if ((p % leafSize) == 0)
