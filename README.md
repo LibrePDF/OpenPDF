@@ -28,7 +28,7 @@ Add this to your pom.xml file:
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
-            <version>1.0.5</version>
+            <version>1.1.0</version>
         </dependency>
 
 
