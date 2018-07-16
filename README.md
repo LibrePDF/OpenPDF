@@ -32,7 +32,7 @@ Add this to your pom.xml file:
         </dependency>
 
 ## Docs ##
-See [examples](pdf-toolbox/src/test/java/com/lowagie/examples/).
+See [examples](pdf-toolbox/src/test/java/com/lowagie/examples/) and [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-1-0/).
 
 
 ## Background ##
