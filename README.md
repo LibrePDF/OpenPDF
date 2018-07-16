@@ -31,6 +31,9 @@ Add this to your pom.xml file:
             <version>1.1.0</version>
         </dependency>
 
+## Docs ##
+See [examples](docs/examples).
+
 
 ## Background ##
 
