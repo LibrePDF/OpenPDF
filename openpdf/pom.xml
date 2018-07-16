@@ -12,7 +12,7 @@
     <artifactId>openpdf</artifactId>
 
     <properties>
-        <bouncycastle.version>1.58</bouncycastle.version>
+        <bouncycastle.version>1.60</bouncycastle.version>
     </properties>
 
     <dependencies>
