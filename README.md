@@ -34,27 +34,18 @@ Add this to your pom.xml file:
 
 ## Background ##
 
+OpenPDF is open source with software with a LGPL and MPL license. It is a fork of iText version 4, more specifically iText svn tag 4.2.0, which was hosted publicly on sourceforge with LGPL and MPL license headers in the source code, and lgpl and mpl license documents in the svn repository.
 Beginning with version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell commercial licenses. 
-The OpenPDF project is a fork of iText 4, with a LGPL and MPL open source license.
-
-## Changes ##
-This repo has the following changes from the old "original" 4.2.0 version:
- - compilation now also supports Java 8, but compatibility level in maven pom is set to Java 7
- - in the case of unexpected end of PDF file the IOException is thrown (not PDFNull)
- - merged patch from Steven to fix NPE in XFA Form (escapeSom method)
- - merged UnembedFontPdfSmartCopy functionality from Vicente Alencar
- - merged RTF Footer functionality from ubermichael
- - compatibility fix to support the newest (1.54) bouncy castle libraries based/inspired by flex-developments fixes
- - some NPE fixes and tweaked maven support
 
 ## Contributing ##
 Release the hounds!  Please send all pull requests.
+Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
 
 ## Dependencies ##
 
 ### Required: ###
 
- - BouncyCastle 1.58
+ - BouncyCastle 1.60
    - Provider
    - PKIX/CMS
  - PDFRenderer
