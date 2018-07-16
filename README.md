@@ -32,7 +32,7 @@ Add this to your pom.xml file:
         </dependency>
 
 ## Docs ##
-See [examples](docs/examples).
+See [examples](pdf-toolbox/src/test/java/com/lowagie/examples/).
 
 
 ## Background ##
