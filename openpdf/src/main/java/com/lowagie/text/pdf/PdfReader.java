@@ -127,6 +127,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   protected String certificateKeyProvider = null; // added by Aiken Sam for
                                                   // certificate decryption
   private boolean ownerPasswordUsed;
+
+  // allow the PDF to be modified even if the owner password was not supplied
+  // if encrypted (non-encrypted documents may be modified regardless)
+  private boolean modificationAllowedWithoutOwnerPassword = true;
+
   protected List<PdfObject> strings = new ArrayList<>();
   protected boolean sharedStreams = true;
   protected boolean consolidateNamedDestinations = false;
@@ -3831,16 +3836,40 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * Checks if an encrypted document may be modified if the owner password was not supplied.
+   * If the document is not encrypted, the setting has no effect.
+   *
+   * @return <CODE>true</CODE> if the document may be modified even if the owner password was not
+   *         supplied <CODE>false</CODE> otherwise
+   */
+  public boolean isModificationlowedWithoutOwnerPassword() {
+    return this.modificationAllowedWithoutOwnerPassword;
+  }
+
+  /**
+   * Sets whether the document (if encrypted) may be modified even if the owner password was not
+   * supplied. If this is set to <CODE>false</CODE> an exception will be thrown when attempting to
+   * access the Document if the owner password was not supplied (for encrypted documents.)
+   *
+   * @param modificationAllowedWithoutOwnerPassword
+   *         the modificationAllowedWithoutOwnerPassword state.
+   */
+  public void setModificationAllowedWithoutOwnerPassword(
+    boolean modificationAllowedWithoutOwnerPassword) {
+    this.modificationAllowedWithoutOwnerPassword = modificationAllowedWithoutOwnerPassword;
+  }
+
+  /**
    * Checks if the document was opened with the owner password so that the end
    * application can decide what level of access restrictions to apply. If the
    * document is not encrypted it will return <CODE>true</CODE>.
-   * 
-   * @return <CODE>true</CODE> if the document was opened with the owner
-   *         password or if it's not encrypted, <CODE>false</CODE> if the
-   *         document was opened with the user password
+   *
+   * @return <CODE>true</CODE> if the document was opened with the owner password or if it's not
+   *         encrypted or the modificationAllowedWithoutOwnerPassword flag is set,
+   *         <CODE>false</CODE> otherwise.
    */
   public final boolean isOpenedWithFullPermissions() {
-    return !encrypted || ownerPasswordUsed;
+    return !encrypted || ownerPasswordUsed || modificationAllowedWithoutOwnerPassword;
   }
 
   public int getCryptoMode() {
