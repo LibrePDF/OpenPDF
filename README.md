@@ -21,6 +21,8 @@ GNU General Lesser Public License (LGPL) version 3.0 - http://www.gnu.org/licens
 
 Mozilla Public License Version 2.0 - http://www.mozilla.org/MPL/2.0/
 
+Some source files have other open source licences, this is something we are adressing in [issue #89](https://github.com/LibrePDF/OpenPDF/issues/89). We want OpenPDF to be consistently licensed with the LGPL and MPL licences only.
+
 
 ## Use OpenPDF as Maven dependency
 Add this to your pom.xml file:
@@ -34,6 +36,9 @@ Add this to your pom.xml file:
 ## Docs ##
 See [examples](pdf-toolbox/src/test/java/com/lowagie/examples/) and [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-1-0/).
 
+## Google Group for users and developers ##
+
+https://groups.google.com/d/forum/openpdf
 
 ## Background ##
 
