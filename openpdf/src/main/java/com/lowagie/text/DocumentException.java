@@ -59,7 +59,7 @@ package com.lowagie.text;
  * @see		DocListener
  */
 
-public class DocumentException extends Exception {
+public class DocumentException extends RuntimeException {
 	
 	/** A serial version UID */
     private static final long serialVersionUID = -2191131489390840739L;
