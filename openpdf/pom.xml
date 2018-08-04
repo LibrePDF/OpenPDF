@@ -15,9 +15,21 @@
         <bouncycastle.version>1.60</bouncycastle.version>
         <rxjava.version>2.2.0</rxjava.version>
         <commons-text.version>1.4</commons-text.version>
+        <commons-compress.version>1.17</commons-compress.version>
+        <commons-io.version>2.6</commons-io.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${commons-compress.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>

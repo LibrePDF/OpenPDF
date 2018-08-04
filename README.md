@@ -53,6 +53,8 @@ https://groups.google.com/d/forum/openpdf
 
 ### Required: ###
 
+ - Apache Commons IO
+ - Apache Commons Compress
  - Apache Commons Text
  - RxJava
  - PDFRenderer

@@ -13,7 +13,6 @@ of the code." Steven Brandt also agreed with the use of this class.
 
 The following files contain material that was copyrighted by SUN:
 
-com/lowagie/text/pdf/LZWDecoder.java (first appearance in iText: 2002-02-08)
 com/lowagie/text/pdf/codec/BmpImage.java (first appearance in iText: 2003-06-20)
 com/lowagie/text/pdf/codec/PngImage.java (first appearance in iText: 2003-04-25)
 com/lowagie/text/pdf/codec/TIFFDirectory.java (first appearance in iText: 2003-04-09)

@@ -59,6 +59,8 @@ import com.lowagie.text.exceptions.InvalidPdfException;
 import com.lowagie.text.exceptions.UnsupportedPdfException;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
+import org.apache.commons.compress.compressors.z.ZCompressorInputStream;
+import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -2025,9 +2027,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    */
   public static byte[] LZWDecode(byte in[]) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    LZWDecoder lzw = new LZWDecoder();
-    lzw.decode(in, out);
-    return out.toByteArray();
+    try {
+      ZCompressorInputStream is = new ZCompressorInputStream(new ByteArrayInputStream(in));
+      return IOUtils.toByteArray(is);
+    } catch (IOException e) {
+      throw ExceptionHelper.wrapOrThrow(e);
+    }
   }
 
   /**
