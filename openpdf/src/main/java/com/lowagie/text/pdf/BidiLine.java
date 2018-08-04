@@ -180,21 +180,6 @@ public class BidiLine {
         	return true;
         }
         
-        if (runDirection == PdfWriter.RUN_DIRECTION_LTR || runDirection == PdfWriter.RUN_DIRECTION_RTL) {
-            if (orderLevels.length < totalTextLength) {
-                orderLevels = new byte[pieceSize];
-                indexChars = new int[pieceSize];
-            }
-            ArabicLigaturizer.processNumbers(text, 0, totalTextLength, arabicOptions);
-            BidiOrder order = new BidiOrder(text, 0, totalTextLength, (byte)(runDirection == PdfWriter.RUN_DIRECTION_RTL ? 1 : 0));
-            byte od[] = order.getLevels();
-            for (int k = 0; k < totalTextLength; ++k) {
-                orderLevels[k] = od[k];
-                indexChars[k] = k;
-            }
-            doArabicShapping();
-            mirrorGlyphs();
-        }
         totalTextLength = trimRightEx(0, totalTextLength - 1) + 1;
         return true;
     }
