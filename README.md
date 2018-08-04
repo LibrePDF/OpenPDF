@@ -48,10 +48,6 @@ Beginning with version 5.0 of iText, the developers have moved to the AGPL to im
 Release the hounds!  Please send all pull requests.
 Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
 
-## Google Group for users and developers ##
-
-https://groups.google.com/d/forum/openpdf
-
 ## Dependencies ##
 
 ### Required: ###
