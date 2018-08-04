@@ -239,7 +239,7 @@ public class PdfDictionary extends PdfObject {
      *   <VAR>key</VAR>
      */
     public PdfObject get(PdfName key) {
-        return (PdfObject) hashMap.get(key);
+        return hashMap.get(key);
     }
     
     /**

@@ -483,7 +483,7 @@ public class Markup {
 		int end = endComment.length();
 		int start = string.indexOf(startComment, pos);
 		while (start > -1) {
-			result.append(string.substring(pos, start));
+			result.append(string, pos, start);
 			pos = string.indexOf(endComment, start) + end;
 			start = string.indexOf(startComment, pos);
 		}

@@ -184,7 +184,7 @@ class PdfCopyFieldsImp extends PdfWriter {
         }
     }
     
-    void propagate(PdfObject obj, PdfIndirectReference refo, boolean restricted) throws IOException {
+    void propagate(PdfObject obj, PdfIndirectReference refo, boolean restricted) {
         if (obj == null)
             return;
 //        if (refo != null)

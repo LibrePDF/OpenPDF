@@ -51,6 +51,7 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfString;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,12 +80,9 @@ public class ParsedText extends ParsedTextImpl {
      */
     protected String decode(String in) {
         byte[] bytes;
-        if (BaseFont.IDENTITY_H.equals(gs.font.getEncoding()))
-            try {
-                bytes = in.getBytes("UTF-16");
-            } catch (UnsupportedEncodingException e) {
-                bytes = in.getBytes();
-            }
+        if (BaseFont.IDENTITY_H.equals(gs.font.getEncoding())) {
+            bytes = in.getBytes(StandardCharsets.UTF_16);
+        }
         bytes = in.getBytes();
         return gs.font.decode(bytes, 0, bytes.length);
     }
@@ -174,12 +172,9 @@ public class ParsedText extends ParsedTextImpl {
               convertHeightToUser(gs.font.getFontDescriptor(DocumentFont.DESCENT, gs.fontSize),
                                   textMatrix),
               convertWidthToUser(unscaledWidth, textMatrix));
-        if (BaseFont.IDENTITY_H.equals(gs.font.getEncoding()))
-            try {
-                pdfText = new PdfString(new String(text.getBytes(), "UTF-16"));
-            } catch (UnsupportedEncodingException e) {
-                throw new Error("This error can't actually happen as java always has Unicode", e);
-            }
+        if (BaseFont.IDENTITY_H.equals(gs.font.getEncoding())) {
+            pdfText = new PdfString(new String(text.getBytes(), StandardCharsets.UTF_16));
+        }
         else pdfText = text;
         textToUserSpaceTransformMatrix = textMatrix;
         this.gs = gs;

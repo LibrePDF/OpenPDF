@@ -288,7 +288,7 @@ public class Barcode128 extends Barcode{
                 }
                 if (idlen == 0)
                     break;
-                buf.append('(').append(code.substring(0, idlen)).append(')');
+                buf.append('(').append(code, 0, idlen).append(')');
                 code = code.substring(idlen);
                 if (n > 0) {
                     n -= idlen;
@@ -301,7 +301,7 @@ public class Barcode128 extends Barcode{
                     int idx = code.indexOf(FNC1);
                     if (idx < 0)
                         break;
-                    buf.append(code.substring(0,idx));
+                    buf.append(code, 0, idx);
                     code = code.substring(idx + 1);
                 }
             }

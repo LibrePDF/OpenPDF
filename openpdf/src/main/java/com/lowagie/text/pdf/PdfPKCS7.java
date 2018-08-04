@@ -52,6 +52,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.MessageDigest;
@@ -1055,12 +1056,9 @@ public class PdfPKCS7 {
    * @param certificate
    *          the certificate
    * @return the URL or null
-   * @throws CertificateParsingException
-   *           on error
    * @since 2.1.6
    */
-  public static String getOCSPURL(X509Certificate certificate)
-      throws CertificateParsingException {
+  public static String getOCSPURL(X509Certificate certificate) {
     try {
       ASN1Primitive obj = getExtensionValue(certificate,
           X509Extensions.AuthorityInfoAccess.getId());
@@ -1141,7 +1139,7 @@ public class PdfPKCS7 {
       throws IOException {
     DERTaggedObject taggedObject = (DERTaggedObject) names;
     return new String(ASN1OctetString.getInstance(taggedObject, false)
-        .getOctets(), "ISO-8859-1");
+        .getOctets(), StandardCharsets.ISO_8859_1);
   }
 
   /**

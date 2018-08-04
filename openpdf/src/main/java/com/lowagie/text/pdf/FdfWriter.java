@@ -332,7 +332,7 @@ public class FdfWriter {
         }
         
         
-        PdfArray calculate(HashMap map) throws IOException {
+        PdfArray calculate(HashMap map) {
             PdfArray ar = new PdfArray();
             for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
                 Map.Entry entry = (Map.Entry) it.next();

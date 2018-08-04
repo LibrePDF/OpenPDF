@@ -12,7 +12,7 @@ import java.util.Map;
 public class FactoryPropertiesTest {
 
     @Test
-    public void shouldCreateRelativeLeadingForLineHeightNUmber() throws Exception {
+    public void shouldCreateRelativeLeadingForLineHeightNUmber() {
         // given
         final Map<String, String> h = new HashMap<>();
         final String style = "line-height:1.4";

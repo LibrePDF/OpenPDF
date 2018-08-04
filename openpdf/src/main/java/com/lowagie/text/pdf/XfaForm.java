@@ -150,7 +150,7 @@ public class XfaForm {
         DocumentBuilder db = fact.newDocumentBuilder();
         db.setEntityResolver(new EntityResolver() {
 			@Override
-			public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+			public InputSource resolveEntity(String publicId, String systemId) {
 				return new InputSource(new StringReader(""));
 			}        	
         });
@@ -544,7 +544,7 @@ public class XfaForm {
             StringBuffer sb = new StringBuffer();
             int last = 0;
             while (idx >= 0) {
-                sb.append(s.substring(last, idx));
+                sb.append(s, last, idx);
                 sb.append('\\');
                 last = idx;
                 idx = s.indexOf('.', idx + 1);
@@ -565,7 +565,7 @@ public class XfaForm {
             StringBuffer sb = new StringBuffer();
             int last = 0;
             while (idx >= 0) {
-                sb.append(s.substring(last, idx));
+                sb.append(s, last, idx);
                 last = idx + 1;
                 idx = s.indexOf('\\', idx + 1);
             }
@@ -599,7 +599,7 @@ public class XfaForm {
             int last = 0;
             StringBuffer sb = new StringBuffer();
             while (idx >= 0) {
-                sb.append(s.substring(last, idx));
+                sb.append(s, last, idx);
                 idx = s.indexOf("]", idx + 10);
                 if (idx < 0)
                     return sb.toString();
@@ -1128,7 +1128,7 @@ public class XfaForm {
     	DocumentBuilder db = dbf.newDocumentBuilder(); 
         db.setEntityResolver(new EntityResolver() {
 			@Override
-			public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+			public InputSource resolveEntity(String publicId, String systemId) {
 				return new InputSource(new StringReader(""));
 			}        	
         });

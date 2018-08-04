@@ -3454,7 +3454,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     private ArrayList pageInh;
     private boolean keepPages;
 
-    private PageRefs(PdfReader reader) throws IOException {
+    private PageRefs(PdfReader reader) {
       this.reader = reader;
       if (reader.partial) {
         refsp = new IntHashtable();
@@ -3496,7 +3496,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       reader.rootPages.put(PdfName.COUNT, new PdfNumber(refsn.size()));
     }
 
-    void reReadPages() throws IOException {
+    void reReadPages() {
       refsn = null;
       readPages();
     }

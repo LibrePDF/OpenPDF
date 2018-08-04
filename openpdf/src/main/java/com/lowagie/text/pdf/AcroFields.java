@@ -959,7 +959,7 @@ public class AcroFields {
                             PdfAppearance cb = new PdfAppearance();
                             if (dao[DA_FONT] != null) {
                                 BaseFont bf = (BaseFont)value;
-                                PdfName psn = (PdfName)PdfAppearance.stdFieldFontNames.get(bf.getPostscriptFontName());
+                                PdfName psn = PdfAppearance.stdFieldFontNames.get(bf.getPostscriptFontName());
                                 if (psn == null) {
                                     psn = new PdfName(bf.getPostscriptFontName());
                                 }

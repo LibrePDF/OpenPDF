@@ -986,7 +986,7 @@ public class Table extends Rectangle implements LargeElement {
             lNewMaxColumns = 1; // value to hold in how many columns the current one will be split
             float [] tmpWidths = null;
             for (i=0; i < rows.size(); i++) {
-                if ( Table.class.isInstance(((Row) rows.get(i)).getCell(j)) ) {
+                if (((Row) rows.get(i)).getCell(j) instanceof Table) {
                     isTable=true;
                     lDummyTable = ((Table) ((Row) rows.get(i)).getCell(j));
                     if( tmpWidths == null) {
@@ -1053,7 +1053,7 @@ public class Table extends Rectangle implements LargeElement {
         for (i=0; i < rows.size(); i++) {
             lNewMaxRows = 1;    // holds value in how many rows the current one will be split
             for (j=0; j < columns; j++) {
-                if ( Table.class.isInstance(((Row) rows.get(i)).getCell(j)) ) {
+                if (((Row) rows.get(i)).getCell(j) instanceof Table) {
                     isTable=true;
                     lDummyTable = (Table) ((Row) rows.get(i)).getCell(j);
                     if ( lDummyTable.getDimension().height > lNewMaxRows ) {
@@ -1102,7 +1102,7 @@ public class Table extends Rectangle implements LargeElement {
                 lDummyColumn = 0;
                 lNewMaxRows = 1;
                 for (j=0; j < columns; j++) {
-                    if ( Table.class.isInstance(((Row) rows.get(i)).getCell(j)) )       // copy values from embedded table
+                    if (((Row) rows.get(i)).getCell(j) instanceof Table)       // copy values from embedded table
                     {
                         lDummyTable = (Table) ((Row) rows.get(i)).getCell(j);
                         
@@ -1131,7 +1131,7 @@ public class Table extends Rectangle implements LargeElement {
                                 if (lDummyElement != null) {
                                     int col=lDummyColumn+l;
                                     
-                                    if ( Cell.class.isInstance(lDummyElement) ) {
+                                    if (lDummyElement instanceof Cell) {
                                         Cell lDummyC = (Cell)lDummyElement;
                                         // Find col to add cell in and set col span
                                         col = colMap[l];
@@ -1149,7 +1149,7 @@ public class Table extends Rectangle implements LargeElement {
                     {
                         Object aElement = getElement(i,j);
                         
-                        if ( Cell.class.isInstance(aElement) ) {
+                        if (aElement instanceof Cell) {
                             
                             // adjust spans for cell
                             ((Cell) aElement).setRowspan(((Cell) ((Row) rows.get(i)).getCell(j)).getRowspan() + lDummyHeights[i] - 1);
@@ -1219,9 +1219,7 @@ public class Table extends Rectangle implements LargeElement {
             }
         }
         else {
-            if ((aLocation.y + aCell.getColspan()) > columns) {
-                return false;
-            }
+            return (aLocation.y + aCell.getColspan()) <= columns;
         }
         
         return true;

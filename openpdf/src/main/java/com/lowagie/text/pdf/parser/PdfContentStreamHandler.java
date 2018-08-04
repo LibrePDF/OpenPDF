@@ -720,7 +720,7 @@ public class PdfContentStreamHandler {
 		@Override
 		public void invoke(ArrayList<PdfObject> operands,
 				PdfContentStreamHandler handler, PdfDictionary resources) {
-			String tagName = ((PdfName) operands.get(0)).toString().substring(1)
+			String tagName = operands.get(0).toString().substring(1)
 					.toLowerCase(Locale.ROOT);
 			if ("artifact".equals(tagName) || "placedpdf".equals(tagName)
 					|| handler.contextNames.peek() == null) {

@@ -43,7 +43,7 @@ public class HelloWorldServlet extends HttpServlet {
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void doGet (HttpServletRequest request, HttpServletResponse response)
-    throws IOException, ServletException {
+    throws IOException {
         
         // we retrieve the presentationtype
         String presentationtype = request.getParameter("presentationtype");
