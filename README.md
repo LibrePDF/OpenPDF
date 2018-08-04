@@ -36,10 +36,6 @@ Add this to your pom.xml file:
 ## Docs ##
 See [examples](pdf-toolbox/src/test/java/com/lowagie/examples/) and [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-1-0/).
 
-## Google Group for users and developers ##
-
-https://groups.google.com/d/forum/openpdf
-
 ## Background ##
 
 OpenPDF is open source with software with a LGPL and MPL license. It is a fork of iText version 4, more specifically iText svn tag 4.2.0, which was hosted publicly on sourceforge with LGPL and MPL license headers in the source code, and lgpl and mpl license documents in the svn repository.
@@ -48,6 +44,10 @@ Beginning with version 5.0 of iText, the developers have moved to the AGPL to im
 ## Contributing ##
 Release the hounds!  Please send all pull requests.
 Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
+
+## Google Group for users and developers ##
+
+https://groups.google.com/d/forum/openpdf
 
 ## Dependencies ##
 
