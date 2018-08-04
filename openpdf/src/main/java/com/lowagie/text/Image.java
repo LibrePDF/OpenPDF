@@ -78,7 +78,6 @@ import com.lowagie.text.pdf.codec.CCITTG4Encoder;
 import com.lowagie.text.pdf.codec.GifImage;
 import com.lowagie.text.pdf.codec.JBIG2Image;
 import com.lowagie.text.pdf.codec.PngImage;
-import com.lowagie.text.pdf.codec.TiffImage;
 import io.reactivex.internal.util.ExceptionHelper;
 
 /**
@@ -286,22 +285,8 @@ public abstract class Image extends Rectangle {
 			}
 			if ((c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42)
 					|| (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
-				RandomAccessFileOrArray ra = null;
-				try {
-					if (url.getProtocol().equals("file")) {
-						String file = url.getFile();
-                        file = Utilities.unEscapeURL(file);
-						ra = new RandomAccessFileOrArray(file);
-					} else
-						ra = new RandomAccessFileOrArray(url);
-					Image img = TiffImage.getTiffImage(ra, 1);
-					img.url = url;
-					return img;
-				} finally {
-					if (ra != null)
-						ra.close();
-				}
-
+				throw new IOException(url.toString()
+						+ " is not a recognized imageformat. TIFF support has been removed.");
 			}
 			if ( c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2' &&
 					c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n' ) {
@@ -393,18 +378,8 @@ public abstract class Image extends Rectangle {
 			}
 			if ((c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42)
 					|| (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
-				RandomAccessFileOrArray ra = null;
-				try {
-					ra = new RandomAccessFileOrArray(imgb);
-					Image img = TiffImage.getTiffImage(ra, 1);
-                    if (img.getOriginalData() == null)
-                        img.setOriginalData(imgb);
-					return img;
-				} finally {
-					if (ra != null)
-						ra.close();
-				}
-
+				// TIFF support has been removed.
+				throw new IOException(MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat"));
 			}
 			if ( c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2' ) {
 				is = new java.io.ByteArrayInputStream(imgb);

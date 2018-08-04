@@ -15,10 +15,6 @@ The following files contain material that was copyrighted by SUN:
 
 com/lowagie/text/pdf/codec/BmpImage.java (first appearance in iText: 2003-06-20)
 com/lowagie/text/pdf/codec/PngImage.java (first appearance in iText: 2003-04-25)
-com/lowagie/text/pdf/codec/TIFFDirectory.java (first appearance in iText: 2003-04-09)
-com/lowagie/text/pdf/codec/TIFFFaxDecoder.java (first appearance in iText: 2003-04-09)
-com/lowagie/text/pdf/codec/TIFFField.java (first appearance in iText: 2003-04-09)
-com/lowagie/text/pdf/codec/TIFFLZWDecoder.java (first appearance in iText: 2003-04-09)
 
 The original code was released under the BSD license, and contained the following
 extra restriction: "You acknowledge that Software is not designed, licensed or intended
