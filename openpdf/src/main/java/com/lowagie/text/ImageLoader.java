@@ -55,6 +55,7 @@ import org.apache.sanselan.formats.png.PngImageParser;
 import org.apache.sanselan.formats.tiff.TiffImageParser;
 
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -67,7 +68,9 @@ public class ImageLoader {
 
     public static Image getGifImage(URL url) {
         try {
-            byte[] imageBytes = IOUtils.toByteArray(url.openStream());
+            InputStream is = url.openStream();
+            byte[] imageBytes = IOUtils.toByteArray(is);
+            is.close();
             GifImageParser parser = new GifImageParser();
             BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
             return Image.getInstance(bufferedImage, null, false);
@@ -79,7 +82,9 @@ public class ImageLoader {
 
     public static Image getTiffImage(URL url) {
         try {
-            byte[] imageBytes = IOUtils.toByteArray(url.openStream());
+            InputStream is = url.openStream();
+            byte[] imageBytes = IOUtils.toByteArray(is);
+            is.close();
             TiffImageParser parser = new TiffImageParser();
             BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
             return Image.getInstance(bufferedImage, null, false);
@@ -91,7 +96,9 @@ public class ImageLoader {
 
     public static Image getPngImage(URL url) {
         try {
-            byte[] imageBytes = IOUtils.toByteArray(url.openStream());
+            InputStream is = url.openStream();
+            byte[] imageBytes = IOUtils.toByteArray(is);
+            is.close();
             PngImageParser parser = new PngImageParser();
             BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
             return Image.getInstance(bufferedImage, null, false);
@@ -104,7 +111,9 @@ public class ImageLoader {
 
     public static Image getBmpImage(URL url) {
         try {
-            byte[] imageBytes = IOUtils.toByteArray(url.openStream());
+            InputStream is = url.openStream();
+            byte[] imageBytes = IOUtils.toByteArray(is);
+            is.close();
             BmpImageParser parser = new BmpImageParser();
             BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
             return Image.getInstance(bufferedImage, null, false);
