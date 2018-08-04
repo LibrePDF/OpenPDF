@@ -23,7 +23,6 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.SimpleCell;
 import com.lowagie.text.SimpleTable;
 import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.rtf.RtfWriter2;
 
 /**
  * Example that is used to test the TableAttributes class.
@@ -42,7 +41,6 @@ public class TablePdfPTable {
         try {
             // creation of the different writers
             PdfWriter.getInstance(document, new FileOutputStream("tableattributes.pdf"));
-            RtfWriter2.getInstance(document, new FileOutputStream("tableattributes.rtf"));
             // open the document
             document.open();
             // add content
