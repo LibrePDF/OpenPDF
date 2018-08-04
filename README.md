@@ -41,7 +41,7 @@ See [examples](pdf-toolbox/src/test/java/com/lowagie/examples/) and [JavaDoc](ht
 
 ## Background ##
 
-OpenPDF is open source with software with a LGPL and MPL license. It is a fork of iText version 4, more specifically iText svn tag 4.2.0, which was hosted publicly on sourceforge with LGPL and MPL license headers in the source code, and lgpl and mpl license documents in the svn repository.
+OpenPDF is open source software with a LGPL and MPL license. It is a fork of iText version 4, more specifically iText svn tag 4.2.0, which was hosted publicly on sourceforge with LGPL and MPL license headers in the source code, and lgpl and mpl license documents in the svn repository.
 Beginning with version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell commercial licenses. 
 
 ## Contributing ##
