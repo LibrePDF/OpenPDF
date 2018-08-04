@@ -102,6 +102,7 @@ import java.util.Stack;
  * </ul>
  * <p>
  */
+@Deprecated
 public final class SimpleXMLParser {
     /** possible states */
 	private final static int UNKNOWN = 0;
@@ -650,48 +651,7 @@ public final class SimpleXMLParser {
         parse(doc, null, r, false);
     }
     
-    /**
-     * Escapes a string with the appropriated XML codes.
-     * @param s the string to be escaped
-     * @param onlyASCII codes above 127 will always be escaped with &amp;#nn; if <CODE>true</CODE>
-     * @return the escaped string
-     */    
-    public static String escapeXML(String s, boolean onlyASCII) {
-        char cc[] = s.toCharArray();
-        int len = cc.length;
-        StringBuffer sb = new StringBuffer();
-        for (int k = 0; k < len; ++k) {
-            int c = cc[k];
-            switch (c) {
-                case '<':
-                    sb.append("&lt;");
-                    break;
-                case '>':
-                    sb.append("&gt;");
-                    break;
-                case '&':
-                    sb.append("&amp;");
-                    break;
-                case '"':
-                    sb.append("&quot;");
-                    break;
-                case '\'':
-                    sb.append("&apos;");
-                    break;
-                default:
-                	if ((c == 0x9) || (c == 0xA) || (c == 0xD)
-                		|| ((c >= 0x20) && (c <= 0xD7FF))
-                		|| ((c >= 0xE000) && (c <= 0xFFFD))
-                		|| ((c >= 0x10000) && (c <= 0x10FFFF))) { 
-                		if (onlyASCII && c > 127)
-                			sb.append("&#").append(c).append(';');
-                		else 
-                			sb.append((char)c);
-                	}
-            }
-        }
-        return sb.toString();
-    }
+
     /**
      * Returns the IANA encoding name that is auto-detected from
      * the bytes specified, with the endian-ness of that encoding where appropriate.

@@ -53,6 +53,7 @@ https://groups.google.com/d/forum/openpdf
 
 ### Required: ###
 
+ - Apache Commons Text
  - RxJava
  - PDFRenderer
  - DOM4j

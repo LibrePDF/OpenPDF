@@ -14,9 +14,15 @@
     <properties>
         <bouncycastle.version>1.60</bouncycastle.version>
         <rxjava.version>2.2.0</rxjava.version>
+        <commons-text.version>1.4</commons-text.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>${commons-text.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.reactivex.rxjava2</groupId>
             <artifactId>rxjava</artifactId>
