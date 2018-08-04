@@ -53,14 +53,15 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 
 ### Required: ###
 
- - BouncyCastle 1.60
-   - Provider
-   - PKIX/CMS
+ - RxJava
  - PDFRenderer
  - DOM4j
 
 ### Optional: ###
 
+  - BouncyCastle 1.60
+    - Provider
+    - PKIX/CMS
  - JUnit 4 - for unit testing
  - JFreeChart - for testing graphical examples
    - JFreeChart

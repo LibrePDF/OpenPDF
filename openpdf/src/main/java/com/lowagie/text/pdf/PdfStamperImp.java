@@ -59,7 +59,7 @@ import org.xml.sax.SAXException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.exceptions.BadPasswordException;
@@ -1241,7 +1241,7 @@ class PdfStamperImp extends PdfWriter {
             }
         }
         catch (IOException e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
 

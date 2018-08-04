@@ -48,7 +48,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 /**
  * A class for performing LZW decoding.
  *
@@ -162,7 +162,7 @@ public class LZWDecoder {
             uncompData.write(string);
         }
         catch (IOException e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
     

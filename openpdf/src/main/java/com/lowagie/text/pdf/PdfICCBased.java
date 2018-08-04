@@ -49,7 +49,7 @@ package com.lowagie.text.pdf;
 import java.awt.color.ICC_Profile;
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 
 /**
  * A <CODE>PdfICCBased</CODE> defines a ColorSpace
@@ -96,7 +96,7 @@ public class PdfICCBased extends PdfStream {
             bytes = profile.getData();
             flateCompress(compressionLevel);
         } catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
 }

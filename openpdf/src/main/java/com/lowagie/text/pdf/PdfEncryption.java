@@ -58,7 +58,7 @@ import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
 
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 
 /**
  * 
@@ -138,7 +138,7 @@ public class PdfEncryption {
 		try {
 			md5 = MessageDigest.getInstance("MD5");
 		} catch (Exception e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionHelper.wrapOrThrow(e);
 		}
 		publicKeyHandler = new PdfPublicKeySecurityHandler();
 	}
@@ -335,7 +335,7 @@ public class PdfEncryption {
 		try {
 			md5 = MessageDigest.getInstance("MD5");
 		} catch (Exception e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionHelper.wrapOrThrow(e);
 		}
 		long time = System.currentTimeMillis();
 		long mem = Runtime.getRuntime().freeMemory();
@@ -424,7 +424,7 @@ public class PdfEncryption {
 			try {
 				recipients = publicKeyHandler.getEncodedRecipients();
 			} catch (Exception f) {
-				throw new ExceptionConverter(f);
+				throw ExceptionHelper.wrapOrThrow(f);
 			}
 
 			if (revision == STANDARD_ENCRYPTION_40) {
@@ -477,7 +477,7 @@ public class PdfEncryption {
 					md.update(new byte[] { (byte) 255, (byte) 255, (byte) 255,
 							(byte) 255 });
 			} catch (Exception f) {
-				throw new ExceptionConverter(f);
+				throw ExceptionHelper.wrapOrThrow(f);
 			}
 
 			byte[] mdResult = md.digest();
@@ -553,7 +553,7 @@ public class PdfEncryption {
 			os2.finish();
 			return ba.toByteArray();
 		} catch (IOException ex) {
-			throw new ExceptionConverter(ex);
+			throw ExceptionHelper.wrapOrThrow(ex);
 		}
 	}
 
@@ -573,7 +573,7 @@ public class PdfEncryption {
 				ba.write(b2);
 			return ba.toByteArray();
 		} catch (IOException ex) {
-			throw new ExceptionConverter(ex);
+			throw ExceptionHelper.wrapOrThrow(ex);
 		}
 	}
 

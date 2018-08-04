@@ -51,7 +51,7 @@ import java.security.PrivateKey;
 import java.security.cert.CRL;
 import java.security.cert.Certificate;
 
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 
 /**
  * A signature dictionary representation for the standard filters.
@@ -115,7 +115,7 @@ public abstract class PdfSigGenericPKCS extends PdfSignature {
             pkcs.setExternalDigest(externalDigest, externalRSAdata, digestEncryptionAlgorithm);
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
 

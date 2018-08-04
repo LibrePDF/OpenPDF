@@ -50,7 +50,7 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.bouncycastle.BouncyCastleHelper;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
@@ -845,7 +845,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           md.update(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255 });
         encryptionKey = md.digest();
       } catch (Exception f) {
-        throw new ExceptionConverter(f);
+        throw ExceptionHelper.wrapOrThrow(f);
       }
     }
 
@@ -930,7 +930,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         return obj;
       }
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionHelper.wrapOrThrow(e);
     }
   }
 
@@ -1005,7 +1005,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         lastXrefPartial = idx;
       return obj;
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionHelper.wrapOrThrow(e);
     }
   }
 
@@ -3109,7 +3109,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     try {
       tokens.close();
     } catch (IOException e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionHelper.wrapOrThrow(e);
     }
   }
 
@@ -3564,7 +3564,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           }
         }
       } catch (Exception e) {
-        throw new ExceptionConverter(e);
+        throw ExceptionHelper.wrapOrThrow(e);
       }
     }
 

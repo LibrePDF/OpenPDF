@@ -62,7 +62,7 @@ import org.w3c.dom.Node;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.codec.Base64;
@@ -145,7 +145,7 @@ public class AcroFields {
             xfa = new XfaForm(reader);
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
         if (writer instanceof PdfStamperImp) {
             append = ((PdfStamperImp)writer).isAppend();
@@ -552,7 +552,7 @@ public class AcroFields {
             return ret;
         }
         catch (IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionHelper.wrapOrThrow(ioe);
         }
     }
 
@@ -840,7 +840,7 @@ public class AcroFields {
 					valBytes = PdfReader.getStreamBytes((PRStream)v);
 	                return new String(valBytes);
 				} catch (IOException e) {
-					throw new ExceptionConverter(e);
+					throw ExceptionHelper.wrapOrThrow(e);
 				}
         }
         
@@ -1085,7 +1085,7 @@ public class AcroFields {
             return true;
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
 
@@ -2225,7 +2225,7 @@ public class AcroFields {
             return pk;
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
 
@@ -2249,7 +2249,7 @@ public class AcroFields {
             }
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
         finally {
             try{rf.close();}catch(Exception e){}
@@ -2573,7 +2573,7 @@ public class AcroFields {
             return newButton;
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
 

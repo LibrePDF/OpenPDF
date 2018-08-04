@@ -53,7 +53,7 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Image;
 import com.lowagie.text.Jpeg;
 import com.lowagie.text.pdf.PdfArray;
@@ -77,7 +77,7 @@ public class TiffImage {
             return TIFFDirectory.getNumDirectories(s);
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
 
@@ -279,7 +279,7 @@ public class TiffImage {
             return img;
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
     
@@ -514,7 +514,7 @@ public class TiffImage {
             return img;
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
     
@@ -572,7 +572,7 @@ public class TiffImage {
             inflater.inflate(inflated);
         }
         catch(DataFormatException dfe) {
-            throw new ExceptionConverter(dfe);
+            throw ExceptionHelper.wrapOrThrow(dfe);
         }
     }
 

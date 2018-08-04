@@ -49,7 +49,7 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Rectangle;
 
 /**
@@ -167,7 +167,7 @@ public class RadioCheckField extends BaseField {
             setFont(BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.WINANSI, false));
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
     

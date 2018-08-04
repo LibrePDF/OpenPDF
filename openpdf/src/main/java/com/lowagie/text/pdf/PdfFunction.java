@@ -48,7 +48,7 @@ package com.lowagie.text.pdf;
 
 import java.io.IOException;
 
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 /** Implements PDF functions.
  *
  * @author Paulo Soares (psoares@consiste.pt)
@@ -73,7 +73,7 @@ public class PdfFunction {
             }
         }
         catch (IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionHelper.wrapOrThrow(ioe);
         }
         return reference;
     }

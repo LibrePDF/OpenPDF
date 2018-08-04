@@ -79,6 +79,7 @@ import com.lowagie.text.pdf.codec.GifImage;
 import com.lowagie.text.pdf.codec.JBIG2Image;
 import com.lowagie.text.pdf.codec.PngImage;
 import com.lowagie.text.pdf.codec.TiffImage;
+import io.reactivex.internal.util.ExceptionHelper;
 
 /**
  * An <CODE>Image</CODE> is the representation of a graphic element (JPEG, PNG
@@ -763,7 +764,7 @@ public abstract class Image extends Rectangle {
 					sm.makeMask();
 					img.setImageMask(sm);
 				} catch (DocumentException de) {
-					throw new ExceptionConverter(de);
+					throw ExceptionHelper.wrapOrThrow(de);
 				}
 			}
 			return img;
@@ -968,7 +969,7 @@ public abstract class Image extends Rectangle {
 					.getDeclaredConstructor(Image.class);
 			return (Image) constructor.newInstance(image);
 		} catch (Exception e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionHelper.wrapOrThrow(e);
 		}
 	}
 

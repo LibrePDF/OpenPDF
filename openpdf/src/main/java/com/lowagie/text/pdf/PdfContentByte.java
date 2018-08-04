@@ -63,7 +63,7 @@ import java.util.Map;
 import com.lowagie.text.Annotation;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Image;
 import com.lowagie.text.ImgJBIG2;
 import com.lowagie.text.Rectangle;
@@ -3062,7 +3062,7 @@ public class PdfContentByte {
         	dict.toPdf(writer, content);
         }
         catch (IOException e) {
-        	throw new ExceptionConverter(e);
+        	throw ExceptionHelper.wrapOrThrow(e);
         }
         content.append(" BDC").append_i(separator);
     }
@@ -3097,7 +3097,7 @@ public class PdfContentByte {
                 property.toPdf(writer, content);
             }
             catch (Exception e) {
-                throw new ExceptionConverter(e);
+                throw ExceptionHelper.wrapOrThrow(e);
             }
         else {
             PdfObject[] objs;

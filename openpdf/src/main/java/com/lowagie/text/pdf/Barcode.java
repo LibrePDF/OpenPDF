@@ -50,7 +50,7 @@ package com.lowagie.text.pdf;
 
 import java.awt.Color;
 
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 /** Base class containing properties and methods common to all
@@ -424,7 +424,7 @@ public abstract class Barcode {
             return Image.getInstance(createTemplateWithBarcode(cb, barColor, textColor));
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
     

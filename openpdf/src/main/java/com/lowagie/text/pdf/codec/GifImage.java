@@ -55,7 +55,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Image;
 import com.lowagie.text.ImgRaw;
 import com.lowagie.text.Utilities;
@@ -385,7 +385,7 @@ public class GifImage {
             }
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
         img.setOriginalType(Image.ORIGINAL_GIF);
         img.setOriginalData(fromData);

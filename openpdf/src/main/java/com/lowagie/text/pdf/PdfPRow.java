@@ -53,7 +53,7 @@ import java.awt.Color;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 
@@ -374,7 +374,7 @@ public class PdfPRow {
 				try {
 					canvases[PdfPTable.TEXTCANVAS].addImage(img);
 				} catch (DocumentException e) {
-					throw new ExceptionConverter(e);
+					throw ExceptionHelper.wrapOrThrow(e);
 				}
 			} else {
                 // rotation sponsored by Connection GmbH
@@ -387,7 +387,7 @@ public class PdfPRow {
                     try {
                         ct.go(true);
                     } catch (DocumentException e) {
-                        throw new ExceptionConverter(e);
+                        throw ExceptionHelper.wrapOrThrow(e);
                     }
                     float calcHeight = -ct.getYLine();
                     if (netWidth <= 0 || netHeight <= 0)
@@ -433,7 +433,7 @@ public class PdfPRow {
                         try {
                             ct.go();
                         } catch (DocumentException e) {
-                            throw new ExceptionConverter(e);
+                            throw ExceptionHelper.wrapOrThrow(e);
                         } finally {
                             restoreCanvases(canvases);
                         }
@@ -490,7 +490,7 @@ public class PdfPRow {
                         try {
                             ct.go();
                         } catch (DocumentException e) {
-                            throw new ExceptionConverter(e);
+                            throw ExceptionHelper.wrapOrThrow(e);
                         } finally {
                             if (cell.getRotation() == 180) {
                                 restoreCanvases(canvases);
@@ -624,7 +624,7 @@ public class PdfPRow {
 					status = ct.go(true);
 				}
 				catch (DocumentException e) {
-					throw new ExceptionConverter(e);
+					throw ExceptionHelper.wrapOrThrow(e);
 				}
 				boolean thisEmpty = (ct.getYLine() == y);
 				if (thisEmpty) {

@@ -66,7 +66,7 @@ import com.lowagie.text.Cell;
 import com.lowagie.text.ChapterAutoNumber;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.ElementTags;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Image;
 import com.lowagie.text.List;
@@ -395,7 +395,7 @@ public class ElementFactory {
 			setRectangleProperties(table, attributes);
 			return table;
 		} catch (BadElementException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionHelper.wrapOrThrow(e);
 		}
 	}
 

@@ -52,7 +52,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfFormField;
@@ -159,7 +159,7 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
 			try {
 				field = tf.getTextField();
 			} catch (Exception e) {
-				throw new ExceptionConverter(e);
+				throw ExceptionHelper.wrapOrThrow(e);
 			}
 		}
 		else {

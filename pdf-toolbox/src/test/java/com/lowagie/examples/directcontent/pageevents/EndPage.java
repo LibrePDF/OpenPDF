@@ -16,7 +16,7 @@ package com.lowagie.examples.directcontent.pageevents;
 import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
@@ -71,7 +71,7 @@ public class EndPage extends PdfPageEventHelper {
                 writer.getDirectContent());
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
 

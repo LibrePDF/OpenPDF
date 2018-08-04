@@ -55,7 +55,7 @@ import java.awt.image.MemoryImageSource;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Rectangle;
 
 /** Implements the code codabar. The default parameters are:
@@ -124,7 +124,7 @@ public class BarcodeCodabar extends Barcode{
             codeType = CODABAR;
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
     

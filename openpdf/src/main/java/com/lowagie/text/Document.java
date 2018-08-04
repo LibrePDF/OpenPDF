@@ -55,6 +55,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.lowagie.text.error_messages.MessageLocalization;
+import io.reactivex.internal.util.ExceptionHelper;
 
 /**
  * A generic Document class.
@@ -467,7 +468,7 @@ public class Document implements DocListener {
         try {
             return add(new Header(name, content));
 		} catch (DocumentException de) {
-            throw new ExceptionConverter(de);
+            throw ExceptionHelper.wrapOrThrow(de);
         }
     }
     
@@ -483,7 +484,7 @@ public class Document implements DocListener {
         try {
             return add(new Meta(Element.TITLE, title));
 		} catch (DocumentException de) {
-            throw new ExceptionConverter(de);
+            throw ExceptionHelper.wrapOrThrow(de);
         }
     }
     
@@ -499,7 +500,7 @@ public class Document implements DocListener {
         try {
             return add(new Meta(Element.SUBJECT, subject));
 		} catch (DocumentException de) {
-            throw new ExceptionConverter(de);
+            throw ExceptionHelper.wrapOrThrow(de);
         }
     }
     
@@ -515,7 +516,7 @@ public class Document implements DocListener {
         try {
             return add(new Meta(Element.KEYWORDS, keywords));
 		} catch (DocumentException de) {
-            throw new ExceptionConverter(de);
+            throw ExceptionHelper.wrapOrThrow(de);
         }
     }
     
@@ -531,7 +532,7 @@ public class Document implements DocListener {
         try {
             return add(new Meta(Element.AUTHOR, author));
 		} catch (DocumentException de) {
-            throw new ExceptionConverter(de);
+            throw ExceptionHelper.wrapOrThrow(de);
         }
     }
     
@@ -547,7 +548,7 @@ public class Document implements DocListener {
         try {
             return add(new Meta(Element.CREATOR, creator));
 		} catch (DocumentException de) {
-            throw new ExceptionConverter(de);
+            throw ExceptionHelper.wrapOrThrow(de);
         }
     }
     
@@ -561,7 +562,7 @@ public class Document implements DocListener {
         try {
             return add(new Meta(Element.PRODUCER, getVersion()));
 		} catch (DocumentException de) {
-            throw new ExceptionConverter(de);
+            throw ExceptionHelper.wrapOrThrow(de);
         }
     }
     
@@ -578,7 +579,7 @@ public class Document implements DocListener {
 					"EEE MMM dd HH:mm:ss zzz yyyy");
 			return add(new Meta(Element.CREATIONDATE, sdf.format(new Date())));
 		} catch (DocumentException de) {
-            throw new ExceptionConverter(de);
+            throw ExceptionHelper.wrapOrThrow(de);
         }
     }
     

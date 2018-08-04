@@ -56,7 +56,7 @@ import java.util.HashMap;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 
 /** Subsets a True Type font by removing the unneeded glyphs from
  * the font.
@@ -389,7 +389,7 @@ class TrueTypeFontSubSet {
             return new String(buf, BaseFont.WINANSI);
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionHelper.wrapOrThrow(e);
         }
     }
     

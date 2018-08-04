@@ -97,7 +97,7 @@ import java.util.HashMap;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.BadElementException;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Image;
 import com.lowagie.text.ImgRaw;
 import com.lowagie.text.Utilities;
@@ -217,7 +217,7 @@ public class BmpImage {
             return img;
         }
         catch (BadElementException be) {
-            throw new ExceptionConverter(be);
+            throw ExceptionHelper.wrapOrThrow(be);
         }
     }
     
@@ -958,7 +958,7 @@ public class BmpImage {
                 bytesRead += r;
             }
         } catch (IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionHelper.wrapOrThrow(ioe);
         }
         
         int l=0, count;

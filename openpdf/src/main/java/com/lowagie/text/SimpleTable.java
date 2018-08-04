@@ -55,6 +55,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPTableEvent;
+import io.reactivex.internal.util.ExceptionHelper;
 
 /**
  * Rectangle that can be used for Cells.
@@ -349,7 +350,7 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
 			return false;
 		}
 		catch(BadElementException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionHelper.wrapOrThrow(e);
 		}
 	}
 }

@@ -1,12 +1,5 @@
+
 (1)
-
-ExceptionConverter:
-The original version of this class was published in an article by Heinz Kabutz.
-Read http://www.javaspecialists.co.za/archive/newsletter.do?issue=033&print=yes&locale=en_US
-"This material from The Java(tm) Specialists' Newsletter by Maximum Solutions
-(South Africa). Please contact Maximum Solutions  for more information.
-
-(2)
 
 SimpleXMLParser:
 The original version of this class was published in a JavaWorld article by Steven Brandt:
@@ -16,7 +9,7 @@ Steven Brandt's JavaWorld article, 'Java Tip 128: Create a quick-and-dirty XML p
 We ask that you reference the author as the creator and JavaWorld as the original publisher
 of the code." Steven Brandt also agreed with the use of this class.
 
-(3)
+(2)
 
 The following files contain material that was copyrighted by SUN:
 
@@ -96,7 +89,7 @@ The JAI Image I/O Tools packages (jai-imageio-core) were created
 to support formats handled by JAI but not included in Java SE
 as well as some new things like JPEG2000."
 
-(4) the file com/lowagie/text/pdf/codec/TIFFConstants
+(3) the file com/lowagie/text/pdf/codec/TIFFConstants
 and some other TIFF related code is derived from LIBTIFF:
 
  Copyright (c) 1988-1997 Sam Leffler
@@ -121,7 +114,7 @@ and some other TIFF related code is derived from LIBTIFF:
  LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
  OF THIS SOFTWARE.
 
-(5)
+(4)
 
 BidiOrder:
 As stated in the Javadoc comments, materials from Unicode.org

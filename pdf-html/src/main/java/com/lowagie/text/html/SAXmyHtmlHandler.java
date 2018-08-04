@@ -58,7 +58,7 @@ import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.ElementTags;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.xml.SAXiTextHandler;
 import com.lowagie.text.xml.XmlPeer;
@@ -236,7 +236,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
                 document.add((Element) stack.pop());
                 return;
             } catch (DocumentException e) {
-                throw new ExceptionConverter(e);
+                throw ExceptionHelper.wrapOrThrow(e);
             }
         }
         if (HtmlTagMap.isHead(name)) {

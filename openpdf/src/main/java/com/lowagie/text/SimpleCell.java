@@ -56,6 +56,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPCellEvent;
 import com.lowagie.text.pdf.PdfPTable;
+import io.reactivex.internal.util.ExceptionHelper;
 
 /**
  * Rectangle that can be used for Cells.
@@ -522,7 +523,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
 			return false;
 		}
 		catch(BadElementException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionHelper.wrapOrThrow(e);
 		}
 	}
 	/**

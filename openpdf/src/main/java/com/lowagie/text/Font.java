@@ -53,6 +53,7 @@ import java.awt.Color;
 
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
+import io.reactivex.internal.util.ExceptionHelper;
 
 /**
  * Contains all the specifications of a font: fontfamily, size, style and color.
@@ -718,7 +719,7 @@ public class Font implements Comparable {
 		try {
 			cfont = BaseFont.createFont(fontName, encoding, false);
 		} catch (Exception ee) {
-			throw new ExceptionConverter(ee);
+			throw ExceptionHelper.wrapOrThrow(ee);
 		}
 		return cfont;
 	}

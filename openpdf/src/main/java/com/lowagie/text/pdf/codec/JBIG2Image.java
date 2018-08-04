@@ -49,7 +49,7 @@
 
 package com.lowagie.text.pdf.codec;
 
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Image;
 import com.lowagie.text.ImgJBIG2;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;
@@ -96,7 +96,7 @@ public class JBIG2Image {
 			Image img = new ImgJBIG2(p.pageBitmapWidth, p.pageBitmapHeight, p.getData(true), sr.getGlobal(true));
 			return img;
 		} catch (Exception e) {
-	        throw new ExceptionConverter(e);
+	        throw ExceptionHelper.wrapOrThrow(e);
 	    }
 	}
 
@@ -111,7 +111,7 @@ public class JBIG2Image {
 			sr.read();
 			return sr.numberOfPages();
 		} catch (Exception e) {
-	        throw new ExceptionConverter(e);
+	        throw ExceptionHelper.wrapOrThrow(e);
 	    }
     }
 	

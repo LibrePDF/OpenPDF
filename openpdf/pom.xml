@@ -13,9 +13,15 @@
 
     <properties>
         <bouncycastle.version>1.60</bouncycastle.version>
+        <rxjava.version>2.2.0</rxjava.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.reactivex.rxjava2</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>${rxjava.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>

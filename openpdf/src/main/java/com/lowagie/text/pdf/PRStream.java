@@ -56,7 +56,7 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 
 public class PRStream extends PdfStream {
     
@@ -120,7 +120,7 @@ public class PRStream extends PdfStream {
                 bytes = stream.toByteArray();
             }
             catch (IOException ioe) {
-                throw new ExceptionConverter(ioe);
+                throw ExceptionHelper.wrapOrThrow(ioe);
             }
             put(PdfName.FILTER, PdfName.FLATEDECODE);
         }
@@ -167,7 +167,7 @@ public class PRStream extends PdfStream {
                 this.compressionLevel = compressionLevel;
             }
             catch (IOException ioe) {
-                throw new ExceptionConverter(ioe);
+                throw ExceptionHelper.wrapOrThrow(ioe);
             }
             put(PdfName.FILTER, PdfName.FLATEDECODE);
         }

@@ -69,7 +69,7 @@ import java.util.Map;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+import io.reactivex.internal.util.ExceptionHelper;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
@@ -720,7 +720,7 @@ public class PdfSignatureAppearance {
       }
       return size;
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionHelper.wrapOrThrow(e);
     }
   }
 
