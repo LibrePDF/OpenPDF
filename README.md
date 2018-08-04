@@ -21,7 +21,10 @@ GNU General Lesser Public License (LGPL) version 3.0 - http://www.gnu.org/licens
 
 Mozilla Public License Version 2.0 - http://www.mozilla.org/MPL/2.0/
 
-Some source files have other open source licences, this is something we are adressing in [issue #89](https://github.com/LibrePDF/OpenPDF/issues/89). We want OpenPDF to be consistently licensed with the LGPL and MPL licences only.
+We want OpenPDF to be consist of source code with is consistently licensed with the LGPL and MPL licences only.
+Since this is a software fork where we maintain code from a legacy software library (iText) we are reviewing the
+history and license of the code-base. The result of this work has been that we have replaced some source code which
+had other incompatible open source licenses. This also means that any new contributions to the project must have a dual LGPL and MPL license only.
 
 
 ## Use OpenPDF as Maven dependency
