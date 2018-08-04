@@ -17,9 +17,15 @@
         <commons-text.version>1.4</commons-text.version>
         <commons-compress.version>1.17</commons-compress.version>
         <commons-io.version>2.6</commons-io.version>
+        <sanselan.version>0.97-incubator</sanselan.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.sanselan</groupId>
+            <artifactId>sanselan</artifactId>
+            <version>${sanselan.version}</version>
+        </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>

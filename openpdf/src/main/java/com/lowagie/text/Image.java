@@ -72,12 +72,7 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.RandomAccessFileOrArray;
-import com.lowagie.text.pdf.codec.BmpImage;
 import com.lowagie.text.pdf.codec.CCITTG4Encoder;
-import com.lowagie.text.pdf.codec.GifImage;
-import com.lowagie.text.pdf.codec.JBIG2Image;
-import com.lowagie.text.pdf.codec.PngImage;
 import io.reactivex.internal.util.ExceptionHelper;
 
 /**
@@ -217,6 +212,9 @@ public abstract class Image extends Rectangle {
 	/** an iText attributed unique id for this image. */
 	protected Long mySerialId = getSerialId();
 
+	public static final int[] PNGID = {137, 80, 78, 71, 13, 10, 26, 10};
+
+
 	// image from file or URL
 	
 	/**
@@ -260,9 +258,7 @@ public abstract class Image extends Rectangle {
 
 			is = null;
 			if (c1 == 'G' && c2 == 'I' && c3 == 'F') {
-				GifImage gif = new GifImage(url);
-				Image img = gif.getImage(1);
-				return img;
+				return ImageLoader.getGifImage(url);
 			}
 			if (c1 == 0xFF && c2 == 0xD8) {
 				return new Jpeg(url);
@@ -273,38 +269,24 @@ public abstract class Image extends Rectangle {
 			if (c1 == 0xff && c2 == 0x4f && c3 == 0xff && c4 == 0x51) {
 				return new Jpeg2000(url);
 			}
-			if (c1 == PngImage.PNGID[0] && c2 == PngImage.PNGID[1]
-					&& c3 == PngImage.PNGID[2] && c4 == PngImage.PNGID[3]) {
-				return PngImage.getImage(url);
+			if (c1 == PNGID[0] && c2 == PNGID[1]
+					&& c3 == PNGID[2] && c4 == PNGID[3]) {
+				return ImageLoader.getPngImage(url);
 			}
 			if (c1 == 0xD7 && c2 == 0xCD) {
 				return new ImgWMF(url);
 			}
 			if (c1 == 'B' && c2 == 'M') {
-				return  BmpImage.getImage(url);
+				return  ImageLoader.getBmpImage(url);
 			}
 			if ((c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42)
 					|| (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
-				throw new IOException(url.toString()
-						+ " is not a recognized imageformat. TIFF support has been removed.");
+				return  ImageLoader.getTiffImage(url);
 			}
 			if ( c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2' &&
 					c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n' ) {
-				RandomAccessFileOrArray ra = null;
-				try {
-					if (url.getProtocol().equals("file")) {
-						String file = url.getFile();
-						file = Utilities.unEscapeURL(file);
-			            ra = new RandomAccessFileOrArray(file);
-					} else
-						ra = new RandomAccessFileOrArray(url);
-					Image img = JBIG2Image.getJbig2Image(ra, 1);
-					img.url = url;
-					return img;
-				} finally {
-						if (ra != null)
-							ra.close();
-				}
+				throw new IOException(url.toString()
+						+ " is not a recognized imageformat. JBIG2 support has been removed.");
 			}
 			throw new IOException(url.toString()
 					+ " is not a recognized imageformat.");
@@ -354,8 +336,7 @@ public abstract class Image extends Rectangle {
 
 			is = null;
 			if (c1 == 'G' && c2 == 'I' && c3 == 'F') {
-				GifImage gif = new GifImage(imgb);
-				return gif.getImage(1);
+				return ImageLoader.getGifImage(imgb);
 			}
 			if (c1 == 0xFF && c2 == 0xD8) {
 				return new Jpeg(imgb);
@@ -366,20 +347,19 @@ public abstract class Image extends Rectangle {
 			if (c1 == 0xff && c2 == 0x4f && c3 == 0xff && c4 == 0x51) {
 				return new Jpeg2000(imgb);
 			}
-			if (c1 == PngImage.PNGID[0] && c2 == PngImage.PNGID[1]
-					&& c3 == PngImage.PNGID[2] && c4 == PngImage.PNGID[3]) {
-				return PngImage.getImage(imgb);
+			if (c1 == PNGID[0] && c2 == PNGID[1]
+					&& c3 == PNGID[2] && c4 == PNGID[3]) {
+				return ImageLoader.getPngImage(imgb);
 			}
 			if (c1 == 0xD7 && c2 == 0xCD) {
 				return new ImgWMF(imgb);
 			}
 			if (c1 == 'B' && c2 == 'M') {
-				return BmpImage.getImage(imgb);
+				return ImageLoader.getBmpImage(imgb);
 			}
 			if ((c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42)
 					|| (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
-				// TIFF support has been removed.
-				throw new IOException(MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat"));
+				return ImageLoader.getTiffImage(imgb);
 			}
 			if ( c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2' ) {
 				is = new java.io.ByteArrayInputStream(imgb);
@@ -389,26 +369,7 @@ public abstract class Image extends Rectangle {
 				int c7 = is.read();
 				int c8 = is.read();
 				if ( c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n' ) {
-					int file_header_flags = is.read();
-					int number_of_pages = -1;
-					if ( (file_header_flags & 0x2) == 0x2 ) {
-						number_of_pages = (is.read() << 24) | (is.read() << 16) | (is.read() << 8) | is.read();
-					}
-					is.close();
-					// a jbig2 file with a file header.  the header is the only way we know here.                                                           
-					// embedded jbig2s don't have a header, have to create them by explicit use of Jbig2Image?
-					// nkerr, 2008-12-05  see also the getInstance(URL)
-					RandomAccessFileOrArray ra = null;
-					try {
-						ra = new RandomAccessFileOrArray(imgb);
-						Image img = JBIG2Image.getJbig2Image(ra, 1);
-						if (img.getOriginalData() == null)
-							img.setOriginalData(imgb);
-						return img;
-					} finally {
-						if (ra != null)
-							ra.close();
-					}
+					throw new IOException(MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat"));
 				}
 			}
 			throw new IOException(MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat"));

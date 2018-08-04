@@ -65,7 +65,6 @@ import com.lowagie.text.Image;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.codec.BmpImage;
 
 public class MetaDo {
     
@@ -538,39 +537,9 @@ public class MetaDo {
                     break;
                 }
                 case META_DIBSTRETCHBLT:
-                case META_STRETCHDIB: {
-                    int rop = in.readInt();
-                    if (function == META_STRETCHDIB) {
-                        /*int usage = */ in.readWord();
-                    }
-                    int srcHeight = in.readShort();
-                    int srcWidth = in.readShort();
-                    int ySrc = in.readShort();
-                    int xSrc = in.readShort();
-                    float destHeight = state.transformY(in.readShort()) - state.transformY(0);
-                    float destWidth = state.transformX(in.readShort()) - state.transformX(0);
-                    float yDest = state.transformY(in.readShort());
-                    float xDest = state.transformX(in.readShort());
-                    byte b[] = new byte[(tsize * 2) - (in.getLength() - lenMarker)];
-                    for (int k = 0; k < b.length; ++k)
-                        b[k] = (byte)in.readByte();
-                    try {
-                        ByteArrayInputStream inb = new ByteArrayInputStream(b);
-                        Image bmp = BmpImage.getImage(inb, true, b.length);
-                        cb.saveState();
-                        cb.rectangle(xDest, yDest, destWidth, destHeight);
-                        cb.clip();
-                        cb.newPath();
-                        bmp.scaleAbsolute(destWidth * bmp.getWidth() / srcWidth, -destHeight * bmp.getHeight() / srcHeight);
-                        bmp.setAbsolutePosition(xDest - destWidth * xSrc / srcWidth, yDest + destHeight * ySrc / srcHeight - bmp.getScaledHeight());
-                        cb.addImage(bmp);
-                        cb.restoreState();
-                    }
-                    catch (Exception e) {
-                        // empty on purpose
-                    }
+                case META_STRETCHDIB:
                     break;
-                }
+
             }
             in.skip((tsize * 2) - (in.getLength() - lenMarker));
         }

@@ -59,6 +59,7 @@ https://groups.google.com/d/forum/openpdf
  - Apache Commons IO
  - Apache Commons Compress
  - Apache Commons Text
+ - Sanselan (Apache Commons Imaging)
  - RxJava
  - PDFRenderer
  - DOM4j
