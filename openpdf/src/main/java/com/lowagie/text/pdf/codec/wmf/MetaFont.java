@@ -53,9 +53,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
-import io.reactivex.internal.util.ExceptionHelper;
+
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.pdf.BaseFont;
 
 public class MetaFont extends MetaObject {
@@ -189,7 +190,7 @@ public class MetaFont extends MetaObject {
             font = BaseFont.createFont(fontName, "Cp1252", false);
         }
         catch (Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
         
         return font;

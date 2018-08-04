@@ -13,7 +13,6 @@
 
     <properties>
         <bouncycastle.version>1.60</bouncycastle.version>
-        <rxjava.version>2.2.0</rxjava.version>
         <commons-text.version>1.3</commons-text.version>
         <commons-compress.version>1.17</commons-compress.version>
         <commons-io.version>2.6</commons-io.version>
@@ -40,11 +39,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>${commons-text.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.reactivex.rxjava2</groupId>
-            <artifactId>rxjava</artifactId>
-            <version>${rxjava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>

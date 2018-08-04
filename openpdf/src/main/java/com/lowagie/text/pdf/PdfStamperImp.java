@@ -55,11 +55,12 @@ import java.util.Iterator;
 import java.util.Map;
 import com.lowagie.text.error_messages.MessageLocalization;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
 import org.xml.sax.SAXException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import io.reactivex.internal.util.ExceptionHelper;
+
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.exceptions.BadPasswordException;
@@ -1241,7 +1242,7 @@ class PdfStamperImp extends PdfWriter {
             }
         }
         catch (IOException e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
 

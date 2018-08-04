@@ -58,11 +58,12 @@ import java.util.List;
 import java.util.Map;
 import com.lowagie.text.error_messages.MessageLocalization;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
 import org.w3c.dom.Node;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import io.reactivex.internal.util.ExceptionHelper;
+
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.codec.Base64;
@@ -145,7 +146,7 @@ public class AcroFields {
             xfa = new XfaForm(reader);
         }
         catch (Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
         if (writer instanceof PdfStamperImp) {
             append = ((PdfStamperImp)writer).isAppend();
@@ -552,7 +553,7 @@ public class AcroFields {
             return ret;
         }
         catch (IOException ioe) {
-            throw ExceptionHelper.wrapOrThrow(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
 
@@ -840,7 +841,7 @@ public class AcroFields {
 					valBytes = PdfReader.getStreamBytes((PRStream)v);
 	                return new String(valBytes);
 				} catch (IOException e) {
-					throw ExceptionHelper.wrapOrThrow(e);
+					throw ExceptionUtil.wrap(e);
 				}
         }
         
@@ -1085,7 +1086,7 @@ public class AcroFields {
             return true;
         }
         catch (Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
 
@@ -2225,7 +2226,7 @@ public class AcroFields {
             return pk;
         }
         catch (Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
 
@@ -2249,7 +2250,7 @@ public class AcroFields {
             }
         }
         catch (Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
         finally {
             try{rf.close();}catch(Exception e){}
@@ -2573,7 +2574,7 @@ public class AcroFields {
             return newButton;
         }
         catch (Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
 

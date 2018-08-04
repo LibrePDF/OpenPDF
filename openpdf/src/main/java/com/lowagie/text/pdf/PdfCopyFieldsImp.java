@@ -59,8 +59,9 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import io.reactivex.internal.util.ExceptionHelper;
+
 import com.lowagie.text.exceptions.BadPasswordException;
+import com.lowagie.text.exceptions.ExceptionUtil;
 
 /**
  *
@@ -362,7 +363,7 @@ class PdfCopyFieldsImp extends PdfWriter {
             closeIt();
         }
         catch (Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
     
@@ -550,7 +551,7 @@ class PdfCopyFieldsImp extends PdfWriter {
             return cat;
         }
         catch (IOException e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
 

@@ -46,12 +46,14 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.security.PrivateKey;
 import java.security.cert.CRL;
 import java.security.cert.Certificate;
 
-import io.reactivex.internal.util.ExceptionHelper;
+
 
 /**
  * A signature dictionary representation for the standard filters.
@@ -115,7 +117,7 @@ public abstract class PdfSigGenericPKCS extends PdfSignature {
             pkcs.setExternalDigest(externalDigest, externalRSAdata, digestEncryptionAlgorithm);
         }
         catch (Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
 

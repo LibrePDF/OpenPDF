@@ -1,6 +1,5 @@
 /*
- * Copyright 2002 by Phillip Pan
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at http://www.mozilla.org/MPL/
@@ -40,61 +39,20 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
  * details.
  *
- * If you didn't download this code from the following link, you should check if
- * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
- */
-package com.lowagie.text.pdf;
-
-
-import com.lowagie.text.exceptions.ExceptionUtil;
-
-/**
- * A <CODE>PdfPattern</CODE> defines a ColorSpace
- *
- * @see		PdfStream
  */
 
-public class PdfPattern extends PdfStream {
-    
-	/**
-	 * Creates a PdfPattern object.
-	 * @param	painter	a pattern painter instance
-	 */
-	PdfPattern(PdfPatternPainter painter) {
-		this(painter, DEFAULT_COMPRESSION);
-	}
+package com.lowagie.text.exceptions;
 
-	/**
-	 * Creates a PdfPattern object.
-	 * @param	painter	a pattern painter instance
-	 * @param	compressionLevel the compressionLevel for the stream
-	 * @since	2.1.3
-	 */
-    PdfPattern(PdfPatternPainter painter, int compressionLevel) {
-        super();
-        PdfNumber one = new PdfNumber(1);
-        PdfArray matrix = painter.getMatrix();
-        if ( matrix != null ) {
-            put(PdfName.MATRIX, matrix);
+public class ExceptionUtil {
+
+    public static RuntimeException wrap(Throwable e) {
+        if (e instanceof Error) {
+            throw (Error) e;
         }
-        put(PdfName.TYPE, PdfName.PATTERN);
-        put(PdfName.BBOX, new PdfRectangle(painter.getBoundingBox()));
-        put(PdfName.RESOURCES, painter.getResources());
-        put(PdfName.TILINGTYPE, one);
-        put(PdfName.PATTERNTYPE, one);
-        if (painter.isStencil())
-            put(PdfName.PAINTTYPE, new PdfNumber(2));
-        else
-            put(PdfName.PAINTTYPE, one);
-        put(PdfName.XSTEP, new PdfNumber(painter.getXStep()));
-        put(PdfName.YSTEP, new PdfNumber(painter.getYStep()));
-        bytes = painter.toPdf(null);
-        put(PdfName.LENGTH, new PdfNumber(bytes.length));
-        try {
-            flateCompress(compressionLevel);
-        } catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+        if (e instanceof RuntimeException) {
+            return (RuntimeException) e;
         }
+        return new RuntimeException(e);
     }
+
 }

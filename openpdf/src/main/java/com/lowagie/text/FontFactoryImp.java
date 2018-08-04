@@ -60,9 +60,10 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
-import io.reactivex.internal.util.ExceptionHelper;
+
 
 /**
  * If you are using True Type fonts, you can declare the paths of the different ttf- and ttc-files
@@ -212,7 +213,7 @@ public class FontFactoryImp implements FontProvider {
         }
         catch(DocumentException de) {
             // this shouldn't happen
-            throw ExceptionHelper.wrapOrThrow(de);
+            throw ExceptionUtil.wrap(de);
         }
         catch(IOException ioe) {
             // the font is registered as a true type font, but the path was wrong
@@ -588,10 +589,10 @@ public class FontFactoryImp implements FontProvider {
         }
         catch(DocumentException de) {
             // this shouldn't happen
-            throw ExceptionHelper.wrapOrThrow(de);
+            throw ExceptionUtil.wrap(de);
         }
         catch(IOException ioe) {
-            throw ExceptionHelper.wrapOrThrow(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
 

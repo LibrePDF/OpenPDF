@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.html.HtmlTags;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.Chunk;
@@ -65,7 +66,7 @@ import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.ElementTags;
-import io.reactivex.internal.util.ExceptionHelper;
+
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Image;
 import com.lowagie.text.ListItem;
@@ -166,7 +167,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 				document.add(currentParagraph);
 			currentParagraph = null;
 		} catch (Exception e) {
-			throw ExceptionHelper.wrapOrThrow(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 
@@ -439,7 +440,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 				return;
 			}
 		} catch (Exception e) {
-			throw ExceptionHelper.wrapOrThrow(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 
@@ -614,7 +615,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 				return;
 			}
 		} catch (Exception e) {
-			throw ExceptionHelper.wrapOrThrow(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 

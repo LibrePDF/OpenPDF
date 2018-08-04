@@ -112,6 +112,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Random;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.ExtensionsGenerator;
@@ -127,7 +128,7 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
-import io.reactivex.internal.util.ExceptionHelper;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
@@ -274,7 +275,7 @@ public class OcspClientBouncyCastle implements OcspClient {
         }
       }
     } catch (Exception ex) {
-      throw ExceptionHelper.wrapOrThrow(ex);
+      throw ExceptionUtil.wrap(ex);
     }
     return null;
   }

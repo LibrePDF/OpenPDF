@@ -59,7 +59,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import io.reactivex.internal.util.ExceptionHelper;
+import com.lowagie.text.exceptions.ExceptionUtil;
+
 
 /** Reads a Truetype font
  *
@@ -696,7 +697,7 @@ class TrueTypeFont extends BaseFont {
             return new String(buf, WINANSI);
         }
         catch (Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
     

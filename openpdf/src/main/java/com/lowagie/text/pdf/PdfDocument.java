@@ -82,11 +82,12 @@ import com.lowagie.text.Section;
 import com.lowagie.text.SimpleTable;
 import com.lowagie.text.Table;
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.draw.DrawInterface;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-import io.reactivex.internal.util.ExceptionHelper;
+
 
 /**
  * <CODE>PdfDocument</CODE> is the class that is used by <CODE>PdfWriter</CODE>
@@ -290,7 +291,7 @@ public class PdfDocument extends Document {
                     put(PdfName.NAMES, writer.addToBody(names).getIndirectReference());
             }
             catch (IOException e) {
-                throw ExceptionHelper.wrapOrThrow(e);
+                throw ExceptionUtil.wrap(e);
             }
         }
 
@@ -311,7 +312,7 @@ public class PdfDocument extends Document {
             try {
                 put(PdfName.AA, writer.addToBody(actions).getIndirectReference());
             } catch (Exception e) {
-                throw ExceptionHelper.wrapOrThrow(e);
+                throw ExceptionUtil.wrap(e);
             }
         }
     }
@@ -792,7 +793,7 @@ public class PdfDocument extends Document {
             initPage();
         }
         catch(DocumentException de) {
-            throw ExceptionHelper.wrapOrThrow(de);
+            throw ExceptionUtil.wrap(de);
         }
     }
 
@@ -824,7 +825,7 @@ public class PdfDocument extends Document {
             writeOutlines();
         }
         catch(Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
 
         writer.close();
@@ -966,10 +967,10 @@ public class PdfDocument extends Document {
         }
         catch(DocumentException de) {
         	// maybe this never happens, but it's better to check.
-        	throw ExceptionHelper.wrapOrThrow(de);
+        	throw ExceptionUtil.wrap(de);
         }
         catch (IOException ioe) {
-            throw ExceptionHelper.wrapOrThrow(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
         return true;
     }
@@ -1184,7 +1185,7 @@ public class PdfDocument extends Document {
             }
         }
         catch(Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
         leading = oldleading;
         alignment = oldAlignment;
@@ -1283,7 +1284,7 @@ public class PdfDocument extends Document {
           flushLines();
         }
       } catch (DocumentException ex) {
-        throw ExceptionHelper.wrapOrThrow(ex);
+        throw ExceptionUtil.wrap(ex);
         }
     }
 
@@ -1877,7 +1878,7 @@ public class PdfDocument extends Document {
                 catalog.put(PdfName.ACROFORM, writer.addToBody(annotationsImp.getAcroForm()).getIndirectReference());
             }
             catch (IOException e) {
-                throw ExceptionHelper.wrapOrThrow(e);
+                throw ExceptionUtil.wrap(e);
             }
         }
 
@@ -2122,7 +2123,7 @@ public class PdfDocument extends Document {
             documentLevelJS.put(SIXTEEN_DIGITS.format(jsCounter++), writer.addToBody(js).getIndirectReference());
         }
         catch (IOException e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
     void addJavaScript(String name, PdfAction js) {
@@ -2132,7 +2133,7 @@ public class PdfDocument extends Document {
             documentLevelJS.put(name, writer.addToBody(js).getIndirectReference());
         }
         catch (IOException e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
 

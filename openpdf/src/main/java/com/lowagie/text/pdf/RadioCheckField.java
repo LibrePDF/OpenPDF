@@ -49,8 +49,9 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 
 import com.lowagie.text.DocumentException;
-import io.reactivex.internal.util.ExceptionHelper;
+
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.exceptions.ExceptionUtil;
 
 /**
  * Creates a radio or a check field.
@@ -167,7 +168,7 @@ public class RadioCheckField extends BaseField {
             setFont(BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.WINANSI, false));
         }
         catch (Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
     

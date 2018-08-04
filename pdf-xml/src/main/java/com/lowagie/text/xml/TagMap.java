@@ -49,7 +49,8 @@
 
 package com.lowagie.text.xml;
 
-import io.reactivex.internal.util.ExceptionHelper;
+
+import com.lowagie.text.exceptions.ExceptionUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.DefaultHandler;
@@ -189,7 +190,7 @@ public class TagMap extends HashMap {
         	try {
 				init(new FileInputStream(tagfile));
 			} catch (FileNotFoundException fnfe) {
-				throw ExceptionHelper.wrapOrThrow(fnfe);
+				throw ExceptionUtil.wrap(fnfe);
 			}
         }
     }
@@ -209,7 +210,7 @@ public class TagMap extends HashMap {
             parser.parse(new InputSource(in), new AttributeHandler(this));
         }
         catch(Exception e) {
-            throw ExceptionHelper.wrapOrThrow(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
 

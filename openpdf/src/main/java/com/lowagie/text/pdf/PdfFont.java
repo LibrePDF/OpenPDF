@@ -49,8 +49,9 @@
 
 package com.lowagie.text.pdf;
 
-import io.reactivex.internal.util.ExceptionHelper;
+
 import com.lowagie.text.Image;
+import com.lowagie.text.exceptions.ExceptionUtil;
 
 /**
  * <CODE>PdfFont</CODE> is the Pdf Font object.
@@ -178,7 +179,7 @@ class PdfFont implements Comparable {
             return new PdfFont(bf, 12);
         }
         catch (Exception ee) {
-            throw ExceptionHelper.wrapOrThrow(ee);
+            throw ExceptionUtil.wrap(ee);
         }
     }
     void setHorizontalScaling(float hScale) {
