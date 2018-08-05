@@ -56,6 +56,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
  - Apache Commons Compress
  - Apache Commons Text
  - Sanselan (Apache Commons Imaging)
+ - juniversalchardet
  - PDFRenderer
  - DOM4j
 
