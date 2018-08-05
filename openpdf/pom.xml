@@ -17,9 +17,15 @@
         <commons-compress.version>1.17</commons-compress.version>
         <commons-io.version>2.6</commons-io.version>
         <sanselan.version>0.97-incubator</sanselan.version>
+        <juniversalchardet.version>1.0.3</juniversalchardet.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.googlecode.juniversalchardet</groupId>
+            <artifactId>juniversalchardet</artifactId>
+            <version>${juniversalchardet.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.sanselan</groupId>
             <artifactId>sanselan</artifactId>

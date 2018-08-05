@@ -40,42 +40,11 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
  * details.
  *
- * If you didn't download this code from the following link, you should check if
- * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
- *
- * The code to recognize the encoding in this class and in the convenience class IanaEncodings was taken from Apache Xerces published under the following license:
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * Part of this code is based on the Quick-and-Dirty XML parser by Steven Brandt.
- * The code for the Quick-and-Dirty parser was published in JavaWorld (java tip 128).
- * Steven Brandt and JavaWorld gave permission to use the code for free.
- * (Bruno Lowagie and Paulo Soares chose to use it under the MPL/LGPL in
- * conformance with the rest of the code).
- * The original code can be found on this url: <A HREF="http://www.javaworld.com/javatips/jw-javatip128_p.html">http://www.javaworld.com/javatips/jw-javatip128_p.html</A>.
- * It was substantially refactored by Bruno Lowagie.
- * 
- * The method 'private static String getEncodingName(byte[] b4)' was found
- * in org.apache.xerces.impl.XMLEntityManager, originaly published by the
- * Apache Software Foundation under the Apache Software License; now being
- * used in iText under the MPL.
  */
 package com.lowagie.text.xml.simpleparser;
 
 import com.lowagie.text.error_messages.MessageLocalization;
+import org.mozilla.universalchardet.UniversalDetector;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -592,7 +561,10 @@ public final class SimpleXMLParser {
         int count = in.read(b4);
         if (count != 4)
             throw new IOException(MessageLocalization.getComposedMessage("insufficient.length"));
-        String encoding = getEncodingName(b4);
+        UniversalDetector detector = new UniversalDetector(null);
+        detector.handleData(b4, 0, count);
+        String encoding = detector.getDetectedCharset();
+
         String decl = null;
         if (encoding.equals("UTF-8")) {
             StringBuffer sb = new StringBuffer();
@@ -650,75 +622,5 @@ public final class SimpleXMLParser {
     public static void parse(SimpleXMLDocHandler doc,Reader r) throws IOException {
         parse(doc, null, r, false);
     }
-    
 
-    /**
-     * Returns the IANA encoding name that is auto-detected from
-     * the bytes specified, with the endian-ness of that encoding where appropriate.
-     * (method found in org.apache.xerces.impl.XMLEntityManager, originally published
-     * by the Apache Software Foundation under the Apache Software License; now being
-     * used in iText under the MPL)
-     * @param b4    The first four bytes of the input.
-     * @return an IANA-encoding string
-     */
-    private static String getEncodingName(byte[] b4) {
-        
-        // UTF-16, with BOM
-        int b0 = b4[0] & 0xFF;
-        int b1 = b4[1] & 0xFF;
-        if (b0 == 0xFE && b1 == 0xFF) {
-            // UTF-16, big-endian
-            return "UTF-16BE";
-        }
-        if (b0 == 0xFF && b1 == 0xFE) {
-            // UTF-16, little-endian
-            return "UTF-16LE";
-        }
-        
-        // UTF-8 with a BOM
-        int b2 = b4[2] & 0xFF;
-        if (b0 == 0xEF && b1 == 0xBB && b2 == 0xBF) {
-            return "UTF-8";
-        }
-        
-        // other encodings
-        int b3 = b4[3] & 0xFF;
-        if (b0 == 0x00 && b1 == 0x00 && b2 == 0x00 && b3 == 0x3C) {
-            // UCS-4, big endian (1234)
-            return "ISO-10646-UCS-4";
-        }
-        if (b0 == 0x3C && b1 == 0x00 && b2 == 0x00 && b3 == 0x00) {
-            // UCS-4, little endian (4321)
-            return "ISO-10646-UCS-4";
-        }
-        if (b0 == 0x00 && b1 == 0x00 && b2 == 0x3C && b3 == 0x00) {
-            // UCS-4, unusual octet order (2143)
-            // REVISIT: What should this be?
-            return "ISO-10646-UCS-4";
-        }
-        if (b0 == 0x00 && b1 == 0x3C && b2 == 0x00 && b3 == 0x00) {
-            // UCS-4, unusual octet order (3412)
-            // REVISIT: What should this be?
-            return "ISO-10646-UCS-4";
-        }
-        if (b0 == 0x00 && b1 == 0x3C && b2 == 0x00 && b3 == 0x3F) {
-            // UTF-16, big-endian, no BOM
-            // (or could turn out to be UCS-2...
-            // REVISIT: What should this be?
-            return "UTF-16BE";
-        }
-        if (b0 == 0x3C && b1 == 0x00 && b2 == 0x3F && b3 == 0x00) {
-            // UTF-16, little-endian, no BOM
-            // (or could turn out to be UCS-2...
-            return "UTF-16LE";
-        }
-        if (b0 == 0x4C && b1 == 0x6F && b2 == 0xA7 && b3 == 0x94) {
-            // EBCDIC
-            // a la xerces1, return CP037 instead of EBCDIC here
-            return "CP037";
-        }
-        
-        // default encoding
-        return "UTF-8";
-    }
 }
