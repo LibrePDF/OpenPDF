@@ -46,11 +46,11 @@
 package com.lowagie.text;
 
 
-import com.lowagie.text.ExceptionConverter;
 import org.apache.commons.io.IOUtils;
 import org.apache.sanselan.common.byteSources.ByteSourceArray;
 import org.apache.sanselan.formats.bmp.BmpImageParser;
 import org.apache.sanselan.formats.gif.GifImageParser;
+import org.apache.sanselan.formats.jpeg.JpegImageParser;
 import org.apache.sanselan.formats.png.PngImageParser;
 import org.apache.sanselan.formats.tiff.TiffImageParser;
 
@@ -123,6 +123,20 @@ public class ImageLoader {
         }
     }
 
+    public static Image getJpegImage(URL url) {
+        try {
+            InputStream is = url.openStream();
+            byte[] imageBytes = IOUtils.toByteArray(is);
+            is.close();
+            JpegImageParser parser = new JpegImageParser();
+            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
+            return Image.getInstance(bufferedImage, null, false);
+
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
 
     public static Image getGifImage(byte imageData[]) {
         try {
@@ -168,5 +182,15 @@ public class ImageLoader {
         }
     }
 
+    public static Image getJpegImage(byte imageData[]) {
+        try {
+            JpegImageParser parser = new JpegImageParser();
+            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageData), new HashMap());
+            return Image.getInstance(bufferedImage, null, false);
+
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
 
 }

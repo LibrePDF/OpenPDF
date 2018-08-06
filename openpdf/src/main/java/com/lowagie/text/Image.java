@@ -262,13 +262,13 @@ public abstract class Image extends Rectangle {
 				return ImageLoader.getGifImage(url);
 			}
 			if (c1 == 0xFF && c2 == 0xD8) {
-				return new Jpeg(url);
+				return ImageLoader.getJpegImage(url);
 			}
 			if (c1 == 0x00 && c2 == 0x00 && c3 == 0x00 && c4 == 0x0c) {
-				return new Jpeg2000(url);
+				return ImageLoader.getJpegImage(url);
 			}
 			if (c1 == 0xff && c2 == 0x4f && c3 == 0xff && c4 == 0x51) {
-				return new Jpeg2000(url);
+				return ImageLoader.getJpegImage(url);
 			}
 			if (c1 == PNGID[0] && c2 == PNGID[1]
 					&& c3 == PNGID[2] && c4 == PNGID[3]) {
@@ -340,13 +340,13 @@ public abstract class Image extends Rectangle {
 				return ImageLoader.getGifImage(imgb);
 			}
 			if (c1 == 0xFF && c2 == 0xD8) {
-				return new Jpeg(imgb);
+				return ImageLoader.getJpegImage(imgb);
 			}
 			if (c1 == 0x00 && c2 == 0x00 && c3 == 0x00 && c4 == 0x0c) {
-				return new Jpeg2000(imgb);
+				return ImageLoader.getJpegImage(imgb);
 			}
 			if (c1 == 0xff && c2 == 0x4f && c3 == 0xff && c4 == 0x51) {
-				return new Jpeg2000(imgb);
+				return ImageLoader.getJpegImage(imgb);
 			}
 			if (c1 == PNGID[0] && c2 == PNGID[1]
 					&& c3 == PNGID[2] && c4 == PNGID[3]) {
