@@ -57,7 +57,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 import java.util.ArrayList;
 
@@ -429,7 +429,7 @@ public class PdfCopy extends PdfWriter {
             return theCat;
         }
         catch (IOException e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     
@@ -747,7 +747,7 @@ public class PdfCopy extends PdfWriter {
                 }
             }
             catch (IOException e) {
-                throw ExceptionUtil.wrap(e);
+                throw new ExceptionConverter(e);
             }
         }
     }

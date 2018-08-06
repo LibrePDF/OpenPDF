@@ -57,7 +57,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.Element;
 
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 /** Implements the code codabar. The default parameters are:
  * <pre>
@@ -125,7 +125,7 @@ public class BarcodeCodabar extends Barcode{
             codeType = CODABAR;
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     

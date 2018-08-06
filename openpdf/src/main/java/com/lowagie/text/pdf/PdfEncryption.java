@@ -49,7 +49,7 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.crypto.ARCFOUREncryption;
 import com.lowagie.text.error_messages.MessageLocalization;
 
@@ -139,7 +139,7 @@ public class PdfEncryption {
 		try {
 			md5 = MessageDigest.getInstance("MD5");
 		} catch (Exception e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 		publicKeyHandler = new PdfPublicKeySecurityHandler();
 	}
@@ -336,7 +336,7 @@ public class PdfEncryption {
 		try {
 			md5 = MessageDigest.getInstance("MD5");
 		} catch (Exception e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 		long time = System.currentTimeMillis();
 		long mem = Runtime.getRuntime().freeMemory();
@@ -425,7 +425,7 @@ public class PdfEncryption {
 			try {
 				recipients = publicKeyHandler.getEncodedRecipients();
 			} catch (Exception f) {
-				throw ExceptionUtil.wrap(f);
+				throw new ExceptionConverter(f);
 			}
 
 			if (revision == STANDARD_ENCRYPTION_40) {
@@ -478,7 +478,7 @@ public class PdfEncryption {
 					md.update(new byte[] { (byte) 255, (byte) 255, (byte) 255,
 							(byte) 255 });
 			} catch (Exception f) {
-				throw ExceptionUtil.wrap(f);
+				throw new ExceptionConverter(f);
 			}
 
 			byte[] mdResult = md.digest();
@@ -554,7 +554,7 @@ public class PdfEncryption {
 			os2.finish();
 			return ba.toByteArray();
 		} catch (IOException ex) {
-			throw ExceptionUtil.wrap(ex);
+			throw new ExceptionConverter(ex);
 		}
 	}
 
@@ -574,7 +574,7 @@ public class PdfEncryption {
 				ba.write(b2);
 			return ba.toByteArray();
 		} catch (IOException ex) {
-			throw ExceptionUtil.wrap(ex);
+			throw new ExceptionConverter(ex);
 		}
 	}
 

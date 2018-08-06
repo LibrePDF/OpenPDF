@@ -55,7 +55,7 @@ import java.util.HashMap;
 
 
 import com.lowagie.text.Utilities;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  * Each font in the document will have an instance of this class
@@ -238,7 +238,7 @@ class FontDetails {
                     b = s.getBytes(CJKFont.CJK_ENCODING);
                 }
                 catch (UnsupportedEncodingException e) {
-                    throw ExceptionUtil.wrap(e);
+                    throw new ExceptionConverter(e);
                 }
                 break;
             }
@@ -277,7 +277,7 @@ class FontDetails {
 			byte[] b = s.getBytes(CJKFont.CJK_ENCODING);
 			return b;
 		} catch (UnsupportedEncodingException e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 	
@@ -320,7 +320,7 @@ class FontDetails {
             }
         }
         catch(Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     

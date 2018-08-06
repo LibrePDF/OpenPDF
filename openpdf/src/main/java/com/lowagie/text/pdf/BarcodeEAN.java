@@ -55,7 +55,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 /** Generates barcodes in several formats: EAN13, EAN8, UPCA, UPCE,
  * supplemental 2 and 5. The default parameters are:
@@ -185,7 +185,7 @@ public class BarcodeEAN extends Barcode{
             code = "";
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     

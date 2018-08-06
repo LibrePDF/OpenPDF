@@ -68,7 +68,7 @@ import com.lowagie.text.Image;
 import com.lowagie.text.ImgJBIG2;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.exceptions.IllegalPdfSyntaxException;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfXConformanceImp;
@@ -3063,7 +3063,7 @@ public class PdfContentByte {
         	dict.toPdf(writer, content);
         }
         catch (IOException e) {
-        	throw ExceptionUtil.wrap(e);
+        	throw new ExceptionConverter(e);
         }
         content.append(" BDC").append_i(separator);
     }
@@ -3098,7 +3098,7 @@ public class PdfContentByte {
                 property.toPdf(writer, content);
             }
             catch (Exception e) {
-                throw ExceptionUtil.wrap(e);
+                throw new ExceptionConverter(e);
             }
         else {
             PdfObject[] objs;

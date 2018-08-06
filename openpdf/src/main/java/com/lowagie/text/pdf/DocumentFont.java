@@ -50,7 +50,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 
 /**
@@ -132,7 +132,7 @@ public class DocumentFont extends BaseFont {
                         cjkMirror = BaseFont.createFont(fontName, cjkEncs[k], false);
                     }
                     catch (Exception e) {
-                        throw ExceptionUtil.wrap(e);
+                        throw new ExceptionConverter(e);
                     }
                     return;
                 }
@@ -148,7 +148,7 @@ public class DocumentFont extends BaseFont {
 	                        cjkMirror = BaseFont.createFont(cjkNames2[k], cjkEncs2[k], false);
 	                    }
 	                    catch (Exception e) {
-	                        throw ExceptionUtil.wrap(e);
+	                        throw new ExceptionConverter(e);
 	                    }
 	                    return;
 	                }
@@ -179,7 +179,7 @@ public class DocumentFont extends BaseFont {
             }
             
         } catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     
@@ -277,7 +277,7 @@ public class DocumentFont extends BaseFont {
             }
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     
@@ -325,7 +325,7 @@ public class DocumentFont extends BaseFont {
                 bf = BaseFont.createFont(fontName, WINANSI, false);
             }
             catch (Exception e) {
-                throw ExceptionUtil.wrap(e);
+                throw new ExceptionConverter(e);
             }
             int e[] = uni2byte.toOrderedKeys();
             for (int k = 0; k < e.length; ++k) {

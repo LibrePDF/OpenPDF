@@ -1,6 +1,6 @@
 package com.lowagie.bouncycastle;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfObject;
 
@@ -24,7 +24,7 @@ public class BouncyCastleHelper {
         try {
             X509CertificateHolder certificateHolder = new X509CertificateHolder(certificate.getEncoded());
         } catch (CertificateEncodingException | IOException f) {
-            throw ExceptionUtil.wrap(f);
+            throw new ExceptionConverter(f);
         }
         // ******************************************************************************
     }
@@ -51,7 +51,7 @@ public class BouncyCastleHelper {
 
                 }
             } catch (Exception f) {
-                throw ExceptionUtil.wrap(f);
+                throw new ExceptionConverter(f);
             }
         }
         return envelopedData;

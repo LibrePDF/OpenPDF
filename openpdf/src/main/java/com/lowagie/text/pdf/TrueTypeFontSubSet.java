@@ -56,7 +56,7 @@ import java.util.HashMap;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 
 /** Subsets a True Type font by removing the unneeded glyphs from
@@ -390,7 +390,7 @@ class TrueTypeFontSubSet {
             return new String(buf, BaseFont.WINANSI);
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     

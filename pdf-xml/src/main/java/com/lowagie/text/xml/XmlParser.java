@@ -51,7 +51,7 @@ package com.lowagie.text.xml;
 
 import com.lowagie.text.DocListener;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -81,10 +81,10 @@ public class XmlParser {
             parser = SAXParserFactory.newInstance().newSAXParser();
         }
         catch(ParserConfigurationException pce) {
-            throw ExceptionUtil.wrap(pce);
+            throw new ExceptionConverter(pce);
         }
         catch(SAXException se) {
-            throw ExceptionUtil.wrap(se);
+            throw new ExceptionConverter(se);
         }
     }
     
@@ -99,10 +99,10 @@ public class XmlParser {
             parser.parse(is, new SAXiTextHandler(document));
         }
         catch(SAXException se) {
-            throw ExceptionUtil.wrap(se);
+            throw new ExceptionConverter(se);
         }
         catch(IOException ioe) {
-            throw ExceptionUtil.wrap(ioe);
+            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -118,10 +118,10 @@ public class XmlParser {
             parser.parse(is, new SAXmyHandler(document, new TagMap(tagmap)));
         }
         catch(SAXException se) {
-            throw ExceptionUtil.wrap(se);
+            throw new ExceptionConverter(se);
         }
         catch(IOException ioe) {
-            throw ExceptionUtil.wrap(ioe);
+            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -137,10 +137,10 @@ public class XmlParser {
                 parser.parse(is, new SAXmyHandler(document, new TagMap(tagmap)));
             }
             catch(SAXException se) {
-                throw ExceptionUtil.wrap(se);
+                throw new ExceptionConverter(se);
             }
             catch(IOException ioe) {
-                throw ExceptionUtil.wrap(ioe);
+                throw new ExceptionConverter(ioe);
             }
         }
     
@@ -156,10 +156,10 @@ public class XmlParser {
             parser.parse(is, new SAXmyHandler(document, tagmap));
         }
         catch(SAXException se) {
-            throw ExceptionUtil.wrap(se);
+            throw new ExceptionConverter(se);
         }
         catch(IOException ioe) {
-            throw ExceptionUtil.wrap(ioe);
+            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -174,10 +174,10 @@ public class XmlParser {
             parser.parse(file, new SAXiTextHandler(document));
         }
         catch(SAXException se) {
-            throw ExceptionUtil.wrap(se);
+            throw new ExceptionConverter(se);
         }
         catch(IOException ioe) {
-            throw ExceptionUtil.wrap(ioe);
+            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -193,10 +193,10 @@ public class XmlParser {
             parser.parse(file, new SAXmyHandler(document, new TagMap(tagmap)));
         }
         catch(SAXException se) {
-            throw ExceptionUtil.wrap(se);
+            throw new ExceptionConverter(se);
         }
         catch(IOException ioe) {
-            throw ExceptionUtil.wrap(ioe);
+            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -212,10 +212,10 @@ public class XmlParser {
             parser.parse(file, new SAXmyHandler(document, tagmap));
         }
         catch(SAXException se) {
-            throw ExceptionUtil.wrap(se);
+            throw new ExceptionConverter(se);
         }
         catch(IOException ioe) {
-            throw ExceptionUtil.wrap(ioe);
+            throw new ExceptionConverter(ioe);
         }
     }
     

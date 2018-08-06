@@ -46,7 +46,7 @@
  */
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 import java.awt.Font;
 import java.io.File;
@@ -172,7 +172,7 @@ public class DefaultFontMapper implements FontMapper {
             return BaseFont.createFont(fontKey, BaseFont.CP1252, false);
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     

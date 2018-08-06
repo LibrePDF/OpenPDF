@@ -59,7 +59,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 
 /** Reads a Truetype font
@@ -697,7 +697,7 @@ class TrueTypeFont extends BaseFont {
             return new String(buf, WINANSI);
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     

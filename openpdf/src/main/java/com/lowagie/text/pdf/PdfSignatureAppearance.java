@@ -76,7 +76,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  * This class takes care of the cryptographic options and appearances that form
@@ -721,7 +721,7 @@ public class PdfSignatureAppearance {
       }
       return size;
     } catch (Exception e) {
-      throw ExceptionUtil.wrap(e);
+      throw new ExceptionConverter(e);
     }
   }
 

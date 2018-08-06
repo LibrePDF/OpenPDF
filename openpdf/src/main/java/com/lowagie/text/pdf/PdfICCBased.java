@@ -48,7 +48,7 @@ package com.lowagie.text.pdf;
 
 import java.awt.color.ICC_Profile;
 import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 
 /**
@@ -96,7 +96,7 @@ public class PdfICCBased extends PdfStream {
             bytes = profile.getData();
             flateCompress(compressionLevel);
         } catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
 }

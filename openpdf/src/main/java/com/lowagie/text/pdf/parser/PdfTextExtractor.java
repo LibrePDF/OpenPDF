@@ -49,7 +49,7 @@
 package com.lowagie.text.pdf.parser;
 
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PRStream;
 import com.lowagie.text.pdf.PRTokeniser;
@@ -252,7 +252,7 @@ public class PdfTextExtractor {
 				handler.invokeOperator(operator, operands, resources);
 			}
 		} catch (Exception e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 		handler.popContext();
 	}

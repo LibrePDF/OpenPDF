@@ -57,7 +57,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.Element;
 
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 /** Implements the code 39 and code 39 extended. The default parameters are:
  * <pre>
@@ -160,7 +160,7 @@ public class Barcode39 extends Barcode{
             extended = false;
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     

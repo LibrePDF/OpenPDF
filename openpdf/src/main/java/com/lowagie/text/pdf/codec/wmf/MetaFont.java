@@ -56,7 +56,7 @@ import java.util.Locale;
 
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.BaseFont;
 
 public class MetaFont extends MetaObject {
@@ -190,7 +190,7 @@ public class MetaFont extends MetaObject {
             font = BaseFont.createFont(fontName, "Cp1252", false);
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
         
         return font;

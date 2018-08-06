@@ -46,7 +46,7 @@
  */
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 import java.io.ByteArrayOutputStream;
 import java.security.PrivateKey;
@@ -117,7 +117,7 @@ public abstract class PdfSigGenericPKCS extends PdfSignature {
             pkcs.setExternalDigest(externalDigest, externalRSAdata, digestEncryptionAlgorithm);
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
 

@@ -68,7 +68,7 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -192,7 +192,7 @@ public class CFFFont {
             return (char)(i & 0xff);
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     
@@ -201,7 +201,7 @@ public class CFFFont {
             return buf.readChar();
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     
@@ -219,7 +219,7 @@ public class CFFFont {
             buf.seek(offset);
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     
@@ -228,7 +228,7 @@ public class CFFFont {
             return buf.readShort();
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     
@@ -237,7 +237,7 @@ public class CFFFont {
             return buf.readInt();
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     
@@ -246,7 +246,7 @@ public class CFFFont {
             return buf.getFilePointer();
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     int nextIndexOffset;
@@ -425,7 +425,7 @@ public class CFFFont {
                     buffer[i] = buf.readByte();
             }
             catch (Exception e) {
-                throw ExceptionUtil.wrap(e);
+                throw new ExceptionConverter(e);
             }
             //System.err.println("finished range emit");
         }

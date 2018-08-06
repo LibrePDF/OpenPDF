@@ -51,7 +51,7 @@
 package com.lowagie.text.pdf.hyphenation;
 
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
 import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
 
@@ -98,7 +98,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
 		try {
 			SimpleXMLParser.parse(this, stream);
 		} catch (IOException e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		} finally {
 			try {
 				stream.close();

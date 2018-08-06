@@ -59,7 +59,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -701,7 +701,7 @@ public abstract class Image extends Rectangle {
 					sm.makeMask();
 					img.setImageMask(sm);
 				} catch (DocumentException de) {
-					throw ExceptionUtil.wrap(de);
+					throw new ExceptionConverter(de);
 				}
 			}
 			return img;
@@ -906,7 +906,7 @@ public abstract class Image extends Rectangle {
 					.getDeclaredConstructor(Image.class);
 			return (Image) constructor.newInstance(image);
 		} catch (Exception e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 

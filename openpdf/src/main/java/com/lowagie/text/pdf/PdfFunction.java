@@ -46,7 +46,7 @@
  */
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 import java.io.IOException;
 
@@ -75,7 +75,7 @@ public class PdfFunction {
             }
         }
         catch (IOException ioe) {
-            throw ExceptionUtil.wrap(ioe);
+            throw new ExceptionConverter(ioe);
         }
         return reference;
     }

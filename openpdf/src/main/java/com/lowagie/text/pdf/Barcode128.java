@@ -55,7 +55,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Element;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 
 /**
@@ -243,7 +243,7 @@ public class Barcode128 extends Barcode{
             codeType = CODE128;
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
 

@@ -48,7 +48,7 @@
  */
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.crypto.AESCipher;
 import com.lowagie.text.pdf.crypto.IVGenerator;
 import com.lowagie.text.pdf.crypto.ARCFOUREncryption;
@@ -82,7 +82,7 @@ public class OutputStreamEncryption extends OutputStream {
                 arcfour.prepareARCFOURKey(key, off, len);
             }
         } catch (Exception ex) {
-            throw ExceptionUtil.wrap(ex);
+            throw new ExceptionConverter(ex);
         }
     }
     
@@ -210,7 +210,7 @@ public class OutputStreamEncryption extends OutputStream {
                 try {
                     b = cipher.doFinal();
                 } catch (Exception ex) {
-                    throw ExceptionUtil.wrap(ex);
+                    throw new ExceptionConverter(ex);
                 }
                 out.write(b, 0, b.length);
             }

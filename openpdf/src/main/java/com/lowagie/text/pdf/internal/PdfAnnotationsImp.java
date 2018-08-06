@@ -57,7 +57,7 @@ import java.util.HashMap;
 import com.lowagie.text.Annotation;
 
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfAcroForm;
 import com.lowagie.text.pdf.PdfAction;
 import com.lowagie.text.pdf.PdfAnnotation;
@@ -207,7 +207,7 @@ public class PdfAnnotationsImp {
                     writer.addToBody(dic, dic.getIndirectReference());
                 }
                 catch (IOException e) {
-                    throw ExceptionUtil.wrap(e);
+                    throw new ExceptionConverter(e);
                 }
             }
         }

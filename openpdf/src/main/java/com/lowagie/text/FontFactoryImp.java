@@ -60,7 +60,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
 
@@ -213,7 +213,7 @@ public class FontFactoryImp implements FontProvider {
         }
         catch(DocumentException de) {
             // this shouldn't happen
-            throw ExceptionUtil.wrap(de);
+            throw new ExceptionConverter(de);
         }
         catch(IOException ioe) {
             // the font is registered as a true type font, but the path was wrong
@@ -589,10 +589,10 @@ public class FontFactoryImp implements FontProvider {
         }
         catch(DocumentException de) {
             // this shouldn't happen
-            throw ExceptionUtil.wrap(de);
+            throw new ExceptionConverter(de);
         }
         catch(IOException ioe) {
-            throw ExceptionUtil.wrap(ioe);
+            throw new ExceptionConverter(ioe);
         }
     }
 

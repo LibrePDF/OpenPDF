@@ -52,7 +52,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPCellEvent;
@@ -524,7 +524,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
 			return false;
 		}
 		catch(BadElementException e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 	/**

@@ -51,7 +51,7 @@ package com.lowagie.text;
 
 import java.awt.Color;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
 
@@ -720,7 +720,7 @@ public class Font implements Comparable {
 		try {
 			cfont = BaseFont.createFont(fontName, encoding, false);
 		} catch (Exception ee) {
-			throw ExceptionUtil.wrap(ee);
+			throw new ExceptionConverter(ee);
 		}
 		return cfont;
 	}

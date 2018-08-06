@@ -52,7 +52,7 @@ package com.lowagie.text.html;
 import java.util.HashMap;
 import java.util.Properties;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import org.xml.sax.Attributes;
 
 import com.lowagie.text.DocListener;
@@ -237,7 +237,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
                 document.add((Element) stack.pop());
                 return;
             } catch (DocumentException e) {
-                throw ExceptionUtil.wrap(e);
+                throw new ExceptionConverter(e);
             }
         }
         if (HtmlTagMap.isHead(name)) {

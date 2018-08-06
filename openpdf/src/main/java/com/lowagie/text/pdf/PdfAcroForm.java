@@ -54,7 +54,7 @@ import java.util.Iterator;
 
 
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  * Each PDF document can contain maximum 1 AcroForm.
@@ -473,7 +473,7 @@ public class PdfAcroForm extends PdfDictionary {
             font = BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
         }
         catch(Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
         float size = (ury - lly);
         PdfAppearance tpOn = PdfAppearance.createAppearance(writer, urx - llx, ury - lly);

@@ -55,7 +55,7 @@ import java.util.Iterator;
 import java.util.Map;
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import org.xml.sax.SAXException;
 
 import com.lowagie.text.Document;
@@ -1242,7 +1242,7 @@ class PdfStamperImp extends PdfWriter {
             }
         }
         catch (IOException e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
 

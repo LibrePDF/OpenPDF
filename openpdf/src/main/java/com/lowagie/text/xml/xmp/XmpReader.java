@@ -56,7 +56,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -99,7 +99,7 @@ public class XmpReader {
 	        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 	        domDocument = db.parse(bais);
 		} catch (ParserConfigurationException e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 	

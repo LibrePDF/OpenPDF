@@ -59,7 +59,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 
 /**
@@ -266,7 +266,7 @@ public class PdfStream extends PdfDictionary {
             compressed = true;
         }
         catch(IOException ioe) {
-            throw ExceptionUtil.wrap(ioe);
+            throw new ExceptionConverter(ioe);
         }
     }
 

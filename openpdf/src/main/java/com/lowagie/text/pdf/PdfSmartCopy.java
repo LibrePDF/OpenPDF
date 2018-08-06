@@ -58,7 +58,7 @@ import java.util.HashMap;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 
 /**
@@ -198,7 +198,7 @@ public class PdfSmartCopy extends PdfCopy {
                 md5 = MessageDigest.getInstance("MD5");
             }
             catch (Exception e) {
-                throw ExceptionUtil.wrap(e);
+                throw new ExceptionConverter(e);
             }
             ByteBuffer bb = new ByteBuffer();
             int level = 100;

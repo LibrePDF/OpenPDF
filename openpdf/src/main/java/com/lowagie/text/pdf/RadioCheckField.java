@@ -51,7 +51,7 @@ import java.io.IOException;
 import com.lowagie.text.DocumentException;
 
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  * Creates a radio or a check field.
@@ -168,7 +168,7 @@ public class RadioCheckField extends BaseField {
             setFont(BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.WINANSI, false));
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     

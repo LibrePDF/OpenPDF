@@ -58,7 +58,7 @@ import java.util.List;
 import java.util.Map;
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import org.w3c.dom.Node;
 
 import com.lowagie.text.DocumentException;
@@ -146,7 +146,7 @@ public class AcroFields {
             xfa = new XfaForm(reader);
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
         if (writer instanceof PdfStamperImp) {
             append = ((PdfStamperImp)writer).isAppend();
@@ -553,7 +553,7 @@ public class AcroFields {
             return ret;
         }
         catch (IOException ioe) {
-            throw ExceptionUtil.wrap(ioe);
+            throw new ExceptionConverter(ioe);
         }
     }
 
@@ -841,7 +841,7 @@ public class AcroFields {
 					valBytes = PdfReader.getStreamBytes((PRStream)v);
 	                return new String(valBytes);
 				} catch (IOException e) {
-					throw ExceptionUtil.wrap(e);
+					throw new ExceptionConverter(e);
 				}
         }
         
@@ -1086,7 +1086,7 @@ public class AcroFields {
             return true;
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
 
@@ -2226,7 +2226,7 @@ public class AcroFields {
             return pk;
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
 
@@ -2250,7 +2250,7 @@ public class AcroFields {
             }
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
         finally {
             try{rf.close();}catch(Exception e){}
@@ -2574,7 +2574,7 @@ public class AcroFields {
             return newButton;
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
 

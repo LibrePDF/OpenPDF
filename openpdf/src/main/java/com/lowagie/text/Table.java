@@ -58,7 +58,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -1186,7 +1186,7 @@ public class Table extends Rectangle implements LargeElement {
             }
         }
         catch(BadElementException bee) {
-            throw ExceptionUtil.wrap(bee);
+            throw new ExceptionConverter(bee);
         }
     }
     

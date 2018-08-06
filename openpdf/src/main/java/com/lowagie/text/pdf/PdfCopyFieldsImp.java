@@ -61,7 +61,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 
 import com.lowagie.text.exceptions.BadPasswordException;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  *
@@ -363,7 +363,7 @@ class PdfCopyFieldsImp extends PdfWriter {
             closeIt();
         }
         catch (Exception e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
     
@@ -551,7 +551,7 @@ class PdfCopyFieldsImp extends PdfWriter {
             return cat;
         }
         catch (IOException e) {
-            throw ExceptionUtil.wrap(e);
+            throw new ExceptionConverter(e);
         }
     }
 

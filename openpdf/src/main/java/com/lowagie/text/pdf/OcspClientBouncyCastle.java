@@ -112,7 +112,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Random;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.ExtensionsGenerator;
@@ -275,7 +275,7 @@ public class OcspClientBouncyCastle implements OcspClient {
         }
       }
     } catch (Exception ex) {
-      throw ExceptionUtil.wrap(ex);
+      throw new ExceptionConverter(ex);
     }
     return null;
   }

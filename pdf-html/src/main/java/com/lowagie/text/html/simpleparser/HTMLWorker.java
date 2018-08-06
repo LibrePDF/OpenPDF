@@ -58,7 +58,7 @@ import java.util.HashMap;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.html.HtmlTags;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.Chunk;
@@ -167,7 +167,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 				document.add(currentParagraph);
 			currentParagraph = null;
 		} catch (Exception e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 
@@ -440,7 +440,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 				return;
 			}
 		} catch (Exception e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 
@@ -615,7 +615,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 				return;
 			}
 		} catch (Exception e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 

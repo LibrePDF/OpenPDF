@@ -49,7 +49,7 @@ package com.lowagie.text.pdf;
 
 
 import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.exceptions.ExceptionUtil;
+import com.lowagie.text.ExceptionConverter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -221,7 +221,7 @@ public class PdfEncodings {
 		try {
 			return text.getBytes(encoding);
 		} catch (UnsupportedEncodingException e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 
@@ -278,7 +278,7 @@ public class PdfEncodings {
 		try {
 			return String.valueOf(char1).getBytes(encoding);
 		} catch (UnsupportedEncodingException e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 
@@ -327,7 +327,7 @@ public class PdfEncodings {
 		try {
 			return new String(bytes, encoding);
 		} catch (UnsupportedEncodingException e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 
@@ -400,7 +400,7 @@ public class PdfEncodings {
 				cmaps.putIfAbsent(name, planes);
 			}
 		} catch (IOException e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 
@@ -449,7 +449,7 @@ public class PdfEncodings {
 			}
 			return decodeSequence(seq, start, length, planes);
 		} catch (IOException e) {
-			throw ExceptionUtil.wrap(e);
+			throw new ExceptionConverter(e);
 		}
 	}
 
