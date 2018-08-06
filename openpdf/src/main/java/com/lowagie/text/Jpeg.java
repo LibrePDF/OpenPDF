@@ -53,6 +53,8 @@ import java.awt.color.ICC_Profile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
@@ -262,7 +264,7 @@ public class Jpeg extends Image {
                             byteappe[k] = (byte)is.read();
                         }
                         if (byteappe.length >= 12) {
-                            String appe = new String(byteappe, 0, 5, "ISO-8859-1");
+                            String appe = new String(byteappe, 0, 5, StandardCharsets.ISO_8859_1);
                             if (appe.equals("Adobe")) {
                                 invert = true;
                             }
@@ -276,7 +278,7 @@ public class Jpeg extends Image {
                             byteapp2[k] = (byte)is.read();
                         }
                         if (byteapp2.length >= 14) {
-                            String app2 = new String(byteapp2, 0, 11, "ISO-8859-1");
+                            String app2 = new String(byteapp2, 0, 11, StandardCharsets.ISO_8859_1);
                             if (app2.equals("ICC_PROFILE")) {
                                 int order = byteapp2[12] & 0xff;
                                 int count = byteapp2[13] & 0xff;

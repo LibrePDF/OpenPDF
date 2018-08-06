@@ -19,13 +19,14 @@ import java.io.FileOutputStream;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfGState;
@@ -105,7 +106,7 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
             helv = BaseFont.createFont("Helvetica", BaseFont.WINANSI, false);
         }
         catch(Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionUtil.wrap(e);
         }
     }    
     
@@ -158,7 +159,7 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
                 cb.addImage(headerImage, headerImage.getWidth(), 0, 0, headerImage.getHeight(), 440, 80);
             }
             catch(Exception e) {
-                throw new ExceptionConverter(e);
+                throw ExceptionUtil.wrap(e);
             }
             cb.restoreState();
         }

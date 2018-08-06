@@ -55,7 +55,9 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Properties;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.pdf.OutputStreamCounter;
+
 
 /**
  * An abstract <CODE>Writer</CODE> class for documents.
@@ -286,7 +288,7 @@ public abstract class DocWriter implements DocListener {
                 os.close();
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
 
@@ -344,7 +346,7 @@ public abstract class DocWriter implements DocListener {
             os.flush();
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
 

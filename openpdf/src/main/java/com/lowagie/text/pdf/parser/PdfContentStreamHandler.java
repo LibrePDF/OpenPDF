@@ -52,8 +52,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.pdf.CMapAwareDocumentFont;
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PRStream;
@@ -720,7 +721,7 @@ public class PdfContentStreamHandler {
 		@Override
 		public void invoke(ArrayList<PdfObject> operands,
 				PdfContentStreamHandler handler, PdfDictionary resources) {
-			String tagName = ((PdfName) operands.get(0)).toString().substring(1)
+			String tagName = operands.get(0).toString().substring(1)
 					.toLowerCase(Locale.ROOT);
 			if ("artifact".equals(tagName) || "placedpdf".equals(tagName)
 					|| handler.contextNames.peek() == null) {
@@ -817,7 +818,7 @@ public class PdfContentStreamHandler {
 					try {
 						data = getContentBytesFromPdfObject(stream);
 					} catch (IOException ex) {
-						throw new ExceptionConverter(ex);
+						throw ExceptionUtil.wrap(ex);
 					}
 					new PushGraphicsState().invoke(operands, handler, resources);			
 					processContent(data, resources2);
@@ -835,7 +836,7 @@ public class PdfContentStreamHandler {
 					invokeOperator(operator, operands, resources);
 				}
 			} catch (Exception e) {
-				throw new ExceptionConverter(e);
+				throw ExceptionUtil.wrap(e);
 			}
 		}
 

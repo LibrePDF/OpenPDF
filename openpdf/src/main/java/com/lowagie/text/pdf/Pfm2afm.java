@@ -145,6 +145,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import com.lowagie.text.error_messages.MessageLocalization;
@@ -159,7 +160,7 @@ public final class Pfm2afm {
     /** Creates a new instance of Pfm2afm */
     private Pfm2afm(RandomAccessFileOrArray in, OutputStream out) throws IOException {
         this.in = in;
-        this.out = new PrintWriter(new OutputStreamWriter(out, "ISO-8859-1"));
+        this.out = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.ISO_8859_1));
     }
     
     /**
@@ -199,7 +200,7 @@ public final class Pfm2afm {
             if (b[k] == 0)
                 break;
         }
-        return new String(b, 0, k, "ISO-8859-1");
+        return new String(b, 0, k, StandardCharsets.ISO_8859_1);
     }
     
     private String readString() throws IOException {

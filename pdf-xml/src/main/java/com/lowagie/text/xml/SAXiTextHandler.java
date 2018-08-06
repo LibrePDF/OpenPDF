@@ -59,7 +59,7 @@ import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.ElementTags;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.List;
@@ -71,6 +71,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.Section;
 import com.lowagie.text.Table;
 import com.lowagie.text.TextElementArray;
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.factories.ElementFactory;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.draw.LineSeparator;
@@ -314,7 +315,7 @@ public class SAXiTextHandler extends DefaultHandler {
                 table.setWidths(widths);
             } catch (BadElementException bee) {
                 // this shouldn't happen
-                throw new ExceptionConverter(bee);
+                throw ExceptionUtil.wrap(bee);
             }
             stack.push(table);
             return;
@@ -327,7 +328,7 @@ public class SAXiTextHandler extends DefaultHandler {
             try {
                 section = ElementFactory.getSection((Section) previous, attributes);
             } catch (ClassCastException cce) {
-                throw new ExceptionConverter(cce);
+                throw ExceptionUtil.wrap(cce);
             }
             stack.push(previous);
             stack.push(section);
@@ -353,12 +354,12 @@ public class SAXiTextHandler extends DefaultHandler {
                     try {
                         document.add(img);
                     } catch (DocumentException de) {
-                        throw new ExceptionConverter(de);
+                        throw ExceptionUtil.wrap(de);
                     }
                     return;
                 }
             } catch (Exception e) {
-                throw new ExceptionConverter(e);
+                throw ExceptionUtil.wrap(e);
             }
         }
 
@@ -380,7 +381,7 @@ public class SAXiTextHandler extends DefaultHandler {
                 }
                 return;
             } catch (DocumentException de) {
-                throw new ExceptionConverter(de);
+                throw ExceptionUtil.wrap(de);
             }
         }
 
@@ -396,7 +397,7 @@ public class SAXiTextHandler extends DefaultHandler {
                     try {
                         document.add(Chunk.NEWLINE);
                     } catch (DocumentException de) {
-                        throw new ExceptionConverter(de);
+                        throw ExceptionUtil.wrap(de);
                     }
                 } else {
                     currentChunk.append("\n");
@@ -434,7 +435,7 @@ public class SAXiTextHandler extends DefaultHandler {
                 try {
                     document.add(hr);
                 } catch (DocumentException de) {
-                    throw new ExceptionConverter(de);
+                    throw ExceptionUtil.wrap(de);
                 }
             }
             return;
@@ -462,7 +463,7 @@ public class SAXiTextHandler extends DefaultHandler {
                     if (ElementTags.BOTTOM.equalsIgnoreCase(key))
                         bottomMargin = Float.parseFloat(value + "f");
                 } catch (Exception ex) {
-                    throw new ExceptionConverter(ex);
+                    throw ExceptionUtil.wrap(ex);
                 }
                 if (ElementTags.PAGE_SIZE.equals(key)) {
                     try {
@@ -471,7 +472,7 @@ public class SAXiTextHandler extends DefaultHandler {
                                 .getField(pageSizeName);
                         pageSize = (Rectangle) pageSizeField.get(null);
                     } catch (Exception ex) {
-                        throw new ExceptionConverter(ex);
+                        throw ExceptionUtil.wrap(ex);
                     }
                 } else if (ElementTags.ORIENTATION.equals(key)) {
                     try {
@@ -479,13 +480,13 @@ public class SAXiTextHandler extends DefaultHandler {
                             orientation = "landscape";
                         }
                     } catch (Exception ex) {
-                        throw new ExceptionConverter(ex);
+                        throw ExceptionUtil.wrap(ex);
                     }
                 } else {
                     try {
                         document.add(new Meta(key, value));
                     } catch (DocumentException de) {
-                        throw new ExceptionConverter(de);
+                        throw ExceptionUtil.wrap(de);
                     }
                 }
             }
@@ -848,7 +849,7 @@ public class SAXiTextHandler extends DefaultHandler {
                 return;
             }
         } catch (DocumentException de) {
-            throw new ExceptionConverter(de);
+            throw ExceptionUtil.wrap(de);
         }
     }
 

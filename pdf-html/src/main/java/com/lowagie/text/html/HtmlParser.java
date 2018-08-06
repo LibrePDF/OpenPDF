@@ -53,11 +53,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.lowagie.text.DocListener;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.xml.XmlParser;
 
 /**
@@ -85,10 +86,10 @@ public class HtmlParser extends XmlParser {
             parser.parse(is, new SAXmyHtmlHandler(document));
         }
         catch(SAXException se) {
-            throw new ExceptionConverter(se);
+            throw ExceptionUtil.wrap(se);
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
     
@@ -114,10 +115,10 @@ public class HtmlParser extends XmlParser {
             parser.parse(file, new SAXmyHtmlHandler(document));
         }
         catch(SAXException se) {
-            throw new ExceptionConverter(se);
+            throw ExceptionUtil.wrap(se);
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
     
@@ -143,10 +144,10 @@ public class HtmlParser extends XmlParser {
             parser.parse(new InputSource(is), new SAXmyHtmlHandler(document));
         }
         catch(SAXException se) {
-            throw new ExceptionConverter(se);
+            throw ExceptionUtil.wrap(se);
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
     
@@ -172,10 +173,10 @@ public class HtmlParser extends XmlParser {
             parser.parse(new InputSource(is), new SAXmyHtmlHandler(document));
         }
         catch(SAXException se) {
-            throw new ExceptionConverter(se);
+            throw ExceptionUtil.wrap(se);
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
     

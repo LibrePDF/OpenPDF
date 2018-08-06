@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.PushbackInputStream;
 import com.lowagie.text.error_messages.MessageLocalization;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -423,7 +424,7 @@ public class CMapParser
         }
         else
         {
-            retval = new String( bytes, "UTF-16BE" );
+            retval = new String( bytes, StandardCharsets.UTF_16BE);
         }
         return retval;
     }

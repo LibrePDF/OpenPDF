@@ -54,8 +54,9 @@ import java.awt.image.MemoryImageSource;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.exceptions.ExceptionUtil;
+
 
 /**
  * Implements the code 128 and UCC/EAN-128. Other symbologies are allowed in raw mode.<p>
@@ -242,7 +243,7 @@ public class Barcode128 extends Barcode{
             codeType = CODE128;
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
 
@@ -288,7 +289,7 @@ public class Barcode128 extends Barcode{
                 }
                 if (idlen == 0)
                     break;
-                buf.append('(').append(code.substring(0, idlen)).append(')');
+                buf.append('(').append(code, 0, idlen).append(')');
                 code = code.substring(idlen);
                 if (n > 0) {
                     n -= idlen;
@@ -301,7 +302,7 @@ public class Barcode128 extends Barcode{
                     int idx = code.indexOf(FNC1);
                     if (idx < 0)
                         break;
-                    buf.append(code.substring(0,idx));
+                    buf.append(code, 0, idx);
                     code = code.substring(idx + 1);
                 }
             }

@@ -1,7 +1,4 @@
 /*
- * $Id: RtfStyleTypes.java 3373 2008-05-12 16:21:24Z xlv $
- *
- * Copyright 2007 by Howard Shank (hgshank@yahoo.com)
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -14,16 +11,16 @@
  * The Original Code is 'iText, a free JAVA-PDF library'.
  *
  * The Initial Developer of the Original Code is Bruno Lowagie. Portions created by
- * the Initial Developer are Copyright (C) 1999-2006 by Bruno Lowagie.
+ * the Initial Developer are Copyright (C) 1999, 2000, 2001, 2002 by Bruno Lowagie.
  * All Rights Reserved.
  * Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer
- * are Copyright (C) 2000-2006 by Paulo Soares. All Rights Reserved.
+ * are Copyright (C) 2000, 2001, 2002 by Paulo Soares. All Rights Reserved.
  *
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
  *
  * Alternatively, the contents of this file may be used under the terms of the
- * LGPL license (the ?GNU LIBRARY GENERAL PUBLIC LICENSE?), in which case the
+ * LGPL license (the "GNU LIBRARY GENERAL PUBLIC LICENSE"), in which case the
  * provisions of LGPL are applicable instead of those above.  If you wish to
  * allow use of your version of this file only under the terms of the LGPL
  * License and not to allow others to use your version of this file under
@@ -42,38 +39,20 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
  * details.
  *
- * If you didn't download this code from the following link, you should check if
- * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
  */
-package com.lowagie.text.rtf.style;
 
-/**
- * <code>RtfStyleTypes</code> contains the different types of Stylesheet entries
- * that exist in RTF.
- * 
- * @author Howard Shank (hgshank@yahoo.com)
- * @since 2.0.8
- */
-public final class RtfStyleTypes {
-	/**
-	 * Indicates paragraph style.
-	 */
-	public final static int PARAGRAPH = 0;
-	/**
-	 * Indicates character style.
-	 */
-	public final static int CHARACTER = 0;
-	/**
-	 * Indicates section style.
-	 */
-	public final static int SECTION = 2;
-	/**
-	 * Indicates Table style.
-	 */
-	public final static int TABLE = 3;
-	/**
-	 * Indicates table definition style.
-	 */
-	public final static int TABLE_STYLE_DEFINITION = 4;
+package com.lowagie.text.exceptions;
+
+public class ExceptionUtil {
+
+    public static RuntimeException wrap(Throwable e) {
+        if (e instanceof Error) {
+            throw (Error) e;
+        }
+        if (e instanceof RuntimeException) {
+            return (RuntimeException) e;
+        }
+        return new RuntimeException(e);
+    }
+
 }

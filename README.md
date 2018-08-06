@@ -21,7 +21,10 @@ GNU General Lesser Public License (LGPL) version 3.0 - http://www.gnu.org/licens
 
 Mozilla Public License Version 2.0 - http://www.mozilla.org/MPL/2.0/
 
-Some source files have other open source licences, this is something we are adressing in [issue #89](https://github.com/LibrePDF/OpenPDF/issues/89). We want OpenPDF to be consistently licensed with the LGPL and MPL licences only.
+We want OpenPDF to consist of source code which is consistently licensed with the LGPL and MPL licences only.
+Since this is a software fork where we maintain code from a legacy software library (iText) we are reviewing the
+history and license of the code-base. The result of this work has been that we have replaced some source code which
+had other incompatible open source licenses. This also means that any new contributions to the project must have a dual LGPL and MPL license only.
 
 
 ## Use OpenPDF as Maven dependency
@@ -36,13 +39,9 @@ Add this to your pom.xml file:
 ## Docs ##
 See [examples](pdf-toolbox/src/test/java/com/lowagie/examples/) and [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-1-0/).
 
-## Google Group for users and developers ##
-
-https://groups.google.com/d/forum/openpdf
-
 ## Background ##
 
-OpenPDF is open source with software with a LGPL and MPL license. It is a fork of iText version 4, more specifically iText svn tag 4.2.0, which was hosted publicly on sourceforge with LGPL and MPL license headers in the source code, and lgpl and mpl license documents in the svn repository.
+OpenPDF is open source software with a LGPL and MPL license. It is a fork of iText version 4, more specifically iText svn tag 4.2.0, which was hosted publicly on sourceforge with LGPL and MPL license headers in the source code, and lgpl and mpl license documents in the svn repository.
 Beginning with version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell commercial licenses. 
 
 ## Contributing ##
@@ -53,14 +52,19 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 
 ### Required: ###
 
- - BouncyCastle 1.60
-   - Provider
-   - PKIX/CMS
+ - Apache Commons IO
+ - Apache Commons Compress
+ - Apache Commons Text
+ - Sanselan (Apache Commons Imaging)
+ - juniversalchardet
  - PDFRenderer
  - DOM4j
 
 ### Optional: ###
 
+  - BouncyCastle 1.60
+    - Provider
+    - PKIX/CMS
  - JUnit 4 - for unit testing
  - JFreeChart - for testing graphical examples
    - JFreeChart

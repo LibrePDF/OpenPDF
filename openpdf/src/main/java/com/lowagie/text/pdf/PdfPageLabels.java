@@ -26,8 +26,9 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.factories.RomanAlphabetFactory;
 import com.lowagie.text.factories.RomanNumberFactory;
 
@@ -181,7 +182,7 @@ public class PdfPageLabels {
 		try {
 			return PdfNumberTree.writeTree(map, writer);
 		} catch (IOException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 

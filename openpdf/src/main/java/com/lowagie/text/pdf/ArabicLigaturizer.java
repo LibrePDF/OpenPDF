@@ -54,6 +54,7 @@ package com.lowagie.text.pdf;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+@Deprecated
 public class ArabicLigaturizer {
     
     static boolean isVowel(char s) {
@@ -556,11 +557,9 @@ public class ArabicLigaturizer {
                 break;
                 
                 case DIGITS_EN2AN_INIT_LR:
-                    shapeToArabicDigitsWithContext(text, 0, length, digitBase, false);
                     break;
                     
                 case DIGITS_EN2AN_INIT_AL:
-                    shapeToArabicDigitsWithContext(text, 0, length, digitBase, true);
                     break;
                     
                 default:
@@ -569,32 +568,7 @@ public class ArabicLigaturizer {
         }
     }
     
-    static void shapeToArabicDigitsWithContext(char[] dest, int start, int length, char digitBase,  boolean lastStrongWasAL) {
-        digitBase -= '0'; // move common adjustment out of loop
- 
-        int limit = start + length;
-        for(int i = start; i < limit; ++i) {
-            char ch = dest[i];
-            switch (BidiOrder.getDirection(ch)) {
-            case BidiOrder.L:
-            case BidiOrder.R:
-                lastStrongWasAL = false;
-                break;
-            case BidiOrder.AL:
-                lastStrongWasAL = true;
-                break;
-            case BidiOrder.EN:
-                if (lastStrongWasAL && ch <= '\u0039') {
-                    dest[i] = (char)(ch + digitBase);
-                }
-                break;
-            default:
-                break;
-            }
-        }
-    }
-
-    private static final char ALEF = 0x0627;
+     private static final char ALEF = 0x0627;
     private static final char ALEFHAMZA = 0x0623;
     private static final char ALEFHAMZABELOW = 0x0625;
     private static final char ALEFMADDA = 0x0622;

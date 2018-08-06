@@ -69,13 +69,14 @@ import java.util.Map;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.exceptions.ExceptionUtil;
 
 /**
  * This class takes care of the cryptographic options and appearances that form
@@ -720,7 +721,7 @@ public class PdfSignatureAppearance {
       }
       return size;
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 

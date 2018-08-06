@@ -53,8 +53,9 @@ import java.awt.font.GlyphVector;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Utilities;
+import com.lowagie.text.exceptions.ExceptionUtil;
 
 /**
  * Each font in the document will have an instance of this class
@@ -237,7 +238,7 @@ class FontDetails {
                     b = s.getBytes(CJKFont.CJK_ENCODING);
                 }
                 catch (UnsupportedEncodingException e) {
-                    throw new ExceptionConverter(e);
+                    throw ExceptionUtil.wrap(e);
                 }
                 break;
             }
@@ -276,7 +277,7 @@ class FontDetails {
 			byte[] b = s.getBytes(CJKFont.CJK_ENCODING);
 			return b;
 		} catch (UnsupportedEncodingException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 	
@@ -319,7 +320,7 @@ class FontDetails {
             }
         }
         catch(Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
     

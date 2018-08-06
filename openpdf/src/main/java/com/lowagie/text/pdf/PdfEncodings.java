@@ -47,14 +47,16 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.exceptions.ExceptionUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.StringTokenizer;
@@ -219,7 +221,7 @@ public class PdfEncodings {
 		try {
 			return text.getBytes(encoding);
 		} catch (UnsupportedEncodingException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 
@@ -276,7 +278,7 @@ public class PdfEncodings {
 		try {
 			return String.valueOf(char1).getBytes(encoding);
 		} catch (UnsupportedEncodingException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 
@@ -325,7 +327,7 @@ public class PdfEncodings {
 		try {
 			return new String(bytes, encoding);
 		} catch (UnsupportedEncodingException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 
@@ -398,7 +400,7 @@ public class PdfEncodings {
 				cmaps.putIfAbsent(name, planes);
 			}
 		} catch (IOException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 
@@ -447,7 +449,7 @@ public class PdfEncodings {
 			}
 			return decodeSequence(seq, start, length, planes);
 		} catch (IOException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 
@@ -499,7 +501,7 @@ public class PdfEncodings {
 	static void encodeStream(InputStream in, ArrayList<char[]> planes)
 			throws IOException {
 		BufferedReader rd = new BufferedReader(new InputStreamReader(in,
-				"iso-8859-1"));
+				StandardCharsets.ISO_8859_1));
 		String line = null;
 		int state = CIDNONE;
 		byte seqs[] = new byte[7];

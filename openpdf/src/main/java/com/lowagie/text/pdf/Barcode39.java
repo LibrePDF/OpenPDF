@@ -55,8 +55,9 @@ import java.awt.image.MemoryImageSource;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.exceptions.ExceptionUtil;
 
 /** Implements the code 39 and code 39 extended. The default parameters are:
  * <pre>
@@ -159,7 +160,7 @@ public class Barcode39 extends Barcode{
             extended = false;
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
     

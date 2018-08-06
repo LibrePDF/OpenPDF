@@ -10,7 +10,7 @@ import org.junit.Test;
 @Ignore  //ignored until we can fix headless GUI on Travis CI.
 public class SwingExamplesTest {
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String args[]) {
         SwingExamplesTest r = new SwingExamplesTest();
         r.testJTable2Pdf();
     }

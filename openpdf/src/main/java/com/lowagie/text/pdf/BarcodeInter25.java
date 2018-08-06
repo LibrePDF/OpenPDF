@@ -55,8 +55,9 @@ import java.awt.image.MemoryImageSource;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.exceptions.ExceptionUtil;
 
 /** Implements the code interleaved 2 of 5. The text can include
  * non numeric characters that are printed but do not generate bars.
@@ -107,7 +108,7 @@ public class BarcodeInter25 extends Barcode{
             checksumText = false;
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
     

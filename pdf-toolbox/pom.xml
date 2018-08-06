@@ -19,11 +19,6 @@
         </dependency>
         <dependency>
             <groupId>com.github.librepdf</groupId>
-            <artifactId>pdf-rtf</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
             <version>${project.version}</version>
         </dependency>

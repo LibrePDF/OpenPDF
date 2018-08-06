@@ -11,7 +11,7 @@ import org.junit.Test;
 public class DocumentTest {
 
     @Test
-    public void testThatVersionIsCorrect() throws IOException {
+    public void testThatVersionIsCorrect() {
         // Given
         String versionFromPom = getProjectVersion();
         String versionInCode = Document.getVersion();

@@ -410,7 +410,7 @@ public class EntitiesToUnicode {
     		}
     		pos_a = s.indexOf('&', pos_amp + 1);
     		while (pos_a != -1 && pos_a < pos_sc) {
-    			buf.append(s.substring(pos_amp, pos_a));
+    			buf.append(s, pos_amp, pos_a);
     			pos_amp = pos_a;
     			pos_a = s.indexOf('&', pos_amp + 1);
     		}
@@ -419,7 +419,7 @@ public class EntitiesToUnicode {
     			return buf.toString();
     		}
     		if (replace == '\0') {
-    			buf.append(s.substring(pos_amp, pos_sc + 1));
+    			buf.append(s, pos_amp, pos_sc + 1);
     		}
     		else {
     			buf.append(replace);
@@ -430,7 +430,7 @@ public class EntitiesToUnicode {
     			return buf.toString();
     		}
     		else {
-    			buf.append(s.substring(pos_sc + 1, pos_amp));
+    			buf.append(s, pos_sc + 1, pos_amp);
     		}
     	}
     }

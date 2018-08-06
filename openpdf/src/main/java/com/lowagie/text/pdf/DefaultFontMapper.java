@@ -46,11 +46,13 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
+
 import java.awt.Font;
 import java.io.File;
 import java.util.HashMap;
 
-import com.lowagie.text.ExceptionConverter;
+
 /** Default class to map awt fonts to BaseFont.
  * @author Paulo Soares (psoares@consiste.pt)
  */
@@ -170,7 +172,7 @@ public class DefaultFontMapper implements FontMapper {
             return BaseFont.createFont(fontKey, BaseFont.CP1252, false);
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
     

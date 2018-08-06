@@ -156,31 +156,31 @@ public class PdfDate extends PdfString {
         StringBuffer sb = new StringBuffer();
         if (d.length() < 4)
             return "0000";
-        sb.append(d.substring(0, 4)); //year
+        sb.append(d, 0, 4); //year
         d = d.substring(4);
         if (d.length() < 2)
             return sb.toString();
-        sb.append('-').append(d.substring(0, 2)); //month
+        sb.append('-').append(d, 0, 2); //month
         d = d.substring(2);
         if (d.length() < 2)
             return sb.toString();
-        sb.append('-').append(d.substring(0, 2)); //day
+        sb.append('-').append(d, 0, 2); //day
         d = d.substring(2);
         if (d.length() < 2)
             return sb.toString();
-        sb.append('T').append(d.substring(0, 2)); //hour
+        sb.append('T').append(d, 0, 2); //hour
         d = d.substring(2);
         if (d.length() < 2) {
             sb.append(":00Z");
             return sb.toString();
         }
-        sb.append(':').append(d.substring(0, 2)); //minute
+        sb.append(':').append(d, 0, 2); //minute
         d = d.substring(2);
         if (d.length() < 2) {
             sb.append('Z');
             return sb.toString();
         }
-        sb.append(':').append(d.substring(0, 2)); //second
+        sb.append(':').append(d, 0, 2); //second
         d = d.substring(2);
         if (d.startsWith("-") || d.startsWith("+")) {
             String sign = d.substring(0, 1);

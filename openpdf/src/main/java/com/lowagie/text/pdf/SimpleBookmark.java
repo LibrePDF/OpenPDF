@@ -66,6 +66,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.xml.simpleparser.IanaEncodings;
 import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
 import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
+import org.apache.commons.text.StringEscapeUtils;
+
 /**
  * Bookmark processing in a simple way. It has some limitations, mainly the only
  * action types supported are GoTo, GoToR, URI and Launch.
@@ -597,14 +599,14 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
                     String value = (String) entry.getValue();
                     if (key.equals("Named") || key.equals("NamedN"))
                         value = SimpleNamedDestination.escapeBinaryString(value);
-                    out.write(SimpleXMLParser.escapeXML(value, onlyASCII));
+                    out.write(StringEscapeUtils.escapeXml11(value));
                     out.write("\" ");
                 }
             }
             out.write(">");
             if (title == null)
                 title = "";
-            out.write(SimpleXMLParser.escapeXML(title, onlyASCII));
+            out.write(StringEscapeUtils.escapeXml11(title));
             if (kids != null) {
                 out.write("\n");
                 exportToXMLNode(kids, out, indent + 1, onlyASCII);
@@ -658,7 +660,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      */
     public static void exportToXML(List list, Writer wrt, String encoding, boolean onlyASCII) throws IOException {
         wrt.write("<?xml version=\"1.0\" encoding=\"");
-        wrt.write(SimpleXMLParser.escapeXML(encoding, onlyASCII));
+        wrt.write(StringEscapeUtils.escapeXml11(encoding));
         wrt.write("\"?>\n<Bookmark>\n");
         exportToXMLNode(list, wrt, 1, onlyASCII);
         wrt.write("</Bookmark>\n");

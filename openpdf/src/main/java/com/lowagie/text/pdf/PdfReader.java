@@ -50,15 +50,18 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.bouncycastle.BouncyCastleHelper;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.exceptions.BadPasswordException;
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.exceptions.InvalidPdfException;
 import com.lowagie.text.exceptions.UnsupportedPdfException;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
+import org.apache.commons.compress.compressors.z.ZCompressorInputStream;
+import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -845,7 +848,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           md.update(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255 });
         encryptionKey = md.digest();
       } catch (Exception f) {
-        throw new ExceptionConverter(f);
+        throw ExceptionUtil.wrap(f);
       }
     }
 
@@ -930,7 +933,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         return obj;
       }
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -1005,7 +1008,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         lastXrefPartial = idx;
       return obj;
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -2025,9 +2028,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    */
   public static byte[] LZWDecode(byte in[]) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    LZWDecoder lzw = new LZWDecoder();
-    lzw.decode(in, out);
-    return out.toByteArray();
+    try {
+      ZCompressorInputStream is = new ZCompressorInputStream(new ByteArrayInputStream(in));
+      return IOUtils.toByteArray(is);
+    } catch (IOException e) {
+      throw ExceptionUtil.wrap(e);
+    }
   }
 
   /**
@@ -3109,7 +3115,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     try {
       tokens.close();
     } catch (IOException e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -3449,7 +3455,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     private ArrayList pageInh;
     private boolean keepPages;
 
-    private PageRefs(PdfReader reader) throws IOException {
+    private PageRefs(PdfReader reader) {
       this.reader = reader;
       if (reader.partial) {
         refsp = new IntHashtable();
@@ -3491,7 +3497,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       reader.rootPages.put(PdfName.COUNT, new PdfNumber(refsn.size()));
     }
 
-    void reReadPages() throws IOException {
+    void reReadPages() {
       refsn = null;
       readPages();
     }
@@ -3564,7 +3570,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           }
         }
       } catch (Exception e) {
-        throw new ExceptionConverter(e);
+        throw ExceptionUtil.wrap(e);
       }
     }
 

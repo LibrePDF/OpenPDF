@@ -69,7 +69,7 @@ import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Font;
 import com.lowagie.text.Header;
 import com.lowagie.text.HeaderFooter;
@@ -86,6 +86,7 @@ import com.lowagie.text.Row;
 import com.lowagie.text.Section;
 import com.lowagie.text.SimpleTable;
 import com.lowagie.text.Table;
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.pdf.BaseFont;
 
 /**
@@ -177,7 +178,7 @@ public class HtmlWriter extends DocWriter {
             os.write(GT);
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
     
@@ -214,7 +215,7 @@ public class HtmlWriter extends DocWriter {
             os.write(GT);
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
         return true;
     }
@@ -303,7 +304,7 @@ public class HtmlWriter extends DocWriter {
             }
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
     
@@ -351,7 +352,7 @@ public class HtmlWriter extends DocWriter {
             initHeader(); // line added by David Freels
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
     
@@ -370,7 +371,7 @@ public class HtmlWriter extends DocWriter {
             super.close();
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
     
@@ -386,7 +387,7 @@ public class HtmlWriter extends DocWriter {
                 add(header.paragraph());
             }
             catch(Exception e) {
-                throw new ExceptionConverter(e);
+                throw ExceptionUtil.wrap(e);
             }
         }
     }
@@ -404,7 +405,7 @@ public class HtmlWriter extends DocWriter {
                 add(footer.paragraph());
             }
             catch(Exception e) {
-                throw new ExceptionConverter(e);
+                throw ExceptionUtil.wrap(e);
             }
         }
     }
@@ -600,7 +601,7 @@ public class HtmlWriter extends DocWriter {
             return true;
         }
         catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            throw ExceptionUtil.wrap(ioe);
         }
     }
     
@@ -906,7 +907,7 @@ public class HtmlWriter extends DocWriter {
             		try {
 						table = ((SimpleTable)element).createTable();
 					} catch (BadElementException e) {
-						throw new ExceptionConverter(e);
+						throw ExceptionUtil.wrap(e);
 					}
             	}
                 table.complete();

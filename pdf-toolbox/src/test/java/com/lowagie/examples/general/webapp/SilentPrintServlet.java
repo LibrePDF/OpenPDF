@@ -45,7 +45,7 @@ public class SilentPrintServlet extends HttpServlet {
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public void doGet(HttpServletRequest requ, HttpServletResponse resp)
-			throws ServletException, IOException {
+			throws IOException {
 		doWork(requ, resp);
 	}
 
@@ -53,7 +53,7 @@ public class SilentPrintServlet extends HttpServlet {
 	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public void doPost(HttpServletRequest requ, HttpServletResponse resp)
-			throws ServletException, IOException {
+			throws IOException {
 		doWork(requ, resp);
 	}
 

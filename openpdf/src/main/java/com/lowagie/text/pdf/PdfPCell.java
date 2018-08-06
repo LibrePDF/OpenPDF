@@ -55,10 +55,11 @@ import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Image;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.exceptions.ExceptionUtil;
 import com.lowagie.text.pdf.events.PdfPCellEventForwarder;
 
 /**
@@ -992,7 +993,7 @@ public class PdfPCell extends Rectangle{
 				try {
 					ct.go(true);
 				} catch (DocumentException e) {
-					throw new ExceptionConverter(e);
+					throw ExceptionUtil.wrap(e);
 				}
 				if (pivoted)
 					setBottom(getTop() - getEffectivePaddingTop() - getEffectivePaddingBottom() - ct.getFilledWidth());

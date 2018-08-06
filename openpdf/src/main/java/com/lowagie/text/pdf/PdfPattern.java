@@ -46,7 +46,8 @@
  */
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.ExceptionConverter;
+
+import com.lowagie.text.exceptions.ExceptionUtil;
 
 /**
  * A <CODE>PdfPattern</CODE> defines a ColorSpace
@@ -93,7 +94,7 @@ public class PdfPattern extends PdfStream {
         try {
             flateCompress(compressionLevel);
         } catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
 }

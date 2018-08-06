@@ -50,7 +50,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.exceptions.ExceptionUtil;
+
 
 /**
  *
@@ -131,7 +132,7 @@ public class DocumentFont extends BaseFont {
                         cjkMirror = BaseFont.createFont(fontName, cjkEncs[k], false);
                     }
                     catch (Exception e) {
-                        throw new ExceptionConverter(e);
+                        throw ExceptionUtil.wrap(e);
                     }
                     return;
                 }
@@ -147,7 +148,7 @@ public class DocumentFont extends BaseFont {
 	                        cjkMirror = BaseFont.createFont(cjkNames2[k], cjkEncs2[k], false);
 	                    }
 	                    catch (Exception e) {
-	                        throw new ExceptionConverter(e);
+	                        throw ExceptionUtil.wrap(e);
 	                    }
 	                    return;
 	                }
@@ -178,7 +179,7 @@ public class DocumentFont extends BaseFont {
             }
             
         } catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
     
@@ -276,7 +277,7 @@ public class DocumentFont extends BaseFont {
             }
         }
         catch (Exception e) {
-            throw new ExceptionConverter(e);
+            throw ExceptionUtil.wrap(e);
         }
     }
     
@@ -304,7 +305,7 @@ public class DocumentFont extends BaseFont {
                             currentNumber = ((PdfNumber)obj).intValue();
                         else {
 							int c[] = GlyphList.nameToUnicode(PdfName
-									.decodeName(((PdfName) obj).toString()));
+									.decodeName(obj.toString()));
                             if (c != null && c.length > 0) {
                                 uni2byte.put(c[0], currentNumber);
                                 diffmap.put(c[0], currentNumber);
@@ -324,7 +325,7 @@ public class DocumentFont extends BaseFont {
                 bf = BaseFont.createFont(fontName, WINANSI, false);
             }
             catch (Exception e) {
-                throw new ExceptionConverter(e);
+                throw ExceptionUtil.wrap(e);
             }
             int e[] = uni2byte.toOrderedKeys();
             for (int k = 0; k < e.length; ++k) {
@@ -531,11 +532,10 @@ public class DocumentFont extends BaseFont {
      * @param writer the writer for this document
      * @param ref the font indirect reference
      * @param params several parameters that depend on the font type
-     * @throws IOException on error
      * @throws DocumentException error in generating the object
      *
      */
-    void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException, IOException {
+    void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException {
     }
     
     /**

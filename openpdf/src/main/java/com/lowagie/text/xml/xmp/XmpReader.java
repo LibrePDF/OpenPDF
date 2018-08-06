@@ -50,11 +50,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -63,7 +65,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.xml.XmlDomWriter;
 
 /**
@@ -90,14 +92,14 @@ public class XmpReader {
 			DocumentBuilder db = fact.newDocumentBuilder();
 	        db.setEntityResolver(new EntityResolver() {
 				@Override
-				public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+				public InputSource resolveEntity(String publicId, String systemId) {
 					return new InputSource(new StringReader(""));
 				}        	
 	        });
 	        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 	        domDocument = db.parse(bais);
 		} catch (ParserConfigurationException e) {
-			throw new ExceptionConverter(e);
+			throw ExceptionUtil.wrap(e);
 		}
 	}
 	
@@ -177,7 +179,7 @@ public class XmpReader {
 		XmlDomWriter xw = new XmlDomWriter();
         ByteArrayOutputStream fout = new ByteArrayOutputStream();
         xw.setOutput(fout, null);
-        fout.write(XmpWriter.XPACKET_PI_BEGIN.getBytes("UTF-8"));
+        fout.write(XmpWriter.XPACKET_PI_BEGIN.getBytes(StandardCharsets.UTF_8));
         fout.flush();
         NodeList xmpmeta = domDocument.getElementsByTagName("x:xmpmeta");
         xw.write(xmpmeta.item(0));

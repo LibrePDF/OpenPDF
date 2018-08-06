@@ -52,6 +52,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.MessageDigest;
@@ -77,6 +78,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.lowagie.text.exceptions.ExceptionUtil;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Enumerated;
@@ -114,7 +116,7 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.TimeStampToken;
 
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
@@ -329,7 +331,7 @@ public class PdfPKCS7 {
         sig = Signature.getInstance("SHA1withRSA", provider);
       sig.initVerify(signCert.getPublicKey());
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -559,7 +561,7 @@ public class PdfPKCS7 {
         sig = Signature.getInstance(getDigestAlgorithm(), provider);
       sig.initVerify(signCert.getPublicKey());
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -869,7 +871,7 @@ public class PdfPKCS7 {
       k.load(fin, null);
       return k;
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     } finally {
       try {
         if (fin != null) {
@@ -1055,12 +1057,9 @@ public class PdfPKCS7 {
    * @param certificate
    *          the certificate
    * @return the URL or null
-   * @throws CertificateParsingException
-   *           on error
    * @since 2.1.6
    */
-  public static String getOCSPURL(X509Certificate certificate)
-      throws CertificateParsingException {
+  public static String getOCSPURL(X509Certificate certificate) {
     try {
       ASN1Primitive obj = getExtensionValue(certificate,
           X509Extensions.AuthorityInfoAccess.getId());
@@ -1141,7 +1140,7 @@ public class PdfPKCS7 {
       throws IOException {
     DERTaggedObject taggedObject = (DERTaggedObject) names;
     return new String(ASN1OctetString.getInstance(taggedObject, false)
-        .getOctets(), "ISO-8859-1");
+        .getOctets(), StandardCharsets.ISO_8859_1);
   }
 
   /**
@@ -1158,7 +1157,7 @@ public class PdfPKCS7 {
       return (ASN1Primitive) seq
           .getObjectAt(seq.getObjectAt(0) instanceof DERTaggedObject ? 3 : 2);
     } catch (IOException e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -1176,7 +1175,7 @@ public class PdfPKCS7 {
       return (ASN1Primitive) seq
           .getObjectAt(seq.getObjectAt(0) instanceof DERTaggedObject ? 5 : 4);
     } catch (IOException e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -1191,7 +1190,7 @@ public class PdfPKCS7 {
     try {
       return new X509Name((ASN1Sequence) getIssuer(cert.getTBSCertificate()));
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -1206,7 +1205,7 @@ public class PdfPKCS7 {
     try {
       return new X509Name((ASN1Sequence) getSubject(cert.getTBSCertificate()));
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -1229,7 +1228,7 @@ public class PdfPKCS7 {
 
       return bOut.toByteArray();
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -1256,7 +1255,7 @@ public class PdfPKCS7 {
       } else if (digestEncryptionAlgorithm.equals("DSA")) {
         this.digestEncryptionAlgorithm = ID_DSA;
       } else
-        throw new ExceptionConverter(new NoSuchAlgorithmException(
+        throw ExceptionUtil.wrap(new NoSuchAlgorithmException(
             MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
                 digestEncryptionAlgorithm)));
     }
@@ -1419,7 +1418,7 @@ public class PdfPKCS7 {
 
       return bOut.toByteArray();
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -1495,7 +1494,7 @@ public class PdfPKCS7 {
       return getAuthenticatedAttributeSet(secondDigest, signingTime, ocsp)
           .getEncoded(ASN1Encoding.DER);
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 
@@ -1546,7 +1545,7 @@ public class PdfPKCS7 {
       }
       return new DERSet(attribute);
     } catch (Exception e) {
-      throw new ExceptionConverter(e);
+      throw ExceptionUtil.wrap(e);
     }
   }
 

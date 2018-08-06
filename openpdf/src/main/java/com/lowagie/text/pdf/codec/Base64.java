@@ -2,6 +2,8 @@ package com.lowagie.text.pdf.codec;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * <p>Encodes and decodes to and from Base64 notation.</p>
  * <p>Homepage: <a href="http://iharder.net/base64">http://iharder.net/base64</a>.</p>
@@ -1177,7 +1179,7 @@ public class Base64 {
         try{
             out = new java.io.BufferedOutputStream(
                     new java.io.FileOutputStream( outfile ) );
-            out.write( encoded.getBytes("US-ASCII") ); // Strict, 7-bit output.
+            out.write( encoded.getBytes(StandardCharsets.US_ASCII) ); // Strict, 7-bit output.
         }   // end try
         catch( java.io.IOException ex ) {
             ex.printStackTrace();

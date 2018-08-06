@@ -54,6 +54,7 @@ import com.lowagie.text.pdf.codec.CCITTG4Encoder;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.image.MemoryImageSource;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
@@ -679,7 +680,7 @@ public class BarcodeDatamatrix {
      * @throws java.io.UnsupportedEncodingException on error
      */
     public int generate(String text) throws UnsupportedEncodingException {
-        byte[] t = text.getBytes("iso-8859-1");
+        byte[] t = text.getBytes(StandardCharsets.ISO_8859_1);
         return generate(t, 0, t.length);
     }
     

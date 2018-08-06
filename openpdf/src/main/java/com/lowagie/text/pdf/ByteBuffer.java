@@ -609,7 +609,7 @@ public class ByteBuffer extends OutputStream {
         out.write(buf, 0, count);
     }
     
-    public void write(int b) throws IOException {
+    public void write(int b) {
         append((byte)b);
     }
     
