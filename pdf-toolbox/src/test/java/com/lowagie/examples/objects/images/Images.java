@@ -63,6 +63,9 @@ public class Images {
             document.add(new Paragraph("iText.wmf"));
             Image wmf = Image.getInstance("iText.wmf");
             document.add(wmf);
+            document.add(new Paragraph("iText.tif"));
+            Image tif = Image.getInstance("iText.tif");
+            document.add(tif);
         }
         catch(DocumentException de) {
             System.err.println(de.getMessage());

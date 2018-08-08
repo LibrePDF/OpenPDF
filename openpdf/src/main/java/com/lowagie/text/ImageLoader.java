@@ -47,12 +47,12 @@ package com.lowagie.text;
 
 
 import org.apache.commons.io.IOUtils;
-import org.apache.sanselan.common.byteSources.ByteSourceArray;
-import org.apache.sanselan.formats.bmp.BmpImageParser;
-import org.apache.sanselan.formats.gif.GifImageParser;
-import org.apache.sanselan.formats.jpeg.JpegImageParser;
-import org.apache.sanselan.formats.png.PngImageParser;
-import org.apache.sanselan.formats.tiff.TiffImageParser;
+import org.apache.commons.imaging.common.bytesource.ByteSourceArray;
+import org.apache.commons.imaging.formats.bmp.BmpImageParser;
+import org.apache.commons.imaging.formats.gif.GifImageParser;
+import org.apache.commons.imaging.formats.jpeg.JpegImageParser;
+import org.apache.commons.imaging.formats.png.PngImageParser;
+import org.apache.commons.imaging.formats.tiff.TiffImageParser;
 
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
