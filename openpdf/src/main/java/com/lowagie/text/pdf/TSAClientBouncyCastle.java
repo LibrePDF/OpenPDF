@@ -55,6 +55,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
+import org.apache.commons.codec.binary.Base64;
 
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
@@ -65,7 +66,6 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.tsp.TimeStampTokenInfo;
 
 import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.pdf.codec.Base64;
 
 /**
  * Time Stamp Authority Client interface implementation using Bouncy Castle
@@ -249,7 +249,7 @@ public class TSAClientBouncyCastle implements TSAClient {
     if ((tsaUsername != null) && !tsaUsername.equals("")) {
       String userPassword = tsaUsername + ":" + tsaPassword;
       tsaConnection.setRequestProperty("Authorization", "Basic "
-          + new String(Base64.encodeBytes(userPassword.getBytes())));
+          + new String(Base64.encodeBase64(userPassword.getBytes())));
     }
     OutputStream out = tsaConnection.getOutputStream();
     out.write(requestBytes);
@@ -267,7 +267,7 @@ public class TSAClientBouncyCastle implements TSAClient {
 
     String encoding = tsaConnection.getContentEncoding();
     if (encoding != null && encoding.equalsIgnoreCase("base64")) {
-      respBytes = Base64.decode(new String(respBytes));
+      respBytes = Base64.decodeBase64(respBytes);
     }
     return respBytes;
   }
