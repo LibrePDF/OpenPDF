@@ -60,11 +60,41 @@ import java.net.URL;
 import java.util.HashMap;
 
 /**
- * Loads image files such as PNG, GIF, TIFF and BMP.
+ * Loads image files such as PNG, JPEG, GIF, TIFF and BMP.
+ *
+ * TODO: The goal of this class is to use Apache Commons Imaging to parse images and metadata,
+ * and embed the image in the PDF in the best way (the compressed image format, not the raw pixels).
+ *
+ * TODO: Update to Apache Commons Imaging 1.0 or later when it has a proper release on Maven Central.
+ *
+ * We don't want to maintain our own image codecs.
  *
  * @author Andreas Rosdal
  */
 public class ImageLoader {
+
+    /**
+     *     Creates an Image from a PNG image file in an URL.
+     *
+     *     TODO: Instead of using Image.getInstance to convert  the PNG to a raw image,
+     *     then use Commons Imaging to read metadata, and embed the image as a PNG.
+     *
+     * @param url
+     * @return
+     */
+    public static Image getPngImage(URL url) {
+        try {
+            InputStream is = url.openStream();
+            byte[] imageBytes = IOUtils.toByteArray(is);
+            is.close();
+            PngImageParser parser = new PngImageParser();
+            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
+            return Image.getInstance(bufferedImage, null, false);
+
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
 
     public static Image getGifImage(URL url) {
         try {
@@ -94,20 +124,6 @@ public class ImageLoader {
         }
     }
 
-    public static Image getPngImage(URL url) {
-        try {
-            InputStream is = url.openStream();
-            byte[] imageBytes = IOUtils.toByteArray(is);
-            is.close();
-            PngImageParser parser = new PngImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
-            return Image.getInstance(bufferedImage, null, false);
-
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
-    }
-
 
     public static Image getBmpImage(URL url) {
         try {
@@ -123,20 +139,37 @@ public class ImageLoader {
         }
     }
 
+    /**
+     * Creates an Image from a JPEG image file in an URL.
+     *
+     * TODO: Use Commons Imaging for image metadata parsing.
+     *
+     * @param url
+     * @return
+     */
     public static Image getJpegImage(URL url) {
         try {
             InputStream is = url.openStream();
             byte[] imageBytes = IOUtils.toByteArray(is);
             is.close();
-            JpegImageParser parser = new JpegImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
-            return Image.getInstance(bufferedImage, null, false);
+            return new Jpeg(imageBytes);
 
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
 
+    public static Image getJpeg2000Image(URL url) {
+        try {
+            InputStream is = url.openStream();
+            byte[] imageBytes = IOUtils.toByteArray(is);
+            is.close();
+            return new Jpeg2000(imageBytes);
+
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
 
     public static Image getGifImage(byte imageData[]) {
         try {
@@ -182,11 +215,30 @@ public class ImageLoader {
         }
     }
 
+    /**
+     * Creates an Image from a JPEG image file in a byte array.
+     *
+     * TODO: Use Commons Imaging for image metadata parsing.
+     *
+     * @param imageData
+     * @return
+     */
     public static Image getJpegImage(byte imageData[]) {
         try {
             JpegImageParser parser = new JpegImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageData), new HashMap());
-            return Image.getInstance(bufferedImage, null, false);
+
+            return new Jpeg(imageData);
+
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    public static Image getJpeg2000Image(byte imageData[]) {
+        try {
+            JpegImageParser parser = new JpegImageParser();
+
+            return new Jpeg2000(imageData);
 
         } catch (Exception e) {
             throw new ExceptionConverter(e);
