@@ -58,9 +58,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
  - Apache Commons Text
  - Apache Commons Codec
  - Apache Commons Imaging
- - juniversalchardet
- - PDFRenderer
- - DOM4j
+ - Juniversalchardet
 
 ### Optional: ###
 
@@ -72,3 +70,4 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
    - JFreeChart
    - JCommon
    - Servlet
+ - DOM4j is required for the pdf-swing submodule.
