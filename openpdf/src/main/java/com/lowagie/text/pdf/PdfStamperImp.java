@@ -313,7 +313,7 @@ class PdfStamperImp extends PdfWriter {
         }
         PdfIndirectReference encryption = null;
         PdfObject fileID = null;
-        if (crypto != null && includeFileID) {
+        if (crypto != null) {
             if (append) {
                 encryption = reader.getCryptoRef();
             }
@@ -321,7 +321,7 @@ class PdfStamperImp extends PdfWriter {
                 PdfIndirectObject encryptionObject = addToBody(crypto.getEncryptionDictionary(), false);
                 encryption = encryptionObject.getIndirectReference();
             }
-            fileID = crypto.getFileID();
+            if (includeFileID) fileID = crypto.getFileID();
         }
         else if (includeFileID) {
             if (overrideFileId != null) {
