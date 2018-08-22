@@ -251,15 +251,9 @@
 
     <developers>
         <developer>
-            <name>Art Krahenbuhl</name>
-            <email>rtfarte@gmail.com</email>
-            <organizationUrl>https://github.com/rtfarte</organizationUrl>
+            <name>The OpenPDF Project</name>
+            <organizationUrl>https://github.com/librepdf</organizationUrl>
         </developer>
-        <developer>
-            <name>Andreas Røsdal</name>
-            <email>andrearo AT pvv.ntnu.no</email>
-            <organizationUrl>https://github.com/andreasrosdal</organizationUrl>
-        </developer>             
     </developers>
     <!-- Distribution config from http://central.sonatype.org/pages/apache-maven.html#distribution-management-and-authentication -->
     <distributionManagement>
