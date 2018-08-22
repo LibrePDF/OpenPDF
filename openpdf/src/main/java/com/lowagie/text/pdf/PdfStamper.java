@@ -760,4 +760,23 @@ public class PdfStamper
     public Map getPdfLayers() {
     	return stamper.getPdfLayers();
     }
+
+    public void setIncludeFileID(boolean includeFileID) {
+        this.stamper.setIncludeFileID(includeFileID);
+    }
+
+    public boolean isIncludeFileID() {
+        return stamper.isIncludeFileID();
+    }
+
+    public void setOverrideFileId(PdfObject overrideFileId) {
+        this.stamper.setOverrideFileId(overrideFileId);
+    }
+
+    public PdfObject getOverrideFileId() {
+        return stamper.getOverrideFileId();
+    }
+
+
+
 }
