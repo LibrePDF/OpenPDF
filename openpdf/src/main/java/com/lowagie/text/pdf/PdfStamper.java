@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SignatureException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -777,6 +778,12 @@ public class PdfStamper
         return stamper.getOverrideFileId();
     }
 
+    public Calendar getModificationDate() {
+		return stamper.getModificationDate();
+	}
 
+	public void setModificationDate(Calendar modificationDate) {
+		this.stamper.setModificationDate(modificationDate);
+	}
 
 }
