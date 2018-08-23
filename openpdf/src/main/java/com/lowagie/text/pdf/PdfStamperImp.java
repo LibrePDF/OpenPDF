@@ -49,6 +49,7 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -96,6 +97,7 @@ class PdfStamperImp extends PdfWriter {
     protected PdfAction openAction;
     private boolean includeFileID = true;
     private PdfObject overrideFileId = null;
+    private Calendar modificationDate = null;
 
     /** Creates new PdfStamperImp.
      * @param reader the read PDF
@@ -241,7 +243,14 @@ class PdfStamperImp extends PdfWriter {
         	altMetadata = xmpMetadata;
         }
         // if there is XMP data to add: add it
-        PdfDate date = new PdfDate();
+
+        PdfDate date = null;
+        if (modificationDate == null) {
+            date = new PdfDate();
+        } else {
+            date = new PdfDate(modificationDate);
+        }
+        
         if (altMetadata != null) {
         	PdfStream xmp;
         	try {
@@ -1714,4 +1723,15 @@ class PdfStamperImp extends PdfWriter {
     public void setOverrideFileId(PdfObject overrideFileId) {
         this.overrideFileId = overrideFileId;
     }
+    
+
+    public Calendar getModificationDate() {
+        return modificationDate;
+    }
+
+    public void setModificationDate(Calendar modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+
+
 }
