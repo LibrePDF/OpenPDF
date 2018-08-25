@@ -762,27 +762,77 @@ public class PdfStamper
     	return stamper.getPdfLayers();
     }
 
+    /**
+     * Specifies if the file ID property should be included in the PDF file header when creating and stamping the PDF file.
+     *
+     * @since OpenPDF 1.2.1
+     * @date 25. aug 2018
+     * @see PdfName#ID
+     *
+     * @param includeFileID
+     */
     public void setIncludeFileID(boolean includeFileID) {
         this.stamper.setIncludeFileID(includeFileID);
     }
 
+    /**
+     * Returns if the file ID property should be included in the PDF file header when creating and signing the PDF file.
+     *
+     * @since OpenPDF 1.2.1
+     * @date 25. aug 2018
+     * @see PdfName#ID
+     *
+     * @return boolean
+     */
     public boolean isIncludeFileID() {
         return stamper.isIncludeFileID();
     }
 
+    /**
+     * Specifies the enforced PDF file ID, used to specifically override the PDF file ID when creating and signing the PDF file.
+     *
+     * @param overrideFileId
+     * @since OpenPDF 1.2.1
+     * @date 25. aug 2018
+     * @see PdfName#ID
+     */
     public void setOverrideFileId(PdfObject overrideFileId) {
         this.stamper.setOverrideFileId(overrideFileId);
     }
 
+    /**
+     * Returns the enforced PDF file ID, used to specifically override the created PDF file ID when creating and signing the PDF file.
+     *
+     * @date 25. aug 2018
+     * @since OpenPDF 1.2.1
+     * @see PdfName#ID
+     * @return PdfObject
+     */
     public PdfObject getOverrideFileId() {
         return stamper.getOverrideFileId();
     }
 
-    public Calendar getModificationDate() {
+    /**
+     * Returns the enforced modification date, used to specifically override the PDF modification date (ModDate) property when creating and signing the PDF file.
+     *
+     * @since OpenPDF 1.2.1
+     * @date 25. aug 2018
+     * @see PdfName#MODDATE
+     * @return Calendar
+     */
+    public Calendar getEnforcedModificationDate() {
 		return stamper.getModificationDate();
 	}
 
-	public void setModificationDate(Calendar modificationDate) {
+    /**
+     * Specifies the enforced modification date, used to specifically override the PDF modification date (ModDate) property when creating and signing the PDF file.
+     *
+     * @date 25. aug 2018
+     * @since OpenPDF 1.2.1
+     * @see PdfName#MODDATE
+     * @param modificationDate enforced modification date.
+     */
+	public void setEnforcedModificationDate(Calendar modificationDate) {
 		this.stamper.setModificationDate(modificationDate);
 	}
 

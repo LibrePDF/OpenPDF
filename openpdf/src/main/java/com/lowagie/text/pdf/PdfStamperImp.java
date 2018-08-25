@@ -1708,6 +1708,8 @@ class PdfStamperImp extends PdfWriter {
         }
     }
 
+    /** These methods are used by PdfStamper to override some PDF properties when signing PDF files. */
+
     public boolean isIncludeFileID() {
         return includeFileID;
     }
