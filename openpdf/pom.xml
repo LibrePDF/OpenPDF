@@ -17,8 +17,8 @@
         <commons-compress.version>1.18</commons-compress.version>
         <commons-io.version>2.6</commons-io.version>
         <commons-codec.version>1.11</commons-codec.version>
-        <commons-imaging.version>1.0-SNAPSHOT</commons-imaging.version>
         <juniversalchardet.version>1.0.3</juniversalchardet.version>
+        <imageio-tiff.version>3.4</imageio-tiff.version>
     </properties>
 
 
@@ -28,11 +28,6 @@
             <groupId>com.googlecode.juniversalchardet</groupId>
             <artifactId>juniversalchardet</artifactId>
             <version>${juniversalchardet.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-imaging</artifactId>
-            <version>${commons-imaging.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -63,6 +58,11 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-tiff</artifactId>
+            <version>${imageio-tiff.version}</version>
         </dependency>
 
         <!-- Test Dependencies -->

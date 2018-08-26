@@ -54,7 +54,6 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
  - Apache Commons Compress
  - Apache Commons Text
  - Apache Commons Codec
- - Apache Commons Imaging
  - Juniversalchardet
 
 ### Optional: ###

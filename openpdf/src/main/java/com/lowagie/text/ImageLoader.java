@@ -47,25 +47,19 @@ package com.lowagie.text;
 
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.imaging.common.bytesource.ByteSourceArray;
-import org.apache.commons.imaging.formats.bmp.BmpImageParser;
-import org.apache.commons.imaging.formats.gif.GifImageParser;
-import org.apache.commons.imaging.formats.jpeg.JpegImageParser;
-import org.apache.commons.imaging.formats.png.PngImageParser;
-import org.apache.commons.imaging.formats.tiff.TiffImageParser;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
 
 /**
  * Loads image files such as PNG, JPEG, GIF, TIFF and BMP.
  *
- * TODO: The goal of this class is to use Apache Commons Imaging to parse images and metadata,
+ * TODO: The goal of this class is to use Java ImageIO to parse images and metadata,
  * and embed the image in the PDF in the best way (the compressed image format, not the raw pixels).
  *
- * TODO: Update to Apache Commons Imaging 1.0 or later when it has a proper release on Maven Central.
  *
  * We don't want to maintain our own image codecs.
  *
@@ -76,8 +70,6 @@ public class ImageLoader {
     /**
      *     Creates an Image from a PNG image file in an URL.
      *
-     *     TODO: Instead of using Image.getInstance to convert  the PNG to a raw image,
-     *     then use Commons Imaging to read metadata, and embed the image as a PNG.
      *
      * @param url
      * @return
@@ -85,10 +77,8 @@ public class ImageLoader {
     public static Image getPngImage(URL url) {
         try {
             InputStream is = url.openStream();
-            byte[] imageBytes = IOUtils.toByteArray(is);
+            BufferedImage bufferedImage = ImageIO.read(is);
             is.close();
-            PngImageParser parser = new PngImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
@@ -99,10 +89,8 @@ public class ImageLoader {
     public static Image getGifImage(URL url) {
         try {
             InputStream is = url.openStream();
-            byte[] imageBytes = IOUtils.toByteArray(is);
+            BufferedImage bufferedImage = ImageIO.read(is);
             is.close();
-            GifImageParser parser = new GifImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
@@ -113,10 +101,8 @@ public class ImageLoader {
     public static Image getTiffImage(URL url) {
         try {
             InputStream is = url.openStream();
-            byte[] imageBytes = IOUtils.toByteArray(is);
+            BufferedImage bufferedImage = ImageIO.read(is);
             is.close();
-            TiffImageParser parser = new TiffImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
@@ -128,10 +114,8 @@ public class ImageLoader {
     public static Image getBmpImage(URL url) {
         try {
             InputStream is = url.openStream();
-            byte[] imageBytes = IOUtils.toByteArray(is);
+            BufferedImage bufferedImage = ImageIO.read(is);
             is.close();
-            BmpImageParser parser = new BmpImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageBytes), new HashMap());
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
@@ -141,8 +125,6 @@ public class ImageLoader {
 
     /**
      * Creates an Image from a JPEG image file in an URL.
-     *
-     * TODO: Use Commons Imaging for image metadata parsing.
      *
      * @param url
      * @return
@@ -173,8 +155,7 @@ public class ImageLoader {
 
     public static Image getGifImage(byte imageData[]) {
         try {
-            GifImageParser parser = new GifImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageData), new HashMap());
+            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
@@ -184,8 +165,7 @@ public class ImageLoader {
 
     public static Image getPngImage(byte imageData[]) {
         try {
-            PngImageParser parser = new PngImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageData), new HashMap());
+            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
@@ -195,8 +175,7 @@ public class ImageLoader {
 
     public static Image getBmpImage(byte imageData[]) {
         try {
-            BmpImageParser parser = new BmpImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageData), new HashMap());
+            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
@@ -206,8 +185,7 @@ public class ImageLoader {
 
     public static Image getTiffImage(byte imageData[]) {
         try {
-            TiffImageParser parser = new TiffImageParser();
-            BufferedImage bufferedImage = parser.getBufferedImage(new ByteSourceArray(imageData), new HashMap());
+            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
@@ -218,15 +196,12 @@ public class ImageLoader {
     /**
      * Creates an Image from a JPEG image file in a byte array.
      *
-     * TODO: Use Commons Imaging for image metadata parsing.
      *
      * @param imageData
      * @return
      */
     public static Image getJpegImage(byte imageData[]) {
         try {
-            JpegImageParser parser = new JpegImageParser();
-
             return new Jpeg(imageData);
 
         } catch (Exception e) {
@@ -236,8 +211,6 @@ public class ImageLoader {
 
     public static Image getJpeg2000Image(byte imageData[]) {
         try {
-            JpegImageParser parser = new JpegImageParser();
-
             return new Jpeg2000(imageData);
 
         } catch (Exception e) {
