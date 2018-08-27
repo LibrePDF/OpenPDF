@@ -10,11 +10,6 @@ Get version 1.2.1 here - https://github.com/LibrePDF/OpenPDF/releases/tag/openpd
 ### Previous Versions
 - [Version 1.2.0](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.0) _released 2018-08-06_
 - [Version 1.1.0](https://github.com/LibrePDF/OpenPDF/releases/tag/1.1.0) _released 2018-07-06_
-- [Version 1.0.5](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.5) _released 2017-11-16_
-- [Version 1.0.4](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.4) _released 2017-10-11_
-- [Version 1.0.3](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.3) _released 2017-07-24_
-- [Version 1.0.2](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.2) _released 2017-06-03_
-- [Version 1.0.1](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0.1) _released 2017-01-28_
 - [Version 1.0](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0) _released 2016-05-03_
 
 ## License ##
