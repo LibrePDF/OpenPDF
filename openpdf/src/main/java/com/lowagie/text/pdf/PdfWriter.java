@@ -2164,7 +2164,7 @@ public class PdfWriter extends DocWriter implements
 
     /** The form XObjects in this document. The key is the xref and the value
         is Object[]{PdfName, template}.*/
-    protected HashMap<PdfIndirectReference, Object[]> formXObjects = new HashMap<PdfIndirectReference, Object[]>();
+    protected LinkedHashMap<PdfIndirectReference, Object[]> formXObjects = new LinkedHashMap<PdfIndirectReference, Object[]>();
 
     /** The name counter for the form XObjects name. */
     protected int formXObjectsCounter = 1;
