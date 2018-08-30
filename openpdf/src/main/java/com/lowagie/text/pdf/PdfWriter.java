@@ -49,48 +49,25 @@
 
 package com.lowagie.text.pdf;
 
-import java.awt.Color;
+import com.lowagie.text.*;
+import com.lowagie.text.Image;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.pdf.collection.PdfCollection;
+import com.lowagie.text.pdf.events.PdfPageEventForwarder;
+import com.lowagie.text.pdf.interfaces.*;
+import com.lowagie.text.pdf.internal.PdfVersionImp;
+import com.lowagie.text.pdf.internal.PdfXConformanceImp;
+import com.lowagie.text.xml.xmp.XmpWriter;
+
+import java.awt.*;
 import java.awt.color.ICC_Profile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.security.cert.Certificate;
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.DocListener;
-import com.lowagie.text.DocWriter;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-
-import com.lowagie.text.Image;
-import com.lowagie.text.ImgJBIG2;
-import com.lowagie.text.ImgWMF;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.Table;
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.pdf.collection.PdfCollection;
-import com.lowagie.text.pdf.events.PdfPageEventForwarder;
-import com.lowagie.text.pdf.interfaces.PdfAnnotations;
-import com.lowagie.text.pdf.interfaces.PdfDocumentActions;
-import com.lowagie.text.pdf.interfaces.PdfEncryptionSettings;
-import com.lowagie.text.pdf.interfaces.PdfPageActions;
-import com.lowagie.text.pdf.interfaces.PdfVersion;
-import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
-import com.lowagie.text.pdf.interfaces.PdfXConformance;
-import com.lowagie.text.pdf.interfaces.PdfRunDirection;
-import com.lowagie.text.pdf.internal.PdfVersionImp;
-import com.lowagie.text.pdf.internal.PdfXConformanceImp;
-import com.lowagie.text.xml.xmp.XmpWriter;
+import java.util.*;
+import java.util.List;
 
 /**
  * A <CODE>DocWriter</CODE> class for PDF.

@@ -49,13 +49,12 @@
 
 package com.lowagie.text;
 
+import com.lowagie.text.error_messages.MessageLocalization;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.ExceptionConverter;
 
 
 /**
@@ -560,11 +559,17 @@ public class Document implements DocListener {
  */
     
     public boolean addProducer() {
-        try {
-            return add(new Meta(Element.PRODUCER, getVersion()));
-		} catch (DocumentException de) {
-            throw new ExceptionConverter(de);
-        }
+        return this.addProducer(this.getVersion());
+    }
+
+    /**
+     * Adds the provided value as the producer to a Document.
+     *
+     * @param producer new producer line value
+     * @return <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
+    public boolean addProducer(final String producer) {
+        return add(new Meta(Element.PRODUCER, producer));
     }
     
 	/**
