@@ -563,7 +563,9 @@ public final class SimpleXMLParser {
             throw new IOException(MessageLocalization.getComposedMessage("insufficient.length"));
         UniversalDetector detector = new UniversalDetector(null);
         detector.handleData(b4, 0, count);
+        detector.dataEnd();
         String encoding = detector.getDetectedCharset();
+        if (encoding == null) encoding = "UTF-8"; //UTF-8 is default.
 
         String decl = null;
         if (encoding.equals("UTF-8")) {
