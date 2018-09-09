@@ -3,6 +3,6 @@ jdk:
   - oraclejdk10
   - oraclejdk9
   - oraclejdk8
-  - openjdk7
+  - openjdk8
 
 install: mvn install -Dgpg.skip
