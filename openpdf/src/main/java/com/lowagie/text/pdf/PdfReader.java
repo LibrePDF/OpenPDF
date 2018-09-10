@@ -1070,7 +1070,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   protected void readDocObjPartial() throws IOException {
     xrefObj = new ArrayList<>(xref.length / 2);
-    xrefObj.addAll(Collections.<PdfObject>nCopies(xref.length / 2, null));
+    xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
     readDecryptedDocObj();
     if (objStmToOffset != null) {
       int keys[] = objStmToOffset.getKeys();
@@ -1178,7 +1178,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   protected void readDocObj() throws IOException {
     List<PdfObject> streams = new ArrayList<>();
     xrefObj = new ArrayList<>(xref.length / 2);
-    xrefObj.addAll(Collections.<PdfObject>nCopies(xref.length / 2, null));
+    xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
     for (int k = 2; k < xref.length; k += 2) {
       int pos = xref[k];
       if (pos <= 0 || xref[k + 1] > 0)

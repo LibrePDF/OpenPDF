@@ -559,7 +559,7 @@ public class Document implements DocListener {
  */
     
     public boolean addProducer() {
-        return this.addProducer(this.getVersion());
+        return this.addProducer(getVersion());
     }
 
     /**

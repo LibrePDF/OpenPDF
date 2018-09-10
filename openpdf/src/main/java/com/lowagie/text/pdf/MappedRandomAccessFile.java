@@ -208,7 +208,7 @@ public class MappedRandomAccessFile {
     }
     
     private static boolean cleanJava9(final java.nio.ByteBuffer buffer) {
-    	Boolean b = (Boolean) AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+    	Boolean b = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             public Boolean run() {
                 Boolean success = Boolean.FALSE;
                 try {
@@ -230,7 +230,7 @@ public class MappedRandomAccessFile {
     }
 
 	private static boolean cleanOldsJDK(final java.nio.ByteBuffer buffer) {
-		Boolean b = (Boolean) AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+		Boolean b = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             public Boolean run() {
                 Boolean success = Boolean.FALSE;
                 try {
