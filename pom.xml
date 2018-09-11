@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.test.failure.ignore>false</maven.test.failure.ignore>
         <java.version>1.8</java.version>
-        <maven.source.version>2.4</maven.source.version>
+        <maven.source.version>3.0.1</maven.source.version>
         <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
         <maven.clean.plugin.version>2.6.1</maven.clean.plugin.version>
         <maven.dependency.plugin.version>2.9</maven.dependency.plugin.version>
