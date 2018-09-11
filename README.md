@@ -24,12 +24,20 @@ We want OpenPDF to consist of source code which is consistently licensed with th
 
 
 ## Use OpenPDF as Maven dependency
-Add this to your pom.xml file:
+Add this to your pom.xml file to use the latest version of OpenPDF:
 
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
             <version>1.2.3</version>
+        </dependency>
+
+There is a separate Java 7 compatible branch and release:
+
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>1.2.3.java7</version>
         </dependency>
 
 ## Docs ##
@@ -45,11 +53,10 @@ Release the hounds!  Please send all pull requests.
 Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
 
 ## Dependencies ##
+- Java 8 or later is required to use OpenPDF. There is a separate branch for Java 7 called 'java7'.
 
+### Required Dependencies: ###
 
-### Required: ###
-
- - Java 8 or later
  - Apache Commons IO
  - Apache Commons Compress
  - Apache Commons Text
