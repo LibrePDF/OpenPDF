@@ -6,7 +6,7 @@
     <groupId>com.github.librepdf</groupId>
     <artifactId>openpdf-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.3.java7</version>
 
     <licenses>
         <license>
@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.test.failure.ignore>false</maven.test.failure.ignore>
-        <java.version>1.8</java.version>
+        <java.version>1.7</java.version>
         <maven.source.version>2.4</maven.source.version>
         <maven.javadoc.plugin.version>2.10.1</maven.javadoc.plugin.version>
         <maven.clean.plugin.version>2.6.1</maven.clean.plugin.version>

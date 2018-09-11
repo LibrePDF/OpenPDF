@@ -6,14 +6,14 @@
     <parent>
         <groupId>com.github.librepdf</groupId>
         <artifactId>openpdf-parent</artifactId>
-        <version>1.2.4-SNAPSHOT</version>
+        <version>1.2.3.java7</version>
     </parent>
 
     <artifactId>openpdf</artifactId>
 
     <properties>
         <bouncycastle.version>1.60</bouncycastle.version>
-        <commons-text.version>1.4</commons-text.version>
+        <commons-text.version>1.3</commons-text.version>
         <commons-compress.version>1.18</commons-compress.version>
         <commons-io.version>2.6</commons-io.version>
         <commons-codec.version>1.11</commons-codec.version>
