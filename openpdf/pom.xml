@@ -18,7 +18,7 @@
         <commons-io.version>2.6</commons-io.version>
         <commons-codec.version>1.11</commons-codec.version>
         <juniversalchardet.version>1.0.3</juniversalchardet.version>
-        <imageio-tiff.version>3.4</imageio-tiff.version>
+        <imageio-tiff.version>3.4.1</imageio-tiff.version>
     </properties>
 
 
