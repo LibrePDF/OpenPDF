@@ -4,10 +4,11 @@ OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF) [![Build Status](https://travis-ci.org/LibrePDF/OpenPDF.svg?branch=master)](https://travis-ci.org/LibrePDF/OpenPDF) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf) [![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%203.0-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-3.0) [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
 
-## OpenPDF version 1.2.3 released 2018-09-10 ##
-Get version 1.2.3 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.3
+## OpenPDF version 1.2.4 released 2018-09-14 ##
+Get version 1.2.4 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.4
 
 ### Previous Versions
+- [Version 1.2.3](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.3) _released 2018-09-10_
 - [Version 1.2.2](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.2) _released 2018-08-30_
 - [Version 1.2.1](https://github.com/LibrePDF/OpenPDF/releases/tag/openpdf-1.2.1) _released 2018-08-27_
 - [Version 1.2.0](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.0) _released 2018-08-06_
@@ -29,7 +30,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4</version>
         </dependency>
 
 There is a separate Java 7 compatible branch and release:
