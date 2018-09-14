@@ -12,6 +12,7 @@
     <artifactId>openpdf</artifactId>
 
     <properties>
+        <java-module-name>com.github.librepdf.openpdf</java-module-name>
         <bouncycastle.version>1.60</bouncycastle.version>
         <commons-text.version>1.4</commons-text.version>
         <commons-compress.version>1.18</commons-compress.version>

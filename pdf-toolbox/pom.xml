@@ -11,6 +11,10 @@
 
     <artifactId>pdf-toolbox</artifactId>
 
+    <properties>
+        <java-module-name>com.github.librepdf.pdf-toolbox</java-module-name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.github.librepdf</groupId>

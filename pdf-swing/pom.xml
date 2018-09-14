@@ -11,6 +11,10 @@
 
     <artifactId>pdf-swing</artifactId>
 
+    <properties>
+        <java-module-name>com.github.librepdf.pdf-swing</java-module-name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.github.librepdf</groupId>
