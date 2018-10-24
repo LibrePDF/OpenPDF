@@ -59,7 +59,6 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 ### Required Dependencies: ###
 
  - Apache Commons Compress
- - Apache Commons Text
  - Juniversalchardet
 
 ### Optional: ###
