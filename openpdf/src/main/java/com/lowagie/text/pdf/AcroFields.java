@@ -49,15 +49,9 @@ package com.lowagie.text.pdf;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import com.lowagie.text.error_messages.MessageLocalization;
-import org.apache.commons.codec.binary.Base64;
 
 import com.lowagie.text.ExceptionConverter;
 import org.w3c.dom.Node;
@@ -1382,7 +1376,7 @@ public class AcroFields {
                 //we'll assume that the value is an image in base64
                 Image img;
                 try {
-                    img = Image.getInstance(Base64.decodeBase64(value));
+                    img = Image.getInstance(Base64.getDecoder().decode(value));
                 }
                 catch (Exception e) {
                     return false;

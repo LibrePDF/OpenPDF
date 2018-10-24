@@ -55,7 +55,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
-import org.apache.commons.codec.binary.Base64;
+import java.util.Base64;
 
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
@@ -249,7 +249,7 @@ public class TSAClientBouncyCastle implements TSAClient {
     if ((tsaUsername != null) && !tsaUsername.equals("")) {
       String userPassword = tsaUsername + ":" + tsaPassword;
       tsaConnection.setRequestProperty("Authorization", "Basic "
-          + new String(Base64.encodeBase64(userPassword.getBytes())));
+          + new String(Base64.getDecoder().decode(userPassword.getBytes())));
     }
     OutputStream out = tsaConnection.getOutputStream();
     out.write(requestBytes);
@@ -267,7 +267,7 @@ public class TSAClientBouncyCastle implements TSAClient {
 
     String encoding = tsaConnection.getContentEncoding();
     if (encoding != null && encoding.equalsIgnoreCase("base64")) {
-      respBytes = Base64.decodeBase64(respBytes);
+      respBytes = Base64.getDecoder().decode(respBytes);
     }
     return respBytes;
   }
