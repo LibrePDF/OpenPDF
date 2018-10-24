@@ -45,9 +45,6 @@
 
 package com.lowagie.text;
 
-
-import org.apache.commons.io.IOUtils;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -132,7 +129,7 @@ public class ImageLoader {
     public static Image getJpegImage(URL url) {
         try {
             InputStream is = url.openStream();
-            byte[] imageBytes = IOUtils.toByteArray(is);
+            byte[] imageBytes = Utilities.toByteArray(is);
             is.close();
             return new Jpeg(imageBytes);
 
@@ -144,7 +141,7 @@ public class ImageLoader {
     public static Image getJpeg2000Image(URL url) {
         try {
             InputStream is = url.openStream();
-            byte[] imageBytes = IOUtils.toByteArray(is);
+            byte[] imageBytes = Utilities.toByteArray(is);
             is.close();
             return new Jpeg2000(imageBytes);
 

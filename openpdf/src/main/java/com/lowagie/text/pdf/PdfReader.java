@@ -53,6 +53,7 @@ import com.lowagie.bouncycastle.BouncyCastleHelper;
 
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.Utilities;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.ExceptionConverter;
@@ -61,7 +62,6 @@ import com.lowagie.text.exceptions.UnsupportedPdfException;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
 import org.apache.commons.compress.compressors.z.ZCompressorInputStream;
-import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -2027,10 +2027,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @return the decoded data
    */
   public static byte[] LZWDecode(byte in[]) {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
       ZCompressorInputStream is = new ZCompressorInputStream(new ByteArrayInputStream(in));
-      return IOUtils.toByteArray(is);
+      return Utilities.toByteArray(is);
+
     } catch (IOException e) {
       throw new ExceptionConverter(e);
     }

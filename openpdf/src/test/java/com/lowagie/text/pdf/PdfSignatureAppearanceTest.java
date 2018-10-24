@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.HashMap;
 
-import org.apache.commons.io.IOUtils;
+import com.lowagie.text.Utilities;
 import org.junit.Test;
 
 import com.lowagie.text.DocumentException;
@@ -50,7 +50,7 @@ public class PdfSignatureAppearanceTest {
 				exc.put(PdfName.CONTENTS, new Integer(10));
 				sap.preClose(exc);
 
-				byte[] result = IOUtils.toByteArray(sap.getRangeStream());
+				byte[] result = Utilities.toByteArray(sap.getRangeStream());
 				byte[] sha256 = getSHA256(result);
 				if (expectedDigestPreClose == null) {
 					expectedDigestPreClose = sha256;
@@ -62,7 +62,7 @@ public class PdfSignatureAppearanceTest {
 				update.put(PdfName.CONTENTS, new PdfString("aaaa").setHexWriting(true));
 				sap.close(update);
 
-				byte[] resultClose = IOUtils.toByteArray(sap.getRangeStream());
+				byte[] resultClose = Utilities.toByteArray(sap.getRangeStream());
 				byte[] sha256Close = getSHA256(resultClose);
 				if (expectedDigestClose == null) {
 					expectedDigestClose = sha256Close;
@@ -103,7 +103,7 @@ public class PdfSignatureAppearanceTest {
 				exc.put(PdfName.CONTENTS, new Integer(10));
 				sap.preClose(exc);
 
-				byte[] result = IOUtils.toByteArray(sap.getRangeStream());
+				byte[] result = Utilities.toByteArray(sap.getRangeStream());
 				byte[] sha256 = getSHA256(result);
 				if (expectedDigestPreClose == null) {
 					expectedDigestPreClose = sha256;
@@ -115,7 +115,7 @@ public class PdfSignatureAppearanceTest {
 				update.put(PdfName.CONTENTS, new PdfString("aaaa").setHexWriting(true));
 				sap.close(update);
 
-				byte[] resultClose = IOUtils.toByteArray(sap.getRangeStream());
+				byte[] resultClose = Utilities.toByteArray(sap.getRangeStream());
 				byte[] sha256Close = getSHA256(resultClose);
 				if (expectedDigestClose == null) {
 					expectedDigestClose = sha256Close;

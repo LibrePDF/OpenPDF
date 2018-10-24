@@ -48,6 +48,7 @@
  */
 package com.lowagie.text;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -339,4 +340,29 @@ public class Utilities {
         codePoint -= 0x10000;
         return new String(new char[]{(char)((codePoint / 0x400) + 0xd800), (char)((codePoint % 0x400) + 0xdc00)});
     }
+
+	/**
+	 * Reads an input stream to a byte array.
+	 *
+	 * Similar as IOUtils.toByteArray.
+	 *
+	 * By evernat on Github.
+	 *
+	 * @param is
+	 * @return byte[]
+	 * @throws IOException
+	 */
+    public static byte[] toByteArray(InputStream is) throws IOException {
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+		int nRead;
+		byte[] data = new byte[16384];
+
+		while ((nRead = is.read(data, 0, data.length)) != -1) {
+			buffer.write(data, 0, nRead);
+		}
+
+		return buffer.toByteArray();
+	}
+
 }
