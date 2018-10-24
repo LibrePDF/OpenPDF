@@ -62,7 +62,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.xml.simpleparser.IanaEncodings;
 import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
 import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
-import org.apache.commons.text.StringEscapeUtils;
+import com.lowagie.text.xml.XMLUtil;
 
 /**
  *
@@ -135,16 +135,16 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
      */
     public static void exportToXML(HashMap names, Writer wrt, String encoding, boolean onlyASCII) throws IOException {
         wrt.write("<?xml version=\"1.0\" encoding=\"");
-        wrt.write(StringEscapeUtils.escapeXml11(encoding));
+        wrt.write(XMLUtil.escapeXML(encoding, onlyASCII));
         wrt.write("\"?>\n<Destination>\n");
         for (Iterator it = names.entrySet().iterator(); it.hasNext();) {
             Map.Entry entry = (Map.Entry)it.next();
             String key = (String)entry.getKey();
             String value = (String)entry.getValue();
             wrt.write("  <Name Page=\"");
-            wrt.write(StringEscapeUtils.escapeXml11(value));
+            wrt.write(XMLUtil.escapeXML(value, onlyASCII));
             wrt.write("\">");
-            wrt.write(StringEscapeUtils.escapeXml11(escapeBinaryString(key)));
+            wrt.write(XMLUtil.escapeXML(escapeBinaryString(key), onlyASCII));
             wrt.write("</Name>\n");
         }
         wrt.write("</Destination>\n");
