@@ -14,7 +14,6 @@
     <properties>
         <java-module-name>com.github.librepdf.openpdf</java-module-name>
         <bouncycastle.version>1.60</bouncycastle.version>
-        <commons-compress.version>1.18</commons-compress.version>
         <juniversalchardet.version>1.0.3</juniversalchardet.version>
         <imageio-tiff.version>3.4.1</imageio-tiff.version>
     </properties>
@@ -26,11 +25,6 @@
             <groupId>com.googlecode.juniversalchardet</groupId>
             <artifactId>juniversalchardet</artifactId>
             <version>${juniversalchardet.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>${commons-compress.version}</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
