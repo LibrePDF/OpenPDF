@@ -54,6 +54,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 ### Required Dependencies: ###
 
  - Juniversalchardet
+ - com.twelvemonkeys.imageio (imageio-tiff)
 
 ### Optional: ###
 
