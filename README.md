@@ -53,12 +53,12 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 
 ### Required Dependencies: ###
 
- - Juniversalchardet
- - com.twelvemonkeys.imageio (imageio-tiff)
+ - [Juniversalchardet](https://github.com/albfernandez/juniversalchardet)
+ - [TwelveMonkeys imageio-tiff](https://github.com/haraldk/TwelveMonkeys/)
 
 ### Optional: ###
 
-  - BouncyCastle 1.60
+  - [BouncyCastle](https://www.bouncycastle.org/) 1.60
     - Provider
     - PKIX/CMS
  - JUnit 4 - for unit testing
