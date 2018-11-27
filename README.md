@@ -54,13 +54,13 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 ### Required Dependencies: ###
 
  - [Juniversalchardet](https://github.com/albfernandez/juniversalchardet)
- - [TwelveMonkeys imageio-tiff](https://github.com/haraldk/TwelveMonkeys/)
 
 ### Optional: ###
 
   - [BouncyCastle](https://www.bouncycastle.org/) 1.60
     - Provider
     - PKIX/CMS
+ - [TwelveMonkeys imageio-tiff](https://github.com/haraldk/TwelveMonkeys/) - optional if TIFF image support is needed.    
  - JUnit 4 - for unit testing
  - JFreeChart - for testing graphical examples
    - JFreeChart
