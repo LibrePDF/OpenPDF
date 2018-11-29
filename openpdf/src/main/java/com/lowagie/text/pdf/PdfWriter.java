@@ -2743,13 +2743,17 @@ public class PdfWriter extends DocWriter implements
     public static final int RUN_DIRECTION_DEFAULT = 0;
     /** Do not use bidirectional reordering. */
     public static final int RUN_DIRECTION_NO_BIDI = 1;
+
+    /* TODO: There are currently some issues with RUN_DIRECTION_LTR and RUN_DIRECTION_RTL which will be fixed in a future release. */
     /** Use bidirectional reordering with left-to-right
      * preferential run direction.
      */
+    @Deprecated
     public static final int RUN_DIRECTION_LTR = 2;
     /** Use bidirectional reordering with right-to-left
      * preferential run direction.
      */
+    @Deprecated
     public static final int RUN_DIRECTION_RTL = 3;
 
     protected int runDirection = RUN_DIRECTION_NO_BIDI;
