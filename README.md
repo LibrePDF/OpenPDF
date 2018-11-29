@@ -4,10 +4,11 @@ OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF) [![Build Status](https://travis-ci.org/LibrePDF/OpenPDF.svg?branch=master)](https://travis-ci.org/LibrePDF/OpenPDF) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf) [![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%203.0-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-3.0) [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
 
-## OpenPDF version 1.2.5 released 2018-10-25 ##
-Get version 1.2.5 here - https://github.com/LibrePDF/OpenPDF/releases/tag/openpdf-1.2.5
+## OpenPDF version 1.2.6 released 2018-11-29 ##
+Get version 1.2.6 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.6
 
 ### Previous Versions
+- [Version 1.2.5](https://github.com/LibrePDF/OpenPDF/releases/tag/openpdf-1.2.5) _released 2018-10-25_
 - [Version 1.2.4](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.4) _released 2018-09-14_
 - [Version 1.2.3](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.3) _released 2018-09-10_
 - [Version 1.2.2](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.2) _released 2018-08-30_
@@ -60,7 +61,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
   - [BouncyCastle](https://www.bouncycastle.org/) 1.60
     - Provider
     - PKIX/CMS
- - [TwelveMonkeys imageio-tiff](https://github.com/haraldk/TwelveMonkeys/) - optional if TIFF image support is needed.    
+ - [TwelveMonkeys imageio-tiff](https://github.com/haraldk/TwelveMonkeys/) - optional by default, but required if TIFF image support is needed.    
  - JUnit 4 - for unit testing
  - JFreeChart - for testing graphical examples
    - JFreeChart
