@@ -32,7 +32,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
-            <version>1.2.5</version>
+            <version>1.2.6</version>
         </dependency>
 
 There is a separate Java 7 compatible branch and release.
