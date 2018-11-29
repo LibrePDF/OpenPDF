@@ -7,15 +7,7 @@ OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL
 ## OpenPDF version 1.2.6 released 2018-11-29 ##
 Get version 1.2.6 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.6
 
-[Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
-
-## License ##
-
-GNU General Lesser Public License (LGPL) version 3.0 - http://www.gnu.org/licenses/lgpl.html
-
-Mozilla Public License Version 2.0 - http://www.mozilla.org/MPL/2.0/
-
-We want OpenPDF to consist of source code which is consistently licensed with the LGPL and MPL licences only. This also means that any new contributions to the project must have a dual LGPL and MPL license only.
+- [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
 
 ## Use OpenPDF as Maven dependency
@@ -28,6 +20,14 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
         </dependency>
 
 There is a separate Java 7 compatible branch and release.
+
+## License ##
+
+GNU General Lesser Public License (LGPL) version 3.0 - http://www.gnu.org/licenses/lgpl.html
+
+Mozilla Public License Version 2.0 - http://www.mozilla.org/MPL/2.0/
+
+We want OpenPDF to consist of source code which is consistently licensed with the LGPL and MPL licences only. This also means that any new contributions to the project must have a dual LGPL and MPL license only.
 
 ## Docs ##
 See [examples](pdf-toolbox/src/test/java/com/lowagie/examples/) and [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-1-0/).
