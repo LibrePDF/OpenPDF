@@ -7,15 +7,7 @@ OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL
 ## OpenPDF version 1.2.6 released 2018-11-29 ##
 Get version 1.2.6 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.6
 
-### Previous Versions
-- [Version 1.2.5](https://github.com/LibrePDF/OpenPDF/releases/tag/openpdf-1.2.5) _released 2018-10-25_
-- [Version 1.2.4](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.4) _released 2018-09-14_
-- [Version 1.2.3](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.3) _released 2018-09-10_
-- [Version 1.2.2](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.2) _released 2018-08-30_
-- [Version 1.2.1](https://github.com/LibrePDF/OpenPDF/releases/tag/openpdf-1.2.1) _released 2018-08-27_
-- [Version 1.2.0](https://github.com/LibrePDF/OpenPDF/releases/tag/1.2.0) _released 2018-08-06_
-- [Version 1.1.0](https://github.com/LibrePDF/OpenPDF/releases/tag/1.1.0) _released 2018-07-06_
-- [Version 1.0](https://github.com/LibrePDF/OpenPDF/releases/tag/1.0) _released 2016-05-03_
+[Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
 ## License ##
 
