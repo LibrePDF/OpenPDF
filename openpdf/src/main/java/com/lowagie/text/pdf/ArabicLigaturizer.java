@@ -54,7 +54,6 @@ package com.lowagie.text.pdf;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
-@Deprecated
 public class ArabicLigaturizer {
     
     static boolean isVowel(char s) {
@@ -555,20 +554,75 @@ public class ArabicLigaturizer {
                     }
                 }
                 break;
-                
+
                 case DIGITS_EN2AN_INIT_LR:
+                    shapeToArabicDigitsWithContext(text, 0, length, digitBase, false);
                     break;
-                    
+
                 case DIGITS_EN2AN_INIT_AL:
+                    shapeToArabicDigitsWithContext(text, 0, length, digitBase, true);
                     break;
-                    
+
                 default:
                     break;
             }
         }
     }
-    
-     private static final char ALEF = 0x0627;
+
+    /**
+     * Given an array of characters, process a section of it, and replace
+     * European numeral characters (0-9) with Arabic numeral characters
+     * (depending on the {@code digitBase}) if the characters are preceded by
+     * Arabic characters.
+     * 
+     * @param dest
+     *            The array of characters to be processed. Must not be
+     *            {@code null}, and must have a length greater than {@code 0}.
+     * @param start
+     *            The start index of the characters to be processed. The value
+     *            must be greater than, or equal to, {@code 0} and less than the
+     *            length of the array {@code dest}.
+     * @param length
+     *            The number of characters to process. {@code length} +
+     *            {@code start} must be less than, or equal to, the length of
+     *            the array {@code dest}.
+     * @param digitBase
+     *            The code of the character which represents the numeral 0 into
+     *            which the European numbers should be converted. For instance,
+     *            Arabic-Indic digits begin at {@code '\u0660'}, and Eastern
+     *            Arabic-Indic digits (Persian and Urdu) begin at
+     *            {@code '\u06f0'}.
+     * @param lastStrongWasAL
+     *            A boolean flag indicating whether or not the character
+     *            preceding the array of characters to be processed was an
+     *            Arabic character, or not.
+     */
+    static void shapeToArabicDigitsWithContext(char[] dest, int start, int length, char digitBase, boolean lastStrongWasAL) {
+        digitBase -= '0'; // move common adjustment out of loop
+
+        int limit = start + length;
+        for (int i = start; i < limit; ++i) {
+            char ch = dest[i];
+            switch (Character.getDirectionality(ch)) {
+                case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT:
+                    lastStrongWasAL = false;
+                    break;
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC:
+                    lastStrongWasAL = true;
+                    break;
+                case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
+                    if (lastStrongWasAL && ch <= '\u0039') {
+                        dest[i] = (char) (ch + digitBase);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private static final char ALEF = 0x0627;
     private static final char ALEFHAMZA = 0x0623;
     private static final char ALEFHAMZABELOW = 0x0625;
     private static final char ALEFMADDA = 0x0622;
