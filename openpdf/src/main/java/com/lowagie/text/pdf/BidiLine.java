@@ -48,6 +48,7 @@
 
 package com.lowagie.text.pdf;
 
+import java.text.Bidi;
 import java.util.ArrayList;
 
 import com.lowagie.text.Chunk;
@@ -178,6 +179,22 @@ public class BidiLine {
         totalTextLength = trimRight(0, totalTextLength - 1) + 1;
         if (totalTextLength == 0) {
         	return true;
+        }
+        
+        if (runDirection == PdfWriter.RUN_DIRECTION_LTR || runDirection == PdfWriter.RUN_DIRECTION_RTL) {
+            if (orderLevels.length < totalTextLength) {
+                orderLevels = new byte[pieceSize];
+                indexChars = new int[pieceSize];
+            }
+            ArabicLigaturizer.processNumbers(text, 0, totalTextLength, arabicOptions);
+            Bidi bidi = new Bidi(new String(text),
+                                 (byte) (runDirection == PdfWriter.RUN_DIRECTION_RTL ? Bidi.DIRECTION_RIGHT_TO_LEFT : Bidi.DIRECTION_LEFT_TO_RIGHT));
+            for (int k = 0; k < totalTextLength; ++k) {
+                orderLevels[k] = (byte) bidi.getLevelAt(k);
+                indexChars[k] = k;
+            }
+            doArabicShapping();
+            mirrorGlyphs();
         }
         
         totalTextLength = trimRightEx(0, totalTextLength - 1) + 1;
