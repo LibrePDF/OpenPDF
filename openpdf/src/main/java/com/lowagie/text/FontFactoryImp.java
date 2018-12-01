@@ -176,22 +176,16 @@ public class FontFactoryImp implements FontProvider {
         if (tmp != null) {
             // some bugs were fixed here by Daniel Marczisovszky
             int s = style == Font.UNDEFINED ? Font.NORMAL : style;
-            int fs = Font.NORMAL;
-            boolean found = false;
             for (Iterator i = tmp.iterator(); i.hasNext(); ) {
                 String f = (String) i.next();
                 String lcf = f.toLowerCase(Locale.ROOT);
-                fs = Font.NORMAL;
+                int fs = Font.NORMAL;
                 if (lcf.indexOf("bold") != -1) fs |= Font.BOLD;
                 if (lcf.indexOf("italic") != -1 || lcf.indexOf("oblique") != -1) fs |= Font.ITALIC;
                 if ((s & Font.BOLDITALIC) == fs) {
                     fontname = f;
-                    found = true;
                     break;
                 }
-            }
-            if (style != Font.UNDEFINED && found) {
-                style &= ~fs;
             }
         }
         BaseFont basefont = null;
