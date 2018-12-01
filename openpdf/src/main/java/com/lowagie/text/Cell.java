@@ -50,6 +50,10 @@
 
 package com.lowagie.text;
 
+import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.VerticalAlignment;
+import com.lowagie.text.alignment.WithHorizontalAlignment;
+import com.lowagie.text.alignment.WithVerticalAlignment;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.lowagie.text.error_messages.MessageLocalization;
@@ -91,7 +95,7 @@ import com.lowagie.text.pdf.PdfPCell;
  * @see		Row
  */
 
-public class Cell extends Rectangle implements TextElementArray {
+public class Cell extends Rectangle implements TextElementArray, WithHorizontalAlignment, WithVerticalAlignment {
 
 	// membervariables
 
@@ -271,6 +275,8 @@ public class Cell extends Rectangle implements TextElementArray {
 	/**
 	 * Sets the horizontal alignment.
 	 * @param	value	the new value
+	 * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+	 * use {@link Cell#setHorizontalAlignment(HorizontalAlignment)} instead
 	 */
 	public void setHorizontalAlignment(int value) {
 		horizontalAlignment = value;
@@ -280,6 +286,8 @@ public class Cell extends Rectangle implements TextElementArray {
 	 * Sets the alignment of this cell.
 	 * This methods allows you to set the alignment as a String.
 	 * @param	alignment		the new alignment as a <CODE>String</CODE>
+	 * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+	 * use {@link Cell#setHorizontalAlignment(HorizontalAlignment)} instead
 	 */
 	public void setHorizontalAlignment(String alignment) {
 		setHorizontalAlignment(ElementTags.alignmentValue(alignment));
@@ -296,6 +304,8 @@ public class Cell extends Rectangle implements TextElementArray {
 	/**
 	 * Sets the vertical alignment.
 	 * @param	value	the new value
+	 * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+	 * use {@link Cell#setVerticalAlignment(VerticalAlignment)} instead
 	 */
 	public void setVerticalAlignment(int value) {
 		verticalAlignment = value;
@@ -305,6 +315,8 @@ public class Cell extends Rectangle implements TextElementArray {
 	 * Sets the alignment of this paragraph.
 	 *
 	 * @param	alignment		the new alignment as a <CODE>String</CODE>
+	 * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+	 * use {@link Cell#setVerticalAlignment(VerticalAlignment)} instead
 	 */
 	public void setVerticalAlignment(String alignment) {
 		setVerticalAlignment(ElementTags.alignmentValue(alignment));
@@ -851,4 +863,21 @@ public class Cell extends Rectangle implements TextElementArray {
 		throw new UnsupportedOperationException(MessageLocalization.getComposedMessage("dimensions.of.a.cell.are.attributed.automagically.see.the.faq"));
 	}
 
+	@Override
+	public void setHorizontalAlignment(final HorizontalAlignment alignment) {
+	    if (alignment == null) {
+	        return;
+	    }
+
+	    horizontalAlignment = alignment.getId();
+	}
+
+	@Override
+	public void setVerticalAlignment(final VerticalAlignment alignment) {
+	    if (alignment == null) {
+	        return;
+	    }
+
+	    verticalAlignment = alignment.getId();
+	}
 }

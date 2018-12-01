@@ -52,13 +52,14 @@
 
 package com.lowagie.text;
 
+import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.WithHorizontalAlignment;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -153,7 +154,7 @@ import com.lowagie.text.pdf.PdfPTable;
  * @see         Cell
  */
 
-public class Table extends Rectangle implements LargeElement {
+public class Table extends Rectangle implements LargeElement, WithHorizontalAlignment {
     
     // membervariables
     
@@ -427,6 +428,9 @@ public class Table extends Rectangle implements LargeElement {
      * Sets the horizontal alignment.
      *
      * @param       value   the new value
+     * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+     * use {@link Table#setHorizontalAlignment(HorizontalAlignment)} instead
+     *
      */
     public void setAlignment(int value) {
         alignment = value;
@@ -436,6 +440,8 @@ public class Table extends Rectangle implements LargeElement {
      * Sets the alignment of this paragraph.
      *
      * @param    alignment        the new alignment as a <CODE>String</CODE>
+     * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+     * use {@link Table#setHorizontalAlignment(HorizontalAlignment)} instead
      */
     public void setAlignment(String alignment) {
         if (ElementTags.ALIGN_LEFT.equalsIgnoreCase(alignment)) {
@@ -447,6 +453,15 @@ public class Table extends Rectangle implements LargeElement {
             return;
         }
         this.alignment = Element.ALIGN_CENTER;
+    }
+
+    @Override
+    public void setHorizontalAlignment(final HorizontalAlignment alignment) {
+        if (alignment == null) {
+            return;
+        }
+
+        this.alignment = alignment.getId();
     }
 
 	/**

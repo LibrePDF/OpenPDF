@@ -50,6 +50,8 @@
 
 package com.lowagie.text;
 
+import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.WithHorizontalAlignment;
 import java.util.ArrayList;
 import com.lowagie.text.error_messages.MessageLocalization;
 
@@ -68,7 +70,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * @see   Cell
  * @see   Table
  */
-public class Row implements Element {
+public class Row implements Element, WithHorizontalAlignment {
     
     // constants
     
@@ -367,6 +369,8 @@ public class Row implements Element {
      * Sets the horizontal alignment.
      *
      * @param value the new value
+     * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+     * use {@link Row#setHorizontalAlignment(HorizontalAlignment)} instead
      */
     public void setHorizontalAlignment(int value) {
         horizontalAlignment = value;
@@ -379,5 +383,14 @@ public class Row implements Element {
      */
     public int getHorizontalAlignment() {
         return horizontalAlignment;
+    }
+
+    @Override
+    public void setHorizontalAlignment(final HorizontalAlignment alignment) {
+        if (alignment == null) {
+            return;
+        }
+
+        horizontalAlignment = alignment.getId();
     }
 }
