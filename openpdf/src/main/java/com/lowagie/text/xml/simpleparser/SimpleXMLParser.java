@@ -561,10 +561,7 @@ public final class SimpleXMLParser {
         int count = in.read(b4);
         if (count != 4)
             throw new IOException(MessageLocalization.getComposedMessage("insufficient.length"));
-        UniversalDetector detector = new UniversalDetector(null);
-        detector.handleData(b4, 0, count);
-        detector.dataEnd();
-        String encoding = detector.getDetectedCharset();
+        String encoding = UniversalDetector.detectCharsetFromBOM(b4);
         if (encoding == null) encoding = "UTF-8"; //UTF-8 is default.
 
         String decl = null;
