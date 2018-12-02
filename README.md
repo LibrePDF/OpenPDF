@@ -54,7 +54,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
     - Provider
     - PKIX/CMS
  - [TwelveMonkeys imageio-tiff](https://github.com/haraldk/TwelveMonkeys/) - optional by default, but required if TIFF image support is needed.    
- - JUnit 4 - for unit testing
+ - JUnit 5 - for unit testing
  - JFreeChart - for testing graphical examples
    - JFreeChart
    - JCommon
