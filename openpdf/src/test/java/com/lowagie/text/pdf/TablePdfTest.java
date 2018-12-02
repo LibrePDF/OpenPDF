@@ -2,16 +2,15 @@ package com.lowagie.text.pdf;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Test;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Phrase;
+import org.junit.jupiter.api.Test;
 
 public class TablePdfTest {
 
 	@Test
-	public void testTableSpacingPercentage() throws FileNotFoundException,
+	void testTableSpacingPercentage() throws FileNotFoundException,
 			DocumentException {
 		Document document = PdfTestBase
 				.createPdf("testTableSpacingPercentage.pdf");
@@ -33,7 +32,7 @@ public class TablePdfTest {
 	}
 
 	@Test
-	public void testTableArrayOutOfBoundsSpan() throws FileNotFoundException,
+	void testTableArrayOutOfBoundsSpan() throws FileNotFoundException,
 			DocumentException {
 		Document document = PdfTestBase
 				.createPdf("testTableArrayOutOfBoundsSpan.pdf");
@@ -88,7 +87,7 @@ public class TablePdfTest {
 	}
 
 	@Test
-	public void testCreateTable() throws FileNotFoundException,
+	void testCreateTable() throws FileNotFoundException,
 			DocumentException {
 		// create document
 		Document document = PdfTestBase.createPdf("testCreateTable.pdf");

@@ -19,11 +19,11 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.pdf.PdfWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Demonstrates how to underline and strike through text.
@@ -31,13 +31,13 @@ import static org.junit.Assert.*;
  * @author blowagie
  */
 
-public class ExtraStyles {
+class ExtraStyles {
 
 	/**
 	 * Underline or strike through text.
 	 */
     @Test
-	public void testUnderlineAndStrikeThrough() throws Exception {
+	void testUnderlineAndStrikeThrough() throws Exception {
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             // step 1: creation of a document-object
@@ -65,7 +65,6 @@ public class ExtraStyles {
             document.close();
 
             assertFalse(baos.size() == 0);
-
 		}
 
 	}

@@ -1,40 +1,38 @@
 package com.lowagie.text.pdf.parser;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.lowagie.text.pdf.PdfReader;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 public class PdfTextExtractorTest {
 
 	
-	@Test(expected=IOException.class)
-	public void testPageExceeded() throws Exception {
-		getString("HelloWorldMeta.pdf", 5);
+	@Test
+	void testPageExceeded() {
+		Assertions.assertThrows(IOException.class, () -> getString("HelloWorldMeta.pdf", 5));
 	}
-	@Test(expected=IOException.class)
-	public void testInvalidPageNumber() throws Exception {
-		getString("HelloWorldMeta.pdf", 0);
+	@Test
+	void testInvalidPageNumber() {
+		Assertions.assertThrows(IOException.class, () -> getString("HelloWorldMeta.pdf", 0));
 	}
 	
 	
 	@Test
-	public void testConcatenateWatermark() throws Exception {
+	void testConcatenateWatermark() throws Exception {
 		String result = getString("merge-acroforms.pdf", 5);
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		// html??
 		result = result.replaceAll("\\<.*?>","");		
 		// Multiple spaces betwen words??
-		Assert.assertTrue(result.contains("2.  This  is  chapter  2"));
-		Assert.assertTrue(result.contains("watermark-concatenate"));
+		Assertions.assertTrue(result.contains("2.  This  is  chapter  2"));
+		Assertions.assertTrue(result.contains("watermark-concatenate"));
 	}
 		
 	

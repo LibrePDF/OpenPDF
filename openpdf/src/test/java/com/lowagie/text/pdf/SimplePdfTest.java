@@ -2,16 +2,16 @@ package com.lowagie.text.pdf;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Test;
-
 import com.lowagie.text.Annotation;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Rectangle;
+import org.junit.jupiter.api.Test;
 
 public class SimplePdfTest {
+
 	@Test
-	public void testSimplePdf() throws FileNotFoundException, DocumentException {
+	void testSimplePdf() throws FileNotFoundException, DocumentException {
 		// create document
 		Document document = PdfTestBase.createPdf("testSimplePdf.pdf");
 		try {

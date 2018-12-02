@@ -18,22 +18,23 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Using the java.awt.Image object.
  */
-public class AwtImage {
+class AwtImage {
 
     /**
      * Uses a java.awt.Image object to construct a com.lowagie.text.Image object.
      */
     @Test
-    public void testAwtImage() throws Exception {
+    void testAwtImage() throws Exception {
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
@@ -71,7 +72,6 @@ public class AwtImage {
             document.close();
 
             assertFalse(baos.size() == 0);
-
         }
     }
 }

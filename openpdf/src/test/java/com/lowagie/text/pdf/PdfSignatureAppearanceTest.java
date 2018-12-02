@@ -1,6 +1,6 @@
 package com.lowagie.text.pdf;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,15 +11,15 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 import com.lowagie.text.Utilities;
-import org.junit.Test;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Rectangle;
+import org.junit.jupiter.api.Test;
 
 public class PdfSignatureAppearanceTest {
 
 	@Test
-	public void invisibleExternalSignature() throws DocumentException, IOException, NoSuchAlgorithmException {
+	void invisibleExternalSignature() throws DocumentException, IOException, NoSuchAlgorithmException {
 		byte[] expectedDigestPreClose = null;
 		byte[] expectedDigestClose = null;
 
@@ -74,7 +74,7 @@ public class PdfSignatureAppearanceTest {
 	}
 
 	@Test
-	public void visibleExternalSignature() throws DocumentException, IOException, NoSuchAlgorithmException {
+	void visibleExternalSignature() throws DocumentException, IOException, NoSuchAlgorithmException {
 		byte[] expectedDigestPreClose = null;
 		byte[] expectedDigestClose = null;
 
