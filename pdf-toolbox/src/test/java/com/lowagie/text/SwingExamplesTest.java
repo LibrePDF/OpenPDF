@@ -1,21 +1,21 @@
 package com.lowagie.text;
 
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.fail;
 
-@Ignore  //ignored until we can fix headless GUI on Travis CI.
-public class SwingExamplesTest {
+@Disabled  //ignored until we can fix headless GUI on Travis CI.
+class SwingExamplesTest {
 
-    public static void main(String args[]) {
+    static void main(String args[]) {
         SwingExamplesTest r = new SwingExamplesTest();
         r.testJTable2Pdf();
     }
     
-    public void runSingleTest(Class c, String... args) {
+    void runSingleTest(Class c, String... args) {
         try {
             Method m = c.getMethod("main", String[].class);
             m.invoke(null, new Object[] {args});
@@ -26,7 +26,7 @@ public class SwingExamplesTest {
     }
 
     @Test
-    public void testJTable2Pdf() {
+    void testJTable2Pdf() {
         runSingleTest(com.lowagie.examples.objects.tables.alternatives.JTable2Pdf.class);
     }
 

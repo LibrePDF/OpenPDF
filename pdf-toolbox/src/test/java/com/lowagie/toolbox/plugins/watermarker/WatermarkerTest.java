@@ -2,7 +2,7 @@ package com.lowagie.toolbox.plugins.watermarker;
 
 import static java.awt.Color.RED;
 import static java.nio.file.Files.readAllBytes;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,14 +10,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Test;
-
 import com.lowagie.text.DocumentException;
+import org.junit.jupiter.api.Test;
 
-public class WatermarkerTest {
+class WatermarkerTest {
 
     @Test
-    public void shouldWriteWatermarkWithIOStreams() throws IOException, DocumentException {
+    void shouldWriteWatermarkWithIOStreams() throws IOException, DocumentException {
         // GIVEN
         Path path = Paths.get("src/test/resources/MyFile.pdf");
         byte[] input = readAllBytes(path);

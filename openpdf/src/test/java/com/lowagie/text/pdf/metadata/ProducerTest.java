@@ -4,20 +4,20 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
-import org.junit.Assert;
-import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ProducerTest {
 
     private static final String PRODUCER = "Producer";
 
     @Test
-    public void changeProducerLineTest() throws IOException {
+    void changeProducerLineTest() throws IOException {
         String expected = "New Producer.";
 
         Document document = new Document();
@@ -36,7 +36,7 @@ public class ProducerTest {
         Map<String, String> infoDictionary = reader.getInfo();
         String actual = infoDictionary.get(PRODUCER);
 
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
 
         reader.close();
     }

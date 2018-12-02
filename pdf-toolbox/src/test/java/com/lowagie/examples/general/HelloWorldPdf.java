@@ -19,11 +19,11 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Generates a simple 'Hello World' PDF.
@@ -31,13 +31,13 @@ import static org.junit.Assert.assertFalse;
  * @author blowagie
  */
 
-public class HelloWorldPdf {
+class HelloWorldPdf {
 
 	/**
 	 * Generates simple PDF, RTF and HTML files using only one Document object.
 	 */
     @Test
-	public void testHelloWorld() throws Exception {
+	void testHelloWorld() throws Exception {
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             // step 1: creation of a document-object

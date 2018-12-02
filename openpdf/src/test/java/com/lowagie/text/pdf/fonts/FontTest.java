@@ -2,14 +2,14 @@ package com.lowagie.text.pdf.fonts;
 
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * {@link Font Font}-related test cases.
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
  * @author noavarice
  * @since 1.2.7
  */
-public class FontTest {
+class FontTest {
 
     private static final Map<Integer, Predicate<Font>> STYLES_TO_TEST_METHOD = new HashMap<Integer, Predicate<Font>> () {{
         put(Font.NORMAL, f -> !f.isBold() && !f.isItalic() && !f.isStrikethru() && !f.isUnderlined());
@@ -39,7 +39,7 @@ public class FontTest {
      * @see Font#getStyle()
      */
     @Test
-    public void testStyleSettingByValue() {
+    void testStyleSettingByValue() {
         FontFactory.registerDirectories();
         for (final int style: STYLES_TO_TEST_METHOD.keySet()) { // TODO: complement tests after adding enum with font styles
             final Font font = FontFactory.getFont(DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, style);
@@ -57,7 +57,7 @@ public class FontTest {
      * @see Font#isUnderlined()
      */
     @Test
-    public void testStyleSettingByPredicate() {
+    void testStyleSettingByPredicate() {
         for (final int style: STYLES_TO_TEST_METHOD.keySet()) {
             final Font font = FontFactory.getFont(DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, style);
             final Predicate<Font> p = STYLES_TO_TEST_METHOD.get(style);
