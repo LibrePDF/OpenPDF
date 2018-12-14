@@ -62,7 +62,7 @@
         <profile>
             <id>java8-javadoc</id>
             <activation>
-                <jdk>[1.8,</jdk>
+                <jdk>[1.8,)</jdk>
             </activation>
             <properties>
                 <javadoc.param>-Xdoclint:none</javadoc.param>
