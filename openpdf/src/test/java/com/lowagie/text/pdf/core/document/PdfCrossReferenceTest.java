@@ -28,13 +28,22 @@
 package com.lowagie.text.pdf.core.document;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 import com.lowagie.text.pdf.PdfWriter.PdfBody.PdfCrossReference;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
@@ -93,5 +102,44 @@ class PdfCrossReferenceTest {
           assertEquals(new PdfCrossReference(offset, 0).hashCode(), offset);
         })
     );
+  }
+
+  private static final Predicate<String> CROSS_REFERENCE_FORMAT = Pattern
+      .compile("^\\d{10} \\d{5} [fn] \n$")
+      .asPredicate();
+
+  /**
+   * Each cross-reference entry shall always be exactly 20 bytes (according to PDF specification
+   * version 1.7, 7.5.4, "Cross-Reference Table").
+   */
+  private static final int CROSS_REFERENCE_ENTRY_LENGTH = 20;
+
+  private static final PdfCrossReference[] REFERENCES = new PdfCrossReference[] {
+      new PdfCrossReference(1, 0, 0),
+      new PdfCrossReference(1, 1, 1),
+      new PdfCrossReference(1, 1_000_000_000, 65_535)
+  };
+
+  /**
+   * Checks generated PDF representation of cross-reference entries.
+   */
+  @TestFactory
+  Iterable<DynamicTest> testPdfRepresentation() throws IOException {
+    final List<DynamicTest> tests = new ArrayList<>();
+    final OutputStream os = mock(OutputStream.class);
+    doAnswer(invocation -> {
+      final byte[] bytes = invocation.getArgument(0);
+      tests.add(dynamicTest("Test not null", () -> assertNotNull(bytes)));
+      tests.add(dynamicTest("Test size", () -> assertEquals(bytes.length, CROSS_REFERENCE_ENTRY_LENGTH)));
+      final String stringRepresentation = new String(bytes);
+      tests.add(dynamicTest("Test format", () -> assertTrue(CROSS_REFERENCE_FORMAT.test(stringRepresentation))));
+      return invocation;
+    }).when(os).write(any());
+
+    for (final PdfCrossReference ref: REFERENCES) {
+      ref.toPdf(os);
+    }
+
+    return tests;
   }
 }
