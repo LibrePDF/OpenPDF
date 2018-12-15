@@ -57,7 +57,7 @@ class PdfCrossReferenceTest {
 
   /**
    * Tests comparison between different {@link PdfCrossReference cross-reference entries},
-   * because such entries are ordered through according PDF objects offsets.
+   * because such entries are ordered through according PDF object numbers.
    */
   @TestFactory
   Iterable<DynamicTest> testComparison() {

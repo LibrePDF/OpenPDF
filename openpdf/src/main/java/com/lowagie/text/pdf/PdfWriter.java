@@ -200,7 +200,7 @@ public class PdfWriter extends DocWriter implements
             }
 
             /**
-             * Compares current {@link PdfCrossReference entry} with passed {@code reference} by PDF object offset.
+             * Compares current {@link PdfCrossReference entry} with passed {@code reference} by PDF object number.
              */
             @Override
             public int compareTo(final PdfCrossReference reference) {
@@ -208,10 +208,10 @@ public class PdfWriter extends DocWriter implements
             }
 
             /**
-             * Checks if two entries are equal if their PDF object offset are equal.
+             * Checks if two entries are equal if their PDF object numbers are equal.
              *
              * @param obj Another cross-reference entry
-             * @return If null, not of type {@link PdfCrossReference} or offsets are not equal,
+             * @return If null, not of type {@link PdfCrossReference} or object numbers are not equal,
              * returns false; true otherwise
              */
             @Override
