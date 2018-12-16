@@ -115,7 +115,14 @@ public class PdfWriter extends DocWriter implements
          * <CODE>PdfCrossReference</CODE> is an entry in the PDF Cross-Reference table.
          */
 
-        static class PdfCrossReference implements Comparable {
+        public static class PdfCrossReference implements Comparable<PdfCrossReference> {
+
+          /**
+           * String template for cross-reference entry PDF representation.
+           *
+           * @see Formatter
+           */
+          private static final String CROSS_REFERENCE_ENTRY_FORMAT = "%010d %05d %c \n";
 
             // membervariables
             private int type;
@@ -135,7 +142,7 @@ public class PdfWriter extends DocWriter implements
              * @param	generation	generation number of the object
              */
 
-            PdfCrossReference(int refnum, int offset, int generation) {
+            public PdfCrossReference(int refnum, int offset, int generation) {
                 type = 0;
                 this.offset = offset;
                 this.refnum = refnum;
@@ -148,14 +155,14 @@ public class PdfWriter extends DocWriter implements
              * @param	offset		byte offset of the object
              */
 
-            PdfCrossReference(int refnum, int offset) {
+            public PdfCrossReference(int refnum, int offset) {
                 type = 1;
                 this.offset = offset;
                 this.refnum = refnum;
                 this.generation = 0;
             }
 
-            PdfCrossReference(int type, int refnum, int offset, int generation) {
+            public PdfCrossReference(int type, int refnum, int offset, int generation) {
                 this.type = type;
                 this.offset = offset;
                 this.refnum = refnum;
@@ -167,19 +174,15 @@ public class PdfWriter extends DocWriter implements
             }
 
             /**
-             * Returns the PDF representation of this <CODE>PdfObject</CODE>.
-             * @param os
-             * @throws IOException
+             * Writes PDF representation of cross-reference entry to passed output stream.
+             *
+             * @param os Output stream this entry to write to
+             * @throws IOException If any I/O error occurs
              */
-
             public void toPdf(OutputStream os) throws IOException {
-                StringBuffer off = new StringBuffer("0000000000").append(offset);
-                off.delete(0, off.length() - 10);
-                StringBuffer gen = new StringBuffer("00000").append(generation);
-                gen.delete(0, gen.length() - 5);
-
-                off.append(' ').append(gen).append(generation == GENERATION_MAX ? " f \n" : " n \n");
-                os.write(getISOBytes(off.toString()));
+              // TODO: are generation number and 'In use' keyword bound that way?
+              final char inUse = generation == GENERATION_MAX ? 'f' : 'n';
+              os.write(String.format(CROSS_REFERENCE_ENTRY_FORMAT, offset, generation, inUse).getBytes());
             }
 
             /**
@@ -197,32 +200,34 @@ public class PdfWriter extends DocWriter implements
             }
 
             /**
-             * @see java.lang.Comparable#compareTo(java.lang.Object)
+             * Compares current {@link PdfCrossReference entry} with passed {@code reference} by PDF object number.
              */
-            public int compareTo(Object o) {
-                PdfCrossReference other = (PdfCrossReference)o;
-                return (refnum < other.refnum ? -1 : (refnum==other.refnum ? 0 : 1));
+            @Override
+            public int compareTo(final PdfCrossReference reference) {
+              return Integer.compare(refnum, reference.refnum);
             }
 
             /**
-             * @see java.lang.Object#equals(java.lang.Object)
+             * Checks if two entries are equal if their PDF object numbers are equal.
+             *
+             * @param obj Another cross-reference entry
+             * @return If null, not of type {@link PdfCrossReference} or object numbers are not equal,
+             * returns false; true otherwise
              */
+            @Override
             public boolean equals(Object obj) {
-                if (obj instanceof PdfCrossReference) {
-                    PdfCrossReference other = (PdfCrossReference)obj;
-                    return (refnum == other.refnum);
-                }
-                else
-                    return false;
+              if (!(obj instanceof PdfCrossReference)) {
+                return false;
+              }
+
+              final PdfCrossReference other = (PdfCrossReference)obj;
+              return refnum == other.refnum;
             }
 
-            /**
-             * @see java.lang.Object#hashCode()
-             */
+            @Override
             public int hashCode() {
-				return refnum;
-			}
-
+              return refnum;
+            }
         }
 
         private static final int OBJSINSTREAM = 200;
