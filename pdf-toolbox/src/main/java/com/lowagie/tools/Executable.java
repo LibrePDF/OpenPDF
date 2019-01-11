@@ -83,17 +83,17 @@ public class Executable {
 			parameters = "";
 		}
 		if (acroread != null) {
-			process = Runtime.getRuntime().exec(
-					acroread + parameters + " \"" + fileName + "\"");
+			process = Runtime.getRuntime().exec(createCommand(
+					acroread , parameters ,  " \"" , fileName , "\""));
 		}
 		else if (isWindows()) {
 			if (isWindows9X()) {
-				process = Runtime.getRuntime().exec(
-						"command.com /C start acrord32" + parameters + " \"" + fileName + "\"");
+				process = Runtime.getRuntime().exec(createCommand(
+						"command.com /C start acrord32" , parameters , " \"" , fileName , "\""));
 			}
 			else {
-				process = Runtime.getRuntime().exec(
-					"cmd /c start acrord32" + parameters + " \"" + fileName + "\"");
+				process = Runtime.getRuntime().exec(createCommand(
+					"cmd /c start acrord32" , parameters , " \"" , fileName , "\""));
 			}
 		}
 		else if (isMac()) {
@@ -112,6 +112,16 @@ public class Executable {
 		} catch (InterruptedException ie) {
 		}
 		return process;
+	}
+
+	/**
+	 * Creates a command string array from the string arguments.
+	 *
+	 * @param arguments
+	 * @return
+	 */
+	private static String[] createCommand(String... arguments) {
+		return arguments;
 	}
 	
 	/**
@@ -260,7 +270,7 @@ public class Executable {
 				openURL.invoke(null, url);
 			}
 			else if (isWindows())
-				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+				Runtime.getRuntime().exec(createCommand("rundll32 url.dll,FileProtocolHandler " , url));
 			else { //assume Unix or Linux
 	            String[] browsers = {
 	               "firefox", "opera", "konqueror", "mozilla", "netscape" };
