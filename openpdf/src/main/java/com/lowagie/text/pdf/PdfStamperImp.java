@@ -374,6 +374,11 @@ class PdfStamperImp extends PdfWriter {
         else {
             info = addToBody(newInfo, false).getIndirectReference();
         }
+
+        if (PdfName.CATALOG.equals(newInfo.get(PdfName.TYPE))) {
+            root = info
+    	}
+
         // write the cross-reference table of the body
         body.writeCrossReferenceTable(os, root, info, encryption, fileID, prevxref);
         if (fullCompression) {
