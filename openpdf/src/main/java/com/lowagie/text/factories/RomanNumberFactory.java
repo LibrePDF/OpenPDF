@@ -77,7 +77,7 @@ public class RomanNumberFactory {
 			this.pre = pre;
 		}
 	}
-	
+
 	/**
 	 * Array with Roman digits.
 	 */
@@ -90,14 +90,14 @@ public class RomanNumberFactory {
 		new RomanDigit('v', 5, false),
 		new RomanDigit('i', 1, true)
 	};
-	
-	/** 
+
+	/**
 	 * Changes an int into a lower case roman number.
 	 * @param index the original number
 	 * @return the roman number (lower case)
 	 */
-	public static final String getString(int index) {
-		StringBuffer buf = new StringBuffer();
+	public static String getString(int index) {
+		StringBuilder buf = new StringBuilder();
 
 		// lower than 0 ? Add minus
 		if (index < 0) {
@@ -141,45 +141,36 @@ public class RomanNumberFactory {
 		}
 		return buf.toString();
 	}
-	
-	/** 
+
+	/**
 	 * Changes an int into a lower case roman number.
 	 * @param index the original number
 	 * @return the roman number (lower case)
 	 */
-	public static final String getLowerCaseString(int index) {
-		return getString(index);		
+	public static String getLowerCaseString(int index) {
+		return getString(index);
 	}
-	
-	/** 
+
+	/**
 	 * Changes an int into an upper case roman number.
 	 * @param index the original number
 	 * @return the roman number (lower case)
 	 */
-	public static final String getUpperCaseString(int index) {
-		return getString(index).toUpperCase();		
+	public static String getUpperCaseString(int index) {
+		return getString(index).toUpperCase();
 	}
 
-	/** 
+	/**
 	 * Changes an int into a roman number.
 	 * @param index the original number
 	 * @return the roman number (lower case)
 	 */
-	public static final String getString(int index, boolean lowercase) {
+	public static String getString(int index, boolean lowercase) {
 		if (lowercase) {
 			return getLowerCaseString(index);
 		}
 		else {
 			return getUpperCaseString(index);
-		}
-	}
-	
-	/**
-	 * Test this class using this main method.
-	 */
-	public static void main(String[] args) {
-		for (int i = 1; i < 2000; i++) {
-			System.out.println(getString(i));
 		}
 	}
 }
