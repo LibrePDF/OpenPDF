@@ -351,7 +351,7 @@ public class PdfDocument extends Document {
     public float getLeading() {
     	return leading;
     }
-    
+
     /**
      * Setter for the current leading.
      * @param	leading the current leading
@@ -1018,7 +1018,7 @@ public class PdfDocument extends Document {
         }
         return super.setMarginMirroring(MarginMirroring);
     }
-    
+
     /**
      * @see com.lowagie.text.DocListener#setMarginMirroring(boolean)
      * @since	2.1.6
@@ -1384,7 +1384,7 @@ public class PdfDocument extends Document {
                 }
                 // if there's a single word on the line and we are using NO_SPACE_CHAR_RATIO,
                 // we don't want any character spacing
-                float baseFactor = (numberOfSpaces == 0 && ratio == PdfWriter.NO_SPACE_CHAR_RATIO) 
+                float baseFactor = (numberOfSpaces == 0 && ratio == PdfWriter.NO_SPACE_CHAR_RATIO)
                 		? 0f : width / (ratio * numberOfSpaces + lineLen - 1);
                 baseWordSpacing = ratio * baseFactor;
                 baseCharacterSpacing = baseFactor;
@@ -2234,11 +2234,11 @@ public class PdfDocument extends Document {
     protected Rectangle nextPageSize = null;
 
     /** This is the size of the several boxes of the current Page. */
-    protected HashMap<String, PdfRectangle> thisBoxSize = new HashMap<String, PdfRectangle>();
+    protected HashMap<String, PdfRectangle> thisBoxSize = new HashMap<>();
 
     /** This is the size of the several boxes that will be used in
      * the next page. */
-    protected HashMap<String, PdfRectangle> boxSize = new HashMap<String, PdfRectangle>();
+    protected HashMap<String, PdfRectangle> boxSize = new HashMap<>();
 
     void setCropBoxSize(Rectangle crop) {
         setBoxSize("crop", crop);
