@@ -8,10 +8,10 @@ import java.util.List;
  */
 public interface FieldReader {
 
-    HashMap getFields();
+    HashMap<String, String> getFields();
 
     String getFieldValue(String fieldKey);
 
-    List getListValues(String fieldKey);
+    List<String> getListValues(String fieldKey);
 
 }
