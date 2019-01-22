@@ -376,7 +376,7 @@ class PdfStamperImp extends PdfWriter {
         }
 
         if (PdfName.CATALOG.equals(newInfo.get(PdfName.TYPE))) {
-            root = info
+            root = info;
     	}
 
         // write the cross-reference table of the body
