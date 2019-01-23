@@ -30,14 +30,14 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class EncodingFont {
 
-	/**
-	 * Fonts and encoding.
-	 * @param args no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Fonts and encoding.
+     * @param args no arguments needed
+     */
+    public static void main(String[] args) {
         System.out.println("Encodings");
         try {
-        	// step 1
+            // step 1
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             // step 2
             PdfWriter.getInstance(document, new FileOutputStream("encodingfont.pdf"));
@@ -49,10 +49,10 @@ public class EncodingFont {
             for (int z = 0; z < all.length; ++z) {
                 String file = all[z];
                 document.add(new Paragraph("Unicode equivalence for the font \""
-                		+ file
-						+"\" with the encoding \""
-						+file
-						+ "\"\n"));
+                        + file
+                        +"\" with the encoding \""
+                        +file
+                        + "\"\n"));
                 char[] tb;
                 if (z == 0)
                     tb = SYMBOL_TABLE;
@@ -87,9 +87,9 @@ public class EncodingFont {
         catch (Exception de) {
             de.printStackTrace();
         }
-	}
+    }
     
-	static String cst(char c) {
+    static String cst(char c) {
         if (c == 0)
             return "\u00a0";
         String s = Integer.toHexString(c);

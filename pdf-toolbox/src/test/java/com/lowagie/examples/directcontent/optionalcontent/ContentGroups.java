@@ -37,7 +37,7 @@ import com.lowagie.text.pdf.PdfWriter;
  * Demonstrates how to group optional content.
  */
 public class ContentGroups {
-	   
+       
     /**
      * Demonstrates how to group optional content.
      * @param args no arguments needed
@@ -45,7 +45,7 @@ public class ContentGroups {
     public static void main(String[] args) {
         System.out.println("Grouping optional content");
         try {
-        	// step 1
+            // step 1
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             // step 2
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("contentgroups.pdf"));

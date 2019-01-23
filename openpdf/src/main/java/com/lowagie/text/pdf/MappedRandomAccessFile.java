@@ -109,7 +109,7 @@ public class MappedRandomAccessFile {
      * @since 2.0.8
      */
     public FileChannel getChannel() {
-    	return channel;
+        return channel;
     }
     
     /**
@@ -202,24 +202,24 @@ public class MappedRandomAccessFile {
             return false;
         }
         if (cleanJava9(buffer)) {
-        	return true;
+            return true;
         }
         return cleanOldsJDK(buffer);
     }
     
     private static boolean cleanJava9(final java.nio.ByteBuffer buffer) {
-    	Boolean b = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+        Boolean b = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             public Boolean run() {
                 Boolean success = Boolean.FALSE;
                 try {
-                	final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
-                	final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
-                	theUnsafeField.setAccessible(true);
-                	final Object theUnsafe = theUnsafeField.get(null);
-                	final Method invokeCleanerMethod = unsafeClass.getMethod("invokeCleaner", java.nio.ByteBuffer.class);
-                	invokeCleanerMethod.invoke(theUnsafe, buffer);
-                	success = Boolean.TRUE;
-                } catch (Exception ignore) {                	
+                    final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+                    final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
+                    theUnsafeField.setAccessible(true);
+                    final Object theUnsafe = theUnsafeField.get(null);
+                    final Method invokeCleanerMethod = unsafeClass.getMethod("invokeCleaner", java.nio.ByteBuffer.class);
+                    invokeCleanerMethod.invoke(theUnsafe, buffer);
+                    success = Boolean.TRUE;
+                } catch (Exception ignore) {                    
                     // Ignore
                 }
                 return success;
@@ -229,14 +229,14 @@ public class MappedRandomAccessFile {
         return b.booleanValue();
     }
 
-	private static boolean cleanOldsJDK(final java.nio.ByteBuffer buffer) {
-		Boolean b = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+    private static boolean cleanOldsJDK(final java.nio.ByteBuffer buffer) {
+        Boolean b = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             public Boolean run() {
                 Boolean success = Boolean.FALSE;
                 try {
                     Method getCleanerMethod = buffer.getClass().getMethod("cleaner", (Class[])null);
                     if (!getCleanerMethod.isAccessible()) {
-                    	getCleanerMethod.setAccessible(true);
+                        getCleanerMethod.setAccessible(true);
                     }
                     Object cleaner = getCleanerMethod.invoke(buffer, (Object[])null);
                     Method clean = cleaner.getClass().getMethod("clean", (Class[])null);
@@ -250,6 +250,6 @@ public class MappedRandomAccessFile {
         });
         
         return b.booleanValue();
-	}
+    }
     
 }

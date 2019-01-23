@@ -63,9 +63,9 @@ import com.lowagie.text.ExceptionConverter;
  * This object is described in the 'Portable Document Format Reference Manual version 1.3'
  * section 7.7 (page 198-203).
  *
- * @see		PdfName
- * @see		PdfDictionary
- * @see		BadPdfFormatException
+ * @see        PdfName
+ * @see        PdfDictionary
+ * @see        BadPdfFormatException
  */
 
 class PdfFont implements Comparable {
@@ -94,8 +94,8 @@ class PdfFont implements Comparable {
     /**
      * Compares this <CODE>PdfFont</CODE> with another
      *
-     * @param	object	the other <CODE>PdfFont</CODE>
-     * @return	a value
+     * @param    object    the other <CODE>PdfFont</CODE>
+     * @return    a value
      */
     
     public int compareTo(Object object) {
@@ -123,7 +123,7 @@ class PdfFont implements Comparable {
     /**
      * Returns the size of this font.
      *
-     * @return		a size
+     * @return        a size
      */
     
     float size() {
@@ -137,7 +137,7 @@ class PdfFont implements Comparable {
     /**
      * Returns the approximative width of 1 character of this font.
      *
-     * @return		a width in Text Space
+     * @return        a width in Text Space
      */
     
     float width() {
@@ -147,8 +147,8 @@ class PdfFont implements Comparable {
     /**
      * Returns the width of a certain character of this font.
      *
-     * @param		character	a certain character
-     * @return		a width in Text Space
+     * @param        character    a certain character
+     * @return        a width in Text Space
      */
     
     float width(int character) {

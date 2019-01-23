@@ -52,13 +52,13 @@ package com.lowagie.text;
 /**
  * Interface for a text element to which other objects can be added.
  *
- * @see		Phrase
- * @see		Paragraph
- * @see		Section
- * @see		ListItem
- * @see		Chapter
- * @see		Anchor
- * @see		Cell
+ * @see        Phrase
+ * @see        Paragraph
+ * @see        Section
+ * @see        ListItem
+ * @see        Chapter
+ * @see        Anchor
+ * @see        Cell
  */
 
 public interface TextElementArray extends Element {
@@ -66,8 +66,8 @@ public interface TextElementArray extends Element {
   /**
    * Adds an object to the <CODE>TextElementArray</CODE>.
    *
-   * @param	o			an object that has to be added
-   * @return	<CODE>true</CODE> if the addition succeeded; <CODE>false</CODE> otherwise
+   * @param    o            an object that has to be added
+   * @return    <CODE>true</CODE> if the addition succeeded; <CODE>false</CODE> otherwise
    */
   boolean add(Object o);
 }

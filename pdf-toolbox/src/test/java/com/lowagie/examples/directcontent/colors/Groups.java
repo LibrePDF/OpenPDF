@@ -54,10 +54,10 @@ public class Groups {
      * @throws Exception
      */
     public static void pictureCircles(float x, float y, PdfContentByte cb) throws Exception {
-    	PdfGState gs = new PdfGState();
-    	gs.setBlendMode(PdfGState.BM_SOFTLIGHT);
-    	gs.setFillOpacity(0.7f);
-    	cb.setGState(gs);
+        PdfGState gs = new PdfGState();
+        gs.setBlendMode(PdfGState.BM_SOFTLIGHT);
+        gs.setFillOpacity(0.7f);
+        cb.setGState(gs);
         cb.setColorFill(Color.gray);
         cb.circle(x + 70, y + 70, 50);
         cb.fill();
@@ -72,7 +72,7 @@ public class Groups {
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-		System.out.println("Transparency Groups");
+        System.out.println("Transparency Groups");
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {

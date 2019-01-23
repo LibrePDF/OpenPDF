@@ -341,7 +341,7 @@ public class IntHashtable implements Cloneable {
             tab[index] = null;
         }
         count = 0;
-	}
+    }
     
     /***
      * <p>Innerclass that acts as a datastructure to create a new entry in the
@@ -370,14 +370,14 @@ public class IntHashtable implements Cloneable {
         
         // extra methods for inner class Entry by Paulo
         public int getKey() {
-        	return key;
+            return key;
         }
         public int getValue() {
-        	return value;
+            return value;
         }
         protected Object clone() {
-        	Entry entry = new Entry(hash, key, value, (next != null) ? (Entry)next.clone() : null);
-        	return entry;
+            Entry entry = new Entry(hash, key, value, (next != null) ? (Entry)next.clone() : null);
+            return entry;
         }
     }
     
@@ -388,19 +388,19 @@ public class IntHashtable implements Cloneable {
         Entry entry;
         
         IntHashtableIterator(Entry[] table) {
-        	this.table = table;
-        	this.index = table.length;
+            this.table = table;
+            this.index = table.length;
         }
         public boolean hasNext() {
-        	if (entry != null) {
-        		return true;
-        	}
-        	while (index-- > 0) {
-        	    if ((entry = table[index]) != null) {
-        	        return true;
-        	    }
-        	}
-        	return false;
+            if (entry != null) {
+                return true;
+            }
+            while (index-- > 0) {
+                if ((entry = table[index]) != null) {
+                    return true;
+                }
+            }
+            return false;
         }
         
         public Object next() {
@@ -408,14 +408,14 @@ public class IntHashtable implements Cloneable {
                 while ((index-- > 0) && ((entry = table[index]) == null));
             }
             if (entry != null) {
-            	Entry e = entry;
-            	entry = e.next;
-            	return e;
+                Entry e = entry;
+                entry = e.next;
+                return e;
             }
-        	throw new NoSuchElementException(MessageLocalization.getComposedMessage("inthashtableiterator"));
+            throw new NoSuchElementException(MessageLocalization.getComposedMessage("inthashtableiterator"));
         }
         public void remove() {
-        	throw new UnsupportedOperationException(MessageLocalization.getComposedMessage("remove.not.supported"));
+            throw new UnsupportedOperationException(MessageLocalization.getComposedMessage("remove.not.supported"));
         }
     }
     
@@ -427,50 +427,50 @@ public class IntHashtable implements Cloneable {
     
     public int[] toOrderedKeys() {
         int[] res = getKeys();
-    	Arrays.sort(res);
-    	return res;
+        Arrays.sort(res);
+        return res;
     }
     
     public int[] getKeys() {
         int[] res = new int[count];
-    	int ptr = 0;
-    	int index = table.length;
-    	Entry entry = null;
-    	while (true) {
-    		if (entry == null)
-    			while ((index-- > 0) && ((entry = table[index]) == null));
-    		if (entry == null)
-    			break;
-    		Entry e = entry;
-    		entry = e.next;
-    		res[ptr++] = e.key;
-    	}
-    	return res;
+        int ptr = 0;
+        int index = table.length;
+        Entry entry = null;
+        while (true) {
+            if (entry == null)
+                while ((index-- > 0) && ((entry = table[index]) == null));
+            if (entry == null)
+                break;
+            Entry e = entry;
+            entry = e.next;
+            res[ptr++] = e.key;
+        }
+        return res;
     }
     
     public int getOneKey() {
-    	if (count == 0)
-    		return 0;
-    	int index = table.length;
-    	Entry entry = null;
-    	while ((index-- > 0) && ((entry = table[index]) == null));
-    	if (entry == null)
-    		return 0;
-    	return entry.key;
+        if (count == 0)
+            return 0;
+        int index = table.length;
+        Entry entry = null;
+        while ((index-- > 0) && ((entry = table[index]) == null));
+        if (entry == null)
+            return 0;
+        return entry.key;
     }
     
     public Object clone() {
-    	try {
-    		IntHashtable t = (IntHashtable)super.clone();
-    		t.table = new Entry[table.length];
-    		for (int i = table.length ; i-- > 0 ; ) {
-    			t.table[i] = (table[i] != null)
-    			? (Entry)table[i].clone() : null;
-    		}
-    		return t;
-    	} catch (CloneNotSupportedException e) {
-    		// this shouldn't happen, since we are Cloneable
-    		throw new InternalError();
-    	}
+        try {
+            IntHashtable t = (IntHashtable)super.clone();
+            t.table = new Entry[table.length];
+            for (int i = table.length ; i-- > 0 ; ) {
+                t.table[i] = (table[i] != null)
+                ? (Entry)table[i].clone() : null;
+            }
+            return t;
+        } catch (CloneNotSupportedException e) {
+            // this shouldn't happen, since we are Cloneable
+            throw new InternalError();
+        }
     }
 }

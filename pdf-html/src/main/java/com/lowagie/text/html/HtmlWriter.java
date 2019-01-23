@@ -233,7 +233,7 @@ public class HtmlWriter extends DocWriter {
             return false;
         }
         if (open && !element.isContent()) {
-				throw new DocumentException(MessageLocalization.getComposedMessage("the.document.is.open.you.can.only.add.elements.with.content"));
+                throw new DocumentException(MessageLocalization.getComposedMessage("the.document.is.open.you.can.only.add.elements.with.content"));
         }
         try {
             switch(element.type()) {
@@ -278,26 +278,26 @@ public class HtmlWriter extends DocWriter {
                     writeComment("Creationdate: " + HtmlEncoder.encode(((Meta)element).getContent()));
                     return true;
                 case Element.MARKED:
-                	if (element instanceof MarkedSection) {
-                		MarkedSection ms = (MarkedSection)element;
-                		addTabs(1);
+                    if (element instanceof MarkedSection) {
+                        MarkedSection ms = (MarkedSection)element;
+                        addTabs(1);
                         writeStart(HtmlTags.DIV);
                         writeMarkupAttributes(ms.getMarkupAttributes());
                         os.write(GT);
-                		MarkedObject mo = ((MarkedSection)element).getTitle();
-                		if (mo != null) {
-                			markup = mo.getMarkupAttributes();
-                			mo.process(this);
-                		}
-                		ms.process(this);
+                        MarkedObject mo = ((MarkedSection)element).getTitle();
+                        if (mo != null) {
+                            markup = mo.getMarkupAttributes();
+                            mo.process(this);
+                        }
+                        ms.process(this);
                         writeEnd(HtmlTags.DIV);
                         return true;
-                	}
-                	else {
-                		MarkedObject mo = (MarkedObject) element;
-                		markup = mo.getMarkupAttributes();
-                    	return mo.process(this);
-                	}
+                    }
+                    else {
+                        MarkedObject mo = (MarkedObject) element;
+                        markup = mo.getMarkupAttributes();
+                        return mo.process(this);
+                    }
                 default:
                     write(element, 2);
                     return true;
@@ -616,14 +616,14 @@ public class HtmlWriter extends DocWriter {
     protected void write(Element element, int indent) throws IOException {
         Properties styleAttributes = null;
         switch(element.type()) {
-        	case Element.MARKED: {
-        		try {
-					add(element);
-				} catch (DocumentException e) {
-					e.printStackTrace();
-				}
-        		return;
-        	}
+            case Element.MARKED: {
+                try {
+                    add(element);
+                } catch (DocumentException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
             case Element.CHUNK:
             {
                 Chunk chunk = (Chunk) element;
@@ -855,7 +855,7 @@ public class HtmlWriter extends DocWriter {
                     write(HtmlTags.ROWSPAN, String.valueOf(cell.getRowspan()));
                 }
                 if (cell.getMaxLines() == 1) {
-                	write(HtmlTags.STYLE, "white-space: nowrap;");
+                    write(HtmlTags.STYLE, "white-space: nowrap;");
                 }
                 os.write(GT);
                 // contents
@@ -899,17 +899,17 @@ public class HtmlWriter extends DocWriter {
             }
             case Element.TABLE:
             {
-            	Table table;
-            	try {
-            		table = (Table) element;
-            	}
-            	catch(ClassCastException cce) {
-            		try {
-						table = ((SimpleTable)element).createTable();
-					} catch (BadElementException e) {
-						throw new ExceptionConverter(e);
-					}
-            	}
+                Table table;
+                try {
+                    table = (Table) element;
+                }
+                catch(ClassCastException cce) {
+                    try {
+                        table = ((SimpleTable)element).createTable();
+                    } catch (BadElementException e) {
+                        throw new ExceptionConverter(e);
+                    }
+                }
                 table.complete();
                 // start tag
                 addTabs(indent);

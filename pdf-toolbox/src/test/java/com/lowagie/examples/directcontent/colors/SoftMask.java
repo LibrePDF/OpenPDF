@@ -32,7 +32,7 @@ public class SoftMask {
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-		System.out.println("SoftMask");
+        System.out.println("SoftMask");
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {

@@ -68,186 +68,186 @@ import com.lowagie.text.pdf.PRTokeniser;
 
 public class Utilities {
 
-	/**
-	 * Gets the keys of a Hashtable
-	 * 
-	 * @param table
-	 *            a Hashtable
-	 * @return the keyset of a Hashtable (or an empty set if table is null)
-	 */
-	public static Set getKeySet(Hashtable table) {
-		return (table == null) ? Collections.EMPTY_SET : table.keySet();
-	}
+    /**
+     * Gets the keys of a Hashtable
+     * 
+     * @param table
+     *            a Hashtable
+     * @return the keyset of a Hashtable (or an empty set if table is null)
+     */
+    public static Set getKeySet(Hashtable table) {
+        return (table == null) ? Collections.EMPTY_SET : table.keySet();
+    }
 
-	/**
-	 * Utility method to extend an array.
-	 * 
-	 * @param original
-	 *            the original array or <CODE>null</CODE>
-	 * @param item
-	 *            the item to be added to the array
-	 * @return a new array with the item appended
-	 */
-	public static Object[][] addToArray(Object[][] original, Object[] item) {
-		if (original == null) {
-			original = new Object[1][];
-			original[0] = item;
-			return original;
-		} else {
-			Object[][] original2 = new Object[original.length + 1][];
-			System.arraycopy(original, 0, original2, 0, original.length);
-			original2[original.length] = item;
-			return original2;
-		}
-	}
+    /**
+     * Utility method to extend an array.
+     * 
+     * @param original
+     *            the original array or <CODE>null</CODE>
+     * @param item
+     *            the item to be added to the array
+     * @return a new array with the item appended
+     */
+    public static Object[][] addToArray(Object[][] original, Object[] item) {
+        if (original == null) {
+            original = new Object[1][];
+            original[0] = item;
+            return original;
+        } else {
+            Object[][] original2 = new Object[original.length + 1][];
+            System.arraycopy(original, 0, original2, 0, original.length);
+            original2[original.length] = item;
+            return original2;
+        }
+    }
 
-	/**
-	 * Checks for a true/false value of a key in a Properties object.
-	 * @param attributes
-	 * @param key
-	 * @return a true/false value of a key in a Properties object
-	 */
-	public static boolean checkTrueOrFalse(Properties attributes, String key) {
-		return "true".equalsIgnoreCase(attributes.getProperty(key));
-	}
+    /**
+     * Checks for a true/false value of a key in a Properties object.
+     * @param attributes
+     * @param key
+     * @return a true/false value of a key in a Properties object
+     */
+    public static boolean checkTrueOrFalse(Properties attributes, String key) {
+        return "true".equalsIgnoreCase(attributes.getProperty(key));
+    }
 
-	/**
-	 * Unescapes an URL. All the "%xx" are replaced by the 'xx' hex char value.
-	 * @param src the url to unescape
-	 * @return the unescaped value
-	 */    
-	public static String unEscapeURL(String src) {
-	    StringBuffer bf = new StringBuffer();
-	    char[] s = src.toCharArray();
-	    for (int k = 0; k < s.length; ++k) {
-	        char c = s[k];
-	        if (c == '%') {
-	            if (k + 2 >= s.length) {
-	                bf.append(c);
-	                continue;
-	            }
-	            int a0 = PRTokeniser.getHex(s[k + 1]);
-	            int a1 = PRTokeniser.getHex(s[k + 2]);
-	            if (a0 < 0 || a1 < 0) {
-	                bf.append(c);
-	                continue;
-	            }
-	            bf.append((char)(a0 * 16 + a1));
-	            k += 2;
-	        }
-	        else
-	            bf.append(c);
-	    }
-	    return bf.toString();
-	}
+    /**
+     * Unescapes an URL. All the "%xx" are replaced by the 'xx' hex char value.
+     * @param src the url to unescape
+     * @return the unescaped value
+     */    
+    public static String unEscapeURL(String src) {
+        StringBuffer bf = new StringBuffer();
+        char[] s = src.toCharArray();
+        for (int k = 0; k < s.length; ++k) {
+            char c = s[k];
+            if (c == '%') {
+                if (k + 2 >= s.length) {
+                    bf.append(c);
+                    continue;
+                }
+                int a0 = PRTokeniser.getHex(s[k + 1]);
+                int a1 = PRTokeniser.getHex(s[k + 2]);
+                if (a0 < 0 || a1 < 0) {
+                    bf.append(c);
+                    continue;
+                }
+                bf.append((char)(a0 * 16 + a1));
+                k += 2;
+            }
+            else
+                bf.append(c);
+        }
+        return bf.toString();
+    }
 
-	/**
-	 * This method makes a valid URL from a given filename.
-	 * <P>
-	 * This method makes the conversion of this library from the JAVA 2 platform
-	 * to a JDK1.1.x-version easier.
-	 * 
-	 * @param filename
-	 *            a given filename
-	 * @return a valid URL
-	 * @throws MalformedURLException
-	 */
-	public static URL toURL(String filename) throws MalformedURLException {
+    /**
+     * This method makes a valid URL from a given filename.
+     * <P>
+     * This method makes the conversion of this library from the JAVA 2 platform
+     * to a JDK1.1.x-version easier.
+     * 
+     * @param filename
+     *            a given filename
+     * @return a valid URL
+     * @throws MalformedURLException
+     */
+    public static URL toURL(String filename) throws MalformedURLException {
         try {
             return new URL(filename);
         }
         catch (Exception e) {
             return new File(filename).toURI().toURL();
         }
-	}
+    }
 
-	/**
-	 * This method is an alternative for the <CODE>InputStream.skip()</CODE>
-	 * -method that doesn't seem to work properly for big values of <CODE>size
-	 * </CODE>.
-	 * 
-	 * @param is
-	 *            the <CODE>InputStream</CODE>
-	 * @param size
-	 *            the number of bytes to skip
-	 * @throws IOException
-	 */
-	static public void skip(InputStream is, int size) throws IOException {
-	    long n;
-		while (size > 0) {
-	        n = is.skip(size);
-	        if (n <= 0)
-	            break;
-			size -= n;
-		}
-	}
-	
-	/**
-	 * Measurement conversion from millimeters to points.
-	 * @param	value	a value in millimeters
-	 * @return	a value in points
-	 * @since	2.1.2
-	 */
-	public static final float millimetersToPoints(float value) {
-	    return inchesToPoints(millimetersToInches(value));
-	}
+    /**
+     * This method is an alternative for the <CODE>InputStream.skip()</CODE>
+     * -method that doesn't seem to work properly for big values of <CODE>size
+     * </CODE>.
+     * 
+     * @param is
+     *            the <CODE>InputStream</CODE>
+     * @param size
+     *            the number of bytes to skip
+     * @throws IOException
+     */
+    static public void skip(InputStream is, int size) throws IOException {
+        long n;
+        while (size > 0) {
+            n = is.skip(size);
+            if (n <= 0)
+                break;
+            size -= n;
+        }
+    }
+    
+    /**
+     * Measurement conversion from millimeters to points.
+     * @param    value    a value in millimeters
+     * @return    a value in points
+     * @since    2.1.2
+     */
+    public static final float millimetersToPoints(float value) {
+        return inchesToPoints(millimetersToInches(value));
+    }
 
-	/**
-	 * Measurement conversion from millimeters to inches.
-	 * @param	value	a value in millimeters
-	 * @return	a value in inches
-	 * @since	2.1.2
-	 */
-	public static final float millimetersToInches(float value) {
-	    return value / 25.4f;
-	}
+    /**
+     * Measurement conversion from millimeters to inches.
+     * @param    value    a value in millimeters
+     * @return    a value in inches
+     * @since    2.1.2
+     */
+    public static final float millimetersToInches(float value) {
+        return value / 25.4f;
+    }
 
-	/**
-	 * Measurement conversion from points to millimeters.
-	 * @param	value	a value in points
-	 * @return	a value in millimeters
-	 * @since	2.1.2
-	 */
-	public static final float pointsToMillimeters(float value) {
-	    return inchesToMillimeters(pointsToInches(value));
-	}
+    /**
+     * Measurement conversion from points to millimeters.
+     * @param    value    a value in points
+     * @return    a value in millimeters
+     * @since    2.1.2
+     */
+    public static final float pointsToMillimeters(float value) {
+        return inchesToMillimeters(pointsToInches(value));
+    }
 
-	/**
-	 * Measurement conversion from points to inches.
-	 * @param	value	a value in points
-	 * @return	a value in inches
-	 * @since	2.1.2
-	 */
-	public static final float pointsToInches(float value) {
-	    return value / 72f;
-	}
+    /**
+     * Measurement conversion from points to inches.
+     * @param    value    a value in points
+     * @return    a value in inches
+     * @since    2.1.2
+     */
+    public static final float pointsToInches(float value) {
+        return value / 72f;
+    }
 
-	/**
-	 * Measurement conversion from inches to millimeters.
-	 * @param	value	a value in inches
-	 * @return	a value in millimeters
-	 * @since	2.1.2
-	 */
-	public static final float inchesToMillimeters(float value) {
-	    return value * 25.4f;
-	}
+    /**
+     * Measurement conversion from inches to millimeters.
+     * @param    value    a value in inches
+     * @return    a value in millimeters
+     * @since    2.1.2
+     */
+    public static final float inchesToMillimeters(float value) {
+        return value * 25.4f;
+    }
 
-	/**
-	 * Measurement conversion from inches to points.
-	 * @param	value	a value in inches
-	 * @return	a value in points
-	 * @since	2.1.2
-	 */
-	public static final float inchesToPoints(float value) {
-	    return value * 72f;
-	}
+    /**
+     * Measurement conversion from inches to points.
+     * @param    value    a value in inches
+     * @return    a value in points
+     * @since    2.1.2
+     */
+    public static final float inchesToPoints(float value) {
+        return value * 72f;
+    }
     
     /**
      * Check if the value of a character belongs to a certain interval
      * that indicates it's the higher part of a surrogate pair.
-     * @param c	the character
-     * @return	true if the character belongs to the interval
-     * @since	2.1.2
+     * @param c    the character
+     * @return    true if the character belongs to the interval
+     * @since    2.1.2
      */
     public static boolean isSurrogateHigh(char c) {
         return c >= '\ud800' && c <= '\udbff';
@@ -256,9 +256,9 @@ public class Utilities {
     /**
      * Check if the value of a character belongs to a certain interval
      * that indicates it's the lower part of a surrogate pair.
-     * @param c	the character
-     * @return	true if the character belongs to the interval
-     * @since	2.1.2
+     * @param c    the character
+     * @return    true if the character belongs to the interval
+     * @since    2.1.2
      */
     public static boolean isSurrogateLow(char c) {
         return c >= '\udc00' && c <= '\udfff';
@@ -268,10 +268,10 @@ public class Utilities {
      * Checks if two subsequent characters in a String are
      * are the higher and the lower character in a surrogate
      * pair (and therefore eligible for conversion to a UTF 32 character).
-     * @param text	the String with the high and low surrogate characters
-     * @param idx	the index of the 'high' character in the pair
-     * @return	true if the characters are surrogate pairs
-     * @since	2.1.2
+     * @param text    the String with the high and low surrogate characters
+     * @param idx    the index of the 'high' character in the pair
+     * @return    true if the characters are surrogate pairs
+     * @since    2.1.2
      */
     public static boolean isSurrogatePair(String text, int idx) {
         if (idx < 0 || idx > text.length() - 2)
@@ -283,10 +283,10 @@ public class Utilities {
      * Checks if two subsequent characters in a character array are
      * are the higher and the lower character in a surrogate
      * pair (and therefore eligible for conversion to a UTF 32 character).
-     * @param text	the character array with the high and low surrogate characters
-     * @param idx	the index of the 'high' character in the pair
-     * @return	true if the characters are surrogate pairs
-     * @since	2.1.2
+     * @param text    the character array with the high and low surrogate characters
+     * @param idx    the index of the 'high' character in the pair
+     * @return    true if the characters are surrogate pairs
+     * @since    2.1.2
      */
     public static boolean isSurrogatePair(char[] text, int idx) {
         if (idx < 0 || idx > text.length - 2)
@@ -297,10 +297,10 @@ public class Utilities {
     /**
      * Returns the code point of a UTF32 character corresponding with
      * a high and a low surrogate value.
-     * @param highSurrogate	the high surrogate value
-     * @param lowSurrogate	the low surrogate value
-     * @return	a code point value
-     * @since	2.1.2
+     * @param highSurrogate    the high surrogate value
+     * @param lowSurrogate    the low surrogate value
+     * @return    a code point value
+     * @since    2.1.2
      */
     public static int convertToUtf32(char highSurrogate, char lowSurrogate) {
          return (((highSurrogate - 0xd800) * 0x400) + (lowSurrogate - 0xdc00)) + 0x10000;
@@ -308,10 +308,10 @@ public class Utilities {
 
     /**
      * Converts a unicode character in a character array to a UTF 32 code point value.
-     * @param text	a character array that has the unicode character(s)
-     * @param idx	the index of the 'high' character
-     * @return	the code point value
-     * @since	2.1.2
+     * @param text    a character array that has the unicode character(s)
+     * @param idx    the index of the 'high' character
+     * @return    the code point value
+     * @since    2.1.2
      */
     public static int convertToUtf32(char[] text, int idx) {
          return (((text[idx] - 0xd800) * 0x400) + (text[idx + 1] - 0xdc00)) + 0x10000;
@@ -319,10 +319,10 @@ public class Utilities {
 
     /**
      * Converts a unicode character in a String to a UTF32 code point value
-     * @param text	a String that has the unicode character(s)
-     * @param idx	the index of the 'high' character
-     * @return	the codepoint value
-     * @since	2.1.2
+     * @param text    a String that has the unicode character(s)
+     * @param idx    the index of the 'high' character
+     * @return    the codepoint value
+     * @since    2.1.2
      */
     public static int convertToUtf32(String text, int idx) {
          return (((text.charAt(idx) - 0xd800) * 0x400) + (text.charAt(idx + 1) - 0xdc00)) + 0x10000;
@@ -330,9 +330,9 @@ public class Utilities {
 
     /**
      * Converts a UTF32 code point value to a String with the corresponding character(s).
-     * @param codePoint	a Unicode value
-     * @return	the corresponding characters in a String
-     * @since	2.1.2
+     * @param codePoint    a Unicode value
+     * @return    the corresponding characters in a String
+     * @since    2.1.2
      */
     public static String convertFromUtf32(int codePoint) {
         if (codePoint < 0x10000)
@@ -341,28 +341,28 @@ public class Utilities {
         return new String(new char[]{(char)((codePoint / 0x400) + 0xd800), (char)((codePoint % 0x400) + 0xdc00)});
     }
 
-	/**
-	 * Reads an input stream to a byte array.
-	 *
-	 * Similar as IOUtils.toByteArray.
-	 *
-	 * By evernat on Github.
-	 *
-	 * @param is
-	 * @return byte[]
-	 * @throws IOException
-	 */
+    /**
+     * Reads an input stream to a byte array.
+     *
+     * Similar as IOUtils.toByteArray.
+     *
+     * By evernat on Github.
+     *
+     * @param is
+     * @return byte[]
+     * @throws IOException
+     */
     public static byte[] toByteArray(InputStream is) throws IOException {
-		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
-		int nRead;
-		byte[] data = new byte[16384];
+        int nRead;
+        byte[] data = new byte[16384];
 
-		while ((nRead = is.read(data, 0, data.length)) != -1) {
-			buffer.write(data, 0, nRead);
-		}
+        while ((nRead = is.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
 
-		return buffer.toByteArray();
-	}
+        return buffer.toByteArray();
+    }
 
 }

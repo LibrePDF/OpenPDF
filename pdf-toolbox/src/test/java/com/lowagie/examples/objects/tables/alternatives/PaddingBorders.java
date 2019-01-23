@@ -58,7 +58,7 @@ public class PaddingBorders {
             table.addCell("3.2");
             document.add(table);
             table.setConvert2pdfptable(true);
-			document.add(new Paragraph("converted to PdfPTable:"));
+            document.add(new Paragraph("converted to PdfPTable:"));
             document.add(table);
             
             table = new Table(3);
@@ -85,7 +85,7 @@ public class PaddingBorders {
             table.addCell("3.2");
             document.add(table);
             table.setConvert2pdfptable(true);
-			document.add(new Paragraph("converted to PdfPTable:"));
+            document.add(new Paragraph("converted to PdfPTable:"));
             document.add(table);
         }
         catch(DocumentException de) {

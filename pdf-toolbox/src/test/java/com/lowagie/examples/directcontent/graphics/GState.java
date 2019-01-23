@@ -28,58 +28,58 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class GState {
 
-	/**
-	 * Changing the Graphics State with PdfGState.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
-		System.out.println("Changing the Graphics State with PdfGState");
+    /**
+     * Changing the Graphics State with PdfGState.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
+        System.out.println("Changing the Graphics State with PdfGState");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
+        // step 1: creation of a document-object
+        Document document = new Document();
 
-		try {
+        try {
 
-			// step 2:
-			// we create a writer that listens to the document
-			// and directs a PDF-stream to a file
-			PdfWriter writer = PdfWriter.getInstance(document,
-					new FileOutputStream("gstate.pdf"));
+            // step 2:
+            // we create a writer that listens to the document
+            // and directs a PDF-stream to a file
+            PdfWriter writer = PdfWriter.getInstance(document,
+                    new FileOutputStream("gstate.pdf"));
 
-			// step 3: we open the document
-			document.open();
+            // step 3: we open the document
+            document.open();
 
-			// step 4: we grab the ContentByte and do some stuff with it
-			PdfContentByte cb = writer.getDirectContent();
+            // step 4: we grab the ContentByte and do some stuff with it
+            PdfContentByte cb = writer.getDirectContent();
 
             PdfGState gs = new PdfGState();
             gs.setFillOpacity(0.5f);
             cb.setGState(gs);
-			cb.setColorFill(Color.red);
-			cb.circle(260.0f, 500.0f, 250.0f);
-			cb.fill();
-			cb.circle(260.0f, 500.0f, 200.0f);
-			cb.fill();
-			cb.circle(260.0f, 500.0f, 150.0f);
-			cb.fill();
-			gs.setFillOpacity(0.2f);
-			cb.setGState(gs);
-			cb.setColorFill(Color.blue);
-			cb.circle(260.0f, 500.0f, 100.0f);
-			cb.fill();
-			cb.circle(260.0f, 500.0f, 50.0f);
-			cb.fill();
-			
-			cb.sanityCheck();
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+            cb.setColorFill(Color.red);
+            cb.circle(260.0f, 500.0f, 250.0f);
+            cb.fill();
+            cb.circle(260.0f, 500.0f, 200.0f);
+            cb.fill();
+            cb.circle(260.0f, 500.0f, 150.0f);
+            cb.fill();
+            gs.setFillOpacity(0.2f);
+            cb.setGState(gs);
+            cb.setColorFill(Color.blue);
+            cb.circle(260.0f, 500.0f, 100.0f);
+            cb.fill();
+            cb.circle(260.0f, 500.0f, 50.0f);
+            cb.fill();
+            
+            cb.sanityCheck();
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

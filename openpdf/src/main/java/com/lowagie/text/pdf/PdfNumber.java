@@ -59,8 +59,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * This object is described in the 'Portable Document Format Reference Manual
  * version 1.7' section 3.3.2 (page 52-53).
  *
- * @see		PdfObject
- * @see		BadPdfFormatException
+ * @see        PdfObject
+ * @see        BadPdfFormatException
  */
 public class PdfNumber extends PdfObject {
 

@@ -51,7 +51,7 @@ import java.util.Arrays;
 /**
  * Keeps all the values of a 3 by 3 matrix
  * and allows you to do some math with matrices.
- * @since	2.1.4
+ * @since    2.1.4
  */
 public class Matrix {
     /** the row=1, col=1 position ('a') in the matrix. */
@@ -68,9 +68,9 @@ public class Matrix {
     public static final int I23 = 5;  
     /** the row=3, col=1 ('e', or X translation) position in the matrix. */
     public static final int I31 = 6;  
-	/** the row=3, col=2 ('f', or Y translation) position in the matrix. */
+    /** the row=3, col=2 ('f', or Y translation) position in the matrix. */
     public static final int I32 = 7;  
-	/** the row=3, col=3 position (always 1 for 2-D) in the matrix. */
+    /** the row=3, col=3 position (always 1 for 2-D) in the matrix. */
     public static final int I33 = 8;   
     
     /** the values inside the matrix (the identity matrix by default). */
@@ -119,8 +119,8 @@ public class Matrix {
     
     /**
      * Gets a specific value inside the matrix.
-     * @param	index	an array index corresponding with a value inside the matrix
-     * @return	the value at that specific position.
+     * @param    index    an array index corresponding with a value inside the matrix
+     * @return    the value at that specific position.
      */
     public float get(int index){
         return vals[index];
@@ -130,7 +130,7 @@ public class Matrix {
      * multiplies this matrix by 'b' and returns the result
      * See http://en.wikipedia.org/wiki/Matrix_multiplication
      * @param by The matrix to multiply by
-     * @return	the resulting matrix
+     * @return    the resulting matrix
      */
     public Matrix multiply(Matrix by){
         Matrix rslt = new Matrix();
@@ -179,8 +179,8 @@ public class Matrix {
     
     /**
      * Checks equality of matrices.
-     * @param obj	the other Matrix that needs to be compared with this matrix.
-     * @return	true if both matrices are equal
+     * @param obj    the other Matrix that needs to be compared with this matrix.
+     * @return    true if both matrices are equal
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
@@ -192,7 +192,7 @@ public class Matrix {
     
     /**
      * Generates a hash code for this object.
-     * @return	the hash code of this object
+     * @return    the hash code of this object
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -207,7 +207,7 @@ public class Matrix {
     
     /**
      * Generates a String representation of the matrix.
-     * @return	the values, delimited with tabs and newlines.
+     * @return    the values, delimited with tabs and newlines.
      * @see java.lang.Object#toString()
      */
     public String toString() {

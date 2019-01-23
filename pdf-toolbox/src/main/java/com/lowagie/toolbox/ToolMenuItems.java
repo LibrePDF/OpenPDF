@@ -40,34 +40,34 @@ package com.lowagie.toolbox;
  */
 public class ToolMenuItems {
 
-	/** An item in the menubar. */
-	public static final String FILE = "File";
-	/** An item in the menubar. */
-	public static final String CLOSE = "Close";
-	/** An item in the menubar. */
-	public static final String TOOLS = "Tools";
+    /** An item in the menubar. */
+    public static final String FILE = "File";
+    /** An item in the menubar. */
+    public static final String CLOSE = "Close";
+    /** An item in the menubar. */
+    public static final String TOOLS = "Tools";
     public static final String FILELIST = "Filelist";
     public static final String VIEW = "View";
     public static final String RESET = "Reset";
-	/** An item in the menubar. */
-	public static final String HELP = "Help";
-	/** An item in the menubar. */
-	public static final String VERSION = "Version";
-	/** An item in the menubar. */
-	public static final String ABOUT = "About";
-	/** An item in the menubar. */
-	public static final String TOOL = "Tool";
-	/** An item in the menubar. */
-	public static final String USAGE = "Usage";
-	/** An item in the menubar. */
-	public static final String ARGUMENTS = "Arguments";
-	/** An item in the menubar. */
-	public static final String EXECUTE = "Execute";
-	/** An item in the menubar. */
-	public static final String EXECUTESHOW = "Execute+Open";
-	/** An item in the menubar. */
-	public static final String EXECUTEPRINT = "Execute+Printdialog";
-	/** An item in the menubar. */
-	public static final String EXECUTEPRINTSILENT = "Execute+Print";
+    /** An item in the menubar. */
+    public static final String HELP = "Help";
+    /** An item in the menubar. */
+    public static final String VERSION = "Version";
+    /** An item in the menubar. */
+    public static final String ABOUT = "About";
+    /** An item in the menubar. */
+    public static final String TOOL = "Tool";
+    /** An item in the menubar. */
+    public static final String USAGE = "Usage";
+    /** An item in the menubar. */
+    public static final String ARGUMENTS = "Arguments";
+    /** An item in the menubar. */
+    public static final String EXECUTE = "Execute";
+    /** An item in the menubar. */
+    public static final String EXECUTESHOW = "Execute+Open";
+    /** An item in the menubar. */
+    public static final String EXECUTEPRINT = "Execute+Printdialog";
+    /** An item in the menubar. */
+    public static final String EXECUTEPRINTSILENT = "Execute+Print";
 
 }

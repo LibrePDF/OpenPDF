@@ -30,11 +30,11 @@ public class SpaceWordRatio {
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-    	System.out.println("Space Word Ratio");
-    	// step 1
+        System.out.println("Space Word Ratio");
+        // step 1
         Document document = new Document(PageSize.A4, 50, 350, 50, 50);
         try {
-        	// step 2
+            // step 2
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("spacewordratio.pdf"));
             // step 3
             document.open();

@@ -72,7 +72,7 @@ import com.lowagie.text.ExceptionConverter;
 
 public class PdfSmartCopy extends PdfCopy {
 
-	/** the cache with the streams and references. */
+    /** the cache with the streams and references. */
     private HashMap streamMap = null;
 
     /** Creates a PdfSmartCopy instance. */

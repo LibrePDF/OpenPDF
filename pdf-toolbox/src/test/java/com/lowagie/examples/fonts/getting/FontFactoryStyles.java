@@ -28,11 +28,11 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class FontFactoryStyles {
 
-	/**
-	 * Changing the style of a FontFactory Font.
-	 * @param args no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Changing the style of a FontFactory Font.
+     * @param args no arguments needed
+     */
+    public static void main(String[] args) {
         System.out.println("Changing the style of a FontFactory font");
         
         // step 1: creation of a document-object
@@ -66,5 +66,5 @@ public class FontFactoryStyles {
         
         // step 5: we close the document
         document.close();
-	}
+    }
 }

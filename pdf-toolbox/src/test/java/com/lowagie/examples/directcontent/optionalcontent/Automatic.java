@@ -30,15 +30,15 @@ import com.lowagie.text.pdf.PdfWriter;
  * Automatic layer grouping and nesting
  */
 public class Automatic {
-	   
+       
     /**
      * Automatic grouping and nesting.
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-    	System.out.println("Automatic grouping and nesting");
+        System.out.println("Automatic grouping and nesting");
         try {
-        	// step 1
+            // step 1
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             // step 2
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("automatic.pdf"));

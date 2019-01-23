@@ -191,18 +191,18 @@ public class PdfTemplate extends PdfContentByte {
     }
 
     public void setMatrix(float a, float b, float c, float d, float e, float f) {
-		matrix = new PdfArray();
-		matrix.add(new PdfNumber(a));
-		matrix.add(new PdfNumber(b));
-		matrix.add(new PdfNumber(c));
-		matrix.add(new PdfNumber(d));
-		matrix.add(new PdfNumber(e));
-		matrix.add(new PdfNumber(f));
-	}
+        matrix = new PdfArray();
+        matrix.add(new PdfNumber(a));
+        matrix.add(new PdfNumber(b));
+        matrix.add(new PdfNumber(c));
+        matrix.add(new PdfNumber(d));
+        matrix.add(new PdfNumber(e));
+        matrix.add(new PdfNumber(f));
+    }
 
-	PdfArray getMatrix() {
-		return matrix;
-	}
+    PdfArray getMatrix() {
+        return matrix;
+    }
     
     /**
      * Gets the indirect reference to this template.
@@ -211,10 +211,10 @@ public class PdfTemplate extends PdfContentByte {
      */
     
     public PdfIndirectReference getIndirectReference() {
-    	// uncomment the null check as soon as we're sure all examples still work
-    	if (thisReference == null /* && writer != null */) {
-    		thisReference = writer.getPdfIndirectReference();
-    	}
+        // uncomment the null check as soon as we're sure all examples still work
+        if (thisReference == null /* && writer != null */) {
+            thisReference = writer.getPdfIndirectReference();
+        }
         return thisReference;
     }
         
@@ -239,9 +239,9 @@ public class PdfTemplate extends PdfContentByte {
     /**
      * Gets the stream representing this template.
      *
-     * @param	compressionLevel	the compressionLevel
+     * @param    compressionLevel    the compressionLevel
      * @return the stream representing this template
-     * @since	2.1.3	(replacing the method without param compressionLevel)
+     * @since    2.1.3    (replacing the method without param compressionLevel)
      */
     PdfStream getFormXObject(int compressionLevel) throws IOException {
         return new PdfFormXObject(this, compressionLevel);

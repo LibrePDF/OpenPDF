@@ -25,25 +25,25 @@ import com.lowagie.text.pdf.PdfWriter;
  * Break a large table up into different smaller tables in order to save memory.
  */
 public class SplitTable {
-	/**
-	 * Break a large table up into several smaller tables for memory management
-	 * purposes.
-	 * 
-	 * @param args
-	 *            the number of rows for each table fragment.
-	 */
-	public static void main(String[] args) {
+    /**
+     * Break a large table up into several smaller tables for memory management
+     * purposes.
+     * 
+     * @param args
+     *            the number of rows for each table fragment.
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Split Table");
-		// step1
-		Document document = new Document(PageSize.A4, 10, 10, 10, 10);
-		try {
-			// step2
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
-					"SplitTable.pdf"));
-			// step3
-			document.open();
-			// step4
+        System.out.println("Split Table");
+        // step1
+        Document document = new Document(PageSize.A4, 10, 10, 10, 10);
+        try {
+            // step2
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
+                    "SplitTable.pdf"));
+            // step3
+            document.open();
+            // step4
 
             PdfContentByte cb = writer.getDirectContent();
             PdfPTable table = new PdfPTable(10);
@@ -55,10 +55,10 @@ public class SplitTable {
             document.newPage();
             table.writeSelectedRows(5, -1, 0, -1, 50, 650, cb);
             document.close();
-		} catch (Exception de) {
-			de.printStackTrace();
-		}
-		// step5
-		document.close();
-	}
+        } catch (Exception de) {
+            de.printStackTrace();
+        }
+        // step5
+        document.close();
+    }
 }

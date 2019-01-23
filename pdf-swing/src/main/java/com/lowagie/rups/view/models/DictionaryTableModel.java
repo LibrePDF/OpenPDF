@@ -33,63 +33,63 @@ import com.lowagie.text.pdf.PdfName;
  */
 public class DictionaryTableModel extends AbstractTableModel {
 
-	/** A serial version UID. */
-	private static final long serialVersionUID = -8835275996639701776L;
-	/** The PDF dictionary. */
-	protected PdfDictionary dictionary;
-	/** An ArrayList with the dictionary keys. */
-	protected ArrayList<PdfName> keys = new ArrayList<PdfName>();
+    /** A serial version UID. */
+    private static final long serialVersionUID = -8835275996639701776L;
+    /** The PDF dictionary. */
+    protected PdfDictionary dictionary;
+    /** An ArrayList with the dictionary keys. */
+    protected ArrayList<PdfName> keys = new ArrayList<PdfName>();
 
-	/**
-	 * Creates the TableModel.
-	 * @param dictionary the dictionary we want to show
-	 */
-	public DictionaryTableModel(PdfDictionary dictionary) {
-		this.dictionary = dictionary;
-		for (Iterator i = dictionary.getKeys().iterator(); i.hasNext(); )
-			this.keys.add((PdfName) i.next());
-	}
-	
-	/**
-	 * @see javax.swing.table.TableModel#getColumnCount()
-	 */
-	public int getColumnCount() {
-		return 2;
-	}
+    /**
+     * Creates the TableModel.
+     * @param dictionary the dictionary we want to show
+     */
+    public DictionaryTableModel(PdfDictionary dictionary) {
+        this.dictionary = dictionary;
+        for (Iterator i = dictionary.getKeys().iterator(); i.hasNext(); )
+            this.keys.add((PdfName) i.next());
+    }
+    
+    /**
+     * @see javax.swing.table.TableModel#getColumnCount()
+     */
+    public int getColumnCount() {
+        return 2;
+    }
 
-	/**
-	 * @see javax.swing.table.TableModel#getRowCount()
-	 */
-	public int getRowCount() {
-		return dictionary.size();
-	}
+    /**
+     * @see javax.swing.table.TableModel#getRowCount()
+     */
+    public int getRowCount() {
+        return dictionary.size();
+    }
 
-	/**
-	 * @see javax.swing.table.TableModel#getValueAt(int, int)
-	 */
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return keys.get(rowIndex);
-		case 1:
-			return dictionary.get(keys.get(rowIndex));
-		default:
-			return null;
-		}
-	}
+    /**
+     * @see javax.swing.table.TableModel#getValueAt(int, int)
+     */
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        switch (columnIndex) {
+        case 0:
+            return keys.get(rowIndex);
+        case 1:
+            return dictionary.get(keys.get(rowIndex));
+        default:
+            return null;
+        }
+    }
 
-	/**
-	 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
-	 */
-	public String getColumnName(int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return "Key";
-		case 1:
-			return "Value";
-		default:
-			return null;
-		}
-	}
+    /**
+     * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+     */
+    public String getColumnName(int columnIndex) {
+        switch (columnIndex) {
+        case 0:
+            return "Key";
+        case 1:
+            return "Value";
+        default:
+            return null;
+        }
+    }
 
 }

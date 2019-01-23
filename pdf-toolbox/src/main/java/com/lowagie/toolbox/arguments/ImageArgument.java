@@ -54,10 +54,10 @@ public class ImageArgument extends AbstractArgument {
 
     /**
      * Constructs a FileArgument.
-     * @param tool	the tool that needs this argument
-     * @param name	the name of the argument
-     * @param description	the description of the argument
-     * @param filter		a custom filter
+     * @param tool    the tool that needs this argument
+     * @param name    the name of the argument
+     * @param description    the description of the argument
+     * @param filter        a custom filter
      */
     public ImageArgument(AbstractTool tool, String name, String description,
                          FileFilter filter) {
@@ -67,9 +67,9 @@ public class ImageArgument extends AbstractArgument {
 
     /**
      * Constructs a FileArgument.
-     * @param tool	the tool that needs this argument
-     * @param name	the name of the argument
-     * @param description	the description of the argument
+     * @param tool    the tool that needs this argument
+     * @param name    the name of the argument
+     * @param description    the description of the argument
      */
     public ImageArgument(AbstractTool tool, String name, String description) {
         this(tool, name, description, new ImageFilter());

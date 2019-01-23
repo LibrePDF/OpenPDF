@@ -28,9 +28,9 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class TransformImage {
 
-	/**
+    /**
      * Add an image using different transformation matrices.
-	 * @param args no arguments needed
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
         Document.compress = false;

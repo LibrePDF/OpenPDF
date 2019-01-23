@@ -34,11 +34,11 @@ public class VerticalTextInCells {
     /**
      * Example with vertical text in Cells.
      * @param args
-     * 		no arguments needed
+     *         no arguments needed
      */
     public static void main(String[] args) {
 
-		System.out.println("Vertical text in cells");
+        System.out.println("Vertical text in cells");
         // step1
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {

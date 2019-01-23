@@ -208,7 +208,7 @@ public class SAXiTextHandler extends DefaultHandler {
     }
 
     private boolean isNotBlank(String text) {
-    	return text != null && !text.trim().isEmpty();
+        return text != null && !text.trim().isEmpty();
     }
     
     /**
@@ -233,12 +233,12 @@ public class SAXiTextHandler extends DefaultHandler {
             try {
                 current = (TextElementArray) stack.pop();
             } catch (EmptyStackException ese) {
-            	if (bf == null) {
-            		current = new Paragraph("", new Font());
-            	}
-            	else {
-            		current = new Paragraph("", new Font(this.bf));
-            	}
+                if (bf == null) {
+                    current = new Paragraph("", new Font());
+                }
+                else {
+                    current = new Paragraph("", new Font(this.bf));
+                }
             }
             current.add(currentChunk);
             stack.push(current);
@@ -249,7 +249,7 @@ public class SAXiTextHandler extends DefaultHandler {
         if (ElementTags.CHUNK.equals(name)) {
             currentChunk = ElementFactory.getChunk(attributes);
             if (bf != null) {
-            	currentChunk.setFont(new Font(this.bf));
+                currentChunk.setFont(new Font(this.bf));
             }
             return;
         }
@@ -346,7 +346,7 @@ public class SAXiTextHandler extends DefaultHandler {
             try {
                 Image img = ElementFactory.getImage(attributes);
                 try {
-                	addImage(img);
+                    addImage(img);
                     return;
                 } catch (EmptyStackException ese) {
                     // if there is no element on the stack, the Image is added
@@ -414,7 +414,7 @@ public class SAXiTextHandler extends DefaultHandler {
                 Chunk newPage = new Chunk("");
                 newPage.setNewPage();
                 if (bf != null) {
-                	newPage.setFont(new Font(this.bf));
+                    newPage.setFont(new Font(this.bf));
                 }
                 current.add(newPage);
                 stack.push(current);
@@ -447,8 +447,8 @@ public class SAXiTextHandler extends DefaultHandler {
             String value;
             // pagesize and orientation specific code suggested by Samuel Gabriel
             // Updated by Ricardo Coutinho. Only use if set in html!
-			Rectangle pageSize = null;
-			String orientation = null;
+            Rectangle pageSize = null;
+            String orientation = null;
             for (Iterator i = attributes.keySet().iterator(); i.hasNext();) {
                 key = (String) i.next();
                 value = attributes.getProperty(key);
@@ -491,10 +491,10 @@ public class SAXiTextHandler extends DefaultHandler {
                 }
             }
             if(pageSize != null) {
-            	if ("landscape".equals(orientation)) {
-            		pageSize = pageSize.rotate();
-            	}
-            	document.setPageSize(pageSize);
+                if ("landscape".equals(orientation)) {
+                    pageSize = pageSize.rotate();
+                }
+                document.setPageSize(pageSize);
             }
             document.setMargins(leftMargin, rightMargin, topMargin,
                     bottomMargin);
@@ -603,12 +603,12 @@ public class SAXiTextHandler extends DefaultHandler {
             }
         }
         if (currentChunk == null) {
-        	if (bf == null) {
-        		currentChunk = new Chunk(buf.toString());
-        	}
-        	else {
-        		currentChunk = new Chunk(buf.toString(), new Font(this.bf));
-        	}
+            if (bf == null) {
+                currentChunk = new Chunk(buf.toString());
+            }
+            else {
+                currentChunk = new Chunk(buf.toString(), new Font(this.bf));
+            }
         } else {
             currentChunk.append(buf.toString());
         }
@@ -621,7 +621,7 @@ public class SAXiTextHandler extends DefaultHandler {
      * @param bf
      */
     public void setBaseFont(BaseFont bf) {
-    	this.bf = bf;
+        this.bf = bf;
     }
 
     /**

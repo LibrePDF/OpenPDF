@@ -65,19 +65,19 @@ package com.lowagie.text;
  *               FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLDITALIC, new Color(0, 0, 255)));</STRONG>
  * </PRE></BLOCKQUOTE>
  *
- * @see		Element
- * @see		Phrase
- * @see		ListItem
+ * @see        Element
+ * @see        Phrase
+ * @see        ListItem
  */
 
 public class Paragraph extends Phrase {
-	
-	// constants
-	private static final long serialVersionUID = 7852314969733375514L;
+    
+    // constants
+    private static final long serialVersionUID = 7852314969733375514L;
     
     // membervariables
     
-	/** The alignment of the text. */
+    /** The alignment of the text. */
     protected int alignment = Element.ALIGN_UNDEFINED;
     
     /** The text leading that is multiplied by the biggest font size in the line. */
@@ -116,7 +116,7 @@ public class Paragraph extends Phrase {
     /**
      * Constructs a <CODE>Paragraph</CODE> with a certain leading.
      *
-     * @param	leading		the leading
+     * @param    leading        the leading
      */
     public Paragraph(float leading) {
         super(leading);
@@ -125,7 +125,7 @@ public class Paragraph extends Phrase {
     /**
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>Chunk</CODE>.
      *
-     * @param	chunk		a <CODE>Chunk</CODE>
+     * @param    chunk        a <CODE>Chunk</CODE>
      */    
     public Paragraph(Chunk chunk) {
         super(chunk);
@@ -135,8 +135,8 @@ public class Paragraph extends Phrase {
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>Chunk</CODE>
      * and a certain leading.
      *
-     * @param	leading		the leading
-     * @param	chunk		a <CODE>Chunk</CODE>
+     * @param    leading        the leading
+     * @param    chunk        a <CODE>Chunk</CODE>
      */    
     public Paragraph(float leading, Chunk chunk) {
         super(leading, chunk);
@@ -145,7 +145,7 @@ public class Paragraph extends Phrase {
     /**
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE>.
      *
-     * @param	string		a <CODE>String</CODE>
+     * @param    string        a <CODE>String</CODE>
      */
     public Paragraph(String string) {
         super(string);
@@ -155,8 +155,8 @@ public class Paragraph extends Phrase {
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE>
      * and a certain <CODE>Font</CODE>.
      *
-     * @param	string		a <CODE>String</CODE>
-     * @param	font		a <CODE>Font</CODE>
+     * @param    string        a <CODE>String</CODE>
+     * @param    font        a <CODE>Font</CODE>
      */
     public Paragraph(String string, Font font) {
         super(string, font);
@@ -166,8 +166,8 @@ public class Paragraph extends Phrase {
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE>
      * and a certain leading.
      *
-     * @param	leading		the leading
-     * @param	string		a <CODE>String</CODE>
+     * @param    leading        the leading
+     * @param    string        a <CODE>String</CODE>
      */
     public Paragraph(float leading, String string) {
         super(leading, string);
@@ -177,9 +177,9 @@ public class Paragraph extends Phrase {
      * Constructs a <CODE>Paragraph</CODE> with a certain leading, <CODE>String</CODE>
      * and <CODE>Font</CODE>.
      *
-     * @param	leading		the leading
-     * @param	string		a <CODE>String</CODE>
-     * @param	font		a <CODE>Font</CODE>
+     * @param    leading        the leading
+     * @param    string        a <CODE>String</CODE>
+     * @param    font        a <CODE>Font</CODE>
      */
     public Paragraph(float leading, String string, Font font) {
         super(leading, string, font);
@@ -188,20 +188,20 @@ public class Paragraph extends Phrase {
     /**
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>Phrase</CODE>.
      *
-     * @param	phrase		a <CODE>Phrase</CODE>
+     * @param    phrase        a <CODE>Phrase</CODE>
      */    
     public Paragraph(Phrase phrase) {
         super(phrase);
         if (phrase instanceof Paragraph) {
-        	Paragraph p = (Paragraph)phrase;
-        	setAlignment(p.alignment);
-        	setLeading(phrase.getLeading(), p.multipliedLeading);
-        	setIndentationLeft(p.getIndentationLeft());
-        	setIndentationRight(p.getIndentationRight());
-        	setFirstLineIndent(p.getFirstLineIndent());
-        	setSpacingAfter(p.spacingAfter());
-        	setSpacingBefore(p.spacingBefore());
-        	setExtraParagraphSpace(p.getExtraParagraphSpace());
+            Paragraph p = (Paragraph)phrase;
+            setAlignment(p.alignment);
+            setLeading(phrase.getLeading(), p.multipliedLeading);
+            setIndentationLeft(p.getIndentationLeft());
+            setIndentationRight(p.getIndentationRight());
+            setFirstLineIndent(p.getFirstLineIndent());
+            setSpacingAfter(p.spacingAfter());
+            setSpacingBefore(p.spacingBefore());
+            setExtraParagraphSpace(p.getExtraParagraphSpace());
         }
     }
     
@@ -210,7 +210,7 @@ public class Paragraph extends Phrase {
     /**
      * Gets the type of the text element.
      *
-     * @return	a type
+     * @return    a type
      */
     public int type() {
         return Element.PARAGRAPH;
@@ -221,7 +221,7 @@ public class Paragraph extends Phrase {
     /**
      * Adds an <CODE>Object</CODE> to the <CODE>Paragraph</CODE>.
      *
-     * @param	o   object		the object to add.
+     * @param    o   object        the object to add.
      * @return true is adding the object succeeded
      */
     public boolean add(Object o) {
@@ -239,11 +239,11 @@ public class Paragraph extends Phrase {
             super.add(o);
             java.util.List chunks = getChunks();
             if (!chunks.isEmpty()) {
-            	Chunk tmp = ((Chunk) chunks.get(chunks.size() - 1));
-            	super.add(new Chunk("\n", tmp.getFont()));
+                Chunk tmp = ((Chunk) chunks.get(chunks.size() - 1));
+                super.add(new Chunk("\n", tmp.getFont()));
             }
             else {
-            	super.add(Chunk.NEWLINE);
+                super.add(Chunk.NEWLINE);
             }
             return true;
         }
@@ -255,7 +255,7 @@ public class Paragraph extends Phrase {
     /**
      * Sets the alignment of this paragraph.
      *
-     * @param	alignment		the new alignment
+     * @param    alignment        the new alignment
      */
     public void setAlignment(int alignment) {
         this.alignment = alignment;
@@ -264,7 +264,7 @@ public class Paragraph extends Phrase {
     /**
      * Sets the alignment of this paragraph.
      *
-     * @param	alignment		the new alignment as a <CODE>String</CODE>
+     * @param    alignment        the new alignment as a <CODE>String</CODE>
      */
     public void setAlignment(String alignment) {
         if (ElementTags.ALIGN_CENTER.equalsIgnoreCase(alignment)) {
@@ -320,7 +320,7 @@ public class Paragraph extends Phrase {
     /**
      * Sets the indentation of this paragraph on the left side.
      *
-     * @param	indentation		the new indentation
+     * @param    indentation        the new indentation
      */
     public void setIndentationLeft(float indentation) {
         this.indentationLeft = indentation;
@@ -329,7 +329,7 @@ public class Paragraph extends Phrase {
     /**
      * Sets the indentation of this paragraph on the right side.
      *
-     * @param	indentation		the new indentation
+     * @param    indentation        the new indentation
      */
     public void setIndentationRight(float indentation) {
         this.indentationRight = indentation;
@@ -346,7 +346,7 @@ public class Paragraph extends Phrase {
     /**
      * Sets the spacing before this paragraph.
      *
-     * @param	spacing		the new spacing
+     * @param    spacing        the new spacing
      */
     public void setSpacingBefore(float spacing) {
         this.spacingBefore = spacing;
@@ -355,7 +355,7 @@ public class Paragraph extends Phrase {
     /**
      * Sets the spacing after this paragraph.
      *
-     * @param	spacing		the new spacing
+     * @param    spacing        the new spacing
      */
     public void setSpacingAfter(float spacing) {
         this.spacingAfter = spacing;
@@ -381,10 +381,10 @@ public class Paragraph extends Phrase {
 
     // methods to retrieve information
 
-	/**
+    /**
      * Gets the alignment of this paragraph.
      *
-     * @return	alignment
+     * @return    alignment
      */
     public int getAlignment() {
         return alignment;
@@ -407,28 +407,28 @@ public class Paragraph extends Phrase {
      * @return the total leading (fixed and multiplied)
      */
     public float getTotalLeading() {
-    	float m = font == null ?
-    			Font.DEFAULTSIZE * multipliedLeading : font.getCalculatedLeading(multipliedLeading);
-    	if (m > 0 && !hasLeading()) {
-    		return m;
-    	}
-    	return getLeading() + m;
+        float m = font == null ?
+                Font.DEFAULTSIZE * multipliedLeading : font.getCalculatedLeading(multipliedLeading);
+        if (m > 0 && !hasLeading()) {
+            return m;
+        }
+        return getLeading() + m;
     }
 
-	/**
+    /**
      * Gets the indentation of this paragraph on the left side.
      *
-     * @return	the indentation
+     * @return    the indentation
      */
     public float getIndentationLeft() {
         return indentationLeft;
     }
 
-	/**
-	 * Gets the indentation of this paragraph on the right side.
-	 *
-	 * @return	the indentation
-	 */
+    /**
+     * Gets the indentation of this paragraph on the right side.
+     *
+     * @return    the indentation
+     */
     public float getIndentationRight() {
         return indentationRight;
     }
@@ -443,20 +443,20 @@ public class Paragraph extends Phrase {
     
     /**
      * Gets the spacing before this paragraph.
-     * @return	the spacing
-     * @since	2.1.5
+     * @return    the spacing
+     * @since    2.1.5
      */
     public float getSpacingBefore() {
-    	return spacingBefore;
+        return spacingBefore;
     }    
     
     /**
      * Gets the spacing after this paragraph.
-     * @return	the spacing
-     * @since	2.1.5
+     * @return    the spacing
+     * @since    2.1.5
      */
     public float getSpacingAfter() {
-    	return spacingAfter;
+        return spacingAfter;
     }  
     
     /**
@@ -480,7 +480,7 @@ public class Paragraph extends Phrase {
     /**
      * Gets the spacing before this paragraph.
      *
-     * @return	the spacing
+     * @return    the spacing
      * @deprecated As of iText 2.1.5, replaced by {@link #getSpacingBefore()},
      * scheduled for removal at 2.3.0
      */
@@ -491,7 +491,7 @@ public class Paragraph extends Phrase {
     /**
      * Gets the spacing after this paragraph.
      *
-     * @return	the spacing
+     * @return    the spacing
      * @deprecated As of iText 2.1.5, replaced by {@link #getSpacingAfter()},
      * scheduled for removal at 2.3.0
      */

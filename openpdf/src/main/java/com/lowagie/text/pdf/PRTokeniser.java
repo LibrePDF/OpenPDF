@@ -281,7 +281,7 @@ public class PRTokeniser {
                 }
             }
         }
-		// http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=687669#20
+        // http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=687669#20
         if (level > 0) {
             type = TK_NUMBER;
             file.seek(ptr);
@@ -289,11 +289,11 @@ public class PRTokeniser {
             return;
         }
 //                if (type == TK_ENDOFFILE && level > 0)
-//        	        {
-//        	            file.seek(ptr);
-//        	            type = TK_NUMBER;
-//        	            stringValue = n1;
-//        	        }
+//                    {
+//                        file.seek(ptr);
+//                        type = TK_NUMBER;
+//                        stringValue = n1;
+//                    }
 
         throwError("Unexpected end of file");
         // if we hit here, the file is either corrupt (stream ended unexpectedly),
@@ -522,14 +522,14 @@ public class PRTokeniser {
         boolean eol = false;
         int ptr = 0;
         int len = input.length;
-	// ssteward, pdftk-1.10, 040922: 
-	// skip initial whitespace; added this because PdfReader.rebuildXref()
-	// assumes that line provided by readLineSegment does not have init. whitespace;
-	if ( ptr < len ) {
-	    while ( isWhitespace( (c = read()) ) );
-	}
-	while ( !eol && ptr < len ) {
-	    switch (c) {
+    // ssteward, pdftk-1.10, 040922: 
+    // skip initial whitespace; added this because PdfReader.rebuildXref()
+    // assumes that line provided by readLineSegment does not have init. whitespace;
+    if ( ptr < len ) {
+        while ( isWhitespace( (c = read()) ) );
+    }
+    while ( !eol && ptr < len ) {
+        switch (c) {
                 case -1:
                 case '\n':
                     eol = true;
@@ -546,13 +546,13 @@ public class PRTokeniser {
                     break;
             }
 
-	    // break loop? do it before we read() again
-	    if( eol || len <= ptr ) {
-		break;
-	    }
-	    else {
-		c = read();
-	    }
+        // break loop? do it before we read() again
+        if( eol || len <= ptr ) {
+        break;
+        }
+        else {
+        c = read();
+        }
         }
         if (ptr >= len) {
             eol = false;

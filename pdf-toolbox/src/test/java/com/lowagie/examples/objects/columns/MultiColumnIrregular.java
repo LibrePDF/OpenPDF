@@ -37,7 +37,7 @@ public class MultiColumnIrregular {
      */
     public static void main(String[] args) {
         try {
-        	// step 1
+            // step 1
             Document document = new Document();
             OutputStream out = new FileOutputStream("multicolumnirregular.pdf");
             PdfWriter writer = PdfWriter.getInstance(document, out);
@@ -98,8 +98,8 @@ public class MultiColumnIrregular {
                 cb.lineTo(centerX, diamondTop);
                 cb.setColorFill(Color.GRAY);
                 cb.fill();
-            	document.add(mct);
-            	mct.nextColumn();
+                document.add(mct);
+                mct.nextColumn();
             } while (mct.isOverflow());
             document.close();
         } catch (DocumentException e) {

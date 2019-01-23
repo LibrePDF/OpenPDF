@@ -59,7 +59,7 @@ import com.lowagie.text.pdf.collection.PdfTargetDictionary;
 /**
  * A <CODE>PdfAction</CODE> defines an action that can be triggered from a PDF file.
  *
- * @see		PdfDictionary
+ * @see        PdfDictionary
  */
 
 public class PdfAction extends PdfDictionary {
@@ -385,9 +385,9 @@ public class PdfAction extends PdfDictionary {
     
     /**
      * Creates a submit form.
-     * @param file	the URI to submit the form to
-     * @param names	the objects to submit
-     * @param flags	submit properties
+     * @param file    the URI to submit the form to
+     * @param names    the objects to submit
+     * @param flags    submit properties
      * @return A PdfAction
      */
     public static PdfAction createSubmitForm(String file, Object[] names, int flags) {
@@ -405,8 +405,8 @@ public class PdfAction extends PdfDictionary {
     
     /**
      * Creates a resetform.
-     * @param names	the objects to reset
-     * @param flags	submit properties
+     * @param names    the objects to reset
+     * @param flags    submit properties
      * @return A PdfAction
      */
     public static PdfAction createResetForm(Object[] names, int flags) {
@@ -501,7 +501,7 @@ public class PdfAction extends PdfDictionary {
 
     /**
      * Creates a GoToE action to an embedded file.
-     * @param filename	the root document of the target (null if the target is in the same document)
+     * @param filename    the root document of the target (null if the target is in the same document)
      * @param dest the named destination
      * @param isName if true sets the destination as a name, if false sets it as a String
      * @return a GoToE action
@@ -515,22 +515,22 @@ public class PdfAction extends PdfDictionary {
 
     /**
      * Creates a GoToE action to an embedded file.
-     * @param filename	the root document of the target (null if the target is in the same document)
-     * @param target	a path to the target document of this action
-     * @param dest		the destination inside the target document, can be of type PdfDestination, PdfName, or PdfString
-     * @param newWindow	if true, the destination document should be opened in a new window
+     * @param filename    the root document of the target (null if the target is in the same document)
+     * @param target    a path to the target document of this action
+     * @param dest        the destination inside the target document, can be of type PdfDestination, PdfName, or PdfString
+     * @param newWindow    if true, the destination document should be opened in a new window
      * @return a GoToE action
      */
     public static PdfAction gotoEmbedded(String filename, PdfTargetDictionary target, PdfObject dest, boolean newWindow) {
-    	PdfAction action = new PdfAction();
-    	action.put(PdfName.S, PdfName.GOTOE);
-    	action.put(PdfName.T, target);
-    	action.put(PdfName.D, dest);
-    	action.put(PdfName.NEWWINDOW, new PdfBoolean(newWindow));
-    	if (filename != null) {
-    		action.put(PdfName.F, new PdfString(filename));
-    	}
-    	return action;
+        PdfAction action = new PdfAction();
+        action.put(PdfName.S, PdfName.GOTOE);
+        action.put(PdfName.T, target);
+        action.put(PdfName.D, dest);
+        action.put(PdfName.NEWWINDOW, new PdfBoolean(newWindow));
+        if (filename != null) {
+            action.put(PdfName.F, new PdfString(filename));
+        }
+        return action;
     }
 
     /**

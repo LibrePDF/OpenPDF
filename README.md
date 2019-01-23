@@ -39,6 +39,10 @@ Beginning with version 5.0 of iText, the developers have moved to the AGPL to im
 Release the hounds!  Please send all pull requests.
 Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
 
+## Coding Style ##
+- Code indentation style is 4 spaces.
+- Generally try to preserve the coding style in the file you are modifying.
+
 ## Dependencies ##
 - Java 8 or later is required to use OpenPDF. There is a separate branch for Java 7 called 'java7'.
 

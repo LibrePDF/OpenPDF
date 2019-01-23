@@ -76,7 +76,7 @@ class PdfCopyFormsImp extends PdfCopyFieldsImp {
      * @throws DocumentException
      */
     public void copyDocumentFields(PdfReader reader) throws DocumentException {
-    	if (!reader.isOpenedWithFullPermissions())
+        if (!reader.isOpenedWithFullPermissions())
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("pdfreader.not.opened.with.owner.password"));
         if (readers2intrefs.containsKey(reader)) {
             reader = new PdfReader(reader);

@@ -37,19 +37,19 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class OutlineActions {
 
-	/**
-	 * Demonstrates some PageLabel functionality.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Demonstrates some PageLabel functionality.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Outlines with actions");
+        System.out.println("Outlines with actions");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		Document remote = new Document();
-		try {
+        // step 1: creation of a document-object
+        Document document = new Document();
+        Document remote = new Document();
+        try {
             // step 2:
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("OutlineActions.pdf"));
             PdfWriter.getInstance(remote, new FileOutputStream("remote.pdf"));
@@ -80,14 +80,14 @@ public class OutlineActions {
             Paragraph p = new Paragraph("This paragraph contains a ");
             p.add(new Chunk("local destination").setLocalDestination("test"));
             remote.add(p);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-		remote.close();
-	}
+        // step 5: we close the document
+        document.close();
+        remote.close();
+    }
 }

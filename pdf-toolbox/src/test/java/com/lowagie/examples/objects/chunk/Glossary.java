@@ -44,34 +44,34 @@ public class Glossary extends PdfPageEventHelper {
     /**
      * All the text that is passed to this event, gets registered in the glossary.
      * 
-	 * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
+     * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
      */
     public void onGenericTag(PdfWriter writer, Document document, Rectangle rect, String text) {
         glossary.put(text, new Integer(writer.getPageNumber()));
     }
     
-	/**
-	 * Generic page event.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Generic page event.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Glossary");
+        System.out.println("Glossary");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
-			// step 2:
-			// we create a writer that listens to the document
-			PdfWriter writer = PdfWriter.getInstance(document,
-					new FileOutputStream("Glossary.pdf"));
-			Glossary generic = new Glossary();
-			writer.setPageEvent(generic);
-			
-			// step 3: we open the document
-			document.open();
-			// step 4:
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
+            // step 2:
+            // we create a writer that listens to the document
+            PdfWriter writer = PdfWriter.getInstance(document,
+                    new FileOutputStream("Glossary.pdf"));
+            Glossary generic = new Glossary();
+            writer.setPageEvent(generic);
+            
+            // step 3: we open the document
+            document.open();
+            // step 4:
             String[] f = new String[14];
             f[0] = "Courier";
             f[1] = "Courier Bold";
@@ -122,13 +122,13 @@ public class Glossary extends PdfPageEventHelper {
                 g.add(String.valueOf(page));
                 document.add(g);
             }
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

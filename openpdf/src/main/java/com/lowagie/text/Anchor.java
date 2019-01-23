@@ -67,18 +67,18 @@ import java.util.Iterator;
  * <STRONG>anchor.setReference("http://www.lowagie.com");</STRONG>
  * </PRE></BLOCKQUOTE>
  *
- * @see		Element
- * @see		Phrase
+ * @see        Element
+ * @see        Phrase
  */
 
 public class Anchor extends Phrase {
 
-	// constant
-	private static final long serialVersionUID = -852278536049236911L;
-	
+    // constant
+    private static final long serialVersionUID = -852278536049236911L;
+    
     // membervariables
     
-	/** This is the name of the <CODE>Anchor</CODE>. */
+    /** This is the name of the <CODE>Anchor</CODE>. */
     protected String name = null;
     
     /** This is the reference of the <CODE>Anchor</CODE>. */
@@ -96,7 +96,7 @@ public class Anchor extends Phrase {
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain leading.
      *
-     * @param	leading		the leading
+     * @param    leading        the leading
      */
     
     public Anchor(float leading) {
@@ -106,7 +106,7 @@ public class Anchor extends Phrase {
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain <CODE>Chunk</CODE>.
      *
-     * @param	chunk		a <CODE>Chunk</CODE>
+     * @param    chunk        a <CODE>Chunk</CODE>
      */
     public Anchor(Chunk chunk) {
         super(chunk);
@@ -115,7 +115,7 @@ public class Anchor extends Phrase {
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain <CODE>String</CODE>.
      *
-     * @param	string		a <CODE>String</CODE>
+     * @param    string        a <CODE>String</CODE>
      */
     public Anchor(String string) {
         super(string);
@@ -125,8 +125,8 @@ public class Anchor extends Phrase {
      * Constructs an <CODE>Anchor</CODE> with a certain <CODE>String</CODE>
      * and a certain <CODE>Font</CODE>.
      *
-     * @param	string		a <CODE>String</CODE>
-     * @param	font		a <CODE>Font</CODE>
+     * @param    string        a <CODE>String</CODE>
+     * @param    font        a <CODE>Font</CODE>
      */
     public Anchor(String string, Font font) {
         super(string, font);
@@ -136,8 +136,8 @@ public class Anchor extends Phrase {
      * Constructs an <CODE>Anchor</CODE> with a certain <CODE>Chunk</CODE>
      * and a certain leading.
      *
-     * @param	leading		the leading
-     * @param	chunk		a <CODE>Chunk</CODE>
+     * @param    leading        the leading
+     * @param    chunk        a <CODE>Chunk</CODE>
      */
     public Anchor(float leading, Chunk chunk) {
         super(leading, chunk);
@@ -147,8 +147,8 @@ public class Anchor extends Phrase {
      * Constructs an <CODE>Anchor</CODE> with a certain leading
      * and a certain <CODE>String</CODE>.
      *
-     * @param	leading		the leading
-     * @param	string		a <CODE>String</CODE>
+     * @param    leading        the leading
+     * @param    string        a <CODE>String</CODE>
      */
     public Anchor(float leading, String string) {
         super(leading, string);
@@ -158,9 +158,9 @@ public class Anchor extends Phrase {
      * Constructs an <CODE>Anchor</CODE> with a certain leading,
      * a certain <CODE>String</CODE> and a certain <CODE>Font</CODE>.
      *
-     * @param	leading		the leading
-     * @param	string		a <CODE>String</CODE>
-     * @param	font		a <CODE>Font</CODE>
+     * @param    leading        the leading
+     * @param    string        a <CODE>String</CODE>
+     * @param    font        a <CODE>Font</CODE>
      */
     public Anchor(float leading, String string, Font font) {
         super(leading, string, font);
@@ -169,15 +169,15 @@ public class Anchor extends Phrase {
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain <CODE>Phrase</CODE>.
      *
-     * @param	phrase		a <CODE>Phrase</CODE>
+     * @param    phrase        a <CODE>Phrase</CODE>
      */    
     public Anchor(Phrase phrase) {
-    	super(phrase);
-    	if (phrase instanceof Anchor) {
-    		Anchor a = (Anchor) phrase;
-    		setName(a.name);
-    		setReference(a.reference);
-    	}
+        super(phrase);
+        if (phrase instanceof Anchor) {
+            Anchor a = (Anchor) phrase;
+            setName(a.name);
+            setReference(a.reference);
+        }
     }
     
     // implementation of the Element-methods
@@ -186,8 +186,8 @@ public class Anchor extends Phrase {
      * Processes the element by adding it (or the different parts) to an
      * <CODE>ElementListener</CODE>.
      *
-     * @param	listener	an <CODE>ElementListener</CODE>
-     * @return	<CODE>true</CODE> if the element was processed successfully
+     * @param    listener    an <CODE>ElementListener</CODE>
+     * @return    <CODE>true</CODE> if the element was processed successfully
      */
     public boolean process(ElementListener listener) {
         try {
@@ -216,7 +216,7 @@ public class Anchor extends Phrase {
     /**
      * Gets all the chunks in this element.
      *
-     * @return	an <CODE>ArrayList</CODE>
+     * @return    an <CODE>ArrayList</CODE>
      */
     public ArrayList getChunks() {
         ArrayList tmp = new ArrayList();
@@ -243,7 +243,7 @@ public class Anchor extends Phrase {
     /**
      * Gets the type of the text element.
      *
-     * @return	a type
+     * @return    a type
      */
     public int type() {
         return Element.ANCHOR;
@@ -254,7 +254,7 @@ public class Anchor extends Phrase {
     /**
      * Sets the name of this <CODE>Anchor</CODE>.
      *
-     * @param	name		a new name
+     * @param    name        a new name
      */
     public void setName(String name) {
         this.name = name;
@@ -263,7 +263,7 @@ public class Anchor extends Phrase {
     /**
      * Sets the reference of this <CODE>Anchor</CODE>.
      *
-     * @param	reference		a new reference
+     * @param    reference        a new reference
      */
     public void setReference(String reference) {
         this.reference = reference;
@@ -271,28 +271,28 @@ public class Anchor extends Phrase {
     
     // methods to retrieve information
 
-	/**
+    /**
      * Returns the name of this <CODE>Anchor</CODE>.
      *
-     * @return	a name
+     * @return    a name
      */   
     public String getName() {
         return name;
     }
 
-	/**
+    /**
      * Gets the reference of this <CODE>Anchor</CODE>.
      *
-     * @return	a reference
+     * @return    a reference
      */
     public String getReference() {
         return reference;
     }
 
-	/**
+    /**
      * Gets the reference of this <CODE>Anchor</CODE>.
      *
-     * @return	an <CODE>URL</CODE>
+     * @return    an <CODE>URL</CODE>
      */
     public URL getUrl() {
         try {

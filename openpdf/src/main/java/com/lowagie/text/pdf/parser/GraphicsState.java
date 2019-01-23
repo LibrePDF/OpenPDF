@@ -50,7 +50,7 @@ import com.lowagie.text.pdf.CMapAwareDocumentFont;
 
 /**
  * Keeps all the parameters of the graphics state.
- * @since	2.1.4
+ * @since    2.1.4
  */
 public class GraphicsState {
     /** The current transformation matrix. */
@@ -92,7 +92,7 @@ public class GraphicsState {
     
     /**
      * Copy constructor.
-     * @param source	another GraphicsState object
+     * @param source    another GraphicsState object
      */
     public GraphicsState(GraphicsState source){
         // note: all of the following are immutable, with the possible exception of font

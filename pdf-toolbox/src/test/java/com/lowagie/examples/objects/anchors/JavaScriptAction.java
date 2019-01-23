@@ -30,36 +30,36 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class JavaScriptAction {
 
-	/**
-	 * Creates a document with a javascript action.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Creates a document with a javascript action.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
 
-		System.out.println("JavaScript");
+        System.out.println("JavaScript");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
+        // step 1: creation of a document-object
+        Document document = new Document();
 
-		try {
+        try {
 
-			// step 2:
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
-					"JavaScriptAction.pdf"));
-			// step 3: we add Javascript as Metadata and we open the document        
-			document.open();
-			// step 4: we add some content
-			Paragraph p = new Paragraph(new Chunk("Click to say Hello")
-					.setAction(PdfAction.javaScript("app.alert('Hello');\r", writer)));
-			document.add(p);
-		} catch (Exception de) {
-			de.printStackTrace();
-		}
+            // step 2:
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
+                    "JavaScriptAction.pdf"));
+            // step 3: we add Javascript as Metadata and we open the document        
+            document.open();
+            // step 4: we add some content
+            Paragraph p = new Paragraph(new Chunk("Click to say Hello")
+                    .setAction(PdfAction.javaScript("app.alert('Hello');\r", writer)));
+            document.add(p);
+        } catch (Exception de) {
+            de.printStackTrace();
+        }
 
-		// step 5: we close the document
-		document.close();
+        // step 5: we close the document
+        document.close();
 
-	}
+    }
 }

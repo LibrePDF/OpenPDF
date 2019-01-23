@@ -27,7 +27,7 @@ import java.io.Serializable;
 public class CharVector implements Cloneable, Serializable {
 
     private static final long serialVersionUID = -4875768298308363544L;
-	/**
+    /**
      * Capacity increment size
      */
     private static final int DEFAULT_BLOCK_SIZE = 2048;

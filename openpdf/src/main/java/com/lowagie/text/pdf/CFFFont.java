@@ -270,15 +270,15 @@ public class CFFFont {
         indexOffSize = getCard8();
         
         for (int j=0; j<=count; j++) {
-        	//nextIndexOffset = ofset to relative segment
+            //nextIndexOffset = ofset to relative segment
             offsets[j] = nextIndexOffset
-			//2-> count in the index header. 1->offset size in index header
+            //2-> count in the index header. 1->offset size in index header
             + 2+1
-			//offset array size * offset size 
+            //offset array size * offset size 
             + (count+1)*indexOffSize
-			//???zero <-> one base
+            //???zero <-> one base
             - 1
-			// read object offset relative to object array base 
+            // read object offset relative to object array base 
             + getOffset(indexOffSize);
         }
         //nextIndexOffset = offsets[count];
@@ -529,7 +529,7 @@ public class CFFFont {
         }
     }
     
-	/** Card24 item.
+    /** Card24 item.
      */
     
     static protected final class UInt24Item extends Item {
@@ -542,7 +542,7 @@ public class CFFFont {
         }
         // this is incomplete!
         public void emit(byte[] buffer) {
-        	buffer[myOffset+0] = (byte) ((value >>> 16) & 0xff);
+            buffer[myOffset+0] = (byte) ((value >>> 16) & 0xff);
             buffer[myOffset+1] = (byte) ((value >>> 8) & 0xff);
             buffer[myOffset+2] = (byte) ((value >>> 0) & 0xff);
         }
@@ -561,8 +561,8 @@ public class CFFFont {
         }
         // this is incomplete!
         public void emit(byte[] buffer) {
-        	buffer[myOffset+0] = (byte) ((value >>> 24) & 0xff);
-        	buffer[myOffset+1] = (byte) ((value >>> 16) & 0xff);
+            buffer[myOffset+0] = (byte) ((value >>> 24) & 0xff);
+            buffer[myOffset+1] = (byte) ((value >>> 16) & 0xff);
             buffer[myOffset+2] = (byte) ((value >>> 8) & 0xff);
             buffer[myOffset+3] = (byte) ((value >>> 0) & 0xff);
         }
@@ -1008,10 +1008,10 @@ public class CFFFont {
         public int CharsetLength;
         public int[]    charstringsOffsets;
         public int[]    charset;
-        public int[] 	FDSelect;
+        public int[]     FDSelect;
         public int FDSelectLength;
         public int FDSelectFormat;
-        public int 		CharstringType = 2;
+        public int         CharstringType = 2;
         public int FDArrayCount;
         public int FDArrayOffsize;
         public int[] FDArrayOffsets;
@@ -1085,7 +1085,7 @@ public class CFFFont {
             //seek(stringOffsets[j]);
             //strings[j] = "";
             //for (int k=stringOffsets[j]; k<stringOffsets[j+1]; k++) {
-            //	strings[j] += (char)getCard8();
+            //    strings[j] += (char)getCard8();
             //}
             System.err.println("j="+(int)j+" <? "+(standardStrings.length+(stringOffsets.length-1)));
             System.err.println("strings["+(int)j+"]=<"+getString(j)+">");
@@ -1096,7 +1096,7 @@ public class CFFFont {
         
         for (int j=0; j<topdictOffsets.length-1; j++) {
             seek(topdictOffsets[j]);
-            while (getPosition() < topdictOffsets[j+1]) {            	
+            while (getPosition() < topdictOffsets[j+1]) {                
                 getDictItem();
                 if (key=="FullName") {
                     //System.err.println("getting fullname sid = "+((Integer)args[0]).intValue());
@@ -1128,7 +1128,7 @@ public class CFFFont {
                 else if (key=="FDSelect")
                     fonts[j].fdselectOffset = ((Integer)args[0]).intValue();
                 else if (key=="CharstringType")
-                	fonts[j].CharstringType = ((Integer)args[0]).intValue();
+                    fonts[j].CharstringType = ((Integer)args[0]).intValue();
             }
             
             // private dict
@@ -1138,8 +1138,8 @@ public class CFFFont {
                 while (getPosition() < fonts[j].privateOffset+fonts[j].privateLength) {
                     getDictItem();
                     if (key=="Subrs")
-                    	//Add the private offset to the lsubrs since the offset is 
-                    	// relative to the beginning of the PrivateDict
+                        //Add the private offset to the lsubrs since the offset is 
+                        // relative to the beginning of the PrivateDict
                         fonts[j].privateSubrs = ((Integer)args[0]).intValue()+fonts[j].privateOffset;
                 }
             }
@@ -1171,8 +1171,8 @@ public class CFFFont {
     // ADDED BY Oren & Ygal
     
     void ReadEncoding(int nextIndexOffset){
-    	int format;
-    	seek(nextIndexOffset);
-    	format = getCard8();
+        int format;
+        seek(nextIndexOffset);
+        format = getCard8();
     }    
 }

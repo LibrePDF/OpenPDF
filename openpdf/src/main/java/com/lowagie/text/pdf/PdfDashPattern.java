@@ -56,7 +56,7 @@ import java.io.OutputStream;
  * A <CODE>PdfDashPattern</CODE> defines a dash pattern as described in
  * the PDF Reference Manual version 1.3 p 325 (section 8.4.3).
  *
- * @see		PdfArray
+ * @see        PdfArray
  */
 
 public class PdfDashPattern extends PdfArray {

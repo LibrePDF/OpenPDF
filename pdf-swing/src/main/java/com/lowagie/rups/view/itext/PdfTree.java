@@ -36,55 +36,55 @@ import com.lowagie.rups.view.itext.treenodes.PdfTrailerTreeNode;
  */
 public class PdfTree extends JTree implements Observer {
 
-	/** The root of the PDF tree. */
-	protected PdfTrailerTreeNode root;
-	
-	/**
-	 * Constructs a PDF tree.
-	 */
-	public PdfTree() {
-		super();
-		root = new PdfTrailerTreeNode();
-		setCellRenderer(new IconTreeCellRenderer());
-		update(null, null);
-	}
-	
-	/**
-	 * Getter for the root node
-	 * @return	the PDF Trailer node
-	 */
-	public PdfTrailerTreeNode getRoot() {
-		return root;
-	}
+    /** The root of the PDF tree. */
+    protected PdfTrailerTreeNode root;
+    
+    /**
+     * Constructs a PDF tree.
+     */
+    public PdfTree() {
+        super();
+        root = new PdfTrailerTreeNode();
+        setCellRenderer(new IconTreeCellRenderer());
+        update(null, null);
+    }
+    
+    /**
+     * Getter for the root node
+     * @return    the PDF Trailer node
+     */
+    public PdfTrailerTreeNode getRoot() {
+        return root;
+    }
 
-	/**
-	 * Updates the PdfTree when a file is closed or when a ObjectLoader
-	 * has finished loading objects.
-	 * @param observable	the Observable class that started the update
-	 * @param obj			the object that has all the updates
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	public void update(Observable observable, Object obj) {
-		if (obj == null) {
-			root = new PdfTrailerTreeNode();
-		}
-		setModel(new DefaultTreeModel(root));
-		repaint();
-	}
+    /**
+     * Updates the PdfTree when a file is closed or when a ObjectLoader
+     * has finished loading objects.
+     * @param observable    the Observable class that started the update
+     * @param obj            the object that has all the updates
+     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+     */
+    public void update(Observable observable, Object obj) {
+        if (obj == null) {
+            root = new PdfTrailerTreeNode();
+        }
+        setModel(new DefaultTreeModel(root));
+        repaint();
+    }
 
-	/**
-	 * Select a specific node in the tree.
-	 * Typically this method will be called from a different tree,
-	 * such as the pages, outlines or form tree.
-	 * @param	node	the node that has to be selected
-	 */
-	public void selectNode(PdfObjectTreeNode node) {
-		TreePath path = new TreePath(node.getPath());
-		setSelectionPath(path);
-		scrollPathToVisible(path);
-	}
+    /**
+     * Select a specific node in the tree.
+     * Typically this method will be called from a different tree,
+     * such as the pages, outlines or form tree.
+     * @param    node    the node that has to be selected
+     */
+    public void selectNode(PdfObjectTreeNode node) {
+        TreePath path = new TreePath(node.getPath());
+        setSelectionPath(path);
+        scrollPathToVisible(path);
+    }
 
-	/** a serial version UID */
-	private static final long serialVersionUID = 7545804447512085734L;
-	
+    /** a serial version UID */
+    private static final long serialVersionUID = 7545804447512085734L;
+    
 }

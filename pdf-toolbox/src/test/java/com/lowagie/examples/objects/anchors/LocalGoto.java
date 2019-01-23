@@ -34,12 +34,12 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class LocalGoto {
 
-	/**
-	 * Creates a document with a Local Goto and a Local Destination.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Creates a document with a Local Goto and a Local Destination.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
         System.out.println("local goto");
         
         // step 1: creation of a document-object
@@ -89,5 +89,5 @@ public class LocalGoto {
         
         // step 5: we close the document
         document.close();
-	}
+    }
 }

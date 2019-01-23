@@ -73,16 +73,16 @@ public class XMLUtil {
                     sb.append("&apos;");
                     break;
                 default:
-                	if ((c == 0x9) || (c == 0xA) || (c == 0xD)
-                		|| ((c >= 0x20) && (c <= 0xD7FF))
-                		|| ((c >= 0xE000) && (c <= 0xFFFD))
-                		|| ((c >= 0x10000) && (c <= 0x10FFFF))) { 
-                		if (onlyASCII && c > 127) {
-                			sb.append("&#").append(c).append(';');
-                		} else {
-                			sb.append((char)c);
-						}
-                	}
+                    if ((c == 0x9) || (c == 0xA) || (c == 0xD)
+                        || ((c >= 0x20) && (c <= 0xD7FF))
+                        || ((c >= 0xE000) && (c <= 0xFFFD))
+                        || ((c >= 0x10000) && (c <= 0x10FFFF))) { 
+                        if (onlyASCII && c > 127) {
+                            sb.append("&#").append(c).append(';');
+                        } else {
+                            sb.append((char)c);
+                        }
+                    }
             }
         }
         return sb.toString();

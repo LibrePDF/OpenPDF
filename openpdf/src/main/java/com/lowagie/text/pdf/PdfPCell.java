@@ -102,7 +102,7 @@ public class PdfPCell extends Rectangle{
 
     /**
      * Holds value of property rowspan.
-     * @since	2.1.6
+     * @since    2.1.6
      */
     private int rowspan = 1;
     
@@ -201,7 +201,7 @@ public class PdfPCell extends Rectangle{
      * This constructor allows nested tables.
      * 
      * @param table The <CODE>PdfPTable</CODE>
-     * @param style	The style to apply to the cell (you could use getDefaultCell())
+     * @param style    The style to apply to the cell (you could use getDefaultCell())
      * @since 2.1.0
      */
     public PdfPCell(PdfPTable table, PdfPCell style) {
@@ -214,21 +214,21 @@ public class PdfPCell extends Rectangle{
         table.setExtendLastRow(true);
         column.addElement(table);
         if (style != null) {
-        	cloneNonPositionParameters(style);
-        	verticalAlignment = style.verticalAlignment;
-        	paddingLeft = style.paddingLeft;
-        	paddingRight = style.paddingRight;
-        	paddingTop = style.paddingTop;
-        	paddingBottom = style.paddingBottom;
-        	colspan = style.colspan;
-        	rowspan = style.rowspan;
-        	cellEvent = style.cellEvent;
-        	useDescender = style.useDescender;
-        	useBorderPadding = style.useBorderPadding;
-        	rotation = style.rotation;
+            cloneNonPositionParameters(style);
+            verticalAlignment = style.verticalAlignment;
+            paddingLeft = style.paddingLeft;
+            paddingRight = style.paddingRight;
+            paddingTop = style.paddingTop;
+            paddingBottom = style.paddingBottom;
+            colspan = style.colspan;
+            rowspan = style.rowspan;
+            cellEvent = style.cellEvent;
+            useDescender = style.useDescender;
+            useBorderPadding = style.useBorderPadding;
+            rotation = style.rotation;
         }
         else
-        	setPadding(0);
+            setPadding(0);
     }
     
     /**
@@ -341,11 +341,11 @@ public class PdfPCell extends Rectangle{
      * @return effective value of property paddingLeft.
      */
     public float getEffectivePaddingLeft() {
-    	if (isUseBorderPadding()) {
-    		float border = getBorderWidthLeft() / (isUseVariableBorders() ? 1f : 2f);
-    	    return paddingLeft + border;
-    	}
-    	return paddingLeft;
+        if (isUseBorderPadding()) {
+            float border = getBorderWidthLeft() / (isUseVariableBorders() ? 1f : 2f);
+            return paddingLeft + border;
+        }
+        return paddingLeft;
     }
     
     /**
@@ -371,11 +371,11 @@ public class PdfPCell extends Rectangle{
      * @return effective value of property paddingRight.
      */
     public float getEffectivePaddingRight() {
-    	if (isUseBorderPadding()) {
-    		float border = getBorderWidthRight() / (isUseVariableBorders() ? 1f : 2f);
-    		return paddingRight + border;
-    	}
-    	return paddingRight;
+        if (isUseBorderPadding()) {
+            float border = getBorderWidthRight() / (isUseVariableBorders() ? 1f : 2f);
+            return paddingRight + border;
+        }
+        return paddingRight;
     }
     
     /**
@@ -403,10 +403,10 @@ public class PdfPCell extends Rectangle{
      * @return effective value of property paddingTop.
      */
     public float getEffectivePaddingTop() {
-    	if (isUseBorderPadding()) {
-    		float border = getBorderWidthTop()/(isUseVariableBorders()?1f:2f);
-    		return paddingTop + border;
-    	}
+        if (isUseBorderPadding()) {
+            float border = getBorderWidthTop()/(isUseVariableBorders()?1f:2f);
+            return paddingTop + border;
+        }
         return paddingTop;
     }
     
@@ -436,10 +436,10 @@ public class PdfPCell extends Rectangle{
      * @return effective value of property paddingBottom.
      */
     public float getEffectivePaddingBottom() {
-    	if (isUseBorderPadding()) {
-    		float border = getBorderWidthBottom()/(isUseVariableBorders()?1f:2f);
-    		return paddingBottom + border;
-    	}
+        if (isUseBorderPadding()) {
+            float border = getBorderWidthBottom()/(isUseVariableBorders()?1f:2f);
+            return paddingBottom + border;
+        }
         return paddingBottom;
     }
     
@@ -581,11 +581,11 @@ public class PdfPCell extends Rectangle{
     /**
      * Tells you whether the cell has a fixed height.
      * 
-     * @return	true is a fixed height was set.
+     * @return    true is a fixed height was set.
      * @since 2.1.5
      */
     public boolean hasFixedHeight() {
-    	return getFixedHeight() > 0;
+        return getFixedHeight() > 0;
     }
     
     /**
@@ -611,11 +611,11 @@ public class PdfPCell extends Rectangle{
     /**
      * Tells you whether the cell has a minimum height.
      * 
-     * @return	true if a minimum height was set.
+     * @return    true if a minimum height was set.
      * @since 2.1.5
      */
     public boolean hasMinimumHeight() {
-    	return getMinimumHeight() > 0;
+        return getMinimumHeight() > 0;
     }
     
     /**
@@ -679,7 +679,7 @@ public class PdfPCell extends Rectangle{
      * Getter for property rowspan.
      * 
      * @return Value of property rowspan.
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public int getRowspan() {
         return rowspan;
@@ -689,7 +689,7 @@ public class PdfPCell extends Rectangle{
      * Setter for property rowspan.
      * 
      * @param rowspan New value of property rowspan.
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public void setRowspan(int rowspan) {
         this.rowspan = rowspan;
@@ -810,18 +810,18 @@ public class PdfPCell extends Rectangle{
      * @param cellEvent the cell event
      */
     public void setCellEvent(PdfPCellEvent cellEvent) {
-    	if (cellEvent == null)
-    		this.cellEvent = null;
-    	else if (this.cellEvent == null)
-    		this.cellEvent = cellEvent;
-    	else if (this.cellEvent instanceof PdfPCellEventForwarder)
-    		((PdfPCellEventForwarder)this.cellEvent).addCellEvent(cellEvent);
-    	else {
-    		PdfPCellEventForwarder forward = new PdfPCellEventForwarder();
-    		forward.addCellEvent(this.cellEvent);
-    		forward.addCellEvent(cellEvent);
-    		this.cellEvent = forward;
-    	}
+        if (cellEvent == null)
+            this.cellEvent = null;
+        else if (this.cellEvent == null)
+            this.cellEvent = cellEvent;
+        else if (this.cellEvent instanceof PdfPCellEventForwarder)
+            ((PdfPCellEventForwarder)this.cellEvent).addCellEvent(cellEvent);
+        else {
+            PdfPCellEventForwarder forward = new PdfPCellEventForwarder();
+            forward.addCellEvent(this.cellEvent);
+            forward.addCellEvent(cellEvent);
+            this.cellEvent = forward;
+        }
     }
     
     /**
@@ -892,11 +892,11 @@ public class PdfPCell extends Rectangle{
     /**
      * Returns the list of composite elements of the column.
      *
-     * @return	a List object.
-     * @since	2.1.1
+     * @return    a List object.
+     * @since    2.1.1
      */
     public List getCompositeElements() {
-    	return getColumn().compositeElements;
+        return getColumn().compositeElements;
     }
     
     /**
@@ -934,82 +934,82 @@ public class PdfPCell extends Rectangle{
     
     /**
      * Consumes part of the content of the cell.
-     * @param	height	the hight of the part that has to be consumed
-     * @since	2.1.6
+     * @param    height    the hight of the part that has to be consumed
+     * @since    2.1.6
      */
     void consumeHeight(float height) {
         float rightLimit = getRight() - getEffectivePaddingRight();
         float leftLimit = getLeft() + getEffectivePaddingLeft();
         float bry = height - getEffectivePaddingTop() - getEffectivePaddingBottom();
         if (getRotation() != 90 && getRotation() != 270) {
-            column.setSimpleColumn(leftLimit, bry + 0.001f,	rightLimit, 0);
+            column.setSimpleColumn(leftLimit, bry + 0.001f,    rightLimit, 0);
         }
         else {
-        	column.setSimpleColumn(0, leftLimit, bry + 0.001f, rightLimit);
+            column.setSimpleColumn(0, leftLimit, bry + 0.001f, rightLimit);
         }
         try {
-        	column.go(true);
-		} catch (DocumentException e) {
-			// do nothing
-		}
+            column.go(true);
+        } catch (DocumentException e) {
+            // do nothing
+        }
     }
-	
-	/**
-	 * Returns the height of the cell.
-	 * @return	the height of the cell
-	 * @since	3.0.0
-	 */
-	public float getMaxHeight() {
-		boolean pivoted = (getRotation() == 90 || getRotation() == 270);
-		Image img = getImage();
-		if (img != null) {
-			img.scalePercent(100);
-			float refWidth = pivoted ? img.getScaledHeight() : img.getScaledWidth();
-			float scale = (getRight() - getEffectivePaddingRight()
+    
+    /**
+     * Returns the height of the cell.
+     * @return    the height of the cell
+     * @since    3.0.0
+     */
+    public float getMaxHeight() {
+        boolean pivoted = (getRotation() == 90 || getRotation() == 270);
+        Image img = getImage();
+        if (img != null) {
+            img.scalePercent(100);
+            float refWidth = pivoted ? img.getScaledHeight() : img.getScaledWidth();
+            float scale = (getRight() - getEffectivePaddingRight()
                     - getEffectivePaddingLeft() - getLeft()) / refWidth;
-			img.scalePercent(scale * 100);
-			float refHeight = pivoted ? img.getScaledWidth() : img.getScaledHeight();
-			setBottom(getTop() - getEffectivePaddingTop() - getEffectivePaddingBottom() - refHeight);
-		}
-		else {
-			if ((pivoted && hasFixedHeight()) || getColumn() == null)
-				setBottom(getTop() - getFixedHeight());
-			else {
-				ColumnText ct = ColumnText.duplicate(getColumn());
-				float right, top, left, bottom;
-				if (pivoted) {
-					right = PdfPRow.RIGHT_LIMIT;
-					top = getRight() - getEffectivePaddingRight();
-					left = 0;
-					bottom = getLeft() + getEffectivePaddingLeft();
-				}
-				else {
-					right = isNoWrap() ? PdfPRow.RIGHT_LIMIT : getRight() - getEffectivePaddingRight();
-					top = getTop() - getEffectivePaddingTop();
-					left = getLeft() + getEffectivePaddingLeft();
-					bottom = hasFixedHeight() ? getTop() + getEffectivePaddingBottom() - getFixedHeight() : PdfPRow.BOTTOM_LIMIT;
-				}
-				PdfPRow.setColumn(ct, left, bottom, right, top);
-				try {
-					ct.go(true);
-				} catch (DocumentException e) {
-					throw new ExceptionConverter(e);
-				}
-				if (pivoted)
-					setBottom(getTop() - getEffectivePaddingTop() - getEffectivePaddingBottom() - ct.getFilledWidth());
-				else {
-					float yLine = ct.getYLine();
-					if (isUseDescender())
-						yLine += ct.getDescender();
-					setBottom(yLine - getEffectivePaddingBottom());
-				}
-			}
-		}
-		float height = getHeight();
-		if (hasFixedHeight())
-			height = getFixedHeight();
-		else if (height < getMinimumHeight())
-			height = getMinimumHeight();
-		return height;
-	}
+            img.scalePercent(scale * 100);
+            float refHeight = pivoted ? img.getScaledWidth() : img.getScaledHeight();
+            setBottom(getTop() - getEffectivePaddingTop() - getEffectivePaddingBottom() - refHeight);
+        }
+        else {
+            if ((pivoted && hasFixedHeight()) || getColumn() == null)
+                setBottom(getTop() - getFixedHeight());
+            else {
+                ColumnText ct = ColumnText.duplicate(getColumn());
+                float right, top, left, bottom;
+                if (pivoted) {
+                    right = PdfPRow.RIGHT_LIMIT;
+                    top = getRight() - getEffectivePaddingRight();
+                    left = 0;
+                    bottom = getLeft() + getEffectivePaddingLeft();
+                }
+                else {
+                    right = isNoWrap() ? PdfPRow.RIGHT_LIMIT : getRight() - getEffectivePaddingRight();
+                    top = getTop() - getEffectivePaddingTop();
+                    left = getLeft() + getEffectivePaddingLeft();
+                    bottom = hasFixedHeight() ? getTop() + getEffectivePaddingBottom() - getFixedHeight() : PdfPRow.BOTTOM_LIMIT;
+                }
+                PdfPRow.setColumn(ct, left, bottom, right, top);
+                try {
+                    ct.go(true);
+                } catch (DocumentException e) {
+                    throw new ExceptionConverter(e);
+                }
+                if (pivoted)
+                    setBottom(getTop() - getEffectivePaddingTop() - getEffectivePaddingBottom() - ct.getFilledWidth());
+                else {
+                    float yLine = ct.getYLine();
+                    if (isUseDescender())
+                        yLine += ct.getDescender();
+                    setBottom(yLine - getEffectivePaddingBottom());
+                }
+            }
+        }
+        float height = getHeight();
+        if (hasFixedHeight())
+            height = getFixedHeight();
+        else if (height < getMinimumHeight())
+            height = getMinimumHeight();
+        return height;
+    }
 }

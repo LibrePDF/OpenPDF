@@ -54,26 +54,26 @@ import com.lowagie.text.ExceptionConverter;
 /**
  * A <CODE>PdfICCBased</CODE> defines a ColorSpace
  *
- * @see		PdfStream
+ * @see        PdfStream
  */
 
 public class PdfICCBased extends PdfStream {
 
     /**
      * Creates an ICC stream.
-     * @param	profile an ICC profile
+     * @param    profile an ICC profile
      */
     public PdfICCBased(ICC_Profile profile) {
-    	this(profile, DEFAULT_COMPRESSION);
+        this(profile, DEFAULT_COMPRESSION);
     }
     
     /**
      * Creates an ICC stream.
      *
-     * @param	compressionLevel	the compressionLevel
+     * @param    compressionLevel    the compressionLevel
      *
-     * @param	profile an ICC profile
-     * @since	2.1.3	(replacing the constructor without param compressionLevel)
+     * @param    profile an ICC profile
+     * @since    2.1.3    (replacing the constructor without param compressionLevel)
      */
     public PdfICCBased(ICC_Profile profile, int compressionLevel) {
         super();

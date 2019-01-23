@@ -50,7 +50,7 @@ package com.lowagie.text.pdf;
  */
 public class PatternColor extends ExtendedColor {
     private static final long serialVersionUID = -1185448552860615964L;
-	/**
+    /**
      * The actual pattern.
      */    
     PdfPatternPainter painter;

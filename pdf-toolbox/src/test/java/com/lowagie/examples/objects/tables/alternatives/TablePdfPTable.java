@@ -67,49 +67,49 @@ public class TablePdfPTable {
             row.add(cell);
             table.addElement(row);
             for (int i = 0; i < 100; i++) {
-            	row = new SimpleCell(SimpleCell.ROW);
-            	switch (i % 3) {
-        		case 0:
-        			row.setBackgroundColor(Color.red);
-        			break;
-        		case 1:
-        			row.setBackgroundColor(Color.green);
-        			break;
-        		case 2:
-        			row.setBackgroundColor(Color.blue);
-        			break;
-            	}
-            	if (i % 2 == 1) {
-            		row.setBorderWidth(3f);
-            	}
-            	cell = new SimpleCell(SimpleCell.CELL);
-            	cell.add(new Paragraph("Row " + (i + 1)));
-            	cell.setSpacing_left(20f);
-            	row.add(cell);
-            	if (i % 5 == 4) {
-            		cell = new SimpleCell(SimpleCell.CELL);
-            		cell.setColspan(3);
-            		cell.setBorderColor(Color.orange);
-            		cell.setBorderWidth(5f);
-            		cell.add(new Paragraph("Hello!"));
-            		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            		row.add(cell);
-            	}
-            	else {
-            		cell = new SimpleCell(SimpleCell.CELL);
-            		cell.add(new Paragraph("A"));
-            		row.add(cell);
-            		cell = new SimpleCell(SimpleCell.CELL);
-            		cell.add(new Paragraph("B"));
-            		cell.setBackgroundColor(Color.gray);
-            		row.add(cell);
-            		cell = new SimpleCell(SimpleCell.CELL);
-            		cell.add(new Paragraph("C"));
-            		row.add(cell);
-            	}
-            	table.addElement(row);
+                row = new SimpleCell(SimpleCell.ROW);
+                switch (i % 3) {
+                case 0:
+                    row.setBackgroundColor(Color.red);
+                    break;
+                case 1:
+                    row.setBackgroundColor(Color.green);
+                    break;
+                case 2:
+                    row.setBackgroundColor(Color.blue);
+                    break;
+                }
+                if (i % 2 == 1) {
+                    row.setBorderWidth(3f);
+                }
+                cell = new SimpleCell(SimpleCell.CELL);
+                cell.add(new Paragraph("Row " + (i + 1)));
+                cell.setSpacing_left(20f);
+                row.add(cell);
+                if (i % 5 == 4) {
+                    cell = new SimpleCell(SimpleCell.CELL);
+                    cell.setColspan(3);
+                    cell.setBorderColor(Color.orange);
+                    cell.setBorderWidth(5f);
+                    cell.add(new Paragraph("Hello!"));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    row.add(cell);
+                }
+                else {
+                    cell = new SimpleCell(SimpleCell.CELL);
+                    cell.add(new Paragraph("A"));
+                    row.add(cell);
+                    cell = new SimpleCell(SimpleCell.CELL);
+                    cell.add(new Paragraph("B"));
+                    cell.setBackgroundColor(Color.gray);
+                    row.add(cell);
+                    cell = new SimpleCell(SimpleCell.CELL);
+                    cell.add(new Paragraph("C"));
+                    row.add(cell);
+                }
+                table.addElement(row);
             }
-        	document.add(table);
+            document.add(table);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -118,5 +118,5 @@ public class TablePdfPTable {
         // we close the document
         document.close();
     }
-	
+    
 }

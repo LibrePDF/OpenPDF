@@ -363,27 +363,27 @@ public class EntitiesToUnicode {
     /**
      * Translates an entity to a unicode character.
      *
-     * @param	name	the name of the entity
-     * @return	the corresponding unicode character
+     * @param    name    the name of the entity
+     * @return    the corresponding unicode character
      */
     public static char decodeEntity(String name) {
-    	if (name.startsWith("#x")) {
-    		try {
-    			return (char)Integer.parseInt(name.substring(2),16);
-    		}
-    		catch(NumberFormatException nfe) {
-    			return '\0';
-    		}
-    	}
-    	if (name.startsWith("#")) {
-    		try {
-    			return (char)Integer.parseInt(name.substring(1));
-    		}
-    		catch(NumberFormatException nfe) {
-    			return '\0';
-    		}
-    	}
-    	Character c = (Character)map.get(name);
+        if (name.startsWith("#x")) {
+            try {
+                return (char)Integer.parseInt(name.substring(2),16);
+            }
+            catch(NumberFormatException nfe) {
+                return '\0';
+            }
+        }
+        if (name.startsWith("#")) {
+            try {
+                return (char)Integer.parseInt(name.substring(1));
+            }
+            catch(NumberFormatException nfe) {
+                return '\0';
+            }
+        }
+        Character c = (Character)map.get(name);
         if (c == null)
             return '\0';
         else
@@ -395,43 +395,43 @@ public class EntitiesToUnicode {
      * replacing the entity with the right (unicode) character.
      */
     public static String decodeString(String s) {
-    	int pos_amp = s.indexOf('&');
-    	if (pos_amp == -1) return s;
-    	
-    	int pos_sc;
-    	int pos_a;
-    	StringBuffer buf = new StringBuffer(s.substring(0, pos_amp));
-    	char replace;
-    	while (true) {
-    		pos_sc = s.indexOf(';', pos_amp);
-    		if (pos_sc == -1) {
-    			buf.append(s.substring(pos_amp));
-    			return buf.toString();
-    		}
-    		pos_a = s.indexOf('&', pos_amp + 1);
-    		while (pos_a != -1 && pos_a < pos_sc) {
-    			buf.append(s, pos_amp, pos_a);
-    			pos_amp = pos_a;
-    			pos_a = s.indexOf('&', pos_amp + 1);
-    		}
-    		replace = decodeEntity(s.substring(pos_amp + 1, pos_sc));
-    		if (s.length() < pos_sc + 1) {
-    			return buf.toString();
-    		}
-    		if (replace == '\0') {
-    			buf.append(s, pos_amp, pos_sc + 1);
-    		}
-    		else {
-    			buf.append(replace);
-    		}
-    		pos_amp = s.indexOf('&', pos_sc);
-    		if (pos_amp == -1) {
-    			buf.append(s.substring(pos_sc + 1));
-    			return buf.toString();
-    		}
-    		else {
-    			buf.append(s, pos_sc + 1, pos_amp);
-    		}
-    	}
+        int pos_amp = s.indexOf('&');
+        if (pos_amp == -1) return s;
+        
+        int pos_sc;
+        int pos_a;
+        StringBuffer buf = new StringBuffer(s.substring(0, pos_amp));
+        char replace;
+        while (true) {
+            pos_sc = s.indexOf(';', pos_amp);
+            if (pos_sc == -1) {
+                buf.append(s.substring(pos_amp));
+                return buf.toString();
+            }
+            pos_a = s.indexOf('&', pos_amp + 1);
+            while (pos_a != -1 && pos_a < pos_sc) {
+                buf.append(s, pos_amp, pos_a);
+                pos_amp = pos_a;
+                pos_a = s.indexOf('&', pos_amp + 1);
+            }
+            replace = decodeEntity(s.substring(pos_amp + 1, pos_sc));
+            if (s.length() < pos_sc + 1) {
+                return buf.toString();
+            }
+            if (replace == '\0') {
+                buf.append(s, pos_amp, pos_sc + 1);
+            }
+            else {
+                buf.append(replace);
+            }
+            pos_amp = s.indexOf('&', pos_sc);
+            if (pos_amp == -1) {
+                buf.append(s.substring(pos_sc + 1));
+                return buf.toString();
+            }
+            else {
+                buf.append(s, pos_sc + 1, pos_amp);
+            }
+        }
     }
 }

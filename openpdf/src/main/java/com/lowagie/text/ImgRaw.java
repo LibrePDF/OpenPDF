@@ -56,8 +56,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
 /**
  * Raw Image data that has to be inserted into the document
  *
- * @see		Element
- * @see		Image
+ * @see        Element
+ * @see        Image
  *
  * @author  Paulo Soares
  */

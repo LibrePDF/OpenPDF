@@ -100,11 +100,11 @@ final class VersionBean {
             scmTimestamp = getAttributeValueOrDefault(attributes, "SCM-Timestamp");
             
             if (isEmpty(implementationVersion) && !isEmpty(bundleVersion)) {
-            	implementationVersion = bundleVersion;
+                implementationVersion = bundleVersion;
             }
         }
         private boolean isEmpty(String value) {
-        	return value == null || value.length() == 0;
+            return value == null || value.length() == 0;
         }
 
         private void initializeDerivativeProperties() {

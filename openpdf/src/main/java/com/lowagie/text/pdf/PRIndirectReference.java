@@ -61,9 +61,9 @@ public class PRIndirectReference extends PdfIndirectReference {
 /**
  * Constructs a <CODE>PdfIndirectReference</CODE>.
  *
- * @param		reader			a <CODE>PdfReader</CODE>
- * @param		number			the object number.
- * @param		generation		the generation number.
+ * @param        reader            a <CODE>PdfReader</CODE>
+ * @param        number            the object number.
+ * @param        generation        the generation number.
  */
     
     PRIndirectReference(PdfReader reader, int number, int generation) {
@@ -76,8 +76,8 @@ public class PRIndirectReference extends PdfIndirectReference {
 /**
  * Constructs a <CODE>PdfIndirectReference</CODE>.
  *
- * @param		reader			a <CODE>PdfReader</CODE>
- * @param		number			the object number.
+ * @param        reader            a <CODE>PdfReader</CODE>
+ * @param        number            the object number.
  */
     
     PRIndirectReference(PdfReader reader, int number) {

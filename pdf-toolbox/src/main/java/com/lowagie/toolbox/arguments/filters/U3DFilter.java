@@ -52,7 +52,7 @@ public class U3DFilter extends FileFilter {
      * @return boolean
      */
     public boolean accept(File f) {
-		if (f.isDirectory()) return true;
+        if (f.isDirectory()) return true;
         return f.getName().toLowerCase().endsWith(".u3d");
     }
 
@@ -62,7 +62,7 @@ public class U3DFilter extends FileFilter {
      * @return String
      */
     public String getDescription() {
-		return "*.u3d U3D files";
-	}
+        return "*.u3d U3D files";
+    }
 
 }

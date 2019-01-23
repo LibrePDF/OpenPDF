@@ -39,9 +39,9 @@ public class ListFields {
             stream.println("ListFields output file");
             stream.println("==================================================");
             for (int i = 0; i < args.length; i++) {
-            	stream.print("Filename: ");
-            	stream.println(args[i]);
-            	stream.println();
+                stream.print("Filename: ");
+                stream.println(args[i]);
+                stream.println();
                 PdfReader reader = new PdfReader(args[i]);
                 PRAcroForm form = reader.getAcroForm();
                 if (form == null) {

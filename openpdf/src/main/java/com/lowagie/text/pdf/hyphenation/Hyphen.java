@@ -33,7 +33,7 @@ import java.io.Serializable;
 
 public class Hyphen implements Serializable {
     private static final long serialVersionUID = -7666138517324763063L;
-	public String preBreak;
+    public String preBreak;
     public String noBreak;
     public String postBreak;
 

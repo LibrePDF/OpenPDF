@@ -55,12 +55,12 @@ import com.lowagie.text.error_messages.MessageLocalization;
 /**
  * A <CODE>PdfSpotColor</CODE> defines a ColorSpace
  *
- * @see		PdfDictionary
+ * @see        PdfDictionary
  */
 
 public class PdfSpotColor{
     
-/**	The color name */
+/**    The color name */
     public PdfName name;
     
 /** The alternative color space */
@@ -70,8 +70,8 @@ public class PdfSpotColor{
     /**
      * Constructs a new <CODE>PdfSpotColor</CODE>.
      *
-     * @param		name		a String value
-     * @param		altcs		an alternative colorspace value
+     * @param        name        a String value
+     * @param        altcs        an alternative colorspace value
      */
     
     public PdfSpotColor(String name, Color altcs) {

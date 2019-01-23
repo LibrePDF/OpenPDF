@@ -288,8 +288,8 @@ public class PdfSignatureAppearance {
     this.certChain = new Certificate[1];
     this.certChain[0] = certificate;
     if (crl != null) {
-    	this.crlList = new CRL[1];
-    	this.crlList[0] = crl;    	
+        this.crlList = new CRL[1];
+        this.crlList[0] = crl;        
     }
     this.filter = filter;
   }
@@ -298,10 +298,10 @@ public class PdfSignatureAppearance {
    * Sets the cryptographic parameters.
    */
   public void setCrypto(PrivateKey privKey, Certificate[] certChain, CRL[] crlList, PdfName filter) {
-	  this.privKey = privKey;
-	  this.certChain = certChain;
-	  this.crlList = crlList;
-	  this.filter = filter;
+      this.privKey = privKey;
+      this.certChain = certChain;
+      this.crlList = crlList;
+      this.filter = filter;
   }
 
   // OJO... Modificacion de

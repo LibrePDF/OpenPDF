@@ -28,57 +28,57 @@ import com.lowagie.text.pdf.PdfArray;
  * A TableModel in case we want to show a PDF array in a JTable.
  */
 public class PdfArrayTableModel extends AbstractTableModel {
-	
-	/** A serial version UID. */
-	private static final long serialVersionUID = 4665485782853993708L;
-	/** The PDF array. */
-	protected PdfArray array;
+    
+    /** A serial version UID. */
+    private static final long serialVersionUID = 4665485782853993708L;
+    /** The PDF array. */
+    protected PdfArray array;
 
-	/**
-	 * Creates the TableModel.
-	 * @param array a PDF array
-	 */
-	public PdfArrayTableModel(PdfArray array) {
-		this.array = array;
-	}
-	
-	/**
-	 * @see javax.swing.table.TableModel#getColumnCount()
-	 */
-	public int getColumnCount() {
-		return 1;
-	}
+    /**
+     * Creates the TableModel.
+     * @param array a PDF array
+     */
+    public PdfArrayTableModel(PdfArray array) {
+        this.array = array;
+    }
+    
+    /**
+     * @see javax.swing.table.TableModel#getColumnCount()
+     */
+    public int getColumnCount() {
+        return 1;
+    }
 
-	/**
-	 * @see javax.swing.table.TableModel#getRowCount()
-	 */
-	public int getRowCount() {
-		return array.size();
-	}
+    /**
+     * @see javax.swing.table.TableModel#getRowCount()
+     */
+    public int getRowCount() {
+        return array.size();
+    }
 
-	/**
-	 * @see javax.swing.table.TableModel#getValueAt(int, int)
-	 */
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return array.getPdfObject(rowIndex);
-		default:
-			return null;
-		}
-	}
+    /**
+     * @see javax.swing.table.TableModel#getValueAt(int, int)
+     */
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        switch (columnIndex) {
+        case 0:
+            return array.getPdfObject(rowIndex);
+        default:
+            return null;
+        }
+    }
 
-	/**
-	 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
-	 */
-	public String getColumnName(int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return "Array";
-		default:
-			return null;
-		}
-	}
+    /**
+     * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+     */
+    public String getColumnName(int columnIndex) {
+        switch (columnIndex) {
+        case 0:
+            return "Array";
+        default:
+            return null;
+        }
+    }
 
 }
 

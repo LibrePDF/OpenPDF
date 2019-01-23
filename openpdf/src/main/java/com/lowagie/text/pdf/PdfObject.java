@@ -60,15 +60,15 @@ import java.io.OutputStream;
  * All these basic PDF objects are described in the 'Portable Document Format
  * Reference Manual version 1.3' Chapter 4 (pages 37-54).
  *
- * @see		PdfNull
- * @see		PdfBoolean
- * @see		PdfNumber
- * @see		PdfString
- * @see		PdfName
- * @see		PdfArray
- * @see		PdfDictionary
- * @see		PdfStream
- * @see		PdfIndirectReference
+ * @see        PdfNull
+ * @see        PdfBoolean
+ * @see        PdfNumber
+ * @see        PdfString
+ * @see        PdfName
+ * @see        PdfArray
+ * @see        PdfDictionary
+ * @see        PdfStream
+ * @see        PdfIndirectReference
  */
 public abstract class PdfObject {
 
@@ -234,7 +234,7 @@ public abstract class PdfObject {
      * Remark: the actual content of an object is in most cases identical to its representation.
      * The following statement is always true: length() &gt;= pdfLength().</P>
      *
-     * @return		a length
+     * @return        a length
      */
 //    public int pdfLength() {
 //        return toPdf(null).length;

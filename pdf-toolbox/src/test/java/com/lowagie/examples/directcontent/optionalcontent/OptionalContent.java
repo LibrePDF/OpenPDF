@@ -40,11 +40,11 @@ import com.lowagie.text.pdf.TextField;
  * Demonstrates the use of layers.
  */
 public class OptionalContent {
-	/**
-	 * Demonstrates the use of layers.
-	 * @param args no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Demonstrates the use of layers.
+     * @param args no arguments needed
+     */
+    public static void main(String[] args) {
         try {
             System.out.println("Optional content");        
             // step 1: creation of a document-object

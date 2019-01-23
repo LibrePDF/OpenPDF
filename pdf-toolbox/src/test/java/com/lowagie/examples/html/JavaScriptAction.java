@@ -31,27 +31,27 @@ import com.lowagie.text.html.HtmlWriter;
 
 public class JavaScriptAction {
 
-	/**
-	 * Creates a document with Named Actions.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Creates a document with Named Actions.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Open Application");
+        System.out.println("Open Application");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
+        // step 1: creation of a document-object
+        Document document = new Document();
 
-		try {
+        try {
 
-			// step 2:
-			HtmlWriter.getInstance(document, new FileOutputStream(
-					"JavaScriptAction.html"));
-			// step 3: we add Javascript as Metadata and we open the document
-			
-			StringBuffer javaScriptSection = new StringBuffer();
+            // step 2:
+            HtmlWriter.getInstance(document, new FileOutputStream(
+                    "JavaScriptAction.html"));
+            // step 3: we add Javascript as Metadata and we open the document
+            
+            StringBuffer javaScriptSection = new StringBuffer();
             javaScriptSection.append("\t\tfunction load() {\n");
             javaScriptSection.append("\t\t  alert('Page has been loaded.');\n");
             javaScriptSection.append("\t\t}\n");
@@ -68,9 +68,9 @@ public class JavaScriptAction {
             document.setJavaScript_onLoad  ("load()");
             document.setJavaScript_onUnLoad("unload()");
             
-			document.open();
-			// step 4: we add some content
-			Phrase phrase1 = new Phrase("There are 3 JavaScript functions in the HTML page, load(), unload() and sayHi().\n\n" +
+            document.open();
+            // step 4: we add some content
+            Phrase phrase1 = new Phrase("There are 3 JavaScript functions in the HTML page, load(), unload() and sayHi().\n\n" +
                                    "The first one will be called when the HTML page has been loaded by your browser.\n" +
                                    "The second one will be called when the HTML page is being unloaded,\n" +
                                    "for example when you go to another page.\n");
@@ -81,12 +81,12 @@ public class JavaScriptAction {
               anchor.setReference("JavaScript:sayHi()");
               document.add(anchor);
 
-		} catch (Exception de) {
-			de.printStackTrace();
-		}
+        } catch (Exception de) {
+            de.printStackTrace();
+        }
 
-		// step 5: we close the document
-		document.close();
+        // step 5: we close the document
+        document.close();
 
-	}
+    }
 }

@@ -30,7 +30,7 @@ public class ImagesURL {
     
     /**
      * Images example with a complete path to the images.
-     * @param args	no arguments needed
+     * @param args    no arguments needed
      */
     public static void main(String[] args) {
         

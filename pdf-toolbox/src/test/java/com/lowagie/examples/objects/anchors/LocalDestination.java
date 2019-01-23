@@ -30,12 +30,12 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class LocalDestination {
 
-	/**
-	 * Creates a document that jumps to a Local Destination upon opening.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Creates a document that jumps to a Local Destination upon opening.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
         System.out.println("local destination");
         
         // step 1: creation of a document-object
@@ -59,5 +59,5 @@ public class LocalDestination {
         
         // step 5: we close the document
         document.close();
-	}
+    }
 }

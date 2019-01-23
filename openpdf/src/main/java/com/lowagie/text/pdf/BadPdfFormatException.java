@@ -52,12 +52,12 @@ package com.lowagie.text.pdf;
 /**
  * Signals that a bad PDF format has been used to construct a <CODE>PdfObject</CODE>.
  *
- * @see		PdfException
- * @see		PdfBoolean
- * @see		PdfNumber
- * @see		PdfString
- * @see		PdfName
- * @see		PdfDictionary
+ * @see        PdfException
+ * @see        PdfBoolean
+ * @see        PdfNumber
+ * @see        PdfString
+ * @see        PdfName
+ * @see        PdfDictionary
  */
 
 public class BadPdfFormatException extends PdfException {
@@ -77,7 +77,7 @@ private static final long serialVersionUID = 1802317735708833538L;
 /**
  * Constructs a <code>BadPdfFormatException</code> with a message.
  *
- * @param		message			a message describing the exception
+ * @param        message            a message describing the exception
  */
     
     BadPdfFormatException(String message) {

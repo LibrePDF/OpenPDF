@@ -75,7 +75,7 @@ import java.util.HashMap;
 
 public class IanaEncodings {
 
-	/** The object that maps IANA to Java encodings. */
+    /** The object that maps IANA to Java encodings. */
     private static final HashMap map = new HashMap();
 
     static {        

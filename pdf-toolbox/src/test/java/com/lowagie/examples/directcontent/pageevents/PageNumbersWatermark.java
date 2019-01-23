@@ -38,7 +38,7 @@ import com.lowagie.text.pdf.PdfWriter;
  * Demonstrates the use of templates to add Watermarks and Pagenumbers.
  */
 public class PageNumbersWatermark extends PdfPageEventHelper {
-	/** An Image that goes in the header. */
+    /** An Image that goes in the header. */
     public Image headerImage;
     /** The headertable. */
     public PdfPTable table;
@@ -55,7 +55,7 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
      */
     public static void main(String[] args) {
         try {
-        	// step 1: creating the document
+            // step 1: creating the document
             Document doc = new Document(PageSize.A4, 50, 50, 100, 72);
             // step 2: creating the writer
             PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("pageNumbersWatermark.pdf"));
@@ -82,7 +82,7 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
      */
     public void onOpenDocument(PdfWriter writer, Document document) {
         try {
-        	// initialization of the header table
+            // initialization of the header table
             headerImage = Image.getInstance("logo.gif");
             table = new PdfPTable(2);
             Phrase p = new Phrase();

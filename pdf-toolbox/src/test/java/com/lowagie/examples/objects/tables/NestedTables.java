@@ -25,24 +25,24 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class NestedTables {
 
-	/**
-	 * Using nested tables.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Using nested tables.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Nested Tables");
-		// step1
-		Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);
-		try {
-			// step2
-			PdfWriter.getInstance(document,
-					new FileOutputStream("NestedTables.pdf"));
-			// step3
-			document.open();
-			// step4
+        System.out.println("Nested Tables");
+        // step1
+        Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);
+        try {
+            // step2
+            PdfWriter.getInstance(document,
+                    new FileOutputStream("NestedTables.pdf"));
+            // step3
+            document.open();
+            // step4
             PdfPTable table = new PdfPTable(4);
             PdfPTable nested1 = new PdfPTable(2);
             nested1.addCell("1.1");
@@ -64,10 +64,10 @@ public class NestedTables {
             document.add(table);
             // step 5: we close the document
             document.close();
-		} catch (Exception de) {
-			de.printStackTrace();
-		}
-		// step5
-		document.close();
-	}
+        } catch (Exception de) {
+            de.printStackTrace();
+        }
+        // step5
+        document.close();
+    }
 }

@@ -30,25 +30,25 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class TrueTypeCollections {
 
-	/**
-	 * Using true type collections.
-	 * @param args no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Using true type collections.
+     * @param args no arguments needed
+     */
+    public static void main(String[] args) {
         System.out.println("True Type Collections");
         
         // step 1: creation of a document-object
         Document document = new Document();
         
         try {
-			BufferedWriter out = new BufferedWriter(new FileWriter("msgothic.txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter("msgothic.txt"));
             String[] names = BaseFont.enumerateTTCNames("c:\\windows\\fonts\\msgothic.ttc");
             for (int i = 0; i < names.length; i++) {              
-	        	out.write("font " + i + ": " + names[i]);
-	        	out.write("\r\n");
-	        }
-	        out.flush();
-	        out.close();
+                out.write("font " + i + ": " + names[i]);
+                out.write("\r\n");
+            }
+            out.flush();
+            out.close();
             // step 2: creation of the writer
             PdfWriter.getInstance(document, new FileOutputStream("truetypecollections.pdf"));
             
@@ -73,5 +73,5 @@ public class TrueTypeCollections {
         
         // step 5: we close the document
         document.close();
-	}
+    }
 }

@@ -31,15 +31,15 @@ import com.lowagie.text.pdf.PdfWriter;
  * Layer radio group and zoom.
  */
 public class Layers {
-	   
+       
     /**
      * Layer radio group and zoom.
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-    	System.out.println("layer radio group and zoom");
+        System.out.println("layer radio group and zoom");
         try {
-        	// step 1
+            // step 1
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             // step 2
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("layers.pdf"));

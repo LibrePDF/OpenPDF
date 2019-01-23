@@ -121,9 +121,9 @@ public class PdfImportedPage extends com.lowagie.text.pdf.PdfTemplate {
     /**
      * Gets the stream representing this page.
      *
-     * @param	compressionLevel	the compressionLevel
+     * @param    compressionLevel    the compressionLevel
      * @return the stream representing this page
-     * @since	2.1.3	(replacing the method without param compressionLevel)
+     * @since    2.1.3    (replacing the method without param compressionLevel)
      */
     PdfStream getFormXObject(int compressionLevel) throws IOException {
          return readerInstance.getFormXObject(pageNumber, compressionLevel);
@@ -151,13 +151,13 @@ public class PdfImportedPage extends com.lowagie.text.pdf.PdfTemplate {
     /**
      * Always throws an error. This operation is not allowed.
      * @param group New value of property group.
-     * @since	2.1.6
+     * @since    2.1.6
      */ 
     public void setGroup(PdfTransparencyGroup group) {
         throwError();
-	}
+    }
 
-	void throwError() {
+    void throwError() {
         throw new RuntimeException(MessageLocalization.getComposedMessage("content.can.not.be.added.to.a.pdfimportedpage"));
     }
     

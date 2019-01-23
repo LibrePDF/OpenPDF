@@ -43,12 +43,12 @@ public class AnnotatedImage {
             // step 4: we add some content
             Image jpeg = Image.getInstance("otsoe.jpg");
             jpeg.setAnnotation(new Annotation("picture", "This is my dog", 0, 0, 0, 0));
-			jpeg.setAbsolutePosition(100f, 550f);
-			document.add(jpeg);
+            jpeg.setAbsolutePosition(100f, 550f);
+            document.add(jpeg);
             Image wmf = Image.getInstance("iText.wmf");
             wmf.setAnnotation(new Annotation(0, 0, 0, 0, "http://www.lowagie.com/iText"));
-			wmf.setAbsolutePosition(100f, 200f);
-			document.add(wmf);
+            wmf.setAbsolutePosition(100f, 200f);
+            document.add(wmf);
         }
         catch (Exception de) {
             de.printStackTrace();

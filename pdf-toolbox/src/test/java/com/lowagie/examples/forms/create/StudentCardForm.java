@@ -39,30 +39,30 @@ import com.lowagie.text.pdf.TextField;
  * @author blowagie
  */
 public class StudentCardForm implements PdfPCellEvent {
-	
-	/** the writer with the acroform */
-	private PdfFormField field;
+    
+    /** the writer with the acroform */
+    private PdfFormField field;
 
-	/**
-	 * Construct an implementation of PdfPCellEvent.
-	 * 
-	 * @param field
-	 *            a form field
-	 *  
-	 */
-	public StudentCardForm(PdfFormField field) {
-		this.field = field;
-	}
+    /**
+     * Construct an implementation of PdfPCellEvent.
+     * 
+     * @param field
+     *            a form field
+     *  
+     */
+    public StudentCardForm(PdfFormField field) {
+        this.field = field;
+    }
 
-	/**
-	 * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell,
-	 *      com.lowagie.text.Rectangle, com.lowagie.text.pdf.PdfContentByte[])
-	 */
-	public void cellLayout(PdfPCell cell, Rectangle position,
-			PdfContentByte[] canvases) {
-		field.setWidget(position, null);
-	}
-	
+    /**
+     * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell,
+     *      com.lowagie.text.Rectangle, com.lowagie.text.pdf.PdfContentByte[])
+     */
+    public void cellLayout(PdfPCell cell, Rectangle position,
+            PdfContentByte[] canvases) {
+        field.setWidget(position, null);
+    }
+    
     /**
      * Generates a StudentCard as a form
      * @param args no arguments needed here
@@ -136,13 +136,13 @@ public class StudentCardForm implements PdfPCellEvent {
             innertable.addCell(cell);
             outertable.addCell(innertable);
             cell = new PdfPCell();
-			cell.setBackgroundColor(new Color(0xFF, 0xDE, 0xAD));
+            cell.setBackgroundColor(new Color(0xFF, 0xDE, 0xAD));
             PdfFormField picture = PdfFormField.createPushButton(writer);
             picture.setFieldName("picture");
             cell.setCellEvent(new StudentCardForm(picture));
             outertable.addCell(cell);
             cell = new PdfPCell();
-			cell.setBackgroundColor(Color.WHITE);
+            cell.setBackgroundColor(Color.WHITE);
             PdfFormField barcode = PdfFormField.createPushButton(writer);
             barcode.setFieldName("barcode");
             cell.setCellEvent(new StudentCardForm(barcode));

@@ -52,25 +52,25 @@ public class AddWatermarkPageNumbers {
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.EMBEDDED);
             img.setAbsolutePosition(200, 400);
             while (i < n) {
-            	i++;
-            	// watermark under the existing page
-            	under = stamp.getUnderContent(i);
-            	under.addImage(img);
-            	// text over the existing page
-            	over = stamp.getOverContent(i);
-            	over.beginText();
-            	over.setFontAndSize(bf, 18);
-            	over.setTextMatrix(30, 30);
-            	over.showText("page " + i);
-            	over.setFontAndSize(bf, 32);
-            	over.showTextAligned(Element.ALIGN_LEFT, "DUPLICATE", 230, 430, 45);
-            	over.endText();
+                i++;
+                // watermark under the existing page
+                under = stamp.getUnderContent(i);
+                under.addImage(img);
+                // text over the existing page
+                over = stamp.getOverContent(i);
+                over.beginText();
+                over.setFontAndSize(bf, 18);
+                over.setTextMatrix(30, 30);
+                over.showText("page " + i);
+                over.setFontAndSize(bf, 32);
+                over.showTextAligned(Element.ALIGN_LEFT, "DUPLICATE", 230, 430, 45);
+                over.endText();
             }
             // adding an extra page
             stamp.insertPage(1, PageSize.A4);
             over = stamp.getOverContent(1);
-        	over.beginText();
-        	over.setFontAndSize(bf, 18);
+            over.beginText();
+            over.setFontAndSize(bf, 18);
             over.showTextAligned(Element.ALIGN_LEFT, "DUPLICATE OF AN EXISTING PDF DOCUMENT", 30, 600, 0);
             over.endText();
             // adding a page from another document

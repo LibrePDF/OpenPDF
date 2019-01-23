@@ -160,7 +160,7 @@ class PdfCopyFieldsImp extends PdfWriter {
     }
     
     /**
-     * @since	2.1.5; before 2.1.5 the method was private
+     * @since    2.1.5; before 2.1.5 the method was private
      */
     protected void updateCalculationOrder(PdfReader reader) {
         PdfDictionary catalog = reader.getCatalog();
@@ -572,28 +572,28 @@ class PdfCopyFieldsImp extends PdfWriter {
     
     /**
      * Sets a reference to "visited" in the copy process.
-     * @param	ref	the reference that needs to be set to "visited"
-     * @return	true if the reference was set to visited
+     * @param    ref    the reference that needs to be set to "visited"
+     * @return    true if the reference was set to visited
      */
     protected boolean setVisited(PRIndirectReference ref) {
         IntHashtable refs = (IntHashtable)visited.get(ref.getReader());
         if (refs != null)
-        	return (refs.put(ref.getNumber(), 1) != 0);
+            return (refs.put(ref.getNumber(), 1) != 0);
         else
-        	return false;
+            return false;
     }
     
     /**
      * Checks if a reference has already been "visited" in the copy process.
-     * @param	ref	the reference that needs to be checked
-     * @return	true if the reference was already visited
+     * @param    ref    the reference that needs to be checked
+     * @return    true if the reference was already visited
      */
     protected boolean isVisited(PRIndirectReference ref) {
         IntHashtable refs = (IntHashtable)visited.get(ref.getReader());
         if (refs != null)
-        	return refs.containsKey(ref.getNumber());
+            return refs.containsKey(ref.getNumber());
         else
-        	return false;
+            return false;
     }
     
     protected boolean isVisited(PdfReader reader, int number, int generation) {
@@ -603,15 +603,15 @@ class PdfCopyFieldsImp extends PdfWriter {
     
     /**
      * Checks if a reference refers to a page object.
-     * @param	ref	the reference that needs to be checked
-     * @return	true is the reference refers to a page object.
+     * @param    ref    the reference that needs to be checked
+     * @return    true is the reference refers to a page object.
      */
     protected boolean isPage(PRIndirectReference ref) {
         IntHashtable refs = (IntHashtable)pages2intrefs.get(ref.getReader());
         if (refs != null)
-        	return refs.containsKey(ref.getNumber());
+            return refs.containsKey(ref.getNumber());
         else
-        	return false;
+            return false;
     }
 
     RandomAccessFileOrArray getReaderFile(PdfReader reader) {

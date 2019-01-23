@@ -79,41 +79,41 @@ import com.lowagie.text.ExceptionConverter;
  * This object is described in the 'Portable Document Format Reference Manual version 1.7'
  * section 3.2.7 (page 60-63).<BR>
  *
- * @see		PdfObject
- * @see		PdfDictionary
+ * @see        PdfObject
+ * @see        PdfDictionary
  */
 
 public class PdfStream extends PdfDictionary {
     
     // membervariables
 
-	/**
-	 * A possible compression level.
-	 * @since	2.1.3
-	 */
-	public static final int DEFAULT_COMPRESSION = -1;
-	/**
-	 * A possible compression level.
-	 * @since	2.1.3
-	 */
-	public static final int NO_COMPRESSION = 0;
-	/**
-	 * A possible compression level.
-	 * @since	2.1.3
-	 */
-	public static final int BEST_SPEED = 1;
-	/**
-	 * A possible compression level.
-	 * @since	2.1.3
-	 */
-	public static final int BEST_COMPRESSION = 9;
-	
-	
+    /**
+     * A possible compression level.
+     * @since    2.1.3
+     */
+    public static final int DEFAULT_COMPRESSION = -1;
+    /**
+     * A possible compression level.
+     * @since    2.1.3
+     */
+    public static final int NO_COMPRESSION = 0;
+    /**
+     * A possible compression level.
+     * @since    2.1.3
+     */
+    public static final int BEST_SPEED = 1;
+    /**
+     * A possible compression level.
+     * @since    2.1.3
+     */
+    public static final int BEST_COMPRESSION = 9;
+    
+    
 /** is the stream compressed? */
     protected boolean compressed = false;
     /**
      * The level of compression.
-     * @since	2.1.3
+     * @since    2.1.3
      */
     protected int compressionLevel = NO_COMPRESSION;
     
@@ -133,7 +133,7 @@ public class PdfStream extends PdfDictionary {
 /**
  * Constructs a <CODE>PdfStream</CODE>-object.
  *
- * @param		bytes			content of the new <CODE>PdfObject</CODE> as an array of <CODE>byte</CODE>.
+ * @param        bytes            content of the new <CODE>PdfObject</CODE> as an array of <CODE>byte</CODE>.
  */
  
     public PdfStream(byte[] bytes) {
@@ -205,13 +205,13 @@ public class PdfStream extends PdfDictionary {
      * Compresses the stream.
      */
     public void flateCompress() {
-    	flateCompress(DEFAULT_COMPRESSION);
+        flateCompress(DEFAULT_COMPRESSION);
     }
     
     /**
      * Compresses the stream.
-	 * @param compressionLevel the compression level (0 = best speed, 9 = best compression, -1 is default)
-	 * @since	2.1.3
+     * @param compressionLevel the compression level (0 = best speed, 9 = best compression, -1 is default)
+     * @since    2.1.3
      */
     public void flateCompress(int compressionLevel) {
         if (!Document.compress)
@@ -220,7 +220,7 @@ public class PdfStream extends PdfDictionary {
         if (compressed) {
             return;
         }
-    	this.compressionLevel = compressionLevel;
+        this.compressionLevel = compressionLevel;
         if (inputStream != null) {
             compressed = true;
             return;
@@ -381,7 +381,7 @@ public class PdfStream extends PdfDictionary {
      * @see com.lowagie.text.pdf.PdfObject#toString()
      */
     public String toString() {
-    	if (get(PdfName.TYPE) == null) return "Stream";
-    	return "Stream of type: " + get(PdfName.TYPE);
+        if (get(PdfName.TYPE) == null) return "Stream";
+        return "Stream of type: " + get(PdfName.TYPE);
     }
 }

@@ -29,7 +29,7 @@ public class Images {
     
     /**
      * General Images example that generates an HTML file with wrong paths to the images where the paths are right.
-     * @param args	no arguments needed
+     * @param args    no arguments needed
      */
     public static void main(String[] args) {
         

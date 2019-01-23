@@ -59,7 +59,7 @@ import com.lowagie.text.Utilities;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class BidiLine {
-	
+    
     protected int runDirection;
     protected int pieceSize = 256;
     protected char[] text = new char[pieceSize];
@@ -178,7 +178,7 @@ public class BidiLine {
         // remove trailing WS
         totalTextLength = trimRight(0, totalTextLength - 1) + 1;
         if (totalTextLength == 0) {
-        	return true;
+            return true;
         }
         
         if (runDirection == PdfWriter.RUN_DIRECTION_LTR || runDirection == PdfWriter.RUN_DIRECTION_RTL) {
@@ -373,16 +373,16 @@ public class BidiLine {
             if (splitChar)
                 lastSplit = currentChar;
             width -= charWidth;
-        	lastValidChunk = ck;
+            lastValidChunk = ck;
             if (ck.isTab()) {
-            	Object[] tab = (Object[])ck.getAttribute(Chunk.TAB);
-        		float tabPosition = ((Float)tab[1]).floatValue();
-        		boolean newLine = ((Boolean)tab[2]).booleanValue();
-        		if (newLine && tabPosition < originalWidth - width) {
-        			return new PdfLine(0, originalWidth, width, alignment, true, createArrayOfPdfChunks(oldCurrentChar, currentChar - 1), isRTL);
-        		}
-        		detailChunks[currentChar].adjustLeft(leftX);
-        		width = originalWidth - tabPosition;
+                Object[] tab = (Object[])ck.getAttribute(Chunk.TAB);
+                float tabPosition = ((Float)tab[1]).floatValue();
+                boolean newLine = ((Boolean)tab[2]).booleanValue();
+                if (newLine && tabPosition < originalWidth - width) {
+                    return new PdfLine(0, originalWidth, width, alignment, true, createArrayOfPdfChunks(oldCurrentChar, currentChar - 1), isRTL);
+                }
+                detailChunks[currentChar].adjustLeft(leftX);
+                width = originalWidth - tabPosition;
             }
             if (surrogate)
                 ++currentChar;

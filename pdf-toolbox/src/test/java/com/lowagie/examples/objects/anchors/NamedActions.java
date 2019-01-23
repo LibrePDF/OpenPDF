@@ -34,52 +34,52 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class NamedActions {
 
-	/**
-	 * Creates a document with Named Actions.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Creates a document with Named Actions.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Named Actions");
+        System.out.println("Named Actions");
 
-		// step 1: creation of a document-object
-		Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+        // step 1: creation of a document-object
+        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
 
-		try {
+        try {
 
-			// step 2: we create a writer that listens to the document
-			PdfWriter.getInstance(document,
-					new FileOutputStream("NamedActions.pdf"));
-			// step 3: we open the document
-			document.open();
-			// step 4: we add some content
-			Paragraph p = new Paragraph(new Chunk("Click to print")
-					.setAction(new PdfAction(PdfAction.PRINTDIALOG)));
-			PdfPTable table = new PdfPTable(4);
-			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-			table.addCell(new Phrase(new Chunk("First Page")
-					.setAction(new PdfAction(PdfAction.FIRSTPAGE))));
-			table.addCell(new Phrase(new Chunk("Prev Page")
-					.setAction(new PdfAction(PdfAction.PREVPAGE))));
-			table.addCell(new Phrase(new Chunk("Next Page")
-					.setAction(new PdfAction(PdfAction.NEXTPAGE))));
-			table.addCell(new Phrase(new Chunk("Last Page")
-					.setAction(new PdfAction(PdfAction.LASTPAGE))));
-			for (int k = 1; k <= 10; ++k) {
-				document.add(new Paragraph("This is page " + k));
-				document.add(Chunk.NEWLINE);
-				document.add(table);
-				document.add(p);
-				document.newPage();
-			}
-		} catch (Exception de) {
-			de.printStackTrace();
-		}
+            // step 2: we create a writer that listens to the document
+            PdfWriter.getInstance(document,
+                    new FileOutputStream("NamedActions.pdf"));
+            // step 3: we open the document
+            document.open();
+            // step 4: we add some content
+            Paragraph p = new Paragraph(new Chunk("Click to print")
+                    .setAction(new PdfAction(PdfAction.PRINTDIALOG)));
+            PdfPTable table = new PdfPTable(4);
+            table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(new Phrase(new Chunk("First Page")
+                    .setAction(new PdfAction(PdfAction.FIRSTPAGE))));
+            table.addCell(new Phrase(new Chunk("Prev Page")
+                    .setAction(new PdfAction(PdfAction.PREVPAGE))));
+            table.addCell(new Phrase(new Chunk("Next Page")
+                    .setAction(new PdfAction(PdfAction.NEXTPAGE))));
+            table.addCell(new Phrase(new Chunk("Last Page")
+                    .setAction(new PdfAction(PdfAction.LASTPAGE))));
+            for (int k = 1; k <= 10; ++k) {
+                document.add(new Paragraph("This is page " + k));
+                document.add(Chunk.NEWLINE);
+                document.add(table);
+                document.add(p);
+                document.newPage();
+            }
+        } catch (Exception de) {
+            de.printStackTrace();
+        }
 
-		// step 5: we close the document
-		document.close();
+        // step 5: we close the document
+        document.close();
 
-	}
+    }
 }

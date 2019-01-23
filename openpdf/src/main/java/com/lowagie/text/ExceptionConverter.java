@@ -75,7 +75,7 @@ package com.lowagie.text;
  */
 public class ExceptionConverter extends RuntimeException {
     private static final long serialVersionUID = 8657630363395849399L;
-	/** we keep a handle to the wrapped exception */
+    /** we keep a handle to the wrapped exception */
     private Exception ex;
     /** prefix for the exception */
     private String prefix;

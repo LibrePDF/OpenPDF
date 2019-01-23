@@ -62,34 +62,34 @@ import java.util.Properties;
 
 public class MarkedObject implements Element {
 
-	/** The element that is wrapped in a MarkedObject. */
-	protected Element element;
+    /** The element that is wrapped in a MarkedObject. */
+    protected Element element;
 
-	/** Contains extra markupAttributes */
-	protected Properties markupAttributes = new Properties();
-	    
-	/**
-	 * This constructor is for internal use only.
-	 */
-	protected MarkedObject() {
-		element = null;
-	}
-	
-	/**
-	 * Creates a MarkedObject.
-	 */
-	public MarkedObject(Element element) {
-		this.element = element;
-	}
-	
+    /** Contains extra markupAttributes */
+    protected Properties markupAttributes = new Properties();
+        
+    /**
+     * This constructor is for internal use only.
+     */
+    protected MarkedObject() {
+        element = null;
+    }
+    
+    /**
+     * Creates a MarkedObject.
+     */
+    public MarkedObject(Element element) {
+        this.element = element;
+    }
+    
     /**
      * Gets all the chunks in this element.
      *
      * @return  an <CODE>ArrayList</CODE>
      */
-	public ArrayList getChunks() {
-		return element.getChunks();
-	}
+    public ArrayList getChunks() {
+        return element.getChunks();
+    }
 
     /**
      * Processes the element by adding it (or the different parts) to an
@@ -98,53 +98,53 @@ public class MarkedObject implements Element {
      * @param       listener        an <CODE>ElementListener</CODE>
      * @return <CODE>true</CODE> if the element was processed successfully
      */
-	public boolean process(ElementListener listener) {
+    public boolean process(ElementListener listener) {
         try {
             return listener.add(element);
         }
         catch(DocumentException de) {
             return false;
         }
-	}
-	
+    }
+    
     /**
      * Gets the type of the text element.
      *
      * @return  a type
      */
-	public int type() {
-		return MARKED;
-	}
-	
-	/**
-	 * @see com.lowagie.text.Element#isContent()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isContent() {
-		return true;
-	}
+    public int type() {
+        return MARKED;
+    }
+    
+    /**
+     * @see com.lowagie.text.Element#isContent()
+     * @since    iText 2.0.8
+     */
+    public boolean isContent() {
+        return true;
+    }
 
-	/**
-	 * @see com.lowagie.text.Element#isNestable()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isNestable() {
-		return true;
-	}
+    /**
+     * @see com.lowagie.text.Element#isNestable()
+     * @since    iText 2.0.8
+     */
+    public boolean isNestable() {
+        return true;
+    }
 
-	/**
-	 * Getter for the markup attributes.
-	 * @return the markupAttributes
-	 */
-	public Properties getMarkupAttributes() {
-		return markupAttributes;
-	}
-	
-	/**
-	 * Adds one markup attribute.
-	 */
-	public void setMarkupAttribute(String key, String value) {
-		markupAttributes.setProperty(key, value);
-	}
+    /**
+     * Getter for the markup attributes.
+     * @return the markupAttributes
+     */
+    public Properties getMarkupAttributes() {
+        return markupAttributes;
+    }
+    
+    /**
+     * Adds one markup attribute.
+     */
+    public void setMarkupAttribute(String key, String value) {
+        markupAttributes.setProperty(key, value);
+    }
 
 }

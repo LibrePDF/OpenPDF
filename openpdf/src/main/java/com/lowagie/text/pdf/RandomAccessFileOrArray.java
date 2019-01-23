@@ -82,7 +82,7 @@ public class RandomAccessFileOrArray implements DataInput {
     private int startOffset = 0;
 
     public RandomAccessFileOrArray(String filename) throws IOException {
-    	this(filename, false, Document.plainRandomAccess);
+        this(filename, false, Document.plainRandomAccess);
     }
     
     public RandomAccessFileOrArray(String filename, boolean forceRead, boolean plainRandomAccess) throws IOException {
@@ -103,10 +103,10 @@ public class RandomAccessFileOrArray implements DataInput {
             else {
                 InputStream is = null;
                 if ("-".equals(filename)) {
-                	is = System.in;
+                    is = System.in;
                 }
                 else {
-                	is = BaseFont.getResourceStream(filename);
+                    is = BaseFont.getResourceStream(filename);
                 }
                 if (is == null)
                     throw new IOException(MessageLocalization.getComposedMessage("1.not.found.as.file.or.resource", filename));
@@ -128,7 +128,7 @@ public class RandomAccessFileOrArray implements DataInput {
             finally {
                 try {if (s != null) {s.close();}}catch(Exception e){}
             }
-        	return;
+            return;
         }
         this.filename = filename;
         if (plainRandomAccess)
@@ -642,14 +642,14 @@ public class RandomAccessFileOrArray implements DataInput {
      * @since 2.0.8
      */
     public java.nio.ByteBuffer getNioByteBuffer() throws IOException {
-    	if (filename != null) {
-    		FileChannel channel;
+        if (filename != null) {
+            FileChannel channel;
             if (plainRandomAccess)
                 channel = trf.getChannel();
             else
                 channel = rf.getChannel();
             return channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-    	}
-    	return java.nio.ByteBuffer.wrap(arrayIn);
+        }
+        return java.nio.ByteBuffer.wrap(arrayIn);
     }
 }

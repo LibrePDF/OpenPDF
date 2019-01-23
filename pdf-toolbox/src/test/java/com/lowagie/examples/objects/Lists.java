@@ -36,18 +36,18 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class Lists {
 
-	/**
-	 * Demonstrates some List functionality.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Demonstrates some List functionality.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("the List object");
+        System.out.println("the List object");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
             // step 2:
             PdfWriter.getInstance(document, new FileOutputStream("lists.pdf"));
             HtmlWriter.getInstance(document, new FileOutputStream("lists.html"));
@@ -119,13 +119,13 @@ public class Lists {
             sublist.add("Galapagos");
             list.add(sublist);
             document.add(list);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

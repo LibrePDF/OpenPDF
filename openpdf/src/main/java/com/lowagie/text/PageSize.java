@@ -56,14 +56,14 @@ import com.lowagie.text.error_messages.MessageLocalization;
 /**
  * The <CODE>PageSize</CODE>-object contains a number of rectangles representing the most common paper sizes.
  *
- * @see		Rectangle
+ * @see        Rectangle
  */
 
 public class PageSize {
     
     // membervariables
     
-	/** This is the letter format */
+    /** This is the letter format */
     public static final Rectangle LETTER = new RectangleReadOnly(612,792);
     
     /** This is the note format */
@@ -225,8 +225,8 @@ public class PageSize {
      * (for instance "A4", "LETTER",...) or a value like "595 842"
      */
     public static Rectangle getRectangle(String name)  {
-    	name = name.trim().toUpperCase();
-    	int pos = name.indexOf(' ');
+        name = name.trim().toUpperCase();
+        int pos = name.indexOf(' ');
         if (pos == -1) {
             try {            
                 Field field = PageSize.class.getDeclaredField(name.toUpperCase());
@@ -236,13 +236,13 @@ public class PageSize {
             }
         }
         else {
-        	try {
-        		String width = name.substring(0, pos);
-        		String height = name.substring(pos + 1);
-        		return new Rectangle(Float.parseFloat(width), Float.parseFloat(height));
-        	} catch(Exception e) {
-        		throw new RuntimeException(MessageLocalization.getComposedMessage("1.is.not.a.valid.page.size.format.2", name, e.getMessage()));
-        	}
+            try {
+                String width = name.substring(0, pos);
+                String height = name.substring(pos + 1);
+                return new Rectangle(Float.parseFloat(width), Float.parseFloat(height));
+            } catch(Exception e) {
+                throw new RuntimeException(MessageLocalization.getComposedMessage("1.is.not.a.valid.page.size.format.2", name, e.getMessage()));
+            }
         }
     }
 }

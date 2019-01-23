@@ -74,76 +74,76 @@ import java.util.Stack;
 @Deprecated
 public final class SimpleXMLParser {
     /** possible states */
-	private final static int UNKNOWN = 0;
-	private final static int TEXT = 1;
-	private final static int TAG_ENCOUNTERED = 2;
-	private final static int EXAMIN_TAG = 3;
-	private final static int TAG_EXAMINED = 4;
-	private final static int IN_CLOSETAG = 5;
-	private final static int SINGLE_TAG = 6;
-	private final static int CDATA = 7;
-	private final static int COMMENT = 8;
-	private final static int PI = 9;
-	private final static int ENTITY = 10;
-	private final static int QUOTE = 11;
-	private final static int ATTRIBUTE_KEY = 12;
-	private final static int ATTRIBUTE_EQUAL = 13;
-	private final static int ATTRIBUTE_VALUE = 14;
+    private final static int UNKNOWN = 0;
+    private final static int TEXT = 1;
+    private final static int TAG_ENCOUNTERED = 2;
+    private final static int EXAMIN_TAG = 3;
+    private final static int TAG_EXAMINED = 4;
+    private final static int IN_CLOSETAG = 5;
+    private final static int SINGLE_TAG = 6;
+    private final static int CDATA = 7;
+    private final static int COMMENT = 8;
+    private final static int PI = 9;
+    private final static int ENTITY = 10;
+    private final static int QUOTE = 11;
+    private final static int ATTRIBUTE_KEY = 12;
+    private final static int ATTRIBUTE_EQUAL = 13;
+    private final static int ATTRIBUTE_VALUE = 14;
     
-	/** the state stack */
-	Stack stack;
-	/** The current character. */
-	int character = 0;
-	/** The previous character. */
-	int previousCharacter = -1;
-	/** the line we are currently reading */
-	int lines = 1;
-	/** the column where the current character occurs */
-	int columns = 0;
-	/** was the last character equivalent to a newline? */
-	boolean eol = false;
-	/**
-	 * A boolean indicating if the next character should be taken into account
-	 * if it's a space character. When nospace is false, the previous character
-	 * wasn't whitespace.
-	 * @since 2.1.5
-	 */
-	boolean nowhite = false;
-	/** the current state */
-	int state;
-	/** Are we parsing HTML? */
-	boolean html;
-	/** current text (whatever is encountered between tags) */
-	StringBuffer text = new StringBuffer();
-	/** current entity (whatever is encountered between & and ;) */
-	StringBuffer entity = new StringBuffer();
-	/** current tagname */
-	String tag = null;
-	/** current attributes */
-	HashMap attributes = null;
-	/** The handler to which we are going to forward document content */
-	SimpleXMLDocHandler doc;
-	/** The handler to which we are going to forward comments. */
-	SimpleXMLDocHandlerComment comment;
-	/** Keeps track of the number of tags that are open. */
-	int nested = 0;
-	/** the quote character that was used to open the quote. */
-	int quoteCharacter = '"';
-	/** the attribute key. */
-	String attributekey = null;
-	/** the attribute value. */
-	String attributevalue = null;
+    /** the state stack */
+    Stack stack;
+    /** The current character. */
+    int character = 0;
+    /** The previous character. */
+    int previousCharacter = -1;
+    /** the line we are currently reading */
+    int lines = 1;
+    /** the column where the current character occurs */
+    int columns = 0;
+    /** was the last character equivalent to a newline? */
+    boolean eol = false;
+    /**
+     * A boolean indicating if the next character should be taken into account
+     * if it's a space character. When nospace is false, the previous character
+     * wasn't whitespace.
+     * @since 2.1.5
+     */
+    boolean nowhite = false;
+    /** the current state */
+    int state;
+    /** Are we parsing HTML? */
+    boolean html;
+    /** current text (whatever is encountered between tags) */
+    StringBuffer text = new StringBuffer();
+    /** current entity (whatever is encountered between & and ;) */
+    StringBuffer entity = new StringBuffer();
+    /** current tagname */
+    String tag = null;
+    /** current attributes */
+    HashMap attributes = null;
+    /** The handler to which we are going to forward document content */
+    SimpleXMLDocHandler doc;
+    /** The handler to which we are going to forward comments. */
+    SimpleXMLDocHandlerComment comment;
+    /** Keeps track of the number of tags that are open. */
+    int nested = 0;
+    /** the quote character that was used to open the quote. */
+    int quoteCharacter = '"';
+    /** the attribute key. */
+    String attributekey = null;
+    /** the attribute value. */
+    String attributevalue = null;
     
-	/**
-	 * Creates a Simple XML parser object.
-	 * Call go(BufferedReader) immediately after creation.
-	 */
+    /**
+     * Creates a Simple XML parser object.
+     * Call go(BufferedReader) immediately after creation.
+     */
     private SimpleXMLParser(SimpleXMLDocHandler doc, SimpleXMLDocHandlerComment comment, boolean html) {
-    	this.doc = doc;
-    	this.comment = comment;
-    	this.html = html;
-    	stack = new Stack();
-    	state = html ? TEXT : UNKNOWN;
+        this.doc = doc;
+        this.comment = comment;
+        this.html = html;
+        stack = new Stack();
+        state = html ? TEXT : UNKNOWN;
     }
     
     /**
@@ -158,56 +158,56 @@ public final class SimpleXMLParser {
             reader = new BufferedReader(r);
         doc.startDocument();
         while(true) {
-			// read a new character
-			if (previousCharacter == -1) {
-				character = reader.read();
-			}
-			// or re-examine the previous character
-			else {
-				character = previousCharacter;
-				previousCharacter = -1;
-			}
-			
-			// the end of the file was reached
-			if (character == -1) {
-				if (html) {
-					if (html && state == TEXT)
-						flush();
-					doc.endDocument();
-				} else {
-					throwException(MessageLocalization.getComposedMessage("missing.end.tag"));
-				}
-				return;
-			}
+            // read a new character
+            if (previousCharacter == -1) {
+                character = reader.read();
+            }
+            // or re-examine the previous character
+            else {
+                character = previousCharacter;
+                previousCharacter = -1;
+            }
             
-			// dealing with  \n and \r
-			if (character == '\n' && eol) {
-				eol = false;
-				continue;
-			} else if (eol) {
-				eol = false;
-			} else if (character == '\n') {
-				lines++;
-				columns = 0;
-			} else if (character == '\r') {
-				eol = true;
-				character = '\n';
-				lines++;
-				columns = 0;
-			} else {
-				columns++;
-			}
+            // the end of the file was reached
+            if (character == -1) {
+                if (html) {
+                    if (html && state == TEXT)
+                        flush();
+                    doc.endDocument();
+                } else {
+                    throwException(MessageLocalization.getComposedMessage("missing.end.tag"));
+                }
+                return;
+            }
             
-			switch(state) {
+            // dealing with  \n and \r
+            if (character == '\n' && eol) {
+                eol = false;
+                continue;
+            } else if (eol) {
+                eol = false;
+            } else if (character == '\n') {
+                lines++;
+                columns = 0;
+            } else if (character == '\r') {
+                eol = true;
+                character = '\n';
+                lines++;
+                columns = 0;
+            } else {
+                columns++;
+            }
+            
+            switch(state) {
             // we are in an unknown state before there's actual content
-			case UNKNOWN:
+            case UNKNOWN:
                 if(character == '<') {
                     saveState(TEXT);
                     state = TAG_ENCOUNTERED;
                 }
                 break;
             // we can encounter any content
-			case TEXT:
+            case TEXT:
                 if(character == '<') {
                     flush();
                     saveState(state);
@@ -218,9 +218,9 @@ public final class SimpleXMLParser {
                     state = ENTITY;
                     nowhite = true;
                 } else if (Character.isWhitespace((char)character)) {
-                	if (nowhite)
-                		text.append((char)character);
-                	nowhite = false;
+                    if (nowhite)
+                        text.append((char)character);
+                    nowhite = false;
                 } else {
                     text.append((char)character);
                     nowhite = true;
@@ -228,7 +228,7 @@ public final class SimpleXMLParser {
                 break;
             // we have just seen a < and are wondering what we are looking at
             // <foo>, </foo>, <!-- ... --->, etc.
-			case TAG_ENCOUNTERED:
+            case TAG_ENCOUNTERED:
                 initTag();
                 if(character == '/') {
                     state = IN_CLOSETAG;
@@ -242,7 +242,7 @@ public final class SimpleXMLParser {
                 break;
             // we are processing something like this <foo ... >.
             // It could still be a <!-- ... --> or something.
-			case EXAMIN_TAG:
+            case EXAMIN_TAG:
                 if(character == '>') {
                     doTag();
                     processTag(true);
@@ -267,7 +267,7 @@ public final class SimpleXMLParser {
                 }
                 break;
             // we know the name of the tag now.
-			case TAG_EXAMINED:
+            case TAG_EXAMINED:
                 if(character == '>') {
                     processTag(true);
                     initTag();
@@ -283,7 +283,7 @@ public final class SimpleXMLParser {
                 break;
                 
                 // we are processing a closing tag: e.g. </foo>
-			case IN_CLOSETAG:
+            case IN_CLOSETAG:
                 if(character == '>') {
                     doTag();
                     processTag(false);
@@ -297,10 +297,10 @@ public final class SimpleXMLParser {
                 
             // we have just seen something like this: <foo a="b"/
             // and are looking for the final >.
-			case SINGLE_TAG:
+            case SINGLE_TAG:
                 if(character != '>')
                     throwException(MessageLocalization.getComposedMessage("expected.gt.for.tag.lt.1.gt", tag));
-				doTag();
+                doTag();
                 processTag(true);
                 processTag(false);
                 initTag();
@@ -312,7 +312,7 @@ public final class SimpleXMLParser {
                 break;
                 
             // we are processing CDATA
-			case CDATA:
+            case CDATA:
                 if(character == '>'
                 && text.toString().endsWith("]]")) {
                     text.setLength(text.length()-2);
@@ -324,7 +324,7 @@ public final class SimpleXMLParser {
                 
             // we are processing a comment.  We are inside
             // the <!-- .... --> looking for the -->.
-			case COMMENT:
+            case COMMENT:
                 if(character == '>'
                 && text.toString().endsWith("--")) {
                     text.setLength(text.length() - 2);
@@ -335,7 +335,7 @@ public final class SimpleXMLParser {
                 break;
                 
             // We are inside one of these <? ... ?> or one of these <!DOCTYPE ... >
-			case PI:
+            case PI:
                 if(character == '>') {
                     state = restoreState();
                     if(state == TEXT) state = UNKNOWN;
@@ -343,16 +343,16 @@ public final class SimpleXMLParser {
                 break;
                 
             // we are processing an entity, e.g. &lt;, &#187;, etc.
-			case ENTITY:
+            case ENTITY:
                 if(character == ';') {
                     state = restoreState();
                     String cent = entity.toString();
                     entity.setLength(0);
                     char ce = EntitiesToUnicode.decodeEntity(cent);
                     if (ce == '\0')
-                    	text.append('&').append(cent).append(';');
+                        text.append('&').append(cent).append(';');
                     else
-                    	text.append(ce);
+                        text.append(ce);
                 } else if ((character != '#' && (character < '0' || character > '9') && (character < 'a' || character > 'z')
                     && (character < 'A' || character > 'Z')) || entity.length() >= 7) {
                     state = restoreState();
@@ -365,7 +365,7 @@ public final class SimpleXMLParser {
                 }
                 break;
             // We are processing the quoted right-hand side of an element's attribute.
-			case QUOTE:
+            case QUOTE:
                 if (html && quoteCharacter == ' ' && character == '>') {
                     flush();
                     processTag(true);
@@ -373,14 +373,14 @@ public final class SimpleXMLParser {
                     state = restoreState();
                 }
                 else if (html && quoteCharacter == ' ' && Character.isWhitespace((char)character)) {
-                	flush();
+                    flush();
                     state = TAG_EXAMINED;
                 }
                 else if (html && quoteCharacter == ' ') {
                     text.append((char)character);
                 }
                 else if(character == quoteCharacter) {
-                	flush();
+                    flush();
                     state = TAG_EXAMINED;
                 } else if(" \r\n\u0009".indexOf(character)>=0) {
                     text.append(' ');
@@ -393,12 +393,12 @@ public final class SimpleXMLParser {
                 }
                 break;
                 
-			case ATTRIBUTE_KEY:
+            case ATTRIBUTE_KEY:
                 if(Character.isWhitespace((char)character)) {
                     flush();
                     state = ATTRIBUTE_EQUAL;
                 } else if(character == '=') {
-                	flush();
+                    flush();
                     state = ATTRIBUTE_VALUE;
                 } else if (html && character == '>') {
                     text.setLength(0);
@@ -410,7 +410,7 @@ public final class SimpleXMLParser {
                 }
                 break;
                 
-			case ATTRIBUTE_EQUAL:
+            case ATTRIBUTE_EQUAL:
                 if(character == '=') {
                     state = ATTRIBUTE_VALUE;
                 } else if(Character.isWhitespace((char)character)) {
@@ -432,7 +432,7 @@ public final class SimpleXMLParser {
                 }
                 break;
                 
-			case ATTRIBUTE_VALUE:
+            case ATTRIBUTE_VALUE:
                 if(character == '"' || character == '\'') {
                     quoteCharacter = character;
                     state = QUOTE;
@@ -467,10 +467,10 @@ public final class SimpleXMLParser {
     }
     /**
      * Adds a state to the stack.
-     * @param	s	a state to add to the stack
+     * @param    s    a state to add to the stack
      */
     private void saveState(int s) {
-    	stack.push(new Integer(s));
+        stack.push(new Integer(s));
     }
     /**
      * Flushes the text that is currently in the buffer.
@@ -478,31 +478,31 @@ public final class SimpleXMLParser {
      * as content or as comment,... depending on the current state.
      */
     private void flush() {
-    	switch(state){
-    	case TEXT:
-    	case CDATA:
+        switch(state){
+        case TEXT:
+        case CDATA:
             if(text.length() > 0) {
                 doc.text(text.toString());
             }
             break;
-    	case COMMENT:
-        	if (comment != null) {
+        case COMMENT:
+            if (comment != null) {
                 comment.comment(text.toString());
             }
-        	break;
-    	case ATTRIBUTE_KEY:
+            break;
+        case ATTRIBUTE_KEY:
             attributekey = text.toString();
             if (html)
                 attributekey = attributekey.toLowerCase();
-    		break;
-    	case QUOTE:
-    	case ATTRIBUTE_VALUE:
-        	attributevalue = text.toString();
+            break;
+        case QUOTE:
+        case ATTRIBUTE_VALUE:
+            attributevalue = text.toString();
             attributes.put(attributekey,attributevalue);
             break;
-    	default:
-    		// do nothing
-    	}
+        default:
+            // do nothing
+        }
         text.setLength(0);
     }
     /**
@@ -514,25 +514,25 @@ public final class SimpleXMLParser {
     }
     /** Sets the name of the tag. */
     private void doTag() {
-    	if(tag == null)
-    		tag = text.toString();
-    	if (html)
-    		tag = tag.toLowerCase();
-    	text.setLength(0);
+        if(tag == null)
+            tag = text.toString();
+        if (html)
+            tag = tag.toLowerCase();
+        text.setLength(0);
     }
     /**
      * processes the tag.
-     * @param start	if true we are dealing with a tag that has just been opened; if false we are closing a tag.
+     * @param start    if true we are dealing with a tag that has just been opened; if false we are closing a tag.
      */
     private void processTag(boolean start) {
-    	if (start) {
-    		nested++;
-    		doc.startElement(tag,attributes);
-    	}
-    	else {
+        if (start) {
+            nested++;
+            doc.startElement(tag,attributes);
+        }
+        else {
             nested--;
             doc.endElement(tag);
-    	}
+        }
     }
     /** Throws an exception */
     private void throwException(String s) throws IOException {
@@ -546,8 +546,8 @@ public final class SimpleXMLParser {
      * @throws IOException on error
      */
     public static void parse(SimpleXMLDocHandler doc, SimpleXMLDocHandlerComment comment, Reader r, boolean html) throws IOException {
-    	SimpleXMLParser parser = new SimpleXMLParser(doc, comment, html);
-    	parser.go(r);
+        SimpleXMLParser parser = new SimpleXMLParser(doc, comment, html);
+        parser.go(r);
     }
     
     /**

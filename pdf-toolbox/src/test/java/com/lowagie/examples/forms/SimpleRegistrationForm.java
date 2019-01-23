@@ -31,108 +31,108 @@ import com.lowagie.text.pdf.TextField;
  * General example using TableEvents and CellEvents.
  */
 public class SimpleRegistrationForm implements PdfPCellEvent {
-	
-	/** the writer with the acroform */
-	private PdfWriter writer;
+    
+    /** the writer with the acroform */
+    private PdfWriter writer;
 
-	/** the current fieldname */
-	private String fieldname = "NoName";
+    /** the current fieldname */
+    private String fieldname = "NoName";
 
-	/**
-	 * Construct an implementation of PdfPCellEvent.
-	 * 
-	 * @param writer
-	 *            the writer with the Acroform that will have to hold the
-	 *            fields.
-	 */
-	public SimpleRegistrationForm(PdfWriter writer) {
-		this.writer = writer;
-	}
+    /**
+     * Construct an implementation of PdfPCellEvent.
+     * 
+     * @param writer
+     *            the writer with the Acroform that will have to hold the
+     *            fields.
+     */
+    public SimpleRegistrationForm(PdfWriter writer) {
+        this.writer = writer;
+    }
 
-	/**
-	 * Construct an implementation of PdfPCellEvent.
-	 * 
-	 * @param writer
-	 *            the writer with the Acroform that will have to hold the
-	 *            fields.
-	 * @param fieldname
-	 *            the name of the TextField
-	 *  
-	 */
-	public SimpleRegistrationForm(PdfWriter writer, String fieldname) {
-		this.writer = writer;
-		this.fieldname = fieldname;
-	}
+    /**
+     * Construct an implementation of PdfPCellEvent.
+     * 
+     * @param writer
+     *            the writer with the Acroform that will have to hold the
+     *            fields.
+     * @param fieldname
+     *            the name of the TextField
+     *  
+     */
+    public SimpleRegistrationForm(PdfWriter writer, String fieldname) {
+        this.writer = writer;
+        this.fieldname = fieldname;
+    }
 
-	/**
-	 * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell,
-	 *      com.lowagie.text.Rectangle, com.lowagie.text.pdf.PdfContentByte[])
-	 */
-	public void cellLayout(PdfPCell cell, Rectangle position,
-			PdfContentByte[] canvases) {
-		TextField tf = new TextField(writer, position, fieldname);
-		tf.setFontSize(12);
-		try {
-			PdfFormField field = tf.getTextField();
-			writer.addAnnotation(field);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell,
+     *      com.lowagie.text.Rectangle, com.lowagie.text.pdf.PdfContentByte[])
+     */
+    public void cellLayout(PdfPCell cell, Rectangle position,
+            PdfContentByte[] canvases) {
+        TextField tf = new TextField(writer, position, fieldname);
+        tf.setFontSize(12);
+        try {
+            PdfFormField field = tf.getTextField();
+            writer.addAnnotation(field);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Example originally written by Wendy Smoak to generate a Table with
-	 * 'floating boxes'. Adapted by Bruno Lowagie.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// step 1
-		Document document = new Document();
-		try {
-			// step 2
+    /**
+     * Example originally written by Wendy Smoak to generate a Table with
+     * 'floating boxes'. Adapted by Bruno Lowagie.
+     * 
+     * @param args
+     */
+    public static void main(String[] args) {
+        // step 1
+        Document document = new Document();
+        try {
+            // step 2
 
-			PdfWriter writer = PdfWriter.getInstance(document,
-					new FileOutputStream("SimpleRegistrationForm.pdf"));
-			// step 3
-			document.open();
-			// step 4
-			PdfPTable table = new PdfPTable(2);
-			PdfPCell cell;
-			table.getDefaultCell().setPadding(5f);
+            PdfWriter writer = PdfWriter.getInstance(document,
+                    new FileOutputStream("SimpleRegistrationForm.pdf"));
+            // step 3
+            document.open();
+            // step 4
+            PdfPTable table = new PdfPTable(2);
+            PdfPCell cell;
+            table.getDefaultCell().setPadding(5f);
 
-			table.addCell("Your name:");
-			cell = new PdfPCell();
-			cell.setCellEvent(new SimpleRegistrationForm(writer, "name"));
-			table.addCell(cell);
+            table.addCell("Your name:");
+            cell = new PdfPCell();
+            cell.setCellEvent(new SimpleRegistrationForm(writer, "name"));
+            table.addCell(cell);
 
-			table.addCell("Your home address:");
-			cell = new PdfPCell();
-			cell.setCellEvent(new SimpleRegistrationForm(writer, "address"));
-			table.addCell(cell);
+            table.addCell("Your home address:");
+            cell = new PdfPCell();
+            cell.setCellEvent(new SimpleRegistrationForm(writer, "address"));
+            table.addCell(cell);
 
-			table.addCell("Postal code:");
-			cell = new PdfPCell();
-			cell
-					.setCellEvent(new SimpleRegistrationForm(writer,
-							"postal_code"));
-			table.addCell(cell);
+            table.addCell("Postal code:");
+            cell = new PdfPCell();
+            cell
+                    .setCellEvent(new SimpleRegistrationForm(writer,
+                            "postal_code"));
+            table.addCell(cell);
 
-			table.addCell("Your email address:");
-			cell = new PdfPCell();
-			cell.setCellEvent(new SimpleRegistrationForm(writer, "email"));
-			table.addCell(cell);
+            table.addCell("Your email address:");
+            cell = new PdfPCell();
+            cell.setCellEvent(new SimpleRegistrationForm(writer, "email"));
+            table.addCell(cell);
 
-			document.add(table);
+            document.add(table);
 
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
-		// step 5
-		document.close();
-	}
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
+        // step 5
+        document.close();
+    }
 }

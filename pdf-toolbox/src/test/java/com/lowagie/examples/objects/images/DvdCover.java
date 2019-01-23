@@ -31,105 +31,105 @@ import com.lowagie.text.pdf.PdfWriter;
  * @author blowagie
  */
 public class DvdCover {
-	
-	/**
-	 * Sets the Image that has to be on the back of the cover.
-	 * @param back an Image object.
-	 */
-	public void setBack(Image back) {
-		this.back = back;
-	}
-	/**
-	 * Sets the backgroundcolor of the cover.
-	 * @param backgroundcolor a Color object.
-	 */
-	public void setBackgroundcolor(Color backgroundcolor) {
-		this.backgroundcolor = backgroundcolor;
-	}
-	/**
-	 * Sets the Image that has to be on the front of the cover.
-	 * @param front an Image object.
-	 */
-	public void setFront(Image front) {
-		this.front = front;
-	}
-	/**
-	 * Sets the Image that has to be on the back of the cover.
-	 * @param side an Image object.
-	 */
-	public void setSide(Image side) {
-		this.side = side;
-	}
-	/**
-	 * Sets the title of the movie (will be printed on the side if there is no side image)
-	 * @param title The title to set.
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	/**
-	 * Sets the filename of the resulting PDF
-	 * @param filename The filename to set.
-	 */
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-	
-	/** the name of the file that has to be generated. */
-	protected String filename;
-	/** the title that has to be on the side of the cover. */
-	protected String title;
-	/** the backgroundcolor of the cover. */
-	protected Color backgroundcolor;
-	/** the front image of the cover. */
-	protected Image front;
-	/** the side image of the cover. */
-	protected Image side;
-	/** the back image of the cover. */
-	protected Image back;
-	
-	/**
-	 * Creates a DVD Cover object.
-	 */
-	public DvdCover() {
-	}
-	
+    
+    /**
+     * Sets the Image that has to be on the back of the cover.
+     * @param back an Image object.
+     */
+    public void setBack(Image back) {
+        this.back = back;
+    }
+    /**
+     * Sets the backgroundcolor of the cover.
+     * @param backgroundcolor a Color object.
+     */
+    public void setBackgroundcolor(Color backgroundcolor) {
+        this.backgroundcolor = backgroundcolor;
+    }
+    /**
+     * Sets the Image that has to be on the front of the cover.
+     * @param front an Image object.
+     */
+    public void setFront(Image front) {
+        this.front = front;
+    }
+    /**
+     * Sets the Image that has to be on the back of the cover.
+     * @param side an Image object.
+     */
+    public void setSide(Image side) {
+        this.side = side;
+    }
+    /**
+     * Sets the title of the movie (will be printed on the side if there is no side image)
+     * @param title The title to set.
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    /**
+     * Sets the filename of the resulting PDF
+     * @param filename The filename to set.
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+    
+    /** the name of the file that has to be generated. */
+    protected String filename;
+    /** the title that has to be on the side of the cover. */
+    protected String title;
+    /** the backgroundcolor of the cover. */
+    protected Color backgroundcolor;
+    /** the front image of the cover. */
+    protected Image front;
+    /** the side image of the cover. */
+    protected Image side;
+    /** the back image of the cover. */
+    protected Image back;
+    
+    /**
+     * Creates a DVD Cover object.
+     */
+    public DvdCover() {
+    }
+    
     /**
      * Example that generates a DVD Cover in PDF.
-     * @param args	an array containing [0] a filename [1] a title [2] a backgroundcolor [3] a front image [4] a back image [5] a side image
+     * @param args    an array containing [0] a filename [1] a title [2] a backgroundcolor [3] a front image [4] a back image [5] a side image
      */
     public static void main(String[] args) {
         System.out.println("DVD Cover");
         DvdCover cover = new DvdCover();
         if (args.length > 0) {
-        	cover.setFilename(args[0]);
+            cover.setFilename(args[0]);
         }
         if (args.length > 1) {
-        	cover.setTitle(args[1]);
+            cover.setTitle(args[1]);
         }
         if (args.length > 2) {
-        	cover.setBackgroundcolor(Color.decode(args[2]));
+            cover.setBackgroundcolor(Color.decode(args[2]));
         }
         if (args.length > 3) {
-        	try {
-				cover.setFront(Image.getInstance(args[3]));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+            try {
+                cover.setFront(Image.getInstance(args[3]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (args.length > 4) {
-        	try {
-        		cover.setBack(Image.getInstance(args[4]));
-        	} catch (Exception e) {
-        		e.printStackTrace();
-        	}
+            try {
+                cover.setBack(Image.getInstance(args[4]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (args.length > 5) {
-        	try {
-        		cover.setSide(Image.getInstance(args[5]));
-        	} catch (Exception e) {
-        		e.printStackTrace();
-        	}
+            try {
+                cover.setSide(Image.getInstance(args[5]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         cover.generatePdf();
     }
@@ -148,24 +148,24 @@ public class DvdCover {
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-        	if (filename == null) { filename = "dvdcover.pdf"; }
+            if (filename == null) { filename = "dvdcover.pdf"; }
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filename));
                         
             // step 3: we open the document
             document.open();
             
             // step 4:
-        	PdfContentByte cb = writer.getDirectContent();
+            PdfContentByte cb = writer.getDirectContent();
             if (title != null) {
-            	cb.setFontAndSize(BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, false), 24);
-            	cb.beginText();
-            	if (front == null) {
-            		cb.showTextAligned(Element.ALIGN_CENTER, title, 595f, 262f, 0f);
-            	}
-            	if (side == null) {
-            		cb.showTextAligned(Element.ALIGN_CENTER, title, 385f, 262f, 270f);
-            	}
-            	cb.endText(); 
+                cb.setFontAndSize(BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, false), 24);
+                cb.beginText();
+                if (front == null) {
+                    cb.showTextAligned(Element.ALIGN_CENTER, title, 595f, 262f, 0f);
+                }
+                if (side == null) {
+                    cb.showTextAligned(Element.ALIGN_CENTER, title, 385f, 262f, 270f);
+                }
+                cb.endText(); 
             }
             cb.moveTo(370, 0);
             cb.lineTo(370, 525);
@@ -173,19 +173,19 @@ public class DvdCover {
             cb.lineTo(410, 0);
             cb.stroke();
             if (front != null) {
-            	front.scaleToFit(370, 525);
-            	front.setAbsolutePosition(410f + (370f - front.getScaledWidth()) / 2f, (525f - front.getScaledHeight()) / 2f);
-            	document.add(front);
+                front.scaleToFit(370, 525);
+                front.setAbsolutePosition(410f + (370f - front.getScaledWidth()) / 2f, (525f - front.getScaledHeight()) / 2f);
+                document.add(front);
             }
             if (back != null) {
-            	back.scaleToFit(370, 525);
-            	back.setAbsolutePosition((370f - back.getScaledWidth()) / 2f, (525f - back.getScaledHeight()) / 2f);
-            	document.add(back);
+                back.scaleToFit(370, 525);
+                back.setAbsolutePosition((370f - back.getScaledWidth()) / 2f, (525f - back.getScaledHeight()) / 2f);
+                document.add(back);
             }
             if (side != null) {
-            	side.scaleToFit(40, 525);
-            	side.setAbsolutePosition(370 + (40f - side.getScaledWidth()) / 2f, (525f - side.getScaledHeight()) / 2f);
-            	document.add(side);
+                side.scaleToFit(40, 525);
+                side.setAbsolutePosition(370 + (40f - side.getScaledWidth()) / 2f, (525f - side.getScaledHeight()) / 2f);
+                document.add(side);
             }
         }
         catch(DocumentException de) {

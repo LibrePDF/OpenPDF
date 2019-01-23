@@ -24,41 +24,41 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ReadEncrypted {
 
-	/**
-	 * Reads an encrypted PDF document.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
-		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(
-					"info_encrypted.txt"));
-			PdfReader r = new PdfReader("HelloEncrypted.pdf", "Hello"
-						.getBytes());
-			out.write(r.getInfo().toString());
-			out.write("\r\n");
-			int permissions = r.getPermissions();
-			out.write("Printing allowed: " + ((PdfWriter.ALLOW_PRINTING & permissions) > 0) );
-			out.write("\r\n");
-			out.write("Modifying contents allowed: " + ((PdfWriter.ALLOW_MODIFY_CONTENTS & permissions) > 0) );
-			out.write("\r\n");
-			out.write("Copying allowed: " + ((PdfWriter.ALLOW_COPY & permissions) > 0) );
-			out.write("\r\n");
-			out.write("Modifying annotations allowed: " + ((PdfWriter.ALLOW_MODIFY_ANNOTATIONS & permissions) > 0) );
-			out.write("\r\n");
-			out.write("Fill in allowed: " + ((PdfWriter.ALLOW_FILL_IN & permissions) > 0) );
-			out.write("\r\n");
-			out.write("Screen Readers allowed: " + ((PdfWriter.ALLOW_SCREENREADERS & permissions) > 0) );
-			out.write("\r\n");
-			out.write("Assembly allowed: " + ((PdfWriter.ALLOW_ASSEMBLY & permissions) > 0) );
-			out.write("\r\n");
-			out.write("Degraded printing allowed: " + ((PdfWriter.ALLOW_DEGRADED_PRINTING & permissions) > 0) );
-			out.write("\r\n");
-			out.flush();
-			out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Reads an encrypted PDF document.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(
+                    "info_encrypted.txt"));
+            PdfReader r = new PdfReader("HelloEncrypted.pdf", "Hello"
+                        .getBytes());
+            out.write(r.getInfo().toString());
+            out.write("\r\n");
+            int permissions = r.getPermissions();
+            out.write("Printing allowed: " + ((PdfWriter.ALLOW_PRINTING & permissions) > 0) );
+            out.write("\r\n");
+            out.write("Modifying contents allowed: " + ((PdfWriter.ALLOW_MODIFY_CONTENTS & permissions) > 0) );
+            out.write("\r\n");
+            out.write("Copying allowed: " + ((PdfWriter.ALLOW_COPY & permissions) > 0) );
+            out.write("\r\n");
+            out.write("Modifying annotations allowed: " + ((PdfWriter.ALLOW_MODIFY_ANNOTATIONS & permissions) > 0) );
+            out.write("\r\n");
+            out.write("Fill in allowed: " + ((PdfWriter.ALLOW_FILL_IN & permissions) > 0) );
+            out.write("\r\n");
+            out.write("Screen Readers allowed: " + ((PdfWriter.ALLOW_SCREENREADERS & permissions) > 0) );
+            out.write("\r\n");
+            out.write("Assembly allowed: " + ((PdfWriter.ALLOW_ASSEMBLY & permissions) > 0) );
+            out.write("\r\n");
+            out.write("Degraded printing allowed: " + ((PdfWriter.ALLOW_DEGRADED_PRINTING & permissions) > 0) );
+            out.write("\r\n");
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -27,16 +27,16 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class FixedFontWidth {
 
-	/**
-	 * Changing the width of font glyphs.
-	 * @param args no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Changing the width of font glyphs.
+     * @param args no arguments needed
+     */
+    public static void main(String[] args) {
         System.out.println("Fixed Font Width");
         // step 1
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {
-        	// step 2
+            // step 2
             PdfWriter.getInstance(document, new FileOutputStream("fixedfontwidth.pdf"));
             // step 3
             document.open();
@@ -55,5 +55,5 @@ public class FixedFontWidth {
         }
         // step 5
         document.close();
-	}
+    }
 }

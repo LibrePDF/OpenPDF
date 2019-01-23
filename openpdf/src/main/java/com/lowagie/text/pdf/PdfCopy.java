@@ -247,7 +247,7 @@ public class PdfCopy extends PdfWriter {
     for (Iterator it = in.getKeys().iterator(); it.hasNext(); ) {
       PdfName key = (PdfName) it.next();
       PdfObject value = in.get(key);
-      //	    System.out.println("Copy " + key);
+      //        System.out.println("Copy " + key);
       if (PdfName.PAGE.equals(type)) {
         if (!key.equals(PdfName.B) && !key.equals(PdfName.PARENT)) {
           out.put(key, copyObject(value));
@@ -295,7 +295,7 @@ public class PdfCopy extends PdfWriter {
     }
     switch (in.type) {
       case PdfObject.DICTIONARY:
-        //	        System.out.println("Dictionary: " + in.toString());
+        //            System.out.println("Dictionary: " + in.toString());
         return copyDictionary((PdfDictionary) in);
       case PdfObject.INDIRECT:
         return copyIndirect((PRIndirectReference) in);

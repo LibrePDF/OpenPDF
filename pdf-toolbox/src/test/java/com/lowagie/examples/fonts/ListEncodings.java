@@ -25,29 +25,29 @@ import com.lowagie.text.pdf.BaseFont;
  */
 public class ListEncodings {
 
-	/**
-	 * Listing the encodings of font comic.
-	 * @param args no arguments needed
-	 */
-	public static void main(String[] args) {
-		System.out.println("Listing Font properties");
-		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter("encodings.txt"));
-			BaseFont bfComic = BaseFont.createFont("c:\\windows\\fonts\\comicbd.ttf", BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-			out.write("postscriptname: " + bfComic.getPostscriptFontName());
-			out.write("\r\n\r\n");
-	        String[] codePages = bfComic.getCodePagesSupported();
-	        out.write("All available encodings:\n\n");
-	        for (int i = 0; i < codePages.length; i++) {
-	        	out.write(codePages[i]);
-	        	out.write("\r\n");
-	        }
-	        out.flush();
-	        out.close();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Listing the encodings of font comic.
+     * @param args no arguments needed
+     */
+    public static void main(String[] args) {
+        System.out.println("Listing Font properties");
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter("encodings.txt"));
+            BaseFont bfComic = BaseFont.createFont("c:\\windows\\fonts\\comicbd.ttf", BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+            out.write("postscriptname: " + bfComic.getPostscriptFontName());
+            out.write("\r\n\r\n");
+            String[] codePages = bfComic.getCodePagesSupported();
+            out.write("All available encodings:\n\n");
+            for (int i = 0; i < codePages.length; i++) {
+                out.write(codePages[i]);
+                out.write("\r\n");
+            }
+            out.flush();
+            out.close();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

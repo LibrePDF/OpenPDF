@@ -36,18 +36,18 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class AHref {
 
-	/**
-	 * Demonstrates some Anchor functionality.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Demonstrates some Anchor functionality.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("the Anchor object");
+        System.out.println("the Anchor object");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
             // step 2:
             PdfWriter.getInstance(document, new FileOutputStream("AHref.pdf"));
             HtmlWriter.getInstance(document, new FileOutputStream("AHref.html"));
@@ -66,13 +66,13 @@ public class AHref {
             Anchor anchor2 = new Anchor("please jump to a local destination", FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL, new Color(0, 0, 255)));
             anchor2.setReference("#top");
             document.add(anchor2);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

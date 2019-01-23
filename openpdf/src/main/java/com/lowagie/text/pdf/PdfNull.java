@@ -55,7 +55,7 @@ package com.lowagie.text.pdf;
  * This object is described in the 'Portable Document Format Reference Manual version 1.7'
  * section 3.2.8 (page 63).
  *
- * @see		PdfObject
+ * @see        PdfObject
  */
 
 public class PdfNull extends PdfObject {
@@ -63,7 +63,7 @@ public class PdfNull extends PdfObject {
     // CLASS CONSTANTS
     
     /** An instance of the <CODE>PdfNull</CODE>-object. */
-    public static final PdfNull	PDFNULL = new PdfNull();
+    public static final PdfNull    PDFNULL = new PdfNull();
     
     /** The content of the <CODE>PdfNull</CODE>-object. */
     private static final String CONTENT = "null";
@@ -82,6 +82,6 @@ public class PdfNull extends PdfObject {
     // CLASS METHOD
     
     public String toString() {
-    	return "null";
+        return "null";
     }
 }

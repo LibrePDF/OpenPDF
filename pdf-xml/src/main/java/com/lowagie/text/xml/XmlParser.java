@@ -90,8 +90,8 @@ public class XmlParser {
     
 /**
  * Parses a given file.
- * @param document	The document that will listen to the parser
- * @param is	The InputStream with the contents
+ * @param document    The document that will listen to the parser
+ * @param is    The InputStream with the contents
  */
     
     public void go(DocListener document, InputSource is) {

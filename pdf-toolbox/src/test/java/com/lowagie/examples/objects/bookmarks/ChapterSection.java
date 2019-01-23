@@ -36,13 +36,13 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class ChapterSection {
 
-	/**
-	 * Creates a document with outlines.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Creates a document with outlines.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
         
         System.out.println("Chapters and Sections");
         
@@ -91,9 +91,9 @@ public class ChapterSection {
                     if (i > 2) section.setBookmarkOpen(false);
                     // in all chapters except the 1st one, some extra text is added to section 3
                     if (j == 3 && i > 1) {
-                    	section.setIndentationLeft(72);
+                        section.setIndentationLeft(72);
                         section.add(blahblah);
-                    	section.add(new Paragraph("test"));
+                        section.add(new Paragraph("test"));
                     }
                     // in every section 3 subsections are added
                     for (int k = 1; k < 4; k++) {
@@ -111,7 +111,7 @@ public class ChapterSection {
                     }
                     // a new page is added after the second section in Chapter 1
                     if (j == 2 && i == 1) {
-                    	section.add(Chunk.NEXTPAGE);
+                        section.add(Chunk.NEXTPAGE);
                     }
                 }
                 document.add(chapter);
@@ -121,6 +121,6 @@ public class ChapterSection {
             de.printStackTrace();
         }
         // step 5: we close the document
-		document.close();
-	}
+        document.close();
+    }
 }

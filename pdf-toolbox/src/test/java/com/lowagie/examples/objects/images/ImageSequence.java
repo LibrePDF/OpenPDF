@@ -32,7 +32,7 @@ public class ImageSequence {
      * Generates 2 documents: one that respects the order of Images added,
      * another that has the default behaviour: only show the images if
      * they fit on the page, if they don't fit, wait until the next page.
-     * @param args	no arguments needed
+     * @param args    no arguments needed
      */
     public static void main(String[] args) {
         

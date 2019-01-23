@@ -66,7 +66,7 @@ import java.util.ArrayList;
  * This object is described in the 'Portable Document Format Reference Manual version 1.3'
  * section 6.3 (page 71-73)
  *
- * @see		PdfPage
+ * @see        PdfPage
  */
 
 public class PdfPages {
@@ -149,7 +149,7 @@ public class PdfPages {
                     top.put(PdfName.PARENT, (PdfIndirectReference)nextParents.get(p / leafSize));
                 }
                 else {
-                	top.put(PdfName.ITXT, new PdfString(Document.getRelease()));
+                    top.put(PdfName.ITXT, new PdfString(Document.getRelease()));
                 }
                 writer.addToBody(top, (PdfIndirectReference)tParents.get(p));
             }

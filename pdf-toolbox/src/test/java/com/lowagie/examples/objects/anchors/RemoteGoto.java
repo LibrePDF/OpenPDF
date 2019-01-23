@@ -35,11 +35,11 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class RemoteGoto {
 
-	/**
-	 * Creates documents with Remote Goto functionality.
-	 * 
-	 * @param args no arguments needed here
-	 */    public static void main(String[] args) {
+    /**
+     * Creates documents with Remote Goto functionality.
+     * 
+     * @param args no arguments needed here
+     */    public static void main(String[] args) {
         
         System.out.println("Remote goto (URLs and local destinations in another document)");
         

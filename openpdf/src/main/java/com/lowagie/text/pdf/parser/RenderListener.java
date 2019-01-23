@@ -54,15 +54,15 @@ package com.lowagie.text.pdf.parser;
  * @since 2.1.6
  */
 public interface RenderListener extends TextAssembler {
-	/**
-	 * Resets the internal state of the RenderListener
-	 */
+    /**
+     * Resets the internal state of the RenderListener
+     */
     void reset();
 
-	/**
-	 * Returns the result so far.
-	 * 
-	 * @return a String with the resulting text.
-	 */
+    /**
+     * Returns the result so far.
+     * 
+     * @return a String with the resulting text.
+     */
     String getResultantText();
 }

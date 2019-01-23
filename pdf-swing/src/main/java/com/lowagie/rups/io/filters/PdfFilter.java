@@ -10,9 +10,9 @@ import javax.swing.filechooser.FileFilter;
  */
 public class PdfFilter extends FileFilter {
 
-	/** A public instance of the PdfFilter. */
-	public static final PdfFilter INSTANCE = new PdfFilter();
-	
+    /** A public instance of the PdfFilter. */
+    public static final PdfFilter INSTANCE = new PdfFilter();
+    
     /**
      *
      * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
@@ -20,7 +20,7 @@ public class PdfFilter extends FileFilter {
      * @return boolean
      */
     public boolean accept(File f) {
-		if (f.isDirectory()) return true;
+        if (f.isDirectory()) return true;
         return f.getName().toLowerCase().endsWith(".pdf");
     }
 
@@ -30,7 +30,7 @@ public class PdfFilter extends FileFilter {
      * @return String
      */
     public String getDescription() {
-		return "*.pdf PDF files";
-	}
+        return "*.pdf PDF files";
+    }
 
 }

@@ -446,17 +446,17 @@ public class ColumnText {
             element = t;
         }
         if (element.type() == Element.CHUNK) {
-        	element = new Paragraph((Chunk)element);
+            element = new Paragraph((Chunk)element);
         }
         else if (element.type() == Element.PHRASE) {
-        	element = new Paragraph((Phrase)element);
+            element = new Paragraph((Phrase)element);
         }
         if (element instanceof SimpleTable) {
-        	try {
-				element = ((SimpleTable)element).createPdfPTable();
-			} catch (DocumentException e) {
-				throw new IllegalArgumentException(MessageLocalization.getComposedMessage("element.not.allowed"));
-			}
+            try {
+                element = ((SimpleTable)element).createPdfPTable();
+            } catch (DocumentException e) {
+                throw new IllegalArgumentException(MessageLocalization.getComposedMessage("element.not.allowed"));
+            }
         }
         else if (element.type() != Element.PARAGRAPH && element.type() != Element.LIST && element.type() != Element.PTABLE && element.type() != Element.YMARK)
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("element.not.allowed"));
@@ -840,59 +840,59 @@ public class ColumnText {
         float x1;
         int status = 0;
         while(true) {
-        	firstIndent = (lastWasNewline ? indent : followingIndent); //
-        	if (rectangularMode) {
-        		if (rectangularWidth <= firstIndent + rightIndent) {
-        			status = NO_MORE_COLUMN;
-        			if (bidiLine.isEmpty())
-        				status |= NO_MORE_TEXT;
-        			break;
-        		}
-        		if (bidiLine.isEmpty()) {
-        			status = NO_MORE_TEXT;
-        			break;
-        		}
+            firstIndent = (lastWasNewline ? indent : followingIndent); //
+            if (rectangularMode) {
+                if (rectangularWidth <= firstIndent + rightIndent) {
+                    status = NO_MORE_COLUMN;
+                    if (bidiLine.isEmpty())
+                        status |= NO_MORE_TEXT;
+                    break;
+                }
+                if (bidiLine.isEmpty()) {
+                    status = NO_MORE_TEXT;
+                    break;
+                }
                 line = bidiLine.processLine(leftX, rectangularWidth - firstIndent - rightIndent, alignment, localRunDirection, arabicOptions);
                 if (line == null) {
-                	status = NO_MORE_TEXT;
-                	break;
+                    status = NO_MORE_TEXT;
+                    break;
                 }
                 float[] maxSize = line.getMaxSize();
                 if (isUseAscender() && Float.isNaN(firstLineY))
-                	currentLeading = line.getAscender();
+                    currentLeading = line.getAscender();
                 else
-                	currentLeading = Math.max(fixedLeading + maxSize[0] * multipliedLeading, maxSize[1]);
+                    currentLeading = Math.max(fixedLeading + maxSize[0] * multipliedLeading, maxSize[1]);
                 if (yLine > maxY || yLine - currentLeading < minY ) {
-                	status = NO_MORE_COLUMN;
-                	bidiLine.restore();
-                	break;
+                    status = NO_MORE_COLUMN;
+                    bidiLine.restore();
+                    break;
                 }
                 yLine -= currentLeading;
                 if (!simulate && !dirty) {
-                	text.beginText();
-                	dirty = true;
+                    text.beginText();
+                    dirty = true;
                 }
                 if (Float.isNaN(firstLineY))
-                	firstLineY = yLine;
+                    firstLineY = yLine;
                 updateFilledWidth(rectangularWidth - line.widthLeft());
                 x1 = leftX;
-        	}
+            }
             else {
-               	float yTemp = yLine;
+                   float yTemp = yLine;
                 float[] xx = findLimitsTwoLines();
-               	if (xx == null) {
-               		status = NO_MORE_COLUMN;
-               		if (bidiLine.isEmpty())
-               			status |= NO_MORE_TEXT;
-               		yLine = yTemp;
-               		break;
-               	}
-               	if (bidiLine.isEmpty()) {
-               		status = NO_MORE_TEXT;
-               		yLine = yTemp;
-               		break;
-               	}
-               	x1 = Math.max(xx[0], xx[2]);
+                   if (xx == null) {
+                       status = NO_MORE_COLUMN;
+                       if (bidiLine.isEmpty())
+                           status |= NO_MORE_TEXT;
+                       yLine = yTemp;
+                       break;
+                   }
+                   if (bidiLine.isEmpty()) {
+                       status = NO_MORE_TEXT;
+                       yLine = yTemp;
+                       break;
+                   }
+                   x1 = Math.max(xx[0], xx[2]);
                     float x2 = Math.min(xx[1], xx[3]);
                     if (x2 - x1 <= firstIndent + rightIndent)
                         continue;
@@ -1086,24 +1086,24 @@ public class ColumnText {
         float llx;
         float urx;
         switch (alignment) {
-        	case Element.ALIGN_LEFT:
-        		llx = 0;
-        		urx = 20000;
-        		break;
-        	case Element.ALIGN_RIGHT:
-        		llx = -20000;
-        		urx = 0;
-        		break;
-        	default:
-        		llx = -20000;
-        		urx = 20000;
-        		break;
+            case Element.ALIGN_LEFT:
+                llx = 0;
+                urx = 20000;
+                break;
+            case Element.ALIGN_RIGHT:
+                llx = -20000;
+                urx = 0;
+                break;
+            default:
+                llx = -20000;
+                urx = 20000;
+                break;
         }
         if (rotation == 0) {
-        	llx += x;
-        	lly += y;
-        	urx += x;
-        	ury += y;
+            llx += x;
+            lly += y;
+            urx += x;
+            ury += y;
         }
         else {
             double alpha = rotation * Math.PI / 180.0;
@@ -1316,7 +1316,7 @@ public class ColumnText {
                     return NO_MORE_COLUMN;
             }
             else if (element.type() == Element.PTABLE) {
-            	// don't write anything in the current column if there's no more space available
+                // don't write anything in the current column if there's no more space available
                 if (yLine < minY || yLine > maxY)
                     return NO_MORE_COLUMN;
                 
@@ -1378,7 +1378,7 @@ public class ColumnText {
                 if (listIdx < headerRows)
                     listIdx = headerRows;
                 if (!table.isComplete())
-                	yTemp -= footerHeight;
+                    yTemp -= footerHeight;
                 for (k = listIdx; k < table.size(); ++k) {
                     float rowHeight = table.getRowHeight(k);
                     if (yTemp - rowHeight < minY)
@@ -1386,11 +1386,11 @@ public class ColumnText {
                     yTemp -= rowHeight;
                 }
                 if (!table.isComplete())
-                	yTemp += footerHeight;
+                    yTemp += footerHeight;
                 // either k is the first row that doesn't fit on the page (break);
                 if (k < table.size()) {
-                	if (table.isSplitRows() && (!table.isSplitLate() || (k == listIdx && firstPass))) {
-                		if (!splittedRow) {
+                    if (table.isSplitRows() && (!table.isSplitLate() || (k == listIdx && firstPass))) {
+                        if (!splittedRow) {
                             splittedRow = true;
                             table = new PdfPTable(table);
                             compositeElements.set(0, table);
@@ -1406,7 +1406,7 @@ public class ColumnText {
                         }
                         else {
                             yTemp = minY;
-                            table.getRows().add(++k, newRow);	                            	
+                            table.getRows().add(++k, newRow);                                    
                         }
                     }
                     else if (!table.isSplitRows() && k == listIdx && firstPass) {
@@ -1421,7 +1421,7 @@ public class ColumnText {
                 firstPass = false;
                 // we draw the table (for real now)
                 if (!simulate) {
-                	// set the alignment
+                    // set the alignment
                     switch (table.getHorizontalAlignment()) {
                         case Element.ALIGN_LEFT:
                             break;
@@ -1448,9 +1448,9 @@ public class ColumnText {
                     boolean showFooter = !table.isSkipLastFooter();
                     boolean newPageFollows = false;
                     if (k < table.size()) {
-                    	nt.setComplete(true);
-                    	showFooter = true;
-                    	newPageFollows = true;
+                        nt.setComplete(true);
+                        showFooter = true;
+                        newPageFollows = true;
                     }
                     // we add the footer rows if necessary (not for incomplete tables)
                     for (int j = 0; j < footerRows && nt.isComplete() && showFooter; ++j)
@@ -1480,7 +1480,7 @@ public class ColumnText {
                     yTemp = minY;
                 yLine = yTemp;
                 if (!(skipHeader || table.isComplete()))
-                	yLine += footerHeight;
+                    yLine += footerHeight;
                 if (k >= table.size()) {
                     yLine -= table.spacingAfter();
                     compositeElements.removeFirst();
@@ -1575,7 +1575,7 @@ public class ColumnText {
     /**
      * Enables/Disables adjustment of first line height based on max ascender.
      * 
-     * @param useAscender	enable adjustment if true
+     * @param useAscender    enable adjustment if true
      */
     public void setUseAscender(boolean useAscender) {
         this.useAscender = useAscender;
@@ -1585,7 +1585,7 @@ public class ColumnText {
      * Checks the status variable and looks if there's still some text.
      */
     public static boolean hasMoreText(int status) {
-    	return (status & ColumnText.NO_MORE_TEXT) == 0;
+        return (status & ColumnText.NO_MORE_TEXT) == 0;
     }
 
     /**

@@ -29,11 +29,11 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ChineseJapaneseKorean {
 
-	/**
-	 * Using CJK fonts
-	 * @param args no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Using CJK fonts
+     * @param args no arguments needed
+     */
+    public static void main(String[] args) {
         System.out.println("CJK Fonts");
         
         // step 1: creation of a document-object
@@ -95,5 +95,5 @@ public class ChineseJapaneseKorean {
         
         // step 5: we close the document
         document.close();
-	}
+    }
 }

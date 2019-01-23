@@ -32,7 +32,7 @@ public class FdfExample {
      */
     public static void main(String[] args) {
         try {
-        	// writing the FDF file
+            // writing the FDF file
             FdfWriter fdf = new FdfWriter();
             fdf.setFieldAsString("name", "Bruno Lowagie");
             fdf.setFieldAsString("address", "Baeyensstraat 121, Sint-Amandsberg");

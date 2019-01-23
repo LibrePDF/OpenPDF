@@ -55,7 +55,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 /**
  * A <CODE>PdfBorderDictionary</CODE> define the appearance of a Border (Annotations).
  *
- * @see		PdfDictionary
+ * @see        PdfDictionary
  */
 
 public class PdfBorderDictionary extends PdfDictionary {

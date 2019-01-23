@@ -52,25 +52,25 @@ import com.lowagie.text.ExceptionConverter;
 /**
  * A <CODE>PdfPattern</CODE> defines a ColorSpace
  *
- * @see		PdfStream
+ * @see        PdfStream
  */
 
 public class PdfPattern extends PdfStream {
     
-	/**
-	 * Creates a PdfPattern object.
-	 * @param	painter	a pattern painter instance
-	 */
-	PdfPattern(PdfPatternPainter painter) {
-		this(painter, DEFAULT_COMPRESSION);
-	}
+    /**
+     * Creates a PdfPattern object.
+     * @param    painter    a pattern painter instance
+     */
+    PdfPattern(PdfPatternPainter painter) {
+        this(painter, DEFAULT_COMPRESSION);
+    }
 
-	/**
-	 * Creates a PdfPattern object.
-	 * @param	painter	a pattern painter instance
-	 * @param	compressionLevel the compressionLevel for the stream
-	 * @since	2.1.3
-	 */
+    /**
+     * Creates a PdfPattern object.
+     * @param    painter    a pattern painter instance
+     * @param    compressionLevel the compressionLevel for the stream
+     * @since    2.1.3
+     */
     PdfPattern(PdfPatternPainter painter, int compressionLevel) {
         super();
         PdfNumber one = new PdfNumber(1);

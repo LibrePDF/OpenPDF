@@ -105,11 +105,11 @@ public class PdfFileSpecification extends PdfDictionary {
      * @param fileDisplay the file information that is presented to the user
      * @param fileStore the byte array with the file. If it is not <CODE>null</CODE>
      * it takes precedence over <CODE>filePath</CODE>
-     * @param compressionLevel	the compression level to be used for compressing the file
+     * @param compressionLevel    the compression level to be used for compressing the file
      * it takes precedence over <CODE>filePath</CODE>
      * @throws IOException on error
      * @return the file specification
-     * @since	2.1.3
+     * @since    2.1.3
      */    
     public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte[] fileStore, int compressionLevel) throws IOException {
         return fileEmbedded(writer, filePath, fileDisplay, fileStore, null, null, compressionLevel);
@@ -149,7 +149,7 @@ public class PdfFileSpecification extends PdfDictionary {
      * @return the file specification
      */    
     public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte[] fileStore, boolean compress, String mimeType, PdfDictionary fileParameter) throws IOException {
-    	return fileEmbedded(writer, filePath, fileDisplay, fileStore, mimeType, fileParameter, compress ? PdfStream.BEST_COMPRESSION : PdfStream.NO_COMPRESSION);
+        return fileEmbedded(writer, filePath, fileDisplay, fileStore, mimeType, fileParameter, compress ? PdfStream.BEST_COMPRESSION : PdfStream.NO_COMPRESSION);
     }
     
     /**
@@ -165,7 +165,7 @@ public class PdfFileSpecification extends PdfDictionary {
      * @param compressionLevel the level of compression
      * @throws IOException on error
      * @return the file specification
-     * @since	2.1.3
+     * @since    2.1.3
      */    
     public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte[] fileStore, String mimeType, PdfDictionary fileParameter, int compressionLevel) throws IOException {
         PdfFileSpecification fs = new PdfFileSpecification();
@@ -274,8 +274,8 @@ public class PdfFileSpecification extends PdfDictionary {
      * Adds the unicode file name (the key /UF). This entry was introduced
      * in PDF 1.7. The filename must have the slash and backslash escaped
      * according to the file specification rules.
-     * @param filename	the filename
-     * @param unicode	if true, the filename is UTF-16BE encoded; otherwise PDFDocEncoding is used;
+     * @param filename    the filename
+     * @param unicode    if true, the filename is UTF-16BE encoded; otherwise PDFDocEncoding is used;
      */    
     public void setUnicodeFileName(String filename, boolean unicode) {
         put(PdfName.UF, new PdfString(filename, unicode ? PdfObject.TEXT_UNICODE : PdfObject.TEXT_PDFDOCENCODING));
@@ -285,16 +285,16 @@ public class PdfFileSpecification extends PdfDictionary {
      * Sets a flag that indicates whether an external file referenced by the file
      * specification is volatile. If the value is true, applications should never
      * cache a copy of the file.
-     * @param volatile_file	if true, the external file should not be cached
+     * @param volatile_file    if true, the external file should not be cached
      */
     public void setVolatile(boolean volatile_file) {
-    	put(PdfName.V, new PdfBoolean(volatile_file));
+        put(PdfName.V, new PdfBoolean(volatile_file));
     }
     
     /**
      * Adds a description for the file that is specified here.
-     * @param description	some text
-     * @param unicode		if true, the text is added as a unicode string
+     * @param description    some text
+     * @param unicode        if true, the text is added as a unicode string
      */
     public void addDescription(String description, boolean unicode) {
         put(PdfName.DESC, new PdfString(description, unicode ? PdfObject.TEXT_UNICODE : PdfObject.TEXT_PDFDOCENCODING));
@@ -304,6 +304,6 @@ public class PdfFileSpecification extends PdfDictionary {
      * Adds the Collection item dictionary.
      */
     public void addCollectionItem(PdfCollectionItem ci) {
-    	put(PdfName.CI, ci);
+        put(PdfName.CI, ci);
     }
 }

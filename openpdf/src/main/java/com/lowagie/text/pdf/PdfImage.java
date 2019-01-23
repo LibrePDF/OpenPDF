@@ -239,7 +239,7 @@ public class PdfImage extends PdfStream {
                     }
                     streamBytes = new ByteArrayOutputStream();
                     transferBytes(is, streamBytes, -1);
-                	break;
+                    break;
                 default:
                     throw new BadPdfFormatException(MessageLocalization.getComposedMessage("1.is.an.unknown.image.format", errorID));
             }
@@ -263,7 +263,7 @@ public class PdfImage extends PdfStream {
     /**
      * Returns the <CODE>PdfName</CODE> of the image.
      *
-     * @return		the name
+     * @return        the name
      */
     
     public PdfName name() {

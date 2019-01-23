@@ -43,7 +43,7 @@ public class Concatenate {
             System.err.println("arguments: file1 [file2 ...] destfile");
         }
         else {
-        	System.out.println("PdfCopy example");
+            System.out.println("PdfCopy example");
             try {
                 int pageOffset = 0;
                 ArrayList master = new ArrayList();

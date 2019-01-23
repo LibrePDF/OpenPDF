@@ -65,8 +65,8 @@ import java.util.SimpleTimeZone;
  * This object is described in the 'Portable Document Format Reference Manual version 1.3'
  * section 7.2 (page 183-184)
  *
- * @see		PdfString
- * @see		java.util.GregorianCalendar
+ * @see        PdfString
+ * @see        java.util.GregorianCalendar
  */
 
 public class PdfDate extends PdfString {
@@ -79,7 +79,7 @@ public class PdfDate extends PdfString {
 /**
  * Constructs a <CODE>PdfDate</CODE>-object.
  *
- * @param		d			the date that has to be turned into a <CODE>PdfDate</CODE>-object
+ * @param        d            the date that has to be turned into a <CODE>PdfDate</CODE>-object
  */
     
     public PdfDate(Calendar d) {
@@ -122,9 +122,9 @@ public class PdfDate extends PdfString {
  * Adds a number of leading zeros to a given <CODE>String</CODE> in order to get a <CODE>String</CODE>
  * of a certain length.
  *
- * @param		i   		a given number
- * @param		length		the length of the resulting <CODE>String</CODE>
- * @return		the resulting <CODE>String</CODE>
+ * @param        i           a given number
+ * @param        length        the length of the resulting <CODE>String</CODE>
+ * @return        the resulting <CODE>String</CODE>
  */
     
     private String setLength(int i, int length) { // 1.3-1.4 problem fixed by Finn Bock

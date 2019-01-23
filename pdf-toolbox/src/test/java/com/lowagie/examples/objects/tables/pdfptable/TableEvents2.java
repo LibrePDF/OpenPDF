@@ -36,13 +36,13 @@ public class TableEvents2 implements PdfPTableEvent {
      * @see com.lowagie.text.pdf.PdfPTableEvent#tableLayout(com.lowagie.text.pdf.PdfPTable, float[][], float[], int, int, com.lowagie.text.pdf.PdfContentByte[])
      */
     public void tableLayout(PdfPTable table, float[][] width, float[] heights, int headerRows, int rowStart, PdfContentByte[] canvases) {
-    	
-    	// widths of the different cells of the first row
+        
+        // widths of the different cells of the first row
         float[] widths = width[0];
         
         PdfContentByte cb = canvases[PdfPTable.TEXTCANVAS];
         cb.saveState();
-    	// border for the complete table
+        // border for the complete table
         cb.setLineWidth(2);
         cb.setRGBColorStroke(255, 0, 0);
         cb.rectangle(widths[0], heights[heights.length - 1], widths[widths.length - 1] - widths[0], heights[0] - heights[heights.length - 1]);
@@ -66,7 +66,7 @@ public class TableEvents2 implements PdfPTableEvent {
         // loop over the rows
         for (int line = 0; line < heights.length - 1; ++line) {
             widths = width[line];
-        	// loop over the columns
+            // loop over the columns
             for (int col = 0; col < widths.length - 1; ++col) {
                 if (line == 0 && col == 0)
                     cb.setAction(new PdfAction("http://www.lowagie.com/iText/"),
@@ -89,11 +89,11 @@ public class TableEvents2 implements PdfPTableEvent {
     /**
      * General example using table events (with colspan).
      * @param args
-     * 		no arguments needed
+     *         no arguments needed
      */
     public static void main(String[] args) {
 
-		System.out.println("Table Events 2");
+        System.out.println("Table Events 2");
         // step1
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {

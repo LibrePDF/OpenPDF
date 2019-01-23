@@ -26,15 +26,15 @@ import com.lowagie.text.pdf.PdfWriter;
  * Using an Open Type Font (CFF only).
  */
 public class OpenTypeFont {
-	/**
-	 * Using oth
-	 * @param args no arguments needed
-	 */
-	public static void main(String[] args) {
-		// step 1
+    /**
+     * Using oth
+     * @param args no arguments needed
+     */
+    public static void main(String[] args) {
+        // step 1
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {
-        	// step 2
+            // step 2
             PdfWriter.getInstance(document, new FileOutputStream("opentypefont.pdf"));
             // step 3
             document.open();
@@ -48,5 +48,5 @@ public class OpenTypeFont {
         }
         // step 5
         document.close();
-	}
+    }
 }

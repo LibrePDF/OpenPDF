@@ -31,48 +31,48 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class Width {
 
-	/**
-	 * Demonstrates how to measure and scale the width of a Chunk.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Demonstrates how to measure and scale the width of a Chunk.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Width");
+        System.out.println("Width");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
-			// step 2:
-			// we create a writer that listens to the document
-			PdfWriter.getInstance(document,
-					new FileOutputStream("Width.pdf"));
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
+            // step 2:
+            // we create a writer that listens to the document
+            PdfWriter.getInstance(document,
+                    new FileOutputStream("Width.pdf"));
 
-			// step 3: we open the document
-			document.open();
-			// step 4:
-			Chunk c = new Chunk("quick brown fox jumps over the lazy dog");
-			float w = c.getWidthPoint();
-			Paragraph p = new Paragraph("The width of the chunk: '");
-			p.add(c);
-			p.add("' is ");
-			p.add(String.valueOf(w));
-			p.add(" points or ");
-			p.add(String.valueOf(w / 72f));
-			p.add(" inches.");
-			document.add(p);
-			document.add(c);
-			document.add(Chunk.NEWLINE);
-			c.setHorizontalScaling(0.5f);
-			document.add(c);
-			document.add(c);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+            // step 3: we open the document
+            document.open();
+            // step 4:
+            Chunk c = new Chunk("quick brown fox jumps over the lazy dog");
+            float w = c.getWidthPoint();
+            Paragraph p = new Paragraph("The width of the chunk: '");
+            p.add(c);
+            p.add("' is ");
+            p.add(String.valueOf(w));
+            p.add(" points or ");
+            p.add(String.valueOf(w / 72f));
+            p.add(" inches.");
+            document.add(p);
+            document.add(c);
+            document.add(Chunk.NEWLINE);
+            c.setHorizontalScaling(0.5f);
+            document.add(c);
+            document.add(c);
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

@@ -33,39 +33,39 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ExtraStyles {
 
-	/**
-	 * Underline or strike through text.
-	 */
+    /**
+     * Underline or strike through text.
+     */
     @Test
-	void testUnderlineAndStrikeThrough() throws Exception {
+    void testUnderlineAndStrikeThrough() throws Exception {
 
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             // step 1: creation of a document-object
             Document document = new Document();
-			// step 2:
-			// we create a writer that listens to the document
-			PdfWriter.getInstance(document, baos);
+            // step 2:
+            // we create a writer that listens to the document
+            PdfWriter.getInstance(document, baos);
 
-			// step 3: we open the document
-			document.open();
-			// step 4:
-			Font font;
-			Chunk chunk;
-			font = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.UNDERLINE);
-			chunk = new Chunk("underline", font);
-			document.add(chunk);
-			font = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.NORMAL);
-			chunk = new Chunk(" and ", font);
-			document.add(chunk);
-			font = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.STRIKETHRU);
-			chunk = new Chunk("strike through", font);
-			document.add(chunk);
+            // step 3: we open the document
+            document.open();
+            // step 4:
+            Font font;
+            Chunk chunk;
+            font = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.UNDERLINE);
+            chunk = new Chunk("underline", font);
+            document.add(chunk);
+            font = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.NORMAL);
+            chunk = new Chunk(" and ", font);
+            document.add(chunk);
+            font = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.STRIKETHRU);
+            chunk = new Chunk("strike through", font);
+            document.add(chunk);
 
             // step 5: we close the document
             document.close();
 
             assertFalse(baos.size() == 0);
-		}
+        }
 
-	}
+    }
 }

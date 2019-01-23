@@ -52,7 +52,7 @@ public class PdfFilter extends FileFilter {
      * @return boolean
      */
     public boolean accept(File f) {
-		if (f.isDirectory()) return true;
+        if (f.isDirectory()) return true;
         return f.getName().toLowerCase().endsWith(".pdf");
     }
 
@@ -62,7 +62,7 @@ public class PdfFilter extends FileFilter {
      * @return String
      */
     public String getDescription() {
-		return "*.pdf PDF files";
-	}
+        return "*.pdf PDF files";
+    }
 
 }

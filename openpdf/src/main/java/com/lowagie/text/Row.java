@@ -74,7 +74,7 @@ public class Row implements Element, WithHorizontalAlignment {
     
     // constants
     
-	/** id of a null element in a Row*/
+    /** id of a null element in a Row*/
     public static final int NULL = 0;
     
     /** id of the Cell element in a Row*/
@@ -150,21 +150,21 @@ public class Row implements Element, WithHorizontalAlignment {
         return new ArrayList();
     }
     
-	/**
-	 * @see com.lowagie.text.Element#isContent()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isContent() {
-		return true;
-	}
+    /**
+     * @see com.lowagie.text.Element#isContent()
+     * @since    iText 2.0.8
+     */
+    public boolean isContent() {
+        return true;
+    }
 
-	/**
-	 * @see com.lowagie.text.Element#isNestable()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isNestable() {
-		return false;
-	}
+    /**
+     * @see com.lowagie.text.Element#isNestable()
+     * @since    iText 2.0.8
+     */
+    public boolean isNestable() {
+        return false;
+    }
     
     // method to delete a column
     

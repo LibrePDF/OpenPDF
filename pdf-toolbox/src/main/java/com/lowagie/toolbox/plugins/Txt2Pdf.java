@@ -62,39 +62,39 @@ import com.lowagie.toolbox.arguments.filters.PdfFilter;
  */
 public class Txt2Pdf extends AbstractTool {
 
-	static {
-		addVersion("$Id: Txt2Pdf.java 3271 2008-04-18 20:39:42Z xlv $");
-	}
-	/**
-	 * Constructs a Txt2Pdf object.
-	 */
-	public Txt2Pdf() {
-		menuoptions = MENU_EXECUTE | MENU_EXECUTE_SHOW | MENU_EXECUTE_PRINT_SILENT;
-		arguments.add(new FileArgument(this, "srcfile", "The file you want to convert", false));
-		arguments.add(new FileArgument(this, "destfile", "The file to which the converted text has to be written", true, new PdfFilter()));
-		PageSizeArgument oa1 = new PageSizeArgument(this, "pagesize", "Pagesize");
-		arguments.add(oa1);
-		OptionArgument oa2 = new OptionArgument(this, "orientation", "Orientation of the page");
-		oa2.addOption("Portrait", "PORTRAIT");
-		oa2.addOption("Landscape", "LANDSCAPE");
-		arguments.add(oa2);
-	}
+    static {
+        addVersion("$Id: Txt2Pdf.java 3271 2008-04-18 20:39:42Z xlv $");
+    }
+    /**
+     * Constructs a Txt2Pdf object.
+     */
+    public Txt2Pdf() {
+        menuoptions = MENU_EXECUTE | MENU_EXECUTE_SHOW | MENU_EXECUTE_PRINT_SILENT;
+        arguments.add(new FileArgument(this, "srcfile", "The file you want to convert", false));
+        arguments.add(new FileArgument(this, "destfile", "The file to which the converted text has to be written", true, new PdfFilter()));
+        PageSizeArgument oa1 = new PageSizeArgument(this, "pagesize", "Pagesize");
+        arguments.add(oa1);
+        OptionArgument oa2 = new OptionArgument(this, "orientation", "Orientation of the page");
+        oa2.addOption("Portrait", "PORTRAIT");
+        oa2.addOption("Landscape", "LANDSCAPE");
+        arguments.add(oa2);
+    }
 
-	/**
-	 * @see com.lowagie.toolbox.AbstractTool#createFrame()
-	 */
-	protected void createFrame() {
-		internalFrame = new JInternalFrame("Txt2Pdf", true, true, true);
-		internalFrame.setSize(300, 80);
-		internalFrame.setJMenuBar(getMenubar());
-		System.out.println("=== Txt2Pdf OPENED ===");
-	}
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     */
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("Txt2Pdf", true, true, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== Txt2Pdf OPENED ===");
+    }
 
-	/**
-	 * @see com.lowagie.toolbox.AbstractTool#execute()
-	 */
-	public void execute() {
-		try {
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#execute()
+     */
+    public void execute() {
+        try {
             String line = null;
             Document document;
             Font f;
@@ -114,14 +114,14 @@ public class Txt2Pdf extends AbstractTool {
                 document.add(new Paragraph(12, line, f));
             }
             document.close();
-		} catch (Exception e) {
-        	JOptionPane.showMessageDialog(internalFrame,
-        		    e.getMessage(),
-        		    e.getClass().getName(),
-        		    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(internalFrame,
+                    e.getMessage(),
+                    e.getClass().getName(),
+                    JOptionPane.ERROR_MESSAGE);
             System.err.println(e.getMessage());
-		}
-	}
+        }
+    }
 
     /**
      *
@@ -129,12 +129,12 @@ public class Txt2Pdf extends AbstractTool {
      * @param arg StringArgument
      */
     public void valueHasChanged(AbstractArgument arg) {
-		if (internalFrame == null) {
-			// if the internal frame is null, the tool was called from the command line
-			return;
-		}
-		// represent the changes of the argument in the internal frame
-	}
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the command line
+            return;
+        }
+        // represent the changes of the argument in the internal frame
+    }
 
 
     /**
@@ -143,13 +143,13 @@ public class Txt2Pdf extends AbstractTool {
      * @param args String[]
      */
     public static void main(String[] args) {
-    	Txt2Pdf tool = new Txt2Pdf();
-    	if (args.length < 3) {
-    		System.err.println(tool.getUsage());
-    	}
-    	tool.setMainArguments(args);
+        Txt2Pdf tool = new Txt2Pdf();
+        if (args.length < 3) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
         tool.execute();
-	}
+    }
 
     /**
      *
@@ -158,6 +158,6 @@ public class Txt2Pdf extends AbstractTool {
      * @return File
      */
     protected File getDestPathPDF() throws InstantiationException {
-		return (File)getValue("destfile");
-	}
+        return (File)getValue("destfile");
+    }
 }

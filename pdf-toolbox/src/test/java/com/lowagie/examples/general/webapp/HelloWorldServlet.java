@@ -34,10 +34,10 @@ import com.lowagie.text.pdf.PdfWriter;
  * @author blowagie
  */
 public class HelloWorldServlet extends HttpServlet {
-	   
+       
     private static final long serialVersionUID = -6033026500372479591L;
 
-	/**
+    /**
      * Returns a PDF, RTF or HTML document.
      * 
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)

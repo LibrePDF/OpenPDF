@@ -24,23 +24,23 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class EncryptorExample {
 
-	/**
+    /**
      * Reads and encrypts an existing PDF file.
      * @param args no arguments needed
      */
-	public static void main(String[] args) {
-		System.out.println("Encryptor example");
-		try {
-			PdfReader reader = new PdfReader("ChapterSection.pdf");
-			PdfEncryptor.encrypt(reader,
-					new FileOutputStream("encrypted.pdf"),
-					"Hello".getBytes(),
-					"World".getBytes(),
-					PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY,
-					false);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public static void main(String[] args) {
+        System.out.println("Encryptor example");
+        try {
+            PdfReader reader = new PdfReader("ChapterSection.pdf");
+            PdfEncryptor.encrypt(reader,
+                    new FileOutputStream("encrypted.pdf"),
+                    "Hello".getBytes(),
+                    "World".getBytes(),
+                    PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY,
+                    false);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

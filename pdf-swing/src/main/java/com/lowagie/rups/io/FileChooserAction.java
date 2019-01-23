@@ -33,59 +33,59 @@ import javax.swing.filechooser.FileFilter;
  * to the object that is waiting for you to choose a file.
  */
 public class FileChooserAction extends AbstractAction {
-	
-	/** An object that is expecting the result of the file chooser action. */
-	protected Observable observable;
-	/** A file filter to apply when browsing for a file. */
-	protected FileFilter filter;
-	/** Indicates if you're browsing to create a new or an existing file. */
-	protected boolean newFile;
-	/** The file that was chosen. */
-	protected File file;
-	
-	/**
-	 * Creates a new file chooser action.
-	 * @param observable	the object waiting for you to select file
-	 * @param caption	a description for the action
-	 * @param filter	a filter to apply when browsing
-	 * @param newFile	indicates if you should browse for a new or existing file
-	 */
-	public FileChooserAction(Observable observable, String caption, FileFilter filter, boolean newFile) {
-		super(caption);
-		this.observable = observable;
-		this.filter = filter;
-		this.newFile = newFile;
-	}
-	
-	/**
-	 * Getter for the file.
-	 */
-	public File getFile() {
-		return file;
-	}
+    
+    /** An object that is expecting the result of the file chooser action. */
+    protected Observable observable;
+    /** A file filter to apply when browsing for a file. */
+    protected FileFilter filter;
+    /** Indicates if you're browsing to create a new or an existing file. */
+    protected boolean newFile;
+    /** The file that was chosen. */
+    protected File file;
+    
+    /**
+     * Creates a new file chooser action.
+     * @param observable    the object waiting for you to select file
+     * @param caption    a description for the action
+     * @param filter    a filter to apply when browsing
+     * @param newFile    indicates if you should browse for a new or existing file
+     */
+    public FileChooserAction(Observable observable, String caption, FileFilter filter, boolean newFile) {
+        super(caption);
+        this.observable = observable;
+        this.filter = filter;
+        this.newFile = newFile;
+    }
+    
+    /**
+     * Getter for the file.
+     */
+    public File getFile() {
+        return file;
+    }
 
-	/**
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	public void actionPerformed(ActionEvent evt) {
-		JFileChooser fc = new JFileChooser();
-		if (filter != null) {
-			fc.setFileFilter(filter);
-		}
-		int okCancel;
-		if (newFile) {
-			okCancel = fc.showSaveDialog(null);
-		}
-		else {
-			okCancel = fc.showOpenDialog(null);
-		}
-		if (okCancel == JFileChooser.APPROVE_OPTION) {
-			file = fc.getSelectedFile();
-			observable.notifyObservers(this);
-		}
-	}
+    /**
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(ActionEvent evt) {
+        JFileChooser fc = new JFileChooser();
+        if (filter != null) {
+            fc.setFileFilter(filter);
+        }
+        int okCancel;
+        if (newFile) {
+            okCancel = fc.showSaveDialog(null);
+        }
+        else {
+            okCancel = fc.showOpenDialog(null);
+        }
+        if (okCancel == JFileChooser.APPROVE_OPTION) {
+            file = fc.getSelectedFile();
+            observable.notifyObservers(this);
+        }
+    }
 
-	/** A serial version UID. */
-	private static final long serialVersionUID = 2225830878098387118L;
+    /** A serial version UID. */
+    private static final long serialVersionUID = 2225830878098387118L;
 
 }

@@ -33,46 +33,46 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class EndOfLine {
 
-	/**
-	 * Demonstrates the use of the Phrase object.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Demonstrates the use of the Phrase object.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("End of Line");
+        System.out.println("End of Line");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
-			// step 2:
-			// we create a writer that listens to the document
-			PdfWriter.getInstance(document,
-					new FileOutputStream("EndOfLine.pdf"));
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
+            // step 2:
+            // we create a writer that listens to the document
+            PdfWriter.getInstance(document,
+                    new FileOutputStream("EndOfLine.pdf"));
 
-			// step 3: we open the document
-			document.open();
-			// step 4:
-			Chunk chunk = new Chunk("quick brown fox jumps over the lazy dog ");
-			for (int i = 0; i < 5; i++) {
-				chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.3f, new Color(i * 30, i * 30, i * 30));
-				document.add(chunk);
-			}
-			document.newPage();
-			Phrase p = new Phrase(16f);
-			for (int i = 0; i < 5; i++) {
-				chunk = new Chunk("quick brown fox jumps over the lazy dog ");
-				chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.3f, new Color(i * 30, i * 30, i * 30));
-				p.add(chunk);
-			}
-			document.add(p);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+            // step 3: we open the document
+            document.open();
+            // step 4:
+            Chunk chunk = new Chunk("quick brown fox jumps over the lazy dog ");
+            for (int i = 0; i < 5; i++) {
+                chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.3f, new Color(i * 30, i * 30, i * 30));
+                document.add(chunk);
+            }
+            document.newPage();
+            Phrase p = new Phrase(16f);
+            for (int i = 0; i < 5; i++) {
+                chunk = new Chunk("quick brown fox jumps over the lazy dog ");
+                chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.3f, new Color(i * 30, i * 30, i * 30));
+                p.add(chunk);
+            }
+            document.add(p);
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

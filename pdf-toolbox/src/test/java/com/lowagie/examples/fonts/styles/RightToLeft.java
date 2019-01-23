@@ -40,7 +40,7 @@ public class RightToLeft {
      */
     public static void main(String[] args) {
         try {
-        	// step 1
+            // step 1
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             // step 2
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("righttoleft.pdf"));

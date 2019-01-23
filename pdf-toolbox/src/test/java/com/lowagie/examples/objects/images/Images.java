@@ -29,7 +29,7 @@ public class Images {
     
     /**
      * General Images example
-     * @param args	no arguments needed
+     * @param args    no arguments needed
      */
     public static void main(String[] args) {
         

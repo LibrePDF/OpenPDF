@@ -52,7 +52,7 @@ import java.awt.Color;
 /**
  * A <CODE>PdfColor</CODE> defines a Color (it's a <CODE>PdfArray</CODE> containing 3 values).
  *
- * @see		PdfDictionary
+ * @see        PdfDictionary
  */
 
 class PdfColor extends PdfArray {
@@ -62,9 +62,9 @@ class PdfColor extends PdfArray {
 /**
  * Constructs a new <CODE>PdfColor</CODE>.
  *
- * @param		red			a value between 0 and 255
- * @param		green		a value between 0 and 255
- * @param		blue		a value between 0 and 255
+ * @param        red            a value between 0 and 255
+ * @param        green        a value between 0 and 255
+ * @param        blue        a value between 0 and 255
  */
     
     PdfColor(int red, int green, int blue) {

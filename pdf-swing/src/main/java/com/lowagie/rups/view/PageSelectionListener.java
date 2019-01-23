@@ -24,15 +24,15 @@ package com.lowagie.rups.view;
  * Interface that has to be implemented by every class that listens
  * to page navigation features; keys that are pressed, buttons that
  * are pushed,...
- * @since	iText 5.0.0 (renamed from PageNavigationListener)
+ * @since    iText 5.0.0 (renamed from PageNavigationListener)
  */
 public interface PageSelectionListener {
 
-	/**
-	 * Goes to a specific page number in a document.
-	 * @param	pageNumber
-	 * @return	the resulting page number.
-	 * 		Can be different from pageNumber if pageNumber doesn't exist.
-	 */
+    /**
+     * Goes to a specific page number in a document.
+     * @param    pageNumber
+     * @return    the resulting page number.
+     *         Can be different from pageNumber if pageNumber doesn't exist.
+     */
     int gotoPage(int pageNumber);
 }

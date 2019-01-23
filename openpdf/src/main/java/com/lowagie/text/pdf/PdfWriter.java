@@ -78,21 +78,21 @@ import java.util.List;
  */
 
 public class PdfWriter extends DocWriter implements
-	PdfViewerPreferences,
-	PdfEncryptionSettings,
-	PdfVersion,
-	PdfDocumentActions,
-	PdfPageActions,
-	PdfXConformance,
-	PdfRunDirection,
-	PdfAnnotations {
+    PdfViewerPreferences,
+    PdfEncryptionSettings,
+    PdfVersion,
+    PdfDocumentActions,
+    PdfPageActions,
+    PdfXConformance,
+    PdfRunDirection,
+    PdfAnnotations {
 
-	/**
-	 * The highest generation number possible.
-	 * @since	iText 2.1.6
-	 */
-	public static final int GENERATION_MAX = 65535;
-	
+    /**
+     * The highest generation number possible.
+     * @since    iText 2.1.6
+     */
+    public static final int GENERATION_MAX = 65535;
+    
 // INNER CLASSES
 
     /**
@@ -102,9 +102,9 @@ public class PdfWriter extends DocWriter implements
      * Reference Manual version 1.3' (page 55-60). It contains the body of a PDF document
      * (section 5.14) and it can also generate a Cross-reference Table (section 5.15).
      *
-     * @see		PdfWriter
-     * @see		PdfObject
-     * @see		PdfIndirectObject
+     * @see        PdfWriter
+     * @see        PdfObject
+     * @see        PdfIndirectObject
      */
 
     public static class PdfBody {
@@ -127,19 +127,19 @@ public class PdfWriter extends DocWriter implements
             // membervariables
             private int type;
 
-            /**	Byte offset in the PDF file. */
+            /**    Byte offset in the PDF file. */
             private int offset;
 
             private int refnum;
-            /**	generation of the object. */
+            /**    generation of the object. */
             private int generation;
 
             // constructors
             /**
              * Constructs a cross-reference element for a PdfIndirectObject.
              * @param refnum
-             * @param	offset		byte offset of the object
-             * @param	generation	generation number of the object
+             * @param    offset        byte offset of the object
+             * @param    generation    generation number of the object
              */
 
             public PdfCrossReference(int refnum, int offset, int generation) {
@@ -152,7 +152,7 @@ public class PdfWriter extends DocWriter implements
             /**
              * Constructs a cross-reference element for a PdfIndirectObject.
              * @param refnum
-             * @param	offset		byte offset of the object
+             * @param    offset        byte offset of the object
              */
 
             public PdfCrossReference(int refnum, int offset) {
@@ -310,8 +310,8 @@ public class PdfWriter extends DocWriter implements
          * to an <CODE>ArrayList</CODE> that will be used to build the
          * Cross-reference Table.
          *
-         * @param		object			a <CODE>PdfObject</CODE>
-         * @return		a <CODE>PdfIndirectObject</CODE>
+         * @param        object            a <CODE>PdfObject</CODE>
+         * @return        a <CODE>PdfIndirectObject</CODE>
          * @throws IOException
          */
 
@@ -348,9 +348,9 @@ public class PdfWriter extends DocWriter implements
          * to an <CODE>ArrayList</CODE> that will be used to build the
          * Cross-reference Table.
          *
-         * @param		object			a <CODE>PdfObject</CODE>
-         * @param		ref		        a <CODE>PdfIndirectReference</CODE>
-         * @return		a <CODE>PdfIndirectObject</CODE>
+         * @param        object            a <CODE>PdfObject</CODE>
+         * @param        ref                a <CODE>PdfIndirectReference</CODE>
+         * @return        a <CODE>PdfIndirectObject</CODE>
          * @throws IOException
          */
 
@@ -392,7 +392,7 @@ public class PdfWriter extends DocWriter implements
         /**
          * Returns the offset of the Cross-Reference table.
          *
-         * @return		an offset
+         * @return        an offset
          */
 
         int offset() {
@@ -402,7 +402,7 @@ public class PdfWriter extends DocWriter implements
         /**
          * Returns the total number of objects contained in the CrossReferenceTable of this <CODE>Body</CODE>.
          *
-         * @return	a number of objects
+         * @return    a number of objects
          */
 
         int size() {
@@ -521,10 +521,10 @@ public class PdfWriter extends DocWriter implements
         /**
          * Constructs a PDF-Trailer.
          *
-         * @param		size		the number of entries in the <CODE>PdfCrossReferenceTable</CODE>
-         * @param		offset		offset of the <CODE>PdfCrossReferenceTable</CODE>
-         * @param		root		an indirect reference to the root of the PDF document
-         * @param		info		an indirect reference to the info object of the PDF document
+         * @param        size        the number of entries in the <CODE>PdfCrossReferenceTable</CODE>
+         * @param        offset        offset of the <CODE>PdfCrossReferenceTable</CODE>
+         * @param        root        an indirect reference to the root of the PDF document
+         * @param        info        an indirect reference to the info object of the PDF document
          * @param encryption
          * @param fileID
          * @param prevxref
@@ -560,9 +560,9 @@ public class PdfWriter extends DocWriter implements
         }
     }
 
-//	ESSENTIALS
+//    ESSENTIALS
 
-//	Construct a PdfWriter instance
+//    Construct a PdfWriter instance
 
     /**
      * Constructs a <CODE>PdfWriter</CODE>.
@@ -576,8 +576,8 @@ public class PdfWriter extends DocWriter implements
      * Remark: a PdfWriter can only be constructed by calling the method
      * <CODE>getInstance(Document document, OutputStream os)</CODE>.
      *
-     * @param	document	The <CODE>PdfDocument</CODE> that has to be written
-     * @param	os			The <CODE>OutputStream</CODE> the writer has to write to.
+     * @param    document    The <CODE>PdfDocument</CODE> that has to be written
+     * @param    os            The <CODE>OutputStream</CODE> the writer has to write to.
      */
 
     protected PdfWriter(PdfDocument document, OutputStream os) {
@@ -590,11 +590,11 @@ public class PdfWriter extends DocWriter implements
     /**
      * Use this method to get an instance of the <CODE>PdfWriter</CODE>.
      *
-     * @param	document	The <CODE>Document</CODE> that has to be written
-     * @param	os	The <CODE>OutputStream</CODE> the writer has to write to.
-     * @return	a new <CODE>PdfWriter</CODE>
+     * @param    document    The <CODE>Document</CODE> that has to be written
+     * @param    os    The <CODE>OutputStream</CODE> the writer has to write to.
+     * @return    a new <CODE>PdfWriter</CODE>
      *
-     * @throws	DocumentException on error
+     * @throws    DocumentException on error
      */
 
     public static PdfWriter getInstance(Document document, OutputStream os)
@@ -626,7 +626,7 @@ public class PdfWriter extends DocWriter implements
         return writer;
     }
 
-//	the PdfDocument instance
+//    the PdfDocument instance
 
     /** the pdfdocument object. */
     protected PdfDocument pdf;
@@ -663,17 +663,17 @@ public class PdfWriter extends DocWriter implements
     /**
      * Sets the initial leading for the PDF document.
      * This has to be done before the document is opened.
-     * @param	leading	the initial leading
-     * @since	2.1.6
-     * @throws	DocumentException	if you try setting the leading after the document was opened.
+     * @param    leading    the initial leading
+     * @since    2.1.6
+     * @throws    DocumentException    if you try setting the leading after the document was opened.
      */
     public void setInitialLeading(float leading) throws DocumentException {
-    	if (open)
-    		throw new DocumentException(MessageLocalization.getComposedMessage("you.can.t.set.the.initial.leading.if.the.document.is.already.open"));
-    	pdf.setLeading(leading);
+        if (open)
+            throw new DocumentException(MessageLocalization.getComposedMessage("you.can.t.set.the.initial.leading.if.the.document.is.already.open"));
+        pdf.setLeading(leading);
     }
     
-//	the PdfDirectContentByte instances
+//    the PdfDirectContentByte instances
 
 /*
  * You should see Direct Content as a canvas on which you can draw
@@ -725,7 +725,7 @@ public class PdfWriter extends DocWriter implements
         directContentUnder.reset();
     }
 
-//	PDF body
+//    PDF body
 
 /*
  * A PDF file has 4 parts: a header, a body, a cross-reference table, and a trailer.
@@ -862,7 +862,7 @@ public class PdfWriter extends DocWriter implements
     }
 
 
-//	PDF Catalog
+//    PDF Catalog
 
 /*
  * The Catalog is also called the root object of the document.
@@ -892,8 +892,8 @@ public class PdfWriter extends DocWriter implements
         }
         // [F13] OCG
         if (!documentOCG.isEmpty()) {
-        	fillOCProperties(false);
-        	catalog.put(PdfName.OCPROPERTIES, OCProperties);
+            fillOCProperties(false);
+            catalog.put(PdfName.OCPROPERTIES, OCProperties);
         }
         return catalog;
     }
@@ -911,7 +911,7 @@ public class PdfWriter extends DocWriter implements
         return this.extraCatalog;
     }
 
-//	PdfPages
+//    PdfPages
 
 /*
  * The page root keeps the complete page tree of the document.
@@ -928,7 +928,7 @@ public class PdfWriter extends DocWriter implements
     protected int currentPageNumber = 1;
     /**
      * The value of the Tabs entry in the page dictionary.
-     * @since	2.1.5
+     * @since    2.1.5
      */
     protected PdfName tabs = null;
 
@@ -1006,21 +1006,21 @@ public class PdfWriter extends DocWriter implements
 
     /**
      * Sets the value for the Tabs entry in the page tree.
-     * @param	tabs	Can be PdfName.R, PdfName.C or PdfName.S.
+     * @param    tabs    Can be PdfName.R, PdfName.C or PdfName.S.
      * Since the Adobe Extensions Level 3, it can also be PdfName.A
      * or PdfName.W
-     * @since	2.1.5
+     * @since    2.1.5
      */
     public void setTabs(PdfName tabs) {
-    	this.tabs = tabs;
+        this.tabs = tabs;
     }
 
     /**
      * Returns the value to be used for the Tabs entry in the page tree.
-     * @since	2.1.5
+     * @since    2.1.5
      */
     public PdfName getTabs() {
-    	return tabs;
+        return tabs;
     }
 
     /**
@@ -1064,7 +1064,7 @@ public class PdfWriter extends DocWriter implements
         return null;
     }
 
-//	page events
+//    page events
 
 /*
  * Page events are specific for iText, not for PDF.
@@ -1082,15 +1082,15 @@ public class PdfWriter extends DocWriter implements
      */
 
     public void setPageEvent(PdfPageEvent event) {
-    	if (event == null) this.pageEvent = null;
-    	else if (this.pageEvent == null) this.pageEvent = event;
-    	else if (this.pageEvent instanceof PdfPageEventForwarder) ((PdfPageEventForwarder)this.pageEvent).addPageEvent(event);
-    	else {
-    		PdfPageEventForwarder forward = new PdfPageEventForwarder();
-    		forward.addPageEvent(this.pageEvent);
-    		forward.addPageEvent(event);
-    		this.pageEvent = forward;
-    	}
+        if (event == null) this.pageEvent = null;
+        else if (this.pageEvent == null) this.pageEvent = event;
+        else if (this.pageEvent instanceof PdfPageEventForwarder) ((PdfPageEventForwarder)this.pageEvent).addPageEvent(event);
+        else {
+            PdfPageEventForwarder forward = new PdfPageEventForwarder();
+            forward.addPageEvent(this.pageEvent);
+            forward.addPageEvent(event);
+            this.pageEvent = forward;
+        }
     }
 
     /**
@@ -1104,7 +1104,7 @@ public class PdfWriter extends DocWriter implements
         return pageEvent;
     }
 
-//	Open and Close methods + method that create the PDF
+//    Open and Close methods + method that create the PDF
 
     /** A number referring to the previous Cross-Reference Table. */
     protected int prevxref = 0;
@@ -1120,7 +1120,7 @@ public class PdfWriter extends DocWriter implements
     public void open() {
         super.open();
         try {
-        	pdf_version.writeHeader(os);
+            pdf_version.writeHeader(os);
             body = new PdfBody(this);
             if (pdfxConformance.isPdfX32002()) {
                 PdfDictionary sec = new PdfDictionary();
@@ -1161,15 +1161,15 @@ public class PdfWriter extends DocWriter implements
                 PdfDictionary catalog = getCatalog(rootRef);
                 // [C9] if there is XMP data to add: add it
                 if (xmpMetadata != null) {
-                	PdfStream xmp = new PdfStream(xmpMetadata);
-                	xmp.put(PdfName.TYPE, PdfName.METADATA);
-                	xmp.put(PdfName.SUBTYPE, PdfName.XML);
+                    PdfStream xmp = new PdfStream(xmpMetadata);
+                    xmp.put(PdfName.TYPE, PdfName.METADATA);
+                    xmp.put(PdfName.SUBTYPE, PdfName.XML);
                     if (crypto != null && !crypto.isMetadataEncrypted()) {
                         PdfArray ar = new PdfArray();
                         ar.add(PdfName.CRYPT);
                         xmp.put(PdfName.FILTER, ar);
                     }
-                	catalog.put(PdfName.METADATA, body.add(xmp).getIndirectReference());
+                    catalog.put(PdfName.METADATA, body.add(xmp).getIndirectReference());
                 }
                 // [C10] make pdfx conformant
                 if (isPdfX()) {
@@ -1335,7 +1335,7 @@ public class PdfWriter extends DocWriter implements
         catalog.put(PdfName.OUTLINES, topRef);
     }
 
-//	[C2] PdfVersion interface
+//    [C2] PdfVersion interface
      /** possible PDF version (header) */
      public static final char VERSION_1_2 = '2';
      /** possible PDF version (header) */
@@ -1372,45 +1372,45 @@ public class PdfWriter extends DocWriter implements
 
     /** @see com.lowagie.text.pdf.interfaces.PdfVersion#setAtLeastPdfVersion(char) */
     public void setAtLeastPdfVersion(char version) {
-    	pdf_version.setAtLeastPdfVersion(version);
+        pdf_version.setAtLeastPdfVersion(version);
     }
 
-	/** @see com.lowagie.text.pdf.interfaces.PdfVersion#setPdfVersion(com.lowagie.text.pdf.PdfName) */
-	public void setPdfVersion(PdfName version) {
-		pdf_version.setPdfVersion(version);
-	}
+    /** @see com.lowagie.text.pdf.interfaces.PdfVersion#setPdfVersion(com.lowagie.text.pdf.PdfName) */
+    public void setPdfVersion(PdfName version) {
+        pdf_version.setPdfVersion(version);
+    }
 
-	/**
-	 * @see com.lowagie.text.pdf.interfaces.PdfVersion#addDeveloperExtension(com.lowagie.text.pdf.PdfDeveloperExtension)
-	 * @since	2.1.6
-	 */
-	public void addDeveloperExtension(PdfDeveloperExtension de) {
-		pdf_version.addDeveloperExtension(de);
-	}
-	
-	/**
-	 * Returns the version information.
-	 */
-	PdfVersionImp getPdfVersion() {
-		return pdf_version;
-	}
+    /**
+     * @see com.lowagie.text.pdf.interfaces.PdfVersion#addDeveloperExtension(com.lowagie.text.pdf.PdfDeveloperExtension)
+     * @since    2.1.6
+     */
+    public void addDeveloperExtension(PdfDeveloperExtension de) {
+        pdf_version.addDeveloperExtension(de);
+    }
+    
+    /**
+     * Returns the version information.
+     */
+    PdfVersionImp getPdfVersion() {
+        return pdf_version;
+    }
 
 //  [C3] PdfViewerPreferences interface
 
-	// page layout (section 13.1.1 of "iText in Action")
+    // page layout (section 13.1.1 of "iText in Action")
 
-	/** A viewer preference */
-	public static final int PageLayoutSinglePage = 1;
-	/** A viewer preference */
-	public static final int PageLayoutOneColumn = 2;
-	/** A viewer preference */
-	public static final int PageLayoutTwoColumnLeft = 4;
-	/** A viewer preference */
-	public static final int PageLayoutTwoColumnRight = 8;
-	/** A viewer preference */
-	public static final int PageLayoutTwoPageLeft = 16;
-	/** A viewer preference */
-	public static final int PageLayoutTwoPageRight = 32;
+    /** A viewer preference */
+    public static final int PageLayoutSinglePage = 1;
+    /** A viewer preference */
+    public static final int PageLayoutOneColumn = 2;
+    /** A viewer preference */
+    public static final int PageLayoutTwoColumnLeft = 4;
+    /** A viewer preference */
+    public static final int PageLayoutTwoColumnRight = 8;
+    /** A viewer preference */
+    public static final int PageLayoutTwoPageLeft = 16;
+    /** A viewer preference */
+    public static final int PageLayoutTwoPageRight = 32;
 
     // page mode (section 13.1.2 of "iText in Action")
 
@@ -1466,7 +1466,7 @@ public class PdfWriter extends DocWriter implements
 
     /** @see com.lowagie.text.pdf.interfaces.PdfViewerPreferences#addViewerPreference(com.lowagie.text.pdf.PdfName, com.lowagie.text.pdf.PdfObject) */
     public void addViewerPreference(PdfName key, PdfObject value) {
-    	pdf.addViewerPreference(key, value);
+        pdf.addViewerPreference(key, value);
     }
 
 //  [C4] Page labels
@@ -1485,37 +1485,37 @@ public class PdfWriter extends DocWriter implements
      * Adds named destinations in bulk.
      * Valid keys and values of the map can be found in the map
      * that is created by SimpleNamedDestination.
-     * @param	map	a map with strings as keys for the names,
-     * 			and structured strings as values for the destinations
-     * @param	page_offset	number of pages that has to be added to
-     * 			the page numbers in the destinations (useful if you
+     * @param    map    a map with strings as keys for the names,
+     *             and structured strings as values for the destinations
+     * @param    page_offset    number of pages that has to be added to
+     *             the page numbers in the destinations (useful if you
      *          use this method in combination with PdfCopy).
-     * @since	iText 5.0
+     * @since    iText 5.0
      */
     public void addNamedDestinations(Map<String, String> map, int page_offset) {
-    	Map.Entry<String, String> entry;
-    	int page;
-    	String dest;
-    	PdfDestination destination;
-    	for (Iterator<Map.Entry<String, String>> i = map.entrySet().iterator(); i.hasNext(); ) {
-    		entry = i.next();
-    		dest = entry.getValue();
-    		page = Integer.parseInt(dest.substring(0, dest.indexOf(" ")));
-    		destination = new PdfDestination(dest.substring(dest.indexOf(" ") + 1));
-    		addNamedDestination(entry.getKey(), page + page_offset, destination);
-    	}
+        Map.Entry<String, String> entry;
+        int page;
+        String dest;
+        PdfDestination destination;
+        for (Iterator<Map.Entry<String, String>> i = map.entrySet().iterator(); i.hasNext(); ) {
+            entry = i.next();
+            dest = entry.getValue();
+            page = Integer.parseInt(dest.substring(0, dest.indexOf(" ")));
+            destination = new PdfDestination(dest.substring(dest.indexOf(" ") + 1));
+            addNamedDestination(entry.getKey(), page + page_offset, destination);
+        }
     }
     
     /**
      * Adds one named destination.
-     * @param	name	the name for the destination
-     * @param	page	the page number where you want to jump to
-     * @param	dest	an explicit destination
-     * @since	iText 5.0
+     * @param    name    the name for the destination
+     * @param    page    the page number where you want to jump to
+     * @param    dest    an explicit destination
+     * @since    iText 5.0
      */
     public void addNamedDestination(String name, int page, PdfDestination dest) {
-    	dest.addPage(getPageReference(page));
-    	pdf.localDestination(name, dest);
+        dest.addPage(getPageReference(page));
+        pdf.localDestination(name, dest);
     }
     
      /**
@@ -1550,7 +1550,7 @@ public class PdfWriter extends DocWriter implements
      /**
       * Use this method to add a JavaScript action at the document level.
       * When the document opens, all this JavaScript runs.
-      * @param name	The name of the JS Action in the name tree
+      * @param name    The name of the JS Action in the name tree
       * @param js The JavaScript action
       */
      public void addJavaScript(String name, PdfAction js) {
@@ -1560,7 +1560,7 @@ public class PdfWriter extends DocWriter implements
      /**
       * Use this method to add a JavaScript action at the document level.
       * When the document opens, all this JavaScript runs.
-      * @param name	The name of the JS Action in the name tree
+      * @param name    The name of the JS Action in the name tree
       * @param code the JavaScript code
       * @param unicode select JavaScript unicode. Note that the internal
       * Acrobat JavaScript engine does not support unicode,
@@ -1573,7 +1573,7 @@ public class PdfWriter extends DocWriter implements
      /**
       * Use this method to adds a JavaScript action at the document level.
       * When the document opens, all this JavaScript runs.
-      * @param name	The name of the JS Action in the name tree
+      * @param name    The name of the JS Action in the name tree
       * @param code the JavaScript code
       */
      public void addJavaScript(String name, String code) {
@@ -2366,7 +2366,7 @@ public class PdfWriter extends DocWriter implements
     PdfObject[] addSimpleProperty(Object prop, PdfIndirectReference refi) {
         if (!documentProperties.containsKey(prop)) {
             if (prop instanceof PdfOCG)
-            	PdfXConformanceImp.checkPDFXConformance(this, PdfXConformanceImp.PDFXKEY_LAYER, null);
+                PdfXConformanceImp.checkPDFXConformance(this, PdfXConformanceImp.PDFXKEY_LAYER, null);
             documentProperties.put(prop, new PdfObject[]{new PdfName("Pr" + (documentProperties.size() + 1)), refi});
         }
         return documentProperties.get(prop);
@@ -2460,8 +2460,8 @@ public class PdfWriter extends DocWriter implements
      * The state of a locked group cannot be changed through the user interface
      * of a viewer application. Producers can use this entry to prevent the visibility
      * of content that depends on these groups from being changed by users.
-     * @param layer	the layer that needs to be added to the array of locked OCGs
-     * @since	2.1.2
+     * @param layer    the layer that needs to be added to the array of locked OCGs
+     * @since    2.1.2
      */
     public void lockLayer(PdfLayer layer) {
         OCGLocked.add(layer.getRef());
@@ -2803,7 +2803,7 @@ public class PdfWriter extends DocWriter implements
      * @throws DocumentException on error
      */
      public void setUserunit(float userunit) throws DocumentException {
- 		if (userunit < 1f || userunit > 75000f) throw new DocumentException(MessageLocalization.getComposedMessage("userunit.should.be.a.value.between.1.and.75000"));
+         if (userunit < 1f || userunit > 75000f) throw new DocumentException(MessageLocalization.getComposedMessage("userunit.should.be.a.value.between.1.and.75000"));
          this.userunit = userunit;
          setAtLeastPdfVersion(VERSION_1_6);
      }
@@ -3082,7 +3082,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * Gets an indirect reference to a JBIG2 Globals stream.
      * Adds the stream if it hasn't already been added to the writer.
-	 * @param	content a byte array that may already been added to the writer inside a stream object.
+     * @param    content a byte array that may already been added to the writer inside a stream object.
      * @since  2.1.5
      */
     protected PdfIndirectReference getReferenceJBIG2Globals(byte[] content) {

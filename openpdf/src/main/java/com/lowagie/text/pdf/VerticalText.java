@@ -64,7 +64,7 @@ public class VerticalText {
 
 /** Signals that there are no more text available. */    
     public static final int NO_MORE_TEXT = 1;
-	
+    
 /** Signals that there is no more column. */    
     public static final int NO_MORE_COLUMN = 2;
 

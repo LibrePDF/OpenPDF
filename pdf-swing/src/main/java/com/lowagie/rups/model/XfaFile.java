@@ -36,43 +36,43 @@ import com.lowagie.rups.io.OutputStreamResource;
 /** Class that deals with the XFA file that can be inside a PDF file. */
 public class XfaFile implements OutputStreamResource {
 
-	/** The X4J Document object (XML). */
-	protected Document xfaDocument;
-	
-	/**
-	 * Constructs an XFA file from an OutputStreamResource.
-	 * This resource can be an XML file or a node in a RUPS application.
-	 * @param	resource	the XFA resource
-	 * @throws IOException 
-	 * @throws DocumentException 
-	 */
-	public XfaFile(OutputStreamResource resource) throws IOException, DocumentException {
-		// Is there a way to avoid loading everything in memory?
-		// Can we somehow get the XML from the PDF as an InputSource, Reader or InputStream?
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		resource.writeTo(baos);
-		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-		SAXReader reader = new SAXReader();
-		xfaDocument = reader.read(bais);
-	}
+    /** The X4J Document object (XML). */
+    protected Document xfaDocument;
+    
+    /**
+     * Constructs an XFA file from an OutputStreamResource.
+     * This resource can be an XML file or a node in a RUPS application.
+     * @param    resource    the XFA resource
+     * @throws IOException 
+     * @throws DocumentException 
+     */
+    public XfaFile(OutputStreamResource resource) throws IOException, DocumentException {
+        // Is there a way to avoid loading everything in memory?
+        // Can we somehow get the XML from the PDF as an InputSource, Reader or InputStream?
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        resource.writeTo(baos);
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        SAXReader reader = new SAXReader();
+        xfaDocument = reader.read(bais);
+    }
 
-	/**
-	 * Getter for the XFA Document object.
-	 * @return	a Document object (X4J)
-	 */
-	public Document getXfaDocument() {
-		return xfaDocument;
-	}
+    /**
+     * Getter for the XFA Document object.
+     * @return    a Document object (X4J)
+     */
+    public Document getXfaDocument() {
+        return xfaDocument;
+    }
 
-	/**
-	 * Writes a formatted XML file to the OutputStream.
-	 * @see com.lowagie.rups.io.OutputStreamResource#writeTo(java.io.OutputStream)
-	 */
-	public void writeTo(OutputStream os) throws IOException {
-		if (xfaDocument == null)
-			return;
-		OutputFormat format = new OutputFormat("   ", true);
+    /**
+     * Writes a formatted XML file to the OutputStream.
+     * @see com.lowagie.rups.io.OutputStreamResource#writeTo(java.io.OutputStream)
+     */
+    public void writeTo(OutputStream os) throws IOException {
+        if (xfaDocument == null)
+            return;
+        OutputFormat format = new OutputFormat("   ", true);
         XMLWriter writer = new XMLWriter(os, format);
         writer.write(xfaDocument);
-	}
+    }
 }

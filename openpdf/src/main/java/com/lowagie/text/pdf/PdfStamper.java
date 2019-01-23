@@ -79,7 +79,7 @@ import java.security.cert.Certificate;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfStamper
-	implements PdfViewerPreferences, PdfEncryptionSettings {
+    implements PdfViewerPreferences, PdfEncryptionSettings {
     /**
      * The writer
      */    
@@ -400,8 +400,8 @@ public class PdfStamper
      * (the default) to keep the FreeText annotations as active content.
      */
     public void setFreeTextFlattening(boolean flat) {
-    	stamper.setFreeTextFlattening(flat);
-	}
+        stamper.setFreeTextFlattening(flat);
+    }
 
     /**
      * Adds an annotation of form field in a specific page. This page number
@@ -415,14 +415,14 @@ public class PdfStamper
 
     /**
      * Adds an empty signature.
-     * @param name	the name of the signature
-     * @param page	the page number
-     * @param llx	lower left x coordinate of the signature's position
-     * @param lly	lower left y coordinate of the signature's position
-     * @param urx	upper right x coordinate of the signature's position
-     * @param ury	upper right y coordinate of the signature's position
-     * @return	a signature form field
-     * @since	2.1.4
+     * @param name    the name of the signature
+     * @param page    the page number
+     * @param llx    lower left x coordinate of the signature's position
+     * @param lly    lower left y coordinate of the signature's position
+     * @param urx    upper right x coordinate of the signature's position
+     * @param ury    upper right y coordinate of the signature's position
+     * @return    a signature form field
+     * @since    2.1.4
      */
     public PdfFormField addSignature(String name, int page, float llx, float lly, float urx, float ury) {
         PdfAcroForm acroForm = stamper.getAcroForm();
@@ -519,17 +519,17 @@ public class PdfStamper
      * @param initialView can be PdfName.D, PdfName.T or PdfName.H
      */
     public void makePackage( PdfName initialView ) {
-    	PdfCollection collection = new PdfCollection(0);
-    	collection.put(PdfName.VIEW, initialView);
-    	stamper.makePackage( collection );
+        PdfCollection collection = new PdfCollection(0);
+        collection.put(PdfName.VIEW, initialView);
+        stamper.makePackage( collection );
     }
 
     /**
      * Adds or replaces the Collection Dictionary in the Catalog.
-     * @param	collection	the new collection dictionary.
+     * @param    collection    the new collection dictionary.
      */
     public void makePackage(PdfCollection collection) {
-    	stamper.makePackage(collection);    	
+        stamper.makePackage(collection);        
     }
     
     /**
@@ -548,7 +548,7 @@ public class PdfStamper
      */
     
     public void addViewerPreference(PdfName key, PdfObject value) {
-    	stamper.addViewerPreference(key, value);
+        stamper.addViewerPreference(key, value);
     }
 
     /**
@@ -755,11 +755,11 @@ public class PdfStamper
     /**
      * Gets the PdfLayer objects in an existing document as a Map
      * with the names/titles of the layers as keys.
-     * @return	a Map with all the PdfLayers in the document (and the name/title of the layer as key)
-     * @since	2.1.2
+     * @return    a Map with all the PdfLayers in the document (and the name/title of the layer as key)
+     * @since    2.1.2
      */
     public Map getPdfLayers() {
-    	return stamper.getPdfLayers();
+        return stamper.getPdfLayers();
     }
 
     /**
@@ -821,8 +821,8 @@ public class PdfStamper
      * @return Calendar
      */
     public Calendar getEnforcedModificationDate() {
-		return stamper.getModificationDate();
-	}
+        return stamper.getModificationDate();
+    }
 
     /**
      * Specifies the enforced modification date, used to specifically override the PDF modification date (ModDate) property when creating and signing the PDF file.
@@ -832,8 +832,8 @@ public class PdfStamper
      * @see PdfName#MODDATE
      * @param modificationDate enforced modification date.
      */
-	public void setEnforcedModificationDate(Calendar modificationDate) {
-		this.stamper.setModificationDate(modificationDate);
-	}
+    public void setEnforcedModificationDate(Calendar modificationDate) {
+        this.stamper.setModificationDate(modificationDate);
+    }
 
 }

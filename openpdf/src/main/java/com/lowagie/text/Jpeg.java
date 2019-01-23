@@ -61,8 +61,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * An <CODE>Jpeg</CODE> is the representation of a graphic element (JPEG)
  * that has to be inserted into the document
  *
- * @see		Element
- * @see		Image
+ * @see        Element
+ * @see        Image
  */
 
 public class Jpeg extends Image {
@@ -112,7 +112,7 @@ public class Jpeg extends Image {
     /**
      * Constructs a <CODE>Jpeg</CODE>-object, using an <VAR>url</VAR>.
      *
-     * @param		url			the <CODE>URL</CODE> where the image can be found
+     * @param        url            the <CODE>URL</CODE> where the image can be found
      * @throws BadElementException
      * @throws IOException
      */
@@ -124,7 +124,7 @@ public class Jpeg extends Image {
     /**
      * Constructs a <CODE>Jpeg</CODE>-object from memory.
      *
-     * @param		img		the memory image
+     * @param        img        the memory image
      * @throws BadElementException
      * @throws IOException
      */
@@ -139,9 +139,9 @@ public class Jpeg extends Image {
     /**
      * Constructs a <CODE>Jpeg</CODE>-object from memory.
      *
-     * @param		img			the memory image.
-     * @param		width		the width you want the image to have
-     * @param		height		the height you want the image to have
+     * @param        img            the memory image.
+     * @param        width        the width you want the image to have
+     * @param        height        the height you want the image to have
      * @throws BadElementException
      * @throws IOException
      */
@@ -157,8 +157,8 @@ public class Jpeg extends Image {
     /**
      * Reads a short from the <CODE>InputStream</CODE>.
      *
-     * @param	is		the <CODE>InputStream</CODE>
-     * @return	an int
+     * @param    is        the <CODE>InputStream</CODE>
+     * @return    an int
      * @throws IOException
      */
     private static final int getShort(InputStream is) throws IOException {
@@ -168,8 +168,8 @@ public class Jpeg extends Image {
     /**
      * Returns a type of marker.
      *
-     * @param	marker      an int
-     * @return	a type: <VAR>VALID_MARKER</CODE>, <VAR>UNSUPPORTED_MARKER</VAR> or <VAR>NOPARAM_MARKER</VAR>
+     * @param    marker      an int
+     * @return    a type: <VAR>VALID_MARKER</CODE>, <VAR>UNSUPPORTED_MARKER</VAR> or <VAR>NOPARAM_MARKER</VAR>
      */
     private static final int marker(int marker) {
         for (int i = 0; i < VALID_MARKERS.length; i++) {
@@ -214,7 +214,7 @@ public class Jpeg extends Image {
                 is = new java.io.ByteArrayInputStream(rawData);
                 errorID = "Byte array";
             }
-            if (is.read() != 0xFF || is.read() != 0xD8)	{
+            if (is.read() != 0xFF || is.read() != 0xD8)    {
                 throw new BadElementException(MessageLocalization.getComposedMessage("1.is.not.a.valid.jpeg.file", errorID));
             }
             boolean firstPass = true;
@@ -346,11 +346,11 @@ public class Jpeg extends Image {
                 total += icc[k].length - 14;
             }
             try {
-            	ICC_Profile icc_prof = ICC_Profile.getInstance(ficc);
-            	tagICC(icc_prof);
+                ICC_Profile icc_prof = ICC_Profile.getInstance(ficc);
+                tagICC(icc_prof);
             }
             catch(IllegalArgumentException e) {
-            	// ignore ICC profile if it's invalid.
+                // ignore ICC profile if it's invalid.
             }
             icc = null;
         }

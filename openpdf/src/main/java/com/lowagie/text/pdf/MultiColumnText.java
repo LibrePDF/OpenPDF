@@ -230,20 +230,20 @@ public class MultiColumnText implements Element {
      * Adds a <CODE>Phrase</CODE> to the current text array.
      * Will not have any effect if addElement() was called before.
      * @param phrase the text
-     * @since	2.1.5
+     * @since    2.1.5
      */
     public void addText(Phrase phrase) {
-    	columnText.addText(phrase);
+        columnText.addText(phrase);
     }
     
     /**
      * Adds a <CODE>Chunk</CODE> to the current text array.
      * Will not have any effect if addElement() was called before.
      * @param chunk the text
-     * @since	2.1.5
+     * @since    2.1.5
      */
     public void addText(Chunk chunk) {
-    	columnText.addText(chunk);
+        columnText.addText(chunk);
     }
     
     /**
@@ -343,7 +343,7 @@ public class MultiColumnText implements Element {
             throw ex;
         }
         if (desiredHeight == AUTOMATIC && columnDefs.size() == 1) {
-        	currentHeight = documentY - columnText.getYLine();
+            currentHeight = documentY - columnText.getYLine();
         }
         return currentHeight;
     }
@@ -351,10 +351,10 @@ public class MultiColumnText implements Element {
     private void newPage() throws DocumentException {
         resetCurrentColumn();
         if (desiredHeight == AUTOMATIC) {
-        	top = nextY = AUTOMATIC;
+            top = nextY = AUTOMATIC;
         }
         else {
-        	top = nextY;
+            top = nextY;
         }
         totalHeight = 0;
         if (document != null) {
@@ -388,8 +388,8 @@ public class MultiColumnText implements Element {
      * Processes the element by adding it to an
      * <CODE>ElementListener</CODE>.
      *
-     * @param	listener	an <CODE>ElementListener</CODE>
-     * @return	<CODE>true</CODE> if the element was processed successfully
+     * @param    listener    an <CODE>ElementListener</CODE>
+     * @return    <CODE>true</CODE> if the element was processed successfully
      */
     public boolean process(ElementListener listener) {
         try {
@@ -402,7 +402,7 @@ public class MultiColumnText implements Element {
     /**
      * Gets the type of the text element.
      *
-     * @return	a type
+     * @return    a type
      */
 
     public int type() {
@@ -412,28 +412,28 @@ public class MultiColumnText implements Element {
     /**
      * Returns null - not used
      *
-     * @return	null
+     * @return    null
      */
 
     public ArrayList getChunks() {
         return null;
     }
     
-	/**
-	 * @see com.lowagie.text.Element#isContent()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isContent() {
-		return true;
-	}
+    /**
+     * @see com.lowagie.text.Element#isContent()
+     * @since    iText 2.0.8
+     */
+    public boolean isContent() {
+        return true;
+    }
 
-	/**
-	 * @see com.lowagie.text.Element#isNestable()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isNestable() {
-		return false;
-	}
+    /**
+     * @see com.lowagie.text.Element#isNestable()
+     * @since    iText 2.0.8
+     */
+    public boolean isNestable() {
+        return false;
+    }
 
     /**
      * Calculates the appropriate y position for the bottom
@@ -467,9 +467,9 @@ public class MultiColumnText implements Element {
      * @return the current column
      */
     public int getCurrentColumn() {
-    	if (columnsRightToLeft) {
-    		return (columnDefs.size() - currentColumn - 1);
-    	} 
+        if (columnsRightToLeft) {
+            return (columnDefs.size() - currentColumn - 1);
+        } 
         return currentColumn;
     }
     
@@ -477,7 +477,7 @@ public class MultiColumnText implements Element {
      * Resets the current column.
      */
     public void resetCurrentColumn() {
-    	currentColumn = 0;
+        currentColumn = 0;
     }
     
     /**
@@ -485,11 +485,11 @@ public class MultiColumnText implements Element {
      * @return true if the current column has changed
      */
     public boolean shiftCurrentColumn() {
-    	if (currentColumn + 1 < columnDefs.size()) {
+        if (currentColumn + 1 < columnDefs.size()) {
             currentColumn++;
             return true;
-    	}
-    	return false;
+        }
+        return false;
     }
     
     /**
@@ -497,7 +497,7 @@ public class MultiColumnText implements Element {
      * @param direction true = right2left; false = left2right
      */
     public void setColumnsRightToLeft(boolean direction) {
-    	columnsRightToLeft = direction;
+        columnsRightToLeft = direction;
     }
     
     /** Sets the ratio between the extra word spacing and the extra character spacing

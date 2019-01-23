@@ -96,16 +96,16 @@ public class PRStream extends PdfStream {
     }
 
     public PRStream(PdfReader reader, byte[] conts) {
-    	this(reader, conts, DEFAULT_COMPRESSION);
+        this(reader, conts, DEFAULT_COMPRESSION);
     }
 
     /**
      * Creates a new PDF stream object that will replace a stream
      * in a existing PDF file.
-     * @param	reader	the reader that holds the existing PDF
-     * @param	conts	the new content
-     * @param	compressionLevel	the compression level for the content
-     * @since	2.1.3 (replacing the existing constructor without param compressionLevel)
+     * @param    reader    the reader that holds the existing PDF
+     * @param    conts    the new content
+     * @param    compressionLevel    the compression level for the content
+     * @since    2.1.3 (replacing the existing constructor without param compressionLevel)
      */
     public PRStream(PdfReader reader, byte[] conts, int compressionLevel) {
         this.reader = reader;
@@ -137,10 +137,10 @@ public class PRStream extends PdfStream {
      * 
      * @param data raw data, decrypted and uncompressed.
      * @param compress true if you want the stream to be compressed.
-     * @since	iText 2.1.1
+     * @since    iText 2.1.1
      */
     public void setData(byte[] data, boolean compress) {
-    	setData(data, compress, DEFAULT_COMPRESSION);
+        setData(data, compress, DEFAULT_COMPRESSION);
     }
     
     /**
@@ -150,8 +150,8 @@ public class PRStream extends PdfStream {
      * 
      * @param data raw data, decrypted and uncompressed.
      * @param compress true if you want the stream to be compressed.
-     * @param compressionLevel	a value between -1 and 9 (ignored if compress == false)
-     * @since	iText 2.1.3
+     * @param compressionLevel    a value between -1 and 9 (ignored if compress == false)
+     * @since    iText 2.1.3
      */
     public void setData(byte[] data, boolean compress, int compressionLevel) {
         remove(PdfName.FILTER);

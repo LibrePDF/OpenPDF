@@ -366,10 +366,10 @@ class TrueTypeFont extends BaseFont {
      * @param ttfAfm the font as a <CODE>byte</CODE> array
      * @throws DocumentException the font is invalid
      * @throws IOException the font file could not be read
-     * @since	2.1.5
+     * @since    2.1.5
      */
     TrueTypeFont(String ttFile, String enc, boolean emb, byte[] ttfAfm, boolean justNames, boolean forceRead) throws DocumentException, IOException {
-    	this.justNames = justNames;
+        this.justNames = justNames;
         String nameBase = getBaseName(ttFile);
         String ttcName = getTTCName(nameBase);
         if (nameBase.length() < ttFile.length()) {
@@ -633,7 +633,7 @@ class TrueTypeFont extends BaseFont {
      * @param ttfAfm the font as a <CODE>byte</CODE> array, possibly <CODE>null</CODE>
      * @throws DocumentException the font is invalid
      * @throws IOException the font file could not be read
-     * @since	2.1.5
+     * @since    2.1.5
      */
     void process(byte[] ttfAfm, boolean preload) throws DocumentException, IOException {
         tables = new HashMap();
@@ -1314,8 +1314,8 @@ class TrueTypeFont extends BaseFont {
      * If this font file is using the Compact Font File Format, then this method
      * will return the raw bytes needed for the font stream. If this method is
      * ever made public: make sure to add a test if (cff == true).
-     * @return	a byte array
-     * @since	2.1.3
+     * @return    a byte array
+     * @since    2.1.3
      */
     protected byte[] readCffFont() throws IOException {
         RandomAccessFileOrArray rf2 = new RandomAccessFileOrArray(rf);
@@ -1333,22 +1333,22 @@ class TrueTypeFont extends BaseFont {
                 // empty on purpose
             }
         }
-    	return b;
+        return b;
     }
 
     /**
      * Returns a PdfStream object with the full font program.
-     * @return	a PdfStream with the font program
-     * @since	2.1.3
+     * @return    a PdfStream with the font program
+     * @since    2.1.3
      */
     public PdfStream getFullFontStream() throws IOException, DocumentException {
         if (cff) {
             return new StreamFont(readCffFont(), "Type1C", compressionLevel);
         }
         else {
-        	byte[] b = getFullFont();
+            byte[] b = getFullFont();
             int[] lengths = new int[]{b.length};
-        	return new StreamFont(b, lengths, compressionLevel);
+            return new StreamFont(b, lengths, compressionLevel);
         }
     }
     

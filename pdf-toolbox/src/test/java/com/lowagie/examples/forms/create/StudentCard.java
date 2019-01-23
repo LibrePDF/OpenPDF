@@ -83,15 +83,15 @@ public class StudentCard {
             innertable.addCell(new Paragraph("option:", f));
             innertable.addCell(new Paragraph("architecture", f));
             outertable.addCell(innertable);
-			outertable.getDefaultCell().setBackgroundColor(new Color(0xFF, 0xDE, 0xAD));
-			outertable.addCell(Image.getInstance("bruno.jpg"));
+            outertable.getDefaultCell().setBackgroundColor(new Color(0xFF, 0xDE, 0xAD));
+            outertable.addCell(Image.getInstance("bruno.jpg"));
             BarcodeEAN codeEAN = new BarcodeEAN();
             codeEAN.setCodeType(Barcode.EAN13);
             codeEAN.setCode("8010012529736");
-			Image imageEAN = codeEAN.createImageWithBarcode(cb, null, null);            
-			imageEAN.setRotationDegrees(90);
-			outertable.getDefaultCell().setBackgroundColor(Color.WHITE);
-			outertable.addCell(imageEAN);
+            Image imageEAN = codeEAN.createImageWithBarcode(cb, null, null);            
+            imageEAN.setRotationDegrees(90);
+            outertable.getDefaultCell().setBackgroundColor(Color.WHITE);
+            outertable.addCell(imageEAN);
             outertable.writeSelectedRows(0, -1, 20, 100, writer.getDirectContent());
         }
         catch(DocumentException de) {

@@ -123,32 +123,32 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         vertical = enc.endsWith("V");
     }
     
-	void readCMaps() throws DocumentException, IOException {
-		super.readCMaps();
+    void readCMaps() throws DocumentException, IOException {
+        super.readCMaps();
 
-		Map cmap = null;
-		if (cmapExt != null) {
-			cmap = cmapExt;
-		} else if (cmap31 != null) {
-			cmap = cmap31;
-		}
+        Map cmap = null;
+        if (cmapExt != null) {
+            cmap = cmapExt;
+        } else if (cmap31 != null) {
+            cmap = cmap31;
+        }
 
-		if (cmap != null) {
-			inverseCmap = new HashMap<Integer, Integer>();
-			for (Iterator iterator = cmap.entrySet().iterator(); iterator.hasNext();) {
-				Map.Entry entry = (Map.Entry) iterator.next();
-				Integer code = (Integer) entry.getKey();
-				int[] metrics = (int[]) entry.getValue();
-				inverseCmap.put(metrics[0], code);
-			}
-		}
-	}
-    
-	protected Integer getCharacterCode(int code) {
-		return inverseCmap == null ? null : inverseCmap.get(code);
+        if (cmap != null) {
+            inverseCmap = new HashMap<Integer, Integer>();
+            for (Iterator iterator = cmap.entrySet().iterator(); iterator.hasNext();) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                Integer code = (Integer) entry.getKey();
+                int[] metrics = (int[]) entry.getValue();
+                inverseCmap.put(metrics[0], code);
+            }
+        }
     }
     
-	
+    protected Integer getCharacterCode(int code) {
+        return inverseCmap == null ? null : inverseCmap.get(code);
+    }
+    
+    
     /**
      * Gets the width of a <CODE>char</CODE> in normalized 1000 units.
      * @param char1 the unicode <CODE>char</CODE> to get the width of
@@ -206,7 +206,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      * @return the stream representing this CMap or <CODE>null</CODE>
      */    
     private PdfStream getToUnicode(Object[] metrics) {
-    	metrics = filterCmapMetrics(metrics);
+        metrics = filterCmapMetrics(metrics);
         if (metrics.length == 0)
             return null;
         StringBuffer buf = new StringBuffer(
@@ -248,30 +248,30 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         return stream;
     }
     
-	private Object[] filterCmapMetrics(Object[] metrics) {
-		if (metrics.length == 0) {
-			return metrics;
-		}
+    private Object[] filterCmapMetrics(Object[] metrics) {
+        if (metrics.length == 0) {
+            return metrics;
+        }
 
-		List<int[]> cmapMetrics = new ArrayList<int[]>(metrics.length);
-		for (int i = 0; i < metrics.length; i++) {
+        List<int[]> cmapMetrics = new ArrayList<int[]>(metrics.length);
+        for (int i = 0; i < metrics.length; i++) {
             int[] metric = (int[]) metrics[i];
-			// PdfContentByte.showText(GlyphVector) uses glyphs that might not
-			// map to a character.
-			// the glyphs are included in the metrics array, but we need to
-			// exclude them from the cmap.
-			if (metric.length >= 3) {
-				cmapMetrics.add(metric);
-			}
-		}
+            // PdfContentByte.showText(GlyphVector) uses glyphs that might not
+            // map to a character.
+            // the glyphs are included in the metrics array, but we need to
+            // exclude them from the cmap.
+            if (metric.length >= 3) {
+                cmapMetrics.add(metric);
+            }
+        }
 
-		if (cmapMetrics.size() == metrics.length) {
-			return metrics;
-		}
+        if (cmapMetrics.size() == metrics.length) {
+            return metrics;
+        }
 
-		return cmapMetrics.toArray();
-	}
-	
+        return cmapMetrics.toArray();
+    }
+    
     private static String toHex4(int n) {
         String s = "0000" + Integer.toHexString(n);
         return s.substring(s.length() - 4);
@@ -300,11 +300,11 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         PdfDictionary dic = new PdfDictionary(PdfName.FONT);
         // sivan; cff
         if (cff) {
-			dic.put(PdfName.SUBTYPE, PdfName.CIDFONTTYPE0);
+            dic.put(PdfName.SUBTYPE, PdfName.CIDFONTTYPE0);
             dic.put(PdfName.BASEFONT, new PdfName(subsetPrefix+fontName+"-"+encoding));
         }
-		else {
-			dic.put(PdfName.SUBTYPE, PdfName.CIDFONTTYPE2);
+        else {
+            dic.put(PdfName.SUBTYPE, PdfName.CIDFONTTYPE2);
             dic.put(PdfName.BASEFONT, new PdfName(subsetPrefix + fontName));
         }
         dic.put(PdfName.FONTDESCRIPTOR, fontDescriptor);
@@ -356,12 +356,12 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
 
         dic.put(PdfName.SUBTYPE, PdfName.TYPE0);
         // The PDF Reference manual advises to add -encoding to CID font names
-		if (cff)
-		  dic.put(PdfName.BASEFONT, new PdfName(subsetPrefix+fontName+"-"+encoding));
-		  //dic.put(PdfName.BASEFONT, new PdfName(subsetPrefix+fontName));
-		else
-		  dic.put(PdfName.BASEFONT, new PdfName(subsetPrefix + fontName));
-		  //dic.put(PdfName.BASEFONT, new PdfName(fontName));
+        if (cff)
+          dic.put(PdfName.BASEFONT, new PdfName(subsetPrefix+fontName+"-"+encoding));
+          //dic.put(PdfName.BASEFONT, new PdfName(subsetPrefix+fontName));
+        else
+          dic.put(PdfName.BASEFONT, new PdfName(subsetPrefix + fontName));
+          //dic.put(PdfName.BASEFONT, new PdfName(fontName));
         dic.put(PdfName.ENCODING, new PdfName(encoding));
         dic.put(PdfName.DESCENDANTFONTS, new PdfArray(descendant));
         if (toUnicode != null)
@@ -426,9 +426,9 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
                 CFFFontSubset cff = new CFFFontSubset(new RandomAccessFileOrArray(b),longTag);
                 b = cff.Process(cff.getNames()[0]);
             }
-			pobj = new StreamFont(b, "CIDFontType0C", compressionLevel);
-			obj = writer.addToBody(pobj);
-			ind_font = obj.getIndirectReference();
+            pobj = new StreamFont(b, "CIDFontType0C", compressionLevel);
+            obj = writer.addToBody(pobj);
+            ind_font = obj.getIndirectReference();
         } else {
             byte[] b;
             if (subset || directoryOffset != 0) {
@@ -468,14 +468,14 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
     
     /**
      * Returns a PdfStream object with the full font program.
-     * @return	a PdfStream with the font program
-     * @since	2.1.3
+     * @return    a PdfStream with the font program
+     * @since    2.1.3
      */
     public PdfStream getFullFontStream() throws IOException, DocumentException {
-    	if (cff) {
-			return new StreamFont(readCffFont(), "CIDFontType0C", compressionLevel);
+        if (cff) {
+            return new StreamFont(readCffFont(), "CIDFontType0C", compressionLevel);
         }
-    	return super.getFullFontStream();
+        return super.getFullFontStream();
     }
     
     /** A forbidden operation. Will throw a null pointer exception.

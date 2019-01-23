@@ -69,9 +69,9 @@ public class PdfPSXObject extends PdfTemplate {
     /**
      * Gets the stream representing this object.
      *
-     * @param	compressionLevel	the compressionLevel
+     * @param    compressionLevel    the compressionLevel
      * @return the stream representing this template
-     * @since	2.1.3	(replacing the method without param compressionLevel)
+     * @since    2.1.3    (replacing the method without param compressionLevel)
      */
     
     PdfStream getFormXObject(int compressionLevel) {

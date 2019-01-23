@@ -28,42 +28,42 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ImageCell {
 
-	/**
-	 * A cell with an image.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * A cell with an image.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Image in a Cell");
+        System.out.println("Image in a Cell");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
+        // step 1: creation of a document-object
+        Document document = new Document();
 
-		try {
-			// step 2:
-			PdfWriter.getInstance(document, new FileOutputStream("ImageCell.pdf"));
+        try {
+            // step 2:
+            PdfWriter.getInstance(document, new FileOutputStream("ImageCell.pdf"));
 
-			// step 3: we open the document
-			document.open();
-			Image image = Image.getInstance("otsoe.jpg");
-			float[] widths = {1f, 4f};
-			PdfPTable table = new PdfPTable(widths);
-			table.addCell("This is my dog");
-			table.addCell(image);
-			table.addCell("This two");
-			table.addCell(new PdfPCell(image, true));
-			table.addCell("This three");
-			table.addCell(new PdfPCell(image, false));
-			document.add(table);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+            // step 3: we open the document
+            document.open();
+            Image image = Image.getInstance("otsoe.jpg");
+            float[] widths = {1f, 4f};
+            PdfPTable table = new PdfPTable(widths);
+            table.addCell("This is my dog");
+            table.addCell(image);
+            table.addCell("This two");
+            table.addCell(new PdfPCell(image, true));
+            table.addCell("This three");
+            table.addCell(new PdfPCell(image, false));
+            document.add(table);
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

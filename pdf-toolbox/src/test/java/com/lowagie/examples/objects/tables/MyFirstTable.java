@@ -29,53 +29,53 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class MyFirstTable {
 
-	/**
-	 * A very simple PdfPTable example.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * A very simple PdfPTable example.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
 
-		System.out.println("My First PdfPTable");
+        System.out.println("My First PdfPTable");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
+        // step 1: creation of a document-object
+        Document document = new Document();
 
-		try {
-			// step 2:
-			// we create a writer that listens to the document
-			// and directs a PDF-stream to a file
-			PdfWriter.getInstance(document, new FileOutputStream("MyFirstTable.pdf"));
+        try {
+            // step 2:
+            // we create a writer that listens to the document
+            // and directs a PDF-stream to a file
+            PdfWriter.getInstance(document, new FileOutputStream("MyFirstTable.pdf"));
 
-			// step 3: we open the document
-			document.open();
+            // step 3: we open the document
+            document.open();
 
-			PdfPTable table = new PdfPTable(3);
-			PdfPCell cell = new PdfPCell(new Paragraph("header with colspan 3"));
-			cell.setColspan(3);
-			table.addCell(cell);
-			table.addCell("1.1");
-			table.addCell("2.1");
-			table.addCell("3.1");
-			table.addCell("1.2");
-			table.addCell("2.2");
-			table.addCell("3.2");
-			cell = new PdfPCell(new Paragraph("cell test1"));
-			cell.setBorderColor(new Color(255, 0, 0));
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph("cell test2"));
-			cell.setColspan(2);
-			cell.setBackgroundColor(new Color(0xC0, 0xC0, 0xC0));
-			table.addCell(cell);
-			document.add(table);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+            PdfPTable table = new PdfPTable(3);
+            PdfPCell cell = new PdfPCell(new Paragraph("header with colspan 3"));
+            cell.setColspan(3);
+            table.addCell(cell);
+            table.addCell("1.1");
+            table.addCell("2.1");
+            table.addCell("3.1");
+            table.addCell("1.2");
+            table.addCell("2.2");
+            table.addCell("3.2");
+            cell = new PdfPCell(new Paragraph("cell test1"));
+            cell.setBorderColor(new Color(255, 0, 0));
+            table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("cell test2"));
+            cell.setColspan(2);
+            cell.setBackgroundColor(new Color(0xC0, 0xC0, 0xC0));
+            table.addCell(cell);
+            document.add(table);
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

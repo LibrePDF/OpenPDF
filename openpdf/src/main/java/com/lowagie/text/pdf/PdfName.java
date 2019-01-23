@@ -69,9 +69,9 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * version 1.7' section 3.2.4 (page 56-58).
  * <P>
  *
- * @see		PdfObject
- * @see		PdfDictionary
- * @see		BadPdfFormatException
+ * @see        PdfObject
+ * @see        PdfDictionary
+ * @see        BadPdfFormatException
  */
 
 public class PdfName extends PdfObject implements Comparable{
@@ -184,7 +184,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName B = new PdfName("B");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName BACKGROUND = new PdfName("Background");
     /** A name */
@@ -193,7 +193,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName BASEFONT = new PdfName("BaseFont");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName BASEVERSION = new PdfName("BaseVersion");
     /** A name */
@@ -421,12 +421,12 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName DECODEPARMS = new PdfName("DecodeParms");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName DEFAULT = new PdfName("Default");
     /**
      * A name
-     * @since	2.1.5 renamed from DEFAULTCRYPTFILER
+     * @since    2.1.5 renamed from DEFAULTCRYPTFILER
      */
     public static final PdfName DEFAULTCRYPTFILTER = new PdfName("DefaultCryptFilter");
     /** A name */
@@ -506,17 +506,17 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName EF = new PdfName("EF");
     /**
      * A name
-     * @since	2.1.3
+     * @since    2.1.3
      */
     public static final PdfName EFF = new PdfName("EFF");
     /**
      * A name
-     * @since	2.1.3
+     * @since    2.1.3
      */
     public static final PdfName EFOPEN = new PdfName("EFOpen");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName EMBEDDED = new PdfName("Embedded");
     /** A name */
@@ -541,12 +541,12 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName EXTEND = new PdfName("Extend");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName EXTENSIONS = new PdfName("Extensions");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName EXTENSIONLEVEL = new PdfName("ExtensionLevel");
     /** A name */
@@ -643,7 +643,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName FONTNAME = new PdfName("FontName");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName FOREGROUND = new PdfName("Foreground");
     /** A name */
@@ -807,7 +807,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName ITALICANGLE = new PdfName("ItalicAngle");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName ITXT = new PdfName("ITXT");
     /** A name */
@@ -816,12 +816,12 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName JAVASCRIPT = new PdfName("JavaScript");
     /**
      * A name
-     * @since	2.1.5
+     * @since    2.1.5
      */
     public static final PdfName JBIG2DECODE = new PdfName("JBIG2Decode");
     /**
      * A name
-     * @since	2.1.5
+     * @since    2.1.5
      */
     public static final PdfName JBIG2GLOBALS = new PdfName("JBIG2Globals");
     /** A name */
@@ -888,7 +888,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName LOCK = new PdfName("Lock");
     /**
      * A name
-     * @since	2.1.2
+     * @since    2.1.2
      */
     public static final PdfName LOCKED = new PdfName("Locked");
     /** A name */
@@ -897,7 +897,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName M = new PdfName("M");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName MATERIAL = new PdfName("Material");
     /** A name */
@@ -914,12 +914,12 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName MASK = new PdfName("Mask");
     /**
      * A name
-     * @since	2.1.6 renamed from MAX
+     * @since    2.1.6 renamed from MAX
      */
     public static final PdfName MAX_LOWER_CASE = new PdfName("max");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName MAX_CAMEL_CASE = new PdfName("Max");
     /** A name */
@@ -934,12 +934,12 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName METADATA = new PdfName("Metadata");
     /**
      * A name
-     * @since	2.1.6 renamed from MIN
+     * @since    2.1.6 renamed from MIN
      */
     public static final PdfName MIN_LOWER_CASE = new PdfName("min");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName MIN_CAMEL_CASE = new PdfName("Min");
     /** A name */
@@ -1233,7 +1233,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName REGISTRYNAME = new PdfName("RegistryName");
     /**
      * A name
-     * @since	2.1.5 renamed from RELATIVECALORIMETRIC
+     * @since    2.1.5 renamed from RELATIVECALORIMETRIC
      */
     public static final PdfName RELATIVECOLORIMETRIC = new PdfName("RelativeColorimetric");
     /** A name */
@@ -1261,7 +1261,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName RICHMEDIAANIMATION = new PdfName("RichMediaAnimation");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName RICHMEDIACOMMAND = new PdfName("RichMediaCommand");
     /**
@@ -1444,7 +1444,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName T = new PdfName("T");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName TA = new PdfName("TA");
     /**
@@ -1454,7 +1454,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName TABLE = new PdfName("Table");
     /**
      * A name
-     * @since	2.1.5
+     * @since    2.1.5
      */
     public static final PdfName TABS = new PdfName("Tabs");
     /**
@@ -1492,7 +1492,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName TI = new PdfName("TI");
     /**
      * A name
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public static final PdfName TIME = new PdfName("Time");
     /** A name */
@@ -1622,7 +1622,7 @@ public class PdfName extends PdfObject implements Comparable{
     /** A name */
     public static final PdfName VERISIGN_PPKVS = new PdfName("VeriSign.PPKVS");
     /** A name */
-	public static final PdfName VERSION = new PdfName("Version");
+    public static final PdfName VERSION = new PdfName("Version");
     /**
      * A name.
      * @since 2.1.6
@@ -1864,46 +1864,46 @@ public class PdfName extends PdfObject implements Comparable{
      *
      * @param name the name to encode
      * @return the encoded name
-     * @since	2.1.5
+     * @since    2.1.5
      */
     public static byte[] encodeName(String name) {
-    	int length = name.length();
-    	ByteBuffer buf = new ByteBuffer(length + 20);
-    	buf.append('/');
-    	char c;
+        int length = name.length();
+        ByteBuffer buf = new ByteBuffer(length + 20);
+        buf.append('/');
+        char c;
         char[] chars = name.toCharArray();
-    	for (int k = 0; k < length; k++) {
-    		c = (char)(chars[k] & 0xff);
-    		// Escape special characters
-    		switch (c) {
-    			case ' ':
-    			case '%':
-    			case '(':
-    			case ')':
-    			case '<':
-    			case '>':
-    			case '[':
-    			case ']':
-    			case '{':
-    			case '}':
-    			case '/':
-    			case '#':
-    				buf.append('#');
-    				buf.append(Integer.toString(c, 16));
-    				break;
-    			default:
-    				if (c >= 32 && c <= 126)
-    					buf.append(c);
-    				else {
-    					buf.append('#');
-    					if (c < 16)
-    						buf.append('0');
-    					buf.append(Integer.toString(c, 16));
-    				}
-    				break;
-    			}
-    		}
-    	return buf.toByteArray();
+        for (int k = 0; k < length; k++) {
+            c = (char)(chars[k] & 0xff);
+            // Escape special characters
+            switch (c) {
+                case ' ':
+                case '%':
+                case '(':
+                case ')':
+                case '<':
+                case '>':
+                case '[':
+                case ']':
+                case '{':
+                case '}':
+                case '/':
+                case '#':
+                    buf.append('#');
+                    buf.append(Integer.toString(c, 16));
+                    break;
+                default:
+                    if (c >= 32 && c <= 126)
+                        buf.append(c);
+                    else {
+                        buf.append('#');
+                        if (c < 16)
+                            buf.append('0');
+                        buf.append(Integer.toString(c, 16));
+                    }
+                    break;
+                }
+            }
+        return buf.toByteArray();
     }
 
     /**
@@ -1919,8 +1919,8 @@ public class PdfName extends PdfObject implements Comparable{
             for (int k = 1; k < len; ++k) {
                 char c = name.charAt(k);
                 if (c == '#') {
-                	char c1 = name.charAt(k + 1);
-                	char c2 = name.charAt(k + 2);
+                    char c1 = name.charAt(k + 1);
+                    char c2 = name.charAt(k + 2);
                     c = (char)((PRTokeniser.getHex(c1) << 4) + PRTokeniser.getHex(c2));
                     k += 2;
                 }

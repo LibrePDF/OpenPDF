@@ -101,12 +101,12 @@ public class XfaForm {
     /**
      * Return the XFA Object, could be an array, could be a Stream.
      * Returns null f no XFA Object is present.
-     * @param	reader	a PdfReader instance
-     * @return	the XFA object
-     * @since	2.1.3
+     * @param    reader    a PdfReader instance
+     * @return    the XFA object
+     * @since    2.1.3
      */
     public static PdfObject getXfaObject(PdfReader reader) {
-    	PdfDictionary af = (PdfDictionary)PdfReader.getPdfObjectRelease(reader.getCatalog().get(PdfName.ACROFORM));
+        PdfDictionary af = (PdfDictionary)PdfReader.getPdfObjectRelease(reader.getCatalog().get(PdfName.ACROFORM));
         if (af == null) {
             return null;
         }
@@ -125,8 +125,8 @@ public class XfaForm {
         this.reader = reader;
         PdfObject xfa = getXfaObject(reader);
         if (xfa == null) {
-        	xfaPresent = false;
-        	return;
+            xfaPresent = false;
+            return;
         }
         xfaPresent = true;
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -149,10 +149,10 @@ public class XfaForm {
         fact.setNamespaceAware(true);
         DocumentBuilder db = fact.newDocumentBuilder();
         db.setEntityResolver(new EntityResolver() {
-			@Override
-			public InputSource resolveEntity(String publicId, String systemId) {
-				return new InputSource(new StringReader(""));
-			}        	
+            @Override
+            public InputSource resolveEntity(String publicId, String systemId) {
+                return new InputSource(new StringReader(""));
+            }            
         });
         domDocument = db.parse(new ByteArrayInputStream(bout.toByteArray()));   
         extractNodes();
@@ -160,19 +160,19 @@ public class XfaForm {
     
     /**
      * Extracts the nodes from the domDocument.
-     * @since	2.1.5
+     * @since    2.1.5
      */
     private void extractNodes() {
         Node n = domDocument.getFirstChild();
         while (n.getChildNodes().getLength() == 0) {
-        	n = n.getNextSibling();
+            n = n.getNextSibling();
         }
         n = n.getFirstChild();
         while (n != null) {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 String s = n.getLocalName();
                 if (s.equals("template")) {
-                	templateNode = n;
+                    templateNode = n;
                     templateSom = new Xml2SomTemplate(n);
                 }
                 else if (s.equals("datasets")) {
@@ -204,10 +204,10 @@ public class XfaForm {
             for (int k = 0; k < ar.size(); k += 2) {
                 PdfString s = ar.getAsString(k);
                 if ("template".equals(s.toString())) {
-                	t = k + 1;
+                    t = k + 1;
                 }
                 if ("datasets".equals(s.toString())) {
-                	d = k + 1;
+                    d = k + 1;
                 }
             }
             if (t > -1 && d > -1) {
@@ -220,7 +220,7 @@ public class XfaForm {
                 dStream.flateCompress(writer.getCompressionLevel());
                 ar.set(d, writer.addToBody(dStream).getIndirectReference());
                 af.put(PdfName.XFA, new PdfArray(ar));
-            	return;
+                return;
             }
         }
         reader.killXref(af.get(PdfName.XFA));
@@ -284,10 +284,10 @@ public class XfaForm {
         if (items.containsKey(name))
             return name;
         if (acroFieldsSom == null) {
-        	if (items.isEmpty() && xfaPresent)
-        		acroFieldsSom = new AcroFieldsSearch(datasetsSom.getName2Node().keySet());
-        	else
-        		acroFieldsSom = new AcroFieldsSearch(items.keySet());
+            if (items.isEmpty() && xfaPresent)
+                acroFieldsSom = new AcroFieldsSearch(datasetsSom.getName2Node().keySet());
+            else
+                acroFieldsSom = new AcroFieldsSearch(items.keySet());
         }
         if (acroFieldsSom.getAcroShort2LongName().containsKey(name))
             return (String)acroFieldsSom.getAcroShort2LongName().get(name);
@@ -464,7 +464,7 @@ public class XfaForm {
     public static class Stack2 extends ArrayList {
         private static final long serialVersionUID = -7451476576174095212L;
 
-		/**
+        /**
          * Looks at the object at the top of this stack without removing it from the stack.
          * @return the object at the top of this stack
          */
@@ -1115,41 +1115,41 @@ public class XfaForm {
     }
     
     public void fillXfaForm(File file) throws ParserConfigurationException, SAXException, IOException {
-		fillXfaForm(new FileInputStream(file));
+        fillXfaForm(new FileInputStream(file));
     }
     
     public void fillXfaForm(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-    	fillXfaForm(new InputSource(is));
+        fillXfaForm(new InputSource(is));
     }
-		
+        
     
     public void fillXfaForm(InputSource is) throws ParserConfigurationException, SAXException, IOException {
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    	DocumentBuilder db = dbf.newDocumentBuilder(); 
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder(); 
         db.setEntityResolver(new EntityResolver() {
-			@Override
-			public InputSource resolveEntity(String publicId, String systemId) {
-				return new InputSource(new StringReader(""));
-			}        	
+            @Override
+            public InputSource resolveEntity(String publicId, String systemId) {
+                return new InputSource(new StringReader(""));
+            }            
         });
-    	Document newdoc = db.parse(is);
-    	fillXfaForm(newdoc.getDocumentElement());
+        Document newdoc = db.parse(is);
+        fillXfaForm(newdoc.getDocumentElement());
     }
     
     /**
      * Replaces the data under datasets/data.
-     * @since	iText 5.0.0
+     * @since    iText 5.0.0
      */
     public void fillXfaForm(Node node) {
-		Node data = datasetsNode.getFirstChild();
-		NodeList list = data.getChildNodes();
-		if (list.getLength() == 0) {
-			data.appendChild(domDocument.importNode(node, true));
-		}
-		else {
-			data.replaceChild(domDocument.importNode(node, true), data.getFirstChild());
-		}
+        Node data = datasetsNode.getFirstChild();
+        NodeList list = data.getChildNodes();
+        if (list.getLength() == 0) {
+            data.appendChild(domDocument.importNode(node, true));
+        }
+        else {
+            data.replaceChild(domDocument.importNode(node, true), data.getFirstChild());
+        }
         extractNodes();
-		setChanged(true);
+        setChanged(true);
     }
 }

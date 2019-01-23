@@ -453,7 +453,7 @@ public abstract class Barcode {
      *
      */
     public void setInkSpreading(float inkSpreading) {
-    	this.inkSpreading = inkSpreading;
+        this.inkSpreading = inkSpreading;
     }
 
     /**

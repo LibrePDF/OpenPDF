@@ -47,121 +47,121 @@ import com.lowagie.text.pdf.PdfPageLabels;
  */
 public class PagesTable extends JTable implements JTableAutoModelInterface, Observer {
 
-	/** A list with page nodes. */
-	protected ArrayList<PdfPageTreeNode> list = new ArrayList<PdfPageTreeNode>();
-	/** Nodes in the FormTree correspond with nodes in the main PdfTree. */
-	protected PdfReaderController controller;
-	/***/
-	protected PageSelectionListener listener;
+    /** A list with page nodes. */
+    protected ArrayList<PdfPageTreeNode> list = new ArrayList<PdfPageTreeNode>();
+    /** Nodes in the FormTree correspond with nodes in the main PdfTree. */
+    protected PdfReaderController controller;
+    /***/
+    protected PageSelectionListener listener;
 
-	/**
-	 * Constructs a PagesTable.
-	 * @param	listener	the page navigation listener.
-	 */
-	public PagesTable(PdfReaderController controller, PageSelectionListener listener) {
-		this.controller = controller;
-		this.listener = listener;
-	}
-	
-	/**
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	public void update(Observable observable, Object obj) {
-		if (obj == null) {
-			list = new ArrayList<PdfPageTreeNode>();
-			repaint();
-			return;
-		}
-		if (obj instanceof ObjectLoader) {
-			ObjectLoader loader = (ObjectLoader)obj;
-			String[] pagelabels = PdfPageLabels.getPageLabels(loader.getReader());
-			int i = 0;
-			TreeNodeFactory factory = loader.getNodes();
-			PdfTrailerTreeNode trailer = controller.getPdfTree().getRoot();
-			PdfObjectTreeNode catalog = factory.getChildNode(trailer, PdfName.ROOT);
-			PdfPagesTreeNode pages = (PdfPagesTreeNode)factory.getChildNode(catalog, PdfName.PAGES);
-			if (pages == null) {
-				return;
-			}
-			Enumeration p = pages.depthFirstEnumeration();
-			PdfObjectTreeNode  child;
-			StringBuffer buf;
-			while (p.hasMoreElements()) {
-				child = (PdfObjectTreeNode)p.nextElement();
-				if (child instanceof PdfPageTreeNode) {
-					buf = new StringBuffer("Page ");
-					buf.append(++i);
-					if (pagelabels != null) {
-						buf.append(" ( ");
-						buf.append(pagelabels[i - 1]);
-						buf.append(" )");
-					}
-					child.setUserObject(buf.toString());
-					list.add((PdfPageTreeNode)child);
-				}
-			}
-		}
-		setModel(new JTableAutoModel(this));
-	}
-	
-	/**
-	 * @see javax.swing.JTable#getColumnCount()
-	 */
-	public int getColumnCount() {
-		return 2;
-	}
-	
-	/**
-	 * @see javax.swing.JTable#getRowCount()
-	 */
-	public int getRowCount() {
-		return list.size();
-	}
+    /**
+     * Constructs a PagesTable.
+     * @param    listener    the page navigation listener.
+     */
+    public PagesTable(PdfReaderController controller, PageSelectionListener listener) {
+        this.controller = controller;
+        this.listener = listener;
+    }
+    
+    /**
+     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+     */
+    public void update(Observable observable, Object obj) {
+        if (obj == null) {
+            list = new ArrayList<PdfPageTreeNode>();
+            repaint();
+            return;
+        }
+        if (obj instanceof ObjectLoader) {
+            ObjectLoader loader = (ObjectLoader)obj;
+            String[] pagelabels = PdfPageLabels.getPageLabels(loader.getReader());
+            int i = 0;
+            TreeNodeFactory factory = loader.getNodes();
+            PdfTrailerTreeNode trailer = controller.getPdfTree().getRoot();
+            PdfObjectTreeNode catalog = factory.getChildNode(trailer, PdfName.ROOT);
+            PdfPagesTreeNode pages = (PdfPagesTreeNode)factory.getChildNode(catalog, PdfName.PAGES);
+            if (pages == null) {
+                return;
+            }
+            Enumeration p = pages.depthFirstEnumeration();
+            PdfObjectTreeNode  child;
+            StringBuffer buf;
+            while (p.hasMoreElements()) {
+                child = (PdfObjectTreeNode)p.nextElement();
+                if (child instanceof PdfPageTreeNode) {
+                    buf = new StringBuffer("Page ");
+                    buf.append(++i);
+                    if (pagelabels != null) {
+                        buf.append(" ( ");
+                        buf.append(pagelabels[i - 1]);
+                        buf.append(" )");
+                    }
+                    child.setUserObject(buf.toString());
+                    list.add((PdfPageTreeNode)child);
+                }
+            }
+        }
+        setModel(new JTableAutoModel(this));
+    }
+    
+    /**
+     * @see javax.swing.JTable#getColumnCount()
+     */
+    public int getColumnCount() {
+        return 2;
+    }
+    
+    /**
+     * @see javax.swing.JTable#getRowCount()
+     */
+    public int getRowCount() {
+        return list.size();
+    }
 
     /**
      * @see javax.swing.JTable#getValueAt(int, int)
      */
     public Object getValueAt(int rowIndex, int columnIndex) {
-    	if (getRowCount() == 0) return null;
-		switch (columnIndex) {
-		case 0:
-			return "Object " + list.get(rowIndex).getNumber();
-		case 1:
-			return list.get(rowIndex);
-		}
-		return null;
-	}
-	/**
-	 * @see javax.swing.JTable#getColumnName(int)
-	 */
-	public String getColumnName(int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return "Object";
-		case 1:
-			return "Page";
-		default:
-			return null;
-		}
-	}
+        if (getRowCount() == 0) return null;
+        switch (columnIndex) {
+        case 0:
+            return "Object " + list.get(rowIndex).getNumber();
+        case 1:
+            return list.get(rowIndex);
+        }
+        return null;
+    }
+    /**
+     * @see javax.swing.JTable#getColumnName(int)
+     */
+    public String getColumnName(int columnIndex) {
+        switch (columnIndex) {
+        case 0:
+            return "Object";
+        case 1:
+            return "Page";
+        default:
+            return null;
+        }
+    }
 
-	/**
-	 * @see javax.swing.JTable#valueChanged(javax.swing.event.ListSelectionEvent)
-	 */
-	@Override
-	public void valueChanged(ListSelectionEvent evt) {
-		if (evt != null)
-			super.valueChanged(evt);
-		if (controller == null)
-			return;
-		if (getRowCount() > 0) {
-			controller.selectNode(list.get(getSelectedRow()));
-			if (listener != null)
-				listener.gotoPage(getSelectedRow() + 1);
-		}
-	}
+    /**
+     * @see javax.swing.JTable#valueChanged(javax.swing.event.ListSelectionEvent)
+     */
+    @Override
+    public void valueChanged(ListSelectionEvent evt) {
+        if (evt != null)
+            super.valueChanged(evt);
+        if (controller == null)
+            return;
+        if (getRowCount() > 0) {
+            controller.selectNode(list.get(getSelectedRow()));
+            if (listener != null)
+                listener.gotoPage(getSelectedRow() + 1);
+        }
+    }
 
-	/** A serial version UID. */
-	private static final long serialVersionUID = -6523261089453886508L;
+    /** A serial version UID. */
+    private static final long serialVersionUID = -6523261089453886508L;
 
 }

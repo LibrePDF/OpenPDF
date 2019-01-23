@@ -31,18 +31,18 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class PageLabels {
 
-	/**
-	 * Demonstrates some PageLabel functionality.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Demonstrates some PageLabel functionality.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("pagelabels");
+        System.out.println("pagelabels");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
             // step 2:
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("PageLabels.pdf"));
             // step 3:
@@ -59,13 +59,13 @@ public class PageLabels {
             pageLabels.addPageLabel(5, PdfPageLabels.DECIMAL_ARABIC_NUMERALS);
             pageLabels.addPageLabel(8, PdfPageLabels.DECIMAL_ARABIC_NUMERALS, "A-", 8);
             writer.setPageLabels(pageLabels);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

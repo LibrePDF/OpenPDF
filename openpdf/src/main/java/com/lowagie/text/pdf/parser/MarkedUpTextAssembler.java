@@ -55,152 +55,152 @@ import java.util.Collection;
  * 
  */
 public class MarkedUpTextAssembler implements TextAssembler {
-	private PdfReader _reader;
-	private ParsedTextImpl _inProgress = null;
-	int _page;
-	private int word_id_counter = 1;
-	private boolean _usePdfMarkupElements = false;
+    private PdfReader _reader;
+    private ParsedTextImpl _inProgress = null;
+    int _page;
+    private int word_id_counter = 1;
+    private boolean _usePdfMarkupElements = false;
 
-	/**
-	 * our result may be partially processed already, in which case we'll just
-	 * add things to it, once ready.
-	 */
-	Collection<FinalText> result = new ArrayList<FinalText>();
+    /**
+     * our result may be partially processed already, in which case we'll just
+     * add things to it, once ready.
+     */
+    Collection<FinalText> result = new ArrayList<FinalText>();
 
-	/**
-	 * as we get new content (final or not), we accumulate it until we reach the
-	 * end of a parsing unit
-	 * 
-	 * Each parsing unit may have a tag name that should wrap its content
-	 */
-	Collection<TextAssemblyBuffer> partialWords = new ArrayList<TextAssemblyBuffer>();
+    /**
+     * as we get new content (final or not), we accumulate it until we reach the
+     * end of a parsing unit
+     * 
+     * Each parsing unit may have a tag name that should wrap its content
+     */
+    Collection<TextAssemblyBuffer> partialWords = new ArrayList<TextAssemblyBuffer>();
 
-	MarkedUpTextAssembler(PdfReader reader) {
-		_reader = reader;
-	}
+    MarkedUpTextAssembler(PdfReader reader) {
+        _reader = reader;
+    }
 
-	MarkedUpTextAssembler(PdfReader reader, boolean usePdfMarkupElements) {
-		_reader = reader;
-		_usePdfMarkupElements = usePdfMarkupElements;
-	}
+    MarkedUpTextAssembler(PdfReader reader, boolean usePdfMarkupElements) {
+        _reader = reader;
+        _usePdfMarkupElements = usePdfMarkupElements;
+    }
 
-	/**
-	 * Remember an unassembled chunk until we hit the end of this element, or we
-	 * hit an assembled chunk, and need to pull things together.
-	 * 
-	 * @param unassembled
-	 *            chunk of text rendering instruction to contribute to final
-	 *            text
-	 */
-	@Override
-	public void process(ParsedText unassembled, String contextName) {
-		partialWords.addAll(unassembled.getAsPartialWords());
-	}
+    /**
+     * Remember an unassembled chunk until we hit the end of this element, or we
+     * hit an assembled chunk, and need to pull things together.
+     * 
+     * @param unassembled
+     *            chunk of text rendering instruction to contribute to final
+     *            text
+     */
+    @Override
+    public void process(ParsedText unassembled, String contextName) {
+        partialWords.addAll(unassembled.getAsPartialWords());
+    }
 
-	/**
-	 * Slot fully-assembled chunk into our result at the current location. If
-	 * there are unassembled chunks waiting, assemble them first.
-	 * 
-	 * @param completed
-	 *            This is a chunk from a nested element
-	 */
-	@Override
-	public void process(FinalText completed, String contextName) {
-		clearAccumulator();
-		result.add(completed);
+    /**
+     * Slot fully-assembled chunk into our result at the current location. If
+     * there are unassembled chunks waiting, assemble them first.
+     * 
+     * @param completed
+     *            This is a chunk from a nested element
+     */
+    @Override
+    public void process(FinalText completed, String contextName) {
+        clearAccumulator();
+        result.add(completed);
 
-	}
+    }
 
-	/**
-	 * @param completed
-	 * @see com.lowagie.text.pdf.parser.TextAssembler#process(com.lowagie.text.pdf.parser.Word,
-	 *      String)
-	 */
-	@Override
-	public void process(Word completed, String contextName) {
-		partialWords.add(completed);
-	}
+    /**
+     * @param completed
+     * @see com.lowagie.text.pdf.parser.TextAssembler#process(com.lowagie.text.pdf.parser.Word,
+     *      String)
+     */
+    @Override
+    public void process(Word completed, String contextName) {
+        partialWords.add(completed);
+    }
 
-	/**
-	 *
-	 */
-	private void clearAccumulator() {
-		for (TextAssemblyBuffer partialWord : partialWords) {
-		    // Visit each partialWord, calling renderText 
-			partialWord.assemble(this);
-		}
-		partialWords.clear();
-		if (_inProgress != null) {
-			result.add(_inProgress.getFinalText(_reader, _page, this, _usePdfMarkupElements));
-			_inProgress = null;
-		}
-	}
+    /**
+     *
+     */
+    private void clearAccumulator() {
+        for (TextAssemblyBuffer partialWord : partialWords) {
+            // Visit each partialWord, calling renderText 
+            partialWord.assemble(this);
+        }
+        partialWords.clear();
+        if (_inProgress != null) {
+            result.add(_inProgress.getFinalText(_reader, _page, this, _usePdfMarkupElements));
+            _inProgress = null;
+        }
+    }
 
-	private FinalText concatenateResult(String containingElementName) {
-		// null element means that this is a formatting artifact, not content.
-		if (containingElementName == null) {
-			// at some point, we may want to extract alternate text for some
-			// artifacts.
-			return null;
-		}
-		StringBuffer res = new StringBuffer();
-		if (_usePdfMarkupElements && !containingElementName.isEmpty()) {
-			res.append('<').append(containingElementName).append('>');
-		}
-		for (FinalText item : result) {
-			res.append(item.getText());
-		}
-		// important, as the stuff buffered in the result is now used up!
-		result.clear();
-		if (_usePdfMarkupElements && !containingElementName.isEmpty()) {
-			res.append("</");
-			int spacePos = containingElementName.indexOf(' ');
-			if (spacePos >= 0) {
-				containingElementName = containingElementName.substring(0,
-						spacePos);
-			}
-			res.append(containingElementName).append('>');
-		}
-		return new FinalText(res.toString());
-	}
+    private FinalText concatenateResult(String containingElementName) {
+        // null element means that this is a formatting artifact, not content.
+        if (containingElementName == null) {
+            // at some point, we may want to extract alternate text for some
+            // artifacts.
+            return null;
+        }
+        StringBuffer res = new StringBuffer();
+        if (_usePdfMarkupElements && !containingElementName.isEmpty()) {
+            res.append('<').append(containingElementName).append('>');
+        }
+        for (FinalText item : result) {
+            res.append(item.getText());
+        }
+        // important, as the stuff buffered in the result is now used up!
+        result.clear();
+        if (_usePdfMarkupElements && !containingElementName.isEmpty()) {
+            res.append("</");
+            int spacePos = containingElementName.indexOf(' ');
+            if (spacePos >= 0) {
+                containingElementName = containingElementName.substring(0,
+                        spacePos);
+            }
+            res.append(containingElementName).append('>');
+        }
+        return new FinalText(res.toString());
+    }
 
-	/**
-	 * @param textInfo
-	 * @return
-	 */
-	private FinalText accumulate(Collection<TextAssemblyBuffer> textInfo) {
-		StringBuffer res = new StringBuffer();
-		for (TextAssemblyBuffer info : textInfo) {
-			res.append(info.getText());
-		}
-		return new FinalText(res.toString());
-	}
+    /**
+     * @param textInfo
+     * @return
+     */
+    private FinalText accumulate(Collection<TextAssemblyBuffer> textInfo) {
+        StringBuffer res = new StringBuffer();
+        for (TextAssemblyBuffer info : textInfo) {
+            res.append(info.getText());
+        }
+        return new FinalText(res.toString());
+    }
 
-	/**
-	 * @return
-	 * @see com.lowagie.text.pdf.parser.TextAssembler#endParsingContext(String)
-	 */
-	@Override
-	public FinalText endParsingContext(String containingElementName) {
-		clearAccumulator();
-		return concatenateResult(containingElementName);
-	}
+    /**
+     * @return
+     * @see com.lowagie.text.pdf.parser.TextAssembler#endParsingContext(String)
+     */
+    @Override
+    public FinalText endParsingContext(String containingElementName) {
+        clearAccumulator();
+        return concatenateResult(containingElementName);
+    }
 
-	/**
-	 * 
-	 * @see com.lowagie.text.pdf.parser.TextAssembler#reset()
-	 */
-	@Override
-	public void reset() {
-		result.clear();
-		partialWords.clear();
-		_inProgress = null;
-	}
+    /**
+     * 
+     * @see com.lowagie.text.pdf.parser.TextAssembler#reset()
+     */
+    @Override
+    public void reset() {
+        result.clear();
+        partialWords.clear();
+        _inProgress = null;
+    }
 
-	@Override
-	public void renderText(FinalText finalText) {
-		result.add(finalText);
-	}
+    @Override
+    public void renderText(FinalText finalText) {
+        result.add(finalText);
+    }
 
     /**
      * Captures text using a simplified algorithm for inserting hard returns and
@@ -263,32 +263,32 @@ public class MarkedUpTextAssembler implements TextAssembler {
         }
     }
 
-	/**
-	 * Getter.
-	 *
-	 * @see SimpleTextExtractingPdfContentRenderListener#_reader
-	 * @return reader
-	 */
-	protected PdfReader getReader() {
-		return _reader;
-	}
+    /**
+     * Getter.
+     *
+     * @see SimpleTextExtractingPdfContentRenderListener#_reader
+     * @return reader
+     */
+    protected PdfReader getReader() {
+        return _reader;
+    }
 
-	/**
-	 * @param page
-	 * @see com.lowagie.text.pdf.parser.TextAssembler#setPage(int)
-	 */
-	@Override
-	public void setPage(int page) {
-		_page = page;
-	}
+    /**
+     * @param page
+     * @see com.lowagie.text.pdf.parser.TextAssembler#setPage(int)
+     */
+    @Override
+    public void setPage(int page) {
+        _page = page;
+    }
 
-	/**
-	 * @return
-	 * @see com.lowagie.text.pdf.parser.TextAssembler#getWordId()
-	 */
-	@Override
-	public String getWordId() {
-		return "word" + word_id_counter++;
-	}
+    /**
+     * @return
+     * @see com.lowagie.text.pdf.parser.TextAssembler#getWordId()
+     */
+    @Override
+    public String getWordId() {
+        return "word" + word_id_counter++;
+    }
 
 }

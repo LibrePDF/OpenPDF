@@ -34,58 +34,58 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class Lines {
 
-	/**
-	 * Underline or strike through text.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Underline or strike through text.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Underline, Strike through,...");
+        System.out.println("Underline, Strike through,...");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
-			// step 2:
-			// we create a writer that listens to the document
-			PdfWriter.getInstance(document,
-					new FileOutputStream("Lines.pdf"));
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
+            // step 2:
+            // we create a writer that listens to the document
+            PdfWriter.getInstance(document,
+                    new FileOutputStream("Lines.pdf"));
 
-			// step 3: we open the document
-			document.open();
-			// step 4:
-			Chunk underlined = new Chunk("underlined");
-			underlined.setUnderline(0.2f, -2f);
-			Paragraph p = new Paragraph("The following chunk is ");
-			p.add(underlined);
-			document.add(p);
-			Chunk strikethru = new Chunk("strike through example");
-			strikethru.setUnderline(0.5f, 3f);	
-			document.add(strikethru);
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
-			Chunk c;
-			c = new Chunk("Multiple lines");
-			c.setUnderline(new Color(0xFF, 0x00, 0x00), 0.0f, 0.3f, 0.0f, 0.4f, PdfContentByte.LINE_CAP_ROUND);
-			c.setUnderline(new Color(0x00, 0xFF, 0x00), 5.0f, 0.0f, 0.0f, -0.5f, PdfContentByte.LINE_CAP_PROJECTING_SQUARE);
-			c.setUnderline(new Color(0x00, 0x00, 0xFF), 0.0f, 0.2f, 15.0f, 0.0f, PdfContentByte.LINE_CAP_BUTT);
-			document.add(c);
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
-			c = new Chunk("Multiple lines", FontFactory.getFont(FontFactory.HELVETICA, 24));
-			c.setUnderline(new Color(0xFF, 0x00, 0x00), 0.0f, 0.3f, 0.0f, 0.4f, PdfContentByte.LINE_CAP_ROUND);
-			c.setUnderline(new Color(0x00, 0xFF, 0x00), 5.0f, 0.0f, 0.0f, -0.5f, PdfContentByte.LINE_CAP_PROJECTING_SQUARE);
-			c.setUnderline(new Color(0x00, 0x00, 0xFF), 0.0f, 0.2f, 15.0f, 0.0f, PdfContentByte.LINE_CAP_BUTT);
-			document.add(c);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+            // step 3: we open the document
+            document.open();
+            // step 4:
+            Chunk underlined = new Chunk("underlined");
+            underlined.setUnderline(0.2f, -2f);
+            Paragraph p = new Paragraph("The following chunk is ");
+            p.add(underlined);
+            document.add(p);
+            Chunk strikethru = new Chunk("strike through example");
+            strikethru.setUnderline(0.5f, 3f);    
+            document.add(strikethru);
+            document.add(Chunk.NEWLINE);
+            document.add(Chunk.NEWLINE);
+            document.add(Chunk.NEWLINE);
+            Chunk c;
+            c = new Chunk("Multiple lines");
+            c.setUnderline(new Color(0xFF, 0x00, 0x00), 0.0f, 0.3f, 0.0f, 0.4f, PdfContentByte.LINE_CAP_ROUND);
+            c.setUnderline(new Color(0x00, 0xFF, 0x00), 5.0f, 0.0f, 0.0f, -0.5f, PdfContentByte.LINE_CAP_PROJECTING_SQUARE);
+            c.setUnderline(new Color(0x00, 0x00, 0xFF), 0.0f, 0.2f, 15.0f, 0.0f, PdfContentByte.LINE_CAP_BUTT);
+            document.add(c);
+            document.add(Chunk.NEWLINE);
+            document.add(Chunk.NEWLINE);
+            document.add(Chunk.NEWLINE);
+            c = new Chunk("Multiple lines", FontFactory.getFont(FontFactory.HELVETICA, 24));
+            c.setUnderline(new Color(0xFF, 0x00, 0x00), 0.0f, 0.3f, 0.0f, 0.4f, PdfContentByte.LINE_CAP_ROUND);
+            c.setUnderline(new Color(0x00, 0xFF, 0x00), 5.0f, 0.0f, 0.0f, -0.5f, PdfContentByte.LINE_CAP_PROJECTING_SQUARE);
+            c.setUnderline(new Color(0x00, 0x00, 0xFF), 0.0f, 0.2f, 15.0f, 0.0f, PdfContentByte.LINE_CAP_BUTT);
+            document.add(c);
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

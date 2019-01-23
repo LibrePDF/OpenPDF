@@ -33,59 +33,59 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class Background {
 
-	/**
-	 * Using Background Colors in Chunks.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Using Background Colors in Chunks.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Background color");
+        System.out.println("Background color");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
-			// step 2:
-			// we create a writer that listens to the document
-			PdfWriter.getInstance(document,
-					new FileOutputStream("Background.pdf"));
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
+            // step 2:
+            // we create a writer that listens to the document
+            PdfWriter.getInstance(document,
+                    new FileOutputStream("Background.pdf"));
 
-			// step 3: we open the document
-			document.open();
-			// step 4:
-			Chunk high = new Chunk("highlighted");
-			high.setBackground(new Color(0xFF, 0xFF, 0x00));
-			Paragraph p = new Paragraph("The following chunk is ");
-			p.add(high);
-			document.add(p);
-			Chunk c;
-			c = new Chunk("background");
-			c.setBackground(new Color(0xC0, 0xC0, 0xC0));
-			document.add(c);
-			c = new Chunk("background");
-			c.setTextRise(8);
-			c.setBackground(new Color(0xFF, 0xDE, 0xAD));
-			document.add(c);
-			c = new Chunk("background", FontFactory.getFont(FontFactory.HELVETICA, 8));
-			c.setBackground(new Color(0x70, 0x70, 0x70));
-			document.add(c);
-			c = new Chunk("background");
-			c.setBackground(new Color(0x00, 0x80, 0x80));
-			document.add(c);
-			document.add(Chunk.NEWLINE);
-			p = new Paragraph("An more complex ");
-			c = new Chunk("background chunk");
-			c.setBackground(new Color(0xFF, 0x00, 0x00), 5f, 30f, -10f, 0f);
-			p.add(c);
-			p.add(" example");
-			document.add(p);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+            // step 3: we open the document
+            document.open();
+            // step 4:
+            Chunk high = new Chunk("highlighted");
+            high.setBackground(new Color(0xFF, 0xFF, 0x00));
+            Paragraph p = new Paragraph("The following chunk is ");
+            p.add(high);
+            document.add(p);
+            Chunk c;
+            c = new Chunk("background");
+            c.setBackground(new Color(0xC0, 0xC0, 0xC0));
+            document.add(c);
+            c = new Chunk("background");
+            c.setTextRise(8);
+            c.setBackground(new Color(0xFF, 0xDE, 0xAD));
+            document.add(c);
+            c = new Chunk("background", FontFactory.getFont(FontFactory.HELVETICA, 8));
+            c.setBackground(new Color(0x70, 0x70, 0x70));
+            document.add(c);
+            c = new Chunk("background");
+            c.setBackground(new Color(0x00, 0x80, 0x80));
+            document.add(c);
+            document.add(Chunk.NEWLINE);
+            p = new Paragraph("An more complex ");
+            c = new Chunk("background chunk");
+            c.setBackground(new Color(0xFF, 0x00, 0x00), 5f, 30f, -10f, 0f);
+            p.add(c);
+            p.add(" example");
+            document.add(p);
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

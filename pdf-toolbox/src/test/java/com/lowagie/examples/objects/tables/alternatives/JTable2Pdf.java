@@ -38,7 +38,7 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class JTable2Pdf extends JFrame {
     private static final long serialVersionUID = 8461166420041411734L;
-	/** The JTable we will show in a Swing app and print to PDF. */
+    /** The JTable we will show in a Swing app and print to PDF. */
     private JTable table;
     
     /**
@@ -150,7 +150,7 @@ public class JTable2Pdf extends JFrame {
             cb.restoreState();
             
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             System.err.println(e.getMessage());
         }
         
@@ -163,18 +163,18 @@ public class JTable2Pdf extends JFrame {
     private void exit() {
         System.exit(0);
     }    
-	/**
-	 * A very simple PdfPTable example.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * A very simple PdfPTable example.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
         System.out.println("Printing a JTable");
         JTable2Pdf frame = new JTable2Pdf();
         frame.pack();
         frame.setVisible(true);
         frame.print();
         frame.dispose();
-	}
+    }
 }

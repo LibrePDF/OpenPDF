@@ -125,7 +125,7 @@ public class PdfStructureElement extends PdfDictionary {
     /**
      * Gets the reference this object will be written to.
      * @return the reference this object will be written to
-     * @since	2.1.6 method removed in 2.1.5, but restored in 2.1.6
+     * @since    2.1.6 method removed in 2.1.5, but restored in 2.1.6
      */    
     public PdfIndirectReference getReference() {
         return this.reference;

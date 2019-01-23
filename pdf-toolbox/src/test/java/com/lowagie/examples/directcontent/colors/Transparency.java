@@ -73,7 +73,7 @@ public class Transparency {
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-		System.out.println("Transparency");
+        System.out.println("Transparency");
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {

@@ -28,10 +28,10 @@ import java.io.OutputStream;
  * can be written to an OutputStream.
  */
 public interface OutputStreamResource {
-	/**
-	 * Writes a resource to an OutputStream.
-	 * @param os	the OutputStream to which the XML is written.
-	 * @throws IOException	usual exception when there's a problem writing to an OutputStream
-	 */
+    /**
+     * Writes a resource to an OutputStream.
+     * @param os    the OutputStream to which the XML is written.
+     * @throws IOException    usual exception when there's a problem writing to an OutputStream
+     */
     void writeTo(OutputStream os) throws IOException;
 }

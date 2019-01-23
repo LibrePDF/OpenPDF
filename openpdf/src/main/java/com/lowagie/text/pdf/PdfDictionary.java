@@ -73,9 +73,9 @@ import java.util.Set;
  * version 1.7' section 3.2.6 (page 59-60).
  * <P>
  *
- * @see		PdfObject
- * @see		PdfName
- * @see		BadPdfFormatException
+ * @see        PdfObject
+ * @see        PdfName
+ * @see        BadPdfFormatException
  */
 public class PdfDictionary extends PdfObject {
 

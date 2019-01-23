@@ -940,7 +940,7 @@ public class AcroFields {
     }
     //PdfName type = (PdfName)PdfReader.getPdfObject(((PdfDictionary)item.merged.get(0)).get(PdfName.FT));
     //if (!PdfName.CH.equals(type)) {
-    //	return ret;
+    //    return ret;
     //}
     PdfArray values = item.getMerged(0).getAsArray(PdfName.I);
     if (values == null) {

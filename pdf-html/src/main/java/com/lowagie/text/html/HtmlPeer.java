@@ -62,50 +62,50 @@ import com.lowagie.text.xml.XmlPeer;
 
 public class HtmlPeer extends XmlPeer {
 
-	/**
-	 * Creates a XmlPeer.
-	 * 
-	 * @param name
-	 *            the iText name of the tag
-	 * @param alias
-	 *            the Html name of the tag
-	 */
+    /**
+     * Creates a XmlPeer.
+     * 
+     * @param name
+     *            the iText name of the tag
+     * @param alias
+     *            the Html name of the tag
+     */
 
-	public HtmlPeer(String name, String alias) {
-		super(name, alias.toLowerCase());
-	}
+    public HtmlPeer(String name, String alias) {
+        super(name, alias.toLowerCase());
+    }
 
-	/**
-	 * Sets an alias for an attribute.
-	 * 
-	 * @param name
-	 *            the iText tagname
-	 * @param alias
-	 *            the custom tagname
-	 */
+    /**
+     * Sets an alias for an attribute.
+     * 
+     * @param name
+     *            the iText tagname
+     * @param alias
+     *            the custom tagname
+     */
 
-	public void addAlias(String name, String alias) {
-		attributeAliases.put(alias.toLowerCase(), name);
-	}
+    public void addAlias(String name, String alias) {
+        attributeAliases.put(alias.toLowerCase(), name);
+    }
 
-	/**
-	 * @see com.lowagie.text.xml.XmlPeer#getAttributes(org.xml.sax.Attributes)
-	 */
-	public Properties getAttributes(Attributes attrs) {
-		Properties attributes = new Properties();
-		attributes.putAll(attributeValues);
-		if (defaultContent != null) {
-			attributes.put(ElementTags.ITEXT, defaultContent);
-		}
-		if (attrs != null) {
-			String attribute, value;
-			for (int i = 0; i < attrs.getLength(); i++) {
-				attribute = getName(attrs.getQName(i).toLowerCase());
-				value = attrs.getValue(i);
-				attributes.setProperty(attribute, value);
-			}
-		}
-		return attributes;
+    /**
+     * @see com.lowagie.text.xml.XmlPeer#getAttributes(org.xml.sax.Attributes)
+     */
+    public Properties getAttributes(Attributes attrs) {
+        Properties attributes = new Properties();
+        attributes.putAll(attributeValues);
+        if (defaultContent != null) {
+            attributes.put(ElementTags.ITEXT, defaultContent);
+        }
+        if (attrs != null) {
+            String attribute, value;
+            for (int i = 0; i < attrs.getLength(); i++) {
+                attribute = getName(attrs.getQName(i).toLowerCase());
+                value = attrs.getValue(i);
+                attributes.setProperty(attribute, value);
+            }
+        }
+        return attributes;
     }
 }
 

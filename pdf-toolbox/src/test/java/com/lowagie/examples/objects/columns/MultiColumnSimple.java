@@ -54,7 +54,7 @@ public class MultiColumnSimple {
 
             // Write some iText poems
             for (int i = 0; i < 30; i++) {
-            	mct.addElement(new Paragraph(String.valueOf(i + 1)));
+                mct.addElement(new Paragraph(String.valueOf(i + 1)));
                 mct.addElement(newPara(randomWord(noun), Element.ALIGN_CENTER, Font.BOLDITALIC));
                 for (int j = 0; j < 4; j++) {
                     mct.addElement(newPara(poemLine(), Element.ALIGN_LEFT, Font.NORMAL));

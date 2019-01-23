@@ -544,13 +544,13 @@ public abstract class BaseField {
      * @param box the field dimension and position
      */
     public void setBox(Rectangle box) {
-    	if (box == null) {
-    		this.box = null;
-    	}
-    	else {
-    		this.box = new Rectangle(box);
-    		this.box.normalize();
-    	}
+        if (box == null) {
+            this.box = null;
+        }
+        else {
+            this.box = new Rectangle(box);
+            this.box.normalize();
+        }
     }
 
     /** Gets the field rotation.

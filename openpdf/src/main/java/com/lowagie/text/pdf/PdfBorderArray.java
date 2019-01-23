@@ -52,7 +52,7 @@ package com.lowagie.text.pdf;
 /**
  * A <CODE>PdfBorderArray</CODE> defines the border of a <CODE>PdfAnnotation</CODE>.
  *
- * @see		PdfArray
+ * @see        PdfArray
  */
 
 public class PdfBorderArray extends PdfArray {

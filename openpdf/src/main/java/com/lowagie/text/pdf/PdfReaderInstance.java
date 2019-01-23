@@ -113,10 +113,10 @@ class PdfReaderInstance {
     
     /**
      * Gets the content stream of a page as a PdfStream object.
-     * @param	pageNumber			the page of which you want the stream
-     * @param	compressionLevel	the compression level you want to apply to the stream
-     * @return	a PdfStream object
-     * @since	2.1.3 (the method already existed without param compressionLevel)
+     * @param    pageNumber            the page of which you want the stream
+     * @param    compressionLevel    the compression level you want to apply to the stream
+     * @return    a PdfStream object
+     * @since    2.1.3 (the method already existed without param compressionLevel)
      */
     PdfStream getFormXObject(int pageNumber, int compressionLevel) throws IOException {
         PdfDictionary page = reader.getPageNRelease(pageNumber);

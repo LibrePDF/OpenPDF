@@ -135,7 +135,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
 
         // super.handleStartingTags is replaced with handleStartingTags
         // suggestion by Vu Ngoc Tan/Hop
-    	name = name.toLowerCase();
+        name = name.toLowerCase();
         if (HtmlTagMap.isHtml(name)) {
             // we do nothing
             return;
@@ -231,7 +231,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
 
     public void endElement(String uri, String lname, String name) {
         // System.err.println("End: " + name);
-    	name = name.toLowerCase();
+        name = name.toLowerCase();
         if (ElementTags.PARAGRAPH.equals(name)) {
             try {
                 document.add((Element) stack.pop());

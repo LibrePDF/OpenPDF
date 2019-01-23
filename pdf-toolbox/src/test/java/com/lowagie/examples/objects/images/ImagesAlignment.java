@@ -28,12 +28,12 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ImagesAlignment {
 
-	/**
-	 * Generates a PDF with Images that are aligned.
-	 * @param args no arguments needed
-	 */
-	public static void main(java.lang.String[] args) {
-		System.out.println("Image alignment");
+    /**
+     * Generates a PDF with Images that are aligned.
+     * @param args no arguments needed
+     */
+    public static void main(java.lang.String[] args) {
+        System.out.println("Image alignment");
         // step 1: creation of a document-object
         Document document = new Document();
         try {
@@ -91,5 +91,5 @@ public class ImagesAlignment {
         }
         // step 5: we close the document
         document.close();
-	}
+    }
 } 

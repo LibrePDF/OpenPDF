@@ -34,7 +34,7 @@ import com.lowagie.text.pdf.PdfWriter;
  * Demonstrates the use of nested layers.
  */
 public class NestedLayers {
-	   
+       
     /**
      * Demonstrates the use of nested layers
      * @param args no arguments needed
@@ -42,7 +42,7 @@ public class NestedLayers {
     public static void main(String[] args) {
         System.out.println("nested layers");
         try {
-        	// step 1
+            // step 1
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             // step 2
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("nestedlayers.pdf"));

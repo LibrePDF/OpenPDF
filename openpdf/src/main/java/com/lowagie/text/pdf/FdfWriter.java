@@ -238,10 +238,10 @@ public class FdfWriter {
      * @return <CODE>true</CODE> if the value was inserted,
      * <CODE>false</CODE> if the name is incompatible with
      * an existing field
-     * @since	2.1.5
+     * @since    2.1.5
      */
     public boolean setFieldAsAction(String field, PdfAction action) {
-    	return setField(field, action);
+        return setField(field, action);
     }
     
     /** Sets all the fields from this <CODE>FdfReader</CODE>
@@ -259,7 +259,7 @@ public class FdfWriter {
             }
             v = dic.get(PdfName.A); // (plaflamme)
             if (v != null) {
-            	setField(key, v);
+                setField(key, v);
             }
         }
     }
@@ -343,8 +343,8 @@ public class FdfWriter {
                 if (v instanceof HashMap) {
                     dic.put(PdfName.KIDS, calculate((HashMap)v));
                 }
-                else if(v instanceof PdfAction) {	// (plaflamme)
-                   	dic.put(PdfName.A, (PdfAction)v);
+                else if(v instanceof PdfAction) {    // (plaflamme)
+                       dic.put(PdfName.A, (PdfAction)v);
                 }
                 else {
                     dic.put(PdfName.V, (PdfObject)v);

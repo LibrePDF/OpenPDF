@@ -61,7 +61,7 @@ public class DirFilter extends FileFilter {
      * @return String
      */
     public String getDescription() {
-		return "directories";
-	}
+        return "directories";
+    }
 
 }

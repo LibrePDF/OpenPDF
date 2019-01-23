@@ -29,44 +29,44 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class TableWithImage {
 
-	/**
-	 * A very simple PdfPTable example.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
-		System.out.println("A table with Image");
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
-			// step 2:
-			// we create a writer that listens to the document
-			// and directs a PDF-stream to a file
-			PdfWriter.getInstance(document,
-					new FileOutputStream("imageTable.pdf"));
-			// step 3: we open the document
-			document.open();
-			// step 4: we create a table and add it to the document
-			Table table = new Table(2, 2); // 2 rows, 2 columns
-			table.addCell(new Cell(Image.getInstance("otsoe.jpg")));
-			table.addCell(new Cell(Image.getInstance("iText.gif")));
-			Cell c1 = new Cell();
-			c1.add(Image.getInstance("iText.gif"));
-			table.addCell(c1);
-			Cell c2 = new Cell();
-			c2.add(Image.getInstance("otsoe.jpg"));
-			table.addCell(c2);
-			document.add(table);
-			document.add(new Paragraph("converted to PdfPTable:"));
-			table.setConvert2pdfptable(true);
-			document.add(table);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
-		// step 5: we close the document
-		document.close();
-	}
+    /**
+     * A very simple PdfPTable example.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
+        System.out.println("A table with Image");
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
+            // step 2:
+            // we create a writer that listens to the document
+            // and directs a PDF-stream to a file
+            PdfWriter.getInstance(document,
+                    new FileOutputStream("imageTable.pdf"));
+            // step 3: we open the document
+            document.open();
+            // step 4: we create a table and add it to the document
+            Table table = new Table(2, 2); // 2 rows, 2 columns
+            table.addCell(new Cell(Image.getInstance("otsoe.jpg")));
+            table.addCell(new Cell(Image.getInstance("iText.gif")));
+            Cell c1 = new Cell();
+            c1.add(Image.getInstance("iText.gif"));
+            table.addCell(c1);
+            Cell c2 = new Cell();
+            c2.add(Image.getInstance("otsoe.jpg"));
+            table.addCell(c2);
+            document.add(table);
+            document.add(new Paragraph("converted to PdfPTable:"));
+            table.setConvert2pdfptable(true);
+            document.add(table);
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
+        // step 5: we close the document
+        document.close();
+    }
 }

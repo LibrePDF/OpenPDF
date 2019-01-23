@@ -69,71 +69,71 @@ import com.lowagie.toolbox.swing.PdfInformationPanel;
  */
 public class Burst extends AbstractTool {
 
-	static {
-		addVersion("$Id: Burst.java 3271 2008-04-18 20:39:42Z xlv $");
-	}
+    static {
+        addVersion("$Id: Burst.java 3271 2008-04-18 20:39:42Z xlv $");
+    }
 
-	/**
-	 * Constructs a Burst object.
-	 */
-	public Burst() {
-		FileArgument f = new FileArgument(this, "srcfile", "The file you want to split", false, new PdfFilter());
-		f.setLabel(new PdfInformationPanel());
-		arguments.add(f);
-	}
+    /**
+     * Constructs a Burst object.
+     */
+    public Burst() {
+        FileArgument f = new FileArgument(this, "srcfile", "The file you want to split", false, new PdfFilter());
+        f.setLabel(new PdfInformationPanel());
+        arguments.add(f);
+    }
 
-	/**
-	 * @see com.lowagie.toolbox.AbstractTool#createFrame()
-	 */
-	protected void createFrame() {
-		internalFrame = new JInternalFrame("Burst", true, false, true);
-		internalFrame.setSize(300, 80);
-		internalFrame.setJMenuBar(getMenubar());
-		System.out.println("=== Burst OPENED ===");
-	}
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     */
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("Burst", true, false, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== Burst OPENED ===");
+    }
 
-	/**
-	 * @see com.lowagie.toolbox.AbstractTool#execute()
-	 */
-	public void execute() {
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#execute()
+     */
+    public void execute() {
         try {
-			if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
-			File src = (File)getValue("srcfile");
+            if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
+            File src = (File)getValue("srcfile");
             File directory = src.getParentFile();
             String name = src.getName();
             name = name.substring(0, name.lastIndexOf('.'));
-        	// we create a reader for a certain document
-			PdfReader reader = new PdfReader(src.getAbsolutePath());
-			// we retrieve the total number of pages
-			int n = reader.getNumberOfPages();
-			int digits = 1 + (n / 10);
-			System.out.println("There are " + n + " pages in the original file.");
-			Document document;
-			int pagenumber;
-			String filename;
+            // we create a reader for a certain document
+            PdfReader reader = new PdfReader(src.getAbsolutePath());
+            // we retrieve the total number of pages
+            int n = reader.getNumberOfPages();
+            int digits = 1 + (n / 10);
+            System.out.println("There are " + n + " pages in the original file.");
+            Document document;
+            int pagenumber;
+            String filename;
             for (int i = 0; i < n; i++) {
-            	pagenumber = i + 1;
-            	filename = String.valueOf(pagenumber);
-            	while (filename.length() < digits) filename = "0" + filename;
-            	filename = "_" + filename + ".pdf";
-            	// step 1: creation of a document-object
-            	document = new Document(reader.getPageSizeWithRotation(pagenumber));
-				// step 2: we create a writer that listens to the document
-            	PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File(directory, name + filename)));
-            	// step 3: we open the document
-            	document.open();
-            	PdfContentByte cb = writer.getDirectContent();
-				PdfImportedPage page = writer.getImportedPage(reader, pagenumber);
-				int rotation = reader.getPageRotation(pagenumber);
-				if (rotation == 90 || rotation == 270) {
-					cb.addTemplate(page, 0, -1f, 1f, 0, 0, reader.getPageSizeWithRotation(pagenumber).getHeight());
-				}
-				else {
-					cb.addTemplate(page, 1f, 0, 0, 1f, 0, 0);
-				}
-				// step 5: we close the document
-				document.close();
-			}
+                pagenumber = i + 1;
+                filename = String.valueOf(pagenumber);
+                while (filename.length() < digits) filename = "0" + filename;
+                filename = "_" + filename + ".pdf";
+                // step 1: creation of a document-object
+                document = new Document(reader.getPageSizeWithRotation(pagenumber));
+                // step 2: we create a writer that listens to the document
+                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File(directory, name + filename)));
+                // step 3: we open the document
+                document.open();
+                PdfContentByte cb = writer.getDirectContent();
+                PdfImportedPage page = writer.getImportedPage(reader, pagenumber);
+                int rotation = reader.getPageRotation(pagenumber);
+                if (rotation == 90 || rotation == 270) {
+                    cb.addTemplate(page, 0, -1f, 1f, 0, 0, reader.getPageSizeWithRotation(pagenumber).getHeight());
+                }
+                else {
+                    cb.addTemplate(page, 1f, 0, 0, 1f, 0, 0);
+                }
+                // step 5: we close the document
+                document.close();
+            }
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -146,12 +146,12 @@ public class Burst extends AbstractTool {
      * @param arg StringArgument
      */
     public void valueHasChanged(AbstractArgument arg) {
-		if (internalFrame == null) {
-			// if the internal frame is null, the tool was called from the command line
-			return;
-		}
-		// represent the changes of the argument in the internal frame
-	}
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the command line
+            return;
+        }
+        // represent the changes of the argument in the internal frame
+    }
 
 
     /**
@@ -160,13 +160,13 @@ public class Burst extends AbstractTool {
      * @param args String[]
      */
     public static void main(String[] args) {
-    	Burst tool = new Burst();
-    	if (args.length < 1) {
-    		System.err.println(tool.getUsage());
-    	}
-    	tool.setMainArguments(args);
+        Burst tool = new Burst();
+        if (args.length < 1) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
         tool.execute();
-	}
+    }
 
     /**
      *
@@ -175,6 +175,6 @@ public class Burst extends AbstractTool {
      * @return File
      */
     protected File getDestPathPDF() throws InstantiationException {
-		throw new InstantiationException("There is more than one destfile.");
-	}
+        throw new InstantiationException("There is more than one destfile.");
+    }
 }

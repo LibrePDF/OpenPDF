@@ -43,9 +43,9 @@ import javax.swing.text.StyleContext;
  */
 public class Console implements Observer {
 
-	/** Single Console instance. */
-	private static Console console = null;
-	
+    /** Single Console instance. */
+    private static Console console = null;
+    
     /** Custom PrintStream. */
     PrintStream printStream;
     /** Custom OutputStream. */
@@ -55,7 +55,7 @@ public class Console implements Observer {
     
     /** OutputStream for System.out. */
     PipedOutputStream poOut;
-	/** InputStream for System.out. */
+    /** InputStream for System.out. */
     PipedInputStream piOut;
 
     /** OutputStream for System.err. */
@@ -74,11 +74,11 @@ public class Console implements Observer {
      * @throws IOException
      */
     private Console() throws IOException {
-    	// Set up Custom
-    	piCustom = new PipedInputStream();
-    	poCustom = new PipedOutputStream();
+        // Set up Custom
+        piCustom = new PipedInputStream();
+        poCustom = new PipedOutputStream();
         printStream = new PrintStream(poCustom);
-    	
+        
         // Set up System.out
         piOut = new PipedInputStream();
         poOut = new PipedOutputStream(piOut);
@@ -102,69 +102,69 @@ public class Console implements Observer {
      * Console is a Singleton class: you can only get one Console.
      */
     public static synchronized Console getInstance() {
-    	if (console == null) {
-    		try {
-				console = new Console();
-			} catch (IOException e) {
-				console = null;
-			}
-    	}
-    	return console;
+        if (console == null) {
+            try {
+                console = new Console();
+            } catch (IOException e) {
+                console = null;
+            }
+        }
+        return console;
     }
 
-	/**
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	public void update(Observable observable, Object obj) {
-		if (RupsMenuBar.CLOSE.equals(obj)) {
-			textArea.setText("");
-		}
-		if (RupsMenuBar.OPEN.equals(obj)) {
-			textArea.setText("");
-		}
-	}
-	
+    /**
+     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+     */
+    public void update(Observable observable, Object obj) {
+        if (RupsMenuBar.CLOSE.equals(obj)) {
+            textArea.setText("");
+        }
+        if (RupsMenuBar.OPEN.equals(obj)) {
+            textArea.setText("");
+        }
+    }
+    
     /**
      * Allows you to print something to the custom PrintStream.
-     * @param	s	the message you want to send to the Console
+     * @param    s    the message you want to send to the Console
      */
-	public static void println(String s) {
-		PrintStream ps = getInstance().getPrintStream();
-		if (ps == null) {
-			System.out.println(s);
-		}
-		else {
-			ps.println(s);
-			ps.flush();
-		}
-	}
+    public static void println(String s) {
+        PrintStream ps = getInstance().getPrintStream();
+        if (ps == null) {
+            System.out.println(s);
+        }
+        else {
+            ps.println(s);
+            ps.flush();
+        }
+    }
 
     /**
      * Get the custom PrintStream of the console.
      */
-	public PrintStream getPrintStream() {
-		return printStream;
-	}
+    public PrintStream getPrintStream() {
+        return printStream;
+    }
 
-	/**
-	 * Get the JTextArea to which everything is written.
-	 */
-	public JTextPane getTextArea() {
-		return textArea;
-	}
+    /**
+     * Get the JTextArea to which everything is written.
+     */
+    public JTextPane getTextArea() {
+        return textArea;
+    }
     
-	/**
-	 * The thread that will write everything to the text area.
-	 */
+    /**
+     * The thread that will write everything to the text area.
+     */
     class ReadWriteThread extends Thread {
-    	/** The InputStream of this Thread */
+        /** The InputStream of this Thread */
         PipedInputStream pi;
         /** The type (CUSTOM, SYSTEMOUT, SYSTEMERR) of this Thread */
         String type;
 
         /** Create the ReaderThread. */
         ReadWriteThread(PipedInputStream pi, String type) {
-        	super();
+            super();
             this.pi = pi;
             this.type = type;
         }
@@ -194,7 +194,7 @@ public class Console implements Observer {
                 }
             }
         }
-    }	
+    }    
     
     /**
      * The style context defining the styles of each type of PrintStream.
@@ -202,13 +202,13 @@ public class Console implements Observer {
     class ConsoleStyleContext extends StyleContext {
 
         /** A Serial Version UID. */
-		private static final long serialVersionUID = 7253870053566811171L;
-		/** The name of the Style used for Custom messages */
-		public static final String CUSTOM = "Custom";
-		/** The name of the Style used for System.out */
+        private static final long serialVersionUID = 7253870053566811171L;
+        /** The name of the Style used for Custom messages */
+        public static final String CUSTOM = "Custom";
+        /** The name of the Style used for System.out */
         public static final String SYSTEMOUT = "SystemOut";
-		/** The name of the Style used for System.err */
-		public static final String SYSTEMERR = "SystemErr";
+        /** The name of the Style used for System.err */
+        public static final String SYSTEMERR = "SystemErr";
 
         /** Creates the style context for the Console. */
         public ConsoleStyleContext() {

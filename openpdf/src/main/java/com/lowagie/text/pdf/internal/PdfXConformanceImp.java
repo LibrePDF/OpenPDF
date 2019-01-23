@@ -98,33 +98,33 @@ public class PdfXConformanceImp implements PdfXConformance {
         this.pdfxConformance = pdfxConformance;
     }
 
-	/**
-	 * @see com.lowagie.text.pdf.interfaces.PdfXConformance#getPDFXConformance()
-	 */
-	public int getPDFXConformance() {
-		return pdfxConformance;
-	}
+    /**
+     * @see com.lowagie.text.pdf.interfaces.PdfXConformance#getPDFXConformance()
+     */
+    public int getPDFXConformance() {
+        return pdfxConformance;
+    }
     
     /**
      * Checks if the PDF/X Conformance is necessary.
      * @return true if the PDF has to be in conformance with any of the PDF/X specifications
      */
     public boolean isPdfX() {
-    	return pdfxConformance != PdfWriter.PDFXNONE;
+        return pdfxConformance != PdfWriter.PDFXNONE;
     }
     /**
      * Checks if the PDF has to be in conformance with PDF/X-1a:2001
      * @return true of the PDF has to be in conformance with PDF/X-1a:2001
      */
     public boolean isPdfX1A2001() {
-    	return pdfxConformance == PdfWriter.PDFX1A2001;
+        return pdfxConformance == PdfWriter.PDFX1A2001;
     }
     /**
      * Checks if the PDF has to be in conformance with PDF/X-3:2002
      * @return true of the PDF has to be in conformance with PDF/X-3:2002
      */
     public boolean isPdfX32002() {
-    	return pdfxConformance == PdfWriter.PDFX32002;
+        return pdfxConformance == PdfWriter.PDFX32002;
     }
     
     /**
@@ -132,7 +132,7 @@ public class PdfXConformanceImp implements PdfXConformance {
      * @return true of the PDF has to be in conformance with PDFA1
      */
     public boolean isPdfA1() {
-    	return pdfxConformance == PdfWriter.PDFA1A || pdfxConformance == PdfWriter.PDFA1B;
+        return pdfxConformance == PdfWriter.PDFA1A || pdfxConformance == PdfWriter.PDFA1B;
     }
     
     /**
@@ -140,7 +140,7 @@ public class PdfXConformanceImp implements PdfXConformance {
      * @return true of the PDF has to be in conformance with PDFA1A
      */
     public boolean isPdfA1A() {
-    	return pdfxConformance == PdfWriter.PDFA1A;
+        return pdfxConformance == PdfWriter.PDFA1A;
     }
     
     public void completeInfoDictionary(PdfDictionary info) {
@@ -180,10 +180,10 @@ public class PdfXConformanceImp implements PdfXConformance {
     }
     
     /**
-	 * Business logic that checks if a certain object is in conformance with PDF/X.
-     * @param writer	the writer that is supposed to write the PDF/X file
-     * @param key		the type of PDF/X conformance that has to be checked
-     * @param obj1		the object that is checked for conformance
+     * Business logic that checks if a certain object is in conformance with PDF/X.
+     * @param writer    the writer that is supposed to write the PDF/X file
+     * @param key        the type of PDF/X conformance that has to be checked
+     * @param obj1        the object that is checked for conformance
      */
     public static void checkPDFXConformance(PdfWriter writer, int key, Object obj1) {
         if (writer == null || !writer.isPdfX())

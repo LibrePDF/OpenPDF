@@ -42,7 +42,7 @@ import java.util.Map;
  * This class represents a CMap file.
  *
  * @author Ben Litchfield (ben@benlitchfield.com)
- * @since	2.1.4
+ * @since    2.1.4
  */
 public class CMap
 {

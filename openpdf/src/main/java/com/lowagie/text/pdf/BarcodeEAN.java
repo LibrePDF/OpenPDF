@@ -120,19 +120,19 @@ public class BarcodeEAN extends Barcode{
             };
     
     /** The total number of bars for EAN13.*/
-	private static final int TOTALBARS_EAN13 = 11 + 12 * 4;
+    private static final int TOTALBARS_EAN13 = 11 + 12 * 4;
     /** The total number of bars for EAN8.*/
-	private static final int TOTALBARS_EAN8 = 11 + 8 * 4;
+    private static final int TOTALBARS_EAN8 = 11 + 8 * 4;
     /** The total number of bars for UPCE.*/
-	private static final int TOTALBARS_UPCE = 9 + 6 * 4;
+    private static final int TOTALBARS_UPCE = 9 + 6 * 4;
     /** The total number of bars for supplemental 2.*/
-	private static final int TOTALBARS_SUPP2 = 13;
+    private static final int TOTALBARS_SUPP2 = 13;
     /** The total number of bars for supplemental 5.*/
-	private static final int TOTALBARS_SUPP5 = 31;
+    private static final int TOTALBARS_SUPP5 = 31;
     /** Marker for odd parity.*/
-	private static final int ODD = 0;
+    private static final int ODD = 0;
     /** Marker for even parity.*/
-	private static final int EVEN = 1;
+    private static final int EVEN = 1;
 
     /**
      * Sequence of parities to be used with EAN13.

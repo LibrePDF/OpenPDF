@@ -22,26 +22,26 @@ import com.lowagie.text.pdf.PdfReader;
  * Getting information from a PDF file.
  */
 public class Info {
-	/**
-	 * Getting information from a PDF file
-	 * @param args 	the names of paths to PDF files.
-	 */
-	public static void main(String[] args) {
-		try {
-		BufferedWriter out = new BufferedWriter(new FileWriter("info.txt"));
+    /**
+     * Getting information from a PDF file
+     * @param args     the names of paths to PDF files.
+     */
+    public static void main(String[] args) {
+        try {
+        BufferedWriter out = new BufferedWriter(new FileWriter("info.txt"));
         for (int i = 0; i < args.length; i++) { 
-        	PdfReader r = new PdfReader(args[i]);
+            PdfReader r = new PdfReader(args[i]);
             out.write(args[i]);
             out.write("\r\n------------------------------------\r\n");
-        	out.write(r.getInfo().toString());
-        	out.write("\r\n------------------------------------\r\n");
+            out.write(r.getInfo().toString());
+            out.write("\r\n------------------------------------\r\n");
         }
         out.flush();
         out.close();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

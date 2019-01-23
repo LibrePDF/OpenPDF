@@ -59,8 +59,8 @@ package com.lowagie.text.pdf;
  * This object is described in the 'Portable Document Format Reference Manual version 1.3'
  * section 4.11 (page 54).
  *
- * @see		PdfObject
- * @see		PdfIndirectObject
+ * @see        PdfObject
+ * @see        PdfIndirectObject
  */
 
 public class PdfIndirectReference extends PdfObject {
@@ -82,9 +82,9 @@ public class PdfIndirectReference extends PdfObject {
 /**
  * Constructs a <CODE>PdfIndirectReference</CODE>.
  *
- * @param		type			the type of the <CODE>PdfObject</CODE> that is referenced to
- * @param		number			the object number.
- * @param		generation		the generation number.
+ * @param        type            the type of the <CODE>PdfObject</CODE> that is referenced to
+ * @param        number            the object number.
+ * @param        generation        the generation number.
  */
     
     PdfIndirectReference(int type, int number, int generation) {
@@ -96,8 +96,8 @@ public class PdfIndirectReference extends PdfObject {
 /**
  * Constructs a <CODE>PdfIndirectReference</CODE>.
  *
- * @param		type			the type of the <CODE>PdfObject</CODE> that is referenced to
- * @param		number			the object number.
+ * @param        type            the type of the <CODE>PdfObject</CODE> that is referenced to
+ * @param        number            the object number.
  */
     
     PdfIndirectReference(int type, int number) {
@@ -109,7 +109,7 @@ public class PdfIndirectReference extends PdfObject {
 /**
  * Returns the number of the object.
  *
- * @return		a number.
+ * @return        a number.
  */
     
     public int getNumber() {
@@ -119,7 +119,7 @@ public class PdfIndirectReference extends PdfObject {
 /**
  * Returns the generation of the object.
  *
- * @return		a number.
+ * @return        a number.
  */
     
     public int getGeneration() {
@@ -127,6 +127,6 @@ public class PdfIndirectReference extends PdfObject {
     }
     
     public String toString() {
-    	return new StringBuffer().append(number).append(" ").append(generation).append(" R").toString();
+        return new StringBuffer().append(number).append(" ").append(generation).append(" R").toString();
     }
 }

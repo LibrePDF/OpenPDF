@@ -170,10 +170,10 @@ class Type1Font extends BaseFont
      * @param emb true if the font is to be embedded in the PDF
      * @throws DocumentException the AFM file is invalid
      * @throws IOException the AFM file could not be read
-     * @since	2.1.5
+     * @since    2.1.5
      */
     Type1Font(String afmFile, String enc, boolean emb, byte[] ttfAfm, byte[] pfb, boolean forceRead)
-    	throws DocumentException, IOException {
+        throws DocumentException, IOException {
         if (emb && ttfAfm != null && pfb == null)
             throw new DocumentException(MessageLocalization.getComposedMessage("two.byte.arrays.are.needed.if.the.type1.font.is.embedded"));
         if (emb && ttfAfm != null)

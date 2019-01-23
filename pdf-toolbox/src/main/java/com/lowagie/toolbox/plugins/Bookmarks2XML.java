@@ -56,52 +56,52 @@ import com.lowagie.toolbox.arguments.filters.PdfFilter;
  */
 public class Bookmarks2XML extends AbstractTool {
 
-	static {
-		addVersion("$Id: Bookmarks2XML.java 3271 2008-04-18 20:39:42Z xlv $");
-	}
+    static {
+        addVersion("$Id: Bookmarks2XML.java 3271 2008-04-18 20:39:42Z xlv $");
+    }
 
-	/**
-	 * Constructs an Bookmarks2XML object.
-	 */
-	public Bookmarks2XML() {
-		arguments.add(new FileArgument(this, "pdffile", "the PDF from which you want to extract bookmarks", false, new PdfFilter()));
-		arguments.add(new FileArgument(this, "xmlfile", "the resulting bookmarks file in XML", true));
-	}
+    /**
+     * Constructs an Bookmarks2XML object.
+     */
+    public Bookmarks2XML() {
+        arguments.add(new FileArgument(this, "pdffile", "the PDF from which you want to extract bookmarks", false, new PdfFilter()));
+        arguments.add(new FileArgument(this, "xmlfile", "the resulting bookmarks file in XML", true));
+    }
 
-	/**
-	 * @see com.lowagie.toolbox.AbstractTool#createFrame()
-	 */
-	protected void createFrame() {
-		internalFrame = new JInternalFrame("Bookmarks2XML", true, true, true);
-		internalFrame.setSize(300, 80);
-		internalFrame.setJMenuBar(getMenubar());
-		System.out.println("=== Bookmarks2XML OPENED ===");
-	}
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     */
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("Bookmarks2XML", true, true, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== Bookmarks2XML OPENED ===");
+    }
 
-	/**
-	 * @see com.lowagie.toolbox.AbstractTool#execute()
-	 */
-	public void execute() {
-		try {
-			if (getValue("xmlfile") == null) throw new InstantiationException("You need to choose an xml file");
-			if (getValue("pdffile") == null) throw new InstantiationException("You need to choose a source PDF file");
-			PdfReader reader = new PdfReader(((File)getValue("pdffile")).getAbsolutePath());
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#execute()
+     */
+    public void execute() {
+        try {
+            if (getValue("xmlfile") == null) throw new InstantiationException("You need to choose an xml file");
+            if (getValue("pdffile") == null) throw new InstantiationException("You need to choose a source PDF file");
+            PdfReader reader = new PdfReader(((File)getValue("pdffile")).getAbsolutePath());
             reader.consolidateNamedDestinations();
             List<HashMap<String, Object>> bookmarks = SimpleBookmark.getBookmark( reader );
             // save them in XML format
             FileOutputStream bmWriter = new FileOutputStream( (File)getValue("xmlfile") );
             SimpleBookmark.exportToXML(bookmarks, bmWriter, "UTF-8", false);
             bmWriter.close();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-        	JOptionPane.showMessageDialog(internalFrame,
-        		    e.getMessage(),
-        		    e.getClass().getName(),
-        		    JOptionPane.ERROR_MESSAGE);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(internalFrame,
+                    e.getMessage(),
+                    e.getClass().getName(),
+                    JOptionPane.ERROR_MESSAGE);
             System.err.println(e.getMessage());
-		}
-	}
+        }
+    }
 
     /**
      *
@@ -109,12 +109,12 @@ public class Bookmarks2XML extends AbstractTool {
      * @param arg StringArgument
      */
     public void valueHasChanged(AbstractArgument arg) {
-		if (internalFrame == null) {
-			// if the internal frame is null, the tool was called from the command line
-			return;
-		}
-		// represent the changes of the argument in the internal frame
-	}
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the command line
+            return;
+        }
+        // represent the changes of the argument in the internal frame
+    }
 
     /**
      * Allows you to generate an index file in HTML containing Bookmarks to an existing PDF file.
@@ -122,11 +122,11 @@ public class Bookmarks2XML extends AbstractTool {
      * @param args String[]
      */
     public static void main(String[] args) {
-    	Bookmarks2XML tool = new Bookmarks2XML();
-    	if (args.length < 2) {
-    		System.err.println(tool.getUsage());
-    	}
-    	tool.setMainArguments(args);
+        Bookmarks2XML tool = new Bookmarks2XML();
+        if (args.length < 2) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
         tool.execute();
     }
 
@@ -137,7 +137,7 @@ public class Bookmarks2XML extends AbstractTool {
      * @return File
      */
     protected File getDestPathPDF() throws InstantiationException {
-		throw new InstantiationException("There is no file to show.");
-	}
+        throw new InstantiationException("There is no file to show.");
+    }
 
 }
