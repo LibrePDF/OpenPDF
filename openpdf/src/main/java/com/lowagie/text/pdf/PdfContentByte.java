@@ -1114,7 +1114,7 @@ public class PdfContentByte {
     public void addImage(Image image, boolean inlineImage) throws DocumentException {
         if (!image.hasAbsoluteY())
             throw new DocumentException(MessageLocalization.getComposedMessage("the.image.must.have.absolute.positioning"));
-        float matrix[] = image.matrix();
+        float[] matrix = image.matrix();
         matrix[Image.CX] = image.getAbsoluteX() - matrix[Image.CX];
         matrix[Image.CY] = image.getAbsoluteY() - matrix[Image.CY];
         addImage(image, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], inlineImage);
@@ -1425,7 +1425,7 @@ public class PdfContentByte {
     private void showText2(String text) {
         if (state.fontDetails == null)
             throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
-        byte b[] = state.fontDetails.convertToBytes(text);
+        byte[] b = state.fontDetails.convertToBytes(text);
         escapeString(b, content);
     }
 
@@ -1455,7 +1455,7 @@ public class PdfContentByte {
         PdfTextArray pa = new PdfTextArray();
         StringBuffer acc = new StringBuffer();
         int len = text.length() - 1;
-        char c[] = text.toCharArray();
+        char[] c = text.toCharArray();
         if (len >= 0)
             acc.append(c, 0, 1);
         for (int k = 0; k < len; ++k) {
@@ -1602,7 +1602,7 @@ public class PdfContentByte {
      * @param b the <CODE>byte</CODE> array to escape
      * @return an escaped <CODE>byte</CODE> array
      */
-    static byte[] escapeString(byte b[]) {
+    static byte[] escapeString(byte[] b) {
         ByteBuffer content = new ByteBuffer();
         escapeString(b, content);
         return content.toByteArray();
@@ -1614,7 +1614,7 @@ public class PdfContentByte {
      * @param b the <CODE>byte</CODE> array to escape
      * @param content the content
      */
-    static void escapeString(byte b[], ByteBuffer content) {
+    static void escapeString(byte[] b, ByteBuffer content) {
         content.append_i('(');
         for (int k = 0; k < b.length; ++k) {
             byte c = b[k];
@@ -1887,7 +1887,7 @@ public class PdfContentByte {
         List<float[]> ar = bezierArc(x1, y1, x2, y2, startAng, extent);
         if (ar.isEmpty())
             return;
-        float pt[] = ar.get(0);
+        float[] pt = ar.get(0);
         moveTo(pt[0], pt[1]);
         for (float[] anAr : ar) {
             pt = anAr;
@@ -2933,7 +2933,7 @@ public class PdfContentByte {
      * @param gstate the graphic state
      */
     public void setGState(PdfGState gstate) {
-        PdfObject obj[] = writer.addSimpleExtGState(gstate);
+        PdfObject[] obj = writer.addSimpleExtGState(gstate);
         PageResources prs = getPageResources();
         PdfName name = prs.addExtGState((PdfName)obj[0], (PdfIndirectReference)obj[1]);
         content.append(name.getBytes()).append(" gs").append_i(separator);
@@ -2996,7 +2996,7 @@ public class PdfContentByte {
      * @param af the transformation
      */
     public void transform(AffineTransform af) {
-        double arr[] = new double[6];
+        double[] arr = new double[6];
         af.getMatrix(arr);
         content.append(arr[0]).append(' ').append(arr[1]).append(' ').append(arr[2]).append(' ');
         content.append(arr[3]).append(' ').append(arr[4]).append(' ').append(arr[5]).append(" cm").append_i(separator);

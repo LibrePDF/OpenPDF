@@ -51,7 +51,7 @@ public class XMLUtil {
      * @return the escaped string
      */    
     public static String escapeXML(String s, boolean onlyASCII) {
-        char cc[] = s.toCharArray();
+        char[] cc = s.toCharArray();
         int len = cc.length;
         StringBuilder sb = new StringBuilder();
         for (int k = 0; k < len; ++k) {

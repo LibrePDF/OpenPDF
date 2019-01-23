@@ -131,7 +131,7 @@ public class CMapAwareDocumentFont extends DocumentFont {
 	 */
 	private void processUni2Byte() {
 		IntHashtable uni2byte = getUni2Byte();
-		int e[] = uni2byte.toOrderedKeys();
+		int[] e = uni2byte.toOrderedKeys();
 
 		cidbyte2uni = new char[256];
 		for (int element : e) {

@@ -270,15 +270,21 @@ public abstract class BaseFont {
 	/** a not defined character in a custom PDF encoding */
 	public static final String notdef = ".notdef";
 
-	/** table of characters widths for this encoding */
-	protected int widths[] = new int[256];
+	/**
+	 * table of characters widths for this encoding
+	 */
+	protected int[] widths = new int[256];
 
-	/** encoding names */
-	protected String differences[] = new String[256];
-	/** same as differences but with the unicode codes */
-	protected char unicodeDifferences[] = new char[256];
+	/**
+	 * encoding names
+	 */
+	protected String[] differences = new String[256];
+	/**
+	 * same as differences but with the unicode codes
+	 */
+	protected char[] unicodeDifferences = new char[256];
 
-	protected int charBBoxes[][] = new int[256][];
+	protected int[][] charBBoxes = new int[256][];
 	/** encoding used with this font */
 	protected String encoding;
 
@@ -371,7 +377,7 @@ public abstract class BaseFont {
 		 * @since 2.1.3 (replaces the constructor without param
 		 *        compressionLevel)
 		 */
-		public StreamFont(byte contents[], int lengths[], int compressionLevel)
+		public StreamFont(byte[] contents, int[] lengths, int compressionLevel)
 				throws DocumentException {
 			try {
 				bytes = contents;
@@ -400,7 +406,7 @@ public abstract class BaseFont {
 		 * @since 2.1.3 (replaces the constructor without param
 		 *        compressionLevel)
 		 */
-		public StreamFont(byte contents[], String subType, int compressionLevel)
+		public StreamFont(byte[] contents, String subType, int compressionLevel)
 				throws DocumentException {
 			try {
 				bytes = contents;
@@ -642,7 +648,7 @@ public abstract class BaseFont {
 	 * @since iText 0.80
 	 */
 	public static BaseFont createFont(String name, String encoding,
-			boolean embedded, boolean cached, byte ttfAfm[], byte pfb[])
+									  boolean embedded, boolean cached, byte[] ttfAfm, byte[] pfb)
 			throws DocumentException, IOException {
 		return createFont(name, encoding, embedded, cached, ttfAfm, pfb, false);
 	}
@@ -721,8 +727,8 @@ public abstract class BaseFont {
 	 * @since 2.0.3
 	 */
 	public static BaseFont createFont(String name, String encoding,
-			boolean embedded, boolean cached, byte ttfAfm[], byte pfb[],
-			boolean noThrow) throws DocumentException, IOException {
+									  boolean embedded, boolean cached, byte[] ttfAfm, byte[] pfb,
+									  boolean noThrow) throws DocumentException, IOException {
 		return createFont(name, encoding, embedded, cached, ttfAfm, pfb, false,
 				false);
 	}
@@ -804,8 +810,8 @@ public abstract class BaseFont {
 	 * @since 2.1.5
 	 */
 	public static BaseFont createFont(String name, String encoding,
-			boolean embedded, boolean cached, byte ttfAfm[], byte pfb[],
-			boolean noThrow, boolean forceRead) throws DocumentException,
+									  boolean embedded, boolean cached, byte[] ttfAfm, byte[] pfb,
+									  boolean noThrow, boolean forceRead) throws DocumentException,
 			IOException {
 		String nameBase = getBaseName(name);
 		encoding = normalizeEncoding(encoding);
@@ -965,7 +971,7 @@ public abstract class BaseFont {
 			String s;
 			String name;
 			char c;
-			byte b[] = new byte[1];
+			byte[] b = new byte[1];
 			for (int k = 0; k < 256; ++k) {
 				b[0] = (byte) k;
 				s = PdfEncodings.convertToString(b, encoding);
@@ -1040,7 +1046,7 @@ public abstract class BaseFont {
 			}
 		} else {
 			int total = 0;
-			byte mbytes[] = convertToBytes((char) char1);
+			byte[] mbytes = convertToBytes((char) char1);
 			for (byte mbyte : mbytes) {
 				total += widths[0xff & mbyte];
 			}
@@ -1069,7 +1075,7 @@ public abstract class BaseFont {
 			}
 			return total;
 		} else {
-			byte mbytes[] = convertToBytes(text);
+			byte[] mbytes = convertToBytes(text);
 			for (byte mbyte : mbytes) {
 				total += widths[0xff & mbyte];
 			}
@@ -1088,9 +1094,9 @@ public abstract class BaseFont {
 	 */
 	public int getDescent(String text) {
 		int min = 0;
-		char chars[] = text.toCharArray();
+		char[] chars = text.toCharArray();
 		for (char c : chars) {
-			int bbox[] = getCharBBox(c);
+			int[] bbox = getCharBBox(c);
 			if (bbox != null && bbox[1] < min) {
 				min = bbox[1];
 			}
@@ -1109,9 +1115,9 @@ public abstract class BaseFont {
 	 */
 	public int getAscent(String text) {
 		int max = 0;
-		char chars[] = text.toCharArray();
+		char[] chars = text.toCharArray();
 		for (char c : chars) {
-			int bbox[] = getCharBBox(c);
+			int[] bbox = getCharBBox(c);
 			if (bbox != null && bbox[3] > max) {
 				max = bbox[3];
 			}
@@ -1168,7 +1174,7 @@ public abstract class BaseFont {
 		}
 		int len = text.length() - 1;
 		int kern = 0;
-		char c[] = text.toCharArray();
+		char[] c = text.toCharArray();
 		for (int k = 0; k < len; ++k) {
 			kern += getKerning(c[k], c[k + 1]);
 		}
@@ -1273,7 +1279,7 @@ public abstract class BaseFont {
 	 *             error in generating the object
 	 */
 	abstract void writeFont(PdfWriter writer, PdfIndirectReference ref,
-			Object params[]) throws DocumentException, IOException;
+							Object[] params) throws DocumentException, IOException;
 
 	/**
 	 * Returns a PdfStream object with the full font program (if possible). This
@@ -1427,7 +1433,7 @@ public abstract class BaseFont {
 	 * @return the full name of the font
 	 */
 	public static String[][] getFullFontName(String name, String encoding,
-			byte ttfAfm[]) throws DocumentException, IOException {
+											 byte[] ttfAfm) throws DocumentException, IOException {
 		String nameBase = getBaseName(name);
 		BaseFont fontBuilt = null;
 		if (nameBase.toLowerCase().endsWith(".ttf")
@@ -1458,7 +1464,7 @@ public abstract class BaseFont {
 	 *         getFamilyFontName(), getFullFontName()}
 	 */
 	public static Object[] getAllFontNames(String name, String encoding,
-			byte ttfAfm[]) throws DocumentException, IOException {
+										   byte[] ttfAfm) throws DocumentException, IOException {
 		String nameBase = getBaseName(name);
 		BaseFont fontBuilt = null;
 		if (nameBase.toLowerCase().endsWith(".ttf")
@@ -1492,7 +1498,7 @@ public abstract class BaseFont {
 	 * @since 2.0.8
 	 */
 	public static String[][] getAllNameEntries(String name, String encoding,
-			byte ttfAfm[]) throws DocumentException, IOException {
+											   byte[] ttfAfm) throws DocumentException, IOException {
 		String nameBase = getBaseName(name);
 		BaseFont fontBuilt = null;
 		if (nameBase.toLowerCase().endsWith(".ttf")
@@ -1557,7 +1563,7 @@ public abstract class BaseFont {
 	 *             on error
 	 * @return the postscript font names
 	 */
-	public static String[] enumerateTTCNames(byte ttcArray[])
+	public static String[] enumerateTTCNames(byte[] ttcArray)
 			throws DocumentException, IOException {
 		return new EnumerateTTC(ttcArray).getNames();
 	}
@@ -1748,7 +1754,7 @@ public abstract class BaseFont {
 	 *         <CODE>false</CODE> otherwise
 	 */
 	public boolean charExists(int c) {
-		byte b[] = convertToBytes(c);
+		byte[] b = convertToBytes(c);
 		return b.length > 0;
 	}
 
@@ -1763,7 +1769,7 @@ public abstract class BaseFont {
 	 *         otherwise
 	 */
 	public boolean setCharAdvance(int c, int advance) {
-		byte b[] = convertToBytes(c);
+		byte[] b = convertToBytes(c);
 		if (b.length == 0) {
 			return false;
 		}
@@ -1872,7 +1878,7 @@ public abstract class BaseFont {
 	 *         [llx,lly,urx,ury] or <code>null</code>
 	 */
 	public int[] getCharBBox(int c) {
-		byte b[] = convertToBytes(c);
+		byte[] b = convertToBytes(c);
 		if (b.length == 0) {
 			return null;
 		} else {

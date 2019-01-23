@@ -400,7 +400,7 @@ public class PdfAnnotation extends PdfDictionary {
     return annot;
   }
 
-  public static PdfAnnotation createMarkup(PdfWriter writer, Rectangle rect, String contents, int type, float quadPoints[]) {
+  public static PdfAnnotation createMarkup(PdfWriter writer, Rectangle rect, String contents, int type, float[] quadPoints) {
     PdfAnnotation annot = new PdfAnnotation(writer, rect);
     PdfName name = PdfName.HIGHLIGHT;
     switch (type) {
@@ -437,14 +437,14 @@ public class PdfAnnotation extends PdfDictionary {
     return annot;
   }
 
-  public static PdfAnnotation createInk(PdfWriter writer, Rectangle rect, String contents, float inkList[][]) {
+  public static PdfAnnotation createInk(PdfWriter writer, Rectangle rect, String contents, float[][] inkList) {
     PdfAnnotation annot = new PdfAnnotation(writer, rect);
     annot.put(PdfName.SUBTYPE, PdfName.INK);
     annot.put(PdfName.CONTENTS, new PdfString(contents, PdfObject.TEXT_UNICODE));
     PdfArray outer = new PdfArray();
     for (int k = 0; k < inkList.length; ++k) {
       PdfArray inner = new PdfArray();
-      float deep[] = inkList[k];
+        float[] deep = inkList[k];
       for (int j = 0; j < deep.length; ++j) {
         inner.add(new PdfNumber(deep[j]));
       }
@@ -467,8 +467,8 @@ public class PdfAnnotation extends PdfDictionary {
    * @return the annotation
    * @throws IOException on error
    */
-  public static PdfAnnotation createFileAttachment(PdfWriter writer, Rectangle rect, String contents, byte fileStore[], String file,
-      String fileDisplay) throws IOException {
+  public static PdfAnnotation createFileAttachment(PdfWriter writer, Rectangle rect, String contents, byte[] fileStore, String file,
+                                                   String fileDisplay) throws IOException {
     return createFileAttachment(writer, rect, contents, PdfFileSpecification.fileEmbedded(writer, file, fileDisplay, fileStore));
   }
 
@@ -506,7 +506,7 @@ public class PdfAnnotation extends PdfDictionary {
   }
 
   public void setDefaultAppearanceString(PdfContentByte cb) {
-    byte b[] = cb.getInternalBuffer().toByteArray();
+      byte[] b = cb.getInternalBuffer().toByteArray();
     int len = b.length;
     for (int k = 0; k < len; ++k) {
       if (b[k] == '\n') {

@@ -56,7 +56,7 @@ import java.util.HashMap;
 
 public class ChainedProperties {
 
-	public final static int fontSizes[] = { 8, 10, 12, 14, 18, 24, 36 };
+    public final static int[] fontSizes = {8, 10, 12, 14, 18, 24, 36};
 
 	public ArrayList chain = new ArrayList();
 
@@ -66,7 +66,7 @@ public class ChainedProperties {
 
 	public String getProperty(String key) {
 		for (int k = chain.size() - 1; k >= 0; --k) {
-			Object obj[] = (Object[]) chain.get(k);
+            Object[] obj = (Object[]) chain.get(k);
 			HashMap prop = (HashMap) obj[1];
 			String ret = (String) prop.get(key);
 			if (ret != null)
@@ -77,7 +77,7 @@ public class ChainedProperties {
 
 	public boolean hasProperty(String key) {
 		for (int k = chain.size() - 1; k >= 0; --k) {
-			Object obj[] = (Object[]) chain.get(k);
+            Object[] obj = (Object[]) chain.get(k);
 			HashMap prop = (HashMap) obj[1];
 			if (prop.containsKey(key))
 				return true;

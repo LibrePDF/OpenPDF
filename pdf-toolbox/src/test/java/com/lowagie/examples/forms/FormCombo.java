@@ -54,7 +54,7 @@ public class FormCombo {
             // step 4:
             PdfContentByte cb = writer.getDirectContent();
             cb.moveTo(0, 0);
-            String options[] = {"Red", "Green", "Blue"};
+            String[] options = {"Red", "Green", "Blue"};
             PdfFormField field = PdfFormField.createCombo(writer, true, options, 0);
             field.setWidget(new Rectangle(100, 700, 180, 720), PdfAnnotation.HIGHLIGHT_INVERT);
             field.setFieldName("ACombo");

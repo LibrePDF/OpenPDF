@@ -250,7 +250,7 @@ public class PdfDocument extends Document {
                     for (Iterator<Map.Entry<String, Object[]>> i = localDestinations.entrySet().iterator(); i.hasNext();) {
                         Map.Entry<String, Object[]> entry = i.next();
                         String name = entry.getKey();
-                        Object obj[] = entry.getValue();
+                        Object[] obj = entry.getValue();
                         if (obj[2] == null) //no destination
                             continue;
                         PdfIndirectReference ref = (PdfIndirectReference)obj[1];
@@ -1293,7 +1293,7 @@ public class PdfDocument extends Document {
         }
 
         // initialization of some parameters
-        Object currentValues[] = new Object[2];
+        Object[] currentValues = new Object[2];
         PdfFont currentFont = null;
         float displacement = 0;
         PdfLine l;
@@ -1340,7 +1340,7 @@ public class PdfDocument extends Document {
      * @param ratio
      * @throws DocumentException on error
      */
-    void writeLineToContent(PdfLine line, PdfContentByte text, PdfContentByte graphics, Object currentValues[], float ratio)  throws DocumentException {
+    void writeLineToContent(PdfLine line, PdfContentByte text, PdfContentByte graphics, Object[] currentValues, float ratio)  throws DocumentException {
         PdfFont currentFont = (PdfFont)(currentValues[0]);
         float lastBaseFactor = ((Float)(currentValues[1])).floatValue();
         PdfChunk chunk;
@@ -1454,9 +1454,9 @@ public class PdfDocument extends Document {
                         float fontSize = chunk.font().size();
                         float ascender = chunk.font().getFont().getFontDescriptor(BaseFont.ASCENT, fontSize);
                         float descender = chunk.font().getFont().getFontDescriptor(BaseFont.DESCENT, fontSize);
-                        Object bgr[] = (Object[])chunk.getAttribute(Chunk.BACKGROUND);
+                        Object[] bgr = (Object[]) chunk.getAttribute(Chunk.BACKGROUND);
                         graphics.setColorFill((Color)bgr[0]);
-                        float extra[] = (float[])bgr[1];
+                        float[] extra = (float[]) bgr[1];
                         graphics.rectangle(xMarker - extra[0],
                             yMarker + descender - extra[1] + chunk.getTextRise(),
                             width - subtract + extra[0] + extra[2],
@@ -1470,12 +1470,12 @@ public class PdfDocument extends Document {
                             subtract = 0;
                         if (nextChunk == null)
                             subtract += hangingCorrection;
-                        Object unders[][] = (Object[][])chunk.getAttribute(Chunk.UNDERLINE);
+                        Object[][] unders = (Object[][]) chunk.getAttribute(Chunk.UNDERLINE);
                         Color scolor = null;
                         for (int k = 0; k < unders.length; ++k) {
-                            Object obj[] = unders[k];
+                            Object[] obj = unders[k];
                             scolor = (Color)obj[0];
-                            float ps[] = (float[])obj[1];
+                            float[] ps = (float[]) obj[1];
                             if (scolor == null)
                                 scolor = color;
                             if (scolor != null)
@@ -1510,7 +1510,7 @@ public class PdfDocument extends Document {
                             subtract = 0;
                         if (nextChunk == null)
                             subtract += hangingCorrection;
-                        Object obj[] = (Object[])chunk.getAttribute(Chunk.REMOTEGOTO);
+                        Object[] obj = (Object[]) chunk.getAttribute(Chunk.REMOTEGOTO);
                         String filename = (String)obj[0];
                         if (obj[1] instanceof String)
                             remoteGoto(filename, (String)obj[1], xMarker, yMarker, xMarker + width - subtract, yMarker + chunk.font().size());
@@ -1557,7 +1557,7 @@ public class PdfDocument extends Document {
                         annot.put(PdfName.RECT, new PdfRectangle(xMarker, yMarker + descender, xMarker + width - subtract, yMarker + ascender));
                         text.addAnnotation(annot);
                     }
-                    float params[] = (float[])chunk.getAttribute(Chunk.SKEW);
+                    float[] params = (float[]) chunk.getAttribute(Chunk.SKEW);
                     Float hs = (Float)chunk.getAttribute(Chunk.HSCALE);
                     if (params != null || hs != null) {
                         float b = 0, c = 0;
@@ -1575,7 +1575,7 @@ public class PdfDocument extends Document {
 					}
                     if (chunk.isImage()) {
                         Image image = chunk.getImage();
-                        float matrix[] = image.matrix();
+                        float[] matrix = image.matrix();
                         matrix[Image.CX] = xMarker + chunk.getImageOffsetX() - matrix[Image.CX];
                         matrix[Image.CY] = yMarker + chunk.getImageOffsetY() - matrix[Image.CY];
                         graphics.addImage(image, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5]);
@@ -1591,7 +1591,7 @@ public class PdfDocument extends Document {
                 text.setFontAndSize(currentFont.getFont(), currentFont.size());
             }
             float rise = 0;
-            Object textRender[] = (Object[])chunk.getAttribute(Chunk.TEXTRENDERMODE);
+            Object[] textRender = (Object[]) chunk.getAttribute(Chunk.TEXTRENDERMODE);
             int tr = 0;
             float strokeWidth = 1;
             Color strokeColor = null;
@@ -2053,7 +2053,7 @@ public class PdfDocument extends Document {
 
     PdfAction getLocalGotoAction(String name) {
         PdfAction action;
-        Object obj[] = localDestinations.get(name);
+        Object[] obj = localDestinations.get(name);
         if (obj == null)
             obj = new Object[3];
         if (obj[0] == null) {
@@ -2080,7 +2080,7 @@ public class PdfDocument extends Document {
      * already existed
      */
     boolean localDestination(String name, PdfDestination destination) {
-        Object obj[] = localDestinations.get(name);
+        Object[] obj = localDestinations.get(name);
         if (obj == null)
             obj = new Object[3];
         if (obj[2] != null)
@@ -2425,7 +2425,7 @@ public class PdfDocument extends Document {
             diff += leading;
         }
         float lowerleft = indentTop() - currentHeight - image.getScaledHeight() -diff;
-        float mt[] = image.matrix();
+        float[] mt = image.matrix();
         float startPosition = indentLeft() - mt[4];
         if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT) startPosition = indentRight() - image.getScaledWidth() - mt[4];
         if ((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE) startPosition = indentLeft() + ((indentRight() - indentLeft() - image.getScaledWidth()) / 2) - mt[4];

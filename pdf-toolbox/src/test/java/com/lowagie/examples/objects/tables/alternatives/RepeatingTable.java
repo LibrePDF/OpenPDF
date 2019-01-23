@@ -53,8 +53,8 @@ public class RepeatingTable {
             document.open();
             
             Table datatable = new Table(10);
-            
-            int headerwidths[] = {10, 24, 12, 12, 7, 7, 7, 7, 7, 7};
+
+            int[] headerwidths = {10, 24, 12, 12, 7, 7, 7, 7, 7, 7};
             datatable.setWidths(headerwidths);
             datatable.setWidth(100);
             datatable.setPadding(3);

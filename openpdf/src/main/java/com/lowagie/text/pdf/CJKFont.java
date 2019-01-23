@@ -157,7 +157,7 @@ class CJKFont extends BaseFont {
 			cidDirect = true;
 			String s = cjkFonts.getProperty(fontName);
 			s = s.substring(0, s.indexOf('_'));
-			char c[] = allCMaps.get(s);
+			char[] c = allCMaps.get(s);
 			if (c == null) {
 				c = readCMap(s);
 				if (c == null) {
@@ -171,7 +171,7 @@ class CJKFont extends BaseFont {
 			}
 			translationMap = c;
 		} else {
-			char c[] = allCMaps.get(enc);
+			char[] c = allCMaps.get(enc);
 			if (c == null) {
 				String s = cjkEncodings.getProperty(enc);
 				if (s == null) {
@@ -190,7 +190,7 @@ class CJKFont extends BaseFont {
 				}
 				if (tk.hasMoreTokens()) {
 					String nt2 = tk.nextToken();
-					char m2[] = readCMap(nt2);
+					char[] m2 = readCMap(nt2);
 					for (int k = 0; k < 0x10000; ++k) {
 						if (m2[k] == 0) {
 							m2[k] = c[k];
@@ -315,7 +315,7 @@ class CJKFont extends BaseFont {
 		dic.put(PdfName.SUBTYPE, PdfName.CIDFONTTYPE0);
 		dic.put(PdfName.BASEFONT, new PdfName(fontName + style));
 		dic.put(PdfName.FONTDESCRIPTOR, fontDescriptor);
-		int keys[] = cjkTag.toOrderedKeys();
+		int[] keys = cjkTag.toOrderedKeys();
 		String w = convertToHCIDMetrics(keys, hMetrics);
 		if (w != null) {
 			dic.put(PdfName.W, new PdfLiteral(w));
@@ -354,7 +354,7 @@ class CJKFont extends BaseFont {
 	}
 
 	@Override
-	void writeFont(PdfWriter writer, PdfIndirectReference ref, Object params[])
+	void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params)
 			throws DocumentException, IOException {
 		IntHashtable cjkTag = (IntHashtable) params[0];
 		PdfIndirectReference ind_font = null;
@@ -494,7 +494,7 @@ class CJKFont extends BaseFont {
 		try {
 			name = name + ".cmap";
 			InputStream is = getResourceStream(RESOURCE_PATH + name);
-			char c[] = new char[0x10000];
+			char[] c = new char[0x10000];
 			for (int k = 0; k < 0x10000; ++k) {
 				c[k] = (char) ((is.read() << 8) + is.read());
 			}
@@ -516,7 +516,7 @@ class CJKFont extends BaseFont {
 		return h;
 	}
 
-	static String convertToHCIDMetrics(int keys[], IntHashtable h) {
+	static String convertToHCIDMetrics(int[] keys, IntHashtable h) {
 		if (keys.length == 0) {
 			return null;
 		}
@@ -598,8 +598,8 @@ class CJKFont extends BaseFont {
 		return buf.toString();
 	}
 
-	static String convertToVCIDMetrics(int keys[], IntHashtable v,
-			IntHashtable h) {
+	static String convertToVCIDMetrics(int[] keys, IntHashtable v,
+									   IntHashtable h) {
 		if (keys.length == 0) {
 			return null;
 		}

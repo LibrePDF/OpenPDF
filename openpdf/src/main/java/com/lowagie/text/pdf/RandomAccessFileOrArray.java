@@ -73,7 +73,7 @@ public class RandomAccessFileOrArray implements DataInput {
     RandomAccessFile trf;
     boolean plainRandomAccess;
     String filename;
-    byte arrayIn[];
+    byte[] arrayIn;
     int arrayInPtr;
     byte back;
     boolean isBack = false;
@@ -152,7 +152,7 @@ public class RandomAccessFileOrArray implements DataInput {
     }
     
     public static byte[] InputStreamToArray(InputStream is) throws IOException {
-        byte b[] = new byte[8192];
+        byte[] b = new byte[8192];
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         while (true) {
             int read = is.read(b);
@@ -164,7 +164,7 @@ public class RandomAccessFileOrArray implements DataInput {
         return out.toByteArray();
     }
 
-    public RandomAccessFileOrArray(byte arrayIn[]) {
+    public RandomAccessFileOrArray(byte[] arrayIn) {
         this.arrayIn = arrayIn;
     }
     
@@ -224,15 +224,15 @@ public class RandomAccessFileOrArray implements DataInput {
         }
     }
     
-    public int read(byte b[]) throws IOException {
+    public int read(byte[] b) throws IOException {
         return read(b, 0, b.length);
     }
     
-    public void readFully(byte b[]) throws IOException {
+    public void readFully(byte[] b) throws IOException {
         readFully(b, 0, b.length);
     }
     
-    public void readFully(byte b[], int off, int len) throws IOException {
+    public void readFully(byte[] b, int off, int len) throws IOException {
         int n = 0;
         do {
             int count = read(b, off + n, len - n);

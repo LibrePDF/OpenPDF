@@ -527,10 +527,10 @@ public class Chunk implements Element {
 			float yPosition, float yPositionMul, int cap) {
 		if (attributes == null)
 			attributes = new HashMap();
-		Object obj[] = {
+		Object[] obj = {
 				color,
-				new float[] { thickness, thicknessMul, yPosition, yPositionMul, cap } };
-		Object unders[][] = Utilities.addToArray((Object[][]) attributes.get(UNDERLINE),
+				new float[]{thickness, thicknessMul, yPosition, yPositionMul, cap}};
+		Object[][] unders = Utilities.addToArray((Object[][]) attributes.get(UNDERLINE),
 				obj);
 		return setAttribute(UNDERLINE, unders);
 	}
@@ -769,7 +769,7 @@ public class Chunk implements Element {
 	public Image getImage() {
 		if (attributes == null)
 			return null;
-		Object obj[] = (Object[]) attributes.get(Chunk.IMAGE);
+		Object[] obj = (Object[]) attributes.get(Chunk.IMAGE);
 		if (obj == null)
 			return null;
 		else {

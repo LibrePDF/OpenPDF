@@ -78,10 +78,10 @@ public class PdfPageLabels {
 	/**
 	 * Dictionary values to set the logical page styles
 	 */
-	static PdfName numberingStyle[] = new PdfName[]
-		{
-			PdfName.D, PdfName.R, new PdfName("r"), PdfName.A, new PdfName("a")
-		};
+	static PdfName[] numberingStyle = new PdfName[]
+			{
+					PdfName.D, PdfName.R, new PdfName("r"), PdfName.A, new PdfName("a")
+			};
 
 	/**
 	 * The sequence of logical pages. Will contain at least a value for page 1
@@ -267,7 +267,7 @@ public class PdfPageLabels {
 			return null;
 		}
 		HashMap numberTree = PdfNumberTree.readTree(labels);
-		Integer numbers[] = new Integer[numberTree.size()];
+		Integer[] numbers = new Integer[numberTree.size()];
 		numbers = (Integer[]) numberTree.keySet()
 										.toArray(numbers);
 		Arrays.sort(numbers);

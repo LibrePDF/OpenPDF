@@ -49,7 +49,7 @@
 package com.lowagie.text.pdf.crypto;
 
 public class ARCFOUREncryption {
-    private byte state[] = new byte[256];
+    private byte[] state = new byte[256];
     private int x;
     private int y;
 
@@ -57,11 +57,11 @@ public class ARCFOUREncryption {
     public ARCFOUREncryption() {
     }
     
-    public void prepareARCFOURKey(byte key[]) {
+    public void prepareARCFOURKey(byte[] key) {
         prepareARCFOURKey(key, 0, key.length);
     }
 
-    public void prepareARCFOURKey(byte key[], int off, int len) {
+    public void prepareARCFOURKey(byte[] key, int off, int len) {
         int index1 = 0;
         int index2 = 0;
         for (int k = 0; k < 256; ++k)
@@ -78,7 +78,7 @@ public class ARCFOUREncryption {
         }
     }
 
-    public void encryptARCFOUR(byte dataIn[], int off, int len, byte dataOut[], int offOut) {
+    public void encryptARCFOUR(byte[] dataIn, int off, int len, byte[] dataOut, int offOut) {
         int length = len + off;
         byte tmp;
         for (int k = off; k < length; ++k) {
@@ -91,15 +91,15 @@ public class ARCFOUREncryption {
         }
     }
 
-    public void encryptARCFOUR(byte data[], int off, int len) {
+    public void encryptARCFOUR(byte[] data, int off, int len) {
         encryptARCFOUR(data, off, len, data, off);
     }
 
-    public void encryptARCFOUR(byte dataIn[], byte dataOut[]) {
+    public void encryptARCFOUR(byte[] dataIn, byte[] dataOut) {
         encryptARCFOUR(dataIn, 0, dataIn.length, dataOut, 0);
     }
 
-    public void encryptARCFOUR(byte data[]) {
+    public void encryptARCFOUR(byte[] data) {
         encryptARCFOUR(data, 0, data.length, data, 0);
     }   
 }

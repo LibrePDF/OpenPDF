@@ -64,7 +64,7 @@ public class PdfLiteral extends PdfObject {
         super(0, text);
     }
     
-    public PdfLiteral(byte b[]) {
+    public PdfLiteral(byte[] b) {
         super(0, b);
     }
 
@@ -78,7 +78,7 @@ public class PdfLiteral extends PdfObject {
         super(type, text);
     }
     
-    public PdfLiteral(int type, byte b[]) {
+    public PdfLiteral(int type, byte[] b) {
         super(type, b);
     }
     

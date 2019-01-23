@@ -96,9 +96,11 @@ public class Jpeg extends Image {
     public static final int M_APP2 = 0xE2;
     /** Marker value */
     public static final int M_APPE = 0xEE;
-    
-    /** sequence that is used in all Jpeg files */
-    public static final byte JFIF_ID[] = {0x4A, 0x46, 0x49, 0x46, 0x00};
+
+    /**
+     * sequence that is used in all Jpeg files
+     */
+    public static final byte[] JFIF_ID = {0x4A, 0x46, 0x49, 0x46, 0x00};
     
     private byte[][] icc;
     // Constructors
@@ -230,7 +232,7 @@ public class Jpeg extends Image {
                             Utilities.skip(is, len - 2);
                             continue;
                         }
-                        byte bcomp[] = new byte[JFIF_ID.length];
+                        byte[] bcomp = new byte[JFIF_ID.length];
                         int r = is.read(bcomp);
                         if (r != bcomp.length)
                             throw new BadElementException(MessageLocalization.getComposedMessage("1.corrupted.jfif.marker", errorID));

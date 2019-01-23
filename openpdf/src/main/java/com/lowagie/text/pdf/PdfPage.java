@@ -62,8 +62,8 @@ import java.util.HashMap;
 
 public class PdfPage extends PdfDictionary {
 
-  private static final String boxStrings[] = {"crop", "trim", "art", "bleed"};
-  private static final PdfName boxNames[] = {PdfName.CROPBOX, PdfName.TRIMBOX, PdfName.ARTBOX, PdfName.BLEEDBOX};
+    private static final String[] boxStrings = {"crop", "trim", "art", "bleed"};
+    private static final PdfName[] boxNames = {PdfName.CROPBOX, PdfName.TRIMBOX, PdfName.ARTBOX, PdfName.BLEEDBOX};
   // membervariables
 
   /**

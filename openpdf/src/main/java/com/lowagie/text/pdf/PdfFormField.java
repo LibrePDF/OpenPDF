@@ -93,7 +93,7 @@ public class PdfFormField extends PdfAnnotation {
     public static final boolean SINGLELINE = false;
     public static final boolean PLAINTEXT = false;
     public static final boolean PASSWORD = true;
-    static PdfName mergeTarget[] = {PdfName.FONT, PdfName.XOBJECT, PdfName.COLORSPACE, PdfName.PATTERN};
+    static PdfName[] mergeTarget = {PdfName.FONT, PdfName.XOBJECT, PdfName.COLORSPACE, PdfName.PATTERN};
     
     /** Holds value of property parent. */
     protected PdfFormField parent;
@@ -177,23 +177,23 @@ public class PdfFormField extends PdfAnnotation {
         return field;
     }
     
-    public static PdfFormField createList(PdfWriter writer, String options[], int topIndex) {
+    public static PdfFormField createList(PdfWriter writer, String[] options, int topIndex) {
         return createChoice(writer, 0, processOptions(options), topIndex);
     }
 
-    public static PdfFormField createList(PdfWriter writer, String options[][], int topIndex) {
+    public static PdfFormField createList(PdfWriter writer, String[][] options, int topIndex) {
         return createChoice(writer, 0, processOptions(options), topIndex);
     }
 
-    public static PdfFormField createCombo(PdfWriter writer, boolean edit, String options[], int topIndex) {
+    public static PdfFormField createCombo(PdfWriter writer, boolean edit, String[] options, int topIndex) {
         return createChoice(writer, FF_COMBO + (edit ? FF_EDIT : 0), processOptions(options), topIndex);
     }
     
-    public static PdfFormField createCombo(PdfWriter writer, boolean edit, String options[][], int topIndex) {
+    public static PdfFormField createCombo(PdfWriter writer, boolean edit, String[][] options, int topIndex) {
         return createChoice(writer, FF_COMBO + (edit ? FF_EDIT : 0), processOptions(options), topIndex);
     }
     
-    protected static PdfArray processOptions(String options[]) {
+    protected static PdfArray processOptions(String[] options) {
         PdfArray array = new PdfArray();
         for (int k = 0; k < options.length; ++k) {
             array.add(new PdfString(options[k], PdfObject.TEXT_UNICODE));
@@ -201,10 +201,10 @@ public class PdfFormField extends PdfAnnotation {
         return array;
     }
     
-    protected static PdfArray processOptions(String options[][]) {
+    protected static PdfArray processOptions(String[][] options) {
         PdfArray array = new PdfArray();
         for (int k = 0; k < options.length; ++k) {
-            String subOption[] = options[k];
+            String[] subOption = options[k];
             PdfArray ar2 = new PdfArray(new PdfString(subOption[0], PdfObject.TEXT_UNICODE));
             ar2.add(new PdfString(subOption[1], PdfObject.TEXT_UNICODE));
             array.add(ar2);

@@ -579,7 +579,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 					document.add(tb);
 				else
 					((TextElementArray) stack.peek()).add(tb);
-				boolean state[] = (boolean[]) tableState.pop();
+				boolean[] state = (boolean[]) tableState.pop();
 				pendingTR = state[0];
 				pendingTD = state[1];
 				skipText = false;

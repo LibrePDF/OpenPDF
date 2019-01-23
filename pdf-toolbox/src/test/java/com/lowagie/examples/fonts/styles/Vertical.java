@@ -30,21 +30,21 @@ import com.lowagie.text.pdf.VerticalText;
  * Writing Vertical Text.
  */
 public class Vertical {
-    
-    static String texts[] = {
-        "Some very long text to check if it wraps (or not).",
-        " In blue.",
-        "And now in orange another very long text.",
-        "", "", ""};
-        
-    static String encs[] = {"UniJIS-UCS2-V", "Identity-V"};
+
+    static String[] texts = {
+            "Some very long text to check if it wraps (or not).",
+            " In blue.",
+            "And now in orange another very long text.",
+            "", "", ""};
+
+    static String[] encs = {"UniJIS-UCS2-V", "Identity-V"};
     
     /**
      * @param text
      * @return converted text
      */
     public static String convertCid(String text) {
-        char cid[] = text.toCharArray();
+        char[] cid = text.toCharArray();
         for (int k = 0; k < cid.length; ++k) {
             char c = cid[k];
             if (c == '\n')

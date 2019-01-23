@@ -134,7 +134,7 @@ public class MappedRandomAccessFile {
      * @param len int length
      * @return int bytes read or -1 on EOF
      */
-    public int read(byte bytes[], int off, int len) {
+    public int read(byte[] bytes, int off, int len) {
         int pos = mappedByteBuffer.position();
         int limit = mappedByteBuffer.limit();
         if (pos == limit)

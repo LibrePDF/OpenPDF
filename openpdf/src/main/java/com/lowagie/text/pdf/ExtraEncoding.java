@@ -79,5 +79,5 @@ public interface ExtraEncoding {
      * supports more than one encoding.
      * @return the conversion or <CODE>null</CODE> if no conversion is supported
      */
-    String byteToChar(byte b[], String encoding);
+    String byteToChar(byte[] b, String encoding);
 }

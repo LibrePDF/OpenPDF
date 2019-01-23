@@ -123,9 +123,9 @@ public class PdfStream extends PdfDictionary {
     protected int inputStreamLength = -1;
     protected PdfWriter writer;
     protected int rawLength;
-        
-    static final byte STARTSTREAM[] = DocWriter.getISOBytes("stream\n");
-    static final byte ENDSTREAM[] = DocWriter.getISOBytes("\nendstream");
+
+    static final byte[] STARTSTREAM = DocWriter.getISOBytes("stream\n");
+    static final byte[] ENDSTREAM = DocWriter.getISOBytes("\nendstream");
     static final int SIZESTREAM = STARTSTREAM.length + ENDSTREAM.length;
 
     // constructors
@@ -327,8 +327,8 @@ public class PdfStream extends PdfDictionary {
                 deflater = new Deflater(compressionLevel);
                 fout = def = new DeflaterOutputStream(fout, deflater, 0x8000);
             }
-            
-            byte buf[] = new byte[4192];
+
+            byte[] buf = new byte[4192];
             while (true) {
                 int n = inputStream.read(buf);
                 if (n <= 0)
@@ -346,7 +346,7 @@ public class PdfStream extends PdfDictionary {
         }
         else {
             if (crypto != null && !crypto.isEmbeddedFilesOnly()) {
-                byte b[];
+                byte[] b;
                 if (streamBytes != null) {
                     b = crypto.encryptByteArray(streamBytes.toByteArray());
                 }

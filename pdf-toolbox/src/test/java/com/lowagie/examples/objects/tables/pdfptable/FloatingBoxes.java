@@ -38,7 +38,7 @@ public class FloatingBoxes implements PdfPCellEvent, PdfPTableEvent {
 	 */
 	public void tableLayout(PdfPTable table, float[][] width, float[] height,
 			int headerRows, int rowStart, PdfContentByte[] canvases) {
-		float widths[] = width[0];
+        float[] widths = width[0];
 		float x1 = widths[0];
 		float x2 = widths[widths.length - 1];
 		float y1 = height[0];

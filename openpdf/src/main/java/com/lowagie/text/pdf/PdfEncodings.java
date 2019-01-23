@@ -73,7 +73,7 @@ public class PdfEncodings {
 	protected static final int CIDRANGE = 1;
 	protected static final int CIDCHAR = 2;
 
-	static final char winansiByteToChar[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	static final char[] winansiByteToChar = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 			11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
 			28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
 			45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61,
@@ -91,9 +91,9 @@ public class PdfEncodings {
 			209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221,
 			222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
 			235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
-			248, 249, 250, 251, 252, 253, 254, 255 };
+			248, 249, 250, 251, 252, 253, 254, 255};
 
-	static final char pdfEncodingByteToChar[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+	static final char[] pdfEncodingByteToChar = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 			10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
 			27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
 			44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
@@ -112,7 +112,7 @@ public class PdfEncodings {
 			205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217,
 			218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230,
 			231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243,
-			244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255 };
+			244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255};
 
 	static final IntHashtable winansi = new IntHashtable();
 
@@ -160,7 +160,7 @@ public class PdfEncodings {
 		}
 		if (encoding == null || encoding.length() == 0) {
 			int len = text.length();
-			byte b[] = new byte[len];
+			byte[] b = new byte[len];
 			for (int k = 0; k < len; ++k) {
 				b[k] = (byte) text.charAt(k);
 			}
@@ -168,7 +168,7 @@ public class PdfEncodings {
 		}
 		ExtraEncoding extra = extraEncodings.get(encoding.toLowerCase(Locale.ROOT));
 		if (extra != null) {
-			byte b[] = extra.charToByte(text, encoding);
+			byte[] b = extra.charToByte(text, encoding);
 			if (b != null) {
 				return b;
 			}
@@ -180,10 +180,10 @@ public class PdfEncodings {
 			hash = pdfEncoding;
 		}
 		if (hash != null) {
-			char cc[] = text.toCharArray();
+			char[] cc = text.toCharArray();
 			int len = cc.length;
 			int ptr = 0;
-			byte b[] = new byte[len];
+			byte[] b = new byte[len];
 			int c = 0;
 			for (int k = 0; k < len; ++k) {
 				char char1 = cc[k];
@@ -199,15 +199,15 @@ public class PdfEncodings {
 			if (ptr == len) {
 				return b;
 			}
-			byte b2[] = new byte[ptr];
+			byte[] b2 = new byte[ptr];
 			System.arraycopy(b, 0, b2, 0, ptr);
 			return b2;
 		}
 		if (encoding.equals(PdfObject.TEXT_UNICODE)) {
 			// workaround for jdk 1.2.2 bug
-			char cc[] = text.toCharArray();
+			char[] cc = text.toCharArray();
 			int len = cc.length;
-			byte b[] = new byte[cc.length * 2 + 2];
+			byte[] b = new byte[cc.length * 2 + 2];
 			b[0] = -2;
 			b[1] = -1;
 			int bptr = 2;
@@ -242,7 +242,7 @@ public class PdfEncodings {
 		}
 		ExtraEncoding extra = extraEncodings.get(encoding.toLowerCase(Locale.ROOT));
 		if (extra != null) {
-			byte b[] = extra.charToByte(char1, encoding);
+			byte[] b = extra.charToByte(char1, encoding);
 			if (b != null) {
 				return b;
 			}
@@ -268,7 +268,7 @@ public class PdfEncodings {
 		}
 		if (encoding.equals(PdfObject.TEXT_UNICODE)) {
 			// workaround for jdk 1.2.2 bug
-			byte b[] = new byte[4];
+			byte[] b = new byte[4];
 			b[0] = -2;
 			b[1] = -1;
 			b[2] = (byte) (char1 >> 8);
@@ -292,12 +292,12 @@ public class PdfEncodings {
 	 *            the encoding
 	 * @return the converted <CODE>String</CODE>
 	 */
-	public static final String convertToString(byte bytes[], String encoding) {
+	public static final String convertToString(byte[] bytes, String encoding) {
 		if (bytes == null) {
 			return PdfObject.NOTHING;
 		}
 		if (encoding == null || encoding.length() == 0) {
-			char c[] = new char[bytes.length];
+			char[] c = new char[bytes.length];
 			for (int k = 0; k < bytes.length; ++k) {
 				c[k] = (char) (bytes[k] & 0xff);
 			}
@@ -310,7 +310,7 @@ public class PdfEncodings {
 				return text;
 			}
 		}
-		char ch[] = null;
+		char[] ch = null;
 		if (encoding.equals(BaseFont.WINANSI)) {
 			ch = winansiByteToChar;
 		} else if (encoding.equals(PdfObject.TEXT_PDFDOCENCODING)) {
@@ -318,7 +318,7 @@ public class PdfEncodings {
 		}
 		if (ch != null) {
 			int len = bytes.length;
-			char c[] = new char[len];
+			char[] c = new char[len];
 			for (int k = 0; k < len; ++k) {
 				c[k] = ch[bytes[k] & 0xff];
 			}
@@ -361,8 +361,8 @@ public class PdfEncodings {
 	 * Assumes that '\\n' and '\\r\\n' are the newline sequences. It may not
 	 * work for all CJK encodings. To be used with loadCmap().
 	 */
-	public static final byte CRLF_CID_NEWLINE[][] = new byte[][] {
-			{ (byte) '\n' }, { (byte) '\r', (byte) '\n' } };
+	public static final byte[][] CRLF_CID_NEWLINE = new byte[][]{
+			{(byte) '\n'}, {(byte) '\r', (byte) '\n'}};
 
 	/**
 	 * Clears the CJK cmaps from the cache. If <CODE>name</CODE> is the empty
@@ -391,9 +391,9 @@ public class PdfEncodings {
 	 *            the sequences to be replaced by a newline in the resulting
 	 *            CID. See <CODE>CRLF_CID_NEWLINE</CODE>
 	 */
-	public static void loadCmap(String name, byte newline[][]) {
+	public static void loadCmap(String name, byte[][] newline) {
 		try {
-			char planes[][] = null;
+			char[][] planes = null;
 			planes = cmaps.get(name);
 			if (planes == null) {
 				planes = readCmap(name, newline);
@@ -417,7 +417,7 @@ public class PdfEncodings {
 	 *            the <CODE>byte</CODE> array to be decoded
 	 * @return the CID string
 	 */
-	public static String convertCmap(String name, byte seq[]) {
+	public static String convertCmap(String name, byte[] seq) {
 		return convertCmap(name, seq, 0, seq.length);
 	}
 
@@ -438,10 +438,10 @@ public class PdfEncodings {
 	 *            the <CODE>byte</CODE> array to be decoded
 	 * @return the CID string
 	 */
-	public static String convertCmap(String name, byte seq[], int start,
-			int length) {
+	public static String convertCmap(String name, byte[] seq, int start,
+									 int length) {
 		try {
-			char planes[][] = null;
+			char[][] planes = null;
 			planes = cmaps.get(name);
 			if (planes == null) {
 				planes = readCmap(name, (byte[][]) null);
@@ -453,14 +453,14 @@ public class PdfEncodings {
 		}
 	}
 
-	static String decodeSequence(byte seq[], int start, int length,
-			char planes[][]) {
+	static String decodeSequence(byte[] seq, int start, int length,
+								 char[][] planes) {
 		StringBuffer buf = new StringBuffer();
 		int end = start + length;
 		int currentPlane = 0;
 		for (int k = start; k < end; ++k) {
 			int one = seq[k] & 0xff;
-			char plane[] = planes[currentPlane];
+			char[] plane = planes[currentPlane];
 			int cid = plane[one];
 			if ((cid & 0x8000) == 0) {
 				buf.append((char) cid);
@@ -472,7 +472,7 @@ public class PdfEncodings {
 		return buf.toString();
 	}
 
-	static char[][] readCmap(String name, byte newline[][]) throws IOException {
+	static char[][] readCmap(String name, byte[][] newline) throws IOException {
 		ArrayList<char[]> planes = new ArrayList<char[]>();
 		planes.add(new char[256]);
 		readCmap(name, planes);
@@ -482,7 +482,7 @@ public class PdfEncodings {
 						planes);
 			}
 		}
-		char ret[][] = new char[planes.size()][];
+		char[][] ret = new char[planes.size()][];
 		return planes.toArray(ret);
 	}
 
@@ -504,7 +504,7 @@ public class PdfEncodings {
 				StandardCharsets.ISO_8859_1));
 		String line = null;
 		int state = CIDNONE;
-		byte seqs[] = new byte[7];
+		byte[] seqs = new byte[7];
 		while ((line = rd.readLine()) != null) {
 			if (line.length() < 6) {
 				continue;
@@ -561,18 +561,18 @@ public class PdfEncodings {
 		}
 	}
 
-	static void breakLong(long n, int size, byte seqs[]) {
+	static void breakLong(long n, int size, byte[] seqs) {
 		for (int k = 0; k < size; ++k) {
 			seqs[k] = (byte) (n >> (size - 1 - k) * 8);
 		}
 	}
 
-	static void encodeSequence(int size, byte seqs[], char cid,
-			ArrayList<char[]> planes) {
+	static void encodeSequence(int size, byte[] seqs, char cid,
+							   ArrayList<char[]> planes) {
 		--size;
 		int nextPlane = 0;
 		for (int idx = 0; idx < size; ++idx) {
-			char plane[] = planes.get(nextPlane);
+			char[] plane = planes.get(nextPlane);
 			int one = seqs[idx] & 0xff;
 			char c = plane[one];
 			if (c != 0 && (c & 0x8000) == 0) {
@@ -587,7 +587,7 @@ public class PdfEncodings {
 			}
 			nextPlane = c & 0x7fff;
 		}
-		char plane[] = planes.get(nextPlane);
+		char[] plane = planes.get(nextPlane);
 		int one = seqs[size] & 0xff;
 		char c = plane[one];
 		if ((c & 0x8000) != 0) {
@@ -628,8 +628,8 @@ public class PdfEncodings {
 
 		@Override
 		public byte[] charToByte(String text, String encoding) {
-			char cc[] = text.toCharArray();
-			byte b[] = new byte[cc.length];
+			char[] cc = text.toCharArray();
+			byte[] b = new byte[cc.length];
 			int ptr = 0;
 			int len = cc.length;
 			for (int k = 0; k < len; ++k) {
@@ -646,7 +646,7 @@ public class PdfEncodings {
 			if (ptr == len) {
 				return b;
 			}
-			byte b2[] = new byte[ptr];
+			byte[] b2 = new byte[ptr];
 			System.arraycopy(b, 0, b2, 0, ptr);
 			return b2;
 		}
@@ -656,7 +656,7 @@ public class PdfEncodings {
 			return null;
 		}
 
-		private final static byte table[] = { 0, 35, 34, 0, 0, 0, 41, 62, 81,
+		private final static byte[] table = {0, 35, 34, 0, 0, 0, 41, 62, 81,
 				42, 0, 0, 65, 63, 0, 0, 0, 0, 0, -4, 0, 0, 0, -5, 0, 0, 0, 0,
 				0, 0, 86, 0, 88, 89, 0, 0, 0, 0, 0, 0, 0, 0, -75, 0, 0, 0, 0,
 				0, -74, 0, 0, 0, -83, -81, -84, 0, 0, 0, 0, 0, 0, 0, 0, 124,
@@ -668,7 +668,7 @@ public class PdfEncodings {
 				-115, -114, -113, -112, -111, -110, -109, -108, -107, -24, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -24, -40, 0, 0, -60, -58, 0,
 				0, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, -36, 0, 0, 0, 0, 0, 0, 0, 0,
-				0, 0, 0 };
+				0, 0, 0};
 	}
 
 	private static class Cp437Conversion implements ExtraEncoding {
@@ -676,8 +676,8 @@ public class PdfEncodings {
 
 		@Override
 		public byte[] charToByte(String text, String encoding) {
-			char cc[] = text.toCharArray();
-			byte b[] = new byte[cc.length];
+			char[] cc = text.toCharArray();
+			byte[] b = new byte[cc.length];
 			int ptr = 0;
 			int len = cc.length;
 			for (int k = 0; k < len; ++k) {
@@ -694,7 +694,7 @@ public class PdfEncodings {
 			if (ptr == len) {
 				return b;
 			}
-			byte b2[] = new byte[ptr];
+			byte[] b2 = new byte[ptr];
 			System.arraycopy(b, 0, b2, 0, ptr);
 			return b2;
 		}
@@ -716,7 +716,7 @@ public class PdfEncodings {
 		@Override
 		public String byteToChar(byte[] b, String encoding) {
 			int len = b.length;
-			char cc[] = new char[len];
+			char[] cc = new char[len];
 			int ptr = 0;
 			for (int k = 0; k < len; ++k) {
 				int c = b[k] & 0xff;
@@ -733,7 +733,7 @@ public class PdfEncodings {
 			return new String(cc, 0, ptr);
 		}
 
-		private final static char table[] = { '\u00C7', '\u00FC', '\u00E9',
+		private final static char[] table = {'\u00C7', '\u00FC', '\u00E9',
 				'\u00E2', '\u00E4', '\u00E0', '\u00E5', '\u00E7', '\u00EA',
 				'\u00EB', '\u00E8', '\u00EF', '\u00EE', '\u00EC', '\u00C4',
 				'\u00C5', '\u00C9', '\u00E6', '\u00C6', '\u00F4', '\u00F6',
@@ -754,7 +754,7 @@ public class PdfEncodings {
 				'\u0398', '\u03A9', '\u03B4', '\u221E', '\u03C6', '\u03B5',
 				'\u2229', '\u2261', '\u00B1', '\u2265', '\u2264', '\u2320',
 				'\u2321', '\u00F7', '\u2248', '\u00B0', '\u2219', '\u00B7',
-				'\u221A', '\u207F', '\u00B2', '\u25A0', '\u00A0' };
+				'\u221A', '\u207F', '\u00B2', '\u25A0', '\u00A0'};
 
 		static {
 			for (int k = 0; k < table.length; ++k) {
@@ -779,8 +779,8 @@ public class PdfEncodings {
 
 		@Override
 		public byte[] charToByte(String text, String encoding) {
-			char cc[] = text.toCharArray();
-			byte b[] = new byte[cc.length];
+			char[] cc = text.toCharArray();
+			byte[] b = new byte[cc.length];
 			int ptr = 0;
 			int len = cc.length;
 			for (int k = 0; k < len; ++k) {
@@ -793,7 +793,7 @@ public class PdfEncodings {
 			if (ptr == len) {
 				return b;
 			}
-			byte b2[] = new byte[ptr];
+			byte[] b2 = new byte[ptr];
 			System.arraycopy(b, 0, b2, 0, ptr);
 			return b2;
 		}
@@ -813,7 +813,7 @@ public class PdfEncodings {
 			return null;
 		}
 
-		private final static char table1[] = { ' ', '!', '\u2200', '#',
+		private final static char[] table1 = {' ', '!', '\u2200', '#',
 				'\u2203', '%', '&', '\u220b', '(', ')', '*', '+', ',', '-',
 				'.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 				':', ';', '<', '=', '>', '?', '\u2245', '\u0391', '\u0392',
@@ -845,9 +845,9 @@ public class PdfEncodings {
 				'\u23a2', '\u23a3', '\u23a7', '\u23a8', '\u23a9', '\u23aa',
 				'\0', '\u232a', '\u222b', '\u2320', '\u23ae', '\u2321',
 				'\u239e', '\u239f', '\u23a0', '\u23a4', '\u23a5', '\u23a6',
-				'\u23ab', '\u23ac', '\u23ad', '\0' };
+				'\u23ab', '\u23ac', '\u23ad', '\0'};
 
-		private final static char table2[] = { '\u0020', '\u2701', '\u2702',
+		private final static char[] table2 = {'\u0020', '\u2701', '\u2702',
 				'\u2703', '\u2704', '\u260e', '\u2706', '\u2707', '\u2708',
 				'\u2709', '\u261b', '\u261e', '\u270C', '\u270D', '\u270E',
 				'\u270F', '\u2710', '\u2711', '\u2712', '\u2713', '\u2714',
@@ -882,7 +882,7 @@ public class PdfEncodings {
 				'\u27AA', '\u27AB', '\u27AC', '\u27AD', '\u27AE', '\u27AF',
 				'\u0000', '\u27B1', '\u27B2', '\u27B3', '\u27B4', '\u27B5',
 				'\u27B6', '\u27B7', '\u27B8', '\u27B9', '\u27BA', '\u27BB',
-				'\u27BC', '\u27BD', '\u27BE', '\u0000' };
+				'\u27BC', '\u27BD', '\u27BE', '\u0000'};
 
 		static {
 			for (int k = 0; k < table1.length; ++k) {
@@ -913,8 +913,8 @@ public class PdfEncodings {
 
 		@Override
 		public byte[] charToByte(String text, String encoding) {
-			char ch[] = text.toCharArray();
-			byte b[] = new byte[ch.length];
+			char[] ch = text.toCharArray();
+			byte[] b = new byte[ch.length];
 			int ptr = 0;
 			int len = ch.length;
 			for (int k = 0; k < len; ++k) {
@@ -926,7 +926,7 @@ public class PdfEncodings {
 			if (ptr == len) {
 				return b;
 			}
-			byte b2[] = new byte[ptr];
+			byte[] b2 = new byte[ptr];
 			System.arraycopy(b, 0, b2, 0, ptr);
 			return b2;
 		}

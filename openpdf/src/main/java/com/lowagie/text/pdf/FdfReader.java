@@ -70,7 +70,7 @@ public class FdfReader extends PdfReader {
      * @param pdfIn the byte array with the form
      * @throws IOException on error
      */
-    public FdfReader(byte pdfIn[]) throws IOException {
+    public FdfReader(byte[] pdfIn) throws IOException {
         super(pdfIn);
     }
 
@@ -173,7 +173,7 @@ public class FdfReader extends PdfReader {
      * @return the field value or <CODE>null</CODE>
      */
     public String getFieldValue(String name) {
-        PdfDictionary field = (PdfDictionary)fields.get(name);
+        PdfDictionary field = fields.get(name);
         if (field == null)
             return null;
         PdfObject v = getPdfObject(field.get(PdfName.V));
@@ -185,7 +185,7 @@ public class FdfReader extends PdfReader {
             PdfString vs = (PdfString)v;
             if (encoding == null || vs.getEncoding() != null)
                 return vs.toUnicodeString();
-            byte b[] = vs.getBytes();
+            byte[] b = vs.getBytes();
             if (b.length >= 2 && b[0] == (byte)254 && b[1] == (byte)255)
                 return vs.toUnicodeString();
             try {

@@ -57,8 +57,8 @@ public class PdfShadingPattern extends PdfDictionary {
     protected PdfShading shading;
     
     protected PdfWriter writer;
-    
-    protected float matrix[] = {1, 0, 0, 1, 0, 0};
+
+    protected float[] matrix = {1, 0, 0, 1, 0, 0};
     
     protected PdfName patternName;
 
@@ -99,7 +99,7 @@ public class PdfShadingPattern extends PdfDictionary {
         writer.addToBody(this, getPatternReference());
     }
     
-    public void setMatrix(float matrix[]) {
+    public void setMatrix(float[] matrix) {
         if (matrix.length != 6)
             throw new RuntimeException(MessageLocalization.getComposedMessage("the.matrix.size.must.be.6"));
         this.matrix = matrix;

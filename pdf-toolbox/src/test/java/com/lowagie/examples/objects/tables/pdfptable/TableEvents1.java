@@ -37,7 +37,7 @@ public class TableEvents1 implements PdfPTableEvent {
     public void tableLayout(PdfPTable table, float[][] width, float[] heights, int headerRows, int rowStart, PdfContentByte[] canvases) {
     	
     	// widths of the different cells of the first row
-        float widths[] = width[0];
+        float[] widths = width[0];
         
         PdfContentByte cb = canvases[PdfPTable.TEXTCANVAS];
         cb.saveState();

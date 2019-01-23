@@ -90,7 +90,7 @@ public class FontSelector {
         int fsize = fonts.size();
         if (fsize == 0)
             throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("no.font.is.defined"));
-        char cc[] = text.toCharArray();
+        char[] cc = text.toCharArray();
         int len = cc.length;
         StringBuffer sb = new StringBuffer();
         Font font = null;

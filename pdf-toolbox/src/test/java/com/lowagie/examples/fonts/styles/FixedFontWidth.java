@@ -42,7 +42,7 @@ public class FixedFontWidth {
             document.open();
             // step 4
             BaseFont bf = BaseFont.createFont("Helvetica", "winansi", false, false, null, null);
-            int widths[] = bf.getWidths();
+            int[] widths = bf.getWidths();
             for (int k = 0; k < widths.length; ++k) {
                 if (widths[k] != 0)
                     widths[k] = 1000;

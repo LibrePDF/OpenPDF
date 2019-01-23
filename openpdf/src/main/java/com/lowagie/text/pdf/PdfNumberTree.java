@@ -70,7 +70,7 @@ public class PdfNumberTree {
     public static PdfDictionary writeTree(Map items, PdfWriter writer) throws IOException {
         if (items.isEmpty())
             return null;
-        Integer numbers[] = new Integer[items.size()];
+        Integer[] numbers = new Integer[items.size()];
         numbers = (Integer[])items.keySet().toArray(numbers);
         Arrays.sort(numbers);
         if (numbers.length <= leafSize) {
@@ -84,7 +84,7 @@ public class PdfNumberTree {
             return dic;
         }
         int skip = leafSize;
-        PdfIndirectReference kids[] = new PdfIndirectReference[(numbers.length + leafSize - 1) / leafSize];
+        PdfIndirectReference[] kids = new PdfIndirectReference[(numbers.length + leafSize - 1) / leafSize];
         for (int k = 0; k < kids.length; ++k) {
             int offset = k * leafSize;
             int end = Math.min(offset + leafSize, numbers.length);

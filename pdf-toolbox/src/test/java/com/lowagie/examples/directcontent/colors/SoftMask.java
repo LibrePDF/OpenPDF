@@ -54,7 +54,7 @@ public class SoftMask {
             document.add(new Paragraph(text));
             Image img = Image.getInstance("otsoe.jpg");
             img.setAbsolutePosition(100, 550);
-            byte gradient[] = new byte[256];
+            byte[] gradient = new byte[256];
             for (int k = 0; k < 256; ++k)
                 gradient[k] = (byte)k;
             Image smask = Image.getInstance(256, 1, 1, 8, gradient);

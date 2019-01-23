@@ -301,7 +301,7 @@ public class PdfAction extends PdfDictionary {
         }
         else {
             try {
-                byte b[] = PdfEncodings.convertToBytes(code, unicode ? PdfObject.TEXT_UNICODE : PdfObject.TEXT_PDFDOCENCODING);
+                byte[] b = PdfEncodings.convertToBytes(code, unicode ? PdfObject.TEXT_UNICODE : PdfObject.TEXT_PDFDOCENCODING);
                 PdfStream stream = new PdfStream(b);
                 stream.flateCompress(writer.getCompressionLevel());
                 js.put(PdfName.JS, writer.addToBody(stream).getIndirectReference());
@@ -359,7 +359,7 @@ public class PdfAction extends PdfDictionary {
         return createHide(new PdfString(name), hide);
     }
     
-    static PdfArray buildArray(Object names[]) {
+    static PdfArray buildArray(Object[] names) {
         PdfArray array = new PdfArray();
         for (int k = 0; k < names.length; ++k) {
             Object obj = names[k];
@@ -379,7 +379,7 @@ public class PdfAction extends PdfDictionary {
      * @param hide
      * @return A Hide Action
      */
-    public static PdfAction createHide(Object names[], boolean hide) {
+    public static PdfAction createHide(Object[] names, boolean hide) {
         return createHide(buildArray(names), hide);
     }
     
@@ -390,7 +390,7 @@ public class PdfAction extends PdfDictionary {
      * @param flags	submit properties
      * @return A PdfAction
      */
-    public static PdfAction createSubmitForm(String file, Object names[], int flags) {
+    public static PdfAction createSubmitForm(String file, Object[] names, int flags) {
         PdfAction action = new PdfAction();
         action.put(PdfName.S, PdfName.SUBMITFORM);
         PdfDictionary dic = new PdfDictionary();
@@ -409,7 +409,7 @@ public class PdfAction extends PdfDictionary {
      * @param flags	submit properties
      * @return A PdfAction
      */
-    public static PdfAction createResetForm(Object names[], int flags) {
+    public static PdfAction createResetForm(Object[] names, int flags) {
         PdfAction action = new PdfAction();
         action.put(PdfName.S, PdfName.RESETFORM);
         if (names != null)

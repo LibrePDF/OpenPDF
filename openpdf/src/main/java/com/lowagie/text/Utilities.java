@@ -88,13 +88,13 @@ public class Utilities {
 	 *            the item to be added to the array
 	 * @return a new array with the item appended
 	 */
-	public static Object[][] addToArray(Object original[][], Object item[]) {
+	public static Object[][] addToArray(Object[][] original, Object[] item) {
 		if (original == null) {
 			original = new Object[1][];
 			original[0] = item;
 			return original;
 		} else {
-			Object original2[][] = new Object[original.length + 1][];
+			Object[][] original2 = new Object[original.length + 1][];
 			System.arraycopy(original, 0, original2, 0, original.length);
 			original2[original.length] = item;
 			return original2;

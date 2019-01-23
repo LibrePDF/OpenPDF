@@ -236,7 +236,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
 
     public static String escapeBinaryString(String s) {
         StringBuffer buf = new StringBuffer();
-        char cc[] = s.toCharArray();
+        char[] cc = s.toCharArray();
         int len = cc.length;
         for (int k = 0; k < len; ++k) {
             char c = cc[k];
@@ -255,7 +255,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
 
     public static String unEscapeBinaryString(String s) {
         StringBuffer buf = new StringBuffer();
-        char cc[] = s.toCharArray();
+        char[] cc = s.toCharArray();
         int len = cc.length;
         for (int k = 0; k < len; ++k) {
             char c = cc[k];

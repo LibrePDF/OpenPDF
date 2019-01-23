@@ -277,8 +277,8 @@ public class FactoryProperties {
 			if (key.equals(Markup.CSS_KEY_FONTFAMILY)) {
 				h.put("face", prop.getProperty(key));
 			} else if (key.equals(Markup.CSS_KEY_FONTSIZE)) {
-				h.put("size", Float.toString(Markup.parseLength(prop
-						.getProperty(key)))
+				h.put("size", Markup.parseLength(prop
+						.getProperty(key))
 						+ "pt");
 			} else if (key.equals(Markup.CSS_KEY_FONTSTYLE)) {
 				String ss = prop.getProperty(key).trim().toLowerCase();
@@ -341,8 +341,8 @@ public class FactoryProperties {
 						Markup.DEFAULT_FONT_SIZE);
 				if (actualFontSize <= 0f)
 					actualFontSize = Markup.DEFAULT_FONT_SIZE;
-				h.put(ElementTags.SIZE, Float.toString(Markup.parseLength(prop
-						.getProperty(key), actualFontSize))
+				h.put(ElementTags.SIZE, Markup.parseLength(prop
+						.getProperty(key), actualFontSize)
 						+ "pt");
 			} else if (key.equals(Markup.CSS_KEY_FONTSTYLE)) {
 				String ss = prop.getProperty(key).trim().toLowerCase();

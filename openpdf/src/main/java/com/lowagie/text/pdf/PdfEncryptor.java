@@ -78,7 +78,7 @@ public final class PdfEncryptor {
      * @param strength128Bits <code>true</code> for 128 bit key length, <code>false</code> for 40 bit key length
      * @throws DocumentException on error
      * @throws IOException on error */
-    public static void encrypt(PdfReader reader, OutputStream os, byte userPassword[], byte ownerPassword[], int permissions, boolean strength128Bits) throws DocumentException, IOException {
+    public static void encrypt(PdfReader reader, OutputStream os, byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits) throws DocumentException, IOException {
         PdfStamper stamper = new PdfStamper(reader, os);
         stamper.setEncryption(userPassword, ownerPassword, permissions, strength128Bits);
         stamper.close();
@@ -103,7 +103,7 @@ public final class PdfEncryptor {
      * @throws DocumentException on error
      * @throws IOException on error
      */
-    public static void encrypt(PdfReader reader, OutputStream os, byte userPassword[], byte ownerPassword[], int permissions, boolean strength128Bits, HashMap newInfo) throws DocumentException, IOException {
+    public static void encrypt(PdfReader reader, OutputStream os, byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits, HashMap newInfo) throws DocumentException, IOException {
         PdfStamper stamper = new PdfStamper(reader, os);
         stamper.setEncryption(userPassword, ownerPassword, permissions, strength128Bits);
         stamper.setMoreInfo(newInfo);

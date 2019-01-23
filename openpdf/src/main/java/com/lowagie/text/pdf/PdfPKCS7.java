@@ -127,8 +127,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
  */
 public class PdfPKCS7 {
 
-  private byte sigAttr[];
-  private byte digestAttr[];
+  private byte[] sigAttr;
+  private byte[] digestAttr;
   private int version, signerversion;
   private Set digestalgos;
   private Collection certs, crls, signCerts;
@@ -138,11 +138,11 @@ public class PdfPKCS7 {
   private String digestAlgorithm, digestEncryptionAlgorithm;
   private Signature sig;
   private transient PrivateKey privKey;
-  private byte RSAdata[];
+  private byte[] RSAdata;
   private boolean verified;
   private boolean verifyResult;
-  private byte externalDigest[];
-  private byte externalRSAdata[];
+  private byte[] externalDigest;
+  private byte[] externalRSAdata;
   private String provider;
 
   private static final String ID_PKCS7_DATA = "1.2.840.113549.1.7.1";
@@ -688,7 +688,7 @@ public class PdfPKCS7 {
     if (sigAttr != null) {
       sig.update(sigAttr);
       if (RSAdata != null) {
-        byte msd[] = messageDigest.digest();
+        byte[] msd = messageDigest.digest();
         messageDigest.update(msd);
       }
       verifyResult = (Arrays.equals(messageDigest.digest(), digestAttr) && sig
@@ -929,8 +929,8 @@ public class PdfPKCS7 {
    *         <CODE>Object[]{cert,error}</CODE> where <CODE>cert</CODE> is the
    *         failed certificate and <CODE>error</CODE> is the error message
    */
-  public static Object[] verifyCertificates(Certificate certs[],
-      KeyStore keystore, Collection crls, Calendar calendar) {
+  public static Object[] verifyCertificates(Certificate[] certs,
+                                            KeyStore keystore, Collection crls, Calendar calendar) {
     if (calendar == null)
       calendar = new GregorianCalendar();
     for (int k = 0; k < certs.length; ++k) {
@@ -1245,8 +1245,8 @@ public class PdfPKCS7 {
    *          <CODE>digest</CODE> is not <CODE>null</CODE> then it may be "RSA"
    *          or "DSA"
    */
-  public void setExternalDigest(byte digest[], byte RSAdata[],
-      String digestEncryptionAlgorithm) {
+  public void setExternalDigest(byte[] digest, byte[] RSAdata,
+                                String digestEncryptionAlgorithm) {
     externalDigest = digest;
     externalRSAdata = RSAdata;
     if (digestEncryptionAlgorithm != null) {
@@ -1281,7 +1281,7 @@ public class PdfPKCS7 {
    *          the signing time in the authenticatedAttributes
    * @return the bytes for the PKCS7SignedData object
    */
-  public byte[] getEncodedPKCS7(byte secondDigest[], Calendar signingTime) {
+  public byte[] getEncodedPKCS7(byte[] secondDigest, Calendar signingTime) {
     return getEncodedPKCS7(secondDigest, signingTime, null, null);
   }
 
@@ -1299,8 +1299,8 @@ public class PdfPKCS7 {
    * @return byte[] the bytes for the PKCS7SignedData object
    * @since 2.1.6
    */
-  public byte[] getEncodedPKCS7(byte secondDigest[], Calendar signingTime,
-      TSAClient tsaClient, byte[] ocsp) {
+  public byte[] getEncodedPKCS7(byte[] secondDigest, Calendar signingTime,
+                                TSAClient tsaClient, byte[] ocsp) {
     try {
       if (externalDigest != null) {
         digest = externalDigest;
@@ -1488,8 +1488,8 @@ public class PdfPKCS7 {
    * @return the byte array representation of the authenticatedAttributes ready
    *         to be signed
    */
-  public byte[] getAuthenticatedAttributeBytes(byte secondDigest[],
-      Calendar signingTime, byte[] ocsp) {
+  public byte[] getAuthenticatedAttributeBytes(byte[] secondDigest,
+                                               Calendar signingTime, byte[] ocsp) {
     try {
       return getAuthenticatedAttributeSet(secondDigest, signingTime, ocsp)
           .getEncoded(ASN1Encoding.DER);
@@ -1498,8 +1498,8 @@ public class PdfPKCS7 {
     }
   }
 
-  private DERSet getAuthenticatedAttributeSet(byte secondDigest[],
-      Calendar signingTime, byte[] ocsp) {
+  private DERSet getAuthenticatedAttributeSet(byte[] secondDigest,
+                                              Calendar signingTime, byte[] ocsp) {
     try {
       ASN1EncodableVector attribute = new ASN1EncodableVector();
       ASN1EncodableVector v = new ASN1EncodableVector();

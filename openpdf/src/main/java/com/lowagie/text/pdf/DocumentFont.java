@@ -401,7 +401,7 @@ public class DocumentFont extends BaseFont {
 
   private void fillEncoding(PdfName encoding) {
     if (PdfName.MAC_ROMAN_ENCODING.equals(encoding) || PdfName.WIN_ANSI_ENCODING.equals(encoding)) {
-      byte b[] = new byte[256];
+      byte[] b = new byte[256];
       for (int k = 0; k < 256; ++k) {
         b[k] = (byte) k;
       }
@@ -410,7 +410,7 @@ public class DocumentFont extends BaseFont {
         enc = MACROMAN;
       }
       String cv = PdfEncodings.convertToString(b, enc);
-      char arr[] = cv.toCharArray();
+      char[] arr = cv.toCharArray();
       for (int k = 0; k < 256; ++k) {
         uni2byte.put(arr[k], k);
       }

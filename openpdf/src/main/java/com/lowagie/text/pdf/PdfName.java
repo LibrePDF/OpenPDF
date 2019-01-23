@@ -1739,7 +1739,7 @@ public class PdfName extends PdfObject implements Comparable{
      */
 
     static {
-        Field fields[] = PdfName.class.getDeclaredFields();
+        Field[] fields = PdfName.class.getDeclaredFields();
         staticNames = new HashMap<>(fields.length);
         final int flags = Modifier.STATIC | Modifier.PUBLIC | Modifier.FINAL;
         try {
@@ -1790,7 +1790,7 @@ public class PdfName extends PdfObject implements Comparable{
      *
      * @param bytes the byte representation of the name
      */
-    public PdfName(byte bytes[]) {
+    public PdfName(byte[] bytes) {
         super(PdfObject.NAME, bytes);
     }
 
@@ -1809,8 +1809,8 @@ public class PdfName extends PdfObject implements Comparable{
      */
     public int compareTo(Object object) {
         PdfName name = (PdfName) object;
-        byte myBytes[] = bytes;
-        byte objBytes[] = name.bytes;
+        byte[] myBytes = bytes;
+        byte[] objBytes = name.bytes;
         int len = Math.min(myBytes.length, objBytes.length);
         for(int i = 0; i < len; i++) {
             if (myBytes[i] > objBytes[i])
@@ -1871,7 +1871,7 @@ public class PdfName extends PdfObject implements Comparable{
     	ByteBuffer buf = new ByteBuffer(length + 20);
     	buf.append('/');
     	char c;
-    	char chars[] = name.toCharArray();
+        char[] chars = name.toCharArray();
     	for (int k = 0; k < length; k++) {
     		c = (char)(chars[k] & 0xff);
     		// Escape special characters

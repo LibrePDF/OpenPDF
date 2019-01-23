@@ -93,7 +93,7 @@ public class PdfFileSpecification extends PdfDictionary {
      * @throws IOException on error
      * @return the file specification
      */    
-    public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte fileStore[]) throws IOException {
+    public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte[] fileStore) throws IOException {
         return fileEmbedded(writer, filePath, fileDisplay, fileStore, PdfStream.BEST_COMPRESSION);
     }
 
@@ -111,7 +111,7 @@ public class PdfFileSpecification extends PdfDictionary {
      * @return the file specification
      * @since	2.1.3
      */    
-    public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte fileStore[], int compressionLevel) throws IOException {
+    public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte[] fileStore, int compressionLevel) throws IOException {
         return fileEmbedded(writer, filePath, fileDisplay, fileStore, null, null, compressionLevel);
     }
     
@@ -129,7 +129,7 @@ public class PdfFileSpecification extends PdfDictionary {
      * @throws IOException on error
      * @return the file specification
      */    
-    public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte fileStore[], boolean compress) throws IOException {
+    public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte[] fileStore, boolean compress) throws IOException {
         return fileEmbedded(writer, filePath, fileDisplay, fileStore, null, null, compress ? PdfStream.BEST_COMPRESSION : PdfStream.NO_COMPRESSION);
     }
     
@@ -148,7 +148,7 @@ public class PdfFileSpecification extends PdfDictionary {
      * @throws IOException on error
      * @return the file specification
      */    
-    public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte fileStore[], boolean compress, String mimeType, PdfDictionary fileParameter) throws IOException {
+    public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte[] fileStore, boolean compress, String mimeType, PdfDictionary fileParameter) throws IOException {
     	return fileEmbedded(writer, filePath, fileDisplay, fileStore, mimeType, fileParameter, compress ? PdfStream.BEST_COMPRESSION : PdfStream.NO_COMPRESSION);
     }
     
@@ -167,7 +167,7 @@ public class PdfFileSpecification extends PdfDictionary {
      * @return the file specification
      * @since	2.1.3
      */    
-    public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte fileStore[], String mimeType, PdfDictionary fileParameter, int compressionLevel) throws IOException {
+    public static PdfFileSpecification fileEmbedded(PdfWriter writer, String filePath, String fileDisplay, byte[] fileStore, String mimeType, PdfDictionary fileParameter, int compressionLevel) throws IOException {
         PdfFileSpecification fs = new PdfFileSpecification();
         fs.writer = writer;
         fs.put(PdfName.F, new PdfString(fileDisplay));
@@ -266,7 +266,7 @@ public class PdfFileSpecification extends PdfDictionary {
      * backslash escaped according to the file specification rules
      * @param fileName the file name as a byte array
      */    
-    public void setMultiByteFileName(byte fileName[]) {
+    public void setMultiByteFileName(byte[] fileName) {
         put(PdfName.F, new PdfString(fileName).setHexWriting(true));
     }
     

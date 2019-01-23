@@ -159,9 +159,9 @@ public class PdfGraphics2D extends Graphics2D {
 
     // Added by Jurij Bilas
     protected boolean underline;          // indicates if the font style is underlined
-      
-    protected PdfGState fillGState[] = new PdfGState[256];
-    protected PdfGState strokeGState[] = new PdfGState[256];
+
+    protected PdfGState[] fillGState = new PdfGState[256];
+    protected PdfGState[] strokeGState = new PdfGState[256];
     protected int currentFillGState = 255;
     protected int currentStrokeGState = 255;
     
@@ -644,7 +644,7 @@ public class PdfGraphics2D extends Graphics2D {
             return stroke;
         BasicStroke st = (BasicStroke)stroke;
         float scale = (float)Math.sqrt(Math.abs(transform.getDeterminant()));
-        float dash[] = st.getDashArray();
+        float[] dash = st.getDashArray();
         if (dash != null) {
             for (int k = 0; k < dash.length; ++k)
                 dash[k] *= scale;
@@ -704,7 +704,7 @@ public class PdfGraphics2D extends Graphics2D {
             makeDash = true;
         }
         if (makeDash) {
-            float dash[] = nStroke.getDashArray();
+            float[] dash = nStroke.getDashArray();
             if (dash == null)
                 cb.setLiteral("[]0 d\n");
             else {

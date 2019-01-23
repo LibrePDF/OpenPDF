@@ -50,7 +50,7 @@ public class AddBigTable {
 			int NumColumns = 12;
 
 			PdfPTable datatable = new PdfPTable(NumColumns);
-			int headerwidths[] = { 9, 4, 8, 10, 8, 11, 9, 7, 9, 10, 4, 10 }; // percentage
+            int[] headerwidths = {9, 4, 8, 10, 8, 11, 9, 7, 9, 10, 4, 10}; // percentage
 			datatable.setWidths(headerwidths);
 			datatable.setWidthPercentage(100); // percentage
 			datatable.getDefaultCell().setPadding(3);

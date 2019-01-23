@@ -171,14 +171,18 @@ public abstract class Image extends Rectangle {
 	/** The URL of the image. */
 	protected URL url;
 
-	/** The raw data of the image. */
-	protected byte rawData[];
+	/**
+	 * The raw data of the image.
+	 */
+	protected byte[] rawData;
 
 	/** The bits per component of the raw image. It also flags a CCITT image. */
 	protected int bpc = 1;
 
-	/** The template to be treated as an image. */
-	protected PdfTemplate template[] = new PdfTemplate[1];
+	/**
+	 * The template to be treated as an image.
+	 */
+	protected PdfTemplate[] template = new PdfTemplate[1];
 
 	/** The alignment of the Image. */
 	protected int alignment;
@@ -337,7 +341,7 @@ public abstract class Image extends Rectangle {
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
-	public static Image getInstance(byte imgb[]) throws BadElementException,
+	public static Image getInstance(byte[] imgb) throws BadElementException,
             IOException {
 		InputStream is = null;
 		try {
@@ -412,7 +416,7 @@ public abstract class Image extends Rectangle {
 	 *             on error
 	 */
 	public static Image getInstance(int width, int height, int components,
-			int bpc, byte data[]) throws BadElementException {
+									int bpc, byte[] data) throws BadElementException {
 		return Image.getInstance(width, height, components, bpc, data, null);
 	}
 
@@ -488,7 +492,7 @@ public abstract class Image extends Rectangle {
 	 *             on error
 	 */
 	public static Image getInstance(int width, int height, boolean reverseBits,
-			int typeCCITT, int parameters, byte[] data, int transparency[])
+									int typeCCITT, int parameters, byte[] data, int[] transparency)
 			throws BadElementException {
 		if (transparency != null && transparency.length != 2)
 			throw new BadElementException(MessageLocalization.getComposedMessage("transparency.length.must.be.equal.to.2.with.ccitt.images"));
@@ -519,12 +523,12 @@ public abstract class Image extends Rectangle {
 	 *             on error
 	 */
 	public static Image getInstance(int width, int height, int components,
-			int bpc, byte data[], int transparency[])
+									int bpc, byte[] data, int[] transparency)
 			throws BadElementException {
 		if (transparency != null && transparency.length != components * 2)
 			throw new BadElementException(MessageLocalization.getComposedMessage("transparency.length.must.be.equal.to.componentes.2"));
 		if (components == 1 && bpc == 1) {
-			byte g4[] = CCITTG4Encoder.compress(data, width, height);
+			byte[] g4 = CCITTG4Encoder.compress(data, width, height);
 			return Image.getInstance(width, height, false, Image.CCITTG4,
 					Image.CCITT_BLACKIS1, g4, transparency);
 		}
@@ -600,7 +604,7 @@ public abstract class Image extends Rectangle {
 				transColor = (color.getRed() + color.getGreen()
 						+ color.getBlue() < 384) ? 0 : 1;
 			}
-			int transparency[] = null;
+			int[] transparency = null;
 			int cbyte = 0x80;
 			int wMarker = 0;
 			int currByte = 0;
@@ -662,7 +666,7 @@ public abstract class Image extends Rectangle {
 				green = color.getGreen();
 				blue = color.getBlue();
 			}
-			int transparency[] = null;
+			int[] transparency = null;
 			if (color != null) {
 				for (int j = 0; j < size; j++) {
 					int alpha = (pixels[j] >> 24) & 0xff;
@@ -1941,8 +1945,10 @@ public abstract class Image extends Rectangle {
 		this.smask = smask;
 	}
 
-	/** this is the transparency information of the raw image */
-	protected int transparency[];
+	/**
+	 * this is the transparency information of the raw image
+	 */
+	protected int[] transparency;
 
 	/**
 	 * Returns the transparency.
@@ -1960,7 +1966,7 @@ public abstract class Image extends Rectangle {
 	 * @param transparency
 	 *            the transparency values
 	 */
-	public void setTransparency(int transparency[]) {
+	public void setTransparency(int[] transparency) {
 		this.transparency = transparency;
 	}
 

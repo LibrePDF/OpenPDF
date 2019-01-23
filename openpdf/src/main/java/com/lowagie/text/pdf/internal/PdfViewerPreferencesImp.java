@@ -86,25 +86,35 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
 		};
 
 
-    /** A series of viewer preferences. */
-    public static final PdfName NONFULLSCREENPAGEMODE_PREFERENCES[] = {
-    	PdfName.USENONE, PdfName.USEOUTLINES, PdfName.USETHUMBS, PdfName.USEOC
-    };
-    /** A series of viewer preferences. */
-    public static final PdfName DIRECTION_PREFERENCES[] = {
-    	PdfName.L2R, PdfName.R2L
-    };
-	/** A series of viewer preferences. */
-	public static final PdfName PAGE_BOUNDARIES[] = {
-		PdfName.MEDIABOX, PdfName.CROPBOX, PdfName.BLEEDBOX, PdfName.TRIMBOX, PdfName.ARTBOX
+	/**
+	 * A series of viewer preferences.
+	 */
+	public static final PdfName[] NONFULLSCREENPAGEMODE_PREFERENCES = {
+			PdfName.USENONE, PdfName.USEOUTLINES, PdfName.USETHUMBS, PdfName.USEOC
 	};
-	/** A series of viewer preferences */
-	public static final PdfName PRINTSCALING_PREFERENCES[] = {
-		PdfName.APPDEFAULT, PdfName.NONE
+	/**
+	 * A series of viewer preferences.
+	 */
+	public static final PdfName[] DIRECTION_PREFERENCES = {
+			PdfName.L2R, PdfName.R2L
 	};
-	/** A series of viewer preferences. */
-	public static final PdfName DUPLEX_PREFERENCES[] = {
-		PdfName.SIMPLEX, PdfName.DUPLEXFLIPSHORTEDGE, PdfName.DUPLEXFLIPLONGEDGE
+	/**
+	 * A series of viewer preferences.
+	 */
+	public static final PdfName[] PAGE_BOUNDARIES = {
+			PdfName.MEDIABOX, PdfName.CROPBOX, PdfName.BLEEDBOX, PdfName.TRIMBOX, PdfName.ARTBOX
+	};
+	/**
+	 * A series of viewer preferences
+	 */
+	public static final PdfName[] PRINTSCALING_PREFERENCES = {
+			PdfName.APPDEFAULT, PdfName.NONE
+	};
+	/**
+	 * A series of viewer preferences.
+	 */
+	public static final PdfName[] DUPLEX_PREFERENCES = {
+			PdfName.SIMPLEX, PdfName.DUPLEXFLIPSHORTEDGE, PdfName.DUPLEXFLIPLONGEDGE
 	};
 	
 	/** This value will hold the viewer preferences for the page layout and page mode. */

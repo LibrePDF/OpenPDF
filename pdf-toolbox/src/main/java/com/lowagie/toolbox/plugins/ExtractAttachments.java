@@ -210,7 +210,7 @@ public class ExtractAttachments extends AbstractTool {
 		PRStream prs = (PRStream) PdfReader.getPdfObject(ef.get(PdfName.F));
 		if (prs == null)
 			return;
-		byte b[] = PdfReader.getStreamBytes(prs);
+        byte[] b = PdfReader.getStreamBytes(prs);
 		FileOutputStream fout = new FileOutputStream(fullPath);
 		fout.write(b);
 		fout.close();

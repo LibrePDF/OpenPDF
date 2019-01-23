@@ -506,7 +506,7 @@ public class TextField extends BaseField {
 
     protected PdfFormField getChoiceField(boolean isList) throws IOException, DocumentException {
         options &= (~MULTILINE) & (~COMB);
-        String uchoices[] = choices;
+        String[] uchoices = choices;
         if (uchoices == null)
             uchoices = new String[0];
 
@@ -519,7 +519,7 @@ public class TextField extends BaseField {
             text = uchoices[topChoice];
         
         PdfFormField field = null;
-        String mix[][] = null;
+        String[][] mix = null;
         
         if (choiceExports == null) {
             if (isList)
@@ -610,7 +610,7 @@ public class TextField extends BaseField {
         return field;
     }
 
-    private void writeMultipleValues( PdfFormField field, String mix[][] ) {
+    private void writeMultipleValues(PdfFormField field, String[][] mix) {
 		PdfArray indexes = new PdfArray();
 		PdfArray values = new PdfArray();
 		for (int i = 0; i < choiceSelections.size(); ++i) {

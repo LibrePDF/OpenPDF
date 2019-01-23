@@ -294,7 +294,7 @@ public class MetaDo {
                     if (isNullStrokeFill(false))
                         break;
                     int numPoly = in.readWord();
-                    int lens[] = new int[numPoly];
+                    int[] lens = new int[numPoly];
                     for (int k = 0; k < lens.length; ++k)
                         lens[k] = in.readWord();
                     for (int len : lens) {
@@ -368,7 +368,7 @@ public class MetaDo {
                     List<float[]> ar = PdfContentByte.bezierArc(l, b, r, t, arc1, arc2);
                     if (ar.isEmpty())
                         break;
-                    float pt[] = ar.get(0);
+                    float[] pt = ar.get(0);
                     cb.moveTo(cx, cy);
                     cb.lineTo(pt[0], pt[1]);
                     for (float[] anAr : ar) {
@@ -401,7 +401,7 @@ public class MetaDo {
                     List<float[]> ar = PdfContentByte.bezierArc(l, b, r, t, arc1, arc2);
                     if (ar.isEmpty())
                         break;
-                    float pt[] = ar.get(0);
+                    float[] pt = ar.get(0);
                     cx = pt[0];
                     cy = pt[1];
                     cb.moveTo(cx, cy);
@@ -466,7 +466,7 @@ public class MetaDo {
                         x2 = in.readShort();
                         y2 = in.readShort();
                     }
-                    byte text[] = new byte[count];
+                    byte[] text = new byte[count];
                     int k;
                     for (k = 0; k < count; ++k) {
                         byte c = (byte)in.readByte();
@@ -487,7 +487,7 @@ public class MetaDo {
                 case META_TEXTOUT:
                 {
                     int count = in.readWord();
-                    byte text[] = new byte[count];
+                    byte[] text = new byte[count];
                     int k;
                     for (k = 0; k < count; ++k) {
                         byte c = (byte)in.readByte();
@@ -653,7 +653,7 @@ public class MetaDo {
         if (image.getOriginalType() != Image.ORIGINAL_BMP)
             throw new IOException(MessageLocalization.getComposedMessage("only.bmp.can.be.wrapped.in.wmf"));
         InputStream imgIn;
-        byte data[] = null;
+        byte[] data = null;
         if (image.getOriginalData() == null) {
             imgIn = image.getUrl().openStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();

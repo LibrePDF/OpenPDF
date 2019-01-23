@@ -182,7 +182,7 @@ public class PdfPages {
         pages.add(page);
     }
 
-    int reorderPages(int order[]) throws DocumentException {
+    int reorderPages(int[] order) throws DocumentException {
         if (order == null)
             return pages.size();
         if (parents.size() > 1)
@@ -190,7 +190,7 @@ public class PdfPages {
         if (order.length != pages.size())
             throw new DocumentException(MessageLocalization.getComposedMessage("page.reordering.requires.an.array.with.the.same.size.as.the.number.of.pages"));
         int max = pages.size();
-        boolean temp[] = new boolean[max];
+        boolean[] temp = new boolean[max];
         for (int k = 0; k < max; ++k) {
             int p = order[k];
             if (p < 1 || p > max)
@@ -199,7 +199,7 @@ public class PdfPages {
                 throw new DocumentException(MessageLocalization.getComposedMessage("page.reordering.requires.no.page.repetition.page.1.is.repeated", p));
             temp[p - 1] = true;
         }
-        Object copy[] = pages.toArray();
+        Object[] copy = pages.toArray();
         for (int k = 0; k < max; ++k) {
             pages.set(k, copy[order[k] - 1]);
         }

@@ -65,21 +65,22 @@ import com.lowagie.text.Rectangle;
  */
 public class BarcodePostnet extends Barcode{
 
-    /** The bars for each character.
-     */    
-	private static final byte BARS[][] = 
-    {
-        {1,1,0,0,0},
-        {0,0,0,1,1},
-        {0,0,1,0,1},
-        {0,0,1,1,0},
-        {0,1,0,0,1},
-        {0,1,0,1,0},
-        {0,1,1,0,0},
-        {1,0,0,0,1},
-        {1,0,0,1,0},
-        {1,0,1,0,0}
-    };
+    /**
+     * The bars for each character.
+     */
+    private static final byte[][] BARS =
+            {
+                    {1, 1, 0, 0, 0},
+                    {0, 0, 0, 1, 1},
+                    {0, 0, 1, 0, 1},
+                    {0, 0, 1, 1, 0},
+                    {0, 1, 0, 0, 1},
+                    {0, 1, 0, 1, 0},
+                    {0, 1, 1, 0, 0},
+                    {1, 0, 0, 0, 1},
+                    {1, 0, 0, 1, 0},
+                    {1, 0, 1, 0, 0}
+            };
     
     /** Creates new BarcodePostnet */
     public BarcodePostnet() {
@@ -101,7 +102,7 @@ public class BarcodePostnet extends Barcode{
             total += n;
         }
         text += (char)(((10 - (total % 10)) % 10) + '0');
-        byte bars[] = new byte[text.length() * 5 + 2];
+        byte[] bars = new byte[text.length() * 5 + 2];
         bars[0] = 1;
         bars[bars.length - 1] = 1;
         for (int k = 0; k < text.length(); ++k) {
@@ -159,7 +160,7 @@ public class BarcodePostnet extends Barcode{
     public Rectangle placeBarcode(PdfContentByte cb, Color barColor, Color textColor) {
         if (barColor != null)
             cb.setColorFill(barColor);
-        byte bars[] = getBarsPostnet(code);
+        byte[] bars = getBarsPostnet(code);
         byte flip = 1;
         if (codeType == PLANET) {
             flip = 0;
@@ -199,8 +200,8 @@ public class BarcodePostnet extends Barcode{
         if (barTall <= barShort)
             barTall = barShort + 1;
         int width = ((code.length() + 1) * 5 + 1) * barDistance + barWidth;
-        int pix[] = new int[width * barTall];
-        byte bars[] = getBarsPostnet(code);
+        int[] pix = new int[width * barTall];
+        byte[] bars = getBarsPostnet(code);
         byte flip = 1;
         if (codeType == PLANET) {
             flip = 0;

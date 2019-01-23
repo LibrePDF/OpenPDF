@@ -298,7 +298,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @param list the bookmarks
      * @param pageRange the page ranges, always in pairs.
      */    
-    public static void eliminatePages(List list, int pageRange[]) {
+    public static void eliminatePages(List list, int[] pageRange) {
         if (list == null)
             return;
         for (Iterator it = list.listIterator(); it.hasNext();) {
@@ -353,7 +353,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @param pageRange the page ranges, always in pairs. It can be <CODE>null</CODE>
      * to include all the pages
      */    
-    public static void shiftPageNumbers(List list, int pageShift, int pageRange[]) {
+    public static void shiftPageNumbers(List list, int pageShift, int[] pageRange) {
         if (list == null)
             return;
         for (Iterator it = list.listIterator(); it.hasNext();) {
@@ -500,14 +500,14 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     }
 
     public static Object[] iterateOutlines(PdfWriter writer, PdfIndirectReference parent, List kids, boolean namedAsNames) throws IOException {
-        PdfIndirectReference refs[] = new PdfIndirectReference[kids.size()];
+        PdfIndirectReference[] refs = new PdfIndirectReference[kids.size()];
         for (int k = 0; k < refs.length; ++k)
             refs[k] = writer.getPdfIndirectReference();
         int ptr = 0;
         int count = 0;
         for (Iterator it = kids.listIterator(); it.hasNext(); ++ptr) {
             HashMap map = (HashMap)it.next();
-            Object lower[] = null;
+            Object[] lower = null;
             List subKid = (List)map.get("Kids");
             if (subKid != null && !subKid.isEmpty())
                 lower = iterateOutlines(writer, refs[ptr], subKid, namedAsNames);

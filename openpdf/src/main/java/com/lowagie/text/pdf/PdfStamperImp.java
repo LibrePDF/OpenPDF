@@ -84,7 +84,7 @@ class PdfStamperImp extends PdfWriter {
     protected AcroFields acroFields;
     protected boolean flat = false;
     protected boolean flatFreeText = false;
-    protected int namePtr[] = {0};
+    protected int[] namePtr = {0};
     protected HashSet partialFlattening = new HashSet();
     protected boolean useVp = false;
     protected PdfViewerPreferencesImp viewerPreferences = new PdfViewerPreferencesImp();
@@ -125,7 +125,7 @@ class PdfStamperImp extends PdfWriter {
                 crypto = new PdfEncryption(reader.getDecrypt());
             pdf_version.setAppendmode(true);
             file.reOpen();
-            byte buf[] = new byte[8192];
+            byte[] buf = new byte[8192];
             int n;
             while ((n = file.read(buf)) > 0)
                 this.os.write(buf, 0, n);
@@ -288,7 +288,7 @@ class PdfStamperImp extends PdfWriter {
             alterContents();
             int rootN = ((PRIndirectReference)reader.trailer.get(PdfName.ROOT)).getNumber();
             if (append) {
-                int keys[] = marked.getKeys();
+                int[] keys = marked.getKeys();
                 for (int k = 0; k < keys.length; ++k) {
                     int j = keys[k];
                     PdfObject obj = reader.getPdfObjectRelease(j);
@@ -610,7 +610,7 @@ class PdfStamperImp extends PdfWriter {
                     irt.put(nm.toString(), obj);
             }
         }
-        int arhits[] = hits.getKeys();
+        int[] arhits = hits.getKeys();
         for (int k = 0; k < arhits.length; ++k) {
             int n = arhits[k];
             PdfObject obj = fdf.getPdfObject(n);

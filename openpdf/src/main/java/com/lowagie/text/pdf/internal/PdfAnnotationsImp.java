@@ -223,7 +223,7 @@ public class PdfAnnotationsImp {
            case Annotation.FILE_DEST:
                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(), new PdfAction((String) annot.attributes().get(Annotation.FILE), (String) annot.attributes().get(Annotation.DESTINATION)));
            case Annotation.SCREEN:
-               boolean sparams[] = (boolean[])annot.attributes().get(Annotation.PARAMETERS);
+               boolean[] sparams = (boolean[]) annot.attributes().get(Annotation.PARAMETERS);
                String fname = (String) annot.attributes().get(Annotation.FILE);
                String mimetype = (String) annot.attributes().get(Annotation.MIMETYPE);
                PdfFileSpecification fs;

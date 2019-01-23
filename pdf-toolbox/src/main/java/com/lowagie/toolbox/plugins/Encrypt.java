@@ -61,17 +61,18 @@ public class Encrypt extends AbstractTool {
 	static {
 		addVersion("$Id: Encrypt.java 3271 2008-04-18 20:39:42Z xlv $");
 	}
-    private final static int PERMISSIONS[] = {
-    	PdfWriter.ALLOW_PRINTING,
-    	PdfWriter.ALLOW_MODIFY_CONTENTS,
-    	PdfWriter.ALLOW_COPY,
-    	PdfWriter.ALLOW_MODIFY_ANNOTATIONS,
-    	PdfWriter.ALLOW_FILL_IN,
-    	PdfWriter.ALLOW_SCREENREADERS,
-    	PdfWriter.ALLOW_ASSEMBLY,
-    	PdfWriter.ALLOW_DEGRADED_PRINTING};
-    private final static String PERMISSION_OPTIONS[] = {
-    		"AllowPrinting",
+
+	private final static int[] PERMISSIONS = {
+			PdfWriter.ALLOW_PRINTING,
+			PdfWriter.ALLOW_MODIFY_CONTENTS,
+			PdfWriter.ALLOW_COPY,
+			PdfWriter.ALLOW_MODIFY_ANNOTATIONS,
+			PdfWriter.ALLOW_FILL_IN,
+			PdfWriter.ALLOW_SCREENREADERS,
+			PdfWriter.ALLOW_ASSEMBLY,
+			PdfWriter.ALLOW_DEGRADED_PRINTING};
+	private final static String[] PERMISSION_OPTIONS = {
+			"AllowPrinting",
 			"AllowModifyContents",
 			"AllowCopy",
 			"AllowModifyAnnotations",
@@ -79,7 +80,7 @@ public class Encrypt extends AbstractTool {
 			"AllowScreenReaders (128 bit only)",
 			"AllowAssembly (128 bit only)",
 			"AllowDegradedPrinting (128 bit only)"
-    		};
+	};
 
 	/**
 	 * Constructs an Encrypt object.
