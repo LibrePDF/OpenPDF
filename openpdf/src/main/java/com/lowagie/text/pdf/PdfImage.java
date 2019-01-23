@@ -106,7 +106,7 @@ public class PdfImage extends PdfStream {
             if (image.isImgRaw()) {
                 // will also have the CCITT parameters
                 int colorspace = image.getColorspace();
-                int transparency[] = image.getTransparency();
+                int[] transparency = image.getTransparency();
                 if (transparency != null && !image.isMask() && maskRef == null) {
                     String s = "[";
                     for (int k = 0; k < transparency.length; ++k)
@@ -271,7 +271,7 @@ public class PdfImage extends PdfStream {
     }
     
     static void transferBytes(InputStream in, OutputStream out, int len) throws IOException {
-        byte buffer[] = new byte[TRANSFERSIZE];
+        byte[] buffer = new byte[TRANSFERSIZE];
         if (len < 0)
             len = 0x7fff0000;
         int size;

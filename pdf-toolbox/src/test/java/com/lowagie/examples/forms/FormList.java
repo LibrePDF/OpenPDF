@@ -47,7 +47,7 @@ public class FormList {
             
             // step 4:
             TextField fldDef = new TextField( writer, new Rectangle(100, 700, 180, 760), "AList" );
-            String options[] = {"Red", "Green", "Blue", "White", "Cyan", "Yellow", "Magenta", "Black"};
+            String[] options = {"Red", "Green", "Blue", "White", "Cyan", "Yellow", "Magenta", "Black"};
             fldDef.setChoices( options );
 
             // you must turn on multiselect before making multiple selections or they will be discarded.

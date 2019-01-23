@@ -106,7 +106,7 @@ public class PdfArray extends PdfObject {
 	 * @param values
 	 *            an array of <CODE>float</CODE> values to be added
 	 */
-	public PdfArray(float values[]) {
+	public PdfArray(float[] values) {
 		this();
 		add(values);
 	}
@@ -121,7 +121,7 @@ public class PdfArray extends PdfObject {
 	 * @param values
 	 *            an array of <CODE>int</CODE> values to be added
 	 */
-	public PdfArray(int values[]) {
+	public PdfArray(int[] values) {
 		this();
 		add(values);
 	}
@@ -306,7 +306,7 @@ public class PdfArray extends PdfObject {
 	 *            An array of <CODE>float</CODE> values to add
 	 * @return always <CODE>true</CODE>
 	 */
-	public boolean add(float values[]) {
+	public boolean add(float[] values) {
 		for (float value : values) {
 			arrayList.add(new PdfNumber(value));
 		}
@@ -324,7 +324,7 @@ public class PdfArray extends PdfObject {
 	 *            An array of <CODE>int</CODE> values to add
 	 * @return always <CODE>true</CODE>
 	 */
-	public boolean add(int values[]) {
+	public boolean add(int[] values) {
 		for (int value : values) {
 			arrayList.add(new PdfNumber(value));
 		}

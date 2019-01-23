@@ -87,8 +87,8 @@ class FontDetails {
     CJKFont cjkFont;
     /**
      * The array used with single byte encodings
-     */    
-    byte shortTag[];
+     */
+    byte[] shortTag;
     /**
      * The map used with double byte encodings. The key is Integer(glyph) and
      * the value is int[]{glyph, width, Unicode code}
@@ -174,7 +174,7 @@ class FontDetails {
      * @return the conversion
      */    
     byte[] convertToBytes(String text) {
-        byte b[] = null;
+        byte[] b = null;
         switch (fontType) {
             case BaseFont.FONT_TYPE_T3:
                 return baseFont.convertToBytes(text);
@@ -200,8 +200,8 @@ class FontDetails {
             case BaseFont.FONT_TYPE_TTUNI: {
                 try {
                     int len = text.length();
-                    int metrics[] = null;
-                    char glyph[] = new char[len];
+                    int[] metrics = null;
+                    char[] glyph = new char[len];
                     int i = 0;
                     if (symbolic) {
                         b = PdfEncodings.convertToBytes(text, "symboltt");

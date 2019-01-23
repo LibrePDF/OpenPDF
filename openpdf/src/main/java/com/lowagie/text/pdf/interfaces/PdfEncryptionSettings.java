@@ -79,7 +79,7 @@ public interface PdfEncryptionSettings {
      * Optionally DO_NOT_ENCRYPT_METADATA can be ored to output the metadata in cleartext
      * @throws DocumentException if the document is already open
      */
-    void setEncryption(byte userPassword[], byte ownerPassword[], int permissions, int encryptionType) throws DocumentException;
+    void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, int encryptionType) throws DocumentException;
 
     /**
      * Sets the certificate encryption options for this document. An array of one or more public certificates

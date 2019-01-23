@@ -96,12 +96,12 @@ public class PdfPTable implements LargeElement{
     
     protected ArrayList rows = new ArrayList();
     protected float totalHeight = 0;
-    protected PdfPCell currentRow[];
+    protected PdfPCell[] currentRow;
     protected int currentRowIdx = 0;
     protected PdfPCell defaultCell = new PdfPCell((Phrase)null);
     protected float totalWidth = 0;
-    protected float relativeWidths[];
-    protected float absoluteWidths[];
+    protected float[] relativeWidths;
+    protected float[] absoluteWidths;
     protected PdfPTableEvent tableEvent;
     
     /**
@@ -200,7 +200,7 @@ public class PdfPTable implements LargeElement{
      * 
      * @param relativeWidths the relative column widths
      */    
-    public PdfPTable(float relativeWidths[]) {
+    public PdfPTable(float[] relativeWidths) {
         if (relativeWidths == null)
             throw new NullPointerException(MessageLocalization.getComposedMessage("the.widths.array.in.pdfptable.constructor.can.not.be.null"));
         if (relativeWidths.length == 0)
@@ -305,7 +305,7 @@ public class PdfPTable implements LargeElement{
      * @throws DocumentException if the number of widths is different than the number
      * of columns
      */    
-    public void setWidths(float relativeWidths[]) throws DocumentException {
+    public void setWidths(float[] relativeWidths) throws DocumentException {
         if (relativeWidths.length != getNumberOfColumns())
             throw new DocumentException(MessageLocalization.getComposedMessage("wrong.number.of.columns"));
         this.relativeWidths = new float[relativeWidths.length];
@@ -323,8 +323,8 @@ public class PdfPTable implements LargeElement{
      * @throws DocumentException if the number of widths is different than the number
      * of columns
      */    
-    public void setWidths(int relativeWidths[]) throws DocumentException {
-        float tb[] = new float[relativeWidths.length];
+    public void setWidths(int[] relativeWidths) throws DocumentException {
+        float[] tb = new float[relativeWidths.length];
         for (int k = 0; k < relativeWidths.length; ++k)
             tb[k] = relativeWidths[k];
         setWidths(tb);
@@ -365,7 +365,7 @@ public class PdfPTable implements LargeElement{
      * @throws DocumentException if the number of widths is different than the number
      * of columns
      */    
-    public void setTotalWidth(float columnWidth[]) throws DocumentException {
+    public void setTotalWidth(float[] columnWidth) throws DocumentException {
         if (columnWidth.length != getNumberOfColumns())
             throw new DocumentException(MessageLocalization.getComposedMessage("wrong.number.of.columns"));
         totalWidth = 0;
@@ -381,7 +381,7 @@ public class PdfPTable implements LargeElement{
      * @param pageSize the page size
      * @throws DocumentException
      */    
-    public void setWidthPercentage(float columnWidth[], Rectangle pageSize) throws DocumentException {
+    public void setWidthPercentage(float[] columnWidth, Rectangle pageSize) throws DocumentException {
         if (columnWidth.length != getNumberOfColumns())
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("wrong.number.of.columns"));
         float totalWidth = 0;
@@ -473,7 +473,7 @@ public class PdfPTable implements LargeElement{
         while (currentRowIdx >= currentRow.length) {
         	int numCols = getNumberOfColumns();
             if (runDirection == PdfWriter.RUN_DIRECTION_RTL) {
-                PdfPCell rtlRow[] = new PdfPCell[numCols];
+                PdfPCell[] rtlRow = new PdfPCell[numCols];
                 int rev = currentRow.length;
                 for (int k = 0; k < currentRow.length; ++k) {
                     PdfPCell rcell = currentRow[k];
@@ -690,7 +690,7 @@ public class PdfPTable implements LargeElement{
         }
         
         if (tableEvent != null && colStart == 0 && colEnd == totalCols) {
-            float heights[] = new float[rowEnd - rowStart + 1];
+            float[] heights = new float[rowEnd - rowStart + 1];
             heights[0] = yPosStart;
             for (int k = rowStart; k < rowEnd; ++k) {
                 PdfPRow row = (PdfPRow)rows.get(k);
@@ -1250,7 +1250,7 @@ public class PdfPTable implements LargeElement{
             firstRow = Math.max(firstRow, headerRows);
             lastRow = Math.max(lastRow, headerRows);
         }
-        float widths[][] = new float[(includeHeaders ? headerRows : 0) + lastRow - firstRow][];
+        float[][] widths = new float[(includeHeaders ? headerRows : 0) + lastRow - firstRow][];
         if (isColspan) {
             int n = 0;
             if (includeHeaders) {
@@ -1272,7 +1272,7 @@ public class PdfPTable implements LargeElement{
         }
         else {
         	int numCols = getNumberOfColumns();
-            float width[] = new float[numCols + 1];
+            float[] width = new float[numCols + 1];
             width[0] = xPos;
             for (int k = 0; k < numCols; ++k)
                 width[k + 1] = width[k] + absoluteWidths[k];

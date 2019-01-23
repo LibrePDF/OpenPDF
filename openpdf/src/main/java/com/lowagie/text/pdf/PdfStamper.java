@@ -198,7 +198,7 @@ public class PdfStamper
         PdfSigGenericPKCS sig = sigApp.getSigStandard();
         PdfLiteral lit = (PdfLiteral)sig.get(PdfName.CONTENTS);
         int totalBuf = (lit.getPosLength() - 2) / 2;
-        byte buf[] = new byte[8192];
+        byte[] buf = new byte[8192];
         int n;
         InputStream inp = sigApp.getRangeStream();
         try {
@@ -269,7 +269,7 @@ public class PdfStamper
      * @param strength128Bits <code>true</code> for 128 bit key length, <code>false</code> for 40 bit key length
      * @throws DocumentException if anything was already written to the output
      */
-    public void setEncryption(byte userPassword[], byte ownerPassword[], int permissions, boolean strength128Bits) throws DocumentException {
+    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits) throws DocumentException {
         if (stamper.isAppend())
             throw new DocumentException(MessageLocalization.getComposedMessage("append.mode.does.not.support.changing.the.encryption.status"));
         if (stamper.isContentWritten())
@@ -290,7 +290,7 @@ public class PdfStamper
      * Optionally DO_NOT_ENCRYPT_METADATA can be ored to output the metadata in cleartext
      * @throws DocumentException if the document is already open
      */
-    public void setEncryption(byte userPassword[], byte ownerPassword[], int permissions, int encryptionType) throws DocumentException {
+    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, int encryptionType) throws DocumentException {
         if (stamper.isAppend())
             throw new DocumentException(MessageLocalization.getComposedMessage("append.mode.does.not.support.changing.the.encryption.status"));
         if (stamper.isContentWritten())
@@ -493,7 +493,7 @@ public class PdfStamper
      * @param fileDisplay the actual file name stored in the pdf
      * @throws IOException on error
      */    
-    public void addFileAttachment(String description, byte fileStore[], String file, String fileDisplay) throws IOException {
+    public void addFileAttachment(String description, byte[] fileStore, String file, String fileDisplay) throws IOException {
         addFileAttachment(description, PdfFileSpecification.fileEmbedded(stamper, file, fileDisplay, fileStore));
     }
 

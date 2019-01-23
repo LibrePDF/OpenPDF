@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @Disabled  //ignored until we can fix headless GUI on Travis CI.
 class SwingExamplesTest {
 
-    static void main(String args[]) {
+    static void main(String[] args) {
         SwingExamplesTest r = new SwingExamplesTest();
         r.testJTable2Pdf();
     }

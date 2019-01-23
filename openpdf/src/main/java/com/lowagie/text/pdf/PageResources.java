@@ -62,13 +62,13 @@ class PageResources {
     protected PdfDictionary propertyDictionary = new PdfDictionary();
     protected HashMap forbiddenNames;
     protected PdfDictionary originalResources;
-    protected int namePtr[] = {0};
+    protected int[] namePtr = {0};
     protected HashMap usedNames;
 
     PageResources() {
     }
     
-    void setOriginalResources(PdfDictionary resources, int newNamePtr[]) {
+    void setOriginalResources(PdfDictionary resources, int[] newNamePtr) {
         if (newNamePtr != null)
             namePtr = newNamePtr;
         forbiddenNames = new HashMap();

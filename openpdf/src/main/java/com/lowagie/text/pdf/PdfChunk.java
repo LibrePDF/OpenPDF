@@ -73,8 +73,8 @@ import com.lowagie.text.Utilities;
 
 public class PdfChunk {
 
-    private static final char singleSpace[] = {' '};
-    private static final PdfChunk thisChunk[] = new PdfChunk[1];
+    private static final char[] singleSpace = {' '};
+    private static final PdfChunk[] thisChunk = new PdfChunk[1];
     private static final float ITALIC_ANGLE = 0.21256f;
 /** The allowed attributes in variable <CODE>attributes</CODE>. */
     private static final HashMap keysAttributes = new HashMap();
@@ -166,7 +166,7 @@ public class PdfChunk {
         this.attributes = other.attributes;
         this.noStroke = other.noStroke;
         this.baseFont = other.baseFont;
-        Object obj[] = (Object[])attributes.get(Chunk.IMAGE);
+        Object[] obj = (Object[]) attributes.get(Chunk.IMAGE);
         if (obj == null)
             image = null;
         else {
@@ -232,13 +232,13 @@ public class PdfChunk {
             }
         }
         if (f.isUnderlined()) {
-            Object obj[] = {null, new float[]{0, 1f / 15, 0, -1f / 3, 0}};
-            Object unders[][] = Utilities.addToArray((Object[][])attributes.get(Chunk.UNDERLINE), obj);
+            Object[] obj = {null, new float[]{0, 1f / 15, 0, -1f / 3, 0}};
+            Object[][] unders = Utilities.addToArray((Object[][]) attributes.get(Chunk.UNDERLINE), obj);
             attributes.put(Chunk.UNDERLINE, unders);
         }
         if (f.isStrikethru()) {
-            Object obj[] = {null, new float[]{0, 1f / 15, 0, 1f / 3, 0}};
-            Object unders[][] = Utilities.addToArray((Object[][])attributes.get(Chunk.UNDERLINE), obj);
+            Object[] obj = {null, new float[]{0, 1f / 15, 0, 1f / 3, 0}};
+            Object[][] unders = Utilities.addToArray((Object[][]) attributes.get(Chunk.UNDERLINE), obj);
             attributes.put(Chunk.UNDERLINE, unders);
         }
         if (action != null)
@@ -246,7 +246,7 @@ public class PdfChunk {
         // the color can't be stored in a PdfFont
         noStroke.put(Chunk.COLOR, f.getColor());
         noStroke.put(Chunk.ENCODING, font.getFont().getEncoding());
-        Object obj[] = (Object[])attributes.get(Chunk.IMAGE);
+        Object[] obj = (Object[]) attributes.get(Chunk.IMAGE);
         if (obj == null) {
             image = null;
         }
@@ -322,7 +322,7 @@ public class PdfChunk {
         int lastSpace = -1;
         float lastSpaceWidth = 0;
         int length = value.length();
-        char valueArray[] = value.toCharArray();
+        char[] valueArray = value.toCharArray();
         char character = 0;
         BaseFont ft = font.getFont();
         boolean surrogate = false;

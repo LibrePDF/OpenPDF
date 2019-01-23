@@ -174,7 +174,7 @@ public class PdfRectangle extends PdfArray {
      * @since 2.1.5
      */
 
-    public boolean add( float values[] ) {
+    public boolean add(float[] values) {
         return false;
     }
 
@@ -185,7 +185,7 @@ public class PdfRectangle extends PdfArray {
      * @since 2.1.5
      */
 
-    public boolean add( int values[] ) {
+    public boolean add(int[] values) {
         return false;
     }
 

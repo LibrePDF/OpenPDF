@@ -65,26 +65,26 @@ import java.util.LinkedList;
  * @author Oren Manor (manorore@post.tau.ac.il) and Ygal Blum (blumygal@post.tau.ac.il)
  */
 public class CFFFontSubset extends CFFFont {
-	
+
 	/**
-	 *  The Strings in this array represent Type1/Type2 operator names
+	 * The Strings in this array represent Type1/Type2 operator names
 	 */
-	static final String SubrsFunctions[] = {
-			"RESERVED_0","hstem","RESERVED_2","vstem","vmoveto","rlineto","hlineto","vlineto",
-			"rrcurveto","RESERVED_9","callsubr","return","escape","RESERVED_13",
-			"endchar","RESERVED_15","RESERVED_16","RESERVED_17","hstemhm","hintmask",
-			"cntrmask","rmoveto","hmoveto","vstemhm","rcurveline","rlinecurve","vvcurveto",
-			"hhcurveto","shortint","callgsubr","vhcurveto","hvcurveto"
-			};
+	static final String[] SubrsFunctions = {
+			"RESERVED_0", "hstem", "RESERVED_2", "vstem", "vmoveto", "rlineto", "hlineto", "vlineto",
+			"rrcurveto", "RESERVED_9", "callsubr", "return", "escape", "RESERVED_13",
+			"endchar", "RESERVED_15", "RESERVED_16", "RESERVED_17", "hstemhm", "hintmask",
+			"cntrmask", "rmoveto", "hmoveto", "vstemhm", "rcurveline", "rlinecurve", "vvcurveto",
+			"hhcurveto", "shortint", "callgsubr", "vhcurveto", "hvcurveto"
+	};
 	/**
 	 * The Strings in this array represent Type1/Type2 escape operator names
 	 */
-	static final String SubrsEscapeFuncs[] = {
-			"RESERVED_0","RESERVED_1","RESERVED_2","and","or","not","RESERVED_6",
-			"RESERVED_7","RESERVED_8","abs","add","sub","div","RESERVED_13","neg",
-			"eq","RESERVED_16","RESERVED_17","drop","RESERVED_19","put","get","ifelse",
-			"random","mul","RESERVED_25","sqrt","dup","exch","index","roll","RESERVED_31",
-			"RESERVED_32","RESERVED_33","hflex","flex","hflex1","flex1","RESERVED_REST"
+	static final String[] SubrsEscapeFuncs = {
+			"RESERVED_0", "RESERVED_1", "RESERVED_2", "and", "or", "not", "RESERVED_6",
+			"RESERVED_7", "RESERVED_8", "abs", "add", "sub", "div", "RESERVED_13", "neg",
+			"eq", "RESERVED_16", "RESERVED_17", "drop", "RESERVED_19", "put", "get", "ifelse",
+			"random", "mul", "RESERVED_25", "sqrt", "dup", "exch", "index", "roll", "RESERVED_31",
+			"RESERVED_32", "RESERVED_33", "hflex", "flex", "hflex1", "flex1", "RESERVED_REST"
 	};
 	
 	/**

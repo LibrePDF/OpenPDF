@@ -748,7 +748,7 @@ public class PdfWriter extends DocWriter implements
         for (Iterator i = dest.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             String name = (String) entry.getKey();
-            Object obj[] = (Object[]) entry.getValue();
+            Object[] obj = (Object[]) entry.getValue();
             PdfDestination destination = (PdfDestination)obj[2];
             if (obj[1] == null)
                 obj[1] = getPdfIndirectReference();
@@ -950,7 +950,7 @@ public class PdfWriter extends DocWriter implements
      * same size as the number of pages.
      * @throws DocumentException if all the pages are not present in the array
      */
-    public int reorderPages(int order[]) throws DocumentException {
+    public int reorderPages(int[] order) throws DocumentException {
         return root.reorderPages(order);
     }
 
@@ -1236,7 +1236,7 @@ public class PdfWriter extends DocWriter implements
         }
         // [F4] add the form XObjects
         for (Iterator<Object[]> it = formXObjects.values().iterator(); it.hasNext();) {
-            Object objs[] = it.next();
+            Object[] objs = it.next();
             PdfTemplate template = (PdfTemplate)objs[1];
             if (template != null && template.getIndirectReference() instanceof PRIndirectReference)
                 continue;
@@ -1274,7 +1274,7 @@ public class PdfWriter extends DocWriter implements
         for (Iterator<Map.Entry<PdfDictionary, PdfObject[]>> it = documentExtGState.entrySet().iterator(); it.hasNext();) {
             Map.Entry<PdfDictionary, PdfObject[]> entry = it.next();
             PdfDictionary gstate = entry.getKey();
-            PdfObject obj[] = entry.getValue();
+            PdfObject[] obj = entry.getValue();
             addToBody(gstate, (PdfIndirectReference)obj[1]);
         }
         // [F11] add the properties
@@ -1327,7 +1327,7 @@ public class PdfWriter extends DocWriter implements
             return;
         PdfDictionary top = new PdfDictionary();
         PdfIndirectReference topRef = getPdfIndirectReference();
-        Object kids[] = SimpleBookmark.iterateOutlines(this, topRef, newBookmarks, namedAsNames);
+        Object[] kids = SimpleBookmark.iterateOutlines(this, topRef, newBookmarks, namedAsNames);
         top.put(PdfName.FIRST, (PdfIndirectReference)kids[0]);
         top.put(PdfName.LAST, (PdfIndirectReference)kids[1]);
         top.put(PdfName.COUNT, new PdfNumber(((Integer)kids[2]).intValue()));
@@ -1590,7 +1590,7 @@ public class PdfWriter extends DocWriter implements
       * @param fileDisplay the actual file name stored in the pdf
       * @throws IOException on error
       */
-     public void addFileAttachment(String description, byte fileStore[], String file, String fileDisplay) throws IOException {
+     public void addFileAttachment(String description, byte[] fileStore, String file, String fileDisplay) throws IOException {
          addFileAttachment(description, PdfFileSpecification.fileEmbedded(this, file, fileDisplay, fileStore));
      }
 
@@ -1828,7 +1828,7 @@ public class PdfWriter extends DocWriter implements
      *
      * @throws IOException
      */
-    public void setOutputIntents(String outputConditionIdentifier, String outputCondition, String registryName, String info, byte destOutputProfile[]) throws IOException {
+    public void setOutputIntents(String outputConditionIdentifier, String outputCondition, String registryName, String info, byte[] destOutputProfile) throws IOException {
         ICC_Profile colorProfile = (destOutputProfile == null) ? null : ICC_Profile.getInstance(destOutputProfile);
         setOutputIntents(outputConditionIdentifier, outputCondition, registryName, info, colorProfile);
     }
@@ -1858,7 +1858,7 @@ public class PdfWriter extends DocWriter implements
         if (checkExistence)
             return true;
         PRStream stream = (PRStream)PdfReader.getPdfObject(out.get(PdfName.DESTOUTPUTPROFILE));
-        byte destProfile[] = null;
+        byte[] destProfile = null;
         if (stream != null) {
             destProfile = PdfReader.getStreamBytes(stream);
         }
@@ -1976,7 +1976,7 @@ public class PdfWriter extends DocWriter implements
     }
 
     /** @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(byte[], byte[], int, int) */
-    public void setEncryption(byte userPassword[], byte ownerPassword[], int permissions, int encryptionType) throws DocumentException {
+    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, int encryptionType) throws DocumentException {
         if (pdf.isOpen())
             throw new DocumentException(MessageLocalization.getComposedMessage("encryption.can.only.be.added.before.opening.the.document"));
         crypto = new PdfEncryption();
@@ -2012,7 +2012,7 @@ public class PdfWriter extends DocWriter implements
      * @throws DocumentException if the document is already open
      * @deprecated As of iText 2.0.3, replaced by (@link #setEncryption(byte[], byte[], int, int)}. Scheduled for removal at or after 2.2.0
      */
-    public void setEncryption(byte userPassword[], byte ownerPassword[], int permissions, boolean strength128Bits) throws DocumentException {
+    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits) throws DocumentException {
         setEncryption(userPassword, ownerPassword, permissions, strength128Bits ? STANDARD_ENCRYPTION_128 : STANDARD_ENCRYPTION_40);
     }
 
@@ -2160,7 +2160,7 @@ public class PdfWriter extends DocWriter implements
 
     PdfName addDirectTemplateSimple(PdfTemplate template, PdfName forcedName) {
         PdfIndirectReference ref = template.getIndirectReference();
-        Object obj[] = formXObjects.get(ref);
+        Object[] obj = formXObjects.get(ref);
         PdfName name = null;
         try {
             if (obj == null) {

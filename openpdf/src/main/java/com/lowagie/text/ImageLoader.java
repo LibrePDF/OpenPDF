@@ -150,7 +150,7 @@ public class ImageLoader {
         }
     }
 
-    public static Image getGifImage(byte imageData[]) {
+    public static Image getGifImage(byte[] imageData) {
         try {
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
             return Image.getInstance(bufferedImage, null, false);
@@ -160,7 +160,7 @@ public class ImageLoader {
         }
     }
 
-    public static Image getPngImage(byte imageData[]) {
+    public static Image getPngImage(byte[] imageData) {
         try {
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
             return Image.getInstance(bufferedImage, null, false);
@@ -170,7 +170,7 @@ public class ImageLoader {
         }
     }
 
-    public static Image getBmpImage(byte imageData[]) {
+    public static Image getBmpImage(byte[] imageData) {
         try {
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
             return Image.getInstance(bufferedImage, null, false);
@@ -180,7 +180,7 @@ public class ImageLoader {
         }
     }
 
-    public static Image getTiffImage(byte imageData[]) {
+    public static Image getTiffImage(byte[] imageData) {
         try {
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
             return Image.getInstance(bufferedImage, null, false);
@@ -197,7 +197,7 @@ public class ImageLoader {
      * @param imageData
      * @return
      */
-    public static Image getJpegImage(byte imageData[]) {
+    public static Image getJpegImage(byte[] imageData) {
         try {
             return new Jpeg(imageData);
 
@@ -206,7 +206,7 @@ public class ImageLoader {
         }
     }
 
-    public static Image getJpeg2000Image(byte imageData[]) {
+    public static Image getJpeg2000Image(byte[] imageData) {
         try {
             return new Jpeg2000(imageData);
 

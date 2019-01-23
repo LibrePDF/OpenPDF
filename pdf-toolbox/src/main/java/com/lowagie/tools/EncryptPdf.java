@@ -69,15 +69,15 @@ public class EncryptPdf {
     private final static int PERMISSIONS = 4;
     private final static int STRENGTH = 5;
     private final static int MOREINFO = 6;
-    private final static int permit[] = {
-    	PdfWriter.ALLOW_PRINTING,
-    	PdfWriter.ALLOW_MODIFY_CONTENTS,
-    	PdfWriter.ALLOW_COPY,
-    	PdfWriter.ALLOW_MODIFY_ANNOTATIONS,
-    	PdfWriter.ALLOW_FILL_IN,
-    	PdfWriter.ALLOW_SCREENREADERS,
-    	PdfWriter.ALLOW_ASSEMBLY,
-        PdfWriter.ALLOW_DEGRADED_PRINTING};
+    private final static int[] permit = {
+            PdfWriter.ALLOW_PRINTING,
+            PdfWriter.ALLOW_MODIFY_CONTENTS,
+            PdfWriter.ALLOW_COPY,
+            PdfWriter.ALLOW_MODIFY_ANNOTATIONS,
+            PdfWriter.ALLOW_FILL_IN,
+            PdfWriter.ALLOW_SCREENREADERS,
+            PdfWriter.ALLOW_ASSEMBLY,
+            PdfWriter.ALLOW_DEGRADED_PRINTING};
 
     private static void usage() {
         System.out.println("usage: input_file output_file user_password owner_password permissions 128|40 [new info string pairs]");
@@ -99,7 +99,7 @@ public class EncryptPdf {
      * 
      * @param args input_file output_file user_password owner_password permissions 128|40 [new info string pairs]
      */
-    public static void main (String args[]) {
+    public static void main (String[] args) {
         System.out.println("PDF document encryptor");
         if (args.length <= STRENGTH || args[PERMISSIONS].length() != 8) {
             usage();

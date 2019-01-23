@@ -69,33 +69,33 @@ public class PRTokeniser {
     public static final int TK_REF = 9;
     public static final int TK_OTHER = 10;
     public static final int TK_ENDOFFILE = 11;
-    public static final boolean delims[] = {
-        true,  true,  false, false, false, false, false, false, false, false,
-        true,  true,  false, true,  true,  false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, true,  false, false, false, false, true,  false,
-        false, true,  true,  false, false, false, false, false, true,  false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, true,  false, true,  false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, true,  false, true,  false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false};
+    public static final boolean[] delims = {
+            true, true, false, false, false, false, false, false, false, false,
+            true, true, false, true, true, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, true, false, false, false, false, true, false,
+            false, true, true, false, false, false, false, false, true, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, true, false, true, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, true, false, true, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false};
     
     static final String EMPTY = "";
 
@@ -111,7 +111,7 @@ public class PRTokeniser {
         file = new RandomAccessFileOrArray(filename);
     }
 
-    public PRTokeniser(byte pdfIn[]) {
+    public PRTokeniser(byte[] pdfIn) {
         file = new RandomAccessFileOrArray(pdfIn);
     }
     
@@ -517,7 +517,7 @@ public class PRTokeniser {
         return Integer.parseInt(stringValue);
     }
     
-    public boolean readLineSegment(byte input[]) throws IOException {
+    public boolean readLineSegment(byte[] input) throws IOException {
         int c = -1;
         boolean eol = false;
         int ptr = 0;
@@ -583,7 +583,7 @@ public class PRTokeniser {
         return true;
     }
     
-    public static int[] checkObjectStart(byte line[]) {
+    public static int[] checkObjectStart(byte[] line) {
         try {
             PRTokeniser tk = new PRTokeniser(line);
             int num = 0;

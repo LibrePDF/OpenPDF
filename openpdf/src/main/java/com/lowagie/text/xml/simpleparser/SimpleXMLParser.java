@@ -557,7 +557,7 @@ public final class SimpleXMLParser {
      * @throws IOException on error
      */    
     public static void parse(SimpleXMLDocHandler doc, InputStream in) throws IOException {
-        byte b4[] = new byte[4];
+        byte[] b4 = new byte[4];
         int count = in.read(b4);
         if (count != 4)
             throw new IOException(MessageLocalization.getComposedMessage("insufficient.length"));

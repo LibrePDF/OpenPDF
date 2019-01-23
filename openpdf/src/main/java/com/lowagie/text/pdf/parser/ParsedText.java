@@ -280,7 +280,7 @@ public class ParsedText extends ParsedTextImpl {
         ArrayList<Word> result = new ArrayList<Word>();
         CMapAwareDocumentFont font = gs.font;
         char[] chars = pdfText.getOriginalChars();
-        boolean hasSpace[] = new boolean[chars.length];
+        boolean[] hasSpace = new boolean[chars.length];
         float totalWidth = 0;
         StringBuffer wordAccum = new StringBuffer(3);
         float wordStartOffset = 0;

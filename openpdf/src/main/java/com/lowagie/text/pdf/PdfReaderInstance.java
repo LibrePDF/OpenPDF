@@ -61,7 +61,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 class PdfReaderInstance {
     static final PdfLiteral IDENTITYMATRIX = new PdfLiteral("[1 0 0 1 0 0]");
     static final PdfNumber ONE = new PdfNumber(1);
-    int myXref[];
+    int[] myXref;
     PdfReader reader;
     RandomAccessFileOrArray file;
     HashMap importedPages = new HashMap();
@@ -122,7 +122,7 @@ class PdfReaderInstance {
         PdfDictionary page = reader.getPageNRelease(pageNumber);
         PdfObject contents = PdfReader.getPdfObjectRelease(page.get(PdfName.CONTENTS));
         PdfDictionary dic = new PdfDictionary();
-        byte bout[] = null;
+        byte[] bout = null;
         if (contents != null) {
             if (contents.isStream())
                 dic.putAll((PRStream)contents);

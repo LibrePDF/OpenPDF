@@ -68,9 +68,11 @@ import com.lowagie.text.DocWriter;
 public class ByteBuffer extends OutputStream {
     /** The count of bytes in the buffer. */
     protected int count;
-    
-    /** The buffer where the bytes are stored. */
-    protected byte buf[];
+
+    /**
+     * The buffer where the bytes are stored.
+     */
+    protected byte[] buf;
     
     private static int byteCacheSize = 0;
     
@@ -191,7 +193,7 @@ public class ByteBuffer extends OutputStream {
     public ByteBuffer append_i(int b) {
         int newcount = count + 1;
         if (newcount > buf.length) {
-            byte newbuf[] = new byte[Math.max(buf.length << 1, newcount)];
+            byte[] newbuf = new byte[Math.max(buf.length << 1, newcount)];
             System.arraycopy(buf, 0, newbuf, 0, count);
             buf = newbuf;
         }
@@ -208,13 +210,13 @@ public class ByteBuffer extends OutputStream {
      * @param len the length of bytes to append
      * @return a reference to this <CODE>ByteBuffer</CODE> object
      */
-    public ByteBuffer append(byte b[], int off, int len) {
+    public ByteBuffer append(byte[] b, int off, int len) {
         if ((off < 0) || (off > b.length) || (len < 0) ||
         ((off + len) > b.length) || ((off + len) < 0) || len == 0)
             return this;
         int newcount = count + len;
         if (newcount > buf.length) {
-            byte newbuf[] = new byte[Math.max(buf.length << 1, newcount)];
+            byte[] newbuf = new byte[Math.max(buf.length << 1, newcount)];
             System.arraycopy(buf, 0, newbuf, 0, count);
             buf = newbuf;
         }
@@ -228,7 +230,7 @@ public class ByteBuffer extends OutputStream {
      * @param b the array to be appended
      * @return a reference to this <CODE>ByteBuffer</CODE> object
      */
-    public ByteBuffer append(byte b[]) {
+    public ByteBuffer append(byte[] b) {
         return append(b, 0, b.length);
     }
     
@@ -554,7 +556,7 @@ public class ByteBuffer extends OutputStream {
      * @return  the current contents of this output stream, as a byte array.
      */
     public byte[] toByteArray() {
-        byte newbuf[] = new byte[count];
+        byte[] newbuf = new byte[count];
         System.arraycopy(buf, 0, newbuf, 0, count);
         return newbuf;
     }

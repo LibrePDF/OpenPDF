@@ -88,33 +88,43 @@ public class PdfEncryption {
 	private static final byte[] metadataPad = { (byte) 255, (byte) 255,
 			(byte) 255, (byte) 255 };
 
-	/** The encryption key for a particular object/generation */
-	byte key[];
+    /**
+     * The encryption key for a particular object/generation
+     */
+    byte[] key;
 
 	/** The encryption key length for a particular object/generation */
 	int keySize;
 
-	/** The global encryption key */
-	byte mkey[];
+    /**
+     * The global encryption key
+     */
+    byte[] mkey;
 
-	/** Work area to prepare the object/generation bytes */
-	byte extra[] = new byte[5];
+    /**
+     * Work area to prepare the object/generation bytes
+     */
+    byte[] extra = new byte[5];
 
 	/** The message digest algorithm MD5 */
 	MessageDigest md5;
 
-	/** The encryption key for the owner */
-	byte ownerKey[] = new byte[32];
+    /**
+     * The encryption key for the owner
+     */
+    byte[] ownerKey = new byte[32];
 
-	/** The encryption key for the user */
-	byte userKey[] = new byte[32];
+    /**
+     * The encryption key for the user
+     */
+    byte[] userKey = new byte[32];
 
 	/** The public key security handler for certificate encryption */
 	protected PdfPublicKeySecurityHandler publicKeyHandler = null;
 
 	int permissions;
 
-	byte documentID[];
+    byte[] documentID;
 
 	static long seq = System.currentTimeMillis();
 
@@ -207,8 +217,8 @@ public class PdfEncryption {
 
 	/**
 	 */
-	private byte[] padPassword(byte userPassword[]) {
-		byte userPad[] = new byte[32];
+	private byte[] padPassword(byte[] userPassword) {
+        byte[] userPad = new byte[32];
 		if (userPassword == null) {
 			System.arraycopy(pad, 0, userPad, 0, 32);
 		} else {
@@ -224,12 +234,12 @@ public class PdfEncryption {
 
 	/**
 	 */
-	private byte[] computeOwnerKey(byte userPad[], byte ownerPad[]) {
-		byte ownerKey[] = new byte[32];
+	private byte[] computeOwnerKey(byte[] userPad, byte[] ownerPad) {
+        byte[] ownerKey = new byte[32];
 
-		byte digest[] = md5.digest(ownerPad);
+        byte[] digest = md5.digest(ownerPad);
 		if (revision == STANDARD_ENCRYPTION_128 || revision == AES_128) {
-			byte mkey[] = new byte[keyLength / 8];
+            byte[] mkey = new byte[keyLength / 8];
 			// only use for the input as many bit as the key consists of
 			for (int k = 0; k < 50; ++k)
 				System.arraycopy(md5.digest(digest), 0, digest, 0, mkey.length);
@@ -252,8 +262,8 @@ public class PdfEncryption {
 	 * 
 	 * ownerKey, documentID must be setup
 	 */
-	private void setupGlobalEncryptionKey(byte[] documentID, byte userPad[],
-			byte ownerKey[], int permissions) {
+	private void setupGlobalEncryptionKey(byte[] documentID, byte[] userPad,
+                                          byte[] ownerKey, int permissions) {
 		this.documentID = documentID;
 		this.ownerKey = ownerKey;
 		this.permissions = permissions;
@@ -265,7 +275,7 @@ public class PdfEncryption {
 		md5.update(userPad);
 		md5.update(ownerKey);
 
-		byte ext[] = new byte[4];
+        byte[] ext = new byte[4];
 		ext[0] = (byte) permissions;
 		ext[1] = (byte) (permissions >> 8);
 		ext[2] = (byte) (permissions >> 16);
@@ -276,7 +286,7 @@ public class PdfEncryption {
 		if (!encryptMetadata)
 			md5.update(metadataPad);
 
-		byte digest[] = new byte[mkey.length];
+        byte[] digest = new byte[mkey.length];
 		System.arraycopy(md5.digest(), 0, digest, 0, mkey.length);
 
 		// only use the really needed bits as input for the hash
@@ -296,7 +306,7 @@ public class PdfEncryption {
 	private void setupUserKey() {
 		if (revision == STANDARD_ENCRYPTION_128 || revision == AES_128) {
 			md5.update(pad);
-			byte digest[] = md5.digest(documentID);
+            byte[] digest = md5.digest(documentID);
 			System.arraycopy(digest, 0, userKey, 0, 16);
 			for (int k = 16; k < 32; ++k)
 				userKey[k] = 0;
@@ -314,8 +324,8 @@ public class PdfEncryption {
 
 	// gets keylength and revision and uses revision to choose the initial values
 	// for permissions
-	public void setupAllKeys(byte userPassword[], byte ownerPassword[],
-			int permissions) {
+	public void setupAllKeys(byte[] userPassword, byte[] ownerPassword,
+                             int permissions) {
 		if (ownerPassword == null || ownerPassword.length == 0)
 			ownerPassword = md5.digest(createDocumentId());
 		permissions |= (revision == STANDARD_ENCRYPTION_128 || revision == AES_128) ? 0xfffff0c0
@@ -323,8 +333,8 @@ public class PdfEncryption {
 		permissions &= 0xfffffffc;
 		// PDF reference 3.5.2 Standard Security Handler, Algorithm 3.3-1
 		// If there is no owner password, use the user password instead.
-		byte userPad[] = padPassword(userPassword);
-		byte ownerPad[] = padPassword(ownerPassword);
+        byte[] userPad = padPassword(userPassword);
+        byte[] ownerPad = padPassword(ownerPassword);
 
 		this.ownerKey = computeOwnerKey(userPad, ownerPad);
 		documentID = createDocumentId();
@@ -346,31 +356,31 @@ public class PdfEncryption {
 
 	/**
 	 */
-	public void setupByUserPassword(byte[] documentID, byte userPassword[],
-			byte ownerKey[], int permissions) {
+	public void setupByUserPassword(byte[] documentID, byte[] userPassword,
+                                    byte[] ownerKey, int permissions) {
 		setupByUserPad(documentID, padPassword(userPassword), ownerKey,
 				permissions);
 	}
 
 	/**
 	 */
-	private void setupByUserPad(byte[] documentID, byte userPad[],
-			byte ownerKey[], int permissions) {
+	private void setupByUserPad(byte[] documentID, byte[] userPad,
+                                byte[] ownerKey, int permissions) {
 		setupGlobalEncryptionKey(documentID, userPad, ownerKey, permissions);
 		setupUserKey();
 	}
 
 	/**
 	 */
-	public void setupByOwnerPassword(byte[] documentID, byte ownerPassword[],
-			byte userKey[], byte ownerKey[], int permissions) {
+	public void setupByOwnerPassword(byte[] documentID, byte[] ownerPassword,
+                                     byte[] userKey, byte[] ownerKey, int permissions) {
 		setupByOwnerPad(documentID, padPassword(ownerPassword), userKey,
 				ownerKey, permissions);
 	}
 
-	private void setupByOwnerPad(byte[] documentID, byte ownerPad[],
-			byte userKey[], byte ownerKey[], int permissions) {
-		byte userPad[] = computeOwnerKey(ownerKey, ownerPad); // userPad will
+	private void setupByOwnerPad(byte[] documentID, byte[] ownerPad,
+                                 byte[] userKey, byte[] ownerKey, int permissions) {
+        byte[] userPad = computeOwnerKey(ownerKey, ownerPad); // userPad will
 																// be set in
 																// this.ownerKey
 		setupGlobalEncryptionKey(documentID, userPad, ownerKey, permissions); // step
@@ -400,7 +410,7 @@ public class PdfEncryption {
 			keySize = 16;
 	}
 
-	public static PdfObject createInfoId(byte id[]) {
+	public static PdfObject createInfoId(byte[] id) {
 		ByteBuffer buf = new ByteBuffer(90);
 		buf.append('[').append('<');
 		for (int k = 0; k < 16; ++k)

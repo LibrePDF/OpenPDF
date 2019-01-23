@@ -107,7 +107,7 @@ public class PdfSmartCopy extends PdfCopy {
 
         PdfIndirectReference theRef;
         RefKey key = new RefKey(in);
-        IndirectReferences iRef = (IndirectReferences) indirects.get(key);
+        IndirectReferences iRef = indirects.get(key);
         if (iRef != null) {
             theRef = iRef.getRef();
             if (iRef.getCopied()) {

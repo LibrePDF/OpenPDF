@@ -139,8 +139,8 @@ public class PdfEFStream extends PdfStream {
                 deflater = new Deflater(compressionLevel);
                 fout = def = new DeflaterOutputStream(fout, deflater, 0x8000);
             }
-            
-            byte buf[] = new byte[4192];
+
+            byte[] buf = new byte[4192];
             while (true) {
                 int n = inputStream.read(buf);
                 if (n <= 0)
@@ -164,7 +164,7 @@ public class PdfEFStream extends PdfStream {
                     os.write(bytes);
             }
             else {
-                byte b[];
+                byte[] b;
                 if (streamBytes != null) {
                     b = crypto.encryptByteArray(streamBytes.toByteArray());
                 }

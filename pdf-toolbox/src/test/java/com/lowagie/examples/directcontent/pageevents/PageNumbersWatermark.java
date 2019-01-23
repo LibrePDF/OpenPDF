@@ -53,7 +53,7 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
      * Generates a document with a header containing Page x of y and with a Watermark on every page.
      * @param args no arguments needed
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         try {
         	// step 1: creating the document
             Document doc = new Document(PageSize.A4, 50, 50, 100, 72);

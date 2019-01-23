@@ -524,7 +524,7 @@ public class FontFactoryImp implements FontProvider {
     public void register(String path, String alias) {
         try {
             if (path.toLowerCase().endsWith(".ttf") || path.toLowerCase().endsWith(".otf") || path.toLowerCase().indexOf(".ttc,") > 0) {
-                Object allNames[] = BaseFont.getAllFontNames(path, BaseFont.WINANSI, null);
+                Object[] allNames = BaseFont.getAllFontNames(path, BaseFont.WINANSI, null);
                 trueTypeFonts.setProperty(((String)allNames[0]).toLowerCase(), path);
                 if (alias != null) {
                     trueTypeFonts.setProperty(alias.toLowerCase(), path);
@@ -611,7 +611,7 @@ public class FontFactoryImp implements FontProvider {
             File file = new File(dir);
             if (!file.exists() || !file.isDirectory())
                 return 0;
-            String files[] = file.list();
+            String[] files = file.list();
             if (files == null)
                 return 0;
             for (int k = 0; k < files.length; ++k) {

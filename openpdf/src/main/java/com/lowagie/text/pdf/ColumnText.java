@@ -479,7 +479,7 @@ public class ColumnText {
      * @param cLine the column array
      * @return the converted array
      */
-    protected ArrayList convertColumn(float cLine[]) {
+    protected ArrayList convertColumn(float[] cLine) {
         if (cLine.length < 4)
             throw new RuntimeException(MessageLocalization.getComposedMessage("no.valid.column.line.found"));
         ArrayList cc = new ArrayList();
@@ -493,7 +493,7 @@ public class ColumnText {
             // x = ay + b
             float a = (x1 - x2) / (y1 - y2);
             float b = x1 - a * y1;
-            float r[] = new float[4];
+            float[] r = new float[4];
             r[0] = Math.min(y1, y2);
             r[1] = Math.max(y1, y2);
             r[2] = a;
@@ -521,7 +521,7 @@ public class ColumnText {
             return 0;
         }
         for (int k = 0; k < wall.size(); ++k) {
-            float r[] = (float[])wall.get(k);
+            float[] r = (float[]) wall.get(k);
             if (yLine < r[0] || yLine > r[1])
                 continue;
             return r[2] * yLine + r[3];
@@ -559,14 +559,14 @@ public class ColumnText {
             if (repeat && currentLeading == 0)
                 return null;
             repeat = true;
-            float x1[] = findLimitsOneLine();
+            float[] x1 = findLimitsOneLine();
             if (lineStatus == LINE_STATUS_OFFLIMITS)
                 return null;
             yLine -= currentLeading;
             if (lineStatus == LINE_STATUS_NOLINE) {
                 continue;
             }
-            float x2[] = findLimitsOneLine();
+            float[] x2 = findLimitsOneLine();
             if (lineStatus == LINE_STATUS_OFFLIMITS)
                 return null;
             if (lineStatus == LINE_STATUS_NOLINE) {
@@ -587,7 +587,7 @@ public class ColumnText {
      * @param leftLine the left column bound
      * @param rightLine the right column bound
      */
-    public void setColumns(float leftLine[], float rightLine[]) {
+    public void setColumns(float[] leftLine, float[] rightLine) {
         maxY = -10e20f;
         minY = 10e20f;
         setYLine(Math.max(leftLine[1], leftLine[leftLine.length - 1]));
@@ -811,7 +811,7 @@ public class ColumnText {
         linesWritten = 0;
         boolean dirty = false;
         float ratio = spaceCharRatio;
-        Object currentValues[] = new Object[2];
+        Object[] currentValues = new Object[2];
         PdfFont currentFont = null;
         Float lastBaseFactor = new Float(0);
         currentValues[1] = lastBaseFactor;
@@ -879,7 +879,7 @@ public class ColumnText {
         	}
             else {
                	float yTemp = yLine;
-               	float xx[] = findLimitsTwoLines();
+                float[] xx = findLimitsTwoLines();
                	if (xx == null) {
                		status = NO_MORE_COLUMN;
                		if (bidiLine.isEmpty())
@@ -1241,7 +1241,7 @@ public class ColumnText {
                     }
                     if (k == items.size() - 1) {
                         if (!stack.isEmpty()) {
-                            Object objs[] = (Object[])stack.pop();
+                            Object[] objs = (Object[]) stack.pop();
                             list = (com.lowagie.text.List)objs[0];
                             items = list.getItems();
                             k = ((Integer)objs[1]).intValue();

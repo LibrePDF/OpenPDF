@@ -78,21 +78,22 @@ import com.lowagie.text.ExceptionConverter;
  */
 public class BarcodeInter25 extends Barcode{
 
-    /** The bars to generate the code.
-     */    
-	private static final byte BARS[][] =
-    {
-        {0,0,1,1,0},
-        {1,0,0,0,1},
-        {0,1,0,0,1},
-        {1,1,0,0,0},
-        {0,0,1,0,1},
-        {1,0,1,0,0},
-        {0,1,1,0,0},
-        {0,0,0,1,1},
-        {1,0,0,1,0},
-        {0,1,0,1,0}
-    };
+    /**
+     * The bars to generate the code.
+     */
+    private static final byte[][] BARS =
+            {
+                    {0, 0, 1, 1, 0},
+                    {1, 0, 0, 0, 1},
+                    {0, 1, 0, 0, 1},
+                    {1, 1, 0, 0, 0},
+                    {0, 0, 1, 0, 1},
+                    {1, 0, 1, 0, 0},
+                    {0, 1, 1, 0, 0},
+                    {0, 0, 0, 1, 1},
+                    {1, 0, 0, 1, 0},
+                    {0, 1, 0, 1, 0}
+            };
 
     /** Creates new BarcodeInter25 */
     public BarcodeInter25() {
@@ -149,7 +150,7 @@ public class BarcodeInter25 extends Barcode{
         text = keepNumbers(text);
         if ((text.length() & 1) != 0)
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.text.length.must.be.even"));
-        byte bars[] = new byte[text.length() * 5 + 7];
+        byte[] bars = new byte[text.length() * 5 + 7];
         int pb = 0;
         bars[pb++] = 0;
         bars[pb++] = 0;
@@ -159,8 +160,8 @@ public class BarcodeInter25 extends Barcode{
         for (int k = 0; k < len; ++k) {
             int c1 = text.charAt(k * 2) - '0';
             int c2 = text.charAt(k * 2 + 1) - '0';
-            byte b1[] = BARS[c1];
-            byte b2[] = BARS[c2];
+            byte[] b1 = BARS[c1];
+            byte[] b2 = BARS[c2];
             for (int j = 0; j < 5; ++j) {
                 bars[pb++] = b1[j];
                 bars[pb++] = b2[j];
@@ -276,7 +277,7 @@ public class BarcodeInter25 extends Barcode{
                 barStartY = textStartY + baseline;
             }
         }
-        byte bars[] = getBarsInter25(bCode);
+        byte[] bars = getBarsInter25(bCode);
         boolean print = true;
         if (barColor != null)
             cb.setColorFill(barColor);
@@ -317,11 +318,11 @@ public class BarcodeInter25 extends Barcode{
         int len = bCode.length();
         int nn = (int)n;
         int fullWidth = len * (3 + 2 * nn) + (6 + nn );
-        byte bars[] = getBarsInter25(bCode);
+        byte[] bars = getBarsInter25(bCode);
         boolean print = true;
         int ptr = 0;
         int height = (int)barHeight;
-        int pix[] = new int[fullWidth * height];
+        int[] pix = new int[fullWidth * height];
         for (int k = 0; k < bars.length; ++k) {
             int w = (bars[k] == 0 ? 1 : nn);
             int c = g;

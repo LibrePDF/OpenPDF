@@ -95,7 +95,7 @@ public class PRStream extends PdfStream {
         this.offset = offset;
     }
 
-    public PRStream(PdfReader reader, byte conts[]) {
+    public PRStream(PdfReader reader, byte[] conts) {
     	this(reader, conts, DEFAULT_COMPRESSION);
     }
 

@@ -305,7 +305,7 @@ public class SAXiTextHandler extends DefaultHandler {
         // tables
         if (ElementTags.TABLE.equals(name)) {
             Table table = ElementFactory.getTable(attributes);
-            float widths[] = table.getProportionalWidths();
+            float[] widths = table.getProportionalWidths();
             for (int i = 0; i < widths.length; i++) {
                 if (widths[i] == 0) {
                     widths[i] = 100.0f / widths.length;
@@ -788,7 +788,7 @@ public class SAXiTextHandler extends DefaultHandler {
                     j += cell.getColspan();
                     table.addCell(cell);
                 }
-                float widths[] = table.getProportionalWidths();
+                float[] widths = table.getProportionalWidths();
                 if (widths.length == columns) {
                     float left = 0.0f;
                     for (int i = 0; i < columns; i++) {

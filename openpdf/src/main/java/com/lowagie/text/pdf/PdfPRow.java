@@ -73,15 +73,16 @@ public class PdfPRow {
 	 */
 	public static final float RIGHT_LIMIT = 20000;
 
-	protected PdfPCell cells[];
+    protected PdfPCell[] cells;
 
-	protected float widths[];
-	
-	/**
-	 * extra heights that needs to be added to a cell because of rowspans.
-	 * @since	2.1.6
-	 */
-	protected float extraHeights[];
+    protected float[] widths;
+
+    /**
+     * extra heights that needs to be added to a cell because of rowspans.
+     *
+     * @since 2.1.6
+     */
+    protected float[] extraHeights;
 
 	protected float maxHeight = 0;
 	
@@ -95,7 +96,7 @@ public class PdfPRow {
 	 * 
 	 * @param cells
 	 */
-	public PdfPRow(PdfPCell cells[]) {
+	public PdfPRow(PdfPCell[] cells) {
 		this.cells = cells;
 		widths = new float[cells.length];
 		initExtraHeights();
@@ -125,7 +126,7 @@ public class PdfPRow {
 	 * @param widths
 	 * @return true if everything went right
 	 */
-	public boolean setWidths(float widths[]) {
+	public boolean setWidths(float[] widths) {
 		if (widths.length != cells.length)
 			return false;
 		System.arraycopy(widths, 0, this.widths, 0, cells.length);
@@ -548,7 +549,7 @@ public class PdfPRow {
 			if (cells[k] != null)
 				++n;
 		}
-		float width[] = new float[n + 1];
+        float[] width = new float[n + 1];
 		n = 0;
 		width[n++] = xPos;
 		for (int k = 0; k < cells.length; ++k) {
@@ -570,9 +571,9 @@ public class PdfPRow {
 	 * an empty row would result
 	 */
 	public PdfPRow splitRow(PdfPTable table, int rowIndex, float new_height) {
-		PdfPCell newCells[] = new PdfPCell[cells.length];
-		float fixHs[] = new float[cells.length];
-		float minHs[] = new float[cells.length];
+        PdfPCell[] newCells = new PdfPCell[cells.length];
+        float[] fixHs = new float[cells.length];
+        float[] minHs = new float[cells.length];
 		boolean allEmpty = true;
 		for (int k = 0; k < cells.length; ++k) {
 			float newHeight = new_height;

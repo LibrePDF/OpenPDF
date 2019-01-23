@@ -140,7 +140,7 @@ public class XmlDomWriter {
             case Node.ELEMENT_NODE: {
                 fOut.print('<');
                 fOut.print(node.getNodeName());
-                Attr attrs[] = sortAttributes(node.getAttributes());
+                Attr[] attrs = sortAttributes(node.getAttributes());
                 for (int i = 0; i < attrs.length; i++) {
                     Attr attr = attrs[i];
                     fOut.print(' ');
@@ -233,7 +233,7 @@ public class XmlDomWriter {
     protected Attr[] sortAttributes(NamedNodeMap attrs) {
         
         int len = (attrs != null) ? attrs.getLength() : 0;
-        Attr array[] = new Attr[len];
+        Attr[] array = new Attr[len];
         for (int i = 0; i < len; i++) {
             array[i] = (Attr)attrs.item(i);
         }

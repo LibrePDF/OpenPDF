@@ -67,7 +67,7 @@ public class ImageMasks {
             document.add(p);
             document.add(p);
             PdfContentByte cb = writer.getDirectContent();
-            byte maskr[] = {(byte)0x3c, (byte)0x7e, (byte)0xe7, (byte)0xc3, (byte)0xc3, (byte)0xe7, (byte)0x7e, (byte)0x3c};
+            byte[] maskr = {(byte) 0x3c, (byte) 0x7e, (byte) 0xe7, (byte) 0xc3, (byte) 0xc3, (byte) 0xe7, (byte) 0x7e, (byte) 0x3c};
             Image mask = Image.getInstance(8, 8, 1, 1, maskr);
             mask.makeMask();
             mask.setInverted(true);

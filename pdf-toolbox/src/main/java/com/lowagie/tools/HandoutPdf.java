@@ -72,7 +72,7 @@ public class HandoutPdf extends java.lang.Object {
 	 * Makes handouts based on an existing PDF file.
 	 * @param args the command line arguments
 	 */
-	public static void main (String args[]) {
+	public static void main (String[] args) {
 		if (args.length != 3) {
 			System.err.println("arguments: srcfile destfile pages");
 		}

@@ -34,7 +34,7 @@ public class FullFontNames {
 	        BaseFont bf = BaseFont.createFont("c:\\windows\\fonts\\arialbi.ttf", "winansi", BaseFont.NOT_EMBEDDED);
 			out.write("postscriptname: " + bf.getPostscriptFontName());
 			out.write("\r\n\r\n");
-	        String names[][] = bf.getFullFontName();
+            String[][] names = bf.getFullFontName();
 	        out.write("\n\nListing the full font name:\n\n");
 	        for (int k = 0; k < names.length; ++k) {
 	            if (names[k][0].equals("3") && names[k][1].equals("1")) // Microsoft encoding

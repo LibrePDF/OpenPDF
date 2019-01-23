@@ -400,7 +400,7 @@ class PdfCopyFieldsImp extends PdfWriter {
                 file = reader.getSafeFile();
                 file.reOpen();
                 IntHashtable t = (IntHashtable) entry.getValue();
-                int keys[] = t.toOrderedKeys();
+                int[] keys = t.toOrderedKeys();
                 for (int k = 0; k < keys.length; ++k) {
                     PRIndirectReference ref = new PRIndirectReference(reader, keys[k]);
                     addToBody(PdfReader.getPdfObjectRelease(ref), t.get(keys[k]));

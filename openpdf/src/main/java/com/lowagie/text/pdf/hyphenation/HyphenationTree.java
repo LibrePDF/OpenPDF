@@ -449,7 +449,7 @@ public class HyphenationTree extends TernaryTree
 
     public void printStats() {
         System.out.println("Value space size = "
-                           + Integer.toString(vspace.length()));
+                           + vspace.length());
         super.printStats();
     }
 }

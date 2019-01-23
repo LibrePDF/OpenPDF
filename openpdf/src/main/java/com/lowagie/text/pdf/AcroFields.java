@@ -200,7 +200,7 @@ public class AcroFields {
         if (name.length() > 0) {
           name = name.substring(0, name.length() - 1);
         }
-        Item item = (Item) fields.get(name);
+        Item item = fields.get(name);
         if (item == null) {
           item = new Item();
           fields.put(name, item);
@@ -390,7 +390,7 @@ public class AcroFields {
     if (ftype != FIELD_TYPE_COMBO && ftype != FIELD_TYPE_LIST) {
       return false;
     }
-    Item fd = (Item) fields.get(fieldName);
+    Item fd = fields.get(fieldName);
     String[] sing = null;
     if (exportValues == null && displayValues != null) {
       sing = displayValues;
@@ -508,7 +508,7 @@ public class AcroFields {
     if (fields.containsKey(newName)) {
       return false;
     }
-    Item item = (Item) fields.get(oldName);
+    Item item = fields.get(oldName);
     if (item == null) {
       return false;
     }
@@ -528,7 +528,7 @@ public class AcroFields {
     try {
       PRTokeniser tk = new PRTokeniser(PdfEncodings.convertToBytes(da, null));
       ArrayList stack = new ArrayList();
-      Object ret[] = new Object[3];
+      Object[] ret = new Object[3];
       while (tk.nextToken()) {
         if (tk.getTokenType() == PRTokeniser.TK_COMMENT) {
           continue;
@@ -579,7 +579,7 @@ public class AcroFields {
     // the text size and color
     PdfString da = merged.getAsString(PdfName.DA);
     if (da != null) {
-      Object dab[] = splitDAelements(da.toUnicodeString());
+      Object[] dab = splitDAelements(da.toUnicodeString());
       if (dab[DA_SIZE] != null) {
         tx.setFontSize(((Float) dab[DA_SIZE]).floatValue());
       }
@@ -597,7 +597,7 @@ public class AcroFields {
               BaseFont bp = new DocumentFont((PRIndirectReference) po);
               tx.setFont(bp);
               Integer porkey = new Integer(por.getNumber());
-              BaseFont porf = (BaseFont) extensionFonts.get(porkey);
+              BaseFont porf = extensionFonts.get(porkey);
               if (porf == null) {
                 if (!extensionFonts.containsKey(porkey)) {
                   PdfDictionary fo = (PdfDictionary) PdfReader.getPdfObject(po);
@@ -623,9 +623,9 @@ public class AcroFields {
                 ((TextField) tx).setExtensionFont(porf);
               }
             } else {
-              BaseFont bf = (BaseFont) localFonts.get(dab[DA_FONT]);
+              BaseFont bf = localFonts.get(dab[DA_FONT]);
               if (bf == null) {
-                String fn[] = (String[]) stdFieldFontNames.get(dab[DA_FONT]);
+                String[] fn = stdFieldFontNames.get(dab[DA_FONT]);
                 if (fn != null) {
                   try {
                     String enc = "winansi";
@@ -730,7 +730,7 @@ public class AcroFields {
     }
   }
 
-  PdfAppearance getAppearance(PdfDictionary merged, String values[], String fieldName) throws IOException, DocumentException {
+  PdfAppearance getAppearance(PdfDictionary merged, String[] values, String fieldName) throws IOException, DocumentException {
     topFirst = 0;
     String text = (values.length > 0) ? values[0] : null;
 
@@ -776,8 +776,8 @@ public class AcroFields {
       return tx.getAppearance();
     }
     if (opt != null) {
-      String choices[] = new String[opt.size()];
-      String choicesExp[] = new String[opt.size()];
+      String[] choices = new String[opt.size()];
+      String[] choicesExp = new String[opt.size()];
       for (int k = 0; k < opt.size(); ++k) {
         PdfObject obj = opt.getPdfObject(k);
         if (obj.isString()) {
@@ -818,7 +818,7 @@ public class AcroFields {
   }
 
   PdfAppearance getAppearance(PdfDictionary merged, String text, String fieldName) throws IOException, DocumentException {
-    String valueArr[] = new String[1];
+    String[] valueArr = new String[1];
     valueArr[0] = text;
     return getAppearance(merged, valueArr, fieldName);
   }
@@ -856,7 +856,7 @@ public class AcroFields {
       name = XfaForm.Xml2Som.getShortName(name);
       return XfaForm.getNodeText(xfa.findDatasetsNode(name));
     }
-    Item item = (Item) fields.get(name);
+    Item item = fields.get(name);
     if (item == null) {
       return null;
     }
@@ -934,7 +934,7 @@ public class AcroFields {
     } else {
       ret = new String[]{s};
     }
-    Item item = (Item) fields.get(name);
+    Item item = fields.get(name);
     if (item == null) {
       return ret;
     }
@@ -978,12 +978,12 @@ public class AcroFields {
    * to process all
    * @return <CODE>true</CODE> if the property exists, <CODE>false</CODE> otherwise
    */
-  public boolean setFieldProperty(String field, String name, Object value, int inst[]) {
+  public boolean setFieldProperty(String field, String name, Object value, int[] inst) {
     if (writer == null) {
       throw new RuntimeException(MessageLocalization.getComposedMessage("this.acrofields.instance.is.read.only"));
     }
     try {
-      Item item = (Item) fields.get(field);
+      Item item = fields.get(field);
       if (item == null) {
         return false;
       }
@@ -997,7 +997,7 @@ public class AcroFields {
             da = merged.getAsString(PdfName.DA);
             PdfDictionary dr = merged.getAsDict(PdfName.DR);
             if (da != null && dr != null) {
-              Object dao[] = splitDAelements(da.toUnicodeString());
+              Object[] dao = splitDAelements(da.toUnicodeString());
               PdfAppearance cb = new PdfAppearance();
               if (dao[DA_FONT] != null) {
                 BaseFont bf = (BaseFont) value;
@@ -1061,7 +1061,7 @@ public class AcroFields {
             merged = item.getMerged(k);
             da = merged.getAsString(PdfName.DA);
             if (da != null) {
-              Object dao[] = splitDAelements(da.toUnicodeString());
+              Object[] dao = splitDAelements(da.toUnicodeString());
               PdfAppearance cb = new PdfAppearance();
               if (dao[DA_FONT] != null) {
                 ByteBuffer buf = cb.getInternalBuffer();
@@ -1082,7 +1082,7 @@ public class AcroFields {
             merged = item.getMerged(k);
             da = merged.getAsString(PdfName.DA);
             if (da != null) {
-              Object dao[] = splitDAelements(da.toUnicodeString());
+              Object[] dao = splitDAelements(da.toUnicodeString());
               PdfAppearance cb = new PdfAppearance();
               if (dao[DA_FONT] != null) {
                 ByteBuffer buf = cb.getInternalBuffer();
@@ -1156,11 +1156,11 @@ public class AcroFields {
    * to process all
    * @return <CODE>true</CODE> if the property exists, <CODE>false</CODE> otherwise
    */
-  public boolean setFieldProperty(String field, String name, int value, int inst[]) {
+  public boolean setFieldProperty(String field, String name, int value, int[] inst) {
     if (writer == null) {
       throw new RuntimeException(MessageLocalization.getComposedMessage("this.acrofields.instance.is.read.only"));
     }
-    Item item = (Item) fields.get(field);
+    Item item = fields.get(field);
     if (item == null) {
       return false;
     }
@@ -1361,7 +1361,7 @@ public class AcroFields {
       }
       xfa.setNodeText(xn, value);
     }
-    Item item = (Item) fields.get(name);
+    Item item = fields.get(name);
     if (item == null) {
       return false;
     }
@@ -1553,7 +1553,7 @@ public class AcroFields {
         return null;
       }
     }
-    return (Item) fields.get(name);
+    return fields.get(name);
   }
 
   /**
@@ -1584,7 +1584,7 @@ public class AcroFields {
     if (item == null) {
       return null;
     }
-    float ret[] = new float[item.size() * 5];
+    float[] ret = new float[item.size() * 5];
     int ptr = 0;
     for (int k = 0; k < item.size(); ++k) {
       try {
@@ -1633,7 +1633,7 @@ public class AcroFields {
       }
     }
     if (ptr < ret.length) {
-      float ret2[] = new float[ptr];
+      float[] ret2 = new float[ptr];
       System.arraycopy(ret, 0, ret2, 0, ptr);
       return ret2;
     }
@@ -1667,7 +1667,7 @@ public class AcroFields {
     if (page < 1) {
       return false;
     }
-    String names[] = new String[fields.size()];
+    String[] names = new String[fields.size()];
     fields.keySet().toArray(names);
     boolean found = false;
     for (int k = 0; k < names.length; ++k) {
@@ -2054,7 +2054,7 @@ public class AcroFields {
 
     IntHashtable hits;
 
-    public InstHit(int inst[]) {
+    public InstHit(int[] inst) {
       if (inst == null) {
         return;
       }
@@ -2117,9 +2117,9 @@ public class AcroFields {
         totalRevisions = sorter.size() + 1;
       }
       for (int k = 0; k < sorter.size(); ++k) {
-        Object objs[] = (Object[]) sorter.get(k);
+        Object[] objs = (Object[]) sorter.get(k);
         String name = (String) objs[0];
-        int p[] = (int[]) objs[1];
+        int[] p = (int[]) objs[1];
         p[1] = k + 1;
         sigNames.put(name, p);
       }
@@ -2162,7 +2162,7 @@ public class AcroFields {
     if (!sigNames.containsKey(name)) {
       return null;
     }
-    Item item = (Item) fields.get(name);
+    Item item = fields.get(name);
     PdfDictionary merged = item.getMerged(0);
     return merged.getAsDict(PdfName.V);
   }
@@ -2180,7 +2180,7 @@ public class AcroFields {
     if (!sigNames.containsKey(name)) {
       return false;
     }
-    return ((int[]) sigNames.get(name))[0] == reader.getFileLength();
+    return sigNames.get(name)[0] == reader.getFileLength();
   }
 
   /**
@@ -2291,7 +2291,7 @@ public class AcroFields {
     RandomAccessFileOrArray rf = reader.getSafeFile();
     try {
       rf.reOpen();
-      byte buf[] = new byte[8192];
+      byte[] buf = new byte[8192];
       for (int k = 0; k < b.size(); ++k) {
         int start = b.getAsNumber(k).intValue();
         int length = b.getAsNumber(++k).intValue();
@@ -2344,7 +2344,7 @@ public class AcroFields {
     if (!sigNames.containsKey(field)) {
       return 0;
     }
-    return ((int[]) sigNames.get(field))[1];
+    return sigNames.get(field)[1];
   }
 
   /**
@@ -2360,7 +2360,7 @@ public class AcroFields {
     if (!sigNames.containsKey(field)) {
       return null;
     }
-    int length = ((int[]) sigNames.get(field))[0];
+    int length = sigNames.get(field)[0];
     RandomAccessFileOrArray raf = reader.getSafeFile();
     raf.reOpen();
     raf.seek(0);
@@ -2468,7 +2468,7 @@ public class AcroFields {
 
   private static class RevisionStream extends InputStream {
 
-    private byte b[] = new byte[1];
+    private byte[] b = new byte[1];
     private RandomAccessFileOrArray raf;
     private int length;
     private int rangePosition = 0;
