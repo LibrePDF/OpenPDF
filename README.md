@@ -44,7 +44,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 - Generally try to preserve the coding style in the file you are modifying.
 
 ## Dependencies ##
-- Java 8 or later is required to use OpenPDF. There is a separate branch for Java 7 called 'java7'.
+- Java 8 or later is required to use OpenPDF.
 
 ### Required Dependencies: ###
 
