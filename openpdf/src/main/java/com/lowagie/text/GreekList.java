@@ -49,16 +49,15 @@ package com.lowagie.text;
 import com.lowagie.text.factories.GreekAlphabetFactory;
 
 /**
- * 
+ *
  * A special-version of <CODE>LIST</CODE> which use greek-letters.
- * 
+ *
  * @see com.lowagie.text.List
  */
 
 public class GreekList extends List {
-
 // constructors
-    
+
     /**
      * Initialization
      */
@@ -68,7 +67,7 @@ public class GreekList extends List {
     }
     /**
      * Initialization
-     * 
+     *
      * @param symbolIndent    indent
      */
     public GreekList(int symbolIndent) {
@@ -77,8 +76,8 @@ public class GreekList extends List {
     }
 
     /**
-     * Initialization 
-     * @param    greeklower        greek-char in lowercase   
+     * Initialization
+     * @param    greeklower        greek-char in lowercase
      * @param     symbolIndent    indent
      */
     public GreekList(boolean greeklower, int symbolIndent) {
@@ -88,7 +87,7 @@ public class GreekList extends List {
     }
 
 // helper method
-    
+
     /**
      * change the font to SYMBOL
      */
@@ -98,32 +97,29 @@ public class GreekList extends List {
     }
 
 // overridden method
-    
+
     /**
      * Adds an <CODE>Object</CODE> to the <CODE>List</CODE>.
      *
-     * @param    o    the object to add.
+     * @param    element    the object to add.
      * @return true if adding the object succeeded
      */
-    public boolean add(Object o) {
-        if (o instanceof ListItem) {
-            ListItem item = (ListItem) o;
+    public boolean add(Element element) {
+        if (element instanceof ListItem) {
+            ListItem item = (ListItem) element;
             Chunk chunk = new Chunk(preSymbol, symbol.getFont());
-            chunk.append(GreekAlphabetFactory.getString(first + list.size(), lowercase));
+            chunk.append(GreekAlphabetFactory.getString(first + content.size(), lowercase));
             chunk.append(postSymbol);
             item.setListSymbol(chunk);
             item.setIndentationLeft(symbolIndent, autoindent);
             item.setIndentationRight(0);
-            list.add(item);
-        } else if (o instanceof List) {
-            List nested = (List) o;
+            return content.add(item);
+        } else if (element instanceof List) {
+            List nested = (List) element;
             nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
             first--;
-            return list.add(nested);
-        } else if (o instanceof String) {
-            return this.add(new ListItem((String) o));
+            return content.add(nested);
         }
         return false;
     }
-
 }

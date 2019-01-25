@@ -30,7 +30,7 @@
  * the MPL, indicate your decision by deleting the provisions above and
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE 
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
@@ -53,16 +53,16 @@ package com.lowagie.text.xml.xmp;
  * An implementation of an XmpSchema.
  */
 public class XmpMMSchema extends XmpSchema {
-
     private static final long serialVersionUID = 1408509596611634862L;
+
     /** default namespace identifier*/
     public static final String DEFAULT_XPATH_ID = "xmpMM";
     /** default namespace uri*/
     public static final String DEFAULT_XPATH_URI = "http://ns.adobe.com/xap/1.0/mm/";
-    
+
 
     /** A reference to the original document from which this one is derived. It is a minimal reference; missing components can be assumed to be unchanged. For example, a new version might only need to specify the instance ID and version number of the previous version, or a rendition might only need to specify the instance ID and rendition class of the original. */
-    public static final String DERIVEDFROM = "xmpMM:DerivedFrom"; 
+    public static final String DERIVEDFROM = "xmpMM:DerivedFrom";
     /** The common identifier for all versions and renditions of a document. */
     public static final String DOCUMENTID = "xmpMM:DocumentID";
     /** An ordered array of high-level user actions that resulted in this resource. It is intended to give human readers a general indication of the steps taken to make the changes from the previous version to this one. The list should be at an abstract level; it is not intended to be an exhaustive keystroke or other detailed history. */
@@ -85,7 +85,7 @@ public class XmpMMSchema extends XmpSchema {
     public static final String VERSIONID = "xmpMM:VersionID";
     /** The version history associated with this resource.*/
     public static final String VERSIONS = "xmpMM:Versions";
-    
+
     public XmpMMSchema() {
         super("xmlns:" + DEFAULT_XPATH_ID + "=\"" + DEFAULT_XPATH_URI + "\"");
     }

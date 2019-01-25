@@ -49,6 +49,8 @@
 
 package com.lowagie.text;
 
+import java.util.Collection;
+
 /**
  * Interface for a text element to which other objects can be added.
  *
@@ -62,12 +64,64 @@ package com.lowagie.text;
  */
 
 public interface TextElementArray extends Element {
-    
-  /**
-   * Adds an object to the <CODE>TextElementArray</CODE>.
-   *
-   * @param    o            an object that has to be added
-   * @return    <CODE>true</CODE> if the addition succeeded; <CODE>false</CODE> otherwise
-   */
-  boolean add(Object o);
+    /**
+     * Adds an <CODE>Element</CODE> to the <CODE>TextElementArray</CODE>.
+     *
+     * @param    element            an object that has to be added
+     * @return    <CODE>true</CODE> if the addition succeeded; <CODE>false</CODE> otherwise
+     */
+    boolean add(Element element) throws BadElementException;
+
+    /**
+     * Adds all the <CODE>Element</CODE>s from an <CODE>Iterable<CODE> to this <CODE>Element</CODE>.
+     *
+     * @param    collection    a collection of <CODE>Element</CODE>s.
+     * @return    <CODE>true</CODE> if the action succeeded, <CODE>false</CODE> if not.
+     * @throws    ClassCastException    when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
+     */
+    default boolean addAll(Iterable<? extends Element> collection) {
+        for (Element e : collection) {
+            this.add(e);
+        }
+        return true;
+    }
+
+    /**
+     * Adds an <CODE>Element</CODE> to the <CODE>TextElementArray</CODE>.
+     *
+     * @param    element            an object that has to be added
+     * @return    <CODE>true</CODE> if the addition succeeded; <CODE>false</CODE> otherwise
+     * @deprecated user <CODE>add(Element element</CODE>
+     */
+    @Deprecated
+    default boolean add(Object o) {
+      if (o == null) return false;
+
+      try {
+          add((Element) o);
+          return true;
+      }
+      catch(ClassCastException cce) {
+          throw new ClassCastException(o.getClass().getName());
+      }
+      catch(BadElementException bee) {
+          throw new ClassCastException(bee.getMessage());
+      }
+  }
+
+    /**
+     * Adds all the <CODE>Element</CODE>s from an <CODE>Iterable<CODE> to this <CODE>Element</CODE>.
+     *
+     * @param    collection    a collection of <CODE>Element</CODE>s.
+     * @return    <CODE>true</CODE> if the action succeeded, <CODE>false</CODE> if not.
+     * @throws    ClassCastException    when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
+     * @deprecated user <CODE>addAll(Iterable<? extends Element> collection)</CODE>
+     */
+    @Deprecated
+    default boolean addAll(Collection<?> collection) {
+        for (Object o : collection) {
+            this.add(o);
+        }
+        return true;
+    }
 }

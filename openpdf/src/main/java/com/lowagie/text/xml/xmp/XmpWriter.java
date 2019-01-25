@@ -30,7 +30,7 @@
  * the MPL, indicate your decision by deleting the provisions above and
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE 
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
@@ -49,6 +49,11 @@
 
 package com.lowagie.text.xml.xmp;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.Map;
+
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfName;
@@ -56,19 +61,12 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * With this class you can create an Xmp Stream that can be used for adding
  * Metadata to a PDF Dictionary. Remark that this class doesn't cover the
- * complete XMP specification. 
+ * complete XMP specification.
  */
 public class XmpWriter {
-
     /** A possible charset for the XMP. */
     public static final String UTF8 = "UTF-8";
     /** A possible charset for the XMP. */
@@ -77,16 +75,16 @@ public class XmpWriter {
     public static final String UTF16BE = "UTF-16BE";
     /** A possible charset for the XMP. */
     public static final String UTF16LE = "UTF-16LE";
-    
+
     /** String used to fill the extra space. */
     public static final String EXTRASPACE = "                                                                                                   \n";
-    
+
     /** You can add some extra space in the XMP packet; 1 unit in this variable represents 100 spaces and a newline. */
     protected int extraSpace;
-    
+
     /** The writer to which you can write bytes for the XMP stream. */
     protected OutputStreamWriter writer;
-    
+
     /** The about string that goes into the rdf:Description tags. */
     protected String about;
 
@@ -95,24 +93,24 @@ public class XmpWriter {
      * @since iText 2.1.6
      */
     public static final String XPACKET_PI_BEGIN = "<?xpacket begin=\"\uFEFF\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>\n";
-    
+
     /**
      * Processing Instruction required at the end of an XMP stream for XMP streams that can be updated
      * @since iText 2.1.6
      */
     public static final String XPACKET_PI_END_W = "<?xpacket end=\"w\"?>";
-    
+
     /**
      * Processing Instruction required at the end of an XMP stream for XMP streams that are read only
      * @since iText 2.1.6
      */
     public static final String XPACKET_PI_END_R = "<?xpacket end=\"r\"?>";
-    
+
     /** The end attribute. */
     protected char end = 'w';
-    
+
     /**
-     * Creates an XmpWriter. 
+     * Creates an XmpWriter.
      * @param os
      * @param utfEncoding
      * @param extraSpace
@@ -126,7 +124,7 @@ public class XmpWriter {
         writer.write("<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n");
         about = "";
     }
-    
+
     /**
      * Creates an XmpWriter.
      * @param os
@@ -148,11 +146,8 @@ public class XmpWriter {
             DublinCoreSchema dc = new DublinCoreSchema();
             PdfSchema p = new PdfSchema();
             XmpBasicSchema basic = new XmpBasicSchema();
-            PdfName key;
-            PdfObject obj;
-            for (Iterator it = info.getKeys().iterator(); it.hasNext();) {
-                key = (PdfName)it.next();
-                obj = info.get(key);
+            for (PdfName key : info.getKeys()) {
+                PdfObject obj = info.get(key);
                 if (obj == null)
                     continue;
                 if (PdfName.TITLE.equals(key)) {
@@ -200,18 +195,15 @@ public class XmpWriter {
      * @param info
      * @throws IOException
      */
-    public XmpWriter(OutputStream os, Map info) throws IOException {
+    public XmpWriter(OutputStream os, Map<String,String> info) throws IOException {
         this(os);
         if (info != null) {
             DublinCoreSchema dc = new DublinCoreSchema();
             PdfSchema p = new PdfSchema();
             XmpBasicSchema basic = new XmpBasicSchema();
-            String key;
-            String value;
-            for (Iterator it = info.entrySet().iterator(); it.hasNext();) {
-                Map.Entry entry = (Map.Entry) it.next();
-                key = (String) entry.getKey();
-                value = (String) entry.getValue();
+            for(Map.Entry<String, String> e : info.entrySet()) {
+                String key = e.getKey();
+                String value = e.getValue();
                 if (value == null)
                     continue;
                 if ("Title".equals(key)) {
@@ -245,19 +237,19 @@ public class XmpWriter {
             if (basic.size() > 0) addRdfDescription(basic);
         }
     }
-    
+
     /** Sets the XMP to read-only */
     public void setReadOnly() {
         end = 'r';
     }
-    
+
     /**
      * @param about The about to set.
      */
     public void setAbout(String about) {
         this.about = about;
     }
-    
+
     /**
      * Adds an rdf:Description.
      * @param xmlns
@@ -273,7 +265,7 @@ public class XmpWriter {
         writer.write(content);
         writer.write("</rdf:Description>\n");
     }
-    
+
     /**
      * Adds an rdf:Description.
      * @param s
@@ -288,7 +280,7 @@ public class XmpWriter {
         writer.write(s.toString());
         writer.write("</rdf:Description>\n");
     }
-    
+
     /**
      * Flushes and closes the XmpWriter.
      * @throws IOException

@@ -1,12 +1,12 @@
 /*
  * Copyright 1999-2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,7 @@
 
 package com.lowagie.text.pdf.hyphenation;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This interface is used to connect the XML pattern file parser to
@@ -42,7 +42,7 @@ public interface PatternConsumer {
      * A hyphenatedword is a vector of alternating String's and
      * {@link Hyphen Hyphen} instances
      */
-    void addException(String word, ArrayList hyphenatedword);
+    void addException(String word, List<Object> hyphenatedword);
 
     /**
      * Add hyphenation patterns.

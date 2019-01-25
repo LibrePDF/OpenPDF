@@ -50,14 +50,16 @@
 
 package com.lowagie.text;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+
 import com.lowagie.text.alignment.HorizontalAlignment;
 import com.lowagie.text.alignment.VerticalAlignment;
 import com.lowagie.text.alignment.WithHorizontalAlignment;
 import com.lowagie.text.alignment.WithVerticalAlignment;
-import java.util.ArrayList;
-import java.util.Iterator;
 import com.lowagie.text.error_messages.MessageLocalization;
-
 import com.lowagie.text.pdf.PdfPCell;
 
 /**
@@ -95,7 +97,7 @@ import com.lowagie.text.pdf.PdfPCell;
  * @see        Row
  */
 
-public class Cell extends Rectangle implements TextElementArray, WithHorizontalAlignment, WithVerticalAlignment {
+public class Cell extends Rectangle implements ComposedElement<Element>, TextElementArray, WithHorizontalAlignment, WithVerticalAlignment {
 
     // membervariables
 
@@ -103,7 +105,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      * The <CODE>ArrayList</CODE> of <CODE>Element</CODE>s
      * that are part of the content of the Cell.
      */
-    protected ArrayList arrayList = null;
+    protected ArrayList<Element> content = null;
 
     /** The horizontal alignment of the cell content. */
     protected int horizontalAlignment = Element.ALIGN_UNDEFINED;
@@ -131,16 +133,16 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
     protected boolean header;
 
     /**
-     * Maximum number of lines allowed in the cell.  
+     * Maximum number of lines allowed in the cell.
      * The default value of this property is not to limit the maximum number of lines
      * (contributed by dperezcar@fcc.es)
      */
     protected int maxLines = Integer.MAX_VALUE;
-    
+
     /**
-     * If a truncation happens due to the maxLines property, then this text will 
+     * If a truncation happens due to the maxLines property, then this text will
      * be added to indicate a truncation has happened.
-     * Default value is null, and means avoiding marking the truncation.  
+     * Default value is null, and means avoiding marking the truncation.
      * A useful value of this property could be e.g. "..."
      * (contributed by dperezcar@fcc.es)
      */
@@ -165,7 +167,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      * this only has an effect when rendered to PDF.
      */
     protected boolean useBorderPadding;
-    
+
     /** Does this <CODE>Cell</CODE> force a group change? */
     protected boolean groupChange = true;
 
@@ -178,7 +180,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
         setBorder(UNDEFINED);
         setBorderWidth(0.5f);
         // initializes the arraylist
-        arrayList = new ArrayList();
+        content = new ArrayList<>();
     }
 
     /**
@@ -188,7 +190,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      */
     public Cell(boolean dummy) {
         this();
-        arrayList.add(new Paragraph(0));
+        content.add(new Paragraph(0));
     }
 
     /**
@@ -223,6 +225,11 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
 
     // implementation of the Element-methods
 
+    @Override
+    public Collection<? extends Element> getChildren() {
+    	return content!=null ? content : Collections.emptyList();
+    }
+
     /**
      * Processes the element by adding it (or the different parts) to an
      * <CODE>ElementListener</CODE>.
@@ -248,19 +255,6 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
         return Element.CELL;
     }
 
-    /**
-     * Gets all the chunks in this element.
-     *
-     * @return    an <CODE>ArrayList</CODE>
-     */
-    public ArrayList getChunks() {
-        ArrayList tmp = new ArrayList();
-        for (Iterator i = arrayList.iterator(); i.hasNext(); ) {
-            tmp.addAll(((Element) i.next()).getChunks());
-        }
-        return tmp;
-    }
-
     // Getters and setters
 
     /**
@@ -278,6 +272,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
      * use {@link Cell#setHorizontalAlignment(HorizontalAlignment)} instead
      */
+    @Deprecated
     public void setHorizontalAlignment(int value) {
         horizontalAlignment = value;
     }
@@ -289,6 +284,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
      * use {@link Cell#setHorizontalAlignment(HorizontalAlignment)} instead
      */
+    @Deprecated
     public void setHorizontalAlignment(String alignment) {
         setHorizontalAlignment(ElementTags.alignmentValue(alignment));
     }
@@ -307,6 +303,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
      * use {@link Cell#setVerticalAlignment(VerticalAlignment)} instead
      */
+    @Deprecated
     public void setVerticalAlignment(int value) {
         verticalAlignment = value;
     }
@@ -318,6 +315,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
      * use {@link Cell#setVerticalAlignment(VerticalAlignment)} instead
      */
+    @Deprecated
     public void setVerticalAlignment(String alignment) {
         setVerticalAlignment(ElementTags.alignmentValue(alignment));
     }
@@ -330,7 +328,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
     public void setWidth(float value) {
         this.width = value;
     }
-    
+
     /**
      * Sets the width.
      * It can be an absolute value "100" or a percentage "20%"
@@ -344,7 +342,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
         }
         width = Integer.parseInt(value);
     }
-    
+
     /**
      * Gets the width.
      */
@@ -436,7 +434,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
     public boolean isHeader() {
         return header;
     }
-    
+
     /**
      * Setter for maxLines
      * @param value the maximum number of lines
@@ -444,7 +442,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
     public void setMaxLines(int value) {
         maxLines = value;
     }
-    
+
     /**
      * Getter for maxLines
      * @return the maxLines value
@@ -452,7 +450,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
     public int getMaxLines() {
         return maxLines;
     }
-        
+
     /**
      * Setter for showTruncation
      * @param value    Can be null for avoiding marking the truncation.
@@ -460,7 +458,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
     public void setShowTruncation(String value) {
         showTruncation = value;
     }
-    
+
     /**
      * Getter for showTruncation
      * @return the showTruncation value
@@ -534,32 +532,25 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
     public void setGroupChange(boolean value) {
         groupChange = value;
     }
-    
-// arraylist stuff
 
-    /**
-     * Gets the number of <CODE>Element</CODE>s in the Cell.
-     *
-     * @return    a <CODE>size</CODE>.
-     */
-    public int size() {
-        return arrayList.size();
-    }
+// arraylist stuff
 
     /**
      * Gets an iterator of <CODE>Element</CODE>s.
      *
      * @return    an <CODE>Iterator</CODE>.
+     * @deprecated use <CODE>ComposedElement.getChildren()</CODE>
      */
-    public Iterator getElements() {
-        return arrayList.iterator();
+    @Deprecated
+    public Iterator<?> getElements() {
+        return content.iterator();
     }
-    
+
     /**
      * Clears all the <CODE>Element</CODE>s of this <CODE>Cell</CODE>.
      */
     public void clear() {
-        arrayList.clear();
+        content.clear();
     }
 
     /**
@@ -572,7 +563,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
             case 0:
                 return true;
             case 1:
-                Element element = (Element) arrayList.get(0);
+                Element element = content.get(0);
                 switch (element.type()) {
                     case Element.CHUNK:
                         return ((Chunk) element).isEmpty();
@@ -582,20 +573,21 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
                         return ((Phrase) element).isEmpty();
                     case Element.LIST:
                         return ((List) element).isEmpty();
+                    default:
+                        return false;
                 }
-            return false;
             default:
                 return false;
         }
     }
-    
+
     /**
      * Makes sure there is at least 1 object in the Cell.
      *
      * Otherwise it might not be shown in the table.
      */
     void fill() {
-        if (size() == 0) arrayList.add(new Paragraph(0));
+        if (size() == 0) content.add(new Paragraph(0));
     }
 
     /**
@@ -604,10 +596,24 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      * @return    true if the only element in this cell is a table
      */
     public boolean isTable() {
-        return (size() == 1)
-            && (((Element)arrayList.get(0)).type() == Element.TABLE);
+        return size() == 1 && content.get(0).type() == Element.TABLE;
     }
-    
+
+    /**
+     * Adds an element to this <CODE>Cell</CODE>.
+     * <P>
+     * Remark: you can't add <CODE>ListItem</CODE>s, <CODE>Row</CODE>s, <CODE>Cell</CODE>s,
+     * <CODE>JPEG</CODE>s, <CODE>GIF</CODE>s or <CODE>PNG</CODE>s to a <CODE>Cell</CODE>.
+     *
+     * @param element The <CODE>Element</CODE> to add
+     * @throws BadElementException if the method was called with a <CODE>ListItem</CODE>, <CODE>Row</CODE> or <CODE>Cell</CODE>
+     * @deprecated use <CODE>add(Element element)</CODE>
+     */
+    @Deprecated
+    public void addElement(Element element) throws BadElementException {
+        add(element);
+    }
+
     /**
      * Adds an element to this <CODE>Cell</CODE>.
      * <P>
@@ -617,14 +623,14 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      * @param element The <CODE>Element</CODE> to add
      * @throws BadElementException if the method was called with a <CODE>ListItem</CODE>, <CODE>Row</CODE> or <CODE>Cell</CODE>
      */
-    public void addElement(Element element) throws BadElementException {
+    public boolean add(Element element) throws BadElementException {
         if (isTable()) {
-            Table table = (Table) arrayList.get(0);
+            Table table = (Table) content.get(0);
             Cell tmp = new Cell(element);
             tmp.setBorder(NO_BORDER);
             tmp.setColspan(table.getColumns());
             table.addCell(tmp);
-            return;
+            return true;
         }
         switch(element.type()) {
             case Element.LISTITEM:
@@ -636,9 +642,9 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
                 if (Float.isNaN(leading)) {
                     setLeading(list.getTotalLeading());
                 }
-                if (list.isEmpty()) return;
-                arrayList.add(element);
-                return;
+                if (list.isEmpty()) return false;
+                content.add(element);
+                return true;
             case Element.ANCHOR:
             case Element.PARAGRAPH:
             case Element.PHRASE:
@@ -646,13 +652,13 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
                 if (Float.isNaN(leading)) {
                     setLeading(p.getLeading());
                 }
-                if (p.isEmpty()) return;
-                arrayList.add(element);
-                return;
+                if (p.isEmpty()) return false;
+                content.add(element);
+                return true;
             case Element.CHUNK:
-                if (((Chunk) element).isEmpty()) return;
-                arrayList.add(element);
-                return;
+                if (((Chunk) element).isEmpty()) return false;
+                content.add(element);
+                return true;
             case Element.TABLE:
                 Table table = new Table(3);
                 float[] widths = new float[3];
@@ -669,18 +675,19 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
                     case Element.ALIGN_RIGHT:
                         widths[0] = 100f - widths[1];
                         widths[2] = 0f;
+                        break;
                 }
                 table.setWidths(widths);
                 Cell tmp;
-                if (arrayList.isEmpty()) {
+                if (content.isEmpty()) {
                     table.addCell(getDummyCell());
                 }
                 else {
                     tmp = new Cell();
                     tmp.setBorder(NO_BORDER);
                     tmp.setColspan(3);
-                    for (Iterator i = arrayList.iterator(); i.hasNext(); ) {
-                        tmp.add(i.next());
+                    for(Element e : content) {
+                        tmp.add(e);
                     }
                     table.addCell(tmp);
                 }
@@ -693,36 +700,18 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
                 table.addCell(tmp);
                 table.addCell(getDummyCell());
                 clear();
-                arrayList.add(table);
-                return;
+                content.add(table);
+                return true;
             default:
-                arrayList.add(element);
-        }
-    }
-
-    /**
-     * Add an <CODE>Object</CODE> to this cell.
-     *
-     * @param o the object to add
-     * @return always <CODE>true</CODE>
-     */
-    public boolean add(Object o) {
-        try {
-            this.addElement((Element) o);
-            return true;
-        }
-        catch(ClassCastException cce) {
-            throw new ClassCastException(MessageLocalization.getComposedMessage("you.can.only.add.objects.that.implement.the.element.interface"));
-        }
-        catch(BadElementException bee) {
-            throw new ClassCastException(bee.getMessage());
+                content.add(element);
+                return true;
         }
     }
 
     // helper methods
-    
+
     /**
-     * Get dummy cell used when merging inner tables. 
+     * Get dummy cell used when merging inner tables.
      * @return a cell with colspan 3 and no border
      */
     private static Cell getDummyCell() {
@@ -739,7 +728,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      */
     public PdfPCell createPdfPCell() throws BadElementException {
         if (rowspan > 1) throw new BadElementException(MessageLocalization.getComposedMessage("pdfpcells.can.t.have.a.rowspan.gt.1"));
-        if (isTable()) return new PdfPCell(((Table)arrayList.get(0)).createPdfPTable());
+        if (isTable()) return new PdfPCell(((Table)content.get(0)).createPdfPTable());
         PdfPCell cell = new PdfPCell();
         cell.setVerticalAlignment(verticalAlignment);
         cell.setHorizontalAlignment(horizontalAlignment);
@@ -749,8 +738,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
         cell.setLeading(getLeading(), 0);
         cell.cloneNonPositionParameters(this);
         cell.setNoWrap(getMaxLines() == 1);
-        for (Iterator i = getElements(); i.hasNext(); ) {
-            Element e = (Element)i.next();
+        for (Element e : getChildren()) {
             if (e.type() == Element.PHRASE || e.type() == Element.PARAGRAPH) {
                 Paragraph p = new Paragraph((Phrase)e);
                 p.setAlignment(horizontalAlignment);

@@ -30,7 +30,7 @@
  * the MPL, indicate your decision by deleting the provisions above and
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE 
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
@@ -49,14 +49,13 @@
 
 package com.lowagie.text.xml.xmp;
 
-import java.util.Enumeration;
 import java.util.Properties;
 
 public class LangAlt extends Properties {
 
     /** A serial version id. */
     private static final long serialVersionUID = 4396971487200843099L;
-    
+
     /** Key for the default language. */
     public static final String DEFAULT = "x-default";
 
@@ -81,7 +80,7 @@ public class LangAlt extends Properties {
     /**
      * Process a property.
      */
-    protected void process(StringBuffer buf, Object lang) {
+    protected void process(StringBuilder buf, Object lang) {
         buf.append("<rdf:li xml:lang=\"");
         buf.append(lang);
         buf.append("\" >");
@@ -92,11 +91,11 @@ public class LangAlt extends Properties {
     /**
      * Creates a String that can be used in an XmpSchema.
      */
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
+    public synchronized String toString() {
+        StringBuilder sb = new StringBuilder();
         sb.append("<rdf:Alt>");
-        for (Enumeration e = this.propertyNames(); e.hasMoreElements();) {
-            process(sb, e.nextElement());
+        for (Object key : keySet()) {
+            process(sb, key);
         }
         sb.append("</rdf:Alt>");
         return sb.toString();

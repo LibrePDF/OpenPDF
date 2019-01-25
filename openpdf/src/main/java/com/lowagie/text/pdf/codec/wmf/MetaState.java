@@ -57,7 +57,7 @@ import java.util.Stack;
 import com.lowagie.text.pdf.PdfContentByte;
 
 public class MetaState {
-    
+
     public static final int TA_NOUPDATECP = 0;
     public static final int TA_UPDATECP = 1;
     public static final int TA_LEFT = 0;
@@ -66,15 +66,15 @@ public class MetaState {
     public static final int TA_TOP = 0;
     public static final int TA_BOTTOM = 8;
     public static final int TA_BASELINE = 24;
-    
+
     public static final int TRANSPARENT = 1;
     public static final int OPAQUE = 2;
 
     public static final int ALTERNATE = 1;
     public static final int WINDING = 2;
 
-    public Stack savedStates;
-    public ArrayList MetaObjects;
+    public Stack<MetaState> savedStates;
+    public ArrayList<MetaObject> MetaObjects;
     public Point currentPoint;
     public MetaPen currentPen;
     public MetaBrush currentBrush;
@@ -91,12 +91,12 @@ public class MetaState {
     public int extentWy;
     public float scalingX;
     public float scalingY;
-    
+
 
     /** Creates new MetaState */
     public MetaState() {
-        savedStates = new Stack();
-        MetaObjects = new ArrayList();
+        savedStates = new Stack<>();
+        MetaObjects = new ArrayList<>();
         currentPoint = new Point(0, 0);
         currentPen = new MetaPen();
         currentBrush = new MetaBrush();
@@ -106,7 +106,7 @@ public class MetaState {
     public MetaState(MetaState state) {
         setMetaState(state);
     }
-    
+
     public void setMetaState(MetaState state) {
         savedStates = state.savedStates;
         MetaObjects = state.MetaObjects;
@@ -137,9 +137,9 @@ public class MetaState {
         }
         MetaObjects.add(object);
     }
-    
+
     public void selectMetaObject(int index, PdfContentByte cb) {
-        MetaObject obj = (MetaObject)MetaObjects.get(index);
+        MetaObject obj = MetaObjects.get(index);
         if (obj == null)
             return;
         int style;
@@ -179,7 +179,7 @@ public class MetaState {
                             break;
                         default:
                             cb.setLineDash(0);
-                            break;                            
+                            break;
                     }
                 }
                 break;
@@ -191,11 +191,11 @@ public class MetaState {
             }
         }
     }
-    
+
     public void deleteMetaObject(int index) {
         MetaObjects.set(index, null);
     }
-    
+
     public void saveState(PdfContentByte cb) {
         cb.saveState();
         MetaState state = new MetaState(this);
@@ -213,17 +213,17 @@ public class MetaState {
         MetaState state = null;
         while (pops-- != 0) {
             cb.restoreState();
-            state = (MetaState)savedStates.pop();
+            state = savedStates.pop();
         }
         setMetaState(state);
     }
-    
+
     public void cleanup(PdfContentByte cb) {
         int k = savedStates.size();
         while (k-- > 0)
             cb.restoreState();
     }
-    
+
     public float transformX(int x) {
         return ((float)x - offsetWx) * scalingX / extentWx;
     }
@@ -231,36 +231,36 @@ public class MetaState {
     public float transformY(int y) {
         return (1f - ((float)y - offsetWy) / extentWy) * scalingY;
     }
-    
+
     public void setScalingX(float scalingX) {
         this.scalingX = scalingX;
     }
-    
+
     public void setScalingY(float scalingY) {
         this.scalingY = scalingY;
     }
-    
+
     public void setOffsetWx(int offsetWx) {
         this.offsetWx = offsetWx;
     }
-    
+
     public void setOffsetWy(int offsetWy) {
         this.offsetWy = offsetWy;
     }
-    
+
     public void setExtentWx(int extentWx) {
         this.extentWx = extentWx;
     }
-    
+
     public void setExtentWy(int extentWy) {
         this.extentWy = extentWy;
     }
-    
+
     public float transformAngle(float angle) {
         float ta = scalingY < 0 ? -angle : angle;
         return (float)(scalingX < 0 ? Math.PI - ta : ta);
     }
-    
+
     public void setCurrentPoint(Point p) {
         currentPoint = p;
     }
@@ -268,7 +268,7 @@ public class MetaState {
     public Point getCurrentPoint() {
         return currentPoint;
     }
-    
+
     public MetaBrush getCurrentBrush() {
         return currentBrush;
     }
@@ -280,93 +280,93 @@ public class MetaState {
     public MetaFont getCurrentFont() {
         return currentFont;
     }
-    
+
     /** Getter for property currentBackgroundColor.
      * @return Value of property currentBackgroundColor.
      */
     public Color getCurrentBackgroundColor() {
         return currentBackgroundColor;
     }
-    
+
     /** Setter for property currentBackgroundColor.
      * @param currentBackgroundColor New value of property currentBackgroundColor.
      */
     public void setCurrentBackgroundColor(Color currentBackgroundColor) {
         this.currentBackgroundColor = currentBackgroundColor;
     }
-    
+
     /** Getter for property currentTextColor.
      * @return Value of property currentTextColor.
      */
     public Color getCurrentTextColor() {
         return currentTextColor;
     }
-    
+
     /** Setter for property currentTextColor.
      * @param currentTextColor New value of property currentTextColor.
      */
     public void setCurrentTextColor(Color currentTextColor) {
         this.currentTextColor = currentTextColor;
     }
-    
+
     /** Getter for property backgroundMode.
      * @return Value of property backgroundMode.
      */
     public int getBackgroundMode() {
         return backgroundMode;
     }
-    
+
     /** Setter for property backgroundMode.
      * @param backgroundMode New value of property backgroundMode.
      */
     public void setBackgroundMode(int backgroundMode) {
         this.backgroundMode = backgroundMode;
     }
-    
+
     /** Getter for property textAlign.
      * @return Value of property textAlign.
      */
     public int getTextAlign() {
         return textAlign;
     }
-    
+
     /** Setter for property textAlign.
      * @param textAlign New value of property textAlign.
      */
     public void setTextAlign(int textAlign) {
         this.textAlign = textAlign;
     }
-    
+
     /** Getter for property polyFillMode.
      * @return Value of property polyFillMode.
      */
     public int getPolyFillMode() {
         return polyFillMode;
     }
-    
+
     /** Setter for property polyFillMode.
      * @param polyFillMode New value of property polyFillMode.
      */
     public void setPolyFillMode(int polyFillMode) {
         this.polyFillMode = polyFillMode;
     }
-    
+
     public void setLineJoinRectangle(PdfContentByte cb) {
         if (lineJoin != 0) {
             lineJoin = 0;
             cb.setLineJoin(0);
         }
     }
-    
+
     public void setLineJoinPolygon(PdfContentByte cb) {
         if (lineJoin == 0) {
             lineJoin = 1;
             cb.setLineJoin(1);
         }
     }
-    
+
     public boolean getLineNeutral() {
         return (lineJoin == 0);
     }
-    
+
 }

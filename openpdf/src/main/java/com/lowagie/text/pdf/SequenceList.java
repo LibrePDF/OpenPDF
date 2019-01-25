@@ -46,9 +46,9 @@
  */
 package com.lowagie.text.pdf;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * This class expands a string into a list of numbers. The main use is to select a
@@ -91,7 +91,7 @@ public class SequenceList {
         ptr = 0;
         text = range.toCharArray();
     }
-    
+
     protected char nextChar() {
         while (true) {
             if (ptr >= text.length)
@@ -101,13 +101,13 @@ public class SequenceList {
                 return c;
         }
     }
-    
+
     protected void putBack() {
         --ptr;
         if (ptr < 0)
             ptr = 0;
     }
-    
+
     protected int getType() {
         StringBuffer buf = new StringBuffer();
         int state = FIRST;
@@ -161,7 +161,7 @@ public class SequenceList {
             }
         }
     }
-    
+
     private void otherProc() {
         if (other.equals("odd") || other.equals("o")) {
             odd = true;
@@ -172,7 +172,7 @@ public class SequenceList {
             even = true;
         }
     }
-    
+
     protected boolean getAttributes() {
         low = -1;
         high = -1;
@@ -242,16 +242,16 @@ public class SequenceList {
             }
         }
     }
-    
+
     /**
      * Generates a list of numbers from a string.
      * @param ranges the comma separated ranges
      * @param maxNumber the maximum number in the range
      * @return a list with the numbers as <CODE>Integer</CODE>
-     */    
-    public static List expand(String ranges, int maxNumber) {
+     */
+    public static List<Integer> expand(String ranges, int maxNumber) {
         SequenceList parse = new SequenceList(ranges);
-        LinkedList list = new LinkedList();
+        List<Integer> list = new LinkedList<>();
         boolean sair = false;
         while (!sair) {
             sair = parse.getAttributes();
@@ -263,7 +263,7 @@ public class SequenceList {
                 parse.high = maxNumber;
             if (parse.low > maxNumber)
                 parse.low = maxNumber;
-            
+
             //System.out.println("low="+parse.low+",high="+parse.high+",odd="+parse.odd+",even="+parse.even+",inverse="+parse.inverse);
             int inc = 1;
             if (parse.inverse) {
@@ -272,8 +272,8 @@ public class SequenceList {
                     parse.low = parse.high;
                     parse.high = t;
                 }
-                for (ListIterator it = list.listIterator(); it.hasNext();) {
-                    int n = ((Integer)it.next()).intValue();
+                for (Iterator<Integer> it = list.iterator(); it.hasNext();) {
+                    int n = it.next().intValue();
                     if (parse.even && (n & 1) == 1)
                         continue;
                     if (parse.odd && (n & 1) == 0)
@@ -293,7 +293,7 @@ public class SequenceList {
                             parse.low -= ((parse.low & 1) == 1 ? 0 : 1);
                     }
                     for (int k = parse.low; k >= parse.high; k += inc)
-                        list.add(new Integer(k));
+                        list.add(Integer.valueOf(k));
                 }
                 else {
                     if (parse.odd || parse.even) {
@@ -304,7 +304,7 @@ public class SequenceList {
                             parse.low += ((parse.low & 1) == 1 ? 1 : 0);
                     }
                     for (int k = parse.low; k <= parse.high; k += inc) {
-                        list.add(new Integer(k));
+                        list.add(Integer.valueOf(k));
                     }
                 }
             }

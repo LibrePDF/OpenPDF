@@ -74,7 +74,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * @see        BadPdfFormatException
  */
 
-public class PdfName extends PdfObject implements Comparable{
+public class PdfName extends PdfObject implements Comparable<PdfName> {
 
     // CLASS CONSTANTS (a variety of standard names used in PDF))
     /**
@@ -1062,7 +1062,7 @@ public class PdfName extends PdfObject implements Comparable{
      * @since 2.1.6
      */
     public static final PdfName OSCILLATING = new PdfName("Oscillating");
-    
+
     /** A name */
     public static final PdfName OUTLINES = new PdfName("Outlines");
     /** A name */
@@ -1510,7 +1510,7 @@ public class PdfName extends PdfObject implements Comparable{
     /** A name */
     public static final PdfName TK = new PdfName("TK");
     /** A name */
-    public static final PdfName TM = new PdfName("TM"); 
+    public static final PdfName TM = new PdfName("TM");
     /**
      * A name
      * @since 2.1.6
@@ -1807,8 +1807,7 @@ public class PdfName extends PdfObject implements Comparable{
      * @throws ClassCastException if the specified object's type prevents it
      * from being compared to this Object.
      */
-    public int compareTo(Object object) {
-        PdfName name = (PdfName) object;
+    public int compareTo(PdfName name) {
         byte[] myBytes = bytes;
         byte[] objBytes = name.bytes;
         int len = Math.min(myBytes.length, objBytes.length);
@@ -1836,7 +1835,7 @@ public class PdfName extends PdfObject implements Comparable{
         if (this == obj)
             return true;
         if (obj instanceof PdfName)
-            return compareTo(obj) == 0;
+            return compareTo((PdfName)obj) == 0;
         return false;
     }
 

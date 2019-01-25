@@ -41,7 +41,7 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
  * details.
- * 
+ *
  * Contributions by:
  * Lubos Strapko
  *
@@ -57,7 +57,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
@@ -66,7 +65,7 @@ import com.lowagie.text.Cell;
 import com.lowagie.text.ChapterAutoNumber;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.ElementTags;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Image;
 import com.lowagie.text.List;
@@ -77,7 +76,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.Section;
 import com.lowagie.text.Table;
 import com.lowagie.text.Utilities;
-import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.html.Markup;
 
 /**
@@ -331,14 +330,14 @@ public class ElementFactory {
             value = attributes.getProperty(ElementTags.WIDTHS);
             if (value != null) {
                 StringTokenizer widthTokens = new StringTokenizer(value, ";");
-                ArrayList values = new ArrayList();
+                ArrayList<String> values = new ArrayList<>();
                 while (widthTokens.hasMoreTokens()) {
                     values.add(widthTokens.nextToken());
                 }
                 table = new Table(values.size());
                 float[] widths = new float[table.getColumns()];
                 for (int i = 0; i < values.size(); i++) {
-                    value = (String) values.get(i);
+                    value = values.get(i);
                     widths[i] = Float.parseFloat(value + "f");
                 }
                 table.setWidths(widths);

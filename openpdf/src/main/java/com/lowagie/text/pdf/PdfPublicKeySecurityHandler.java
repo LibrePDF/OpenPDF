@@ -50,10 +50,10 @@
 
 /**
  *     The below 2 methods are from pdfbox.
- * 
+ *
  *     private DERObject createDERForRecipient(byte[] in, X509Certificate cert) ;
  *     private KeyTransRecipientInfo computeRecipientInfo(X509Certificate x509certificate, byte[] abyte0);
- *     
+ *
  *     2006-11-22 Aiken Sam.
  */
 
@@ -101,6 +101,7 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -131,7 +132,7 @@ public class PdfPublicKeySecurityHandler {
 
   static final int SEED_LENGTH = 20;
 
-  private ArrayList recipients = null;
+  private List<PdfPublicKeyRecipient> recipients = new ArrayList<>();
 
   private byte[] seed = new byte[SEED_LENGTH];
 
@@ -147,8 +148,6 @@ public class PdfPublicKeySecurityHandler {
     } catch (NoSuchAlgorithmException e) {
       seed = SecureRandom.getSeed(SEED_LENGTH);
     }
-
-    recipients = new ArrayList();
   }
 
   public void addRecipient(PdfPublicKeyRecipient recipient) {
@@ -171,8 +170,7 @@ public class PdfPublicKeySecurityHandler {
   public byte[] getEncodedRecipient(int index) throws IOException,
       GeneralSecurityException {
     // Certificate certificate = recipient.getX509();
-    PdfPublicKeyRecipient recipient = (PdfPublicKeyRecipient) recipients
-        .get(index);
+    PdfPublicKeyRecipient recipient = recipients.get(index);
     byte[] cms = recipient.getCms();
 
     if (cms != null)
@@ -221,20 +219,19 @@ public class PdfPublicKeySecurityHandler {
   }
 
   public PdfArray getEncodedRecipients() throws IOException {
-    PdfArray EncodedRecipients = new PdfArray();
-    byte[] cms = null;
-    for (int i = 0; i < recipients.size(); i++)
-      try {
-        cms = getEncodedRecipient(i);
-        EncodedRecipients.add(new PdfLiteral(PdfContentByte.escapeString(cms)));
-      } catch (GeneralSecurityException | IOException e) {
-        EncodedRecipients = null;
-      }
+    PdfArray arr = new PdfArray();
 
-    return EncodedRecipients;
+    for (int i = 0; i < recipients.size(); i++) try {
+      byte[] cms = getEncodedRecipient(i);
+      arr.add(new PdfLiteral(PdfContentByte.escapeString(cms)));
+    } catch (GeneralSecurityException | IOException e) {
+      return null;
+    }
+
+    return arr;
   }
 
-  private ASN1Primitive createDERForRecipient(byte[] in, X509Certificate cert)
+  private static ASN1Primitive createDERForRecipient(byte[] in, X509Certificate cert)
       throws IOException, GeneralSecurityException {
 
     String s = "1.2.840.113549.3.2";
@@ -245,52 +242,59 @@ public class PdfPublicKeySecurityHandler {
         .generateParameters();
     ByteArrayInputStream bytearrayinputstream = new ByteArrayInputStream(
         algorithmparameters.getEncoded("ASN.1"));
-    ASN1InputStream asn1inputstream = new ASN1InputStream(bytearrayinputstream);
-    ASN1Primitive derobject = asn1inputstream.readObject();
-    KeyGenerator keygenerator = KeyGenerator.getInstance(s);
-    keygenerator.init(128);
-    SecretKey secretkey = keygenerator.generateKey();
-    Cipher cipher = Cipher.getInstance(s);
-    cipher.init(1, secretkey, algorithmparameters);
-    byte[] abyte1 = cipher.doFinal(in);
-    DEROctetString deroctetstring = new DEROctetString(abyte1);
-    KeyTransRecipientInfo keytransrecipientinfo = computeRecipientInfo(cert,
-        secretkey.getEncoded());
-    DERSet derset = new DERSet(new RecipientInfo(keytransrecipientinfo));
-    AlgorithmIdentifier algorithmidentifier = new AlgorithmIdentifier(
-        new ASN1ObjectIdentifier(s), derobject);
-    EncryptedContentInfo encryptedcontentinfo = new EncryptedContentInfo(
-        PKCSObjectIdentifiers.data, algorithmidentifier, deroctetstring);
-    ASN1Set set = null;
-    EnvelopedData env = new EnvelopedData(null, derset, encryptedcontentinfo,
-        set);
-    ContentInfo contentinfo = new ContentInfo(
-        PKCSObjectIdentifiers.envelopedData, env);
-    // OJO... Modificacion de
-    // Felix--------------------------------------------------
-    // return contentinfo.getDERObject();
-    return contentinfo.toASN1Primitive();
+    try (
+        ASN1InputStream asn1inputstream = new ASN1InputStream(bytearrayinputstream);
+    ) {
+        ASN1Primitive derobject = asn1inputstream.readObject();
+        KeyGenerator keygenerator = KeyGenerator.getInstance(s);
+        keygenerator.init(128);
+        SecretKey secretkey = keygenerator.generateKey();
+        Cipher cipher = Cipher.getInstance(s);
+        cipher.init(1, secretkey, algorithmparameters);
+        byte[] abyte1 = cipher.doFinal(in);
+        DEROctetString deroctetstring = new DEROctetString(abyte1);
+        KeyTransRecipientInfo keytransrecipientinfo = computeRecipientInfo(cert,
+            secretkey.getEncoded());
+        DERSet derset = new DERSet(new RecipientInfo(keytransrecipientinfo));
+        AlgorithmIdentifier algorithmidentifier = new AlgorithmIdentifier(
+            new ASN1ObjectIdentifier(s), derobject);
+        EncryptedContentInfo encryptedcontentinfo = new EncryptedContentInfo(
+            PKCSObjectIdentifiers.data, algorithmidentifier, deroctetstring);
+        ASN1Set set = null;
+        EnvelopedData env = new EnvelopedData(null, derset, encryptedcontentinfo,
+            set);
+        ContentInfo contentinfo = new ContentInfo(
+            PKCSObjectIdentifiers.envelopedData, env);
+        // OJO... Modificacion de
+        // Felix--------------------------------------------------
+        // return contentinfo.getDERObject();
+        return contentinfo.toASN1Primitive();
+    }
     // ******************************************************************************
   }
 
-  private KeyTransRecipientInfo computeRecipientInfo(
+  private static KeyTransRecipientInfo computeRecipientInfo(
       X509Certificate x509certificate, byte[] abyte0)
       throws GeneralSecurityException, IOException {
-    ASN1InputStream asn1inputstream = new ASN1InputStream(
-        new ByteArrayInputStream(x509certificate.getTBSCertificate()));
-    TBSCertificateStructure tbscertificatestructure = TBSCertificateStructure
-        .getInstance(asn1inputstream.readObject());
-    AlgorithmIdentifier algorithmidentifier = tbscertificatestructure
-        .getSubjectPublicKeyInfo().getAlgorithmId();
-    IssuerAndSerialNumber issuerandserialnumber = new IssuerAndSerialNumber(
-        tbscertificatestructure.getIssuer(), tbscertificatestructure
-            .getSerialNumber().getValue());
-    Cipher cipher = Cipher.getInstance(algorithmidentifier.getAlgorithm()
-        .getId());
-    cipher.init(1, x509certificate);
-    DEROctetString deroctetstring = new DEROctetString(cipher.doFinal(abyte0));
-    RecipientIdentifier recipId = new RecipientIdentifier(issuerandserialnumber);
-    return new KeyTransRecipientInfo(recipId, algorithmidentifier,
-        deroctetstring);
+
+    try (
+        ASN1InputStream asn1inputstream = new ASN1InputStream(
+            new ByteArrayInputStream(x509certificate.getTBSCertificate()));
+    ) {
+        TBSCertificateStructure tbscertificatestructure = TBSCertificateStructure
+                .getInstance(asn1inputstream.readObject());
+            AlgorithmIdentifier algorithmidentifier = tbscertificatestructure
+                .getSubjectPublicKeyInfo().getAlgorithmId();
+            IssuerAndSerialNumber issuerandserialnumber = new IssuerAndSerialNumber(
+                tbscertificatestructure.getIssuer(), tbscertificatestructure
+                    .getSerialNumber().getValue());
+            Cipher cipher = Cipher.getInstance(algorithmidentifier.getAlgorithm()
+                .getId());
+            cipher.init(1, x509certificate);
+            DEROctetString deroctetstring = new DEROctetString(cipher.doFinal(abyte0));
+            RecipientIdentifier recipId = new RecipientIdentifier(issuerandserialnumber);
+            return new KeyTransRecipientInfo(recipId, algorithmidentifier,
+                deroctetstring);
+    }
   }
 }

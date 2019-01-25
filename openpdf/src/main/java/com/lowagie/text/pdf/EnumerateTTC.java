@@ -52,9 +52,9 @@ package com.lowagie.text.pdf;
 
 import java.io.IOException;
 import java.util.HashMap;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.error_messages.MessageLocalization;
 /** Enumerates all the fonts inside a True Type Collection.
  *
  * @author  Paulo Soares (psoares@consiste.pt)
@@ -74,10 +74,10 @@ class EnumerateTTC extends TrueTypeFont{
         rf = new RandomAccessFileOrArray(ttcArray);
         findNames();
     }
-    
+
     void findNames() throws DocumentException, IOException {
-        tables = new HashMap();
-        
+        tables = new HashMap<>();
+
         try {
             String mainTag = readStandardString(4);
             if (!mainTag.equals("ttcf"))
@@ -112,7 +112,7 @@ class EnumerateTTC extends TrueTypeFont{
                 rf.close();
         }
     }
-    
+
     String[] getNames() {
         return names;
     }

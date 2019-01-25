@@ -52,6 +52,7 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -64,15 +65,15 @@ import java.util.ListIterator;
  * sequence of objects, followed by a right square bracket (]).<BR>
  * This object is described in the 'Portable Document Format Reference Manual
  * version 1.7' section 3.2.5 (page 58).
- * 
+ *
  * @see PdfObject
  */
-public class PdfArray extends PdfObject {
+public class PdfArray extends PdfObject implements Iterable<PdfObject> {
 
     // CLASS VARIABLES
 
     /** this is the actual array of PdfObjects */
-    protected List<PdfObject> arrayList;
+    protected List<PdfObject> elements = new ArrayList<>();
 
     // constructors
 
@@ -81,28 +82,27 @@ public class PdfArray extends PdfObject {
      */
     public PdfArray() {
         super(ARRAY);
-        arrayList = new ArrayList<>();
     }
 
     /**
      * Constructs an <CODE>PdfArray</CODE>-object, containing 1
      * <CODE>PdfObject</CODE>.
-     * 
+     *
      * @param object
      *            a <CODE>PdfObject</CODE> that has to be added to the array
      */
     public PdfArray(PdfObject object) {
         this();
-        arrayList.add(object);
+        elements.add(object);
     }
 
     /**
      * Constructs a <CODE>PdfArray</CODE>-object, containing all
      * <CODE>float</CODE> values in a specified array.
-     * 
+     *
      * The <CODE>float</CODE> values are internally converted to
      * <CODE>PdfNumber</CODE> objects.
-     * 
+     *
      * @param values
      *            an array of <CODE>float</CODE> values to be added
      */
@@ -114,10 +114,10 @@ public class PdfArray extends PdfObject {
     /**
      * Constructs a <CODE>PdfArray</CODE>-object, containing all
      * <CODE>int</CODE> values in a specified array.
-     * 
+     *
      * The <CODE>int</CODE> values are internally converted to
      * <CODE>PdfNumber</CODE> objects.
-     * 
+     *
      * @param values
      *            an array of <CODE>int</CODE> values to be added
      */
@@ -135,17 +135,17 @@ public class PdfArray extends PdfObject {
      *            added to the array
      * @since 2.1.3
      */
-    public PdfArray(List<PdfObject> pdfObjectList) {
+    public PdfArray(Collection<? extends PdfObject> pdfObjectList) {
         this();
         if (pdfObjectList != null) {
-            arrayList.addAll(pdfObjectList);
+            elements.addAll(pdfObjectList);
         }
     }
 
     /**
      * Constructs an <CODE>PdfArray</CODE>-object, containing all
      * <CODE>PdfObject</CODE>s in a specified <CODE>PdfArray</CODE>.
-     * 
+     *
      * @param array
      *            a <CODE>PdfArray</CODE> to be added to the array
      */
@@ -158,7 +158,7 @@ public class PdfArray extends PdfObject {
     /**
      * Writes the PDF representation of this <CODE>PdfArray</CODE> as an array
      * of <CODE>byte</CODE> to the specified <CODE>OutputStream</CODE>.
-     * 
+     *
      * @param writer
      *            for backwards compatibility
      * @param os
@@ -168,22 +168,20 @@ public class PdfArray extends PdfObject {
     public void toPdf(PdfWriter writer, OutputStream os) throws IOException {
         os.write('[');
 
-        Iterator<PdfObject> i = arrayList.iterator();
-        PdfObject object;
-        int type;
+        Iterator<PdfObject> i = elements.iterator();
         if (i.hasNext()) {
-            object = i.next();
+        	PdfObject object = i.next();
             if (object == null) {
                 object = PdfNull.PDFNULL;
             }
             object.toPdf(writer, os);
         }
         while (i.hasNext()) {
-            object = i.next();
+        	PdfObject object = i.next();
             if (object == null) {
                 object = PdfNull.PDFNULL;
             }
-            type = object.type();
+            int type = object.type();
             if (type != PdfObject.ARRAY && type != PdfObject.DICTIONARY
                     && type != PdfObject.NAME && type != PdfObject.STRING) {
                 os.write(' ');
@@ -195,17 +193,17 @@ public class PdfArray extends PdfObject {
 
     /**
      * Returns a string representation of this <CODE>PdfArray</CODE>.
-     * 
+     *
      * The string representation consists of a list of all
      * <CODE>PdfObject</CODE>s contained in this <CODE>PdfArray</CODE>, enclosed
      * in square brackets ("[]"). Adjacent elements are separated by the
      * characters ", " (comma and space).
-     * 
+     *
      * @return the string representation of this <CODE>PdfArray</CODE>
      */
     @Override
     public String toString() {
-        return arrayList.toString();
+        return elements.toString();
     }
 
     // ARRAY CONTENT METHODS
@@ -213,7 +211,7 @@ public class PdfArray extends PdfObject {
     /**
      * Overwrites a specified location of the array, returning the previous
      * value
-     * 
+     *
      * @param idx
      *            The index of the element to be overwritten
      * @param obj
@@ -224,15 +222,15 @@ public class PdfArray extends PdfObject {
      * @since 2.1.5
      */
     public PdfObject set(int idx, PdfObject obj) {
-        return arrayList.set(idx, obj);
+        return elements.set(idx, obj);
     }
 
     /**
      * Remove the element at the specified position from the array.
-     * 
+     *
      * Shifts any subsequent elements to the left (subtracts one from their
      * indices).
-     * 
+     *
      * @param idx
      *            The index of the element to be removed.
      * @throws IndexOutOfBoundsException
@@ -240,7 +238,7 @@ public class PdfArray extends PdfObject {
      * @since 2.1.5
      */
     public PdfObject remove(int idx) {
-        return arrayList.remove(idx);
+        return elements.remove(idx);
     }
 
     /**
@@ -260,7 +258,7 @@ public class PdfArray extends PdfObject {
      * @return a copy of the the internal List.
      */
     public List<PdfObject> getElements() {
-        return new ArrayList<>(arrayList);
+        return new ArrayList<>(elements);
     }
 
     /**
@@ -269,46 +267,46 @@ public class PdfArray extends PdfObject {
      * @return the size of the List
      */
     public int size() {
-        return arrayList.size();
+        return elements.size();
     }
 
     /**
      * Returns <CODE>true</CODE> if the array is empty.
-     * 
+     *
      * @return <CODE>true</CODE> if the array is empty
      * @since 2.1.5
      */
     public boolean isEmpty() {
-        return arrayList.isEmpty();
+        return elements.isEmpty();
     }
 
     /**
      * Adds a <CODE>PdfObject</CODE> to the end of the <CODE>PdfArray</CODE>.
-     * 
+     *
      * The <CODE>PdfObject</CODE> will be the last element.
-     * 
+     *
      * @param object
      *            <CODE>PdfObject</CODE> to add
      * @return always <CODE>true</CODE>
      */
     public boolean add(PdfObject object) {
-        return arrayList.add(object);
+        return elements.add(object);
     }
 
     /**
      * Adds an array of <CODE>float</CODE> values to end of the
      * <CODE>PdfArray</CODE>.
-     * 
+     *
      * The values will be the last elements. The <CODE>float</CODE> values are
      * internally converted to <CODE>PdfNumber</CODE> objects.
-     * 
+     *
      * @param values
      *            An array of <CODE>float</CODE> values to add
      * @return always <CODE>true</CODE>
      */
     public boolean add(float[] values) {
         for (float value : values) {
-            arrayList.add(new PdfNumber(value));
+            elements.add(new PdfNumber(value));
         }
         return true;
     }
@@ -316,27 +314,27 @@ public class PdfArray extends PdfObject {
     /**
      * Adds an array of <CODE>int</CODE> values to end of the
      * <CODE>PdfArray</CODE>.
-     * 
+     *
      * The values will be the last elements. The <CODE>int</CODE> values are
      * internally converted to <CODE>PdfNumber</CODE> objects.
-     * 
+     *
      * @param values
      *            An array of <CODE>int</CODE> values to add
      * @return always <CODE>true</CODE>
      */
     public boolean add(int[] values) {
         for (int value : values) {
-            arrayList.add(new PdfNumber(value));
+            elements.add(new PdfNumber(value));
         }
         return true;
     }
 
     /**
      * Inserts the specified element at the specified position.
-     * 
+     *
      * Shifts the element currently at that position (if any) and any subsequent
      * elements to the right (adds one to their indices).
-     * 
+     *
      * @param index
      *            The index at which the specified element is to be inserted
      * @param element
@@ -347,67 +345,78 @@ public class PdfArray extends PdfObject {
      * @since 2.1.5
      */
     public void add(int index, PdfObject element) {
-        arrayList.add(index, element);
+        elements.add(index, element);
     }
 
     /**
      * Inserts a <CODE>PdfObject</CODE> at the beginning of the
      * <CODE>PdfArray</CODE>.
-     * 
+     *
      * The <CODE>PdfObject</CODE> will be the first element, any other elements
      * will be shifted to the right (adds one to their indices).
-     * 
+     *
      * @param object
      *            The <CODE>PdfObject</CODE> to add
      */
     public void addFirst(PdfObject object) {
-        arrayList.add(0, object);
+        elements.add(0, object);
     }
 
     /**
      * Checks if the <CODE>PdfArray</CODE> already contains a certain
      * <CODE>PdfObject</CODE>.
-     * 
+     *
      * @param object
      *            The <CODE>PdfObject</CODE> to check
      * @return <CODE>true</CODE>
      */
     public boolean contains(PdfObject object) {
-        return arrayList.contains(object);
+        return elements.contains(object);
     }
 
     /**
      * Returns the list iterator for the array.
-     * 
+     *
      * @return a ListIterator
      */
+    public ListIterator<PdfObject> iterator() {
+        return elements.listIterator();
+    }
+
+    /**
+     * Returns the list iterator for the array.
+     *
+     * @return a ListIterator
+     * @deprecated use <CODE>iterator()</CODE>
+     */
+    @Deprecated
     public ListIterator<PdfObject> listIterator() {
-        return arrayList.listIterator();
+        return iterator();
     }
 
     /**
      * Returns the <CODE>PdfObject</CODE> with the specified index.
-     * 
+     *
      * A possible indirect references is not resolved, so the returned
      * <CODE>PdfObject</CODE> may be either a direct object or an indirect
      * reference, depending on how the object is stored in the
      * <CODE>PdfArray</CODE>.
-     * 
+     *
      * @param idx
      *            The index of the <CODE>PdfObject</CODE> to be returned
      * @return A <CODE>PdfObject</CODE>
      */
     public PdfObject getPdfObject(int idx) {
-        return arrayList.get(idx);
+        return elements.get(idx);
     }
 
     /**
      * Returns the <CODE>PdfObject</CODE> with the specified index, resolving a
      * possible indirect reference to a direct object.
-     * 
+     *
      * Thus this method will never return a <CODE>PdfIndirectReference</CODE>
      * object.
-     * 
+     *
      * @param idx
      *            The index of the <CODE>PdfObject</CODE> to be returned
      * @return A direct <CODE>PdfObject</CODE> or <CODE>null</CODE>
@@ -422,11 +431,11 @@ public class PdfArray extends PdfObject {
     /**
      * Returns a <CODE>PdfObject</CODE> as a <CODE>PdfDictionary</CODE>,
      * resolving indirect references.
-     * 
+     *
      * The object corresponding to the specified index is retrieved and
      * resolvedto a direct object. If it is a <CODE>PdfDictionary</CODE>, it is
      * cast down and returned as such. Otherwise <CODE>null</CODE> is returned.
-     * 
+     *
      * @param idx
      *            The index of the <CODE>PdfObject</CODE> to be returned
      * @return the corresponding <CODE>PdfDictionary</CODE> object, or
@@ -444,11 +453,11 @@ public class PdfArray extends PdfObject {
     /**
      * Returns a <CODE>PdfObject</CODE> as a <CODE>PdfArray</CODE>, resolving
      * indirect references.
-     * 
+     *
      * The object corresponding to the specified index is retrieved and resolved
      * to a direct object. If it is a <CODE>PdfArray</CODE>, it is cast down and
      * returned as such. Otherwise <CODE>null</CODE> is returned.
-     * 
+     *
      * @param idx
      *            The index of the <CODE>PdfObject</CODE> to be returned
      * @return the corresponding <CODE>PdfArray</CODE> object, or
@@ -466,11 +475,11 @@ public class PdfArray extends PdfObject {
     /**
      * Returns a <CODE>PdfObject</CODE> as a <CODE>PdfStream</CODE>, resolving
      * indirect references.
-     * 
+     *
      * The object corresponding to the specified index is retrieved and resolved
      * to a direct object. If it is a <CODE>PdfStream</CODE>, it is cast down
      * and returned as such. Otherwise <CODE>null</CODE> is returned.
-     * 
+     *
      * @param idx
      *            The index of the <CODE>PdfObject</CODE> to be returned
      * @return the corresponding <CODE>PdfStream</CODE> object, or
@@ -488,11 +497,11 @@ public class PdfArray extends PdfObject {
     /**
      * Returns a <CODE>PdfObject</CODE> as a <CODE>PdfString</CODE>, resolving
      * indirect references.
-     * 
+     *
      * The object corresponding to the specified index is retrieved and resolved
      * to a direct object. If it is a <CODE>PdfString</CODE>, it is cast down
      * and returned as such. Otherwise <CODE>null</CODE> is returned.
-     * 
+     *
      * @param idx
      *            The index of the <CODE>PdfObject</CODE> to be returned
      * @return the corresponding <CODE>PdfString</CODE> object, or
@@ -510,11 +519,11 @@ public class PdfArray extends PdfObject {
     /**
      * Returns a <CODE>PdfObject</CODE> as a <CODE>PdfNumber</CODE>, resolving
      * indirect references.
-     * 
+     *
      * The object corresponding to the specified index is retrieved and resolved
      * to a direct object. If it is a <CODE>PdfNumber</CODE>, it is cast down
      * and returned as such. Otherwise <CODE>null</CODE> is returned.
-     * 
+     *
      * @param idx
      *            The index of the <CODE>PdfObject</CODE> to be returned
      * @return the corresponding <CODE>PdfNumber</CODE> object, or
@@ -532,11 +541,11 @@ public class PdfArray extends PdfObject {
     /**
      * Returns a <CODE>PdfObject</CODE> as a <CODE>PdfName</CODE>, resolving
      * indirect references.
-     * 
+     *
      * The object corresponding to the specified index is retrieved and resolved
      * to a direct object. If it is a <CODE>PdfName</CODE>, it is cast down and
      * returned as such. Otherwise <CODE>null</CODE> is returned.
-     * 
+     *
      * @param idx
      *            The index of the <CODE>PdfObject</CODE> to be returned
      * @return the corresponding <CODE>PdfName</CODE> object, or
@@ -554,11 +563,11 @@ public class PdfArray extends PdfObject {
     /**
      * Returns a <CODE>PdfObject</CODE> as a <CODE>PdfBoolean</CODE>, resolving
      * indirect references.
-     * 
+     *
      * The object corresponding to the specified index is retrieved and resolved
      * to a direct object. If it is a <CODE>PdfBoolean</CODE>, it is cast down
      * and returned as such. Otherwise <CODE>null</CODE> is returned.
-     * 
+     *
      * @param idx
      *            The index of the <CODE>PdfObject</CODE> to be returned
      * @return the corresponding <CODE>PdfBoolean</CODE> object, or
@@ -575,11 +584,11 @@ public class PdfArray extends PdfObject {
 
     /**
      * Returns a <CODE>PdfObject</CODE> as a <CODE>PdfIndirectReference</CODE>.
-     * 
+     *
      * The object corresponding to the specified index is retrieved. If it is a
      * <CODE>PdfIndirectReference</CODE>, it is cast down and returned as such.
      * Otherwise <CODE>null</CODE> is returned.
-     * 
+     *
      * @param idx
      *            The index of the <CODE>PdfObject</CODE> to be returned
      * @return the corresponding <CODE>PdfIndirectReference</CODE> object, or

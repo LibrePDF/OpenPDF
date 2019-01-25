@@ -44,20 +44,19 @@
  */
 package com.lowagie.text.pdf.parser;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.CMapAwareDocumentFont;
 import com.lowagie.text.pdf.DocumentFont;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfString;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author dgd
- * 
+ *
  */
 public class ParsedText extends ParsedTextImpl {
 
@@ -73,7 +72,7 @@ public class ParsedText extends ParsedTextImpl {
     /**
      * Decodes a Java String containing glyph ids encoded in the font's encoding, and determine the
      * unicode equivalent
-     * 
+     *
      * @param in
      *            the String that needs to be decoded
      * @return the decoded String
@@ -90,13 +89,13 @@ public class ParsedText extends ParsedTextImpl {
     /**
      * This constructor should only be called when the origin for text display is at (0,0) and the
      * graphical state reflects all transformations of the baseline. This is in text space units.
-     * 
+     *
      * Decodes a PdfString (which will contain glyph ids encoded in the font's encoding) based on
      * the active font, and determine the unicode equivalent
-     * 
+     *
      * @param in
      *            the String that needs to be encoded
-     * 
+     *
      * @return the encoded String
      * @since 2.1.7
      */
@@ -108,10 +107,10 @@ public class ParsedText extends ParsedTextImpl {
     /**
      * This constructor should only be called when the origin for text display is at (0,0) and the
      * graphical state reflects all transformations of the baseline. This is in text space units.
-     * 
+     *
      * Decodes a String (which will contain glyph ids encoded in the font's encoding) based on
      * the active font. This is supported for compatibility, but is no longer preferred.
-     * 
+     *
      * @param text
      *            string
      * @param gs
@@ -130,7 +129,7 @@ public class ParsedText extends ParsedTextImpl {
     /**
      * This constructor should only be called when the origin for text display is at (0,0) and the
      * graphical state reflects all transformations of the baseline. This is in text space units.
-     * 
+     *
      * @param text
      *            string
      * @param gs
@@ -147,8 +146,8 @@ public class ParsedText extends ParsedTextImpl {
 
     /**
      * Internal constructor for a parsed text item. The constructors that call it
-     * gather some information from the graphical state first. 
-     * 
+     * gather some information from the graphical state first.
+     *
      * @param text
      *            This is a PdfString containing code points for the current font, not actually characters.
      *            If the font has multiByte glyphs, (Identity-H encoding) we reparse the string so that the code
@@ -181,7 +180,7 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * Internal constructor when the code points are already in a string. 
+     * Internal constructor when the code points are already in a string.
      * @param text
      *            string
      * @param gs
@@ -224,11 +223,11 @@ public class ParsedText extends ParsedTextImpl {
      * Calculates the width of a space character. If the font does not define a
      * width for a standard space character , we also attempt to use the width
      * of \u00A0 (a non-breaking space in many fonts)
-     * 
+     *
      * @param gs
      *            graphic state including current transformation to page coordinates from
      *            text measurement
-     * 
+     *
      * @return the width of a single space character in text space units
      */
     private static float getUnscaledFontSpaceWidth(GraphicsState gs) {
@@ -241,7 +240,7 @@ public class ParsedText extends ParsedTextImpl {
 
     /**
      * Gets the width of a String in text space units
-     * 
+     *
      * @param string
      *            the string that needs measuring
      * @param gs
@@ -266,18 +265,18 @@ public class ParsedText extends ParsedTextImpl {
     /**
      * Break this string if there are spaces within it. If so, we mark the new Words appropriately
      * for later assembly.
-     * 
+     *
      * We are guaranteed that every space (internal word break) in this parsed text object will
      * create a new word in the result of this method. We are not guaranteed that these Word objects
      * are actually words until they have been assembled.
-     * 
+     *
      * The word following any space preserves that space in its string value, so that the assembler
      * will not erroneously merge words that should be separate, regardless of the spacing.
-     * 
+     *
      * @return list of Word objects.
      */
     public List<Word> getAsPartialWords() {
-        ArrayList<Word> result = new ArrayList<Word>();
+        ArrayList<Word> result = new ArrayList<>();
         CMapAwareDocumentFont font = gs.font;
         char[] chars = pdfText.getOriginalChars();
         boolean[] hasSpace = new boolean[chars.length];
@@ -325,7 +324,7 @@ public class ParsedText extends ParsedTextImpl {
      * Calculate whether individual character positions (after font decoding from code to a
      * character), contain spaces and break words, and whether the resulting words should be treated
      * as complete (i.e. if any spaces were found.
-     * 
+     *
      * @param chars
      *            to check
      * @param hasSpace
@@ -353,7 +352,7 @@ public class ParsedText extends ParsedTextImpl {
     /**
      * Create a word to represent a broken substring at a space. As spaces have zero "word length"
      * make sure that they also have a baseline to check
-     * 
+     *
      * @param wordAccum
      *            buffer of characters
      * @param wordStartOffset

@@ -48,13 +48,13 @@ package com.lowagie.text.pdf.events;
 
 import java.io.IOException;
 import java.util.HashMap;
-import com.lowagie.text.error_messages.MessageLocalization;
+import java.util.Map;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-
-import com.lowagie.text.Rectangle;
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfFormField;
 import com.lowagie.text.pdf.PdfName;
@@ -73,48 +73,48 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
     /**
      * Keeps a map with fields that are to be positioned in inGenericTag.
      */
-    protected HashMap genericChunkFields = new HashMap();
+    protected Map<String, PdfFormField> genericChunkFields = new HashMap<>();
 
     /**
      * Keeps the form field that is to be positioned in a cellLayout event.
      */
     protected PdfFormField cellField = null;
-    
+
     /**
-     * The PdfWriter to use when a field has to added in a cell event. 
+     * The PdfWriter to use when a field has to added in a cell event.
      */
     protected PdfWriter fieldWriter = null;
     /**
-     * The PdfFormField that is the parent of the field added in a cell event. 
+     * The PdfFormField that is the parent of the field added in a cell event.
      */
     protected PdfFormField parent = null;
-    
+
     /** Creates a new event. This constructor will be used if you need to position fields with Chunk objects. */
     public FieldPositioningEvents() {}
-    
+
     /** Some extra padding that will be taken into account when defining the widget. */
     public float padding;
-    
+
     /**
      * Add a PdfFormField that has to be tied to a generic Chunk.
      */
     public void addField(String text, PdfFormField field) {
         genericChunkFields.put(text, field);
     }
-    
+
     /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. */
     public FieldPositioningEvents(PdfWriter writer, PdfFormField field) {
         this.cellField = field;
         this.fieldWriter = writer;
-    }  
-    
+    }
+
     /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. */
     public FieldPositioningEvents(PdfFormField parent, PdfFormField field) {
         this.cellField = field;
         this.parent = parent;
     }
-    
-    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. 
+
+    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event.
      * @throws DocumentException
      * @throws IOException*/
     public FieldPositioningEvents(PdfWriter writer, String text) throws IOException, DocumentException {
@@ -122,9 +122,9 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
         TextField tf = new TextField(writer, new Rectangle(0, 0), text);
         tf.setFontSize(14);
         cellField = tf.getTextField();
-    }   
-    
-    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. 
+    }
+
+    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event.
      * @throws DocumentException
      * @throws IOException*/
     public FieldPositioningEvents(PdfWriter writer, PdfFormField parent, String text) throws IOException, DocumentException {
@@ -132,7 +132,7 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
         TextField tf = new TextField(writer, new Rectangle(0, 0), text);
         tf.setFontSize(14);
         cellField = tf.getTextField();
-    }  
+    }
 
     /**
      * @param padding The padding to set.
@@ -140,7 +140,7 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
     public void setPadding(float padding) {
         this.padding = padding;
     }
-    
+
     /**
      * @param parent The parent to set.
      */
@@ -153,7 +153,7 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
     public void onGenericTag(PdfWriter writer, Document document,
             Rectangle rect, String text) {
         rect.setBottom(rect.getBottom() - 3);
-        PdfFormField field = (PdfFormField) genericChunkFields.get(text);
+        PdfFormField field = genericChunkFields.get(text);
         if (field == null) {
             TextField tf = new TextField(writer, new Rectangle(rect.getLeft(padding), rect.getBottom(padding), rect.getRight(padding), rect.getTop(padding)), text);
             tf.setFontSize(14);

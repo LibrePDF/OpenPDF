@@ -48,15 +48,14 @@
  */
 
 package com.lowagie.text.pdf.codec.wmf;
-import com.lowagie.text.Document;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
-
+import com.lowagie.text.Document;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.BaseFont;
 
 public class MetaFont extends MetaObject {
@@ -82,7 +81,7 @@ public class MetaFont extends MetaObject {
     static final int FF_MODERN = 3;
     static final int FF_SCRIPT = 4;
     static final int FF_DECORATIVE = 5;
-    static final int BOLDTHRESHOLD = 600;    
+    static final int BOLDTHRESHOLD = 600;
     static final int nameSize = 32;
     static final int ETO_OPAQUE = 2;
     static final int ETO_CLIPPED = 4;
@@ -131,7 +130,7 @@ public class MetaFont extends MetaObject {
         }
         faceName = faceName.toLowerCase(Locale.ROOT);
     }
-    
+
     public BaseFont getFont() {
         if (font != null)
             return font;
@@ -173,8 +172,7 @@ public class MetaFont extends MetaObject {
                 case FF_DECORATIVE:
                     fontName = fontNames[MARKER_HELVETICA + italic + bold];
                     break;
-                default:
-                {
+                default: {
                     switch (pitch) {
                         case FIXED_PITCH:
                             fontName = fontNames[MARKER_COURIER + italic + bold];
@@ -192,22 +190,22 @@ public class MetaFont extends MetaObject {
         catch (Exception e) {
             throw new ExceptionConverter(e);
         }
-        
+
         return font;
     }
-    
+
     public float getAngle() {
         return angle;
     }
-    
+
     public boolean isUnderline() {
         return underline;
     }
-    
+
     public boolean isStrikeout() {
         return strikeout;
     }
-    
+
     public float getFontSize(MetaState state) {
         return Math.abs(state.transformY(height) - state.transformY(0)) * Document.wmfFontCorrection;
     }

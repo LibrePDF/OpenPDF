@@ -49,8 +49,6 @@
 
 package com.lowagie.text;
 
-import java.util.ArrayList;
-
 /**
  * This is an <CODE>Element</CODE> that contains
  * some meta information about the document.
@@ -65,17 +63,17 @@ import java.util.ArrayList;
  */
 
 public class Meta implements Element {
-    
+
     // membervariables
-    
+
     /** This is the type of Meta-information this object contains. */
     private int type;
-    
+
     /** This is the content of the Meta-information. */
     private StringBuffer content;
-    
+
     // constructors
-    
+
     /**
      * Constructs a <CODE>Meta</CODE>.
      *
@@ -86,7 +84,7 @@ public class Meta implements Element {
         this.type = type;
         this.content = new StringBuffer(content);
     }
-    
+
     /**
      * Constructs a <CODE>Meta</CODE>.
      *
@@ -97,9 +95,9 @@ public class Meta implements Element {
         this.type = Meta.getType(tag);
         this.content = new StringBuffer(content);
     }
-    
+
     // implementation of the Element-methods
-    
+
     /**
      * Processes the element by adding it (or the different parts) to a
      * <CODE>ElementListener</CODE>.
@@ -115,7 +113,7 @@ public class Meta implements Element {
             return false;
         }
     }
-    
+
     /**
      * Gets the type of the text element.
      *
@@ -124,16 +122,7 @@ public class Meta implements Element {
     public int type() {
         return type;
     }
-    
-    /**
-     * Gets all the chunks in this element.
-     *
-     * @return    an <CODE>ArrayList</CODE>
-     */
-    public ArrayList getChunks() {
-        return new ArrayList();
-    }
-    
+
     /**
      * @see com.lowagie.text.Element#isContent()
      * @since    iText 2.0.8
@@ -149,9 +138,9 @@ public class Meta implements Element {
     public boolean isNestable() {
         return false;
     }
-    
+
     // methods
-    
+
     /**
      * appends some text to this <CODE>Meta</CODE>.
      *
@@ -161,7 +150,7 @@ public class Meta implements Element {
     public StringBuffer append(String string) {
         return content.append(string);
     }
-    
+
     // methods to retrieve information
 
     /**
@@ -178,7 +167,7 @@ public class Meta implements Element {
      *
      * @return    a <CODE>String</CODE>
      */
-    
+
     public String getName() {
         switch (type) {
             case Element.SUBJECT:
@@ -197,10 +186,10 @@ public class Meta implements Element {
                     return ElementTags.UNKNOWN;
         }
     }
-    
+
     /**
      * Returns the name of the meta information.
-     * 
+     *
      * @param tag iText tag for meta information
      * @return    the Element value corresponding with the given tag
      */

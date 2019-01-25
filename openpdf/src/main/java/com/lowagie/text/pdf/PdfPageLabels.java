@@ -27,18 +27,19 @@
 package com.lowagie.text.pdf;
 
 
-import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.factories.RomanAlphabetFactory;
-import com.lowagie.text.factories.RomanNumberFactory;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.factories.RomanAlphabetFactory;
+import com.lowagie.text.factories.RomanNumberFactory;
 
 /**
  * Page labels are used to identify each page visually on the screen or in print.
- * 
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfPageLabels {
@@ -78,27 +79,25 @@ public class PdfPageLabels {
     /**
      * Dictionary values to set the logical page styles
      */
-    static PdfName[] numberingStyle = new PdfName[]
-            {
-                    PdfName.D, PdfName.R, new PdfName("r"), PdfName.A, new PdfName("a")
-            };
+    static PdfName[] numberingStyle = {
+            PdfName.D, PdfName.R, new PdfName("r"), PdfName.A, new PdfName("a")
+    };
 
     /**
      * The sequence of logical pages. Will contain at least a value for page 1
      */
-    private HashMap map;
+    private Map<Integer, PdfObject> map = new HashMap<>();
 
     /**
      * Creates a new PdfPageLabel with a default logical page 1
      */
     public PdfPageLabels() {
-        map = new HashMap();
         addPageLabel(1, PdfPageLabels.DECIMAL_ARABIC_NUMERALS, null, 1);
     }
 
     /**
      * Adds or replaces a page label.
-     * 
+     *
      * @param page
      *            the real page to start the numbering. First page is 1
      * @param numberStyle
@@ -123,12 +122,12 @@ public class PdfPageLabels {
         if (firstPage != 1) {
             dic.put(PdfName.ST, new PdfNumber(firstPage));
         }
-        map.put(new Integer(page - 1), dic);
+        map.put(Integer.valueOf(page - 1), dic);
     }
 
     /**
      * Adds or replaces a page label. The first logical page has the default of 1.
-     * 
+     *
      * @param page
      *            the real page to start the numbering. First page is 1
      * @param numberStyle
@@ -143,7 +142,7 @@ public class PdfPageLabels {
     /**
      * Adds or replaces a page label. There is no text prefix and the first logical page has the
      * default of 1.
-     * 
+     *
      * @param page
      *            the real page to start the numbering. First page is 1
      * @param numberStyle
@@ -162,7 +161,7 @@ public class PdfPageLabels {
 
     /**
      * Removes a page label. The first page label can not be removed, only changed.
-     * 
+     *
      * @param page
      *            the real page to remove
      */
@@ -170,12 +169,12 @@ public class PdfPageLabels {
         if (page <= 1) {
             return;
         }
-        map.remove(new Integer(page - 1));
+        map.remove(Integer.valueOf(page - 1));
     }
 
     /**
      * Gets the page label dictionary to insert into the document.
-     * 
+     *
      * @return the page label dictionary
      */
     PdfDictionary getDictionary(PdfWriter writer) {
@@ -188,7 +187,7 @@ public class PdfPageLabels {
 
     /**
      * Retrieves the page labels from a PDF as an array of String objects.
-     * 
+     *
      * @param reader
      *            a PdfReader object that has the page labels you want to retrieve
      * @return a String array or <code>null</code> if no page labels are present
@@ -205,16 +204,16 @@ public class PdfPageLabels {
 
         String[] labelstrings = new String[n];
 
-        HashMap numberTree = PdfNumberTree.readTree(labels);
+        Map<Integer,PdfObject> numberTree = PdfNumberTree.readTree(labels);
 
         int pagecount = 1;
         Integer current;
         char type = 'D';
         String prefix = "";
         for (int i = 0; i < n; i++ ) {
-            current = new Integer(i);
+            current = Integer.valueOf(i);
             if (numberTree.containsKey(current)) {
-                PdfDictionary d = (PdfDictionary) PdfReader.getPdfObjectRelease((PdfObject) numberTree.get(current));
+                PdfDictionary d = (PdfDictionary) PdfReader.getPdfObjectRelease(numberTree.get(current));
                 if (d.contains(PdfName.ST)) {
                     pagecount = ((PdfNumber) d.get(PdfName.ST)).intValue();
                 } else {
@@ -254,7 +253,7 @@ public class PdfPageLabels {
 
     /**
      * Retrieves the page labels from a PDF as an array of {@link PdfPageLabelFormat} objects.
-     * 
+     *
      * @param reader
      *            a PdfReader object that has the page labels you want to retrieve
      * @return a PdfPageLabelEntry array, containing an entry for each format change or
@@ -266,10 +265,8 @@ public class PdfPageLabels {
         if (labels == null) {
             return null;
         }
-        HashMap numberTree = PdfNumberTree.readTree(labels);
-        Integer[] numbers = new Integer[numberTree.size()];
-        numbers = (Integer[]) numberTree.keySet()
-                                        .toArray(numbers);
+        Map<Integer, PdfObject> numberTree = PdfNumberTree.readTree(labels);
+        Integer[] numbers = numberTree.keySet().toArray(new Integer[numberTree.size()]);
         Arrays.sort(numbers);
         PdfPageLabelFormat[] formats = new PdfPageLabelFormat[numberTree.size()];
         String prefix;
@@ -277,7 +274,7 @@ public class PdfPageLabels {
         int pagecount;
         for (int k = 0; k < numbers.length; ++k) {
             Integer key = numbers[k];
-            PdfDictionary d = (PdfDictionary) PdfReader.getPdfObjectRelease((PdfObject) numberTree.get(key));
+            PdfDictionary d = (PdfDictionary) PdfReader.getPdfObjectRelease(numberTree.get(key));
             if (d.contains(PdfName.ST)) {
                 pagecount = ((PdfNumber) d.get(PdfName.ST)).intValue();
             } else {
@@ -328,7 +325,7 @@ public class PdfPageLabels {
 
         /**
          * Creates a page label format.
-         * 
+         *
          * @param physicalPage
          *            the real page to start the numbering. First page is 1
          * @param numberStyle

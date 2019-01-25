@@ -50,13 +50,14 @@ package com.lowagie.text.pdf;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /** Common field variables.
  * @author Paulo Soares (psoares@consiste.pt)
@@ -149,11 +150,10 @@ public abstract class BaseField {
     /** Holds value of property maxCharacterLength. */
     protected int maxCharacterLength;
 
-    private final static HashMap<PdfName, Integer> fieldKeys = new HashMap<>();
-
+    private final static Collection<PdfName> fieldKeys = new HashSet<>();
     static {
-        fieldKeys.putAll(PdfCopyFieldsImp.fieldKeys);
-        fieldKeys.put(PdfName.T, new Integer(1));
+        fieldKeys.addAll(PdfCopyFieldsImp.fieldKeys);
+        fieldKeys.add(PdfName.T);
     }
     /** Creates a new <CODE>TextField</CODE>.
      * @param writer the document <CODE>PdfWriter</CODE>
@@ -258,22 +258,22 @@ public abstract class BaseField {
         return app;
     }
 
-    protected static ArrayList getHardBreaks(String text) {
-        ArrayList arr = new ArrayList();
+    protected static ArrayList<String> getHardBreaks(String text) {
+        ArrayList<String> arr = new ArrayList<>();
         char[] cs = text.toCharArray();
         int len = cs.length;
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (int k = 0; k < len; ++k) {
             char c = cs[k];
             if (c == '\r') {
                 if (k + 1 < len && cs[k + 1] == '\n')
                     ++k;
                 arr.add(buf.toString());
-                buf = new StringBuffer();
+                buf = new StringBuilder();
             }
             else if (c == '\n') {
                 arr.add(buf.toString());
-                buf = new StringBuffer();
+                buf = new StringBuilder();
             }
             else
                 buf.append(c);
@@ -293,13 +293,13 @@ public abstract class BaseField {
         }
     }
 
-    protected static ArrayList breakLines(ArrayList breaks, BaseFont font, float fontSize, float width) {
-        ArrayList lines = new ArrayList();
+    protected static ArrayList<String> breakLines(ArrayList<String> breaks, BaseFont font, float fontSize, float width) {
+        ArrayList<String> lines = new ArrayList<>();
         StringBuffer buf = new StringBuffer();
         for (int ck = 0; ck < breaks.size(); ++ck) {
             buf.setLength(0);
             float w = 0;
-            char[] cs = ((String) breaks.get(ck)).toCharArray();
+            char[] cs = breaks.get(ck).toCharArray();
             int len = cs.length;
             // 0 inline first, 1 inline, 2 spaces
             int state = 0;
@@ -668,9 +668,9 @@ public abstract class BaseField {
      * @param to the destination. It may be <CODE>null</CODE>
      */
     public static void moveFields(PdfDictionary from, PdfDictionary to) {
-        for (Iterator i = from.getKeys().iterator(); i.hasNext();) {
-            PdfName key = (PdfName)i.next();
-            if (fieldKeys.containsKey(key)) {
+        for (Iterator<PdfName> i = from.getKeys().iterator(); i.hasNext();) {
+            PdfName key = i.next();
+            if (fieldKeys.contains(key)) {
                 if (to != null)
                     to.put(key, from.get(key));
                 i.remove();

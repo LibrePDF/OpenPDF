@@ -64,7 +64,7 @@ import java.util.ArrayList;
  * classes (I think they're really great). However, if I use the
  * javax.swing.text classes, it will become very difficult to downgrade rugPdf.
  * </OL>
- * 
+ *
  * @see Anchor
  * @see Cell
  * @see Chapter
@@ -181,7 +181,7 @@ public interface Element {
 
     /** This is a possible type of <CODE>Element</CODE>. */
     int MULTI_COLUMN_TEXT = 40;
-    
+
     /** This is a possible type of <CODE>Element</CODE>. */
     int MARKED = 50;
 
@@ -307,20 +307,18 @@ public interface Element {
     /**
      * Processes the element by adding it (or the different parts) to an <CODE>
      * ElementListener</CODE>.
-     * 
+     *
      * @param listener
      *            an <CODE>ElementListener</CODE>
      * @return <CODE>true</CODE> if the element was processed successfully
      */
-
     boolean process(ElementListener listener);
 
     /**
      * Gets the type of the text element.
-     * 
+     *
      * @return a type
      */
-
     int type();
 
     /**
@@ -329,30 +327,28 @@ public interface Element {
      * @since    iText 2.0.8
      * @return    true if this is a 'content' element; false if this is a 'metadata' element
      */
-
     boolean isContent();
-    
+
     /**
      * Checks if this element is nestable.
      * @since    iText 2.0.8
      * @return    true if this element can be nested inside other elements.
      */
-
     boolean isNestable();
-    
+
     /**
      * Gets all the chunks in this element.
-     * 
+     *
      * @return an <CODE>ArrayList</CODE>
      */
-
-    ArrayList getChunks();
+    default ArrayList<Chunk> getChunks() {
+        return new ArrayList<>();
+    }
 
     /**
      * Gets the content of the text element.
-     * 
+     *
      * @return a type
      */
-
     String toString();
 }

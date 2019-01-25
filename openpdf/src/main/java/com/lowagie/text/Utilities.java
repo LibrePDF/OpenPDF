@@ -55,7 +55,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -70,18 +70,18 @@ public class Utilities {
 
     /**
      * Gets the keys of a Hashtable
-     * 
+     *
      * @param table
      *            a Hashtable
      * @return the keyset of a Hashtable (or an empty set if table is null)
      */
-    public static Set getKeySet(Hashtable table) {
+    public static <E> Set<E> getKeySet(Map<E,?> table) {
         return (table == null) ? Collections.EMPTY_SET : table.keySet();
     }
 
     /**
      * Utility method to extend an array.
-     * 
+     *
      * @param original
      *            the original array or <CODE>null</CODE>
      * @param item
@@ -93,12 +93,12 @@ public class Utilities {
             original = new Object[1][];
             original[0] = item;
             return original;
-        } else {
-            Object[][] original2 = new Object[original.length + 1][];
-            System.arraycopy(original, 0, original2, 0, original.length);
-            original2[original.length] = item;
-            return original2;
         }
+
+        Object[][] original2 = new Object[original.length + 1][];
+        System.arraycopy(original, 0, original2, 0, original.length);
+        original2[original.length] = item;
+        return original2;
     }
 
     /**
@@ -115,7 +115,7 @@ public class Utilities {
      * Unescapes an URL. All the "%xx" are replaced by the 'xx' hex char value.
      * @param src the url to unescape
      * @return the unescaped value
-     */    
+     */
     public static String unEscapeURL(String src) {
         StringBuffer bf = new StringBuffer();
         char[] s = src.toCharArray();
@@ -146,7 +146,7 @@ public class Utilities {
      * <P>
      * This method makes the conversion of this library from the JAVA 2 platform
      * to a JDK1.1.x-version easier.
-     * 
+     *
      * @param filename
      *            a given filename
      * @return a valid URL
@@ -165,7 +165,7 @@ public class Utilities {
      * This method is an alternative for the <CODE>InputStream.skip()</CODE>
      * -method that doesn't seem to work properly for big values of <CODE>size
      * </CODE>.
-     * 
+     *
      * @param is
      *            the <CODE>InputStream</CODE>
      * @param size
@@ -181,7 +181,7 @@ public class Utilities {
             size -= n;
         }
     }
-    
+
     /**
      * Measurement conversion from millimeters to points.
      * @param    value    a value in millimeters
@@ -241,7 +241,7 @@ public class Utilities {
     public static final float inchesToPoints(float value) {
         return value * 72f;
     }
-    
+
     /**
      * Check if the value of a character belongs to a certain interval
      * that indicates it's the higher part of a surrogate pair.

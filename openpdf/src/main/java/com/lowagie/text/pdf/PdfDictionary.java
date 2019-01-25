@@ -111,7 +111,7 @@ public class PdfDictionary extends PdfObject {
      */
     public PdfDictionary() {
         super(DICTIONARY);
-        hashMap = new HashMap<PdfName, PdfObject>();
+        hashMap = new HashMap<>();
     }
 
     /**

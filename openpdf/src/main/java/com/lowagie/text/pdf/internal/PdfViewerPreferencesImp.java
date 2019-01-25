@@ -116,13 +116,13 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
     public static final PdfName[] DUPLEX_PREFERENCES = {
             PdfName.SIMPLEX, PdfName.DUPLEXFLIPSHORTEDGE, PdfName.DUPLEXFLIPLONGEDGE
     };
-    
+
     /** This value will hold the viewer preferences for the page layout and page mode. */
     private int pageLayoutAndMode = 0;
-    
+
     /** This dictionary holds the viewer preferences (other than page layout and page mode). */
     private PdfDictionary viewerPreferences = new PdfDictionary();
-    
+
     /** The mask to decide if a ViewerPreferences dictionary is needed */
     private static final int viewerPreferencesMask = 0xfff000;
 
@@ -139,10 +139,10 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
     public PdfDictionary getViewerPreferences() {
         return viewerPreferences;
     }
-    
+
     /**
      * Sets the viewer preferences as the sum of several constants.
-     * 
+     *
      * @param preferences
      *            the viewer preferences
      * @see PdfViewerPreferences#setViewerPreferences
@@ -165,7 +165,7 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
                 viewerPreferences.put(PdfName.CENTERWINDOW, PdfBoolean.PDFTRUE);
             if ((preferences & PdfWriter.DisplayDocTitle) != 0)
                 viewerPreferences.put(PdfName.DISPLAYDOCTITLE, PdfBoolean.PDFTRUE);
-            
+
             if ((preferences & PdfWriter.NonFullScreenPageModeUseNone) != 0)
                 viewerPreferences.put(PdfName.NONFULLSCREENPAGEMODE, PdfName.USENONE);
             else if ((preferences & PdfWriter.NonFullScreenPageModeUseOutlines) != 0)
@@ -181,28 +181,28 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
                 viewerPreferences.put(PdfName.DIRECTION, PdfName.R2L);
 
             if ((preferences & PdfWriter.PrintScalingNone) != 0)
-                viewerPreferences.put(PdfName.PRINTSCALING, PdfName.NONE);            
+                viewerPreferences.put(PdfName.PRINTSCALING, PdfName.NONE);
         }
     }
-    
+
     /**
      * Given a key for a viewer preference (a PdfName object),
      * this method returns the index in the VIEWER_PREFERENCES array.
      * @param key    a PdfName referring to a viewer preference
      * @return    an index in the VIEWER_PREFERENCES array
      */
-    private int getIndex(PdfName key) {
+    private static int getIndex(PdfName key) {
         for (int i = 0; i < VIEWER_PREFERENCES.length; i++) {
             if (VIEWER_PREFERENCES[i].equals(key))
                 return i;
         }
         return -1;
     }
-    
+
     /**
      * Checks if some value is valid for a certain key.
      */
-    private boolean isPossibleValue(PdfName value, PdfName[] accepted) {
+    private static boolean isPossibleValue(PdfName value, PdfName[] accepted) {
         for (int i = 0; i < accepted.length; i++) {
             if (accepted[i].equals(value)) {
                 return true;
@@ -210,7 +210,7 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
         }
         return false;
     }
-    
+
     /**
      * Sets the viewer preferences for printing.
      */
@@ -276,7 +276,7 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
     /**
      * Adds the viewer preferences defined in the preferences parameter to a
      * PdfDictionary (more specifically the root or catalog of a PDF file).
-     * 
+     *
      * @param catalog
      */
     public void addToCatalog(PdfDictionary catalog) {

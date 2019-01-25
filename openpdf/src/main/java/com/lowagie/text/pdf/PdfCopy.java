@@ -50,17 +50,14 @@ package com.lowagie.text.pdf;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-
-import com.lowagie.text.Rectangle;
 import com.lowagie.text.ExceptionConverter;
-
-import java.util.ArrayList;
-import java.util.Map;
+import com.lowagie.text.Rectangle;
 
 /**
  * Make copies of PDF documents. Documents can be edited after reading and before writing them out.
@@ -244,8 +241,7 @@ public class PdfCopy extends PdfWriter {
     PdfDictionary out = new PdfDictionary();
     PdfObject type = PdfReader.getPdfObjectRelease(in.get(PdfName.TYPE));
 
-    for (Iterator it = in.getKeys().iterator(); it.hasNext(); ) {
-      PdfName key = (PdfName) it.next();
+    for (PdfName key : in.getKeys()) {
       PdfObject value = in.get(key);
       //        System.out.println("Copy " + key);
       if (PdfName.PAGE.equals(type)) {
@@ -523,7 +519,7 @@ public class PdfCopy extends PdfWriter {
     }
   }
 
-  public PdfIndirectReference add(PdfOutline outline) {
+  public PdfIndirectReference add(@SuppressWarnings("unused") PdfOutline outline) {
     return null;
   }
 
@@ -572,6 +568,7 @@ public class PdfCopy extends PdfWriter {
    * @param iPage an imported page
    * @return the <CODE>PageStamp</CODE>
    */
+  @SuppressWarnings("resource")
   public PageStamp createPageStamp(PdfImportedPage iPage) {
     int pageNum = iPage.getPageNumber();
     PdfReader reader = iPage.getPdfReaderInstance().getReader();
@@ -637,33 +634,37 @@ public class PdfCopy extends PdfWriter {
         ar = new PdfArray();
         pageN.put(PdfName.CONTENTS, ar);
       }
-      ByteBuffer out = new ByteBuffer();
-      if (under != null) {
-        out.append(PdfContents.SAVESTATE);
-        applyRotation(pageN, out);
-        out.append(under.getInternalBuffer());
-        out.append(PdfContents.RESTORESTATE);
-      }
-      if (over != null) {
-        out.append(PdfContents.SAVESTATE);
-      }
-      PdfStream stream = new PdfStream(out.toByteArray());
-      stream.flateCompress(cstp.getCompressionLevel());
-      PdfIndirectReference ref1 = cstp.addToBody(stream).getIndirectReference();
-      ar.addFirst(ref1);
-      out.reset();
-      if (over != null) {
-        out.append(' ');
-        out.append(PdfContents.RESTORESTATE);
-        out.append(PdfContents.SAVESTATE);
-        applyRotation(pageN, out);
-        out.append(over.getInternalBuffer());
-        out.append(PdfContents.RESTORESTATE);
-        stream = new PdfStream(out.toByteArray());
+
+      try (
+        ByteBuffer out = new ByteBuffer();
+      ) {
+        if (under != null) {
+          out.append(PdfContents.SAVESTATE);
+          applyRotation(pageN, out);
+          out.append(under.getInternalBuffer());
+          out.append(PdfContents.RESTORESTATE);
+        }
+        if (over != null) {
+          out.append(PdfContents.SAVESTATE);
+        }
+        PdfStream stream = new PdfStream(out.toByteArray());
         stream.flateCompress(cstp.getCompressionLevel());
-        ar.add(cstp.addToBody(stream).getIndirectReference());
+        PdfIndirectReference ref1 = cstp.addToBody(stream).getIndirectReference();
+        ar.addFirst(ref1);
+        out.reset();
+        if (over != null) {
+          out.append(' ');
+          out.append(PdfContents.RESTORESTATE);
+          out.append(PdfContents.SAVESTATE);
+          applyRotation(pageN, out);
+          out.append(over.getInternalBuffer());
+          out.append(PdfContents.RESTORESTATE);
+          stream = new PdfStream(out.toByteArray());
+          stream.flateCompress(cstp.getCompressionLevel());
+          ar.add(cstp.addToBody(stream).getIndirectReference());
+        }
+        pageN.put(PdfName.RESOURCES, pageResources.getResources());
       }
-      pageN.put(PdfName.RESOURCES, pageResources.getResources());
     }
 
     void applyRotation(PdfDictionary pageN, ByteBuffer out) {
@@ -701,12 +702,12 @@ public class PdfCopy extends PdfWriter {
       cstp.fieldArray.add(ref);
     }
 
-    private void expandFields(PdfFormField field, ArrayList allAnnots) {
+    private void expandFields(PdfFormField field, ArrayList<? super PdfFormField> allAnnots) {
       allAnnots.add(field);
-      ArrayList kids = field.getKids();
+      ArrayList<PdfFormField> kids = field.getKids();
       if (kids != null) {
         for (int k = 0; k < kids.size(); ++k) {
-          expandFields((PdfFormField) kids.get(k), allAnnots);
+          expandFields(kids.get(k), allAnnots);
         }
       }
     }

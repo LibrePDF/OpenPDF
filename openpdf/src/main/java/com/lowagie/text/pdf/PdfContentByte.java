@@ -56,19 +56,17 @@ import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.lowagie.text.Annotation;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Image;
 import com.lowagie.text.ImgJBIG2;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.exceptions.IllegalPdfSyntaxException;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfXConformanceImp;
@@ -184,19 +182,19 @@ public class PdfContentByte {
     /** This is the GraphicState in use */
     protected GraphicState state = new GraphicState();
 
-    private static Map<PdfName, String> abrev = new HashMap<>();
     /** The list were we save/restore the state */
     protected List<GraphicState> stateList = new ArrayList<>();
 
     /** The separator between commands.
      */
     protected int separator = '\n';
-    
+
     private int mcDepth = 0;
     private boolean inText = false;
     /** The list were we save/restore the layer depth */
     protected List<Integer> layerDepth;
 
+    private static Map<PdfName, String> abrev = new HashMap<>();
     static {
         abrev.put(PdfName.BITSPERCOMPONENT, "/BPC ");
         abrev.put(PdfName.COLORSPACE, "/CS ");
@@ -789,7 +787,7 @@ public class PdfContentByte {
         content.append(x).append(' ').append(y).append(' ').append(w).append(' ').append(h).append(" re").append_i(separator);
     }
 
-    private boolean compareColors(Color c1, Color c2) {
+    private static boolean compareColors(Color c1, Color c2) {
         if (c1 == null && c2 == null)
             return true;
         if (c1 == null || c2 == null)
@@ -1181,8 +1179,7 @@ public class PdfContentByte {
                             pimage.put(PdfName.DECODEPARMS, decodeparms);
                         }
                     }
-                    for (Iterator it = pimage.getKeys().iterator(); it.hasNext();) {
-                        PdfName key = (PdfName)it.next();
+                    for (PdfName key :pimage.getKeys()) {
                         PdfObject value = pimage.get(key);
                         String s = abrev.get(key);
                         if (s == null)
@@ -1438,13 +1435,13 @@ public class PdfContentByte {
         showText2(text);
         content.append("Tj").append_i(separator);
     }
-    
+
     public void showText(GlyphVector glyphVector) {
         byte[] b = state.fontDetails.convertToBytes(glyphVector);
         escapeString(b, content);
         content.append("Tj").append_i(separator);
     }
-    
+
     /**
      * Constructs a kern array for a text in a certain font
      * @param text the text
@@ -1603,9 +1600,14 @@ public class PdfContentByte {
      * @return an escaped <CODE>byte</CODE> array
      */
     static byte[] escapeString(byte[] b) {
-        ByteBuffer content = new ByteBuffer();
-        escapeString(b, content);
-        return content.toByteArray();
+        try (
+            ByteBuffer content = new ByteBuffer();
+        ) {
+            escapeString(b, content);
+            return content.toByteArray();
+        } catch(IOException ex) {
+            return null;
+        }
     }
 
     /**
@@ -2481,7 +2483,7 @@ public class PdfContentByte {
         if (state.fontDetails == null)
             throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         content.append("[");
-        List arrayList = text.getArrayList();
+        List<Object> arrayList = text.getArrayList();
         boolean lastWasNumber = false;
         for (Object obj : arrayList) {
             if (obj instanceof String) {
@@ -3027,7 +3029,7 @@ public class PdfContentByte {
         PdfDictionary dict = new PdfDictionary();
         beginMarkedContentSequence(struc, dict);
     }
-    
+
     public void beginMarkedContentSequence(PdfStructureElement struc, PdfDictionary dict) {
         PdfObject obj = struc.get(PdfName.K);
         int mark = pdf.getMarkPoint();
@@ -3122,12 +3124,12 @@ public class PdfContentByte {
     public void beginMarkedContentSequence(PdfName tag) {
         beginMarkedContentSequence(tag, null, false);
     }
-    
+
     /**
      * Checks for any dangling state: Mismatched save/restore state, begin/end text,
      * begin/end layer, or begin/end marked content sequence.
      * If found, this function will throw.  This function is called automatically
-     * during a reset() (from Document.newPage() for example), and before writing 
+     * during a reset() (from Document.newPage() for example), and before writing
      * itself out in toPdf().
      * One possible cause: not calling myPdfGraphics2D.dispose() will leave dangling
      *                     saveState() calls.

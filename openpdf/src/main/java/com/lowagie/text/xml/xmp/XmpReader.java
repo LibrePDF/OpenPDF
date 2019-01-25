@@ -56,7 +56,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.lowagie.text.ExceptionConverter;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -65,7 +64,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.xml.XmlDomWriter;
 
 /**
@@ -77,13 +76,13 @@ import com.lowagie.text.xml.XmlDomWriter;
 public class XmpReader {
 
     private Document domDocument;
-    
+
     /**
      * Constructs an XMP reader
      * @param    bytes    the XMP content
-     * @throws ExceptionConverter 
-     * @throws IOException 
-     * @throws SAXException 
+     * @throws ExceptionConverter
+     * @throws IOException
+     * @throws SAXException
      */
     public XmpReader(byte[] bytes) throws SAXException, IOException {
         try {
@@ -94,7 +93,7 @@ public class XmpReader {
                 @Override
                 public InputSource resolveEntity(String publicId, String systemId) {
                     return new InputSource(new StringReader(""));
-                }            
+                }
             });
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
             domDocument = db.parse(bais);
@@ -102,7 +101,7 @@ public class XmpReader {
             throw new ExceptionConverter(e);
         }
     }
-    
+
     /**
      * Replaces the content of a tag.
      * @param    namespaceURI    the URI of the namespace
@@ -121,8 +120,8 @@ public class XmpReader {
             setNodeText(domDocument, node, value);
         }
         return true;
-    }    
-    
+    }
+
     /**
      * Adds a tag.
      * @param    namespaceURI    the URI of the namespace
@@ -153,7 +152,7 @@ public class XmpReader {
         }
         return false;
     }
-    
+
     /**
      * Sets the text of this node. All the child's node are deleted and a new
      * child text node is created.
@@ -171,24 +170,26 @@ public class XmpReader {
         n.appendChild(domDocument.createTextNode(value));
         return true;
     }
-    
+
     /**
      * Writes the document to a byte array.
      */
     public byte[] serializeDoc() throws IOException {
         XmlDomWriter xw = new XmlDomWriter();
-        ByteArrayOutputStream fout = new ByteArrayOutputStream();
-        xw.setOutput(fout, null);
-        fout.write(XmpWriter.XPACKET_PI_BEGIN.getBytes(StandardCharsets.UTF_8));
-        fout.flush();
-        NodeList xmpmeta = domDocument.getElementsByTagName("x:xmpmeta");
-        xw.write(xmpmeta.item(0));
-        fout.flush();
-        for (int i = 0; i < 20; i++) {
-            fout.write(XmpWriter.EXTRASPACE.getBytes());
+        try (
+            ByteArrayOutputStream fout = new ByteArrayOutputStream();
+        ) {
+            xw.setOutput(fout, null);
+            fout.write(XmpWriter.XPACKET_PI_BEGIN.getBytes(StandardCharsets.UTF_8));
+            fout.flush();
+            NodeList xmpmeta = domDocument.getElementsByTagName("x:xmpmeta");
+            xw.write(xmpmeta.item(0));
+            fout.flush();
+            for (int i = 0; i < 20; i++) {
+                fout.write(XmpWriter.EXTRASPACE.getBytes());
+            }
+            fout.write(XmpWriter.XPACKET_PI_END_W.getBytes());
+            return fout.toByteArray();
         }
-        fout.write(XmpWriter.XPACKET_PI_END_W.getBytes());
-        fout.close();
-        return fout.toByteArray();
     }
 }

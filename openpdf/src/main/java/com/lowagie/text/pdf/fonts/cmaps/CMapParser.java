@@ -31,16 +31,16 @@
 package com.lowagie.text.pdf.fonts.cmaps;
 
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PushbackInputStream;
-import com.lowagie.text.error_messages.MessageLocalization;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * This will parser a CMap stream.
@@ -54,10 +54,10 @@ public class CMapParser
     private static final String BEGIN_CODESPACE_RANGE = "begincodespacerange";
     private static final String BEGIN_BASE_FONT_CHAR = "beginbfchar";
     private static final String BEGIN_BASE_FONT_RANGE = "beginbfrange";
-    
+
     private static final String MARK_END_OF_DICTIONARY = ">>";
     private static final String MARK_END_OF_ARRAY = "]";
-    
+
     private byte[] tokenParserByteBuffer = new byte[512];
 
     /**
@@ -75,110 +75,113 @@ public class CMapParser
      *
      * @throws IOException If there is an error parsing the stream.
      */
-    public CMap parse( InputStream input ) throws IOException
+    public CMap parse(InputStream input) throws IOException
     {
-        PushbackInputStream cmapStream = new PushbackInputStream( input );
-        CMap result = new CMap();
-        Object previousToken = null;
-        Object token = null;
-        while( (token = parseNextToken( cmapStream )) != null )
-        {
-            if( token instanceof Operator )
+        try (
+            PushbackInputStream cmapStream = new PushbackInputStream(input);
+        ) {
+            CMap result = new CMap();
+            Object previousToken = null;
+            Object token = null;
+            while( (token = parseNextToken( cmapStream )) != null )
             {
-                Operator op = (Operator)token;
-                if( op.op.equals( BEGIN_CODESPACE_RANGE ) )
+                if( token instanceof Operator )
                 {
-                    Number cosCount = (Number)previousToken;
-                    for( int j=0; j<cosCount.intValue(); j++ )
+                    Operator op = (Operator)token;
+                    if( op.op.equals( BEGIN_CODESPACE_RANGE ) )
                     {
-                        byte[] startRange = (byte[])parseNextToken( cmapStream );
-                        byte[] endRange = (byte[])parseNextToken( cmapStream );
-                        CodespaceRange range = new CodespaceRange();
-                        range.setStart( startRange );
-                        range.setEnd( endRange );
-                        result.addCodespaceRange( range );
-                    }
-                }
-                else if( op.op.equals( BEGIN_BASE_FONT_CHAR ) )
-                {
-                    Number cosCount = (Number)previousToken;
-                    for( int j=0; j<cosCount.intValue(); j++ )
-                    {
-                        byte[] inputCode = (byte[])parseNextToken( cmapStream );
-                        Object nextToken = parseNextToken( cmapStream );
-                        if( nextToken instanceof byte[] )
+                        Number cosCount = (Number)previousToken;
+                        for( int j=0; j<cosCount.intValue(); j++ )
                         {
-                            byte[] bytes = (byte[])nextToken;
-                            String value = createStringFromBytes( bytes );
-                            result.addMapping( inputCode, value );
-                        }
-                        else if( nextToken instanceof LiteralName )
-                        {
-                            result.addMapping( inputCode, ((LiteralName)nextToken).name );
-                        }
-                        else
-                        {
-                            throw new IOException(MessageLocalization.getComposedMessage("error.parsing.cmap.beginbfchar.expected.cosstring.or.cosname.and.not.1", nextToken));
+                            byte[] startRange = (byte[])parseNextToken( cmapStream );
+                            byte[] endRange = (byte[])parseNextToken( cmapStream );
+                            CodespaceRange range = new CodespaceRange();
+                            range.setStart( startRange );
+                            range.setEnd( endRange );
+                            result.addCodespaceRange( range );
                         }
                     }
-                }
-               else if( op.op.equals( BEGIN_BASE_FONT_RANGE ) )
-                {
-                    Number cosCount = (Number)previousToken;
-                    
-                    for( int j=0; j<cosCount.intValue(); j++ )
+                    else if( op.op.equals( BEGIN_BASE_FONT_CHAR ) )
                     {
-                        byte[] startCode = (byte[])parseNextToken( cmapStream );
-                        byte[] endCode = (byte[])parseNextToken( cmapStream );
-                        Object nextToken = parseNextToken( cmapStream );
-                        List array = null;
-                        byte[] tokenBytes = null;
-                        if( nextToken instanceof List )
+                        Number cosCount = (Number)previousToken;
+                        for( int j=0; j<cosCount.intValue(); j++ )
                         {
-                            array = (List)nextToken;
-                            tokenBytes = (byte[])array.get( 0 );
-                        }
-                        else
-                        {
-                            tokenBytes = (byte[])nextToken;
-                        }
-                        
-                        String value = null;
-                        
-                        int arrayIndex = 0;
-                        boolean done = false;
-                        while( !done )
-                        {
-                            if( compare( startCode, endCode ) >= 0 )
+                            byte[] inputCode = (byte[])parseNextToken( cmapStream );
+                            Object nextToken = parseNextToken( cmapStream );
+                            if( nextToken instanceof byte[] )
                             {
-                                done = true;
+                                byte[] bytes = (byte[])nextToken;
+                                String value = createStringFromBytes( bytes );
+                                result.addMapping( inputCode, value );
                             }
-                            value = createStringFromBytes( tokenBytes );
-                            result.addMapping( startCode, value );
-                            increment( startCode );
-                            
-                            if( array == null )
+                            else if( nextToken instanceof LiteralName )
                             {
-                                increment( tokenBytes );
+                                result.addMapping( inputCode, ((LiteralName)nextToken).name );
                             }
                             else
                             {
-                                arrayIndex++;
-                                if( arrayIndex < array.size() )
+                                throw new IOException(MessageLocalization.getComposedMessage("error.parsing.cmap.beginbfchar.expected.cosstring.or.cosname.and.not.1", nextToken));
+                            }
+                        }
+                    }
+                   else if( op.op.equals( BEGIN_BASE_FONT_RANGE ) )
+                    {
+                        Number cosCount = (Number)previousToken;
+
+                        for( int j=0; j<cosCount.intValue(); j++ )
+                        {
+                            byte[] startCode = (byte[])parseNextToken( cmapStream );
+                            byte[] endCode = (byte[])parseNextToken( cmapStream );
+                            Object nextToken = parseNextToken( cmapStream );
+                            List<byte[]> array = null;
+                            byte[] tokenBytes = null;
+                            if( nextToken instanceof List )
+                            {
+                                array = (List<byte[]>) nextToken;
+                                tokenBytes = array.get(0);
+                            }
+                            else
+                            {
+                                tokenBytes = (byte[])nextToken;
+                            }
+
+                            String value = null;
+
+                            int arrayIndex = 0;
+                            boolean done = false;
+                            while( !done )
+                            {
+                                if( compare( startCode, endCode ) >= 0 )
                                 {
-                                    tokenBytes = (byte[])array.get( arrayIndex );
+                                    done = true;
+                                }
+                                value = createStringFromBytes( tokenBytes );
+                                result.addMapping( startCode, value );
+                                increment( startCode );
+
+                                if( array == null )
+                                {
+                                    increment( tokenBytes );
+                                }
+                                else
+                                {
+                                    arrayIndex++;
+                                    if( arrayIndex < array.size() )
+                                    {
+                                        tokenBytes = array.get( arrayIndex );
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                previousToken = token;
             }
-            previousToken = token;
+            return result;
         }
-        return result;
     }
-    
-    private Object parseNextToken( PushbackInputStream is ) throws IOException
+
+    private Object parseNextToken(PushbackInputStream is) throws IOException
     {
         Object retval = null;
         int nextByte = is.read();
@@ -191,7 +194,7 @@ public class CMapParser
         {
             case '%':
             {
-                //header operations, for now return the entire line 
+                //header operations, for now return the entire line
                 //may need to smarter in the future
                 StringBuffer buffer = new StringBuffer();
                 buffer.append( (char)nextByte );
@@ -203,7 +206,7 @@ public class CMapParser
             {
                 StringBuffer buffer = new StringBuffer();
                 int stringByte = is.read();
-                
+
                 while( stringByte != -1 && stringByte != ')' )
                 {
                     buffer.append( (char)stringByte );
@@ -232,9 +235,9 @@ public class CMapParser
             }
             case '[':
             {
-                List list = new ArrayList();
-                
-                Object nextToken = parseNextToken( is ); 
+                List<Object> list = new ArrayList<>();
+
+                Object nextToken = parseNextToken( is );
                 while( nextToken != MARK_END_OF_ARRAY )
                 {
                     list.add( nextToken );
@@ -248,9 +251,9 @@ public class CMapParser
                 int theNextByte = is.read();
                 if( theNextByte == '<' )
                 {
-                    Map result = new HashMap();
+                    Map<String,Object> result = new HashMap<>();
                     //we are reading a dictionary
-                    Object key = parseNextToken( is ); 
+                    Object key = parseNextToken( is );
                     while( key instanceof LiteralName && key != MARK_END_OF_DICTIONARY )
                     {
                         Object value = parseNextToken( is );
@@ -262,7 +265,7 @@ public class CMapParser
                 else
                 {
                     //won't read more than 512 bytes
-                    
+
                     int multiplyer = 16;
                     int bufferIndex = -1;
                     while( theNextByte != -1 && theNextByte != '>' )
@@ -314,7 +317,7 @@ public class CMapParser
             {
                 StringBuffer buffer = new StringBuffer();
                 int stringByte = is.read();
-                
+
                 while( !isWhitespaceOrEOF( stringByte ) )
                 {
                     buffer.append( (char)stringByte );
@@ -342,7 +345,7 @@ public class CMapParser
                 StringBuffer buffer = new StringBuffer();
                 buffer.append( (char)nextByte );
                 nextByte = is.read();
-                
+
                 while( !isWhitespaceOrEOF( nextByte ) &&
                         (Character.isDigit( (char)nextByte )||
                          nextByte == '.' ) )
@@ -358,7 +361,7 @@ public class CMapParser
                 }
                 else
                 {
-                    retval = new Integer( buffer.toString() );
+                    retval = Integer.valueOf( buffer.toString() );
                 }
                 break;
             }
@@ -367,21 +370,21 @@ public class CMapParser
                 StringBuffer buffer = new StringBuffer();
                 buffer.append( (char)nextByte );
                 nextByte = is.read();
-                
+
                 while( !isWhitespaceOrEOF( nextByte ) )
                 {
                     buffer.append( (char)nextByte );
                     nextByte = is.read();
                 }
-                retval = new Operator( buffer.toString() );                        
-                
+                retval = new Operator( buffer.toString() );
+
                 break;
             }
         }
         return retval;
     }
-    
-    private void readUntilEndOfLine( InputStream is, StringBuffer buf ) throws IOException
+
+    private static void readUntilEndOfLine(InputStream is, StringBuffer buf) throws IOException
     {
         int nextByte = is.read();
         while( nextByte != -1 && nextByte != 0x0D && nextByte != 0x0A )
@@ -390,19 +393,19 @@ public class CMapParser
             nextByte = is.read();
         }
     }
-    
-    private boolean isWhitespaceOrEOF( int aByte )
-    {
-        return aByte == -1 || aByte == 0x20 || aByte == 0x0D || aByte == 0x0A; 
-    }
-    
 
-    private void increment( byte[] data )
+    private static boolean isWhitespaceOrEOF(int aByte)
+    {
+        return aByte == -1 || aByte == 0x20 || aByte == 0x0D || aByte == 0x0A;
+    }
+
+
+    private void increment(byte[] data)
     {
         increment( data, data.length-1 );
     }
 
-    private void increment( byte[] data, int position )
+    private void increment(byte[] data, int position)
     {
         if( position > 0 && (data[position]+256)%256 == 255 )
         {
@@ -414,8 +417,8 @@ public class CMapParser
             data[position] = (byte)(data[position]+1);
         }
     }
-    
-    private String createStringFromBytes( byte[] bytes ) throws IOException
+
+    private static String createStringFromBytes(byte[] bytes)
     {
         String retval = null;
         if( bytes.length == 1 )
@@ -429,7 +432,7 @@ public class CMapParser
         return retval;
     }
 
-    private int compare( byte[] first, byte[] second )
+    private static int compare(byte[] first, byte[] second)
     {
         int retval = 1;
         boolean done = false;
@@ -452,7 +455,7 @@ public class CMapParser
         }
         return retval;
     }
-    
+
     /**
      * Internal class.
      */
@@ -464,7 +467,7 @@ public class CMapParser
             name = theName;
         }
     }
-    
+
     /**
      * Internal class.
      */
@@ -476,12 +479,12 @@ public class CMapParser
             op = theOp;
         }
     }
-    
+
     /**
      * A simple class to test parsing of cmap files.
-     * 
+     *
      * @param args Some command line arguments.
-     * 
+     *
      * @throws Exception If there is an error parsing the file.
      */
     public static void main( String[] args ) throws Exception

@@ -50,11 +50,13 @@
 package com.lowagie.text.pdf;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
+import com.lowagie.text.ComposedElement;
 import com.lowagie.text.Element;
 import com.lowagie.text.Image;
 import com.lowagie.text.List;
@@ -84,11 +86,11 @@ import com.lowagie.text.Rectangle;
 public class PdfCell extends Rectangle {
 
     // membervariables
-    
+
     /**
      * These are the PdfLines in the Cell.
      */
-    private ArrayList lines;
+    private ArrayList<PdfLine> lines;
 
     /**
      * These are the PdfLines in the Cell.
@@ -98,7 +100,7 @@ public class PdfCell extends Rectangle {
     /**
      * These are the Images in the Cell.
      */
-    private ArrayList images;
+    private Collection<Image> images;
 
     /**
      * This is the leading of the lines.
@@ -158,7 +160,7 @@ public class PdfCell extends Rectangle {
     private PdfLine lastLine;
 
     // constructors
-    
+
     /**
      * Constructs a <CODE>PdfCell</CODE>-object.
      *
@@ -184,11 +186,8 @@ public class PdfCell extends Rectangle {
         this.useBorderPadding = cell.isUseBorderPadding();
 
         // initialization of some parameters
-        PdfChunk chunk;
-        Element element;
-        PdfChunk overflow;
-        lines = new ArrayList();
-        images = new ArrayList();
+        lines = new ArrayList<>();
+        images = new ArrayList<>();
         leading = cell.getLeading();
         int alignment = cell.getHorizontalAlignment();
         left += cellspacing + cellpadding;
@@ -202,11 +201,10 @@ public class PdfCell extends Rectangle {
 
         rowspan = cell.getRowspan();
 
-        ArrayList allActions;
+        ArrayList<PdfAction> allActions;
         int aCounter;
         // we loop over all the elements of the cell
-        for (Iterator i = cell.getElements(); i.hasNext();) {
-            element = (Element) i.next();
+        for (Element element : cell.getChildren()) {
             switch (element.type()) {
                 case Element.JPEG:
                 case Element.JPEG2000:
@@ -227,7 +225,7 @@ public class PdfCell extends Rectangle {
                     break;
                     // if the element is something else
                 default:
-                    allActions = new ArrayList();
+                    allActions = new ArrayList<>();
                     processActions(element, null, allActions);
                     aCounter = 0;
 
@@ -246,15 +244,15 @@ public class PdfCell extends Rectangle {
                         line = new PdfLine(currentLeft, currentRight, alignment, currentLineLeading);
                     }
                     // we loop over the chunks
-                    ArrayList chunks = element.getChunks();
+                    ArrayList<Chunk> chunks = element.getChunks();
                     if (chunks.isEmpty()) {
                        addLine(line); // add empty line - all cells need some lines even if they are empty
                        line = new PdfLine(currentLeft, currentRight, alignment, currentLineLeading);
                     }
                     else {
-                        for (Iterator j = chunks.iterator(); j.hasNext();) {
-                            Chunk c = (Chunk) j.next();
-                            chunk = new PdfChunk(c, (PdfAction) (allActions.get(aCounter++)));
+                        for (Chunk c : chunks) {
+                            PdfChunk chunk = new PdfChunk(c, allActions.get(aCounter++));
+                            PdfChunk overflow;
                             while ((overflow = line.add(chunk)) != null) {
                                 addLine(line);
                                 line = new PdfLine(currentLeft, currentRight, alignment, currentLineLeading);
@@ -269,6 +267,7 @@ public class PdfCell extends Rectangle {
                         case Element.CHAPTER:
                             line.resetAlignment();
                             flushCurrentLine();
+                            break;
                     }
             }
         }
@@ -281,7 +280,7 @@ public class PdfCell extends Rectangle {
                 String more = cell.getShowTruncation();
                 if (more != null && more.length() > 0) {
                     // Denote that the content has been truncated
-                    lastLine = (PdfLine) lines.get(lines.size() - 1);
+                    lastLine = lines.get(lines.size() - 1);
                     if (lastLine.size() >= 0) {
                         PdfChunk lastChunk = lastLine.getChunk(lastLine.size() - 1);
                         float moreWidth = new PdfChunk(more, lastChunk).width();
@@ -303,7 +302,7 @@ public class PdfCell extends Rectangle {
 
         // adjust first line height so that it touches the top
         if (!lines.isEmpty()) {
-            firstLine = (PdfLine) lines.get(0);
+            firstLine = lines.get(0);
             float firstLineRealHeight = firstLineRealHeight();
             contentHeight -= firstLine.height();
             firstLine.height = firstLineRealHeight;
@@ -318,20 +317,18 @@ public class PdfCell extends Rectangle {
     }
 
     private void addList(List list, float left, float right, int alignment) {
-        PdfChunk chunk;
-        PdfChunk overflow;
-        ArrayList allActions = new ArrayList();
+        ArrayList<PdfAction> allActions = new ArrayList<>();
         processActions(list, null, allActions);
         int aCounter = 0;
-        for (Iterator it = list.getItems().iterator(); it.hasNext();) {
-            Element ele = (Element)it.next();
+        for (Element ele : list.getChildren()) {
             switch (ele.type()) {
                 case Element.LISTITEM:
                     ListItem item = (ListItem)ele;
                     line = new PdfLine(left + item.getIndentationLeft(), right, alignment, item.getLeading());
                     line.setListItem(item);
-                    for (Iterator j = item.getChunks().iterator(); j.hasNext();) {
-                        chunk = new PdfChunk((Chunk) j.next(), (PdfAction) (allActions.get(aCounter++)));
+                    for (Chunk c : item.getChunks()) {
+                        PdfChunk chunk = new PdfChunk(c, allActions.get(aCounter++));
+                        PdfChunk overflow;
                         while ((overflow = line.add(chunk)) != null) {
                             addLine(line);
                             line = new PdfLine(left + item.getIndentationLeft(), right, alignment, item.getLeading());
@@ -346,6 +343,7 @@ public class PdfCell extends Rectangle {
                     List sublist = (List)ele;
                     addList(sublist, left + sublist.getIndentationLeft(), right, alignment);
                     break;
+                default:
             }
         }
     }
@@ -426,7 +424,7 @@ public class PdfCell extends Rectangle {
     public float getBottom() {
         return super.getBottom(cellspacing);
     }
-    
+
     // methods
 
     private void addLine(PdfLine line) {
@@ -437,11 +435,11 @@ public class PdfCell extends Rectangle {
     }
 
     private PdfLine removeLine(int index) {
-        PdfLine oldLine = (PdfLine) lines.remove(index);
+        PdfLine oldLine = lines.remove(index);
         contentHeight -= oldLine.height();
         if (index == 0) {
             if (!lines.isEmpty()) {
-                firstLine = (PdfLine) lines.get(0);
+                firstLine = lines.get(0);
                 float firstLineRealHeight = firstLineRealHeight();
                 contentHeight -= firstLine.height();
                 firstLine.height = firstLineRealHeight;
@@ -562,22 +560,22 @@ public class PdfCell extends Rectangle {
      * @return    an <CODE>ArrayList</CODE> of <CODE>PdfLine</CODE>s
      */
 
-    public ArrayList getLines(float top, float bottom) {
+    public ArrayList<PdfLine> getLines(float top, float bottom) {
         float lineHeight;
         float currentPosition = Math.min(getTop(), top);
         setTop(currentPosition + cellspacing);
-        ArrayList result = new ArrayList();
+        ArrayList<PdfLine> result = new ArrayList<>();
 
         // if the bottom of the page is higher than the top of the cell: do nothing
         if (getTop() < bottom) {
             return result;
         }
-        
+
         // we loop over the lines
         int size = lines.size();
         boolean aboveBottom = true;
         for (int i = 0; i < size && aboveBottom; i++) {
-            line = (PdfLine) lines.get(i);
+            line = lines.get(i);
             lineHeight = line.height();
             currentPosition -= lineHeight;
             // if the currentPosition is higher than the bottom, we add the line to the result
@@ -591,7 +589,7 @@ public class PdfCell extends Rectangle {
         float difference = 0f;
         if (!header) {
             if (aboveBottom) {
-                lines = new ArrayList();
+                lines = new ArrayList<>();
                 contentHeight = 0f;
             } else {
                 size = result.size();
@@ -602,9 +600,7 @@ public class PdfCell extends Rectangle {
             }
         }
         if (difference > 0) {
-            Image image;
-            for (Iterator i = images.iterator(); i.hasNext();) {
-                image = (Image) i.next();
+            for (Image image : images) {
                 image.setAbsolutePosition(image.getAbsoluteX(), image.getAbsoluteY() - difference - leading);
             }
         }
@@ -621,20 +617,18 @@ public class PdfCell extends Rectangle {
      * @return    an <CODE>ArrayList</CODE> of <CODE>Image</CODE>s
      */
 
-    public ArrayList getImages(float top, float bottom) {
-
+    public ArrayList<Image> getImages(float top, float bottom) {
         // if the bottom of the page is higher than the top of the cell: do nothing
         if (getTop() < bottom) {
-            return new ArrayList();
+            return new ArrayList<>();
         }
         top = Math.min(getTop(), top);
         // initializations
-        Image image;
         float height;
-        ArrayList result = new ArrayList();
+        ArrayList<Image> result = new ArrayList<>();
         // we loop over the images
-        for (Iterator i = images.iterator(); i.hasNext() && !header;) {
-            image = (Image) i.next();
+        for (Iterator<Image> i = images.iterator(); i.hasNext() && !header;) {
+        	Image image = i.next();
             height = image.getAbsoluteY();
             // if the currentPosition is higher than the bottom, we add the line to the result
             if (top - height > (bottom + cellpadding)) {
@@ -693,12 +687,8 @@ public class PdfCell extends Rectangle {
      * @return    a value
      */
     private float remainingLinesHeight() {
-        if (lines.isEmpty()) return 0;
         float result = 0;
-        int size = lines.size();
-        PdfLine line;
-        for (int i = 0; i < size; i++) {
-            line = (PdfLine) lines.get(i);
+        for (PdfLine line : lines) {
             result += line.height();
         }
         return result;
@@ -712,15 +702,14 @@ public class PdfCell extends Rectangle {
 
     public float remainingHeight() {
         float result = 0f;
-        for (Iterator i = images.iterator(); i.hasNext();) {
-            Image image = (Image) i.next();
+        for (Image image : images) {
             result += image.getScaledHeight();
         }
         return remainingLinesHeight() + cellspacing + 2 * cellpadding + result;
     }
-    
+
     // methods to retrieve membervariables
-    
+
     /**
      * Gets the leading of a cell.
      *
@@ -778,14 +767,13 @@ public class PdfCell extends Rectangle {
      * @param allActions
      */
 
-    protected void processActions(Element element, PdfAction action, ArrayList allActions) {
+    protected void processActions(Element element, PdfAction action, ArrayList<PdfAction> allActions) {
         if (element.type() == Element.ANCHOR) {
             String url = ((Anchor) element).getReference();
             if (url != null) {
                 action = new PdfAction(url);
             }
         }
-        Iterator i;
         switch (element.type()) {
             case Element.PHRASE:
             case Element.SECTION:
@@ -793,17 +781,13 @@ public class PdfCell extends Rectangle {
             case Element.CHAPTER:
             case Element.LISTITEM:
             case Element.PARAGRAPH:
-                for (i = ((ArrayList) element).iterator(); i.hasNext();) {
-                    processActions((Element) i.next(), action, allActions);
+            case Element.LIST:
+                for (Element e : ((ComposedElement<Element>) element).getChildren()) {
+                    processActions(e, action, allActions);
                 }
                 break;
             case Element.CHUNK:
                 allActions.add(action);
-                break;
-            case Element.LIST:
-                for (i = ((List) element).getItems().iterator(); i.hasNext();) {
-                    processActions((Element) i.next(), action, allActions);
-                }
                 break;
             default:
                 int n = element.getChunks().size();

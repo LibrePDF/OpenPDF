@@ -57,14 +57,13 @@ import java.util.StringTokenizer;
 import com.lowagie.text.pdf.fonts.FontsResourceAnchor;
 
 public class GlyphList {
-
-  private static HashMap<Integer, String> unicode2names = new HashMap<>();
+  private static HashMap<Object, String> unicode2names = new HashMap<>();
   private static HashMap<String, int[]> names2unicode = new HashMap<>();
 
   static {
-    InputStream is = null;
-    try {
-      is = BaseFont.getResourceStream(BaseFont.RESOURCE_PATH + "glyphlist.txt", FontsResourceAnchor.class.getClassLoader());
+    try (
+      InputStream is = BaseFont.getResourceStream(BaseFont.RESOURCE_PATH + "glyphlist.txt", FontsResourceAnchor.class.getClassLoader());
+    ) {
       if (is == null) {
         String msg = "glyphlist.txt not found as resource. (It must exist as resource in the package com.lowagie.text.pdf.fonts)";
         throw new Exception(msg);
@@ -78,8 +77,7 @@ public class GlyphList {
         }
         out.write(buf, 0, size);
       }
-      is.close();
-      is = null;
+
       String s = PdfEncodings.convertToString(out.toByteArray(), null);
       StringTokenizer tk = new StringTokenizer(s, "\r\n");
       while (tk.hasMoreTokens()) {
@@ -98,20 +96,12 @@ public class GlyphList {
           continue;
         }
         hex = t2.nextToken();
-        Integer num = Integer.valueOf(hex, 16);
-        unicode2names.put(num, name);
+        int num = Integer.parseInt(hex, 16);
+        unicode2names.put(Integer.valueOf(num), name);
         names2unicode.put(name, new int[]{ num });
       }
     } catch (Exception e) {
       System.err.println("glyphlist.txt loading error: " + e.getMessage());
-    } finally {
-      if (is != null) {
-        try {
-          is.close();
-        } catch (Exception e) {
-          // empty on purpose
-        }
-      }
     }
   }
 
@@ -120,6 +110,6 @@ public class GlyphList {
   }
 
   public static String unicodeToName(int num) {
-    return unicode2names.get(num);
+    return unicode2names.get(Integer.valueOf(num));
   }
 }

@@ -49,6 +49,10 @@
 package com.lowagie.text.pdf.parser;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PRStream;
@@ -62,14 +66,9 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.ListIterator;
-
 /**
  * Extracts text from a PDF file.
- * 
+ *
  * @since 2.1.4
  */
 public class PdfTextExtractor {
@@ -86,7 +85,7 @@ public class PdfTextExtractor {
     /**
      * Creates a new Text Extractor object, using a {@link TextAssembler} as the
      * render listener
-     * 
+     *
      * @param reader
      *            the reader with the PDF
      */
@@ -97,7 +96,7 @@ public class PdfTextExtractor {
     /**
      * Creates a new Text Extractor object, using a {@link TextAssembler} as the
      * render listener
-     * 
+     *
      * @param reader
      *            the reader with the PDF
      * @param usePdfMarkupElements
@@ -109,7 +108,7 @@ public class PdfTextExtractor {
 
     /**
      * Creates a new Text Extractor object.
-     * 
+     *
      * @param reader
      *            the reader with the PDF
      * @param renderListener
@@ -123,7 +122,7 @@ public class PdfTextExtractor {
 
     /**
      * Gets the content bytes of a page.
-     * 
+     *
      * @param pageNum
      *            the 1-based page number of page you want get the content
      *            stream from
@@ -146,7 +145,7 @@ public class PdfTextExtractor {
     /**
      * Gets the content bytes from a content object, which may be a reference a
      * stream or an array.
-     * 
+     *
      * @param contentObject
      *            the object to read bytes from
      * @return the content bytes
@@ -171,10 +170,7 @@ public class PdfTextExtractor {
             // because
             // processContent() resets state.
             final ByteArrayOutputStream allBytes = new ByteArrayOutputStream();
-            final PdfArray contentArray = (PdfArray) contentObject;
-            final ListIterator<PdfObject> iter = contentArray.listIterator();
-            while (iter.hasNext()) {
-                final PdfObject element = iter.next();
+            for(PdfObject element : (PdfArray) contentObject) {
                 allBytes.write(getContentBytesFromContentObject(element));
             }
             result = allBytes.toByteArray();
@@ -189,7 +185,7 @@ public class PdfTextExtractor {
 
     /**
      * Gets the text from a page.
-     * 
+     *
      * @param page
      *            the 1-based page number of page
      * @return a String with the content as plain text (without PDF syntax)
@@ -202,7 +198,7 @@ public class PdfTextExtractor {
 
     /**
      * get the text from the page
-     * 
+     *
      * @param page
      *            page number we are interested in
      * @param useContainerMarkup
@@ -216,7 +212,7 @@ public class PdfTextExtractor {
             throws IOException {
         PdfDictionary pageDict = reader.getPageN(page);
         if (pageDict == null) {
-            return ""; 
+            return "";
         }
         PdfDictionary resources = pageDict.getAsDict(PdfName.RESOURCES);
 
@@ -230,7 +226,7 @@ public class PdfTextExtractor {
 
     /**
      * Processes PDF syntax
-     * 
+     *
      * @param contentBytes
      *            the bytes of a content stream
      * @param resources
@@ -245,8 +241,8 @@ public class PdfTextExtractor {
         try {
             PdfContentParser ps = new PdfContentParser(new PRTokeniser(
                     contentBytes));
-            ArrayList<PdfObject> operands = new ArrayList<PdfObject>();
-            while (ps.parse(operands).size() > 0) {
+            List<PdfObject> operands;
+            while ((operands = ps.parse()).size() > 0) {
                 PdfLiteral operator = (PdfLiteral) operands
                         .get(operands.size() - 1);
                 handler.invokeOperator(operator, operands, resources);

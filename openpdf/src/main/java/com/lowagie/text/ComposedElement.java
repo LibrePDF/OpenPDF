@@ -1,7 +1,7 @@
 /*
- * $Id: PdfPTableEventForwarder.java 3373 2008-05-12 16:21:24Z xlv $
+ * $Id: Element.java 3672 2009-02-01 15:32:09Z blowagie $
  *
- * Copyright 2005 Bruno Lowagie
+ * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -47,41 +47,84 @@
  * http://www.lowagie.com/iText/
  */
 
-package com.lowagie.text.pdf.events;
+package com.lowagie.text;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfPTableEvent;
+import java.util.Collection;
 
 /**
- * If you want to add more than one page event to a PdfPTable,
- * you have to construct a PdfPTableEventForwarder, add the
- * different events to this object and add the forwarder to
- * the PdfWriter.
+ * Interface for composed elements.
+ *
+ * @see Anchor
+ * @see Cell
+ * @see Chapter
+ * @see Paragraph
+ * @see Phrase
+ * @see Section
  */
 
-public class PdfPTableEventForwarder implements PdfPTableEvent {
-
-    /** ArrayList containing all the PageEvents that have to be executed. */
-    protected List<PdfPTableEvent> events = new ArrayList<>();
+public interface ComposedElement<E extends Element> extends Element {
+    /**
+     * Gets all the children of the current element.
+     *
+     * @return    an <CODE> ArrayList<Element></CODE>
+     */
+    public Collection<? extends E> getChildren();
 
     /**
-     * Add a page event to the forwarder.
-     * @param event an event that has to be added to the forwarder.
+     * Gets the size of the list.
+     *
+     * @return    a <CODE>size</CODE>
      */
-    public void addTableEvent(PdfPTableEvent event) {
-        events.add(event);
+    default int size() {
+        return getChildren().size();
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPTableEvent#tableLayout(com.lowagie.text.pdf.PdfPTable, float[][], float[], int, int, com.lowagie.text.pdf.PdfContentByte[])
+     * Returns <CODE>true</CODE> if the list is empty.
+     *
+     * @return <CODE>true</CODE> if the list is empty
      */
-    public void tableLayout(PdfPTable table, float[][] widths, float[] heights, int headerRows, int rowStart, PdfContentByte[] canvases) {
-        for (PdfPTableEvent event : events) {
-            event.tableLayout(table, widths, heights, headerRows, rowStart, canvases);
+    default boolean isEmpty() {
+        return getChildren().isEmpty();
+    }
+
+    /**
+     * Gets all the chunks in this element.
+     *
+     * @return    an <CODE>ArrayList</CODE>
+     */
+    default ArrayList<Chunk> getChunks() {
+        return ComposedElement.getChunks(getChildren());
+    }
+
+    /**
+     * Processes the element by adding it (or the different parts) to an
+     * <CODE>ElementListener</CODE>.
+     *
+     * @param    listener        the <CODE>ElementListener</CODE>
+     * @return    <CODE>true</CODE> if the element was processed successfully
+     */
+    default boolean process(ElementListener listener) {
+        return ComposedElement.process(listener, getChildren());
+    }
+
+    public static ArrayList<Chunk> getChunks(Iterable<? extends Element> elements) {
+        ArrayList<Chunk> tmp = new ArrayList<>();
+        for(Element e : elements) {
+            tmp.addAll(e.getChunks());
+        }
+        return tmp;
+    }
+
+    public static boolean process(ElementListener listener, Iterable<? extends Element> elements) {
+        try {
+            if(elements!=null) for (Element e : elements) {
+                listener.add(e);
+            }
+            return true;
+        } catch(DocumentException de) {
+            return false;
         }
     }
 }

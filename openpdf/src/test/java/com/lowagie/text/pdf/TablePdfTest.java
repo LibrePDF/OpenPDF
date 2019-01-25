@@ -1,17 +1,17 @@
 package com.lowagie.text.pdf;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Phrase;
-import org.junit.jupiter.api.Test;
 
 public class TablePdfTest {
 
     @Test
-    void testTableSpacingPercentage() throws FileNotFoundException,
-            DocumentException {
+    void testTableSpacingPercentage() throws IOException, DocumentException {
         Document document = PdfTestBase
                 .createPdf("testTableSpacingPercentage.pdf");
         document.setMargins(72, 72, 72, 72);
@@ -32,10 +32,9 @@ public class TablePdfTest {
     }
 
     @Test
-    void testTableArrayOutOfBoundsSpan() throws FileNotFoundException,
+    void testTableArrayOutOfBoundsSpan() throws IOException,
             DocumentException {
-        Document document = PdfTestBase
-                .createPdf("testTableArrayOutOfBoundsSpan.pdf");
+        Document document = PdfTestBase.createPdf("testTableArrayOutOfBoundsSpan.pdf");
         document.open();
         PdfPTable table = new PdfPTable(2);
         table.setComplete(false);
@@ -87,8 +86,7 @@ public class TablePdfTest {
     }
 
     @Test
-    void testCreateTable() throws FileNotFoundException,
-            DocumentException {
+    void testCreateTable() throws IOException, DocumentException {
         // create document
         Document document = PdfTestBase.createPdf("testCreateTable.pdf");
         try {
@@ -116,7 +114,7 @@ public class TablePdfTest {
 
     }
 
-    private PdfPTable createPdfTable(int numberOfColumns)
+    private static PdfPTable createPdfTable(int numberOfColumns)
             throws DocumentException {
 
         PdfPTable table = new PdfPTable(numberOfColumns);

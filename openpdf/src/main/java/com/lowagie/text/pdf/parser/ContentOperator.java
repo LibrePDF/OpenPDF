@@ -46,20 +46,20 @@
  */
 package com.lowagie.text.pdf.parser;
 
+import java.util.List;
+
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfObject;
 
-import java.util.ArrayList;
-
 /**
  * Interface implemented by a series of content operators
- * 
+ *
  * @since 2.1.4
  */
 public interface ContentOperator {
     /**
      * Invokes a content operator.
-     * 
+     *
      * @param operands
      *            the operands that come with the operator
      * @param handler
@@ -67,7 +67,7 @@ public interface ContentOperator {
      * @param resources
      *            Pdf Resources found in the file containing the stream.
      */
-    void invoke(ArrayList<PdfObject> operands,
+    void invoke(List<PdfObject> operands,
                 PdfContentStreamHandler handler, PdfDictionary resources);
 
     /**
@@ -75,5 +75,4 @@ public interface ContentOperator {
      *         stream
      */
     String getOperatorName();
-
 }

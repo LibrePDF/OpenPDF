@@ -60,34 +60,32 @@ import java.util.Properties;
  * the MarkedObject functionality.
  */
 
-public class MarkedObject implements Element {
-
+public class MarkedObject<E extends Element> implements Element {
     /** The element that is wrapped in a MarkedObject. */
-    protected Element element;
+    protected E element;
 
     /** Contains extra markupAttributes */
     protected Properties markupAttributes = new Properties();
-        
+
     /**
      * This constructor is for internal use only.
      */
     protected MarkedObject() {
-        element = null;
     }
-    
+
     /**
      * Creates a MarkedObject.
      */
-    public MarkedObject(Element element) {
+    public MarkedObject(E element) {
         this.element = element;
     }
-    
+
     /**
      * Gets all the chunks in this element.
      *
      * @return  an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
+    public ArrayList<Chunk> getChunks() {
         return element.getChunks();
     }
 
@@ -106,7 +104,7 @@ public class MarkedObject implements Element {
             return false;
         }
     }
-    
+
     /**
      * Gets the type of the text element.
      *
@@ -115,7 +113,7 @@ public class MarkedObject implements Element {
     public int type() {
         return MARKED;
     }
-    
+
     /**
      * @see com.lowagie.text.Element#isContent()
      * @since    iText 2.0.8
@@ -139,12 +137,11 @@ public class MarkedObject implements Element {
     public Properties getMarkupAttributes() {
         return markupAttributes;
     }
-    
+
     /**
      * Adds one markup attribute.
      */
     public void setMarkupAttribute(String key, String value) {
         markupAttributes.setProperty(key, value);
     }
-
 }

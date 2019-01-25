@@ -52,8 +52,8 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import com.lowagie.text.error_messages.MessageLocalization;
 
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.collection.PdfTargetDictionary;
 
 /**
@@ -63,7 +63,7 @@ import com.lowagie.text.pdf.collection.PdfTargetDictionary;
  */
 
 public class PdfAction extends PdfDictionary {
-    
+
     /** A named action to go to the first page.
      */
     public static final int FIRSTPAGE = 1;
@@ -111,22 +111,22 @@ public class PdfAction extends PdfDictionary {
     public static final int RESET_EXCLUDE = 1;
 
     // constructors
-    
+
     /** Create an empty action.
-     */    
+     */
     public PdfAction() {
     }
-    
+
     /**
      * Constructs a new <CODE>PdfAction</CODE> of Subtype URI.
      *
      * @param url the Url to go to
      */
-    
+
     public PdfAction(URL url) {
         this(url.toExternalForm());
     }
-    
+
     /**
      * Construct a new <CODE>PdfAction</CODE> of Subtype URI that accepts the x and y coordinate of the position that was clicked.
      * @param url
@@ -135,64 +135,64 @@ public class PdfAction extends PdfDictionary {
     public PdfAction(URL url, boolean isMap) {
         this(url.toExternalForm(), isMap);
     }
-    
+
     /**
      * Constructs a new <CODE>PdfAction</CODE> of Subtype URI.
      *
      * @param url the url to go to
      */
-    
+
     public PdfAction(String url) {
         this(url, false);
     }
-    
+
     /**
      * Construct a new <CODE>PdfAction</CODE> of Subtype URI that accepts the x and y coordinate of the position that was clicked.
      * @param url
      * @param isMap
      */
-    
+
     public PdfAction(String url, boolean isMap) {
         put(PdfName.S, PdfName.URI);
         put(PdfName.URI, new PdfString(url));
         if (isMap)
             put(PdfName.ISMAP, PdfBoolean.PDFTRUE);
     }
-    
+
     /**
      * Constructs a new <CODE>PdfAction</CODE> of Subtype GoTo.
      * @param destination the destination to go to
      */
-    
+
     PdfAction(PdfIndirectReference destination) {
         put(PdfName.S, PdfName.GOTO);
         put(PdfName.D, destination);
     }
-    
+
     /**
      * Constructs a new <CODE>PdfAction</CODE> of Subtype GoToR.
      * @param filename the file name to go to
      * @param name the named destination to go to
      */
-    
+
     public PdfAction(String filename, String name) {
         put(PdfName.S, PdfName.GOTOR);
         put(PdfName.F, new PdfString(filename));
         put(PdfName.D, new PdfString(name));
     }
-    
+
     /**
      * Constructs a new <CODE>PdfAction</CODE> of Subtype GoToR.
      * @param filename the file name to go to
      * @param page the page destination to go to
      */
-    
+
     public PdfAction(String filename, int page) {
         put(PdfName.S, PdfName.GOTOR);
         put(PdfName.F, new PdfString(filename));
         put(PdfName.D, new PdfLiteral("[" + (page - 1) + " /FitH 10000]"));
     }
-    
+
     /** Implements name actions. The action can be FIRSTPAGE, LASTPAGE,
      * NEXTPAGE, PREVPAGE and PRINTDIALOG.
      * @param named the named action
@@ -220,7 +220,7 @@ public class PdfAction extends PdfDictionary {
                 throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.named.action"));
         }
     }
-    
+
     /** Launches an application or a document.
      * @param application the application to be launched or the document to be opened or printed.
      * @param parameters (Windows-specific) A parameter string to be passed to the application.
@@ -247,7 +247,7 @@ public class PdfAction extends PdfDictionary {
             put(PdfName.WIN, dic);
         }
     }
-    
+
     /** Launches an application or a document.
      * @param application the application to be launched or the document to be opened or printed.
      * @param parameters (Windows-specific) A parameter string to be passed to the application.
@@ -262,7 +262,7 @@ public class PdfAction extends PdfDictionary {
     public static PdfAction createLaunch(String application, String parameters, String operation, String defaultDir) {
         return new PdfAction(application, parameters, operation, defaultDir);
     }
-    
+
      /**Creates a Rendition action
      * @param file
      * @param fs
@@ -279,7 +279,7 @@ public class PdfAction extends PdfDictionary {
         js.put(new PdfName("AN"), ref);
         return js;
      }
-  
+
     /** Creates a JavaScript action. If the JavaScript is smaller than
      * 50 characters it will be placed as a string, otherwise it will
      * be placed as a compressed stream.
@@ -289,7 +289,7 @@ public class PdfAction extends PdfDictionary {
      * Acrobat JavaScript engine does not support unicode,
      * so this may or may not work for you
      * @return the JavaScript action
-     */    
+     */
     public static PdfAction javaScript(String code, PdfWriter writer, boolean unicode) {
         PdfAction js = new PdfAction();
         js.put(PdfName.S, PdfName.JAVASCRIPT);
@@ -319,11 +319,11 @@ public class PdfAction extends PdfDictionary {
      * @param code the JavaScript code
      * @param writer the writer for this action
      * @return the JavaScript action
-     */    
+     */
     public static PdfAction javaScript(String code, PdfWriter writer) {
         return javaScript(code, writer, false);
     }
-    
+
     /**
      * A Hide action hides or shows an object.
      * @param obj object to hide or show
@@ -338,7 +338,7 @@ public class PdfAction extends PdfDictionary {
             action.put(PdfName.H, PdfBoolean.PDFFALSE);
         return action;
     }
-    
+
     /**
      * A Hide action hides or shows an annotation.
      * @param annot
@@ -348,7 +348,7 @@ public class PdfAction extends PdfDictionary {
     public static PdfAction createHide(PdfAnnotation annot, boolean hide) {
         return createHide(annot.getIndirectReference(), hide);
     }
-    
+
     /**
      * A Hide action hides or shows an annotation.
      * @param name
@@ -358,7 +358,7 @@ public class PdfAction extends PdfDictionary {
     public static PdfAction createHide(String name, boolean hide) {
         return createHide(new PdfString(name), hide);
     }
-    
+
     static PdfArray buildArray(Object[] names) {
         PdfArray array = new PdfArray();
         for (int k = 0; k < names.length; ++k) {
@@ -372,7 +372,7 @@ public class PdfAction extends PdfDictionary {
         }
         return array;
     }
-    
+
     /**
      * A Hide action hides or shows objects.
      * @param names
@@ -382,7 +382,7 @@ public class PdfAction extends PdfDictionary {
     public static PdfAction createHide(Object[] names, boolean hide) {
         return createHide(buildArray(names), hide);
     }
-    
+
     /**
      * Creates a submit form.
      * @param file    the URI to submit the form to
@@ -402,7 +402,7 @@ public class PdfAction extends PdfDictionary {
         action.put(PdfName.FLAGS, new PdfNumber(flags));
         return action;
     }
-    
+
     /**
      * Creates a resetform.
      * @param names    the objects to reset
@@ -417,7 +417,7 @@ public class PdfAction extends PdfDictionary {
         action.put(PdfName.FLAGS, new PdfNumber(flags));
         return action;
     }
-    
+
     /**
      * Creates an Import field.
      * @param file
@@ -429,10 +429,10 @@ public class PdfAction extends PdfDictionary {
         action.put(PdfName.F, new PdfString(file));
         return action;
     }
-    
+
     /** Add a chained action.
      * @param na the next action
-     */    
+     */
     public void next(PdfAction na) {
         PdfObject nextAction = get(PdfName.NEXT);
         if (nextAction == null)
@@ -446,13 +446,13 @@ public class PdfAction extends PdfDictionary {
             ((PdfArray)nextAction).add(na);
         }
     }
-    
+
     /** Creates a GoTo action to an internal page.
      * @param page the page to go. First page is 1
      * @param dest the destination for the page
      * @param writer the writer for this action
      * @return a GoTo action
-     */    
+     */
     public static PdfAction gotoLocalPage(int page, PdfDestination dest, PdfWriter writer) {
         PdfIndirectReference ref = writer.getPageReference(page);
         dest.addPage(ref);
@@ -554,8 +554,8 @@ public class PdfAction extends PdfDictionary {
      * group are turned OFF. If a group is set to OFF, there is no effect on other groups.<br>
      * If <CODE>false</CODE>, radio-button state relationships, if any, are ignored
      * @return the action
-     */    
-    public static PdfAction setOCGstate(ArrayList state, boolean preserveRB) {
+     */
+    public static PdfAction setOCGstate(ArrayList<Object> state, boolean preserveRB) {
         PdfAction action = new PdfAction();
         action.put(PdfName.S, PdfName.SETOCGSTATE);
         PdfArray a = new PdfArray();

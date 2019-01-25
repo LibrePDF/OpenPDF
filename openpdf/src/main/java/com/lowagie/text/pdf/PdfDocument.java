@@ -49,21 +49,45 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.*;
+import java.awt.Color;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import com.lowagie.text.Anchor;
+import com.lowagie.text.Annotation;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
+import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Image;
-import com.lowagie.text.List;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.MarkedObject;
+import com.lowagie.text.MarkedSection;
+import com.lowagie.text.Meta;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.Section;
+import com.lowagie.text.SimpleTable;
+import com.lowagie.text.Table;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.draw.DrawInterface;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-
-import java.awt.*;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.*;
 
 
 /**
@@ -240,7 +264,7 @@ public class PdfDocument extends Document {
          * @param documentFileAttachment    the attached files
          * @param writer the writer the catalog applies to
          */
-        void addNames(TreeMap<String, Object[]> localDestinations, HashMap<String, PdfIndirectReference> documentLevelJS, HashMap<String, PdfIndirectReference> documentFileAttachment, PdfWriter writer) {
+        void addNames(TreeMap<String, Object[]> localDestinations, Map<String, PdfIndirectReference> documentLevelJS, Map<String, PdfIndirectReference> documentFileAttachment, PdfWriter writer) {
             if (localDestinations.isEmpty() && documentLevelJS.isEmpty() && documentFileAttachment.isEmpty())
                 return;
             try {
@@ -601,7 +625,7 @@ public class PdfDocument extends Document {
                 }
                 case Element.LIST: {
                     // we cast the element to a List
-                    List list = (List) element;
+                	com.lowagie.text.List list = (com.lowagie.text.List) element;
                     if (list.isAlignindent()) {
                         list.normalizeIndentation();
                     }
@@ -734,14 +758,14 @@ public class PdfDocument extends Document {
                     break;
                 }
                 case Element.MARKED: {
-                    MarkedObject mo;
+                    MarkedObject<?> mo;
                     if (element instanceof MarkedSection) {
                         mo = ((MarkedSection)element).getTitle();
                         if (mo != null) {
                             mo.process(this);
                         }
                     }
-                    mo = (MarkedObject)element;
+                    mo = (MarkedObject<?>)element;
                     mo.process(this);
                     break;
                 }
@@ -1144,7 +1168,7 @@ public class PdfDocument extends Document {
         currentHeight = 0;
 
         // backgroundcolors, etc...
-        thisBoxSize = new HashMap<String, PdfRectangle>(boxSize);
+        thisBoxSize = new HashMap<>(boxSize);
         if (pageSize.getBackgroundColor() != null
         || pageSize.hasBorders()
         || pageSize.getBorderColor() != null) {
@@ -1296,15 +1320,11 @@ public class PdfDocument extends Document {
         Object[] currentValues = new Object[2];
         PdfFont currentFont = null;
         float displacement = 0;
-        PdfLine l;
         Float lastBaseFactor = new Float(0);
         currentValues[1] = lastBaseFactor;
+
         // looping over all the lines
-        for (Iterator i = lines.iterator(); i.hasNext(); ) {
-
-            // this is a line in the loop
-            l = (PdfLine) i.next();
-
+        for (PdfLine l : lines) {
             float moveTextX = l.indentLeft() - indentLeft() + indentation.indentLeft + indentation.listIndentLeft + indentation.sectionIndentLeft;
             text.moveText(moveTextX, -l.height());
             // is the line preceded by a symbol?
@@ -1319,9 +1339,10 @@ public class PdfDocument extends Document {
             currentFont = (PdfFont)currentValues[0];
             displacement += l.height();
             text.moveText(-moveTextX, 0);
-
         }
-        lines = new ArrayList();
+
+        lines = new ArrayList<>();
+
         return displacement;
     }
 
@@ -1343,7 +1364,6 @@ public class PdfDocument extends Document {
     void writeLineToContent(PdfLine line, PdfContentByte text, PdfContentByte graphics, Object[] currentValues, float ratio)  throws DocumentException {
         PdfFont currentFont = (PdfFont)(currentValues[0]);
         float lastBaseFactor = ((Float)(currentValues[1])).floatValue();
-        PdfChunk chunk;
         int numberOfSpaces;
         int lineLen;
         boolean isJustified;
@@ -1401,8 +1421,7 @@ public class PdfDocument extends Document {
         float tabPosition = 0;
 
         // looping over all the chunks in 1 line
-        for (Iterator j = line.iterator(); j.hasNext(); ) {
-            chunk = (PdfChunk) j.next();
+        for (PdfChunk chunk : line.getChunks()) {
             Color color = chunk.color();
             hScale = 1;
 
@@ -2096,7 +2115,7 @@ public class PdfDocument extends Document {
      * Stores a list of document level JavaScript actions.
      */
     int jsCounter;
-    protected HashMap<String, PdfIndirectReference> documentLevelJS = new HashMap<String, PdfIndirectReference>();
+    protected Map<String, PdfIndirectReference> documentLevelJS = new HashMap<>();
     protected static final DecimalFormat SIXTEEN_DIGITS = new DecimalFormat("0000000000000000");
     void addJavaScript(PdfAction js) {
         if (js.get(PdfName.JS) == null)
@@ -2119,11 +2138,11 @@ public class PdfDocument extends Document {
         }
     }
 
-    HashMap<String, PdfIndirectReference> getDocumentLevelJS() {
+    Map<String, PdfIndirectReference> getDocumentLevelJS() {
         return documentLevelJS;
     }
 
-    protected HashMap<String, PdfIndirectReference> documentFileAttachment = new HashMap<String, PdfIndirectReference>();
+    protected Map<String, PdfIndirectReference> documentFileAttachment = new HashMap<>();
 
     void addFileAttachment(String description, PdfFileSpecification fs) throws IOException {
         if (description == null) {
@@ -2147,7 +2166,7 @@ public class PdfDocument extends Document {
         documentFileAttachment.put(fn, fs.getReference());
     }
 
-    HashMap<String, PdfIndirectReference> getDocumentFileAttachment() {
+    Map<String, PdfIndirectReference> getDocumentFileAttachment() {
         return documentFileAttachment;
     }
 
@@ -2560,10 +2579,10 @@ public class PdfDocument extends Document {
 
             Integer i = rowspanMap.get(c);
             if (i == null) {
-                i = new Integer(c.rowspan());
+                i = Integer.valueOf(c.rowspan());
             }
 
-            i = new Integer(i.intValue() - 1);
+            i = Integer.valueOf(i.intValue() - 1);
             rowspanMap.put(c, i);
 
             if (i.intValue() < 1) {
@@ -2596,10 +2615,10 @@ public class PdfDocument extends Document {
             pageMap.put(cell, i);
 
             Integer pageInteger = pageNumber;
-            Set set = (Set) pageMap.get(pageInteger);
+            Collection<PdfCell> set = (Collection<PdfCell>) pageMap.get(pageInteger);
 
             if (set == null) {
-                set = new HashSet();
+                set = new HashSet<>();
                 pageMap.put(pageInteger, set);
             }
 
@@ -2618,7 +2637,7 @@ public class PdfDocument extends Document {
 
         public boolean isCellRenderedOnPage(PdfCell cell, int pageNumber) {
             Integer pageInteger = pageNumber;
-            Set set = (Set) pageMap.get(pageInteger);
+            Collection<PdfCell> set = (Collection<PdfCell>) pageMap.get(pageInteger);
 
             if (set != null) {
                 return set.contains(cell);
@@ -2646,13 +2665,10 @@ public class PdfDocument extends Document {
         ctx.rowspanMap = new HashMap<>();
         ctx.table = table;
 
-        // initialization of parameters
-        PdfCell cell;
-
         // drawing the table
-        ArrayList headercells = table.getHeaderCells();
-        ArrayList cells = table.getCells();
-        ArrayList rows = extractRows(cells, ctx);
+        List<PdfCell> headercells = table.getHeaderCells();
+        List<PdfCell> cells = table.getCells();
+        List<List<PdfCell>> rows = extractRows(cells, ctx);
         boolean isContinue = false;
         while (!cells.isEmpty()) {
             // initialization of some extra parameters;
@@ -2662,11 +2678,11 @@ public class PdfDocument extends Document {
             boolean cellsShown = false;
 
             // draw the cells (line by line)
-            Iterator iterator = rows.iterator();
 
             boolean atLeastOneFits = false;
-            while (iterator.hasNext()) {
-                ArrayList row = (ArrayList) iterator.next();
+
+            for (Iterator<List<PdfCell>> it = rows.iterator(); it.hasNext(); ) {
+                List<PdfCell> row = it.next();
                 analyzeRow(rows, ctx);
                 renderCells(ctx, row, table.hasToFitPageCells() & atLeastOneFits);
 
@@ -2674,21 +2690,16 @@ public class PdfDocument extends Document {
                     break;
                 }
                 consumeRowspan(row, ctx);
-                iterator.remove();
+                it.remove();
                 atLeastOneFits = true;
             }
 
 //          compose cells array list for subsequent code
             cells.clear();
             Set<PdfCell> opt = new HashSet<>();
-            iterator = rows.iterator();
-            while (iterator.hasNext()) {
-                ArrayList row = (ArrayList) iterator.next();
 
-                Iterator cellIterator = row.iterator();
-                while (cellIterator.hasNext()) {
-                    cell = (PdfCell) cellIterator.next();
-
+            for (List<PdfCell> row : rows) {
+                for (PdfCell cell : row) {
                     if (!opt.contains(cell)) {
                         cells.add(cell);
                         opt.add(cell);
@@ -2762,11 +2773,11 @@ public class PdfDocument extends Document {
                 int size = headercells.size();
                 if (size > 0) {
                     // this is the top of the headersection
-                    cell = (PdfCell) headercells.get(0);
+                    PdfCell cell = headercells.get(0);
                     float oldTop = cell.getTop(0);
                     // loop over all the cells of the table header
                     for (int i = 0; i < size; i++) {
-                        cell = (PdfCell) headercells.get(i);
+                        cell = headercells.get(i);
                         // calculation of the new cellpositions
                         cell.setTop(indentTop() - oldTop + cell.getTop(0));
                         cell.setBottom(indentTop() - oldTop + cell.getBottom(0));
@@ -2774,10 +2785,8 @@ public class PdfDocument extends Document {
                         // we paint the borders of the cell
                         ctx.cellGraphics.rectangle(cell.rectangle(indentTop(), indentBottom()));
                         // we write the text of the cell
-                        ArrayList images = cell.getImages(indentTop(), indentBottom());
-                        for (Iterator im = images.iterator(); im.hasNext();) {
+                        for(Image image : cell.getImages(indentTop(), indentBottom())) {
                             cellsShown = true;
-                            Image image = (Image) im.next();
                             graphics.addImage(image);
                         }
                         lines = cell.getLines(indentTop(), indentBottom());
@@ -2802,7 +2811,7 @@ public class PdfDocument extends Document {
                 size = Math.min(cells.size(), table.columns());
                 int i = 0;
                 while (i < size) {
-                    cell = (PdfCell) cells.get(i);
+                    PdfCell cell = cells.get(i);
                     if (cell.getTop(-table.cellspacing()) > ctx.lostTableBottom) {
                         float newBottom = ctx.pagetop - difference + cell.getBottom();
                         float neededHeight = cell.remainingHeight();
@@ -2816,7 +2825,7 @@ public class PdfDocument extends Document {
                 table.setTop(indentTop());
                 table.setBottom(ctx.pagetop - difference + table.getBottom(table.cellspacing()));
                 for (i = 0; i < size; i++) {
-                    cell = (PdfCell) cells.get(i);
+                    PdfCell cell = cells.get(i);
                     float newBottom = ctx.pagetop - difference + cell.getBottom();
                     float newTop = ctx.pagetop - difference + cell.getTop(-table.cellspacing());
                     if (newTop > indentTop() - currentHeight) {
@@ -2843,17 +2852,14 @@ public class PdfDocument extends Document {
         pageEmpty = false;
     }
 
-    protected void analyzeRow(ArrayList rows, RenderingContext ctx) {
+    protected void analyzeRow(List<List<PdfCell>> rows, RenderingContext ctx) {
         ctx.maxCellBottom = indentBottom();
 
         // determine whether row(index) is in a rowspan
         int rowIndex = 0;
 
-        ArrayList row = (ArrayList) rows.get(rowIndex);
         int maxRowspan = 1;
-        Iterator iterator = row.iterator();
-        while (iterator.hasNext()) {
-            PdfCell cell = (PdfCell) iterator.next();
+        for (PdfCell cell : rows.get(rowIndex)) {
             maxRowspan = Math.max(ctx.currentRowspan(cell), maxRowspan);
         }
         rowIndex += maxRowspan;
@@ -2866,10 +2872,8 @@ public class PdfDocument extends Document {
 
         if (rowIndex < 0 || rowIndex >= rows.size()) return;
 
-        row = (ArrayList) rows.get(rowIndex);
-        iterator = row.iterator();
-        while (iterator.hasNext()) {
-            PdfCell cell = (PdfCell) iterator.next();
+        List<PdfCell> row = rows.get(rowIndex);
+        for (PdfCell cell : row) {
             Rectangle cellRect = cell.rectangle(ctx.pagetop, indentBottom());
             if (useTop) {
                 ctx.maxCellBottom = Math.max(ctx.maxCellBottom, cellRect.getTop());
@@ -2881,39 +2885,32 @@ public class PdfDocument extends Document {
         }
     }
 
-    protected boolean mayBeRemoved(ArrayList row) {
-        Iterator iterator = row.iterator();
+    protected boolean mayBeRemoved(Collection<PdfCell> row) {
         boolean mayBeRemoved = true;
-        while (iterator.hasNext()) {
-            PdfCell cell = (PdfCell) iterator.next();
-
+        for(PdfCell cell : row) {
             mayBeRemoved &= cell.mayBeRemoved();
         }
         return mayBeRemoved;
     }
 
-    protected void consumeRowspan(ArrayList row, RenderingContext ctx) {
-        Iterator iterator = row.iterator();
-        while (iterator.hasNext()) {
-            PdfCell c = (PdfCell) iterator.next();
-            ctx.consumeRowspan(c);
+    protected void consumeRowspan(Collection<PdfCell> row, RenderingContext ctx) {
+        for(PdfCell cell : row) {
+            ctx.consumeRowspan(cell);
         }
     }
 
-    protected ArrayList extractRows(ArrayList cells, RenderingContext ctx) {
-        PdfCell cell;
+    protected List<List<PdfCell>> extractRows(List<PdfCell> cells, RenderingContext ctx) {
         PdfCell previousCell = null;
-        ArrayList rows = new ArrayList();
-        java.util.List<PdfCell> rowCells = new ArrayList<>();
+        List<List<PdfCell>> rows = new ArrayList<>();
+        List<PdfCell> rowCells = new ArrayList<>();
 
-        Iterator iterator = cells.iterator();
-        while (iterator.hasNext()) {
-            cell = (PdfCell) iterator.next();
+        for (Iterator<PdfCell> it = cells.iterator(); it.hasNext(); ) {
+        	PdfCell cell = it.next();
 
             boolean isAdded = false;
 
-            boolean isEndOfRow = !iterator.hasNext();
-            boolean isCurrentCellPartOfRow = !iterator.hasNext();
+            boolean isEndOfRow = !it.hasNext();
+            boolean isCurrentCellPartOfRow = !it.hasNext();
 
             if (previousCell != null) {
                 if (cell.getLeft() <= previousCell.getLeft()) {
@@ -2933,7 +2930,7 @@ public class PdfDocument extends Document {
                 }
 
                 // start a new list for next line
-                rowCells = new ArrayList();
+                rowCells = new ArrayList<>();
             }
 
             if (!isAdded) {
@@ -2949,14 +2946,14 @@ public class PdfDocument extends Document {
 
         // fill row information with rowspan cells to get complete "scan lines"
         for (int i = rows.size() - 1; i >= 0; i--) {
-            ArrayList row = (ArrayList) rows.get(i);
+            List<PdfCell> row = rows.get(i);
             // iterator through row
             for (int j = 0; j < row.size(); j++) {
-                PdfCell c = (PdfCell) row.get(j);
+                PdfCell c = row.get(j);
                 int rowspan = c.rowspan();
                 // fill in missing rowspan cells to complete "scan line"
                 for (int k = 1; k < rowspan && rows.size() < i+k; k++) {
-                    ArrayList spannedRow = ((ArrayList) rows.get(i + k));
+                	List<PdfCell> spannedRow = rows.get(i + k);
                     if (spannedRow.size() > j)
                         spannedRow.add(j, c);
                 }
@@ -2966,24 +2963,17 @@ public class PdfDocument extends Document {
         return rows;
     }
 
-    protected void renderCells(RenderingContext ctx, java.util.List cells, boolean hasToFit) throws DocumentException {
-        PdfCell cell;
-        Iterator iterator;
+    protected void renderCells(RenderingContext ctx, List<PdfCell> cells, boolean hasToFit) throws DocumentException {
         if (hasToFit) {
-            iterator = cells.iterator();
-            while (iterator.hasNext()) {
-                cell = (PdfCell) iterator.next();
+            for(PdfCell cell : cells) {
                 if (!cell.isHeader()) {
                     if (cell.getBottom() < indentBottom()) return;
                 }
             }
         }
-        iterator = cells.iterator();
 
-        while (iterator.hasNext()) {
-            cell = (PdfCell) iterator.next();
+        for (PdfCell cell : cells) {
             if (!ctx.isCellRenderedOnPage(cell, getPageNumber())) {
-
                 float correction = 0;
                 if (ctx.numCellRendered(cell) >= 1) {
                     correction = 1.0f;
@@ -3018,12 +3008,9 @@ public class PdfDocument extends Document {
                 }
 
                 // and additional graphics
-                ArrayList images = cell.getImages(ctx.pagetop, indentBottom());
-                for (Iterator i = images.iterator(); i.hasNext();) {
-                    Image image = (Image) i.next();
+                for (Image image : cell.getImages(ctx.pagetop, indentBottom())) {
                     graphics.addImage(image);
                 }
-
             }
         }
     }

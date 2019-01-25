@@ -49,20 +49,20 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.pdf.crypto.ARCFOUREncryption;
-import com.lowagie.text.error_messages.MessageLocalization;
-
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
+
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.pdf.crypto.ARCFOUREncryption;
 
 
 
 /**
- * 
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  * @author Kazuya Ujihara
  */
@@ -136,7 +136,7 @@ public class PdfEncryption {
     private int keyLength;
 
     private boolean encryptMetadata;
-    
+
     /**
      * Indicates if the encryption is only necessary for embedded files.
      * @since 2.1.3
@@ -217,7 +217,7 @@ public class PdfEncryption {
 
     /**
      */
-    private byte[] padPassword(byte[] userPassword) {
+    private static byte[] padPassword(byte[] userPassword) {
         byte[] userPad = new byte[32];
         if (userPassword == null) {
             System.arraycopy(pad, 0, userPad, 0, 32);
@@ -259,7 +259,7 @@ public class PdfEncryption {
     }
 
     /**
-     * 
+     *
      * ownerKey, documentID must be setup
      */
     private void setupGlobalEncryptionKey(byte[] documentID, byte[] userPad,
@@ -299,7 +299,7 @@ public class PdfEncryption {
     }
 
     /**
-     * 
+     *
      * mkey must be setup
      */
     // use the revision to choose the setup method

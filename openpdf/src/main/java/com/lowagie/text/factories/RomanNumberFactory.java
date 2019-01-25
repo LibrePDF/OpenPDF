@@ -168,8 +168,7 @@ public class RomanNumberFactory {
     public static String getString(int index, boolean lowercase) {
         if (lowercase) {
             return getLowerCaseString(index);
-        }
-        else {
+        } else {
             return getUpperCaseString(index);
         }
     }

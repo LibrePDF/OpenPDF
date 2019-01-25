@@ -49,21 +49,20 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.error_messages.MessageLocalization;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.error_messages.MessageLocalization;
+
 /**
  * Creates a CJK font compatible with the fonts in the Adobe Asian font Pack.
- * 
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 
@@ -79,9 +78,8 @@ class CJKFont extends BaseFont {
 
     static Properties cjkFonts = new Properties();
     static Properties cjkEncodings = new Properties();
-    Hashtable<String, char[]> allCMaps = new Hashtable<String, char[]>();
-    static ConcurrentHashMap<String, HashMap<Object, Object>> allFonts = new ConcurrentHashMap<String, HashMap<Object, Object>>(
-            500, 0.85f, 64);
+    Map<String, char[]> allCMaps = new HashMap<>();
+    static Map<String, Map<String, Object>> allFonts = new ConcurrentHashMap<>(500, 0.85f, 64);
     private static boolean propertiesLoaded = false;
     private static Object initLock = new Object();
 
@@ -97,37 +95,39 @@ class CJKFont extends BaseFont {
     private char[] translationMap;
     private IntHashtable vMetrics;
     private IntHashtable hMetrics;
-    private HashMap<Object, Object> fontDesc;
+    private Map<String, Object> fontDesc;
     private boolean vertical = false;
 
     private static void loadProperties() {
-        if (propertiesLoaded) {
-            return;
-        }
+        if (propertiesLoaded) return;
+
         synchronized (initLock) {
             if (propertiesLoaded) {
                 return;
             }
-            try {
-                InputStream is = getResourceStream(RESOURCE_PATH
-                        + "cjkfonts.properties");
+            try (
+                InputStream is = getResourceStream(RESOURCE_PATH + "cjkfonts.properties");
+            ) {
                 cjkFonts.load(is);
-                is.close();
-                is = getResourceStream(RESOURCE_PATH
-                        + "cjkencodings.properties");
-                cjkEncodings.load(is);
-                is.close();
             } catch (Exception e) {
                 cjkFonts = new Properties();
+            }
+
+            try (
+                InputStream is = getResourceStream(RESOURCE_PATH + "cjkencodings.properties");
+            ) {
+                cjkEncodings.load(is);
+            } catch (Exception e) {
                 cjkEncodings = new Properties();
             }
+
             propertiesLoaded = true;
         }
     }
 
     /**
      * Creates a CJK font.
-     * 
+     *
      * @param fontName
      *            the name of the font
      * @param enc
@@ -214,7 +214,7 @@ class CJKFont extends BaseFont {
 
     /**
      * Checks if its a valid CJK font.
-     * 
+     *
      * @param fontName
      *            the font name
      * @param enc
@@ -231,7 +231,7 @@ class CJKFont extends BaseFont {
 
     /**
      * Gets the width of a <CODE>char</CODE> in normalized 1000 units.
-     * 
+     *
      * @param char1
      *            the unicode <CODE>char</CODE> to get the width of
      * @return the width in normalized 1000 units
@@ -377,7 +377,7 @@ class CJKFont extends BaseFont {
     /**
      * You can't get the FontStream of a CJK font (CJK fonts are never
      * embedded), so this method always returns null.
-     * 
+     *
      * @return null
      * @since 2.1.3
      */
@@ -404,7 +404,7 @@ class CJKFont extends BaseFont {
      * Gets the font parameter identified by <CODE>key</CODE>. Valid values for
      * <CODE>key</CODE> are <CODE>ASCENT</CODE>, <CODE>CAPHEIGHT</CODE>,
      * <CODE>DESCENT</CODE> and <CODE>ITALICANGLE</CODE>.
-     * 
+     *
      * @param key
      *            the parameter to be extracted
      * @param fontSize
@@ -452,7 +452,7 @@ class CJKFont extends BaseFont {
      * specification, chapter 2, in the 'name' table.<br>
      * For the other fonts the array has a single element with {"", "", "", font
      * name}.
-     * 
+     *
      * @return the full name of the font
      */
     @Override
@@ -467,7 +467,7 @@ class CJKFont extends BaseFont {
      * in the Open Type specification, chapter 2, in the 'name' table.<br>
      * For the other fonts the array has a single element with {"4", "", "", "",
      * font name}.
-     * 
+     *
      * @return the full name of the font
      */
     @Override
@@ -482,7 +482,7 @@ class CJKFont extends BaseFont {
      * specification, chapter 2, in the 'name' table.<br>
      * For the other fonts the array has a single element with {"", "", "", font
      * name}.
-     * 
+     *
      * @return the family name of the font
      */
     @Override
@@ -491,19 +491,18 @@ class CJKFont extends BaseFont {
     }
 
     static char[] readCMap(String name) {
-        try {
-            name = name + ".cmap";
+        try (
             InputStream is = getResourceStream(RESOURCE_PATH + name);
+        ) {
+            name = name + ".cmap";
             char[] c = new char[0x10000];
             for (int k = 0; k < 0x10000; ++k) {
                 c[k] = (char) ((is.read() << 8) + is.read());
             }
-            is.close();
             return c;
         } catch (Exception e) {
-            // empty on purpose
+            return null;
         }
-        return null;
     }
 
     static IntHashtable createMetric(String s) {
@@ -672,29 +671,30 @@ class CJKFont extends BaseFont {
         return buf.toString();
     }
 
-    static HashMap<Object, Object> readFontProperties(String name) {
-        try {
-            name += ".properties";
-            InputStream is = getResourceStream(RESOURCE_PATH + name);
+    static Map<String, Object> readFontProperties(String name) {
+        try (
+            InputStream is = getResourceStream(RESOURCE_PATH + name + ".properties");
+        ) {
             Properties p = new Properties();
             p.load(is);
-            is.close();
+
+            Map<String, Object> map = new HashMap<>();
+            for(Map.Entry<Object, Object> e : p.entrySet()) {
+            	map.put((String)e.getKey(), e.getValue());
+            }
+
             IntHashtable W = createMetric(p.getProperty("W"));
             p.remove("W");
+            map.put("W", W);
+
             IntHashtable W2 = createMetric(p.getProperty("W2"));
             p.remove("W2");
-            HashMap<Object, Object> map = new HashMap<Object, Object>();
-            for (Enumeration e = p.keys(); e.hasMoreElements();) {
-                Object obj = e.nextElement();
-                map.put(obj, p.getProperty((String) obj));
-            }
-            map.put("W", W);
             map.put("W2", W2);
+
             return map;
         } catch (Exception e) {
-            // empty on purpose
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -715,7 +715,7 @@ class CJKFont extends BaseFont {
 
     /**
      * Checks if the font has any kerning pairs.
-     * 
+     *
      * @return always <CODE>false</CODE>
      */
     @Override
@@ -725,7 +725,7 @@ class CJKFont extends BaseFont {
 
     /**
      * Checks if a character exists in this font.
-     * 
+     *
      * @param c
      *            the character to check
      * @return <CODE>true</CODE> if the character has a glyph,
@@ -738,7 +738,7 @@ class CJKFont extends BaseFont {
 
     /**
      * Sets the character advance.
-     * 
+     *
      * @param c
      *            the character
      * @param advance
@@ -754,7 +754,7 @@ class CJKFont extends BaseFont {
     /**
      * Sets the font name that will appear in the pdf font dictionary. Use with
      * care as it can easily make a font unreadable if not embedded.
-     * 
+     *
      * @param name
      *            the new font name
      */

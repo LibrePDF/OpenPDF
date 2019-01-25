@@ -46,9 +46,10 @@
  */
 package com.lowagie.text.pdf;
 
+import java.util.HashMap;
+
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
-import java.util.HashMap;
 
 
 /**
@@ -183,7 +184,7 @@ public class DocumentFont extends BaseFont {
     }
   }
 
-  private IntHashtable readWidths(PdfArray ws) {
+  private static IntHashtable readWidths(PdfArray ws) {
     IntHashtable hh = new IntHashtable();
     if (ws == null) {
       return hh;
@@ -208,7 +209,7 @@ public class DocumentFont extends BaseFont {
     return hh;
   }
 
-  private String decodeString(PdfString ps) {
+  private static String decodeString(PdfString ps) {
     if (ps.isHexWriting()) {
       return PdfEncodings.convertToString(ps.getBytes(), "UnicodeBigUnmarked");
     } else {
@@ -568,7 +569,7 @@ public class DocumentFont extends BaseFont {
     if (cjkMirror != null) {
       return cjkMirror.getWidth(char1);
     } else if (isType0) {
-      int[] ws = metrics.get(char1);
+      int[] ws = metrics.get(Integer.valueOf(char1));
       if (ws != null) {
         return ws[1];
       } else {
@@ -586,7 +587,7 @@ public class DocumentFont extends BaseFont {
       char[] chars = text.toCharArray();
       int total = 0;
       for (char aChar : chars) {
-        int[] ws = metrics.get(aChar);
+        int[] ws = metrics.get(Integer.valueOf(aChar));
         if (ws != null) {
           total += ws[1];
         }
@@ -606,7 +607,7 @@ public class DocumentFont extends BaseFont {
       byte[] b = new byte[len * 2];
       int bptr = 0;
       for (char aChar : chars) {
-        int[] ws = metrics.get(aChar);
+        int[] ws = metrics.get(Integer.valueOf(aChar));
         if (ws != null) {
           int g = ws[0];
           b[bptr++] = (byte) (g / 256);
@@ -643,7 +644,7 @@ public class DocumentFont extends BaseFont {
     if (cjkMirror != null) {
       return PdfEncodings.convertToBytes((char) char1, CJKFont.CJK_ENCODING);
     } else if (isType0) {
-      int[] ws = metrics.get(char1);
+      int[] ws = metrics.get(Integer.valueOf(char1));
       if (ws != null) {
         int g = ws[0];
         return new byte[]{(byte) (g / 256), (byte) (g)};
@@ -667,7 +668,7 @@ public class DocumentFont extends BaseFont {
     if (cjkMirror != null) {
       return cjkMirror.charExists(c);
     } else if (isType0) {
-      return metrics.containsKey(c);
+      return metrics.containsKey(Integer.valueOf(c));
     } else {
       return super.charExists(c);
     }

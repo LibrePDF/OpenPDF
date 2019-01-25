@@ -61,79 +61,79 @@ import java.util.Set;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfLayerMembership extends PdfDictionary implements PdfOCG {
-    
+
     /**
      * Visible only if all of the entries are <B>ON</B>.
-     */    
+     */
     public static final PdfName ALLON = new PdfName("AllOn");
     /**
      * Visible if any of the entries are <B>ON</B>.
-     */    
+     */
     public static final PdfName ANYON = new PdfName("AnyOn");
     /**
      * Visible if any of the entries are <B>OFF</B>.
-     */    
+     */
     public static final PdfName ANYOFF = new PdfName("AnyOff");
     /**
      * Visible only if all of the entries are <B>OFF</B>.
-     */    
+     */
     public static final PdfName ALLOFF = new PdfName("AllOff");
 
     PdfIndirectReference ref;
     PdfArray members = new PdfArray();
     Set<PdfLayer> layers = new HashSet<>();
-    
+
     /**
      * Creates a new, empty, membership layer.
      * @param writer the writer
-     */    
+     */
     public PdfLayerMembership(PdfWriter writer) {
         super(PdfName.OCMD);
         put(PdfName.OCGS, members);
         ref = writer.getPdfIndirectReference();
     }
-    
+
     /**
      * Gets the <CODE>PdfIndirectReference</CODE> that represents this membership layer.
      * @return the <CODE>PdfIndirectReference</CODE> that represents this layer
-     */    
+     */
     public PdfIndirectReference getRef() {
         return ref;
     }
-    
+
     /**
      * Adds a new member to the layer.
      * @param layer the new member to the layer
-     */    
+     */
     public void addMember(PdfLayer layer) {
         if (!layers.contains(layer)) {
             members.add(layer.getRef());
             layers.add(layer);
         }
     }
-    
+
     /**
      * Gets the member layers.
      * @return the member layers
-     */    
-    public Collection getLayers() {
+     */
+    public Collection<PdfLayer> getLayers() {
         return layers;
     }
-    
+
     /**
      * Sets the visibility policy for content belonging to this
      * membership dictionary. Possible values are ALLON, ANYON, ANYOFF and ALLOFF.
      * The default value is ANYON.
      * @param type the visibility policy
-     */    
+     */
     public void setVisibilityPolicy(PdfName type) {
         put(PdfName.P, type);
     }
-    
+
     /**
      * Gets the dictionary representing the membership layer. It just returns <CODE>this</CODE>.
      * @return the dictionary representing the layer
-     */    
+     */
     public PdfObject getPdfObject() {
         return this;
     }

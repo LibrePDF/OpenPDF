@@ -73,15 +73,15 @@ public class PdfDate extends PdfString {
 
     private static final int[] DATE_SPACE = {Calendar.YEAR, 4, 0, Calendar.MONTH, 2, -1, Calendar.DAY_OF_MONTH, 2, 0,
             Calendar.HOUR_OF_DAY, 2, 0, Calendar.MINUTE, 2, 0, Calendar.SECOND, 2, 0};
-    
+
     // constructors
-    
+
 /**
  * Constructs a <CODE>PdfDate</CODE>-object.
  *
  * @param        d            the date that has to be turned into a <CODE>PdfDate</CODE>-object
  */
-    
+
     public PdfDate(Calendar d) {
         super();
         StringBuffer date = new StringBuffer("D:");
@@ -109,15 +109,15 @@ public class PdfDate extends PdfString {
         }
         value = date.toString();
     }
-    
+
 /**
  * Constructs a <CODE>PdfDate</CODE>-object, representing the current day and time.
  */
-    
+
     public PdfDate() {
         this(new GregorianCalendar());
     }
-    
+
 /**
  * Adds a number of leading zeros to a given <CODE>String</CODE> in order to get a <CODE>String</CODE>
  * of a certain length.
@@ -126,8 +126,8 @@ public class PdfDate extends PdfString {
  * @param        length        the length of the resulting <CODE>String</CODE>
  * @return        the resulting <CODE>String</CODE>
  */
-    
-    private String setLength(int i, int length) { // 1.3-1.4 problem fixed by Finn Bock
+
+    private static String setLength(int i, int length) { // 1.3-1.4 problem fixed by Finn Bock
         StringBuffer tmp = new StringBuffer();
         tmp.append(i);
         while (tmp.length() < length) {
@@ -136,7 +136,7 @@ public class PdfDate extends PdfString {
         tmp.setLength(length);
         return tmp.toString();
     }
-    
+
     /**
      * Gives the W3C format of the PdfDate.
      * @return a formatted date
@@ -144,7 +144,7 @@ public class PdfDate extends PdfString {
     public String getW3CDate() {
         return getW3CDate(value);
     }
-    
+
     /**
      * Gives the W3C format of the PdfDate.
      * @param d the date in the format D:YYYYMMDDHHmmSSOHH'mm'
@@ -201,13 +201,13 @@ public class PdfDate extends PdfString {
         sb.append('Z');
         return sb.toString();
     }
-    
+
     /**
      * Converts a PDF string representing a date into a Calendar.
      * @param s the PDF string representing a date
      * @return a <CODE>Calendar</CODE> representing the date or <CODE>null</CODE> if the string
      * was not a date
-     */    
+     */
     public static Calendar decode(String s) {
         try {
             if (s.startsWith("D:"))

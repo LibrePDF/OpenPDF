@@ -118,7 +118,7 @@ public class PdfEncodings {
 
     static final IntHashtable pdfEncoding = new IntHashtable();
 
-    static ConcurrentHashMap<String, ExtraEncoding> extraEncodings = new ConcurrentHashMap<String, ExtraEncoding>(
+    static ConcurrentHashMap<String, ExtraEncoding> extraEncodings = new ConcurrentHashMap<>(
             200, 0.85f, 64);
 
     static {
@@ -355,7 +355,7 @@ public class PdfEncodings {
         return true;
     }
 
-    static final ConcurrentHashMap<String, char[][]> cmaps = new ConcurrentHashMap<String, char[][]>(
+    static final ConcurrentHashMap<String, char[][]> cmaps = new ConcurrentHashMap<>(
             100, 0.85f, 64);
     /**
      * Assumes that '\\n' and '\\r\\n' are the newline sequences. It may not
@@ -473,7 +473,7 @@ public class PdfEncodings {
     }
 
     static char[][] readCmap(String name, byte[][] newline) throws IOException {
-        ArrayList<char[]> planes = new ArrayList<char[]>();
+        ArrayList<char[]> planes = new ArrayList<>();
         planes.add(new char[256]);
         readCmap(name, planes);
         if (newline != null) {

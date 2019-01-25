@@ -112,7 +112,6 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Random;
 
-import com.lowagie.text.ExceptionConverter;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.ExtensionsGenerator;
@@ -128,12 +127,12 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * OcspClient implementation using BouncyCastle.
- * 
+ *
  * @author psoares
  * @since 2.1.6
  */
@@ -147,7 +146,7 @@ public class OcspClientBouncyCastle implements OcspClient {
 
   /**
    * Creates an instance of an OcspClient that will be using BouncyCastle.
-   * 
+   *
    * @param checkCert
    *          the check certificate
    * @param rootCert
@@ -164,7 +163,7 @@ public class OcspClientBouncyCastle implements OcspClient {
 
   /**
    * Generates an OCSP request using BouncyCastle.
-   * 
+   *
    * @param issuerCert
    *          certificate of the issues
    * @param serialNumber
@@ -229,48 +228,47 @@ public class OcspClientBouncyCastle implements OcspClient {
   @Override
   public byte[] getEncoded() {
     try {
-      OCSPReq request = generateOCSPRequest(rootCert,
-          checkCert.getSerialNumber());
+      OCSPReq request = generateOCSPRequest(rootCert, checkCert.getSerialNumber());
       byte[] array = request.getEncoded();
       URL urlt = new URL(url);
       HttpURLConnection con = (HttpURLConnection) urlt.openConnection();
       con.setRequestProperty("Content-Type", "application/ocsp-request");
       con.setRequestProperty("Accept", "application/ocsp-response");
       con.setDoOutput(true);
-      OutputStream out = con.getOutputStream();
-      DataOutputStream dataOut = new DataOutputStream(new BufferedOutputStream(
-          out));
-      dataOut.write(array);
-      dataOut.flush();
-      dataOut.close();
+
+      try (
+        OutputStream out = con.getOutputStream();
+        DataOutputStream dataOut = new DataOutputStream(new BufferedOutputStream(out));
+      ) {
+        dataOut.write(array);
+      }
+
       if (con.getResponseCode() / 100 != 2) {
         throw new IOException(MessageLocalization.getComposedMessage(
             "invalid.http.response.1", con.getResponseCode()));
       }
       // Get Response
-      InputStream in = (InputStream) con.getContent();
-      OCSPResp ocspResponse = new OCSPResp(in);
+      try (
+        InputStream in = (InputStream) con.getContent();
+      ) {
+        OCSPResp ocspResponse = new OCSPResp(in);
 
-      if (ocspResponse.getStatus() != 0)
-        throw new IOException(MessageLocalization.getComposedMessage(
-            "invalid.status.1", ocspResponse.getStatus()));
-      BasicOCSPResp basicResponse = (BasicOCSPResp) ocspResponse
-          .getResponseObject();
-      if (basicResponse != null) {
-        SingleResp[] responses = basicResponse.getResponses();
-        if (responses.length == 1) {
-          SingleResp resp = responses[0];
-          Object status = resp.getCertStatus();
-          if (status == null) {
-            return basicResponse.getEncoded();
-          } else if (status instanceof org.bouncycastle.cert.ocsp.RevokedStatus) {
-            throw new IOException(
-                MessageLocalization
-                    .getComposedMessage("ocsp.status.is.revoked"));
-          } else {
-            throw new IOException(
-                MessageLocalization
-                    .getComposedMessage("ocsp.status.is.unknown"));
+        if (ocspResponse.getStatus() != 0)
+            throw new IOException(MessageLocalization.getComposedMessage("invalid.status.1", ocspResponse.getStatus()));
+
+        BasicOCSPResp basicResponse = (BasicOCSPResp) ocspResponse.getResponseObject();
+        if (basicResponse != null) {
+          SingleResp[] responses = basicResponse.getResponses();
+          if (responses.length == 1) {
+            SingleResp resp = responses[0];
+            Object status = resp.getCertStatus();
+            if (status == null) {
+              return basicResponse.getEncoded();
+            } else if (status instanceof org.bouncycastle.cert.ocsp.RevokedStatus) {
+              throw new IOException(MessageLocalization.getComposedMessage("ocsp.status.is.revoked"));
+            } else {
+              throw new IOException(MessageLocalization.getComposedMessage("ocsp.status.is.unknown"));
+            }
           }
         }
       }

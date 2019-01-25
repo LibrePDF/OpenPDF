@@ -49,20 +49,19 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.error_messages.MessageLocalization;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.error_messages.MessageLocalization;
+
 /**
  * Base class for the several font types supported
- * 
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 
@@ -293,7 +292,7 @@ public abstract class BaseFont {
 
     /**
      * The compression level for the font stream.
-     * 
+     *
      * @since 2.1.3
      */
     protected int compressionLevel = PdfStream.DEFAULT_COMPRESSION;
@@ -306,11 +305,10 @@ public abstract class BaseFont {
     protected boolean fontSpecific = true;
 
     /** cache for the fonts already used. */
-    protected static ConcurrentHashMap<String, BaseFont> fontCache = new ConcurrentHashMap<String, BaseFont>(
-            500, 0.85f, 64);
+    protected static ConcurrentHashMap<String, BaseFont> fontCache = new ConcurrentHashMap<>(500, 0.85f, 64);
 
     /** list of the 14 built in fonts. */
-    protected static final HashMap<String, PdfName> BuiltinFonts14 = new HashMap<String, PdfName>();
+    protected static final HashMap<String, PdfName> BuiltinFonts14 = new HashMap<>();
 
     /**
      * Forces the output of the width array. Only matters for the 14 built-in
@@ -364,7 +362,7 @@ public abstract class BaseFont {
         /**
          * Generates the PDF stream with the Type1 and Truetype fonts returning
          * a PdfStream.
-         * 
+         *
          * @param contents
          *            the content of the stream
          * @param lengths
@@ -394,7 +392,7 @@ public abstract class BaseFont {
 
         /**
          * Generates the PDF stream for a font.
-         * 
+         *
          * @param contents
          *            the content of a stream
          * @param subType
@@ -431,7 +429,7 @@ public abstract class BaseFont {
      * Creates a new font. This will always be the default Helvetica font (not
      * embedded). This method is introduced because Helvetica is used in many
      * examples.
-     * 
+     *
      * @return a BaseFont object (Helvetica, Winansi, not embedded)
      * @throws IOException
      *             This shouldn't occur ever
@@ -476,23 +474,23 @@ public abstract class BaseFont {
      * <P>
      * Example for a "simple" encoding that includes the Unicode character
      * space, A, B and ecyrillic:
-     * 
+     *
      * <PRE>
      * &quot;# simple 32 0020 0041 0042 0454&quot;
      * </PRE>
      * <P>
      * Example for a "full" encoding for a Type1 Tex font:
-     * 
+     *
      * <PRE>
      * &quot;# full 'A' nottriangeqlleft 0041 'B' dividemultiply 0042 32 space 0020&quot;
      * </PRE>
      * <P>
      * This method calls:<br>
-     * 
+     *
      * <PRE>
      * createFont(name, encoding, embedded, true, null, null);
      * </PRE>
-     * 
+     *
      * @param name
      *            the name of the font or its location on file
      * @param encoding
@@ -542,23 +540,23 @@ public abstract class BaseFont {
      * <P>
      * Example for a "simple" encoding that includes the Unicode character
      * space, A, B and ecyrillic:
-     * 
+     *
      * <PRE>
      * &quot;# simple 32 0020 0041 0042 0454&quot;
      * </PRE>
      * <P>
      * Example for a "full" encoding for a Type1 Tex font:
-     * 
+     *
      * <PRE>
      * &quot;# full 'A' nottriangeqlleft 0041 'B' dividemultiply 0042 32 space 0020&quot;
      * </PRE>
      * <P>
      * This method calls:<br>
-     * 
+     *
      * <PRE>
      * createFont(name, encoding, embedded, true, null, null);
      * </PRE>
-     * 
+     *
      * @param name
      *            the name of the font or its location on file
      * @param encoding
@@ -615,17 +613,17 @@ public abstract class BaseFont {
      * <P>
      * Example for a "simple" encoding that includes the Unicode character
      * space, A, B and ecyrillic:
-     * 
+     *
      * <PRE>
      * &quot;# simple 32 0020 0041 0042 0454&quot;
      * </PRE>
      * <P>
      * Example for a "full" encoding for a Type1 Tex font:
-     * 
+     *
      * <PRE>
      * &quot;# full 'A' nottriangeqlleft 0041 'B' dividemultiply 0042 32 space 0020&quot;
      * </PRE>
-     * 
+     *
      * @param name
      *            the name of the font or its location on file
      * @param encoding
@@ -687,17 +685,17 @@ public abstract class BaseFont {
      * <P>
      * Example for a "simple" encoding that includes the Unicode character
      * space, A, B and ecyrillic:
-     * 
+     *
      * <PRE>
      * &quot;# simple 32 0020 0041 0042 0454&quot;
      * </PRE>
      * <P>
      * Example for a "full" encoding for a Type1 Tex font:
-     * 
+     *
      * <PRE>
      * &quot;# full 'A' nottriangeqlleft 0041 'B' dividemultiply 0042 32 space 0020&quot;
      * </PRE>
-     * 
+     *
      * @param name
      *            the name of the font or its location on file
      * @param encoding
@@ -767,17 +765,17 @@ public abstract class BaseFont {
      * <P>
      * Example for a "simple" encoding that includes the Unicode character
      * space, A, B and ecyrillic:
-     * 
+     *
      * <PRE>
      * &quot;# simple 32 0020 0041 0042 0454&quot;
      * </PRE>
      * <P>
      * Example for a "full" encoding for a Type1 Tex font:
-     * 
+     *
      * <PRE>
      * &quot;# full 'A' nottriangeqlleft 0041 'B' dividemultiply 0042 32 space 0020&quot;
      * </PRE>
-     * 
+     *
      * @param name
      *            the name of the font or its location on file
      * @param encoding
@@ -866,7 +864,7 @@ public abstract class BaseFont {
     /**
      * Creates a font based on an existing document font. The created font font
      * may not behave as expected, depending on the encoding or subset.
-     * 
+     *
      * @param fontRef
      *            the reference to the document font
      * @return the font
@@ -877,7 +875,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the name without the modifiers Bold, Italic or BoldItalic.
-     * 
+     *
      * @param name
      *            the full name of the font
      * @return the name without the modifiers Bold, Italic or BoldItalic
@@ -897,7 +895,7 @@ public abstract class BaseFont {
     /**
      * Normalize the encoding names. "winansi" is changed to "Cp1252" and
      * "macroman" is changed to "MacRoman".
-     * 
+     *
      * @param enc
      *            the encoding to be normalized
      * @return the normalized encoding
@@ -996,7 +994,7 @@ public abstract class BaseFont {
      * Gets the width from the font according to the Unicode char <CODE>c</CODE>
      * or the <CODE>name</CODE>. If the <CODE>name</CODE> is null it's a
      * symbolic font.
-     * 
+     *
      * @param c
      *            the unicode char
      * @param name
@@ -1007,7 +1005,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the kerning between two Unicode chars.
-     * 
+     *
      * @param char1
      *            the first char
      * @param char2
@@ -1018,7 +1016,7 @@ public abstract class BaseFont {
 
     /**
      * Sets the kerning between two Unicode chars.
-     * 
+     *
      * @param char1
      *            the first char
      * @param char2
@@ -1032,7 +1030,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the width of a <CODE>char</CODE> in normalized 1000 units.
-     * 
+     *
      * @param char1
      *            the unicode <CODE>char</CODE> to get the width of
      * @return the width in normalized 1000 units
@@ -1056,7 +1054,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the width of a <CODE>String</CODE> in normalized 1000 units.
-     * 
+     *
      * @param text
      *            the <CODE>String</CODE> to get the width of
      * @return the width in normalized 1000 units
@@ -1087,7 +1085,7 @@ public abstract class BaseFont {
      * Gets the descent of a <CODE>String</CODE> in normalized 1000 units. The
      * descent will always be less than or equal to zero even if all the
      * characters have an higher descent.
-     * 
+     *
      * @param text
      *            the <CODE>String</CODE> to get the descent of
      * @return the descent in normalized 1000 units
@@ -1108,7 +1106,7 @@ public abstract class BaseFont {
      * Gets the ascent of a <CODE>String</CODE> in normalized 1000 units. The
      * ascent will always be greater than or equal to zero even if all the
      * characters have a lower ascent.
-     * 
+     *
      * @param text
      *            the <CODE>String</CODE> to get the ascent of
      * @return the ascent in normalized 1000 units
@@ -1129,7 +1127,7 @@ public abstract class BaseFont {
      * Gets the descent of a <CODE>String</CODE> in points. The descent will
      * always be less than or equal to zero even if all the characters have an
      * higher descent.
-     * 
+     *
      * @param text
      *            the <CODE>String</CODE> to get the descent of
      * @param fontSize
@@ -1144,7 +1142,7 @@ public abstract class BaseFont {
      * Gets the ascent of a <CODE>String</CODE> in points. The ascent will
      * always be greater than or equal to zero even if all the characters have a
      * lower ascent.
-     * 
+     *
      * @param text
      *            the <CODE>String</CODE> to get the ascent of
      * @param fontSize
@@ -1160,7 +1158,7 @@ public abstract class BaseFont {
     /**
      * Gets the width of a <CODE>String</CODE> in points taking kerning into
      * account.
-     * 
+     *
      * @param text
      *            the <CODE>String</CODE> to get the width of
      * @param fontSize
@@ -1183,7 +1181,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the width of a <CODE>String</CODE> in points.
-     * 
+     *
      * @param text
      *            the <CODE>String</CODE> to get the width of
      * @param fontSize
@@ -1196,7 +1194,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the width of a <CODE>char</CODE> in points.
-     * 
+     *
      * @param char1
      *            the <CODE>char</CODE> to get the width of
      * @param fontSize
@@ -1210,7 +1208,7 @@ public abstract class BaseFont {
     /**
      * Converts a <CODE>String</CODE> to a </CODE>byte</CODE> array according to
      * the font's encoding.
-     * 
+     *
      * @param text
      *            the <CODE>String</CODE> to be converted
      * @return an array of <CODE>byte</CODE> representing the conversion
@@ -1244,7 +1242,7 @@ public abstract class BaseFont {
     /**
      * Converts a <CODE>char</CODE> to a </CODE>byte</CODE> array according to
      * the font's encoding.
-     * 
+     *
      * @param char1
      *            the <CODE>char</CODE> to be converted
      * @return an array of <CODE>byte</CODE> representing the conversion
@@ -1266,7 +1264,7 @@ public abstract class BaseFont {
 
     /**
      * Outputs to the writer the font dictionaries and streams.
-     * 
+     *
      * @param writer
      *            the writer for this document
      * @param ref
@@ -1285,7 +1283,7 @@ public abstract class BaseFont {
      * Returns a PdfStream object with the full font program (if possible). This
      * method will return null for some types of fonts (CJKFont, Type3Font) or
      * if there is no font program available (standard Type 1 fonts).
-     * 
+     *
      * @return a PdfStream with the font program
      * @since 2.1.3
      */
@@ -1295,7 +1293,7 @@ public abstract class BaseFont {
     /**
      * Gets the encoding used to convert <CODE>String</CODE> into
      * <CODE>byte[]</CODE>.
-     * 
+     *
      * @return the encoding name
      */
     public String getEncoding() {
@@ -1308,7 +1306,7 @@ public abstract class BaseFont {
      * <CODE>CAPHEIGHT</CODE>, <CODE>DESCENT</CODE>, <CODE>AWT_DESCENT</CODE>,
      * <CODE>ITALICANGLE</CODE>, <CODE>BBOXLLX</CODE>, <CODE>BBOXLLY</CODE>,
      * <CODE>BBOXURX</CODE> and <CODE>BBOXURY</CODE>.
-     * 
+     *
      * @param key
      *            the parameter to be extracted
      * @param fontSize
@@ -1320,7 +1318,7 @@ public abstract class BaseFont {
     /**
      * Gets the font type. The font types can be: FONT_TYPE_T1, FONT_TYPE_TT,
      * FONT_TYPE_CJK and FONT_TYPE_TTUNI.
-     * 
+     *
      * @return the font type
      */
     public int getFontType() {
@@ -1329,7 +1327,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the embedded flag.
-     * 
+     *
      * @return <CODE>true</CODE> if the font is embedded.
      */
     public boolean isEmbedded() {
@@ -1338,7 +1336,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the symbolic flag of the font.
-     * 
+     *
      * @return <CODE>true</CODE> if the font is symbolic
      */
     public boolean isFontSpecific() {
@@ -1348,7 +1346,7 @@ public abstract class BaseFont {
     /**
      * Creates a unique subset prefix to be added to the font name when the font
      * is embedded and subset.
-     * 
+     *
      * @return the subset prefix
      */
     public static String createSubsetPrefix() {
@@ -1362,7 +1360,7 @@ public abstract class BaseFont {
     /**
      * Gets the Unicode character corresponding to the byte output to the pdf
      * stream.
-     * 
+     *
      * @param index
      *            the byte index
      * @return the Unicode character
@@ -1373,7 +1371,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the postscript font name.
-     * 
+     *
      * @return the postscript font name
      */
     public abstract String getPostscriptFontName();
@@ -1381,7 +1379,7 @@ public abstract class BaseFont {
     /**
      * Sets the font name that will appear in the pdf font dictionary. Use with
      * care as it can easily make a font unreadable if not embedded.
-     * 
+     *
      * @param name
      *            the new font name
      */
@@ -1394,7 +1392,7 @@ public abstract class BaseFont {
      * specification, chapter 2, in the 'name' table.<br>
      * For the other fonts the array has a single element with {"", "", "", font
      * name}.
-     * 
+     *
      * @return the full name of the font
      */
     public abstract String[][] getFullFontName();
@@ -1406,7 +1404,7 @@ public abstract class BaseFont {
      * in the Open Type specification, chapter 2, in the 'name' table.<br>
      * For the other fonts the array has a single element with {"4", "", "", "",
      * font name}.
-     * 
+     *
      * @return the full name of the font
      * @since 2.0.8
      */
@@ -1419,7 +1417,7 @@ public abstract class BaseFont {
      * specification, chapter 2, in the 'name' table.<br>
      * For the other fonts the array has a single element with {"", "", "", font
      * name}.
-     * 
+     *
      * @param name
      *            the name of the font
      * @param encoding
@@ -1449,7 +1447,7 @@ public abstract class BaseFont {
 
     /**
      * Gets all the names from the font. Only the required tables are read.
-     * 
+     *
      * @param name
      *            the name of the font
      * @param encoding
@@ -1482,7 +1480,7 @@ public abstract class BaseFont {
     /**
      * Gets all the entries of the namestable from the font. Only the required
      * tables are read.
-     * 
+     *
      * @param name
      *            the name of the font
      * @param encoding
@@ -1519,7 +1517,7 @@ public abstract class BaseFont {
      * specification, chapter 2, in the 'name' table.<br>
      * For the other fonts the array has a single element with {"", "", "", font
      * name}.
-     * 
+     *
      * @return the family name of the font
      */
     public abstract String[][] getFamilyFontName();
@@ -1527,7 +1525,7 @@ public abstract class BaseFont {
     /**
      * Gets the code pages supported by the font. This has only meaning with
      * True Type fonts.
-     * 
+     *
      * @return the code pages supported by the font
      */
     public String[] getCodePagesSupported() {
@@ -1537,7 +1535,7 @@ public abstract class BaseFont {
     /**
      * Enumerates the postscript font names present inside a True Type
      * Collection.
-     * 
+     *
      * @param ttcFile
      *            the file name of the font
      * @throws DocumentException
@@ -1554,7 +1552,7 @@ public abstract class BaseFont {
     /**
      * Enumerates the postscript font names present inside a True Type
      * Collection.
-     * 
+     *
      * @param ttcArray
      *            the font as a <CODE>byte</CODE> array
      * @throws DocumentException
@@ -1570,7 +1568,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the font width array.
-     * 
+     *
      * @return the font width array
      */
     public int[] getWidths() {
@@ -1579,7 +1577,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the array with the names of the characters.
-     * 
+     *
      * @return the array with the names of the characters
      */
     public String[] getDifferences() {
@@ -1588,7 +1586,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the array with the unicode characters.
-     * 
+     *
      * @return the array with the unicode characters
      */
     public char[] getUnicodeDifferences() {
@@ -1597,7 +1595,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the state of the property.
-     * 
+     *
      * @return value of property forceWidthsOutput
      */
     public boolean isForceWidthsOutput() {
@@ -1606,7 +1604,7 @@ public abstract class BaseFont {
 
     /**
      * Set to <CODE>true</CODE> to force the generation of the widths array.
-     * 
+     *
      * @param forceWidthsOutput
      *            <CODE>true</CODE> to force the generation of the widths array
      */
@@ -1616,7 +1614,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the direct conversion of <CODE>char</CODE> to <CODE>byte</CODE>.
-     * 
+     *
      * @return value of property directTextToByte.
      * @see #setDirectTextToByte(boolean directTextToByte)
      */
@@ -1628,7 +1626,7 @@ public abstract class BaseFont {
      * Sets the conversion of <CODE>char</CODE> directly to <CODE>byte</CODE> by
      * casting. This is a low level feature to put the bytes directly in the
      * content stream without passing through String.getBytes().
-     * 
+     *
      * @param directTextToByte
      *            New value of property directTextToByte.
      */
@@ -1639,7 +1637,7 @@ public abstract class BaseFont {
     /**
      * Indicates if all the glyphs and widths for that particular encoding
      * should be included in the document.
-     * 
+     *
      * @return <CODE>false</CODE> to include all the glyphs and widths.
      */
     public boolean isSubset() {
@@ -1653,7 +1651,7 @@ public abstract class BaseFont {
      * <CODE>false</CODE> and {@link #addSubsetRange(int[])} was not called the
      * full font will be included otherwise just the characters ranges will be
      * included.
-     * 
+     *
      * @param subset
      *            new value of property subset
      */
@@ -1663,7 +1661,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the font resources.
-     * 
+     *
      * @param key
      *            the full name of the resource
      * @return the <CODE>InputStream</CODE> to get the resource or
@@ -1675,7 +1673,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the font resources.
-     * 
+     *
      * @param key
      *            the full name of the resource
      * @param loader
@@ -1684,7 +1682,8 @@ public abstract class BaseFont {
      * @return the <CODE>InputStream</CODE> to get the resource or
      *         <CODE>null</CODE> if not found
      */
-    public static InputStream getResourceStream(String key, ClassLoader loader) {
+    @SuppressWarnings("resource")
+	public static InputStream getResourceStream(String key, ClassLoader loader) {
         if (key.startsWith("/")) {
             key = key.substring(1);
         }
@@ -1718,7 +1717,7 @@ public abstract class BaseFont {
      * Gets the Unicode equivalent to a CID. The (inexistent) CID <FF00> is
      * translated as '\n'. It has only meaning with CJK fonts with Identity
      * encoding.
-     * 
+     *
      * @param c
      *            the CID code
      * @return the Unicode equivalent
@@ -1729,7 +1728,7 @@ public abstract class BaseFont {
 
     /**
      * Gets the CID code given an Unicode. It has only meaning with CJK fonts.
-     * 
+     *
      * @param c
      *            the Unicode
      * @return the CID equivalent
@@ -1740,14 +1739,14 @@ public abstract class BaseFont {
 
     /**
      * Checks if the font has any kerning pairs.
-     * 
+     *
      * @return <CODE>true</CODE> if the font has any kerning pairs
      */
     public abstract boolean hasKernPairs();
 
     /**
      * Checks if a character exists in this font.
-     * 
+     *
      * @param c
      *            the character to check
      * @return <CODE>true</CODE> if the character has a glyph,
@@ -1760,7 +1759,7 @@ public abstract class BaseFont {
 
     /**
      * Sets the character advance.
-     * 
+     *
      * @param c
      *            the character
      * @param advance
@@ -1805,8 +1804,8 @@ public abstract class BaseFont {
         }
         PdfDictionary font = resources.getAsDict(PdfName.FONT);
         if (font != null) {
-            for (Iterator it = font.getKeys().iterator(); it.hasNext();) {
-                PdfObject ft = font.get((PdfName) it.next());
+            for (PdfName name : font.getKeys()) {
+                PdfObject ft = font.get(name);
                 if (ft == null || !ft.isIndirect()) {
                     continue;
                 }
@@ -1819,9 +1818,8 @@ public abstract class BaseFont {
         }
         PdfDictionary xobj = resources.getAsDict(PdfName.XOBJECT);
         if (xobj != null) {
-            for (Iterator it = xobj.getKeys().iterator(); it.hasNext();) {
-                recourseFonts(xobj.getAsDict((PdfName) it.next()), hits, fonts,
-                        level);
+            for (PdfName name : xobj.getKeys()) {
+                recourseFonts(xobj.getAsDict(name), hits, fonts, level);
             }
         }
     }
@@ -1831,14 +1829,14 @@ public abstract class BaseFont {
      * <CODE>ArrayList</CODE> contains a
      * <CODE>Object[]{String,PRIndirectReference}</CODE> with the font name and
      * the indirect reference to it.
-     * 
+     *
      * @param reader
      *            the document where the fonts are to be listed from
      * @return the list of fonts and references
      */
     public static ArrayList<Object[]> getDocumentFonts(PdfReader reader) {
         IntHashtable hits = new IntHashtable();
-        ArrayList<Object[]> fonts = new ArrayList<Object[]>();
+        ArrayList<Object[]> fonts = new ArrayList<>();
         int npages = reader.getNumberOfPages();
         for (int k = 1; k <= npages; ++k) {
             recourseFonts(reader.getPageN(k), hits, fonts, 1);
@@ -1851,7 +1849,7 @@ public abstract class BaseFont {
      * the <CODE>ArrayList</CODE> contains a
      * <CODE>Object[]{String,PRIndirectReference}</CODE> with the font name and
      * the indirect reference to it.
-     * 
+     *
      * @param reader
      *            the document where the fonts are to be listed from
      * @param page
@@ -1861,7 +1859,7 @@ public abstract class BaseFont {
     public static ArrayList<Object[]> getDocumentFonts(PdfReader reader,
             int page) {
         IntHashtable hits = new IntHashtable();
-        ArrayList<Object[]> fonts = new ArrayList<Object[]>();
+        ArrayList<Object[]> fonts = new ArrayList<>();
         recourseFonts(reader.getPageN(page), hits, fonts, 1);
         return fonts;
     }
@@ -1871,7 +1869,7 @@ public abstract class BaseFont {
      * <CODE>null</CODE> if the font has not the information or the character
      * has no contours, as in the case of the space, for example. Characters
      * with no contours may also return [0,0,0,0].
-     * 
+     *
      * @param c
      *            the character to get the contour bounding box from
      * @return an array of four floats with the bounding box in the format
@@ -1919,20 +1917,20 @@ public abstract class BaseFont {
      * array where the first element is the start range inclusive and the second
      * element is the end range inclusive. Several ranges are allowed in the
      * same array.
-     * 
+     *
      * @param range
      *            the character range
      */
     public void addSubsetRange(int[] range) {
         if (subsetRanges == null) {
-            subsetRanges = new ArrayList<int[]>();
+            subsetRanges = new ArrayList<>();
         }
         subsetRanges.add(range);
     }
 
     /**
      * Returns the compression level used for the font streams.
-     * 
+     *
      * @return the compression level (0 = best speed, 9 = best compression, -1
      *         is default)
      * @since 2.1.3
@@ -1943,7 +1941,7 @@ public abstract class BaseFont {
 
     /**
      * Sets the compression level to be used for the font streams.
-     * 
+     *
      * @param compressionLevel
      *            a value between 0 (best speed) and 9 (best compression)
      * @since 2.1.3

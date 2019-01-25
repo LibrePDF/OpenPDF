@@ -51,8 +51,6 @@ package com.lowagie.text;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.HyphenationEvent;
 
@@ -83,32 +81,33 @@ import com.lowagie.text.pdf.HyphenationEvent;
  * @see        Anchor
  */
 
-public class Phrase extends ArrayList implements TextElementArray {
-    
+public class Phrase extends ArrayList<Element> implements ComposedElement<Element>, TextElementArray {
     // constants
     private static final long serialVersionUID = 2643594602455068231L;
 
     // membervariables
     /** This is the leading of this phrase. */
     protected float leading = Float.NaN;
-    
+
     /** This is the font of this phrase. */
     protected Font font;
-    
+
     /** Null, unless the Phrase has to be hyphenated.
      * @since    2.1.2
      */
     protected HyphenationEvent hyphenation = null;
-    
+
+    protected ArrayList<Element> children;
+
     // constructors
-    
+
     /**
      * Constructs a <CODE>Phrase</CODE> without specifying a leading.
      */
     public Phrase() {
         this(16);
     }
-    
+
     /**
      * Copy constructor for <CODE>Phrase</CODE>.
      */
@@ -129,7 +128,7 @@ public class Phrase extends ArrayList implements TextElementArray {
         this.leading = leading;
         font = new Font();
     }
-    
+
     /**
      * Constructs a <CODE>Phrase</CODE> with a certain <CODE>Chunk</CODE>.
      *
@@ -154,7 +153,7 @@ public class Phrase extends ArrayList implements TextElementArray {
         font = chunk.getFont();
         setHyphenation(chunk.getHyphenation());
     }
-    
+
     /**
      * Constructs a <CODE>Phrase</CODE> with a certain <CODE>String</CODE>.
      *
@@ -163,7 +162,7 @@ public class Phrase extends ArrayList implements TextElementArray {
     public Phrase(String string) {
         this(Float.NaN, string, new Font());
     }
-    
+
     /**
      * Constructs a <CODE>Phrase</CODE> with a certain <CODE>String</CODE> and a certain <CODE>Font</CODE>.
      *
@@ -173,7 +172,7 @@ public class Phrase extends ArrayList implements TextElementArray {
     public Phrase(String string, Font font) {
         this(Float.NaN, string, font);
     }
-    
+
     /**
      * Constructs a <CODE>Phrase</CODE> with a certain leading and a certain <CODE>String</CODE>.
      *
@@ -183,7 +182,7 @@ public class Phrase extends ArrayList implements TextElementArray {
     public Phrase(float leading, String string) {
         this(leading, string, new Font());
     }
-    
+
     /**
      * Constructs a <CODE>Phrase</CODE> with a certain leading, a certain <CODE>String</CODE>
      * and a certain <CODE>Font</CODE>.
@@ -200,50 +199,23 @@ public class Phrase extends ArrayList implements TextElementArray {
             super.add(new Chunk(string, font));
         }
     }
-    
+
     // implementation of the Element-methods
-    
-    /**
-     * Processes the element by adding it (or the different parts) to an
-     * <CODE>ElementListener</CODE>.
-     *
-     * @param    listener    an <CODE>ElementListener</CODE>
-     * @return    <CODE>true</CODE> if the element was processed successfully
-     */
-    public boolean process(ElementListener listener) {
-        try {
-            for (Iterator i = iterator(); i.hasNext(); ) {
-                listener.add((Element) i.next());
-            }
-            return true;
-        }
-        catch(DocumentException de) {
-            return false;
-        }
-    }
-    
+
     /**
      * Gets the type of the text element.
      *
      * @return    a type
-     */    
+     */
     public int type() {
         return Element.PHRASE;
     }
-    
-    /**
-     * Gets all the chunks in this element.
-     *
-     * @return    an <CODE>ArrayList</CODE>
-     */ 
-    public ArrayList getChunks() {
-        ArrayList tmp = new ArrayList();
-        for (Iterator i = iterator(); i.hasNext(); ) {
-            tmp.addAll(((Element) i.next()).getChunks());
-        }
-        return tmp;
+
+    @Override
+    public Collection<Element> getChildren() {
+        return children;
     }
-    
+
     /**
      * @see com.lowagie.text.Element#isContent()
      * @since    iText 2.0.8
@@ -259,48 +231,42 @@ public class Phrase extends ArrayList implements TextElementArray {
     public boolean isNestable() {
         return true;
     }
-    
+
     // overriding some of the ArrayList-methods
-    
+
     /**
      * Adds a <CODE>Chunk</CODE>, an <CODE>Anchor</CODE> or another <CODE>Phrase</CODE>
      * to this <CODE>Phrase</CODE>.
      *
      * @param    index    index at which the specified element is to be inserted
-     * @param    o       an object of type <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
+     * @param    element       an object of type <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
      * @throws    ClassCastException    when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
      */
-    public void add(int index, Object o) {
-        if (o == null) return;
-        try {
-            Element element = (Element) o;
-            if (element.type() == Element.CHUNK) {
-                Chunk chunk = (Chunk) element;
-                if (!font.isStandardFont()) {
-                    chunk.setFont(font.difference(chunk.getFont()));
-                }
-                if (hyphenation != null && chunk.getHyphenation() == null && !chunk.isEmpty()) {
-                    chunk.setHyphenation(hyphenation);
-                }
-                super.add(index, chunk);
+    public void add(int index, Element element) {
+        if (element == null) return;
+        if (element.type() == Element.CHUNK) {
+            Chunk chunk = (Chunk) element;
+            if (!font.isStandardFont()) {
+                chunk.setFont(font.difference(chunk.getFont()));
             }
-            else if (element.type() == Element.PHRASE ||
-            element.type() == Element.ANCHOR ||
-            element.type() == Element.ANNOTATION ||
-            element.type() == Element.TABLE || // line added by David Freels
-            element.type() == Element.YMARK || 
-            element.type() == Element.MARKED) {
-                super.add(index, element);
+            if (hyphenation != null && chunk.getHyphenation() == null && !chunk.isEmpty()) {
+                chunk.setHyphenation(hyphenation);
             }
-            else {
-                throw new ClassCastException(String.valueOf(element.type()));
-            }
+            super.add(index, chunk);
         }
-        catch(ClassCastException cce) {
-            throw new ClassCastException(MessageLocalization.getComposedMessage("insertion.of.illegal.element.1", cce.getMessage()));
+        else if (element.type() == Element.PHRASE ||
+        element.type() == Element.ANCHOR ||
+        element.type() == Element.ANNOTATION ||
+        element.type() == Element.TABLE || // line added by David Freels
+        element.type() == Element.YMARK ||
+        element.type() == Element.MARKED) {
+            super.add(index, element);
+        }
+        else {
+            throw new ClassCastException(String.valueOf(element.type()));
         }
     }
-    
+
     /**
      * Adds a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or another <CODE>Phrase</CODE>
      * to this <CODE>Phrase</CODE>.
@@ -311,66 +277,64 @@ public class Phrase extends ArrayList implements TextElementArray {
      */
     public boolean add(Object o) {
         if (o == null) return false;
-        if (o instanceof String) {
-            return super.add(new Chunk((String) o, font));
-        }
-        if (o instanceof RtfElementInterface) {
-            return super.add(o);
-        }
-        try {
-            Element element = (Element) o;
-            switch(element.type()) {
-                case Element.CHUNK:
-                    return addChunk((Chunk) o);
-                case Element.PHRASE:
-                case Element.PARAGRAPH:
-                    Phrase phrase = (Phrase) o;
-                    boolean success = true;
-                    Element e;
-                    for (Iterator i = phrase.iterator(); i.hasNext(); ) {
-                        e = (Element) i.next();
-                        if (e instanceof Chunk) {
-                            success &= addChunk((Chunk)e);
-                        }
-                        else {
-                            success &= this.add(e);
-                        }
-                    }
-                    return success;
-                case Element.MARKED:
-                case Element.ANCHOR:
-                case Element.ANNOTATION:
-                case Element.FOOTNOTE:
-                case Element.TABLE: // case added by David Freels
-                case Element.PTABLE: // case added by mr. Karen Vardanyan
-                    // This will only work for PDF!!! Not for RTF/HTML
-                case Element.LIST:
-                case Element.YMARK:
-                    return super.add(o);
-                    default:
-                        throw new ClassCastException(String.valueOf(element.type()));
-            }
-        }
-        catch(ClassCastException cce) {
-            throw new ClassCastException(MessageLocalization.getComposedMessage("insertion.of.illegal.element.1", cce.getMessage()));
-        }
+        if (o instanceof String) return add((String) o);
+        if (o instanceof RtfElementInterface) { ((ArrayList)this).add(o); return true; } // TODO: Check: weird types
+        if (o instanceof Element) return add((Element) o);
+        throw new ClassCastException(o.getClass().getName());
     }
-    
+
     /**
-     * Adds a collection of <CODE>Chunk</CODE>s
+     * Adds a <CODE>String</CODE> text as a <CODE>Chunk</CODE> to this <CODE>Phrase</CODE>.
+     *
+     * @param    o    a <CODE>String</CODE> chunk.
+     * @return    a boolean
+     */
+    public boolean add(String text) {
+    	return add(new Chunk(text, font));
+    }
+
+    /**
+     * Adds a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or another <CODE>Phrase</CODE>
      * to this <CODE>Phrase</CODE>.
      *
-     * @param    collection    a collection of <CODE>Chunk</CODE>s, <CODE>Anchor</CODE>s and <CODE>Phrase</CODE>s.
-     * @return    <CODE>true</CODE> if the action succeeded, <CODE>false</CODE> if not.
+     * @param    o    an object of type <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
+     * @return    a boolean
      * @throws    ClassCastException    when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
      */
-    public boolean addAll(Collection collection) {
-        for (Iterator iterator = collection.iterator(); iterator.hasNext(); ) {
-            this.add(iterator.next());
+    public boolean add(Element element) {
+        if (element == null) return false;
+
+        switch(element.type()) {
+            case Element.CHUNK:
+                return addChunk((Chunk) element);
+            case Element.PHRASE:
+            case Element.PARAGRAPH:
+                Phrase phrase = (Phrase) element;
+                boolean success = true;
+                for(Element e : phrase.getChildren()) {
+                    if (e instanceof Chunk) {
+                        success &= addChunk((Chunk)e);
+                    }
+                    else {
+                        success &= this.add(e);
+                    }
+                }
+                return success;
+            case Element.MARKED:
+            case Element.ANCHOR:
+            case Element.ANNOTATION:
+            case Element.FOOTNOTE:
+            case Element.TABLE: // case added by David Freels
+            case Element.PTABLE: // case added by mr. Karen Vardanyan
+                // This will only work for PDF!!! Not for RTF/HTML
+            case Element.LIST:
+            case Element.YMARK:
+                return super.add(element);
+            default:
+                throw new ClassCastException(String.valueOf(element.type()));
         }
-        return true;
     }
-    
+
     /**
      * Adds a Chunk.
      * <p>
@@ -407,28 +371,28 @@ public class Phrase extends ArrayList implements TextElementArray {
         }
         return super.add(newChunk);
     }
-    
+
     /**
      * Adds a <CODE>Object</CODE> to the <CODE>Paragraph</CODE>.
      *
-     * @param    object        the object to add.
+     * @param    element        the object to add.
      */
-    protected void addSpecial(Object object) {
-        super.add(object);
+    protected void addSpecial(Element element) {
+        super.add(element);
     }
-    
+
     // other methods that change the member variables
-    
+
     /**
      * Sets the leading of this phrase.
      *
      * @param    leading        the new leading
      */
-    
+
     public void setLeading(float leading) {
         this.leading = leading;
     }
-    
+
     /**
      * Sets the main font of this phrase.
      * @param font    the new font
@@ -436,7 +400,7 @@ public class Phrase extends ArrayList implements TextElementArray {
     public void setFont(Font font) {
         this.font = font;
     }
-    
+
     // methods to retrieve information
 
     /**
@@ -455,7 +419,7 @@ public class Phrase extends ArrayList implements TextElementArray {
      * Checks you if the leading of this phrase is defined.
      *
      * @return    true if the leading is defined
-     */ 
+     */
     public boolean hasLeading() {
         return !Float.isNaN(leading);
     }
@@ -464,7 +428,7 @@ public class Phrase extends ArrayList implements TextElementArray {
      * Gets the font of the first <CODE>Chunk</CODE> that appears in this <CODE>Phrase</CODE>.
      *
      * @return    a <CODE>Font</CODE>
-     */  
+     */
     public Font getFont() {
         return font;
     }
@@ -475,12 +439,12 @@ public class Phrase extends ArrayList implements TextElementArray {
      */
     public String getContent() {
         StringBuffer buf = new StringBuffer();
-        for (Iterator i = getChunks().iterator(); i.hasNext(); ) {
-            buf.append(i.next().toString());
+        for (Chunk c : getChunks()) {
+            buf.append(c.toString());
         }
         return buf.toString();
     }
-    
+
     /**
      * Checks is this <CODE>Phrase</CODE> contains no or 1 empty <CODE>Chunk</CODE>.
      *
@@ -492,13 +456,13 @@ public class Phrase extends ArrayList implements TextElementArray {
             case 0:
                 return true;
             case 1:
-                Element element = (Element) get(0);
+                Element element = get(0);
                 return element.type() == Element.CHUNK && ((Chunk) element).isEmpty();
             default:
                     return false;
         }
     }
-    
+
     /**
      * Getter for the hyphenation settings.
      * @return    a HyphenationEvent
@@ -516,17 +480,17 @@ public class Phrase extends ArrayList implements TextElementArray {
     public void setHyphenation(HyphenationEvent hyphenation) {
         this.hyphenation = hyphenation;
     }
-    
+
     // kept for historical reasons; people should use FontSelector
     // eligible for deprecation, but the methods are mentioned in the book p277.
-    
+
     /**
      * Constructs a Phrase that can be used in the static getInstance() method.
      * @param    dummy    a dummy parameter
      */
     private Phrase(boolean dummy) {
     }
-    
+
     /**
      * Gets a special kind of Phrase that changes some characters into corresponding symbols.
      * @param string
@@ -535,7 +499,7 @@ public class Phrase extends ArrayList implements TextElementArray {
     public static final Phrase getInstance(String string) {
         return getInstance(16, string, new Font());
     }
-    
+
     /**
      * Gets a special kind of Phrase that changes some characters into corresponding symbols.
      * @param leading
@@ -545,7 +509,7 @@ public class Phrase extends ArrayList implements TextElementArray {
     public static final Phrase getInstance(int leading, String string) {
         return getInstance(leading, string, new Font());
     }
-    
+
     /**
      * Gets a special kind of Phrase that changes some characters into corresponding symbols.
      * @param leading
@@ -581,5 +545,4 @@ public class Phrase extends ArrayList implements TextElementArray {
         }
         return p;
     }
-
 }

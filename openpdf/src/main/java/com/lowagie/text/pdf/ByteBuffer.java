@@ -55,9 +55,9 @@ import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocWriter;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * Acts like a <CODE>StringBuffer</CODE> but works with <CODE>byte</CODE> arrays.
@@ -73,9 +73,9 @@ public class ByteBuffer extends OutputStream {
      * The buffer where the bytes are stored.
      */
     protected byte[] buf;
-    
+
     private static int byteCacheSize = 0;
-    
+
     private static byte[][] byteCache = new byte[byteCacheSize][];
     public static final byte ZERO = (byte)'0';
     private static final char[] chars = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
@@ -83,15 +83,15 @@ public class ByteBuffer extends OutputStream {
     /**
      * If <CODE>true</CODE> always output floating point numbers with 6 decimal digits.
      * If <CODE>false</CODE> uses the faster, although less precise, representation.
-     */    
+     */
     public static boolean HIGH_PRECISION = false;
     private static final DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
-    
+
     /** Creates new ByteBuffer with capacity 128 */
     public ByteBuffer() {
         this(128);
     }
-    
+
     /**
      * Creates a byte buffer with a certain capacity.
      * @param size the initial capacity
@@ -101,7 +101,7 @@ public class ByteBuffer extends OutputStream {
             size = 128;
         buf = new byte[size];
     }
-    
+
     /**
      * Sets the cache size.
      * <P>
@@ -110,7 +110,7 @@ public class ByteBuffer extends OutputStream {
      *
      * @param   size    the size of the cache
      */
-    
+
     public static void setCacheSize(int size) {
         if (size > 3276700) size = 3276700;
         if (size <= byteCacheSize) return;
@@ -119,13 +119,13 @@ public class ByteBuffer extends OutputStream {
         byteCache = tmpCache;
         byteCacheSize = size;
     }
-    
+
     /**
      * You can fill the cache in advance if you want to.
      *
      * @param   decimals
      */
-    
+
     public static void fillCache(int decimals) {
         int step = 1;
         switch(decimals) {
@@ -141,14 +141,14 @@ public class ByteBuffer extends OutputStream {
             byteCache[i] = convertToBytes(i);
         }
     }
-    
+
     /**
      * Converts an double (multiplied by 100 and cast to an int) into an array of bytes.
      *
      * @param   i   the int
      * @return  a byte array
      */
-    
+
     private static byte[] convertToBytes(int i) {
         int size = (int)Math.floor(Math.log(i) / Math.log(10));
         if (i % 100 != 0) {
@@ -184,7 +184,7 @@ public class ByteBuffer extends OutputStream {
         }
         return cache;
     }
-    
+
     /**
      * Appends an <CODE>int</CODE>. The size of the array will grow by one.
      * @param b the int to be appended
@@ -201,7 +201,7 @@ public class ByteBuffer extends OutputStream {
         count = newcount;
         return this;
     }
-    
+
     /**
      * Appends the subarray of the <CODE>byte</CODE> array. The buffer will grow by
      * <CODE>len</CODE> bytes.
@@ -224,7 +224,7 @@ public class ByteBuffer extends OutputStream {
         count = newcount;
         return this;
     }
-    
+
     /**
      * Appends an array of bytes.
      * @param b the array to be appended
@@ -233,7 +233,7 @@ public class ByteBuffer extends OutputStream {
     public ByteBuffer append(byte[] b) {
         return append(b, 0, b.length);
     }
-    
+
     /**
      * Appends a <CODE>String</CODE> to the buffer. The <CODE>String</CODE> is
      * converted according to the encoding ISO-8859-1.
@@ -245,7 +245,7 @@ public class ByteBuffer extends OutputStream {
             return append(DocWriter.getISOBytes(str));
         return this;
     }
-    
+
     /**
      * Appends a <CODE>char</CODE> to the buffer. The <CODE>char</CODE> is
      * converted according to the encoding ISO-8859-1.
@@ -255,7 +255,7 @@ public class ByteBuffer extends OutputStream {
     public ByteBuffer append(char c) {
         return append_i(c);
     }
-    
+
     /**
      * Appends another <CODE>ByteBuffer</CODE> to this buffer.
      * @param buf the <CODE>ByteBuffer</CODE> to be appended
@@ -264,7 +264,7 @@ public class ByteBuffer extends OutputStream {
     public ByteBuffer append(ByteBuffer buf) {
         return append(buf.buf, 0, buf.count);
     }
-    
+
     /**
      * Appends the string representation of an <CODE>int</CODE>.
      * @param i the <CODE>int</CODE> to be appended
@@ -273,16 +273,16 @@ public class ByteBuffer extends OutputStream {
     public ByteBuffer append(int i) {
         return append((double)i);
     }
-    
+
     public ByteBuffer append(byte b) {
         return append_i(b);
     }
-    
+
     public ByteBuffer appendHex(byte b) {
         append(bytes[(b >> 4) & 0x0f]);
         return append(bytes[b & 0x0f]);
     }
-    
+
     /**
      * Appends a string representation of a <CODE>float</CODE> according
      * to the Pdf conventions.
@@ -292,7 +292,7 @@ public class ByteBuffer extends OutputStream {
     public ByteBuffer append(float i) {
         return append((double)i);
     }
-    
+
     /**
      * Appends a string representation of a <CODE>double</CODE> according
      * to the Pdf conventions.
@@ -303,7 +303,7 @@ public class ByteBuffer extends OutputStream {
         append(formatDouble(d, this));
         return this;
     }
-    
+
     /**
      * Outputs a <CODE>double</CODE> into a format suitable for the PDF.
      * @param d a double
@@ -312,7 +312,7 @@ public class ByteBuffer extends OutputStream {
     public static String formatDouble(double d) {
         return formatDouble(d, null);
     }
-    
+
     /**
      * Outputs a <CODE>double</CODE> into a format suitable for the PDF.
      * @param d a double
@@ -367,11 +367,11 @@ public class ByteBuffer extends OutputStream {
             }
             if (buf != null) {
                 int v = (int) (d * 100000);
-                
+
                 if (negative) buf.append((byte)'-');
                 buf.append((byte)'0');
                 buf.append((byte)'.');
-                
+
                 buf.append( (byte)(v / 10000 + ZERO) );
                 if (v % 10000 != 0) {
                     buf.append( (byte)((v / 1000) % 10 + ZERO) );
@@ -389,11 +389,11 @@ public class ByteBuffer extends OutputStream {
             } else {
                 int x = 100000;
                 int v = (int) (d * x);
-                
+
                 StringBuffer res = new StringBuffer();
                 if (negative) res.append('-');
                 res.append("0.");
-                
+
                 while( v < x/10 ) {
                     res.append('0');
                     x /= 10;
@@ -409,7 +409,7 @@ public class ByteBuffer extends OutputStream {
         } else if (d <= 32767) {
             d += 0.005;
             int v = (int) (d * 100);
-            
+
             if (v < byteCacheSize && byteCache[v] != null) {
                 if (buf != null) {
                     if (negative) buf.append((byte)'-');
@@ -442,7 +442,7 @@ public class ByteBuffer extends OutputStream {
                         //the original number is >=1, we need 1 more bytes
                         size += 1;
                     }
-                    
+
                     //now we must check if we have a decimal number
                     if (v % 100 != 0) {
                         //yes, do not forget the "."
@@ -468,7 +468,7 @@ public class ByteBuffer extends OutputStream {
                     if (v >= 100) {
                         cache[add++] = bytes[(v / 100) % 10];
                     }
-                    
+
                     if (v % 100 != 0) {
                         cache[add++] = (byte)'.';
                         cache[add++] = bytes[(v / 10) % 10];
@@ -478,7 +478,7 @@ public class ByteBuffer extends OutputStream {
                     }
                     byteCache[v] = cache;
                 }
-                
+
                 if (negative) buf.append((byte)'-');
                 if (v >= 1000000) {
                     buf.append( bytes[(v / 1000000)] );
@@ -495,7 +495,7 @@ public class ByteBuffer extends OutputStream {
                 if (v >= 100) {
                     buf.append( bytes[(v / 100) % 10] );
                 }
-                
+
                 if (v % 100 != 0) {
                     buf.append((byte)'.');
                     buf.append( bytes[(v / 10) % 10] );
@@ -522,7 +522,7 @@ public class ByteBuffer extends OutputStream {
                 if (v >= 100) {
                     res.append( chars[(v / 100) % 10] );
                 }
-                
+
                 if (v % 100 != 0) {
                     res.append('.');
                     res.append( chars[(v / 10) % 10] );
@@ -540,14 +540,14 @@ public class ByteBuffer extends OutputStream {
             return res.append(v).toString();
         }
     }
-    
+
     /**
      * Sets the size to zero.
      */
     public void reset() {
         count = 0;
     }
-    
+
     /**
      * Creates a newly allocated byte array. Its size is the current
      * size of this output stream and the valid contents of the buffer
@@ -560,7 +560,7 @@ public class ByteBuffer extends OutputStream {
         System.arraycopy(buf, 0, newbuf, 0, count);
         return newbuf;
     }
-    
+
     /**
      * Returns the current size of the buffer.
      *
@@ -569,13 +569,13 @@ public class ByteBuffer extends OutputStream {
     public int size() {
         return count;
     }
-    
+
     public void setSize(int size) {
         if (size > count || size < 0)
             throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.new.size.must.be.positive.and.lt.eq.of.the.current.size"));
         count = size;
     }
-    
+
     /**
      * Converts the buffer's contents into a string, translating bytes into
      * characters according to the platform's default character encoding.
@@ -585,7 +585,7 @@ public class ByteBuffer extends OutputStream {
     public String toString() {
         return new String(buf, 0, count);
     }
-    
+
     /**
      * Converts the buffer's contents into a string, translating bytes into
      * characters according to the specified character encoding.
@@ -598,7 +598,7 @@ public class ByteBuffer extends OutputStream {
     public String toString(String enc) throws UnsupportedEncodingException {
         return new String(buf, 0, count, enc);
     }
-    
+
     /**
      * Writes the complete contents of this byte buffer output to
      * the specified output stream argument, as if by calling the output
@@ -610,15 +610,15 @@ public class ByteBuffer extends OutputStream {
     public void writeTo(OutputStream out) throws IOException {
         out.write(buf, 0, count);
     }
-    
+
     public void write(int b) {
         append((byte)b);
     }
-    
+
     public void write(byte[] b, int off, int len) {
         append(b, off, len);
     }
-    
+
     public byte[] getBuffer() {
         return buf;
     }

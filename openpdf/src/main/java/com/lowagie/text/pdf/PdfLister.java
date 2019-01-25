@@ -53,7 +53,6 @@
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Iterator;
 /**
  * List a PDF file in human-readable form (for debugging reasons mostly)
  * @author Mark Thompson
@@ -100,11 +99,8 @@ public class PdfLister {
     public void listDict(PdfDictionary dictionary)
     {
         out.println("<<");
-        PdfName key;
-        PdfObject value;
-        for (Iterator i = dictionary.getKeys().iterator(); i.hasNext(); ) {
-            key = (PdfName) i.next();
-            value = dictionary.get(key);
+        for (PdfName key : dictionary.getKeys()) {
+            PdfObject value = dictionary.get(key);
             out.print(key.toString());
             out.print(' ');
             listAnyObject(value);
@@ -119,8 +115,7 @@ public class PdfLister {
     public void listArray(PdfArray array)
     {
         out.println('[');
-        for (Iterator i = array.listIterator(); i.hasNext(); ) {
-            PdfObject item = (PdfObject)i.next();
+        for (PdfObject item : array) {
             listAnyObject(item);
         }
         out.println(']');
@@ -178,9 +173,9 @@ public class PdfLister {
             listStream((PRStream)obj, readerInst);
             break;
         case PdfObject.ARRAY:
-            for (Iterator i = ((PdfArray)obj).listIterator(); i.hasNext();) {
-                PdfObject o = PdfReader.getPdfObject((PdfObject)i.next());
-                listStream((PRStream)o, readerInst);
+            for (PdfObject o : ((PdfArray)obj)) {
+                PRStream s = (PRStream) PdfReader.getPdfObject(o);
+                listStream(s, readerInst);
                 out.println("-----------");
             }
             break;

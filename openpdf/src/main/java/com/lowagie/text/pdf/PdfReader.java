@@ -49,18 +49,6 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.bouncycastle.BouncyCastleHelper;
-
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.exceptions.BadPasswordException;
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.exceptions.InvalidPdfException;
-import com.lowagie.text.exceptions.UnsupportedPdfException;
-import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
-import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -78,13 +66,23 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 import java.util.zip.InflaterInputStream;
 
+import com.lowagie.bouncycastle.BouncyCastleHelper;
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.exceptions.BadPasswordException;
+import com.lowagie.text.exceptions.InvalidPdfException;
+import com.lowagie.text.exceptions.UnsupportedPdfException;
+import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
+import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
+
 /**
  * Reads a PDF document.
- * 
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  * @author Kazuya Ujihara
  */
@@ -160,7 +158,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param filename
    *          the file name of the document
    * @throws IOException
@@ -172,7 +170,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param filename
    *          the file name of the document
    * @param ownerPassword
@@ -188,7 +186,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param pdfIn
    *          the byte array with the document
    * @throws IOException
@@ -200,7 +198,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param pdfIn
    *          the byte array with the document
    * @param ownerPassword
@@ -216,7 +214,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param filename
    *          the file name of the document
    * @param certificate
@@ -239,7 +237,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param url
    *          the URL of the document
    * @throws IOException
@@ -251,7 +249,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param url
    *          the URL of the document
    * @param ownerPassword
@@ -267,7 +265,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param is
    *          the <CODE>InputStream</CODE> containing the document. The stream
    *          is read to the end but is not closed
@@ -284,7 +282,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param is
    *          the <CODE>InputStream</CODE> containing the document. The stream
    *          is read to the end but is not closed
@@ -301,7 +299,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * mode as only parts of the pdf are read as needed. The pdf is left open but
    * may be closed at any time with <CODE>PdfReader.close()</CODE>, reopen is
    * automatic.
-   * 
+   *
    * @param raf
    *          the document location
    * @param ownerPassword
@@ -319,7 +317,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Creates an independent duplicate.
-   * 
+   *
    * @param reader
    *          the <CODE>PdfReader</CODE> to duplicate
    */
@@ -361,7 +359,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets a new file instance of the original PDF document.
-   * 
+   *
    * @return a new file instance of the original PDF document
    */
   public RandomAccessFileOrArray getSafeFile() {
@@ -374,7 +372,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the number of pages in the document.
-   * 
+   *
    * @return the number of pages in the document
    */
   public int getNumberOfPages() {
@@ -384,7 +382,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Returns the document's catalog. This dictionary is not a copy, any changes
    * will be reflected in the catalog.
-   * 
+   *
    * @return the document's catalog
    */
   public PdfDictionary getCatalog() {
@@ -393,7 +391,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Returns the document's acroform, if it has one.
-   * 
+   *
    * @return the document's acroform
    */
   public PRAcroForm getAcroForm() {
@@ -414,7 +412,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the page rotation. This value can be 0, 90, 180 or 270.
-   * 
+   *
    * @param index
    *          the page number. The first page is 1
    * @return the page rotation
@@ -427,17 +425,16 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     PdfNumber rotate = page.getAsNumber(PdfName.ROTATE);
     if (rotate == null)
       return 0;
-    else {
-      int n = rotate.intValue();
-      n %= 360;
-      return n < 0 ? n + 360 : n;
-    }
+
+    int n = rotate.intValue();
+    n %= 360;
+    return n < 0 ? n + 360 : n;
   }
 
   /**
    * Gets the page size, taking rotation into account. This is a
    * <CODE>Rectangle</CODE> with the value of the /MediaBox and the /Rotate key.
-   * 
+   *
    * @param index
    *          the page number. The first page is 1
    * @return a <CODE>Rectangle</CODE>
@@ -448,7 +445,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the rotated page from a page dictionary.
-   * 
+   *
    * @param page
    *          the page dictionary
    * @return the rotated page
@@ -466,7 +463,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the page size without taking rotation into account. This is the value
    * of the /MediaBox key.
-   * 
+   *
    * @param index
    *          the page number. The first page is 1
    * @return the page size
@@ -477,7 +474,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the page from a page dictionary
-   * 
+   *
    * @param page
    *          the page dictionary
    * @return the page
@@ -493,7 +490,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * displayed or printed. It usually is the same as the media box but may be
    * smaller. If the page doesn't have a crop box the page size will be
    * returned.
-   * 
+   *
    * @param index
    *          the page number. The first page is 1
    * @return the crop box
@@ -509,7 +506,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the box size. Allowed names are: "crop", "trim", "art", "bleed" and
    * "media".
-   * 
+   *
    * @param index
    *          the page number. The first page is 1
    * @param boxName
@@ -537,7 +534,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Returns the content of the document information dictionary as a
    * <CODE>HashMap</CODE> of <CODE>String</CODE>.
-   * 
+   *
    * @return content of the document information dictionary
    */
   public Map<String, String> getInfo() {
@@ -569,7 +566,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Normalizes a <CODE>Rectangle</CODE> so that llx and lly are smaller than
    * urx and ury.
-   * 
+   *
    * @param box
    *          the original rectangle
    * @return a normalized <CODE>Rectangle</CODE>
@@ -659,7 +656,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
   }
 
-  private boolean equalsArray(byte[] ar1, byte[] ar2, int size) {
+  private static boolean equalsArray(byte[] ar1, byte[] ar2, int size) {
     for (int k = 0; k < size; ++k) {
       if (ar1[k] != ar2[k])
         return false;
@@ -896,7 +893,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads a <CODE>PdfObject</CODE> resolving an indirect reference if needed.
-   * 
+   *
    * @param obj
    *          the <CODE>PdfObject</CODE> to read
    * @return the resolved <CODE>PdfObject</CODE>
@@ -906,30 +903,31 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       return null;
     if (!obj.isIndirect())
       return obj;
+
     try {
       PRIndirectReference ref = (PRIndirectReference) obj;
       int idx = ref.getNumber();
       boolean appendable = ref.getReader().appendable;
       obj = ref.getReader().getPdfObject(idx);
-      if (obj == null) {
+      if (obj == null)
         return null;
-      } else {
-        if (appendable) {
-          switch (obj.type()) {
-          case PdfObject.NULL:
-            obj = new PdfNull();
-            break;
-          case PdfObject.BOOLEAN:
-            obj = new PdfBoolean(((PdfBoolean) obj).booleanValue());
-            break;
-          case PdfObject.NAME:
-            obj = new PdfName(obj.getBytes());
-            break;
-          }
-          obj.setIndRef(ref);
+
+      if (appendable) {
+        switch (obj.type()) {
+        case PdfObject.NULL:
+          obj = new PdfNull();
+          break;
+        case PdfObject.BOOLEAN:
+          obj = new PdfBoolean(((PdfBoolean) obj).booleanValue());
+          break;
+        case PdfObject.NAME:
+          obj = new PdfName(obj.getBytes());
+          break;
         }
-        return obj;
+        obj.setIndRef(ref);
       }
+
+      return obj;
     } catch (Exception e) {
       throw new ExceptionConverter(e);
     }
@@ -939,7 +937,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * Reads a <CODE>PdfObject</CODE> resolving an indirect reference if needed.
    * If the reader was opened in partial mode the object will be released to
    * save memory.
-   * 
+   *
    * @param obj
    *          the <CODE>PdfObject</CODE> to read
    * @return a PdfObject
@@ -956,26 +954,27 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   public static PdfObject getPdfObject(PdfObject obj, PdfObject parent) {
     if (obj == null)
       return null;
-    if (!obj.isIndirect()) {
-      PRIndirectReference ref;
-      if (parent != null && (ref = parent.getIndRef()) != null
-          && ref.getReader().isAppendable()) {
-        switch (obj.type()) {
-        case PdfObject.NULL:
-          obj = new PdfNull();
-          break;
-        case PdfObject.BOOLEAN:
-          obj = new PdfBoolean(((PdfBoolean) obj).booleanValue());
-          break;
-        case PdfObject.NAME:
-          obj = new PdfName(obj.getBytes());
-          break;
-        }
-        obj.setIndRef(ref);
+    if (obj.isIndirect())
+        return getPdfObject(obj);
+
+    PRIndirectReference ref;
+    if (parent != null && (ref = parent.getIndRef()) != null
+        && ref.getReader().isAppendable()) {
+      switch (obj.type()) {
+      case PdfObject.NULL:
+        obj = new PdfNull();
+        break;
+      case PdfObject.BOOLEAN:
+        obj = new PdfBoolean(((PdfBoolean) obj).booleanValue());
+        break;
+      case PdfObject.NAME:
+        obj = new PdfName(obj.getBytes());
+        break;
+      default:
       }
-      return obj;
+      obj.setIndRef(ref);
     }
-    return getPdfObject(obj);
+    return obj;
   }
 
   /**
@@ -1212,10 +1211,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
     readDecryptedDocObj();
     if (objStmMark != null) {
-      for (Object o : objStmMark.entrySet()) {
-        Map.Entry entry = (Map.Entry) o;
-        int n = (Integer) entry.getKey();
-        IntHashtable h = (IntHashtable) entry.getValue();
+      for(Map.Entry<Integer, IntHashtable> entry : objStmMark.entrySet()) {
+        int n = entry.getKey().intValue();
+        IntHashtable h = entry.getValue();
         readObjStm((PRStream) xrefObj.get(n), h);
         xrefObj.set(n, null);
       }
@@ -1316,7 +1314,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Eliminates the reference to the object freeing the memory used by it and
    * clearing the xref entry.
-   * 
+   *
    * @param obj
    *          the object. If it's an indirect reference it will be eliminated
    * @return the object or the already erased dereferenced object
@@ -1546,7 +1544,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             if (partial) {
               objStmToOffset.put(field2, 0);
             } else {
-              Integer on = field2;
+              Integer on = Integer.valueOf(field2);
               IntHashtable seq = objStmMark.get(on);
               if (seq == null) {
                 seq = new IntHashtable();
@@ -1763,7 +1761,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Decodes a stream that has the FlateDecode filter.
-   * 
+   *
    * @param in
    *          the input data
    * @return the decoded data
@@ -1890,7 +1888,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * A helper to FlateDecode.
-   * 
+   *
    * @param in
    *          the input data
    * @param strict
@@ -1900,27 +1898,30 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    */
   public static byte[] FlateDecode(byte[] in, boolean strict) {
     ByteArrayInputStream stream = new ByteArrayInputStream(in);
-    InflaterInputStream zip = new InflaterInputStream(stream);
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    byte[] b = new byte[strict ? 4092 : 1];
-    try {
-      int n;
-      while ((n = zip.read(b)) >= 0) {
-        out.write(b, 0, n);
+    try (
+      InflaterInputStream zip = new InflaterInputStream(stream);
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+    ) {
+      byte[] b = new byte[strict ? 4092 : 1];
+      try {
+          int n;
+          while ((n = zip.read(b)) >= 0) {
+            out.write(b, 0, n);
+          }
+          return out.toByteArray();
+      } catch(Exception e2) {
+          if (strict)
+            return null;
+          return out.toByteArray();
       }
-      zip.close();
-      out.close();
-      return out.toByteArray();
-    } catch (Exception e) {
-      if (strict)
+    } catch (IOException e) {
         return null;
-      return out.toByteArray();
     }
   }
 
   /**
    * Decodes a stream that has the ASCIIHexDecode filter.
-   * 
+   *
    * @param in
    *          the input data
    * @return the decoded data
@@ -1953,7 +1954,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Decodes a stream that has the ASCII85Decode filter.
-   * 
+   *
    * @param in
    *          the input data
    * @return the decoded data
@@ -2019,7 +2020,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Decodes a stream that has the LZWDecode filter.
-   * 
+   *
    * @param in
    *          the input data
    * @return the decoded data
@@ -2033,7 +2034,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Checks if the document had errors and was rebuilt.
-   * 
+   *
    * @return true if rebuilt.
    *
    */
@@ -2043,7 +2044,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the dictionary that represents a page.
-   * 
+   *
    * @param pageNum
    *          the page number. 1 is the first
    * @return the page dictionary
@@ -2081,7 +2082,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the page reference to this page.
-   * 
+   *
    * @param pageNum
    *          the page number. 1 is the first
    * @return the page reference
@@ -2092,7 +2093,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the contents of the page.
-   * 
+   *
    * @param pageNum
    *          the page number. 1 is the first
    * @param file
@@ -2131,7 +2132,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the contents of the page.
-   * 
+   *
    * @param pageNum
    *          the page number. 1 is the first
    * @throws IOException
@@ -2184,7 +2185,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Sets the contents of the page.
-   * 
+   *
    * @param content
    *          the new page content
    * @param pageNum
@@ -2196,7 +2197,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Sets the contents of the page.
-   * 
+   *
    * @param content
    *          the new page content
    * @param pageNum
@@ -2220,7 +2221,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Get the content from a stream applying the required filters.
-   * 
+   *
    * @param stream
    *          the stream
    * @param file
@@ -2278,7 +2279,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Get the content from a stream applying the required filters.
-   * 
+   *
    * @param stream
    *          the stream
    * @throws IOException
@@ -2300,7 +2301,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Get the content from a stream as it is without applying any filter.
-   * 
+   *
    * @param stream
    *          the stream
    * @param file
@@ -2309,14 +2310,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    *           on error
    * @return the stream content
    */
-  public static byte[] getStreamBytesRaw(PRStream stream,
-      RandomAccessFileOrArray file) throws IOException {
-    PdfReader reader = stream.getReader();
-    byte[] b;
-    if (stream.getOffset() < 0)
-      b = stream.getBytes();
-    else {
-      b = new byte[stream.getLength()];
+  public static byte[] getStreamBytesRaw(PRStream stream, RandomAccessFileOrArray file) throws IOException {
+    try (
+      PdfReader reader = stream.getReader();
+    ) {
+      if (stream.getOffset() < 0)
+        return stream.getBytes();
+
+      byte[] b = new byte[stream.getLength()];
       file.seek(stream.getOffset());
       file.readFully(b);
       PdfEncryption decrypt = reader.getDecrypt();
@@ -2337,8 +2338,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           b = decrypt.decryptByteArray(b);
         }
       }
+      return b;
     }
-    return b;
   }
 
   private static List<PdfObject> addFilters(List<PdfObject> filters, PdfObject filter) {
@@ -2353,7 +2354,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Get the content from a stream as it is without applying any filter.
-   * 
+   *
    * @param stream
    *          the stream
    * @throws IOException
@@ -2423,7 +2424,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Checks if the document was changed.
-   * 
+   *
    * @return <CODE>true</CODE> if the document was changed, <CODE>false</CODE>
    *         otherwise
    */
@@ -2434,7 +2435,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Sets the tampered state. A tampered PdfReader cannot be reused in
    * PdfStamper.
-   * 
+   *
    * @param tampered
    *          the tampered state
    */
@@ -2445,7 +2446,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the XML metadata.
-   * 
+   *
    * @throws IOException
    *           on error
    * @return the XML metadata
@@ -2471,7 +2472,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the byte address of the last xref table.
-   * 
+   *
    * @return the byte address of the last xref table
    */
   public int getLastXref() {
@@ -2480,7 +2481,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the number of xref objects.
-   * 
+   *
    * @return the number of xref objects
    */
   public int getXrefSize() {
@@ -2489,7 +2490,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the byte address of the %%EOF marker.
-   * 
+   *
    * @return the byte address of the %%EOF marker
    */
   public int getEofPos() {
@@ -2499,7 +2500,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the PDF version. Only the last version char is returned. For example
    * version 1.4 is returned as '4'.
-   * 
+   *
    * @return the PDF version
    */
   public char getPdfVersion() {
@@ -2508,7 +2509,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Returns <CODE>true</CODE> if the PDF is encrypted.
-   * 
+   *
    * @return <CODE>true</CODE> if the PDF is encrypted
    */
   public boolean isEncrypted() {
@@ -2518,7 +2519,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the encryption permissions. It can be used directly in
    * <CODE>PdfWriter.setEncryption()</CODE>.
-   * 
+   *
    * @return the encryption permissions
    */
   public int getPermissions() {
@@ -2527,7 +2528,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Returns <CODE>true</CODE> if the PDF has a 128 bit key encryption.
-   * 
+   *
    * @return <CODE>true</CODE> if the PDF has a 128 bit key encryption
    */
   public boolean is128Key() {
@@ -2536,7 +2537,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the trailer dictionary
-   * 
+   *
    * @return the trailer dictionary
    */
   public PdfDictionary getTrailer() {
@@ -2604,7 +2605,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Finds all the font subsets and changes the prefixes to some random values.
-   * 
+   *
    * @return the number of font subsets altered
    */
   public int shuffleSubsetNames() {
@@ -2660,7 +2661,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Finds all the fonts not subset but embedded and marks them as subset.
-   * 
+   *
    * @return the number of fonts altered
    */
   public int createFakeFontSubsets() {
@@ -2720,101 +2721,136 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets all the named destinations as an <CODE>HashMap</CODE>. The key is the
    * name and the value is the destinations array.
-   * 
+   *
    * @return gets all the named destinations
    */
-  public HashMap getNamedDestination() {
-    return getNamedDestination(false);
+  public HashMap<String,PdfArray> getNamedDestination() {
+    return new HashMap<>(getNamedDestinationFromNames());
+  }
+
+  /**
+   * Gets the named destinations from the /Dests key in the catalog as an
+   * <CODE>HashMap</CODE>. The key is the name and the value is the destinations
+   * array.
+   *
+   * @return gets the named destinations
+   */
+  public HashMap<String,PdfArray> getNamedDestinationFromNames() {
+    HashMap<String,PdfArray> names = new HashMap<>();
+
+    if(catalog.get(PdfName.DESTS) != null) {
+      PdfDictionary dic = (PdfDictionary) getPdfObjectRelease(catalog.get(PdfName.DESTS));
+      if (dic == null)
+        return names;
+
+      for (PdfName key : dic.getKeys()) {
+          PdfArray arr = getNameArray(dic.get(key));
+          if (arr != null)
+              names.put(PdfName.decodeName(key.toString()), arr);
+      }
+    }
+
+    return names;
   }
 
   /**
    * Gets all the named destinations as an <CODE>HashMap</CODE>. The key is the
    * name and the value is the destinations array.
-   * 
+   *
    * @param keepNames
    *          true if you want the keys to be real PdfNames instead of Strings
    * @return gets all the named destinations
    * @since 2.1.6
    */
-  public HashMap getNamedDestination(boolean keepNames) {
-    HashMap names = getNamedDestinationFromNames(keepNames);
-    names.putAll(getNamedDestinationFromStrings());
-    return names;
+  public HashMap<PdfName,PdfArray> getNamedDestinationPdfName() {
+    return new HashMap<>(getNamedDestinationFromNamesPdfName());
   }
 
   /**
    * Gets the named destinations from the /Dests key in the catalog as an
    * <CODE>HashMap</CODE>. The key is the name and the value is the destinations
    * array.
-   * 
-   * @return gets the named destinations
-   */
-  public HashMap getNamedDestinationFromNames() {
-    return getNamedDestinationFromNames(false);
-  }
-
-  /**
-   * Gets the named destinations from the /Dests key in the catalog as an
-   * <CODE>HashMap</CODE>. The key is the name and the value is the destinations
-   * array.
-   * 
+   *
    * @param keepNames
    *          true if you want the keys to be real PdfNames instead of Strings
    * @return gets the named destinations
    * @since 2.1.6
    */
-  public HashMap getNamedDestinationFromNames(boolean keepNames) {
-    HashMap names = new HashMap();
-    if (catalog.get(PdfName.DESTS) != null) {
-      PdfDictionary dic = (PdfDictionary) getPdfObjectRelease(catalog
-          .get(PdfName.DESTS));
+  public HashMap<PdfName,PdfArray> getNamedDestinationFromNamesPdfName() {
+    HashMap<PdfName,PdfArray> names = new HashMap<>();
+
+    if(catalog.get(PdfName.DESTS) != null) {
+      PdfDictionary dic = (PdfDictionary) getPdfObjectRelease(catalog.get(PdfName.DESTS));
       if (dic == null)
         return names;
-      Set keys = dic.getKeys();
-      for (Iterator it = keys.iterator(); it.hasNext();) {
-        PdfName key = (PdfName) it.next();
-        PdfArray arr = getNameArray(dic.get(key));
-        if (arr == null)
-          continue;
-        if (keepNames) {
-          names.put(key, arr);
-        } else {
-          String name = PdfName.decodeName(key.toString());
-          names.put(name, arr);
-        }
+
+      for (PdfName key : dic.getKeys()) {
+          PdfArray arr = getNameArray(dic.get(key));
+          if (arr != null)
+              names.put(key, arr);
       }
     }
+
     return names;
+  }
+
+  /**
+   * Gets all the named destinations as an <CODE>HashMap</CODE>. The key is the
+   * name and the value is the destinations array.
+   *
+   * @param keepNames
+   *          true if you want the keys to be real PdfNames instead of Strings
+   * @return gets all the named destinations
+   * @since 2.1.6
+   * @deprecated use <CODE>getNamedDestinationFromNames()</CODE> or <CODE>getNamedDestinationFromNamesPdfName()</CODE>
+   * @Deprecated
+   */
+  @Deprecated
+  public HashMap<?,?> getNamedDestination(boolean keepNames) {
+    return new HashMap<>(getNamedDestinationFromNames(keepNames));
+  }
+
+  /**
+   * Gets the named destinations from the /Dests key in the catalog as an
+   * <CODE>HashMap</CODE>. The key is the name and the value is the destinations
+   * array.
+   *
+   * @param keepNames
+   *          true if you want the keys to be real PdfNames instead of Strings
+   * @return gets the named destinations
+   * @since 2.1.6
+   * @deprecated use <CODE>getNamedDestinationFromNames()</CODE> or <CODE>getNamedDestinationFromNamesPdfName()</CODE>
+   */
+  @Deprecated
+  public HashMap<?,?> getNamedDestinationFromNames(boolean keepNames) {
+      if(keepNames) return getNamedDestinationFromNamesPdfName();
+      return getNamedDestinationFromNames();
   }
 
   /**
    * Gets the named destinations from the /Names key in the catalog as an
    * <CODE>HashMap</CODE>. The key is the name and the value is the destinations
    * array.
-   * 
+   *
    * @return gets the named destinations
    */
-  public HashMap getNamedDestinationFromStrings() {
-    if (catalog.get(PdfName.NAMES) != null) {
-      PdfDictionary dic = (PdfDictionary) getPdfObjectRelease(catalog
-          .get(PdfName.NAMES));
-      if (dic != null) {
-        dic = (PdfDictionary) getPdfObjectRelease(dic.get(PdfName.DESTS));
-        if (dic != null) {
-          HashMap names = PdfNameTree.readTree(dic);
-          for (Iterator it = names.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
-            PdfArray arr = getNameArray((PdfObject) entry.getValue());
-            if (arr != null)
-              entry.setValue(arr);
-            else
-              it.remove();
-          }
-          return names;
-        }
-      }
+  public HashMap<String, PdfArray> getNamedDestinationFromStrings() {
+    if (catalog.get(PdfName.NAMES) == null) return new HashMap<>();
+
+    PdfDictionary dic = (PdfDictionary) getPdfObjectRelease(catalog.get(PdfName.NAMES));
+    if (dic == null) return new HashMap<>();
+
+    dic = (PdfDictionary) getPdfObjectRelease(dic.get(PdfName.DESTS));
+    if (dic == null) return new HashMap<>();
+
+    HashMap<String, PdfArray> names = new HashMap<>();
+    for (Map.Entry<String, PdfObject> e : PdfNameTree.readTree(dic).entrySet()) {
+        PdfArray arr = getNameArray(e.getValue());
+        if (arr != null)
+            names.put(e.getKey(), arr);
     }
-    return new HashMap();
+
+    return names;
   }
 
   /**
@@ -2862,9 +2898,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     pageRefs.resetReleasePage();
   }
 
-  public ArrayList getLinks(int page) {
+  public ArrayList<PdfAnnotation.PdfImportedLink> getLinks(int page) {
     pageRefs.resetReleasePage();
-    ArrayList result = new ArrayList();
+    ArrayList<PdfAnnotation.PdfImportedLink> result = new ArrayList<>();
     PdfDictionary pageDic = pageRefs.getPageN(page);
     if (pageDic.get(PdfName.ANNOTS) != null) {
       PdfArray annots = pageDic.getAsArray(PdfName.ANNOTS);
@@ -2882,7 +2918,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     return result;
   }
 
-  private void iterateBookmarks(PdfObject outlineRef, HashMap names) {
+  private void iterateBookmarks(PdfObject outlineRef, HashMap<PdfName,PdfArray> names) {
     while (outlineRef != null) {
       replaceNamedDestination(outlineRef, names);
       PdfDictionary outline = (PdfDictionary) getPdfObjectRelease(outlineRef);
@@ -2897,14 +2933,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Replaces remote named links with local destinations that have the same
    * name.
-   * 
+   *
    * @since 5.0
    */
   public void makeRemoteNamedDestinationsLocal() {
     if (remoteToLocalNamedDestinations)
       return;
     remoteToLocalNamedDestinations = true;
-    HashMap names = getNamedDestination(true);
+    HashMap<PdfName, PdfArray> names = getNamedDestinationPdfName();
     if (names.isEmpty())
       return;
     for (int k = 1; k <= pageRefs.size(); ++k) {
@@ -2934,7 +2970,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Converts a remote named destination GoToR with a local named destination if
    * there's a corresponding name.
-   * 
+   *
    * @param obj
    *          an annotation that needs to be screened for links to external
    *          named destinations.
@@ -2942,7 +2978,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    *          a map with names of local named destinations
    * @since iText 5.0
    */
-  private boolean convertNamedDestination(PdfObject obj, HashMap names) {
+  private boolean convertNamedDestination(PdfObject obj, HashMap<PdfName,PdfArray> names) {
     obj = getPdfObject(obj);
     int objIdx = lastXrefPartial;
     releaseLastXrefPartial();
@@ -2961,7 +2997,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
               name = ob3;
             else if (ob3.isString())
               name = ob3.toString();
-            PdfArray dest = (PdfArray) names.get(name);
+            PdfArray dest = names.get(name);
             if (dest != null) {
               dic.remove(PdfName.F);
               dic.remove(PdfName.NEWWINDOW);
@@ -2982,7 +3018,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     if (consolidateNamedDestinations)
       return;
     consolidateNamedDestinations = true;
-    HashMap names = getNamedDestination(true);
+    HashMap<PdfName,PdfArray> names = getNamedDestinationPdfName();
     if (names.isEmpty())
       return;
     for (int k = 1; k <= pageRefs.size(); ++k) {
@@ -3014,7 +3050,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     iterateBookmarks(outlines.get(PdfName.FIRST), names);
   }
 
-  private boolean replaceNamedDestination(PdfObject obj, HashMap names) {
+  private boolean replaceNamedDestination(PdfObject obj, HashMap<PdfName,PdfArray> names) {
     obj = getPdfObject(obj);
     int objIdx = lastXrefPartial;
     releaseLastXrefPartial();
@@ -3027,7 +3063,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           name = ob2;
         else if (ob2.isString())
           name = ob2.toString();
-        PdfArray dest = (PdfArray) names.get(name);
+        PdfArray dest = names.get(name);
         if (dest != null) {
           ((PdfDictionary) obj).put(PdfName.DEST, dest);
           setXrefPartialObject(objIdx, obj);
@@ -3046,7 +3082,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             else if (ob3.isString())
               name = ob3.toString();
           }
-          PdfArray dest = (PdfArray) names.get(name);
+          PdfArray dest = names.get(name);
           if (dest != null) {
             dic.put(PdfName.D, dest);
             setXrefPartialObject(obj2Idx, ob2);
@@ -3086,8 +3122,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
     case PdfObject.ARRAY: {
       PdfArray arr = new PdfArray();
-      for (Iterator it = ((PdfArray) original).listIterator(); it.hasNext();) {
-        arr.add(duplicatePdfObject((PdfObject) it.next(), newReader));
+      for(PdfObject o : ((PdfArray) original)) {
+        arr.add(duplicatePdfObject(o, newReader));
       }
       return arr;
     }
@@ -3115,7 +3151,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   protected void removeUnusedNode(PdfObject obj, boolean[] hits) {
-    Stack state = new Stack();
+    Stack<Object> state = new Stack<>();
     state.push(obj);
     while (!state.empty()) {
       Object current = state.pop();
@@ -3152,7 +3188,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       } else {
         objs = (Object[]) current;
         if (objs[0] instanceof ArrayList) {
-          ar = (ArrayList) objs[0];
+          ar = (List<PdfObject>) objs[0];
           idx = (Integer) objs[1];
         } else {
           keys = (PdfName[]) objs[0];
@@ -3205,7 +3241,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Removes all the unreachable objects.
-   * 
+   *
    * @return the number of indirect objects removed
    */
   public int removeUnusedObjects() {
@@ -3234,7 +3270,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets a read-only version of <CODE>AcroFields</CODE>.
-   * 
+   *
    * @return a read-only version of <CODE>AcroFields</CODE>
    */
   public AcroFields getAcroFields() {
@@ -3243,7 +3279,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the global document JavaScript.
-   * 
+   *
    * @param file
    *          the document file
    * @throws IOException
@@ -3259,14 +3295,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         .get(PdfName.JAVASCRIPT));
     if (js == null)
       return null;
-    HashMap jscript = PdfNameTree.readTree(js);
+    Map<String, PdfObject> jscript = PdfNameTree.readTree(js);
     String[] sortedNames = new String[jscript.size()];
-    sortedNames = (String[]) jscript.keySet().toArray(sortedNames);
+    sortedNames = jscript.keySet().toArray(sortedNames);
     Arrays.sort(sortedNames);
     StringBuilder buf = new StringBuilder();
     for (String sortedName : sortedNames) {
-      PdfDictionary j = (PdfDictionary) getPdfObjectRelease((PdfIndirectReference) jscript
-              .get(sortedName));
+      PdfDictionary j = (PdfDictionary) getPdfObjectRelease(jscript.get(sortedName));
       if (j == null)
         continue;
       PdfObject obj = getPdfObjectRelease(j.get(PdfName.JS));
@@ -3291,7 +3326,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the global document JavaScript.
-   * 
+   *
    * @throws IOException
    *           on error
    * @return the global document JavaScript
@@ -3313,7 +3348,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * Selects the pages to keep in the document. The pages are described as
    * ranges. The page ordering can be changed but no page repetitions are
    * allowed. Note that it may be very slow in partial mode.
-   * 
+   *
    * @param ranges
    *          the comma separated ranges as described in {@link SequenceList}
    */
@@ -3326,18 +3361,18 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * <CODE>List</CODE> of <CODE>Integer</CODE>. The page ordering can be changed
    * but no page repetitions are allowed. Note that it may be very slow in
    * partial mode.
-   * 
+   *
    * @param pagesToKeep
    *          the pages to keep in the document
    */
-  public void selectPages(List pagesToKeep) {
+  public void selectPages(List<Integer> pagesToKeep) {
     pageRefs.selectPages(pagesToKeep);
     removeUnusedObjects();
   }
 
   /**
    * Sets the viewer preferences as the sum of several constants.
-   * 
+   *
    * @param preferences
    *          the viewer preferences
    * @see PdfViewerPreferences#setViewerPreferences
@@ -3350,7 +3385,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Adds a viewer preference
-   * 
+   *
    * @param key
    *          a key for a viewer preference
    * @param value
@@ -3371,7 +3406,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * Returns a bitset representing the PageMode and PageLayout viewer
    * preferences. Doesn't return any information about the ViewerPreferences
    * dictionary.
-   * 
+   *
    * @return an int that contains the Viewer Preferences.
    */
   public int getSimpleViewerPreferences() {
@@ -3381,7 +3416,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Getter for property appendable.
-   * 
+   *
    * @return Value of property appendable.
    */
   public boolean isAppendable() {
@@ -3390,7 +3425,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Setter for property appendable.
-   * 
+   *
    * @param appendable
    *          New value of property appendable.
    */
@@ -3402,7 +3437,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Getter for property newXrefType.
-   * 
+   *
    * @return Value of property newXrefType.
    */
   public boolean isNewXrefType() {
@@ -3411,7 +3446,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Getter for property fileLength.
-   * 
+   *
    * @return Value of property fileLength.
    */
   public int getFileLength() {
@@ -3420,7 +3455,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Getter for property hybridXref.
-   * 
+   *
    * @return Value of property hybridXref.
    */
   public boolean isHybridXref() {
@@ -3433,7 +3468,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      * ArrayList with the indirect references to every page. Element 0 = page 1;
      * 1 = page 2;... Not used for partial reading.
      */
-    private ArrayList refsn;
+    private ArrayList<PdfObject> refsn;
     /** The number of pages, updated only in case of partial reading. */
     private int sizep;
     /**
@@ -3447,7 +3482,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      * stack to which pages dictionaries are pushed to keep track of the current
      * page attributes
      */
-    private ArrayList pageInh;
+    private ArrayList<PdfDictionary> pageInh;
     private boolean keepPages;
 
     private PageRefs(PdfReader reader) {
@@ -3466,9 +3501,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       this.reader = reader;
       this.sizep = other.sizep;
       if (other.refsn != null) {
-        refsn = new ArrayList(other.refsn);
+        refsn = new ArrayList<>(other.refsn);
         for (int k = 0; k < refsn.size(); ++k) {
-          refsn.set(k, duplicatePdfObject((PdfObject) refsn.get(k), reader));
+          refsn.set(k, duplicatePdfObject(refsn.get(k), reader));
         }
       } else
         this.refsp = (IntHashtable) other.refsp.clone();
@@ -3477,16 +3512,15 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     int size() {
       if (refsn != null)
         return refsn.size();
-      else
-        return sizep;
+      return sizep;
     }
 
     void readPages() {
       if (refsn != null)
         return;
       refsp = null;
-      refsn = new ArrayList();
-      pageInh = new ArrayList();
+      refsn = new ArrayList<>();
+      pageInh = new ArrayList<>();
       iteratePages((PRIndirectReference) reader.catalog.get(PdfName.PAGES));
       pageInh = null;
       reader.rootPages.put(PdfName.COUNT, new PdfNumber(refsn.size()));
@@ -3499,7 +3533,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     /**
      * Gets the dictionary that represents a page.
-     * 
+     *
      * @param pageNum
      *          the page number. 1 is the first
      * @return the page dictionary
@@ -3531,7 +3565,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     /**
      * Gets the page reference to this page.
-     * 
+     *
      * @param pageNum
      *          the page number. 1 is the first
      * @return the page reference
@@ -3543,27 +3577,26 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           return null;
         if (refsn != null)
           return (PRIndirectReference) refsn.get(pageNum);
-        else {
-          int n = refsp.get(pageNum);
-          if (n == 0) {
-            PRIndirectReference ref = getSinglePage(pageNum);
-            if (reader.lastXrefPartial == -1)
-              lastPageRead = -1;
-            else
-              lastPageRead = pageNum;
-            reader.lastXrefPartial = -1;
-            refsp.put(pageNum, ref.getNumber());
-            if (keepPages)
-              lastPageRead = -1;
-            return ref;
-          } else {
-            if (lastPageRead != pageNum)
-              lastPageRead = -1;
-            if (keepPages)
-              lastPageRead = -1;
-            return new PRIndirectReference(reader, n);
-          }
+
+        int n = refsp.get(pageNum);
+        if (n == 0) {
+          PRIndirectReference ref = getSinglePage(pageNum);
+          if (reader.lastXrefPartial == -1)
+            lastPageRead = -1;
+          else
+            lastPageRead = pageNum;
+          reader.lastXrefPartial = -1;
+          refsp.put(pageNum, ref.getNumber());
+          if (keepPages)
+            lastPageRead = -1;
+          return ref;
         }
+
+        if (lastPageRead != pageNum)
+          lastPageRead = -1;
+        if (keepPages)
+          lastPageRead = -1;
+        return new PRIndirectReference(reader, n);
       } catch (Exception e) {
         throw new ExceptionConverter(e);
       }
@@ -3615,8 +3648,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           refsp.put(size(), ref.getNumber());
         } else {
           IntHashtable refs2 = new IntHashtable((refsp.size() + 1) * 2);
-          for (Iterator it = refsp.getEntryIterator(); it.hasNext();) {
-            IntHashtable.Entry entry = (IntHashtable.Entry) it.next();
+          for (Iterator<IntHashtable.Entry> it = refsp.getEntryIterator(); it.hasNext(); ) {
+            IntHashtable.Entry entry = it.next();
             int p = entry.getKey();
             refs2.put(p >= pageNum ? p + 1 : p, entry.getValue());
           }
@@ -3629,14 +3662,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     /**
      * Adds a PdfDictionary to the pageInh stack to keep track of the page
      * attributes.
-     * 
+     *
      * @param nodePages
      *          a Pages dictionary
      */
     private void pushPageAttributes(PdfDictionary nodePages) {
       PdfDictionary dic = new PdfDictionary();
       if (!pageInh.isEmpty()) {
-        dic.putAll((PdfDictionary) pageInh.get(pageInh.size() - 1));
+        dic.putAll(pageInh.get(pageInh.size() - 1));
       }
       for (PdfName pageInhCandidate : pageInhCandidates) {
         PdfObject obj = nodePages.get(pageInhCandidate);
@@ -3659,7 +3692,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       // reference to a leaf
       if (kidsPR == null) {
         page.put(PdfName.TYPE, PdfName.PAGE);
-        PdfDictionary dic = (PdfDictionary) pageInh.get(pageInh.size() - 1);
+        PdfDictionary dic = pageInh.get(pageInh.size() - 1);
         PdfName key;
         for (Object o : dic.getKeys()) {
           key = (PdfName) o;
@@ -3700,10 +3733,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           if (obj != null)
             acc.put(pageInhCandidate, obj);
         }
-        PdfArray kids = (PdfArray) PdfReader.getPdfObjectRelease(top
-            .get(PdfName.KIDS));
-        for (Iterator it = kids.listIterator(); it.hasNext();) {
-          PRIndirectReference ref = (PRIndirectReference) it.next();
+        PdfArray kids = (PdfArray) PdfReader.getPdfObjectRelease(top.get(PdfName.KIDS));
+        for(PdfObject o : kids) {
+          PRIndirectReference ref = (PRIndirectReference) o;
           PdfDictionary dic = (PdfDictionary) getPdfObject(ref);
           int last = reader.lastXrefPartial;
           PdfObject count = getPdfObjectRelease(dic.get(PdfName.COUNT));
@@ -3726,13 +3758,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       }
     }
 
-    private void selectPages(List pagesToKeep) {
+    private void selectPages(List<Integer> pagesToKeep) {
       IntHashtable pg = new IntHashtable();
-      ArrayList finalPages = new ArrayList();
+      ArrayList<Integer> finalPages = new ArrayList<>();
       int psize = size();
-      for (Object aPagesToKeep : pagesToKeep) {
-        Integer pi = (Integer) aPagesToKeep;
-        int p = pi;
+      for (Integer pi : pagesToKeep) {
+        int p = pi.intValue();
         if (p >= 1 && p <= psize && pg.put(p, 1) == 0)
           finalPages.add(pi);
       }
@@ -3745,10 +3776,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       PRIndirectReference parent = (PRIndirectReference) reader.catalog
           .get(PdfName.PAGES);
       PdfDictionary topPages = (PdfDictionary) PdfReader.getPdfObject(parent);
-      ArrayList newPageRefs = new ArrayList(finalPages.size());
+      ArrayList<PdfObject> newPageRefs = new ArrayList<>(finalPages.size());
       PdfArray kids = new PdfArray();
-      for (Object finalPage : finalPages) {
-        int p = (Integer) finalPage;
+      for (Integer finalPage : finalPages) {
+        int p = finalPage.intValue();
         PRIndirectReference pref = getPageOrigRef(p);
         resetReleasePage();
         kids.add(pref);
@@ -3811,7 +3842,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * No signature validation is made, use the methods available for that in
    * <CODE>AcroFields</CODE>.
    * </p>
-   * 
+   *
    * @return gets the certification level for this document
    */
   public int getCertificationLevel() {
@@ -3874,22 +3905,17 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   public int getCryptoMode() {
-    if (decrypt == null)
-      return -1;
-    else
-      return decrypt.getCryptoMode();
+    if (decrypt == null) return -1;
+    return decrypt.getCryptoMode();
   }
 
   public boolean isMetadataEncrypted() {
-    if (decrypt == null)
-      return false;
-    else
-      return decrypt.isMetadataEncrypted();
+    if (decrypt == null) return false;
+    return decrypt.isMetadataEncrypted();
   }
 
   public byte[] computeUserPassword() {
-    if (!encrypted || !ownerPasswordUsed)
-      return null;
+    if (!encrypted || !ownerPasswordUsed) return null;
     return decrypt.computeUserPassword(password);
   }
 }

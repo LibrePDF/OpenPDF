@@ -39,10 +39,10 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
  * details.
- * 
+ *
  * Contributions by:
  * Lubos Strapko
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * http://www.lowagie.com/iText/
@@ -51,15 +51,17 @@
 package com.lowagie.text.pdf.hyphenation;
 
 
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
-import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.StringTokenizer;
+
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
+import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
 
 /** Parses the xml hyphenation pattern.
  *
@@ -73,7 +75,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
 
     StringBuffer token;
 
-    ArrayList exception;
+    List<Object> exception;
 
     char hyphenChar;
 
@@ -118,8 +120,8 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
         return pat.toString();
     }
 
-    protected ArrayList normalizeException(ArrayList ex) {
-        ArrayList res = new ArrayList();
+    protected List<Object> normalizeException(List<Object> ex) {
+    	List<Object> res = new ArrayList<>();
         for (int i = 0; i < ex.size(); i++) {
             Object item = ex.get(i);
             if (item instanceof String) {
@@ -149,10 +151,9 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
         return res;
     }
 
-    protected String getExceptionWord(ArrayList ex) {
-        StringBuffer res = new StringBuffer();
-        for (int i = 0; i < ex.size(); i++) {
-            Object item = ex.get(i);
+    protected String getExceptionWord(List<Object> ex) {
+        StringBuilder res = new StringBuilder();
+        for (Object item : ex) {
             if (item instanceof String) {
                 res.append((String) item);
             } else {
@@ -194,7 +195,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
                 exception.add(word);
                 exception = normalizeException(exception);
                 consumer.addException(getExceptionWord(exception),
-                        (ArrayList) exception.clone());
+                        new ArrayList<>(exception));
                 break;
             case ELEM_PATTERNS:
                 consumer.addPattern(getPattern(word),
@@ -218,7 +219,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
     public void startDocument() {
     }
 
-    public void startElement(String tag, java.util.HashMap h) {
+    public void startElement(String tag, HashMap<String,Object> h) {
         if (tag.equals("hyphen-char")) {
             String hh = (String) h.get("value");
             if (hh != null && hh.length() == 1) {
@@ -230,7 +231,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
             currElement = ELEM_PATTERNS;
         } else if (tag.equals("exceptions")) {
             currElement = ELEM_EXCEPTIONS;
-            exception = new ArrayList();
+            exception = new ArrayList<>();
         } else if (tag.equals("hyphen")) {
             if (token.length() > 0) {
                 exception.add(token.toString());
@@ -254,7 +255,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
                 exception.add(word);
                 exception = normalizeException(exception);
                 consumer.addException(getExceptionWord(exception),
-                        (ArrayList) exception.clone());
+                        new ArrayList<>(exception));
                 exception.clear();
                 break;
             case ELEM_PATTERNS:
@@ -270,7 +271,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
         System.out.println("class: " + c);
     }
 
-    public void addException(String w, ArrayList e) {
+    public void addException(String w, List<Object> e) {
         System.out.println("exception: " + w + " : " + e.toString());
     }
 
@@ -279,13 +280,15 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
     }
 
     public static void main(String[] args) {
-        try {
-            if (args.length > 0) {
+        if (args.length > 0) {
+            try (
+                FileInputStream stream = new FileInputStream(args[0]);
+            ) {
                 SimplePatternParser pp = new SimplePatternParser();
-                pp.parse(new FileInputStream(args[0]), pp);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                pp.parse(stream, pp);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
     }
 }

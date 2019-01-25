@@ -49,10 +49,10 @@
 package com.lowagie.text.pdf;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
 class PageResources {
-    
+
     protected PdfDictionary fontDictionary = new PdfDictionary();
     protected PdfDictionary xObjectDictionary = new PdfDictionary();
     protected PdfDictionary colorDictionary = new PdfDictionary();
@@ -60,30 +60,29 @@ class PageResources {
     protected PdfDictionary shadingDictionary = new PdfDictionary();
     protected PdfDictionary extGStateDictionary = new PdfDictionary();
     protected PdfDictionary propertyDictionary = new PdfDictionary();
-    protected HashMap forbiddenNames;
+    protected Map<PdfName,PdfName> forbiddenNames;
     protected PdfDictionary originalResources;
     protected int[] namePtr = {0};
-    protected HashMap usedNames;
+    protected Map<PdfName,PdfName> usedNames;
 
     PageResources() {
     }
-    
+
     void setOriginalResources(PdfDictionary resources, int[] newNamePtr) {
         if (newNamePtr != null)
             namePtr = newNamePtr;
-        forbiddenNames = new HashMap();
-        usedNames = new HashMap();
+        forbiddenNames = new HashMap<>();
+        usedNames = new HashMap<>();
         if (resources == null)
             return;
         originalResources = new PdfDictionary();
         originalResources.merge(resources);
-        for (Iterator i = resources.getKeys().iterator(); i.hasNext();) {
-            PdfName key = (PdfName)i.next();
+        for (PdfName key : resources.getKeys()) {
             PdfObject sub = PdfReader.getPdfObject(resources.get(key));
             if (sub != null && sub.isDictionary()) {
                 PdfDictionary dic = (PdfDictionary)sub;
-                for (Iterator j = dic.getKeys().iterator(); j.hasNext();) {
-                    forbiddenNames.put(j.next(), null);
+                for (PdfName key2 : dic.getKeys()) {
+                    forbiddenNames.put(key2, null);
                 }
                 PdfDictionary dic2 = new PdfDictionary();
                 dic2.merge(dic);
@@ -91,11 +90,11 @@ class PageResources {
             }
         }
     }
-    
+
     PdfName translateName(PdfName name) {
         PdfName translated = name;
         if (forbiddenNames != null) {
-            translated = (PdfName)usedNames.get(name);
+            translated = usedNames.get(name);
             if (translated == null) {
                 while (true) {
                     translated = new PdfName("Xi" + (namePtr[0]++));
@@ -107,7 +106,7 @@ class PageResources {
         }
         return translated;
     }
-    
+
     PdfName addFont(PdfName name, PdfIndirectReference reference) {
         name = translateName(name);
         fontDictionary.put(name, reference);
@@ -146,7 +145,7 @@ class PageResources {
         shadingDictionary.put(name, reference);
         return name;
     }
-    
+
     PdfName addPattern(PdfName name, PdfIndirectReference reference) {
         name = translateName(name);
         patternDictionary.put(name, reference);
@@ -179,7 +178,7 @@ class PageResources {
         resources.add(PdfName.PROPERTIES, propertyDictionary);
         return resources;
     }
-    
+
     boolean hasResources() {
         return (fontDictionary.size() > 0
             || xObjectDictionary.size() > 0

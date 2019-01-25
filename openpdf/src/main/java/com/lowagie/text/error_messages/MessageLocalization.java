@@ -48,14 +48,16 @@
  */
 package com.lowagie.text.error_messages;
 
-import com.lowagie.text.pdf.BaseFont;
 import java.io.BufferedReader;
-import java.io.Reader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Map;
+
+import com.lowagie.text.pdf.BaseFont;
 
 /**
  * Localizes error messages. The messages are located in the package
@@ -65,8 +67,8 @@ import java.util.HashMap;
  * @author Paulo Soares (psoares@glintt.com)
  */
 public final class MessageLocalization {
-    private static HashMap defaultLanguage = new HashMap();
-    private static HashMap currentLanguage;
+    private static Map<String,String> defaultLanguage = new HashMap<>();
+    private static Map<String,String> currentLanguage;
     private static final String BASE_PATH = "com/lowagie/text/error_messages/";
 
     private MessageLocalization() {
@@ -79,7 +81,7 @@ public final class MessageLocalization {
             // do nothing
         }
         if (defaultLanguage == null)
-            defaultLanguage = new HashMap();
+            defaultLanguage = new HashMap<>();
     }
 
     /**
@@ -88,15 +90,15 @@ public final class MessageLocalization {
      * @return the message
      */
     public static String getMessage(String key) {
-        HashMap cl = currentLanguage;
+        Map<String,String> cl = currentLanguage;
         String val;
         if (cl != null) {
-            val = (String)cl.get(key);
+            val = cl.get(key);
             if (val != null)
                 return val;
         }
         cl = defaultLanguage;
-        val = (String)cl.get(key);
+        val = cl.get(key);
         if (val != null)
             return val;
         return "No message found for " + key;
@@ -195,7 +197,7 @@ public final class MessageLocalization {
      * @throws IOException on error
      */
     public static boolean setLanguage(String language, String country) throws IOException {
-        HashMap lang = getLanguageMessages(language, country);
+    	Map<String,String> lang = getLanguageMessages(language, country);
         if (lang == null)
             return false;
         currentLanguage = lang;
@@ -211,43 +213,35 @@ public final class MessageLocalization {
         currentLanguage = readLanguageStream(r);
     }
 
-    private static HashMap getLanguageMessages(String language, String country) throws IOException {
+    private static Map<String,String> getLanguageMessages(String language, String country) throws IOException {
         if (language == null)
             throw new IllegalArgumentException("The language cannot be null.");
-        InputStream is = null;
-        try {
-            String file;
-            if (country != null)
-                file = language + "_" + country + ".lng";
-            else
-                file = language + ".lng";
-            is = BaseFont.getResourceStream(BASE_PATH + file, new MessageLocalization().getClass().getClassLoader());
-            if (is != null)
-                return readLanguageStream(is);
-            if (country == null)
-                return null;
-            file = language + ".lng";
-            is = BaseFont.getResourceStream(BASE_PATH + file, new MessageLocalization().getClass().getClassLoader());
-            if (is != null)
-                return readLanguageStream(is);
-            else
-                return null;
-        }
-        finally {
-            try {
-                is.close();
-            } catch (Exception exx) {
+
+        if (country != null) {
+            String file = language + "_" + country + ".lng";
+            try (
+                InputStream is = BaseFont.getResourceStream(BASE_PATH + file, new MessageLocalization().getClass().getClassLoader());
+            ) {
+                if (is != null) return readLanguageStream(is);
             }
-            // do nothing
         }
+
+        String file = language + ".lng";
+        try (
+            InputStream is = BaseFont.getResourceStream(BASE_PATH + file, new MessageLocalization().getClass().getClassLoader());
+        ) {
+            if (is != null) return readLanguageStream(is);
+        }
+
+        return null;
     }
 
-    private static HashMap readLanguageStream(InputStream is) throws IOException {
+    private static Map<String,String> readLanguageStream(InputStream is) throws IOException {
         return readLanguageStream(new InputStreamReader(is, StandardCharsets.UTF_8));
     }
 
-    private static HashMap readLanguageStream(Reader r) throws IOException {
-        HashMap lang = new HashMap();
+    private static Map<String,String> readLanguageStream(Reader r) throws IOException {
+    	Map<String,String> lang = new HashMap<>();
         BufferedReader br = new BufferedReader(r);
         String line;
         while ((line = br.readLine()) != null) {

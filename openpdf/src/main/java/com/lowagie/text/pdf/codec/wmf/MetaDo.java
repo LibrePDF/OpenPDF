@@ -52,7 +52,6 @@ package com.lowagie.text.pdf.codec.wmf;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,7 +66,7 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 
 public class MetaDo {
-    
+
     public static final int META_SETBKCOLOR            = 0x0201;
     public static final int META_SETBKMODE             = 0x0102;
     public static final int META_SETMAPMODE            = 0x0103;
@@ -150,7 +149,7 @@ public class MetaDo {
         this.cb = cb;
         this.in = new InputMeta(in);
     }
-    
+
     public void readAll() throws IOException, DocumentException{
         if (in.readInt() != 0x9AC6CDD7) {
             throw new DocumentException(MessageLocalization.getComposedMessage("not.a.placeable.windows.metafile"));
@@ -170,7 +169,7 @@ public class MetaDo {
         in.readInt();
         in.readWord();
         in.skip(18);
-        
+
         int tsize;
         int function;
         cb.setLineCap(1);
@@ -545,7 +544,7 @@ public class MetaDo {
         }
         state.cleanup(cb);
     }
-    
+
     public void outputText(int x, int y, int flag, int x1, int y1, int x2, int y2, String text) {
         MetaFont font = state.getCurrentFont();
         float refX = state.transformX(x);
@@ -597,7 +596,7 @@ public class MetaDo {
         }
         cb.restoreState();
     }
-    
+
     public boolean isNullStrokeFill(boolean isRectangle) {
         MetaPen pen = state.getCurrentPen();
         MetaBrush brush = state.getCurrentBrush();
@@ -641,14 +640,14 @@ public class MetaDo {
             }
         }
     }
-    
+
     static float getArc(float xCenter, float yCenter, float xDot, float yDot) {
         double s = Math.atan2(yDot - yCenter, xDot - xCenter);
         if (s < 0)
             s += Math.PI * 2;
         return (float)(s / Math.PI * 180);
     }
-    
+
     public static byte[] wrapBMP(Image image) throws IOException {
         if (image.getOriginalType() != Image.ORIGINAL_BMP)
             throw new IOException(MessageLocalization.getComposedMessage("only.bmp.can.be.wrapped.in.wmf"));
@@ -666,71 +665,75 @@ public class MetaDo {
         else
             data = image.getOriginalData();
         int sizeBmpWords = (data.length - 14 + 1) >>> 1;
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        // write metafile header
-        writeWord(os, 1);
-        writeWord(os, 9);
-        writeWord(os, 0x0300);
-        writeDWord(os, 9 + 4 + 5 + 5 + (13 + sizeBmpWords) + 3); // total metafile size
-        writeWord(os, 1);
-        writeDWord(os, 14 + sizeBmpWords); // max record size
-        writeWord(os, 0);
-        // write records
-        writeDWord(os, 4);
-        writeWord(os, META_SETMAPMODE);
-        writeWord(os, 8);
 
-        writeDWord(os, 5);
-        writeWord(os, META_SETWINDOWORG);
-        writeWord(os, 0);
-        writeWord(os, 0);
+        try (
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ) {
+            writeWord(os, 1);
+            writeWord(os, 9);
+            writeWord(os, 0x0300);
+            writeDWord(os, 9 + 4 + 5 + 5 + (13 + sizeBmpWords) + 3); // total metafile size
+            writeWord(os, 1);
+            writeDWord(os, 14 + sizeBmpWords); // max record size
+            writeWord(os, 0);
+            // write records
+            writeDWord(os, 4);
+            writeWord(os, META_SETMAPMODE);
+            writeWord(os, 8);
 
-        writeDWord(os, 5);
-        writeWord(os, META_SETWINDOWEXT);
-        writeWord(os, (int)image.getHeight());
-        writeWord(os, (int)image.getWidth());
+            writeDWord(os, 5);
+            writeWord(os, META_SETWINDOWORG);
+            writeWord(os, 0);
+            writeWord(os, 0);
 
-        writeDWord(os, 13 + sizeBmpWords);
-        writeWord(os, META_DIBSTRETCHBLT);
-        writeDWord(os, 0x00cc0020);
-        writeWord(os, (int)image.getHeight());
-        writeWord(os, (int)image.getWidth());
-        writeWord(os, 0);
-        writeWord(os, 0);
-        writeWord(os, (int)image.getHeight());
-        writeWord(os, (int)image.getWidth());
-        writeWord(os, 0);
-        writeWord(os, 0);
-        os.write(data, 14, data.length - 14);
-        if ((data.length & 1) == 1)
-            os.write(0);
-//        writeDWord(os, 14 + sizeBmpWords);
-//        writeWord(os, META_STRETCHDIB);
-//        writeDWord(os, 0x00cc0020);
-//        writeWord(os, 0);
-//        writeWord(os, (int)image.height());
-//        writeWord(os, (int)image.width());
-//        writeWord(os, 0);
-//        writeWord(os, 0);
-//        writeWord(os, (int)image.height());
-//        writeWord(os, (int)image.width());
-//        writeWord(os, 0);
-//        writeWord(os, 0);
-//        os.write(data, 14, data.length - 14);
-//        if ((data.length & 1) == 1)
-//            os.write(0);
+            writeDWord(os, 5);
+            writeWord(os, META_SETWINDOWEXT);
+            writeWord(os, (int)image.getHeight());
+            writeWord(os, (int)image.getWidth());
 
-        writeDWord(os, 3);
-        writeWord(os, 0);
-        os.close();
-        return os.toByteArray();
+            writeDWord(os, 13 + sizeBmpWords);
+            writeWord(os, META_DIBSTRETCHBLT);
+            writeDWord(os, 0x00cc0020);
+            writeWord(os, (int)image.getHeight());
+            writeWord(os, (int)image.getWidth());
+            writeWord(os, 0);
+            writeWord(os, 0);
+            writeWord(os, (int)image.getHeight());
+            writeWord(os, (int)image.getWidth());
+            writeWord(os, 0);
+            writeWord(os, 0);
+            os.write(data, 14, data.length - 14);
+            if ((data.length & 1) == 1)
+                os.write(0);
+//            writeDWord(os, 14 + sizeBmpWords);
+//            writeWord(os, META_STRETCHDIB);
+//            writeDWord(os, 0x00cc0020);
+//            writeWord(os, 0);
+//            writeWord(os, (int)image.height());
+//            writeWord(os, (int)image.width());
+//            writeWord(os, 0);
+//            writeWord(os, 0);
+//            writeWord(os, (int)image.height());
+//            writeWord(os, (int)image.width());
+//            writeWord(os, 0);
+//            writeWord(os, 0);
+//            os.write(data, 14, data.length - 14);
+//            if ((data.length & 1) == 1)
+//                os.write(0);
+
+            writeDWord(os, 3);
+            writeWord(os, 0);
+
+            // write metafile header
+            return os.toByteArray();
+        }
     }
 
     public static void writeWord(OutputStream os, int v) throws IOException {
         os.write(v & 0xff);
         os.write((v >>> 8) & 0xff);
     }
-    
+
     public static void writeDWord(OutputStream os, int v) throws IOException {
         writeWord(os, v & 0xffff);
         writeWord(os, (v >>> 16) & 0xffff);

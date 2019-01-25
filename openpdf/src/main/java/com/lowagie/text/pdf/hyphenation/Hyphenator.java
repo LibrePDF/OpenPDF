@@ -1,12 +1,12 @@
 /*
  * Copyright 1999-2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,8 @@ package com.lowagie.text.pdf.hyphenation;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.lowagie.text.pdf.BaseFont;
 
@@ -30,17 +31,17 @@ import com.lowagie.text.pdf.BaseFont;
  * @author Carlos Villegas <cav@uniscope.co.jp>
  */
 public class Hyphenator {
-    
+
     /** TODO: Don't use statics */
-    private static Hashtable hyphenTrees = new Hashtable();
+    private static Map<String,HyphenationTree> hyphenTrees = new HashMap<>();
 
     private HyphenationTree hyphenTree = null;
     private int remainCharCount = 2;
     private int pushCharCount = 2;
     private static final String defaultHyphLocation = "com/lowagie/text/pdf/hyphenation/hyph/";
-   
+
     /** Holds value of property hyphenDir. */
-    private static String hyphenDir = "";    
+    private static String hyphenDir = "";
 
     /**
      * @param lang
@@ -69,10 +70,10 @@ public class Hyphenator {
         }
             // first try to find it in the cache
         if (hyphenTrees.containsKey(key)) {
-            return (HyphenationTree)hyphenTrees.get(key);
+            return hyphenTrees.get(key);
         }
         if (hyphenTrees.containsKey(lang)) {
-            return (HyphenationTree)hyphenTrees.get(lang);
+            return hyphenTrees.get(lang);
         }
 
         HyphenationTree hTree = getResourceHyphenationTree(key);
@@ -90,19 +91,31 @@ public class Hyphenator {
      * @return a hyphenation tree
      */
     public static HyphenationTree getResourceHyphenationTree(String key) {
-        try {
-            InputStream stream = BaseFont.getResourceStream(defaultHyphLocation + key + ".xml");
-            if (stream == null && key.length() > 2)
-                stream = BaseFont.getResourceStream(defaultHyphLocation + key.substring(0, 2) + ".xml");
-            if (stream == null)
-                return null;
-            HyphenationTree hTree = new HyphenationTree();
-            hTree.loadSimplePatterns(stream);
-            return hTree;
-        }
-        catch (Exception e) {
+        try (
+            InputStream is = BaseFont.getResourceStream(defaultHyphLocation + key + ".xml");
+        ) {
+            if (is != null) {
+                HyphenationTree hTree = new HyphenationTree();
+                hTree.loadSimplePatterns(is);
+                return hTree;
+            }
+        } catch (Exception e) {
             return null;
         }
+
+        if(key.length() > 2) try (
+            InputStream is = BaseFont.getResourceStream(defaultHyphLocation + key.substring(0, 2) + ".xml");
+        ) {
+            if (is != null) {
+                HyphenationTree hTree = new HyphenationTree();
+                hTree.loadSimplePatterns(is);
+                return hTree;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+
+        return null;
     }
 
     /**
@@ -110,27 +123,35 @@ public class Hyphenator {
      * @return a hyphenation tree
      */
     public static HyphenationTree getFileHyphenationTree(String key) {
-        try {
-            if (hyphenDir == null)
-                return null;
-            InputStream stream = null;
-            File hyphenFile = new File(hyphenDir, key + ".xml");
-            if (hyphenFile.canRead())
-                stream = new FileInputStream(hyphenFile);
-            if (stream == null && key.length() > 2) {
-                hyphenFile = new File(hyphenDir, key.substring(0, 2) + ".xml");
-                if (hyphenFile.canRead())
-                    stream = new FileInputStream(hyphenFile);
-            }
-            if (stream == null)
-                return null;
+        if (hyphenDir == null)
+            return null;
+
+        File hyphenFile = new File(hyphenDir, key + ".xml");
+        if (hyphenFile.canRead()) try (
+            InputStream stream = new FileInputStream(hyphenFile);
+        ) {
             HyphenationTree hTree = new HyphenationTree();
             hTree.loadSimplePatterns(stream);
             return hTree;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
+
+
+        if(key.length() > 2) {
+            hyphenFile = new File(hyphenDir, key.substring(0, 2) + ".xml");
+            if (hyphenFile.canRead()) try (
+                InputStream stream = new FileInputStream(hyphenFile);
+            ) {
+                HyphenationTree hTree = new HyphenationTree();
+                hTree.loadSimplePatterns(stream);
+                return hTree;
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -228,12 +249,12 @@ public class Hyphenator {
     public static String getHyphenDir() {
         return hyphenDir;
     }
-    
+
     /** Setter for property hyphenDir.
      * @param _hyphenDir New value of property hyphenDir.
      */
     public static void setHyphenDir(String _hyphenDir) {
         hyphenDir = _hyphenDir;
     }
-    
+
 }

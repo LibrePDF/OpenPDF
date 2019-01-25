@@ -47,9 +47,9 @@
 package com.lowagie.text;
 
 /**
- * 
+ *
  * A special-version of <CODE>LIST</CODE> which use zapfdingbats-letters.
- * 
+ *
  * @see com.lowagie.text.List
  * @author Michael Niedermair and Bruno Lowagie
  */
@@ -63,7 +63,7 @@ public class ZapfDingbatsList extends List {
 
     /**
      * Creates a ZapfDingbatsList
-     * 
+     *
      * @param zn a char-number
      */
     public ZapfDingbatsList(int zn) {
@@ -76,7 +76,7 @@ public class ZapfDingbatsList extends List {
 
     /**
      * Creates a ZapfDingbatsList
-     * 
+     *
      * @param zn a char-number
      * @param symbolIndent    indent
      */
@@ -89,7 +89,7 @@ public class ZapfDingbatsList extends List {
     }
 
     /**
-     * set the char-number 
+     * set the char-number
      * @param zn a char-number
      */
     public void setCharNumber(int zn) {
@@ -108,26 +108,24 @@ public class ZapfDingbatsList extends List {
     /**
      * Adds an <CODE>Object</CODE> to the <CODE>List</CODE>.
      *
-     * @param    o    the object to add.
+     * @param    element    the object to add.
      * @return true if adding the object succeeded
      */
-    public boolean add(Object o) {
-        if (o instanceof ListItem) {
-            ListItem item = (ListItem) o;
+    public boolean add(Element element) {
+        if (element instanceof ListItem) {
+            ListItem item = (ListItem) element;
             Chunk chunk = new Chunk(preSymbol, symbol.getFont());
             chunk.append(String.valueOf((char)zn));
             chunk.append(postSymbol);
             item.setListSymbol(chunk);
             item.setIndentationLeft(symbolIndent, autoindent);
             item.setIndentationRight(0);
-            list.add(item);
-        } else if (o instanceof List) {
-            List nested = (List) o;
+            return content.add(item);
+        } else if (element instanceof List) {
+            List nested = (List) element;
             nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
             first--;
-            return list.add(nested);
-        } else if (o instanceof String) {
-            return this.add(new ListItem((String) o));
+            return content.add(nested);
         }
         return false;
     }

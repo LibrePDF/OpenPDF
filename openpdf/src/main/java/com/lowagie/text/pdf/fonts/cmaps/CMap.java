@@ -31,12 +31,12 @@
 package com.lowagie.text.pdf.fonts.cmaps;
 
 import java.io.IOException;
-import com.lowagie.text.error_messages.MessageLocalization;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * This class represents a CMap file.
@@ -46,9 +46,9 @@ import java.util.Map;
  */
 public class CMap
 {
-    private List codeSpaceRanges = new ArrayList();
-    private Map singleByteMappings = new HashMap();
-    private Map doubleByteMappings = new HashMap();
+    private List<CodespaceRange> codeSpaceRanges = new ArrayList<>();
+    private Map<Integer,String> singleByteMappings = new HashMap<>();
+    private Map<Integer,String> doubleByteMappings = new HashMap<>();
 
     /**
      * Creates a new instance of CMap.
@@ -57,20 +57,20 @@ public class CMap
     {
         //default constructor
     }
-    
+
     /**
      * This will tell if this cmap has any one byte mappings.
-     * 
+     *
      * @return true If there are any one byte mappings, false otherwise.
      */
     public boolean hasOneByteMappings()
     {
         return !singleByteMappings.isEmpty();
     }
-    
+
     /**
      * This will tell if this cmap has any two byte mappings.
-     * 
+     *
      * @return true If there are any two byte mappings, false otherwise.
      */
     public boolean hasTwoByteMappings()
@@ -80,7 +80,7 @@ public class CMap
 
     /**
      * This will perform a lookup into the map.
-     * 
+     *
      * Some characters (e.g. ligatures) decode to character sequences.
      *
      * @param code The code used to lookup.
@@ -90,10 +90,10 @@ public class CMap
     {
         String result = null;
         if (hasTwoByteMappings()) {
-            result = (String) doubleByteMappings.get(new Integer(code));
+            result = doubleByteMappings.get(Integer.valueOf(code));
         }
         if (result == null && code <= 0xff && hasOneByteMappings()) {
-            result = (String) singleByteMappings.get(new Integer(code & 0xff));
+            result = singleByteMappings.get(Integer.valueOf(code & 0xff));
         }
         return result;
     }
@@ -114,18 +114,18 @@ public class CMap
         Integer key = null;
         if( length == 1 )
         {
-            
-            key = new Integer( code[offset] & 0xff );
-            result = (String)singleByteMappings.get( key );
+
+            key = Integer.valueOf( code[offset] & 0xff );
+            result = singleByteMappings.get( key );
         }
         else if( length == 2 )
         {
             int intKey = code[offset] & 0xff;
             intKey <<= 8;
             intKey += code[offset+1] & 0xff;
-            key = new Integer( intKey );
+            key = Integer.valueOf( intKey );
 
-            result = (String)doubleByteMappings.get( key );
+            result = doubleByteMappings.get( key );
         }
 
         return result;
@@ -143,14 +143,14 @@ public class CMap
     {
         if( src.length == 1 )
         {
-            singleByteMappings.put( new Integer( src[0] & 0xff ), dest );
+            singleByteMappings.put( Integer.valueOf( src[0] & 0xff ), dest );
         }
         else if( src.length == 2 )
         {
             int intSrc = src[0]&0xFF;
             intSrc <<= 8;
             intSrc |= (src[1]&0xFF);
-            doubleByteMappings.put( new Integer( intSrc), dest );
+            doubleByteMappings.put( Integer.valueOf( intSrc), dest );
         }
         else
         {
@@ -174,7 +174,7 @@ public class CMap
      *
      * @return Value of property codeSpaceRanges.
      */
-    public List getCodeSpaceRanges()
+    public List<CodespaceRange> getCodeSpaceRanges()
     {
         return codeSpaceRanges;
     }

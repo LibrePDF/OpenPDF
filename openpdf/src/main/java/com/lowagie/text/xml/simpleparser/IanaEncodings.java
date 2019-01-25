@@ -56,9 +56,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,17 +68,16 @@
 package com.lowagie.text.xml.simpleparser;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Translates a IANA encoding name to a Java encoding.
  */
 
 public class IanaEncodings {
-
     /** The object that maps IANA to Java encodings. */
-    private static final HashMap map = new HashMap();
-
-    static {        
+    private static final Map<String,String> map = new HashMap<>();
+    static {
         // add IANA to Java encoding mappings.
         map.put("BIG5", "Big5");
         map.put("CSBIG5", "Big5");
@@ -160,7 +159,7 @@ public class IanaEncodings {
         map.put("ISO-2022-KR", "ISO2022KR");
         map.put("CSISO2022KR", "ISO2022KR");
         map.put("ISO-2022-CN", "ISO2022CN");
-        
+
         map.put("X0201", "JIS0201");
         map.put("CSISO13JISC6220JP", "JIS0201");
         map.put("X0208", "JIS0208");
@@ -173,7 +172,7 @@ public class IanaEncodings {
         map.put("SHIFT_JIS", "SJIS");
         map.put("CSSHIFT_JIS", "SJIS");
         map.put("MS_Kanji", "SJIS");
-        
+
         // Add support for Cp1252 and its friends
         map.put("WINDOWS-1250", "Cp1250");
         map.put("WINDOWS-1251", "Cp1251");
@@ -185,7 +184,7 @@ public class IanaEncodings {
         map.put("WINDOWS-1257", "Cp1257");
         map.put("WINDOWS-1258", "Cp1258");
         map.put("TIS-620", "TIS620");
-        
+
         map.put("ISO-8859-1", "ISO8859_1");
         map.put("ISO-IR-100", "ISO8859_1");
         map.put("ISO_8859-1", "ISO8859_1");
@@ -194,34 +193,34 @@ public class IanaEncodings {
         map.put("L1", "ISO8859_1");
         map.put("IBM819", "ISO8859_1");
         map.put("CP819", "ISO8859_1");
-        
+
         map.put("ISO-8859-2", "ISO8859_2");
         map.put("ISO-IR-101", "ISO8859_2");
         map.put("ISO_8859-2", "ISO8859_2");
         map.put("LATIN2", "ISO8859_2");
         map.put("CSISOLATIN2", "ISO8859_2");
         map.put("L2", "ISO8859_2");
-        
+
         map.put("ISO-8859-3", "ISO8859_3");
         map.put("ISO-IR-109", "ISO8859_3");
         map.put("ISO_8859-3", "ISO8859_3");
         map.put("LATIN3", "ISO8859_3");
         map.put("CSISOLATIN3", "ISO8859_3");
         map.put("L3", "ISO8859_3");
-        
+
         map.put("ISO-8859-4", "ISO8859_4");
         map.put("ISO-IR-110", "ISO8859_4");
         map.put("ISO_8859-4", "ISO8859_4");
         map.put("LATIN4", "ISO8859_4");
         map.put("CSISOLATIN4", "ISO8859_4");
         map.put("L4", "ISO8859_4");
-        
+
         map.put("ISO-8859-5", "ISO8859_5");
         map.put("ISO-IR-144", "ISO8859_5");
         map.put("ISO_8859-5", "ISO8859_5");
         map.put("CYRILLIC", "ISO8859_5");
         map.put("CSISOLATINCYRILLIC", "ISO8859_5");
-        
+
         map.put("ISO-8859-6", "ISO8859_6");
         map.put("ISO-IR-127", "ISO8859_6");
         map.put("ISO_8859-6", "ISO8859_6");
@@ -229,7 +228,7 @@ public class IanaEncodings {
         map.put("ASMO-708", "ISO8859_6");
         map.put("ARABIC", "ISO8859_6");
         map.put("CSISOLATINARABIC", "ISO8859_6");
-        
+
         map.put("ISO-8859-7", "ISO8859_7");
         map.put("ISO-IR-126", "ISO8859_7");
         map.put("ISO_8859-7", "ISO8859_7");
@@ -238,21 +237,21 @@ public class IanaEncodings {
         map.put("GREEK", "ISO8859_7");
         map.put("CSISOLATINGREEK", "ISO8859_7");
         map.put("GREEK8", "ISO8859_7");
-        
+
         map.put("ISO-8859-8", "ISO8859_8");
         map.put("ISO-8859-8-I", "ISO8859_8"); // added since this encoding only differs w.r.t. presentation
         map.put("ISO-IR-138", "ISO8859_8");
         map.put("ISO_8859-8", "ISO8859_8");
         map.put("HEBREW", "ISO8859_8");
         map.put("CSISOLATINHEBREW", "ISO8859_8");
-        
+
         map.put("ISO-8859-9", "ISO8859_9");
         map.put("ISO-IR-148", "ISO8859_9");
         map.put("ISO_8859-9", "ISO8859_9");
         map.put("LATIN5", "ISO8859_9");
         map.put("CSISOLATIN5", "ISO8859_9");
         map.put("L5", "ISO8859_9");
-        
+
         map.put("KOI8-R", "KOI8_R");
         map.put("CSKOI8-R", "KOI8_R");
         map.put("US-ASCII", "ASCII");
@@ -270,16 +269,16 @@ public class IanaEncodings {
         map.put("UTF-16BE", "UnicodeBig");
         map.put("UTF-16LE", "UnicodeLittle");
     }
-    
+
     /**
      * Gets the java encoding from the IANA encoding. If the encoding cannot be found
      * it returns the input.
      * @param iana the IANA encoding
      * @return the java encoding
-     */    
+     */
     public static String getJavaEncoding(String iana) {
         String IANA = iana.toUpperCase();
-        String jdec = (String)map.get(IANA);
+        String jdec = map.get(IANA);
         if (jdec == null)
             jdec = iana;
         return jdec;

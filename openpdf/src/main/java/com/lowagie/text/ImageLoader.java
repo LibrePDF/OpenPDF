@@ -45,11 +45,12 @@
 
 package com.lowagie.text;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 /**
  * Loads image files such as PNG, JPEG, GIF, TIFF and BMP.
@@ -63,6 +64,22 @@ import java.net.URL;
  * @author Andreas Rosdal
  */
 public class ImageLoader {
+    /**
+     *     Creates an Image from an image file in an URL.
+     *
+     *
+     * @param url
+     * @return
+     */
+    public static Image getImage(URL url) {
+        try (
+            InputStream is = url.openStream();
+        ) {
+            return Image.getInstance(ImageIO.read(is), null, false);
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
 
     /**
      *     Creates an Image from a PNG image file in an URL.
@@ -72,52 +89,40 @@ public class ImageLoader {
      * @return
      */
     public static Image getPngImage(URL url) {
-        try {
-            InputStream is = url.openStream();
-            BufferedImage bufferedImage = ImageIO.read(is);
-            is.close();
-            return Image.getInstance(bufferedImage, null, false);
-
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
+        return getImage(url);
     }
 
+    /**
+     *     Creates an Image from a GIF image file in an URL.
+     *
+     *
+     * @param url
+     * @return
+     */
     public static Image getGifImage(URL url) {
-        try {
-            InputStream is = url.openStream();
-            BufferedImage bufferedImage = ImageIO.read(is);
-            is.close();
-            return Image.getInstance(bufferedImage, null, false);
-
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
+        return getImage(url);
     }
 
+    /**
+     *     Creates an Image from a TIFF image file in an URL.
+     *
+     *
+     * @param url
+     * @return
+     */
     public static Image getTiffImage(URL url) {
-        try {
-            InputStream is = url.openStream();
-            BufferedImage bufferedImage = ImageIO.read(is);
-            is.close();
-            return Image.getInstance(bufferedImage, null, false);
-
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
+        return getImage(url);
     }
 
-
+    /**
+     *     Creates an Image from a BMP image file in an URL.
+     *
+     *
+     * @param url
+     * @return
+     */
     public static Image getBmpImage(URL url) {
-        try {
-            InputStream is = url.openStream();
-            BufferedImage bufferedImage = ImageIO.read(is);
-            is.close();
-            return Image.getInstance(bufferedImage, null, false);
-
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
+        return getImage(url);
     }
 
     /**
@@ -126,68 +131,49 @@ public class ImageLoader {
      * @param url
      * @return
      */
-    public static Image getJpegImage(URL url) {
-        try {
+    public static Jpeg getJpegImage(URL url) {
+        try (
             InputStream is = url.openStream();
-            byte[] imageBytes = Utilities.toByteArray(is);
-            is.close();
-            return new Jpeg(imageBytes);
-
+        ) {
+            return new Jpeg(Utilities.toByteArray(is));
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
 
-    public static Image getJpeg2000Image(URL url) {
-        try {
+    public static Jpeg2000 getJpeg2000Image(URL url) {
+        try (
             InputStream is = url.openStream();
-            byte[] imageBytes = Utilities.toByteArray(is);
-            is.close();
-            return new Jpeg2000(imageBytes);
+        ) {
+            return new Jpeg2000(Utilities.toByteArray(is));
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
 
+    public static Image getImage(byte[] imageData) {
+        try {
+            BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageData));
+            return Image.getInstance(img, null, false);
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
 
     public static Image getGifImage(byte[] imageData) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
-            return Image.getInstance(bufferedImage, null, false);
-
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
+        return getImage(imageData);
     }
 
     public static Image getPngImage(byte[] imageData) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
-            return Image.getInstance(bufferedImage, null, false);
-
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
+        return getImage(imageData);
     }
 
     public static Image getBmpImage(byte[] imageData) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
-            return Image.getInstance(bufferedImage, null, false);
-
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
+        return getImage(imageData);
     }
 
     public static Image getTiffImage(byte[] imageData) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
-            return Image.getInstance(bufferedImage, null, false);
-
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
+        return getImage(imageData);
     }
 
     /**
@@ -200,7 +186,6 @@ public class ImageLoader {
     public static Image getJpegImage(byte[] imageData) {
         try {
             return new Jpeg(imageData);
-
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -209,10 +194,8 @@ public class ImageLoader {
     public static Image getJpeg2000Image(byte[] imageData) {
         try {
             return new Jpeg2000(imageData);
-
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
-
 }

@@ -43,9 +43,6 @@
  */
 package com.lowagie.text.xml.simpleparser;
 
-import com.lowagie.text.error_messages.MessageLocalization;
-import org.mozilla.universalchardet.UniversalDetector;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,6 +51,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Stack;
+
+import org.mozilla.universalchardet.UniversalDetector;
+
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * A simple XML and HTML parser.  This parser is, like the SAX parser,
@@ -89,9 +90,9 @@ public final class SimpleXMLParser {
     private final static int ATTRIBUTE_KEY = 12;
     private final static int ATTRIBUTE_EQUAL = 13;
     private final static int ATTRIBUTE_VALUE = 14;
-    
+
     /** the state stack */
-    Stack stack;
+    Stack<Integer> stack;
     /** The current character. */
     int character = 0;
     /** The previous character. */
@@ -120,7 +121,7 @@ public final class SimpleXMLParser {
     /** current tagname */
     String tag = null;
     /** current attributes */
-    HashMap attributes = null;
+    HashMap<String,Object> attributes = null;
     /** The handler to which we are going to forward document content */
     SimpleXMLDocHandler doc;
     /** The handler to which we are going to forward comments. */
@@ -133,7 +134,7 @@ public final class SimpleXMLParser {
     String attributekey = null;
     /** the attribute value. */
     String attributevalue = null;
-    
+
     /**
      * Creates a Simple XML parser object.
      * Call go(BufferedReader) immediately after creation.
@@ -142,20 +143,18 @@ public final class SimpleXMLParser {
         this.doc = doc;
         this.comment = comment;
         this.html = html;
-        stack = new Stack();
+        stack = new Stack<>();
         state = html ? TEXT : UNKNOWN;
     }
-    
+
     /**
      * Does the actual parsing. Perform this immediately
      * after creating the parser object.
      */
-    private void go(Reader r) throws IOException {
-        BufferedReader reader;
-        if (r instanceof BufferedReader)
-            reader = (BufferedReader)r;
-        else
-            reader = new BufferedReader(r);
+    private void go(Reader reader) throws IOException {
+        if (!(reader instanceof BufferedReader))
+            reader = new BufferedReader(reader);
+
         doc.startDocument();
         while(true) {
             // read a new character
@@ -167,7 +166,7 @@ public final class SimpleXMLParser {
                 character = previousCharacter;
                 previousCharacter = -1;
             }
-            
+
             // the end of the file was reached
             if (character == -1) {
                 if (html) {
@@ -179,7 +178,7 @@ public final class SimpleXMLParser {
                 }
                 return;
             }
-            
+
             // dealing with  \n and \r
             if (character == '\n' && eol) {
                 eol = false;
@@ -197,7 +196,7 @@ public final class SimpleXMLParser {
             } else {
                 columns++;
             }
-            
+
             switch(state) {
             // we are in an unknown state before there's actual content
             case UNKNOWN:
@@ -281,7 +280,7 @@ public final class SimpleXMLParser {
                     state = ATTRIBUTE_KEY;
                 }
                 break;
-                
+
                 // we are processing a closing tag: e.g. </foo>
             case IN_CLOSETAG:
                 if(character == '>') {
@@ -294,7 +293,7 @@ public final class SimpleXMLParser {
                         text.append((char)character);
                 }
                 break;
-                
+
             // we have just seen something like this: <foo a="b"/
             // and are looking for the final >.
             case SINGLE_TAG:
@@ -310,7 +309,7 @@ public final class SimpleXMLParser {
                 }
                 state = restoreState();
                 break;
-                
+
             // we are processing CDATA
             case CDATA:
                 if(character == '>'
@@ -321,7 +320,7 @@ public final class SimpleXMLParser {
                 } else
                     text.append((char)character);
                 break;
-                
+
             // we are processing a comment.  We are inside
             // the <!-- .... --> looking for the -->.
             case COMMENT:
@@ -333,7 +332,7 @@ public final class SimpleXMLParser {
                 } else
                     text.append((char)character);
                 break;
-                
+
             // We are inside one of these <? ... ?> or one of these <!DOCTYPE ... >
             case PI:
                 if(character == '>') {
@@ -341,7 +340,7 @@ public final class SimpleXMLParser {
                     if(state == TEXT) state = UNKNOWN;
                 }
                 break;
-                
+
             // we are processing an entity, e.g. &lt;, &#187;, etc.
             case ENTITY:
                 if(character == ';') {
@@ -392,7 +391,7 @@ public final class SimpleXMLParser {
                     text.append((char)character);
                 }
                 break;
-                
+
             case ATTRIBUTE_KEY:
                 if(Character.isWhitespace((char)character)) {
                     flush();
@@ -409,7 +408,7 @@ public final class SimpleXMLParser {
                     text.append((char)character);
                 }
                 break;
-                
+
             case ATTRIBUTE_EQUAL:
                 if(character == '=') {
                     state = ATTRIBUTE_VALUE;
@@ -431,7 +430,7 @@ public final class SimpleXMLParser {
                     throwException(MessageLocalization.getComposedMessage("error.in.attribute.processing"));
                 }
                 break;
-                
+
             case ATTRIBUTE_VALUE:
                 if(character == '"' || character == '\'') {
                     quoteCharacter = character;
@@ -461,7 +460,7 @@ public final class SimpleXMLParser {
      */
     private int restoreState() {
         if(!stack.empty())
-            return ((Integer)stack.pop()).intValue();
+            return stack.pop().intValue();
         else
             return UNKNOWN;
     }
@@ -470,7 +469,7 @@ public final class SimpleXMLParser {
      * @param    s    a state to add to the stack
      */
     private void saveState(int s) {
-        stack.push(new Integer(s));
+        stack.push(Integer.valueOf(s));
     }
     /**
      * Flushes the text that is currently in the buffer.
@@ -510,7 +509,7 @@ public final class SimpleXMLParser {
      */
     private void initTag() {
         tag = null;
-        attributes = new HashMap();
+        attributes = new HashMap<>();
     }
     /** Sets the name of the tag. */
     private void doTag() {
@@ -538,7 +537,7 @@ public final class SimpleXMLParser {
     private void throwException(String s) throws IOException {
         throw new IOException(MessageLocalization.getComposedMessage("1.near.line.2.column.3", s, String.valueOf(lines), String.valueOf(columns)));
     }
-    
+
     /**
      * Parses the XML document firing the events to the handler.
      * @param doc the document handler
@@ -549,13 +548,13 @@ public final class SimpleXMLParser {
         SimpleXMLParser parser = new SimpleXMLParser(doc, comment, html);
         parser.go(r);
     }
-    
+
     /**
      * Parses the XML document firing the events to the handler.
      * @param doc the document handler
      * @param in the document. The encoding is deduced from the stream. The stream is not closed
      * @throws IOException on error
-     */    
+     */
     public static void parse(SimpleXMLDocHandler doc, InputStream in) throws IOException {
         byte[] b4 = new byte[4];
         int count = in.read(b4);
@@ -592,7 +591,7 @@ public final class SimpleXMLParser {
         }
         parse(doc, new InputStreamReader(in, IanaEncodings.getJavaEncoding(encoding)));
     }
-    
+
     private static String getDeclaredEncoding(String decl) {
         if (decl == null)
             return null;
@@ -617,7 +616,7 @@ public final class SimpleXMLParser {
         }
         return null;
     }
-    
+
     public static void parse(SimpleXMLDocHandler doc,Reader r) throws IOException {
         parse(doc, null, r, false);
     }

@@ -1,12 +1,12 @@
 /*
  * Copyright 1999-2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,12 +15,13 @@
  */
 
 /* $Id: HyphenationTree.java 3117 2008-01-31 05:53:22Z xlv $ */
- 
+
 package com.lowagie.text.pdf.hyphenation;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This tree structure stores the hyphenation patterns in an efficient
@@ -29,7 +30,7 @@ import java.util.HashMap;
  *
  * @author Carlos Villegas <cav@uniscope.co.jp>
  */
-public class HyphenationTree extends TernaryTree 
+public class HyphenationTree extends TernaryTree
             implements PatternConsumer {
 
     private static final long serialVersionUID = -7763254239309429432L;
@@ -42,7 +43,7 @@ public class HyphenationTree extends TernaryTree
     /**
      * This map stores hyphenation exceptions
      */
-    protected HashMap stoplist;
+    protected Map<String,List<Object>> stoplist;
 
     /**
      * This map stores the character classes
@@ -55,7 +56,7 @@ public class HyphenationTree extends TernaryTree
     private transient TernaryTree ivalues;
 
     public HyphenationTree() {
-        stoplist = new HashMap(23);    // usually a small table
+        stoplist = new HashMap<>(23);    // usually a small table
         classmap = new TernaryTree();
         vspace = new ByteVector();
         vspace.alloc(1);    // this reserves index 0, which we don't use
@@ -346,7 +347,7 @@ public class HyphenationTree extends TernaryTree
         String sw = new String(word, 1, len);
         if (stoplist.containsKey(sw)) {
             // assume only simple hyphens (Hyphen.pre="-", Hyphen.post = Hyphen.no = null)
-            ArrayList hw = (ArrayList)stoplist.get(sw);
+            List<Object> hw = stoplist.get(sw);
             int j = 0;
             for (i = 0; i < hw.size(); i++) {
                 Object o = hw.get(i);
@@ -424,7 +425,7 @@ public class HyphenationTree extends TernaryTree
      * @param hyphenatedword a vector of alternating strings and
      * {@link Hyphen hyphen} objects.
      */
-    public void addException(String word, ArrayList hyphenatedword) {
+    public void addException(String word, List<Object> hyphenatedword) {
         stoplist.put(word, hyphenatedword);
     }
 

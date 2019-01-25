@@ -9,12 +9,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 
-import com.lowagie.text.Utilities;
+import org.junit.jupiter.api.Test;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Rectangle;
-import org.junit.jupiter.api.Test;
+import com.lowagie.text.Utilities;
 
 public class PdfSignatureAppearanceTest {
 
@@ -29,8 +30,11 @@ public class PdfSignatureAppearanceTest {
         PdfObject overrideFileId = new PdfLiteral("<123><123>".getBytes());
 
         for (int i = 0; i < 10; i++) {
-            try (InputStream is = getClass().getResourceAsStream("/EmptyPage.pdf"); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (
+                InputStream is = getClass().getResourceAsStream("/EmptyPage.pdf");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 PdfReader reader = new PdfReader(is);
+            ) {
                 PdfStamper stp = PdfStamper.createSignature(reader, baos, '\0', null, true);
                 stp.setEnforcedModificationDate(signDate);
                 stp.setOverrideFileId(overrideFileId);
@@ -46,8 +50,8 @@ public class PdfSignatureAppearanceTest {
                 sap.setCertificationLevel(2);
                 sap.setReason("Test");
 
-                HashMap exc = new HashMap();
-                exc.put(PdfName.CONTENTS, new Integer(10));
+                Map<PdfName,Integer> exc = new HashMap<>();
+                exc.put(PdfName.CONTENTS, Integer.valueOf(10));
                 sap.preClose(exc);
 
                 byte[] result = Utilities.toByteArray(sap.getRangeStream());
@@ -82,8 +86,11 @@ public class PdfSignatureAppearanceTest {
         PdfObject overrideFileId = new PdfLiteral("<123><123>".getBytes());
 
         for (int i = 0; i < 10; i++) {
-            try (InputStream is = getClass().getResourceAsStream("/EmptyPage.pdf"); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (
+                InputStream is = getClass().getResourceAsStream("/EmptyPage.pdf");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 PdfReader reader = new PdfReader(is);
+            ) {
                 PdfStamper stp = PdfStamper.createSignature(reader, baos, '\0', null, true);
                 stp.setEnforcedModificationDate(signDate);
                 stp.setOverrideFileId(overrideFileId);
@@ -99,8 +106,8 @@ public class PdfSignatureAppearanceTest {
                 sap.setVisibleSignature(new Rectangle(100, 100), 1);
                 sap.setLayer2Text("Hello world");
 
-                HashMap exc = new HashMap();
-                exc.put(PdfName.CONTENTS, new Integer(10));
+                Map<PdfName,Integer> exc = new HashMap<>();
+                exc.put(PdfName.CONTENTS, Integer.valueOf(10));
                 sap.preClose(exc);
 
                 byte[] result = Utilities.toByteArray(sap.getRangeStream());
@@ -126,9 +133,8 @@ public class PdfSignatureAppearanceTest {
         }
     }
 
-    private byte[] getSHA256(byte[] bytes) throws NoSuchAlgorithmException {
+    private static byte[] getSHA256(byte[] bytes) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         return md.digest(bytes);
     }
-
 }

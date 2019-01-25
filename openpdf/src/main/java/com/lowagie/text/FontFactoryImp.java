@@ -53,14 +53,14 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
 
@@ -74,10 +74,9 @@ import com.lowagie.text.pdf.BaseFont;
  */
 
 public class FontFactoryImp implements FontProvider {
-        
 /** This is a map of postscriptfontnames of True Type fonts and the path of their ttf- or ttc-file. */
-    private Properties trueTypeFonts = new Properties();
-    
+    private Map<String,String> trueTypeFonts = new HashMap<>();
+
     private static String[] TTFamilyOrder = {
         "3", "1", "1033",
         "3", "0", "1033",
@@ -86,59 +85,58 @@ public class FontFactoryImp implements FontProvider {
     };
 
 /** This is a map of fontfamilies. */
-    private Hashtable fontFamilies = new Hashtable();
-    
+    private Map<String,List<String>> fontFamilies = new HashMap<>();
+
 /** This is the default encoding to use. */
     public String defaultEncoding = BaseFont.WINANSI;
-    
+
 /** This is the default value of the <VAR>embedded</VAR> variable. */
     public boolean defaultEmbedding = BaseFont.NOT_EMBEDDED;
-    
+
 /** Creates new FontFactory */
     public FontFactoryImp() {
-        trueTypeFonts.setProperty(FontFactory.COURIER.toLowerCase(Locale.ROOT), FontFactory.COURIER);
-        trueTypeFonts.setProperty(FontFactory.COURIER_BOLD.toLowerCase(Locale.ROOT), FontFactory.COURIER_BOLD);
-        trueTypeFonts.setProperty(FontFactory.COURIER_OBLIQUE.toLowerCase(Locale.ROOT), FontFactory.COURIER_OBLIQUE);
-        trueTypeFonts.setProperty(FontFactory.COURIER_BOLDOBLIQUE.toLowerCase(Locale.ROOT), FontFactory.COURIER_BOLDOBLIQUE);
-        trueTypeFonts.setProperty(FontFactory.HELVETICA.toLowerCase(Locale.ROOT), FontFactory.HELVETICA);
-        trueTypeFonts.setProperty(FontFactory.HELVETICA_BOLD.toLowerCase(Locale.ROOT), FontFactory.HELVETICA_BOLD);
-        trueTypeFonts.setProperty(FontFactory.HELVETICA_OBLIQUE.toLowerCase(Locale.ROOT), FontFactory.HELVETICA_OBLIQUE);
-        trueTypeFonts.setProperty(FontFactory.HELVETICA_BOLDOBLIQUE.toLowerCase(Locale.ROOT), FontFactory.HELVETICA_BOLDOBLIQUE);
-        trueTypeFonts.setProperty(FontFactory.SYMBOL.toLowerCase(Locale.ROOT), FontFactory.SYMBOL);
-        trueTypeFonts.setProperty(FontFactory.TIMES_ROMAN.toLowerCase(Locale.ROOT), FontFactory.TIMES_ROMAN);
-        trueTypeFonts.setProperty(FontFactory.TIMES_BOLD.toLowerCase(Locale.ROOT), FontFactory.TIMES_BOLD);
-        trueTypeFonts.setProperty(FontFactory.TIMES_ITALIC.toLowerCase(Locale.ROOT), FontFactory.TIMES_ITALIC);
-        trueTypeFonts.setProperty(FontFactory.TIMES_BOLDITALIC.toLowerCase(Locale.ROOT), FontFactory.TIMES_BOLDITALIC);
-        trueTypeFonts.setProperty(FontFactory.ZAPFDINGBATS.toLowerCase(Locale.ROOT), FontFactory.ZAPFDINGBATS);
+        trueTypeFonts.put(FontFactory.COURIER.toLowerCase(Locale.ROOT), FontFactory.COURIER);
+        trueTypeFonts.put(FontFactory.COURIER_BOLD.toLowerCase(Locale.ROOT), FontFactory.COURIER_BOLD);
+        trueTypeFonts.put(FontFactory.COURIER_OBLIQUE.toLowerCase(Locale.ROOT), FontFactory.COURIER_OBLIQUE);
+        trueTypeFonts.put(FontFactory.COURIER_BOLDOBLIQUE.toLowerCase(Locale.ROOT), FontFactory.COURIER_BOLDOBLIQUE);
+        trueTypeFonts.put(FontFactory.HELVETICA.toLowerCase(Locale.ROOT), FontFactory.HELVETICA);
+        trueTypeFonts.put(FontFactory.HELVETICA_BOLD.toLowerCase(Locale.ROOT), FontFactory.HELVETICA_BOLD);
+        trueTypeFonts.put(FontFactory.HELVETICA_OBLIQUE.toLowerCase(Locale.ROOT), FontFactory.HELVETICA_OBLIQUE);
+        trueTypeFonts.put(FontFactory.HELVETICA_BOLDOBLIQUE.toLowerCase(Locale.ROOT), FontFactory.HELVETICA_BOLDOBLIQUE);
+        trueTypeFonts.put(FontFactory.SYMBOL.toLowerCase(Locale.ROOT), FontFactory.SYMBOL);
+        trueTypeFonts.put(FontFactory.TIMES_ROMAN.toLowerCase(Locale.ROOT), FontFactory.TIMES_ROMAN);
+        trueTypeFonts.put(FontFactory.TIMES_BOLD.toLowerCase(Locale.ROOT), FontFactory.TIMES_BOLD);
+        trueTypeFonts.put(FontFactory.TIMES_ITALIC.toLowerCase(Locale.ROOT), FontFactory.TIMES_ITALIC);
+        trueTypeFonts.put(FontFactory.TIMES_BOLDITALIC.toLowerCase(Locale.ROOT), FontFactory.TIMES_BOLDITALIC);
+        trueTypeFonts.put(FontFactory.ZAPFDINGBATS.toLowerCase(Locale.ROOT), FontFactory.ZAPFDINGBATS);
 
-        ArrayList tmp;
-        tmp = new ArrayList();
+        ArrayList<String> tmp = new ArrayList<>();
         tmp.add(FontFactory.COURIER);
         tmp.add(FontFactory.COURIER_BOLD);
         tmp.add(FontFactory.COURIER_OBLIQUE);
         tmp.add(FontFactory.COURIER_BOLDOBLIQUE);
         fontFamilies.put(FontFactory.COURIER.toLowerCase(Locale.ROOT), tmp);
-        tmp = new ArrayList();
+        tmp = new ArrayList<>();
         tmp.add(FontFactory.HELVETICA);
         tmp.add(FontFactory.HELVETICA_BOLD);
         tmp.add(FontFactory.HELVETICA_OBLIQUE);
         tmp.add(FontFactory.HELVETICA_BOLDOBLIQUE);
         fontFamilies.put(FontFactory.HELVETICA.toLowerCase(Locale.ROOT), tmp);
-        tmp = new ArrayList();
+        tmp = new ArrayList<>();
         tmp.add(FontFactory.SYMBOL);
         fontFamilies.put(FontFactory.SYMBOL.toLowerCase(Locale.ROOT), tmp);
-        tmp = new ArrayList();
+        tmp = new ArrayList<>();
         tmp.add(FontFactory.TIMES_ROMAN);
         tmp.add(FontFactory.TIMES_BOLD);
         tmp.add(FontFactory.TIMES_ITALIC);
         tmp.add(FontFactory.TIMES_BOLDITALIC);
         fontFamilies.put(FontFactory.TIMES.toLowerCase(Locale.ROOT), tmp);
         fontFamilies.put(FontFactory.TIMES_ROMAN.toLowerCase(Locale.ROOT), tmp);
-        tmp = new ArrayList();
+        tmp = new ArrayList<>();
         tmp.add(FontFactory.ZAPFDINGBATS);
         fontFamilies.put(FontFactory.ZAPFDINGBATS.toLowerCase(Locale.ROOT), tmp);
     }
-    
+
     /**
      * Constructs a <CODE>Font</CODE>-object.
      *
@@ -153,9 +151,9 @@ public class FontFactoryImp implements FontProvider {
     public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color) {
         return getFont(fontname, encoding, embedded, size, style, color, true);
     }
-    
-    
-    
+
+
+
     /**
      * Constructs a <CODE>Font</CODE>-object.
      *
@@ -172,12 +170,11 @@ public class FontFactoryImp implements FontProvider {
     public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color, boolean cached) {
         if (fontname == null) return new Font(Font.UNDEFINED, size, style, color);
         String lowercasefontname = fontname.toLowerCase(Locale.ROOT);
-        ArrayList tmp = (ArrayList) fontFamilies.get(lowercasefontname);
+        Collection<String> tmp = fontFamilies.get(lowercasefontname);
         if (tmp != null) {
             // some bugs were fixed here by Daniel Marczisovszky
             int s = style == Font.UNDEFINED ? Font.NORMAL : style;
-            for (Iterator i = tmp.iterator(); i.hasNext(); ) {
-                String f = (String) i.next();
+            for (String f : tmp) {
                 String lcf = f.toLowerCase(Locale.ROOT);
                 int fs = Font.NORMAL;
                 if (lcf.indexOf("bold") != -1) fs |= Font.BOLD;
@@ -198,7 +195,7 @@ public class FontFactoryImp implements FontProvider {
             }
             if (basefont == null) {
                 // the font is a true type font or an unknown font
-                fontname = trueTypeFonts.getProperty(lowercasefontname);
+                fontname = trueTypeFonts.get(lowercasefontname);
                 // the font is not registered as truetype font
                 if (fontname == null) return new Font(Font.UNDEFINED, size, style, color);
                 // the font is registered as truetype font
@@ -219,15 +216,15 @@ public class FontFactoryImp implements FontProvider {
         }
         return new Font(basefont, size, style, color);
     }
-    
-    
+
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
  * @param   attributes  the attributes of a <CODE>Font</CODE> object.
  * @return the Font constructed based on the attributes
  */
-    
+
     public Font getFont(Properties attributes) {
         String fontname = null;
         String encoding = defaultEncoding;
@@ -268,10 +265,6 @@ public class FontFactoryImp implements FontProvider {
                     color = Markup.decodeColor(value);
                 }
                 attributes.putAll(styleAttributes);
-                for (Enumeration e = styleAttributes.keys(); e.hasMoreElements();) {
-                    Object o = e.nextElement();
-                    attributes.put(o, styleAttributes.get(o));
-                }
             }
         }
         if ((value = attributes.getProperty(ElementTags.ENCODING)) != null) {
@@ -312,7 +305,7 @@ public class FontFactoryImp implements FontProvider {
         }
         return getFont(fontname, encoding, embedded, size, style, color);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -323,11 +316,11 @@ public class FontFactoryImp implements FontProvider {
  * @param    style        the style of this font
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname, String encoding, boolean embedded, float size, int style) {
         return getFont(fontname, encoding, embedded, size, style, null);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -337,11 +330,11 @@ public class FontFactoryImp implements FontProvider {
  * @param    size        the size of this font
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname, String encoding, boolean embedded, float size) {
         return getFont(fontname, encoding, embedded, size, Font.UNDEFINED, null);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -350,11 +343,11 @@ public class FontFactoryImp implements FontProvider {
  * @param       embedded    true if the font is to be embedded in the PDF
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname, String encoding, boolean embedded) {
         return getFont(fontname, encoding, embedded, Font.UNDEFINED, Font.UNDEFINED, null);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -365,11 +358,11 @@ public class FontFactoryImp implements FontProvider {
  * @param    color        the <CODE>Color</CODE> of this font.
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname, String encoding, float size, int style, Color color) {
         return getFont(fontname, encoding, defaultEmbedding, size, style, color);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -379,11 +372,11 @@ public class FontFactoryImp implements FontProvider {
  * @param    style        the style of this font
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname, String encoding, float size, int style) {
         return getFont(fontname, encoding, defaultEmbedding, size, style, null);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -392,11 +385,11 @@ public class FontFactoryImp implements FontProvider {
  * @param    size        the size of this font
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname, String encoding, float size) {
         return getFont(fontname, encoding, defaultEmbedding, size, Font.UNDEFINED, null);
     }
-    
+
 
 /**
  * Constructs a <CODE>Font</CODE>-object.
@@ -407,11 +400,11 @@ public class FontFactoryImp implements FontProvider {
  * @return the Font constructed based on the parameters
  * @since 2.1.0
  */
-    
+
     public Font getFont(String fontname, float size, Color color) {
         return getFont(fontname, defaultEncoding, defaultEmbedding, size, Font.UNDEFINED, color);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -419,11 +412,11 @@ public class FontFactoryImp implements FontProvider {
  * @param    encoding    the encoding of the font
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname, String encoding) {
         return getFont(fontname, encoding, defaultEmbedding, Font.UNDEFINED, Font.UNDEFINED, null);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -433,11 +426,11 @@ public class FontFactoryImp implements FontProvider {
  * @param    color        the <CODE>Color</CODE> of this font.
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname, float size, int style, Color color) {
         return getFont(fontname, defaultEncoding, defaultEmbedding, size, style, color);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -446,11 +439,11 @@ public class FontFactoryImp implements FontProvider {
  * @param    style        the style of this font
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname, float size, int style) {
         return getFont(fontname, defaultEncoding, defaultEmbedding, size, style, null);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -458,22 +451,22 @@ public class FontFactoryImp implements FontProvider {
  * @param    size        the size of this font
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname, float size) {
         return getFont(fontname, defaultEncoding, defaultEmbedding, size, Font.UNDEFINED, null);
     }
-    
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
  * @param    fontname    the name of the font
  * @return the Font constructed based on the parameters
  */
-    
+
     public Font getFont(String fontname) {
         return getFont(fontname, defaultEncoding, defaultEmbedding, Font.UNDEFINED, Font.UNDEFINED, null);
     }
-    
+
     /**
      * Register a font by giving explicitly the font family and name.
      * @param familyName the font family
@@ -482,10 +475,10 @@ public class FontFactoryImp implements FontProvider {
      */
     public void registerFamily(String familyName, String fullName, String path) {
         if (path != null)
-            trueTypeFonts.setProperty(fullName, path);
-        ArrayList tmp = (ArrayList) fontFamilies.get(familyName);
+            trueTypeFonts.put(fullName, path);
+        List<String> tmp = fontFamilies.get(familyName);
         if (tmp == null) {
-            tmp = new ArrayList();
+            tmp = new ArrayList<>();
             tmp.add(fullName);
             fontFamilies.put(familyName, tmp);
         }
@@ -493,7 +486,7 @@ public class FontFactoryImp implements FontProvider {
             int fullNameLength = fullName.length();
             boolean inserted = false;
             for (int j = 0; j < tmp.size(); ++j) {
-                if (((String)tmp.get(j)).length() >= fullNameLength) {
+                if ((tmp.get(j)).length() >= fullNameLength) {
                     tmp.add(j, fullName);
                     inserted = true;
                     break;
@@ -503,36 +496,36 @@ public class FontFactoryImp implements FontProvider {
                 tmp.add(fullName);
         }
     }
-    
+
 /**
  * Register a ttf- or a ttc-file.
  *
  * @param   path    the path to a ttf- or ttc-file
  */
-    
+
     public void register(String path) {
         register(path, null);
     }
-    
+
 /**
  * Register a font file and use an alias for the font contained in it.
  *
  * @param   path    the path to a font file
  * @param   alias   the alias you want to use for the font
  */
-    
+
     public void register(String path, String alias) {
         try {
             if (path.toLowerCase().endsWith(".ttf") || path.toLowerCase().endsWith(".otf") || path.toLowerCase().indexOf(".ttc,") > 0) {
                 Object[] allNames = BaseFont.getAllFontNames(path, BaseFont.WINANSI, null);
-                trueTypeFonts.setProperty(((String)allNames[0]).toLowerCase(), path);
+                trueTypeFonts.put(((String)allNames[0]).toLowerCase(), path);
                 if (alias != null) {
-                    trueTypeFonts.setProperty(alias.toLowerCase(), path);
+                    trueTypeFonts.put(alias.toLowerCase(), path);
                 }
                 // register all the font names with all the locales
                 String[][] names = (String[][])allNames[2]; //full name
                 for (int i = 0; i < names.length; i++) {
-                    trueTypeFonts.setProperty(names[i][3].toLowerCase(), path);
+                    trueTypeFonts.put(names[i][3].toLowerCase(), path);
                 }
                 String fullName = null;
                 String familyName = null;
@@ -577,8 +570,8 @@ public class FontFactoryImp implements FontProvider {
                 String familyName = bf.getFamilyFontName()[0][3].toLowerCase();
                 String psName = bf.getPostscriptFontName().toLowerCase();
                 registerFamily(familyName, fullName, null);
-                trueTypeFonts.setProperty(psName, path);
-                trueTypeFonts.setProperty(fullName, path);
+                trueTypeFonts.put(psName, path);
+                trueTypeFonts.put(fullName, path);
             }
         }
         catch(DocumentException de) {
@@ -593,7 +586,7 @@ public class FontFactoryImp implements FontProvider {
     /** Register all the fonts in a directory.
      * @param dir the directory
      * @return the number of fonts registered
-     */    
+     */
     public int registerDirectory(String dir) {
         return registerDirectory(dir, false);
     }
@@ -651,7 +644,7 @@ public class FontFactoryImp implements FontProvider {
     /** Register fonts in some probable directories. It usually works in Windows,
      * Linux and Solaris.
      * @return the number of fonts registered
-     */    
+     */
     public int registerDirectories() {
         int count = 0;
         count += registerDirectory("c:/windows/fonts");
@@ -668,30 +661,28 @@ public class FontFactoryImp implements FontProvider {
         return count;
     }
 
-/**
- * Gets a set of registered fontnames.
- * @return a set of registered fonts
- */
-    
-    public Set getRegisteredFonts() {
-        return Utilities.getKeySet(trueTypeFonts);
+    /**
+     * Gets a set of registered fontnames.
+     * @return a set of registered fonts
+     */
+    public Set<String> getRegisteredFonts() {
+        return trueTypeFonts.keySet();
     }
-    
-/**
- * Gets a set of registered fontnames.
- * @return a set of registered font families
- */
-    
-    public Set getRegisteredFamilies() {
-        return Utilities.getKeySet(fontFamilies);
+
+    /**
+     * Gets a set of registered fontnames.
+     * @return a set of registered font families
+     */
+    public Set<String> getRegisteredFamilies() {
+        return fontFamilies.keySet();
     }
-    
-/**
- * Checks if a certain font is registered.
- *
- * @param   fontname    the name of the font that has to be checked.
- * @return  true if the font is found
- */
+
+    /**
+     * Checks if a certain font is registered.
+     *
+     * @param   fontname    the name of the font that has to be checked.
+     * @return  true if the font is found
+     */
     public boolean isRegistered(String fontname) {
         return trueTypeFonts.containsKey(fontname.toLowerCase());
     }

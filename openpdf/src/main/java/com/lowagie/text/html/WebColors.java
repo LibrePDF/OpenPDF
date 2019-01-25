@@ -53,18 +53,19 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.StringTokenizer;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * This class is a HashMap that contains the names of colors as a key and the
  * corresponding Color as value. (Source: Wikipedia
  * http://en.wikipedia.org/wiki/Web_colors )
- * 
+ *
  * @author blowagie
  */
-public class WebColors extends HashMap {
-    
+public class WebColors extends HashMap<String,int[]> {
     private static final long serialVersionUID = 3542523100813372896L;
+
     /** HashMap containing all the names and corresponding color values. */
     public static final WebColors NAMES = new WebColors();
     static {
@@ -213,7 +214,7 @@ public class WebColors extends HashMap {
 
     /**
      * Gives you a Color based on a name.
-     * 
+     *
      * @param name
      *            a name such as black, violet, cornflowerblue or #RGB or #RRGGBB
      *            or rgb(R,G,B)
@@ -221,8 +222,7 @@ public class WebColors extends HashMap {
      * @throws IllegalArgumentException
      *             if the String isn't a know representation of a color.
      */
-    public static Color getRGBColor(String name)
-            throws IllegalArgumentException {
+    public static Color getRGBColor(String name) throws IllegalArgumentException {
         int[] c = { 0, 0, 0, 0 };
         if (name.startsWith("#")) {
             if (name.length() == 4) {
@@ -256,9 +256,8 @@ public class WebColors extends HashMap {
         }
         name = name.toLowerCase(Locale.ROOT);
         if (!NAMES.containsKey(name))
-            throw new IllegalArgumentException("Color '" + name
-                    + "' not found.");
-        c = (int[]) NAMES.get(name);
+            throw new IllegalArgumentException("Color '" + name + "' not found.");
+        c = NAMES.get(name);
         return new Color(c[0], c[1], c[2], c[3]);
     }
 }

@@ -49,10 +49,9 @@
 package com.lowagie.text;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import com.lowagie.text.error_messages.MessageLocalization;
+import java.util.Collection;
 
-import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPCellEvent;
@@ -63,17 +62,16 @@ import com.lowagie.text.pdf.PdfPTable;
  * Rectangle that can be used for Cells.
  * This Rectangle is padded and knows how to draw itself in a PdfPTable or PdfPcellEvent.
  */
-public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementArray {
-
+public class SimpleCell extends Rectangle implements ComposedElement<Element>, PdfPCellEvent, TextElementArray {
     // constants
     /** the CellAttributes object represents a row. */
     public static final boolean ROW = true;
     /** the CellAttributes object represents a cell. */
     public static final boolean CELL = false;
-    
+
     // member variables
     /** the content of the Cell. */
-    private ArrayList content = new ArrayList();
+    private ArrayList<Element> content = new ArrayList<>();
     /** the width of the Cell. */
     private float width = 0f;
     /** the widthpercentage of the Cell. */
@@ -115,7 +113,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
      * this only has an effect when rendered to PDF.
      */
     protected boolean useBorderPadding;
-    
+
     /**
      * A CellAttributes object is always constructed without any dimensions.
      * Dimensions are defined after creation.
@@ -126,24 +124,44 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         cellgroup = row;
         setBorder(BOX);
     }
-    
+
+    @Override
+    public Collection<? extends Element> getChildren() {
+        return content;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Collection<? extends SimpleCell> getCells() {
+        if (cellgroup) return (Collection<? extends SimpleCell>) content;
+        throw new RuntimeException("getCells() used in wrong context");
+    }
+
+    /**
+     * Adds content to this object.
+     * @param element
+     * @throws BadElementException
+     * @deprecated user <CODE>add(Element element)</CODE> instead
+     */
+    @Deprecated
+    public void addElement(Element element) throws BadElementException {
+        add(element);
+    }
+
     /**
      * Adds content to this object.
      * @param element
      * @throws BadElementException
      */
-    public void addElement(Element element) throws BadElementException {
+    public boolean add(Element element) throws BadElementException {
         if (cellgroup) {
             if (element instanceof SimpleCell) {
                 if(((SimpleCell)element).isCellgroup()) {
                     throw new BadElementException(MessageLocalization.getComposedMessage("you.can.t.add.one.row.to.another.row"));
                 }
                 content.add(element);
-                return;
+                return true;
             }
-            else {
-                throw new BadElementException(MessageLocalization.getComposedMessage("you.can.only.add.cells.to.rows.no.objects.of.type.1", element.getClass().getName()));
-            }
+            throw new BadElementException(MessageLocalization.getComposedMessage("you.can.only.add.cells.to.rows.no.objects.of.type.1", element.getClass().getName()));
         }
         if (element.type() == Element.PARAGRAPH
                 || element.type() == Element.PHRASE
@@ -157,12 +175,11 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
                 || element.type() == Element.IMGRAW
                 || element.type() == Element.IMGTEMPLATE) {
             content.add(element);
+            return true;
         }
-        else {
-            throw new BadElementException(MessageLocalization.getComposedMessage("you.can.t.add.an.element.of.type.1.to.a.simplecell", element.getClass().getName()));
-        }
+        throw new BadElementException(MessageLocalization.getComposedMessage("you.can.t.add.an.element.of.type.1.to.a.simplecell", element.getClass().getName()));
     }
-    
+
     /**
      * Creates a Cell with these attributes.
      * @param rowAttributes
@@ -179,14 +196,12 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         cell.setUseAscender(useAscender);
         cell.setUseBorderPadding(useBorderPadding);
         cell.setUseDescender(useDescender);
-        Element element;
-        for (Iterator i = content.iterator(); i.hasNext(); ) {
-            element = (Element)i.next();
-            cell.addElement(element);
+        for(Element e : content) {
+            cell.add(e);
         }
         return cell;
     }
-    
+
     /**
      * Creates a PdfPCell with these attributes.
      * @param rowAttributes
@@ -229,21 +244,19 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         float sp_bottom = spacing_bottom;
         if (Float.isNaN(sp_bottom)) sp_bottom = 0f;
         p = padding_left;
-        if (Float.isNaN(p)) p = 0f; 
+        if (Float.isNaN(p)) p = 0f;
         cell.setPaddingLeft(p + sp_left);
         p = padding_right;
-        if (Float.isNaN(p)) p = 0f; 
+        if (Float.isNaN(p)) p = 0f;
         cell.setPaddingRight(p + sp_right);
         p = padding_top;
-        if (Float.isNaN(p)) p = 0f; 
+        if (Float.isNaN(p)) p = 0f;
         cell.setPaddingTop(p + sp_top);
         p = padding_bottom;
-        if (Float.isNaN(p)) p = 0f; 
+        if (Float.isNaN(p)) p = 0f;
         cell.setPaddingBottom(p + sp_bottom);
-        Element element;
-        for (Iterator i = content.iterator(); i.hasNext(); ) {
-            element = (Element)i.next();
-            cell.addElement(element);
+        for(Element e : content) {
+            cell.addElement(e);
         }
         return cell;
     }
@@ -266,8 +279,8 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         rect.setBackgroundColor(null);
         canvases[PdfPTable.LINECANVAS].rectangle(rect);
     }
-    
-    /** Sets the padding parameters if they are undefined. 
+
+    /** Sets the padding parameters if they are undefined.
      * @param padding
      */
     public void setPadding(float padding) {
@@ -284,7 +297,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
             setPadding_bottom(padding);
         }
     }
-    
+
     /**
      * @return Returns the colspan.
      */
@@ -369,7 +382,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
     public float getSpacing_bottom() {
         return spacing_bottom;
     }
-    
+
     /**
      * @param spacing The spacing to set.
      */
@@ -379,35 +392,35 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         this.spacing_top = spacing;
         this.spacing_bottom = spacing;
     }
-    
+
     /**
      * @param spacing The spacing to set.
      */
     public void setSpacing_left(float spacing) {
         this.spacing_left = spacing;
     }
-    
+
     /**
      * @param spacing The spacing to set.
      */
     public void setSpacing_right(float spacing) {
         this.spacing_right = spacing;
     }
-    
+
     /**
      * @param spacing The spacing to set.
      */
     public void setSpacing_top(float spacing) {
         this.spacing_top = spacing;
     }
-    
+
     /**
      * @param spacing The spacing to set.
      */
     public void setSpacing_bottom(float spacing) {
         this.spacing_bottom = spacing;
     }
-    
+
     /**
      * @return Returns the cellgroup.
      */
@@ -504,11 +517,13 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
     public void setUseDescender(boolean useDescender) {
         this.useDescender = useDescender;
     }
-    
+
     /**
      * @return Returns the content.
+     * @deprecated use <CODE>getChildren</CODE> instead
      */
-    ArrayList getContent() {
+    @Deprecated
+    ArrayList<?> getContent() {
         return content;
     }
 

@@ -63,7 +63,6 @@ import com.lowagie.text.Rectangle;
  */
 
 class PdfContents extends PdfStream {
-
     static final byte[] SAVESTATE = DocWriter.getISOBytes("q\n");
     static final byte[] RESTORESTATE = DocWriter.getISOBytes("Q\n");
     static final byte[] ROTATE90 = DocWriter.getISOBytes("0 1 -1 0 ");
@@ -71,7 +70,7 @@ class PdfContents extends PdfStream {
     static final byte[] ROTATE270 = DocWriter.getISOBytes("0 -1 1 0 ");
     static final byte[] ROTATEFINAL = DocWriter.getISOBytes(" cm\n");
     // constructor
-    
+
 /**
  * Constructs a <CODE>PdfContents</CODE>-object, containing text and general graphics.
  *
@@ -81,7 +80,7 @@ class PdfContents extends PdfStream {
  * @param secondContent the direct content that is over all others
  * @throws BadPdfFormatException on error
  */
-    
+
     PdfContents(PdfContentByte under, PdfContentByte content, PdfContentByte text, PdfContentByte secondContent, Rectangle page) throws BadPdfFormatException {
         super();
         try {

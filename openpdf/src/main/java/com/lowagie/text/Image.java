@@ -57,9 +57,8 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
-import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -354,7 +353,7 @@ public abstract class Image extends Rectangle {
 
             is = null;
             if (c1 == 'G' && c2 == 'I' && c3 == 'F') {
-                return ImageLoader.getGifImage(imgb);
+                return ImageLoader.getImage(imgb);
             }
             if (c1 == 0xFF && c2 == 0xD8) {
                 return ImageLoader.getJpegImage(imgb);
@@ -367,17 +366,17 @@ public abstract class Image extends Rectangle {
             }
             if (c1 == PNGID[0] && c2 == PNGID[1]
                     && c3 == PNGID[2] && c4 == PNGID[3]) {
-                return ImageLoader.getPngImage(imgb);
+                return ImageLoader.getImage(imgb);
             }
             if (c1 == 0xD7 && c2 == 0xCD) {
                 return new ImgWMF(imgb);
             }
             if (c1 == 'B' && c2 == 'M') {
-                return ImageLoader.getBmpImage(imgb);
+                return ImageLoader.getImage(imgb);
             }
             if ((c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42)
                     || (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
-                return ImageLoader.getTiffImage(imgb);
+                return ImageLoader.getImage(imgb);
             }
             if ( c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2' ) {
                 is = new java.io.ByteArrayInputStream(imgb);
@@ -918,9 +917,8 @@ public abstract class Image extends Rectangle {
         if (image == null)
             return null;
         try {
-            Class cs = image.getClass();
-            Constructor constructor = cs
-                    .getDeclaredConstructor(Image.class);
+            Class<?> cs = image.getClass();
+            Constructor<?> constructor = cs.getDeclaredConstructor(Image.class);
             return (Image) constructor.newInstance(image);
         } catch (Exception e) {
             throw new ExceptionConverter(e);

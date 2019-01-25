@@ -50,18 +50,20 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-
-import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.exceptions.BadPasswordException;
+import com.lowagie.text.pdf.AcroFields.Item;
 
 /**
  *
@@ -70,29 +72,29 @@ import com.lowagie.text.ExceptionConverter;
 class PdfCopyFieldsImp extends PdfWriter {
 
     private static final PdfName iTextTag = new PdfName("_iTextTag_");
-    private static final Integer zero = new Integer(0);
-    ArrayList readers = new ArrayList();
-    HashMap readers2intrefs = new HashMap();
-    HashMap pages2intrefs = new HashMap();
-    HashMap visited = new HashMap();
-    ArrayList fields = new ArrayList();
+    private static final Integer zero = Integer.valueOf(0);
+    List<PdfReader> readers = new ArrayList<>();
+    Map<PdfReader,IntHashtable> readers2intrefs = new HashMap<>();
+    Map<PdfReader,IntHashtable> pages2intrefs = new HashMap<>();
+    Map<PdfReader,IntHashtable> visited = new HashMap<>();
+    List<AcroFields> fields = new ArrayList<>();
     RandomAccessFileOrArray file;
-    HashMap fieldTree = new HashMap();
-    ArrayList pageRefs = new ArrayList();
-    ArrayList pageDics = new ArrayList();
+    Map<String,Object> fieldTree = new HashMap<>();
+    List<PdfIndirectReference> pageRefs = new ArrayList<>();
+    List<PdfDictionary> pageDics = new ArrayList<>();
     PdfDictionary resources = new PdfDictionary();
     PdfDictionary form;
     boolean closing = false;
     Document nd;
-    private HashMap tabOrder;
-    private ArrayList calculationOrder = new ArrayList();
-    private ArrayList calculationOrderRefs;
+    private Map<PdfArray,List<Integer>> tabOrder;
+    private List<String> calculationOrder = new ArrayList<>();
+    private List<PdfIndirectReference> calculationOrderRefs;
     private boolean hasSignature;
-    
+
     PdfCopyFieldsImp(OutputStream os) throws DocumentException {
         this(os, '\0');
     }
-    
+
     PdfCopyFieldsImp(OutputStream os, char pdfVersion) throws DocumentException {
         super(new PdfDocument(), os);
         pdf.addWriter(this);
@@ -101,18 +103,18 @@ class PdfCopyFieldsImp extends PdfWriter {
         nd = new Document();
         nd.addDocListener(pdf);
     }
-    
-    void addDocument(PdfReader reader, List pagesToKeep) throws DocumentException, IOException {
+
+    void addDocument(PdfReader reader, List<Integer> pagesToKeep) throws DocumentException, IOException {
         if (!readers2intrefs.containsKey(reader) && reader.isTampered())
             throw new DocumentException(MessageLocalization.getComposedMessage("the.document.was.reused"));
-        reader = new PdfReader(reader);        
+        reader = new PdfReader(reader);
         reader.selectPages(pagesToKeep);
         if (reader.getNumberOfPages() == 0)
             return;
         reader.setTampered(false);
         addDocument(reader);
     }
-    
+
     void addDocument(PdfReader reader) throws DocumentException, IOException {
         if (!reader.isOpenedWithFullPermissions())
             throw new BadPasswordException(MessageLocalization.getComposedMessage("pdfreader.not.opened.with.owner.password"));
@@ -140,7 +142,7 @@ class PdfCopyFieldsImp extends PdfWriter {
         fields.add(reader.getAcroFields());
         updateCalculationOrder(reader);
     }
-    
+
     private static String getCOName(PdfReader reader, PRIndirectReference ref) {
         String name = "";
         while (ref != null) {
@@ -158,7 +160,7 @@ class PdfCopyFieldsImp extends PdfWriter {
             name = name.substring(0, name.length() - 1);
         return name;
     }
-    
+
     /**
      * @since    2.1.5; before 2.1.5 the method was private
      */
@@ -184,7 +186,7 @@ class PdfCopyFieldsImp extends PdfWriter {
             calculationOrder.add(name);
         }
     }
-    
+
     void propagate(PdfObject obj, PdfIndirectReference refo, boolean restricted) {
         if (obj == null)
             return;
@@ -196,8 +198,7 @@ class PdfCopyFieldsImp extends PdfWriter {
             case PdfObject.DICTIONARY:
             case PdfObject.STREAM: {
                 PdfDictionary dic = (PdfDictionary)obj;
-                for (Iterator it = dic.getKeys().iterator(); it.hasNext();) {
-                    PdfName key = (PdfName)it.next();
+                for (PdfName key : dic.getKeys()) {
                     if (restricted && (key.equals(PdfName.PARENT) || key.equals(PdfName.KIDS)))
                         continue;
                     PdfObject ob = dic.get(key);
@@ -215,8 +216,7 @@ class PdfCopyFieldsImp extends PdfWriter {
             }
             case PdfObject.ARRAY: {
                 //PdfArray arr = new PdfArray();
-                for (Iterator it = ((PdfArray)obj).listIterator(); it.hasNext();) {
-                    PdfObject ob = (PdfObject)it.next();
+                for (PdfObject ob : ((PdfArray)obj)) {
                     if (ob != null && ob.isIndirect()) {
                         PRIndirectReference ind = (PRIndirectReference)ob;
                         if (!isVisited(ind) && !isPage(ind)) {
@@ -234,42 +234,41 @@ class PdfCopyFieldsImp extends PdfWriter {
             }
         }
     }
-    
+
     private void adjustTabOrder(PdfArray annots, PdfIndirectReference ind, PdfNumber nn) {
         int v = nn.intValue();
-        ArrayList t = (ArrayList)tabOrder.get(annots);
+        List<Integer> t = tabOrder.get(annots);
         if (t == null) {
-            t = new ArrayList();
+            t = new ArrayList<>();
             int size = annots.size() - 1;
             for (int k = 0; k < size; ++k) {
                 t.add(zero);
             }
-            t.add(new Integer(v));
+            t.add(Integer.valueOf(v));
             tabOrder.put(annots, t);
             annots.add(ind);
         }
         else {
             int size = t.size() - 1;
             for (int k = size; k >= 0; --k) {
-                if (((Integer)t.get(k)).intValue() <= v) {
-                    t.add(k + 1, new Integer(v));
+                if (t.get(k).intValue() <= v) {
+                    t.add(k + 1, Integer.valueOf(v));
                     annots.add(k + 1, ind);
                     size = -2;
                     break;
                 }
             }
             if (size != -2) {
-                t.add(0, new Integer(v));
+                t.add(0, Integer.valueOf(v));
                 annots.add(0, ind);
             }
         }
     }
-    
-    protected PdfArray branchForm(HashMap level, PdfIndirectReference parent, String fname) throws IOException {
+
+    protected PdfArray branchForm(Map<String,Object> level, PdfIndirectReference parent, String fname) throws IOException {
         PdfArray arr = new PdfArray();
-        for (Iterator it = level.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
-            String name = (String) entry.getKey();
+        for (Map.Entry<String,Object> entry : level.entrySet()) {
+            String name = entry.getKey();
             Object obj = entry.getValue();
             PdfIndirectReference ind = getPdfIndirectReference();
             PdfDictionary dic = new PdfDictionary();
@@ -280,18 +279,18 @@ class PdfCopyFieldsImp extends PdfWriter {
             int coidx = calculationOrder.indexOf(fname2);
             if (coidx >= 0)
                 calculationOrderRefs.set(coidx, ind);
-            if (obj instanceof HashMap) {
-                dic.put(PdfName.KIDS, branchForm((HashMap)obj, ind, fname2));
+            if (obj instanceof Map) {
+                dic.put(PdfName.KIDS, branchForm((Map<String,Object>)obj, ind, fname2));
                 arr.add(ind);
                 addToBody(dic, ind);
             }
             else {
-                ArrayList list = (ArrayList)obj;
+                List<?> list = (List<?>)obj;
                 dic.mergeDifferent((PdfDictionary)list.get(0));
                 if (list.size() == 3) {
                     dic.mergeDifferent((PdfDictionary)list.get(2));
                     int page = ((Integer)list.get(1)).intValue();
-                    PdfDictionary pageDic = (PdfDictionary)pageDics.get(page - 1);
+                    PdfDictionary pageDic = pageDics.get(page - 1);
                     PdfArray annots = pageDic.getAsArray(PdfName.ANNOTS);
                     if (annots == null) {
                         annots = new PdfArray();
@@ -305,7 +304,7 @@ class PdfCopyFieldsImp extends PdfWriter {
                     PdfArray kids = new PdfArray();
                     for (int k = 1; k < list.size(); k += 2) {
                         int page = ((Integer)list.get(k)).intValue();
-                        PdfDictionary pageDic = (PdfDictionary)pageDics.get(page - 1);
+                        PdfDictionary pageDic = pageDics.get(page - 1);
                         PdfArray annots = pageDic.getAsArray(PdfName.ANNOTS);
                         if (annots == null) {
                             annots = new PdfArray();
@@ -330,7 +329,7 @@ class PdfCopyFieldsImp extends PdfWriter {
         }
         return arr;
     }
-    
+
     protected void createAcroForms() throws IOException {
         if (fieldTree.isEmpty())
             return;
@@ -338,8 +337,8 @@ class PdfCopyFieldsImp extends PdfWriter {
         form.put(PdfName.DR, resources);
         propagate(resources, null, false);
         form.put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g "));
-        tabOrder = new HashMap();
-        calculationOrderRefs = new ArrayList(calculationOrder);
+        tabOrder = new HashMap<>();
+        calculationOrderRefs = new ArrayList<>(calculationOrder);
         form.put(PdfName.FIELDS, branchForm(fieldTree, null, ""));
         if (hasSignature)
             form.put(PdfName.SIGFLAGS, new PdfNumber(3));
@@ -352,7 +351,7 @@ class PdfCopyFieldsImp extends PdfWriter {
         if (co.size() > 0)
             form.put(PdfName.CO, co);
     }
-    
+
     public void close() {
         if (closing) {
             super.close();
@@ -366,16 +365,16 @@ class PdfCopyFieldsImp extends PdfWriter {
             throw new ExceptionConverter(e);
         }
     }
-    
+
     /**
      * Creates the new PDF by merging the fields and forms.
      */
     protected void closeIt() throws IOException {
         for (int k = 0; k < readers.size(); ++k) {
-            ((PdfReader)readers.get(k)).removeFields();
+            readers.get(k).removeFields();
         }
         for (int r = 0; r < readers.size(); ++r) {
-            PdfReader reader = (PdfReader)readers.get(r);
+            PdfReader reader = readers.get(r);
             for (int page = 1; page <= reader.getNumberOfPages(); ++page) {
                 pageRefs.add(getNewReference(reader.getPageOrigRef(page)));
                 pageDics.add(reader.getPageN(page));
@@ -384,7 +383,7 @@ class PdfCopyFieldsImp extends PdfWriter {
         mergeFields();
         createAcroForms();
         for (int r = 0; r < readers.size(); ++r) {
-                PdfReader reader = (PdfReader)readers.get(r);
+                PdfReader reader = readers.get(r);
                 for (int page = 1; page <= reader.getNumberOfPages(); ++page) {
                     PdfDictionary dic = reader.getPageN(page);
                     PdfIndirectReference pageRef = getNewReference(reader.getPageOrigRef(page));
@@ -393,13 +392,12 @@ class PdfCopyFieldsImp extends PdfWriter {
                     propagate(dic, pageRef, false);
                 }
         }
-        for (Iterator it = readers2intrefs.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
-            PdfReader reader = (PdfReader) entry.getKey();
+        for (Map.Entry<PdfReader,IntHashtable> entry : readers2intrefs.entrySet()) {
+            PdfReader reader = entry.getKey();
             try {
                 file = reader.getSafeFile();
                 file.reOpen();
-                IntHashtable t = (IntHashtable) entry.getValue();
+                IntHashtable t = entry.getValue();
                 int[] keys = t.toOrderedKeys();
                 for (int k = 0; k < keys.length; ++k) {
                     PRIndirectReference ref = new PRIndirectReference(reader, keys[k]);
@@ -418,12 +416,11 @@ class PdfCopyFieldsImp extends PdfWriter {
         }
         pdf.close();
     }
-    
-    void addPageOffsetToField(HashMap fd, int pageOffset) {
+
+    void addPageOffsetToField(Map<?,AcroFields.Item> fd, int pageOffset) {
         if (pageOffset == 0)
             return;
-        for (Iterator it = fd.values().iterator(); it.hasNext();) {
-            AcroFields.Item item = (AcroFields.Item)it.next();
+        for (AcroFields.Item item : fd.values()) {
             for (int k = 0; k < item.size(); ++k) {
                 int p = item.getPage(k).intValue();
                 item.forcePage(k, p + pageOffset);
@@ -431,7 +428,7 @@ class PdfCopyFieldsImp extends PdfWriter {
         }
     }
 
-    void createWidgets(ArrayList list, AcroFields.Item item) {
+    void createWidgets(List<Object> list, AcroFields.Item item) {
         for (int k = 0; k < item.size(); ++k) {
             list.add(item.getPage(k));
             PdfDictionary merged = item.getMerged(k);
@@ -439,18 +436,17 @@ class PdfCopyFieldsImp extends PdfWriter {
             if (dr != null)
                 PdfFormField.mergeResources(resources, (PdfDictionary)PdfReader.getPdfObject(dr));
             PdfDictionary widget = new PdfDictionary();
-            for (Iterator it = merged.getKeys().iterator(); it.hasNext();) {
-                PdfName key = (PdfName)it.next();
-                if (widgetKeys.containsKey(key))
+            for (PdfName key : merged.getKeys()) {
+                if (widgetKeys.contains(key))
                     widget.put(key, merged.get(key));
             }
             widget.put(iTextTag, new PdfNumber(item.getTabOrder(k).intValue() + 1));
             list.add(widget);
         }
     }
-    
+
     void mergeField(String name, AcroFields.Item item) {
-        HashMap map = fieldTree;
+        Map<String,Object> map = fieldTree;
         StringTokenizer tk = new StringTokenizer(name, ".");
         if (!tk.hasMoreTokens())
             return;
@@ -459,13 +455,13 @@ class PdfCopyFieldsImp extends PdfWriter {
             Object obj = map.get(s);
             if (tk.hasMoreTokens()) {
                 if (obj == null) {
-                    obj = new HashMap();
-                    map.put(s, obj);
-                    map = (HashMap)obj;
+                    Map<String,Object> m = new HashMap<>();
+                    map.put(s, m);
+                    obj = map = m;
                     continue;
                 }
                 else if (obj instanceof HashMap)
-                    map = (HashMap)obj;
+                    map = (Map<String,Object>) obj;
                 else
                     return;
             }
@@ -477,18 +473,17 @@ class PdfCopyFieldsImp extends PdfWriter {
                     PdfDictionary field = new PdfDictionary();
                     if (PdfName.SIG.equals(merged.get(PdfName.FT)))
                         hasSignature = true;
-                    for (Iterator it = merged.getKeys().iterator(); it.hasNext();) {
-                        PdfName key = (PdfName)it.next();
-                        if (fieldKeys.containsKey(key))
+                    for (PdfName key : merged.getKeys()) {
+                        if (fieldKeys.contains(key))
                             field.put(key, merged.get(key));
                     }
-                    ArrayList list = new ArrayList();
+                    List<Object> list = new ArrayList<>();
                     list.add(field);
                     createWidgets(list, item);
                     map.put(s, list);
                 }
                 else {
-                    ArrayList list = (ArrayList)obj;
+                	List<Object> list = (List<Object>) obj;
                     PdfDictionary field = (PdfDictionary)list.get(0);
                     PdfName type1 = (PdfName)field.get(PdfName.FT);
                     PdfName type2 = (PdfName)merged.get(PdfName.FT);
@@ -518,29 +513,27 @@ class PdfCopyFieldsImp extends PdfWriter {
             }
         }
     }
-    
-    void mergeWithMaster(HashMap fd) {
-        for (Iterator it = fd.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
-            String name = (String) entry.getKey();
-            mergeField(name, (AcroFields.Item) entry.getValue());
+
+    void mergeWithMaster(Map<String,AcroFields.Item> fd) {
+        for (Map.Entry<String,AcroFields.Item> entry : fd.entrySet()) {
+            mergeField(entry.getKey(), entry.getValue());
         }
     }
-    
+
     void mergeFields() {
         int pageOffset = 0;
         for (int k = 0; k < fields.size(); ++k) {
-            HashMap fd = ((AcroFields)fields.get(k)).getFields();
+            Map<String, Item> fd = fields.get(k).getFields();
             addPageOffsetToField(fd, pageOffset);
             mergeWithMaster(fd);
-            pageOffset += ((PdfReader)readers.get(k)).getNumberOfPages();
+            pageOffset += readers.get(k).getNumberOfPages();
         }
     }
 
     public PdfIndirectReference getPageReference(int page) {
-        return (PdfIndirectReference)pageRefs.get(page - 1);
+        return pageRefs.get(page - 1);
     }
-    
+
     protected PdfDictionary getCatalog(PdfIndirectReference rootObj) {
         try {
             PdfDictionary cat = pdf.getCatalog(rootObj);
@@ -558,9 +551,9 @@ class PdfCopyFieldsImp extends PdfWriter {
     protected PdfIndirectReference getNewReference(PRIndirectReference ref) {
         return new PdfIndirectReference(0, getNewObjectNumber(ref.getReader(), ref.getNumber(), 0));
     }
-    
+
     protected int getNewObjectNumber(PdfReader reader, int number, int generation) {
-        IntHashtable refs = (IntHashtable)readers2intrefs.get(reader);
+        IntHashtable refs = readers2intrefs.get(reader);
         int n = refs.get(number);
         if (n == 0) {
             n = getIndirectReferenceNumber();
@@ -568,46 +561,46 @@ class PdfCopyFieldsImp extends PdfWriter {
         }
         return n;
     }
-    
-    
+
+
     /**
      * Sets a reference to "visited" in the copy process.
      * @param    ref    the reference that needs to be set to "visited"
      * @return    true if the reference was set to visited
      */
     protected boolean setVisited(PRIndirectReference ref) {
-        IntHashtable refs = (IntHashtable)visited.get(ref.getReader());
+        IntHashtable refs = visited.get(ref.getReader());
         if (refs != null)
             return (refs.put(ref.getNumber(), 1) != 0);
         else
             return false;
     }
-    
+
     /**
      * Checks if a reference has already been "visited" in the copy process.
      * @param    ref    the reference that needs to be checked
      * @return    true if the reference was already visited
      */
     protected boolean isVisited(PRIndirectReference ref) {
-        IntHashtable refs = (IntHashtable)visited.get(ref.getReader());
+        IntHashtable refs = visited.get(ref.getReader());
         if (refs != null)
             return refs.containsKey(ref.getNumber());
         else
             return false;
     }
-    
+
     protected boolean isVisited(PdfReader reader, int number, int generation) {
-        IntHashtable refs = (IntHashtable)readers2intrefs.get(reader);
+        IntHashtable refs = readers2intrefs.get(reader);
         return refs.containsKey(number);
     }
-    
+
     /**
      * Checks if a reference refers to a page object.
      * @param    ref    the reference that needs to be checked
      * @return    true is the reference refers to a page object.
      */
     protected boolean isPage(PRIndirectReference ref) {
-        IntHashtable refs = (IntHashtable)pages2intrefs.get(ref.getReader());
+        IntHashtable refs = pages2intrefs.get(ref.getReader());
         if (refs != null)
             return refs.containsKey(ref.getNumber());
         else
@@ -621,44 +614,44 @@ class PdfCopyFieldsImp extends PdfWriter {
     public void openDoc() {
         if (!nd.isOpen())
             nd.open();
-    }    
-    
-    protected static final HashMap widgetKeys = new HashMap();
-    protected static final HashMap fieldKeys = new HashMap();
-    static {
-        Integer one = new Integer(1);
-        widgetKeys.put(PdfName.SUBTYPE, one);
-        widgetKeys.put(PdfName.CONTENTS, one);
-        widgetKeys.put(PdfName.RECT, one);
-        widgetKeys.put(PdfName.NM, one);
-        widgetKeys.put(PdfName.M, one);
-        widgetKeys.put(PdfName.F, one);
-        widgetKeys.put(PdfName.BS, one);
-        widgetKeys.put(PdfName.BORDER, one);
-        widgetKeys.put(PdfName.AP, one);
-        widgetKeys.put(PdfName.AS, one);
-        widgetKeys.put(PdfName.C, one);
-        widgetKeys.put(PdfName.A, one);
-        widgetKeys.put(PdfName.STRUCTPARENT, one);
-        widgetKeys.put(PdfName.OC, one);
-        widgetKeys.put(PdfName.H, one);
-        widgetKeys.put(PdfName.MK, one);
-        widgetKeys.put(PdfName.DA, one);
-        widgetKeys.put(PdfName.Q, one);
-        fieldKeys.put(PdfName.AA, one);
-        fieldKeys.put(PdfName.FT, one);
-        fieldKeys.put(PdfName.TU, one);
-        fieldKeys.put(PdfName.TM, one);
-        fieldKeys.put(PdfName.FF, one);
-        fieldKeys.put(PdfName.V, one);
-        fieldKeys.put(PdfName.DV, one);
-        fieldKeys.put(PdfName.DS, one);
-        fieldKeys.put(PdfName.RV, one);
-        fieldKeys.put(PdfName.OPT, one);
-        fieldKeys.put(PdfName.MAXLEN, one);
-        fieldKeys.put(PdfName.TI, one);
-        fieldKeys.put(PdfName.I, one);
-        fieldKeys.put(PdfName.LOCK, one);
-        fieldKeys.put(PdfName.SV, one);
     }
+
+    protected static final Collection<PdfName> widgetKeys = new HashSet<>(Arrays.asList(
+        PdfName.SUBTYPE,
+        PdfName.CONTENTS,
+        PdfName.RECT,
+        PdfName.NM,
+        PdfName.M,
+        PdfName.F,
+        PdfName.BS,
+        PdfName.BORDER,
+        PdfName.AP,
+        PdfName.AS,
+        PdfName.C,
+        PdfName.A,
+        PdfName.STRUCTPARENT,
+        PdfName.OC,
+        PdfName.H,
+        PdfName.MK,
+        PdfName.DA,
+        PdfName.Q
+    ));
+
+    protected static final Collection<PdfName> fieldKeys = new HashSet<>(Arrays.asList(
+        PdfName.AA,
+        PdfName.FT,
+        PdfName.TU,
+        PdfName.TM,
+        PdfName.FF,
+        PdfName.V,
+        PdfName.DV,
+        PdfName.DS,
+        PdfName.RV,
+        PdfName.OPT,
+        PdfName.MAXLEN,
+        PdfName.TI,
+        PdfName.I,
+        PdfName.LOCK,
+        PdfName.SV
+    ));
 }

@@ -50,13 +50,12 @@
 package com.lowagie.text;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * An <CODE>Annotation</CODE> is a little note that can be added to a page on
  * a document.
- * 
+ *
  * @see Element
  * @see Anchor
  */
@@ -141,7 +140,7 @@ public class Annotation implements Element {
     protected int annotationtype;
 
     /** This is the title of the <CODE>Annotation</CODE>. */
-    protected HashMap annotationAttributes = new HashMap();
+    protected HashMap<String,Object> annotationAttributes = new HashMap<>();
 
     /** This is the lower left x-value */
     protected float llx = Float.NaN;
@@ -160,7 +159,7 @@ public class Annotation implements Element {
     /**
      * Constructs an <CODE>Annotation</CODE> with a certain title and some
      * text.
-     * 
+     *
      * @param llx
      *            lower left x coordinate
      * @param lly
@@ -188,11 +187,11 @@ public class Annotation implements Element {
         urx = an.urx;
         ury = an.ury;
     }
-    
+
     /**
      * Constructs an <CODE>Annotation</CODE> with a certain title and some
      * text.
-     * 
+     *
      * @param title
      *            the title of the annotation
      * @param text
@@ -207,7 +206,7 @@ public class Annotation implements Element {
     /**
      * Constructs an <CODE>Annotation</CODE> with a certain title and some
      * text.
-     * 
+     *
      * @param title
      *            the title of the annotation
      * @param text
@@ -231,7 +230,7 @@ public class Annotation implements Element {
 
     /**
      * Constructs an <CODE>Annotation</CODE>.
-     * 
+     *
      * @param llx
      *            the lower left x-value
      * @param lly
@@ -251,7 +250,7 @@ public class Annotation implements Element {
 
     /**
      * Constructs an <CODE>Annotation</CODE>.
-     * 
+     *
      * @param llx
      *            the lower left x-value
      * @param lly
@@ -271,7 +270,7 @@ public class Annotation implements Element {
 
     /**
      * Constructs an <CODE>Annotation</CODE>.
-     * 
+     *
      * @param llx
      *            the lower left x-value
      * @param lly
@@ -295,7 +294,7 @@ public class Annotation implements Element {
 
     /**
      * Creates a Screen annotation to embed media clips
-     * 
+     *
      * @param llx
      * @param lly
      * @param urx
@@ -319,7 +318,7 @@ public class Annotation implements Element {
 
     /**
      * Constructs an <CODE>Annotation</CODE>.
-     * 
+     *
      * @param llx
      *            the lower left x-value
      * @param lly
@@ -338,12 +337,12 @@ public class Annotation implements Element {
         this(llx, lly, urx, ury);
         annotationtype = FILE_PAGE;
         annotationAttributes.put(FILE, file);
-        annotationAttributes.put(PAGE, new Integer(page));
+        annotationAttributes.put(PAGE, Integer.valueOf(page));
     }
 
     /**
      * Constructs an <CODE>Annotation</CODE>.
-     * 
+     *
      * @param llx
      *            the lower left x-value
      * @param lly
@@ -358,12 +357,12 @@ public class Annotation implements Element {
     public Annotation(float llx, float lly, float urx, float ury, int named) {
         this(llx, lly, urx, ury);
         annotationtype = NAMED_DEST;
-        annotationAttributes.put(NAMED, new Integer(named));
+        annotationAttributes.put(NAMED, Integer.valueOf(named));
     }
 
     /**
      * Constructs an <CODE>Annotation</CODE>.
-     * 
+     *
      * @param llx
      *            the lower left x-value
      * @param lly
@@ -396,7 +395,7 @@ public class Annotation implements Element {
 
     /**
      * Gets the type of the text element.
-     * 
+     *
      * @return a type
      */
     public int type() {
@@ -406,7 +405,7 @@ public class Annotation implements Element {
     /**
      * Processes the element by adding it (or the different parts) to an <CODE>
      * ElementListener</CODE>.
-     * 
+     *
      * @param listener
      *            an <CODE>ElementListener</CODE>
      * @return <CODE>true</CODE> if the element was processed successfully
@@ -419,21 +418,11 @@ public class Annotation implements Element {
         }
     }
 
-    /**
-     * Gets all the chunks in this element.
-     * 
-     * @return an <CODE>ArrayList</CODE>
-     */
-
-    public ArrayList getChunks() {
-        return new ArrayList();
-    }
-
     // methods
 
     /**
      * Sets the dimensions of this annotation.
-     * 
+     *
      * @param llx
      *            the lower left x-value
      * @param lly
@@ -454,7 +443,7 @@ public class Annotation implements Element {
 
     /**
      * Returns the lower left x-value.
-     * 
+     *
      * @return a value
      */
     public float llx() {
@@ -463,7 +452,7 @@ public class Annotation implements Element {
 
     /**
      * Returns the lower left y-value.
-     * 
+     *
      * @return a value
      */
     public float lly() {
@@ -472,7 +461,7 @@ public class Annotation implements Element {
 
     /**
      * Returns the upper right x-value.
-     * 
+     *
      * @return a value
      */
     public float urx() {
@@ -481,7 +470,7 @@ public class Annotation implements Element {
 
     /**
      * Returns the upper right y-value.
-     * 
+     *
      * @return a value
      */
     public float ury() {
@@ -490,7 +479,7 @@ public class Annotation implements Element {
 
     /**
      * Returns the lower left x-value.
-     * 
+     *
      * @param def
      *            the default value
      * @return a value
@@ -503,7 +492,7 @@ public class Annotation implements Element {
 
     /**
      * Returns the lower left y-value.
-     * 
+     *
      * @param def
      *            the default value
      * @return a value
@@ -516,7 +505,7 @@ public class Annotation implements Element {
 
     /**
      * Returns the upper right x-value.
-     * 
+     *
      * @param def
      *            the default value
      * @return a value
@@ -529,7 +518,7 @@ public class Annotation implements Element {
 
     /**
      * Returns the upper right y-value.
-     * 
+     *
      * @param def
      *            the default value
      * @return a value
@@ -542,7 +531,7 @@ public class Annotation implements Element {
 
     /**
      * Returns the type of this <CODE>Annotation</CODE>.
-     * 
+     *
      * @return a type
      */
     public int annotationType() {
@@ -551,7 +540,7 @@ public class Annotation implements Element {
 
     /**
      * Returns the title of this <CODE>Annotation</CODE>.
-     * 
+     *
      * @return a name
      */
     public String title() {
@@ -563,7 +552,7 @@ public class Annotation implements Element {
 
     /**
      * Gets the content of this <CODE>Annotation</CODE>.
-     * 
+     *
      * @return a reference
      */
     public String content() {
@@ -575,13 +564,13 @@ public class Annotation implements Element {
 
     /**
      * Gets the content of this <CODE>Annotation</CODE>.
-     * 
+     *
      * @return a reference
      */
-    public HashMap attributes() {
+    public HashMap<String,Object> attributes() {
         return annotationAttributes;
     }
-    
+
     /**
      * @see com.lowagie.text.Element#isContent()
      * @since    iText 2.0.8

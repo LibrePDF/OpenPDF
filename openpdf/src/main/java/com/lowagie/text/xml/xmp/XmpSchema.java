@@ -30,7 +30,7 @@
  * the MPL, indicate your decision by deleting the provisions above and
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE 
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
@@ -49,7 +49,6 @@
 
 package com.lowagie.text.xml.xmp;
 
-import java.util.Enumeration;
 import java.util.Properties;
 
 /**
@@ -61,8 +60,8 @@ public abstract class XmpSchema extends Properties {
 
     /** the namesspace */
     protected String xmlns;
-    
-    /** Constructs an XMP schema. 
+
+    /** Constructs an XMP schema.
      * @param xmlns
      */
     public XmpSchema(String xmlns) {
@@ -73,19 +72,20 @@ public abstract class XmpSchema extends Properties {
      * The String representation of the contents.
      * @return a String representation.
      */
-    public String toString() {
-        StringBuffer buf = new StringBuffer();
-        for (Enumeration e = this.propertyNames(); e.hasMoreElements(); ) {
-            process(buf, e.nextElement());
+    public synchronized String toString() {
+        StringBuilder buf = new StringBuilder();
+        for(Object key : keySet()) {
+            process(buf, key);
         }
         return buf.toString();
     }
+
     /**
      * Processes a property
      * @param buf
      * @param p
      */
-    protected void process(StringBuffer buf, Object p) {
+    protected void process(StringBuilder buf, Object p) {
         buf.append('<');
         buf.append(p);
         buf.append('>');
@@ -99,8 +99,8 @@ public abstract class XmpSchema extends Properties {
      */
     public String getXmlns() {
         return xmlns;
-    }    
-    
+    }
+
     /**
      * @param key
      * @param value
@@ -109,17 +109,17 @@ public abstract class XmpSchema extends Properties {
     public Object addProperty(String key, String value) {
         return this.setProperty(key, value);
     }
-    
+
     /**
      * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
      */
-    public Object setProperty(String key, String value) {
+    public synchronized Object setProperty(String key, String value) {
         return super.setProperty(key, escape(value));
     }
-    
+
     /**
      * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
-     * 
+     *
      * @param key
      * @param value
      * @return the previous property (null if there wasn't one)
@@ -127,10 +127,10 @@ public abstract class XmpSchema extends Properties {
     public Object setProperty(String key, XmpArray value) {
         return super.setProperty(key, value.toString());
     }
-    
+
     /**
      * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
-     * 
+     *
      * @param key
      * @param value
      * @return the previous property (null if there wasn't one)
@@ -138,7 +138,7 @@ public abstract class XmpSchema extends Properties {
     public Object setProperty(String key, LangAlt value) {
         return super.setProperty(key, value.toString());
      }
-    
+
     /**
      * @param content
      * @return an escaped string

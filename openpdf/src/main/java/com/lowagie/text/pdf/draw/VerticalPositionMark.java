@@ -71,12 +71,12 @@ public class VerticalPositionMark implements DrawInterface, Element {
 
     /** The offset for the line. */
     protected float offset = 0;
-    
+
     /**
      * Creates a vertical position mark that won't draw anything unless
      * you define a DrawInterface.
      */
-    public VerticalPositionMark() {    
+    public VerticalPositionMark() {
     }
 
     /**
@@ -89,7 +89,7 @@ public class VerticalPositionMark implements DrawInterface, Element {
         this.drawInterface = drawInterface;
         this.offset = offset;
     }
-    
+
     /**
      * @see com.lowagie.text.pdf.draw.DrawInterface#draw(com.lowagie.text.pdf.PdfContentByte, float, float, float, float, float)
      */
@@ -98,7 +98,7 @@ public class VerticalPositionMark implements DrawInterface, Element {
             drawInterface.draw(canvas, llx, lly, urx, ury, y + offset);
         }
     }
-    
+
     /**
      * @see com.lowagie.text.Element#process(com.lowagie.text.ElementListener)
      */
@@ -134,8 +134,8 @@ public class VerticalPositionMark implements DrawInterface, Element {
     /**
      * @see com.lowagie.text.Element#getChunks()
      */
-    public ArrayList getChunks() {
-        ArrayList list = new ArrayList();
+    public ArrayList<Chunk> getChunks() {
+        ArrayList<Chunk> list = new ArrayList<>();
         list.add(new Chunk(this, true));
         return list;
     }

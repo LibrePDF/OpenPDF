@@ -65,7 +65,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
      * our result may be partially processed already, in which case we'll just
      * add things to it, once ready.
      */
-    Collection<FinalText> result = new ArrayList<FinalText>();
+    Collection<FinalText> result = new ArrayList<>();
 
     /**
      * as we get new content (final or not), we accumulate it until we reach the
@@ -73,7 +73,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
      * 
      * Each parsing unit may have a tag name that should wrap its content
      */
-    Collection<TextAssemblyBuffer> partialWords = new ArrayList<TextAssemblyBuffer>();
+    Collection<TextAssemblyBuffer> partialWords = new ArrayList<>();
 
     MarkedUpTextAssembler(PdfReader reader) {
         _reader = reader;

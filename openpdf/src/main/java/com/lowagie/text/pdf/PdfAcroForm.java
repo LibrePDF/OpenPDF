@@ -50,11 +50,10 @@
 package com.lowagie.text.pdf;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
-
-import com.lowagie.text.Rectangle;
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Rectangle;
 
 /**
  * Each PDF document can contain maximum 1 AcroForm.
@@ -64,9 +63,8 @@ public class PdfAcroForm extends PdfDictionary {
 
     private PdfWriter writer;
 
-
     /** This is a map containing FieldTemplates. */
-    private HashMap fieldTemplates = new HashMap();
+    private Map<PdfTemplate, Object> fieldTemplates = new HashMap<>();
 
     /** This is an array containing DocumentFields. */
     private PdfArray documentFields = new PdfArray();
@@ -77,14 +75,14 @@ public class PdfAcroForm extends PdfDictionary {
     /** Contains the signature flags. */
     private int sigFlags = 0;
 
-    /** Creates new PdfAcroForm 
+    /** Creates new PdfAcroForm
      * @param writer
      */
     public PdfAcroForm(PdfWriter writer) {
         super();
         this.writer = writer;
     }
-    
+
     public void setNeedAppearances(boolean value) {
         put(PdfName.NEEDAPPEARANCES, new PdfBoolean(value));
     }
@@ -94,7 +92,7 @@ public class PdfAcroForm extends PdfDictionary {
      * @param ft
      */
 
-    public void addFieldTemplates(HashMap ft) {
+    public void addFieldTemplates(Map<PdfTemplate, Object> ft) {
         fieldTemplates.putAll(ft);
     }
 
@@ -121,8 +119,7 @@ public class PdfAcroForm extends PdfDictionary {
             put(PdfName.CO, calculationOrder);
         if (fieldTemplates.isEmpty()) return true;
         PdfDictionary dic = new PdfDictionary();
-        for (Iterator it = fieldTemplates.keySet().iterator(); it.hasNext();) {
-            PdfTemplate template = (PdfTemplate)it.next();
+        for (PdfTemplate template : fieldTemplates.keySet()) {
             PdfFormField.mergeResources(dic, (PdfDictionary)template.getResources());
         }
         put(PdfName.DR, dic);
@@ -688,7 +685,7 @@ public class PdfAcroForm extends PdfDictionary {
      * @param ury
      * @return a PdfFormField
      */
-    public PdfFormField addSignature(String name, 
+    public PdfFormField addSignature(String name,
                     float llx, float lly, float urx, float ury) {
         PdfFormField signature = PdfFormField.createSignature(writer);
         setSignatureParams(signature, name, llx, lly, urx, ury);
@@ -696,7 +693,7 @@ public class PdfAcroForm extends PdfDictionary {
         addFormField(signature);
         return signature;
     }
-    
+
     /**
      * @param field
      * @param name
@@ -722,7 +719,7 @@ public class PdfAcroForm extends PdfDictionary {
      * @param urx
      * @param ury
      */
-    public void drawSignatureAppearences(PdfFormField field, 
+    public void drawSignatureAppearences(PdfFormField field,
                     float llx, float lly, float urx, float ury) {
         PdfAppearance tp = PdfAppearance.createAppearance(writer, urx - llx, ury - lly);
         tp.setGrayFill(1.0f);

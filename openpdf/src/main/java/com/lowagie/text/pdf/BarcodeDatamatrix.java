@@ -48,16 +48,18 @@
  */
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Image;
-import com.lowagie.text.pdf.codec.CCITTG4Encoder;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.image.MemoryImageSource;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.io.UnsupportedEncodingException;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.codec.CCITTG4Encoder;
 
 /**
  * A DataMatrix 2D barcode generator.
@@ -162,7 +164,7 @@ public class BarcodeDatamatrix {
     private int width;
     private int ws;
     private int options;
-    
+
     /**
      * Creates an instance of this class.
      */
@@ -173,7 +175,7 @@ public class BarcodeDatamatrix {
         image[y * xByte + x / 8] |= (byte)(128 >> (x & 7));
     }
 
-    private void draw(byte[] data, int dataSize, DmParams dm) {
+    private void draw(byte[] data, DmParams dm) {
         int i, j, p, x, y, xs, ys, z;
         int xByte = (dm.width + ws * 2 + 7) / 8;
         Arrays.fill(image, (byte)0);
@@ -232,7 +234,7 @@ public class BarcodeDatamatrix {
     private static boolean isDigit(int c) {
         return c >= '0' && c <= '9';
     }
-    
+
     private static int asciiEncodation(byte[] text, int textOffset, int textLength, byte[] data, int dataOffset, int dataLength) {
         int ptrIn, ptrOut, c;
         ptrIn = textOffset;
@@ -621,7 +623,7 @@ public class BarcodeDatamatrix {
                     data[ptrOut++] = (byte)(((eci - 16383) % 254) + 1);
                 }
                 break;
-            case 's': 
+            case 's':
                 if (order != 1)
                     return -1;
                 if (ptrIn + 9 > textSize)
@@ -663,6 +665,7 @@ public class BarcodeDatamatrix {
                 if (order != 1 && (order != 2 || (text[textOffset] != 's' && text[textOffset] != 'm')))
                     return -1;
                 data[ptrOut++] = (byte)(232);
+                break;
             }
         }
         return -1;
@@ -683,7 +686,7 @@ public class BarcodeDatamatrix {
         byte[] t = text.getBytes(StandardCharsets.ISO_8859_1);
         return generate(t, 0, t.length);
     }
-    
+
     /**
      * Creates a barcode.
      * @param text the text
@@ -697,7 +700,7 @@ public class BarcodeDatamatrix {
      * <CODE>DM_ERROR_EXTENSION</CODE> - an error was while parsing an extension.
      */
     public int generate(byte[] text, int textOffset, int textSize) {
-        int extCount, e, k, full;
+        int extCount, e, k;
         DmParams dm, last;
         byte[] data = new byte[2500];
         extOut = 0;
@@ -742,9 +745,8 @@ public class BarcodeDatamatrix {
         image = new byte[(((dm.width + 2 * ws) + 7) / 8) * (dm.height + 2 * ws)];
         makePadding(data, e, dm.dataSize - e);
         place = Placement.doPlacement(dm.height - (dm.height / dm.heightSection * 2), dm.width - (dm.width / dm.widthSection * 2));
-        full = dm.dataSize + ((dm.dataSize + 2) / dm.dataBlock) * dm.errorBlock;
         ReedSolomon.generateECC(data, dm.dataSize, dm.dataBlock, dm.errorBlock);
-        draw(data, full, dm);
+        draw(data, dm);
         return DM_NO_ERROR;
     }
 
@@ -752,21 +754,21 @@ public class BarcodeDatamatrix {
      * before calling this method is required.
      * @return the barcode <CODE>Image</CODE>
      * @throws BadElementException on error
-     */    
+     */
     public Image createImage() throws BadElementException {
         if (image == null)
             return null;
         byte[] g4 = CCITTG4Encoder.compress(image, width + 2 * ws, height + 2 * ws);
         return Image.getInstance(width + 2 * ws, height + 2 * ws, false, Image.CCITTG4, 0, g4, null);
     }
-    
+
     /**
      * Creates a <CODE>java.awt.Image</CODE>. A successful call to the method <CODE>generate()</CODE>
      * before calling this method is required.
      * @param foreground the color of the bars
      * @param background the color of the background
      * @return the image
-     */    
+     */
     public java.awt.Image createAwtImage(Color foreground, Color background) {
         if (image == null)
             return null;
@@ -790,7 +792,7 @@ public class BarcodeDatamatrix {
         java.awt.Image img = canvas.createImage(new MemoryImageSource(w, h, pix, 0, w));
         return img;
     }
-    
+
     private static class DmParams {
         DmParams(int height, int width, int heightSection, int widthSection, int dataSize, int dataBlock, int errorBlock) {
             this.height = height;
@@ -974,19 +976,19 @@ public class BarcodeDatamatrix {
     public void setOptions(int options) {
         this.options = options;
     }
-    
+
     static class Placement {
         private int nrow;
         private int ncol;
         private short[] array;
-        private static final Hashtable cache = new Hashtable();
+        private static final Map<Integer,short[]> cache = new HashMap<>();
 
         private Placement() {
         }
-        
+
         static short[] doPlacement(int nrow, int ncol) {
-            Integer key = new Integer(nrow * 1000 + ncol);
-            short[] pc = (short[])cache.get(key);
+            Integer key = Integer.valueOf(nrow * 1000 + ncol);
+            short[] pc = cache.get(key);
             if (pc != null)
                 return pc;
             Placement p = new Placement();
@@ -1005,7 +1007,7 @@ public class BarcodeDatamatrix {
             array[row*ncol+col] = (short)(8*chr + bit);
         }
         /* "utah" places the 8 bits of a utah-shaped symbol character in ECC200 */
-        private void utah(int row, int col, int chr) { 
+        private void utah(int row, int col, int chr) {
             module(row-2,col-2,chr,0);
             module(row-2,col-1,chr,1);
             module(row-1,col-2,chr,2);
@@ -1016,7 +1018,7 @@ public class BarcodeDatamatrix {
             module(row,col,chr,7);
         }
         /* "cornerN" places 8 bits of the four special corner cases in ECC200 */
-        private void corner1(int chr) { 
+        private void corner1(int chr) {
             module(nrow-1,0,chr,0);
             module(nrow-1,1,chr,1);
             module(nrow-1,2,chr,2);
@@ -1036,7 +1038,7 @@ public class BarcodeDatamatrix {
             module(0,ncol-1,chr,6);
             module(1,ncol-1,chr,7);
         }
-        private void corner3(int chr){ 
+        private void corner3(int chr){
             module(nrow-3,0,chr,0);
             module(nrow-2,0,chr,1);
             module(nrow-1,0,chr,2);
@@ -1092,7 +1094,7 @@ public class BarcodeDatamatrix {
             }
         }
     }
-    
+
     static class ReedSolomon {
 
         private static final int[] log = {

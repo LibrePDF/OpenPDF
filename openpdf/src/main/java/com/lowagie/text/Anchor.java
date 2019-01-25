@@ -52,7 +52,6 @@ package com.lowagie.text;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * An <CODE>Anchor</CODE> can be a reference or a destination of a reference.
@@ -75,34 +74,34 @@ public class Anchor extends Phrase {
 
     // constant
     private static final long serialVersionUID = -852278536049236911L;
-    
+
     // membervariables
-    
+
     /** This is the name of the <CODE>Anchor</CODE>. */
     protected String name = null;
-    
+
     /** This is the reference of the <CODE>Anchor</CODE>. */
     protected String reference = null;
-    
+
     // constructors
-    
+
     /**
      * Constructs an <CODE>Anchor</CODE> without specifying a leading.
      */
     public Anchor() {
         super(16);
     }
-    
+
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain leading.
      *
      * @param    leading        the leading
      */
-    
+
     public Anchor(float leading) {
         super(leading);
     }
-    
+
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain <CODE>Chunk</CODE>.
      *
@@ -111,7 +110,7 @@ public class Anchor extends Phrase {
     public Anchor(Chunk chunk) {
         super(chunk);
     }
-    
+
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain <CODE>String</CODE>.
      *
@@ -120,7 +119,7 @@ public class Anchor extends Phrase {
     public Anchor(String string) {
         super(string);
     }
-    
+
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain <CODE>String</CODE>
      * and a certain <CODE>Font</CODE>.
@@ -131,7 +130,7 @@ public class Anchor extends Phrase {
     public Anchor(String string, Font font) {
         super(string, font);
     }
-    
+
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain <CODE>Chunk</CODE>
      * and a certain leading.
@@ -142,7 +141,7 @@ public class Anchor extends Phrase {
     public Anchor(float leading, Chunk chunk) {
         super(leading, chunk);
     }
-    
+
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain leading
      * and a certain <CODE>String</CODE>.
@@ -153,7 +152,7 @@ public class Anchor extends Phrase {
     public Anchor(float leading, String string) {
         super(leading, string);
     }
-    
+
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain leading,
      * a certain <CODE>String</CODE> and a certain <CODE>Font</CODE>.
@@ -165,12 +164,12 @@ public class Anchor extends Phrase {
     public Anchor(float leading, String string, Font font) {
         super(leading, string, font);
     }
-    
+
     /**
      * Constructs an <CODE>Anchor</CODE> with a certain <CODE>Phrase</CODE>.
      *
      * @param    phrase        a <CODE>Phrase</CODE>
-     */    
+     */
     public Anchor(Phrase phrase) {
         super(phrase);
         if (phrase instanceof Anchor) {
@@ -179,9 +178,9 @@ public class Anchor extends Phrase {
             setReference(a.reference);
         }
     }
-    
+
     // implementation of the Element-methods
-    
+
     /**
      * Processes the element by adding it (or the different parts) to an
      * <CODE>ElementListener</CODE>.
@@ -191,12 +190,9 @@ public class Anchor extends Phrase {
      */
     public boolean process(ElementListener listener) {
         try {
-            Chunk chunk;
-            Iterator i = getChunks().iterator();
             boolean localDestination = (reference != null && reference.startsWith("#"));
             boolean notGotoOK = true;
-            while (i.hasNext()) {
-                chunk = (Chunk) i.next();
+            for(Chunk chunk : getChunks()) {
                 if (name != null && notGotoOK && !chunk.isEmpty()) {
                     chunk.setLocalDestination(name);
                     notGotoOK = false;
@@ -212,20 +208,18 @@ public class Anchor extends Phrase {
             return false;
         }
     }
-    
+
     /**
      * Gets all the chunks in this element.
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
-        ArrayList tmp = new ArrayList();
-        Chunk chunk;
-        Iterator i = iterator();
+    public ArrayList<Chunk> getChunks() {
+        ArrayList<Chunk> tmp = new ArrayList<>();
         boolean localDestination = (reference != null && reference.startsWith("#"));
         boolean notGotoOK = true;
-        while (i.hasNext()) {
-            chunk = (Chunk) i.next();
+        for(Element e : getChildren()) {
+            Chunk chunk = (Chunk) e;
             if (name != null && notGotoOK && !chunk.isEmpty()) {
                 chunk.setLocalDestination(name);
                 notGotoOK = false;
@@ -239,7 +233,7 @@ public class Anchor extends Phrase {
         }
         return tmp;
     }
-    
+
     /**
      * Gets the type of the text element.
      *
@@ -248,9 +242,9 @@ public class Anchor extends Phrase {
     public int type() {
         return Element.ANCHOR;
     }
-    
+
     // methods
-    
+
     /**
      * Sets the name of this <CODE>Anchor</CODE>.
      *
@@ -259,7 +253,7 @@ public class Anchor extends Phrase {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     /**
      * Sets the reference of this <CODE>Anchor</CODE>.
      *
@@ -268,14 +262,14 @@ public class Anchor extends Phrase {
     public void setReference(String reference) {
         this.reference = reference;
     }
-    
+
     // methods to retrieve information
 
     /**
      * Returns the name of this <CODE>Anchor</CODE>.
      *
      * @return    a name
-     */   
+     */
     public String getName() {
         return name;
     }

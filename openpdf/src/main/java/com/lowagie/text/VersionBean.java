@@ -66,7 +66,7 @@ final class VersionBean {
             initialize();
         }
 
-        private String getAttributeValueOrDefault(Attributes attributes, String name) {
+        private static String getAttributeValueOrDefault(Attributes attributes, String name) {
             String value = attributes.getValue(name);
             if (value == null) {
                 value = UNKNOWN;
@@ -86,7 +86,7 @@ final class VersionBean {
             } catch (Exception e) {
             }
 
-            
+
         }
 
         private void initializePropertiesFromManifest(Manifest manifest) {
@@ -98,12 +98,12 @@ final class VersionBean {
             bundleVersion = getAttributeValueOrDefault(attributes, "Bundle-Version");
             implementationTitle = getAttributeValueOrDefault(attributes, "Implementation-Title");
             scmTimestamp = getAttributeValueOrDefault(attributes, "SCM-Timestamp");
-            
+
             if (isEmpty(implementationVersion) && !isEmpty(bundleVersion)) {
                 implementationVersion = bundleVersion;
             }
         }
-        private boolean isEmpty(String value) {
+        private static boolean isEmpty(String value) {
             return value == null || value.length() == 0;
         }
 
@@ -111,14 +111,13 @@ final class VersionBean {
             fullVersionString = MessageFormat.format("{0}", implementationVersion);
         }
 
-        private Manifest readManifest() {
+        private static Manifest readManifest() {
             ProtectionDomain domain = VersionBean.class.getProtectionDomain();
             if (domain != null) {
                 CodeSource codeSource = domain.getCodeSource();
                 if (codeSource != null) {
                     URL url = codeSource.getLocation();
                     if (url != null) {
-                        InputStream manifestStream = null;
                         try {
                             URL manifestFileUrl;
                             if ("vfs".equals(url.getProtocol())) {
@@ -127,22 +126,16 @@ final class VersionBean {
                             } else {
                                 manifestFileUrl = new URL(url, JarFile.MANIFEST_NAME);
                             }
-                            manifestStream = urlToStream(manifestFileUrl);
-                            return new Manifest(manifestStream);
-                        } catch (MalformedURLException e1) {
 
-                        } catch (IOException e) {
- 
-                        } finally {
-                            if (manifestStream != null) {
-                                try {
-                                    manifestStream.close();
-                                } catch (IOException e) {
-                                }
+                            try (
+                                InputStream is = urlToStream(manifestFileUrl);
+                            ) {
+                                return new Manifest(is);
                             }
+                        } catch (MalformedURLException e1) {
+                        } catch (IOException e) {
                         }
 
-                        JarInputStream jis = null;
                         try {
                             URLConnection urlConnection = url.openConnection();
                             urlConnection.setUseCaches(false);
@@ -150,23 +143,18 @@ final class VersionBean {
                             if (urlConnection instanceof JarURLConnection) {
                                 JarURLConnection jarUrlConnection = (JarURLConnection) urlConnection;
                                 return jarUrlConnection.getManifest();
-                            } else {
-                                jis = new JarInputStream(urlConnection.getInputStream());
-                                return jis.getManifest();
+                            }
+
+                            try (
+                                JarInputStream is = new JarInputStream(urlConnection.getInputStream());
+                            ) {
+                                return is.getManifest();
                             }
                         } catch (IOException e) {
-                        } finally {
-                            if (jis != null) {
-                                try {
-                                    jis.close();
-                                } catch (IOException e) {
-                                }
-                            }
                         }
                     }
                 }
             }
-
             return null;
         }
 
@@ -179,19 +167,17 @@ final class VersionBean {
          * @throws IOException
          */
         private static InputStream urlToStream(URL url) throws IOException {
-            if (url != null) {
-                URLConnection connection = url.openConnection();
+            if (url == null) return null;
 
-                try {
-                    connection.setUseCaches(false);
-                } catch (IllegalArgumentException e) {
-                }
-
-                return connection.getInputStream();
-            } else {
-                return null;
+            URLConnection connection = url.openConnection();
+            try {
+                connection.setUseCaches(false);
+            } catch (IllegalArgumentException e) {
             }
+
+            return connection.getInputStream();
         }
+
         boolean containsDataFromManifest() {
             return containsDataFromManifest;
         }
@@ -218,11 +204,9 @@ final class VersionBean {
 
         @Override
         public String toString() {
-            if (this.containsDataFromManifest()) {
+            if (this.containsDataFromManifest())
                 return getImplementationTitle() + " by " + getImplementationVendor() + ", version " + getVersion();
-            } else {
-                return getVersion();
-            }
+            return getVersion();
         }
     }
 

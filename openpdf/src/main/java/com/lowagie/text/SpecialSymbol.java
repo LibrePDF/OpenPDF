@@ -64,7 +64,7 @@ package com.lowagie.text;
  */
 
 public class SpecialSymbol {
-    
+
     /**
      * Returns the first occurrence of a special symbol in a <CODE>String</CODE>.
      *
@@ -80,7 +80,7 @@ public class SpecialSymbol {
         }
         return -1;
     }
-    
+
     /**
      * Gets a chunk with a symbol character.
      * @param c a character that has to be changed into a symbol
@@ -96,7 +96,7 @@ public class SpecialSymbol {
         String s = String.valueOf(greek);
         return new Chunk(s, symbol);
     }
-    
+
     /**
      * Looks for the corresponding symbol in the font Symbol.
      *
@@ -203,8 +203,8 @@ public class SpecialSymbol {
                 return 'y'; // psi
             case 969:
                 return 'w'; // omega
-                default:
-                    return ' ';
+            default:
+                return ' ';
         }
     }
 }

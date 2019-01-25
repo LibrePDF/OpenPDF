@@ -18,9 +18,9 @@
  * All Rights Reserved.
  * Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer
  * are Copyright (C) 2000, 2001, 2002 by Paulo Soares. All Rights Reserved.
- * 
+ *
  * This class was written by Michael Neuweiler based on hints given by Bruno Lowagie
- * 
+ *
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
  *
@@ -55,6 +55,7 @@ import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -73,12 +74,12 @@ import com.lowagie.text.ExceptionConverter;
 public class PdfSmartCopy extends PdfCopy {
 
     /** the cache with the streams and references. */
-    private HashMap streamMap = null;
+    private Map<ByteStore,PdfIndirectReference> streamMap = null;
 
     /** Creates a PdfSmartCopy instance. */
     public PdfSmartCopy(Document document, OutputStream os) throws DocumentException {
         super(document, os);
-        this.streamMap = new HashMap();
+        this.streamMap = new HashMap<>();
     }
     /**
      * Translate a PRIndirectReference to a PdfIndirectReference
@@ -86,7 +87,7 @@ public class PdfSmartCopy extends PdfCopy {
      * referenced object to the output file if it wasn't available
      * in the cache yet. If it's in the cache, the reference to
      * the already used stream is returned.
-     * 
+     *
      * NB: PRIndirectReferences (and PRIndirectObjects) really need to know what
      * file they came from, because each file has its own namespace. The translation
      * we do from their namespace to ours is *at best* heuristic, and guaranteed to
@@ -99,7 +100,7 @@ public class PdfSmartCopy extends PdfCopy {
         if (srcObj.isStream()) {
             streamKey = new ByteStore((PRStream)srcObj);
             validStream = true;
-            PdfIndirectReference streamRef = (PdfIndirectReference) streamMap.get(streamKey);
+            PdfIndirectReference streamRef = streamMap.get(streamKey);
             if (streamRef != null) {
                 return streamRef;
             }
@@ -171,7 +172,7 @@ public class PdfSmartCopy extends PdfCopy {
             else
                 bb.append("$L").append(obj.toString());
         }
-        
+
         private void serDic(PdfDictionary dic, int level, ByteBuffer bb) throws IOException {
             bb.append("$D");
             if (level <= 0)
@@ -183,7 +184,7 @@ public class PdfSmartCopy extends PdfCopy {
                 serObject(dic.get((PdfName)keys[k]), level, bb);
             }
         }
-        
+
         private void serArray(PdfArray array, int level, ByteBuffer bb) throws IOException {
             bb.append("$A");
             if (level <= 0)
@@ -192,7 +193,7 @@ public class PdfSmartCopy extends PdfCopy {
                 serObject(array.getPdfObject(k), level, bb);
             }
         }
-        
+
         ByteStore(PRStream str) throws IOException {
             try {
                 md5 = MessageDigest.getInstance("MD5");
@@ -200,10 +201,13 @@ public class PdfSmartCopy extends PdfCopy {
             catch (Exception e) {
                 throw new ExceptionConverter(e);
             }
-            ByteBuffer bb = new ByteBuffer();
             int level = 100;
-            serObject(str, level, bb);
-            this.b = bb.toByteArray();
+            try (
+                ByteBuffer bb = new ByteBuffer();
+            ) {
+                serObject(str, level, bb);
+                this.b = bb.toByteArray();
+            }
             md5 = null;
         }
 

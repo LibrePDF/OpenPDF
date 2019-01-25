@@ -60,7 +60,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EmptyStackException;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -73,6 +74,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.xml.XmlDomWriter;
 
 /**
@@ -91,13 +93,13 @@ public class XfaForm {
     private org.w3c.dom.Document domDocument;
     private boolean changed;
     public static final String XFA_DATA_SCHEMA = "http://www.xfa.org/schema/xfa-data/1.0/";
-    
+
     /**
      * An empty constructor to build on.
      */
     public XfaForm() {
     }
-    
+
     /**
      * Return the XFA Object, could be an array, could be a Stream.
      * Returns null f no XFA Object is present.
@@ -112,7 +114,7 @@ public class XfaForm {
         }
         return PdfReader.getPdfObjectRelease(af.get(PdfName.XFA));
     }
-    
+
     /**
      * A constructor from a <CODE>PdfReader</CODE>. It basically does everything
      * from finding the XFA stream to the XML parsing.
@@ -152,12 +154,12 @@ public class XfaForm {
             @Override
             public InputSource resolveEntity(String publicId, String systemId) {
                 return new InputSource(new StringReader(""));
-            }            
+            }
         });
-        domDocument = db.parse(new ByteArrayInputStream(bout.toByteArray()));   
+        domDocument = db.parse(new ByteArrayInputStream(bout.toByteArray()));
         extractNodes();
     }
-    
+
     /**
      * Extracts the nodes from the domDocument.
      * @since    2.1.5
@@ -183,7 +185,7 @@ public class XfaForm {
             n = n.getNextSibling();
         }
     }
-    
+
     /**
      * Sets the XFA key from a byte array. The old XFA is erased.
      * @param form the data
@@ -247,14 +249,16 @@ public class XfaForm {
      */
     public static byte[] serializeDoc(Node n) throws IOException {
         XmlDomWriter xw = new XmlDomWriter();
-        ByteArrayOutputStream fout = new ByteArrayOutputStream();
-        xw.setOutput(fout, null);
-        xw.setCanonical(false);
-        xw.write(n);
-        fout.close();
-        return fout.toByteArray();
+        try (
+            ByteArrayOutputStream fout = new ByteArrayOutputStream();
+        ) {
+            xw.setOutput(fout, null);
+            xw.setCanonical(false);
+            xw.write(n);
+            return fout.toByteArray();
+        }
     }
-    
+
     /**
      * Returns <CODE>true</CODE> if it is a XFA form.
      * @return <CODE>true</CODE> if it is a XFA form
@@ -270,8 +274,8 @@ public class XfaForm {
     public org.w3c.dom.Document getDomDocument() {
         return domDocument;
     }
-    
-    
+
+
     /**
      * Finds the complete field name contained in the "classic" forms from a partial
      * name.
@@ -280,7 +284,7 @@ public class XfaForm {
      * @return the complete name or <CODE>null</CODE> if not found
      */
     public String findFieldName(String name, AcroFields af) {
-        HashMap items = af.getFields();
+        Map<String, Item> items = af.getFields();
         if (items.containsKey(name))
             return name;
         if (acroFieldsSom == null) {
@@ -290,12 +294,12 @@ public class XfaForm {
                 acroFieldsSom = new AcroFieldsSearch(items.keySet());
         }
         if (acroFieldsSom.getAcroShort2LongName().containsKey(name))
-            return (String)acroFieldsSom.getAcroShort2LongName().get(name);
+            return acroFieldsSom.getAcroShort2LongName().get(name);
         return acroFieldsSom.inverseSearchGlobal(Xml2Som.splitParts(name));
     }
-    
+
     /**
-     * Finds the complete SOM name contained in the datasets section from a 
+     * Finds the complete SOM name contained in the datasets section from a
      * possibly partial name.
      * @param name the complete or partial name
      * @return the complete name or <CODE>null</CODE> if not found
@@ -307,7 +311,7 @@ public class XfaForm {
     }
 
     /**
-     * Finds the <CODE>Node</CODE> contained in the datasets section from a 
+     * Finds the <CODE>Node</CODE> contained in the datasets section from a
      * possibly partial name.
      * @param name the complete or partial name
      * @return the <CODE>Node</CODE> or <CODE>null</CODE> if not found
@@ -318,7 +322,7 @@ public class XfaForm {
         name = findDatasetsName(name);
         if (name == null)
             return null;
-        return (Node)datasetsSom.getName2Node().get(name);
+        return datasetsSom.getName2Node().get(name);
     }
 
     /**
@@ -330,9 +334,9 @@ public class XfaForm {
         if (n == null)
             return "";
         return getNodeText(n, "");
-        
+
     }
-    
+
     private static String getNodeText(Node n, String name) {
         Node n2 = n.getFirstChild();
         while (n2 != null) {
@@ -346,7 +350,7 @@ public class XfaForm {
         }
         return name;
     }
-    
+
     /**
      * Sets the text of this node. All the child's node are deleted and a new
      * child text node is created.
@@ -365,7 +369,7 @@ public class XfaForm {
         n.appendChild(domDocument.createTextNode(text));
         changed = true;
     }
-    
+
     /**
      * Sets the XFA form flag signaling that this is a valid XFA form.
      * @param xfaPresent the XFA form flag signaling that this is a valid XFA form
@@ -414,15 +418,15 @@ public class XfaForm {
     public void setChanged(boolean changed) {
         this.changed = changed;
     }
-    
+
     /**
      * A structure to store each part of a SOM name and link it to the next part
      * beginning from the lower hierarchy.
      */
     public static class InverseStore {
-        protected ArrayList part = new ArrayList();
-        protected ArrayList follow = new ArrayList();
-        
+        protected List<String> part = new ArrayList<>();
+        protected List<Object> follow = new ArrayList<>();
+
         /**
          * Gets the full name by traversing the hierarchy using only the
          * index 0.
@@ -437,10 +441,10 @@ public class XfaForm {
                 store = (InverseStore)obj;
             }
         }
-        
+
         /**
          * Search the current node for a similar name. A similar name starts
-         * with the same name but has a different index. For example, "detail[3]" 
+         * with the same name but has a different index. For example, "detail[3]"
          * is similar to "detail[9]". The main use is to discard names that
          * correspond to out of bounds records.
          * @param name the name to search
@@ -450,7 +454,7 @@ public class XfaForm {
             int idx = name.indexOf('[');
             name = name.substring(0, idx + 1);
             for (int k = 0; k < part.size(); ++k) {
-                if (((String)part.get(k)).startsWith(name))
+                if (part.get(k).startsWith(name))
                     return true;
             }
             return false;
@@ -461,41 +465,41 @@ public class XfaForm {
      * Another stack implementation. The main use is to facilitate
      * the porting to other languages.
      */
-    public static class Stack2 extends ArrayList {
+    public static class Stack2 extends ArrayList<String> {
         private static final long serialVersionUID = -7451476576174095212L;
 
         /**
          * Looks at the object at the top of this stack without removing it from the stack.
          * @return the object at the top of this stack
          */
-        public Object peek() {
+        public String peek() {
             if (size() == 0)
                 throw new EmptyStackException();
             return get(size() - 1);
         }
-        
+
         /**
          * Removes the object at the top of this stack and returns that object as the value of this function.
-         * @return the object at the top of this stack 
+         * @return the object at the top of this stack
          */
-        public Object pop() {
+        public String pop() {
             if (size() == 0)
                 throw new EmptyStackException();
-            Object ret = get(size() - 1);
+            String ret = get(size() - 1);
             remove(size() - 1);
             return ret;
         }
-        
+
         /**
          * Pushes an item onto the top of this stack.
          * @param item the item to be pushed onto this stack
          * @return the <CODE>item</CODE> argument
          */
-        public Object push(Object item) {
+        public String push(String item) {
             add(item);
             return item;
         }
-        
+
         /**
          * Tests if this stack is empty.
          * @return <CODE>true</CODE> if and only if this stack contains no items; <CODE>false</CODE> otherwise
@@ -504,7 +508,7 @@ public class XfaForm {
             return size() == 0;
         }
     }
-    
+
     /**
      * A class for some basic SOM processing.
      */
@@ -512,15 +516,15 @@ public class XfaForm {
         /**
          * The order the names appear in the XML, depth first.
          */
-        protected ArrayList order;
+        protected ArrayList<String> order;
         /**
          * The mapping of full names to nodes.
          */
-        protected HashMap name2Node;
+        protected Map<String,Node> name2Node;
         /**
          * The data to do a search from the bottom hierarchy.
          */
-        protected HashMap inverseSearch;
+        protected Map<String,InverseStore> inverseSearch;
         /**
          * A stack to be used when parsing.
          */
@@ -583,10 +587,10 @@ public class XfaForm {
                 return "";
             StringBuffer s = new StringBuffer();
             for (int k = 0; k < stack.size(); ++k)
-                s.append('.').append((String)stack.get(k));
+                s.append('.').append(stack.get(k));
             return s.substring(1);
         }
-        
+
         /**
          * Gets the name with the <CODE>#subform</CODE> removed.
          * @param s the long name
@@ -609,7 +613,7 @@ public class XfaForm {
             sb.append(s.substring(last));
             return sb.toString();
         }
-        
+
         /**
          * Adds a SOM name to the search node chain.
          * @param unstack the SOM name
@@ -617,22 +621,22 @@ public class XfaForm {
         public void inverseSearchAdd(String unstack) {
             inverseSearchAdd(inverseSearch, stack, unstack);
         }
-        
+
         /**
          * Adds a SOM name to the search node chain.
          * @param inverseSearch the start point
          * @param stack the stack with the separated SOM parts
          * @param unstack the full name
          */
-        public static void inverseSearchAdd(HashMap inverseSearch, Stack2 stack, String unstack) {
-            String last = (String)stack.peek();
-            InverseStore store = (InverseStore)inverseSearch.get(last);
+        public static void inverseSearchAdd(Map<String,InverseStore> inverseSearch, Stack2 stack, String unstack) {
+            String last = stack.peek();
+            InverseStore store = inverseSearch.get(last);
             if (store == null) {
                 store = new InverseStore();
                 inverseSearch.put(last, store);
             }
             for (int k = stack.size() - 2; k >= 0; --k) {
-                last = (String)stack.get(k);
+                last = stack.get(k);
                 InverseStore store2;
                 int idx = store.part.indexOf(last);
                 if (idx < 0) {
@@ -653,14 +657,14 @@ public class XfaForm {
          * @param parts the SOM parts
          * @return the full name or <CODE>null</CODE> if not found
          */
-        public String inverseSearchGlobal(ArrayList parts) {
+        public String inverseSearchGlobal(List<String> parts) {
             if (parts.isEmpty())
                 return null;
-            InverseStore store = (InverseStore)inverseSearch.get(parts.get(parts.size() - 1));
+            InverseStore store = inverseSearch.get(parts.get(parts.size() - 1));
             if (store == null)
                 return null;
             for (int k = parts.size() - 2; k >= 0; --k) {
-                String part = (String)parts.get(k);
+                String part = parts.get(k);
                 int idx = store.part.indexOf(part);
                 if (idx < 0) {
                     if (store.isSimilar(part))
@@ -671,7 +675,7 @@ public class XfaForm {
             }
             return store.getDefaultName();
         }
-    
+
         /**
          * Splits a SOM name in the individual parts.
          * @param name the full SOM name
@@ -714,7 +718,7 @@ public class XfaForm {
          * Gets the order the names appear in the XML, depth first.
          * @return the order the names appear in the XML, depth first
          */
-        public ArrayList getOrder() {
+        public ArrayList<String> getOrder() {
             return order;
         }
 
@@ -722,7 +726,7 @@ public class XfaForm {
          * Sets the order the names appear in the XML, depth first
          * @param order the order the names appear in the XML, depth first
          */
-        public void setOrder(ArrayList order) {
+        public void setOrder(ArrayList<String> order) {
             this.order = order;
         }
 
@@ -730,7 +734,7 @@ public class XfaForm {
          * Gets the mapping of full names to nodes.
          * @return the mapping of full names to nodes
          */
-        public HashMap getName2Node() {
+        public Map<String,Node> getName2Node() {
             return name2Node;
         }
 
@@ -738,7 +742,7 @@ public class XfaForm {
          * Sets the mapping of full names to nodes.
          * @param name2Node the mapping of full names to nodes
          */
-        public void setName2Node(HashMap name2Node) {
+        public void setName2Node(Map<String,Node> name2Node) {
             this.name2Node = name2Node;
         }
 
@@ -746,7 +750,7 @@ public class XfaForm {
          * Gets the data to do a search from the bottom hierarchy.
          * @return the data to do a search from the bottom hierarchy
          */
-        public HashMap getInverseSearch() {
+        public Map<String,InverseStore> getInverseSearch() {
             return inverseSearch;
         }
 
@@ -754,11 +758,11 @@ public class XfaForm {
          * Sets the data to do a search from the bottom hierarchy.
          * @param inverseSearch the data to do a search from the bottom hierarchy
          */
-        public void setInverseSearch(HashMap inverseSearch) {
+        public void setInverseSearch(Map<String,InverseStore> inverseSearch) {
             this.inverseSearch = inverseSearch;
         }
     }
-    
+
     /**
      * Processes the datasets section in the XFA form.
      */
@@ -769,11 +773,11 @@ public class XfaForm {
          * @param n the datasets node
          */
         public Xml2SomDatasets(Node n) {
-            order = new ArrayList();
-            name2Node = new HashMap();
+            order = new ArrayList<>();
+            name2Node = new HashMap<>();
             stack = new Stack2();
             anform = 0;
-            inverseSearch = new HashMap();
+            inverseSearch = new HashMap<>();
             processDatasetsInternal(n);
         }
 
@@ -789,7 +793,7 @@ public class XfaForm {
             Node n2 = null;
             n = n.getFirstChild();
             for (int k = 0; k < stack.size(); ++k) {
-                String part = (String)stack.get(k);
+                String part = stack.get(k);
                 int idx = part.lastIndexOf('[');
                 String name = part.substring(0, idx);
                 idx = Integer.parseInt(part.substring(idx + 1, part.length() - 1));
@@ -818,7 +822,7 @@ public class XfaForm {
             order.add(shortName);
             return n2;
         }
-        
+
         private static boolean hasChildren(Node n) {
             Node dataNodeN = n.getAttributes().getNamedItemNS(XFA_DATA_SCHEMA, "dataNode");
             if (dataNodeN != null) {
@@ -841,16 +845,16 @@ public class XfaForm {
         }
 
         private void processDatasetsInternal(Node n) {
-            HashMap ss = new HashMap();
+            Map<String,Integer> ss = new HashMap<>();
             Node n2 = n.getFirstChild();
             while (n2 != null) {
                 if (n2.getNodeType() == Node.ELEMENT_NODE) {
                     String s = escapeSom(n2.getLocalName());
-                    Integer i = (Integer)ss.get(s);
+                    Integer i = ss.get(s);
                     if (i == null)
-                        i = new Integer(0);
+                        i = Integer.valueOf(0);
                     else
-                        i = new Integer(i.intValue() + 1);
+                        i = Integer.valueOf(i.intValue() + 1);
                     ss.put(s, i);
                     if (hasChildren(n2)) {
                         stack.push(s + "[" + i.toString() + "]");
@@ -875,17 +879,16 @@ public class XfaForm {
      * A class to process "classic" fields.
      */
     public static class AcroFieldsSearch extends Xml2Som {
-        private HashMap acroShort2LongName;
-        
+        private Map<String,String> acroShort2LongName;
+
         /**
          * Creates a new instance from a Collection with the full names.
          * @param items the Collection
          */
-        public AcroFieldsSearch(Collection items) {
-            inverseSearch = new HashMap();
-            acroShort2LongName = new HashMap();
-            for (Iterator it = items.iterator(); it.hasNext();) {
-                String itemName = (String)it.next();
+        public AcroFieldsSearch(Collection<String> items) {
+            inverseSearch = new HashMap<>();
+            acroShort2LongName = new HashMap<>();
+            for (String itemName : items) {
                 String itemShort = getShortName(itemName);
                 acroShort2LongName.put(itemShort, itemName);
                 inverseSearchAdd(inverseSearch, splitParts(itemShort), itemName);
@@ -893,20 +896,20 @@ public class XfaForm {
         }
 
         /**
-         * Gets the mapping from short names to long names. A long 
+         * Gets the mapping from short names to long names. A long
          * name may contain the #subform name part.
          * @return the mapping from short names to long names
          */
-        public HashMap getAcroShort2LongName() {
+        public Map<String,String> getAcroShort2LongName() {
             return acroShort2LongName;
         }
 
         /**
-         * Sets the mapping from short names to long names. A long 
+         * Sets the mapping from short names to long names. A long
          * name may contain the #subform name part.
          * @param acroShort2LongName the mapping from short names to long names
          */
-        public void setAcroShort2LongName(HashMap acroShort2LongName) {
+        public void setAcroShort2LongName(Map<String,String> acroShort2LongName) {
             this.acroShort2LongName = acroShort2LongName;
         }
     }
@@ -917,18 +920,18 @@ public class XfaForm {
     public static class Xml2SomTemplate extends Xml2Som {
         private boolean dynamicForm;
         private int templateLevel;
-        
+
         /**
          * Creates a new instance from the datasets node.
          * @param n the template node
          */
         public Xml2SomTemplate(Node n) {
-            order = new ArrayList();
-            name2Node = new HashMap();
+            order = new ArrayList<>();
+            name2Node = new HashMap<>();
             stack = new Stack2();
             anform = 0;
             templateLevel = 0;
-            inverseSearch = new HashMap();
+            inverseSearch = new HashMap<>();
             processTemplate(n, null);
         }
 
@@ -938,7 +941,7 @@ public class XfaForm {
          * @return the field type or <CODE>null</CODE> if not found
          */
         public String getFieldType(String s) {
-            Node n = (Node)name2Node.get(s);
+            Node n = name2Node.get(s);
             if (n == null)
                 return null;
             if (n.getLocalName().equals("exclGroup"))
@@ -962,10 +965,10 @@ public class XfaForm {
             return null;
         }
 
-        private void processTemplate(Node n, HashMap ff) {
+        private void processTemplate(Node n, Map<String,Integer> ff) {
             if (ff == null)
-                ff = new HashMap();
-            HashMap ss = new HashMap();
+                ff = new HashMap<>();
+            Map<String,Integer> ss = new HashMap<>();
             Node n2 = n.getFirstChild();
             while (n2 != null) {
                 if (n2.getNodeType() == Node.ELEMENT_NODE) {
@@ -980,15 +983,15 @@ public class XfaForm {
                         }
                         Integer i;
                         if (annon) {
-                            i = new Integer(anform);
+                            i = Integer.valueOf(anform);
                             ++anform;
                         }
                         else {
-                            i = (Integer)ss.get(nn);
+                            i = ss.get(nn);
                             if (i == null)
-                                i = new Integer(0);
+                                i = Integer.valueOf(0);
                             else
-                                i = new Integer(i.intValue() + 1);
+                                i = Integer.valueOf(i.intValue() + 1);
                             ss.put(nn, i);
                         }
                         stack.push(nn + "[" + i.toString() + "]");
@@ -1004,11 +1007,11 @@ public class XfaForm {
                         Node name = n2.getAttributes().getNamedItem("name");
                         if (name != null) {
                             String nn = escapeSom(name.getNodeValue());
-                            Integer i = (Integer)ff.get(nn);
+                            Integer i = ff.get(nn);
                             if (i == null)
-                                i = new Integer(0);
+                                i = Integer.valueOf(0);
                             else
-                                i = new Integer(i.intValue() + 1);
+                                i = Integer.valueOf(i.intValue() + 1);
                             ff.put(nn, i);
                             stack.push(nn + "[" + i.toString() + "]");
                             String unstack = printStack();
@@ -1105,7 +1108,7 @@ public class XfaForm {
     public void setAcroFieldsSom(AcroFieldsSearch acroFieldsSom) {
         this.acroFieldsSom = acroFieldsSom;
     }
-    
+
     /**
      * Gets the <CODE>Node</CODE> that corresponds to the datasets part.
      * @return the <CODE>Node</CODE> that corresponds to the datasets part
@@ -1113,29 +1116,32 @@ public class XfaForm {
     public Node getDatasetsNode() {
         return datasetsNode;
     }
-    
+
     public void fillXfaForm(File file) throws ParserConfigurationException, SAXException, IOException {
-        fillXfaForm(new FileInputStream(file));
+        try (
+            InputStream is = new FileInputStream(file);
+        ) {
+            fillXfaForm(is);
+        }
     }
-    
+
     public void fillXfaForm(InputStream is) throws ParserConfigurationException, SAXException, IOException {
         fillXfaForm(new InputSource(is));
     }
-        
-    
+
     public void fillXfaForm(InputSource is) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder(); 
+        DocumentBuilder db = dbf.newDocumentBuilder();
         db.setEntityResolver(new EntityResolver() {
             @Override
             public InputSource resolveEntity(String publicId, String systemId) {
                 return new InputSource(new StringReader(""));
-            }            
+            }
         });
         Document newdoc = db.parse(is);
         fillXfaForm(newdoc.getDocumentElement());
     }
-    
+
     /**
      * Replaces the data under datasets/data.
      * @since    iText 5.0.0

@@ -47,15 +47,14 @@
 package com.lowagie.text;
 
 /**
- * 
+ *
  * A special-version of <CODE>LIST</CODE> which use zapfdingbats-numbers (1..10).
- * 
+ *
  * @see com.lowagie.text.List
  * @author Michael Niedermair and Bruno Lowagie
  */
 
 public class ZapfDingbatsNumberList extends List {
-
     /**
      * which type
      */
@@ -87,8 +86,8 @@ public class ZapfDingbatsNumberList extends List {
     }
 
     /**
-     * set the type 
-     * 
+     * set the type
+     *
      * @param type
      */
     public void setType(int type) {
@@ -107,38 +106,36 @@ public class ZapfDingbatsNumberList extends List {
     /**
      * Adds an <CODE>Object</CODE> to the <CODE>List</CODE>.
      *
-     * @param    o    the object to add.
+     * @param    element    the object to add.
      * @return true if adding the object succeeded
      */
-    public boolean add(Object o) {
-        if (o instanceof ListItem) {
-            ListItem item = (ListItem) o;
+    public boolean add(Element element) {
+        if (element instanceof ListItem) {
+            ListItem item = (ListItem) element;
             Chunk chunk = new Chunk(preSymbol, symbol.getFont());
             switch (type ) {
                 case 0:
-                    chunk.append(String.valueOf((char)(first + list.size() + 171)));
+                    chunk.append(String.valueOf((char)(first + content.size() + 171)));
                     break;
                 case 1:
-                    chunk.append(String.valueOf((char)(first + list.size() + 181)));
+                    chunk.append(String.valueOf((char)(first + content.size() + 181)));
                     break;
                 case 2:
-                    chunk.append(String.valueOf((char)(first + list.size() + 191)));
+                    chunk.append(String.valueOf((char)(first + content.size() + 191)));
                     break;
                 default:
-                    chunk.append(String.valueOf((char)(first + list.size() + 201)));
+                    chunk.append(String.valueOf((char)(first + content.size() + 201)));
             }
             chunk.append(postSymbol);
             item.setListSymbol(chunk);
             item.setIndentationLeft(symbolIndent, autoindent);
             item.setIndentationRight(0);
-            list.add(item);
-        } else if (o instanceof List) {
-            List nested = (List) o;
+            return content.add(item);
+        } else if (element instanceof List) {
+            List nested = (List) element;
             nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
             first--;
-            return list.add(nested);
-        } else if (o instanceof String) {
-            return this.add(new ListItem((String) o));
+            return content.add(nested);
         }
         return false;
     }

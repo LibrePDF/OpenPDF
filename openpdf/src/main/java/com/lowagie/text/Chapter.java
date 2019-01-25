@@ -75,35 +75,35 @@ import java.util.ArrayList;
  */
 
 public class Chapter extends Section {
-    
+
     // constant
     private static final long serialVersionUID = 1791000695779357361L;
-    
+
     /**
      * Constructs a new <CODE>Chapter</CODE>.
      * @param    number        the Chapter number
      */
     public Chapter(int number) {
         super(null, 1);
-        numbers = new ArrayList();
-        numbers.add(new Integer(number));
+        numbers = new ArrayList<>();
+        numbers.add(Integer.valueOf(number));
         triggerNewPage = true;
     }
-    
+
     /**
      * Constructs a new <CODE>Chapter</CODE>.
      *
      * @param    title        the Chapter title (as a <CODE>Paragraph</CODE>)
      * @param    number        the Chapter number
      */
-    
+
     public Chapter(Paragraph title, int number) {
         super(title, 1);
-        numbers = new ArrayList();
-        numbers.add(new Integer(number));
+        numbers = new ArrayList<>();
+        numbers.add(Integer.valueOf(number));
         triggerNewPage = true;
     }
-    
+
     /**
      * Constructs a new <CODE>Chapter</CODE>.
      *
@@ -113,9 +113,9 @@ public class Chapter extends Section {
     public Chapter(String title, int number) {
         this(new Paragraph(title), number);
     }
-    
+
     // implementation of the Element-methods
-    
+
     /**
      * Gets the type of the text element.
      *
