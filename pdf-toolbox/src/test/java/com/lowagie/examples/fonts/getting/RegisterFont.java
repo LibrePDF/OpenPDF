@@ -17,7 +17,6 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -37,23 +36,23 @@ public class RegisterFont {
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-        
+
         System.out.println("Registering fonts with the FontFactory");
-        
+
         FontFactory.register("c:\\windows\\fonts\\comicbd.ttf");
         FontFactory.register("c:\\windows\\fonts\\comic.ttf");
         FontFactory.register("c:\\windows\\fonts\\msgothic.ttc");
-        
+
         // step 1: creation of a document-object
         Document document = new Document();
-        
+
         try {
             // step 2: creation of the writer
             PdfWriter.getInstance(document, new FileOutputStream("registerfont.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4: we add content to the document
             Font font0 = FontFactory.getFont(BaseFont.HELVETICA, BaseFont.WINANSI, 12);
             String text0 = "This is the quite popular built in font '" + BaseFont.HELVETICA + "'.";
@@ -69,13 +68,13 @@ public class RegisterFont {
             document.add(new Paragraph(text3, font3));
             BufferedWriter out = new BufferedWriter(new FileWriter("registered.txt"));
             out.write("These fonts were registered at the FontFactory:\r\n");
-            for (Iterator i = FontFactory.getRegisteredFonts().iterator(); i.hasNext(); ) {
-                out.write((String) i.next());
+            for (String font : FontFactory.getRegisteredFonts()) {
+                out.write(font);
                 out.write("\r\n");
             }
             out.write("\r\n\r\nThese are the families these fonts belong to:\r\n");
-            for (Iterator i = FontFactory.getRegisteredFamilies().iterator(); i.hasNext(); ) {
-                out.write((String) i.next());
+            for (String family : FontFactory.getRegisteredFamilies()) {
+                out.write(family);
                 out.write("\r\n");
             }
             out.flush();
@@ -87,7 +86,7 @@ public class RegisterFont {
         catch(IOException ioe) {
             System.err.println(ioe.getMessage());
         }
-        
+
         // step 5: we close the document
         document.close();
 

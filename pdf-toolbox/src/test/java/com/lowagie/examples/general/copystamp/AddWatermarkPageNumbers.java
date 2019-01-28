@@ -15,6 +15,7 @@ package com.lowagie.examples.general.copystamp;
 
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.lowagie.text.Element;
 import com.lowagie.text.Image;
@@ -41,7 +42,7 @@ public class AddWatermarkPageNumbers {
             // we create a stamper that will copy the document to a new file
             PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("watermark_pagenumbers.pdf"));
             // adding some metadata
-            HashMap moreInfo = new HashMap();
+            Map<String,String> moreInfo = new HashMap<>();
             moreInfo.put("Author", "Bruno Lowagie");
             stamp.setMoreInfo(moreInfo);
             // adding content to each page

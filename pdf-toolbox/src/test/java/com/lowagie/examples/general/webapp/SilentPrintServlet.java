@@ -17,7 +17,6 @@ package com.lowagie.examples.general.webapp;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +58,7 @@ public class SilentPrintServlet extends HttpServlet {
 
     /**
      * The actual business logic.
-     * 
+     *
      * @param requ    the request object
      * @param resp    the response object
      * @throws IOException
@@ -67,7 +66,7 @@ public class SilentPrintServlet extends HttpServlet {
     public void doWork(HttpServletRequest requ, HttpServletResponse resp)
             throws IOException {
         ServletOutputStream out = resp.getOutputStream();
-        
+
         // what did the user request?
         int action = ACT_INIT;
         int sub = ACT_INIT;

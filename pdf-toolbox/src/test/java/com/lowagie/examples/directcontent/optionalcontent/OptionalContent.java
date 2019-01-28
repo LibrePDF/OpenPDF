@@ -16,6 +16,7 @@ package com.lowagie.examples.directcontent.optionalcontent;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -46,7 +47,7 @@ public class OptionalContent {
      */
     public static void main(String[] args) {
         try {
-            System.out.println("Optional content");        
+            System.out.println("Optional content");
             // step 1: creation of a document-object
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             // step 2: creation of the writer
@@ -96,7 +97,7 @@ public class OptionalContent {
             tp.setLayer(l4);
             tp.setBoundingBox(new Rectangle(0, -10, 100, 20));
             cb.addTemplate(tp, 200, 500);
-            ArrayList state = new ArrayList();
+            List<Object> state = new ArrayList<>();
             state.add("toggle");
             state.add(l1);
             state.add(l2);
@@ -106,7 +107,7 @@ public class OptionalContent {
             Chunk ck = new Chunk("Click here to toggle the layers", new Font(Font.HELVETICA, 18, Font.NORMAL, Color.yellow)).setBackground(Color.blue).setAction(action);
             ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, new Phrase(ck), 250, 400, 0);
             cb.sanityCheck();
-            
+
             // step 5: closing the document
             document.close();
         }

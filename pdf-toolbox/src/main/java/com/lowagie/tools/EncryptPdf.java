@@ -50,6 +50,7 @@ package com.lowagie.tools;
 
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.lowagie.text.pdf.PdfEncryptor;
 import com.lowagie.text.pdf.PdfReader;
@@ -61,7 +62,7 @@ import com.lowagie.text.pdf.PdfWriter;
  * @since 2.1.1 (renamed to follow Java naming conventions)
  */
 public class EncryptPdf {
-    
+
     private final static int INPUT_FILE = 0;
     private final static int OUTPUT_FILE = 1;
     private final static int USER_PASSWORD = 2;
@@ -93,10 +94,10 @@ public class EncryptPdf {
         System.out.println("AllowDegradedPrinting (128 bit only)");
         System.out.println("Example permissions to copy and print would be: 10100000");
     }
-    
+
     /**
      * Encrypts a PDF document.
-     * 
+     *
      * @param args input_file output_file user_password owner_password permissions 128|40 [new info string pairs]
      */
     public static void main (String[] args) {
@@ -114,7 +115,7 @@ public class EncryptPdf {
             System.out.println("Reading " + args[INPUT_FILE]);
             PdfReader reader = new PdfReader(args[INPUT_FILE]);
             System.out.println("Writing " + args[OUTPUT_FILE]);
-            HashMap moreInfo = new HashMap();
+            Map<String,String> moreInfo = new HashMap<>();
             for (int k = MOREINFO; k < args.length - 1; k += 2)
                 moreInfo.put(args[k], args[k + 1]);
             PdfEncryptor.encrypt(reader, new FileOutputStream(args[OUTPUT_FILE]),

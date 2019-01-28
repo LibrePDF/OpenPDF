@@ -16,7 +16,7 @@ package com.lowagie.examples.objects.chunk;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeMap;
 
 import com.lowagie.text.Chunk;
@@ -32,27 +32,27 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Demonstrates the use of the Generic PageEvent.
- * 
+ *
  * @author blowagie
  */
 
 public class Glossary extends PdfPageEventHelper {
-    
+
     /** keeps a glossary of words and the pages they appear on */
-    public TreeMap glossary = new TreeMap();
-    
+    public Map<String,Integer> glossary = new TreeMap<>();
+
     /**
      * All the text that is passed to this event, gets registered in the glossary.
-     * 
+     *
      * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
      */
     public void onGenericTag(PdfWriter writer, Document document, Rectangle rect, String text) {
-        glossary.put(text, new Integer(writer.getPageNumber()));
+        glossary.put(text, Integer.valueOf(writer.getPageNumber()));
     }
-    
+
     /**
      * Generic page event.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -68,7 +68,7 @@ public class Glossary extends PdfPageEventHelper {
                     new FileOutputStream("Glossary.pdf"));
             Glossary generic = new Glossary();
             writer.setPageEvent(generic);
-            
+
             // step 3: we open the document
             document.open();
             // step 4:
@@ -111,13 +111,12 @@ public class Glossary extends PdfPageEventHelper {
                     document.newPage();
                 }
             }
-            
+
             // we add the glossary
             document.newPage();
-            for (Iterator i = generic.glossary.keySet().iterator(); i.hasNext(); ) {
-                String key = (String) i.next();
-                int page = ((Integer) generic.glossary.get(key)).intValue();
-                Paragraph g = new Paragraph(key);
+            for (Map.Entry<String,Integer> e : generic.glossary.entrySet()) {
+                int page = e.getValue().intValue();
+                Paragraph g = new Paragraph(e.getKey());
                 g.add(" : page ");
                 g.add(String.valueOf(page));
                 document.add(g);

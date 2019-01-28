@@ -17,7 +17,6 @@ package com.lowagie.examples.general.webapp;
 import java.io.IOException;
 import java.util.Date;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,24 +29,24 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Hello World example as a Servlet.
- * 
+ *
  * @author blowagie
  */
 public class HelloWorldServlet extends HttpServlet {
-       
+
     private static final long serialVersionUID = -6033026500372479591L;
 
     /**
      * Returns a PDF, RTF or HTML document.
-     * 
+     *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void doGet (HttpServletRequest request, HttpServletResponse response)
     throws IOException {
-        
+
         // we retrieve the presentationtype
         String presentationtype = request.getParameter("presentationtype");
-        
+
         // step 1
         Document document = new Document();
         try {
@@ -63,10 +62,10 @@ public class HelloWorldServlet extends HttpServlet {
             else {
                 response.sendRedirect("http://itextdocs.lowagie.com/tutorial/general/webapp/index.html#HelloWorld");
             }
-            
+
             // step 3
             document.open();
-            
+
             // step 4
             document.add(new Paragraph("Hello World"));
             document.add(new Paragraph(new Date().toString()));
@@ -75,7 +74,7 @@ public class HelloWorldServlet extends HttpServlet {
             de.printStackTrace();
             System.err.println("document: " + de.getMessage());
         }
-        
+
         // step 5: we close the document (the outputstream is also closed internally)
         document.close();
     }

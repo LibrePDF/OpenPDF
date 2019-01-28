@@ -49,17 +49,15 @@
 
 package com.lowagie.text.html;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
-import com.lowagie.text.ExceptionConverter;
 import org.xml.sax.Attributes;
 
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
 import com.lowagie.text.ElementTags;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.xml.SAXiTextHandler;
 import com.lowagie.text.xml.XmlPeer;
@@ -80,7 +78,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
     /**
      * Constructs a new SAXiTextHandler that will translate all the events
      * triggered by the parser to actions on the <CODE>Document</CODE>-object.
-     * 
+     *
      * @param document
      *            this is the document on which events must be triggered
      */
@@ -91,7 +89,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
     /**
      * Constructs a new SAXiTextHandler that will translate all the events
      * triggered by the parser to actions on the <CODE>Document</CODE>-object.
-     * 
+     *
      * @param document
      *            this is the document on which events must be triggered
      * @param bf
@@ -104,20 +102,20 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
     /**
      * Constructs a new SAXiTextHandler that will translate all the events
      * triggered by the parser to actions on the <CODE>Document</CODE>-object.
-     * 
+     *
      * @param document
      *            this is the document on which events must be triggered
      * @param htmlTags
      *            a tagmap translating HTML tags to iText tags
      */
 
-    public SAXmyHtmlHandler(DocListener document, HashMap htmlTags) {
+    public SAXmyHtmlHandler(DocListener document, Map<String,Object> htmlTags) {
         super(document, htmlTags);
     }
 
     /**
      * This method gets called when a start tag is encountered.
-     * 
+     *
      * @param uri
      *            the Uniform Resource Identifier
      * @param lname
@@ -219,7 +217,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
 
     /**
      * This method gets called when an end tag is encountered.
-     * 
+     *
      * @param uri
      *            the Uniform Resource Identifier
      * @param lname
@@ -234,7 +232,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
         name = name.toLowerCase();
         if (ElementTags.PARAGRAPH.equals(name)) {
             try {
-                document.add((Element) stack.pop());
+                document.add(stack.pop());
                 return;
             } catch (DocumentException e) {
                 throw new ExceptionConverter(e);

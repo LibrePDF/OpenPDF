@@ -44,7 +44,7 @@
  *
  * Contributions by:
  * Lubos Strapko
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * http://www.lowagie.com/iText/
@@ -61,8 +61,7 @@ import com.lowagie.text.FontFactory;
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
  */
 
-public class HtmlTagMap extends HashMap {
-
+public class HtmlTagMap extends HashMap<String,Object> {
     private static final long serialVersionUID = 5287430058473705350L;
 
     /**

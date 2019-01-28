@@ -16,9 +16,9 @@ package com.lowagie.examples.directcontent.pageevents;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeSet;
 
 import javax.xml.parsers.SAXParser;
@@ -58,7 +58,7 @@ public class Events {
     class MyPageEvents extends PdfPageEventHelper {
 
         /** we will keep a list of speakers */
-        TreeSet speakers = new TreeSet();
+        Collection<Speaker> speakers = new TreeSet<>();
 
         /** This is the contentbyte object of the writer */
         PdfContentByte cb;
@@ -71,7 +71,7 @@ public class Events {
 
         /** this is the current act of the play */
         String act = "";
-        
+
         /**
          * Every speaker will be tagged, so that he can be added to the list of speakers.
          * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
@@ -106,8 +106,7 @@ public class Events {
         public void onChapter(PdfWriter writer, Document document,
                 float paragraphPosition, Paragraph title) {
             StringBuffer buf = new StringBuffer();
-            for (Iterator i = title.getChunks().iterator(); i.hasNext();) {
-                Chunk chunk = (Chunk) i.next();
+            for (Chunk chunk : title.getChunks()) {
                 buf.append(chunk.getContent());
             }
             act = buf.toString();
@@ -156,7 +155,7 @@ public class Events {
          * Getting the list of speakers.
          * @return    a list of speakers and the number of occurrences.
          */
-        public TreeSet getSpeakers() {
+        public Collection<Speaker> getSpeakers() {
             return speakers;
         }
     }
@@ -181,7 +180,7 @@ public class Events {
         }
         return null;
     }
-    
+
     /**
      * Converts a play in XML into PDF.
      * @param args no arguments needed
@@ -211,9 +210,7 @@ public class Events {
             parser.parse("playRomeoJuliet.xml", new Events().getXmlHandler(document));
 
             document.newPage();
-            Speaker speaker;
-            for (Iterator i = events.getSpeakers().iterator(); i.hasNext();) {
-                speaker = (Speaker) i.next();
+            for (Speaker speaker : events.getSpeakers()) {
                 document.add(new Paragraph(speaker.getName() + ": "
                         + speaker.getOccurrence() + " speech blocks"));
             }
@@ -237,7 +234,7 @@ public class Events {
          * @param document    the Document object
          * @param tagmap    the tagmap
          */
-        public MyHandler(Document document, HashMap tagmap) {
+        public MyHandler(Document document, Map<String,Object> tagmap) {
             super(document, tagmap);
         }
 

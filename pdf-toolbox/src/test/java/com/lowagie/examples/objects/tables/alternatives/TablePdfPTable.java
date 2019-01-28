@@ -37,7 +37,7 @@ public class TablePdfPTable {
         System.out.println("TableAttributes");
         // creation of the document with a certain size and certain margins
         Document document = new Document(PageSize.A4.rotate(), 50, 50, 50, 50);
-        
+
         try {
             // creation of the different writers
             PdfWriter.getInstance(document, new FileOutputStream("tableattributes.pdf"));
@@ -65,7 +65,7 @@ public class TablePdfPTable {
             cell.setWidth(50f);
             cell.add(new Paragraph("C"));
             row.add(cell);
-            table.addElement(row);
+            table.add(row);
             for (int i = 0; i < 100; i++) {
                 row = new SimpleCell(SimpleCell.ROW);
                 switch (i % 3) {
@@ -107,16 +107,16 @@ public class TablePdfPTable {
                     cell.add(new Paragraph("C"));
                     row.add(cell);
                 }
-                table.addElement(row);
+                table.add(row);
             }
             document.add(table);
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-        
+
         // we close the document
         document.close();
     }
-    
+
 }

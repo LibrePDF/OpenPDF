@@ -48,10 +48,11 @@
 
 package com.lowagie.text.html.simpleparser;
 
+import java.util.Map;
+
 import com.lowagie.text.DocListener;
 import com.lowagie.text.Image;
-import java.util.HashMap;
 
 public interface ImageProvider {
-    Image getImage(String src, HashMap h, ChainedProperties cprops, DocListener doc);
+    Image getImage(String src, Map<String,String> h, ChainedProperties cprops, DocListener doc);
 }

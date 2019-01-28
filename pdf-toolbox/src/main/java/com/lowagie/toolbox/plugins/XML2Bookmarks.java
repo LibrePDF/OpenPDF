@@ -51,8 +51,8 @@ package com.lowagie.toolbox.plugins;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -104,7 +104,7 @@ public class XML2Bookmarks extends AbstractTool {
             if (getValue("pdffile") == null) throw new InstantiationException("You need to choose a source PDF file");
             if (getValue("destfile") == null) throw new InstantiationException("You need to choose a destination PDF file");
             FileInputStream bmReader = new FileInputStream( (File) getValue("xmlfile") );
-            List<HashMap<String, Object>> bookmarks = SimpleBookmark.importFromXML( bmReader );
+            List<Map<String, Object>> bookmarks = SimpleBookmark.importFromXML( bmReader );
             bmReader.close();
             PdfReader reader = new PdfReader(((File)getValue("pdffile")).getAbsolutePath());
             reader.consolidateNamedDestinations();

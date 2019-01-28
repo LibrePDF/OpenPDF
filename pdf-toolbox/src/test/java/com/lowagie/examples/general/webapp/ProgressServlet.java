@@ -18,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,11 +31,11 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * If you want to avoid that your Servlet times out, you should use this ProgressServlet.
- * 
+ *
  * @author blowagie
  */
 public class ProgressServlet extends HttpServlet {
-    
+
     private static final long serialVersionUID = 6272312661092621179L;
 
     /**
@@ -49,7 +48,7 @@ public class ProgressServlet extends HttpServlet {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         /** the percentage of the PDF file that is finished */
         int p = 0;
-        
+
         /**
          * @see java.lang.Runnable#run()
          */
@@ -98,7 +97,7 @@ public class ProgressServlet extends HttpServlet {
             return p;
         }
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      * @param request

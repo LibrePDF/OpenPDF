@@ -15,9 +15,7 @@
 package com.lowagie.examples.general.webapp;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +39,7 @@ public class OutSimplePdf extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         makePdf(request, response, "GET");
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -50,7 +48,7 @@ public class OutSimplePdf extends HttpServlet {
     }
     /**
      * Performs the action: generate a PDF from a GET or POST.
-     * 
+     *
      * @param request    the Servlets request object
      * @param response    the Servlets request object
      * @param methodGetPost    the method that was used in the form

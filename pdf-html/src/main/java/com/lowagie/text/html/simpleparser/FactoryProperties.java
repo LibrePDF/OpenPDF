@@ -42,13 +42,19 @@
  *
  * Contributions by:
  * Lubos Strapko
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * http://www.lowagie.com/iText/
  */
 
 package com.lowagie.text.html.simpleparser;
+
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Element;
@@ -63,13 +69,6 @@ import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.HyphenationAuto;
 import com.lowagie.text.pdf.HyphenationEvent;
-
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.StringTokenizer;
 
 /**
  *
@@ -217,7 +216,7 @@ public class FactoryProperties {
      * @return    a HyphenationEvent
      * @since    2.1.2
      */
-    public static HyphenationEvent getHyphenation(HashMap props) {
+    public static HyphenationEvent getHyphenation(Map<String,Object> props) {
         return getHyphenation((String) props.get("hyphenation"));
     }
 
@@ -267,13 +266,13 @@ public class FactoryProperties {
      * @param    h    a HashMap that should have at least a key named
      * style. After this method is invoked, more keys could be added.
      */
-    public static void insertStyle(HashMap h) {
+    public static void insertStyle(Map<String,Object> h) {
         String style = (String) h.get("style");
         if (style == null)
             return;
         Properties prop = Markup.parseAttributes(style);
-        for (Iterator it = prop.keySet().iterator(); it.hasNext();) {
-            String key = (String) it.next();
+        for (Object _key : prop.keySet()) {
+            String key = (String) _key;
             if (key.equals(Markup.CSS_KEY_FONTFAMILY)) {
                 h.put("face", prop.getProperty(key));
             } else if (key.equals(Markup.CSS_KEY_FONTSIZE)) {
@@ -331,8 +330,8 @@ public class FactoryProperties {
         if (style == null)
             return;
         Properties prop = Markup.parseAttributes(style);
-        for (Iterator it = prop.keySet().iterator(); it.hasNext();) {
-            String key = (String) it.next();
+        for (Object _key : prop.keySet()) {
+          String key = (String) _key;
             if (key.equals(Markup.CSS_KEY_FONTFAMILY)) {
                 h.put(ElementTags.FACE, prop.getProperty(key));
             } else if (key.equals(Markup.CSS_KEY_FONTSIZE)) {
@@ -407,7 +406,7 @@ public class FactoryProperties {
         this.fontImp = fontImp;
     }
 
-    public static HashMap followTags = new HashMap();
+    public static Map<String,String> followTags = new HashMap<>();
     static {
         followTags.put("i", "i");
         followTags.put("b", "b");

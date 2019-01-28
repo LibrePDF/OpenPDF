@@ -15,11 +15,20 @@
 package com.lowagie.examples.forms;
 
 
-import com.lowagie.text.pdf.*;
-
-import java.io.*;
-import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.Map;
+
+import com.lowagie.text.pdf.PRAcroForm;
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfIndirectReference;
+import com.lowagie.text.pdf.PdfLister;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfString;
 
 /**
  * Demonstrates the use of PageSize.
@@ -49,10 +58,8 @@ public class ListFields {
                     break;
                 }
                 PdfLister list = new PdfLister(stream);
-                HashMap refToField = new HashMap();
-                ArrayList fields = form.getFields();
-                for (int k = 0; k < fields.size(); ++k) {
-                    PRAcroForm.FieldInformation field = (PRAcroForm.FieldInformation)fields.get(k);
+                Map<Integer,PRAcroForm.FieldInformation> refToField = new HashMap<>();
+                for(PRAcroForm.FieldInformation field : form.getFields()) {
                     refToField.put(new Integer(field.getRef().getNumber()), field);
                 }
                 for (int page = 1; page <= reader.getNumberOfPages(); ++page) {
@@ -74,7 +81,7 @@ public class ListFields {
                             if (tName != null)
                                 fName = tName.toString() + "." + fName;
                             if (ref != null) {
-                                field = (PRAcroForm.FieldInformation)refToField.get(new Integer(ref.getNumber()));
+                                field = refToField.get(Integer.valueOf(ref.getNumber()));
                             }
                             ref = annotDict.getAsIndirectObject(PdfName.PARENT);
                             annotDict = annotDict.getAsDict(PdfName.PARENT);

@@ -16,6 +16,7 @@ package com.lowagie.examples.directcontent.optionalcontent;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -31,7 +32,7 @@ import com.lowagie.text.pdf.PdfWriter;
  * Layer radio group and zoom.
  */
 public class Layers {
-       
+
     /**
      * Layer radio group and zoom.
      * @param args no arguments needed
@@ -64,7 +65,7 @@ public class Layers {
             l4.setPrint("Print", true);
             l2.setOn(false);
             l3.setOn(false);
-            ArrayList radio = new ArrayList();
+            List<PdfLayer> radio = new ArrayList<>();
             radio.add(l1);
             radio.add(l2);
             radio.add(l3);

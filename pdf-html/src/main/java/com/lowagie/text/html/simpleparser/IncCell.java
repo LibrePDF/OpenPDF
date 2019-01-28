@@ -49,6 +49,7 @@ package com.lowagie.text.html.simpleparser;
 
 import java.util.ArrayList;
 
+import com.lowagie.text.Chunk;
 import com.lowagie.text.Element;
 import com.lowagie.text.ElementListener;
 import com.lowagie.text.Phrase;
@@ -60,10 +61,10 @@ import com.lowagie.text.pdf.PdfPCell;
  * @author  psoares
  */
 public class IncCell implements TextElementArray {
-    
-    private ArrayList chunks = new ArrayList();
+
+    private ArrayList<Chunk> chunks = new ArrayList<>();
     private PdfPCell cell;
-    
+
     /** Creates a new instance of IncCell */
     public IncCell(String tag, ChainedProperties props) {
         cell = new PdfPCell((Phrase)null);
@@ -103,30 +104,28 @@ public class IncCell implements TextElementArray {
         value = props.getProperty("bgcolor");
         cell.setBackgroundColor(Markup.decodeColor(value));
     }
-    
-    public boolean add(Object o) {
-        if (!(o instanceof Element))
-            return false;
-        cell.addElement((Element)o);
+
+    public boolean add(Element el) {
+        cell.addElement(el);
         return true;
     }
-    
-    public ArrayList getChunks() {
+
+    public ArrayList<Chunk> getChunks() {
         return chunks;
     }
-    
+
     public boolean process(ElementListener listener) {
         return true;
     }
-    
+
     public int type() {
         return Element.RECTANGLE;
     }
-    
+
     public PdfPCell getCell() {
         return cell;
-    }  
-    
+    }
+
     /**
      * @see com.lowagie.text.Element#isContent()
      * @since    iText 2.0.8
@@ -141,5 +140,5 @@ public class IncCell implements TextElementArray {
      */
     public boolean isNestable() {
         return true;
-    }  
+    }
 }

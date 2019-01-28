@@ -50,8 +50,8 @@ package com.lowagie.toolbox.plugins;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.swing.JInternalFrame;
@@ -150,16 +150,16 @@ public class HtmlBookmarks extends AbstractTool {
                 Paragraph d = new Paragraph((String) description);
                 document.add(d);
             }
-            List<HashMap<String, Object>> list = SimpleBookmark.getBookmark(reader);
+            List<Map<String, Object>> list = SimpleBookmark.getBookmark(reader);
             if (list == null) {
                 document.add(new Paragraph("This document has no bookmarks."));
             }
             else {
-                for (HashMap<String, Object> c: list) {
+                for (Map<String, Object> c : list) {
                     Chapter chapter = (Chapter)createBookmark(src.getName(), null, c);
-                    List<HashMap<String, Object>> kids = (List<HashMap<String, Object>>) c.get("Kids");
-                    if (kids != null) {
-                        for (HashMap<String, Object> m: kids) {
+                    List<Map<String, Object>> children = (List<Map<String, Object>>) c.get("Kids");
+                    if (children != null) {
+                        for (Map<String, Object> m: children) {
                             addBookmark(src.getName(), chapter, m);
                         }
                     }
@@ -185,11 +185,11 @@ public class HtmlBookmarks extends AbstractTool {
      * @param section the section to which the bookmarks should be added
      * @param bookmark a HashMap containing a Bookmark (and possible kids)
      */
-    private static void addBookmark(String pdf, Section section, HashMap<String, Object> bookmark) {
+    private static void addBookmark(String pdf, Section section, Map<String, Object> bookmark) {
         Section s = createBookmark(pdf, section, bookmark);
-        List<HashMap<String, Object>> kids = (List<HashMap<String, Object>>) bookmark.get("Kids");
+        List<Map<String, Object>> kids = (List<Map<String, Object>>) bookmark.get("Kids");
         if (kids == null) return;
-        for (HashMap<String, Object> m: kids) {
+        for (Map<String, Object> m: kids) {
             addBookmark(pdf, s, m);
         }
     }
@@ -201,7 +201,7 @@ public class HtmlBookmarks extends AbstractTool {
      * @param bookmark the bookmark that has the data for the line
      * @return a subsection of section
      */
-    private static Section createBookmark(String pdf, Section section, HashMap<String, Object> bookmark) {
+    private static Section createBookmark(String pdf, Section section, Map<String, Object> bookmark) {
         Section s;
         Paragraph title = new Paragraph((String)bookmark.get("Title"));
         System.out.println((String)bookmark.get("Title"));

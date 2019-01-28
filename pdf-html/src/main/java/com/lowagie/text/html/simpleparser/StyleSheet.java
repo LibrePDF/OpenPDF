@@ -42,7 +42,7 @@
  *
  * Contributions by:
  * Lubos Strapko
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * http://www.lowagie.com/iText/
@@ -50,61 +50,63 @@
 
 package com.lowagie.text.html.simpleparser;
 
-import com.lowagie.text.html.Markup;
 import java.util.HashMap;
+import java.util.Map;
+
+import com.lowagie.text.html.Markup;
 
 public class StyleSheet {
 
-    public HashMap classMap = new HashMap();
+    public Map<String,Map<String,String>> classMap = new HashMap<>();
 
-    public HashMap tagMap = new HashMap();
+    public HashMap<String,Map<String,String>> tagMap = new HashMap<>();
 
     /** Creates a new instance of StyleSheet */
     public StyleSheet() {
     }
 
-    public void applyStyle(String tag, HashMap props) {
-        HashMap map = (HashMap) tagMap.get(tag.toLowerCase());
+    public void applyStyle(String tag, Map<String,String> props) {
+        Map<String,String> map = tagMap.get(tag.toLowerCase());
         if (map != null) {
-            HashMap temp = new HashMap(map);
+            Map<String,String> temp = new HashMap<>(map);
             temp.putAll(props);
             props.putAll(temp);
         }
-        String cm = (String) props.get(Markup.HTML_ATTR_CSS_CLASS);
+        String cm = props.get(Markup.HTML_ATTR_CSS_CLASS);
         if (cm == null)
             return;
-        map = (HashMap) classMap.get(cm.toLowerCase());
+        map = classMap.get(cm.toLowerCase());
         if (map == null)
             return;
         props.remove(Markup.HTML_ATTR_CSS_CLASS);
-        HashMap temp = new HashMap(map);
+        Map<String,String> temp = new HashMap<>(map);
         temp.putAll(props);
         props.putAll(temp);
     }
 
-    public void loadStyle(String style, HashMap props) {
+    public void loadStyle(String style, Map<String,String> props) {
         classMap.put(style.toLowerCase(), props);
     }
 
     public void loadStyle(String style, String key, String value) {
         style = style.toLowerCase();
-        HashMap props = (HashMap) classMap.get(style);
+        Map<String,String> props = classMap.get(style);
         if (props == null) {
-            props = new HashMap();
+            props = new HashMap<>();
             classMap.put(style, props);
         }
         props.put(key, value);
     }
 
-    public void loadTagStyle(String tag, HashMap props) {
+    public void loadTagStyle(String tag, Map<String,String> props) {
         tagMap.put(tag.toLowerCase(), props);
     }
 
     public void loadTagStyle(String tag, String key, String value) {
         tag = tag.toLowerCase();
-        HashMap props = (HashMap) tagMap.get(tag);
+        Map<String,String> props = tagMap.get(tag);
         if (props == null) {
-            props = new HashMap();
+            props = new HashMap<>();
             tagMap.put(tag, props);
         }
         props.put(key, value);

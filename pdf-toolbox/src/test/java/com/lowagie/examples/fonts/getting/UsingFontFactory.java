@@ -16,6 +16,7 @@ package com.lowagie.examples.fonts.getting;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -28,7 +29,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Special rendering of Chunks.
- * 
+ *
  * @author blowagie
  */
 
@@ -36,7 +37,7 @@ public class UsingFontFactory {
 
     /**
      * Special rendering of Chunks.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -58,10 +59,10 @@ public class UsingFontFactory {
             Paragraph p = new Paragraph("Font Families", FontFactory.getFont(FontFactory.HELVETICA, 16f));
             document.add(p);
             FontFactory.registerDirectories();
-            TreeSet families = new TreeSet(FontFactory.getRegisteredFamilies());
+            Collection<String> families = new TreeSet<>(FontFactory.getRegisteredFamilies());
             int c = 0;
-            for (Iterator i = families.iterator(); i.hasNext() && c < 15; ) {
-                name = (String) i.next();
+            for (Iterator<String> i = families.iterator(); i.hasNext() && c < 15; ) {
+                name = i.next();
                 p = new Paragraph(name);
                 document.add(p);
                 c++;
@@ -69,8 +70,8 @@ public class UsingFontFactory {
             document.newPage();
             String quick = "quick brown fox jumps over the lazy dog";
             p = new Paragraph("Fonts", FontFactory.getFont(FontFactory.HELVETICA, 16f));
-            for (Iterator i = families.iterator(); i.hasNext() && c > 0; ) {
-                name = (String) i.next();
+            for (Iterator<String> i = families.iterator(); i.hasNext() && c > 0; ) {
+                name = i.next();
                 p = new Paragraph(name);
                 document.add(p);
                 try {

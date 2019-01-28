@@ -49,33 +49,34 @@
 
 package com.lowagie.text.xml;
 
-import com.lowagie.text.DocListener;
-
-import com.lowagie.text.ExceptionConverter;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.HashMap;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import com.lowagie.text.DocListener;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  * This class can be used to parse an XML file.
  */
 
 public class XmlParser {
-    
+
 /** This is the instance of the parser. */
     protected SAXParser parser;
-    
+
 /**
  * Constructs an XmlParser.
  */
-    
+
     public XmlParser() {
         try {
             parser = SAXParserFactory.newInstance().newSAXParser();
@@ -87,13 +88,13 @@ public class XmlParser {
             throw new ExceptionConverter(se);
         }
     }
-    
+
 /**
  * Parses a given file.
  * @param document    The document that will listen to the parser
  * @param is    The InputStream with the contents
  */
-    
+
     public void go(DocListener document, InputSource is) {
         try {
             parser.parse(is, new SAXiTextHandler(document));
@@ -105,14 +106,14 @@ public class XmlParser {
             throw new ExceptionConverter(ioe);
         }
     }
-    
+
 /**
  * Parses a given file.
  * @param document The document that will listen to the parser
  * @param is The inputsource with the content
  * @param tagmap A user defined tagmap
  */
-    
+
     public void go(DocListener document, InputSource is, String tagmap) {
         try {
             parser.parse(is, new SAXmyHandler(document, new TagMap(tagmap)));
@@ -124,14 +125,14 @@ public class XmlParser {
             throw new ExceptionConverter(ioe);
         }
     }
-    
+
     /**
      * Parses a given file.
      * @param document The document that will listen to the parser
      * @param is the inputsource with the content
      * @param tagmap an inputstream to a user defined tagmap
      */
-        
+
         public void go(DocListener document, InputSource is, InputStream tagmap) {
             try {
                 parser.parse(is, new SAXmyHandler(document, new TagMap(tagmap)));
@@ -143,15 +144,15 @@ public class XmlParser {
                 throw new ExceptionConverter(ioe);
             }
         }
-    
+
 /**
  * Parses a given file.
  * @param document The document that will listen to the parser
  * @param is the inputsource with the content
  * @param tagmap a user defined tagmap
  */
-    
-    public void go(DocListener document, InputSource is, HashMap tagmap) {
+
+    public void go(DocListener document, InputSource is, Map<String,Object> tagmap) {
         try {
             parser.parse(is, new SAXmyHandler(document, tagmap));
         }
@@ -162,13 +163,13 @@ public class XmlParser {
             throw new ExceptionConverter(ioe);
         }
     }
-    
+
 /**
  * Parses a given file.
  * @param document The document that will listen to the parser
  * @param file The path to a file with the content
  */
-    
+
     public void go(DocListener document, String file) {
         try {
             parser.parse(file, new SAXiTextHandler(document));
@@ -180,14 +181,14 @@ public class XmlParser {
             throw new ExceptionConverter(ioe);
         }
     }
-    
+
 /**
  * Parses a given file.
  * @param document the document that will listen to the parser
  * @param file the path to a file with the content
  * @param tagmap a user defined tagmap
  */
-    
+
     public void go(DocListener document, String file, String tagmap) {
         try {
             parser.parse(file, new SAXmyHandler(document, new TagMap(tagmap)));
@@ -199,15 +200,14 @@ public class XmlParser {
             throw new ExceptionConverter(ioe);
         }
     }
-    
-/**
- * Parses a given file.
- * @param document The document that will listen to the parser
- * @param file the path to a file with the content
- * @param tagmap a user defined tagmap
- */
-    
-    public void go(DocListener document, String file, HashMap tagmap) {
+
+    /**
+     * Parses a given file.
+     * @param document The document that will listen to the parser
+     * @param file the path to a file with the content
+     * @param tagmap a user defined tagmap
+     */
+    public void go(DocListener document, String file, Map<String,Object> tagmap) {
         try {
             parser.parse(file, new SAXmyHandler(document, tagmap));
         }
@@ -218,143 +218,131 @@ public class XmlParser {
             throw new ExceptionConverter(ioe);
         }
     }
-    
-/**
- * Parses a given file that validates with the iText DTD and writes the content to a document.
- * @param document The document that will listen to the parser
- * @param is the inputsource with the content
- */
-    
+
+    /**
+     * Parses a given file that validates with the iText DTD and writes the content to a document.
+     * @param document The document that will listen to the parser
+     * @param is the inputsource with the content
+     */
     public static void parse(DocListener document, InputSource is) {
         XmlParser p = new XmlParser();
         p.go(document, is);
     }
-    
-/**
- * Parses a given file that validates with the iText DTD and writes the content to a document.
- * @param document The document that will listen to the parser
- * @param is The inputsource with the content
- * @param tagmap a user defined tagmap
- */
-    
+
+    /**
+     * Parses a given file that validates with the iText DTD and writes the content to a document.
+     * @param document The document that will listen to the parser
+     * @param is The inputsource with the content
+     * @param tagmap a user defined tagmap
+     */
     public static void parse(DocListener document, InputSource is, String tagmap) {
         XmlParser p = new XmlParser();
         p.go(document, is, tagmap);
     }
-    
-/**
- * Parses a given file and writes the content to a document, using a certain tagmap.
- * @param document The document that will listen to the parser
- * @param is The inputsource with the content
- * @param tagmap a user defined tagmap
- */
-    
-    public static void parse(DocListener document, InputSource is, HashMap tagmap) {
+
+    /**
+     * Parses a given file and writes the content to a document, using a certain tagmap.
+     * @param document The document that will listen to the parser
+     * @param is The inputsource with the content
+     * @param tagmap a user defined tagmap
+     */
+    public static void parse(DocListener document, InputSource is, Map<String,Object> tagmap) {
         XmlParser p = new XmlParser();
         p.go(document, is, tagmap);
     }
-    
-/**
- * Parses a given file that validates with the iText DTD and writes the content to a document.
- * @param document The document that will listen to the parser
- * @param file The path to a file with the content
- */
-    
+
+    /**
+     * Parses a given file that validates with the iText DTD and writes the content to a document.
+     * @param document The document that will listen to the parser
+     * @param file The path to a file with the content
+     */
     public static void parse(DocListener document, String file) {
         XmlParser p = new XmlParser();
         p.go(document, file);
     }
-    
-/**
- * Parses a given file that validates with the iText DTD and writes the content to a document.
- * @param document The document that will listen to the parser
- * @param file The path to a file with the content
- * @param tagmap A user defined tagmap
- */
-    
+
+    /**
+     * Parses a given file that validates with the iText DTD and writes the content to a document.
+     * @param document The document that will listen to the parser
+     * @param file The path to a file with the content
+     * @param tagmap A user defined tagmap
+     */
     public static void parse(DocListener document, String file, String tagmap) {
         XmlParser p = new XmlParser();
         p.go(document, file, tagmap);
     }
-    
-/**
- * Parses a given file and writes the content to a document, using a certain tagmap.
- * @param document The document that will listen to the parser
- * @param file The path to a file with the content
- * @param tagmap A user defined tagmap
- */
-    
-    public static void parse(DocListener document, String file, HashMap tagmap) {
+
+    /**
+     * Parses a given file and writes the content to a document, using a certain tagmap.
+     * @param document The document that will listen to the parser
+     * @param file The path to a file with the content
+     * @param tagmap A user defined tagmap
+     */
+    public static void parse(DocListener document, String file, Map<String,Object> tagmap) {
         XmlParser p = new XmlParser();
         p.go(document, file, tagmap);
     }
-    
-/**
- * Parses a given file that validates with the iText DTD and writes the content to a document.
- * @param document The document that will listen to the parser
- * @param is The inputsource with the content
- */
-    
+
+    /**
+     * Parses a given file that validates with the iText DTD and writes the content to a document.
+     * @param document The document that will listen to the parser
+     * @param is The inputsource with the content
+     */
     public static void parse(DocListener document, InputStream is) {
         XmlParser p = new XmlParser();
         p.go(document, new InputSource(is));
     }
-    
-/**
- * Parses a given file that validates with the iText DTD and writes the content to a document.
- * @param document The document that will listen to the parser
- * @param is The inputstream with the content
- * @param tagmap A user defined tagmap
- */
-    
+
+    /**
+     * Parses a given file that validates with the iText DTD and writes the content to a document.
+     * @param document The document that will listen to the parser
+     * @param is The inputstream with the content
+     * @param tagmap A user defined tagmap
+     */
     public static void parse(DocListener document, InputStream is, String tagmap) {
         XmlParser p = new XmlParser();
         p.go(document, new InputSource(is), tagmap);
     }
-    
-/**
- * Parses a given file and writes the content to a document, using a certain tagmap.
- * @param document The document that will listen to the parser
- * @param is The InputStream with the content
- * @param tagmap A user defined tagmap
- */
-    
-    public static void parse(DocListener document, InputStream is, HashMap tagmap) {
+
+    /**
+     * Parses a given file and writes the content to a document, using a certain tagmap.
+     * @param document The document that will listen to the parser
+     * @param is The InputStream with the content
+     * @param tagmap A user defined tagmap
+     */
+    public static void parse(DocListener document, InputStream is, Map<String,Object> tagmap) {
         XmlParser p = new XmlParser();
         p.go(document, new InputSource(is), tagmap);
     }
-    
-/**
- * Parses a given file that validates with the iText DTD and writes the content to a document.
- * @param document The document that will listen to the parser
- * @param is The reader that reads the content
- */
-    
+
+    /**
+     * Parses a given file that validates with the iText DTD and writes the content to a document.
+     * @param document The document that will listen to the parser
+     * @param is The reader that reads the content
+     */
     public static void parse(DocListener document, Reader is) {
         XmlParser p = new XmlParser();
         p.go(document, new InputSource(is));
     }
-    
-/**
- * Parses a given file that validates with the iText DTD and writes the content to a document.
- * @param document The document that will listen to the parser
- * @param is The reader that reads the content
- * @param tagmap A user defined tagmap
- */
-    
+
+    /**
+     * Parses a given file that validates with the iText DTD and writes the content to a document.
+     * @param document The document that will listen to the parser
+     * @param is The reader that reads the content
+     * @param tagmap A user defined tagmap
+     */
     public static void parse(DocListener document, Reader is, String tagmap) {
         XmlParser p = new XmlParser();
         p.go(document, new InputSource(is), tagmap);
     }
-    
-/**
- * Parses a given file and writes the content to a document, using a certain tagmap.
- * @param document The document that will listen to the parser
- * @param is The reader that reads the content
- * @param tagmap A user defined tagmap
- */
-    
-    public static void parse(DocListener document, Reader is, HashMap tagmap) {
+
+    /**
+     * Parses a given file and writes the content to a document, using a certain tagmap.
+     * @param document The document that will listen to the parser
+     * @param is The reader that reads the content
+     * @param tagmap A user defined tagmap
+     */
+    public static void parse(DocListener document, Reader is, Map<String,Object> tagmap) {
         XmlParser p = new XmlParser();
         p.go(document, new InputSource(is), tagmap);
     }

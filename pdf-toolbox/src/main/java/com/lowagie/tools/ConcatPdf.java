@@ -52,6 +52,7 @@ package com.lowagie.tools;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfCopy;
@@ -64,7 +65,7 @@ import com.lowagie.text.pdf.SimpleBookmark;
  * @since 2.1.1 (renamed to follow Java naming conventions)
  */
 public class ConcatPdf {
-    
+
     /**
      * This class can be used to concatenate existing PDF files.
      * (This was an example known as PdfCopy.java)
@@ -77,7 +78,7 @@ public class ConcatPdf {
         else {
             try {
                 int pageOffset = 0;
-                ArrayList master = new ArrayList();
+                List<Map<String,Object>> master = new ArrayList<>();
                 int f = 0;
                 String outFile = args[args.length-1];
                 Document document = null;
@@ -88,7 +89,7 @@ public class ConcatPdf {
                     reader.consolidateNamedDestinations();
                     // we retrieve the total number of pages
                     int n = reader.getNumberOfPages();
-                    List bookmarks = SimpleBookmark.getBookmark(reader);
+                    List<Map<String,Object>> bookmarks = SimpleBookmark.getBookmark(reader);
                     if (bookmarks != null) {
                         if (pageOffset != 0)
                             SimpleBookmark.shiftPageNumbers(bookmarks, pageOffset, null);
@@ -96,7 +97,7 @@ public class ConcatPdf {
                     }
                     pageOffset += n;
                     System.out.println("There are " + n + " pages in " + args[f]);
-                    
+
                     if (f == 0) {
                         // step 1: creation of a document-object
                         document = new Document(reader.getPageSizeWithRotation(1));
