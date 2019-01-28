@@ -308,7 +308,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     public void startDocument() {
     }
 
-    public void startElement(String tag, HashMap<String,Object> h) {
+    public void startElement(String tag, HashMap<String,String> h) {
         if (xmlNames == null) {
             if (tag.equals("Destination")) {
                 xmlNames = new HashMap<>();

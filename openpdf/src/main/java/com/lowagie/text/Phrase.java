@@ -97,8 +97,6 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
      */
     protected HyphenationEvent hyphenation = null;
 
-    protected ArrayList<Element> children;
-
     // constructors
 
     /**
@@ -213,7 +211,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
 
     @Override
     public Collection<Element> getChildren() {
-        return children;
+        return this;
     }
 
     /**

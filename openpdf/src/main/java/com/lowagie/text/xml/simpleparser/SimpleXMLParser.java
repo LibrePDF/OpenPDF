@@ -121,7 +121,7 @@ public final class SimpleXMLParser {
     /** current tagname */
     String tag = null;
     /** current attributes */
-    HashMap<String,Object> attributes = null;
+    HashMap<String,String> attributes = null;
     /** The handler to which we are going to forward document content */
     SimpleXMLDocHandler doc;
     /** The handler to which we are going to forward comments. */

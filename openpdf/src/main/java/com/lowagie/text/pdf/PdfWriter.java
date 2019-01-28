@@ -2481,10 +2481,9 @@ public class PdfWriter extends DocWriter implements
      * ON, all others must be turned OFF.
      * @param group the radio group
      */
-    public void addOCGRadioGroup(ArrayList<PdfLayer> group) {
+    public void addOCGRadioGroup(Collection<PdfLayer> group) {
         PdfArray ar = new PdfArray();
-        for (int k = 0; k < group.size(); ++k) {
-            PdfLayer layer = group.get(k);
+        for (PdfLayer layer : group) {
             if (layer.getTitle() == null)
                 ar.add(layer.getRef());
         }

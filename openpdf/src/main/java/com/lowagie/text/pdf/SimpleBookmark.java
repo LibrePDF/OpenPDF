@@ -728,7 +728,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     public void startDocument() {
     }
 
-    public void startElement(String tag, HashMap<String,Object> h) {
+    public void startElement(String tag, HashMap<String,String> h) {
         if (topList == null) {
             if (tag.equals("Bookmark")) {
                 topList = new ArrayList<>();

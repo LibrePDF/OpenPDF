@@ -55,8 +55,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import com.lowagie.text.ExceptionConverter;
@@ -219,9 +219,9 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
     public void startDocument() {
     }
 
-    public void startElement(String tag, HashMap<String,Object> h) {
+    public void startElement(String tag, Map<String,String> h) {
         if (tag.equals("hyphen-char")) {
-            String hh = (String) h.get("value");
+            String hh = h.get("value");
             if (hh != null && hh.length() == 1) {
                 hyphenChar = hh.charAt(0);
             }
@@ -236,7 +236,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
             if (token.length() > 0) {
                 exception.add(token.toString());
             }
-            exception.add(new Hyphen((String) h.get("pre"), (String) h.get("no"), (String) h.get("post")));
+            exception.add(new Hyphen(h.get("pre"), h.get("no"), h.get("post")));
             currElement = ELEM_HYPHEN;
         }
         token.setLength(0);

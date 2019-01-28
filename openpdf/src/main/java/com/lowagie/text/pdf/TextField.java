@@ -50,6 +50,7 @@ package com.lowagie.text.pdf;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
@@ -715,7 +716,7 @@ public class TextField extends BaseField {
      * list, all but the first element will be removed.
      * @param selections new selections.  If null, it clear()s the underlying ArrayList.
      */
-    public void setChoiceSelections(ArrayList<Integer> selections) {
+    public void setChoiceSelections(List<Integer> selections) {
         if (selections != null) {
             choiceSelections = new ArrayList<>(selections);
             if (choiceSelections.size() > 1 && (options & BaseField.MULTISELECT) == 0 ) {

@@ -77,7 +77,7 @@ import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfStamper
-    implements PdfViewerPreferences, PdfEncryptionSettings {
+    implements PdfViewerPreferences, PdfEncryptionSettings, AutoCloseable {
     /**
      * The writer
      */
