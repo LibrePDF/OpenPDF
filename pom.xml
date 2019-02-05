@@ -58,18 +58,8 @@
         <maven.surefire.plugin.version>2.22.1</maven.surefire.plugin.version>
         <mockito.version>2.23.4</mockito.version>
     </properties>
-    <!-- Support for compilation under java 8 -->
-    <profiles>
-        <profile>
-            <id>java8-javadoc</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <javadoc.param>-Xdoclint:none</javadoc.param>
-            </properties>
-        </profile>
-    </profiles>
+
+    
     <build>
         <plugins>
             <!-- Create sources for better debugging and context assist -->
@@ -92,6 +82,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven.javadoc.plugin.version}</version>
+                <configuration>
+                    <source>8</source>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -100,7 +93,7 @@
                         </goals>
                         <!-- Disable doclint checks to build it under java 8 javadoc -->
                         <configuration>
-                            <additionalJOptions>${javadoc.param}</additionalJOptions>
+                            <additionalJOptions>-Xdoclint:none</additionalJOptions>
                         </configuration>
                     </execution>
                 </executions>
