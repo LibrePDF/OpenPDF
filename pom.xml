@@ -6,7 +6,7 @@
     <groupId>com.github.librepdf</groupId>
     <artifactId>openpdf-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.10-SNAPSHOT</version>
+    <version>1.2.10</version>
 
     <licenses>
         <license>
@@ -59,7 +59,7 @@
         <mockito.version>2.23.4</mockito.version>
     </properties>
 
-    
+
     <build>
         <plugins>
             <!-- Create sources for better debugging and context assist -->
