@@ -81,7 +81,7 @@ import com.lowagie.text.pdf.HyphenationEvent;
  * @see        Anchor
  */
 
-public class Phrase extends ArrayList<Element> implements ComposedElement<Element>, TextElementArray {
+public class Phrase implements ComposedElement<Element>, TextElementArray {
     // constants
     private static final long serialVersionUID = 2643594602455068231L;
 
@@ -97,6 +97,8 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
      */
     protected HyphenationEvent hyphenation = null;
 
+    protected java.util.List<Element> elements = new ArrayList<>();
+
     // constructors
 
     /**
@@ -111,7 +113,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
      */
     public Phrase(Phrase phrase) {
         super();
-        this.addAll(phrase);
+        elements.addAll(phrase.elements);
         leading = phrase.getLeading();
         font = phrase.getFont();
         setHyphenation(phrase.getHyphenation());
@@ -133,7 +135,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
      * @param    chunk        a <CODE>Chunk</CODE>
      */
     public Phrase(Chunk chunk) {
-        super.add(chunk);
+        elements.add(chunk);
         font = chunk.getFont();
         setHyphenation(chunk.getHyphenation());
     }
@@ -147,7 +149,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
      */
     public Phrase(float leading, Chunk chunk) {
         this.leading = leading;
-        super.add(chunk);
+        elements.add(chunk);
         font = chunk.getFont();
         setHyphenation(chunk.getHyphenation());
     }
@@ -194,7 +196,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
         this.font = font;
         /* bugfix by August Detlefsen */
         if (string != null && string.length() != 0) {
-            super.add(new Chunk(string, font));
+            elements.add(new Chunk(string, font));
         }
     }
 
@@ -211,7 +213,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
 
     @Override
     public Collection<Element> getChildren() {
-        return this;
+        return elements;
     }
 
     /**
@@ -250,7 +252,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
             if (hyphenation != null && chunk.getHyphenation() == null && !chunk.isEmpty()) {
                 chunk.setHyphenation(hyphenation);
             }
-            super.add(index, chunk);
+            elements.add(index, chunk);
         }
         else if (element.type() == Element.PHRASE ||
         element.type() == Element.ANCHOR ||
@@ -258,7 +260,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
         element.type() == Element.TABLE || // line added by David Freels
         element.type() == Element.YMARK ||
         element.type() == Element.MARKED) {
-            super.add(index, element);
+            elements.add(index, element);
         }
         else {
             throw new ClassCastException(String.valueOf(element.type()));
@@ -276,7 +278,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
     public boolean add(Object o) {
         if (o == null) return false;
         if (o instanceof String) return add((String) o);
-        if (o instanceof RtfElementInterface) { ((ArrayList)this).add(o); return true; } // TODO: Check: weird types
+        if (o instanceof RtfElementInterface) { ((ArrayList)elements).add(o); return true; } // TODO: Check: weird types
         if (o instanceof Element) return add((Element) o);
         throw new ClassCastException(o.getClass().getName());
     }
@@ -327,7 +329,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
                 // This will only work for PDF!!! Not for RTF/HTML
             case Element.LIST:
             case Element.YMARK:
-                return super.add(element);
+                return elements.add(element);
             default:
                 throw new ClassCastException(String.valueOf(element.type()));
         }
@@ -349,7 +351,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
         }
         if (size() > 0 && !chunk.hasAttributes()) {
             try {
-                Chunk previous = (Chunk) get(size() - 1);
+                Chunk previous = (Chunk) elements.get(size() - 1);
                 if (!previous.hasAttributes()
                         && (f == null
                         || f.compareTo(previous.getFont()) == 0)
@@ -367,7 +369,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
         if (hyphenation != null && newChunk.getHyphenation() == null && !newChunk.isEmpty()) {
             newChunk.setHyphenation(hyphenation);
         }
-        return super.add(newChunk);
+        return elements.add(newChunk);
     }
 
     /**
@@ -376,7 +378,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
      * @param    element        the object to add.
      */
     protected void addSpecial(Element element) {
-        super.add(element);
+        elements.add(element);
     }
 
     // other methods that change the member variables
@@ -454,7 +456,7 @@ public class Phrase extends ArrayList<Element> implements ComposedElement<Elemen
             case 0:
                 return true;
             case 1:
-                Element element = get(0);
+                Element element = elements.get(0);
                 return element.type() == Element.CHUNK && ((Chunk) element).isEmpty();
             default:
                     return false;

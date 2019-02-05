@@ -82,7 +82,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * </PRE></BLOCKQUOTE>
  */
 
-public class Section extends ArrayList<Element> implements ComposedElement<Element>, TextElementArray, LargeElement {
+public class Section implements ComposedElement<Element>, TextElementArray, LargeElement {
     // constant
     /**
      * A possible number style. The default number style: "1.2.3."
@@ -95,10 +95,9 @@ public class Section extends ArrayList<Element> implements ComposedElement<Eleme
      */
     public static final int NUMBERSTYLE_DOTTED_WITHOUT_FINAL_DOT = 1;
 
-    /** A serial version uid. */
-    private static final long serialVersionUID = 3324172577544748043L;
-
     // member variables
+
+    protected java.util.List<Element> elements = new ArrayList<>();
 
     /** The title of this section. */
     protected Paragraph title;
@@ -178,8 +177,8 @@ public class Section extends ArrayList<Element> implements ComposedElement<Eleme
     // implementation of the Element-methods
 
     @Override
-    public Collection<? extends Element> getChildren() {
-        return this;
+    public Collection<Element> getChildren() {
+        return elements;
     }
 
     /**
@@ -243,7 +242,7 @@ public class Section extends ArrayList<Element> implements ComposedElement<Eleme
         }
         try {
             if (element.isNestable()) {
-                super.add(index, element);
+                elements.add(index, element);
             }
             else {
                 throw new ClassCastException(MessageLocalization.getComposedMessage("you.can.t.add.a.1.to.a.section", element.getClass().getName()));
@@ -270,16 +269,16 @@ public class Section extends ArrayList<Element> implements ComposedElement<Eleme
             if (element.type() == Element.SECTION) {
                 Section section = (Section) element;
                 section.setNumbers(++subsections, numbers);
-                return super.add(section);
+                return elements.add(section);
             }
             else if (element instanceof MarkedObject<?> && ((MarkedObject<?>)element).element.type() == Element.SECTION) {
                 MarkedObject<?> mo = (MarkedObject<?>)element;
                 Section section = (Section)mo.element;
                 section.setNumbers(++subsections, numbers);
-                return super.add(mo);
+                return elements.add(mo);
             }
             else if (element.isNestable()) {
-                return super.add(element);
+                return elements.add(element);
             }
             else {
                 throw new ClassCastException(MessageLocalization.getComposedMessage("you.can.t.add.a.1.to.a.section", element.getClass().getName()));

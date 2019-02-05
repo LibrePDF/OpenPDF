@@ -88,7 +88,7 @@ class PdfCopyFieldsImp extends PdfWriter {
     Document nd;
     private Map<PdfArray,List<Integer>> tabOrder;
     private List<String> calculationOrder = new ArrayList<>();
-    private List<PdfIndirectReference> calculationOrderRefs;
+    private List<Object> calculationOrderRefs;
     private boolean hasSignature;
 
     PdfCopyFieldsImp(OutputStream os) throws DocumentException {
