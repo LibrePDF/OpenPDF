@@ -1,9 +1,9 @@
 /*
  * $Id: HelloWorldServlet.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -61,7 +61,7 @@ public class HelloWorldServlet extends HttpServlet {
                 HtmlWriter.getInstance(document, response.getOutputStream());
             }
             else {
-                response.sendRedirect("http://itextdocs.lowagie.com/tutorial/general/webapp/index.html#HelloWorld");
+                response.sendRedirect("https://github.com/LibrePDF/OpenPDF/wiki/Tutorialgeneral/webapp/index.html#HelloWorld");
             }
             
             // step 3

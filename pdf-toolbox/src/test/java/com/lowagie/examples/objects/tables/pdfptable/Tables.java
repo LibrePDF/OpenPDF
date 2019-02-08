@@ -6,7 +6,7 @@
  *
  * --> Copyright 2001-2005 by G. Martinelli and Bruno Lowagie <--
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
  * http://www.lowagie.com/iText/tutorial/
  *
