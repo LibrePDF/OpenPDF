@@ -61,7 +61,7 @@ public class HelloWorldServlet extends HttpServlet {
                 HtmlWriter.getInstance(document, response.getOutputStream());
             }
             else {
-                response.sendRedirect("https://github.com/LibrePDF/OpenPDF/wiki/Tutorialgeneral/webapp/index.html#HelloWorld");
+                response.sendRedirect("https://web.archive.org/web/20071005033458/http://itextdocs.lowagie.com:80/tutorial/general/webapp/index.html#HelloWorld");
             }
             
             // step 3
