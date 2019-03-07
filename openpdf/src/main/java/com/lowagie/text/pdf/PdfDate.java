@@ -65,21 +65,21 @@ import java.util.SimpleTimeZone;
  * This object is described in the 'Portable Document Format Reference Manual version 1.3'
  * section 7.2 (page 183-184)
  *
- * @see		PdfString
- * @see		java.util.GregorianCalendar
+ * @see        PdfString
+ * @see        java.util.GregorianCalendar
  */
 
 public class PdfDate extends PdfString {
 
-    private static final int DATE_SPACE[] = {Calendar.YEAR, 4, 0, Calendar.MONTH, 2, -1, Calendar.DAY_OF_MONTH, 2, 0,
-        Calendar.HOUR_OF_DAY, 2, 0, Calendar.MINUTE, 2, 0, Calendar.SECOND, 2, 0};
+    private static final int[] DATE_SPACE = {Calendar.YEAR, 4, 0, Calendar.MONTH, 2, -1, Calendar.DAY_OF_MONTH, 2, 0,
+            Calendar.HOUR_OF_DAY, 2, 0, Calendar.MINUTE, 2, 0, Calendar.SECOND, 2, 0};
     
     // constructors
     
 /**
  * Constructs a <CODE>PdfDate</CODE>-object.
  *
- * @param		d			the date that has to be turned into a <CODE>PdfDate</CODE>-object
+ * @param        d            the date that has to be turned into a <CODE>PdfDate</CODE>-object
  */
     
     public PdfDate(Calendar d) {
@@ -122,9 +122,9 @@ public class PdfDate extends PdfString {
  * Adds a number of leading zeros to a given <CODE>String</CODE> in order to get a <CODE>String</CODE>
  * of a certain length.
  *
- * @param		i   		a given number
- * @param		length		the length of the resulting <CODE>String</CODE>
- * @return		the resulting <CODE>String</CODE>
+ * @param        i           a given number
+ * @param        length        the length of the resulting <CODE>String</CODE>
+ * @return        the resulting <CODE>String</CODE>
  */
     
     private String setLength(int i, int length) { // 1.3-1.4 problem fixed by Finn Bock
@@ -156,31 +156,31 @@ public class PdfDate extends PdfString {
         StringBuffer sb = new StringBuffer();
         if (d.length() < 4)
             return "0000";
-        sb.append(d.substring(0, 4)); //year
+        sb.append(d, 0, 4); //year
         d = d.substring(4);
         if (d.length() < 2)
             return sb.toString();
-        sb.append('-').append(d.substring(0, 2)); //month
+        sb.append('-').append(d, 0, 2); //month
         d = d.substring(2);
         if (d.length() < 2)
             return sb.toString();
-        sb.append('-').append(d.substring(0, 2)); //day
+        sb.append('-').append(d, 0, 2); //day
         d = d.substring(2);
         if (d.length() < 2)
             return sb.toString();
-        sb.append('T').append(d.substring(0, 2)); //hour
+        sb.append('T').append(d, 0, 2); //hour
         d = d.substring(2);
         if (d.length() < 2) {
             sb.append(":00Z");
             return sb.toString();
         }
-        sb.append(':').append(d.substring(0, 2)); //minute
+        sb.append(':').append(d, 0, 2); //minute
         d = d.substring(2);
         if (d.length() < 2) {
             sb.append('Z');
             return sb.toString();
         }
-        sb.append(':').append(d.substring(0, 2)); //second
+        sb.append(':').append(d, 0, 2); //second
         d = d.substring(2);
         if (d.startsWith("-") || d.startsWith("+")) {
             String sign = d.substring(0, 1);

@@ -6,7 +6,7 @@
     <groupId>com.github.librepdf</groupId>
     <artifactId>openpdf-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.2.11-SNAPSHOT</version>
 
     <licenses>
         <license>
@@ -24,7 +24,6 @@
     <modules>
         <module>openpdf</module>
         <module>pdf-xml</module>
-        <module>pdf-rtf</module>
         <module>pdf-html</module>
         <module>pdf-swing</module>
         <module>pdf-toolbox</module>
@@ -40,33 +39,27 @@
     </scm>
 
     <properties>
+        <java-module-name>com.github.librepdf.openpdf.parent</java-module-name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.test.failure.ignore>false</maven.test.failure.ignore>
-        <java.version>1.7</java.version>
-        <maven.source.version>2.4</maven.source.version>
-        <maven.javadoc.plugin.version>2.10.1</maven.javadoc.plugin.version>
-        <maven.clean.plugin.version>2.6.1</maven.clean.plugin.version>
-        <maven.dependency.plugin.version>2.9</maven.dependency.plugin.version>
-        <maven.compiler.plugin.version>3.2</maven.compiler.plugin.version>
-        <maven.release.plugin.version>2.5.1</maven.release.plugin.version>
-        <maven.jar.plugin.version>2.5</maven.jar.plugin.version>
+        <java.version>1.8</java.version>
+        <maven.source.version>3.0.1</maven.source.version>
+        <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
+        <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
+        <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
+        <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
+        <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
+        <maven.jar.plugin.version>3.1.0</maven.jar.plugin.version>
         <maven.plugin.repository.version>2.3.1</maven.plugin.repository.version>
         <maven.plugin.bundle.version>3.2.0</maven.plugin.bundle.version>
-        <bouncycastle.version>1.58</bouncycastle.version>
+        <bouncycastle.version>1.60</bouncycastle.version>
+        <jupiter.version>5.3.2</jupiter.version>
+        <maven.surefire.plugin.version>2.22.1</maven.surefire.plugin.version>
+        <mockito.version>2.24.0</mockito.version>
     </properties>
-    <!-- Support for compilation under java 8 -->
-    <profiles>
-        <profile>
-            <id>java8-javadoc</id>
-            <activation>
-                <jdk>[1.8,</jdk>
-            </activation>
-            <properties>
-                <javadoc.param>-Xdoclint:none</javadoc.param>
-            </properties>
-        </profile>
-    </profiles>
+
+
     <build>
         <plugins>
             <!-- Create sources for better debugging and context assist -->
@@ -89,6 +82,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven.javadoc.plugin.version}</version>
+                <configuration>
+                    <source>8</source>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -97,7 +93,7 @@
                         </goals>
                         <!-- Disable doclint checks to build it under java 8 javadoc -->
                         <configuration>
-                            <additionalparam>${javadoc.param}</additionalparam>
+                            <additionalJOptions>-Xdoclint:none</additionalJOptions>
                         </configuration>
                     </execution>
                 </executions>
@@ -161,6 +157,9 @@
                     <!-- Use the Bnd generated MANIFEST.MF in the jar -->
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifestEntries>
+                            <Automatic-Module-Name>${java-module-name}</Automatic-Module-Name>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -173,7 +172,7 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-gpg-plugin</artifactId>
-              <version>1.5</version>
+              <version>1.6</version>
               <executions>
                 <execution>
                   <id>sign-artifacts</id>
@@ -187,7 +186,7 @@
             <plugin>
               <groupId>org.sonatype.plugins</groupId>
               <artifactId>nexus-staging-maven-plugin</artifactId>
-              <version>1.6.7</version>
+              <version>1.6.8</version>
               <extensions>true</extensions>
               <configuration>
                  <serverId>ossrh</serverId>
@@ -219,6 +218,10 @@
                     </instructions>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+            </plugin>
         </plugins>
     </build>
 
@@ -229,12 +232,6 @@
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>2.8.0</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -252,9 +249,8 @@
 
     <developers>
         <developer>
-            <name>Art Krahenbuhl</name>
-            <email>rtfarte@gmail.com</email>
-            <organizationUrl>https://github.com/rtfarte</organizationUrl>
+            <name>The OpenPDF Project</name>
+            <organizationUrl>https://github.com/librepdf</organizationUrl>
         </developer>
     </developers>
     <!-- Distribution config from http://central.sonatype.org/pages/apache-maven.html#distribution-management-and-authentication -->
@@ -264,4 +260,5 @@
        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       </snapshotRepository>
      </distributionManagement>
+
 </project>

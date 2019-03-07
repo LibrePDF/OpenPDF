@@ -55,7 +55,9 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Properties;
 
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.OutputStreamCounter;
+
 
 /**
  * An abstract <CODE>Writer</CODE> class for documents.
@@ -303,7 +305,7 @@ public abstract class DocWriter implements DocListener {
         if (text == null)
             return null;
         int len = text.length();
-        byte b[] = new byte[len];
+        byte[] b = new byte[len];
         for (int k = 0; k < len; ++k)
             b[k] = (byte)text.charAt(k);
         return b;
@@ -320,7 +322,7 @@ public abstract class DocWriter implements DocListener {
     /**
      * Checks if writing is paused.
      *
-     * @return		<CODE>true</CODE> if writing temporarily has to be paused, <CODE>false</CODE> otherwise.
+     * @return        <CODE>true</CODE> if writing temporarily has to be paused, <CODE>false</CODE> otherwise.
      */
     
     public boolean isPaused() {
@@ -440,15 +442,15 @@ public abstract class DocWriter implements DocListener {
  */
     protected boolean writeMarkupAttributes(Properties markup)
     throws IOException {
-    	if (markup == null) return false;
-    	Iterator attributeIterator = markup.keySet().iterator();
-    	String name;
-    	while (attributeIterator.hasNext()) {
-    		name = String.valueOf(attributeIterator.next());
-    		write(name, markup.getProperty(name));
-    	}
-    	markup.clear();
-    	return true;
+        if (markup == null) return false;
+        Iterator attributeIterator = markup.keySet().iterator();
+        String name;
+        while (attributeIterator.hasNext()) {
+            name = String.valueOf(attributeIterator.next());
+            write(name, markup.getProperty(name));
+        }
+        markup.clear();
+        return true;
     }
 
     /** Checks if the stream is to be closed on document close
@@ -476,7 +478,7 @@ public abstract class DocWriter implements DocListener {
     
     /**
      * @see com.lowagie.text.DocListener#setMarginMirroring(boolean)
-     * @since	2.1.6
+     * @since    2.1.6
      */
     public boolean setMarginMirroringTopBottom(boolean MarginMirroring) {
         return false;

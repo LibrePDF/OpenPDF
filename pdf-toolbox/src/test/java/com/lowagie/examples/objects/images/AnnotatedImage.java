@@ -1,15 +1,15 @@
 /*
  * $Id: AnnotatedImage.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.objects.images;
 
@@ -43,12 +43,12 @@ public class AnnotatedImage {
             // step 4: we add some content
             Image jpeg = Image.getInstance("otsoe.jpg");
             jpeg.setAnnotation(new Annotation("picture", "This is my dog", 0, 0, 0, 0));
-			jpeg.setAbsolutePosition(100f, 550f);
-			document.add(jpeg);
+            jpeg.setAbsolutePosition(100f, 550f);
+            document.add(jpeg);
             Image wmf = Image.getInstance("iText.wmf");
             wmf.setAnnotation(new Annotation(0, 0, 0, 0, "http://www.lowagie.com/iText"));
-			wmf.setAbsolutePosition(100f, 200f);
-			document.add(wmf);
+            wmf.setAbsolutePosition(100f, 200f);
+            document.add(wmf);
         }
         catch (Exception de) {
             de.printStackTrace();

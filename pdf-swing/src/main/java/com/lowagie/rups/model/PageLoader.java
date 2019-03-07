@@ -29,61 +29,61 @@ import com.sun.pdfview.PDFPage;
  */
 public class PageLoader extends BackgroundTask {
 
-	/** The PDFFile (SUN's PDF Renderer class) */
-	protected PDFFile file;
-	/** The total number of pages. */
-	protected int numberOfPages;
-	/** True for pages with page number equal to index + 1 that are being loaded. */
-	protected boolean[] busy;
-	/** True for pages with page number equal to index + 1 that have already been loaded.  */
-	protected boolean[] done;
-	
-	/**
-	 * Creates a new page loader.
-	 * @param	file	the PDFFile (SUN's PDF Renderer)
-	 */
-	public PageLoader(PDFFile file) {
-		super();
-		this.file = file;
-		numberOfPages = file.getNumPages();
-		busy = new boolean[numberOfPages];
-		done = new boolean[numberOfPages];
-		start();
-	}
+    /** The PDFFile (SUN's PDF Renderer class) */
+    protected PDFFile file;
+    /** The total number of pages. */
+    protected int numberOfPages;
+    /** True for pages with page number equal to index + 1 that are being loaded. */
+    protected boolean[] busy;
+    /** True for pages with page number equal to index + 1 that have already been loaded.  */
+    protected boolean[] done;
+    
+    /**
+     * Creates a new page loader.
+     * @param    file    the PDFFile (SUN's PDF Renderer)
+     */
+    public PageLoader(PDFFile file) {
+        super();
+        this.file = file;
+        numberOfPages = file.getNumPages();
+        busy = new boolean[numberOfPages];
+        done = new boolean[numberOfPages];
+        start();
+    }
 
-	/**
-	 * Getter for the number of pages.
-	 * @return	the number of pages in the PDF file.
-	 */
-	public int getNumberOfPages() {
-		return numberOfPages;
-	}
+    /**
+     * Getter for the number of pages.
+     * @return    the number of pages in the PDF file.
+     */
+    public int getNumberOfPages() {
+        return numberOfPages;
+    }
 
-	/**
-	 * Loads a page.
-	 * @param	pageNumber	the number of the page that has to be loaded.
-	 * @return	the PDFPage that has been loaded.
-	 */
-	public synchronized PDFPage loadPage(int pageNumber) {
-		pageNumber--;
-		if (busy[pageNumber]) return null;
-		busy[pageNumber] = true;
-		PDFPage page = file.getPage(pageNumber + 1, true);
-		if (!done[pageNumber]) {
-			System.out.println("Loading page " + (pageNumber + 1));
-		}
-		done[pageNumber] = true;
-		busy[pageNumber] = false;
-		return page;
-	}
+    /**
+     * Loads a page.
+     * @param    pageNumber    the number of the page that has to be loaded.
+     * @return    the PDFPage that has been loaded.
+     */
+    public synchronized PDFPage loadPage(int pageNumber) {
+        pageNumber--;
+        if (busy[pageNumber]) return null;
+        busy[pageNumber] = true;
+        PDFPage page = file.getPage(pageNumber + 1, true);
+        if (!done[pageNumber]) {
+            System.out.println("Loading page " + (pageNumber + 1));
+        }
+        done[pageNumber] = true;
+        busy[pageNumber] = false;
+        return page;
+    }
 
-	/**
-	 * @see com.lowagie.rups.model.BackgroundTask#doTask()
-	 */
-	@Override
-	public void doTask() {
-		for (int i = 0; i < numberOfPages; i++) {
-			loadPage(i + 1);
-		}
-	}
+    /**
+     * @see com.lowagie.rups.model.BackgroundTask#doTask()
+     */
+    @Override
+    public void doTask() {
+        for (int i = 0; i < numberOfPages; i++) {
+            loadPage(i + 1);
+        }
+    }
 }

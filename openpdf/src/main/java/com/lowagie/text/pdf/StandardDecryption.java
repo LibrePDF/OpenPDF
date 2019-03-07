@@ -62,7 +62,7 @@ public class StandardDecryption {
     private int ivptr;
 
     /** Creates a new instance of StandardDecryption */
-    public StandardDecryption(byte key[], int off, int len, int revision) {
+    public StandardDecryption(byte[] key, int off, int len, int revision) {
         aes = revision == AES_128;
         if (aes) {
             this.key = new byte[len];

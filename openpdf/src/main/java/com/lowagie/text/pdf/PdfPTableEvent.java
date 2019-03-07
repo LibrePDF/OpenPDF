@@ -87,7 +87,7 @@ public interface PdfPTableEvent {
      * @param rowStart the first row number after the header
      * @param canvases an array of <CODE>PdfContentByte</CODE>
      */
-    void tableLayout(PdfPTable table, float widths[][], float heights[], int headerRows, int rowStart, PdfContentByte[] canvases);
+    void tableLayout(PdfPTable table, float[][] widths, float[] heights, int headerRows, int rowStart, PdfContentByte[] canvases);
 
 }
 

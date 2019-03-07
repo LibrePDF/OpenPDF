@@ -55,14 +55,14 @@ package com.lowagie.text.exceptions;
  */
 public class IllegalPdfSyntaxException extends IllegalArgumentException {
 
-	/** Serial version ID */
-	private static final long serialVersionUID = -643024246596031671L;
+    /** Serial version ID */
+    private static final long serialVersionUID = -643024246596031671L;
 
-	/**
-	 * Creates an exception saying the PDF syntax isn't correct.
-	 * @param	message	some extra info about the exception
-	 */
-	public IllegalPdfSyntaxException(String message) {
-		super(message);
-	}
+    /**
+     * Creates an exception saying the PDF syntax isn't correct.
+     * @param    message    some extra info about the exception
+     */
+    public IllegalPdfSyntaxException(String message) {
+        super(message);
+    }
 }

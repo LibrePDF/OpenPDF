@@ -68,104 +68,106 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.ExceptionConverter;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import com.lowagie.text.ExceptionConverter;
+
 
 public class CFFFont {
-    
-    static final String operatorNames[] = {
-        "version", "Notice", "FullName", "FamilyName",
-        "Weight", "FontBBox", "BlueValues", "OtherBlues",
-        "FamilyBlues", "FamilyOtherBlues", "StdHW", "StdVW",
-        "UNKNOWN_12", "UniqueID", "XUID", "charset",
-        "Encoding", "CharStrings", "Private", "Subrs",
-        "defaultWidthX", "nominalWidthX", "UNKNOWN_22", "UNKNOWN_23",
-        "UNKNOWN_24", "UNKNOWN_25", "UNKNOWN_26", "UNKNOWN_27",
-        "UNKNOWN_28", "UNKNOWN_29", "UNKNOWN_30", "UNKNOWN_31",
-        "Copyright", "isFixedPitch", "ItalicAngle", "UnderlinePosition",
-        "UnderlineThickness", "PaintType", "CharstringType", "FontMatrix",
-        "StrokeWidth", "BlueScale", "BlueShift", "BlueFuzz",
-        "StemSnapH", "StemSnapV", "ForceBold", "UNKNOWN_12_15",
-        "UNKNOWN_12_16", "LanguageGroup", "ExpansionFactor", "initialRandomSeed",
-        "SyntheticBase", "PostScript", "BaseFontName", "BaseFontBlend",
-        "UNKNOWN_12_24", "UNKNOWN_12_25", "UNKNOWN_12_26", "UNKNOWN_12_27",
-        "UNKNOWN_12_28", "UNKNOWN_12_29", "ROS", "CIDFontVersion",
-        "CIDFontRevision", "CIDFontType", "CIDCount", "UIDBase",
-        "FDArray", "FDSelect", "FontName"
+
+    static final String[] operatorNames = {
+            "version", "Notice", "FullName", "FamilyName",
+            "Weight", "FontBBox", "BlueValues", "OtherBlues",
+            "FamilyBlues", "FamilyOtherBlues", "StdHW", "StdVW",
+            "UNKNOWN_12", "UniqueID", "XUID", "charset",
+            "Encoding", "CharStrings", "Private", "Subrs",
+            "defaultWidthX", "nominalWidthX", "UNKNOWN_22", "UNKNOWN_23",
+            "UNKNOWN_24", "UNKNOWN_25", "UNKNOWN_26", "UNKNOWN_27",
+            "UNKNOWN_28", "UNKNOWN_29", "UNKNOWN_30", "UNKNOWN_31",
+            "Copyright", "isFixedPitch", "ItalicAngle", "UnderlinePosition",
+            "UnderlineThickness", "PaintType", "CharstringType", "FontMatrix",
+            "StrokeWidth", "BlueScale", "BlueShift", "BlueFuzz",
+            "StemSnapH", "StemSnapV", "ForceBold", "UNKNOWN_12_15",
+            "UNKNOWN_12_16", "LanguageGroup", "ExpansionFactor", "initialRandomSeed",
+            "SyntheticBase", "PostScript", "BaseFontName", "BaseFontBlend",
+            "UNKNOWN_12_24", "UNKNOWN_12_25", "UNKNOWN_12_26", "UNKNOWN_12_27",
+            "UNKNOWN_12_28", "UNKNOWN_12_29", "ROS", "CIDFontVersion",
+            "CIDFontRevision", "CIDFontType", "CIDCount", "UIDBase",
+            "FDArray", "FDSelect", "FontName"
     };
-    
-    static final String standardStrings[] = {
-        // Automatically generated from Appendix A of the CFF specification; do
-        // not edit. Size should be 391.
-        ".notdef", "space", "exclam", "quotedbl", "numbersign", "dollar",
-        "percent", "ampersand", "quoteright", "parenleft", "parenright",
-        "asterisk", "plus", "comma", "hyphen", "period", "slash", "zero", "one",
-        "two", "three", "four", "five", "six", "seven", "eight", "nine", "colon",
-        "semicolon", "less", "equal", "greater", "question", "at", "A", "B", "C",
-        "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-        "S", "T", "U", "V", "W", "X", "Y", "Z", "bracketleft", "backslash",
-        "bracketright", "asciicircum", "underscore", "quoteleft", "a", "b", "c",
-        "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
-        "s", "t", "u", "v", "w", "x", "y", "z", "braceleft", "bar", "braceright",
-        "asciitilde", "exclamdown", "cent", "sterling", "fraction", "yen",
-        "florin", "section", "currency", "quotesingle", "quotedblleft",
-        "guillemotleft", "guilsinglleft", "guilsinglright", "fi", "fl", "endash",
-        "dagger", "daggerdbl", "periodcentered", "paragraph", "bullet",
-        "quotesinglbase", "quotedblbase", "quotedblright", "guillemotright",
-        "ellipsis", "perthousand", "questiondown", "grave", "acute", "circumflex",
-        "tilde", "macron", "breve", "dotaccent", "dieresis", "ring", "cedilla",
-        "hungarumlaut", "ogonek", "caron", "emdash", "AE", "ordfeminine", "Lslash",
-        "Oslash", "OE", "ordmasculine", "ae", "dotlessi", "lslash", "oslash", "oe",
-        "germandbls", "onesuperior", "logicalnot", "mu", "trademark", "Eth",
-        "onehalf", "plusminus", "Thorn", "onequarter", "divide", "brokenbar",
-        "degree", "thorn", "threequarters", "twosuperior", "registered", "minus",
-        "eth", "multiply", "threesuperior", "copyright", "Aacute", "Acircumflex",
-        "Adieresis", "Agrave", "Aring", "Atilde", "Ccedilla", "Eacute",
-        "Ecircumflex", "Edieresis", "Egrave", "Iacute", "Icircumflex", "Idieresis",
-        "Igrave", "Ntilde", "Oacute", "Ocircumflex", "Odieresis", "Ograve",
-        "Otilde", "Scaron", "Uacute", "Ucircumflex", "Udieresis", "Ugrave",
-        "Yacute", "Ydieresis", "Zcaron", "aacute", "acircumflex", "adieresis",
-        "agrave", "aring", "atilde", "ccedilla", "eacute", "ecircumflex",
-        "edieresis", "egrave", "iacute", "icircumflex", "idieresis", "igrave",
-        "ntilde", "oacute", "ocircumflex", "odieresis", "ograve", "otilde",
-        "scaron", "uacute", "ucircumflex", "udieresis", "ugrave", "yacute",
-        "ydieresis", "zcaron", "exclamsmall", "Hungarumlautsmall",
-        "dollaroldstyle", "dollarsuperior", "ampersandsmall", "Acutesmall",
-        "parenleftsuperior", "parenrightsuperior", "twodotenleader",
-        "onedotenleader", "zerooldstyle", "oneoldstyle", "twooldstyle",
-        "threeoldstyle", "fouroldstyle", "fiveoldstyle", "sixoldstyle",
-        "sevenoldstyle", "eightoldstyle", "nineoldstyle", "commasuperior",
-        "threequartersemdash", "periodsuperior", "questionsmall", "asuperior",
-        "bsuperior", "centsuperior", "dsuperior", "esuperior", "isuperior",
-        "lsuperior", "msuperior", "nsuperior", "osuperior", "rsuperior",
-        "ssuperior", "tsuperior", "ff", "ffi", "ffl", "parenleftinferior",
-        "parenrightinferior", "Circumflexsmall", "hyphensuperior", "Gravesmall",
-        "Asmall", "Bsmall", "Csmall", "Dsmall", "Esmall", "Fsmall", "Gsmall",
-        "Hsmall", "Ismall", "Jsmall", "Ksmall", "Lsmall", "Msmall", "Nsmall",
-        "Osmall", "Psmall", "Qsmall", "Rsmall", "Ssmall", "Tsmall", "Usmall",
-        "Vsmall", "Wsmall", "Xsmall", "Ysmall", "Zsmall", "colonmonetary",
-        "onefitted", "rupiah", "Tildesmall", "exclamdownsmall", "centoldstyle",
-        "Lslashsmall", "Scaronsmall", "Zcaronsmall", "Dieresissmall", "Brevesmall",
-        "Caronsmall", "Dotaccentsmall", "Macronsmall", "figuredash",
-        "hypheninferior", "Ogoneksmall", "Ringsmall", "Cedillasmall",
-        "questiondownsmall", "oneeighth", "threeeighths", "fiveeighths",
-        "seveneighths", "onethird", "twothirds", "zerosuperior", "foursuperior",
-        "fivesuperior", "sixsuperior", "sevensuperior", "eightsuperior",
-        "ninesuperior", "zeroinferior", "oneinferior", "twoinferior",
-        "threeinferior", "fourinferior", "fiveinferior", "sixinferior",
-        "seveninferior", "eightinferior", "nineinferior", "centinferior",
-        "dollarinferior", "periodinferior", "commainferior", "Agravesmall",
-        "Aacutesmall", "Acircumflexsmall", "Atildesmall", "Adieresissmall",
-        "Aringsmall", "AEsmall", "Ccedillasmall", "Egravesmall", "Eacutesmall",
-        "Ecircumflexsmall", "Edieresissmall", "Igravesmall", "Iacutesmall",
-        "Icircumflexsmall", "Idieresissmall", "Ethsmall", "Ntildesmall",
-        "Ogravesmall", "Oacutesmall", "Ocircumflexsmall", "Otildesmall",
-        "Odieresissmall", "OEsmall", "Oslashsmall", "Ugravesmall", "Uacutesmall",
-        "Ucircumflexsmall", "Udieresissmall", "Yacutesmall", "Thornsmall",
-        "Ydieresissmall", "001.000", "001.001", "001.002", "001.003", "Black",
-        "Bold", "Book", "Light", "Medium", "Regular", "Roman", "Semibold"
+
+    static final String[] standardStrings = {
+            // Automatically generated from Appendix A of the CFF specification; do
+            // not edit. Size should be 391.
+            ".notdef", "space", "exclam", "quotedbl", "numbersign", "dollar",
+            "percent", "ampersand", "quoteright", "parenleft", "parenright",
+            "asterisk", "plus", "comma", "hyphen", "period", "slash", "zero", "one",
+            "two", "three", "four", "five", "six", "seven", "eight", "nine", "colon",
+            "semicolon", "less", "equal", "greater", "question", "at", "A", "B", "C",
+            "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+            "S", "T", "U", "V", "W", "X", "Y", "Z", "bracketleft", "backslash",
+            "bracketright", "asciicircum", "underscore", "quoteleft", "a", "b", "c",
+            "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
+            "s", "t", "u", "v", "w", "x", "y", "z", "braceleft", "bar", "braceright",
+            "asciitilde", "exclamdown", "cent", "sterling", "fraction", "yen",
+            "florin", "section", "currency", "quotesingle", "quotedblleft",
+            "guillemotleft", "guilsinglleft", "guilsinglright", "fi", "fl", "endash",
+            "dagger", "daggerdbl", "periodcentered", "paragraph", "bullet",
+            "quotesinglbase", "quotedblbase", "quotedblright", "guillemotright",
+            "ellipsis", "perthousand", "questiondown", "grave", "acute", "circumflex",
+            "tilde", "macron", "breve", "dotaccent", "dieresis", "ring", "cedilla",
+            "hungarumlaut", "ogonek", "caron", "emdash", "AE", "ordfeminine", "Lslash",
+            "Oslash", "OE", "ordmasculine", "ae", "dotlessi", "lslash", "oslash", "oe",
+            "germandbls", "onesuperior", "logicalnot", "mu", "trademark", "Eth",
+            "onehalf", "plusminus", "Thorn", "onequarter", "divide", "brokenbar",
+            "degree", "thorn", "threequarters", "twosuperior", "registered", "minus",
+            "eth", "multiply", "threesuperior", "copyright", "Aacute", "Acircumflex",
+            "Adieresis", "Agrave", "Aring", "Atilde", "Ccedilla", "Eacute",
+            "Ecircumflex", "Edieresis", "Egrave", "Iacute", "Icircumflex", "Idieresis",
+            "Igrave", "Ntilde", "Oacute", "Ocircumflex", "Odieresis", "Ograve",
+            "Otilde", "Scaron", "Uacute", "Ucircumflex", "Udieresis", "Ugrave",
+            "Yacute", "Ydieresis", "Zcaron", "aacute", "acircumflex", "adieresis",
+            "agrave", "aring", "atilde", "ccedilla", "eacute", "ecircumflex",
+            "edieresis", "egrave", "iacute", "icircumflex", "idieresis", "igrave",
+            "ntilde", "oacute", "ocircumflex", "odieresis", "ograve", "otilde",
+            "scaron", "uacute", "ucircumflex", "udieresis", "ugrave", "yacute",
+            "ydieresis", "zcaron", "exclamsmall", "Hungarumlautsmall",
+            "dollaroldstyle", "dollarsuperior", "ampersandsmall", "Acutesmall",
+            "parenleftsuperior", "parenrightsuperior", "twodotenleader",
+            "onedotenleader", "zerooldstyle", "oneoldstyle", "twooldstyle",
+            "threeoldstyle", "fouroldstyle", "fiveoldstyle", "sixoldstyle",
+            "sevenoldstyle", "eightoldstyle", "nineoldstyle", "commasuperior",
+            "threequartersemdash", "periodsuperior", "questionsmall", "asuperior",
+            "bsuperior", "centsuperior", "dsuperior", "esuperior", "isuperior",
+            "lsuperior", "msuperior", "nsuperior", "osuperior", "rsuperior",
+            "ssuperior", "tsuperior", "ff", "ffi", "ffl", "parenleftinferior",
+            "parenrightinferior", "Circumflexsmall", "hyphensuperior", "Gravesmall",
+            "Asmall", "Bsmall", "Csmall", "Dsmall", "Esmall", "Fsmall", "Gsmall",
+            "Hsmall", "Ismall", "Jsmall", "Ksmall", "Lsmall", "Msmall", "Nsmall",
+            "Osmall", "Psmall", "Qsmall", "Rsmall", "Ssmall", "Tsmall", "Usmall",
+            "Vsmall", "Wsmall", "Xsmall", "Ysmall", "Zsmall", "colonmonetary",
+            "onefitted", "rupiah", "Tildesmall", "exclamdownsmall", "centoldstyle",
+            "Lslashsmall", "Scaronsmall", "Zcaronsmall", "Dieresissmall", "Brevesmall",
+            "Caronsmall", "Dotaccentsmall", "Macronsmall", "figuredash",
+            "hypheninferior", "Ogoneksmall", "Ringsmall", "Cedillasmall",
+            "questiondownsmall", "oneeighth", "threeeighths", "fiveeighths",
+            "seveneighths", "onethird", "twothirds", "zerosuperior", "foursuperior",
+            "fivesuperior", "sixsuperior", "sevensuperior", "eightsuperior",
+            "ninesuperior", "zeroinferior", "oneinferior", "twoinferior",
+            "threeinferior", "fourinferior", "fiveinferior", "sixinferior",
+            "seveninferior", "eightinferior", "nineinferior", "centinferior",
+            "dollarinferior", "periodinferior", "commainferior", "Agravesmall",
+            "Aacutesmall", "Acircumflexsmall", "Atildesmall", "Adieresissmall",
+            "Aringsmall", "AEsmall", "Ccedillasmall", "Egravesmall", "Eacutesmall",
+            "Ecircumflexsmall", "Edieresissmall", "Igravesmall", "Iacutesmall",
+            "Icircumflexsmall", "Idieresissmall", "Ethsmall", "Ntildesmall",
+            "Ogravesmall", "Oacutesmall", "Ocircumflexsmall", "Otildesmall",
+            "Odieresissmall", "OEsmall", "Oslashsmall", "Ugravesmall", "Uacutesmall",
+            "Ucircumflexsmall", "Udieresissmall", "Yacutesmall", "Thornsmall",
+            "Ydieresissmall", "001.000", "001.001", "001.002", "001.003", "Black",
+            "Bold", "Book", "Light", "Medium", "Regular", "Roman", "Semibold"
     };
     
     //private String[] strings;
@@ -268,15 +270,15 @@ public class CFFFont {
         indexOffSize = getCard8();
         
         for (int j=0; j<=count; j++) {
-        	//nextIndexOffset = ofset to relative segment
+            //nextIndexOffset = ofset to relative segment
             offsets[j] = nextIndexOffset
-			//2-> count in the index header. 1->offset size in index header
+            //2-> count in the index header. 1->offset size in index header
             + 2+1
-			//offset array size * offset size 
+            //offset array size * offset size 
             + (count+1)*indexOffSize
-			//???zero <-> one base
+            //???zero <-> one base
             - 1
-			// read object offset relative to object array base 
+            // read object offset relative to object array base 
             + getOffset(indexOffSize);
         }
         //nextIndexOffset = offsets[count];
@@ -527,7 +529,7 @@ public class CFFFont {
         }
     }
     
-	/** Card24 item.
+    /** Card24 item.
      */
     
     static protected final class UInt24Item extends Item {
@@ -540,7 +542,7 @@ public class CFFFont {
         }
         // this is incomplete!
         public void emit(byte[] buffer) {
-        	buffer[myOffset+0] = (byte) ((value >>> 16) & 0xff);
+            buffer[myOffset+0] = (byte) ((value >>> 16) & 0xff);
             buffer[myOffset+1] = (byte) ((value >>> 8) & 0xff);
             buffer[myOffset+2] = (byte) ((value >>> 0) & 0xff);
         }
@@ -559,8 +561,8 @@ public class CFFFont {
         }
         // this is incomplete!
         public void emit(byte[] buffer) {
-        	buffer[myOffset+0] = (byte) ((value >>> 24) & 0xff);
-        	buffer[myOffset+1] = (byte) ((value >>> 16) & 0xff);
+            buffer[myOffset+0] = (byte) ((value >>> 24) & 0xff);
+            buffer[myOffset+1] = (byte) ((value >>> 16) & 0xff);
             buffer[myOffset+2] = (byte) ((value >>> 8) & 0xff);
             buffer[myOffset+3] = (byte) ((value >>> 0) & 0xff);
         }
@@ -1006,10 +1008,10 @@ public class CFFFont {
         public int CharsetLength;
         public int[]    charstringsOffsets;
         public int[]    charset;
-        public int[] 	FDSelect;
+        public int[]     FDSelect;
         public int FDSelectLength;
         public int FDSelectFormat;
-        public int 		CharstringType = 2;
+        public int         CharstringType = 2;
         public int FDArrayCount;
         public int FDArrayOffsize;
         public int[] FDArrayOffsets;
@@ -1083,7 +1085,7 @@ public class CFFFont {
             //seek(stringOffsets[j]);
             //strings[j] = "";
             //for (int k=stringOffsets[j]; k<stringOffsets[j+1]; k++) {
-            //	strings[j] += (char)getCard8();
+            //    strings[j] += (char)getCard8();
             //}
             System.err.println("j="+(int)j+" <? "+(standardStrings.length+(stringOffsets.length-1)));
             System.err.println("strings["+(int)j+"]=<"+getString(j)+">");
@@ -1094,7 +1096,7 @@ public class CFFFont {
         
         for (int j=0; j<topdictOffsets.length-1; j++) {
             seek(topdictOffsets[j]);
-            while (getPosition() < topdictOffsets[j+1]) {            	
+            while (getPosition() < topdictOffsets[j+1]) {                
                 getDictItem();
                 if (key=="FullName") {
                     //System.err.println("getting fullname sid = "+((Integer)args[0]).intValue());
@@ -1126,7 +1128,7 @@ public class CFFFont {
                 else if (key=="FDSelect")
                     fonts[j].fdselectOffset = ((Integer)args[0]).intValue();
                 else if (key=="CharstringType")
-                	fonts[j].CharstringType = ((Integer)args[0]).intValue();
+                    fonts[j].CharstringType = ((Integer)args[0]).intValue();
             }
             
             // private dict
@@ -1136,8 +1138,8 @@ public class CFFFont {
                 while (getPosition() < fonts[j].privateOffset+fonts[j].privateLength) {
                     getDictItem();
                     if (key=="Subrs")
-                    	//Add the private offset to the lsubrs since the offset is 
-                    	// relative to the beginning of the PrivateDict
+                        //Add the private offset to the lsubrs since the offset is 
+                        // relative to the beginning of the PrivateDict
                         fonts[j].privateSubrs = ((Integer)args[0]).intValue()+fonts[j].privateOffset;
                 }
             }
@@ -1169,8 +1171,8 @@ public class CFFFont {
     // ADDED BY Oren & Ygal
     
     void ReadEncoding(int nextIndexOffset){
-    	int format;
-    	seek(nextIndexOffset);
-    	format = getCard8();
+        int format;
+        seek(nextIndexOffset);
+        format = getCard8();
     }    
 }

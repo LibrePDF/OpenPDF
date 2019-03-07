@@ -39,7 +39,7 @@ import javax.swing.SwingUtilities;
  */
 public abstract class EventDispatchingThread {
 
-	/**
+    /**
      * Inner class that holds the reference to the thread.
      */
     private static class ThreadWrapper {
@@ -50,8 +50,8 @@ public abstract class EventDispatchingThread {
     }
 
     /** The value of an object constructed by the construct() method.  */
-	private Object value;
-	/** A wrapper for the tread that executes a time-consuming task. */
+    private Object value;
+    /** A wrapper for the tread that executes a time-consuming task. */
     private ThreadWrapper thread;
 
     /**

@@ -1,13 +1,4 @@
 /*
- * The original version of this class was published in an article by professor Heinz Kabutz.
- * Read http://www.javaspecialists.co.za/archive/newsletter.do?issue=033&print=yes&locale=en_US
- * "This material from The Java(tm) Specialists' Newsletter by Maximum Solutions (South Africa).
- * Please contact Maximum Solutions  for more information."
- * 
- * Copyright (C) 2001 Dr. Heinz M. Kabutz
- */
-
-/*
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at http://www.mozilla.org/MPL/
@@ -51,6 +42,31 @@
  * you aren't using an obsolete version:
  * http://www.lowagie.com/iText/
  */
+
+/*
+ * The original version of this class was published in an article by professor Heinz Kabutz.
+ * Read http://www.javaspecialists.co.za/archive/newsletter.do?issue=033&print=yes&locale=en_US
+ * "This material from The Java(tm) Specialists' Newsletter by Maximum Solutions (South Africa).
+ * Please contact Maximum Solutions  for more information."
+ *
+ * Copyright (C) 2001 Dr. Heinz M. Kabutz
+ */
+
+/**
+ * The OpenPDF project has permission from the author to use this class under a LGPL/MPL license on 2018-08-06:
+ *
+ * Hi Andreas,
+ *
+ * you have my permission to use my code with your license.
+ *
+ * Regards
+ *
+ *
+ * Heinz
+ * --
+ * Dr Heinz M. Kabutz (PhD CompSci)
+ */
+
 package com.lowagie.text;
 
 /**
@@ -59,7 +75,7 @@ package com.lowagie.text;
  */
 public class ExceptionConverter extends RuntimeException {
     private static final long serialVersionUID = 8657630363395849399L;
-	/** we keep a handle to the wrapped exception */
+    /** we keep a handle to the wrapped exception */
     private Exception ex;
     /** prefix for the exception */
     private String prefix;

@@ -58,8 +58,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * This object is described in the 'Portable Document Format Reference Manual version 1.7'
  * section 3.2.1 (page 52).
  *
- * @see		PdfObject
- * @see		BadPdfFormatException
+ * @see        PdfObject
+ * @see        BadPdfFormatException
  */
 
 public class PdfBoolean extends PdfObject {
@@ -83,7 +83,7 @@ public class PdfBoolean extends PdfObject {
 /**
  * Constructs a <CODE>PdfBoolean</CODE>-object.
  *
- * @param		value			the value of the new <CODE>PdfObject</CODE>
+ * @param        value            the value of the new <CODE>PdfObject</CODE>
  */
     
     public PdfBoolean(boolean value) {
@@ -100,9 +100,9 @@ public class PdfBoolean extends PdfObject {
 /**
  * Constructs a <CODE>PdfBoolean</CODE>-object.
  *
- * @param		value			the value of the new <CODE>PdfObject</CODE>, represented as a <CODE>String</CODE>
+ * @param        value            the value of the new <CODE>PdfObject</CODE>, represented as a <CODE>String</CODE>
  *
- * @throws		BadPdfFormatException	thrown if the <VAR>value</VAR> isn't '<CODE>true</CODE>' or '<CODE>false</CODE>'
+ * @throws        BadPdfFormatException    thrown if the <VAR>value</VAR> isn't '<CODE>true</CODE>' or '<CODE>false</CODE>'
  */
     
     public PdfBoolean(String value) throws BadPdfFormatException {
@@ -123,7 +123,7 @@ public class PdfBoolean extends PdfObject {
 /**
  * Returns the primitive value of the <CODE>PdfBoolean</CODE>-object.
  *
- * @return		the actual value of the object.
+ * @return        the actual value of the object.
  */
     
     public boolean booleanValue() {
@@ -131,6 +131,6 @@ public class PdfBoolean extends PdfObject {
     }
     
     public String toString() {
-    	return value ? TRUE : FALSE;
+        return value ? TRUE : FALSE;
     }
 }

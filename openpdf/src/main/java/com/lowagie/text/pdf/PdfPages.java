@@ -51,8 +51,9 @@ package com.lowagie.text.pdf;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.ExceptionConverter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ import java.util.ArrayList;
  * This object is described in the 'Portable Document Format Reference Manual version 1.3'
  * section 6.3 (page 71-73)
  *
- * @see		PdfPage
+ * @see        PdfPage
  */
 
 public class PdfPages {
@@ -148,7 +149,7 @@ public class PdfPages {
                     top.put(PdfName.PARENT, (PdfIndirectReference)nextParents.get(p / leafSize));
                 }
                 else {
-                	top.put(PdfName.ITXT, new PdfString(Document.getRelease()));
+                    top.put(PdfName.ITXT, new PdfString(Document.getRelease()));
                 }
                 writer.addToBody(top, (PdfIndirectReference)tParents.get(p));
             }
@@ -181,7 +182,7 @@ public class PdfPages {
         pages.add(page);
     }
 
-    int reorderPages(int order[]) throws DocumentException {
+    int reorderPages(int[] order) throws DocumentException {
         if (order == null)
             return pages.size();
         if (parents.size() > 1)
@@ -189,7 +190,7 @@ public class PdfPages {
         if (order.length != pages.size())
             throw new DocumentException(MessageLocalization.getComposedMessage("page.reordering.requires.an.array.with.the.same.size.as.the.number.of.pages"));
         int max = pages.size();
-        boolean temp[] = new boolean[max];
+        boolean[] temp = new boolean[max];
         for (int k = 0; k < max; ++k) {
             int p = order[k];
             if (p < 1 || p > max)
@@ -198,7 +199,7 @@ public class PdfPages {
                 throw new DocumentException(MessageLocalization.getComposedMessage("page.reordering.requires.no.page.repetition.page.1.is.repeated", p));
             temp[p - 1] = true;
         }
-        Object copy[] = pages.toArray();
+        Object[] copy = pages.toArray();
         for (int k = 0; k < max; ++k) {
             pages.set(k, copy[order[k] - 1]);
         }

@@ -1,15 +1,15 @@
 /*
  * $Id: NestedTables.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.objects.tables.alternatives;
 
@@ -58,9 +58,9 @@ public class NestedTables {
             aTable.addCell("2.1", new Point(2,1));
             aTable.insertTable(secondTable, new Point(1,3));
             document.add(aTable);
-			document.add(new Paragraph("converted to PdfPTable:"));
-			aTable.setConvert2pdfptable(true);
-			document.add(aTable);
+            document.add(new Paragraph("converted to PdfPTable:"));
+            aTable.setConvert2pdfptable(true);
+            document.add(aTable);
             document.newPage();
             
             // example 2
@@ -79,9 +79,9 @@ public class NestedTables {
             aTable.insertTable(secondTable, new Point(1,3));
             aTable.insertTable(thirdTable, new Point(6,2));
             document.add(aTable); 
-			document.add(new Paragraph("converted to PdfPTable:"));
-			aTable.setConvert2pdfptable(true);
-			document.add(aTable);     
+            document.add(new Paragraph("converted to PdfPTable:"));
+            aTable.setConvert2pdfptable(true);
+            document.add(aTable);     
             document.newPage();  
             
             // example 3
@@ -100,12 +100,12 @@ public class NestedTables {
             aTable.insertTable(t2);
             aTable.addCell("new cell");
             document.add(aTable);    
-			document.add(new Paragraph("converted to PdfPTable:"));
-			aTable.setConvert2pdfptable(true);
-			document.add(aTable);
-			document.newPage();
-			
-			// relative column widths are preserved
+            document.add(new Paragraph("converted to PdfPTable:"));
+            aTable.setConvert2pdfptable(true);
+            document.add(aTable);
+            document.newPage();
+            
+            // relative column widths are preserved
             
             Table a = new Table( 2 );
             a.setWidths( new float[] { 85, 15 } );
@@ -128,9 +128,9 @@ public class NestedTables {
             c.insertTable(b, new Point(0,2) );
 
             document.add(c);
-			document.add(new Paragraph("converted to PdfPTable:"));
-			c.setConvert2pdfptable(true);
-			document.add(c);
+            document.add(new Paragraph("converted to PdfPTable:"));
+            c.setConvert2pdfptable(true);
+            document.add(c);
 
         }
         catch(DocumentException de) {

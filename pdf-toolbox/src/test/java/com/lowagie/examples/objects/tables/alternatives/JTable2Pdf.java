@@ -1,15 +1,15 @@
 /*
  * $Id: JTable2Pdf.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.objects.tables.alternatives;
 
@@ -38,7 +38,7 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class JTable2Pdf extends JFrame {
     private static final long serialVersionUID = 8461166420041411734L;
-	/** The JTable we will show in a Swing app and print to PDF. */
+    /** The JTable we will show in a Swing app and print to PDF. */
     private JTable table;
     
     /**
@@ -150,7 +150,7 @@ public class JTable2Pdf extends JFrame {
             cb.restoreState();
             
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             System.err.println(e.getMessage());
         }
         
@@ -163,18 +163,18 @@ public class JTable2Pdf extends JFrame {
     private void exit() {
         System.exit(0);
     }    
-	/**
-	 * A very simple PdfPTable example.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * A very simple PdfPTable example.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
         System.out.println("Printing a JTable");
         JTable2Pdf frame = new JTable2Pdf();
         frame.pack();
         frame.setVisible(true);
         frame.print();
         frame.dispose();
-	}
+    }
 }

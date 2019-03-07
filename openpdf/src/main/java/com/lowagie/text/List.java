@@ -66,17 +66,17 @@ import com.lowagie.text.factories.RomanAlphabetFactory;
  * </PRE></BLOCKQUOTE>
  *
  * The result of this code looks like this:
- *	<OL>
- *		<LI>
- *			First line
- *		</LI>
- *		<LI>
- *			The second line is longer to see what happens once the end of the line is reached. Will it start on a new line?
- *		</LI>
- *		<LI>
- *			Third line
- *		</LI>
- *	</OL>
+ *    <OL>
+ *        <LI>
+ *            First line
+ *        </LI>
+ *        <LI>
+ *            The second line is longer to see what happens once the end of the line is reached. Will it start on a new line?
+ *        </LI>
+ *        <LI>
+ *            Third line
+ *        </LI>
+ *    </OL>
  *
  * <B>Example 2:</B>
  * <BLOCKQUOTE><PRE>
@@ -86,39 +86,39 @@ import com.lowagie.text.factories.RomanAlphabetFactory;
  * </PRE></BLOCKQUOTE>
  *
  * The result of this code looks like this:
- *	<UL>
- *		<LI>
- *			This is an item
- *		</LI>
- *		<LI>
- *			This is another item
- *		</LI>
- *	</UL>
+ *    <UL>
+ *        <LI>
+ *            This is an item
+ *        </LI>
+ *        <LI>
+ *            This is another item
+ *        </LI>
+ *    </UL>
  *
- * @see		Element
- * @see		ListItem
+ * @see        Element
+ * @see        ListItem
  */
 
 public class List implements TextElementArray {
     
     // constants
-	
-	/** a possible value for the numbered parameter */
-	public static final boolean ORDERED = true;
-	/** a possible value for the numbered parameter */
-	public static final boolean UNORDERED = false;
-	/** a possible value for the lettered parameter */
-	public static final boolean NUMERICAL = false;
-	/** a possible value for the lettered parameter */
-	public static final boolean ALPHABETICAL = true;
-	/** a possible value for the lettered parameter */
-	public static final boolean UPPERCASE = false;
-	/** a possible value for the lettered parameter */
-	public static final boolean LOWERCASE = true;
-	
+    
+    /** a possible value for the numbered parameter */
+    public static final boolean ORDERED = true;
+    /** a possible value for the numbered parameter */
+    public static final boolean UNORDERED = false;
+    /** a possible value for the lettered parameter */
+    public static final boolean NUMERICAL = false;
+    /** a possible value for the lettered parameter */
+    public static final boolean ALPHABETICAL = true;
+    /** a possible value for the lettered parameter */
+    public static final boolean UPPERCASE = false;
+    /** a possible value for the lettered parameter */
+    public static final boolean LOWERCASE = true;
+    
     // member variables
-	
-	/** This is the <CODE>ArrayList</CODE> containing the different <CODE>ListItem</CODE>s. */
+    
+    /** This is the <CODE>ArrayList</CODE> containing the different <CODE>ListItem</CODE>s. */
     protected ArrayList list = new ArrayList();
     
     /** Indicates if the list has to be numbered. */
@@ -138,12 +138,12 @@ public class List implements TextElementArray {
     protected Chunk symbol = new Chunk("- ");
     /**
      * In case you are using numbered/lettered lists, this String is added before the number/letter.
-     * @since	iText 2.1.1
+     * @since    iText 2.1.1
      */
     protected String preSymbol = "";
     /**
-     * In case you are using numbered/lettered lists, this String is added after the number/letter.	
-     * @since	iText 2.1.1
+     * In case you are using numbered/lettered lists, this String is added after the number/letter.    
+     * @since    iText 2.1.1
      */
     protected String postSymbol = ". ";
     
@@ -163,28 +163,28 @@ public class List implements TextElementArray {
     
     /**
      * Constructs a <CODE>List</CODE> with a specific symbol indentation.
-     * @param	symbolIndent	the symbol indentation
-     * @since	iText 2.0.8
+     * @param    symbolIndent    the symbol indentation
+     * @since    iText 2.0.8
      */
     public List(float symbolIndent) {
-    	this.symbolIndent = symbolIndent;
+        this.symbolIndent = symbolIndent;
     }
     
     /**
      * Constructs a <CODE>List</CODE>.
-     * @param	numbered		a boolean
+     * @param    numbered        a boolean
      */
     public List(boolean numbered) {
-      	this(numbered, false);
+          this(numbered, false);
     }
         
     /**
      * Constructs a <CODE>List</CODE>.
-     * @param	numbered		a boolean
+     * @param    numbered        a boolean
      * @param lettered has the list to be 'numbered' with letters
      */
     public List(boolean numbered, boolean lettered) {
-    	this.numbered = numbered;
+        this.numbered = numbered;
         this.lettered = lettered;
         this.autoindent = true;
         this.alignindent = true;
@@ -197,8 +197,8 @@ public class List implements TextElementArray {
      * generating PDF-documents; it indicates the indentation of the listsymbol.
      * It is not important for HTML-documents.
      *
-     * @param	numbered		a boolean
-     * @param	symbolIndent	the indentation that has to be used for the listsymbol
+     * @param    numbered        a boolean
+     * @param    symbolIndent    the indentation that has to be used for the listsymbol
      */
     public List(boolean numbered, float symbolIndent) {
         this(numbered, false, symbolIndent);
@@ -222,8 +222,8 @@ public class List implements TextElementArray {
      * Processes the element by adding it (or the different parts) to an
      * <CODE>ElementListener</CODE>.
      *
-     * @param	listener	an <CODE>ElementListener</CODE>
-     * @return	<CODE>true</CODE> if the element was processed successfully
+     * @param    listener    an <CODE>ElementListener</CODE>
+     * @return    <CODE>true</CODE> if the element was processed successfully
      */
     public boolean process(ElementListener listener) {
         try {
@@ -240,7 +240,7 @@ public class List implements TextElementArray {
     /**
      * Gets the type of the text element.
      *
-     * @return	a type
+     * @return    a type
      */
     public int type() {
         return Element.LIST;
@@ -249,7 +249,7 @@ public class List implements TextElementArray {
     /**
      * Gets all the chunks in this element.
      *
-     * @return	an <CODE>ArrayList</CODE>
+     * @return    an <CODE>ArrayList</CODE>
      */
     public ArrayList getChunks() {
         ArrayList tmp = new ArrayList();
@@ -264,7 +264,7 @@ public class List implements TextElementArray {
     /**
      * Adds an <CODE>Object</CODE> to the <CODE>List</CODE>.
      *
-     * @param	o		the object to add.
+     * @param    o        the object to add.
      * @return true if adding the object succeeded
      */
     public boolean add(Object o) {
@@ -300,65 +300,65 @@ public class List implements TextElementArray {
     }
     
     // extra methods
-	
-	/** Makes sure all the items in the list have the same indentation. */
+    
+    /** Makes sure all the items in the list have the same indentation. */
     public void normalizeIndentation() {
         float max = 0;
-    	Element o;
+        Element o;
         for (Iterator i = list.iterator(); i.hasNext(); ) {
-        	o = (Element)i.next();
+            o = (Element)i.next();
             if (o instanceof ListItem) {
-            	max = Math.max(max, ((ListItem)o).getIndentationLeft());
+                max = Math.max(max, ((ListItem)o).getIndentationLeft());
             }
         }
         for (Iterator i = list.iterator(); i.hasNext(); ) {
-        	o = (Element)i.next();
+            o = (Element)i.next();
             if (o instanceof ListItem) {
-            	((ListItem)o).setIndentationLeft(max);
+                ((ListItem)o).setIndentationLeft(max);
             }
         }
     }
     
     // setters
 
-	/**
-	 * @param numbered the numbered to set
-	 */
-	public void setNumbered(boolean numbered) {
-		this.numbered = numbered;
-	}
+    /**
+     * @param numbered the numbered to set
+     */
+    public void setNumbered(boolean numbered) {
+        this.numbered = numbered;
+    }
 
-	/**
-	 * @param lettered the lettered to set
-	 */
-	public void setLettered(boolean lettered) {
-		this.lettered = lettered;
-	}
+    /**
+     * @param lettered the lettered to set
+     */
+    public void setLettered(boolean lettered) {
+        this.lettered = lettered;
+    }
 
-	/**
-	 * @param uppercase the uppercase to set
-	 */
-	public void setLowercase(boolean uppercase) {
-		this.lowercase = uppercase;
-	}
+    /**
+     * @param uppercase the uppercase to set
+     */
+    public void setLowercase(boolean uppercase) {
+        this.lowercase = uppercase;
+    }
 
-	/**
-	 * @param autoindent the autoindent to set
-	 */
-	public void setAutoindent(boolean autoindent) {
-		this.autoindent = autoindent;
-	}
-	/**
-	 * @param alignindent the alignindent to set
-	 */
-	public void setAlignindent(boolean alignindent) {
-		this.alignindent = alignindent;
-	}
+    /**
+     * @param autoindent the autoindent to set
+     */
+    public void setAutoindent(boolean autoindent) {
+        this.autoindent = autoindent;
+    }
+    /**
+     * @param alignindent the alignindent to set
+     */
+    public void setAlignindent(boolean alignindent) {
+        this.alignindent = alignindent;
+    }
     
     /**
      * Sets the number that has to come first in the list.
      *
-     * @param	first		a number
+     * @param    first        a number
      */
     public void setFirst(int first) {
         this.first = first;
@@ -367,7 +367,7 @@ public class List implements TextElementArray {
     /**
      * Sets the listsymbol.
      *
-     * @param	symbol		a <CODE>Chunk</CODE>
+     * @param    symbol        a <CODE>Chunk</CODE>
      */
     public void setListSymbol(Chunk symbol) {
         this.symbol = symbol;
@@ -378,7 +378,7 @@ public class List implements TextElementArray {
      * <P>
      * This is a shortcut for <CODE>setListSymbol(Chunk symbol)</CODE>.
      *
-     * @param	symbol		a <CODE>String</CODE>
+     * @param    symbol        a <CODE>String</CODE>
      */
     public void setListSymbol(String symbol) {
         this.symbol = new Chunk(symbol);
@@ -387,7 +387,7 @@ public class List implements TextElementArray {
     /**
      * Sets the indentation of this paragraph on the left side.
      *
-     * @param	indentation		the new indentation
+     * @param    indentation        the new indentation
      */
     public void setIndentationLeft(float indentation) {
         this.indentationLeft = indentation;
@@ -396,25 +396,25 @@ public class List implements TextElementArray {
     /**
      * Sets the indentation of this paragraph on the right side.
      *
-     * @param	indentation		the new indentation
+     * @param    indentation        the new indentation
      */
     public void setIndentationRight(float indentation) {
         this.indentationRight = indentation;
     }
 
-	/**
-	 * @param symbolIndent the symbolIndent to set
-	 */
-	public void setSymbolIndent(float symbolIndent) {
-		this.symbolIndent = symbolIndent;
-	}
+    /**
+     * @param symbolIndent the symbolIndent to set
+     */
+    public void setSymbolIndent(float symbolIndent) {
+        this.symbolIndent = symbolIndent;
+    }
     
     // methods to retrieve information
     
     /**
      * Gets all the items in the list.
      *
-     * @return	an <CODE>ArrayList</CODE> containing <CODE>ListItem</CODE>s.
+     * @return    an <CODE>ArrayList</CODE> containing <CODE>ListItem</CODE>s.
      */
     public ArrayList getItems() {
         return list;
@@ -423,7 +423,7 @@ public class List implements TextElementArray {
     /**
      * Gets the size of the list.
      *
-     * @return	a <CODE>size</CODE>
+     * @return    a <CODE>size</CODE>
      */
     public int size() {
         return list.size();
@@ -435,13 +435,13 @@ public class List implements TextElementArray {
      * @return <CODE>true</CODE> if the list is empty
      */
     public boolean isEmpty() {
-    	return list.isEmpty();
+        return list.isEmpty();
     }
 
     /**
      * Gets the leading of the first listitem.
      *
-     * @return	a <CODE>leading</CODE>
+     * @return    a <CODE>leading</CODE>
      */
     public float getTotalLeading() {
         if (list.size() < 1) {
@@ -455,7 +455,7 @@ public class List implements TextElementArray {
     
     /**
      * Checks if the list is numbered.
-     * @return	<CODE>true</CODE> if the list is numbered, <CODE>false</CODE> otherwise.
+     * @return    <CODE>true</CODE> if the list is numbered, <CODE>false</CODE> otherwise.
      */
     
     public boolean isNumbered() {
@@ -480,109 +480,109 @@ public class List implements TextElementArray {
     
     /**
      * Checks if the indentation of list items is done automatically.
-	 * @return the autoindent
-	 */
-	public boolean isAutoindent() {
-		return autoindent;
-	}
-	
-	/**
-	 * Checks if all the listitems should be aligned.
-	 * @return the alignindent
-	 */
-	public boolean isAlignindent() {
-		return alignindent;
-	}
+     * @return the autoindent
+     */
+    public boolean isAutoindent() {
+        return autoindent;
+    }
+    
+    /**
+     * Checks if all the listitems should be aligned.
+     * @return the alignindent
+     */
+    public boolean isAlignindent() {
+        return alignindent;
+    }
 
-	/**
+    /**
      * Gets the first number        .
      * @return a number
-	 */
-	public int getFirst() {
-		return first;
-	}
+     */
+    public int getFirst() {
+        return first;
+    }
 
-	/**
+    /**
      * Gets the Chunk containing the symbol.
      * @return a Chunk with a symbol
-	 */
-	public Chunk getSymbol() {
-		return symbol;
-	}
+     */
+    public Chunk getSymbol() {
+        return symbol;
+    }
 
-	/**
+    /**
      * Gets the indentation of this paragraph on the left side.
-     * @return	the indentation
-	 */
-	public float getIndentationLeft() {
-		return indentationLeft;
-	}
+     * @return    the indentation
+     */
+    public float getIndentationLeft() {
+        return indentationLeft;
+    }
 
-	/**
+    /**
      * Gets the indentation of this paragraph on the right side.
-     * @return	the indentation
-	 */
-	public float getIndentationRight() {
-		return indentationRight;
-	}
+     * @return    the indentation
+     */
+    public float getIndentationRight() {
+        return indentationRight;
+    }
 
-	/**
+    /**
      * Gets the symbol indentation.
      * @return the symbol indentation
-	 */
-	public float getSymbolIndent() {
-		return symbolIndent;
-	}
-	/**
-	 * @see com.lowagie.text.Element#isContent()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isContent() {
-		return true;
-	}
+     */
+    public float getSymbolIndent() {
+        return symbolIndent;
+    }
+    /**
+     * @see com.lowagie.text.Element#isContent()
+     * @since    iText 2.0.8
+     */
+    public boolean isContent() {
+        return true;
+    }
 
-	/**
-	 * @see com.lowagie.text.Element#isNestable()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isNestable() {
-		return true;
-	}
+    /**
+     * @see com.lowagie.text.Element#isNestable()
+     * @since    iText 2.0.8
+     */
+    public boolean isNestable() {
+        return true;
+    }
 
-	/**
-	 * Returns the String that is after a number or letter in the list symbol.
-	 * @return	the String that is after a number or letter in the list symbol
-	 * @since	iText 2.1.1
-	 */
-	public String getPostSymbol() {
-		return postSymbol;
-	}
+    /**
+     * Returns the String that is after a number or letter in the list symbol.
+     * @return    the String that is after a number or letter in the list symbol
+     * @since    iText 2.1.1
+     */
+    public String getPostSymbol() {
+        return postSymbol;
+    }
 
-	/**
-	 * Sets the String that has to be added after a number or letter in the list symbol.
-	 * @since	iText 2.1.1
-	 * @param	postSymbol the String that has to be added after a number or letter in the list symbol.
-	 */
-	public void setPostSymbol(String postSymbol) {
-		this.postSymbol = postSymbol;
-	}
+    /**
+     * Sets the String that has to be added after a number or letter in the list symbol.
+     * @since    iText 2.1.1
+     * @param    postSymbol the String that has to be added after a number or letter in the list symbol.
+     */
+    public void setPostSymbol(String postSymbol) {
+        this.postSymbol = postSymbol;
+    }
 
-	/**
-	 * Returns the String that is before a number or letter in the list symbol.
-	 * @return	the String that is before a number or letter in the list symbol
-	 * @since	iText 2.1.1
-	 */
-	public String getPreSymbol() {
-		return preSymbol;
-	}
+    /**
+     * Returns the String that is before a number or letter in the list symbol.
+     * @return    the String that is before a number or letter in the list symbol
+     * @since    iText 2.1.1
+     */
+    public String getPreSymbol() {
+        return preSymbol;
+    }
 
-	/**
-	 * Sets the String that has to be added before a number or letter in the list symbol.
-	 * @since	iText 2.1.1
-	 * @param	preSymbol the String that has to be added before a number or letter in the list symbol.
-	 */
-	public void setPreSymbol(String preSymbol) {
-		this.preSymbol = preSymbol;
-	}
+    /**
+     * Sets the String that has to be added before a number or letter in the list symbol.
+     * @since    iText 2.1.1
+     * @param    preSymbol the String that has to be added before a number or letter in the list symbol.
+     */
+    public void setPreSymbol(String preSymbol) {
+        this.preSymbol = preSymbol;
+    }
 
 }

@@ -63,13 +63,13 @@ import com.lowagie.text.Rectangle;
  */
 
 class PdfContents extends PdfStream {
-    
-    static final byte SAVESTATE[] = DocWriter.getISOBytes("q\n");
-    static final byte RESTORESTATE[] = DocWriter.getISOBytes("Q\n");
-    static final byte ROTATE90[] = DocWriter.getISOBytes("0 1 -1 0 ");
-    static final byte ROTATE180[] = DocWriter.getISOBytes("-1 0 0 -1 ");
-    static final byte ROTATE270[] = DocWriter.getISOBytes("0 -1 1 0 ");
-    static final byte ROTATEFINAL[] = DocWriter.getISOBytes(" cm\n");
+
+    static final byte[] SAVESTATE = DocWriter.getISOBytes("q\n");
+    static final byte[] RESTORESTATE = DocWriter.getISOBytes("Q\n");
+    static final byte[] ROTATE90 = DocWriter.getISOBytes("0 1 -1 0 ");
+    static final byte[] ROTATE180 = DocWriter.getISOBytes("-1 0 0 -1 ");
+    static final byte[] ROTATE270 = DocWriter.getISOBytes("0 -1 1 0 ");
+    static final byte[] ROTATEFINAL = DocWriter.getISOBytes(" cm\n");
     // constructor
     
 /**

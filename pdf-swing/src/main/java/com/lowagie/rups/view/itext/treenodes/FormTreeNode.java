@@ -29,45 +29,45 @@ import com.lowagie.text.pdf.PdfObject;
  * A FormTreeNode is a standard node in a FormTree.
  */
 public class FormTreeNode extends IconTreeNode {
-	
-	/** The corresponding tree node in the PdfTree. */
-	protected PdfObjectTreeNode object_node;
-	
-	/**
-	 * Creates the root node of the FormTree.
-	 */
-	public FormTreeNode() {
-		super("form.png", "Form");
-	}
-	
-	/**
-	 * Creates a node corresponding with a node in the PdfTree.
-	 * @param	node	a corresponding node
-	 */
-	public FormTreeNode(PdfObjectTreeNode node) {
-		super("form.png");
-		this.object_node = node;
-		if (node.isDictionary()) {
-			PdfDictionary dict = (PdfDictionary)node.getPdfObject();
-			PdfObject fieldname = dict.get(PdfName.T);
-			if (fieldname != null) {
-				this.setUserObject(fieldname);
-			}
-			else {
-				this.setUserObject("unnamed field");
-			}
-		}
-	}
+    
+    /** The corresponding tree node in the PdfTree. */
+    protected PdfObjectTreeNode object_node;
+    
+    /**
+     * Creates the root node of the FormTree.
+     */
+    public FormTreeNode() {
+        super("form.png", "Form");
+    }
+    
+    /**
+     * Creates a node corresponding with a node in the PdfTree.
+     * @param    node    a corresponding node
+     */
+    public FormTreeNode(PdfObjectTreeNode node) {
+        super("form.png");
+        this.object_node = node;
+        if (node.isDictionary()) {
+            PdfDictionary dict = (PdfDictionary)node.getPdfObject();
+            PdfObject fieldname = dict.get(PdfName.T);
+            if (fieldname != null) {
+                this.setUserObject(fieldname);
+            }
+            else {
+                this.setUserObject("unnamed field");
+            }
+        }
+    }
 
     /**
      * Gets the node in the PdfTree that corresponds with this
      * FormTreeNode.
-     * @return	a PdfObjectTreeNode in the PdfTree
+     * @return    a PdfObjectTreeNode in the PdfTree
      */
-	public PdfObjectTreeNode getCorrespondingPdfObjectNode() {
-		return object_node;
-	}
+    public PdfObjectTreeNode getCorrespondingPdfObjectNode() {
+        return object_node;
+    }
 
-	/** A serial version UID. */
-	private static final long serialVersionUID = 7800080437550790989L;
+    /** A serial version UID. */
+    private static final long serialVersionUID = 7800080437550790989L;
 }

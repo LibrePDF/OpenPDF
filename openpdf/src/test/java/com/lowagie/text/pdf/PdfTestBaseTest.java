@@ -5,13 +5,13 @@ import java.io.ByteArrayOutputStream;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class PdfTestBaseTest {
 
     @Test
-    public void testCreatePdfStream() throws DocumentException {
+    void testCreatePdfStream() throws DocumentException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         Document pdf = null;
         try {
@@ -25,9 +25,9 @@ public class PdfTestBaseTest {
                 pdf.close();
         }
         final byte[] bytes = stream.toByteArray();
-        Assert.assertNotNull("There should be some PDF-bytes there.", bytes);
+        Assertions.assertNotNull(bytes, "There should be some PDF-bytes there.");
         String header = new String(bytes, 0, 5);
-        Assert.assertEquals("This is no PDF.", "%PDF-", header);
+        Assertions.assertEquals(header, "%PDF-", "This is no PDF.");
     }
 
 }

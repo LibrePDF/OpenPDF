@@ -29,30 +29,30 @@ import javax.swing.ImageIcon;
  * Class that fetches the icons in com.lowagie.trapeze.icons.
  */
 public class IconFetcher {
-	
-	/** Cache with icons. */
-	protected static HashMap<String, Icon> cache = new HashMap<String, Icon>();
-	
-	/**
-	 * Gets an Icon with a specific name.
-	 * @param	filename	the filename of the Icon.
-	 * @return	an Icon
-	 */
-	public static Icon getIcon(String filename) {
-		if (filename == null) {
-			return null;
-		}
-		Icon icon = cache.get(filename);
-		if (icon == null) {
-			try {
-				icon = new ImageIcon(IconFetcher.class.getResource(filename));
-				cache.put(filename, icon);
-			}
-			catch(Exception e) {
-				System.err.println("Can't find file: " + filename);
-				return null;
-			}
-		}
-		return icon;
-	}
+    
+    /** Cache with icons. */
+    protected static HashMap<String, Icon> cache = new HashMap<String, Icon>();
+    
+    /**
+     * Gets an Icon with a specific name.
+     * @param    filename    the filename of the Icon.
+     * @return    an Icon
+     */
+    public static Icon getIcon(String filename) {
+        if (filename == null) {
+            return null;
+        }
+        Icon icon = cache.get(filename);
+        if (icon == null) {
+            try {
+                icon = new ImageIcon(IconFetcher.class.getResource(filename));
+                cache.put(filename, icon);
+            }
+            catch(Exception e) {
+                System.err.println("Can't find file: " + filename);
+                return null;
+            }
+        }
+        return icon;
+    }
 }

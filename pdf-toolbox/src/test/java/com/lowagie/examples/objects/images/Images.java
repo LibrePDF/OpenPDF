@@ -1,15 +1,15 @@
 /*
  * $Id: Images.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.objects.images;
 
@@ -29,7 +29,7 @@ public class Images {
     
     /**
      * General Images example
-     * @param args	no arguments needed
+     * @param args    no arguments needed
      */
     public static void main(String[] args) {
         
@@ -64,8 +64,8 @@ public class Images {
             Image wmf = Image.getInstance("iText.wmf");
             document.add(wmf);
             document.add(new Paragraph("iText.tif"));
-            Image tiff = Image.getInstance("iText.tif");
-            document.add(tiff);
+            Image tif = Image.getInstance("iText.tif");
+            document.add(tif);
         }
         catch(DocumentException de) {
             System.err.println(de.getMessage());

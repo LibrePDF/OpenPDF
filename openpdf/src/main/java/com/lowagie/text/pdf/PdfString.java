@@ -142,7 +142,7 @@ public class PdfString extends PdfObject {
      * @param os The <CODE>OutputStream</CODE> to write the bytes to.
      */
     public void toPdf(PdfWriter writer, OutputStream os) throws IOException {
-        byte b[] = getBytes();
+        byte[] b = getBytes();
         PdfEncryption crypto = null;
         if (writer != null)
             crypto = writer.getEncryption();

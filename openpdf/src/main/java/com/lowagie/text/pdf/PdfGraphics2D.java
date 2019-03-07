@@ -159,9 +159,9 @@ public class PdfGraphics2D extends Graphics2D {
 
     // Added by Jurij Bilas
     protected boolean underline;          // indicates if the font style is underlined
-      
-    protected PdfGState fillGState[] = new PdfGState[256];
-    protected PdfGState strokeGState[] = new PdfGState[256];
+
+    protected PdfGState[] fillGState = new PdfGState[256];
+    protected PdfGState[] strokeGState = new PdfGState[256];
     protected int currentFillGState = 255;
     protected int currentStrokeGState = 255;
     
@@ -170,14 +170,14 @@ public class PdfGraphics2D extends Graphics2D {
     private boolean convertImagesToJPEG = false;
     private float jpegQuality = .95f;
 
-	// Added by Alexej Suchov
-	private float alpha;
+    // Added by Alexej Suchov
+    private float alpha;
 
-	// Added by Alexej Suchov
-	private Composite composite;
+    // Added by Alexej Suchov
+    private Composite composite;
 
-	// Added by Alexej Suchov
-	private Paint realPaint;
+    // Added by Alexej Suchov
+    private Paint realPaint;
 
     private PdfGraphics2D() {
         dg2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -371,7 +371,7 @@ public class PdfGraphics2D extends Graphics2D {
 //            drawGlyphVector(this.font.createGlyphVector(getFontRenderContext(), s), x, y);
         }
         else {
-        	boolean restoreTextRenderingMode = false;
+            boolean restoreTextRenderingMode = false;
             AffineTransform at = getTransform();
             AffineTransform at2 = getTransform();
             at2.translate(x, y);
@@ -416,7 +416,7 @@ public class PdfGraphics2D extends Graphics2D {
                                      : fontTextAttributeWidth;
             if (!TextAttribute.WIDTH_REGULAR.equals(fontTextAttributeWidth))
                 cb.setHorizontalScaling(100.0f / fontTextAttributeWidth.floatValue());
-			
+            
             // Check if we need to simulate a bold font.
             // Do nothing if the BaseFont is already bold. This test is not foolproof but it will work most of the times.
             if (baseFont.getPostscriptFontName().toLowerCase(Locale.ROOT).indexOf("bold") < 0) { 
@@ -587,55 +587,55 @@ public class PdfGraphics2D extends Graphics2D {
     }
     
     /**
-	 * Method contributed by Alexej Suchov
+     * Method contributed by Alexej Suchov
      * @see Graphics2D#setComposite(Composite)
      */
     public void setComposite(Composite comp) {
         
-		if (comp instanceof AlphaComposite) {
+        if (comp instanceof AlphaComposite) {
 
-			AlphaComposite composite = (AlphaComposite) comp;
+            AlphaComposite composite = (AlphaComposite) comp;
 
-			if (composite.getRule() == 3) {
+            if (composite.getRule() == 3) {
 
-				alpha = composite.getAlpha();
-				this.composite = composite;
+                alpha = composite.getAlpha();
+                this.composite = composite;
 
-				if (realPaint != null && (realPaint instanceof Color)) {
+                if (realPaint != null && (realPaint instanceof Color)) {
 
-					Color c = (Color) realPaint;
-					paint = new Color(c.getRed(), c.getGreen(), c.getBlue(),
-							(int) (c.getAlpha() * alpha));
-				}
-				return;
-			}
-		}
+                    Color c = (Color) realPaint;
+                    paint = new Color(c.getRed(), c.getGreen(), c.getBlue(),
+                            (int) (c.getAlpha() * alpha));
+                }
+                return;
+            }
+        }
 
-		this.composite = comp;
-		alpha = 1.0F;
+        this.composite = comp;
+        alpha = 1.0F;
 
     }
     
     /**
-	 * Method contributed by Alexej Suchov
+     * Method contributed by Alexej Suchov
      * @see Graphics2D#setPaint(Paint)
      */
     public void setPaint(Paint paint) {
         if (paint == null)
             return;
         this.paint = paint;
-		realPaint = paint;
+        realPaint = paint;
 
-		if ((composite instanceof AlphaComposite) && (paint instanceof Color)) {
-			
-			AlphaComposite co = (AlphaComposite) composite;
-			
-			if (co.getRule() == 3) {
-				Color c = (Color) paint;
-				this.paint = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (c.getAlpha() * alpha));
-				realPaint = paint;
-			}
-		}
+        if ((composite instanceof AlphaComposite) && (paint instanceof Color)) {
+            
+            AlphaComposite co = (AlphaComposite) composite;
+            
+            if (co.getRule() == 3) {
+                Color c = (Color) paint;
+                this.paint = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (c.getAlpha() * alpha));
+                realPaint = paint;
+            }
+        }
 
     }
 
@@ -644,7 +644,7 @@ public class PdfGraphics2D extends Graphics2D {
             return stroke;
         BasicStroke st = (BasicStroke)stroke;
         float scale = (float)Math.sqrt(Math.abs(transform.getDeterminant()));
-        float dash[] = st.getDashArray();
+        float[] dash = st.getDashArray();
         if (dash != null) {
             for (int k = 0; k < dash.length; ++k)
                 dash[k] *= scale;
@@ -704,7 +704,7 @@ public class PdfGraphics2D extends Graphics2D {
             makeDash = true;
         }
         if (makeDash) {
-            float dash[] = nStroke.getDashArray();
+            float[] dash = nStroke.getDashArray();
             if (dash == null)
                 cb.setLiteral("[]0 d\n");
             else {
@@ -736,17 +736,17 @@ public class PdfGraphics2D extends Graphics2D {
      * @param arg1
      */
     public void setRenderingHint(Key arg0, Object arg1) {
-    	 if (arg1 != null) {
-         	rhints.put(arg0, arg1);
+         if (arg1 != null) {
+             rhints.put(arg0, arg1);
          } else {
-        	 if (arg0 instanceof HyperLinkKey)
-        	 {
-        		 rhints.put(arg0, HyperLinkKey.VALUE_HYPERLINKKEY_OFF);
-        	 }
-        	 else
-        	 {
-        		 rhints.remove(arg0);
-        	 }
+             if (arg0 instanceof HyperLinkKey)
+             {
+                 rhints.put(arg0, HyperLinkKey.VALUE_HYPERLINKKEY_OFF);
+             }
+             else
+             {
+                 rhints.remove(arg0);
+             }
          }
     }
     
@@ -847,7 +847,7 @@ public class PdfGraphics2D extends Graphics2D {
     }
     
     /**
-	 * Method contributed by Alexej Suchov
+     * Method contributed by Alexej Suchov
      * @see Graphics2D#getPaint()
      */
     public Paint getPaint() {
@@ -856,7 +856,7 @@ public class PdfGraphics2D extends Graphics2D {
         } else {
             return paint;
         }
-	}
+    }
     
     /**
      * @see Graphics2D#getComposite()
@@ -1321,7 +1321,7 @@ public class PdfGraphics2D extends Graphics2D {
     ///////////////////////////////////////////////
     //
     //
-    //		implementation specific methods
+    //        implementation specific methods
     //
     //
     
@@ -1482,7 +1482,7 @@ public class PdfGraphics2D extends Graphics2D {
             cb.addImage(image, (float)mx[0], (float)mx[1], (float)mx[2], (float)mx[3], (float)mx[4], (float)mx[5]);
             Object url = getRenderingHint(HyperLinkKey.KEY_INSTANCE);
             if (url != null && !url.equals(HyperLinkKey.VALUE_HYPERLINKKEY_OFF)) {
-            	PdfAction action = new  PdfAction(url.toString());
+                PdfAction action = new  PdfAction(url.toString());
                 cb.setAction(action, (float)mx[4], (float)mx[5], (float)(mx[0]+mx[4]), (float)(mx[3]+mx[5]));
             }
         } catch (Exception ex) {
@@ -1616,16 +1616,16 @@ public class PdfGraphics2D extends Graphics2D {
                 pattern.addImage(image);
 
                 if (fill) {
-                	if (currentFillGState != 255){
-                		currentFillGState = 255;
-                		PdfGState gs = fillGState[255];
-						if (gs == null) {
-							gs = new PdfGState();
-							gs.setFillOpacity(1);
-							fillGState[255] = gs;
-						}
-						cb.setGState(gs);
-					}
+                    if (currentFillGState != 255){
+                        currentFillGState = 255;
+                        PdfGState gs = fillGState[255];
+                        if (gs == null) {
+                            gs = new PdfGState();
+                            gs.setFillOpacity(1);
+                            fillGState[255] = gs;
+                        }
+                        cb.setGState(gs);
+                    }
                     cb.setPatternFill(pattern);
                 }
                 else {
@@ -1655,29 +1655,29 @@ public class PdfGraphics2D extends Graphics2D {
         
     static private class FakeComponent extends Component {
 
-		private static final long serialVersionUID = 6450197945596086638L;
+        private static final long serialVersionUID = 6450197945596086638L;
     }
 
     /**
      * @since 2.0.8
      */
     public static class HyperLinkKey extends RenderingHints.Key
-	{
-	 	public static final HyperLinkKey KEY_INSTANCE = new HyperLinkKey(9999);
-	 	public static final Object VALUE_HYPERLINKKEY_OFF = "0";
-	 	
-		protected HyperLinkKey(int arg0) {
-			super(arg0);
-		}
-		
-		public boolean isCompatibleValue(Object val)
-		{
-			return true;
-		}
-		public String toString()
-		{
-			return "HyperLinkKey";
-		}
-	}
+    {
+         public static final HyperLinkKey KEY_INSTANCE = new HyperLinkKey(9999);
+         public static final Object VALUE_HYPERLINKKEY_OFF = "0";
+         
+        protected HyperLinkKey(int arg0) {
+            super(arg0);
+        }
+        
+        public boolean isCompatibleValue(Object val)
+        {
+            return true;
+        }
+        public String toString()
+        {
+            return "HyperLinkKey";
+        }
+    }
 
 }

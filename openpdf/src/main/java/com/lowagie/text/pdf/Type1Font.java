@@ -67,10 +67,11 @@ import com.lowagie.text.pdf.fonts.FontsResourceAnchor;
 class Type1Font extends BaseFont
 {
     private static FontsResourceAnchor resourceAnchor;
-    
-    /** The PFB file if the input was made with a <CODE>byte</CODE> array.
-     */    
-    protected byte pfb[];
+
+    /**
+     * The PFB file if the input was made with a <CODE>byte</CODE> array.
+     */
+    protected byte[] pfb;
 /** The Postscript font name.
  */
     private String FontName;
@@ -155,10 +156,11 @@ class Type1Font extends BaseFont
 /** <CODE>true</CODE> if this font is one of the 14 built in fonts.
  */
     private boolean builtinFont = false;
-/** Types of records in a PFB file. ASCII is 1 and BINARY is 2.
- *  They have to appear in the PFB file in this sequence.
- */
-    private static final int PFB_TYPES[] = {1, 2, 1};
+    /**
+     * Types of records in a PFB file. ASCII is 1 and BINARY is 2.
+     * They have to appear in the PFB file in this sequence.
+     */
+    private static final int[] PFB_TYPES = {1, 2, 1};
     
     /** Creates a new Type1 font.
      * @param ttfAfm the AFM file if the input is made with a <CODE>byte</CODE> array
@@ -168,10 +170,10 @@ class Type1Font extends BaseFont
      * @param emb true if the font is to be embedded in the PDF
      * @throws DocumentException the AFM file is invalid
      * @throws IOException the AFM file could not be read
-     * @since	2.1.5
+     * @since    2.1.5
      */
-    Type1Font(String afmFile, String enc, boolean emb, byte ttfAfm[], byte pfb[], boolean forceRead)
-    	throws DocumentException, IOException {
+    Type1Font(String afmFile, String enc, boolean emb, byte[] ttfAfm, byte[] pfb, boolean forceRead)
+        throws DocumentException, IOException {
         if (emb && ttfAfm != null && pfb == null)
             throw new DocumentException(MessageLocalization.getComposedMessage("two.byte.arrays.are.needed.if.the.type1.font.is.embedded"));
         if (emb && ttfAfm != null)
@@ -185,7 +187,7 @@ class Type1Font extends BaseFont
         if (BuiltinFonts14.containsKey(afmFile)) {
             embedded = false;
             builtinFont = true;
-            byte buf[] = new byte[1024];
+            byte[] buf = new byte[1024];
             try {
                 if (resourceAnchor == null)
                     resourceAnchor = new FontsResourceAnchor();
@@ -291,7 +293,7 @@ class Type1Font extends BaseFont
  * @return the width of the char
  */
     int getRawWidth(int c, String name) {
-        Object metrics[];
+        Object[] metrics;
         if (name == null) { // font specific
             metrics = (Object[])CharMetrics.get(new Integer(c));
         }
@@ -320,7 +322,7 @@ class Type1Font extends BaseFont
         String second = GlyphList.unicodeToName(char2);
         if (second == null)
             return 0;
-        Object obj[] = (Object[])KernPairs.get(first);
+        Object[] obj = (Object[]) KernPairs.get(first);
         if (obj == null)
             return 0;
         for (int k = 0; k < obj.length; k += 2) {
@@ -407,7 +409,7 @@ class Type1Font extends BaseFont
             Integer C = new Integer(-1);
             Integer WX = new Integer(250);
             String N = "";
-            int B[] = null;
+            int[] B = null;
 
             tok = new StringTokenizer(line, ";");
             while (tok.hasMoreTokens())
@@ -429,7 +431,7 @@ class Type1Font extends BaseFont
                                          Integer.parseInt(tokc.nextToken())};
                 }
             }
-            Object metrics[] = new Object[]{C, WX, N, B};
+            Object[] metrics = new Object[]{C, WX, N, B};
             if (C.intValue() >= 0)
                 CharMetrics.put(C, metrics);
             CharMetrics.put(N, metrics);
@@ -468,13 +470,13 @@ class Type1Font extends BaseFont
                 String first = tok.nextToken();
                 String second = tok.nextToken();
                 Integer width = new Integer((int)Float.parseFloat(tok.nextToken()));
-                Object relates[] = (Object[])KernPairs.get(first);
+                Object[] relates = (Object[]) KernPairs.get(first);
                 if (relates == null)
                     KernPairs.put(first, new Object[]{second, width});
                 else
                 {
                     int n = relates.length;
-                    Object relates2[] = new Object[n + 2];
+                    Object[] relates2 = new Object[n + 2];
                     System.arraycopy(relates, 0, relates2, 0, n);
                     relates2[n] = second;
                     relates2[n + 1] = width;
@@ -511,8 +513,8 @@ class Type1Font extends BaseFont
             else
                 rf = new RandomAccessFileOrArray(pfb);
             int fileLength = rf.length();
-            byte st[] = new byte[fileLength - 18];
-            int lengths[] = new int[3];
+            byte[] st = new byte[fileLength - 18];
+            int[] lengths = new int[3];
             int bytePtr = 0;
             for (int k = 0; k < 3; ++k) {
                 if (rf.read() != 0x80)
@@ -590,7 +592,7 @@ class Type1Font extends BaseFont
      * @param shortTag a 256 bytes long <CODE>byte</CODE> array where each unused byte is represented by 0
      * @param fontDescriptor the indirect reference to a PdfDictionary containing the font descriptor or <CODE>null</CODE>
      */
-    private PdfDictionary getFontBaseType(PdfIndirectReference fontDescriptor, int firstChar, int lastChar, byte shortTag[])
+    private PdfDictionary getFontBaseType(PdfIndirectReference fontDescriptor, int firstChar, int lastChar, byte[] shortTag)
     {
         PdfDictionary dic = new PdfDictionary(PdfName.FONT);
         dic.put(PdfName.SUBTYPE, PdfName.TYPE1);
@@ -648,10 +650,10 @@ class Type1Font extends BaseFont
      * @throws IOException on error
      * @throws DocumentException error in generating the object
      */
-    void writeFont(PdfWriter writer, PdfIndirectReference ref, Object params[]) throws DocumentException, IOException {
+    void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException, IOException {
         int firstChar = ((Integer)params[0]).intValue();
         int lastChar = ((Integer)params[1]).intValue();
-        byte shortTag[] = (byte[])params[2];
+        byte[] shortTag = (byte[]) params[2];
         boolean subsetp = ((Boolean)params[3]).booleanValue() && subset;
         if (!subsetp) {
             firstChar = 0;
@@ -789,7 +791,7 @@ class Type1Font extends BaseFont
         String second = GlyphList.unicodeToName(char2);
         if (second == null)
             return false;
-        Object obj[] = (Object[])KernPairs.get(first);
+        Object[] obj = (Object[]) KernPairs.get(first);
         if (obj == null) {
             obj = new Object[]{second, new Integer(kern)};
             KernPairs.put(first, obj);
@@ -802,7 +804,7 @@ class Type1Font extends BaseFont
             }
         }
         int size = obj.length;
-        Object obj2[] = new Object[size + 2];
+        Object[] obj2 = new Object[size + 2];
         System.arraycopy(obj, 0, obj2, 0, size);
         obj2[size] = second;
         obj2[size + 1] = new Integer(kern);
@@ -811,7 +813,7 @@ class Type1Font extends BaseFont
     }
     
     protected int[] getRawCharBBox(int c, String name) {
-        Object metrics[];
+        Object[] metrics;
         if (name == null) { // font specific
             metrics = (Object[])CharMetrics.get(new Integer(c));
         }

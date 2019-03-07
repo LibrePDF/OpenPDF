@@ -46,12 +46,14 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.ExceptionConverter;
+
 import java.io.ByteArrayOutputStream;
 import java.security.PrivateKey;
 import java.security.cert.CRL;
 import java.security.cert.Certificate;
 
-import com.lowagie.text.ExceptionConverter;
+
 
 /**
  * A signature dictionary representation for the standard filters.
@@ -74,8 +76,8 @@ public abstract class PdfSigGenericPKCS extends PdfSignature {
      */    
     protected String   name;
 
-    private byte externalDigest[];
-    private byte externalRSAdata[];
+    private byte[] externalDigest;
+    private byte[] externalRSAdata;
     private String digestEncryptionAlgorithm;
 
     /**
@@ -127,7 +129,7 @@ public abstract class PdfSigGenericPKCS extends PdfSignature {
      * is also <CODE>null</CODE>. If the <CODE>digest</CODE> is not <CODE>null</CODE>
      * then it may be "RSA" or "DSA"
      */    
-    public void setExternalDigest(byte digest[], byte RSAdata[], String digestEncryptionAlgorithm) {
+    public void setExternalDigest(byte[] digest, byte[] RSAdata, String digestEncryptionAlgorithm) {
         externalDigest = digest;
         externalRSAdata = RSAdata;
         this.digestEncryptionAlgorithm = digestEncryptionAlgorithm;

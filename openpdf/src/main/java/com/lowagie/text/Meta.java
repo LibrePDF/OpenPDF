@@ -60,15 +60,15 @@ import java.util.ArrayList;
  * <CODE>Meta</CODE> is reserved for: Subject, Keywords, Author, Title, Producer
  * and Creationdate information.
  *
- * @see		Element
- * @see		Header
+ * @see        Element
+ * @see        Header
  */
 
 public class Meta implements Element {
     
     // membervariables
     
-	/** This is the type of Meta-information this object contains. */
+    /** This is the type of Meta-information this object contains. */
     private int type;
     
     /** This is the content of the Meta-information. */
@@ -79,8 +79,8 @@ public class Meta implements Element {
     /**
      * Constructs a <CODE>Meta</CODE>.
      *
-     * @param	type		the type of meta-information
-     * @param	content		the content
+     * @param    type        the type of meta-information
+     * @param    content        the content
      */
     Meta(int type, String content) {
         this.type = type;
@@ -90,8 +90,8 @@ public class Meta implements Element {
     /**
      * Constructs a <CODE>Meta</CODE>.
      *
-     * @param	tag		    the tagname of the meta-information
-     * @param	content		the content
+     * @param    tag            the tagname of the meta-information
+     * @param    content        the content
      */
     public Meta(String tag, String content) {
         this.type = Meta.getType(tag);
@@ -104,8 +104,8 @@ public class Meta implements Element {
      * Processes the element by adding it (or the different parts) to a
      * <CODE>ElementListener</CODE>.
      *
-     * @param	listener		the <CODE>ElementListener</CODE>
-     * @return	<CODE>true</CODE> if the element was processed successfully
+     * @param    listener        the <CODE>ElementListener</CODE>
+     * @return    <CODE>true</CODE> if the element was processed successfully
      */
     public boolean process(ElementListener listener) {
         try {
@@ -119,7 +119,7 @@ public class Meta implements Element {
     /**
      * Gets the type of the text element.
      *
-     * @return	a type
+     * @return    a type
      */
     public int type() {
         return type;
@@ -128,35 +128,35 @@ public class Meta implements Element {
     /**
      * Gets all the chunks in this element.
      *
-     * @return	an <CODE>ArrayList</CODE>
+     * @return    an <CODE>ArrayList</CODE>
      */
     public ArrayList getChunks() {
         return new ArrayList();
     }
     
-	/**
-	 * @see com.lowagie.text.Element#isContent()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isContent() {
-		return false;
-	}
+    /**
+     * @see com.lowagie.text.Element#isContent()
+     * @since    iText 2.0.8
+     */
+    public boolean isContent() {
+        return false;
+    }
 
-	/**
-	 * @see com.lowagie.text.Element#isNestable()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isNestable() {
-		return false;
-	}
+    /**
+     * @see com.lowagie.text.Element#isNestable()
+     * @since    iText 2.0.8
+     */
+    public boolean isNestable() {
+        return false;
+    }
     
     // methods
     
     /**
      * appends some text to this <CODE>Meta</CODE>.
      *
-     * @param	string      a <CODE>String</CODE>
-     * @return	a <CODE>StringBuffer</CODE>
+     * @param    string      a <CODE>String</CODE>
+     * @return    a <CODE>StringBuffer</CODE>
      */
     public StringBuffer append(String string) {
         return content.append(string);
@@ -164,19 +164,19 @@ public class Meta implements Element {
     
     // methods to retrieve information
 
-	/**
+    /**
      * Returns the content of the meta information.
      *
-     * @return	a <CODE>String</CODE>
+     * @return    a <CODE>String</CODE>
      */
     public String getContent() {
         return content.toString();
     }
 
-	/**
+    /**
      * Returns the name of the meta information.
      *
-     * @return	a <CODE>String</CODE>
+     * @return    a <CODE>String</CODE>
      */
     
     public String getName() {
@@ -202,7 +202,7 @@ public class Meta implements Element {
      * Returns the name of the meta information.
      * 
      * @param tag iText tag for meta information
-     * @return	the Element value corresponding with the given tag
+     * @return    the Element value corresponding with the given tag
      */
     public static int getType(String tag) {
         if (ElementTags.SUBJECT.equals(tag)) {

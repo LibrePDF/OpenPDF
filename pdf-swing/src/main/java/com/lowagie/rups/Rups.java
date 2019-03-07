@@ -32,24 +32,24 @@ import com.lowagie.rups.controller.RupsController;
  * of a PDF file.
  */
 public class Rups {
-	
-	// main method
-	/**
-	 * Main method. Starts the RUPS application.
-	 * @param	args	no arguments needed
-	 */
-	public static void main(String[] args) {
-		startApplication();
-	}
-	
-	// methods
-	
+    
+    // main method
+    /**
+     * Main method. Starts the RUPS application.
+     * @param    args    no arguments needed
+     */
+    public static void main(String[] args) {
+        startApplication();
+    }
+    
+    // methods
+    
     /**
      * Initializes the main components of the Rups application.
      */
     public static void startApplication() {
-    	// creates a JFrame
-    	JFrame frame = new JFrame();
+        // creates a JFrame
+        JFrame frame = new JFrame();
         // defines the size and location
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize((int)(screen.getWidth() * .90), (int)(screen.getHeight() * .90));
@@ -62,12 +62,12 @@ public class Rups {
         RupsController controller = new RupsController(frame.getSize());
         frame.setJMenuBar(controller.getMenuBar());
         frame.getContentPane().add(controller.getMasterComponent(), java.awt.BorderLayout.CENTER);
-		frame.setVisible(true);
+        frame.setVisible(true);
     }
-	
-	// other member variables
-	
-	/** Serial Version UID. */
-	private static final long serialVersionUID = 4386633640535735848L;
+    
+    // other member variables
+    
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 4386633640535735848L;
 
 }

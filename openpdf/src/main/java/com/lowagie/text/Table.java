@@ -52,6 +52,8 @@
 
 package com.lowagie.text;
 
+import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.WithHorizontalAlignment;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+
 
 /**
  * A <CODE>Table</CODE> is a <CODE>Rectangle</CODE> that contains <CODE>Cell</CODE>s,
@@ -151,7 +154,7 @@ import com.lowagie.text.pdf.PdfPTable;
  * @see         Cell
  */
 
-public class Table extends Rectangle implements LargeElement {
+public class Table extends Rectangle implements LargeElement, WithHorizontalAlignment {
     
     // membervariables
     
@@ -211,13 +214,13 @@ public class Table extends Rectangle implements LargeElement {
     
     /**
      * Indicates if this is the first time the section was added.
-     * @since	iText 2.0.8
+     * @since    iText 2.0.8
      */
     protected boolean notAddedYet = true;
     
     /**
      * Indicates if the PdfPTable is complete once added to the document.
-     * @since	iText 2.0.8
+     * @since    iText 2.0.8
      */
     protected boolean complete = true;
     
@@ -272,23 +275,23 @@ public class Table extends Rectangle implements LargeElement {
      * Copy constructor (shallow copy).
      */
     public Table(Table t) {
-    	super(0, 0, 0, 0);
-    	this.cloneNonPositionParameters(t);
-    	this.columns = t.columns;
-    	this.rows = t.rows;
-    	this.curPosition = t.curPosition;
-    	this.defaultCell = t.defaultCell;
-    	this.lastHeaderRow = t.lastHeaderRow;
-    	this.alignment = t.alignment;
-    	this.cellpadding = t.cellpadding;
-    	this.cellspacing = t.cellspacing;
-    	this.width = t.width;
-    	this.widths = t.widths;
-    	this.autoFillEmptyCells = t.autoFillEmptyCells;
-    	this.tableFitsPage = t.tableFitsPage;
-    	this.cellsFitPage = t.cellsFitPage;
-    	this.offset = t.offset;
-    	this.convert2pdfptable = t.convert2pdfptable;
+        super(0, 0, 0, 0);
+        this.cloneNonPositionParameters(t);
+        this.columns = t.columns;
+        this.rows = t.rows;
+        this.curPosition = t.curPosition;
+        this.defaultCell = t.defaultCell;
+        this.lastHeaderRow = t.lastHeaderRow;
+        this.alignment = t.alignment;
+        this.cellpadding = t.cellpadding;
+        this.cellspacing = t.cellspacing;
+        this.width = t.width;
+        this.widths = t.widths;
+        this.autoFillEmptyCells = t.autoFillEmptyCells;
+        this.tableFitsPage = t.tableFitsPage;
+        this.cellsFitPage = t.cellsFitPage;
+        this.offset = t.offset;
+        this.convert2pdfptable = t.convert2pdfptable;
     }
     
     // implementation of the Element-methods
@@ -328,17 +331,17 @@ public class Table extends Rectangle implements LargeElement {
         return new ArrayList();
     }
 
-	/**
-	 * @see com.lowagie.text.Element#isNestable()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isNestable() {
-		return true;
-	}
+    /**
+     * @see com.lowagie.text.Element#isNestable()
+     * @since    iText 2.0.8
+     */
+    public boolean isNestable() {
+        return true;
+    }
     
     // getters and setters
 
-	/**
+    /**
      * Gets the number of columns.
      *
      * @return    a value
@@ -384,7 +387,7 @@ public class Table extends Rectangle implements LargeElement {
         defaultCell = value;
     }
 
-	/**
+    /**
      * Gets the last number of the rows that contain headers.
      *  
      * @return a rownumber
@@ -412,7 +415,7 @@ public class Table extends Rectangle implements LargeElement {
         return lastHeaderRow;
     }
 
-	/**
+    /**
      * Gets the horizontal alignment.
      *
      * @return  a value
@@ -425,6 +428,9 @@ public class Table extends Rectangle implements LargeElement {
      * Sets the horizontal alignment.
      *
      * @param       value   the new value
+     * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+     * use {@link Table#setHorizontalAlignment(HorizontalAlignment)} instead
+     *
      */
     public void setAlignment(int value) {
         alignment = value;
@@ -434,6 +440,8 @@ public class Table extends Rectangle implements LargeElement {
      * Sets the alignment of this paragraph.
      *
      * @param    alignment        the new alignment as a <CODE>String</CODE>
+     * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+     * use {@link Table#setHorizontalAlignment(HorizontalAlignment)} instead
      */
     public void setAlignment(String alignment) {
         if (ElementTags.ALIGN_LEFT.equalsIgnoreCase(alignment)) {
@@ -447,7 +455,16 @@ public class Table extends Rectangle implements LargeElement {
         this.alignment = Element.ALIGN_CENTER;
     }
 
-	/**
+    @Override
+    public void setHorizontalAlignment(final HorizontalAlignment alignment) {
+        if (alignment == null) {
+            return;
+        }
+
+        this.alignment = alignment.getId();
+    }
+
+    /**
      * Gets the cellpadding.
      *
      * @return  a value
@@ -465,7 +482,7 @@ public class Table extends Rectangle implements LargeElement {
         cellpadding = value;
     }
 
-	/**
+    /**
      * Gets the cellspacing.
      *
      * @return  a value
@@ -495,7 +512,7 @@ public class Table extends Rectangle implements LargeElement {
         autoFillEmptyCells = aDoAutoFill;
     }
 
-	/**
+    /**
      * Gets the table width (a percentage).
      *
      * @return      the table width
@@ -514,20 +531,20 @@ public class Table extends Rectangle implements LargeElement {
     }
     
     /**
-	 * @return the locked
-	 */
-	public boolean isLocked() {
-		return locked;
-	}
+     * @return the locked
+     */
+    public boolean isLocked() {
+        return locked;
+    }
 
-	/**
-	 * @param locked the locked to set
-	 */
-	public void setLocked(boolean locked) {
-		this.locked = locked;
-	}
+    /**
+     * @param locked the locked to set
+     */
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
 
-	/**
+    /**
      * Gets the proportional widths of the columns in this <CODE>Table</CODE>.
      *
      * @return      the proportional widths of the columns in this <CODE>Table</CODE>
@@ -586,7 +603,7 @@ public class Table extends Rectangle implements LargeElement {
      * @throws DocumentException
      */
     public void setWidths(int[] widths) throws DocumentException {
-        float tb[] = new float[widths.length];
+        float[] tb = new float[widths.length];
         for (int k = 0; k < widths.length; ++k)
             tb[k] = widths[k];
         setWidths(tb);
@@ -658,20 +675,20 @@ public class Table extends Rectangle implements LargeElement {
         return offset;
     }
     
-	/**
-	 * Method to check if the Table should be converted to a PdfPTable or not.
-	 * @return false if the table should be handled the old fashioned way.
-	 */
-	public boolean isConvert2pdfptable() {
-		return convert2pdfptable;
-	}
-	/**
-	 * If set to true, iText will try to convert the Table to a PdfPTable.
-	 * @param convert2pdfptable true if you want iText to try to convert the Table to a PdfPTable
-	 */
-	public void setConvert2pdfptable(boolean convert2pdfptable) {
-		this.convert2pdfptable = convert2pdfptable;
-	}
+    /**
+     * Method to check if the Table should be converted to a PdfPTable or not.
+     * @return false if the table should be handled the old fashioned way.
+     */
+    public boolean isConvert2pdfptable() {
+        return convert2pdfptable;
+    }
+    /**
+     * If set to true, iText will try to convert the Table to a PdfPTable.
+     * @param convert2pdfptable true if you want iText to try to convert the Table to a PdfPTable
+     */
+    public void setConvert2pdfptable(boolean convert2pdfptable) {
+        this.convert2pdfptable = convert2pdfptable;
+    }
     
     // methods to add content to the table
     
@@ -827,7 +844,7 @@ public class Table extends Rectangle implements LargeElement {
         aTable.complete();
         
         if (aLocation.y > columns) {
-        	throw new IllegalArgumentException(MessageLocalization.getComposedMessage("inserttable.wrong.columnposition.1.of.location.max.eq.2", String.valueOf(aLocation.y), String.valueOf(columns)));
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("inserttable.wrong.columnposition.1.of.location.max.eq.2", String.valueOf(aLocation.y), String.valueOf(columns)));
         }
         
         int rowCount = aLocation.x + 1 - rows.size();
@@ -881,7 +898,7 @@ public class Table extends Rectangle implements LargeElement {
      * @throws BadElementException
      */
     public void deleteColumn(int column) throws BadElementException {
-        float newWidths[] = new float[--columns];
+        float[] newWidths = new float[--columns];
         System.arraycopy(widths, 0, newWidths, 0, column);
         System.arraycopy(widths, column + 1, newWidths, column, columns - column);
         setWidths(newWidths);
@@ -899,7 +916,7 @@ public class Table extends Rectangle implements LargeElement {
         }
     }
 
-	/**
+    /**
      * Deletes a row.
      *
      * @param       row             the number of the row to delete
@@ -916,7 +933,7 @@ public class Table extends Rectangle implements LargeElement {
     
     /**
      * Deletes all rows in this table.
-	 * (contributed by dperezcar@fcc.es)
+     * (contributed by dperezcar@fcc.es)
      */
     public void deleteAllRows() {
         rows.clear();
@@ -932,7 +949,7 @@ public class Table extends Rectangle implements LargeElement {
      */
     public boolean deleteLastRow() {
         return deleteRow(rows.size() - 1);
-	}
+    }
     
     /**
      * Will fill empty cells with valid blank <CODE>Cell</CODE>s
@@ -985,7 +1002,7 @@ public class Table extends Rectangle implements LargeElement {
             lNewMaxColumns = 1; // value to hold in how many columns the current one will be split
             float [] tmpWidths = null;
             for (i=0; i < rows.size(); i++) {
-                if ( Table.class.isInstance(((Row) rows.get(i)).getCell(j)) ) {
+                if (((Row) rows.get(i)).getCell(j) instanceof Table) {
                     isTable=true;
                     lDummyTable = ((Table) ((Row) rows.get(i)).getCell(j));
                     if( tmpWidths == null) {
@@ -1052,7 +1069,7 @@ public class Table extends Rectangle implements LargeElement {
         for (i=0; i < rows.size(); i++) {
             lNewMaxRows = 1;    // holds value in how many rows the current one will be split
             for (j=0; j < columns; j++) {
-                if ( Table.class.isInstance(((Row) rows.get(i)).getCell(j)) ) {
+                if (((Row) rows.get(i)).getCell(j) instanceof Table) {
                     isTable=true;
                     lDummyTable = (Table) ((Row) rows.get(i)).getCell(j);
                     if ( lDummyTable.getDimension().height > lNewMaxRows ) {
@@ -1101,12 +1118,12 @@ public class Table extends Rectangle implements LargeElement {
                 lDummyColumn = 0;
                 lNewMaxRows = 1;
                 for (j=0; j < columns; j++) {
-                    if ( Table.class.isInstance(((Row) rows.get(i)).getCell(j)) )       // copy values from embedded table
+                    if (((Row) rows.get(i)).getCell(j) instanceof Table)       // copy values from embedded table
                     {
                         lDummyTable = (Table) ((Row) rows.get(i)).getCell(j);
                         
                         // Work out where columns in table table correspond to columns in current table
-                        int colMap[] = new int[lDummyTable.widths.length+1];
+                        int[] colMap = new int[lDummyTable.widths.length + 1];
                         int cb=0, ct=0;
                         
                         for( ; cb<lDummyTable.widths.length;cb++) {
@@ -1130,7 +1147,7 @@ public class Table extends Rectangle implements LargeElement {
                                 if (lDummyElement != null) {
                                     int col=lDummyColumn+l;
                                     
-                                    if ( Cell.class.isInstance(lDummyElement) ) {
+                                    if (lDummyElement instanceof Cell) {
                                         Cell lDummyC = (Cell)lDummyElement;
                                         // Find col to add cell in and set col span
                                         col = colMap[l];
@@ -1148,7 +1165,7 @@ public class Table extends Rectangle implements LargeElement {
                     {
                         Object aElement = getElement(i,j);
                         
-                        if ( Cell.class.isInstance(aElement) ) {
+                        if (aElement instanceof Cell) {
                             
                             // adjust spans for cell
                             ((Cell) aElement).setRowspan(((Cell) ((Row) rows.get(i)).getCell(j)).getRowspan() + lDummyHeights[i] - 1);
@@ -1218,9 +1235,7 @@ public class Table extends Rectangle implements LargeElement {
             }
         }
         else {
-            if ((aLocation.y + aCell.getColspan()) > columns) {
-                return false;
-            }
+            return (aLocation.y + aCell.getColspan()) <= columns;
         }
         
         return true;
@@ -1327,10 +1342,10 @@ public class Table extends Rectangle implements LargeElement {
         float[] w = new float[columns + 1];
         float wPercentage;
         if (locked) {
-        	wPercentage = 100 * width / totalWidth;
+            wPercentage = 100 * width / totalWidth;
         }
         else {
-        	wPercentage = width;
+            wPercentage = width;
         }
         // the border at the left is calculated
         switch(alignment) {
@@ -1370,108 +1385,108 @@ public class Table extends Rectangle implements LargeElement {
      * @throws BadElementException
      */
     public PdfPTable createPdfPTable() throws BadElementException {
-    	if (!convert2pdfptable) {
-    		throw new BadElementException(MessageLocalization.getComposedMessage("no.error.just.an.old.style.table"));
-    	}
+        if (!convert2pdfptable) {
+            throw new BadElementException(MessageLocalization.getComposedMessage("no.error.just.an.old.style.table"));
+        }
         setAutoFillEmptyCells(true);
-    	complete();
-    	PdfPTable pdfptable = new PdfPTable(widths);
-    	pdfptable.setComplete(complete);
-    	if (isNotAddedYet())
-    		pdfptable.setSkipFirstHeader(true);
-    	SimpleTable t_evt = new SimpleTable();
-		t_evt.cloneNonPositionParameters(this);
-		t_evt.setCellspacing(cellspacing);
-    	pdfptable.setTableEvent(t_evt);
-    	pdfptable.setHeaderRows(lastHeaderRow + 1);
-    	pdfptable.setSplitLate(cellsFitPage);
-    	pdfptable.setKeepTogether(tableFitsPage);
-    	if (!Float.isNaN(offset)) {
-    		pdfptable.setSpacingBefore(offset);
-    	}
-    	pdfptable.setHorizontalAlignment(alignment);
-    	if (locked) {
-    		pdfptable.setTotalWidth(width);
-    		pdfptable.setLockedWidth(true);
-    	}
-    	else {
-    		pdfptable.setWidthPercentage(width);
-    	}
-    	Row row;
+        complete();
+        PdfPTable pdfptable = new PdfPTable(widths);
+        pdfptable.setComplete(complete);
+        if (isNotAddedYet())
+            pdfptable.setSkipFirstHeader(true);
+        SimpleTable t_evt = new SimpleTable();
+        t_evt.cloneNonPositionParameters(this);
+        t_evt.setCellspacing(cellspacing);
+        pdfptable.setTableEvent(t_evt);
+        pdfptable.setHeaderRows(lastHeaderRow + 1);
+        pdfptable.setSplitLate(cellsFitPage);
+        pdfptable.setKeepTogether(tableFitsPage);
+        if (!Float.isNaN(offset)) {
+            pdfptable.setSpacingBefore(offset);
+        }
+        pdfptable.setHorizontalAlignment(alignment);
+        if (locked) {
+            pdfptable.setTotalWidth(width);
+            pdfptable.setLockedWidth(true);
+        }
+        else {
+            pdfptable.setWidthPercentage(width);
+        }
+        Row row;
         for (Iterator iterator = iterator(); iterator.hasNext(); ) {
             row = (Row) iterator.next();
             Element cell;
             PdfPCell pcell;
             for (int i = 0; i < row.getColumns(); i++) {
                 if ((cell = (Element)row.getCell(i)) != null) {
-                	if (cell instanceof Table) {
-                		pcell = new PdfPCell(((Table)cell).createPdfPTable());
-                	}
-                	else if (cell instanceof Cell) {
-                		pcell = ((Cell)cell).createPdfPCell();
-                		pcell.setPadding(cellpadding + cellspacing / 2f);
-                		SimpleCell c_evt = new SimpleCell(SimpleCell.CELL);
-                		c_evt.cloneNonPositionParameters((Cell)cell);
-                		c_evt.setSpacing(cellspacing * 2f);
+                    if (cell instanceof Table) {
+                        pcell = new PdfPCell(((Table)cell).createPdfPTable());
+                    }
+                    else if (cell instanceof Cell) {
+                        pcell = ((Cell)cell).createPdfPCell();
+                        pcell.setPadding(cellpadding + cellspacing / 2f);
+                        SimpleCell c_evt = new SimpleCell(SimpleCell.CELL);
+                        c_evt.cloneNonPositionParameters((Cell)cell);
+                        c_evt.setSpacing(cellspacing * 2f);
                         pcell.setCellEvent(c_evt);
-                	}
-                	else {
-                		pcell = new PdfPCell();
-                	}
-                	pdfptable.addCell(pcell);
+                    }
+                    else {
+                        pcell = new PdfPCell();
+                    }
+                    pdfptable.addCell(pcell);
                 }
             }
         }
-    	return pdfptable;
+        return pdfptable;
     }
 
-	/**
-	 * Indicates if this is the first time the section is added.
-	 * @since	iText2.0.8
-	 * @return	true if the section wasn't added yet
-	 */
-	public boolean isNotAddedYet() {
-		return notAddedYet;
-	}
+    /**
+     * Indicates if this is the first time the section is added.
+     * @since    iText2.0.8
+     * @return    true if the section wasn't added yet
+     */
+    public boolean isNotAddedYet() {
+        return notAddedYet;
+    }
 
-	/**
-	 * Sets the indication if the section was already added to
-	 * the document.
-	 * @since	iText2.0.8
-	 * @param notAddedYet
-	 */
-	public void setNotAddedYet(boolean notAddedYet) {
-		this.notAddedYet = notAddedYet;
-	}
-	
-	/**
-	 * @since	iText 2.0.8
-	 * @see com.lowagie.text.LargeElement#flushContent()
-	 */
-	public void flushContent() {		
-		this.setNotAddedYet(false);
+    /**
+     * Sets the indication if the section was already added to
+     * the document.
+     * @since    iText2.0.8
+     * @param notAddedYet
+     */
+    public void setNotAddedYet(boolean notAddedYet) {
+        this.notAddedYet = notAddedYet;
+    }
+    
+    /**
+     * @since    iText 2.0.8
+     * @see com.lowagie.text.LargeElement#flushContent()
+     */
+    public void flushContent() {        
+        this.setNotAddedYet(false);
         ArrayList headerrows = new ArrayList();
         for (int i = 0; i < getLastHeaderRow() + 1; i++) {
             headerrows.add(rows.get(i));
         }
         rows = headerrows;
-	}
+    }
 
-	/**
-     * @since	iText 2.0.8
-	 * @see com.lowagie.text.LargeElement#isComplete()
-	 */
-	public boolean isComplete() {
-		return complete;
-	}
+    /**
+     * @since    iText 2.0.8
+     * @see com.lowagie.text.LargeElement#isComplete()
+     */
+    public boolean isComplete() {
+        return complete;
+    }
 
-	/**
-     * @since	iText 2.0.8
-	 * @see com.lowagie.text.LargeElement#setComplete(boolean)
-	 */
-	public void setComplete(boolean complete) {
-		this.complete = complete;
-	}
+    /**
+     * @since    iText 2.0.8
+     * @see com.lowagie.text.LargeElement#setComplete(boolean)
+     */
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
     
     /**
      * Gets the default layout of the Table.

@@ -55,14 +55,14 @@ package com.lowagie.text.pdf;
  * Interface used by the PdfPKCS7 digital signature builder to call
  * Time Stamp Authority providing RFC 3161 compliant time stamp token.
  * @author Martin Brunecky, 07/17/2007
- * @since	2.1.6
+ * @since    2.1.6
  */
 public interface TSAClient {
     /**
      * Get the time stamp token size estimate.
      * Implementation must return value large enough to accomodate the entire token
      * returned by getTimeStampToken() _prior_ to actual getTimeStampToken() call.
-     * @return	an estimate of the token size
+     * @return    an estimate of the token size
      */
     int getTokenSizeEstimate();
     

@@ -50,6 +50,8 @@
 
 package com.lowagie.text;
 
+import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.WithHorizontalAlignment;
 import java.util.ArrayList;
 import com.lowagie.text.error_messages.MessageLocalization;
 
@@ -68,11 +70,11 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * @see   Cell
  * @see   Table
  */
-public class Row implements Element {
+public class Row implements Element, WithHorizontalAlignment {
     
     // constants
     
-	/** id of a null element in a Row*/
+    /** id of a null element in a Row*/
     public static final int NULL = 0;
     
     /** id of the Cell element in a Row*/
@@ -148,21 +150,21 @@ public class Row implements Element {
         return new ArrayList();
     }
     
-	/**
-	 * @see com.lowagie.text.Element#isContent()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isContent() {
-		return true;
-	}
+    /**
+     * @see com.lowagie.text.Element#isContent()
+     * @since    iText 2.0.8
+     */
+    public boolean isContent() {
+        return true;
+    }
 
-	/**
-	 * @see com.lowagie.text.Element#isNestable()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isNestable() {
-		return false;
-	}
+    /**
+     * @see com.lowagie.text.Element#isNestable()
+     * @since    iText 2.0.8
+     */
+    public boolean isNestable() {
+        return false;
+    }
     
     // method to delete a column
     
@@ -177,8 +179,8 @@ public class Row implements Element {
             throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("getcell.at.illegal.index.1", column));
         }
         columns--;
-        boolean newReserved[] = new boolean[columns];
-        Object newCells[] = new Cell[columns];
+        boolean[] newReserved = new boolean[columns];
+        Object[] newCells = new Cell[columns];
         
         for (int i = 0; i < column; i++) {
             newReserved[i] = reserved[i];
@@ -225,7 +227,7 @@ public class Row implements Element {
         if ((column < 0) || (column > columns)) throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("addcell.illegal.column.argument"));
         if ( !((getObjectID(element) == CELL) || (getObjectID(element) == TABLE)) ) throw new IllegalArgumentException(MessageLocalization.getComposedMessage("addcell.only.cells.or.tables.allowed"));
         
-        int lColspan = ( (Cell.class.isInstance(element)) ? ((Cell) element).getColspan() : 1);
+        int lColspan = ( (element instanceof Cell) ? ((Cell) element).getColspan() : 1);
         
         if (!reserve(column, lColspan)) {
             return -1;
@@ -307,8 +309,8 @@ public class Row implements Element {
      */
     int getElementID(int column) {
         if (cells[column] == null) return NULL;
-        else if (Cell.class.isInstance(cells[column])) return CELL;
-        else if (Table.class.isInstance(cells[column])) return TABLE;
+        else if (cells[column] instanceof Cell) return CELL;
+        else if (cells[column] instanceof Table) return TABLE;
         
         return -1;
     }
@@ -321,8 +323,8 @@ public class Row implements Element {
      */
     int getObjectID(Object element) {
         if (element == null) return NULL;
-        else if (Cell.class.isInstance(element)) return CELL;
-        else if (Table.class.isInstance(element)) return TABLE; 
+        else if (element instanceof Cell) return CELL;
+        else if (element instanceof Table) return TABLE;
         return -1;
     }
     
@@ -367,6 +369,8 @@ public class Row implements Element {
      * Sets the horizontal alignment.
      *
      * @param value the new value
+     * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+     * use {@link Row#setHorizontalAlignment(HorizontalAlignment)} instead
      */
     public void setHorizontalAlignment(int value) {
         horizontalAlignment = value;
@@ -379,5 +383,14 @@ public class Row implements Element {
      */
     public int getHorizontalAlignment() {
         return horizontalAlignment;
+    }
+
+    @Override
+    public void setHorizontalAlignment(final HorizontalAlignment alignment) {
+        if (alignment == null) {
+            return;
+        }
+
+        horizontalAlignment = alignment.getId();
     }
 }

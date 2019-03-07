@@ -66,6 +66,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.xml.simpleparser.IanaEncodings;
 import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
 import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
+import com.lowagie.text.xml.XMLUtil;
+
 /**
  * Bookmark processing in a simple way. It has some limitations, mainly the only
  * action types supported are GoTo, GoToR, URI and Launch.
@@ -225,47 +227,47 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
         return list;
     }
     
-	private static void mapGotoBookmark(HashMap map, PdfObject dest, IntHashtable pages) 
-	{
-		if (dest.isString())
-			map.put("Named", dest.toString());
-		else if (dest.isName())
-			map.put("Named", PdfName.decodeName(dest.toString()));
-		else if (dest.isArray()) 
-			map.put("Page", makeBookmarkParam((PdfArray)dest, pages)); //changed by ujihara 2004-06-13
-		map.put("Action", "GoTo");
-	}
+    private static void mapGotoBookmark(HashMap map, PdfObject dest, IntHashtable pages) 
+    {
+        if (dest.isString())
+            map.put("Named", dest.toString());
+        else if (dest.isName())
+            map.put("Named", PdfName.decodeName(dest.toString()));
+        else if (dest.isArray()) 
+            map.put("Page", makeBookmarkParam((PdfArray)dest, pages)); //changed by ujihara 2004-06-13
+        map.put("Action", "GoTo");
+    }
 
-	private static String makeBookmarkParam(PdfArray dest, IntHashtable pages)
-	{
-		StringBuffer s = new StringBuffer();
-		PdfObject obj = dest.getPdfObject(0);
+    private static String makeBookmarkParam(PdfArray dest, IntHashtable pages)
+    {
+        StringBuffer s = new StringBuffer();
+        PdfObject obj = dest.getPdfObject(0);
         if (obj.isNumber())
             s.append(((PdfNumber)obj).intValue() + 1);
         else
             s.append(pages.get(getNumber((PdfIndirectReference)obj))); //changed by ujihara 2004-06-13
-		s.append(' ').append(dest.getPdfObject(1).toString().substring(1));
-		for (int k = 2; k < dest.size(); ++k)
-			s.append(' ').append(dest.getPdfObject(k).toString());
-		return s.toString();
-	}
-	
-	/**
-	 * Gets number of indirect. If type of directed indirect is PAGES, it refers PAGE object through KIDS.
-	 * (Contributed by Kazuya Ujihara)
-	 * @param indirect 
-	 * 2004-06-13
-	 */
-	private static int getNumber(PdfIndirectReference indirect)
-	{
-		PdfDictionary pdfObj = (PdfDictionary)PdfReader.getPdfObjectRelease(indirect);
-		if (pdfObj.contains(PdfName.TYPE) && pdfObj.get(PdfName.TYPE).equals(PdfName.PAGES) && pdfObj.contains(PdfName.KIDS)) 
-		{
-			PdfArray kids = (PdfArray)pdfObj.get(PdfName.KIDS);
-			indirect = (PdfIndirectReference)kids.getPdfObject(0);
-		}
-		return indirect.getNumber();
-	}
+        s.append(' ').append(dest.getPdfObject(1).toString().substring(1));
+        for (int k = 2; k < dest.size(); ++k)
+            s.append(' ').append(dest.getPdfObject(k).toString());
+        return s.toString();
+    }
+    
+    /**
+     * Gets number of indirect. If type of directed indirect is PAGES, it refers PAGE object through KIDS.
+     * (Contributed by Kazuya Ujihara)
+     * @param indirect 
+     * 2004-06-13
+     */
+    private static int getNumber(PdfIndirectReference indirect)
+    {
+        PdfDictionary pdfObj = (PdfDictionary)PdfReader.getPdfObjectRelease(indirect);
+        if (pdfObj.contains(PdfName.TYPE) && pdfObj.get(PdfName.TYPE).equals(PdfName.PAGES) && pdfObj.contains(PdfName.KIDS)) 
+        {
+            PdfArray kids = (PdfArray)pdfObj.get(PdfName.KIDS);
+            indirect = (PdfIndirectReference)kids.getPdfObject(0);
+        }
+        return indirect.getNumber();
+    }
     
     /**
      * Gets a <CODE>List</CODE> with the bookmarks. It returns <CODE>null</CODE> if
@@ -296,7 +298,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @param list the bookmarks
      * @param pageRange the page ranges, always in pairs.
      */    
-    public static void eliminatePages(List list, int pageRange[]) {
+    public static void eliminatePages(List list, int[] pageRange) {
         if (list == null)
             return;
         for (Iterator it = list.listIterator(); it.hasNext();) {
@@ -351,7 +353,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @param pageRange the page ranges, always in pairs. It can be <CODE>null</CODE>
      * to include all the pages
      */    
-    public static void shiftPageNumbers(List list, int pageShift, int pageRange[]) {
+    public static void shiftPageNumbers(List list, int pageShift, int[] pageRange) {
         if (list == null)
             return;
         for (Iterator it = list.listIterator(); it.hasNext();) {
@@ -498,14 +500,14 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     }
 
     public static Object[] iterateOutlines(PdfWriter writer, PdfIndirectReference parent, List kids, boolean namedAsNames) throws IOException {
-        PdfIndirectReference refs[] = new PdfIndirectReference[kids.size()];
+        PdfIndirectReference[] refs = new PdfIndirectReference[kids.size()];
         for (int k = 0; k < refs.length; ++k)
             refs[k] = writer.getPdfIndirectReference();
         int ptr = 0;
         int count = 0;
         for (Iterator it = kids.listIterator(); it.hasNext(); ++ptr) {
             HashMap map = (HashMap)it.next();
-            Object lower[] = null;
+            Object[] lower = null;
             List subKid = (List)map.get("Kids");
             if (subKid != null && !subKid.isEmpty())
                 lower = iterateOutlines(writer, refs[ptr], subKid, namedAsNames);
@@ -597,14 +599,14 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
                     String value = (String) entry.getValue();
                     if (key.equals("Named") || key.equals("NamedN"))
                         value = SimpleNamedDestination.escapeBinaryString(value);
-                    out.write(SimpleXMLParser.escapeXML(value, onlyASCII));
+                    out.write(XMLUtil.escapeXML(value, onlyASCII));
                     out.write("\" ");
                 }
             }
             out.write(">");
             if (title == null)
                 title = "";
-            out.write(SimpleXMLParser.escapeXML(title, onlyASCII));
+            out.write(XMLUtil.escapeXML(title, onlyASCII));
             if (kids != null) {
                 out.write("\n");
                 exportToXMLNode(kids, out, indent + 1, onlyASCII);
@@ -658,7 +660,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      */
     public static void exportToXML(List list, Writer wrt, String encoding, boolean onlyASCII) throws IOException {
         wrt.write("<?xml version=\"1.0\" encoding=\"");
-        wrt.write(SimpleXMLParser.escapeXML(encoding, onlyASCII));
+        wrt.write(XMLUtil.escapeXML(encoding, onlyASCII));
         wrt.write("\"?>\n<Bookmark>\n");
         exportToXMLNode(list, wrt, 1, onlyASCII);
         wrt.write("</Bookmark>\n");

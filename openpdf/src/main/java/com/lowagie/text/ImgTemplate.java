@@ -57,8 +57,8 @@ import com.lowagie.text.pdf.PdfTemplate;
 /**
  * PdfTemplate that has to be inserted into the document
  *
- * @see		Element
- * @see		Image
+ * @see        Element
+ * @see        Image
  *
  * @author  Paulo Soares
  */
@@ -89,5 +89,5 @@ public class ImgTemplate extends Image {
         plainWidth = getWidth();
         plainHeight = getHeight();
     }
-	
+    
 }

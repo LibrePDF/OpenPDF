@@ -73,7 +73,7 @@ public class RandomAccessFileOrArray implements DataInput {
     RandomAccessFile trf;
     boolean plainRandomAccess;
     String filename;
-    byte arrayIn[];
+    byte[] arrayIn;
     int arrayInPtr;
     byte back;
     boolean isBack = false;
@@ -82,7 +82,7 @@ public class RandomAccessFileOrArray implements DataInput {
     private int startOffset = 0;
 
     public RandomAccessFileOrArray(String filename) throws IOException {
-    	this(filename, false, Document.plainRandomAccess);
+        this(filename, false, Document.plainRandomAccess);
     }
     
     public RandomAccessFileOrArray(String filename, boolean forceRead, boolean plainRandomAccess) throws IOException {
@@ -103,10 +103,10 @@ public class RandomAccessFileOrArray implements DataInput {
             else {
                 InputStream is = null;
                 if ("-".equals(filename)) {
-                	is = System.in;
+                    is = System.in;
                 }
                 else {
-                	is = BaseFont.getResourceStream(filename);
+                    is = BaseFont.getResourceStream(filename);
                 }
                 if (is == null)
                     throw new IOException(MessageLocalization.getComposedMessage("1.not.found.as.file.or.resource", filename));
@@ -128,7 +128,7 @@ public class RandomAccessFileOrArray implements DataInput {
             finally {
                 try {if (s != null) {s.close();}}catch(Exception e){}
             }
-        	return;
+            return;
         }
         this.filename = filename;
         if (plainRandomAccess)
@@ -152,7 +152,7 @@ public class RandomAccessFileOrArray implements DataInput {
     }
     
     public static byte[] InputStreamToArray(InputStream is) throws IOException {
-        byte b[] = new byte[8192];
+        byte[] b = new byte[8192];
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         while (true) {
             int read = is.read(b);
@@ -164,7 +164,7 @@ public class RandomAccessFileOrArray implements DataInput {
         return out.toByteArray();
     }
 
-    public RandomAccessFileOrArray(byte arrayIn[]) {
+    public RandomAccessFileOrArray(byte[] arrayIn) {
         this.arrayIn = arrayIn;
     }
     
@@ -224,15 +224,15 @@ public class RandomAccessFileOrArray implements DataInput {
         }
     }
     
-    public int read(byte b[]) throws IOException {
+    public int read(byte[] b) throws IOException {
         return read(b, 0, b.length);
     }
     
-    public void readFully(byte b[]) throws IOException {
+    public void readFully(byte[] b) throws IOException {
         readFully(b, 0, b.length);
     }
     
-    public void readFully(byte b[], int off, int len) throws IOException {
+    public void readFully(byte[] b, int off, int len) throws IOException {
         int n = 0;
         do {
             int count = read(b, off + n, len - n);
@@ -642,14 +642,14 @@ public class RandomAccessFileOrArray implements DataInput {
      * @since 2.0.8
      */
     public java.nio.ByteBuffer getNioByteBuffer() throws IOException {
-    	if (filename != null) {
-    		FileChannel channel;
+        if (filename != null) {
+            FileChannel channel;
             if (plainRandomAccess)
                 channel = trf.getChannel();
             else
                 channel = rf.getChannel();
             return channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-    	}
-    	return java.nio.ByteBuffer.wrap(arrayIn);
+        }
+        return java.nio.ByteBuffer.wrap(arrayIn);
     }
 }

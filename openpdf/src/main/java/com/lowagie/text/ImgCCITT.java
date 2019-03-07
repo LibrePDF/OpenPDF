@@ -50,15 +50,14 @@
 
 package com.lowagie.text;
 
-import com.lowagie.text.pdf.codec.TIFFFaxDecoder;
 import java.net.URL;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * CCITT Image data that has to be inserted into the document
  *
- * @see		Element
- * @see		Image
+ * @see        Element
+ * @see        Image
  *
  * @author  Paulo Soares
  */
@@ -88,8 +87,7 @@ public class ImgCCITT extends Image {
         super((URL)null);
         if (typeCCITT != CCITTG4 && typeCCITT != CCITTG3_1D && typeCCITT != CCITTG3_2D)
             throw new BadElementException(MessageLocalization.getComposedMessage("the.ccitt.compression.type.must.be.ccittg4.ccittg3.1d.or.ccittg3.2d"));
-        if (reverseBits)
-            TIFFFaxDecoder.reverseBits(data);
+        if (reverseBits) throw new BadElementException("Reversing bits is not supported");
         type = IMGRAW;
         scaledHeight = height;
         setTop(scaledHeight);

@@ -69,72 +69,72 @@ import java.util.Map;
  */
 public class XmpWriter {
 
-	/** A possible charset for the XMP. */
-	public static final String UTF8 = "UTF-8";
-	/** A possible charset for the XMP. */
-	public static final String UTF16 = "UTF-16";
-	/** A possible charset for the XMP. */
-	public static final String UTF16BE = "UTF-16BE";
-	/** A possible charset for the XMP. */
-	public static final String UTF16LE = "UTF-16LE";
-	
-	/** String used to fill the extra space. */
-	public static final String EXTRASPACE = "                                                                                                   \n";
-	
-	/** You can add some extra space in the XMP packet; 1 unit in this variable represents 100 spaces and a newline. */
-	protected int extraSpace;
-	
-	/** The writer to which you can write bytes for the XMP stream. */
-	protected OutputStreamWriter writer;
-	
-	/** The about string that goes into the rdf:Description tags. */
-	protected String about;
+    /** A possible charset for the XMP. */
+    public static final String UTF8 = "UTF-8";
+    /** A possible charset for the XMP. */
+    public static final String UTF16 = "UTF-16";
+    /** A possible charset for the XMP. */
+    public static final String UTF16BE = "UTF-16BE";
+    /** A possible charset for the XMP. */
+    public static final String UTF16LE = "UTF-16LE";
+    
+    /** String used to fill the extra space. */
+    public static final String EXTRASPACE = "                                                                                                   \n";
+    
+    /** You can add some extra space in the XMP packet; 1 unit in this variable represents 100 spaces and a newline. */
+    protected int extraSpace;
+    
+    /** The writer to which you can write bytes for the XMP stream. */
+    protected OutputStreamWriter writer;
+    
+    /** The about string that goes into the rdf:Description tags. */
+    protected String about;
 
-	/**
-	 * Processing Instruction required at the start of an XMP stream
-	 * @since iText 2.1.6
-	 */
-	public static final String XPACKET_PI_BEGIN = "<?xpacket begin=\"\uFEFF\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>\n";
-	
-	/**
-	 * Processing Instruction required at the end of an XMP stream for XMP streams that can be updated
-	 * @since iText 2.1.6
-	 */
-	public static final String XPACKET_PI_END_W = "<?xpacket end=\"w\"?>";
-	
-	/**
-	 * Processing Instruction required at the end of an XMP stream for XMP streams that are read only
-	 * @since iText 2.1.6
-	 */
-	public static final String XPACKET_PI_END_R = "<?xpacket end=\"r\"?>";
-	
-	/** The end attribute. */
-	protected char end = 'w';
-	
-	/**
-	 * Creates an XmpWriter. 
-	 * @param os
-	 * @param utfEncoding
-	 * @param extraSpace
-	 * @throws IOException
-	 */
-	public XmpWriter(OutputStream os, String utfEncoding, int extraSpace) throws IOException {
-		this.extraSpace = extraSpace;
-		writer = new OutputStreamWriter(os, utfEncoding);
-		writer.write(XPACKET_PI_BEGIN);
-		writer.write("<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">\n");
-		writer.write("<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n");
-		about = "";
-	}
-	
-	/**
-	 * Creates an XmpWriter.
-	 * @param os
-	 * @throws IOException
-	 */
-	public XmpWriter(OutputStream os) throws IOException {
-		this(os, UTF8, 20);
-	}
+    /**
+     * Processing Instruction required at the start of an XMP stream
+     * @since iText 2.1.6
+     */
+    public static final String XPACKET_PI_BEGIN = "<?xpacket begin=\"\uFEFF\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>\n";
+    
+    /**
+     * Processing Instruction required at the end of an XMP stream for XMP streams that can be updated
+     * @since iText 2.1.6
+     */
+    public static final String XPACKET_PI_END_W = "<?xpacket end=\"w\"?>";
+    
+    /**
+     * Processing Instruction required at the end of an XMP stream for XMP streams that are read only
+     * @since iText 2.1.6
+     */
+    public static final String XPACKET_PI_END_R = "<?xpacket end=\"r\"?>";
+    
+    /** The end attribute. */
+    protected char end = 'w';
+    
+    /**
+     * Creates an XmpWriter. 
+     * @param os
+     * @param utfEncoding
+     * @param extraSpace
+     * @throws IOException
+     */
+    public XmpWriter(OutputStream os, String utfEncoding, int extraSpace) throws IOException {
+        this.extraSpace = extraSpace;
+        writer = new OutputStreamWriter(os, utfEncoding);
+        writer.write(XPACKET_PI_BEGIN);
+        writer.write("<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">\n");
+        writer.write("<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n");
+        about = "";
+    }
+    
+    /**
+     * Creates an XmpWriter.
+     * @param os
+     * @throws IOException
+     */
+    public XmpWriter(OutputStream os) throws IOException {
+        this(os, UTF8, 20);
+    }
 
 
     /**
@@ -245,62 +245,62 @@ public class XmpWriter {
             if (basic.size() > 0) addRdfDescription(basic);
         }
     }
-	
-	/** Sets the XMP to read-only */
-	public void setReadOnly() {
-		end = 'r';
-	}
-	
-	/**
-	 * @param about The about to set.
-	 */
-	public void setAbout(String about) {
-		this.about = about;
-	}
-	
-	/**
-	 * Adds an rdf:Description.
-	 * @param xmlns
-	 * @param content
-	 * @throws IOException
-	 */
-	public void addRdfDescription(String xmlns, String content) throws IOException {
-		writer.write("<rdf:Description rdf:about=\"");
-		writer.write(about);
-		writer.write("\" ");
-		writer.write(xmlns);
-		writer.write(">");
-		writer.write(content);
-		writer.write("</rdf:Description>\n");
-	}
-	
-	/**
-	 * Adds an rdf:Description.
-	 * @param s
-	 * @throws IOException
-	 */
-	public void addRdfDescription(XmpSchema s) throws IOException {
-		writer.write("<rdf:Description rdf:about=\"");
-		writer.write(about);
-		writer.write("\" ");
-		writer.write(s.getXmlns());
-		writer.write(">");
-		writer.write(s.toString());
-		writer.write("</rdf:Description>\n");
-	}
-	
-	/**
-	 * Flushes and closes the XmpWriter.
-	 * @throws IOException
-	 */
-	public void close() throws IOException {
-		writer.write("</rdf:RDF>");
-		writer.write("</x:xmpmeta>\n");
-		for (int i = 0; i < extraSpace; i++) {
-			writer.write(EXTRASPACE);
-		}
-		writer.write(end == 'r' ? XPACKET_PI_END_R : XPACKET_PI_END_W);
-		writer.flush();
-		writer.close();
-	}
+    
+    /** Sets the XMP to read-only */
+    public void setReadOnly() {
+        end = 'r';
+    }
+    
+    /**
+     * @param about The about to set.
+     */
+    public void setAbout(String about) {
+        this.about = about;
+    }
+    
+    /**
+     * Adds an rdf:Description.
+     * @param xmlns
+     * @param content
+     * @throws IOException
+     */
+    public void addRdfDescription(String xmlns, String content) throws IOException {
+        writer.write("<rdf:Description rdf:about=\"");
+        writer.write(about);
+        writer.write("\" ");
+        writer.write(xmlns);
+        writer.write(">");
+        writer.write(content);
+        writer.write("</rdf:Description>\n");
+    }
+    
+    /**
+     * Adds an rdf:Description.
+     * @param s
+     * @throws IOException
+     */
+    public void addRdfDescription(XmpSchema s) throws IOException {
+        writer.write("<rdf:Description rdf:about=\"");
+        writer.write(about);
+        writer.write("\" ");
+        writer.write(s.getXmlns());
+        writer.write(">");
+        writer.write(s.toString());
+        writer.write("</rdf:Description>\n");
+    }
+    
+    /**
+     * Flushes and closes the XmpWriter.
+     * @throws IOException
+     */
+    public void close() throws IOException {
+        writer.write("</rdf:RDF>");
+        writer.write("</x:xmpmeta>\n");
+        for (int i = 0; i < extraSpace; i++) {
+            writer.write(EXTRASPACE);
+        }
+        writer.write(end == 'r' ? XPACKET_PI_END_R : XPACKET_PI_END_W);
+        writer.flush();
+        writer.close();
+    }
 }

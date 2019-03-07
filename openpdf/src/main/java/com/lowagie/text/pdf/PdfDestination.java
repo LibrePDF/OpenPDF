@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
 /**
  * A <CODE>PdfColor</CODE> defines a Color (it's a <CODE>PdfArray</CODE> containing 3 values).
  *
- * @see		PdfDictionary
+ * @see        PdfDictionary
  */
 
 public class PdfDestination extends PdfArray {
@@ -99,7 +99,7 @@ public class PdfDestination extends PdfArray {
  * will fit the window of the Reader. Otherwise the type will be set to
  * <VAR>FIT</VAR> so that the entire page will fit to the window.
  *
- * @param		type		The destination type
+ * @param        type        The destination type
  */
     
     public PdfDestination(int type) {
@@ -123,8 +123,8 @@ public class PdfDestination extends PdfArray {
  * the window and the parameter will specify the y / x coordinate of the
  * top / left edge. In all other cases the type will be set to <VAR>FITH</VAR>.
  *
- * @param		type		the destination type
- * @param		parameter	a parameter to combined with the destination type
+ * @param        type        the destination type
+ * @param        parameter    a parameter to combined with the destination type
  */
     
     public PdfDestination(int type, float parameter) {
@@ -197,18 +197,18 @@ public class PdfDestination extends PdfArray {
      * Creates a PdfDestination based on a String.
      * Valid Strings are for instance the values returned by SimpleNamedDestination:
      * "Fit", "XYZ 36 806 0",...
-     * @param	dest	a String notation of a destination.
-     * @since	iText 5.0
+     * @param    dest    a String notation of a destination.
+     * @since    iText 5.0
      */
     public PdfDestination(String dest) {
-    	super();
-    	StringTokenizer tokens = new StringTokenizer(dest);
-    	if (tokens.hasMoreTokens()) {
-    		add(new PdfName(tokens.nextToken()));
-    	}
-    	while (tokens.hasMoreTokens()) {
-    		add(new PdfNumber(tokens.nextToken()));
-    	}
+        super();
+        StringTokenizer tokens = new StringTokenizer(dest);
+        if (tokens.hasMoreTokens()) {
+            add(new PdfName(tokens.nextToken()));
+        }
+        while (tokens.hasMoreTokens()) {
+            add(new PdfNumber(tokens.nextToken()));
+        }
     }
     
     // methods
@@ -216,7 +216,7 @@ public class PdfDestination extends PdfArray {
 /**
  * Checks if an indirect reference to a page has been added.
  *
- * @return	<CODE>true</CODE> or <CODE>false</CODE>
+ * @return    <CODE>true</CODE> or <CODE>false</CODE>
  */
     
     public boolean hasPage() {
@@ -225,7 +225,7 @@ public class PdfDestination extends PdfArray {
     
 /** Adds the indirect reference of the destination page.
  *
- * @param page	an indirect reference
+ * @param page    an indirect reference
  * @return true if the page reference was added
  */
     

@@ -52,8 +52,9 @@ package com.lowagie.text.pdf;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  * Each PDF document can contain maximum 1 AcroForm.
@@ -85,7 +86,7 @@ public class PdfAcroForm extends PdfDictionary {
     }
     
     public void setNeedAppearances(boolean value) {
-    	put(PdfName.NEEDAPPEARANCES, new PdfBoolean(value));
+        put(PdfName.NEEDAPPEARANCES, new PdfBoolean(value));
     }
 
     /**
@@ -179,7 +180,7 @@ public class PdfAcroForm extends PdfDictionary {
         setButtonParams(button, PdfFormField.FF_PUSHBUTTON, name, value);
         drawButton(button, caption, font, fontSize, llx, lly, urx, ury);
         addFormField(button);
-	return button;
+    return button;
     }
 
     /**

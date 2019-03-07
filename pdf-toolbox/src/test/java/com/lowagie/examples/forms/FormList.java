@@ -1,15 +1,15 @@
 /*
  * $Id: FormList.java 4104 2009-11-23 18:28:22Z mstorer $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 
 package com.lowagie.examples.forms;
@@ -47,7 +47,7 @@ public class FormList {
             
             // step 4:
             TextField fldDef = new TextField( writer, new Rectangle(100, 700, 180, 760), "AList" );
-            String options[] = {"Red", "Green", "Blue", "White", "Cyan", "Yellow", "Magenta", "Black"};
+            String[] options = {"Red", "Green", "Blue", "White", "Cyan", "Yellow", "Magenta", "Black"};
             fldDef.setChoices( options );
 
             // you must turn on multiselect before making multiple selections or they will be discarded.

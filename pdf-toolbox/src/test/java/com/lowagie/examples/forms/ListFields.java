@@ -1,15 +1,15 @@
 /*
  * $Id: ListFields.java 3688 2009-02-10 22:27:37Z mstorer $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 
 package com.lowagie.examples.forms;
@@ -39,9 +39,9 @@ public class ListFields {
             stream.println("ListFields output file");
             stream.println("==================================================");
             for (int i = 0; i < args.length; i++) {
-            	stream.print("Filename: ");
-            	stream.println(args[i]);
-            	stream.println();
+                stream.print("Filename: ");
+                stream.println(args[i]);
+                stream.println();
                 PdfReader reader = new PdfReader(args[i]);
                 PRAcroForm form = reader.getAcroForm();
                 if (form == null) {

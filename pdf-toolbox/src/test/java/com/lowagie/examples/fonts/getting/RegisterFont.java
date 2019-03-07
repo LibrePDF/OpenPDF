@@ -1,15 +1,15 @@
 /*
  * $Id: RegisterFont.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.fonts.getting;
 
@@ -32,11 +32,11 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class RegisterFont {
 
-	/**
-	 * Registering fonts with the fontfactory.
-	 * @param args no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Registering fonts with the fontfactory.
+     * @param args no arguments needed
+     */
+    public static void main(String[] args) {
         
         System.out.println("Registering fonts with the FontFactory");
         
@@ -67,7 +67,7 @@ public class RegisterFont {
             Font font3= FontFactory.getFont("MS-PGothic", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 12);
             String text3 = "\u5951\u7d04\u8005\u4f4f\u6240\u30e9\u30a4\u30f3\uff11";
             document.add(new Paragraph(text3, font3));
-    		BufferedWriter out = new BufferedWriter(new FileWriter("registered.txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter("registered.txt"));
             out.write("These fonts were registered at the FontFactory:\r\n");
             for (Iterator i = FontFactory.getRegisteredFonts().iterator(); i.hasNext(); ) {
                 out.write((String) i.next());
@@ -91,5 +91,5 @@ public class RegisterFont {
         // step 5: we close the document
         document.close();
 
-	}
+    }
 }

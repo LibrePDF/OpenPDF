@@ -1,15 +1,15 @@
 /*
  * $Id: Lists.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 
 package com.lowagie.examples.objects;
@@ -36,18 +36,18 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class Lists {
 
-	/**
-	 * Demonstrates some List functionality.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Demonstrates some List functionality.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("the List object");
+        System.out.println("the List object");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
             // step 2:
             PdfWriter.getInstance(document, new FileOutputStream("lists.pdf"));
             HtmlWriter.getInstance(document, new FileOutputStream("lists.html"));
@@ -119,13 +119,13 @@ public class Lists {
             sublist.add("Galapagos");
             list.add(sublist);
             document.add(list);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

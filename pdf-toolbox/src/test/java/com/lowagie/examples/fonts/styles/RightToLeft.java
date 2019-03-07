@@ -1,15 +1,15 @@
 /*
  * $Id: RightToLeft.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.fonts.styles;
 
@@ -40,7 +40,7 @@ public class RightToLeft {
      */
     public static void main(String[] args) {
         try {
-        	// step 1
+            // step 1
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             // step 2
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("righttoleft.pdf"));

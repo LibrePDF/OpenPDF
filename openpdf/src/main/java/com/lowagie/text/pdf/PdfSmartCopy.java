@@ -60,6 +60,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
 
+
 /**
  * PdfSmartCopy has the same functionality as PdfCopy,
  * but when resources (such as fonts, images,...) are
@@ -71,7 +72,7 @@ import com.lowagie.text.ExceptionConverter;
 
 public class PdfSmartCopy extends PdfCopy {
 
-	/** the cache with the streams and references. */
+    /** the cache with the streams and references. */
     private HashMap streamMap = null;
 
     /** Creates a PdfSmartCopy instance. */
@@ -106,7 +107,7 @@ public class PdfSmartCopy extends PdfCopy {
 
         PdfIndirectReference theRef;
         RefKey key = new RefKey(in);
-        IndirectReferences iRef = (IndirectReferences) indirects.get(key);
+        IndirectReferences iRef = indirects.get(key);
         if (iRef != null) {
             theRef = iRef.getRef();
             if (iRef.getCopied()) {

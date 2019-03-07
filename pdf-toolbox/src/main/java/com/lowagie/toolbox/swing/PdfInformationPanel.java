@@ -57,35 +57,35 @@ import com.lowagie.text.pdf.RandomAccessFileOrArray;
  */
 public class PdfInformationPanel extends JPanel implements PropertyChangeListener {
 
-	/** A serial version id */
-	private static final long serialVersionUID = -4171577284617028707L;
+    /** A serial version id */
+    private static final long serialVersionUID = -4171577284617028707L;
 
-	/** The file name of the PDF we're going to label. */
-	String filename = "";
+    /** The file name of the PDF we're going to label. */
+    String filename = "";
 
-	/** the label containing the metadata */
-	JLabel label = new JLabel();
+    /** the label containing the metadata */
+    JLabel label = new JLabel();
 
-	/** the scrollpane to scroll through the label */
-	JScrollPane scrollpane = new JScrollPane();
+    /** the scrollpane to scroll through the label */
+    JScrollPane scrollpane = new JScrollPane();
 
-	/** the panel to witch the scrollpane will be added. */
-	JPanel panel = new JPanel();
+    /** the panel to witch the scrollpane will be added. */
+    JPanel panel = new JPanel();
 
-	/** Construct the information label (actually it's a JPanel). */
-	public PdfInformationPanel() {
-		try {
-			this.setLayout(new BorderLayout());
-			label.setHorizontalAlignment(SwingConstants.CENTER);
-			panel.setLayout(new BorderLayout());
-			this.add(panel, BorderLayout.CENTER);
-			scrollpane.setPreferredSize(new Dimension(200, 200));
-			panel.add(scrollpane, BorderLayout.CENTER);
-			scrollpane.setViewportView(label);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+    /** Construct the information label (actually it's a JPanel). */
+    public PdfInformationPanel() {
+        try {
+            this.setLayout(new BorderLayout());
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            panel.setLayout(new BorderLayout());
+            this.add(panel, BorderLayout.CENTER);
+            scrollpane.setPreferredSize(new Dimension(200, 200));
+            panel.add(scrollpane, BorderLayout.CENTER);
+            scrollpane.setViewportView(label);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
     /**
      * Reads a PDF file for retrieving its metadata.
@@ -93,55 +93,55 @@ public class PdfInformationPanel extends JPanel implements PropertyChangeListene
      * @param file File
      */
     public void createTextFromPDF(File file) {
-		if (file.exists()) {
-			int page = 1;
-			PdfReader reader = null;
+        if (file.exists()) {
+            int page = 1;
+            PdfReader reader = null;
 
-			try {
-				reader = new PdfReader(new RandomAccessFileOrArray(file.getAbsolutePath()), null);
-				Map<String, String> pdfinfo = reader.getInfo();
+            try {
+                reader = new PdfReader(new RandomAccessFileOrArray(file.getAbsolutePath()), null);
+                Map<String, String> pdfinfo = reader.getInfo();
 
-				StringBuilder sb = new StringBuilder();
-				sb.append("<html>=== Document Information ===<p>");
-				sb.append(reader.getCropBox(page).getHeight() + "*"
-						+ reader.getCropBox(page).getWidth() + "<p>");
-				sb.append("PDF Version: " + reader.getPdfVersion() + "<p>");
-				sb.append("Number of pages: " + reader.getNumberOfPages()
-						+ "<p>");
-				sb.append("Number of PDF objects: " + reader.getXrefSize()
-						+ "<p>");
-				sb.append("File length: " + reader.getFileLength() + "<p>");
-				sb.append("Encrypted= " + reader.isEncrypted() + "<p>");
-				if (pdfinfo.get("Title") != null) {
-					sb.append("Title= " + pdfinfo.get("Title") + "<p>");
-				}
-				if (pdfinfo.get("Author") != null) {
-					sb.append("Author= " + pdfinfo.get("Author") + "<p>");
-				}
-				if (pdfinfo.get("Subject") != null) {
-					sb.append("Subject= " + pdfinfo.get("Subject") + "<p>");
-				}
-				if (pdfinfo.get("Producer") != null) {
-					sb.append("Producer= " + pdfinfo.get("Producer") + "<p>");
-				}
-				if (pdfinfo.get("ModDate") != null) {
-					sb.append("ModDate= "
-							+ PdfDate.decode(pdfinfo.get("ModDate"))
-									.getTime() + "<p>");
-				}
-				if (pdfinfo.get("CreationDate") != null) {
-					sb.append("CreationDate= "
-							+ PdfDate.decode(
-									pdfinfo.get("CreationDate"))
-									.getTime() + "<p>");
-				}
-				sb.append("</html>");
-				label.setText(sb.toString());
-			} catch (IOException ex) {
-				label.setText("");
-			}
-		}
-	}
+                StringBuilder sb = new StringBuilder();
+                sb.append("<html>=== Document Information ===<p>");
+                sb.append(reader.getCropBox(page).getHeight() + "*"
+                        + reader.getCropBox(page).getWidth() + "<p>");
+                sb.append("PDF Version: " + reader.getPdfVersion() + "<p>");
+                sb.append("Number of pages: " + reader.getNumberOfPages()
+                        + "<p>");
+                sb.append("Number of PDF objects: " + reader.getXrefSize()
+                        + "<p>");
+                sb.append("File length: " + reader.getFileLength() + "<p>");
+                sb.append("Encrypted= " + reader.isEncrypted() + "<p>");
+                if (pdfinfo.get("Title") != null) {
+                    sb.append("Title= " + pdfinfo.get("Title") + "<p>");
+                }
+                if (pdfinfo.get("Author") != null) {
+                    sb.append("Author= " + pdfinfo.get("Author") + "<p>");
+                }
+                if (pdfinfo.get("Subject") != null) {
+                    sb.append("Subject= " + pdfinfo.get("Subject") + "<p>");
+                }
+                if (pdfinfo.get("Producer") != null) {
+                    sb.append("Producer= " + pdfinfo.get("Producer") + "<p>");
+                }
+                if (pdfinfo.get("ModDate") != null) {
+                    sb.append("ModDate= "
+                            + PdfDate.decode(pdfinfo.get("ModDate"))
+                                    .getTime() + "<p>");
+                }
+                if (pdfinfo.get("CreationDate") != null) {
+                    sb.append("CreationDate= "
+                            + PdfDate.decode(
+                                    pdfinfo.get("CreationDate"))
+                                    .getTime() + "<p>");
+                }
+                sb.append("</html>");
+                label.setText(sb.toString());
+            } catch (IOException ex) {
+                label.setText("");
+            }
+        }
+    }
 
     /**
      *
@@ -149,13 +149,13 @@ public class PdfInformationPanel extends JPanel implements PropertyChangeListene
      * @param evt PropertyChangeEvent
      */
     public void propertyChange(PropertyChangeEvent evt) {
-		filename = evt.getPropertyName();
-		if (filename.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
-			File file = (File) evt.getNewValue();
-			if (file != null) {
-				this.createTextFromPDF(file);
-				this.repaint();
-			}
-		}
-	}
+        filename = evt.getPropertyName();
+        if (filename.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
+            File file = (File) evt.getNewValue();
+            if (file != null) {
+                this.createTextFromPDF(file);
+                this.repaint();
+            }
+        }
+    }
 }

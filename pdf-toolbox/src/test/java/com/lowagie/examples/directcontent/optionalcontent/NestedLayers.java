@@ -1,15 +1,15 @@
 /*
  * $Id: NestedLayers.java 3838 2009-04-07 18:34:15Z mstorer $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.directcontent.optionalcontent;
 
@@ -34,7 +34,7 @@ import com.lowagie.text.pdf.PdfWriter;
  * Demonstrates the use of nested layers.
  */
 public class NestedLayers {
-	   
+       
     /**
      * Demonstrates the use of nested layers
      * @param args no arguments needed
@@ -42,7 +42,7 @@ public class NestedLayers {
     public static void main(String[] args) {
         System.out.println("nested layers");
         try {
-        	// step 1
+            // step 1
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             // step 2
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("nestedlayers.pdf"));

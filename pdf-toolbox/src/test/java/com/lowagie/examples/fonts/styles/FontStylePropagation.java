@@ -1,15 +1,15 @@
 /*
  * $Id: FontStylePropagation.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 
 package com.lowagie.examples.fonts.styles;
@@ -33,27 +33,27 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class FontStylePropagation {
 
-	/**
-	 * Explains the mechanism of Font Style Propagation
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * Explains the mechanism of Font Style Propagation
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Font Style Propagation");
+        System.out.println("Font Style Propagation");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
-			// step 2:
-			// we create a writer that listens to the document
-			PdfWriter.getInstance(document,
-					new FileOutputStream("FontStylePropagation.pdf"));
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
+            // step 2:
+            // we create a writer that listens to the document
+            PdfWriter.getInstance(document,
+                    new FileOutputStream("FontStylePropagation.pdf"));
 
-			// step 3: we open the document
-			document.open();
-			// step 4:
-			Phrase myPhrase = new Phrase("Hello 1! ", new Font(Font.TIMES_ROMAN, 8, Font.BOLD));
+            // step 3: we open the document
+            document.open();
+            // step 4:
+            Phrase myPhrase = new Phrase("Hello 1! ", new Font(Font.TIMES_ROMAN, 8, Font.BOLD));
             myPhrase.add(new Phrase("some other font ", new Font(Font.HELVETICA, 8)));
             myPhrase.add(new Phrase("This is the end of the sentence.\n", new Font(Font.TIMES_ROMAN, 8, Font.ITALIC)));
             document.add(myPhrase);
@@ -76,13 +76,13 @@ public class FontStylePropagation {
             myParagraph.add(new Paragraph("Hello 3bis! ", new Font(Font.TIMES_ROMAN, 8, Font.BOLD)));
             myParagraph.add(new Paragraph("This is the end of the sentence.", new Font(Font.TIMES_ROMAN, 8, Font.ITALIC)));
             document.add(myParagraph);
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

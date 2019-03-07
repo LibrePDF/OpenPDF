@@ -158,9 +158,9 @@ public final class PdfPatternPainter extends PdfTemplate {
     
     /**
      * Gets the stream representing this pattern
-     * @param	compressionLevel	the compression level of the stream
+     * @param    compressionLevel    the compression level of the stream
      * @return the stream representing this pattern
-     * @since	2.1.3
+     * @since    2.1.3
      */
     PdfPattern getPattern(int compressionLevel) {
         return new PdfPattern(this, compressionLevel);

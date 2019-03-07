@@ -60,7 +60,7 @@ import java.util.Locale;
 
 public class ElementTags {
     
-	/** the root tag. */
+    /** the root tag. */
     public static final String ITEXT = "itext";
     
     /** attribute of the root and annotation tag (also a special tag within a chapter or section) */
@@ -433,13 +433,13 @@ public class ElementTags {
     public static final String ORIENTATION  = "orientation";
     
     /** a possible list attribute */
-	public static final String ALIGN_INDENTATION_ITEMS = "alignindent";
-	
-	/** a possible list attribute */
-	public static final String AUTO_INDENT_ITEMS = "autoindent";
-	
-	/** a possible list attribute */
-	public static final String LOWERCASE = "lowercase";
+    public static final String ALIGN_INDENTATION_ITEMS = "alignindent";
+    
+    /** a possible list attribute */
+    public static final String AUTO_INDENT_ITEMS = "autoindent";
+    
+    /** a possible list attribute */
+    public static final String LOWERCASE = "lowercase";
    /**
     * a possible list attribute
     * @since 2.1.3
@@ -454,12 +454,12 @@ public class ElementTags {
    
     // methods
     
-	/**
-	 * Translates the alignment value to a String value.
-	 *
-	 * @param   alignment   the alignment value
-	 * @return  the translated value
-	 */
+    /**
+     * Translates the alignment value to a String value.
+     *
+     * @param   alignment   the alignment value
+     * @return  the translated value
+     */
     public static String getAlignment(int alignment) {
         switch(alignment) {
             case Element.ALIGN_LEFT:
@@ -487,11 +487,11 @@ public class ElementTags {
     /**
      * Translates a String value to an alignment value.
      * (written by Norman Richards, integrated into iText by Bruno)
-     * @param	alignment a String (one of the ALIGN_ constants of this class)
-     * @return	an alignment value (one of the ALIGN_ constants of the Element interface) 
+     * @param    alignment a String (one of the ALIGN_ constants of this class)
+     * @return    an alignment value (one of the ALIGN_ constants of the Element interface) 
      */
     public static int alignmentValue(String alignment) {
-    	if (alignment == null) return Element.ALIGN_UNDEFINED;
+        if (alignment == null) return Element.ALIGN_UNDEFINED;
         if (ALIGN_CENTER.equalsIgnoreCase(alignment)) {
             return Element.ALIGN_CENTER;
         }

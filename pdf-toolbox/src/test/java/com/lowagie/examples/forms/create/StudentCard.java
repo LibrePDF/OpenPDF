@@ -1,15 +1,15 @@
 /*
  * $Id: StudentCard.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 
 package com.lowagie.examples.forms.create;
@@ -83,15 +83,15 @@ public class StudentCard {
             innertable.addCell(new Paragraph("option:", f));
             innertable.addCell(new Paragraph("architecture", f));
             outertable.addCell(innertable);
-			outertable.getDefaultCell().setBackgroundColor(new Color(0xFF, 0xDE, 0xAD));
-			outertable.addCell(Image.getInstance("bruno.jpg"));
+            outertable.getDefaultCell().setBackgroundColor(new Color(0xFF, 0xDE, 0xAD));
+            outertable.addCell(Image.getInstance("bruno.jpg"));
             BarcodeEAN codeEAN = new BarcodeEAN();
             codeEAN.setCodeType(Barcode.EAN13);
             codeEAN.setCode("8010012529736");
-			Image imageEAN = codeEAN.createImageWithBarcode(cb, null, null);            
-			imageEAN.setRotationDegrees(90);
-			outertable.getDefaultCell().setBackgroundColor(Color.WHITE);
-			outertable.addCell(imageEAN);
+            Image imageEAN = codeEAN.createImageWithBarcode(cb, null, null);            
+            imageEAN.setRotationDegrees(90);
+            outertable.getDefaultCell().setBackgroundColor(Color.WHITE);
+            outertable.addCell(imageEAN);
             outertable.writeSelectedRows(0, -1, 20, 100, writer.getDirectContent());
         }
         catch(DocumentException de) {

@@ -83,7 +83,7 @@ public class RemoveLaunchApplication
     internalFrame = new JInternalFrame("Remove Launch Applications", true, false, true);
     internalFrame.setSize(300, 80);
     internalFrame.setJMenuBar(getMenubar());
-	System.out.println("=== Remove Launch Applications OPENED ===");
+    System.out.println("=== Remove Launch Applications OPENED ===");
   }
 
   /**
@@ -108,32 +108,32 @@ public class RemoveLaunchApplication
       PdfDictionary l;
       PdfName n;
       for (int i = 1; i < reader.getXrefSize(); i++) {
-      	o = reader.getPdfObject(i);
-      	if (o instanceof PdfDictionary) {
-      		d = (PdfDictionary)o;
-      		o = d.get(PdfName.A);
-      		if (o == null) continue;
-      		if (o instanceof PdfDictionary) {
-      			l = (PdfDictionary)o;
-      		}
-      		else {
-      			PRIndirectReference r =(PRIndirectReference)o;
-      			l = (PdfDictionary)reader.getPdfObject(r.getNumber());
-      		}
-      		n = (PdfName)l.get(PdfName.S);
-      		if (PdfName.LAUNCH.equals(n)) {
-      			if (l.get(PdfName.F) != null) {
-      				System.out.println("Removed: " + l.get(PdfName.F));
-      				l.remove(PdfName.F);
-      			}
-      			if (l.get(PdfName.WIN) != null) {
-      				System.out.println("Removed: " + l.get(PdfName.WIN));
-      				l.remove(PdfName.WIN);
-      			}
-      			l.put(PdfName.S, PdfName.JAVASCRIPT);
-      			l.put(PdfName.JS, new PdfString("app.alert('Launch Application Action removed by iText');\r"));
-      		}
-      	}
+          o = reader.getPdfObject(i);
+          if (o instanceof PdfDictionary) {
+              d = (PdfDictionary)o;
+              o = d.get(PdfName.A);
+              if (o == null) continue;
+              if (o instanceof PdfDictionary) {
+                  l = (PdfDictionary)o;
+              }
+              else {
+                  PRIndirectReference r =(PRIndirectReference)o;
+                  l = (PdfDictionary)reader.getPdfObject(r.getNumber());
+              }
+              n = (PdfName)l.get(PdfName.S);
+              if (PdfName.LAUNCH.equals(n)) {
+                  if (l.get(PdfName.F) != null) {
+                      System.out.println("Removed: " + l.get(PdfName.F));
+                      l.remove(PdfName.F);
+                  }
+                  if (l.get(PdfName.WIN) != null) {
+                      System.out.println("Removed: " + l.get(PdfName.WIN));
+                      l.remove(PdfName.WIN);
+                  }
+                  l.put(PdfName.S, PdfName.JAVASCRIPT);
+                  l.put(PdfName.JS, new PdfString("app.alert('Launch Application Action removed by iText');\r"));
+              }
+          }
       }
       PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(dest));
       stamper.close();

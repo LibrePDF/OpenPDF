@@ -1,15 +1,15 @@
 /*
  * $Id: FixedFontWidth.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.fonts.styles;
 
@@ -27,22 +27,22 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class FixedFontWidth {
 
-	/**
-	 * Changing the width of font glyphs.
-	 * @param args no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Changing the width of font glyphs.
+     * @param args no arguments needed
+     */
+    public static void main(String[] args) {
         System.out.println("Fixed Font Width");
         // step 1
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {
-        	// step 2
+            // step 2
             PdfWriter.getInstance(document, new FileOutputStream("fixedfontwidth.pdf"));
             // step 3
             document.open();
             // step 4
             BaseFont bf = BaseFont.createFont("Helvetica", "winansi", false, false, null, null);
-            int widths[] = bf.getWidths();
+            int[] widths = bf.getWidths();
             for (int k = 0; k < widths.length; ++k) {
                 if (widths[k] != 0)
                     widths[k] = 1000;
@@ -55,5 +55,5 @@ public class FixedFontWidth {
         }
         // step 5
         document.close();
-	}
+    }
 }

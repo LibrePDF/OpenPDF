@@ -48,6 +48,7 @@
 
 package com.lowagie.text.pdf;
 
+import java.text.Bidi;
 import java.util.ArrayList;
 
 import com.lowagie.text.Chunk;
@@ -58,15 +59,15 @@ import com.lowagie.text.Utilities;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class BidiLine {
-	
+    
     protected int runDirection;
     protected int pieceSize = 256;
-    protected char text[] = new char[pieceSize];
-    protected PdfChunk detailChunks[] = new PdfChunk[pieceSize];
+    protected char[] text = new char[pieceSize];
+    protected PdfChunk[] detailChunks = new PdfChunk[pieceSize];
     protected int totalTextLength = 0;
-    
-    protected byte orderLevels[] = new byte[pieceSize];
-    protected int indexChars[] = new int[pieceSize];
+
+    protected byte[] orderLevels = new byte[pieceSize];
+    protected int[] indexChars = new int[pieceSize];
     
     protected ArrayList chunks = new ArrayList();
     protected int indexChunk = 0;
@@ -74,12 +75,12 @@ public class BidiLine {
     protected int currentChar = 0;
     
     protected int storedRunDirection;
-    protected char storedText[] = new char[0];
-    protected PdfChunk storedDetailChunks[] = new PdfChunk[0];
+    protected char[] storedText = new char[0];
+    protected PdfChunk[] storedDetailChunks = new PdfChunk[0];
     protected int storedTotalTextLength = 0;
-    
-    protected byte storedOrderLevels[] = new byte[0];
-    protected int storedIndexChars[] = new int[0];
+
+    protected byte[] storedOrderLevels = new byte[0];
+    protected int[] storedIndexChars = new int[0];
     
     protected int storedIndexChunk = 0;
     protected int storedIndexChunkChar = 0;
@@ -177,7 +178,7 @@ public class BidiLine {
         // remove trailing WS
         totalTextLength = trimRight(0, totalTextLength - 1) + 1;
         if (totalTextLength == 0) {
-        	return true;
+            return true;
         }
         
         if (runDirection == PdfWriter.RUN_DIRECTION_LTR || runDirection == PdfWriter.RUN_DIRECTION_RTL) {
@@ -186,15 +187,16 @@ public class BidiLine {
                 indexChars = new int[pieceSize];
             }
             ArabicLigaturizer.processNumbers(text, 0, totalTextLength, arabicOptions);
-            BidiOrder order = new BidiOrder(text, 0, totalTextLength, (byte)(runDirection == PdfWriter.RUN_DIRECTION_RTL ? 1 : 0));
-            byte od[] = order.getLevels();
+            Bidi bidi = new Bidi(new String(text),
+                                 (byte) (runDirection == PdfWriter.RUN_DIRECTION_RTL ? Bidi.DIRECTION_RIGHT_TO_LEFT : Bidi.DIRECTION_LEFT_TO_RIGHT));
             for (int k = 0; k < totalTextLength; ++k) {
-                orderLevels[k] = od[k];
+                orderLevels[k] = (byte) bidi.getLevelAt(k);
                 indexChars[k] = k;
             }
             doArabicShapping();
             mirrorGlyphs();
         }
+        
         totalTextLength = trimRightEx(0, totalTextLength - 1) + 1;
         return true;
     }
@@ -209,8 +211,8 @@ public class BidiLine {
     
     public void addPiece(char c, PdfChunk chunk) {
         if (totalTextLength >= pieceSize) {
-            char tempText[] = text;
-            PdfChunk tempDetailChunks[] = detailChunks;
+            char[] tempText = text;
+            PdfChunk[] tempDetailChunks = detailChunks;
             pieceSize *= 2;
             text = new char[pieceSize];
             detailChunks = new PdfChunk[pieceSize];
@@ -371,16 +373,16 @@ public class BidiLine {
             if (splitChar)
                 lastSplit = currentChar;
             width -= charWidth;
-        	lastValidChunk = ck;
+            lastValidChunk = ck;
             if (ck.isTab()) {
-            	Object[] tab = (Object[])ck.getAttribute(Chunk.TAB);
-        		float tabPosition = ((Float)tab[1]).floatValue();
-        		boolean newLine = ((Boolean)tab[2]).booleanValue();
-        		if (newLine && tabPosition < originalWidth - width) {
-        			return new PdfLine(0, originalWidth, width, alignment, true, createArrayOfPdfChunks(oldCurrentChar, currentChar - 1), isRTL);
-        		}
-        		detailChunks[currentChar].adjustLeft(leftX);
-        		width = originalWidth - tabPosition;
+                Object[] tab = (Object[])ck.getAttribute(Chunk.TAB);
+                float tabPosition = ((Float)tab[1]).floatValue();
+                boolean newLine = ((Boolean)tab[2]).booleanValue();
+                if (newLine && tabPosition < originalWidth - width) {
+                    return new PdfLine(0, originalWidth, width, alignment, true, createArrayOfPdfChunks(oldCurrentChar, currentChar - 1), isRTL);
+                }
+                detailChunks[currentChar].adjustLeft(leftX);
+                width = originalWidth - tabPosition;
             }
             if (surrogate)
                 ++currentChar;
@@ -404,7 +406,7 @@ public class BidiLine {
         if (newCurrentChar == currentChar - 1) { // middle of word
             HyphenationEvent he = (HyphenationEvent)lastValidChunk.getAttribute(Chunk.HYPHENATION);
             if (he != null) {
-                int word[] = getWord(oldCurrentChar, newCurrentChar);
+                int[] word = getWord(oldCurrentChar, newCurrentChar);
                 if (word != null) {
                     float testWidth = width + getWidth(word[0], currentChar - 1);
                     String pre = he.getHyphenatedWordPre(new String(text, word[0], word[1] - word[0]), lastValidChunk.font().getFont(), lastValidChunk.font().size(), testWidth);

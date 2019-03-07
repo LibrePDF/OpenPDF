@@ -55,31 +55,31 @@ package com.lowagie.text;
  * be added to a Document more than once. If you have invoked setComplete(false),
  * they will be added partially and the content that was added will be
  * removed until you've invoked setComplete(true);
- * @since	iText 2.0.8
+ * @since    iText 2.0.8
  */
 
 public interface LargeElement extends Element {
-	
-	/**
-	 * If you invoke setComplete(false), you indicate that the content
-	 * of the object isn't complete yet; it can be added to the document
-	 * partially, but more will follow. If you invoke setComplete(true),
-	 * you indicate that you won't add any more data to the object.
-	 * @since	iText 2.0.8
-	 * @param	complete	false if you'll be adding more data after
-	 * 						adding the object to the document.
-	 */
+    
+    /**
+     * If you invoke setComplete(false), you indicate that the content
+     * of the object isn't complete yet; it can be added to the document
+     * partially, but more will follow. If you invoke setComplete(true),
+     * you indicate that you won't add any more data to the object.
+     * @since    iText 2.0.8
+     * @param    complete    false if you'll be adding more data after
+     *                         adding the object to the document.
+     */
     void setComplete(boolean complete);
-	
-	/**
-	 * Indicates if the element is complete or not.
-	 * @since	iText 2.0.8
-	 * @return	indicates if the element is complete according to the user.
-	 */
+    
+    /**
+     * Indicates if the element is complete or not.
+     * @since    iText 2.0.8
+     * @return    indicates if the element is complete according to the user.
+     */
     boolean isComplete();
-	
-	/**
-	 * Flushes the content that has been added.
-	 */
+    
+    /**
+     * Flushes the content that has been added.
+     */
     void flushContent();
 }

@@ -57,49 +57,49 @@ import com.lowagie.toolbox.arguments.filters.PdfFilter;
  */
 public class SelectedPages extends AbstractTool {
 
-	static {
-		addVersion("$Id: SelectedPages.java 3271 2008-04-18 20:39:42Z xlv $");
-	}
-	/**
-	 * Constructs a SelectedPages object.
-	 */
-	public SelectedPages() {
-		menuoptions = MENU_EXECUTE | MENU_EXECUTE_SHOW;
-		arguments.add(new FileArgument(this, "srcfile", "The file you want to split", false, new PdfFilter()));
-		arguments.add(new FileArgument(this, "destfile", "The file to which the first part of the original PDF has to be written", true, new PdfFilter()));
-		arguments.add(new StringArgument(this, "selection", "A selection of pages (see Help for more info)"));
-	}
+    static {
+        addVersion("$Id: SelectedPages.java 3271 2008-04-18 20:39:42Z xlv $");
+    }
+    /**
+     * Constructs a SelectedPages object.
+     */
+    public SelectedPages() {
+        menuoptions = MENU_EXECUTE | MENU_EXECUTE_SHOW;
+        arguments.add(new FileArgument(this, "srcfile", "The file you want to split", false, new PdfFilter()));
+        arguments.add(new FileArgument(this, "destfile", "The file to which the first part of the original PDF has to be written", true, new PdfFilter()));
+        arguments.add(new StringArgument(this, "selection", "A selection of pages (see Help for more info)"));
+    }
 
-	/**
-	 * @see com.lowagie.toolbox.AbstractTool#createFrame()
-	 */
-	protected void createFrame() {
-		internalFrame = new JInternalFrame("SelectedPages", true, false, true);
-		internalFrame.setSize(300, 80);
-		internalFrame.setJMenuBar(getMenubar());
-		System.out.println("=== SelectedPages OPENED ===");
-	}
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     */
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("SelectedPages", true, false, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== SelectedPages OPENED ===");
+    }
 
-	/**
-	 * @see com.lowagie.toolbox.AbstractTool#execute()
-	 */
-	public void execute() {
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#execute()
+     */
+    public void execute() {
         try {
-			if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
-			File src = (File)getValue("srcfile");
-        	if (getValue("destfile") == null) throw new InstantiationException("You need to choose a destination file for the first part of the PDF");
-        	File dest = (File)getValue("destfile");
-        	String selection = (String)getValue("selection");
+            if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
+            File src = (File)getValue("srcfile");
+            if (getValue("destfile") == null) throw new InstantiationException("You need to choose a destination file for the first part of the PDF");
+            File dest = (File)getValue("destfile");
+            String selection = (String)getValue("selection");
 
-        	// we create a reader for a certain document
-			PdfReader reader = new PdfReader(src.getAbsolutePath());
-			System.out.println("The original file had " + reader.getNumberOfPages() + " pages.");
-			reader.selectPages(selection);
-			int pages = reader.getNumberOfPages();
-			System.err.println("The new file has " + pages + " pages.");
-			Document document = new Document(reader.getPageSizeWithRotation(1));
-			PdfCopy copy = new PdfCopy(document, new FileOutputStream(dest.getAbsolutePath()));
-			document.open();
+            // we create a reader for a certain document
+            PdfReader reader = new PdfReader(src.getAbsolutePath());
+            System.out.println("The original file had " + reader.getNumberOfPages() + " pages.");
+            reader.selectPages(selection);
+            int pages = reader.getNumberOfPages();
+            System.err.println("The new file has " + pages + " pages.");
+            Document document = new Document(reader.getPageSizeWithRotation(1));
+            PdfCopy copy = new PdfCopy(document, new FileOutputStream(dest.getAbsolutePath()));
+            document.open();
             PdfImportedPage page;
             for (int i = 0; i < pages; ) {
                 ++i;
@@ -108,9 +108,9 @@ public class SelectedPages extends AbstractTool {
                 copy.addPage(page);
             }
             PRAcroForm form = reader.getAcroForm();
-			if (form != null)
+            if (form != null)
                 copy.copyAcroForm(reader);
-			document.close();
+            document.close();
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -123,12 +123,12 @@ public class SelectedPages extends AbstractTool {
      * @param arg StringArgument
      */
     public void valueHasChanged(AbstractArgument arg) {
-		if (internalFrame == null) {
-			// if the internal frame is null, the tool was called from the command line
-			return;
-		}
-		// represent the changes of the argument in the internal frame
-	}
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the command line
+            return;
+        }
+        // represent the changes of the argument in the internal frame
+    }
 
 
     /**
@@ -137,13 +137,13 @@ public class SelectedPages extends AbstractTool {
      * @param args String[]
      */
     public static void main(String[] args) {
-    	SelectedPages tool = new SelectedPages();
-    	if (args.length < 4) {
-    		System.err.println(tool.getUsage());
-    	}
-    	tool.setMainArguments(args);
+        SelectedPages tool = new SelectedPages();
+        if (args.length < 4) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
         tool.execute();
-	}
+    }
 
     /**
      *
@@ -152,6 +152,6 @@ public class SelectedPages extends AbstractTool {
      * @return File
      */
     protected File getDestPathPDF() throws InstantiationException {
-		return (File)getValue("destfile");
-	}
+        return (File)getValue("destfile");
+    }
 }

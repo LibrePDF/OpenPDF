@@ -112,6 +112,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Random;
 
+import com.lowagie.text.ExceptionConverter;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.ExtensionsGenerator;
@@ -127,7 +128,7 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**

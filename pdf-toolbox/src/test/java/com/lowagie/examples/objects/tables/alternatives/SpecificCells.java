@@ -1,15 +1,15 @@
 /*
  * $Id: SpecificCells.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.objects.tables.alternatives;
 
@@ -51,9 +51,9 @@ public class SpecificCells {
             aTable.addCell("2.1", new Point(2,1));
             aTable.addCell("1.3", new Point(1,3));
             document.add(aTable);
-			document.add(new Paragraph("converted to PdfPTable:"));
-			aTable.setConvert2pdfptable(true);
-			document.add(aTable);
+            document.add(new Paragraph("converted to PdfPTable:"));
+            aTable.setConvert2pdfptable(true);
+            document.add(aTable);
             document.newPage();     
             aTable = new Table(4,4);    // 4 rows, 4 columns
             aTable.setAlignment(Element.ALIGN_CENTER);
@@ -65,9 +65,9 @@ public class SpecificCells {
             aTable.addCell("6.1", new Point(6,1));
             aTable.addCell("5.0", new Point(5,0));  
             document.add(aTable);
-			document.add(new Paragraph("converted to PdfPTable:"));
-			aTable.setConvert2pdfptable(true);
-			document.add(aTable);
+            document.add(new Paragraph("converted to PdfPTable:"));
+            aTable.setConvert2pdfptable(true);
+            document.add(aTable);
             document.newPage();
             aTable = new Table(2,2);    // 2 rows, 2 columns
             aTable.setAlignment(Element.ALIGN_LEFT);
@@ -87,9 +87,9 @@ public class SpecificCells {
             aTable.addCell("6.1", new Point(6,1));
             aTable.addCell("5.0", new Point(5,0)); 
             document.add(aTable); 
-			document.add(new Paragraph("converted to PdfPTable:"));
-			aTable.setConvert2pdfptable(true);
-			document.add(aTable);
+            document.add(new Paragraph("converted to PdfPTable:"));
+            aTable.setConvert2pdfptable(true);
+            document.add(aTable);
         }
         catch(DocumentException de) {
             System.err.println(de.getMessage());

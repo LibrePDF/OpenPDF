@@ -60,7 +60,7 @@ public class ChapterAutoNumber extends Chapter {
 
     /**
      * Is the chapter number already set?
-     * @since	2.1.4
+     * @since    2.1.4
      */
     protected boolean numberSet = false;
     
@@ -76,7 +76,7 @@ public class ChapterAutoNumber extends Chapter {
     /**
      * Create a new object.
      * 
-     * @param title	    the Chapter title (as a <CODE>String</CODE>)
+     * @param title        the Chapter title (as a <CODE>String</CODE>)
      */
     public ChapterAutoNumber(final String title) {
         super(title, 0);
@@ -89,9 +89,9 @@ public class ChapterAutoNumber extends Chapter {
      * @return Returns the new section.
      */
     public Section addSection(final String title) {
-    	if (isAddedCompletely()) {
-    		throw new IllegalStateException(MessageLocalization.getComposedMessage("this.largeelement.has.already.been.added.to.the.document"));
-    	}
+        if (isAddedCompletely()) {
+            throw new IllegalStateException(MessageLocalization.getComposedMessage("this.largeelement.has.already.been.added.to.the.document"));
+        }
         return addSection(title, 2);
     }
 
@@ -102,24 +102,24 @@ public class ChapterAutoNumber extends Chapter {
      * @return Returns the new section.
      */
     public Section addSection(final Paragraph title) {
-    	if (isAddedCompletely()) {
-    		throw new IllegalStateException(MessageLocalization.getComposedMessage("this.largeelement.has.already.been.added.to.the.document"));
-    	}
+        if (isAddedCompletely()) {
+            throw new IllegalStateException(MessageLocalization.getComposedMessage("this.largeelement.has.already.been.added.to.the.document"));
+        }
         return addSection(title, 2);
     }
     
     /**
      * Changes the Chapter number.
-     * @param	number	the new chapter number
+     * @param    number    the new chapter number
      * @since 2.1.4
      */
     public int setAutomaticNumber(int number) {
-    	if (!numberSet) {
-        	number++;
-        	super.setChapterNumber(number);
-        	numberSet = true;
-    	}
-		return number;
+        if (!numberSet) {
+            number++;
+            super.setChapterNumber(number);
+            numberSet = true;
+        }
+        return number;
     }
 
 }

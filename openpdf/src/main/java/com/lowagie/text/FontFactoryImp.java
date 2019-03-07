@@ -60,8 +60,10 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
+
 
 /**
  * If you are using True Type fonts, you can declare the paths of the different ttf- and ttc-files
@@ -140,12 +142,12 @@ public class FontFactoryImp implements FontProvider {
     /**
      * Constructs a <CODE>Font</CODE>-object.
      *
-     * @param	fontname    the name of the font
-     * @param	encoding    the encoding of the font
+     * @param    fontname    the name of the font
+     * @param    encoding    the encoding of the font
      * @param       embedded    true if the font is to be embedded in the PDF
-     * @param	size	    the size of this font
-     * @param	style	    the style of this font
-     * @param	color	    the <CODE>Color</CODE> of this font.
+     * @param    size        the size of this font
+     * @param    style        the style of this font
+     * @param    color        the <CODE>Color</CODE> of this font.
      * @return the Font constructed based on the parameters
      */
     public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color) {
@@ -157,39 +159,33 @@ public class FontFactoryImp implements FontProvider {
     /**
      * Constructs a <CODE>Font</CODE>-object.
      *
-     * @param	fontname    the name of the font
-     * @param	encoding    the encoding of the font
+     * @param    fontname    the name of the font
+     * @param    encoding    the encoding of the font
      * @param       embedded    true if the font is to be embedded in the PDF
-     * @param	size	    the size of this font
-     * @param	style	    the style of this font
-     * @param	color	    the <CODE>Color</CODE> of this font.
-     * @param	cached 		true if the font comes from the cache or is added to
-     * 				the cache if new, false if the font is always created new
+     * @param    size        the size of this font
+     * @param    style        the style of this font
+     * @param    color        the <CODE>Color</CODE> of this font.
+     * @param    cached         true if the font comes from the cache or is added to
+     *                 the cache if new, false if the font is always created new
      * @return the Font constructed based on the parameters
      */
     public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color, boolean cached) {
-    	if (fontname == null) return new Font(Font.UNDEFINED, size, style, color);
+        if (fontname == null) return new Font(Font.UNDEFINED, size, style, color);
         String lowercasefontname = fontname.toLowerCase(Locale.ROOT);
         ArrayList tmp = (ArrayList) fontFamilies.get(lowercasefontname);
         if (tmp != null) {
             // some bugs were fixed here by Daniel Marczisovszky
             int s = style == Font.UNDEFINED ? Font.NORMAL : style;
-            int fs = Font.NORMAL;
-            boolean found = false;
             for (Iterator i = tmp.iterator(); i.hasNext(); ) {
                 String f = (String) i.next();
                 String lcf = f.toLowerCase(Locale.ROOT);
-                fs = Font.NORMAL;
+                int fs = Font.NORMAL;
                 if (lcf.indexOf("bold") != -1) fs |= Font.BOLD;
                 if (lcf.indexOf("italic") != -1 || lcf.indexOf("oblique") != -1) fs |= Font.ITALIC;
                 if ((s & Font.BOLDITALIC) == fs) {
                     fontname = f;
-                    found = true;
                     break;
                 }
-            }
-            if (style != Font.UNDEFINED && found) {
-                style &= ~fs;
             }
         }
         BaseFont basefont = null;
@@ -320,11 +316,11 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
  * @param       embedded    true if the font is to be embedded in the PDF
- * @param	size	    the size of this font
- * @param	style	    the style of this font
+ * @param    size        the size of this font
+ * @param    style        the style of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -335,10 +331,10 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
  * @param       embedded    true if the font is to be embedded in the PDF
- * @param	size	    the size of this font
+ * @param    size        the size of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -349,8 +345,8 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
  * @param       embedded    true if the font is to be embedded in the PDF
  * @return the Font constructed based on the parameters
  */
@@ -362,11 +358,11 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
- * @param	size	    the size of this font
- * @param	style	    the style of this font
- * @param	color	    the <CODE>Color</CODE> of this font.
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
+ * @param    size        the size of this font
+ * @param    style        the style of this font
+ * @param    color        the <CODE>Color</CODE> of this font.
  * @return the Font constructed based on the parameters
  */
     
@@ -377,10 +373,10 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
- * @param	size	    the size of this font
- * @param	style	    the style of this font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
+ * @param    size        the size of this font
+ * @param    style        the style of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -391,9 +387,9 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
- * @param	size	    the size of this font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
+ * @param    size        the size of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -405,9 +401,9 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	size	    the size of this font
- * @param	color	    the <CODE>Color</CODE> of this font.
+ * @param    fontname    the name of the font
+ * @param    size        the size of this font
+ * @param    color        the <CODE>Color</CODE> of this font.
  * @return the Font constructed based on the parameters
  * @since 2.1.0
  */
@@ -419,8 +415,8 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
  * @return the Font constructed based on the parameters
  */
     
@@ -431,10 +427,10 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	size	    the size of this font
- * @param	style	    the style of this font
- * @param	color	    the <CODE>Color</CODE> of this font.
+ * @param    fontname    the name of the font
+ * @param    size        the size of this font
+ * @param    style        the style of this font
+ * @param    color        the <CODE>Color</CODE> of this font.
  * @return the Font constructed based on the parameters
  */
     
@@ -445,9 +441,9 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	size	    the size of this font
- * @param	style	    the style of this font
+ * @param    fontname    the name of the font
+ * @param    size        the size of this font
+ * @param    style        the style of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -458,8 +454,8 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	size	    the size of this font
+ * @param    fontname    the name of the font
+ * @param    size        the size of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -470,7 +466,7 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
+ * @param    fontname    the name of the font
  * @return the Font constructed based on the parameters
  */
     
@@ -528,7 +524,7 @@ public class FontFactoryImp implements FontProvider {
     public void register(String path, String alias) {
         try {
             if (path.toLowerCase().endsWith(".ttf") || path.toLowerCase().endsWith(".otf") || path.toLowerCase().indexOf(".ttc,") > 0) {
-                Object allNames[] = BaseFont.getAllFontNames(path, BaseFont.WINANSI, null);
+                Object[] allNames = BaseFont.getAllFontNames(path, BaseFont.WINANSI, null);
                 trueTypeFonts.setProperty(((String)allNames[0]).toLowerCase(), path);
                 if (alias != null) {
                     trueTypeFonts.setProperty(alias.toLowerCase(), path);
@@ -615,7 +611,7 @@ public class FontFactoryImp implements FontProvider {
             File file = new File(dir);
             if (!file.exists() || !file.isDirectory())
                 return 0;
-            String files[] = file.list();
+            String[] files = file.list();
             if (files == null)
                 return 0;
             for (int k = 0; k < files.length; ++k) {

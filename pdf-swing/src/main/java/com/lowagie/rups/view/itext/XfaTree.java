@@ -33,23 +33,23 @@ import com.lowagie.rups.view.itext.treenodes.XdpTreeNode;
  */
 public class XfaTree extends JTree {
 
-	/**
-	 * Constructs an XfaTree.
-	 */
-	public XfaTree() {
-		super();
-	}
-	
-	public void clear() {
-		setCellRenderer(new IconTreeCellRenderer());
-		setModel(new DefaultTreeModel(new IconTreeNode("xfa.png")));
-	}
-	public void load(XfaFile file) {
-		setCellRenderer(new IconTreeCellRenderer());
-		setModel(new DefaultTreeModel(new XdpTreeNode(file.getXfaDocument())));
-	}
+    /**
+     * Constructs an XfaTree.
+     */
+    public XfaTree() {
+        super();
+    }
+    
+    public void clear() {
+        setCellRenderer(new IconTreeCellRenderer());
+        setModel(new DefaultTreeModel(new IconTreeNode("xfa.png")));
+    }
+    public void load(XfaFile file) {
+        setCellRenderer(new IconTreeCellRenderer());
+        setModel(new DefaultTreeModel(new XdpTreeNode(file.getXfaDocument())));
+    }
 
-	/** A Serial Version UID. */
-	private static final long serialVersionUID = -5072971223015095193L;
+    /** A Serial Version UID. */
+    private static final long serialVersionUID = -5072971223015095193L;
 
 }

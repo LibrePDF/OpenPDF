@@ -27,7 +27,7 @@ import java.io.Serializable;
 public class ByteVector implements Serializable {
 
     private static final long serialVersionUID = -1096301185375029343L;
-	/**
+    /**
      * Capacity increment size
      */
     private static final int DEFAULT_BLOCK_SIZE = 2048;

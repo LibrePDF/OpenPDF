@@ -58,8 +58,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * An <CODE>Jpeg2000</CODE> is the representation of a graphic element (JPEG)
  * that has to be inserted into the document
  *
- * @see		Element
- * @see		Image
+ * @see        Element
+ * @see        Image
  */
 
 public class Jpeg2000 extends Image {
@@ -92,7 +92,7 @@ public class Jpeg2000 extends Image {
     /**
      * Constructs a <CODE>Jpeg2000</CODE>-object, using an <VAR>url</VAR>.
      *
-     * @param		url			the <CODE>URL</CODE> where the image can be found
+     * @param        url            the <CODE>URL</CODE> where the image can be found
      * @throws BadElementException
      * @throws IOException
      */
@@ -104,7 +104,7 @@ public class Jpeg2000 extends Image {
     /**
      * Constructs a <CODE>Jpeg2000</CODE>-object from memory.
      *
-     * @param		img		the memory image
+     * @param        img        the memory image
      * @throws BadElementException
      * @throws IOException
      */
@@ -119,9 +119,9 @@ public class Jpeg2000 extends Image {
     /**
      * Constructs a <CODE>Jpeg2000</CODE>-object from memory.
      *
-     * @param		img			the memory image.
-     * @param		width		the width you want the image to have
-     * @param		height		the height you want the image to have
+     * @param        img            the memory image.
+     * @param        width        the width you want the image to have
+     * @param        height        the height you want the image to have
      * @throws BadElementException
      * @throws IOException
      */

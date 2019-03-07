@@ -1,15 +1,15 @@
 /*
  * $Id: SoftMask.java 3838 2009-04-07 18:34:15Z mstorer $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.directcontent.colors;
 
@@ -32,7 +32,7 @@ public class SoftMask {
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-		System.out.println("SoftMask");
+        System.out.println("SoftMask");
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {
@@ -54,7 +54,7 @@ public class SoftMask {
             document.add(new Paragraph(text));
             Image img = Image.getInstance("otsoe.jpg");
             img.setAbsolutePosition(100, 550);
-            byte gradient[] = new byte[256];
+            byte[] gradient = new byte[256];
             for (int k = 0; k < 256; ++k)
                 gradient[k] = (byte)k;
             Image smask = Image.getInstance(256, 1, 1, 8, gradient);

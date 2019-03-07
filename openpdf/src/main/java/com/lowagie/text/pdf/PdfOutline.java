@@ -66,7 +66,7 @@ import com.lowagie.text.Paragraph;
  * This object is described in the 'Portable Document Format Reference Manual version 1.3'
  * section 6.7 (page 104-106)
  *
- * @see		PdfDictionary
+ * @see        PdfDictionary
  */
 
 public class PdfOutline extends PdfDictionary {
@@ -344,7 +344,7 @@ public class PdfOutline extends PdfDictionary {
     /**
      * Gets the indirect reference of this <CODE>PdfOutline</CODE>.
      *
-     * @return		the <CODE>PdfIndirectReference</CODE> to this outline.
+     * @return        the <CODE>PdfIndirectReference</CODE> to this outline.
      */
     
     public PdfIndirectReference indirectReference() {
@@ -354,7 +354,7 @@ public class PdfOutline extends PdfDictionary {
     /**
      * Gets the parent of this <CODE>PdfOutline</CODE>.
      *
-     * @return		the <CODE>PdfOutline</CODE> that is the parent of this outline.
+     * @return        the <CODE>PdfOutline</CODE> that is the parent of this outline.
      */
     
     public PdfOutline parent() {
@@ -394,7 +394,7 @@ public class PdfOutline extends PdfDictionary {
     /**
      * returns the level of this outline.
      *
-     * @return		a level
+     * @return        a level
      */
     
     public int level() {

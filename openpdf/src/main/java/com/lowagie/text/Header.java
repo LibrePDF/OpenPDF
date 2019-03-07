@@ -58,15 +58,15 @@ package com.lowagie.text;
  * <STRONG>Header header = new Header("inspired by", "William Shakespeare");</STRONG>
  * </PRE></BLOCKQUOTE>
  *
- * @see		Element
- * @see		Meta
+ * @see        Element
+ * @see        Meta
  */
 
 public class Header extends Meta {
     
     // membervariables
     
-	/** This is the content of this chunk of text. */
+    /** This is the content of this chunk of text. */
     private StringBuffer name;
     
     // constructors
@@ -74,8 +74,8 @@ public class Header extends Meta {
     /**
      * Constructs a <CODE>Meta</CODE>.
      *
-     * @param	name		the name of the meta-information
-     * @param	content		the content
+     * @param    name        the name of the meta-information
+     * @param    content        the content
      */
     
     public Header(String name, String content) {
@@ -85,10 +85,10 @@ public class Header extends Meta {
     
     // methods to retrieve information
 
-	/**
+    /**
      * Returns the name of the meta information.
      *
-     * @return	a <CODE>String</CODE>
+     * @return    a <CODE>String</CODE>
      */
     public String getName() {
         return name.toString();

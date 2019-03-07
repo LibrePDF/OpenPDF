@@ -1,15 +1,15 @@
 /*
  * $Id: Groups.java 3838 2009-04-07 18:34:15Z mstorer $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.directcontent.colors;
 
@@ -54,10 +54,10 @@ public class Groups {
      * @throws Exception
      */
     public static void pictureCircles(float x, float y, PdfContentByte cb) throws Exception {
-    	PdfGState gs = new PdfGState();
-    	gs.setBlendMode(PdfGState.BM_SOFTLIGHT);
-    	gs.setFillOpacity(0.7f);
-    	cb.setGState(gs);
+        PdfGState gs = new PdfGState();
+        gs.setBlendMode(PdfGState.BM_SOFTLIGHT);
+        gs.setFillOpacity(0.7f);
+        cb.setGState(gs);
         cb.setColorFill(Color.gray);
         cb.circle(x + 70, y + 70, 50);
         cb.fill();
@@ -72,7 +72,7 @@ public class Groups {
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-		System.out.println("Transparency Groups");
+        System.out.println("Transparency Groups");
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {

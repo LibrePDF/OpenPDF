@@ -69,9 +69,9 @@ public class PdfFormXObject extends PdfStream {
 /**
  * Constructs a <CODE>PdfFormXObject</CODE>-object.
  *
- * @param	template			the template
- * @param	compressionLevel	the compression level for the stream
- * @since	2.1.3 (Replacing the existing constructor with param compressionLevel)
+ * @param    template            the template
+ * @param    compressionLevel    the compression level for the stream
+ * @since    2.1.3 (Replacing the existing constructor with param compressionLevel)
  */
     
     PdfFormXObject(PdfTemplate template, int compressionLevel) // throws BadPdfFormatException

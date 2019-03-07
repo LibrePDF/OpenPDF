@@ -32,51 +32,51 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 
 public class StreamTextArea extends JScrollPane implements Observer {
-	
-	/** The text area with the content stream. */
-	protected JTextArea text;
-	
-	/**
-	 * Constructs a StreamTextArea.
-	 */
-	public StreamTextArea() {
-		super();
-		text = new JTextArea();
-		setViewportView(text);
-	}
-	
-	/**
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	public void update(Observable observable, Object obj) {
-		text.setText(null);
-	}
-	
-	/**
-	 * Renders the content stream of a PdfObject or empties the text area.
-	 * @param object	the object of which the content stream needs to be rendered
-	 */
-	public void render(PdfObject object) {
-		if (object instanceof PRStream) {
-			PRStream stream = (PRStream)object;
-			try {
-				TextAreaOutputStream taos = new TextAreaOutputStream(text);
-				taos.write(PdfReader.getStreamBytes(stream));
-				//text.addMouseListener(new StreamEditorAction(stream));
-			}
-			catch(IOException e) {
-				text.setText("The stream could not be read: " + e.getMessage());
-			}
-		}
-		else {
-			update(null, null);
-			return;
-		}
-		text.repaint();
-		repaint();
-	}
+    
+    /** The text area with the content stream. */
+    protected JTextArea text;
+    
+    /**
+     * Constructs a StreamTextArea.
+     */
+    public StreamTextArea() {
+        super();
+        text = new JTextArea();
+        setViewportView(text);
+    }
+    
+    /**
+     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+     */
+    public void update(Observable observable, Object obj) {
+        text.setText(null);
+    }
+    
+    /**
+     * Renders the content stream of a PdfObject or empties the text area.
+     * @param object    the object of which the content stream needs to be rendered
+     */
+    public void render(PdfObject object) {
+        if (object instanceof PRStream) {
+            PRStream stream = (PRStream)object;
+            try {
+                TextAreaOutputStream taos = new TextAreaOutputStream(text);
+                taos.write(PdfReader.getStreamBytes(stream));
+                //text.addMouseListener(new StreamEditorAction(stream));
+            }
+            catch(IOException e) {
+                text.setText("The stream could not be read: " + e.getMessage());
+            }
+        }
+        else {
+            update(null, null);
+            return;
+        }
+        text.repaint();
+        repaint();
+    }
 
-	/** a serial version id. */
-	private static final long serialVersionUID = 1302283071087762494L;
+    /** a serial version id. */
+    private static final long serialVersionUID = 1302283071087762494L;
 
 }

@@ -45,12 +45,12 @@ package com.lowagie.text.pdf.parser;
  * @author dgd
  */
 public abstract class ParsedTextImpl implements TextAssemblyBuffer {
-	private final String text;
-	private float _ascent;
-	private float _descent;
-	private Vector _startPoint;
-	private Vector _endPoint;
-	float _spaceWidth;
+    private final String text;
+    private float _ascent;
+    private float _descent;
+    private Vector _startPoint;
+    private Vector _endPoint;
+    float _spaceWidth;
     /**
      * We track a vector representing our baseline, left->right, so that calculations of line-
      * change can be accurate, even with 0-length words (representing lone spaces, when
@@ -90,50 +90,50 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
         _spaceWidth = spaceWidth;
     }
 
-	/**
-	 * @return
-	 * @see com.lowagie.text.pdf.parser.ParsedText#getText()
-	 */
-	@Override
-	public String getText() {
-		return text;
-	}
+    /**
+     * @return
+     * @see com.lowagie.text.pdf.parser.ParsedText#getText()
+     */
+    @Override
+    public String getText() {
+        return text;
+    }
 
-	/**
-	 * @return The width, in user space units, of a single space character in
-	 *         the current font
-	 */
-	public float getSingleSpaceWidth() {
-		return _spaceWidth;
-	}
+    /**
+     * @return The width, in user space units, of a single space character in
+     *         the current font
+     */
+    public float getSingleSpaceWidth() {
+        return _spaceWidth;
+    }
 
-	public float getAscent() {
-		return _ascent;
-	}
+    public float getAscent() {
+        return _ascent;
+    }
 
-	public float getDescent() {
-		return _descent;
-	}
+    public float getDescent() {
+        return _descent;
+    }
 
-	public float getWidth() {
-		return getEndPoint().subtract(getStartPoint()).length();
-	}
+    public float getWidth() {
+        return getEndPoint().subtract(getStartPoint()).length();
+    }
 
-	/**
-	 * @return a vector in User space representing the start point of the text
-	 */
-	public Vector getStartPoint() {
-		return _startPoint;
-	}
+    /**
+     * @return a vector in User space representing the start point of the text
+     */
+    public Vector getStartPoint() {
+        return _startPoint;
+    }
 
-	/**
-	 * @return a vector in User space representing the end point of the text
-	 *         (i.e. the starting point of the text plus the width of the text,
-	 *         transformed by the applicable transformation matrices)
-	 */
-	public Vector getEndPoint() {
-		return _endPoint;
-	}
+    /**
+     * @return a vector in User space representing the end point of the text
+     *         (i.e. the starting point of the text plus the width of the text,
+     *         transformed by the applicable transformation matrices)
+     */
+    public Vector getEndPoint() {
+        return _endPoint;
+    }
     
     /**
      * Return the vector representing the baseline of this text chunk, even if the length

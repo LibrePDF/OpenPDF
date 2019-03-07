@@ -53,17 +53,18 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.BaseFont;
 
 public class MetaFont extends MetaObject {
-    static final String fontNames[] = {
-        "Courier", "Courier-Bold", "Courier-Oblique", "Courier-BoldOblique",
-        "Helvetica", "Helvetica-Bold", "Helvetica-Oblique", "Helvetica-BoldOblique",
-        "Times-Roman", "Times-Bold", "Times-Italic", "Times-BoldItalic",
-        "Symbol", "ZapfDingbats"};
+    static final String[] fontNames = {
+            "Courier", "Courier-Bold", "Courier-Oblique", "Courier-BoldOblique",
+            "Helvetica", "Helvetica-Bold", "Helvetica-Oblique", "Helvetica-BoldOblique",
+            "Times-Roman", "Times-Bold", "Times-Italic", "Times-BoldItalic",
+            "Symbol", "ZapfDingbats"};
 
     static final int MARKER_BOLD = 1;
     static final int MARKER_ITALIC = 2;
@@ -113,7 +114,7 @@ public class MetaFont extends MetaObject {
         charset = in.readByte();
         in.skip(3);
         pitchAndFamily = in.readByte();
-        byte name[] = new byte[nameSize];
+        byte[] name = new byte[nameSize];
         int k;
         for (k = 0; k < nameSize; ++k) {
             int c = in.readByte();

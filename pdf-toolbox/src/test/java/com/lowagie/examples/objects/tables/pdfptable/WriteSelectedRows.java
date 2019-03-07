@@ -1,15 +1,15 @@
 /*
  * $Id: WriteSelectedRows.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.objects.tables.pdfptable;
 
@@ -27,25 +27,25 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class WriteSelectedRows {
 
-	/**
-	 * Demonstrates the writeSelectedRows method.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Demonstrates the writeSelectedRows method.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
 
-		System.out.println("writeSelectedRows");
-		// step1
-		Document document = new Document(PageSize.A4, 2, 2, 2, 2);
-		try {
-			// step2
-			PdfWriter writer = PdfWriter.getInstance(document,
-					new FileOutputStream("WriteSelectedRows.pdf"));
-			// step3
-			document.open();
-			// step4
-			PdfPTable table = new PdfPTable(4);
+        System.out.println("writeSelectedRows");
+        // step1
+        Document document = new Document(PageSize.A4, 2, 2, 2, 2);
+        try {
+            // step2
+            PdfWriter writer = PdfWriter.getInstance(document,
+                    new FileOutputStream("WriteSelectedRows.pdf"));
+            // step3
+            document.open();
+            // step4
+            PdfPTable table = new PdfPTable(4);
             table.getDefaultCell().setBorder(Rectangle.LEFT | Rectangle.RIGHT);
             for (int k = 0; k < 24; ++k) {
                 table.addCell("cell " + k);
@@ -73,10 +73,10 @@ public class WriteSelectedRows {
             document.newPage();
             document.add(new Paragraph("row 150 - 200"));
             table.writeSelectedRows(150, -1, 50, 820, writer.getDirectContent());
-		} catch (Exception de) {
-			de.printStackTrace();
-		}
-		// step5
-		document.close();
-	}
+        } catch (Exception de) {
+            de.printStackTrace();
+        }
+        // step5
+        document.close();
+    }
 }

@@ -47,6 +47,7 @@
  * http://www.lowagie.com/iText/
  */
 package com.lowagie.text.pdf;
+
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.crypto.AESCipher;
 import com.lowagie.text.pdf.crypto.IVGenerator;
@@ -65,7 +66,7 @@ public class OutputStreamEncryption extends OutputStream {
     private boolean finished;
     
     /** Creates a new instance of OutputStreamCounter */
-    public OutputStreamEncryption(OutputStream out, byte key[], int off, int len, int revision) {
+    public OutputStreamEncryption(OutputStream out, byte[] key, int off, int len, int revision) {
         try {
             this.out = out;
             aes = revision == AES_128;
@@ -85,7 +86,7 @@ public class OutputStreamEncryption extends OutputStream {
         }
     }
     
-    public OutputStreamEncryption(OutputStream out, byte key[], int revision) {
+    public OutputStreamEncryption(OutputStream out, byte[] key, int revision) {
         this(out, key, 0, key.length, revision);
     }
     

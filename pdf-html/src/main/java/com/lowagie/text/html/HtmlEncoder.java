@@ -62,7 +62,7 @@ import com.lowagie.text.Element;
  *     (with xxx = the value of the character)
  * <LI>ASCII-characters from 032 t/m 127 are represented by the character itself, except for:
  *     <UL>
- *     <LI>'\n'	becomes &lt;BR&gt;\n
+ *     <LI>'\n'    becomes &lt;BR&gt;\n
  *     <LI>&quot; becomes &amp;quot;
  *     <LI>&amp; becomes &amp;amp;
  *     <LI>&lt; becomes &amp;lt;
@@ -130,8 +130,8 @@ public final class HtmlEncoder {
 /**
  * Converts a <CODE>String</CODE> to the HTML-format of this <CODE>String</CODE>.
  *
- * @param	string	The <CODE>String</CODE> to convert
- * @return	a <CODE>String</CODE>
+ * @param    string    The <CODE>String</CODE> to convert
+ * @return    a <CODE>String</CODE>
  */
     
     public static String encode(String string) {
@@ -156,8 +156,8 @@ public final class HtmlEncoder {
 /**
  * Converts a <CODE>Color</CODE> into a HTML representation of this <CODE>Color</CODE>.
  *
- * @param	color	the <CODE>Color</CODE> that has to be converted.
- * @return	the HTML representation of this <COLOR>Color</COLOR>
+ * @param    color    the <CODE>Color</CODE> that has to be converted.
+ * @return    the HTML representation of this <COLOR>Color</COLOR>
  */
     
     public static String encode(Color color) {

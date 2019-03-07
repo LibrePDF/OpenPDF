@@ -69,7 +69,7 @@ class EnumerateTTC extends TrueTypeFont{
         findNames();
     }
 
-    EnumerateTTC(byte ttcArray[]) throws DocumentException, IOException {
+    EnumerateTTC(byte[] ttcArray) throws DocumentException, IOException {
         fileName = "Byte array TTC";
         rf = new RandomAccessFileOrArray(ttcArray);
         findNames();
@@ -99,7 +99,7 @@ class EnumerateTTC extends TrueTypeFont{
                 for (int k = 0; k < num_tables; ++k) {
                     String tag = readStandardString(4);
                     rf.skipBytes(4);
-                    int table_location[] = new int[2];
+                    int[] table_location = new int[2];
                     table_location[0] = rf.readInt();
                     table_location[1] = rf.readInt();
                     tables.put(tag, table_location);

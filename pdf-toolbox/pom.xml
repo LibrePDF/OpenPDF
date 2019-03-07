@@ -6,20 +6,19 @@
     <parent>
         <groupId>com.github.librepdf</groupId>
         <artifactId>openpdf-parent</artifactId>
-        <version>1.0.6-SNAPSHOT</version>
+        <version>1.2.11-SNAPSHOT</version>
     </parent>
 
     <artifactId>pdf-toolbox</artifactId>
+
+    <properties>
+        <java-module-name>com.github.librepdf.pdf-toolbox</java-module-name>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>pdf-html</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>pdf-rtf</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -52,8 +51,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

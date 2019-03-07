@@ -66,15 +66,15 @@ import com.lowagie.text.Utilities;
  * A <CODE>PdfChunk</CODE> is a <CODE>PdfString</CODE> in a certain
  * <CODE>PdfFont</CODE> and <CODE>Color</CODE>.
  *
- * @see		PdfString
- * @see		com.lowagie.text.Chunk
- * @see		com.lowagie.text.Font
+ * @see        PdfString
+ * @see        com.lowagie.text.Chunk
+ * @see        com.lowagie.text.Font
  */
 
 public class PdfChunk {
 
-    private static final char singleSpace[] = {' '};
-    private static final PdfChunk thisChunk[] = new PdfChunk[1];
+    private static final char[] singleSpace = {' '};
+    private static final PdfChunk[] thisChunk = new PdfChunk[1];
     private static final float ITALIC_ANGLE = 0.21256f;
 /** The allowed attributes in variable <CODE>attributes</CODE>. */
     private static final HashMap keysAttributes = new HashMap();
@@ -166,7 +166,7 @@ public class PdfChunk {
         this.attributes = other.attributes;
         this.noStroke = other.noStroke;
         this.baseFont = other.baseFont;
-        Object obj[] = (Object[])attributes.get(Chunk.IMAGE);
+        Object[] obj = (Object[]) attributes.get(Chunk.IMAGE);
         if (obj == null)
             image = null;
         else {
@@ -232,13 +232,13 @@ public class PdfChunk {
             }
         }
         if (f.isUnderlined()) {
-            Object obj[] = {null, new float[]{0, 1f / 15, 0, -1f / 3, 0}};
-            Object unders[][] = Utilities.addToArray((Object[][])attributes.get(Chunk.UNDERLINE), obj);
+            Object[] obj = {null, new float[]{0, 1f / 15, 0, -1f / 3, 0}};
+            Object[][] unders = Utilities.addToArray((Object[][]) attributes.get(Chunk.UNDERLINE), obj);
             attributes.put(Chunk.UNDERLINE, unders);
         }
         if (f.isStrikethru()) {
-            Object obj[] = {null, new float[]{0, 1f / 15, 0, 1f / 3, 0}};
-            Object unders[][] = Utilities.addToArray((Object[][])attributes.get(Chunk.UNDERLINE), obj);
+            Object[] obj = {null, new float[]{0, 1f / 15, 0, 1f / 3, 0}};
+            Object[][] unders = Utilities.addToArray((Object[][]) attributes.get(Chunk.UNDERLINE), obj);
             attributes.put(Chunk.UNDERLINE, unders);
         }
         if (action != null)
@@ -246,7 +246,7 @@ public class PdfChunk {
         // the color can't be stored in a PdfFont
         noStroke.put(Chunk.COLOR, f.getColor());
         noStroke.put(Chunk.ENCODING, font.getFont().getEncoding());
-        Object obj[] = (Object[])attributes.get(Chunk.IMAGE);
+        Object[] obj = (Object[]) attributes.get(Chunk.IMAGE);
         if (obj == null) {
             image = null;
         }
@@ -294,8 +294,8 @@ public class PdfChunk {
  * <P>
  * Returns <VAR>null</VAR> if the <CODE>PdfChunk</CODE> wasn't truncated.
  *
- * @param		width		a given width
- * @return		the <CODE>PdfChunk</CODE> that doesn't fit into the width.
+ * @param        width        a given width
+ * @return        the <CODE>PdfChunk</CODE> that doesn't fit into the width.
  */
     
     PdfChunk split(float width) {
@@ -322,7 +322,7 @@ public class PdfChunk {
         int lastSpace = -1;
         float lastSpaceWidth = 0;
         int length = value.length();
-        char valueArray[] = value.toCharArray();
+        char[] valueArray = value.toCharArray();
         char character = 0;
         BaseFont ft = font.getFont();
         boolean surrogate = false;
@@ -430,8 +430,8 @@ public class PdfChunk {
  * <P>
  * Returns <VAR>null</VAR> if the <CODE>PdfChunk</CODE> wasn't truncated.
  *
- * @param		width		a given width
- * @return		the <CODE>PdfChunk</CODE> that doesn't fit into the width.
+ * @param        width        a given width
+ * @return        the <CODE>PdfChunk</CODE> that doesn't fit into the width.
  */
     
     PdfChunk truncate(float width) {
@@ -502,7 +502,7 @@ public class PdfChunk {
 /**
  * Returns the font of this <CODE>Chunk</CODE>.
  *
- * @return	a <CODE>PdfFont</CODE>
+ * @return    a <CODE>PdfFont</CODE>
  */
     
     PdfFont font() {
@@ -512,7 +512,7 @@ public class PdfChunk {
 /**
  * Returns the color of this <CODE>Chunk</CODE>.
  *
- * @return	a <CODE>Color</CODE>
+ * @return    a <CODE>Color</CODE>
  */
     
     Color color() {
@@ -522,14 +522,14 @@ public class PdfChunk {
 /**
  * Returns the width of this <CODE>PdfChunk</CODE>.
  *
- * @return	a width
+ * @return    a width
  */
     
     float width() {
         if (isAttribute(Chunk.CHAR_SPACING)) {
-        	Float cs = (Float) getAttribute(Chunk.CHAR_SPACING);
+            Float cs = (Float) getAttribute(Chunk.CHAR_SPACING);
             return font.width(value) + value.length() * cs.floatValue();
-		}
+        }
         return font.width(value);
     }
     
@@ -568,11 +568,11 @@ public class PdfChunk {
      * @return a displacement in points
      */
     public float getTextRise() {
-    	Float f = (Float) getAttribute(Chunk.SUBSUPSCRIPT);
-    	if (f != null) {
-    		return f.floatValue();
-    	}
-    	return 0.0f;
+        Float f = (Float) getAttribute(Chunk.SUBSUPSCRIPT);
+        if (f != null) {
+            return f.floatValue();
+        }
+        return 0.0f;
     }
     
 /**
@@ -654,45 +654,45 @@ public class PdfChunk {
     
     /**
      * Checks if this <CODE>PdfChunk</CODE> is a Separator Chunk.
-     * @return	true if this chunk is a separator.
-     * @since	2.1.2
+     * @return    true if this chunk is a separator.
+     * @since    2.1.2
      */
     boolean isSeparator() {
-    	return isAttribute(Chunk.SEPARATOR);
+        return isAttribute(Chunk.SEPARATOR);
     }
     
     /**
      * Checks if this <CODE>PdfChunk</CODE> is a horizontal Separator Chunk.
-     * @return	true if this chunk is a horizontal separator.
-     * @since	2.1.2
+     * @return    true if this chunk is a horizontal separator.
+     * @since    2.1.2
      */
     boolean isHorizontalSeparator() {
-    	if (isAttribute(Chunk.SEPARATOR)) {
-    		Object[] o = (Object[])getAttribute(Chunk.SEPARATOR);
-    		return !((Boolean)o[1]).booleanValue();
-    	}
-    	return false;
+        if (isAttribute(Chunk.SEPARATOR)) {
+            Object[] o = (Object[])getAttribute(Chunk.SEPARATOR);
+            return !((Boolean)o[1]).booleanValue();
+        }
+        return false;
     }
     
     /**
      * Checks if this <CODE>PdfChunk</CODE> is a tab Chunk.
-     * @return	true if this chunk is a separator.
-     * @since	2.1.2
+     * @return    true if this chunk is a separator.
+     * @since    2.1.2
      */
     boolean isTab() {
-    	return isAttribute(Chunk.TAB);
+        return isAttribute(Chunk.TAB);
     }
     
     /**
      * Correction for the tab position based on the left starting position.
-     * @param	newValue	the new value for the left X.
-     * @since	2.1.2
+     * @param    newValue    the new value for the left X.
+     * @since    2.1.2
      */
     void adjustLeft(float newValue) {
-    	Object[] o = (Object[])attributes.get(Chunk.TAB);
-    	if (o != null) {
-    		attributes.put(Chunk.TAB, new Object[]{o[0], o[1], o[2], new Float(newValue)});
-    	}
+        Object[] o = (Object[])attributes.get(Chunk.TAB);
+        if (o != null) {
+            attributes.put(Chunk.TAB, new Object[]{o[0], o[1], o[2], new Float(newValue)});
+        }
     }
     
 /**
@@ -784,7 +784,7 @@ public class PdfChunk {
     /**
      * Gets the encoding of this string.
      *
-     * @return		a <CODE>String</CODE>
+     * @return        a <CODE>String</CODE>
      */
     
     String getEncoding() {
@@ -815,8 +815,8 @@ public class PdfChunk {
 /**
  * Removes all the <VAR>' '</VAR> and <VAR>'-'</VAR>-characters on the right of a <CODE>String</CODE>.
  * <P>
- * @param	string		the <CODE>String<CODE> that has to be trimmed.
- * @return	the trimmed <CODE>String</CODE>
+ * @param    string        the <CODE>String<CODE> that has to be trimmed.
+ * @return    the trimmed <CODE>String</CODE>
  */    
     String trim(String string) {
         BaseFont ft = font.getFont();
@@ -841,9 +841,9 @@ public class PdfChunk {
         if (noPrint(c))
             return 0;
         if (isAttribute(Chunk.CHAR_SPACING)) {
-        	Float cs = (Float) getAttribute(Chunk.CHAR_SPACING);
-			return font.width(c) + cs.floatValue();
-		}
+            Float cs = (Float) getAttribute(Chunk.CHAR_SPACING);
+            return font.width(c) + cs.floatValue();
+        }
         return font.width(c);
     }
     

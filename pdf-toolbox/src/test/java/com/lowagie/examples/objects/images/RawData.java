@@ -1,15 +1,15 @@
 /*
  * $Id: RawData.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.objects.images;
 
@@ -52,7 +52,7 @@ public class RawData {
             // creation a jpeg passed as an array of bytes to the Image
             RandomAccessFile rf = new RandomAccessFile("otsoe.jpg", "r");
             int size = (int)rf.length();
-            byte imext[] = new byte[size];
+            byte[] imext = new byte[size];
             rf.readFully(imext);
             rf.close();
             Image img1 = Image.getInstance(imext);
@@ -60,7 +60,7 @@ public class RawData {
             document.add(img1);
             
             // creation of an image of 100 x 100 pixels (x 3 bytes for the Red, Green and Blue value)
-            byte data[] = new byte[100*100*3];
+            byte[] data = new byte[100 * 100 * 3];
             for (int k = 0; k < 100; ++k) {
                 for (int j = 0; j < 300; j += 3) {
                     data[k * 300 + j] = (byte)(255 * Math.sin(j * .5 * Math.PI / 300));

@@ -1,15 +1,15 @@
 /*
  * $Id: Destinations.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 
 package com.lowagie.examples.objects.bookmarks;
@@ -31,25 +31,25 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class Destinations {
 
-	/**
-	 * Creates a document with some goto actions.
-	 * 
-	 * @param args
-	 *            no arguments needed
-	 */
-	public static void main(String[] args) {
+    /**
+     * Creates a document with some goto actions.
+     * 
+     * @param args
+     *            no arguments needed
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Destinations");
+        System.out.println("Destinations");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
 
-			// step 2:
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("Destinations.pdf"));
-			// step 3:       
+            // step 2:
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("Destinations.pdf"));
+            // step 3:       
             writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
-			document.open();
+            document.open();
             // step 4: we grab the ContentByte and do some stuff with it
             PdfContentByte cb = writer.getDirectContent();
             
@@ -82,11 +82,11 @@ public class Destinations {
             new PdfOutline(out1, d3, "sub 2");
             new PdfOutline(out2, d4, "sub 2.1");
             new PdfOutline(out2, d5, "sub 2.2");
-		} catch (Exception de) {
-			de.printStackTrace();
-		}
+        } catch (Exception de) {
+            de.printStackTrace();
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

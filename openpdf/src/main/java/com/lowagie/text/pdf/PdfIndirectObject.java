@@ -66,8 +66,8 @@ import com.lowagie.text.DocWriter;
  * This object is described in the 'Portable Document Format Reference Manual version 1.7'
  * section 3.2.9 (page 63-65).
  *
- * @see		PdfObject
- * @see		PdfIndirectReference
+ * @see        PdfObject
+ * @see        PdfIndirectReference
  */
 
 public class PdfIndirectObject {
@@ -79,9 +79,9 @@ public class PdfIndirectObject {
     
 /** the generation number */
     protected int generation = 0;
-    
-    static final byte STARTOBJ[] = DocWriter.getISOBytes(" obj\n");
-    static final byte ENDOBJ[] = DocWriter.getISOBytes("\nendobj\n");
+
+    static final byte[] STARTOBJ = DocWriter.getISOBytes(" obj\n");
+    static final byte[] ENDOBJ = DocWriter.getISOBytes("\nendobj\n");
     static final int SIZEOBJ = STARTOBJ.length + ENDOBJ.length;
     PdfObject object;
     PdfWriter writer;
@@ -91,8 +91,8 @@ public class PdfIndirectObject {
 /**
  * Constructs a <CODE>PdfIndirectObject</CODE>.
  *
- * @param		number			the object number
- * @param		object			the direct object
+ * @param        number            the object number
+ * @param        object            the direct object
  */
     
     PdfIndirectObject(int number, PdfObject object, PdfWriter writer) {
@@ -105,9 +105,9 @@ public class PdfIndirectObject {
 /**
  * Constructs a <CODE>PdfIndirectObject</CODE>.
  *
- * @param		number			the object number
- * @param		generation		the generation number
- * @param		object			the direct object
+ * @param        number            the object number
+ * @param        generation        the generation number
+ * @param        object            the direct object
  */
     
     PdfIndirectObject(int number, int generation, PdfObject object, PdfWriter writer) {
@@ -128,7 +128,7 @@ public class PdfIndirectObject {
 /**
  * Return the length of this <CODE>PdfIndirectObject</CODE>.
  *
- * @return		the length of the PDF-representation of this indirect object.
+ * @return        the length of the PDF-representation of this indirect object.
  */
     
 //    public int length() {
@@ -142,7 +142,7 @@ public class PdfIndirectObject {
 /**
  * Returns a <CODE>PdfIndirectReference</CODE> to this <CODE>PdfIndirectObject</CODE>.
  *
- * @return		a <CODE>PdfIndirectReference</CODE>
+ * @return        a <CODE>PdfIndirectReference</CODE>
  */
     
     public PdfIndirectReference getIndirectReference() {

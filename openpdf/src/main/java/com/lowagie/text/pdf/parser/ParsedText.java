@@ -51,6 +51,7 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfString;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,8 +61,8 @@ import java.util.List;
  */
 public class ParsedText extends ParsedTextImpl {
 
-	protected final Matrix textToUserSpaceTransformMatrix;
-	protected final GraphicsState gs;
+    protected final Matrix textToUserSpaceTransformMatrix;
+    protected final GraphicsState gs;
 
     /**
      * retain original PdfString as we need to distinguish between the code points contained there,
@@ -79,12 +80,9 @@ public class ParsedText extends ParsedTextImpl {
      */
     protected String decode(String in) {
         byte[] bytes;
-        if (BaseFont.IDENTITY_H.equals(gs.font.getEncoding()))
-            try {
-                bytes = in.getBytes("UTF-16");
-            } catch (UnsupportedEncodingException e) {
-                bytes = in.getBytes();
-            }
+        if (BaseFont.IDENTITY_H.equals(gs.font.getEncoding())) {
+            bytes = in.getBytes(StandardCharsets.UTF_16);
+        }
         bytes = in.getBytes();
         return gs.font.decode(bytes, 0, bytes.length);
     }
@@ -174,12 +172,9 @@ public class ParsedText extends ParsedTextImpl {
               convertHeightToUser(gs.font.getFontDescriptor(DocumentFont.DESCENT, gs.fontSize),
                                   textMatrix),
               convertWidthToUser(unscaledWidth, textMatrix));
-        if (BaseFont.IDENTITY_H.equals(gs.font.getEncoding()))
-            try {
-                pdfText = new PdfString(new String(text.getBytes(), "UTF-16"));
-            } catch (UnsupportedEncodingException e) {
-                throw new Error("This error can't actually happen as java always has Unicode", e);
-            }
+        if (BaseFont.IDENTITY_H.equals(gs.font.getEncoding())) {
+            pdfText = new PdfString(new String(text.getBytes(), StandardCharsets.UTF_16));
+        }
         else pdfText = text;
         textToUserSpaceTransformMatrix = textMatrix;
         this.gs = gs;
@@ -213,60 +208,60 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-	 * @param xoffset
-	 * @param yoffset
-	 * @param textToUserSpaceTransformMatrix
-	 * @return
-	 */
-	private static Vector pointToUserSpace(float xoffset, float yoffset,
-			Matrix textToUserSpaceTransformMatrix) {
-		Vector result = new Vector(xoffset, yoffset, 1f)
-				.cross(textToUserSpaceTransformMatrix);
-		return result;
-	}
+     * @param xoffset
+     * @param yoffset
+     * @param textToUserSpaceTransformMatrix
+     * @return
+     */
+    private static Vector pointToUserSpace(float xoffset, float yoffset,
+            Matrix textToUserSpaceTransformMatrix) {
+        Vector result = new Vector(xoffset, yoffset, 1f)
+                .cross(textToUserSpaceTransformMatrix);
+        return result;
+    }
 
-	/**
-	 * Calculates the width of a space character. If the font does not define a
-	 * width for a standard space character , we also attempt to use the width
-	 * of \u00A0 (a non-breaking space in many fonts)
-	 * 
-	 * @param gs
+    /**
+     * Calculates the width of a space character. If the font does not define a
+     * width for a standard space character , we also attempt to use the width
+     * of \u00A0 (a non-breaking space in many fonts)
+     * 
+     * @param gs
      *            graphic state including current transformation to page coordinates from
      *            text measurement
-	 * 
-	 * @return the width of a single space character in text space units
-	 */
-	private static float getUnscaledFontSpaceWidth(GraphicsState gs) {
-		char charToUse = ' ';
-		if (gs.font.getWidth(charToUse) == 0) {
-			charToUse = '\u00A0';
-		}
-		return getStringWidth(String.valueOf(charToUse), gs);
-	}
+     * 
+     * @return the width of a single space character in text space units
+     */
+    private static float getUnscaledFontSpaceWidth(GraphicsState gs) {
+        char charToUse = ' ';
+        if (gs.font.getWidth(charToUse) == 0) {
+            charToUse = '\u00A0';
+        }
+        return getStringWidth(String.valueOf(charToUse), gs);
+    }
 
-	/**
-	 * Gets the width of a String in text space units
-	 * 
-	 * @param string
-	 *            the string that needs measuring
-	 * @param gs
+    /**
+     * Gets the width of a String in text space units
+     * 
+     * @param string
+     *            the string that needs measuring
+     * @param gs
      *            graphic state including current transformation to page coordinates from
      *            text measurement
-	 * @return the width of a String in text space units
-	 */
-	private static float getStringWidth(String string, GraphicsState gs) {
-		DocumentFont font = gs.font;
-		char[] chars = string.toCharArray();
-		float totalWidth = 0;
-		for (char c : chars) {
-			float w = font.getWidth(c) / 1000.0f;
-			float wordSpacing = Character.isSpaceChar(c) ? gs.wordSpacing : 0f;
-			totalWidth += (w * gs.fontSize + gs.characterSpacing + wordSpacing)
-					* gs.horizontalScaling;
-		}
+     * @return the width of a String in text space units
+     */
+    private static float getStringWidth(String string, GraphicsState gs) {
+        DocumentFont font = gs.font;
+        char[] chars = string.toCharArray();
+        float totalWidth = 0;
+        for (char c : chars) {
+            float w = font.getWidth(c) / 1000.0f;
+            float wordSpacing = Character.isSpaceChar(c) ? gs.wordSpacing : 0f;
+            totalWidth += (w * gs.fontSize + gs.characterSpacing + wordSpacing)
+                    * gs.horizontalScaling;
+        }
 
-		return totalWidth;
-	}
+        return totalWidth;
+    }
 
     /**
      * Break this string if there are spaces within it. If so, we mark the new Words appropriately
@@ -285,7 +280,7 @@ public class ParsedText extends ParsedTextImpl {
         ArrayList<Word> result = new ArrayList<Word>();
         CMapAwareDocumentFont font = gs.font;
         char[] chars = pdfText.getOriginalChars();
-        boolean hasSpace[] = new boolean[chars.length];
+        boolean[] hasSpace = new boolean[chars.length];
         float totalWidth = 0;
         StringBuffer wordAccum = new StringBuffer(3);
         float wordStartOffset = 0;
@@ -395,60 +390,60 @@ public class ParsedText extends ParsedTextImpl {
      *            measurement
      * @return the unscaled (i.e. in Text space) width of our text
      */
-	public float getUnscaledTextWidth(GraphicsState gs) {
-		return getStringWidth(getFontCodes(), gs);
-	}
+    public float getUnscaledTextWidth(GraphicsState gs) {
+        return getStringWidth(getFontCodes(), gs);
+    }
 
-	/**
-	 * @param width
-	 * @param textToUserSpaceTransformMatrix
-	 * @return
-	 */
-	private static float convertWidthToUser(float width,
-			Matrix textToUserSpaceTransformMatrix) {
-		Vector startPos = pointToUserSpace(0, 0, textToUserSpaceTransformMatrix);
-		Vector endPos = pointToUserSpace(width, 0,
-				textToUserSpaceTransformMatrix);
-		return distance(startPos, endPos);
-	}
+    /**
+     * @param width
+     * @param textToUserSpaceTransformMatrix
+     * @return
+     */
+    private static float convertWidthToUser(float width,
+            Matrix textToUserSpaceTransformMatrix) {
+        Vector startPos = pointToUserSpace(0, 0, textToUserSpaceTransformMatrix);
+        Vector endPos = pointToUserSpace(width, 0,
+                textToUserSpaceTransformMatrix);
+        return distance(startPos, endPos);
+    }
 
-	/**
-	 * @param startPos
-	 * @param endPos
-	 * @return
-	 */
-	private static float distance(Vector startPos, Vector endPos) {
-		return endPos.subtract(startPos).length();
-	}
+    /**
+     * @param startPos
+     * @param endPos
+     * @return
+     */
+    private static float distance(Vector startPos, Vector endPos) {
+        return endPos.subtract(startPos).length();
+    }
 
-	/**
-	 * @param height
-	 * @param textToUserSpaceTransformMatrix
-	 * @return
-	 */
-	private static float convertHeightToUser(float height,
-			Matrix textToUserSpaceTransformMatrix) {
-		Vector startPos = pointToUserSpace(0, 0, textToUserSpaceTransformMatrix);
-		Vector endPos = pointToUserSpace(0, height,
-				textToUserSpaceTransformMatrix);
-		return distance(endPos, startPos);
-	}
+    /**
+     * @param height
+     * @param textToUserSpaceTransformMatrix
+     * @return
+     */
+    private static float convertHeightToUser(float height,
+            Matrix textToUserSpaceTransformMatrix) {
+        Vector startPos = pointToUserSpace(0, 0, textToUserSpaceTransformMatrix);
+        Vector endPos = pointToUserSpace(0, height,
+                textToUserSpaceTransformMatrix);
+        return distance(endPos, startPos);
+    }
 
-	/**
-	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#accumulate(com.lowagie.text.pdf.parser.TextAssembler, String)
-	 */
-	@Override
-	public void accumulate(TextAssembler p, String contextName) {
-		p.process(this, contextName);
-	}
+    /**
+     * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#accumulate(com.lowagie.text.pdf.parser.TextAssembler, String)
+     */
+    @Override
+    public void accumulate(TextAssembler p, String contextName) {
+        p.process(this, contextName);
+    }
 
-	/**
-	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#assemble(com.lowagie.text.pdf.parser.TextAssembler)
-	 */
-	@Override
-	public void assemble(TextAssembler p) {
-		p.renderText(this);
-	}
+    /**
+     * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#assemble(com.lowagie.text.pdf.parser.TextAssembler)
+     */
+    @Override
+    public void assemble(TextAssembler p) {
+        p.renderText(this);
+    }
 
     /**
      * when returning the text from this item, we need to decode the code points we have.
@@ -474,24 +469,24 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-	 * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getFinalText(com.lowagie.text.pdf.PdfReader,
-	 *      int, com.lowagie.text.pdf.parser.TextAssembler, boolean)
-	 */
-	@Override
-	public FinalText getFinalText(PdfReader reader, int page,
-			TextAssembler assembler, boolean useMarkup) {
-		throw new RuntimeException(
-				"Final text should never be called on unprocessed word fragment.");
-	}
+     * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getFinalText(com.lowagie.text.pdf.PdfReader,
+     *      int, com.lowagie.text.pdf.parser.TextAssembler, boolean)
+     */
+    @Override
+    public FinalText getFinalText(PdfReader reader, int page,
+            TextAssembler assembler, boolean useMarkup) {
+        throw new RuntimeException(
+                "Final text should never be called on unprocessed word fragment.");
+    }
 
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "[ParsedText: [" + getText() + "] " + getStartPoint() + ", "
-				+ getEndPoint() + "] lead" + "]";
-	}
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "[ParsedText: [" + getText() + "] " + getStartPoint() + ", "
+                + getEndPoint() + "] lead" + "]";
+    }
 
     /**
      * @see com.lowagie.text.pdf.parser.ParsedTextImpl#shouldNotSplit()

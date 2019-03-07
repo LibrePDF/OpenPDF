@@ -52,13 +52,14 @@ package com.lowagie.text.html;
 import java.util.HashMap;
 import java.util.Properties;
 
+import com.lowagie.text.ExceptionConverter;
 import org.xml.sax.Attributes;
 
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.ElementTags;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.xml.SAXiTextHandler;
 import com.lowagie.text.xml.XmlPeer;
@@ -134,7 +135,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
 
         // super.handleStartingTags is replaced with handleStartingTags
         // suggestion by Vu Ngoc Tan/Hop
-    	name = name.toLowerCase();
+        name = name.toLowerCase();
         if (HtmlTagMap.isHtml(name)) {
             // we do nothing
             return;
@@ -230,7 +231,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
 
     public void endElement(String uri, String lname, String name) {
         // System.err.println("End: " + name);
-    	name = name.toLowerCase();
+        name = name.toLowerCase();
         if (ElementTags.PARAGRAPH.equals(name)) {
             try {
                 document.add((Element) stack.pop());

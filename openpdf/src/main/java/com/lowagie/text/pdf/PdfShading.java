@@ -150,7 +150,7 @@ public class PdfShading {
         return null;
     }
 
-    public static PdfShading type1(PdfWriter writer, Color colorSpace, float domain[], float tMatrix[], PdfFunction function) {
+    public static PdfShading type1(PdfWriter writer, Color colorSpace, float[] domain, float[] tMatrix, PdfFunction function) {
         PdfShading sp = new PdfShading(writer);
         sp.shading = new PdfDictionary();
         sp.shadingType = 1;
@@ -164,7 +164,7 @@ public class PdfShading {
         return sp;
     }
     
-    public static PdfShading type2(PdfWriter writer, Color colorSpace, float coords[], float domain[], PdfFunction function, boolean extend[]) {
+    public static PdfShading type2(PdfWriter writer, Color colorSpace, float[] coords, float[] domain, PdfFunction function, boolean[] extend) {
         PdfShading sp = new PdfShading(writer);
         sp.shading = new PdfDictionary();
         sp.shadingType = 2;
@@ -182,7 +182,7 @@ public class PdfShading {
         return sp;
     }
 
-    public static PdfShading type3(PdfWriter writer, Color colorSpace, float coords[], float domain[], PdfFunction function, boolean extend[]) {
+    public static PdfShading type3(PdfWriter writer, Color colorSpace, float[] coords, float[] domain, PdfFunction function, boolean[] extend) {
         PdfShading sp = type2(writer, colorSpace, coords, domain, function, extend);
         sp.shadingType = 3;
         sp.shading.put(PdfName.SHADINGTYPE, new PdfNumber(sp.shadingType));

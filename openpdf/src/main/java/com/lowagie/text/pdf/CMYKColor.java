@@ -56,7 +56,7 @@ package com.lowagie.text.pdf;
 public class CMYKColor extends ExtendedColor {
 
     private static final long serialVersionUID = 5940378778276468452L;
-	float cyan;
+    float cyan;
     float magenta;
     float yellow;
     float black;

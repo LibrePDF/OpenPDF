@@ -46,9 +46,11 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.ExceptionConverter;
+
 import java.io.IOException;
 
-import com.lowagie.text.ExceptionConverter;
+
 /** Implements PDF functions.
  *
  * @author Paulo Soares (psoares@consiste.pt)
@@ -78,8 +80,8 @@ public class PdfFunction {
         return reference;
     }
         
-    public static PdfFunction type0(PdfWriter writer, float domain[], float range[], int size[],
-        int bitsPerSample, int order, float encode[], float decode[], byte stream[]) {
+    public static PdfFunction type0(PdfWriter writer, float[] domain, float[] range, int[] size,
+                                    int bitsPerSample, int order, float[] encode, float[] decode, byte[] stream) {
         PdfFunction func = new PdfFunction(writer);
         func.dictionary = new PdfStream(stream);
         ((PdfStream)func.dictionary).flateCompress(writer.getCompressionLevel());
@@ -97,7 +99,7 @@ public class PdfFunction {
         return func;
     }
 
-    public static PdfFunction type2(PdfWriter writer, float domain[], float range[], float c0[], float c1[], float n) {
+    public static PdfFunction type2(PdfWriter writer, float[] domain, float[] range, float[] c0, float[] c1, float n) {
         PdfFunction func = new PdfFunction(writer);
         func.dictionary = new PdfDictionary();
         func.dictionary.put(PdfName.FUNCTIONTYPE, new PdfNumber(2));
@@ -112,7 +114,7 @@ public class PdfFunction {
         return func;
     }
 
-    public static PdfFunction type3(PdfWriter writer, float domain[], float range[], PdfFunction functions[], float bounds[], float encode[]) {
+    public static PdfFunction type3(PdfWriter writer, float[] domain, float[] range, PdfFunction[] functions, float[] bounds, float[] encode) {
         PdfFunction func = new PdfFunction(writer);
         func.dictionary = new PdfDictionary();
         func.dictionary.put(PdfName.FUNCTIONTYPE, new PdfNumber(3));
@@ -128,8 +130,8 @@ public class PdfFunction {
         return func;
     }
     
-    public static PdfFunction type4(PdfWriter writer, float domain[], float range[], String postscript) {
-        byte b[] = new byte[postscript.length()];
+    public static PdfFunction type4(PdfWriter writer, float[] domain, float[] range, String postscript) {
+        byte[] b = new byte[postscript.length()];
         for (int k = 0; k < b.length; ++k)
             b[k] = (byte)postscript.charAt(k);
         PdfFunction func = new PdfFunction(writer);

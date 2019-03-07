@@ -11,18 +11,18 @@ import com.lowagie.text.PageSize;
 
 class PdfTestBase {
 
-	static Document createPdf(String filename) throws FileNotFoundException, DocumentException {
-		// create a new file
-		return createPdf(new FileOutputStream(new File(filename)));
-	}
+    static Document createPdf(String filename) throws FileNotFoundException, DocumentException {
+        // create a new file
+        return createPdf(new FileOutputStream(new File(filename)));
+    }
 
-	static Document createPdf(OutputStream outputStream) throws DocumentException {
-		// create a new document
-		Document document = new Document(PageSize.A4);
+    static Document createPdf(OutputStream outputStream) throws DocumentException {
+        // create a new document
+        Document document = new Document(PageSize.A4);
 
-		// generate file
-		PdfWriter.getInstance(document, outputStream);
-		return document;
-	}
+        // generate file
+        PdfWriter.getInstance(document, outputStream);
+        return document;
+    }
 
 }

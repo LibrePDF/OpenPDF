@@ -87,8 +87,8 @@ public class HeaderFooter extends Rectangle {
 /**
  * Constructs a <CODE>HeaderFooter</CODE>-object.
  *
- * @param	before		the <CODE>Phrase</CODE> before the pagenumber
- * @param	after		the <CODE>Phrase</CODE> before the pagenumber
+ * @param    before        the <CODE>Phrase</CODE> before the pagenumber
+ * @param    after        the <CODE>Phrase</CODE> before the pagenumber
  */
     
     public HeaderFooter(Phrase before, Phrase after) {
@@ -104,8 +104,8 @@ public class HeaderFooter extends Rectangle {
 /**
  * Constructs a <CODE>Header</CODE>-object with a pagenumber at the end.
  *
- * @param	before		the <CODE>Phrase</CODE> before the pagenumber
- * @param	numbered	<CODE>true</CODE> if the page has to be numbered
+ * @param    before        the <CODE>Phrase</CODE> before the pagenumber
+ * @param    numbered    <CODE>true</CODE> if the page has to be numbered
  */
     
     public HeaderFooter(Phrase before, boolean numbered) {
@@ -152,7 +152,7 @@ public class HeaderFooter extends Rectangle {
 /**
  * Sets the page number.
  *
- * @param		pageN		the new page number
+ * @param        pageN        the new page number
  */
     
     public void setPageNumber(int pageN) {
@@ -162,7 +162,7 @@ public class HeaderFooter extends Rectangle {
 /**
  * Sets the alignment.
  *
- * @param		alignment	the new alignment
+ * @param        alignment    the new alignment
  */
     
     public void setAlignment(int alignment) {
@@ -174,7 +174,7 @@ public class HeaderFooter extends Rectangle {
 /**
  * Gets the <CODE>Paragraph</CODE> that can be used as header or footer.
  *
- * @return		a <CODE>Paragraph</CODE>
+ * @return        a <CODE>Paragraph</CODE>
  */
     
     public Paragraph paragraph() {
@@ -193,7 +193,7 @@ public class HeaderFooter extends Rectangle {
     /**
      * Gets the alignment of this HeaderFooter.
      *
-     * @return	alignment
+     * @return    alignment
      */
 
         public int alignment() {

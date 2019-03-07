@@ -50,11 +50,12 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.bouncycastle.BouncyCastleHelper;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.exceptions.BadPasswordException;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.exceptions.InvalidPdfException;
 import com.lowagie.text.exceptions.UnsupportedPdfException;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
@@ -89,18 +90,18 @@ import java.util.zip.InflaterInputStream;
  */
 public class PdfReader implements PdfViewerPreferences, Closeable {
 
-  static final PdfName pageInhCandidates[] = { PdfName.MEDIABOX,
-      PdfName.ROTATE, PdfName.RESOURCES, PdfName.CROPBOX };
+  static final PdfName[] pageInhCandidates = {PdfName.MEDIABOX,
+          PdfName.ROTATE, PdfName.RESOURCES, PdfName.CROPBOX};
 
-  private static final byte endstream[] = PdfEncodings
-      .convertToBytes("endstream", null);
-  private static final byte endobj[] = PdfEncodings.convertToBytes("endobj", null);
+  private static final byte[] endstream = PdfEncodings
+          .convertToBytes("endstream", null);
+  private static final byte[] endobj = PdfEncodings.convertToBytes("endobj", null);
   protected PRTokeniser tokens;
   // Each xref pair is a position
   // type 0 -> -1, 0
   // type 1 -> offset, 0
   // type 2 -> index, obj num
-  protected int xref[];
+  protected int[] xref;
   protected Map<Integer, IntHashtable> objStmMark;
   protected IntHashtable objStmToOffset;
   protected boolean newXrefType;
@@ -119,7 +120,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   protected int eofPos;
   protected char pdfVersion;
   protected PdfEncryption decrypt;
-  protected byte password[] = null; // added by ujihara for decryption
+  protected byte[] password = null; // added by ujihara for decryption
   protected Key certificateKey = null; // added by Aiken Sam for certificate
                                        // decryption
   protected Certificate certificate = null; // added by Aiken Sam for
@@ -127,6 +128,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   protected String certificateKeyProvider = null; // added by Aiken Sam for
                                                   // certificate decryption
   private boolean ownerPasswordUsed;
+
+  // allow the PDF to be modified even if the owner password was not supplied
+  // if encrypted (non-encrypted documents may be modified regardless)
+  private boolean modificationAllowedWithoutOwnerPassword = true;
+
   protected List<PdfObject> strings = new ArrayList<>();
   protected boolean sharedStreams = true;
   protected boolean consolidateNamedDestinations = false;
@@ -174,7 +180,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @throws IOException
    *           on error
    */
-  public PdfReader(String filename, byte ownerPassword[]) throws IOException {
+  public PdfReader(String filename, byte[] ownerPassword) throws IOException {
     password = ownerPassword;
     tokens = new PRTokeniser(filename);
     readPdf();
@@ -188,7 +194,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @throws IOException
    *           on error
    */
-  public PdfReader(byte pdfIn[]) throws IOException {
+  public PdfReader(byte[] pdfIn) throws IOException {
     this(pdfIn, null);
   }
 
@@ -202,7 +208,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @throws IOException
    *           on error
    */
-  public PdfReader(byte pdfIn[], byte ownerPassword[]) throws IOException {
+  public PdfReader(byte[] pdfIn, byte[] ownerPassword) throws IOException {
     password = ownerPassword;
     tokens = new PRTokeniser(pdfIn);
     readPdf();
@@ -253,7 +259,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @throws IOException
    *           on error
    */
-  public PdfReader(URL url, byte ownerPassword[]) throws IOException {
+  public PdfReader(URL url, byte[] ownerPassword) throws IOException {
     password = ownerPassword;
     tokens = new PRTokeniser(new RandomAccessFileOrArray(url));
     readPdf();
@@ -270,7 +276,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @throws IOException
    *           on error
    */
-  public PdfReader(InputStream is, byte ownerPassword[]) throws IOException {
+  public PdfReader(InputStream is, byte[] ownerPassword) throws IOException {
     password = ownerPassword;
     tokens = new PRTokeniser(new RandomAccessFileOrArray(is));
     readPdf();
@@ -303,7 +309,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @throws IOException
    *           on error
    */
-  public PdfReader(RandomAccessFileOrArray raf, byte ownerPassword[])
+  public PdfReader(RandomAccessFileOrArray raf, byte[] ownerPassword)
       throws IOException {
     password = ownerPassword;
     partial = true;
@@ -653,7 +659,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
   }
 
-  private boolean equalsArray(byte ar1[], byte ar2[], int size) {
+  private boolean equalsArray(byte[] ar1, byte[] ar2, int size) {
     for (int k = 0; k < size; ++k) {
       if (ar1[k] != ar2[k])
         return false;
@@ -681,7 +687,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     PdfObject o;
 
     PdfArray documentIDs = trailer.getAsArray(PdfName.ID);
-    byte documentID[] = null;
+    byte[] documentID = null;
     if (documentIDs != null) {
       o = documentIDs.getPdfObject(0);
       strings.remove(o);
@@ -693,8 +699,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     // just in case we have a broken producer
     if (documentID == null)
       documentID = new byte[0];
-    byte uValue[] = null;
-    byte oValue[] = null;
+    byte[] uValue = null;
+    byte[] oValue = null;
     int cryptoMode = PdfWriter.STANDARD_ENCRYPTION_40;
     int lengthValue = 0;
 
@@ -1062,10 +1068,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   protected void readDocObjPartial() throws IOException {
     xrefObj = new ArrayList<>(xref.length / 2);
-    xrefObj.addAll(Collections.<PdfObject>nCopies(xref.length / 2, null));
+    xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
     readDecryptedDocObj();
     if (objStmToOffset != null) {
-      int keys[] = objStmToOffset.getKeys();
+      int[] keys = objStmToOffset.getKeys();
       for (int n : keys) {
         objStmToOffset.put(n, xref[n * 2]);
         xref[n * 2] = -1;
@@ -1121,7 +1127,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   protected PdfObject readOneObjStm(PRStream stream, int idx)
       throws IOException {
     int first = stream.getAsNumber(PdfName.FIRST).intValue();
-    byte b[] = getStreamBytes(stream, tokens.getFile());
+    byte[] b = getStreamBytes(stream, tokens.getFile());
     PRTokeniser saveTokens = tokens;
     tokens = new PRTokeniser(b);
     try {
@@ -1170,7 +1176,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   protected void readDocObj() throws IOException {
     List<PdfObject> streams = new ArrayList<>();
     xrefObj = new ArrayList<>(xref.length / 2);
-    xrefObj.addAll(Collections.<PdfObject>nCopies(xref.length / 2, null));
+    xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
     for (int k = 2; k < xref.length; k += 2) {
       int pos = xref[k];
       if (pos <= 0 || xref[k + 1] > 0)
@@ -1239,7 +1245,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     } else
       calc = true;
     if (calc) {
-      byte tline[] = new byte[16];
+      byte[] tline = new byte[16];
       tokens.seek(start);
       while (true) {
         int pos = tokens.getFilePointer();
@@ -1267,12 +1273,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       throws IOException {
     int first = stream.getAsNumber(PdfName.FIRST).intValue();
     int n = stream.getAsNumber(PdfName.N).intValue();
-    byte b[] = getStreamBytes(stream, tokens.getFile());
+    byte[] b = getStreamBytes(stream, tokens.getFile());
     PRTokeniser saveTokens = tokens;
     tokens = new PRTokeniser(b);
     try {
-      int address[] = new int[n];
-      int objNumber[] = new int[n];
+      int[] address = new int[n];
+      int[] objNumber = new int[n];
       boolean ok = true;
       for (int k = 0; k < n; ++k) {
         ok = tokens.nextToken();
@@ -1337,7 +1343,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       xref = new int[size];
     else {
       if (xref.length < size) {
-        int xref2[] = new int[size];
+        int[] xref2 = new int[size];
         System.arraycopy(xref, 0, xref2, 0, xref.length);
         xref = xref2;
       }
@@ -1503,9 +1509,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       objStmMark = new HashMap<>();
     if (objStmToOffset == null && partial)
       objStmToOffset = new IntHashtable();
-    byte b[] = getStreamBytes(stm, tokens.getFile());
+    byte[] b = getStreamBytes(stm, tokens.getFile());
     int bptr = 0;
-    int wc[] = new int[3];
+    int[] wc = new int[3];
     for (int k = 0; k < 3; ++k)
       wc[k] = w.getAsNumber(k).intValue();
     for (int idx = 0; idx < index.size(); idx += 2) {
@@ -1568,10 +1574,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     hybridXref = false;
     newXrefType = false;
     tokens.seek(0);
-    int xr[][] = new int[1024][];
+    int[][] xr = new int[1024][];
     int top = 0;
     trailer = null;
-    byte line[] = new byte[64];
+    byte[] line = new byte[64];
     for (;;) {
       int pos = tokens.getFilePointer();
       if (!tokens.readLineSegment(line))
@@ -1592,14 +1598,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           tokens.seek(pos);
         }
       } else if (line[0] >= '0' && line[0] <= '9') {
-        int obj[] = PRTokeniser.checkObjectStart(line);
+        int[] obj = PRTokeniser.checkObjectStart(line);
         if (obj == null)
           continue;
         int num = obj[0];
         int gen = obj[1];
         if (num >= xr.length) {
           int newLength = num * 2;
-          int xr2[][] = new int[newLength][];
+          int[][] xr2 = new int[newLength][];
           System.arraycopy(xr, 0, xr2, 0, top);
           xr = xr2;
         }
@@ -1613,7 +1619,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
     xref = new int[top * 2];
     for (int k = 0; k < top; ++k) {
-      int obj[] = xr[k];
+      int[] obj = xr[k];
       if (obj != null)
         xref[k * 2] = obj[0];
     }
@@ -1762,8 +1768,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    *          the input data
    * @return the decoded data
    */
-  public static byte[] FlateDecode(byte in[]) {
-    byte b[] = FlateDecode(in, true);
+  public static byte[] FlateDecode(byte[] in) {
+    byte[] b = FlateDecode(in, true);
     if (b == null)
       return FlateDecode(in, false);
     return b;
@@ -1772,7 +1778,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * @return a byte array
    */
-  public static byte[] decodePredictor(byte in[], PdfObject dicPar) {
+  public static byte[] decodePredictor(byte[] in, PdfObject dicPar) {
     if (dicPar == null || !dicPar.isDictionary())
       return in;
     PdfDictionary dic = (PdfDictionary) dicPar;
@@ -1892,11 +1898,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    *          try to read a corrupted stream
    * @return the decoded data
    */
-  public static byte[] FlateDecode(byte in[], boolean strict) {
+  public static byte[] FlateDecode(byte[] in, boolean strict) {
     ByteArrayInputStream stream = new ByteArrayInputStream(in);
     InflaterInputStream zip = new InflaterInputStream(stream);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    byte b[] = new byte[strict ? 4092 : 1];
+    byte[] b = new byte[strict ? 4092 : 1];
     try {
       int n;
       while ((n = zip.read(b)) >= 0) {
@@ -1919,7 +1925,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    *          the input data
    * @return the decoded data
    */
-  public static byte[] ASCIIHexDecode(byte in[]) {
+  public static byte[] ASCIIHexDecode(byte[] in) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     boolean first = true;
     int n1 = 0;
@@ -1952,10 +1958,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    *          the input data
    * @return the decoded data
    */
-  public static byte[] ASCII85Decode(byte in[]) {
+  public static byte[] ASCII85Decode(byte[] in) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     int state = 0;
-    int chn[] = new int[5];
+    int[] chn = new int[5];
     for (int k = 0; k < in.length; ++k) {
       int ch = in[k] & 0xff;
       if (ch == '~')
@@ -2018,7 +2024,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    *          the input data
    * @return the decoded data
    */
-  public static byte[] LZWDecode(byte in[]) {
+  public static byte[] LZWDecode(byte[] in) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     LZWDecoder lzw = new LZWDecoder();
     lzw.decode(in, out);
@@ -2184,7 +2190,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @param pageNum
    *          the page number. 1 is the first
    */
-  public void setPageContent(int pageNum, byte content[]) {
+  public void setPageContent(int pageNum, byte[] content) {
     setPageContent(pageNum, content, PdfStream.DEFAULT_COMPRESSION);
   }
 
@@ -2197,7 +2203,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    *          the page number. 1 is the first
    * @since 2.1.3 (the method already existed without param compressionLevel)
    */
-  public void setPageContent(int pageNum, byte content[], int compressionLevel) {
+  public void setPageContent(int pageNum, byte[] content, int compressionLevel) {
     PdfDictionary page = getPageN(pageNum);
     if (page == null)
       return;
@@ -2306,7 +2312,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   public static byte[] getStreamBytesRaw(PRStream stream,
       RandomAccessFileOrArray file) throws IOException {
     PdfReader reader = stream.getReader();
-    byte b[];
+    byte[] b;
     if (stream.getOffset() < 0)
       b = stream.getBytes();
     else {
@@ -2449,7 +2455,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     if (!(obj instanceof PRStream))
       return null;
     RandomAccessFileOrArray rf = getSafeFile();
-    byte b[];
+    byte[] b;
     try {
       rf.reOpen();
       b = getStreamBytes((PRStream) obj, rf);
@@ -2541,7 +2547,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     return decrypt;
   }
 
-  private static boolean equalsn(byte a1[], byte a2[]) {
+  private static boolean equalsn(byte[] a1, byte[] a2) {
     int length = a2.length;
     for (int k = 0; k < length; ++k) {
       if (a1[k] != a2[k])
@@ -3108,7 +3114,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
   }
 
-  protected void removeUnusedNode(PdfObject obj, boolean hits[]) {
+  protected void removeUnusedNode(PdfObject obj, boolean[] hits) {
     Stack state = new Stack();
     state.push(obj);
     while (!state.empty()) {
@@ -3203,7 +3209,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @return the number of indirect objects removed
    */
   public int removeUnusedObjects() {
-    boolean hits[] = new boolean[xrefObj.size()];
+    boolean[] hits = new boolean[xrefObj.size()];
     removeUnusedNode(trailer, hits);
     int total = 0;
     if (partial) {
@@ -3254,7 +3260,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     if (js == null)
       return null;
     HashMap jscript = PdfNameTree.readTree(js);
-    String sortedNames[] = new String[jscript.size()];
+    String[] sortedNames = new String[jscript.size()];
     sortedNames = (String[]) jscript.keySet().toArray(sortedNames);
     Arrays.sort(sortedNames);
     StringBuilder buf = new StringBuilder();
@@ -3268,7 +3274,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (obj.isString())
           buf.append(((PdfString) obj).toUnicodeString()).append('\n');
         else if (obj.isStream()) {
-          byte bytes[] = getStreamBytes((PRStream) obj, file);
+          byte[] bytes = getStreamBytes((PRStream) obj, file);
           if (bytes.length >= 2 && bytes[0] == (byte) 254
                   && bytes[1] == (byte) 255)
             buf.append(PdfEncodings.convertToString(bytes,
@@ -3444,7 +3450,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     private ArrayList pageInh;
     private boolean keepPages;
 
-    private PageRefs(PdfReader reader) throws IOException {
+    private PageRefs(PdfReader reader) {
       this.reader = reader;
       if (reader.partial) {
         refsp = new IntHashtable();
@@ -3486,7 +3492,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       reader.rootPages.put(PdfName.COUNT, new PdfNumber(refsn.size()));
     }
 
-    void reReadPages() throws IOException {
+    void reReadPages() {
       refsn = null;
       readPages();
     }
@@ -3831,16 +3837,40 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * Checks if an encrypted document may be modified if the owner password was not supplied.
+   * If the document is not encrypted, the setting has no effect.
+   *
+   * @return <CODE>true</CODE> if the document may be modified even if the owner password was not
+   *         supplied <CODE>false</CODE> otherwise
+   */
+  public boolean isModificationlowedWithoutOwnerPassword() {
+    return this.modificationAllowedWithoutOwnerPassword;
+  }
+
+  /**
+   * Sets whether the document (if encrypted) may be modified even if the owner password was not
+   * supplied. If this is set to <CODE>false</CODE> an exception will be thrown when attempting to
+   * access the Document if the owner password was not supplied (for encrypted documents.)
+   *
+   * @param modificationAllowedWithoutOwnerPassword
+   *         the modificationAllowedWithoutOwnerPassword state.
+   */
+  public void setModificationAllowedWithoutOwnerPassword(
+    boolean modificationAllowedWithoutOwnerPassword) {
+    this.modificationAllowedWithoutOwnerPassword = modificationAllowedWithoutOwnerPassword;
+  }
+
+  /**
    * Checks if the document was opened with the owner password so that the end
    * application can decide what level of access restrictions to apply. If the
    * document is not encrypted it will return <CODE>true</CODE>.
-   * 
-   * @return <CODE>true</CODE> if the document was opened with the owner
-   *         password or if it's not encrypted, <CODE>false</CODE> if the
-   *         document was opened with the user password
+   *
+   * @return <CODE>true</CODE> if the document was opened with the owner password or if it's not
+   *         encrypted or the modificationAllowedWithoutOwnerPassword flag is set,
+   *         <CODE>false</CODE> otherwise.
    */
   public final boolean isOpenedWithFullPermissions() {
-    return !encrypted || ownerPasswordUsed;
+    return !encrypted || ownerPasswordUsed || modificationAllowedWithoutOwnerPassword;
   }
 
   public int getCryptoMode() {

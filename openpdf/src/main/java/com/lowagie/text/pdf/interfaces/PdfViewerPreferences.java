@@ -61,8 +61,8 @@ import com.lowagie.text.pdf.PdfObject;
  * for reasons of convenience.
  */
 
-public interface PdfViewerPreferences {	
-		
+public interface PdfViewerPreferences {    
+        
     /**
      * Sets the page layout and page mode preferences by ORing one or two of these constants.
      * <p>
@@ -130,7 +130,7 @@ public interface PdfViewerPreferences {
      * <li><b>PRINT_SCALING_NONE</b> - Indicates that the print dialog should reflect no page scaling.
      * </ul>
      * @param preferences the viewer preferences
-	 * @see PdfViewerPreferences#addViewerPreference
+     * @see PdfViewerPreferences#addViewerPreference
      */
     void setViewerPreferences(int preferences);
     
@@ -138,63 +138,63 @@ public interface PdfViewerPreferences {
      * Adds a viewer preference.
      * <ul>
      * <li>In case the key is one of these values:
-     * 		<ul>
-     * 			<li>PdfName.<b>HIDETOOLBAR</b>
-     * 			<li>PdfName.<b>HIDEMENUBAR</b>
-     * 			<li>PdfName.<b>HIDEWINDOWUI</b>
-     * 			<li>PdfName.<b>FITWINDOW</b>
-     * 			<li>PdfName.<b>CENTERWINDOW</b>
-     * 			<li>PdfName.<b>DISPLAYDOCTITLE</b>
-     * 		</ul>
+     *         <ul>
+     *             <li>PdfName.<b>HIDETOOLBAR</b>
+     *             <li>PdfName.<b>HIDEMENUBAR</b>
+     *             <li>PdfName.<b>HIDEWINDOWUI</b>
+     *             <li>PdfName.<b>FITWINDOW</b>
+     *             <li>PdfName.<b>CENTERWINDOW</b>
+     *             <li>PdfName.<b>DISPLAYDOCTITLE</b>
+     *         </ul>
      * The value must be a of type PdfBoolean (true or false).
      * <li>In case the key is PdfName.<b>NONFULLSCREENPAGEMODE</b>,
      * the value must be one of these names:
-     * 		<ul>
-     * 			<li>PdfName.<b>USENONE</b>
-     * 			<li>PdfName.<b>USEOUTLINES</b>
-     * 			<li>PdfName.<b>USETHUMBS</b>
-     * 			<li>PdfName.<b>USEOC</b>
-     * 		</ul>
+     *         <ul>
+     *             <li>PdfName.<b>USENONE</b>
+     *             <li>PdfName.<b>USEOUTLINES</b>
+     *             <li>PdfName.<b>USETHUMBS</b>
+     *             <li>PdfName.<b>USEOC</b>
+     *         </ul>
      * <li>In case the key is PdfName.DIRECTION,
      * the value must be one of these names:
-     * 		<ul>
-     * 			<li>PdfName.<b>L2R</b>
-     * 			<li>PdfName.<b>R2L</b>
-     * 		</ul>
+     *         <ul>
+     *             <li>PdfName.<b>L2R</b>
+     *             <li>PdfName.<b>R2L</b>
+     *         </ul>
      * <li>In case the key is one of these values:
-     * 		<ul>
-     * 			<li>PdfName.<b>VIEWAREA</b>
-     * 			<li>PdfName.<b>VIEWCLIP</b>
-     * 			<li>PdfName.<b>PRINTAREA</b>
-     * 			<li>PdfName.<b>PRINTCLIP</b>
-     * 		</ul>
-     * 	The value must be one of these names:
-     * 		<ul>
-     * 			<li>PdfName.<b>MEDIABOX</b>
-     * 			<li>PdfName.<b>CROPBOX</b>
-     * 			<li>PdfName.<b>BLEEDBOX</b>
-     * 			<li>PdfName.<b>TRIMBOX</b>
-     * 			<li>PdfName.<b>ARTBOX</b>
-     * 		</ul>
+     *         <ul>
+     *             <li>PdfName.<b>VIEWAREA</b>
+     *             <li>PdfName.<b>VIEWCLIP</b>
+     *             <li>PdfName.<b>PRINTAREA</b>
+     *             <li>PdfName.<b>PRINTCLIP</b>
+     *         </ul>
+     *     The value must be one of these names:
+     *         <ul>
+     *             <li>PdfName.<b>MEDIABOX</b>
+     *             <li>PdfName.<b>CROPBOX</b>
+     *             <li>PdfName.<b>BLEEDBOX</b>
+     *             <li>PdfName.<b>TRIMBOX</b>
+     *             <li>PdfName.<b>ARTBOX</b>
+     *         </ul>
      * <li>In case the key is PdfName.<b>PRINTSCALING</b>, the value can be
-     * 		<ul>
-     * 			<li>PdfName.<b>APPDEFAULT</b>
-     * 			<li>PdfName.<b>NONE</b>
-     * 		</ul>
+     *         <ul>
+     *             <li>PdfName.<b>APPDEFAULT</b>
+     *             <li>PdfName.<b>NONE</b>
+     *         </ul>
      * <li>In case the key is PdfName.<b>DUPLEX</b>, the value can be:
-     * 		<ul>
-     * 			<li>PdfName.<b>SIMPLEX</b>
-     * 			<li>PdfName.<b>DUPLEXFLIPSHORTEDGE</b>
-     * 			<li>PdfName.<b>DUPLEXFLIPLONGEDGE</b>
-     * 		</ul>
+     *         <ul>
+     *             <li>PdfName.<b>SIMPLEX</b>
+     *             <li>PdfName.<b>DUPLEXFLIPSHORTEDGE</b>
+     *             <li>PdfName.<b>DUPLEXFLIPLONGEDGE</b>
+     *         </ul>
      * <li>In case the key is PdfName.<b>PICKTRAYBYPDFSIZE</b>, the value must be of type PdfBoolean.
      * <li>In case the key is PdfName.<b>PRINTPAGERANGE</b>, the value must be of type PdfArray.
      * <li>In case the key is PdfName.<b>NUMCOPIES</b>, the value must be of type PdfNumber.
      * <ul>
      * </ul>
-     * @param key	the name of the viewer preference
-     * @param value	the value of the viewer preference
-	 * @see PdfViewerPreferences#setViewerPreferences
+     * @param key    the name of the viewer preference
+     * @param value    the value of the viewer preference
+     * @see PdfViewerPreferences#setViewerPreferences
      */
     void addViewerPreference(PdfName key, PdfObject value);
 }

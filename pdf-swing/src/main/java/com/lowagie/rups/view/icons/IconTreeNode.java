@@ -28,33 +28,33 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class IconTreeNode extends DefaultMutableTreeNode {
 
-	/** The icon that has to be used for this TreeNode. */
-	protected Icon icon;
-	
-	/**
-	 * Constructs an IconTreeNode.
-	 * @param	icon	the filename of the icon to use for this node.
-	 */
-	public IconTreeNode(String icon) {
-		super();
-		this.icon = IconFetcher.getIcon(icon);
-	}
-	
-	/**
-	 * Constructs an IconTreeNode.
-	 * @param	icon	the filename of the icon to use for this node.
-	 * @param	userobject	the userobject for this node
-	 */
-	public IconTreeNode(String icon, Object userobject) {
-		super(userobject);
-		this.icon = IconFetcher.getIcon(icon);
-	}
-	
-	/** Getter for the icon. */
-	public Icon getIcon() {
-		return icon;
-	}
+    /** The icon that has to be used for this TreeNode. */
+    protected Icon icon;
+    
+    /**
+     * Constructs an IconTreeNode.
+     * @param    icon    the filename of the icon to use for this node.
+     */
+    public IconTreeNode(String icon) {
+        super();
+        this.icon = IconFetcher.getIcon(icon);
+    }
+    
+    /**
+     * Constructs an IconTreeNode.
+     * @param    icon    the filename of the icon to use for this node.
+     * @param    userobject    the userobject for this node
+     */
+    public IconTreeNode(String icon, Object userobject) {
+        super(userobject);
+        this.icon = IconFetcher.getIcon(icon);
+    }
+    
+    /** Getter for the icon. */
+    public Icon getIcon() {
+        return icon;
+    }
 
-	/** A Serial Version UID. */
-	private static final long serialVersionUID = -5900308991182960842L;
+    /** A Serial Version UID. */
+    private static final long serialVersionUID = -5900308991182960842L;
 }

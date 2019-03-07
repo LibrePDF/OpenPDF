@@ -52,8 +52,9 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfFormField;
 import com.lowagie.text.pdf.PdfName;
@@ -98,88 +99,88 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
      * Add a PdfFormField that has to be tied to a generic Chunk.
      */
     public void addField(String text, PdfFormField field) {
-    	genericChunkFields.put(text, field);
+        genericChunkFields.put(text, field);
     }
     
     /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. */
     public FieldPositioningEvents(PdfWriter writer, PdfFormField field) {
-    	this.cellField = field;
-    	this.fieldWriter = writer;
+        this.cellField = field;
+        this.fieldWriter = writer;
     }  
     
     /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. */
     public FieldPositioningEvents(PdfFormField parent, PdfFormField field) {
-    	this.cellField = field;
-    	this.parent = parent;
+        this.cellField = field;
+        this.parent = parent;
     }
     
     /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. 
      * @throws DocumentException
      * @throws IOException*/
     public FieldPositioningEvents(PdfWriter writer, String text) throws IOException, DocumentException {
-    	this.fieldWriter = writer;
-    	TextField tf = new TextField(writer, new Rectangle(0, 0), text);
-		tf.setFontSize(14);
-		cellField = tf.getTextField();
-	}   
+        this.fieldWriter = writer;
+        TextField tf = new TextField(writer, new Rectangle(0, 0), text);
+        tf.setFontSize(14);
+        cellField = tf.getTextField();
+    }   
     
     /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. 
      * @throws DocumentException
      * @throws IOException*/
     public FieldPositioningEvents(PdfWriter writer, PdfFormField parent, String text) throws IOException, DocumentException {
-    	this.parent = parent;
-    	TextField tf = new TextField(writer, new Rectangle(0, 0), text);
-		tf.setFontSize(14);
-		cellField = tf.getTextField();
-	}  
+        this.parent = parent;
+        TextField tf = new TextField(writer, new Rectangle(0, 0), text);
+        tf.setFontSize(14);
+        cellField = tf.getTextField();
+    }  
 
-	/**
-	 * @param padding The padding to set.
-	 */
-	public void setPadding(float padding) {
-		this.padding = padding;
-	}
-	
-	/**
-	 * @param parent The parent to set.
-	 */
-	public void setParent(PdfFormField parent) {
-		this.parent = parent;
-	}
-	/**
-	 * @see com.lowagie.text.pdf.PdfPageEvent#onGenericTag(com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
-	 */
-	public void onGenericTag(PdfWriter writer, Document document,
-			Rectangle rect, String text) {
-		rect.setBottom(rect.getBottom() - 3);
-		PdfFormField field = (PdfFormField) genericChunkFields.get(text);
-		if (field == null) {
-			TextField tf = new TextField(writer, new Rectangle(rect.getLeft(padding), rect.getBottom(padding), rect.getRight(padding), rect.getTop(padding)), text);
-			tf.setFontSize(14);
-			try {
-				field = tf.getTextField();
-			} catch (Exception e) {
-				throw new ExceptionConverter(e);
-			}
-		}
-		else {
-			field.put(PdfName.RECT,  new PdfRectangle(rect.getLeft(padding), rect.getBottom(padding), rect.getRight(padding), rect.getTop(padding)));
-		}
-		if (parent == null)
-			writer.addAnnotation(field);
-		else
-			parent.addKid(field);
-	}
+    /**
+     * @param padding The padding to set.
+     */
+    public void setPadding(float padding) {
+        this.padding = padding;
+    }
+    
+    /**
+     * @param parent The parent to set.
+     */
+    public void setParent(PdfFormField parent) {
+        this.parent = parent;
+    }
+    /**
+     * @see com.lowagie.text.pdf.PdfPageEvent#onGenericTag(com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
+     */
+    public void onGenericTag(PdfWriter writer, Document document,
+            Rectangle rect, String text) {
+        rect.setBottom(rect.getBottom() - 3);
+        PdfFormField field = (PdfFormField) genericChunkFields.get(text);
+        if (field == null) {
+            TextField tf = new TextField(writer, new Rectangle(rect.getLeft(padding), rect.getBottom(padding), rect.getRight(padding), rect.getTop(padding)), text);
+            tf.setFontSize(14);
+            try {
+                field = tf.getTextField();
+            } catch (Exception e) {
+                throw new ExceptionConverter(e);
+            }
+        }
+        else {
+            field.put(PdfName.RECT,  new PdfRectangle(rect.getLeft(padding), rect.getBottom(padding), rect.getRight(padding), rect.getTop(padding)));
+        }
+        if (parent == null)
+            writer.addAnnotation(field);
+        else
+            parent.addKid(field);
+    }
 
-	/**
-	 * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell, com.lowagie.text.Rectangle, com.lowagie.text.pdf.PdfContentByte[])
-	 */
-	public void cellLayout(PdfPCell cell, Rectangle rect, PdfContentByte[] canvases) {
-		if (cellField == null || (fieldWriter == null && parent == null)) throw new IllegalArgumentException(MessageLocalization.getComposedMessage("you.have.used.the.wrong.constructor.for.this.fieldpositioningevents.class"));
-		cellField.put(PdfName.RECT, new PdfRectangle(rect.getLeft(padding), rect.getBottom(padding), rect.getRight(padding), rect.getTop(padding)));
-		if (parent == null)
-			fieldWriter.addAnnotation(cellField);
-		else
-			parent.addKid(cellField);
-	}
+    /**
+     * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell, com.lowagie.text.Rectangle, com.lowagie.text.pdf.PdfContentByte[])
+     */
+    public void cellLayout(PdfPCell cell, Rectangle rect, PdfContentByte[] canvases) {
+        if (cellField == null || (fieldWriter == null && parent == null)) throw new IllegalArgumentException(MessageLocalization.getComposedMessage("you.have.used.the.wrong.constructor.for.this.fieldpositioningevents.class"));
+        cellField.put(PdfName.RECT, new PdfRectangle(rect.getLeft(padding), rect.getBottom(padding), rect.getRight(padding), rect.getTop(padding)));
+        if (parent == null)
+            fieldWriter.addAnnotation(cellField);
+        else
+            parent.addKid(cellField);
+    }
 }

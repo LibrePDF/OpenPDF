@@ -1,15 +1,15 @@
 /*
  * $Id: ColumnObjects.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.objects.columns;
 
@@ -33,30 +33,34 @@ import com.lowagie.text.pdf.PdfWriter;
  * A more complex example demonstrating the use of ColumnText.
  */
 public class ColumnObjects {
-	/** Some data we want to output. */
-    static public String headings[] = {
-        "Book/Product Model:",
-        "Sales Handle:",
-        "Why We Published this Book/Product Model:",
-        "Key benefits:",
-        "About the Author(s):",
-        "Technology/Topic Overview: ",
-        "Book/Product Content Summary:", 
-        "Audience:",
-        "What's on the CD/DVD/Web:"
+    /**
+     * Some data we want to output.
+     */
+    static public String[] headings = {
+            "Book/Product Model:",
+            "Sales Handle:",
+            "Why We Published this Book/Product Model:",
+            "Key benefits:",
+            "About the Author(s):",
+            "Technology/Topic Overview: ",
+            "Book/Product Content Summary:",
+            "Audience:",
+            "What's on the CD/DVD/Web:"
     };
 
-    /** Some text we want to output. */
-    static public String texts[] = {
-        "Ideally, choose one title (2-3 if absolutely necessary) that this book should perform like. Include full title, ISBN, author, and any sell through numbers if possible.",
-        "One line description about the sales.",
-        "Brief description (one-two lines) on the importance of this book to the audience.",
-        "What benefit does this book provide to the consumer? (expert advice, speed, fun, productivity). Why should the Retailer/Wholesaler select this book over its competition? What are the unique features about this book should be highlighted? What makes this book different, better? From other books and the previous edition?",
-        "What makes this person so special?  Is she/he an expert, creator of the technology, educational leader, etc.? What is their background, and what relevant experiences do they have to make them the BEST choice? Have he/she/they won awards or been recognized in any way. Other books poublished by the author.\n1. Book one.\n2. Book two.",
-        "In brief two to five line description of the technology, topic or relevant information. Please keep descriptions succinct.",
-        "Ideal describe the contents of this book. What will this book do for the reader? Will this book help them optimize their system? Increase productivity? offer tips and stragegies?",
-        "Who is your intended customer? Experts? Power users? Business professionals? Programmers? What are the demographics?",
-        "What is included on the Cd or Web site? Why is it necessary and what will it do for the purchaser (source code, examples, case studies)?\nIs there a value that can be associated with what is on the CD/DVD or Web?"
+    /**
+     * Some text we want to output.
+     */
+    static public String[] texts = {
+            "Ideally, choose one title (2-3 if absolutely necessary) that this book should perform like. Include full title, ISBN, author, and any sell through numbers if possible.",
+            "One line description about the sales.",
+            "Brief description (one-two lines) on the importance of this book to the audience.",
+            "What benefit does this book provide to the consumer? (expert advice, speed, fun, productivity). Why should the Retailer/Wholesaler select this book over its competition? What are the unique features about this book should be highlighted? What makes this book different, better? From other books and the previous edition?",
+            "What makes this person so special?  Is she/he an expert, creator of the technology, educational leader, etc.? What is their background, and what relevant experiences do they have to make them the BEST choice? Have he/she/they won awards or been recognized in any way. Other books poublished by the author.\n1. Book one.\n2. Book two.",
+            "In brief two to five line description of the technology, topic or relevant information. Please keep descriptions succinct.",
+            "Ideal describe the contents of this book. What will this book do for the reader? Will this book help them optimize their system? Increase productivity? offer tips and stragegies?",
+            "Who is your intended customer? Experts? Power users? Business professionals? Programmers? What are the demographics?",
+            "What is included on the Cd or Web site? Why is it necessary and what will it do for the purchaser (source code, examples, case studies)?\nIs there a value that can be associated with what is on the CD/DVD or Web?"
     };
 
     /**
@@ -77,7 +81,7 @@ public class ColumnObjects {
             int numColumns = 3;
             float fullWidth = document.right() - document.left();
             float columnWidth = (fullWidth - (numColumns - 1) * gutter) / numColumns;
-            float allColumns[] = new float[numColumns]; // left
+            float[] allColumns = new float[numColumns]; // left
             for (int k = 0; k < numColumns; ++k) {
                 allColumns[k] = document.left() + (columnWidth + gutter) * k;
             }

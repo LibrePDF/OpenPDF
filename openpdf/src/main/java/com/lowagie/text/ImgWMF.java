@@ -64,8 +64,8 @@ import com.lowagie.text.pdf.codec.wmf.MetaDo;
  * An <CODE>ImgWMF</CODE> is the representation of a windows metafile
  * that has to be inserted into the document
  *
- * @see		Element
- * @see		Image
+ * @see        Element
+ * @see        Image
  */
 
 public class ImgWMF extends Image {
@@ -138,7 +138,7 @@ public class ImgWMF extends Image {
                 errorID = "Byte array";
             }
             InputMeta in = new InputMeta(is);
-            if (in.readInt() != 0x9AC6CDD7)	{
+            if (in.readInt() != 0x9AC6CDD7)    {
                 throw new BadElementException(MessageLocalization.getComposedMessage("1.is.not.a.valid.placeable.windows.metafile", errorID));
             }
             in.readWord();

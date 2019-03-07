@@ -1,15 +1,15 @@
 /*
  * $Id: SymbolSubstitution.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 
 package com.lowagie.examples.objects;
@@ -30,38 +30,38 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class SymbolSubstitution {
 
-	/**
-	 * How to substiture special characters with Phrase.getInstance.
-	 * 
-	 * @param args no arguments needed here
-	 */
-	public static void main(String[] args) {
+    /**
+     * How to substiture special characters with Phrase.getInstance.
+     * 
+     * @param args no arguments needed here
+     */
+    public static void main(String[] args) {
 
-		System.out.println("Symbol Substitution");
+        System.out.println("Symbol Substitution");
 
-		// step 1: creation of a document-object
-		Document document = new Document();
-		try {
-			// step 2:
-			// we create a writer that listens to the document
-			PdfWriter.getInstance(document,
-					new FileOutputStream("SymbolSubstitution.pdf"));
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
+            // step 2:
+            // we create a writer that listens to the document
+            PdfWriter.getInstance(document,
+                    new FileOutputStream("SymbolSubstitution.pdf"));
 
-			// step 3: we open the document
-			document.open();
-			// step 4:
+            // step 3: we open the document
+            document.open();
+            // step 4:
             document.add(Phrase.getInstance("What is the " + (char) 945 + "-coefficient of the "
                     + (char) 946 + "-factor in the " + (char) 947 + "-equation?\n"));
                     for (int i = 913; i < 970; i++) {
                         document.add(Phrase.getInstance(" " + i + ": " + (char) i));
                     }
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
-		// step 5: we close the document
-		document.close();
-	}
+        // step 5: we close the document
+        document.close();
+    }
 }

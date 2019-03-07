@@ -58,14 +58,14 @@ import java.io.IOException;
  */
 public class InvalidPdfException extends IOException {
 
-	/** a serial version UID */
-	private static final long serialVersionUID = -2319614911517026938L;
+    /** a serial version UID */
+    private static final long serialVersionUID = -2319614911517026938L;
 
-	/**
-	 * Creates an instance of a NoPdfException.
-	 * @param	message	the reason why the document isn't a PDF document according to iText.
-	 */
-	public InvalidPdfException(String message) {
-		super(message);
-	}
+    /**
+     * Creates an instance of a NoPdfException.
+     * @param    message    the reason why the document isn't a PDF document according to iText.
+     */
+    public InvalidPdfException(String message) {
+        super(message);
+    }
 }

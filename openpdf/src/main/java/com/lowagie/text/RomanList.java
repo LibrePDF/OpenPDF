@@ -58,61 +58,61 @@ import com.lowagie.text.factories.RomanNumberFactory;
 public class RomanList extends List {
 
 // constructors
-	
-	/**
-	 * Initialization
-	 */
-	public RomanList() {
-		super(true);
-	}
+    
+    /**
+     * Initialization
+     */
+    public RomanList() {
+        super(true);
+    }
 
-	/**
-	 * Initialization
-	 * 
-	 * @param symbolIndent	indent
-	 */
-	public RomanList(int symbolIndent) {
-		super(true, symbolIndent);
-	}
+    /**
+     * Initialization
+     * 
+     * @param symbolIndent    indent
+     */
+    public RomanList(int symbolIndent) {
+        super(true, symbolIndent);
+    }
 
-	/**
-	 * Initialization 
-	 * @param	lowercase		roman-char in lowercase   
-	 * @param 	symbolIndent	indent
-	 */
-	public RomanList(boolean lowercase, int symbolIndent) {
-		super(true, symbolIndent);
-		this.lowercase = lowercase;
-	}
+    /**
+     * Initialization 
+     * @param    lowercase        roman-char in lowercase   
+     * @param     symbolIndent    indent
+     */
+    public RomanList(boolean lowercase, int symbolIndent) {
+        super(true, symbolIndent);
+        this.lowercase = lowercase;
+    }
 
 // overridden method
-	
-	/**
-	 * Adds an <CODE>Object</CODE> to the <CODE>List</CODE>.
-	 *
-	 * @param	o	the object to add.
-	 * @return true if adding the object succeeded
-	 */
-	public boolean add(Object o) {
-		if (o instanceof ListItem) {
-			ListItem item = (ListItem) o;
-			Chunk chunk;
-			chunk = new Chunk(preSymbol, symbol.getFont());
-			chunk.append(RomanNumberFactory.getString(first + list.size(), lowercase));
-			chunk.append(postSymbol);
-			item.setListSymbol(chunk);
-			item.setIndentationLeft(symbolIndent, autoindent);
-			item.setIndentationRight(0);
-			list.add(item);
-		} else if (o instanceof List) {
-			List nested = (List) o;
-			nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
-			first--;
-			return list.add(nested);
-		} else if (o instanceof String) {
-			return this.add(new ListItem((String) o));
-		}
-		return false;
-	}
+    
+    /**
+     * Adds an <CODE>Object</CODE> to the <CODE>List</CODE>.
+     *
+     * @param    o    the object to add.
+     * @return true if adding the object succeeded
+     */
+    public boolean add(Object o) {
+        if (o instanceof ListItem) {
+            ListItem item = (ListItem) o;
+            Chunk chunk;
+            chunk = new Chunk(preSymbol, symbol.getFont());
+            chunk.append(RomanNumberFactory.getString(first + list.size(), lowercase));
+            chunk.append(postSymbol);
+            item.setListSymbol(chunk);
+            item.setIndentationLeft(symbolIndent, autoindent);
+            item.setIndentationRight(0);
+            list.add(item);
+        } else if (o instanceof List) {
+            List nested = (List) o;
+            nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
+            first--;
+            return list.add(nested);
+        } else if (o instanceof String) {
+            return this.add(new ListItem((String) o));
+        }
+        return false;
+    }
 
 }

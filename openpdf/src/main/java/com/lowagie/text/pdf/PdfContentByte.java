@@ -63,11 +63,12 @@ import java.util.Map;
 import com.lowagie.text.Annotation;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Image;
 import com.lowagie.text.ImgJBIG2;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.exceptions.IllegalPdfSyntaxException;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfXConformanceImp;
@@ -251,7 +252,7 @@ public class PdfContentByte {
      */
 
     public byte[] toPdf(PdfWriter writer) {
-    	sanityCheck();
+        sanityCheck();
         return content.toByteArray();
     }
 
@@ -537,7 +538,7 @@ public class PdfContentByte {
      * @param   blue    the intensity of blue. A value between 0 and 1
      */
     private void HelperRGB(float red, float green, float blue) {
-    	PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_RGB, null);
+        PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_RGB, null);
         if (red < 0)
             red = 0.0f;
         else if (red > 1.0f)
@@ -950,7 +951,7 @@ public class PdfContentByte {
         // the backgroundcolor is set
         Color background = rectangle.getBackgroundColor();
         if (background != null) {
-        	saveState();
+            saveState();
             setColorFill(background);
             rectangle(x1, y1, x2 - x1, y2 - y1);
             fill();
@@ -1113,7 +1114,7 @@ public class PdfContentByte {
     public void addImage(Image image, boolean inlineImage) throws DocumentException {
         if (!image.hasAbsoluteY())
             throw new DocumentException(MessageLocalization.getComposedMessage("the.image.must.have.absolute.positioning"));
-        float matrix[] = image.matrix();
+        float[] matrix = image.matrix();
         matrix[Image.CX] = image.getAbsoluteX() - matrix[Image.CX];
         matrix[Image.CY] = image.getAbsoluteY() - matrix[Image.CY];
         addImage(image, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], inlineImage);
@@ -1173,12 +1174,12 @@ public class PdfContentByte {
                     content.append("\nBI\n");
                     PdfImage pimage = new PdfImage(image, "", null);
                     if (image instanceof ImgJBIG2) {
-                    	byte[] globals = ((ImgJBIG2)image).getGlobalBytes();
-                    	if (globals != null) {
-                    		PdfDictionary decodeparms = new PdfDictionary();
-                    		decodeparms.put(PdfName.JBIG2GLOBALS, writer.getReferenceJBIG2Globals(globals));
-                    		pimage.put(PdfName.DECODEPARMS, decodeparms);
-                    	}
+                        byte[] globals = ((ImgJBIG2)image).getGlobalBytes();
+                        if (globals != null) {
+                            PdfDictionary decodeparms = new PdfDictionary();
+                            decodeparms.put(PdfName.JBIG2GLOBALS, writer.getReferenceJBIG2Globals(globals));
+                            pimage.put(PdfName.DECODEPARMS, decodeparms);
+                        }
                     }
                     for (Iterator it = pimage.getKeys().iterator(); it.hasNext();) {
                         PdfName key = (PdfName)it.next();
@@ -1424,7 +1425,7 @@ public class PdfContentByte {
     private void showText2(String text) {
         if (state.fontDetails == null)
             throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
-        byte b[] = state.fontDetails.convertToBytes(text);
+        byte[] b = state.fontDetails.convertToBytes(text);
         escapeString(b, content);
     }
 
@@ -1438,12 +1439,12 @@ public class PdfContentByte {
         content.append("Tj").append_i(separator);
     }
     
-	public void showText(GlyphVector glyphVector) {
-		byte[] b = state.fontDetails.convertToBytes(glyphVector);
-		escapeString(b, content);
-		content.append("Tj").append_i(separator);
-	}
-	
+    public void showText(GlyphVector glyphVector) {
+        byte[] b = state.fontDetails.convertToBytes(glyphVector);
+        escapeString(b, content);
+        content.append("Tj").append_i(separator);
+    }
+    
     /**
      * Constructs a kern array for a text in a certain font
      * @param text the text
@@ -1454,7 +1455,7 @@ public class PdfContentByte {
         PdfTextArray pa = new PdfTextArray();
         StringBuffer acc = new StringBuffer();
         int len = text.length() - 1;
-        char c[] = text.toCharArray();
+        char[] c = text.toCharArray();
         if (len >= 0)
             acc.append(c, 0, 1);
         for (int k = 0; k < len; ++k) {
@@ -1601,7 +1602,7 @@ public class PdfContentByte {
      * @param b the <CODE>byte</CODE> array to escape
      * @return an escaped <CODE>byte</CODE> array
      */
-    static byte[] escapeString(byte b[]) {
+    static byte[] escapeString(byte[] b) {
         ByteBuffer content = new ByteBuffer();
         escapeString(b, content);
         return content.toByteArray();
@@ -1613,7 +1614,7 @@ public class PdfContentByte {
      * @param b the <CODE>byte</CODE> array to escape
      * @param content the content
      */
-    static void escapeString(byte b[], ByteBuffer content) {
+    static void escapeString(byte[] b, ByteBuffer content) {
         content.append_i('(');
         for (int k = 0; k < b.length; ++k) {
             byte c = b[k];
@@ -1886,7 +1887,7 @@ public class PdfContentByte {
         List<float[]> ar = bezierArc(x1, y1, x2, y2, startAng, extent);
         if (ar.isEmpty())
             return;
-        float pt[] = ar.get(0);
+        float[] pt = ar.get(0);
         moveTo(pt[0], pt[1]);
         for (float[] anAr : ar) {
             pt = anAr;
@@ -2193,7 +2194,7 @@ public class PdfContentByte {
      * @param color the color
      */
     public void setColorStroke(Color color) {
-    	PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_COLOR, color);
+        PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_COLOR, color);
         int type = ExtendedColor.getType(color);
         switch (type) {
             case ExtendedColor.TYPE_GRAY: {
@@ -2230,7 +2231,7 @@ public class PdfContentByte {
      * @param color the color
      */
     public void setColorFill(Color color) {
-    	PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_COLOR, color);
+        PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_COLOR, color);
         int type = ExtendedColor.getType(color);
         switch (type) {
             case ExtendedColor.TYPE_GRAY: {
@@ -2311,7 +2312,7 @@ public class PdfContentByte {
      * @param tint the tint if it is a spot color, ignored otherwise
      */
     void outputColorNumbers(Color color, float tint) {
-    	PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_COLOR, color);
+        PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_COLOR, color);
         int type = ExtendedColor.getType(color);
         switch (type) {
             case ExtendedColor.TYPE_RGB:
@@ -2932,7 +2933,7 @@ public class PdfContentByte {
      * @param gstate the graphic state
      */
     public void setGState(PdfGState gstate) {
-        PdfObject obj[] = writer.addSimpleExtGState(gstate);
+        PdfObject[] obj = writer.addSimpleExtGState(gstate);
         PageResources prs = getPageResources();
         PdfName name = prs.addExtGState((PdfName)obj[0], (PdfIndirectReference)obj[1]);
         content.append(name.getBytes()).append(" gs").append_i(separator);
@@ -2984,7 +2985,7 @@ public class PdfContentByte {
             n = layerDepth.get(layerDepth.size() - 1);
             layerDepth.remove(layerDepth.size() - 1);
         } else {
-        	throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.layer.operators"));
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.layer.operators"));
         }
         while (n-- > 0)
             content.append("EMC").append_i(separator);
@@ -2995,7 +2996,7 @@ public class PdfContentByte {
      * @param af the transformation
      */
     public void transform(AffineTransform af) {
-        double arr[] = new double[6];
+        double[] arr = new double[6];
         af.getMatrix(arr);
         content.append(arr[0]).append(' ').append(arr[1]).append(' ').append(arr[2]).append(' ');
         content.append(arr[3]).append(' ').append(arr[4]).append(' ').append(arr[5]).append(" cm").append_i(separator);
@@ -3023,8 +3024,8 @@ public class PdfContentByte {
      * @param struc the tagging structure
      */
     public void beginMarkedContentSequence(PdfStructureElement struc) {
-    	PdfDictionary dict = new PdfDictionary();
-    	beginMarkedContentSequence(struc, dict);
+        PdfDictionary dict = new PdfDictionary();
+        beginMarkedContentSequence(struc, dict);
     }
     
     public void beginMarkedContentSequence(PdfStructureElement struc, PdfDictionary dict) {
@@ -3059,10 +3060,10 @@ public class PdfContentByte {
         dict.put(PdfName.MCID, new PdfNumber(mark));
         content.append(struc.get(PdfName.S).getBytes()).append(" ");
         try {
-        	dict.toPdf(writer, content);
+            dict.toPdf(writer, content);
         }
         catch (IOException e) {
-        	throw new ExceptionConverter(e);
+            throw new ExceptionConverter(e);
         }
         content.append(" BDC").append_i(separator);
     }
@@ -3071,10 +3072,10 @@ public class PdfContentByte {
      * Ends a marked content sequence
      */
     public void endMarkedContentSequence() {
-    	if (mcDepth == 0) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.marked.content.operators"));
-    	}
-    	--mcDepth;
+        if (mcDepth == 0) {
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.marked.content.operators"));
+        }
+        --mcDepth;
         content.append("EMC").append_i(separator);
     }
 
@@ -3134,17 +3135,17 @@ public class PdfContentByte {
      * @throws IllegalPdfSyntaxException (a runtime exception)
      */
     public void sanityCheck() {
-    	if (mcDepth != 0) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.marked.content.operators"));
-    	}
-    	if (inText) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
-    	}
-    	if (layerDepth != null && !layerDepth.isEmpty()) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.layer.operators"));
-    	}
-    	if (!stateList.isEmpty()) {
-    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
-    	}
+        if (mcDepth != 0) {
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.marked.content.operators"));
+        }
+        if (inText) {
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
+        }
+        if (layerDepth != null && !layerDepth.isEmpty()) {
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.layer.operators"));
+        }
+        if (!stateList.isEmpty()) {
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
+        }
     }
 }

@@ -36,82 +36,82 @@ import com.lowagie.text.pdf.PdfObject;
 
 public class PdfObjectPanel extends JPanel implements Observer {
 
-	/** Name of a panel in the CardLayout. */
-	private static final String TEXT = "text";
-	/** Name of a panel in the CardLayout. */
-	private static final String TABLE = "table";
-	
-	/** The layout that will show the info about the PDF object that is being analyzed. */
-	protected CardLayout layout = new CardLayout();
+    /** Name of a panel in the CardLayout. */
+    private static final String TEXT = "text";
+    /** Name of a panel in the CardLayout. */
+    private static final String TABLE = "table";
+    
+    /** The layout that will show the info about the PDF object that is being analyzed. */
+    protected CardLayout layout = new CardLayout();
 
-	/** Table with dictionary entries. */
-	JTable table = new JTable();
-	/** The text pane with the info about a PDF object in the bottom panel. */
-	JTextArea text = new JTextArea();
-	
-	/** Creates a PDF object panel. */
-	public PdfObjectPanel() {
-		// layout
-		setLayout(layout);
+    /** Table with dictionary entries. */
+    JTable table = new JTable();
+    /** The text pane with the info about a PDF object in the bottom panel. */
+    JTextArea text = new JTextArea();
+    
+    /** Creates a PDF object panel. */
+    public PdfObjectPanel() {
+        // layout
+        setLayout(layout);
 
-		// dictionary / array / stream
-		JScrollPane dict_scrollpane = new JScrollPane();
-		dict_scrollpane.setViewportView(table);
-		add(dict_scrollpane, TABLE);
-		
-		// number / string / ...
-		JScrollPane text_scrollpane = new JScrollPane();
-		text_scrollpane.setViewportView(text);
-		add(text_scrollpane, TEXT);
-	}
-	
-	/**
-	 * Clear the object panel.
-	 */
-	public void clear() {
-		text.setText(null);
-		layout.show(this, TEXT);
-	}
+        // dictionary / array / stream
+        JScrollPane dict_scrollpane = new JScrollPane();
+        dict_scrollpane.setViewportView(table);
+        add(dict_scrollpane, TABLE);
+        
+        // number / string / ...
+        JScrollPane text_scrollpane = new JScrollPane();
+        text_scrollpane.setViewportView(text);
+        add(text_scrollpane, TEXT);
+    }
+    
+    /**
+     * Clear the object panel.
+     */
+    public void clear() {
+        text.setText(null);
+        layout.show(this, TEXT);
+    }
 
-	/**
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	public void update(Observable observable, Object obj) {
-		clear();
-	}
-	
-	/**
-	 * Shows a PdfObject as text or in a table.
-	 * @param object	the object that needs to be shown.
-	 */
-	public void render(PdfObject object) {
-		if (object == null) {
-			text.setText(null);
-			layout.show(this, TEXT);
-			this.repaint();
-			text.repaint();
-			return;
-		}
-		switch(object.type()) {
-		case PdfObject.DICTIONARY:
-		case PdfObject.STREAM:
-			table.setModel(new DictionaryTableModel((PdfDictionary)object));
-			layout.show(this, TABLE);
-			this.repaint();
-			break;
-		case PdfObject.ARRAY:
-			table.setModel(new PdfArrayTableModel((PdfArray)object));
-			layout.show(this, TABLE);
-			this.repaint();
-			break;
-		default:
-			text.setText(object.toString());
-			layout.show(this, TEXT);
-			break;
-		}
-	}
-	
-	/** a serial version id. */
-	private static final long serialVersionUID = 1302283071087762494L;
+    /**
+     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+     */
+    public void update(Observable observable, Object obj) {
+        clear();
+    }
+    
+    /**
+     * Shows a PdfObject as text or in a table.
+     * @param object    the object that needs to be shown.
+     */
+    public void render(PdfObject object) {
+        if (object == null) {
+            text.setText(null);
+            layout.show(this, TEXT);
+            this.repaint();
+            text.repaint();
+            return;
+        }
+        switch(object.type()) {
+        case PdfObject.DICTIONARY:
+        case PdfObject.STREAM:
+            table.setModel(new DictionaryTableModel((PdfDictionary)object));
+            layout.show(this, TABLE);
+            this.repaint();
+            break;
+        case PdfObject.ARRAY:
+            table.setModel(new PdfArrayTableModel((PdfArray)object));
+            layout.show(this, TABLE);
+            this.repaint();
+            break;
+        default:
+            text.setText(object.toString());
+            layout.show(this, TEXT);
+            break;
+        }
+    }
+    
+    /** a serial version id. */
+    private static final long serialVersionUID = 1302283071087762494L;
 
 }

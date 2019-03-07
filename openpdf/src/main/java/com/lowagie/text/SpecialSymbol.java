@@ -57,7 +57,7 @@ package com.lowagie.text;
  * between 913 and 937 (except 930) and between 945 and 969. With this class the value of the
  * corresponding character of the Font Symbol, can be retrieved.
  *
- * @see		Phrase
+ * @see        Phrase
  *
  * @author  Bruno Lowagie
  * @author  Evelyne De Cordier
@@ -65,12 +65,12 @@ package com.lowagie.text;
 
 public class SpecialSymbol {
     
-	/**
-	 * Returns the first occurrence of a special symbol in a <CODE>String</CODE>.
-	 *
-	 * @param	string		a <CODE>String</CODE>
-	 * @return	an index of -1 if no special symbol was found
-	 */
+    /**
+     * Returns the first occurrence of a special symbol in a <CODE>String</CODE>.
+     *
+     * @param    string        a <CODE>String</CODE>
+     * @return    an index of -1 if no special symbol was found
+     */
     public static int index(String string) {
         int length = string.length();
         for (int i = 0; i < length; i++) {
@@ -100,8 +100,8 @@ public class SpecialSymbol {
     /**
      * Looks for the corresponding symbol in the font Symbol.
      *
-     * @param	c	the original ASCII-char
-     * @return	the corresponding symbol in font Symbol
+     * @param    c    the original ASCII-char
+     * @return    the corresponding symbol in font Symbol
      */
     public static char getCorrespondingSymbol(char c) {
         switch(c) {

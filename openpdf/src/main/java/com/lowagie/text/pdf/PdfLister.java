@@ -61,7 +61,7 @@ import java.util.Iterator;
 
 public class PdfLister {
 
-	/** the printStream you want to write the output to. */
+    /** the printStream you want to write the output to. */
     PrintStream out;
 
     /**
@@ -74,7 +74,7 @@ public class PdfLister {
 
     /**
      * Visualizes a PDF object.
-     * @param object	a com.lowagie.text.pdf object
+     * @param object    a com.lowagie.text.pdf object
      */
     public void listAnyObject(PdfObject object)
     {
@@ -95,7 +95,7 @@ public class PdfLister {
     }
     /**
      * Visualizes a PdfDictionary object.
-     * @param dictionary	a com.lowagie.text.pdf.PdfDictionary object
+     * @param dictionary    a com.lowagie.text.pdf.PdfDictionary object
      */
     public void listDict(PdfDictionary dictionary)
     {
@@ -114,7 +114,7 @@ public class PdfLister {
 
     /**
      * Visualizes a PdfArray object.
-     * @param array	a com.lowagie.text.pdf.PdfArray object
+     * @param array    a com.lowagie.text.pdf.PdfArray object
      */
     public void listArray(PdfArray array)
     {

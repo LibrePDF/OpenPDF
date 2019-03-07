@@ -58,27 +58,27 @@ import java.util.zip.DeflaterOutputStream;
 /**
  * Extends PdfStream and should be used to create Streams for Embedded Files
  * (file attachments).
- * @since	2.1.3
+ * @since    2.1.3
  */
 
 public class PdfEFStream extends PdfStream {
 
-	/**
-	 * Creates a Stream object using an InputStream and a PdfWriter object
-	 * @param	in	the InputStream that will be read to get the Stream object
-	 * @param	writer	the writer to which the stream will be added
-	 */
-	public PdfEFStream(InputStream in, PdfWriter writer) {
-		super(in, writer);
-	}
+    /**
+     * Creates a Stream object using an InputStream and a PdfWriter object
+     * @param    in    the InputStream that will be read to get the Stream object
+     * @param    writer    the writer to which the stream will be added
+     */
+    public PdfEFStream(InputStream in, PdfWriter writer) {
+        super(in, writer);
+    }
 
-	/**
-	 * Creates a Stream object using a byte array
-	 * @param	fileStore	the bytes for the stream
-	 */
-	public PdfEFStream(byte[] fileStore) {
-		super(fileStore);
-	}
+    /**
+     * Creates a Stream object using a byte array
+     * @param    fileStore    the bytes for the stream
+     */
+    public PdfEFStream(byte[] fileStore) {
+        super(fileStore);
+    }
 
     /**
      * @see com.lowagie.text.pdf.PdfDictionary#toPdf(com.lowagie.text.pdf.PdfWriter, java.io.OutputStream)
@@ -101,20 +101,20 @@ public class PdfEFStream extends PdfStream {
                 }
             }
         }
-    	if (crypto != null && crypto.isEmbeddedFilesOnly()) {
-    		PdfArray filter = new PdfArray();
-    		PdfArray decodeparms = new PdfArray();
-    		PdfDictionary crypt = new PdfDictionary();
-    		crypt.put(PdfName.NAME, PdfName.STDCF);
-    		filter.add(PdfName.CRYPT);
-    		decodeparms.add(crypt);
-    		if (compressed) {
-    			filter.add(PdfName.FLATEDECODE);
-    			decodeparms.add(new PdfNull());
-    		}
-    		put(PdfName.FILTER, filter);
-    		put(PdfName.DECODEPARMS, decodeparms);
-    	}
+        if (crypto != null && crypto.isEmbeddedFilesOnly()) {
+            PdfArray filter = new PdfArray();
+            PdfArray decodeparms = new PdfArray();
+            PdfDictionary crypt = new PdfDictionary();
+            crypt.put(PdfName.NAME, PdfName.STDCF);
+            filter.add(PdfName.CRYPT);
+            decodeparms.add(crypt);
+            if (compressed) {
+                filter.add(PdfName.FLATEDECODE);
+                decodeparms.add(new PdfNull());
+            }
+            put(PdfName.FILTER, filter);
+            put(PdfName.DECODEPARMS, decodeparms);
+        }
         PdfObject nn = get(PdfName.LENGTH);
         if (crypto != null && nn != null && nn.isNumber()) {
             int sz = ((PdfNumber)nn).intValue();
@@ -139,8 +139,8 @@ public class PdfEFStream extends PdfStream {
                 deflater = new Deflater(compressionLevel);
                 fout = def = new DeflaterOutputStream(fout, deflater, 0x8000);
             }
-            
-            byte buf[] = new byte[4192];
+
+            byte[] buf = new byte[4192];
             while (true) {
                 int n = inputStream.read(buf);
                 if (n <= 0)
@@ -164,7 +164,7 @@ public class PdfEFStream extends PdfStream {
                     os.write(bytes);
             }
             else {
-                byte b[];
+                byte[] b;
                 if (streamBytes != null) {
                     b = crypto.encryptByteArray(streamBytes.toByteArray());
                 }

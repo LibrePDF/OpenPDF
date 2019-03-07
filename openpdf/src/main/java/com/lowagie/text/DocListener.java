@@ -53,19 +53,19 @@ package com.lowagie.text;
  * A class that implements <CODE>DocListener</CODE> will perform some
  * actions when some actions are performed on a <CODE>Document</CODE>.
  *
- * @see		ElementListener
- * @see		Document
- * @see		DocWriter
+ * @see        ElementListener
+ * @see        Document
+ * @see        DocWriter
  */
 
 public interface DocListener extends ElementListener {
     
     // methods
     
-	/**
-	 * Signals that the <CODE>Document</CODE> has been opened and that
-	 * <CODE>Elements</CODE> can be added.
-	 */
+    /**
+     * Signals that the <CODE>Document</CODE> has been opened and that
+     * <CODE>Elements</CODE> can be added.
+     */
 
     void open(); // [L1]
     
@@ -81,7 +81,7 @@ public interface DocListener extends ElementListener {
     /**
      * Signals that an new page has to be started.
      *
-     * @return	<CODE>true</CODE> if the page was added, <CODE>false</CODE> if not.
+     * @return    <CODE>true</CODE> if the page was added, <CODE>false</CODE> if not.
      */
 
     boolean newPage(); // [L3]
@@ -89,8 +89,8 @@ public interface DocListener extends ElementListener {
     /**
      * Sets the pagesize.
      *
-     * @param	pageSize	the new pagesize
-     * @return	a <CODE>boolean</CODE>
+     * @param    pageSize    the new pagesize
+     * @return    a <CODE>boolean</CODE>
      */
 
     boolean setPageSize(Rectangle pageSize); // [L4]
@@ -98,11 +98,11 @@ public interface DocListener extends ElementListener {
     /**
      * Sets the margins.
      *
-     * @param	marginLeft		the margin on the left
-     * @param	marginRight		the margin on the right
-     * @param	marginTop		the margin on the top
-     * @param	marginBottom	the margin on the bottom
-     * @return	a <CODE>boolean</CODE>
+     * @param    marginLeft        the margin on the left
+     * @param    marginRight        the margin on the right
+     * @param    marginTop        the margin on the top
+     * @param    marginBottom    the margin on the bottom
+     * @return    a <CODE>boolean</CODE>
      */
 
     boolean setMargins(float marginLeft, float marginRight, float marginTop, float marginBottom);  // [L5]
@@ -118,14 +118,14 @@ public interface DocListener extends ElementListener {
      * Parameter that allows you to do top/bottom margin mirroring (odd/even pages)
      * @param marginMirroringTopBottom
      * @return true if successful
-     * @since	2.1.6
+     * @since    2.1.6
      */
     boolean setMarginMirroringTopBottom(boolean marginMirroringTopBottom); // [L6]
         
     /**
      * Sets the page number.
      *
-     * @param	pageN		the new page number
+     * @param    pageN        the new page number
      */
 
     void setPageCount(int pageN); // [L7]
@@ -139,7 +139,7 @@ public interface DocListener extends ElementListener {
     /**
      * Changes the header of this document.
      *
-     * @param	header		the new header
+     * @param    header        the new header
      */
 
     void setHeader(HeaderFooter header); // [L9]
@@ -153,7 +153,7 @@ public interface DocListener extends ElementListener {
     /**
      * Changes the footer of this document.
      *
-     * @param	footer		the new footer
+     * @param    footer        the new footer
      */
 
     void setFooter(HeaderFooter footer); // [L11]

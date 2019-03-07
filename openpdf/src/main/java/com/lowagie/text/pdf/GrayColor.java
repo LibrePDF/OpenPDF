@@ -57,7 +57,7 @@ public class GrayColor extends ExtendedColor {
 
     private static final long serialVersionUID = -6571835680819282746L;
 
-	private float gray;
+    private float gray;
     
     public static final GrayColor GRAYBLACK = new GrayColor(0f);
     public static final GrayColor GRAYWHITE = new GrayColor(1f);

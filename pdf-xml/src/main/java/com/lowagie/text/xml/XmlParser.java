@@ -50,6 +50,7 @@
 package com.lowagie.text.xml;
 
 import com.lowagie.text.DocListener;
+
 import com.lowagie.text.ExceptionConverter;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -89,8 +90,8 @@ public class XmlParser {
     
 /**
  * Parses a given file.
- * @param document	The document that will listen to the parser
- * @param is	The InputStream with the contents
+ * @param document    The document that will listen to the parser
+ * @param is    The InputStream with the contents
  */
     
     public void go(DocListener document, InputSource is) {

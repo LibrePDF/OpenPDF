@@ -1,15 +1,15 @@
 /*
  * $Id: Vertical.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.fonts.styles;
 
@@ -30,21 +30,21 @@ import com.lowagie.text.pdf.VerticalText;
  * Writing Vertical Text.
  */
 public class Vertical {
-    
-    static String texts[] = {
-        "Some very long text to check if it wraps (or not).",
-        " In blue.",
-        "And now in orange another very long text.",
-        "", "", ""};
-        
-    static String encs[] = {"UniJIS-UCS2-V", "Identity-V"};
+
+    static String[] texts = {
+            "Some very long text to check if it wraps (or not).",
+            " In blue.",
+            "And now in orange another very long text.",
+            "", "", ""};
+
+    static String[] encs = {"UniJIS-UCS2-V", "Identity-V"};
     
     /**
      * @param text
      * @return converted text
      */
     public static String convertCid(String text) {
-        char cid[] = text.toCharArray();
+        char[] cid = text.toCharArray();
         for (int k = 0; k < cid.length; ++k) {
             char c = cid[k];
             if (c == '\n')

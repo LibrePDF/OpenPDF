@@ -49,6 +49,7 @@
 
 package com.lowagie.text.xml;
 
+
 import com.lowagie.text.ExceptionConverter;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -69,7 +70,7 @@ public class TagMap extends HashMap {
 
     private static final long serialVersionUID = -6809383366554350820L;
 
-	class AttributeHandler extends DefaultHandler {
+    class AttributeHandler extends DefaultHandler {
         
 /** This is a tag */
         public static final String TAG = "tag";
@@ -99,7 +100,7 @@ public class TagMap extends HashMap {
  * Constructs a new SAXiTextHandler that will translate all the events
  * triggered by the parser to actions on the <CODE>Document</CODE>-object.
  *
- * @param	tagMap  A Hashmap containing XmlPeer-objects
+ * @param    tagMap  A Hashmap containing XmlPeer-objects
  */
         
         public AttributeHandler(HashMap tagMap) {
@@ -110,10 +111,10 @@ public class TagMap extends HashMap {
 /**
  * This method gets called when a start tag is encountered.
  *
- * @param   uri 		the Uniform Resource Identifier
- * @param   lname 		the local name (without prefix), or the empty string if Namespace processing is not being performed.
- * @param	tag 		the name of the tag that is encountered
- * @param	attrs		the list of attributes
+ * @param   uri         the Uniform Resource Identifier
+ * @param   lname         the local name (without prefix), or the empty string if Namespace processing is not being performed.
+ * @param    tag         the name of the tag that is encountered
+ * @param    attrs        the list of attributes
  */
         
         public void startElement(String uri, String lname, String tag, Attributes attrs) {
@@ -142,9 +143,9 @@ public class TagMap extends HashMap {
 /**
  * This method gets called when ignorable white space encountered.
  *
- * @param	ch		an array of characters
- * @param	start	the start position in the array
- * @param	length	the number of characters to read from the array
+ * @param    ch        an array of characters
+ * @param    start    the start position in the array
+ * @param    length    the number of characters to read from the array
  */
         
         public void ignorableWhitespace(char[] ch, int start, int length) {
@@ -154,9 +155,9 @@ public class TagMap extends HashMap {
 /**
  * This method gets called when characters are encountered.
  *
- * @param	ch		an array of characters
- * @param	start	the start position in the array
- * @param	length	the number of characters to read from the array
+ * @param    ch        an array of characters
+ * @param    start    the start position in the array
+ * @param    length    the number of characters to read from the array
  */
         
         public void characters(char[] ch, int start, int length) {
@@ -166,9 +167,9 @@ public class TagMap extends HashMap {
 /**
  * This method gets called when an end tag is encountered.
  *
- * @param   uri 		the Uniform Resource Identifier
- * @param   lname 		the local name (without prefix), or the empty string if Namespace processing is not being performed.
- * @param	tag		the name of the tag that ends
+ * @param   uri         the Uniform Resource Identifier
+ * @param   lname         the local name (without prefix), or the empty string if Namespace processing is not being performed.
+ * @param    tag        the name of the tag that ends
  */
         
         public void endElement(String uri, String lname, String tag) {
@@ -186,17 +187,17 @@ public class TagMap extends HashMap {
         try {
             init(TagMap.class.getClassLoader().getResourceAsStream(tagfile));
         }catch(Exception e) {
-        	try {
-				init(new FileInputStream(tagfile));
-			} catch (FileNotFoundException fnfe) {
-				throw new ExceptionConverter(fnfe);
-			}
+            try {
+                init(new FileInputStream(tagfile));
+            } catch (FileNotFoundException fnfe) {
+                throw new ExceptionConverter(fnfe);
+            }
         }
     }
 
     /**
      * Constructs a TagMap.
-     * @param in	An InputStream with the tagmap xml
+     * @param in    An InputStream with the tagmap xml
      */
     public TagMap(InputStream in) {
         super();

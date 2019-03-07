@@ -54,9 +54,9 @@ package com.lowagie.text.pdf;
  * @since 2.1.6
  */
 public interface OcspClient {
-	/**
-	 * Gets an encoded byte array.
-	 * @return	a byte array
-	 */
+    /**
+     * Gets an encoded byte array.
+     * @return    a byte array
+     */
     byte[] getEncoded();
 }

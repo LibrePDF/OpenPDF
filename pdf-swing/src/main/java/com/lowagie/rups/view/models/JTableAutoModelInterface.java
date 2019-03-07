@@ -31,22 +31,22 @@ public interface JTableAutoModelInterface {
      * @return int the number of columns
      */
     int getColumnCount();
-	 /**
+     /**
      * @see javax.swing.table.TableModel#getRowCount()
      * @return int the number of rows
      */
      int getRowCount();
-	/**
-	 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
-	 * @param columnIndex a column number.
-	 * @return the name of the column
-	 */
+    /**
+     * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+     * @param columnIndex a column number.
+     * @return the name of the column
+     */
     String getColumnName(int columnIndex);
     /**
      * @see javax.swing.table.TableModel#getValueAt(int, int)
-     * @param rowIndex int		a row number
-     * @param columnIndex int	a column number
-     * @return Object	an object corresponding with a cell in the table
+     * @param rowIndex int        a row number
+     * @param columnIndex int    a column number
+     * @return Object    an object corresponding with a cell in the table
      */
     Object getValueAt(int rowIndex, int columnIndex);
 }

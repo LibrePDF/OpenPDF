@@ -40,42 +40,11 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
  * details.
  *
- * If you didn't download this code from the following link, you should check if
- * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
- *
- * The code to recognize the encoding in this class and in the convenience class IanaEncodings was taken from Apache Xerces published under the following license:
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * Part of this code is based on the Quick-and-Dirty XML parser by Steven Brandt.
- * The code for the Quick-and-Dirty parser was published in JavaWorld (java tip 128).
- * Steven Brandt and JavaWorld gave permission to use the code for free.
- * (Bruno Lowagie and Paulo Soares chose to use it under the MPL/LGPL in
- * conformance with the rest of the code).
- * The original code can be found on this url: <A HREF="http://www.javaworld.com/javatips/jw-javatip128_p.html">http://www.javaworld.com/javatips/jw-javatip128_p.html</A>.
- * It was substantially refactored by Bruno Lowagie.
- * 
- * The method 'private static String getEncodingName(byte[] b4)' was found
- * in org.apache.xerces.impl.XMLEntityManager, originaly published by the
- * Apache Software Foundation under the Apache Software License; now being
- * used in iText under the MPL.
  */
 package com.lowagie.text.xml.simpleparser;
 
 import com.lowagie.text.error_messages.MessageLocalization;
+import org.mozilla.universalchardet.UniversalDetector;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -102,78 +71,79 @@ import java.util.Stack;
  * </ul>
  * <p>
  */
+@Deprecated
 public final class SimpleXMLParser {
     /** possible states */
-	private final static int UNKNOWN = 0;
-	private final static int TEXT = 1;
-	private final static int TAG_ENCOUNTERED = 2;
-	private final static int EXAMIN_TAG = 3;
-	private final static int TAG_EXAMINED = 4;
-	private final static int IN_CLOSETAG = 5;
-	private final static int SINGLE_TAG = 6;
-	private final static int CDATA = 7;
-	private final static int COMMENT = 8;
-	private final static int PI = 9;
-	private final static int ENTITY = 10;
-	private final static int QUOTE = 11;
-	private final static int ATTRIBUTE_KEY = 12;
-	private final static int ATTRIBUTE_EQUAL = 13;
-	private final static int ATTRIBUTE_VALUE = 14;
+    private final static int UNKNOWN = 0;
+    private final static int TEXT = 1;
+    private final static int TAG_ENCOUNTERED = 2;
+    private final static int EXAMIN_TAG = 3;
+    private final static int TAG_EXAMINED = 4;
+    private final static int IN_CLOSETAG = 5;
+    private final static int SINGLE_TAG = 6;
+    private final static int CDATA = 7;
+    private final static int COMMENT = 8;
+    private final static int PI = 9;
+    private final static int ENTITY = 10;
+    private final static int QUOTE = 11;
+    private final static int ATTRIBUTE_KEY = 12;
+    private final static int ATTRIBUTE_EQUAL = 13;
+    private final static int ATTRIBUTE_VALUE = 14;
     
-	/** the state stack */
-	Stack stack;
-	/** The current character. */
-	int character = 0;
-	/** The previous character. */
-	int previousCharacter = -1;
-	/** the line we are currently reading */
-	int lines = 1;
-	/** the column where the current character occurs */
-	int columns = 0;
-	/** was the last character equivalent to a newline? */
-	boolean eol = false;
-	/**
-	 * A boolean indicating if the next character should be taken into account
-	 * if it's a space character. When nospace is false, the previous character
-	 * wasn't whitespace.
-	 * @since 2.1.5
-	 */
-	boolean nowhite = false;
-	/** the current state */
-	int state;
-	/** Are we parsing HTML? */
-	boolean html;
-	/** current text (whatever is encountered between tags) */
-	StringBuffer text = new StringBuffer();
-	/** current entity (whatever is encountered between & and ;) */
-	StringBuffer entity = new StringBuffer();
-	/** current tagname */
-	String tag = null;
-	/** current attributes */
-	HashMap attributes = null;
-	/** The handler to which we are going to forward document content */
-	SimpleXMLDocHandler doc;
-	/** The handler to which we are going to forward comments. */
-	SimpleXMLDocHandlerComment comment;
-	/** Keeps track of the number of tags that are open. */
-	int nested = 0;
-	/** the quote character that was used to open the quote. */
-	int quoteCharacter = '"';
-	/** the attribute key. */
-	String attributekey = null;
-	/** the attribute value. */
-	String attributevalue = null;
+    /** the state stack */
+    Stack stack;
+    /** The current character. */
+    int character = 0;
+    /** The previous character. */
+    int previousCharacter = -1;
+    /** the line we are currently reading */
+    int lines = 1;
+    /** the column where the current character occurs */
+    int columns = 0;
+    /** was the last character equivalent to a newline? */
+    boolean eol = false;
+    /**
+     * A boolean indicating if the next character should be taken into account
+     * if it's a space character. When nospace is false, the previous character
+     * wasn't whitespace.
+     * @since 2.1.5
+     */
+    boolean nowhite = false;
+    /** the current state */
+    int state;
+    /** Are we parsing HTML? */
+    boolean html;
+    /** current text (whatever is encountered between tags) */
+    StringBuffer text = new StringBuffer();
+    /** current entity (whatever is encountered between & and ;) */
+    StringBuffer entity = new StringBuffer();
+    /** current tagname */
+    String tag = null;
+    /** current attributes */
+    HashMap attributes = null;
+    /** The handler to which we are going to forward document content */
+    SimpleXMLDocHandler doc;
+    /** The handler to which we are going to forward comments. */
+    SimpleXMLDocHandlerComment comment;
+    /** Keeps track of the number of tags that are open. */
+    int nested = 0;
+    /** the quote character that was used to open the quote. */
+    int quoteCharacter = '"';
+    /** the attribute key. */
+    String attributekey = null;
+    /** the attribute value. */
+    String attributevalue = null;
     
-	/**
-	 * Creates a Simple XML parser object.
-	 * Call go(BufferedReader) immediately after creation.
-	 */
+    /**
+     * Creates a Simple XML parser object.
+     * Call go(BufferedReader) immediately after creation.
+     */
     private SimpleXMLParser(SimpleXMLDocHandler doc, SimpleXMLDocHandlerComment comment, boolean html) {
-    	this.doc = doc;
-    	this.comment = comment;
-    	this.html = html;
-    	stack = new Stack();
-    	state = html ? TEXT : UNKNOWN;
+        this.doc = doc;
+        this.comment = comment;
+        this.html = html;
+        stack = new Stack();
+        state = html ? TEXT : UNKNOWN;
     }
     
     /**
@@ -188,56 +158,56 @@ public final class SimpleXMLParser {
             reader = new BufferedReader(r);
         doc.startDocument();
         while(true) {
-			// read a new character
-			if (previousCharacter == -1) {
-				character = reader.read();
-			}
-			// or re-examine the previous character
-			else {
-				character = previousCharacter;
-				previousCharacter = -1;
-			}
-			
-			// the end of the file was reached
-			if (character == -1) {
-				if (html) {
-					if (html && state == TEXT)
-						flush();
-					doc.endDocument();
-				} else {
-					throwException(MessageLocalization.getComposedMessage("missing.end.tag"));
-				}
-				return;
-			}
+            // read a new character
+            if (previousCharacter == -1) {
+                character = reader.read();
+            }
+            // or re-examine the previous character
+            else {
+                character = previousCharacter;
+                previousCharacter = -1;
+            }
             
-			// dealing with  \n and \r
-			if (character == '\n' && eol) {
-				eol = false;
-				continue;
-			} else if (eol) {
-				eol = false;
-			} else if (character == '\n') {
-				lines++;
-				columns = 0;
-			} else if (character == '\r') {
-				eol = true;
-				character = '\n';
-				lines++;
-				columns = 0;
-			} else {
-				columns++;
-			}
+            // the end of the file was reached
+            if (character == -1) {
+                if (html) {
+                    if (html && state == TEXT)
+                        flush();
+                    doc.endDocument();
+                } else {
+                    throwException(MessageLocalization.getComposedMessage("missing.end.tag"));
+                }
+                return;
+            }
             
-			switch(state) {
+            // dealing with  \n and \r
+            if (character == '\n' && eol) {
+                eol = false;
+                continue;
+            } else if (eol) {
+                eol = false;
+            } else if (character == '\n') {
+                lines++;
+                columns = 0;
+            } else if (character == '\r') {
+                eol = true;
+                character = '\n';
+                lines++;
+                columns = 0;
+            } else {
+                columns++;
+            }
+            
+            switch(state) {
             // we are in an unknown state before there's actual content
-			case UNKNOWN:
+            case UNKNOWN:
                 if(character == '<') {
                     saveState(TEXT);
                     state = TAG_ENCOUNTERED;
                 }
                 break;
             // we can encounter any content
-			case TEXT:
+            case TEXT:
                 if(character == '<') {
                     flush();
                     saveState(state);
@@ -248,9 +218,9 @@ public final class SimpleXMLParser {
                     state = ENTITY;
                     nowhite = true;
                 } else if (Character.isWhitespace((char)character)) {
-                	if (nowhite)
-                		text.append((char)character);
-                	nowhite = false;
+                    if (nowhite)
+                        text.append((char)character);
+                    nowhite = false;
                 } else {
                     text.append((char)character);
                     nowhite = true;
@@ -258,7 +228,7 @@ public final class SimpleXMLParser {
                 break;
             // we have just seen a < and are wondering what we are looking at
             // <foo>, </foo>, <!-- ... --->, etc.
-			case TAG_ENCOUNTERED:
+            case TAG_ENCOUNTERED:
                 initTag();
                 if(character == '/') {
                     state = IN_CLOSETAG;
@@ -272,7 +242,7 @@ public final class SimpleXMLParser {
                 break;
             // we are processing something like this <foo ... >.
             // It could still be a <!-- ... --> or something.
-			case EXAMIN_TAG:
+            case EXAMIN_TAG:
                 if(character == '>') {
                     doTag();
                     processTag(true);
@@ -297,7 +267,7 @@ public final class SimpleXMLParser {
                 }
                 break;
             // we know the name of the tag now.
-			case TAG_EXAMINED:
+            case TAG_EXAMINED:
                 if(character == '>') {
                     processTag(true);
                     initTag();
@@ -313,7 +283,7 @@ public final class SimpleXMLParser {
                 break;
                 
                 // we are processing a closing tag: e.g. </foo>
-			case IN_CLOSETAG:
+            case IN_CLOSETAG:
                 if(character == '>') {
                     doTag();
                     processTag(false);
@@ -327,10 +297,10 @@ public final class SimpleXMLParser {
                 
             // we have just seen something like this: <foo a="b"/
             // and are looking for the final >.
-			case SINGLE_TAG:
+            case SINGLE_TAG:
                 if(character != '>')
                     throwException(MessageLocalization.getComposedMessage("expected.gt.for.tag.lt.1.gt", tag));
-				doTag();
+                doTag();
                 processTag(true);
                 processTag(false);
                 initTag();
@@ -342,7 +312,7 @@ public final class SimpleXMLParser {
                 break;
                 
             // we are processing CDATA
-			case CDATA:
+            case CDATA:
                 if(character == '>'
                 && text.toString().endsWith("]]")) {
                     text.setLength(text.length()-2);
@@ -354,7 +324,7 @@ public final class SimpleXMLParser {
                 
             // we are processing a comment.  We are inside
             // the <!-- .... --> looking for the -->.
-			case COMMENT:
+            case COMMENT:
                 if(character == '>'
                 && text.toString().endsWith("--")) {
                     text.setLength(text.length() - 2);
@@ -365,7 +335,7 @@ public final class SimpleXMLParser {
                 break;
                 
             // We are inside one of these <? ... ?> or one of these <!DOCTYPE ... >
-			case PI:
+            case PI:
                 if(character == '>') {
                     state = restoreState();
                     if(state == TEXT) state = UNKNOWN;
@@ -373,16 +343,16 @@ public final class SimpleXMLParser {
                 break;
                 
             // we are processing an entity, e.g. &lt;, &#187;, etc.
-			case ENTITY:
+            case ENTITY:
                 if(character == ';') {
                     state = restoreState();
                     String cent = entity.toString();
                     entity.setLength(0);
                     char ce = EntitiesToUnicode.decodeEntity(cent);
                     if (ce == '\0')
-                    	text.append('&').append(cent).append(';');
+                        text.append('&').append(cent).append(';');
                     else
-                    	text.append(ce);
+                        text.append(ce);
                 } else if ((character != '#' && (character < '0' || character > '9') && (character < 'a' || character > 'z')
                     && (character < 'A' || character > 'Z')) || entity.length() >= 7) {
                     state = restoreState();
@@ -395,7 +365,7 @@ public final class SimpleXMLParser {
                 }
                 break;
             // We are processing the quoted right-hand side of an element's attribute.
-			case QUOTE:
+            case QUOTE:
                 if (html && quoteCharacter == ' ' && character == '>') {
                     flush();
                     processTag(true);
@@ -403,14 +373,14 @@ public final class SimpleXMLParser {
                     state = restoreState();
                 }
                 else if (html && quoteCharacter == ' ' && Character.isWhitespace((char)character)) {
-                	flush();
+                    flush();
                     state = TAG_EXAMINED;
                 }
                 else if (html && quoteCharacter == ' ') {
                     text.append((char)character);
                 }
                 else if(character == quoteCharacter) {
-                	flush();
+                    flush();
                     state = TAG_EXAMINED;
                 } else if(" \r\n\u0009".indexOf(character)>=0) {
                     text.append(' ');
@@ -423,12 +393,12 @@ public final class SimpleXMLParser {
                 }
                 break;
                 
-			case ATTRIBUTE_KEY:
+            case ATTRIBUTE_KEY:
                 if(Character.isWhitespace((char)character)) {
                     flush();
                     state = ATTRIBUTE_EQUAL;
                 } else if(character == '=') {
-                	flush();
+                    flush();
                     state = ATTRIBUTE_VALUE;
                 } else if (html && character == '>') {
                     text.setLength(0);
@@ -440,7 +410,7 @@ public final class SimpleXMLParser {
                 }
                 break;
                 
-			case ATTRIBUTE_EQUAL:
+            case ATTRIBUTE_EQUAL:
                 if(character == '=') {
                     state = ATTRIBUTE_VALUE;
                 } else if(Character.isWhitespace((char)character)) {
@@ -462,7 +432,7 @@ public final class SimpleXMLParser {
                 }
                 break;
                 
-			case ATTRIBUTE_VALUE:
+            case ATTRIBUTE_VALUE:
                 if(character == '"' || character == '\'') {
                     quoteCharacter = character;
                     state = QUOTE;
@@ -497,10 +467,10 @@ public final class SimpleXMLParser {
     }
     /**
      * Adds a state to the stack.
-     * @param	s	a state to add to the stack
+     * @param    s    a state to add to the stack
      */
     private void saveState(int s) {
-    	stack.push(new Integer(s));
+        stack.push(new Integer(s));
     }
     /**
      * Flushes the text that is currently in the buffer.
@@ -508,31 +478,31 @@ public final class SimpleXMLParser {
      * as content or as comment,... depending on the current state.
      */
     private void flush() {
-    	switch(state){
-    	case TEXT:
-    	case CDATA:
+        switch(state){
+        case TEXT:
+        case CDATA:
             if(text.length() > 0) {
                 doc.text(text.toString());
             }
             break;
-    	case COMMENT:
-        	if (comment != null) {
+        case COMMENT:
+            if (comment != null) {
                 comment.comment(text.toString());
             }
-        	break;
-    	case ATTRIBUTE_KEY:
+            break;
+        case ATTRIBUTE_KEY:
             attributekey = text.toString();
             if (html)
                 attributekey = attributekey.toLowerCase();
-    		break;
-    	case QUOTE:
-    	case ATTRIBUTE_VALUE:
-        	attributevalue = text.toString();
+            break;
+        case QUOTE:
+        case ATTRIBUTE_VALUE:
+            attributevalue = text.toString();
             attributes.put(attributekey,attributevalue);
             break;
-    	default:
-    		// do nothing
-    	}
+        default:
+            // do nothing
+        }
         text.setLength(0);
     }
     /**
@@ -544,25 +514,25 @@ public final class SimpleXMLParser {
     }
     /** Sets the name of the tag. */
     private void doTag() {
-    	if(tag == null)
-    		tag = text.toString();
-    	if (html)
-    		tag = tag.toLowerCase();
-    	text.setLength(0);
+        if(tag == null)
+            tag = text.toString();
+        if (html)
+            tag = tag.toLowerCase();
+        text.setLength(0);
     }
     /**
      * processes the tag.
-     * @param start	if true we are dealing with a tag that has just been opened; if false we are closing a tag.
+     * @param start    if true we are dealing with a tag that has just been opened; if false we are closing a tag.
      */
     private void processTag(boolean start) {
-    	if (start) {
-    		nested++;
-    		doc.startElement(tag,attributes);
-    	}
-    	else {
+        if (start) {
+            nested++;
+            doc.startElement(tag,attributes);
+        }
+        else {
             nested--;
             doc.endElement(tag);
-    	}
+        }
     }
     /** Throws an exception */
     private void throwException(String s) throws IOException {
@@ -576,8 +546,8 @@ public final class SimpleXMLParser {
      * @throws IOException on error
      */
     public static void parse(SimpleXMLDocHandler doc, SimpleXMLDocHandlerComment comment, Reader r, boolean html) throws IOException {
-    	SimpleXMLParser parser = new SimpleXMLParser(doc, comment, html);
-    	parser.go(r);
+        SimpleXMLParser parser = new SimpleXMLParser(doc, comment, html);
+        parser.go(r);
     }
     
     /**
@@ -587,11 +557,13 @@ public final class SimpleXMLParser {
      * @throws IOException on error
      */    
     public static void parse(SimpleXMLDocHandler doc, InputStream in) throws IOException {
-        byte b4[] = new byte[4];
+        byte[] b4 = new byte[4];
         int count = in.read(b4);
         if (count != 4)
             throw new IOException(MessageLocalization.getComposedMessage("insufficient.length"));
-        String encoding = getEncodingName(b4);
+        String encoding = UniversalDetector.detectCharsetFromBOM(b4);
+        if (encoding == null) encoding = "UTF-8"; //UTF-8 is default.
+
         String decl = null;
         if (encoding.equals("UTF-8")) {
             StringBuffer sb = new StringBuffer();
@@ -649,116 +621,5 @@ public final class SimpleXMLParser {
     public static void parse(SimpleXMLDocHandler doc,Reader r) throws IOException {
         parse(doc, null, r, false);
     }
-    
-    /**
-     * Escapes a string with the appropriated XML codes.
-     * @param s the string to be escaped
-     * @param onlyASCII codes above 127 will always be escaped with &amp;#nn; if <CODE>true</CODE>
-     * @return the escaped string
-     */    
-    public static String escapeXML(String s, boolean onlyASCII) {
-        char cc[] = s.toCharArray();
-        int len = cc.length;
-        StringBuffer sb = new StringBuffer();
-        for (int k = 0; k < len; ++k) {
-            int c = cc[k];
-            switch (c) {
-                case '<':
-                    sb.append("&lt;");
-                    break;
-                case '>':
-                    sb.append("&gt;");
-                    break;
-                case '&':
-                    sb.append("&amp;");
-                    break;
-                case '"':
-                    sb.append("&quot;");
-                    break;
-                case '\'':
-                    sb.append("&apos;");
-                    break;
-                default:
-                	if ((c == 0x9) || (c == 0xA) || (c == 0xD)
-                		|| ((c >= 0x20) && (c <= 0xD7FF))
-                		|| ((c >= 0xE000) && (c <= 0xFFFD))
-                		|| ((c >= 0x10000) && (c <= 0x10FFFF))) { 
-                		if (onlyASCII && c > 127)
-                			sb.append("&#").append(c).append(';');
-                		else 
-                			sb.append((char)c);
-                	}
-            }
-        }
-        return sb.toString();
-    }
-    /**
-     * Returns the IANA encoding name that is auto-detected from
-     * the bytes specified, with the endian-ness of that encoding where appropriate.
-     * (method found in org.apache.xerces.impl.XMLEntityManager, originally published
-     * by the Apache Software Foundation under the Apache Software License; now being
-     * used in iText under the MPL)
-     * @param b4    The first four bytes of the input.
-     * @return an IANA-encoding string
-     */
-    private static String getEncodingName(byte[] b4) {
-        
-        // UTF-16, with BOM
-        int b0 = b4[0] & 0xFF;
-        int b1 = b4[1] & 0xFF;
-        if (b0 == 0xFE && b1 == 0xFF) {
-            // UTF-16, big-endian
-            return "UTF-16BE";
-        }
-        if (b0 == 0xFF && b1 == 0xFE) {
-            // UTF-16, little-endian
-            return "UTF-16LE";
-        }
-        
-        // UTF-8 with a BOM
-        int b2 = b4[2] & 0xFF;
-        if (b0 == 0xEF && b1 == 0xBB && b2 == 0xBF) {
-            return "UTF-8";
-        }
-        
-        // other encodings
-        int b3 = b4[3] & 0xFF;
-        if (b0 == 0x00 && b1 == 0x00 && b2 == 0x00 && b3 == 0x3C) {
-            // UCS-4, big endian (1234)
-            return "ISO-10646-UCS-4";
-        }
-        if (b0 == 0x3C && b1 == 0x00 && b2 == 0x00 && b3 == 0x00) {
-            // UCS-4, little endian (4321)
-            return "ISO-10646-UCS-4";
-        }
-        if (b0 == 0x00 && b1 == 0x00 && b2 == 0x3C && b3 == 0x00) {
-            // UCS-4, unusual octet order (2143)
-            // REVISIT: What should this be?
-            return "ISO-10646-UCS-4";
-        }
-        if (b0 == 0x00 && b1 == 0x3C && b2 == 0x00 && b3 == 0x00) {
-            // UCS-4, unusual octet order (3412)
-            // REVISIT: What should this be?
-            return "ISO-10646-UCS-4";
-        }
-        if (b0 == 0x00 && b1 == 0x3C && b2 == 0x00 && b3 == 0x3F) {
-            // UTF-16, big-endian, no BOM
-            // (or could turn out to be UCS-2...
-            // REVISIT: What should this be?
-            return "UTF-16BE";
-        }
-        if (b0 == 0x3C && b1 == 0x00 && b2 == 0x3F && b3 == 0x00) {
-            // UTF-16, little-endian, no BOM
-            // (or could turn out to be UCS-2...
-            return "UTF-16LE";
-        }
-        if (b0 == 0x4C && b1 == 0x6F && b2 == 0xA7 && b3 == 0x94) {
-            // EBCDIC
-            // a la xerces1, return CP037 instead of EBCDIC here
-            return "CP037";
-        }
-        
-        // default encoding
-        return "UTF-8";
-    }
+
 }

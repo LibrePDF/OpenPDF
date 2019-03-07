@@ -53,8 +53,9 @@ import java.awt.font.GlyphVector;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Utilities;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  * Each font in the document will have an instance of this class
@@ -86,8 +87,8 @@ class FontDetails {
     CJKFont cjkFont;
     /**
      * The array used with single byte encodings
-     */    
-    byte shortTag[];
+     */
+    byte[] shortTag;
     /**
      * The map used with double byte encodings. The key is Integer(glyph) and
      * the value is int[]{glyph, width, Unicode code}
@@ -173,7 +174,7 @@ class FontDetails {
      * @return the conversion
      */    
     byte[] convertToBytes(String text) {
-        byte b[] = null;
+        byte[] b = null;
         switch (fontType) {
             case BaseFont.FONT_TYPE_T3:
                 return baseFont.convertToBytes(text);
@@ -199,8 +200,8 @@ class FontDetails {
             case BaseFont.FONT_TYPE_TTUNI: {
                 try {
                     int len = text.length();
-                    int metrics[] = null;
-                    char glyph[] = new char[len];
+                    int[] metrics = null;
+                    char[] glyph = new char[len];
                     int i = 0;
                     if (symbolic) {
                         b = PdfEncodings.convertToBytes(text, "symboltt");
@@ -214,24 +215,24 @@ class FontDetails {
                         }
                     }
                     else {
-                    	for (int k = 0; k < len; ++k) {
-                    		int val;
-                    		if (Utilities.isSurrogatePair(text, k)) {
-                    			val = Utilities.convertToUtf32(text, k);
-                    			k++;
-                    		}
-                    		else {
-                    			val = text.charAt(k);
-                    		}
-                    		metrics = ttu.getMetricsTT(val);
-                    		if (metrics == null)
-                    			continue;
-                    		int m0 = metrics[0];
-                    		Integer gl = new Integer(m0);
-                    		if (!longTag.containsKey(gl))
-                    			longTag.put(gl, new int[]{m0, metrics[1], val});
-                    		glyph[i++] = (char)m0;
-                    	}
+                        for (int k = 0; k < len; ++k) {
+                            int val;
+                            if (Utilities.isSurrogatePair(text, k)) {
+                                val = Utilities.convertToUtf32(text, k);
+                                k++;
+                            }
+                            else {
+                                val = text.charAt(k);
+                            }
+                            metrics = ttu.getMetricsTT(val);
+                            if (metrics == null)
+                                continue;
+                            int m0 = metrics[0];
+                            Integer gl = new Integer(m0);
+                            if (!longTag.containsKey(gl))
+                                longTag.put(gl, new int[]{m0, metrics[1], val});
+                            glyph[i++] = (char)m0;
+                        }
                     }
                     String s = new String(glyph, 0, i);
                     b = s.getBytes(CJKFont.CJK_ENCODING);
@@ -245,41 +246,41 @@ class FontDetails {
         return b;
     }
     
-	byte[] convertToBytes(GlyphVector glyphVector) {
-		if (fontType != BaseFont.FONT_TYPE_TTUNI || symbolic) {
-			throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
-		}
+    byte[] convertToBytes(GlyphVector glyphVector) {
+        if (fontType != BaseFont.FONT_TYPE_TTUNI || symbolic) {
+            throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
+        }
 
-		char[] glyphs = new char[glyphVector.getNumGlyphs()];
-		int glyphCount = 0;
-		for (int i = 0; i < glyphs.length; i++) {
-			int code = glyphVector.getGlyphCode(i);
-			if (code == 0xFFFE || code == 0xFFFF) {// considered non-glyphs by
-													// AWT
-				continue;
-			}
+        char[] glyphs = new char[glyphVector.getNumGlyphs()];
+        int glyphCount = 0;
+        for (int i = 0; i < glyphs.length; i++) {
+            int code = glyphVector.getGlyphCode(i);
+            if (code == 0xFFFE || code == 0xFFFF) {// considered non-glyphs by
+                                                    // AWT
+                continue;
+            }
 
-			glyphs[glyphCount++] = (char) code;// FIXME supplementary plane?
+            glyphs[glyphCount++] = (char) code;// FIXME supplementary plane?
 
-			Integer codeKey = Integer.valueOf(code);
-			if (!longTag.containsKey(codeKey)) {
-				int glyphWidth = ttu.getGlyphWidth(code);
-				Integer charCode = ttu.getCharacterCode(code);
-				int[] metrics = charCode != null ? new int[] { code, glyphWidth, charCode.intValue() } : new int[] {
-						code, glyphWidth };
-				longTag.put(codeKey, metrics);
-			}
-		}
+            Integer codeKey = Integer.valueOf(code);
+            if (!longTag.containsKey(codeKey)) {
+                int glyphWidth = ttu.getGlyphWidth(code);
+                Integer charCode = ttu.getCharacterCode(code);
+                int[] metrics = charCode != null ? new int[] { code, glyphWidth, charCode.intValue() } : new int[] {
+                        code, glyphWidth };
+                longTag.put(codeKey, metrics);
+            }
+        }
 
-		String s = new String(glyphs, 0, glyphCount);
-		try {
-			byte[] b = s.getBytes(CJKFont.CJK_ENCODING);
-			return b;
-		} catch (UnsupportedEncodingException e) {
-			throw new ExceptionConverter(e);
-		}
-	}
-	
+        String s = new String(glyphs, 0, glyphCount);
+        try {
+            byte[] b = s.getBytes(CJKFont.CJK_ENCODING);
+            return b;
+        } catch (UnsupportedEncodingException e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+    
     
     /**
      * Writes the font definition to the document.

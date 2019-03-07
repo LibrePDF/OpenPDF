@@ -55,8 +55,9 @@ import java.awt.image.MemoryImageSource;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.ExceptionConverter;
 
 /** Implements the code 39 and code 39 extended. The default parameters are:
  * <pre>
@@ -77,55 +78,56 @@ import com.lowagie.text.Rectangle;
  */
 public class Barcode39 extends Barcode{
 
-    /** The bars to generate the code.
-     */    
-    private static final byte BARS[][] = 
-    {
-        {0,0,0,1,1,0,1,0,0},
-        {1,0,0,1,0,0,0,0,1},
-        {0,0,1,1,0,0,0,0,1},
-        {1,0,1,1,0,0,0,0,0},
-        {0,0,0,1,1,0,0,0,1},
-        {1,0,0,1,1,0,0,0,0},
-        {0,0,1,1,1,0,0,0,0},
-        {0,0,0,1,0,0,1,0,1},
-        {1,0,0,1,0,0,1,0,0},
-        {0,0,1,1,0,0,1,0,0},
-        {1,0,0,0,0,1,0,0,1},
-        {0,0,1,0,0,1,0,0,1},
-        {1,0,1,0,0,1,0,0,0},
-        {0,0,0,0,1,1,0,0,1},
-        {1,0,0,0,1,1,0,0,0},
-        {0,0,1,0,1,1,0,0,0},
-        {0,0,0,0,0,1,1,0,1},
-        {1,0,0,0,0,1,1,0,0},
-        {0,0,1,0,0,1,1,0,0},
-        {0,0,0,0,1,1,1,0,0},
-        {1,0,0,0,0,0,0,1,1},
-        {0,0,1,0,0,0,0,1,1},
-        {1,0,1,0,0,0,0,1,0},
-        {0,0,0,0,1,0,0,1,1},
-        {1,0,0,0,1,0,0,1,0},
-        {0,0,1,0,1,0,0,1,0},
-        {0,0,0,0,0,0,1,1,1},
-        {1,0,0,0,0,0,1,1,0},
-        {0,0,1,0,0,0,1,1,0},
-        {0,0,0,0,1,0,1,1,0},
-        {1,1,0,0,0,0,0,0,1},
-        {0,1,1,0,0,0,0,0,1},
-        {1,1,1,0,0,0,0,0,0},
-        {0,1,0,0,1,0,0,0,1},
-        {1,1,0,0,1,0,0,0,0},
-        {0,1,1,0,1,0,0,0,0},
-        {0,1,0,0,0,0,1,0,1},
-        {1,1,0,0,0,0,1,0,0},
-        {0,1,1,0,0,0,1,0,0},
-        {0,1,0,1,0,1,0,0,0},
-        {0,1,0,1,0,0,0,1,0},
-        {0,1,0,0,0,1,0,1,0},
-        {0,0,0,1,0,1,0,1,0},
-        {0,1,0,0,1,0,1,0,0}
-    };
+    /**
+     * The bars to generate the code.
+     */
+    private static final byte[][] BARS =
+            {
+                    {0, 0, 0, 1, 1, 0, 1, 0, 0},
+                    {1, 0, 0, 1, 0, 0, 0, 0, 1},
+                    {0, 0, 1, 1, 0, 0, 0, 0, 1},
+                    {1, 0, 1, 1, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 1, 1, 0, 0, 0, 1},
+                    {1, 0, 0, 1, 1, 0, 0, 0, 0},
+                    {0, 0, 1, 1, 1, 0, 0, 0, 0},
+                    {0, 0, 0, 1, 0, 0, 1, 0, 1},
+                    {1, 0, 0, 1, 0, 0, 1, 0, 0},
+                    {0, 0, 1, 1, 0, 0, 1, 0, 0},
+                    {1, 0, 0, 0, 0, 1, 0, 0, 1},
+                    {0, 0, 1, 0, 0, 1, 0, 0, 1},
+                    {1, 0, 1, 0, 0, 1, 0, 0, 0},
+                    {0, 0, 0, 0, 1, 1, 0, 0, 1},
+                    {1, 0, 0, 0, 1, 1, 0, 0, 0},
+                    {0, 0, 1, 0, 1, 1, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 1, 1, 0, 1},
+                    {1, 0, 0, 0, 0, 1, 1, 0, 0},
+                    {0, 0, 1, 0, 0, 1, 1, 0, 0},
+                    {0, 0, 0, 0, 1, 1, 1, 0, 0},
+                    {1, 0, 0, 0, 0, 0, 0, 1, 1},
+                    {0, 0, 1, 0, 0, 0, 0, 1, 1},
+                    {1, 0, 1, 0, 0, 0, 0, 1, 0},
+                    {0, 0, 0, 0, 1, 0, 0, 1, 1},
+                    {1, 0, 0, 0, 1, 0, 0, 1, 0},
+                    {0, 0, 1, 0, 1, 0, 0, 1, 0},
+                    {0, 0, 0, 0, 0, 0, 1, 1, 1},
+                    {1, 0, 0, 0, 0, 0, 1, 1, 0},
+                    {0, 0, 1, 0, 0, 0, 1, 1, 0},
+                    {0, 0, 0, 0, 1, 0, 1, 1, 0},
+                    {1, 1, 0, 0, 0, 0, 0, 0, 1},
+                    {0, 1, 1, 0, 0, 0, 0, 0, 1},
+                    {1, 1, 1, 0, 0, 0, 0, 0, 0},
+                    {0, 1, 0, 0, 1, 0, 0, 0, 1},
+                    {1, 1, 0, 0, 1, 0, 0, 0, 0},
+                    {0, 1, 1, 0, 1, 0, 0, 0, 0},
+                    {0, 1, 0, 0, 0, 0, 1, 0, 1},
+                    {1, 1, 0, 0, 0, 0, 1, 0, 0},
+                    {0, 1, 1, 0, 0, 0, 1, 0, 0},
+                    {0, 1, 0, 1, 0, 1, 0, 0, 0},
+                    {0, 1, 0, 1, 0, 0, 0, 1, 0},
+                    {0, 1, 0, 0, 0, 1, 0, 1, 0},
+                    {0, 0, 0, 1, 0, 1, 0, 1, 0},
+                    {0, 1, 0, 0, 1, 0, 1, 0, 0}
+            };
  
     /** The index chars to <CODE>BARS</CODE>.
      */    
@@ -170,7 +172,7 @@ public class Barcode39 extends Barcode{
      */    
     public static byte[] getBarsCode39(String text) {
         text = "*" + text + "*";
-        byte bars[] = new byte[text.length() * 10 - 1];
+        byte[] bars = new byte[text.length() * 10 - 1];
         for (int k = 0; k < text.length(); ++k) {
             int idx = CHARS.indexOf(text.charAt(k));
             if (idx < 0)
@@ -327,7 +329,7 @@ public class Barcode39 extends Barcode{
                 barStartY = textStartY + baseline;
             }
         }
-        byte bars[] = getBarsCode39(bCode);
+        byte[] bars = getBarsCode39(bCode);
         boolean print = true;
         if (barColor != null)
             cb.setColorFill(barColor);
@@ -370,11 +372,11 @@ public class Barcode39 extends Barcode{
         int len = bCode.length() + 2;
         int nn = (int)n;
         int fullWidth = len * (6 + 3 * nn) + (len - 1);
-        byte bars[] = getBarsCode39(bCode);
+        byte[] bars = getBarsCode39(bCode);
         boolean print = true;
         int ptr = 0;
         int height = (int)barHeight;
-        int pix[] = new int[fullWidth * height];
+        int[] pix = new int[fullWidth * height];
         for (int k = 0; k < bars.length; ++k) {
             int w = (bars[k] == 0 ? 1 : nn);
             int c = g;

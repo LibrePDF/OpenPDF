@@ -74,7 +74,7 @@ public class TernaryTree implements Cloneable, Serializable {
 
     private static final long serialVersionUID = 5313366505322983510L;
 
-	/**
+    /**
      * Pointer to low branch and to rest of the key when it is
      * stored directly in this node, we don't have unions in java!
      */
@@ -142,7 +142,7 @@ public class TernaryTree implements Cloneable, Serializable {
         if (freenode + len > eq.length) {
             redimNodeArrays(eq.length + BLOCK_SIZE);
         }
-        char strkey[] = new char[len--];
+        char[] strkey = new char[len--];
         key.getChars(0, len, strkey, 0);
         strkey[len] = 0;
         root = insert(root, strkey, 0, val);
@@ -283,7 +283,7 @@ public class TernaryTree implements Cloneable, Serializable {
 
     public int find(String key) {
         int len = key.length();
-        char strkey[] = new char[len + 1];
+        char[] strkey = new char[len + 1];
         key.getChars(0, len, strkey, 0);
         strkey[len] = 0;
 
@@ -633,11 +633,11 @@ public class TernaryTree implements Cloneable, Serializable {
     }
 
     public void printStats() {
-        System.out.println("Number of keys = " + Integer.toString(length));
-        System.out.println("Node count = " + Integer.toString(freenode));
+        System.out.println("Number of keys = " + length);
+        System.out.println("Node count = " + freenode);
         // System.out.println("Array length = " + Integer.toString(eq.length));
         System.out.println("Key Array length = "
-                           + Integer.toString(kv.length()));
+                           + kv.length());
 
         /*
          * for(int i=0; i<kv.length(); i++)

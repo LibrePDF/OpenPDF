@@ -158,7 +158,7 @@ void onChapterEnd(PdfWriter writer, Document document, float paragraphPosition);
  * @param writer            the <CODE>PdfWriter</CODE> for this document
  * @param document          the document
  * @param paragraphPosition the position the section will be written to
- * @param depth				the number depth of the section
+ * @param depth                the number depth of the section
  * @param title             the title of the section
  */
 void onSection(PdfWriter writer, Document document, float paragraphPosition, int depth, Paragraph title);

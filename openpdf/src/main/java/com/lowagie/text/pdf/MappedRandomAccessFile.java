@@ -51,6 +51,7 @@ package com.lowagie.text.pdf;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.BufferUnderflowException;
 import java.nio.MappedByteBuffer;
@@ -108,7 +109,7 @@ public class MappedRandomAccessFile {
      * @since 2.0.8
      */
     public FileChannel getChannel() {
-    	return channel;
+        return channel;
     }
     
     /**
@@ -133,7 +134,7 @@ public class MappedRandomAccessFile {
      * @param len int length
      * @return int bytes read or -1 on EOF
      */
-    public int read(byte bytes[], int off, int len) {
+    public int read(byte[] bytes, int off, int len) {
         int pos = mappedByteBuffer.position();
         int limit = mappedByteBuffer.limit();
         if (pos == limit)
@@ -197,22 +198,52 @@ public class MappedRandomAccessFile {
      * @return boolean true on success
      */
     public static boolean clean(final java.nio.ByteBuffer buffer) {
-        if (buffer == null || !buffer.isDirect())
+        if (buffer == null || !buffer.isDirect()) {
             return false;
+        }
+        if (cleanJava9(buffer)) {
+            return true;
+        }
+        return cleanOldsJDK(buffer);
+    }
+    
+    private static boolean cleanJava9(final java.nio.ByteBuffer buffer) {
+        Boolean b = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
+                Boolean success = Boolean.FALSE;
+                try {
+                    final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+                    final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
+                    theUnsafeField.setAccessible(true);
+                    final Object theUnsafe = theUnsafeField.get(null);
+                    final Method invokeCleanerMethod = unsafeClass.getMethod("invokeCleaner", java.nio.ByteBuffer.class);
+                    invokeCleanerMethod.invoke(theUnsafe, buffer);
+                    success = Boolean.TRUE;
+                } catch (Exception ignore) {                    
+                    // Ignore
+                }
+                return success;
+            }
+        });
         
-        Boolean b = (Boolean) AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+        return b.booleanValue();
+    }
+
+    private static boolean cleanOldsJDK(final java.nio.ByteBuffer buffer) {
+        Boolean b = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
                 Boolean success = Boolean.FALSE;
                 try {
                     Method getCleanerMethod = buffer.getClass().getMethod("cleaner", (Class[])null);
-                    getCleanerMethod.setAccessible(true);
+                    if (!getCleanerMethod.isAccessible()) {
+                        getCleanerMethod.setAccessible(true);
+                    }
                     Object cleaner = getCleanerMethod.invoke(buffer, (Object[])null);
                     Method clean = cleaner.getClass().getMethod("clean", (Class[])null);
                     clean.invoke(cleaner, (Object[])null);
                     success = Boolean.TRUE;
                 } catch (Exception e) {
-                    // This really is a show stopper on windows
-                    //e.printStackTrace();
+                    // Ignore
                 }
                 return success;
             }

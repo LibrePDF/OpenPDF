@@ -1,15 +1,15 @@
 /*
  * $Id: ImageMasks.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.objects.images;
 
@@ -67,7 +67,7 @@ public class ImageMasks {
             document.add(p);
             document.add(p);
             PdfContentByte cb = writer.getDirectContent();
-            byte maskr[] = {(byte)0x3c, (byte)0x7e, (byte)0xe7, (byte)0xc3, (byte)0xc3, (byte)0xe7, (byte)0x7e, (byte)0x3c};
+            byte[] maskr = {(byte) 0x3c, (byte) 0x7e, (byte) 0xe7, (byte) 0xc3, (byte) 0xc3, (byte) 0xe7, (byte) 0x7e, (byte) 0x3c};
             Image mask = Image.getInstance(8, 8, 1, 1, maskr);
             mask.makeMask();
             mask.setInverted(true);

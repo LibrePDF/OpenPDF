@@ -57,7 +57,7 @@ import com.lowagie.text.DocumentException;
  */
 public class Type3Font extends BaseFont {
     
-	private boolean[] usedSlot;
+    private boolean[] usedSlot;
     private IntHashtable widths3 = new IntHashtable();
     private HashMap char2glyph = new HashMap();
     private PdfWriter writer;
@@ -207,7 +207,7 @@ public class Type3Font extends BaseFont {
         while( firstChar < usedSlot.length && !usedSlot[firstChar] ) firstChar++;
         
         if ( firstChar == usedSlot.length ) {
-        	throw new DocumentException(MessageLocalization.getComposedMessage("no.glyphs.defined.for.type3.font"));
+            throw new DocumentException(MessageLocalization.getComposedMessage("no.glyphs.defined.for.type3.font"));
         }
         int lastChar = usedSlot.length - 1;
         while( lastChar >= firstChar && !usedSlot[lastChar] ) lastChar--;
@@ -265,11 +265,11 @@ public class Type3Font extends BaseFont {
     
     /**
      * Always returns null, because you can't get the FontStream of a Type3 font.
-   	 * @return	null
-     * @since	2.1.3
+        * @return    null
+     * @since    2.1.3
      */
     public PdfStream getFullFontStream() {
-    	return null;
+        return null;
     }
     
     

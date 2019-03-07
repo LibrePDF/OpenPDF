@@ -34,7 +34,7 @@ public class HyphenationTree extends TernaryTree
 
     private static final long serialVersionUID = -7763254239309429432L;
 
-	/**
+    /**
      * value space: stores the interletter values
      */
     protected ByteVector vspace;
@@ -449,7 +449,7 @@ public class HyphenationTree extends TernaryTree
 
     public void printStats() {
         System.out.println("Value space size = "
-                           + Integer.toString(vspace.length()));
+                           + vspace.length());
         super.printStats();
     }
 }

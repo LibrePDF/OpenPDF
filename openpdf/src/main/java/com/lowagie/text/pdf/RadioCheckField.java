@@ -49,8 +49,9 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  * Creates a radio or a check field.
@@ -109,8 +110,8 @@ public class RadioCheckField extends BaseField {
     public static final int TYPE_SQUARE = 5;
     /** A field with the symbol star */
     public static final int TYPE_STAR = 6;
-    
-    private static String typeChars[] = {"4", "l", "8", "u", "n", "H"};
+
+    private static String[] typeChars = {"4", "l", "8", "u", "n", "H"};
     
     /**
      * Holds value of property checkType.

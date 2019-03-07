@@ -53,14 +53,16 @@ import java.awt.color.ICC_Profile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * An <CODE>Jpeg</CODE> is the representation of a graphic element (JPEG)
  * that has to be inserted into the document
  *
- * @see		Element
- * @see		Image
+ * @see        Element
+ * @see        Image
  */
 
 public class Jpeg extends Image {
@@ -94,9 +96,11 @@ public class Jpeg extends Image {
     public static final int M_APP2 = 0xE2;
     /** Marker value */
     public static final int M_APPE = 0xEE;
-    
-    /** sequence that is used in all Jpeg files */
-    public static final byte JFIF_ID[] = {0x4A, 0x46, 0x49, 0x46, 0x00};
+
+    /**
+     * sequence that is used in all Jpeg files
+     */
+    public static final byte[] JFIF_ID = {0x4A, 0x46, 0x49, 0x46, 0x00};
     
     private byte[][] icc;
     // Constructors
@@ -108,7 +112,7 @@ public class Jpeg extends Image {
     /**
      * Constructs a <CODE>Jpeg</CODE>-object, using an <VAR>url</VAR>.
      *
-     * @param		url			the <CODE>URL</CODE> where the image can be found
+     * @param        url            the <CODE>URL</CODE> where the image can be found
      * @throws BadElementException
      * @throws IOException
      */
@@ -120,7 +124,7 @@ public class Jpeg extends Image {
     /**
      * Constructs a <CODE>Jpeg</CODE>-object from memory.
      *
-     * @param		img		the memory image
+     * @param        img        the memory image
      * @throws BadElementException
      * @throws IOException
      */
@@ -135,9 +139,9 @@ public class Jpeg extends Image {
     /**
      * Constructs a <CODE>Jpeg</CODE>-object from memory.
      *
-     * @param		img			the memory image.
-     * @param		width		the width you want the image to have
-     * @param		height		the height you want the image to have
+     * @param        img            the memory image.
+     * @param        width        the width you want the image to have
+     * @param        height        the height you want the image to have
      * @throws BadElementException
      * @throws IOException
      */
@@ -153,8 +157,8 @@ public class Jpeg extends Image {
     /**
      * Reads a short from the <CODE>InputStream</CODE>.
      *
-     * @param	is		the <CODE>InputStream</CODE>
-     * @return	an int
+     * @param    is        the <CODE>InputStream</CODE>
+     * @return    an int
      * @throws IOException
      */
     private static final int getShort(InputStream is) throws IOException {
@@ -164,8 +168,8 @@ public class Jpeg extends Image {
     /**
      * Returns a type of marker.
      *
-     * @param	marker      an int
-     * @return	a type: <VAR>VALID_MARKER</CODE>, <VAR>UNSUPPORTED_MARKER</VAR> or <VAR>NOPARAM_MARKER</VAR>
+     * @param    marker      an int
+     * @return    a type: <VAR>VALID_MARKER</CODE>, <VAR>UNSUPPORTED_MARKER</VAR> or <VAR>NOPARAM_MARKER</VAR>
      */
     private static final int marker(int marker) {
         for (int i = 0; i < VALID_MARKERS.length; i++) {
@@ -190,6 +194,9 @@ public class Jpeg extends Image {
     
     /**
      * This method checks if the image is a valid JPEG and processes some parameters.
+     *
+     * TODO: Use Apache Commons Imaging to parse these parameters instead.
+     *
      * @throws BadElementException
      * @throws IOException
      */
@@ -207,7 +214,7 @@ public class Jpeg extends Image {
                 is = new java.io.ByteArrayInputStream(rawData);
                 errorID = "Byte array";
             }
-            if (is.read() != 0xFF || is.read() != 0xD8)	{
+            if (is.read() != 0xFF || is.read() != 0xD8)    {
                 throw new BadElementException(MessageLocalization.getComposedMessage("1.is.not.a.valid.jpeg.file", errorID));
             }
             boolean firstPass = true;
@@ -225,7 +232,7 @@ public class Jpeg extends Image {
                             Utilities.skip(is, len - 2);
                             continue;
                         }
-                        byte bcomp[] = new byte[JFIF_ID.length];
+                        byte[] bcomp = new byte[JFIF_ID.length];
                         int r = is.read(bcomp);
                         if (r != bcomp.length)
                             throw new BadElementException(MessageLocalization.getComposedMessage("1.corrupted.jfif.marker", errorID));
@@ -262,7 +269,7 @@ public class Jpeg extends Image {
                             byteappe[k] = (byte)is.read();
                         }
                         if (byteappe.length >= 12) {
-                            String appe = new String(byteappe, 0, 5, "ISO-8859-1");
+                            String appe = new String(byteappe, 0, 5, StandardCharsets.ISO_8859_1);
                             if (appe.equals("Adobe")) {
                                 invert = true;
                             }
@@ -276,7 +283,7 @@ public class Jpeg extends Image {
                             byteapp2[k] = (byte)is.read();
                         }
                         if (byteapp2.length >= 14) {
-                            String app2 = new String(byteapp2, 0, 11, "ISO-8859-1");
+                            String app2 = new String(byteapp2, 0, 11, StandardCharsets.ISO_8859_1);
                             if (app2.equals("ICC_PROFILE")) {
                                 int order = byteapp2[12] & 0xff;
                                 int count = byteapp2[13] & 0xff;
@@ -339,11 +346,11 @@ public class Jpeg extends Image {
                 total += icc[k].length - 14;
             }
             try {
-            	ICC_Profile icc_prof = ICC_Profile.getInstance(ficc);
-            	tagICC(icc_prof);
+                ICC_Profile icc_prof = ICC_Profile.getInstance(ficc);
+                tagICC(icc_prof);
             }
             catch(IllegalArgumentException e) {
-            	// ignore ICC profile if it's invalid.
+                // ignore ICC profile if it's invalid.
             }
             icc = null;
         }

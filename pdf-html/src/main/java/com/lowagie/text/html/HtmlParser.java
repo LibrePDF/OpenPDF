@@ -53,11 +53,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
+import com.lowagie.text.ExceptionConverter;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.lowagie.text.DocListener;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.xml.XmlParser;
 
 /**

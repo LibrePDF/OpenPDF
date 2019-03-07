@@ -59,14 +59,14 @@ package com.lowagie.text.exceptions;
  */
 public class UnsupportedPdfException extends InvalidPdfException {
 
-	/** a serial version UID */
-	private static final long serialVersionUID = 2180764250839096628L;
+    /** a serial version UID */
+    private static final long serialVersionUID = 2180764250839096628L;
 
-	/**
-	 * Creates an instance of an UnsupportedPdfException.
-	 * @param	message	the reason why the document isn't a PDF document according to iText.
-	 */
-	public UnsupportedPdfException(String message) {
-		super(message);
-	}
+    /**
+     * Creates an instance of an UnsupportedPdfException.
+     * @param    message    the reason why the document isn't a PDF document according to iText.
+     */
+    public UnsupportedPdfException(String message) {
+        super(message);
+    }
 }

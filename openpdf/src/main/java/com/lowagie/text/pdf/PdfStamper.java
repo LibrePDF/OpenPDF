@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SignatureException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,9 +60,10 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.interfaces.PdfEncryptionSettings;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
@@ -77,7 +79,7 @@ import java.security.cert.Certificate;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfStamper
-	implements PdfViewerPreferences, PdfEncryptionSettings {
+    implements PdfViewerPreferences, PdfEncryptionSettings {
     /**
      * The writer
      */    
@@ -196,7 +198,7 @@ public class PdfStamper
         PdfSigGenericPKCS sig = sigApp.getSigStandard();
         PdfLiteral lit = (PdfLiteral)sig.get(PdfName.CONTENTS);
         int totalBuf = (lit.getPosLength() - 2) / 2;
-        byte buf[] = new byte[8192];
+        byte[] buf = new byte[8192];
         int n;
         InputStream inp = sigApp.getRangeStream();
         try {
@@ -267,7 +269,7 @@ public class PdfStamper
      * @param strength128Bits <code>true</code> for 128 bit key length, <code>false</code> for 40 bit key length
      * @throws DocumentException if anything was already written to the output
      */
-    public void setEncryption(byte userPassword[], byte ownerPassword[], int permissions, boolean strength128Bits) throws DocumentException {
+    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits) throws DocumentException {
         if (stamper.isAppend())
             throw new DocumentException(MessageLocalization.getComposedMessage("append.mode.does.not.support.changing.the.encryption.status"));
         if (stamper.isContentWritten())
@@ -288,7 +290,7 @@ public class PdfStamper
      * Optionally DO_NOT_ENCRYPT_METADATA can be ored to output the metadata in cleartext
      * @throws DocumentException if the document is already open
      */
-    public void setEncryption(byte userPassword[], byte ownerPassword[], int permissions, int encryptionType) throws DocumentException {
+    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, int encryptionType) throws DocumentException {
         if (stamper.isAppend())
             throw new DocumentException(MessageLocalization.getComposedMessage("append.mode.does.not.support.changing.the.encryption.status"));
         if (stamper.isContentWritten())
@@ -398,8 +400,8 @@ public class PdfStamper
      * (the default) to keep the FreeText annotations as active content.
      */
     public void setFreeTextFlattening(boolean flat) {
-    	stamper.setFreeTextFlattening(flat);
-	}
+        stamper.setFreeTextFlattening(flat);
+    }
 
     /**
      * Adds an annotation of form field in a specific page. This page number
@@ -413,14 +415,14 @@ public class PdfStamper
 
     /**
      * Adds an empty signature.
-     * @param name	the name of the signature
-     * @param page	the page number
-     * @param llx	lower left x coordinate of the signature's position
-     * @param lly	lower left y coordinate of the signature's position
-     * @param urx	upper right x coordinate of the signature's position
-     * @param ury	upper right y coordinate of the signature's position
-     * @return	a signature form field
-     * @since	2.1.4
+     * @param name    the name of the signature
+     * @param page    the page number
+     * @param llx    lower left x coordinate of the signature's position
+     * @param lly    lower left y coordinate of the signature's position
+     * @param urx    upper right x coordinate of the signature's position
+     * @param ury    upper right y coordinate of the signature's position
+     * @return    a signature form field
+     * @since    2.1.4
      */
     public PdfFormField addSignature(String name, int page, float llx, float lly, float urx, float ury) {
         PdfAcroForm acroForm = stamper.getAcroForm();
@@ -491,7 +493,7 @@ public class PdfStamper
      * @param fileDisplay the actual file name stored in the pdf
      * @throws IOException on error
      */    
-    public void addFileAttachment(String description, byte fileStore[], String file, String fileDisplay) throws IOException {
+    public void addFileAttachment(String description, byte[] fileStore, String file, String fileDisplay) throws IOException {
         addFileAttachment(description, PdfFileSpecification.fileEmbedded(stamper, file, fileDisplay, fileStore));
     }
 
@@ -517,17 +519,17 @@ public class PdfStamper
      * @param initialView can be PdfName.D, PdfName.T or PdfName.H
      */
     public void makePackage( PdfName initialView ) {
-    	PdfCollection collection = new PdfCollection(0);
-    	collection.put(PdfName.VIEW, initialView);
-    	stamper.makePackage( collection );
+        PdfCollection collection = new PdfCollection(0);
+        collection.put(PdfName.VIEW, initialView);
+        stamper.makePackage( collection );
     }
 
     /**
      * Adds or replaces the Collection Dictionary in the Catalog.
-     * @param	collection	the new collection dictionary.
+     * @param    collection    the new collection dictionary.
      */
     public void makePackage(PdfCollection collection) {
-    	stamper.makePackage(collection);    	
+        stamper.makePackage(collection);        
     }
     
     /**
@@ -546,7 +548,7 @@ public class PdfStamper
      */
     
     public void addViewerPreference(PdfName key, PdfObject value) {
-    	stamper.addViewerPreference(key, value);
+        stamper.addViewerPreference(key, value);
     }
 
     /**
@@ -753,10 +755,85 @@ public class PdfStamper
     /**
      * Gets the PdfLayer objects in an existing document as a Map
      * with the names/titles of the layers as keys.
-     * @return	a Map with all the PdfLayers in the document (and the name/title of the layer as key)
-     * @since	2.1.2
+     * @return    a Map with all the PdfLayers in the document (and the name/title of the layer as key)
+     * @since    2.1.2
      */
     public Map getPdfLayers() {
-    	return stamper.getPdfLayers();
+        return stamper.getPdfLayers();
     }
+
+    /**
+     * Specifies if the file ID property should be included in the PDF file header when creating and stamping the PDF file.
+     *
+     * @since OpenPDF 1.2.1
+     * @date 25. aug 2018
+     * @see PdfName#ID
+     *
+     * @param includeFileID
+     */
+    public void setIncludeFileID(boolean includeFileID) {
+        this.stamper.setIncludeFileID(includeFileID);
+    }
+
+    /**
+     * Returns if the file ID property should be included in the PDF file header when creating and signing the PDF file.
+     *
+     * @since OpenPDF 1.2.1
+     * @date 25. aug 2018
+     * @see PdfName#ID
+     *
+     * @return boolean
+     */
+    public boolean isIncludeFileID() {
+        return stamper.isIncludeFileID();
+    }
+
+    /**
+     * Specifies the enforced PDF file ID, used to specifically override the PDF file ID when creating and signing the PDF file.
+     *
+     * @param overrideFileId
+     * @since OpenPDF 1.2.1
+     * @date 25. aug 2018
+     * @see PdfName#ID
+     */
+    public void setOverrideFileId(PdfObject overrideFileId) {
+        this.stamper.setOverrideFileId(overrideFileId);
+    }
+
+    /**
+     * Returns the enforced PDF file ID, used to specifically override the created PDF file ID when creating and signing the PDF file.
+     *
+     * @date 25. aug 2018
+     * @since OpenPDF 1.2.1
+     * @see PdfName#ID
+     * @return PdfObject
+     */
+    public PdfObject getOverrideFileId() {
+        return stamper.getOverrideFileId();
+    }
+
+    /**
+     * Returns the enforced modification date, used to specifically override the PDF modification date (ModDate) property when creating and signing the PDF file.
+     *
+     * @since OpenPDF 1.2.1
+     * @date 25. aug 2018
+     * @see PdfName#MODDATE
+     * @return Calendar
+     */
+    public Calendar getEnforcedModificationDate() {
+        return stamper.getModificationDate();
+    }
+
+    /**
+     * Specifies the enforced modification date, used to specifically override the PDF modification date (ModDate) property when creating and signing the PDF file.
+     *
+     * @date 25. aug 2018
+     * @since OpenPDF 1.2.1
+     * @see PdfName#MODDATE
+     * @param modificationDate enforced modification date.
+     */
+    public void setEnforcedModificationDate(Calendar modificationDate) {
+        this.stamper.setModificationDate(modificationDate);
+    }
+
 }

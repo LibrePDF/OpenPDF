@@ -1,15 +1,15 @@
 /*
  * $Id: FormCombo.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 
 package com.lowagie.examples.forms;
@@ -54,7 +54,7 @@ public class FormCombo {
             // step 4:
             PdfContentByte cb = writer.getDirectContent();
             cb.moveTo(0, 0);
-            String options[] = {"Red", "Green", "Blue"};
+            String[] options = {"Red", "Green", "Blue"};
             PdfFormField field = PdfFormField.createCombo(writer, true, options, 0);
             field.setWidget(new Rectangle(100, 700, 180, 720), PdfAnnotation.HIGHLIGHT_INVERT);
             field.setFieldName("ACombo");

@@ -220,8 +220,7 @@ public class PdfPublicKeySecurityHandler {
     return cms;
   }
 
-  public PdfArray getEncodedRecipients() throws IOException,
-      GeneralSecurityException {
+  public PdfArray getEncodedRecipients() throws IOException {
     PdfArray EncodedRecipients = new PdfArray();
     byte[] cms = null;
     for (int i = 0; i < recipients.size(); i++)

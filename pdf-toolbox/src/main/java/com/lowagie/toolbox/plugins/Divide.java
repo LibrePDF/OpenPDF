@@ -56,92 +56,92 @@ import com.lowagie.toolbox.arguments.filters.PdfFilter;
  */
 public class Divide extends AbstractTool {
 
-	static {
-		addVersion("$Id: Divide.java 3271 2008-04-18 20:39:42Z xlv $");
-	}
+    static {
+        addVersion("$Id: Divide.java 3271 2008-04-18 20:39:42Z xlv $");
+    }
 
-	/**
-	 * Constructs an Divide object.
-	 */
-	public Divide() {
-		menuoptions = MENU_EXECUTE | MENU_EXECUTE_SHOW;
-		arguments.add(new FileArgument(this, "srcfile",
-				"The file you want to divide", false, new PdfFilter()));
-		arguments.add(new FileArgument(this, "destfile", "The resulting PDF",
-				true, new PdfFilter()));
-	}
+    /**
+     * Constructs an Divide object.
+     */
+    public Divide() {
+        menuoptions = MENU_EXECUTE | MENU_EXECUTE_SHOW;
+        arguments.add(new FileArgument(this, "srcfile",
+                "The file you want to divide", false, new PdfFilter()));
+        arguments.add(new FileArgument(this, "destfile", "The resulting PDF",
+                true, new PdfFilter()));
+    }
 
-	/**
-	 * @see com.lowagie.toolbox.AbstractTool#createFrame()
-	 */
-	protected void createFrame() {
-		internalFrame = new JInternalFrame("Divide", true, false, true);
-		internalFrame.setSize(300, 80);
-		internalFrame.setJMenuBar(getMenubar());
-		System.out.println("=== Divide OPENED ===");
-	}
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     */
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("Divide", true, false, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== Divide OPENED ===");
+    }
 
-	/**
-	 * @see com.lowagie.toolbox.AbstractTool#execute()
-	 */
-	public void execute() {
-		try {
-			if (getValue("srcfile") == null) {
-				throw new InstantiationException(
-						"You need to choose a sourcefile");
-			}
-			File src = (File) getValue("srcfile");
-			if (getValue("destfile") == null) {
-				throw new InstantiationException(
-						"You need to choose a destination file");
-			}
-			File dest = (File) getValue("destfile");
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#execute()
+     */
+    public void execute() {
+        try {
+            if (getValue("srcfile") == null) {
+                throw new InstantiationException(
+                        "You need to choose a sourcefile");
+            }
+            File src = (File) getValue("srcfile");
+            if (getValue("destfile") == null) {
+                throw new InstantiationException(
+                        "You need to choose a destination file");
+            }
+            File dest = (File) getValue("destfile");
 
-			// we create a reader for a certain document
-			PdfReader reader = new PdfReader(src.getAbsolutePath());
-			// we retrieve the total number of pages and the page size
-			int total = reader.getNumberOfPages();
-			System.out.println("There are " + total
-					+ " pages in the original file.");
+            // we create a reader for a certain document
+            PdfReader reader = new PdfReader(src.getAbsolutePath());
+            // we retrieve the total number of pages and the page size
+            int total = reader.getNumberOfPages();
+            System.out.println("There are " + total
+                    + " pages in the original file.");
 
-			Rectangle pageSize = reader.getPageSize(1);
-			Rectangle newSize = new Rectangle(pageSize.getWidth() / 2, pageSize
-					.getHeight());
-			// step 1: creation of a document-object
-			Document document = new Document(newSize, 0, 0, 0, 0);
-			// step 2: we create a writer that listens to the document
-			PdfWriter writer = PdfWriter.getInstance(document,
-					new FileOutputStream(dest));
-			// step 3: we open the document
-			document.open();
-			// step 4: adding the content
-			PdfContentByte cb = writer.getDirectContent();
-			PdfImportedPage page;
-			float offsetX, offsetY;
-			int p;
-			for (int i = 0; i < total; i++) {
-				p = i + 1;
-				pageSize = reader.getPageSize(p);
-				newSize = new Rectangle(pageSize.getWidth() / 2, pageSize.getHeight());
+            Rectangle pageSize = reader.getPageSize(1);
+            Rectangle newSize = new Rectangle(pageSize.getWidth() / 2, pageSize
+                    .getHeight());
+            // step 1: creation of a document-object
+            Document document = new Document(newSize, 0, 0, 0, 0);
+            // step 2: we create a writer that listens to the document
+            PdfWriter writer = PdfWriter.getInstance(document,
+                    new FileOutputStream(dest));
+            // step 3: we open the document
+            document.open();
+            // step 4: adding the content
+            PdfContentByte cb = writer.getDirectContent();
+            PdfImportedPage page;
+            float offsetX, offsetY;
+            int p;
+            for (int i = 0; i < total; i++) {
+                p = i + 1;
+                pageSize = reader.getPageSize(p);
+                newSize = new Rectangle(pageSize.getWidth() / 2, pageSize.getHeight());
 
-				document.newPage();
-				offsetX = 0;
-				offsetY = 0;
-				page = writer.getImportedPage(reader, p);
-				cb.addTemplate(page, 1, 0, 0, 1, offsetX, offsetY);
-				document.newPage();
-				offsetX = -newSize.getWidth();
-				offsetY = 0;
-				page = writer.getImportedPage(reader, p);
-				cb.addTemplate(page, 1, 0, 0, 1, offsetX, offsetY);
+                document.newPage();
+                offsetX = 0;
+                offsetY = 0;
+                page = writer.getImportedPage(reader, p);
+                cb.addTemplate(page, 1, 0, 0, 1, offsetX, offsetY);
+                document.newPage();
+                offsetX = -newSize.getWidth();
+                offsetY = 0;
+                page = writer.getImportedPage(reader, p);
+                cb.addTemplate(page, 1, 0, 0, 1, offsetX, offsetY);
 
-			}
-			// step 5: we close the document
-			document.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            }
+            // step 5: we close the document
+            document.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      *
@@ -149,13 +149,13 @@ public class Divide extends AbstractTool {
      * @param arg StringArgument
      */
     public void valueHasChanged(AbstractArgument arg) {
-		if (internalFrame == null) {
-			// if the internal frame is null, the tool was called from the
-			// command line
-			return;
-		}
-		// represent the changes of the argument in the internal frame
-	}
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the
+            // command line
+            return;
+        }
+        // represent the changes of the argument in the internal frame
+    }
 
     /**
      * Generates a divided version of an NUp version of an existing PDF file.
@@ -163,13 +163,13 @@ public class Divide extends AbstractTool {
      * @param args String[]
      */
     public static void main(String[] args) {
-		Divide tool = new Divide();
-		if (args.length < 2) {
-			System.err.println(tool.getUsage());
-		}
-		tool.setMainArguments(args);
-		tool.execute();
-	}
+        Divide tool = new Divide();
+        if (args.length < 2) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
+        tool.execute();
+    }
 
     /**
      *
@@ -178,6 +178,6 @@ public class Divide extends AbstractTool {
      * @return File
      */
     protected File getDestPathPDF() throws InstantiationException {
-		return (File) getValue("destfile");
-	}
+        return (File) getValue("destfile");
+    }
 }

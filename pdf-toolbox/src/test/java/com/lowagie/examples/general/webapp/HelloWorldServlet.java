@@ -1,15 +1,15 @@
 /*
  * $Id: HelloWorldServlet.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 
 package com.lowagie.examples.general.webapp;
@@ -27,7 +27,6 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.html.HtmlWriter;
 import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.rtf.RtfWriter2;
 
 /**
  * Hello World example as a Servlet.
@@ -35,16 +34,16 @@ import com.lowagie.text.rtf.RtfWriter2;
  * @author blowagie
  */
 public class HelloWorldServlet extends HttpServlet {
-	   
+       
     private static final long serialVersionUID = -6033026500372479591L;
 
-	/**
+    /**
      * Returns a PDF, RTF or HTML document.
      * 
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void doGet (HttpServletRequest request, HttpServletResponse response)
-    throws IOException, ServletException {
+    throws IOException {
         
         // we retrieve the presentationtype
         String presentationtype = request.getParameter("presentationtype");
@@ -61,12 +60,8 @@ public class HelloWorldServlet extends HttpServlet {
                 response.setContentType("text/html");
                 HtmlWriter.getInstance(document, response.getOutputStream());
             }
-            else if ("rtf".equals(presentationtype)) {
-                response.setContentType("text/rtf");
-                RtfWriter2.getInstance(document, response.getOutputStream());
-            }
             else {
-                response.sendRedirect("http://itextdocs.lowagie.com/tutorial/general/webapp/index.html#HelloWorld");
+                response.sendRedirect("https://web.archive.org/web/20071005033458/http://itextdocs.lowagie.com:80/tutorial/general/webapp/index.html#HelloWorld");
             }
             
             // step 3

@@ -69,13 +69,14 @@ import java.util.Map;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  * This class takes care of the cryptographic options and appearances that form
@@ -118,7 +119,7 @@ public class PdfSignatureAppearance {
   private static final float MARGIN = 2;
   private Rectangle rect;
   private Rectangle pageRect;
-  private final PdfTemplate app[] = new PdfTemplate[5];
+  private final PdfTemplate[] app = new PdfTemplate[5];
   private PdfTemplate frm;
   private final PdfStamperImp writer;
   private String layer2Text;
@@ -139,12 +140,12 @@ public class PdfSignatureAppearance {
   private PdfStamper stamper;
   private boolean preClosed = false;
   private PdfSigGenericPKCS sigStandard;
-  private int range[];
+  private int[] range;
   private RandomAccessFile raf;
-  private byte bout[];
+  private byte[] bout;
   private int boutLen;
-  private byte externalDigest[];
-  private byte externalRSAdata[];
+  private byte[] externalDigest;
+  private byte[] externalRSAdata;
   private String digestEncryptionAlgorithm;
   private HashMap exclusionLocations;
 
@@ -287,8 +288,8 @@ public class PdfSignatureAppearance {
     this.certChain = new Certificate[1];
     this.certChain[0] = certificate;
     if (crl != null) {
-    	this.crlList = new CRL[1];
-    	this.crlList[0] = crl;    	
+        this.crlList = new CRL[1];
+        this.crlList[0] = crl;        
     }
     this.filter = filter;
   }
@@ -297,10 +298,10 @@ public class PdfSignatureAppearance {
    * Sets the cryptographic parameters.
    */
   public void setCrypto(PrivateKey privKey, Certificate[] certChain, CRL[] crlList, PdfName filter) {
-	  this.privKey = privKey;
-	  this.certChain = certChain;
-	  this.crlList = crlList;
-	  this.filter = filter;
+      this.privKey = privKey;
+      this.certChain = certChain;
+      this.crlList = crlList;
+      this.filter = filter;
   }
 
   // OJO... Modificacion de
@@ -679,7 +680,7 @@ public class PdfSignatureAppearance {
       if (maxFontSize <= 0) {
         int cr = 0;
         int lf = 0;
-        char t[] = text.toCharArray();
+        char[] t = text.toCharArray();
         for (int k = 0; k < t.length; ++k) {
           if (t[k] == '\n')
             ++lf;
@@ -737,8 +738,8 @@ public class PdfSignatureAppearance {
    *          <CODE>digest</CODE> is not <CODE>null</CODE> then it may be "RSA"
    *          or "DSA"
    */
-  public void setExternalDigest(byte digest[], byte RSAdata[],
-      String digestEncryptionAlgorithm) {
+  public void setExternalDigest(byte[] digest, byte[] RSAdata,
+                                String digestEncryptionAlgorithm) {
     externalDigest = digest;
     externalRSAdata = RSAdata;
     this.digestEncryptionAlgorithm = digestEncryptionAlgorithm;
@@ -1218,7 +1219,7 @@ public class PdfSignatureAppearance {
         if (originalout != null) {
           raf.seek(0);
           int length = (int) raf.length();
-          byte buf[] = new byte[8192];
+          byte[] buf = new byte[8192];
           while (length > 0) {
             int r = raf.read(buf, 0, Math.min(buf.length, length));
             if (r < 0)
@@ -1544,13 +1545,13 @@ public class PdfSignatureAppearance {
      *
      */
   private static class RangeStream extends InputStream {
-    private final byte b[] = new byte[1];
+    private final byte[] b = new byte[1];
     private final RandomAccessFile raf;
-    private final byte bout[];
-    private final int range[];
+    private final byte[] bout;
+    private final int[] range;
     private int rangePosition = 0;
 
-    private RangeStream(RandomAccessFile raf, byte bout[], int range[]) {
+    private RangeStream(RandomAccessFile raf, byte[] bout, int[] range) {
       this.raf = raf;
       this.bout = bout;
       this.range = range;

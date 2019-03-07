@@ -69,33 +69,33 @@ public class PRTokeniser {
     public static final int TK_REF = 9;
     public static final int TK_OTHER = 10;
     public static final int TK_ENDOFFILE = 11;
-    public static final boolean delims[] = {
-        true,  true,  false, false, false, false, false, false, false, false,
-        true,  true,  false, true,  true,  false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, true,  false, false, false, false, true,  false,
-        false, true,  true,  false, false, false, false, false, true,  false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, true,  false, true,  false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, true,  false, true,  false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false};
+    public static final boolean[] delims = {
+            true, true, false, false, false, false, false, false, false, false,
+            true, true, false, true, true, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, true, false, false, false, false, true, false,
+            false, true, true, false, false, false, false, false, true, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, true, false, true, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, true, false, true, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false};
     
     static final String EMPTY = "";
 
@@ -111,7 +111,7 @@ public class PRTokeniser {
         file = new RandomAccessFileOrArray(filename);
     }
 
-    public PRTokeniser(byte pdfIn[]) {
+    public PRTokeniser(byte[] pdfIn) {
         file = new RandomAccessFileOrArray(pdfIn);
     }
     
@@ -281,7 +281,7 @@ public class PRTokeniser {
                 }
             }
         }
-		// http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=687669#20
+        // http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=687669#20
         if (level > 0) {
             type = TK_NUMBER;
             file.seek(ptr);
@@ -289,11 +289,11 @@ public class PRTokeniser {
             return;
         }
 //                if (type == TK_ENDOFFILE && level > 0)
-//        	        {
-//        	            file.seek(ptr);
-//        	            type = TK_NUMBER;
-//        	            stringValue = n1;
-//        	        }
+//                    {
+//                        file.seek(ptr);
+//                        type = TK_NUMBER;
+//                        stringValue = n1;
+//                    }
 
         throwError("Unexpected end of file");
         // if we hit here, the file is either corrupt (stream ended unexpectedly),
@@ -517,19 +517,19 @@ public class PRTokeniser {
         return Integer.parseInt(stringValue);
     }
     
-    public boolean readLineSegment(byte input[]) throws IOException {
+    public boolean readLineSegment(byte[] input) throws IOException {
         int c = -1;
         boolean eol = false;
         int ptr = 0;
         int len = input.length;
-	// ssteward, pdftk-1.10, 040922: 
-	// skip initial whitespace; added this because PdfReader.rebuildXref()
-	// assumes that line provided by readLineSegment does not have init. whitespace;
-	if ( ptr < len ) {
-	    while ( isWhitespace( (c = read()) ) );
-	}
-	while ( !eol && ptr < len ) {
-	    switch (c) {
+    // ssteward, pdftk-1.10, 040922: 
+    // skip initial whitespace; added this because PdfReader.rebuildXref()
+    // assumes that line provided by readLineSegment does not have init. whitespace;
+    if ( ptr < len ) {
+        while ( isWhitespace( (c = read()) ) );
+    }
+    while ( !eol && ptr < len ) {
+        switch (c) {
                 case -1:
                 case '\n':
                     eol = true;
@@ -546,13 +546,13 @@ public class PRTokeniser {
                     break;
             }
 
-	    // break loop? do it before we read() again
-	    if( eol || len <= ptr ) {
-		break;
-	    }
-	    else {
-		c = read();
-	    }
+        // break loop? do it before we read() again
+        if( eol || len <= ptr ) {
+        break;
+        }
+        else {
+        c = read();
+        }
         }
         if (ptr >= len) {
             eol = false;
@@ -583,7 +583,7 @@ public class PRTokeniser {
         return true;
     }
     
-    public static int[] checkObjectStart(byte line[]) {
+    public static int[] checkObjectStart(byte[] line) {
         try {
             PRTokeniser tk = new PRTokeniser(line);
             int num = 0;

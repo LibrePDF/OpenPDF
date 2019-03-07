@@ -1,15 +1,15 @@
 /*
  * $Id: AwtImage.java 3373 2008-05-12 16:21:24Z xlv $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.objects.images;
 
@@ -18,22 +18,23 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Using the java.awt.Image object.
  */
-public class AwtImage {
+class AwtImage {
 
     /**
      * Uses a java.awt.Image object to construct a com.lowagie.text.Image object.
      */
     @Test
-    public void testAwtImage() throws Exception {
+    void testAwtImage() throws Exception {
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
@@ -71,7 +72,6 @@ public class AwtImage {
             document.close();
 
             assertFalse(baos.size() == 0);
-
         }
     }
 }

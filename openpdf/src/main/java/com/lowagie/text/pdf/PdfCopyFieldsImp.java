@@ -59,8 +59,9 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.exceptions.BadPasswordException;
+import com.lowagie.text.ExceptionConverter;
 
 /**
  *
@@ -159,7 +160,7 @@ class PdfCopyFieldsImp extends PdfWriter {
     }
     
     /**
-     * @since	2.1.5; before 2.1.5 the method was private
+     * @since    2.1.5; before 2.1.5 the method was private
      */
     protected void updateCalculationOrder(PdfReader reader) {
         PdfDictionary catalog = reader.getCatalog();
@@ -184,7 +185,7 @@ class PdfCopyFieldsImp extends PdfWriter {
         }
     }
     
-    void propagate(PdfObject obj, PdfIndirectReference refo, boolean restricted) throws IOException {
+    void propagate(PdfObject obj, PdfIndirectReference refo, boolean restricted) {
         if (obj == null)
             return;
 //        if (refo != null)
@@ -399,7 +400,7 @@ class PdfCopyFieldsImp extends PdfWriter {
                 file = reader.getSafeFile();
                 file.reOpen();
                 IntHashtable t = (IntHashtable) entry.getValue();
-                int keys[] = t.toOrderedKeys();
+                int[] keys = t.toOrderedKeys();
                 for (int k = 0; k < keys.length; ++k) {
                     PRIndirectReference ref = new PRIndirectReference(reader, keys[k]);
                     addToBody(PdfReader.getPdfObjectRelease(ref), t.get(keys[k]));
@@ -571,28 +572,28 @@ class PdfCopyFieldsImp extends PdfWriter {
     
     /**
      * Sets a reference to "visited" in the copy process.
-     * @param	ref	the reference that needs to be set to "visited"
-     * @return	true if the reference was set to visited
+     * @param    ref    the reference that needs to be set to "visited"
+     * @return    true if the reference was set to visited
      */
     protected boolean setVisited(PRIndirectReference ref) {
         IntHashtable refs = (IntHashtable)visited.get(ref.getReader());
         if (refs != null)
-        	return (refs.put(ref.getNumber(), 1) != 0);
+            return (refs.put(ref.getNumber(), 1) != 0);
         else
-        	return false;
+            return false;
     }
     
     /**
      * Checks if a reference has already been "visited" in the copy process.
-     * @param	ref	the reference that needs to be checked
-     * @return	true if the reference was already visited
+     * @param    ref    the reference that needs to be checked
+     * @return    true if the reference was already visited
      */
     protected boolean isVisited(PRIndirectReference ref) {
         IntHashtable refs = (IntHashtable)visited.get(ref.getReader());
         if (refs != null)
-        	return refs.containsKey(ref.getNumber());
+            return refs.containsKey(ref.getNumber());
         else
-        	return false;
+            return false;
     }
     
     protected boolean isVisited(PdfReader reader, int number, int generation) {
@@ -602,15 +603,15 @@ class PdfCopyFieldsImp extends PdfWriter {
     
     /**
      * Checks if a reference refers to a page object.
-     * @param	ref	the reference that needs to be checked
-     * @return	true is the reference refers to a page object.
+     * @param    ref    the reference that needs to be checked
+     * @return    true is the reference refers to a page object.
      */
     protected boolean isPage(PRIndirectReference ref) {
         IntHashtable refs = (IntHashtable)pages2intrefs.get(ref.getReader());
         if (refs != null)
-        	return refs.containsKey(ref.getNumber());
+            return refs.containsKey(ref.getNumber());
         else
-        	return false;
+            return false;
     }
 
     RandomAccessFileOrArray getReaderFile(PdfReader reader) {

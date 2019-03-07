@@ -59,12 +59,12 @@ public interface PdfXConformance {
      */
     void setPDFXConformance(int pdfxConformance);
 
-	/**
-	 * Getter for the PDF/X Conformance value.
-	 * @return the pdfxConformance
-	 */
+    /**
+     * Getter for the PDF/X Conformance value.
+     * @return the pdfxConformance
+     */
     int getPDFXConformance();
-	
+    
     /**
      * Checks if the PDF/X Conformance is necessary.
      * @return true if the PDF has to be in conformance with any of the PDF/X specifications

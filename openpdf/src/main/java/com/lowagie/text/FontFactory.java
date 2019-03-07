@@ -127,12 +127,12 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
  * @param       embedded    true if the font is to be embedded in the PDF
- * @param	size	    the size of this font
- * @param	style	    the style of this font
- * @param	color	    the <CODE>Color</CODE> of this font.
+ * @param    size        the size of this font
+ * @param    style        the style of this font
+ * @param    color        the <CODE>Color</CODE> of this font.
  * @return the Font constructed based on the parameters
  */
     
@@ -143,14 +143,14 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
  * @param       embedded    true if the font is to be embedded in the PDF
- * @param	size	    the size of this font
- * @param	style	    the style of this font
- * @param	color	    the <CODE>Color</CODE> of this font.
- * @param	cached 		true if the font comes from the cache or is added to
- * 				the cache if new, false if the font is always created new
+ * @param    size        the size of this font
+ * @param    style        the style of this font
+ * @param    color        the <CODE>Color</CODE> of this font.
+ * @param    cached         true if the font comes from the cache or is added to
+ *                 the cache if new, false if the font is always created new
  * @return the Font constructed based on the parameters
  */
     
@@ -174,11 +174,11 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
  * @param       embedded    true if the font is to be embedded in the PDF
- * @param	size	    the size of this font
- * @param	style	    the style of this font
+ * @param    size        the size of this font
+ * @param    style        the style of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -189,10 +189,10 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
  * @param       embedded    true if the font is to be embedded in the PDF
- * @param	size	    the size of this font
+ * @param    size        the size of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -203,8 +203,8 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
  * @param       embedded    true if the font is to be embedded in the PDF
  * @return the Font constructed based on the parameters
  */
@@ -216,11 +216,11 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
- * @param	size	    the size of this font
- * @param	style	    the style of this font
- * @param	color	    the <CODE>Color</CODE> of this font.
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
+ * @param    size        the size of this font
+ * @param    style        the style of this font
+ * @param    color        the <CODE>Color</CODE> of this font.
  * @return the Font constructed based on the parameters
  */
     
@@ -231,10 +231,10 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
- * @param	size	    the size of this font
- * @param	style	    the style of this font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
+ * @param    size        the size of this font
+ * @param    style        the style of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -245,9 +245,9 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
- * @param	size	    the size of this font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
+ * @param    size        the size of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -258,8 +258,8 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	encoding    the encoding of the font
+ * @param    fontname    the name of the font
+ * @param    encoding    the encoding of the font
  * @return the Font constructed based on the parameters
  */
     
@@ -270,10 +270,10 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	size	    the size of this font
- * @param	style	    the style of this font
- * @param	color	    the <CODE>Color</CODE> of this font.
+ * @param    fontname    the name of the font
+ * @param    size        the size of this font
+ * @param    style        the style of this font
+ * @param    color        the <CODE>Color</CODE> of this font.
  * @return the Font constructed based on the parameters
  */
     
@@ -284,9 +284,9 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	size	    the size of this font
- * @param	color	    the <CODE>Color</CODE> of this font.
+ * @param    fontname    the name of the font
+ * @param    size        the size of this font
+ * @param    color        the <CODE>Color</CODE> of this font.
  * @return the Font constructed based on the parameters
  * @since 2.1.0
  */
@@ -298,9 +298,9 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	size	    the size of this font
- * @param	style	    the style of this font
+ * @param    fontname    the name of the font
+ * @param    size        the size of this font
+ * @param    style        the style of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -311,8 +311,8 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
- * @param	size	    the size of this font
+ * @param    fontname    the name of the font
+ * @param    size        the size of this font
  * @return the Font constructed based on the parameters
  */
     
@@ -323,7 +323,7 @@ public final class FontFactory {
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
- * @param	fontname    the name of the font
+ * @param    fontname    the name of the font
  * @return the Font constructed based on the parameters
  */
     

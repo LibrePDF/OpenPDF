@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities;
 
 public abstract class BackgroundTask {
 
-	/**
+    /**
      * Inner class that holds the reference to the thread.
      */
     private static class ThreadWrapper {
@@ -41,7 +41,7 @@ public abstract class BackgroundTask {
         synchronized void clear() { thread = null; }
     }
 
-	/** A wrapper for the tread that executes a time-consuming task. */
+    /** A wrapper for the tread that executes a time-consuming task. */
     private ThreadWrapper thread;
 
     /**
@@ -57,7 +57,7 @@ public abstract class BackgroundTask {
         Runnable doConstruct = new Runnable() {
             public void run() {
                 try {
-                	doTask();
+                    doTask();
                 }
                 finally {
                     thread.clear();

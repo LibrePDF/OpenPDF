@@ -66,9 +66,9 @@ import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
  * @since 2.1.5
  */
 public class PdfCopyForms
-	implements PdfViewerPreferences, PdfEncryptionSettings {
+    implements PdfViewerPreferences, PdfEncryptionSettings {
     
-	/** The class with the actual implementations. */
+    /** The class with the actual implementations. */
     private PdfCopyFormsImp fc;
     
     /**
@@ -134,8 +134,8 @@ public class PdfCopyForms
      * @param strength128Bits <code>true</code> for 128 bit key length, <code>false</code> for 40 bit key length
      * @throws DocumentException if the document is already open
      */
-    public void setEncryption(byte userPassword[], byte ownerPassword[], int permissions, boolean strength128Bits) throws DocumentException {
-    	fc.setEncryption(userPassword, ownerPassword, permissions, strength128Bits ? PdfWriter.STANDARD_ENCRYPTION_128 : PdfWriter.STANDARD_ENCRYPTION_40);
+    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits) throws DocumentException {
+        fc.setEncryption(userPassword, ownerPassword, permissions, strength128Bits ? PdfWriter.STANDARD_ENCRYPTION_128 : PdfWriter.STANDARD_ENCRYPTION_40);
     }
     
     /**
@@ -212,31 +212,31 @@ public class PdfCopyForms
         fc.setFullCompression();
     }
 
-	/**
-	 * @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(byte[], byte[], int, int)
-	 */
-	public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, int encryptionType) throws DocumentException {
-		fc.setEncryption(userPassword, ownerPassword, permissions, encryptionType);
-	}
+    /**
+     * @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(byte[], byte[], int, int)
+     */
+    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, int encryptionType) throws DocumentException {
+        fc.setEncryption(userPassword, ownerPassword, permissions, encryptionType);
+    }
 
-	/**
-	 * @see com.lowagie.text.pdf.interfaces.PdfViewerPreferences#addViewerPreference(com.lowagie.text.pdf.PdfName, com.lowagie.text.pdf.PdfObject)
-	 */
-	public void addViewerPreference(PdfName key, PdfObject value) {
-		fc.addViewerPreference(key, value);	
-	}
+    /**
+     * @see com.lowagie.text.pdf.interfaces.PdfViewerPreferences#addViewerPreference(com.lowagie.text.pdf.PdfName, com.lowagie.text.pdf.PdfObject)
+     */
+    public void addViewerPreference(PdfName key, PdfObject value) {
+        fc.addViewerPreference(key, value);    
+    }
 
-	/**
-	 * @see com.lowagie.text.pdf.interfaces.PdfViewerPreferences#setViewerPreferences(int)
-	 */
-	public void setViewerPreferences(int preferences) {
-		fc.setViewerPreferences(preferences);
-	}
+    /**
+     * @see com.lowagie.text.pdf.interfaces.PdfViewerPreferences#setViewerPreferences(int)
+     */
+    public void setViewerPreferences(int preferences) {
+        fc.setViewerPreferences(preferences);
+    }
 
-	/**
-	 * @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(java.security.cert.Certificate[], int[], int)
-	 */
-	public void setEncryption(Certificate[] certs, int[] permissions, int encryptionType) throws DocumentException {
-		fc.setEncryption(certs, permissions, encryptionType);
-	}    
+    /**
+     * @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(java.security.cert.Certificate[], int[], int)
+     */
+    public void setEncryption(Certificate[] certs, int[] permissions, int encryptionType) throws DocumentException {
+        fc.setEncryption(certs, permissions, encryptionType);
+    }    
 }

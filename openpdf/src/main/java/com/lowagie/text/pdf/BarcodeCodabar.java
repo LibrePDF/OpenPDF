@@ -55,8 +55,9 @@ import java.awt.image.MemoryImageSource;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.ExceptionConverter;
 
 /** Implements the code codabar. The default parameters are:
  * <pre>
@@ -76,35 +77,36 @@ import com.lowagie.text.Rectangle;
  */
 public class BarcodeCodabar extends Barcode{
 
-    /** The bars to generate the code.
-     */    
-	private static final byte BARS[][] = 
-    {
-        {0,0,0,0,0,1,1}, // 0
-        {0,0,0,0,1,1,0}, // 1
-        {0,0,0,1,0,0,1}, // 2
-        {1,1,0,0,0,0,0}, // 3
-        {0,0,1,0,0,1,0}, // 4
-        {1,0,0,0,0,1,0}, // 5
-        {0,1,0,0,0,0,1}, // 6
-        {0,1,0,0,1,0,0}, // 7
-        {0,1,1,0,0,0,0}, // 8
-        {1,0,0,1,0,0,0}, // 9
-        {0,0,0,1,1,0,0}, // -
-        {0,0,1,1,0,0,0}, // $
-        {1,0,0,0,1,0,1}, // :
-        {1,0,1,0,0,0,1}, // /
-        {1,0,1,0,1,0,0}, // .
-        {0,0,1,0,1,0,1}, // +
-        {0,0,1,1,0,1,0}, // a
-        {0,1,0,1,0,0,1}, // b
-        {0,0,0,1,0,1,1}, // c
-        {0,0,0,1,1,1,0}  // d
-    };
+    /**
+     * The bars to generate the code.
+     */
+    private static final byte[][] BARS =
+            {
+                    {0, 0, 0, 0, 0, 1, 1}, // 0
+                    {0, 0, 0, 0, 1, 1, 0}, // 1
+                    {0, 0, 0, 1, 0, 0, 1}, // 2
+                    {1, 1, 0, 0, 0, 0, 0}, // 3
+                    {0, 0, 1, 0, 0, 1, 0}, // 4
+                    {1, 0, 0, 0, 0, 1, 0}, // 5
+                    {0, 1, 0, 0, 0, 0, 1}, // 6
+                    {0, 1, 0, 0, 1, 0, 0}, // 7
+                    {0, 1, 1, 0, 0, 0, 0}, // 8
+                    {1, 0, 0, 1, 0, 0, 0}, // 9
+                    {0, 0, 0, 1, 1, 0, 0}, // -
+                    {0, 0, 1, 1, 0, 0, 0}, // $
+                    {1, 0, 0, 0, 1, 0, 1}, // :
+                    {1, 0, 1, 0, 0, 0, 1}, // /
+                    {1, 0, 1, 0, 1, 0, 0}, // .
+                    {0, 0, 1, 0, 1, 0, 1}, // +
+                    {0, 0, 1, 1, 0, 1, 0}, // a
+                    {0, 1, 0, 1, 0, 0, 1}, // b
+                    {0, 0, 0, 1, 0, 1, 1}, // c
+                    {0, 0, 0, 1, 1, 1, 0}  // d
+            };
  
     /** The index chars to <CODE>BARS</CODE>.
      */    
-	private static final String CHARS = "0123456789-$:/.+ABCD";
+    private static final String CHARS = "0123456789-$:/.+ABCD";
     
     private static final int START_STOP_IDX = 16;    
     /** Creates a new BarcodeCodabar.
@@ -139,7 +141,7 @@ public class BarcodeCodabar extends Barcode{
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("codabar.must.have.at.least.a.start.and.stop.character"));
         if (CHARS.indexOf(text.charAt(0)) < START_STOP_IDX || CHARS.indexOf(text.charAt(len - 1)) < START_STOP_IDX)
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("codabar.must.have.one.of.abcd.as.start.stop.character"));
-        byte bars[] = new byte[text.length() * 8 - 1];
+        byte[] bars = new byte[text.length() * 8 - 1];
         for (int k = 0; k < len; ++k) {
             int idx = CHARS.indexOf(text.charAt(k));
             if (idx >= START_STOP_IDX && k > 0 && k < len - 1)
@@ -185,7 +187,7 @@ public class BarcodeCodabar extends Barcode{
         text = code;
         if (generateChecksum)
             text = calculateChecksum(code);
-        byte bars[] = getBarsCodabar(text);
+        byte[] bars = getBarsCodabar(text);
         int wide = 0;
         for (int k = 0; k < bars.length; ++k) {
             wide += bars[k];
@@ -243,7 +245,7 @@ public class BarcodeCodabar extends Barcode{
         if (font != null) {
             fontX = font.getWidthPoint(fullCode = altText != null ? altText : fullCode, size);
         }
-        byte bars[] = getBarsCodabar(generateChecksum ? calculateChecksum(code) : code);
+        byte[] bars = getBarsCodabar(generateChecksum ? calculateChecksum(code) : code);
         int wide = 0;
         for (int k = 0; k < bars.length; ++k) {
             wide += bars[k];
@@ -317,7 +319,7 @@ public class BarcodeCodabar extends Barcode{
             fullCode = calculateChecksum(code);
         if (!startStopText)
             fullCode = fullCode.substring(1, fullCode.length() - 1);
-        byte bars[] = getBarsCodabar(generateChecksum ? calculateChecksum(code) : code);
+        byte[] bars = getBarsCodabar(generateChecksum ? calculateChecksum(code) : code);
         int wide = 0;
         for (int k = 0; k < bars.length; ++k) {
             wide += bars[k];
@@ -327,7 +329,7 @@ public class BarcodeCodabar extends Barcode{
         boolean print = true;
         int ptr = 0;
         int height = (int)barHeight;
-        int pix[] = new int[fullWidth * height];
+        int[] pix = new int[fullWidth * height];
         for (int k = 0; k < bars.length; ++k) {
             int w = (bars[k] == 0 ? 1 : (int)n);
             int c = g;

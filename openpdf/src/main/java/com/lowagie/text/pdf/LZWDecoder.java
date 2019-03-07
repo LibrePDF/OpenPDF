@@ -55,20 +55,20 @@ import com.lowagie.text.ExceptionConverter;
  *
  */
 public class LZWDecoder {
-    
-    byte stringTable[][];
-    byte data[] = null;
+
+    byte[][] stringTable;
+    byte[] data = null;
     OutputStream uncompData;
     int tableIndex, bitsToGet = 9;
     int bytePointer, bitPointer;
     int nextData = 0;
     int nextBits = 0;
-    
-    int andTable[] = {
-        511,
-        1023,
-        2047,
-        4095
+
+    int[] andTable = {
+            511,
+            1023,
+            2047,
+            4095
     };
     
     public LZWDecoder() {
@@ -80,7 +80,7 @@ public class LZWDecoder {
      * @param data            The compressed data.
      * @param uncompData      Array to return the uncompressed data in.
      */
-    public void decode(byte data[], OutputStream uncompData) {
+    public void decode(byte[] data, OutputStream uncompData) {
         
         if(data[0] == (byte)0x00 && data[1] == (byte)0x01) {
             throw new RuntimeException(MessageLocalization.getComposedMessage("lzw.flavour.not.supported"));
@@ -99,7 +99,7 @@ public class LZWDecoder {
         nextBits = 0;
         
         int code, oldCode = 0;
-        byte string[];
+        byte[] string;
         
         while ((code = getNextCode()) != 257) {
             
@@ -157,7 +157,7 @@ public class LZWDecoder {
     /**
      * Write out the string just uncompressed.
      */
-    public void writeString(byte string[]) {
+    public void writeString(byte[] string) {
         try {
             uncompData.write(string);
         }
@@ -169,9 +169,9 @@ public class LZWDecoder {
     /**
      * Add a new string to the string table.
      */
-    public void addStringToTable(byte oldString[], byte newString) {
+    public void addStringToTable(byte[] oldString, byte newString) {
         int length = oldString.length;
-        byte string[] = new byte[length + 1];
+        byte[] string = new byte[length + 1];
         System.arraycopy(oldString, 0, string, 0, length);
         string[length] = newString;
         
@@ -190,7 +190,7 @@ public class LZWDecoder {
     /**
      * Add a new string to the string table.
      */
-    public void addStringToTable(byte string[]) {
+    public void addStringToTable(byte[] string) {
         
         // Add this new String to the table
         stringTable[tableIndex++] = string;
@@ -207,9 +207,9 @@ public class LZWDecoder {
     /**
      * Append <code>newString</code> to the end of <code>oldString</code>.
      */
-    public byte[] composeString(byte oldString[], byte newString) {
+    public byte[] composeString(byte[] oldString, byte newString) {
         int length = oldString.length;
-        byte string[] = new byte[length + 1];
+        byte[] string = new byte[length + 1];
         System.arraycopy(oldString, 0, string, 0, length);
         string[length] = newString;
         

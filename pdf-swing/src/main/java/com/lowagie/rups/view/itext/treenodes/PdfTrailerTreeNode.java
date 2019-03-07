@@ -32,19 +32,19 @@ public class PdfTrailerTreeNode extends PdfObjectTreeNode {
      * Constructs a simple text tree node.
      */
     public PdfTrailerTreeNode() {
-		super("pdf.png", null);
-		setUserObject("Open a PDF file");
-	}
+        super("pdf.png", null);
+        setUserObject("Open a PDF file");
+    }
 
-	/**
-	 * Sets the object for this node.
-	 * @param trailer	the trailer dictionary of a PDF file.
-	 */
-	public void setTrailer(PdfDictionary trailer) {
-		object = trailer;
-	}
+    /**
+     * Sets the object for this node.
+     * @param trailer    the trailer dictionary of a PDF file.
+     */
+    public void setTrailer(PdfDictionary trailer) {
+        object = trailer;
+    }
 
-	/** A serial version id. */
-	private static final long serialVersionUID = -3607980103983635182L;
+    /** A serial version id. */
+    private static final long serialVersionUID = -3607980103983635182L;
 
 }

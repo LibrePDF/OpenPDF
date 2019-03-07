@@ -63,60 +63,60 @@ import com.lowagie.toolbox.arguments.filters.PdfFilter;
  */
 public class WatermarkerTool extends AbstractTool {
 
-	FileArgument destfile;
+    FileArgument destfile;
 
-	/**
-	 * This tool lets you add a text watermark to all pages of a document.
-	 */
-	public WatermarkerTool() {
-		super();
-		FileArgument inputfile = new FileArgument(this, "srcfile",
-				"The file you want to watermark", false, new PdfFilter());
-		arguments.add(inputfile);
-		arguments.add(new StringArgument(this, "watermark",
-				"The text that can be used as watermark"));
-		arguments.add(new IntegerArgument(this, "fontsize",
-				"The fontsize of the watermark text"));
-		arguments.add(new FloatArgument(this, "opacity",
-				"The opacity of the watermark text"));
-		destfile = new FileArgument(this, "destfile",
-				"The file to which the watermarked PDF has to be written",
-				true, new PdfFilter());
-		arguments.add(destfile);
-		arguments.add(new StringArgument(this, "color",
-				"The color of the watermark text"));
-		inputfile.addPropertyChangeListener(destfile);
-	}
+    /**
+     * This tool lets you add a text watermark to all pages of a document.
+     */
+    public WatermarkerTool() {
+        super();
+        FileArgument inputfile = new FileArgument(this, "srcfile",
+                "The file you want to watermark", false, new PdfFilter());
+        arguments.add(inputfile);
+        arguments.add(new StringArgument(this, "watermark",
+                "The text that can be used as watermark"));
+        arguments.add(new IntegerArgument(this, "fontsize",
+                "The fontsize of the watermark text"));
+        arguments.add(new FloatArgument(this, "opacity",
+                "The opacity of the watermark text"));
+        destfile = new FileArgument(this, "destfile",
+                "The file to which the watermarked PDF has to be written",
+                true, new PdfFilter());
+        arguments.add(destfile);
+        arguments.add(new StringArgument(this, "color",
+                "The color of the watermark text"));
+        inputfile.addPropertyChangeListener(destfile);
+    }
 
-	/**
-	 * Creates the internal frame.
-	 */
-	@Override
-	protected void createFrame() {
-		internalFrame = new JInternalFrame("Watermark", true, false, true);
-		internalFrame.setSize(300, 80);
-		internalFrame.setJMenuBar(getMenubar());
-		System.out.println("=== Watermark OPENED ===");
-	}
+    /**
+     * Creates the internal frame.
+     */
+    @Override
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("Watermark", true, false, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== Watermark OPENED ===");
+    }
 
-	/**
-	 * Executes the tool (in most cases this generates a PDF file).
-	 */
-	@Override
-	public void execute() {
-		try {
-			if (getValue("srcfile") == null) {
-				throw new InstantiationException(
-						"You need to choose a sourcefile");
-			}
-			if (getValue("destfile") == null) {
-				throw new InstantiationException(
-						"You need to choose a destination file");
-			}
-			if (getValue("watermark") == null) {
-				throw new InstantiationException(
-						"You need to add a text for the watermark");
-			}
+    /**
+     * Executes the tool (in most cases this generates a PDF file).
+     */
+    @Override
+    public void execute() {
+        try {
+            if (getValue("srcfile") == null) {
+                throw new InstantiationException(
+                        "You need to choose a sourcefile");
+            }
+            if (getValue("destfile") == null) {
+                throw new InstantiationException(
+                        "You need to choose a destination file");
+            }
+            if (getValue("watermark") == null) {
+                throw new InstantiationException(
+                        "You need to add a text for the watermark");
+            }
             if (getValue("fontsize") == null) {
                 throw new InstantiationException(
                         "You need to add a fontsize for the watermark");
@@ -131,94 +131,94 @@ public class WatermarkerTool extends AbstractTool {
                 color = decode((String) getValue("color"));
             }
 
-			PdfReader reader = new PdfReader(((File) getValue("srcfile")).getAbsolutePath());
-			PdfStamper stamp = new PdfStamper(reader, new FileOutputStream((File) getValue("destfile")));
-			String text = (String) getValue("watermark");
-			int fontsize = parseInt((String) getValue("fontsize"));
-			float opacity = parseFloat((String) getValue("opacity"));
+            PdfReader reader = new PdfReader(((File) getValue("srcfile")).getAbsolutePath());
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream((File) getValue("destfile")));
+            String text = (String) getValue("watermark");
+            int fontsize = parseInt((String) getValue("fontsize"));
+            float opacity = parseFloat((String) getValue("opacity"));
 
-			Writer writer = new Writer(reader, stamp, text, fontsize, opacity, color);
-			writer.write();
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(internalFrame, e.getMessage(), e
-					.getClass().getName(), JOptionPane.ERROR_MESSAGE);
-			System.err.println(e.getMessage());
-		}
-	}
+            Writer writer = new Writer(reader, stamp, text, fontsize, opacity, color);
+            writer.write();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(internalFrame, e.getMessage(), e
+                    .getClass().getName(), JOptionPane.ERROR_MESSAGE);
+            System.err.println(e.getMessage());
+        }
+    }
 
     /**
-	 * Gets the PDF file that should be generated (or null if the output isn't a
-	 * PDF file).
-	 * 
-	 * @return the PDF file that should be generated
-	 * @throws InstantiationException
-	 */
-	@Override
-	protected File getDestPathPDF() throws InstantiationException {
-		return (File) getValue("destfile");
-	}
+     * Gets the PDF file that should be generated (or null if the output isn't a
+     * PDF file).
+     * 
+     * @return the PDF file that should be generated
+     * @throws InstantiationException
+     */
+    @Override
+    protected File getDestPathPDF() throws InstantiationException {
+        return (File) getValue("destfile");
+    }
 
-	/**
-	 * Indicates that the value of an argument has changed.
-	 * 
-	 * @param arg
-	 *            the argument that has changed
-	 */
-	@Override
-	public void valueHasChanged(AbstractArgument arg) {
-		if (internalFrame == null) {
-			// if the internal frame is null, the tool was called from the
-			// command line
-			return;
-		}
-		if (destfile.getValue() == null
-				&& arg.getName().equalsIgnoreCase("srcfile")) {
-			String filename = arg.getValue().toString();
-			String filenameout = filename.substring(0,
-					filename.indexOf(".", filename.length() - 4))
-					+ "_out.pdf";
-			destfile.setValue(filenameout);
-		}
-	}
+    /**
+     * Indicates that the value of an argument has changed.
+     * 
+     * @param arg
+     *            the argument that has changed
+     */
+    @Override
+    public void valueHasChanged(AbstractArgument arg) {
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the
+            // command line
+            return;
+        }
+        if (destfile.getValue() == null
+                && arg.getName().equalsIgnoreCase("srcfile")) {
+            String filename = arg.getValue().toString();
+            String filenameout = filename.substring(0,
+                    filename.indexOf(".", filename.length() - 4))
+                    + "_out.pdf";
+            destfile.setValue(filenameout);
+        }
+    }
 
-	/**
-	 * This methods helps you running this tool as a standalone application.
-	 * 
-	 * <p>
-	 * Call it like this from command line: java
-	 * com.lowagie.tools.plugins.Watermarker input.pdf Draft 230 0.2 output.pdf #FF000000
-	 * 
-	 * <p>
-	 * "input.pdf" is the input file name to be processed
-	 * <p>
-	 * "Draft" is the text written as transparent "watermark" on top of each
-	 * page
-	 * <p>
-	 * "230" is the font size
-	 * <p>
-	 * "0.2" is the opacity (1.0 completely opaque, 0.0 completely transparent)
-	 * <p>
-	 * "output.pdf" is the output file name
-	 * <p>
-	 * (Optional) "#FF0000" is the color (in hex format like #nnnnnn or 0xnnnnnn), #000000 (black) by default
-	 * 
-	 * <p>
-	 * Call it from within other Java code:
-	 * 
-	 * <p>
-	 * Watermarker.main(new
-	 * String[]{"input.pdf","Draft","230","0.2","output.pdf","#FF000000"});
-	 * 
-	 * @param args
-	 *            the srcfile, watermark text and destfile
-	 */
-	public static void main(String[] args) {
-		WatermarkerTool watermarkerTool = new WatermarkerTool();
-		if (args.length < 5 || args.length > 6) {
-			System.err.println(watermarkerTool.getUsage());
-		}
-		watermarkerTool.setMainArguments(args);
-		watermarkerTool.execute();
-	}
+    /**
+     * This methods helps you running this tool as a standalone application.
+     * 
+     * <p>
+     * Call it like this from command line: java
+     * com.lowagie.tools.plugins.Watermarker input.pdf Draft 230 0.2 output.pdf #FF000000
+     * 
+     * <p>
+     * "input.pdf" is the input file name to be processed
+     * <p>
+     * "Draft" is the text written as transparent "watermark" on top of each
+     * page
+     * <p>
+     * "230" is the font size
+     * <p>
+     * "0.2" is the opacity (1.0 completely opaque, 0.0 completely transparent)
+     * <p>
+     * "output.pdf" is the output file name
+     * <p>
+     * (Optional) "#FF0000" is the color (in hex format like #nnnnnn or 0xnnnnnn), #000000 (black) by default
+     * 
+     * <p>
+     * Call it from within other Java code:
+     * 
+     * <p>
+     * Watermarker.main(new
+     * String[]{"input.pdf","Draft","230","0.2","output.pdf","#FF000000"});
+     * 
+     * @param args
+     *            the srcfile, watermark text and destfile
+     */
+    public static void main(String[] args) {
+        WatermarkerTool watermarkerTool = new WatermarkerTool();
+        if (args.length < 5 || args.length > 6) {
+            System.err.println(watermarkerTool.getUsage());
+        }
+        watermarkerTool.setMainArguments(args);
+        watermarkerTool.execute();
+    }
 
 }

@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.PushbackInputStream;
 import com.lowagie.text.error_messages.MessageLocalization;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:ben@benlitchfield.com">Ben Litchfield</a>
  * @version $Revision: 4065 $
- * @since	2.1.4
+ * @since    2.1.4
  */
 public class CMapParser
 {
@@ -267,13 +268,13 @@ public class CMapParser
                     while( theNextByte != -1 && theNextByte != '>' )
                     {
                         int intValue = 0;
-						if (theNextByte == ' ' || theNextByte == '\t' || theNextByte == '\n' || theNextByte == '\r'
-							|| theNextByte == '\f')
-						{
-							theNextByte = is.read();
-							continue;
-						}
-						else if (theNextByte >= '0' && theNextByte <= '9')
+                        if (theNextByte == ' ' || theNextByte == '\t' || theNextByte == '\n' || theNextByte == '\r'
+                            || theNextByte == '\f')
+                        {
+                            theNextByte = is.read();
+                            continue;
+                        }
+                        else if (theNextByte >= '0' && theNextByte <= '9')
                         {
                             intValue = theNextByte - '0';
                         }
@@ -423,7 +424,7 @@ public class CMapParser
         }
         else
         {
-            retval = new String( bytes, "UTF-16BE" );
+            retval = new String( bytes, StandardCharsets.UTF_16BE);
         }
         return retval;
     }

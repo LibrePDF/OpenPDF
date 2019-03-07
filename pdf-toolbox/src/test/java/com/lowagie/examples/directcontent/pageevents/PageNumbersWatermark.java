@@ -1,15 +1,15 @@
 /*
  * $Id: PageNumbersWatermark.java 3838 2009-04-07 18:34:15Z mstorer $
  *
- * This code is part of the 'iText Tutorial'.
+ * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://itextdocs.lowagie.com/tutorial/
+ * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * itext-questions@lists.sourceforge.net
+ *  
  */
 package com.lowagie.examples.directcontent.pageevents;
 
@@ -19,13 +19,14 @@ import java.io.FileOutputStream;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfGState;
@@ -37,7 +38,7 @@ import com.lowagie.text.pdf.PdfWriter;
  * Demonstrates the use of templates to add Watermarks and Pagenumbers.
  */
 public class PageNumbersWatermark extends PdfPageEventHelper {
-	/** An Image that goes in the header. */
+    /** An Image that goes in the header. */
     public Image headerImage;
     /** The headertable. */
     public PdfPTable table;
@@ -52,9 +53,9 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
      * Generates a document with a header containing Page x of y and with a Watermark on every page.
      * @param args no arguments needed
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         try {
-        	// step 1: creating the document
+            // step 1: creating the document
             Document doc = new Document(PageSize.A4, 50, 50, 100, 72);
             // step 2: creating the writer
             PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("pageNumbersWatermark.pdf"));
@@ -81,7 +82,7 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
      */
     public void onOpenDocument(PdfWriter writer, Document document) {
         try {
-        	// initialization of the header table
+            // initialization of the header table
             headerImage = Image.getInstance("logo.gif");
             table = new PdfPTable(2);
             Phrase p = new Phrase();

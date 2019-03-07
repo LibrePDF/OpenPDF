@@ -55,8 +55,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.lowagie.text.Annotation;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfAcroForm;
 import com.lowagie.text.pdf.PdfAction;
 import com.lowagie.text.pdf.PdfAnnotation;
@@ -90,14 +91,14 @@ public class PdfAnnotationsImp {
     
     
     public PdfAnnotationsImp(PdfWriter writer) {
-    	acroForm = new PdfAcroForm(writer);
+        acroForm = new PdfAcroForm(writer);
     }
     
     /**
      * Checks if the AcroForm is valid.
      */
     public boolean hasValidAcroForm() {
-    	return acroForm.isValid();
+        return acroForm.isValid();
     }
     
     /**
@@ -127,7 +128,7 @@ public class PdfAnnotationsImp {
     }
     
     public void addPlainAnnotation(PdfAnnotation annot) {
-    	annotations.add(annot);
+        annotations.add(annot);
     }
     
     void addFormFieldRaw(PdfFormField field) {
@@ -140,7 +141,7 @@ public class PdfAnnotationsImp {
     }
     
     public boolean hasUnusedAnnotations() {
-    	return !annotations.isEmpty();
+        return !annotations.isEmpty();
     }
 
     public void resetAnnotations() {
@@ -174,29 +175,29 @@ public class PdfAnnotationsImp {
                 if (!dic.isUsed()) {
                     PdfRectangle rect = (PdfRectangle)dic.get(PdfName.RECT);
                     if (rect != null) {
-                    	switch (rotation) {
-                        	case 90:
-                        		dic.put(PdfName.RECT, new PdfRectangle(
-                        				pageSize.getTop() - rect.bottom(),
-										rect.left(),
-										pageSize.getTop() - rect.top(),
-										rect.right()));
-                        		break;
-                        	case 180:
-                        		dic.put(PdfName.RECT, new PdfRectangle(
-                        				pageSize.getRight() - rect.left(),
-										pageSize.getTop() - rect.bottom(),
-										pageSize.getRight() - rect.right(),
-										pageSize.getTop() - rect.top()));
-                        		break;
-                        	case 270:
-                        		dic.put(PdfName.RECT, new PdfRectangle(
-                        				rect.bottom(),
-										pageSize.getRight() - rect.left(),
-										rect.top(),
-										pageSize.getRight() - rect.right()));
-                        		break;
-                    	}
+                        switch (rotation) {
+                            case 90:
+                                dic.put(PdfName.RECT, new PdfRectangle(
+                                        pageSize.getTop() - rect.bottom(),
+                                        rect.left(),
+                                        pageSize.getTop() - rect.top(),
+                                        rect.right()));
+                                break;
+                            case 180:
+                                dic.put(PdfName.RECT, new PdfRectangle(
+                                        pageSize.getRight() - rect.left(),
+                                        pageSize.getTop() - rect.bottom(),
+                                        pageSize.getRight() - rect.right(),
+                                        pageSize.getTop() - rect.top()));
+                                break;
+                            case 270:
+                                dic.put(PdfName.RECT, new PdfRectangle(
+                                        rect.bottom(),
+                                        pageSize.getRight() - rect.left(),
+                                        rect.top(),
+                                        pageSize.getRight() - rect.right()));
+                                break;
+                        }
                     }
                 }
             }
@@ -222,7 +223,7 @@ public class PdfAnnotationsImp {
            case Annotation.FILE_DEST:
                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(), new PdfAction((String) annot.attributes().get(Annotation.FILE), (String) annot.attributes().get(Annotation.DESTINATION)));
            case Annotation.SCREEN:
-               boolean sparams[] = (boolean[])annot.attributes().get(Annotation.PARAMETERS);
+               boolean[] sparams = (boolean[]) annot.attributes().get(Annotation.PARAMETERS);
                String fname = (String) annot.attributes().get(Annotation.FILE);
                String mimetype = (String) annot.attributes().get(Annotation.MIMETYPE);
                PdfFileSpecification fs;
@@ -240,7 +241,7 @@ public class PdfAnnotationsImp {
            case Annotation.LAUNCH:
                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(), new PdfAction((String) annot.attributes().get(Annotation.APPLICATION),(String) annot.attributes().get(Annotation.PARAMETERS),(String) annot.attributes().get(Annotation.OPERATION),(String) annot.attributes().get(Annotation.DEFAULTDIR)));
            default:
-        	   return new PdfAnnotation(writer, defaultRect.getLeft(), defaultRect.getBottom(), defaultRect.getRight(), defaultRect.getTop(), new PdfString(annot.title(), PdfObject.TEXT_UNICODE), new PdfString(annot.content(), PdfObject.TEXT_UNICODE));
+               return new PdfAnnotation(writer, defaultRect.getLeft(), defaultRect.getBottom(), defaultRect.getRight(), defaultRect.getTop(), new PdfString(annot.title(), PdfObject.TEXT_UNICODE), new PdfString(annot.content(), PdfObject.TEXT_UNICODE));
        }
    }
 }

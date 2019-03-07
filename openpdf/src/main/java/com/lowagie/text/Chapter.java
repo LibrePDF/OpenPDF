@@ -77,11 +77,11 @@ import java.util.ArrayList;
 public class Chapter extends Section {
     
     // constant
-	private static final long serialVersionUID = 1791000695779357361L;
-	
-	/**
-	 * Constructs a new <CODE>Chapter</CODE>.
-	 * @param	number		the Chapter number
+    private static final long serialVersionUID = 1791000695779357361L;
+    
+    /**
+     * Constructs a new <CODE>Chapter</CODE>.
+     * @param    number        the Chapter number
      */
     public Chapter(int number) {
         super(null, 1);
@@ -89,12 +89,12 @@ public class Chapter extends Section {
         numbers.add(new Integer(number));
         triggerNewPage = true;
     }
-	
-	/**
-	 * Constructs a new <CODE>Chapter</CODE>.
-	 *
-	 * @param	title		the Chapter title (as a <CODE>Paragraph</CODE>)
-	 * @param	number		the Chapter number
+    
+    /**
+     * Constructs a new <CODE>Chapter</CODE>.
+     *
+     * @param    title        the Chapter title (as a <CODE>Paragraph</CODE>)
+     * @param    number        the Chapter number
      */
     
     public Chapter(Paragraph title, int number) {
@@ -107,8 +107,8 @@ public class Chapter extends Section {
     /**
      * Constructs a new <CODE>Chapter</CODE>.
      *
-     * @param	title		the Chapter title (as a <CODE>String</CODE>)
-     * @param	number		the Chapter number
+     * @param    title        the Chapter title (as a <CODE>String</CODE>)
+     * @param    number        the Chapter number
      */
     public Chapter(String title, int number) {
         this(new Paragraph(title), number);
@@ -119,18 +119,18 @@ public class Chapter extends Section {
     /**
      * Gets the type of the text element.
      *
-     * @return	a type
+     * @return    a type
      */
     public int type() {
         return Element.CHAPTER;
     }
 
-	/**
-	 * @see com.lowagie.text.Element#isNestable()
-	 * @since	iText 2.0.8
-	 */
-	public boolean isNestable() {
-		return false;
-	}
+    /**
+     * @see com.lowagie.text.Element#isNestable()
+     * @since    iText 2.0.8
+     */
+    public boolean isNestable() {
+        return false;
+    }
 
 }

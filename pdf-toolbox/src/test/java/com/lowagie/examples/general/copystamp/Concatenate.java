@@ -38,12 +38,12 @@ public class Concatenate {
      * (This was an example known as PdfCopy.java)
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         if (args.length < 2) {
             System.err.println("arguments: file1 [file2 ...] destfile");
         }
         else {
-        	System.out.println("PdfCopy example");
+            System.out.println("PdfCopy example");
             try {
                 int pageOffset = 0;
                 ArrayList master = new ArrayList();

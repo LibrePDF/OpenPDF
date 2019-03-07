@@ -43,71 +43,71 @@ import com.lowagie.text.pdf.PdfName;
  */
 public class OutlineTree extends JTree implements TreeSelectionListener, Observer {
 
-	/** Nodes in the FormTree correspond with nodes in the main PdfTree. */
-	protected PdfReaderController controller;
-	
-	/** Creates a new outline tree. */
-	public OutlineTree(PdfReaderController controller) {
-		super();
-		this.controller = controller;
-		setCellRenderer(new IconTreeCellRenderer());
-		setModel(new DefaultTreeModel(new OutlineTreeNode()));
-		addTreeSelectionListener(this);
-	}
+    /** Nodes in the FormTree correspond with nodes in the main PdfTree. */
+    protected PdfReaderController controller;
+    
+    /** Creates a new outline tree. */
+    public OutlineTree(PdfReaderController controller) {
+        super();
+        this.controller = controller;
+        setCellRenderer(new IconTreeCellRenderer());
+        setModel(new DefaultTreeModel(new OutlineTreeNode()));
+        addTreeSelectionListener(this);
+    }
 
-	/**
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	public void update(Observable observable, Object obj) {
-		if (obj == null) {
-			setModel(new DefaultTreeModel(new OutlineTreeNode()));
-			repaint();
-			return;
-		}
-		if (obj instanceof ObjectLoader) {
-			ObjectLoader loader = (ObjectLoader)obj;
-			TreeNodeFactory factory = loader.getNodes();
-			PdfTrailerTreeNode trailer = controller.getPdfTree().getRoot();
-			PdfObjectTreeNode catalog = factory.getChildNode(trailer, PdfName.ROOT);
-			PdfObjectTreeNode outline = factory.getChildNode(catalog, PdfName.OUTLINES);
-			if (outline == null) {
-				return;
-			}
-			OutlineTreeNode root = new OutlineTreeNode();
-			loadOutline(factory, root, factory.getChildNode(outline, PdfName.FIRST));
-			setModel(new DefaultTreeModel(root));
-		}
-	}
-	
-	/**
-	 * Method that can be used recursively to load the outline hierarchy into the tree.
-	 */
-	private void loadOutline(TreeNodeFactory factory, OutlineTreeNode parent, PdfObjectTreeNode child) {
-		OutlineTreeNode childnode = new OutlineTreeNode(child);
-		parent.add(childnode);
-		PdfObjectTreeNode first = factory.getChildNode(child, PdfName.FIRST);
-		if (first != null) {
-			loadOutline(factory, childnode, first);
-		}
-		PdfObjectTreeNode next = factory.getChildNode(child, PdfName.NEXT);
-		if (next != null) {
-			loadOutline(factory, parent, next);
-		}
-	}
+    /**
+     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+     */
+    public void update(Observable observable, Object obj) {
+        if (obj == null) {
+            setModel(new DefaultTreeModel(new OutlineTreeNode()));
+            repaint();
+            return;
+        }
+        if (obj instanceof ObjectLoader) {
+            ObjectLoader loader = (ObjectLoader)obj;
+            TreeNodeFactory factory = loader.getNodes();
+            PdfTrailerTreeNode trailer = controller.getPdfTree().getRoot();
+            PdfObjectTreeNode catalog = factory.getChildNode(trailer, PdfName.ROOT);
+            PdfObjectTreeNode outline = factory.getChildNode(catalog, PdfName.OUTLINES);
+            if (outline == null) {
+                return;
+            }
+            OutlineTreeNode root = new OutlineTreeNode();
+            loadOutline(factory, root, factory.getChildNode(outline, PdfName.FIRST));
+            setModel(new DefaultTreeModel(root));
+        }
+    }
+    
+    /**
+     * Method that can be used recursively to load the outline hierarchy into the tree.
+     */
+    private void loadOutline(TreeNodeFactory factory, OutlineTreeNode parent, PdfObjectTreeNode child) {
+        OutlineTreeNode childnode = new OutlineTreeNode(child);
+        parent.add(childnode);
+        PdfObjectTreeNode first = factory.getChildNode(child, PdfName.FIRST);
+        if (first != null) {
+            loadOutline(factory, childnode, first);
+        }
+        PdfObjectTreeNode next = factory.getChildNode(child, PdfName.NEXT);
+        if (next != null) {
+            loadOutline(factory, parent, next);
+        }
+    }
 
-	/**
-	 * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
-	 */
-	public void valueChanged(TreeSelectionEvent evt) {
-		if (controller == null)
-			return;
-		OutlineTreeNode selectednode = (OutlineTreeNode)this.getLastSelectedPathComponent();
-		PdfObjectTreeNode node = selectednode.getCorrespondingPdfObjectNode();
-		if (node != null)
-			controller.selectNode(node);
-	}
+    /**
+     * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
+     */
+    public void valueChanged(TreeSelectionEvent evt) {
+        if (controller == null)
+            return;
+        OutlineTreeNode selectednode = (OutlineTreeNode)this.getLastSelectedPathComponent();
+        PdfObjectTreeNode node = selectednode.getCorrespondingPdfObjectNode();
+        if (node != null)
+            controller.selectNode(node);
+    }
 
-	/** A serial version uid. */
-	private static final long serialVersionUID = 5646572654823301007L;
+    /** A serial version uid. */
+    private static final long serialVersionUID = 5646572654823301007L;
 
 }

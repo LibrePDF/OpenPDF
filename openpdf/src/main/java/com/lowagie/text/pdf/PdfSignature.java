@@ -60,18 +60,18 @@ public class PdfSignature extends PdfDictionary {
         put(PdfName.SUBFILTER, subFilter);
     }
     
-    public void setByteRange(int range[]) {
+    public void setByteRange(int[] range) {
         PdfArray array = new PdfArray();
         for (int k = 0; k < range.length; ++k)
             array.add(new PdfNumber(range[k]));
         put(PdfName.BYTERANGE, array);
     }
     
-    public void setContents(byte contents[]) {
+    public void setContents(byte[] contents) {
         put(PdfName.CONTENTS, new PdfString(contents).setHexWriting(true));
     }
     
-    public void setCert(byte cert[]) {
+    public void setCert(byte[] cert) {
         put(PdfName.CERT, new PdfString(cert));
     }
     

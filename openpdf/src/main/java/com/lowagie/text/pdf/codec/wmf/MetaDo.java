@@ -65,7 +65,6 @@ import com.lowagie.text.Image;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.codec.BmpImage;
 
 public class MetaDo {
     
@@ -295,7 +294,7 @@ public class MetaDo {
                     if (isNullStrokeFill(false))
                         break;
                     int numPoly = in.readWord();
-                    int lens[] = new int[numPoly];
+                    int[] lens = new int[numPoly];
                     for (int k = 0; k < lens.length; ++k)
                         lens[k] = in.readWord();
                     for (int len : lens) {
@@ -369,7 +368,7 @@ public class MetaDo {
                     List<float[]> ar = PdfContentByte.bezierArc(l, b, r, t, arc1, arc2);
                     if (ar.isEmpty())
                         break;
-                    float pt[] = ar.get(0);
+                    float[] pt = ar.get(0);
                     cb.moveTo(cx, cy);
                     cb.lineTo(pt[0], pt[1]);
                     for (float[] anAr : ar) {
@@ -402,7 +401,7 @@ public class MetaDo {
                     List<float[]> ar = PdfContentByte.bezierArc(l, b, r, t, arc1, arc2);
                     if (ar.isEmpty())
                         break;
-                    float pt[] = ar.get(0);
+                    float[] pt = ar.get(0);
                     cx = pt[0];
                     cy = pt[1];
                     cb.moveTo(cx, cy);
@@ -467,7 +466,7 @@ public class MetaDo {
                         x2 = in.readShort();
                         y2 = in.readShort();
                     }
-                    byte text[] = new byte[count];
+                    byte[] text = new byte[count];
                     int k;
                     for (k = 0; k < count; ++k) {
                         byte c = (byte)in.readByte();
@@ -488,7 +487,7 @@ public class MetaDo {
                 case META_TEXTOUT:
                 {
                     int count = in.readWord();
-                    byte text[] = new byte[count];
+                    byte[] text = new byte[count];
                     int k;
                     for (k = 0; k < count; ++k) {
                         byte c = (byte)in.readByte();
@@ -538,39 +537,9 @@ public class MetaDo {
                     break;
                 }
                 case META_DIBSTRETCHBLT:
-                case META_STRETCHDIB: {
-                    int rop = in.readInt();
-                    if (function == META_STRETCHDIB) {
-                        /*int usage = */ in.readWord();
-                    }
-                    int srcHeight = in.readShort();
-                    int srcWidth = in.readShort();
-                    int ySrc = in.readShort();
-                    int xSrc = in.readShort();
-                    float destHeight = state.transformY(in.readShort()) - state.transformY(0);
-                    float destWidth = state.transformX(in.readShort()) - state.transformX(0);
-                    float yDest = state.transformY(in.readShort());
-                    float xDest = state.transformX(in.readShort());
-                    byte b[] = new byte[(tsize * 2) - (in.getLength() - lenMarker)];
-                    for (int k = 0; k < b.length; ++k)
-                        b[k] = (byte)in.readByte();
-                    try {
-                        ByteArrayInputStream inb = new ByteArrayInputStream(b);
-                        Image bmp = BmpImage.getImage(inb, true, b.length);
-                        cb.saveState();
-                        cb.rectangle(xDest, yDest, destWidth, destHeight);
-                        cb.clip();
-                        cb.newPath();
-                        bmp.scaleAbsolute(destWidth * bmp.getWidth() / srcWidth, -destHeight * bmp.getHeight() / srcHeight);
-                        bmp.setAbsolutePosition(xDest - destWidth * xSrc / srcWidth, yDest + destHeight * ySrc / srcHeight - bmp.getScaledHeight());
-                        cb.addImage(bmp);
-                        cb.restoreState();
-                    }
-                    catch (Exception e) {
-                        // empty on purpose
-                    }
+                case META_STRETCHDIB:
                     break;
-                }
+
             }
             in.skip((tsize * 2) - (in.getLength() - lenMarker));
         }
@@ -684,7 +653,7 @@ public class MetaDo {
         if (image.getOriginalType() != Image.ORIGINAL_BMP)
             throw new IOException(MessageLocalization.getComposedMessage("only.bmp.can.be.wrapped.in.wmf"));
         InputStream imgIn;
-        byte data[] = null;
+        byte[] data = null;
         if (image.getOriginalData() == null) {
             imgIn = image.getUrl().openStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
