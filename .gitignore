@@ -177,6 +177,5 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 
 ### Custom
-*.pdf
 *.rtf
 *.html

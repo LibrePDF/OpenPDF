@@ -17,7 +17,7 @@ public class UnicodePdfTest {
     @Test
     void testSimplePdf() throws FileNotFoundException, DocumentException {
         // create document
-        Document document = PdfTestBase.createPdf("target/unicode.pdf");
+        Document document = PdfTestBase.createPdf("unicode.pdf");
         // Probably a good idea to write the document to a byte array, so you can read the result and make some checks.
         // ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         // Document document = PdfTestBase.createPdf(outputStream);

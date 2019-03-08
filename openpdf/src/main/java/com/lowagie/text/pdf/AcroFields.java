@@ -2106,7 +2106,17 @@ public class AcroFields {
       if (rangeSize < 2) {
         continue;
       }
-      int length = ro.getAsNumber(rangeSize - 1).intValue() + ro.getAsNumber(rangeSize - 2).intValue();
+      /*
+       * From the PDF32000_2008 spec: Byterange: An array of pairs of integers
+       * (starting byte offset, length in bytes) Also see:
+       * https://pdf-insecurity.org/download/paper.pdf
+       */
+      int lengthOfSignedBlocks = 0;
+      for (int i = rangeSize - 1; i > 0; i = i - 2) {
+          lengthOfSignedBlocks += ro.getAsNumber(i).intValue();
+      }
+      int unsignedBlock = contents.getOriginalBytes().length * 2 + 2;
+      int length = lengthOfSignedBlocks + unsignedBlock;
       sorter.add(new Object[]{entry.getKey(), new int[]{length, 0}});
     }
     Collections.sort(sorter, new AcroFields.SorterComparator());

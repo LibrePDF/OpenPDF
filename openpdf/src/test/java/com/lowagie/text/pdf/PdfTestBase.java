@@ -12,8 +12,8 @@ import com.lowagie.text.PageSize;
 class PdfTestBase {
 
     static Document createPdf(String filename) throws FileNotFoundException, DocumentException {
-        // create a new file
-        return createPdf(new FileOutputStream(new File(filename)));
+        // create a new file in target dir
+        return createPdf(new FileOutputStream(new File("target", filename)));
     }
 
     static Document createPdf(OutputStream outputStream) throws DocumentException {
