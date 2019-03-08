@@ -53,10 +53,10 @@
         <maven.jar.plugin.version>3.1.0</maven.jar.plugin.version>
         <maven.plugin.repository.version>2.3.1</maven.plugin.repository.version>
         <maven.plugin.bundle.version>3.2.0</maven.plugin.bundle.version>
-        <bouncycastle.version>1.60</bouncycastle.version>
-        <jupiter.version>5.3.2</jupiter.version>
+        <bouncycastle.version>1.61</bouncycastle.version>
+        <jupiter.version>5.4.0</jupiter.version>
         <maven.surefire.plugin.version>2.22.1</maven.surefire.plugin.version>
-        <mockito.version>2.24.0</mockito.version>
+        <mockito.version>2.25.0</mockito.version>
     </properties>
 
 
@@ -170,29 +170,29 @@
             </plugin>
             <!-- GPG signing config -->
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-gpg-plugin</artifactId>
-              <version>1.6</version>
-              <executions>
-                <execution>
-                  <id>sign-artifacts</id>
-                  <phase>verify</phase>
-                  <goals>
-                    <goal>sign</goal>
-                  </goals>
-                </execution>
-              </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
-              <groupId>org.sonatype.plugins</groupId>
-              <artifactId>nexus-staging-maven-plugin</artifactId>
-              <version>1.6.8</version>
-              <extensions>true</extensions>
-              <configuration>
-                 <serverId>ossrh</serverId>
-                 <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                 <autoReleaseAfterClose>false</autoReleaseAfterClose>
-              </configuration>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -231,7 +231,7 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>2.8.0</version>
+                <version>3.12.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -255,10 +255,10 @@
     </developers>
     <!-- Distribution config from http://central.sonatype.org/pages/apache-maven.html#distribution-management-and-authentication -->
     <distributionManagement>
-      <snapshotRepository>
-       <id>ossrh</id>
-       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      </snapshotRepository>
-     </distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

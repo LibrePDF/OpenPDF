@@ -18,8 +18,6 @@
         <imageio-tiff.version>3.4.1</imageio-tiff.version>
     </properties>
 
-
-
     <dependencies>
         <dependency>
             <groupId>com.github.albfernandez</groupId>
