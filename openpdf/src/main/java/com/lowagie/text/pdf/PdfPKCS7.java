@@ -118,6 +118,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 
 
 import com.lowagie.text.error_messages.MessageLocalization;
+import org.bouncycastle.asn1.BERTaggedObject;
 
 /**
  * This class does all the processing related to signing and verifying a PKCS#7
@@ -421,8 +422,11 @@ public class PdfPKCS7 {
         throw new IllegalArgumentException(
             MessageLocalization
                 .getComposedMessage("not.a.valid.pkcs.7.object.not.signed.data"));
-      ASN1Sequence content = (ASN1Sequence) ((DERTaggedObject) signedData
-          .getObjectAt(1)).getObject();
+      ASN1Sequence content = (ASN1Sequence) (
+          (signedData.getObjectAt(1) instanceof BERTaggedObject) ?
+          (BERTaggedObject) signedData.getObjectAt(1) :
+          (DERTaggedObject) signedData.getObjectAt(1))
+          .getObject();
       // the positions that we care are:
       // 0 - version
       // 1 - digestAlgorithms
@@ -460,7 +464,8 @@ public class PdfPKCS7 {
 
       // the signerInfos
       int next = 3;
-      while (content.getObjectAt(next) instanceof DERTaggedObject)
+     while (content.getObjectAt(next) instanceof DERTaggedObject ||
+             content.getObjectAt(next) instanceof BERTaggedObject)
         ++next;
       ASN1Set signerInfos = (ASN1Set) content.getObjectAt(next);
       if (signerInfos.size() != 1)
