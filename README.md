@@ -53,7 +53,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 
 ### Optional: ###
 
-  - [BouncyCastle](https://www.bouncycastle.org/) 1.60
+  - [BouncyCastle](https://www.bouncycastle.org/)
     - Provider
     - PKIX/CMS
  - [TwelveMonkeys imageio-tiff](https://github.com/haraldk/TwelveMonkeys/) - optional by default, but required if TIFF image support is needed.    
