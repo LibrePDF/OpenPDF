@@ -55,7 +55,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
@@ -176,12 +175,12 @@ public class FontFactoryImp implements FontProvider {
         if (tmp != null) {
             // some bugs were fixed here by Daniel Marczisovszky
             int s = style == Font.UNDEFINED ? Font.NORMAL : style;
-            for (Iterator i = tmp.iterator(); i.hasNext(); ) {
-                String f = (String) i.next();
+            for (Object o : tmp) {
+                String f = (String) o;
                 String lcf = f.toLowerCase(Locale.ROOT);
                 int fs = Font.NORMAL;
-                if (lcf.indexOf("bold") != -1) fs |= Font.BOLD;
-                if (lcf.indexOf("italic") != -1 || lcf.indexOf("oblique") != -1) fs |= Font.ITALIC;
+                if (lcf.contains("bold")) fs |= Font.BOLD;
+                if (lcf.contains("italic") || lcf.contains("oblique")) fs |= Font.ITALIC;
                 if ((s & Font.BOLDITALIC) == fs) {
                     fontname = f;
                     break;
@@ -214,7 +213,7 @@ public class FontFactoryImp implements FontProvider {
             return new Font(Font.UNDEFINED, size, style, color);
         }
         catch(NullPointerException npe) {
-            // null was entered as fontname and/or encoding
+        // null was entered as fontname and/or encoding
             return new Font(Font.UNDEFINED, size, style, color);
         }
         return new Font(basefont, size, style, color);
@@ -531,16 +530,16 @@ public class FontFactoryImp implements FontProvider {
                 }
                 // register all the font names with all the locales
                 String[][] names = (String[][])allNames[2]; //full name
-                for (int i = 0; i < names.length; i++) {
-                    trueTypeFonts.setProperty(names[i][3].toLowerCase(), path);
+                for (String[] name1 : names) {
+                    trueTypeFonts.setProperty(name1[3].toLowerCase(), path);
                 }
                 String fullName = null;
                 String familyName = null;
                 names = (String[][])allNames[1]; //family name
                 for (int k = 0; k < TTFamilyOrder.length; k += 3) {
-                    for (int i = 0; i < names.length; i++) {
-                        if (TTFamilyOrder[k].equals(names[i][0]) && TTFamilyOrder[k + 1].equals(names[i][1]) && TTFamilyOrder[k + 2].equals(names[i][2])) {
-                            familyName = names[i][3].toLowerCase();
+                    for (String[] name : names) {
+                        if (TTFamilyOrder[k].equals(name[0]) && TTFamilyOrder[k + 1].equals(name[1]) && TTFamilyOrder[k + 2].equals(name[2])) {
+                            familyName = name[3].toLowerCase();
                             k = TTFamilyOrder.length;
                             break;
                         }
@@ -549,10 +548,10 @@ public class FontFactoryImp implements FontProvider {
                 if (familyName != null) {
                     String lastName = "";
                     names = (String[][])allNames[2]; //full name
-                    for (int i = 0; i < names.length; i++) {
+                    for (String[] name : names) {
                         for (int k = 0; k < TTFamilyOrder.length; k += 3) {
-                            if (TTFamilyOrder[k].equals(names[i][0]) && TTFamilyOrder[k + 1].equals(names[i][1]) && TTFamilyOrder[k + 2].equals(names[i][2])) {
-                                fullName = names[i][3];
+                            if (TTFamilyOrder[k].equals(name[0]) && TTFamilyOrder[k + 1].equals(name[1]) && TTFamilyOrder[k + 2].equals(name[2])) {
+                                fullName = name[3];
                                 if (fullName.equals(lastName))
                                     continue;
                                 lastName = fullName;
@@ -581,12 +580,9 @@ public class FontFactoryImp implements FontProvider {
                 trueTypeFonts.setProperty(fullName, path);
             }
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             // this shouldn't happen
             throw new ExceptionConverter(de);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
 
@@ -614,9 +610,9 @@ public class FontFactoryImp implements FontProvider {
             String[] files = file.list();
             if (files == null)
                 return 0;
-            for (int k = 0; k < files.length; ++k) {
+            for (String file1 : files) {
                 try {
-                    file = new File(dir, files[k]);
+                    file = new File(dir, file1);
                     if (file.isDirectory()) {
                         if (scanSubdirectories) {
                             count += registerDirectory(file.getAbsolutePath(), true);
@@ -636,8 +632,7 @@ public class FontFactoryImp implements FontProvider {
                             ++count;
                         }
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     //empty on purpose
                 }
             }

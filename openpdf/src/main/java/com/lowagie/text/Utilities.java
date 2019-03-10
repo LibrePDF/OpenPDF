@@ -117,7 +117,7 @@ public class Utilities {
      * @return the unescaped value
      */    
     public static String unEscapeURL(String src) {
-        StringBuffer bf = new StringBuffer();
+        StringBuilder bf = new StringBuilder();
         char[] s = src.toCharArray();
         for (int k = 0; k < s.length; ++k) {
             char c = s[k];

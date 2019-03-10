@@ -79,10 +79,8 @@ public class Lines {
             c.setUnderline(new Color(0x00, 0xFF, 0x00), 5.0f, 0.0f, 0.0f, -0.5f, PdfContentByte.LINE_CAP_PROJECTING_SQUARE);
             c.setUnderline(new Color(0x00, 0x00, 0xFF), 0.0f, 0.2f, 15.0f, 0.0f, PdfContentByte.LINE_CAP_BUTT);
             document.add(c);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

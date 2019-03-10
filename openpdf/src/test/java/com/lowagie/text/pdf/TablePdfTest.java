@@ -1,7 +1,5 @@
 package com.lowagie.text.pdf;
 
-import java.io.FileNotFoundException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Phrase;
@@ -10,10 +8,8 @@ import org.junit.jupiter.api.Test;
 public class TablePdfTest {
 
     @Test
-    void testTableSpacingPercentage() throws FileNotFoundException,
-            DocumentException {
-        Document document = PdfTestBase
-                .createPdf("testTableSpacingPercentage.pdf");
+    void testTableSpacingPercentage() throws Exception {
+        Document document = PdfTestBase.createPdf("testTableSpacingPercentage.pdf");
         document.setMargins(72, 72, 72, 72);
         document.open();
         PdfPTable table = new PdfPTable(1);
@@ -23,7 +19,7 @@ public class TablePdfTest {
         cell = new PdfPCell();
         Phrase phase = new Phrase("John Doe");
         cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER); // This has no
-                                                            // effect
+        // effect
         cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE); // This has no effect
         cell.addElement(phase);
         table.addCell(cell);
@@ -32,8 +28,7 @@ public class TablePdfTest {
     }
 
     @Test
-    void testTableArrayOutOfBoundsSpan() throws FileNotFoundException,
-            DocumentException {
+    void testTableArrayOutOfBoundsSpan() throws Exception {
         Document document = PdfTestBase
                 .createPdf("testTableArrayOutOfBoundsSpan.pdf");
         document.open();
@@ -87,8 +82,7 @@ public class TablePdfTest {
     }
 
     @Test
-    void testCreateTable() throws FileNotFoundException,
-            DocumentException {
+    void testCreateTable() throws Exception {
         // create document
         Document document = PdfTestBase.createPdf("testCreateTable.pdf");
         try {

@@ -119,8 +119,8 @@ public class VerticalText {
      * @param phrase the text
      */
     public void addText(Phrase phrase) {
-        for (Iterator j = phrase.getChunks().iterator(); j.hasNext();) {
-            chunks.add(new PdfChunk((Chunk)j.next(), null));
+        for (Object o : phrase.getChunks()) {
+            chunks.add(new PdfChunk((Chunk) o, null));
         }
     }
     
@@ -199,8 +199,9 @@ public class VerticalText {
         PdfChunk split = (PdfChunk)(chunks.get(currentChunkMarker));
         split.setValue(splittedChunkText);
         chunks.set(currentChunkMarker, currentStandbyChunk);
-        for (int j = currentChunkMarker - 1; j >= 0; --j)
-            chunks.remove(j);
+        if (currentChunkMarker > 0) {
+            chunks.subList(0, currentChunkMarker).clear();
+        }
     }
 
     /**

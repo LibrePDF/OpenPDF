@@ -49,7 +49,7 @@
 package com.lowagie.text;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.ExceptionConverter;
@@ -180,8 +180,8 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         cell.setUseBorderPadding(useBorderPadding);
         cell.setUseDescender(useDescender);
         Element element;
-        for (Iterator i = content.iterator(); i.hasNext(); ) {
-            element = (Element)i.next();
+        for (Object o : content) {
+            element = (Element) o;
             cell.addElement(element);
         }
         return cell;
@@ -241,8 +241,8 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         if (Float.isNaN(p)) p = 0f; 
         cell.setPaddingBottom(p + sp_bottom);
         Element element;
-        for (Iterator i = content.iterator(); i.hasNext(); ) {
-            element = (Element)i.next();
+        for (Object o : content) {
+            element = (Element) o;
             cell.addElement(element);
         }
         return cell;

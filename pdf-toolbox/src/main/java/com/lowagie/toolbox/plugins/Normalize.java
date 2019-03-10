@@ -205,7 +205,7 @@ public void execute() {
 
       PdfWriter writer = stp.getWriter();
 
-      ArrayList<PdfDictionary> pageInh = new ArrayList<PdfDictionary>();
+      ArrayList<PdfDictionary> pageInh = new ArrayList<>();
       PdfDictionary catalog = reader.getCatalog();
       PdfDictionary rootPages = catalog.getAsDict(PdfName.PAGES);
       iteratePages(rootPages, reader, pageInh, 0, writer);

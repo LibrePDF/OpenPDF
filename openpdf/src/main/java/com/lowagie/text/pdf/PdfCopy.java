@@ -51,7 +51,6 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -226,7 +225,7 @@ public class PdfCopy extends PdfWriter {
     PdfObject obj = PdfReader.getPdfObjectRelease(in);
     if (obj != null && obj.isDictionary()) {
       PdfObject type = PdfReader.getPdfObjectRelease(((PdfDictionary) obj).get(PdfName.TYPE));
-      if (type != null && PdfName.PAGE.equals(type)) {
+      if (PdfName.PAGE.equals(type)) {
         return theRef;
       }
     }
@@ -244,18 +243,17 @@ public class PdfCopy extends PdfWriter {
     PdfDictionary out = new PdfDictionary();
     PdfObject type = PdfReader.getPdfObjectRelease(in.get(PdfName.TYPE));
 
-    for (Iterator it = in.getKeys().iterator(); it.hasNext(); ) {
-      PdfName key = (PdfName) it.next();
-      PdfObject value = in.get(key);
-      //        System.out.println("Copy " + key);
-      if (PdfName.PAGE.equals(type)) {
-        if (!key.equals(PdfName.B) && !key.equals(PdfName.PARENT)) {
-          out.put(key, copyObject(value));
-        }
-      } else {
-        out.put(key, copyObject(value));
+      for (PdfName key : in.getKeys()) {
+          PdfObject value = in.get(key);
+          //        System.out.println("Copy " + key);
+          if (PdfName.PAGE.equals(type)) {
+              if (!key.equals(PdfName.B) && !key.equals(PdfName.PARENT)) {
+                  out.put(key, copyObject(value));
+              }
+          } else {
+              out.put(key, copyObject(value));
+          }
       }
-    }
     return out;
   }
 
@@ -705,9 +703,9 @@ public class PdfCopy extends PdfWriter {
       allAnnots.add(field);
       ArrayList kids = field.getKids();
       if (kids != null) {
-        for (int k = 0; k < kids.size(); ++k) {
-          expandFields((PdfFormField) kids.get(k), allAnnots);
-        }
+          for (Object kid : kids) {
+              expandFields((PdfFormField) kid, allAnnots);
+          }
       }
     }
 

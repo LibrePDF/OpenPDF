@@ -182,8 +182,7 @@ class FontDetails {
             case BaseFont.FONT_TYPE_TT: {
                 b = baseFont.convertToBytes(text);
                 int len = b.length;
-                for (int k = 0; k < len; ++k)
-                    shortTag[b[k] & 0xff] = 1;
+                for (byte b1 : b) shortTag[b1 & 0xff] = 1;
                 break;
             }
             case BaseFont.FONT_TYPE_CJK: {
@@ -210,7 +209,7 @@ class FontDetails {
                             metrics = ttu.getMetricsTT(b[k] & 0xff);
                             if (metrics == null)
                                 continue;
-                            longTag.put(new Integer(metrics[0]), new int[]{metrics[0], metrics[1], ttu.getUnicodeDifferences(b[k] & 0xff)});
+                            longTag.put(metrics[0], new int[]{metrics[0], metrics[1], ttu.getUnicodeDifferences(b[k] & 0xff)});
                             glyph[i++] = (char)metrics[0];
                         }
                     }
@@ -228,7 +227,7 @@ class FontDetails {
                             if (metrics == null)
                                 continue;
                             int m0 = metrics[0];
-                            Integer gl = new Integer(m0);
+                            Integer gl = m0;
                             if (!longTag.containsKey(gl))
                                 longTag.put(gl, new int[]{m0, metrics[1], val});
                             glyph[i++] = (char)m0;
@@ -262,11 +261,11 @@ class FontDetails {
 
             glyphs[glyphCount++] = (char) code;// FIXME supplementary plane?
 
-            Integer codeKey = Integer.valueOf(code);
+            Integer codeKey = code;
             if (!longTag.containsKey(codeKey)) {
                 int glyphWidth = ttu.getGlyphWidth(code);
                 Integer charCode = ttu.getCharacterCode(code);
-                int[] metrics = charCode != null ? new int[] { code, glyphWidth, charCode.intValue() } : new int[] {
+                int[] metrics = charCode != null ? new int[] { code, glyphWidth, charCode} : new int[] {
                         code, glyphWidth };
                 longTag.put(codeKey, metrics);
             }
@@ -308,14 +307,14 @@ class FontDetails {
                         firstChar = 255;
                         lastChar = 255;
                     }
-                    baseFont.writeFont(writer, indirectReference, new Object[]{new Integer(firstChar), new Integer(lastChar), shortTag, Boolean.valueOf(subset)});
+                    baseFont.writeFont(writer, indirectReference, new Object[]{firstChar, lastChar, shortTag, subset});
                     break;
                 }
                 case BaseFont.FONT_TYPE_CJK:
                     baseFont.writeFont(writer, indirectReference, new Object[]{cjkTag});
                     break;
                 case BaseFont.FONT_TYPE_TTUNI:
-                    baseFont.writeFont(writer, indirectReference, new Object[]{longTag, Boolean.valueOf(subset)});
+                    baseFont.writeFont(writer, indirectReference, new Object[]{longTag, subset});
                     break;
             }
         }

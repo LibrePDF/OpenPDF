@@ -109,7 +109,7 @@ public class SequenceList {
     }
     
     protected int getType() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int state = FIRST;
         while (true) {
             char c = nextChar();
@@ -273,7 +273,7 @@ public class SequenceList {
                     parse.high = t;
                 }
                 for (ListIterator it = list.listIterator(); it.hasNext();) {
-                    int n = ((Integer)it.next()).intValue();
+                    int n = (Integer) it.next();
                     if (parse.even && (n & 1) == 1)
                         continue;
                     if (parse.odd && (n & 1) == 0)
@@ -293,7 +293,7 @@ public class SequenceList {
                             parse.low -= ((parse.low & 1) == 1 ? 0 : 1);
                     }
                     for (int k = parse.low; k >= parse.high; k += inc)
-                        list.add(new Integer(k));
+                        list.add(k);
                 }
                 else {
                     if (parse.odd || parse.even) {
@@ -304,7 +304,7 @@ public class SequenceList {
                             parse.low += ((parse.low & 1) == 1 ? 1 : 0);
                     }
                     for (int k = parse.low; k <= parse.high; k += inc) {
-                        list.add(new Integer(k));
+                        list.add(k);
                     }
                 }
             }

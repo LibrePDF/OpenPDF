@@ -652,7 +652,7 @@ public class HtmlWriter extends DocWriter {
                 }
                 if (attributes != null && attributes.get(Chunk.SUBSUPSCRIPT) != null) {
                     // start sup or sub tag
-                    if (((Float)attributes.get(Chunk.SUBSUPSCRIPT)).floatValue() > 0) {
+                    if ((Float) attributes.get(Chunk.SUBSUPSCRIPT) > 0) {
                         writeStart(HtmlTags.SUP);
                     }
                     else {
@@ -666,7 +666,7 @@ public class HtmlWriter extends DocWriter {
                     // end sup or sub tag
                     os.write(LT);
                     os.write(FORWARD);
-                    if (((Float)attributes.get(Chunk.SUBSUPSCRIPT)).floatValue() > 0) {
+                    if ((Float) attributes.get(Chunk.SUBSUPSCRIPT) > 0) {
                         write(HtmlTags.SUP);
                     }
                     else {
@@ -694,8 +694,8 @@ public class HtmlWriter extends DocWriter {
                 os.write(GT);
                 currentfont.push(phrase.getFont());
                 // contents
-                for (Iterator i = phrase.iterator(); i.hasNext(); ) {
-                    write((Element) i.next(), indent + 1);
+                for (Object o : phrase) {
+                    write((Element) o, indent + 1);
                 }
                 // end tag
                 addTabs(indent);
@@ -723,8 +723,8 @@ public class HtmlWriter extends DocWriter {
                 os.write(GT);
                 currentfont.push(anchor.getFont());
                 // contents
-                for (Iterator i = anchor.iterator(); i.hasNext(); ) {
-                    write((Element) i.next(), indent + 1);
+                for (Object o : anchor) {
+                    write((Element) o, indent + 1);
                 }
                 // end tag
                 addTabs(indent);
@@ -749,8 +749,8 @@ public class HtmlWriter extends DocWriter {
                 os.write(GT);
                 currentfont.push(paragraph.getFont());
                 // contents
-                for (Iterator i = paragraph.iterator(); i.hasNext(); ) {
-                    write((Element)i.next(), indent + 1);
+                for (Object o : paragraph) {
+                    write((Element) o, indent + 1);
                 }
                 // end tag
                 addTabs(indent);
@@ -779,8 +779,8 @@ public class HtmlWriter extends DocWriter {
                 writeMarkupAttributes(markup);
                 os.write(GT);
                 // contents
-                for (Iterator i = list.getItems().iterator(); i.hasNext(); ) {
-                    write((Element) i.next(), indent + 1);
+                for (Object o : list.getItems()) {
+                    write((Element) o, indent + 1);
                 }
                 // end tag
                 addTabs(indent);
@@ -806,8 +806,8 @@ public class HtmlWriter extends DocWriter {
                 os.write(GT);
                 currentfont.push(listItem.getFont());
                 // contents
-                for (Iterator i = listItem.iterator(); i.hasNext(); ) {
-                    write((Element) i.next(), indent + 1);
+                for (Object o : listItem) {
+                    write((Element) o, indent + 1);
                 }
                 // end tag
                 addTabs(indent);
@@ -1032,16 +1032,16 @@ public class HtmlWriter extends DocWriter {
             os.write(GT);
             currentfont.push(section.getTitle().getFont());
             // contents
-            for (Iterator i = section.getTitle().iterator(); i.hasNext(); ) {
-                write((Element)i.next(), indent + 1);
+            for (Object o : section.getTitle()) {
+                write((Element) o, indent + 1);
             }
             // end tag
             addTabs(indent);
             writeEnd(HtmlTags.H[depth]);
             currentfont.pop();
         }
-        for (Iterator i = section.iterator(); i.hasNext(); ) {
-            write((Element) i.next(), indent);
+        for (Object o : section) {
+            write((Element) o, indent);
         }
     }
     
@@ -1079,12 +1079,12 @@ public class HtmlWriter extends DocWriter {
             BaseFont bf = font.getBaseFont();
             if (bf != null) {
                 String ps = bf.getPostscriptFontName().toLowerCase();
-                if (ps.indexOf("bold") >= 0) {
+                if (ps.contains("bold")) {
                     if (fontstyle == Font.UNDEFINED)
                         fontstyle = 0;
                     fontstyle |= Font.BOLD;
                 }
-                if (ps.indexOf("italic") >= 0 || ps.indexOf("oblique") >= 0) {
+                if (ps.contains("italic") || ps.contains("oblique")) {
                     if (fontstyle == Font.UNDEFINED)
                         fontstyle = 0;
                     fontstyle |= Font.ITALIC;

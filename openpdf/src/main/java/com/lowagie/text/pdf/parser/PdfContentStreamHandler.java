@@ -199,7 +199,7 @@ public class PdfContentStreamHandler {
         @Override
         public void invoke(ArrayList<PdfObject> operands,
                 PdfContentStreamHandler handler, PdfDictionary resources) {
-            textMoveNextLine.invoke(new ArrayList<PdfObject>(0), handler,
+            textMoveNextLine.invoke(new ArrayList<>(0), handler,
                     resources);
             showText.invoke(operands, handler, resources);
         }
@@ -239,15 +239,15 @@ public class PdfContentStreamHandler {
             PdfNumber ac = (PdfNumber) operands.get(1);
             PdfString string = (PdfString) operands.get(2);
 
-            ArrayList<PdfObject> twOperands = new ArrayList<PdfObject>(1);
+            ArrayList<PdfObject> twOperands = new ArrayList<>(1);
             twOperands.add(0, aw);
             setTextWordSpacing.invoke(twOperands, handler, resources);
 
-            ArrayList<PdfObject> tcOperands = new ArrayList<PdfObject>(1);
+            ArrayList<PdfObject> tcOperands = new ArrayList<>(1);
             tcOperands.add(0, ac);
             setTextCharacterSpacing.invoke(tcOperands, handler, resources);
 
-            ArrayList<PdfObject> tickOperands = new ArrayList<PdfObject>(1);
+            ArrayList<PdfObject> tickOperands = new ArrayList<>(1);
             tickOperands.add(0, string);
             moveNextLineAndShowText.invoke(tickOperands, handler, resources);
         }
@@ -442,7 +442,7 @@ public class PdfContentStreamHandler {
                 PdfContentStreamHandler handler, PdfDictionary resources) {
             float ty = ((PdfNumber) operands.get(1)).floatValue();
 
-            ArrayList<PdfObject> tlOperands = new ArrayList<PdfObject>(1);
+            ArrayList<PdfObject> tlOperands = new ArrayList<>(1);
             tlOperands.add(0, new PdfNumber(-ty));
             setTextLeading.invoke(tlOperands, handler, resources);
             moveStartNextLine.invoke(operands, handler, resources);
@@ -491,7 +491,7 @@ public class PdfContentStreamHandler {
         @Override
         public void invoke(ArrayList<PdfObject> operands,
                 PdfContentStreamHandler handler, PdfDictionary resources) {
-            ArrayList<PdfObject> tdoperands = new ArrayList<PdfObject>(2);
+            ArrayList<PdfObject> tdoperands = new ArrayList<>(2);
             tdoperands.add(0, new PdfNumber(0));
             tdoperands.add(1, new PdfNumber(-handler.gs().leading));
             moveStartNextLine.invoke(tdoperands, handler, resources);
@@ -623,11 +623,11 @@ public class PdfContentStreamHandler {
         }
     }
 
-    Stack<Collection<TextAssemblyBuffer>> textFragmentStreams = new Stack<Collection<TextAssemblyBuffer>>();
+    Stack<Collection<TextAssemblyBuffer>> textFragmentStreams = new Stack<>();
 
-    Stack<String> contextNames = new Stack<String>();
+    Stack<String> contextNames = new Stack<>();
 
-    Collection<TextAssemblyBuffer> textFragments = new ArrayList<TextAssemblyBuffer>();
+    Collection<TextAssemblyBuffer> textFragments = new ArrayList<>();
 
     /** A map with all supported operators operators (PDF syntax). */
     public Map<String, ContentOperator> operators;
@@ -830,7 +830,7 @@ public class PdfContentStreamHandler {
         private void processContent(byte[] contentBytes, PdfDictionary resources) {
             try {
                 PdfContentParser ps = new PdfContentParser(new PRTokeniser(contentBytes));
-                ArrayList<PdfObject> operands = new ArrayList<PdfObject>();
+                ArrayList<PdfObject> operands = new ArrayList<>();
                 while (ps.parse(operands).size() > 0) {
                     PdfLiteral operator = (PdfLiteral) operands.get(operands.size() - 1);
                     invokeOperator(operator, operands, resources);
@@ -865,7 +865,7 @@ public class PdfContentStreamHandler {
      * Loads all the supported graphics and text state operators in a map.
      */
     protected void installDefaultOperators() {
-        operators = new HashMap<String, ContentOperator>();
+        operators = new HashMap<>();
 
         registerContentOperator(new PdfContentStreamHandler.PushGraphicsState());
         registerContentOperator(new PdfContentStreamHandler.PopGraphicsState());
@@ -964,7 +964,7 @@ public class PdfContentStreamHandler {
     void pushContext(String newContextName) {
         contextNames.push(newContextName);
         textFragmentStreams.push(textFragments);
-        textFragments = new ArrayList<TextAssemblyBuffer>();
+        textFragments = new ArrayList<>();
     }
 
     /**
@@ -981,7 +981,7 @@ public class PdfContentStreamHandler {
      */
     public void reset() {
         if (gsStack == null || gsStack.isEmpty()) {
-            gsStack = new Stack<GraphicsState>();
+            gsStack = new Stack<>();
         }
         gsStack.add(new GraphicsState());
         textMatrix = null;
@@ -1051,7 +1051,7 @@ public class PdfContentStreamHandler {
             throw new RuntimeException(
                     "can't get text with unprocessed stack items");
         }
-        StringBuffer res = new StringBuffer();
+        StringBuilder res = new StringBuilder();
         for (TextAssemblyBuffer fragment : textFragments) {
             res.append(fragment.getText());
         }

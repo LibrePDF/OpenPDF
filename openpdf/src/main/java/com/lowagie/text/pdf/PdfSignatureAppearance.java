@@ -63,7 +63,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.lowagie.text.Chunk;
@@ -681,12 +680,12 @@ public class PdfSignatureAppearance {
         int cr = 0;
         int lf = 0;
         char[] t = text.toCharArray();
-        for (int k = 0; k < t.length; ++k) {
-          if (t[k] == '\n')
-            ++lf;
-          else if (t[k] == '\r')
-            ++cr;
-        }
+          for (char c : t) {
+              if (c == '\n')
+                  ++lf;
+              else if (c == '\r')
+                  ++cr;
+          }
         int minLines = Math.max(cr, lf) + 1;
         maxFontSize = Math.abs(rect.getHeight()) / minLines - 0.001f;
       }
@@ -936,13 +935,13 @@ public class PdfSignatureAppearance {
         continue;
       n1 += ".";
       found = true;
-      for (Iterator it = af.getFields().keySet().iterator(); it.hasNext();) {
-        String fn = (String) it.next();
-        if (fn.startsWith(n1)) {
-          found = false;
-          break;
+        for (Object o : af.getFields().keySet()) {
+            String fn = (String) o;
+            if (fn.startsWith(n1)) {
+                found = false;
+                break;
+            }
         }
-      }
     }
     name += step;
     return name;
@@ -1091,14 +1090,14 @@ public class PdfSignatureAppearance {
       PdfLiteral lit = new PdfLiteral(80);
       exclusionLocations.put(PdfName.BYTERANGE, lit);
       cryptoDictionary.put(PdfName.BYTERANGE, lit);
-      for (Iterator it = exclusionSizes.entrySet().iterator(); it.hasNext();) {
-        Map.Entry entry = (Map.Entry) it.next();
-        PdfName key = (PdfName) entry.getKey();
-        Integer v = (Integer) entry.getValue();
-        lit = new PdfLiteral(v);
-        exclusionLocations.put(key, lit);
-        cryptoDictionary.put(key, lit);
-      }
+        for (Object o : exclusionSizes.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
+            PdfName key = (PdfName) entry.getKey();
+            Integer v = (Integer) entry.getValue();
+            lit = new PdfLiteral(v);
+            exclusionLocations.put(key, lit);
+            cryptoDictionary.put(key, lit);
+        }
       if (certificationLevel > 0)
         addDocMDP(cryptoDictionary);
       if (signatureEvent != null)
@@ -1118,12 +1117,12 @@ public class PdfSignatureAppearance {
         .get(PdfName.BYTERANGE)).getPosition();
     exclusionLocations.remove(PdfName.BYTERANGE);
     int idx = 1;
-    for (Iterator it = exclusionLocations.values().iterator(); it.hasNext();) {
-      PdfLiteral lit = (PdfLiteral) it.next();
-      int n = lit.getPosition();
-      range[idx++] = n;
-      range[idx++] = lit.getPosLength() + n;
-    }
+      for (Object o : exclusionLocations.values()) {
+          PdfLiteral lit = (PdfLiteral) o;
+          int n = lit.getPosition();
+          range[idx++] = n;
+          range[idx++] = lit.getPosLength() + n;
+      }
     Arrays.sort(range, 1, range.length - 1);
     for (int k = 3; k < range.length - 2; k += 2)
       range[k] -= range[k - 1];
@@ -1134,8 +1133,7 @@ public class PdfSignatureAppearance {
       range[range.length - 1] = boutLen - range[range.length - 2];
       ByteBuffer bf = new ByteBuffer();
       bf.append('[');
-      for (int k = 0; k < range.length; ++k)
-        bf.append(range[k]).append(' ');
+        for (int i : range) bf.append(i).append(' ');
       bf.append(']');
       System.arraycopy(bf.getBuffer(), 0, bout, byteRangePosition, bf.size());
     } else {
@@ -1145,8 +1143,7 @@ public class PdfSignatureAppearance {
         range[range.length - 1] = boutL - range[range.length - 2];
         ByteBuffer bf = new ByteBuffer();
         bf.append('[');
-        for (int k = 0; k < range.length; ++k)
-          bf.append(range[k]).append(' ');
+          for (int i : range) bf.append(i).append(' ');
         bf.append(']');
         raf.seek(byteRangePosition);
         raf.write(bf.getBuffer(), 0, bf.size());
@@ -1186,29 +1183,28 @@ public class PdfSignatureAppearance {
             MessageLocalization
                 .getComposedMessage("preclose.must.be.called.first"));
       ByteBuffer bf = new ByteBuffer();
-      for (Iterator it = update.getKeys().iterator(); it.hasNext();) {
-        PdfName key = (PdfName) it.next();
-        PdfObject obj = update.get(key);
-        PdfLiteral lit = (PdfLiteral) exclusionLocations.get(key);
-        if (lit == null)
-          throw new IllegalArgumentException(
-              MessageLocalization.getComposedMessage(
-                  "the.key.1.didn.t.reserve.space.in.preclose", key.toString()));
-        bf.reset();
-        obj.toPdf(null, bf);
-        if (bf.size() > lit.getPosLength())
-          throw new IllegalArgumentException(
-              MessageLocalization.getComposedMessage(
-                  "the.key.1.is.too.big.is.2.reserved.3", key.toString(),
-                  String.valueOf(bf.size()), String.valueOf(lit.getPosLength())));
-        if (tempFile == null)
-          System.arraycopy(bf.getBuffer(), 0, bout, lit.getPosition(),
-              bf.size());
-        else {
-          raf.seek(lit.getPosition());
-          raf.write(bf.getBuffer(), 0, bf.size());
+        for (PdfName key : update.getKeys()) {
+            PdfObject obj = update.get(key);
+            PdfLiteral lit = (PdfLiteral) exclusionLocations.get(key);
+            if (lit == null)
+                throw new IllegalArgumentException(
+                        MessageLocalization.getComposedMessage(
+                                "the.key.1.didn.t.reserve.space.in.preclose", key.toString()));
+            bf.reset();
+            obj.toPdf(null, bf);
+            if (bf.size() > lit.getPosLength())
+                throw new IllegalArgumentException(
+                        MessageLocalization.getComposedMessage(
+                                "the.key.1.is.too.big.is.2.reserved.3", key.toString(),
+                                String.valueOf(bf.size()), String.valueOf(lit.getPosLength())));
+            if (tempFile == null)
+                System.arraycopy(bf.getBuffer(), 0, bout, lit.getPosition(),
+                        bf.size());
+            else {
+                raf.seek(lit.getPosition());
+                raf.write(bf.getBuffer(), 0, bf.size());
+            }
         }
-      }
       if (update.size() != exclusionLocations.size())
         throw new IllegalArgumentException(
             MessageLocalization

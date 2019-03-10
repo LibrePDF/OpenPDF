@@ -66,9 +66,7 @@ public class MultiColumnR2L {
 
             document.add(mct);
             document.close();
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
+        } catch (DocumentException | FileNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -123,7 +121,7 @@ public class MultiColumnR2L {
      */
     public static String poemLine()
     {
-       StringBuffer results = new StringBuffer(150);
+       StringBuilder results = new StringBuilder(150);
        results.append(randomWord(adjective));
        results.append(' ');
        results.append(randomWord(noun));

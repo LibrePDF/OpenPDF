@@ -105,9 +105,9 @@ public class ReversePages
       System.out.println("The original file had " + reader.getNumberOfPages() +
                          " pages.");
       int pages = reader.getNumberOfPages();
-      ArrayList<Integer> li = new ArrayList<Integer>();
+      ArrayList<Integer> li = new ArrayList<>();
       for (int i = pages; i > 0; i--) {
-        li.add(Integer.valueOf(i));
+        li.add(i);
       }
       reader.selectPages(li);
 

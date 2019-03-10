@@ -253,7 +253,7 @@ public class PdfObjectTreeNode extends IconTreeNode {
      * @return    a caption for the object corresponding with the key in the dictionary.
      */
     public static String getDictionaryEntryCaption(PdfDictionary dict, PdfName key) {
-        StringBuffer buf = new StringBuffer(key.toString());
+        StringBuilder buf = new StringBuilder(key.toString());
         buf.append(": ");
         PdfObject valObj = dict.get(key);
         if (valObj.isIndirect()) {

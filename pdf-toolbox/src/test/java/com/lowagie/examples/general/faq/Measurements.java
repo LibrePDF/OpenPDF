@@ -63,13 +63,10 @@ public class Measurements {
             document.add(new Paragraph("The right border is 18pt or 0.25 inch or 0.63 cm."));
             document.add(new Paragraph("The top and bottom border are 72pt or 1 inch or 2.54 cm."));
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

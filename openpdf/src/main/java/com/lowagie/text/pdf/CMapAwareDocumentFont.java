@@ -163,9 +163,9 @@ public class CMapAwareDocumentFont extends DocumentFont {
     private int computeAverageWidth() {
         int count = 0;
         int total = 0;
-        for (int i = 0; i < super.widths.length; i++) {
-            if (super.widths[i] != 0) {
-                total += super.widths[i];
+        for (int width : super.widths) {
+            if (width != 0) {
+                total += width;
                 count++;
             }
         }
@@ -235,7 +235,7 @@ public class CMapAwareDocumentFont extends DocumentFont {
     public String decode(byte[] cidbytes,
                          final int offset,
                          final int len) {
-        StringBuffer sb = new StringBuffer(); // it's a shame we can't make this
+        StringBuilder sb = new StringBuilder(); // it's a shame we can't make this
                                              // StringBuilder
         for (int i = offset; i < offset + len; i++ ) {
             String rslt = decodeSingleCID(cidbytes, i, 1);
@@ -267,7 +267,7 @@ public class CMapAwareDocumentFont extends DocumentFont {
      * @since 2.1.
      */
     public String decode(String chars) {
-        StringBuffer sb = new StringBuffer(); // it's a shame we can't make this
+        StringBuilder sb = new StringBuilder(); // it's a shame we can't make this
                                              // StringBuilder
         for (char c : chars.toCharArray()) {
             String result = decode(c);

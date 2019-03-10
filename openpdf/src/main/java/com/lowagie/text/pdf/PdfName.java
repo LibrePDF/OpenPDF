@@ -1743,12 +1743,11 @@ public class PdfName extends PdfObject implements Comparable{
         staticNames = new HashMap<>(fields.length);
         final int flags = Modifier.STATIC | Modifier.PUBLIC | Modifier.FINAL;
         try {
-            for (int fldIdx = 0; fldIdx < fields.length; ++fldIdx) {
-                Field curFld = fields[fldIdx];
+            for (Field curFld : fields) {
                 if ((curFld.getModifiers() & flags) == flags &&
-                    curFld.getType().equals( PdfName.class )) {
-                    PdfName name = (PdfName)curFld.get( null );
-                    staticNames.put( decodeName( name.toString() ), name );
+                        curFld.getType().equals(PdfName.class)) {
+                    PdfName name = (PdfName) curFld.get(null);
+                    staticNames.put(decodeName(name.toString()), name);
                 }
             }
         } catch (Exception e) {
@@ -1818,11 +1817,7 @@ public class PdfName extends PdfObject implements Comparable{
             if (myBytes[i] < objBytes[i])
                 return -1;
         }
-        if (myBytes.length < objBytes.length)
-            return -1;
-        if (myBytes.length > objBytes.length)
-            return 1;
-        return 0;
+        return Integer.compare(myBytes.length, objBytes.length);
     }
 
     /**
@@ -1913,7 +1908,7 @@ public class PdfName extends PdfObject implements Comparable{
      * @return the decoded name
      */
     public static String decodeName(String name) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         try {
             int len = name.length();
             for (int k = 1; k < len; ++k) {

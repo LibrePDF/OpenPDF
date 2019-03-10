@@ -72,7 +72,7 @@ import com.lowagie.text.ExceptionConverter;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-
+import java.util.Objects;
 
 
 public class CFFFont {
@@ -178,7 +178,7 @@ public class CFFFont {
         //java.lang.System.err.println("going for "+j);
         int p = getPosition();
         seek(stringOffsets[j]);
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         for (int k=stringOffsets[j]; k<stringOffsets[j+1]; k++) {
             s.append(getCard8());
         }
@@ -299,21 +299,21 @@ public class CFFFont {
             char b0 = getCard8();
             if (b0 == 29) {
                 int item = getInt();
-                args[arg_count] = new Integer(item);
+                args[arg_count] = item;
                 arg_count++;
                 //System.err.println(item+" ");
                 continue;
             }
             if (b0 == 28) {
                 short item = getShort();
-                args[arg_count] = new Integer(item);
+                args[arg_count] = (int) item;
                 arg_count++;
                 //System.err.println(item+" ");
                 continue;
             }
             if (b0 >= 32 && b0 <= 246) {
                 byte item = (byte) (b0-139);
-                args[arg_count] = new Integer(item);
+                args[arg_count] = (int) item;
                 arg_count++;
                 //System.err.println(item+" ");
                 continue;
@@ -321,7 +321,7 @@ public class CFFFont {
             if (b0 >= 247 && b0 <= 250) {
                 char b1 = getCard8();
                 short item = (short) ((b0-247)*256+b1+108);
-                args[arg_count] = new Integer(item);
+                args[arg_count] = (int) item;
                 arg_count++;
                 //System.err.println(item+" ");
                 continue;
@@ -329,7 +329,7 @@ public class CFFFont {
             if (b0 >= 251 && b0 <= 254) {
                 char b1 = getCard8();
                 short item = (short) (-(b0-251)*256-b1-108);
-                args[arg_count] = new Integer(item);
+                args[arg_count] = (int) item;
                 arg_count++;
                 //System.err.println(item+" ");
                 continue;
@@ -788,12 +788,12 @@ public class CFFFont {
             int p1 = getPosition();
             getDictItem();
             int p2 = getPosition();
-            if (key=="Encoding"
-            || key=="Private"
-            || key=="FDSelect"
-            || key=="FDArray"
-            || key=="charset"
-            || key=="CharStrings"
+            if (Objects.equals(key, "Encoding")
+            || Objects.equals(key, "Private")
+            || Objects.equals(key, "FDSelect")
+            || Objects.equals(key, "FDArray")
+            || Objects.equals(key, "charset")
+            || Objects.equals(key, "CharStrings")
             ) {
                 // just drop them
             } else {
@@ -827,9 +827,9 @@ public class CFFFont {
             
             l.addLast(new UInt16Item((char)((stringOffsets.length-1)+3))); // count
             l.addLast(new UInt8Item((char)stringsIndexOffSize)); // offSize
-            for (int i=0; i<stringOffsets.length; i++)
+            for (int stringOffset : stringOffsets)
                 l.addLast(new IndexOffsetItem(stringsIndexOffSize,
-                stringOffsets[i]-stringsBaseOffset));
+                        stringOffset - stringsBaseOffset));
             int currentStringsOffset = stringOffsets[stringOffsets.length-1]
             - stringsBaseOffset;
             //l.addLast(new IndexOffsetItem(stringsIndexOffSize,currentStringsOffset));
@@ -1098,37 +1098,37 @@ public class CFFFont {
             seek(topdictOffsets[j]);
             while (getPosition() < topdictOffsets[j+1]) {                
                 getDictItem();
-                if (key=="FullName") {
+                if (Objects.equals(key, "FullName")) {
                     //System.err.println("getting fullname sid = "+((Integer)args[0]).intValue());
                     fonts[j].fullName = getString((char)((Integer)args[0]).intValue());
                     //System.err.println("got it");
-                } else if (key=="ROS")
+                } else if (Objects.equals(key, "ROS"))
                     fonts[j].isCID = true;
-                else if (key=="Private") {
-                    fonts[j].privateLength  = ((Integer)args[0]).intValue();
-                    fonts[j].privateOffset  = ((Integer)args[1]).intValue();
+                else if (Objects.equals(key, "Private")) {
+                    fonts[j].privateLength  = (Integer) args[0];
+                    fonts[j].privateOffset  = (Integer) args[1];
                 }
-                else if (key=="charset"){
-                    fonts[j].charsetOffset = ((Integer)args[0]).intValue();
+                else if (Objects.equals(key, "charset")){
+                    fonts[j].charsetOffset = (Integer) args[0];
                     
                 }
-                else if (key=="Encoding"){
-                    fonts[j].encodingOffset = ((Integer)args[0]).intValue();
+                else if (Objects.equals(key, "Encoding")){
+                    fonts[j].encodingOffset = (Integer) args[0];
                     ReadEncoding(fonts[j].encodingOffset);
                 }
-                else if (key=="CharStrings") {
-                    fonts[j].charstringsOffset = ((Integer)args[0]).intValue();
+                else if (Objects.equals(key, "CharStrings")) {
+                    fonts[j].charstringsOffset = (Integer) args[0];
                     //System.err.println("charstrings "+fonts[j].charstringsOffset);
                     // Added by Oren & Ygal
                     int p = getPosition();
                     fonts[j].charstringsOffsets = getIndex(fonts[j].charstringsOffset);
                     seek(p);
-                } else if (key=="FDArray")
-                    fonts[j].fdarrayOffset = ((Integer)args[0]).intValue();
-                else if (key=="FDSelect")
-                    fonts[j].fdselectOffset = ((Integer)args[0]).intValue();
-                else if (key=="CharstringType")
-                    fonts[j].CharstringType = ((Integer)args[0]).intValue();
+                } else if (Objects.equals(key, "FDArray"))
+                    fonts[j].fdarrayOffset = (Integer) args[0];
+                else if (Objects.equals(key, "FDSelect"))
+                    fonts[j].fdselectOffset = (Integer) args[0];
+                else if (Objects.equals(key, "CharstringType"))
+                    fonts[j].CharstringType = (Integer) args[0];
             }
             
             // private dict
@@ -1137,10 +1137,10 @@ public class CFFFont {
                 seek(fonts[j].privateOffset);
                 while (getPosition() < fonts[j].privateOffset+fonts[j].privateLength) {
                     getDictItem();
-                    if (key=="Subrs")
+                    if (Objects.equals(key, "Subrs"))
                         //Add the private offset to the lsubrs since the offset is 
                         // relative to the beginning of the PrivateDict
-                        fonts[j].privateSubrs = ((Integer)args[0]).intValue()+fonts[j].privateOffset;
+                        fonts[j].privateSubrs = (Integer) args[0] +fonts[j].privateOffset;
                 }
             }
             
@@ -1157,9 +1157,9 @@ public class CFFFont {
                     seek(fdarrayOffsets[k]);
                     while (getPosition() < fdarrayOffsets[k+1])
                         getDictItem();
-                    if (key=="Private") {
-                        fonts[j].fdprivateLengths[k]  = ((Integer)args[0]).intValue();
-                        fonts[j].fdprivateOffsets[k]  = ((Integer)args[1]).intValue();
+                    if (Objects.equals(key, "Private")) {
+                        fonts[j].fdprivateLengths[k]  = (Integer) args[0];
+                        fonts[j].fdprivateOffsets[k]  = (Integer) args[1];
                     }
                     
                 }

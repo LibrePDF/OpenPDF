@@ -16,12 +16,10 @@ package com.lowagie.examples.objects.anchors;
 
 import java.awt.Color;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URL;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
@@ -121,17 +119,10 @@ public class RemoteGoto {
             // for both documents
             document.add(p2);
             document.add(p2);
-        }
-        catch(DocumentException de) {
-            System.err.println(de.getMessage());
-        }
-        catch(IOException ioe) {
+        } catch(Exception ioe) {
             System.err.println(ioe.getMessage());
         }
-        catch(Exception e) {
-            System.err.println(e.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

@@ -53,13 +53,10 @@ public class TrueType {
             String text1 = "This is the quite popular True Type font 'Comic'.";
             document.add(new Paragraph(text1, font));
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

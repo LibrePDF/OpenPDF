@@ -726,8 +726,7 @@ public class BarcodeEAN extends Barcode{
         int ptr = 0;
         int height = (int)barHeight;
         int[] pix = new int[width * height];
-        for (int k = 0; k < bars.length; ++k) {
-            int w = bars[k];
+        for (int w : bars) {
             int c = g;
             if (print)
                 c = f;

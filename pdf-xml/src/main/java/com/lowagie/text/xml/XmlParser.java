@@ -80,11 +80,8 @@ public class XmlParser {
         try {
             parser = SAXParserFactory.newInstance().newSAXParser();
         }
-        catch(ParserConfigurationException pce) {
+        catch(ParserConfigurationException | SAXException pce) {
             throw new ExceptionConverter(pce);
-        }
-        catch(SAXException se) {
-            throw new ExceptionConverter(se);
         }
     }
     
@@ -98,11 +95,8 @@ public class XmlParser {
         try {
             parser.parse(is, new SAXiTextHandler(document));
         }
-        catch(SAXException se) {
+        catch(SAXException | IOException se) {
             throw new ExceptionConverter(se);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -117,11 +111,8 @@ public class XmlParser {
         try {
             parser.parse(is, new SAXmyHandler(document, new TagMap(tagmap)));
         }
-        catch(SAXException se) {
+        catch(SAXException | IOException se) {
             throw new ExceptionConverter(se);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -136,11 +127,8 @@ public class XmlParser {
             try {
                 parser.parse(is, new SAXmyHandler(document, new TagMap(tagmap)));
             }
-            catch(SAXException se) {
+            catch(SAXException | IOException se) {
                 throw new ExceptionConverter(se);
-            }
-            catch(IOException ioe) {
-                throw new ExceptionConverter(ioe);
             }
         }
     
@@ -155,11 +143,8 @@ public class XmlParser {
         try {
             parser.parse(is, new SAXmyHandler(document, tagmap));
         }
-        catch(SAXException se) {
+        catch(SAXException | IOException se) {
             throw new ExceptionConverter(se);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -173,11 +158,8 @@ public class XmlParser {
         try {
             parser.parse(file, new SAXiTextHandler(document));
         }
-        catch(SAXException se) {
+        catch(SAXException | IOException se) {
             throw new ExceptionConverter(se);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -192,11 +174,8 @@ public class XmlParser {
         try {
             parser.parse(file, new SAXmyHandler(document, new TagMap(tagmap)));
         }
-        catch(SAXException se) {
+        catch(SAXException | IOException se) {
             throw new ExceptionConverter(se);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -211,11 +190,8 @@ public class XmlParser {
         try {
             parser.parse(file, new SAXmyHandler(document, tagmap));
         }
-        catch(SAXException se) {
+        catch(SAXException | IOException se) {
             throw new ExceptionConverter(se);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
     

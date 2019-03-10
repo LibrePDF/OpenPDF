@@ -189,8 +189,8 @@ public class BarcodeCodabar extends Barcode{
             text = calculateChecksum(code);
         byte[] bars = getBarsCodabar(text);
         int wide = 0;
-        for (int k = 0; k < bars.length; ++k) {
-            wide += bars[k];
+        for (byte bar : bars) {
+            wide += bar;
         }
         int narrow = bars.length - wide;
         float fullWidth = x * (narrow + wide * n);
@@ -247,8 +247,8 @@ public class BarcodeCodabar extends Barcode{
         }
         byte[] bars = getBarsCodabar(generateChecksum ? calculateChecksum(code) : code);
         int wide = 0;
-        for (int k = 0; k < bars.length; ++k) {
-            wide += bars[k];
+        for (byte bar1 : bars) {
+            wide += bar1;
         }
         int narrow = bars.length - wide;
         float fullWidth = x * (narrow + wide * n);
@@ -283,8 +283,8 @@ public class BarcodeCodabar extends Barcode{
         boolean print = true;
         if (barColor != null)
             cb.setColorFill(barColor);
-        for (int k = 0; k < bars.length; ++k) {
-            float w = (bars[k] == 0 ? x : x * n);
+        for (byte bar : bars) {
+            float w = (bar == 0 ? x : x * n);
             if (print)
                 cb.rectangle(barStartX, barStartY, w - inkSpreading, barHeight);
             print = !print;
@@ -321,8 +321,8 @@ public class BarcodeCodabar extends Barcode{
             fullCode = fullCode.substring(1, fullCode.length() - 1);
         byte[] bars = getBarsCodabar(generateChecksum ? calculateChecksum(code) : code);
         int wide = 0;
-        for (int k = 0; k < bars.length; ++k) {
-            wide += bars[k];
+        for (byte bar1 : bars) {
+            wide += bar1;
         }
         int narrow = bars.length - wide;
         int fullWidth = narrow + wide * (int)n;
@@ -330,8 +330,8 @@ public class BarcodeCodabar extends Barcode{
         int ptr = 0;
         int height = (int)barHeight;
         int[] pix = new int[fullWidth * height];
-        for (int k = 0; k < bars.length; ++k) {
-            int w = (bars[k] == 0 ? 1 : (int)n);
+        for (byte bar : bars) {
+            int w = (bar == 0 ? 1 : (int) n);
             int c = g;
             if (print)
                 c = f;

@@ -41,7 +41,7 @@ public class IndirectObjectFactory {
     /** The highest xref number. */
     protected int n;
     /** A list of all the indirect objects in a PDF file. */
-    protected ArrayList<PdfObject> objects = new ArrayList<PdfObject>();
+    protected ArrayList<PdfObject> objects = new ArrayList<>();
     /** Mapping between the index in the objects list and the reference number in the xref table.  */
     protected IntHashtable idxToRef = new IntHashtable();
     /** Mapping between the reference number in the xref table and the index in the objects list .  */

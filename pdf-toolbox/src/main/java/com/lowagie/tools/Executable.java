@@ -296,7 +296,7 @@ public class Executable {
      */
     public static boolean isWindows() {
         String os = System.getProperty("os.name").toLowerCase();
-        return os.indexOf("windows") != -1 || os.indexOf("nt") != -1;
+        return os.contains("windows") || os.contains("nt");
     }
 
     /**
@@ -316,7 +316,7 @@ public class Executable {
      */
     public static boolean isMac() {
         String os = System.getProperty("os.name").toLowerCase();
-        return os.indexOf("mac") != -1;
+        return os.contains("mac");
     }
 
     /**
@@ -326,6 +326,6 @@ public class Executable {
      */
     public static boolean isLinux() {
         String os = System.getProperty("os.name").toLowerCase();
-        return os.indexOf("linux") != -1;
+        return os.contains("linux");
     }
 }

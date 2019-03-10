@@ -195,12 +195,11 @@ public class PdfTable extends Rectangle {
         
         // loop over all the cells
         int n = newCells.size();
-        for (int i = 0; i < n; i++) {
-            currentCell = (PdfCell) newCells.get(i);
+        for (Object newCell : newCells) {
+            currentCell = (PdfCell) newCell;
             try {
-                currentCell.setBottom(offsets[currentCell.rownumber()-prevRows + currentCell.rowspan()]);
-            }
-            catch(ArrayIndexOutOfBoundsException aioobe) {
+                currentCell.setBottom(offsets[currentCell.rownumber() - prevRows + currentCell.rowspan()]);
+            } catch (ArrayIndexOutOfBoundsException aioobe) {
                 currentCell.setBottom(offsets[rows - 1]);
             }
         }

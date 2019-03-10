@@ -137,7 +137,7 @@ public final class HtmlEncoder {
     public static String encode(String string) {
         int n = string.length();
         char character;
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         // loop over all the characters of the String.
         for (int i = 0; i < n; i++) {
             character = string.charAt(i);
@@ -161,7 +161,7 @@ public final class HtmlEncoder {
  */
     
     public static String encode(Color color) {
-        StringBuffer buffer = new StringBuffer("#");
+        StringBuilder buffer = new StringBuilder("#");
         if (color.getRed() < 16) {
             buffer.append('0');
         }

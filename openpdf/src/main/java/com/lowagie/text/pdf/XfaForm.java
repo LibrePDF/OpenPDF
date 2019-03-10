@@ -60,7 +60,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EmptyStackException;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -69,7 +68,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -148,12 +146,7 @@ public class XfaForm {
         DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
         fact.setNamespaceAware(true);
         DocumentBuilder db = fact.newDocumentBuilder();
-        db.setEntityResolver(new EntityResolver() {
-            @Override
-            public InputSource resolveEntity(String publicId, String systemId) {
-                return new InputSource(new StringReader(""));
-            }            
-        });
+        db.setEntityResolver((publicId, systemId) -> new InputSource(new StringReader("")));
         domDocument = db.parse(new ByteArrayInputStream(bout.toByteArray()));   
         extractNodes();
     }
@@ -449,8 +442,8 @@ public class XfaForm {
         public boolean isSimilar(String name) {
             int idx = name.indexOf('[');
             name = name.substring(0, idx + 1);
-            for (int k = 0; k < part.size(); ++k) {
-                if (((String)part.get(k)).startsWith(name))
+            for (Object o : part) {
+                if (((String) o).startsWith(name))
                     return true;
             }
             return false;
@@ -541,7 +534,7 @@ public class XfaForm {
             int idx = s.indexOf('.');
             if (idx < 0)
                 return s;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             int last = 0;
             while (idx >= 0) {
                 sb.append(s, last, idx);
@@ -562,7 +555,7 @@ public class XfaForm {
             int idx = s.indexOf('\\');
             if (idx < 0)
                 return s;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             int last = 0;
             while (idx >= 0) {
                 sb.append(s, last, idx);
@@ -581,9 +574,8 @@ public class XfaForm {
         protected String printStack() {
             if (stack.empty())
                 return "";
-            StringBuffer s = new StringBuffer();
-            for (int k = 0; k < stack.size(); ++k)
-                s.append('.').append((String)stack.get(k));
+            StringBuilder s = new StringBuilder();
+            for (Object o : stack) s.append('.').append((String) o);
             return s.substring(1);
         }
         
@@ -597,7 +589,7 @@ public class XfaForm {
             if (idx < 0)
                 return s;
             int last = 0;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             while (idx >= 0) {
                 sb.append(s, last, idx);
                 idx = s.indexOf("]", idx + 10);
@@ -788,8 +780,8 @@ public class XfaForm {
             org.w3c.dom.Document doc = n.getOwnerDocument();
             Node n2 = null;
             n = n.getFirstChild();
-            for (int k = 0; k < stack.size(); ++k) {
-                String part = (String)stack.get(k);
+            for (Object o : stack) {
+                String part = (String) o;
                 int idx = part.lastIndexOf('[');
                 String name = part.substring(0, idx);
                 idx = Integer.parseInt(part.substring(idx + 1, part.length() - 1));
@@ -848,9 +840,9 @@ public class XfaForm {
                     String s = escapeSom(n2.getLocalName());
                     Integer i = (Integer)ss.get(s);
                     if (i == null)
-                        i = new Integer(0);
+                        i = 0;
                     else
-                        i = new Integer(i.intValue() + 1);
+                        i = i + 1;
                     ss.put(s, i);
                     if (hasChildren(n2)) {
                         stack.push(s + "[" + i.toString() + "]");
@@ -884,8 +876,8 @@ public class XfaForm {
         public AcroFieldsSearch(Collection items) {
             inverseSearch = new HashMap();
             acroShort2LongName = new HashMap();
-            for (Iterator it = items.iterator(); it.hasNext();) {
-                String itemName = (String)it.next();
+            for (Object item : items) {
+                String itemName = (String) item;
                 String itemShort = getShortName(itemName);
                 acroShort2LongName.put(itemShort, itemName);
                 inverseSearchAdd(inverseSearch, splitParts(itemShort), itemName);
@@ -980,15 +972,15 @@ public class XfaForm {
                         }
                         Integer i;
                         if (annon) {
-                            i = new Integer(anform);
+                            i = anform;
                             ++anform;
                         }
                         else {
                             i = (Integer)ss.get(nn);
                             if (i == null)
-                                i = new Integer(0);
+                                i = 0;
                             else
-                                i = new Integer(i.intValue() + 1);
+                                i = i + 1;
                             ss.put(nn, i);
                         }
                         stack.push(nn + "[" + i.toString() + "]");
@@ -1006,9 +998,9 @@ public class XfaForm {
                             String nn = escapeSom(name.getNodeValue());
                             Integer i = (Integer)ff.get(nn);
                             if (i == null)
-                                i = new Integer(0);
+                                i = 0;
                             else
-                                i = new Integer(i.intValue() + 1);
+                                i = i + 1;
                             ff.put(nn, i);
                             stack.push(nn + "[" + i.toString() + "]");
                             String unstack = printStack();
@@ -1126,12 +1118,7 @@ public class XfaForm {
     public void fillXfaForm(InputSource is) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder(); 
-        db.setEntityResolver(new EntityResolver() {
-            @Override
-            public InputSource resolveEntity(String publicId, String systemId) {
-                return new InputSource(new StringReader(""));
-            }            
-        });
+        db.setEntityResolver((publicId, systemId) -> new InputSource(new StringReader("")));
         Document newdoc = db.parse(is);
         fillXfaForm(newdoc.getDocumentElement());
     }

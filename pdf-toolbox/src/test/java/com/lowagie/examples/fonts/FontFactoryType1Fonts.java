@@ -73,10 +73,8 @@ public class FontFactoryType1Fonts {
             for (int i = 0; i < 14; i++) {
                     document.add(new Paragraph("quick brown fox jumps over the lazy dog", fonts[i]));
             }
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

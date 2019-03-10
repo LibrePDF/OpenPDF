@@ -204,7 +204,7 @@ public final class Pfm2afm {
     }
     
     private String readString() throws IOException {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         while (true) {
             int c = in.read();
             if (c <= 0)
@@ -306,17 +306,17 @@ public final class Pfm2afm {
         }
 
         out.print("\nWeight ");
-        if (weight > 475 || fname.toLowerCase(Locale.ROOT).indexOf("bold") >= 0)
+        if (weight > 475 || fname.toLowerCase(Locale.ROOT).contains("bold"))
            out.print("Bold");
-        else if ((weight < 325 && weight != 0) || fname.toLowerCase(Locale.ROOT).indexOf("light") >= 0)
+        else if ((weight < 325 && weight != 0) || fname.toLowerCase(Locale.ROOT).contains("light"))
             out.print("Light");
-        else if (fname.toLowerCase(Locale.ROOT).indexOf("black") >= 0)
+        else if (fname.toLowerCase(Locale.ROOT).contains("black"))
             out.print("Black");
         else 
             out.print("Medium");
 
         out.print("\nItalicAngle ");
-        if (italic != 0 || fname.toLowerCase(Locale.ROOT).indexOf("italic") >= 0)
+        if (italic != 0 || fname.toLowerCase(Locale.ROOT).contains("italic"))
             out.print("-12.00");
             /* this is a typical value; something else may work better for a
                specific font */

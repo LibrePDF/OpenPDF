@@ -31,7 +31,7 @@ import javax.swing.ImageIcon;
 public class IconFetcher {
     
     /** Cache with icons. */
-    protected static HashMap<String, Icon> cache = new HashMap<String, Icon>();
+    protected static HashMap<String, Icon> cache = new HashMap<>();
     
     /**
      * Gets an Icon with a specific name.

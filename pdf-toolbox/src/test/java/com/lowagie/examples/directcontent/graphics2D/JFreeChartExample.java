@@ -79,11 +79,8 @@ public class JFreeChartExample {
             cb.addTemplate(tp, 0, 0);
             cb.sanityCheck();
         }
-        catch(DocumentException de) {
+        catch(DocumentException | FileNotFoundException de) {
             de.printStackTrace();
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
         // step 5
         document.close();

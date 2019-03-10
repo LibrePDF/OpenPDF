@@ -503,8 +503,8 @@ public class ArabicLigaturizer {
 
     static int arabic_shape(char[] src, int srcoffset, int srclength, char[] dest, int destoffset, int destlength, int level) {
         char[] str = new char[srclength];
-        for (int k = srclength + srcoffset - 1; k >= srcoffset; --k)
-            str[k - srcoffset] = src[k];
+        if (srclength + srcoffset - srcoffset >= 0)
+            System.arraycopy(src, srcoffset, str, srcoffset - srcoffset, srclength + srcoffset - srcoffset);
         StringBuffer string = new StringBuffer(srclength);
         shape(str, string, level);
         if ((level & (ar_composedtashkeel | ar_lig)) != 0)

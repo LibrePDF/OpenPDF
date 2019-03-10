@@ -54,9 +54,9 @@ public class FormList {
             fldDef.setOptions( TextField.MULTISELECT );
 
             ArrayList selections = new ArrayList( 3 );
-            selections.add( new Integer( 1 ) );
-            selections.add( new Integer( 3 ) );
-            selections.add( new Integer( 5 ) );
+            selections.add(1);
+            selections.add(3);
+            selections.add(5);
             fldDef.setChoiceSelections( selections ); // index into chioces
             
             PdfFormField field = fldDef.getListField();
@@ -64,13 +64,10 @@ public class FormList {
 
             
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
         

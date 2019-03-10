@@ -61,7 +61,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -90,12 +89,7 @@ public class XmpReader {
             DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
             fact.setNamespaceAware(true);
             DocumentBuilder db = fact.newDocumentBuilder();
-            db.setEntityResolver(new EntityResolver() {
-                @Override
-                public InputSource resolveEntity(String publicId, String systemId) {
-                    return new InputSource(new StringReader(""));
-                }            
-            });
+            db.setEntityResolver((publicId, systemId) -> new InputSource(new StringReader("")));
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
             domDocument = db.parse(bais);
         } catch (ParserConfigurationException e) {

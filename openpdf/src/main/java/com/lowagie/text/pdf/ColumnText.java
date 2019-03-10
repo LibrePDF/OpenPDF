@@ -49,7 +49,6 @@
 
 package com.lowagie.text.pdf;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Stack;
 import com.lowagie.text.error_messages.MessageLocalization;
@@ -347,8 +346,8 @@ public class ColumnText {
     private void addWaitingPhrase() {
         if (bidiLine == null && waitPhrase != null) {
             bidiLine = new BidiLine();
-            for (Iterator j = waitPhrase.getChunks().iterator(); j.hasNext();) {
-                bidiLine.addChunk(new PdfChunk((Chunk)j.next(), null));
+            for (Object o : waitPhrase.getChunks()) {
+                bidiLine.addChunk(new PdfChunk((Chunk) o, null));
             }
             waitPhrase = null;
         }
@@ -368,8 +367,8 @@ public class ColumnText {
             waitPhrase = phrase;
             return;
         }
-        for (Iterator j = phrase.getChunks().iterator(); j.hasNext();) {
-            bidiLine.addChunk(new PdfChunk((Chunk)j.next(), null));
+        for (Object o : phrase.getChunks()) {
+            bidiLine.addChunk(new PdfChunk((Chunk) o, null));
         }
     }
     
@@ -520,8 +519,8 @@ public class ColumnText {
             lineStatus = LINE_STATUS_OFFLIMITS;
             return 0;
         }
-        for (int k = 0; k < wall.size(); ++k) {
-            float[] r = (float[]) wall.get(k);
+        for (Object o : wall) {
+            float[] r = (float[]) o;
             if (yLine < r[0] || yLine > r[1])
                 continue;
             return r[2] * yLine + r[3];
@@ -813,7 +812,7 @@ public class ColumnText {
         float ratio = spaceCharRatio;
         Object[] currentValues = new Object[2];
         PdfFont currentFont = null;
-        Float lastBaseFactor = new Float(0);
+        Float lastBaseFactor = (float) 0;
         currentValues[1] = lastBaseFactor;
         PdfDocument pdf = null;
         PdfContentByte graphics = null;
@@ -1232,7 +1231,7 @@ public class ColumnText {
                         else ++count;
                     }
                     else if (obj instanceof com.lowagie.text.List) {
-                        stack.push(new Object[]{list, new Integer(k), new Float(listIndentation)});
+                        stack.push(new Object[]{list, k, listIndentation});
                         list = (com.lowagie.text.List)obj;
                         items = list.getItems();
                         listIndentation += list.getIndentationLeft();
@@ -1244,8 +1243,8 @@ public class ColumnText {
                             Object[] objs = (Object[]) stack.pop();
                             list = (com.lowagie.text.List)objs[0];
                             items = list.getItems();
-                            k = ((Integer)objs[1]).intValue();
-                            listIndentation = ((Float)objs[2]).floatValue();
+                            k = (Integer) objs[1];
+                            listIndentation = (Float) objs[2];
                         }
                     }
                 }

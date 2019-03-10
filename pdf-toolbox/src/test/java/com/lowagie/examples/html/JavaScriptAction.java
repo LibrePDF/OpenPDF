@@ -51,7 +51,7 @@ public class JavaScriptAction {
                     "JavaScriptAction.html"));
             // step 3: we add Javascript as Metadata and we open the document
             
-            StringBuffer javaScriptSection = new StringBuffer();
+            StringBuilder javaScriptSection = new StringBuilder();
             javaScriptSection.append("\t\tfunction load() {\n");
             javaScriptSection.append("\t\t  alert('Page has been loaded.');\n");
             javaScriptSection.append("\t\t}\n");

@@ -478,7 +478,7 @@ public class Markup {
      */
     public static String removeComment(String string, String startComment,
             String endComment) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         int pos = 0;
         int end = endComment.length();
         int start = string.indexOf(startComment, pos);

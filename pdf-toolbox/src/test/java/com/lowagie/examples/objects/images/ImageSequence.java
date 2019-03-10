@@ -70,13 +70,10 @@ public class ImageSequence {
             document.add(new Paragraph("7th image"));
             document.add(jpg);
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

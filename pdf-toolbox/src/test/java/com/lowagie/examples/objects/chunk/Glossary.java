@@ -16,7 +16,6 @@ package com.lowagie.examples.objects.chunk;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.TreeMap;
 
 import com.lowagie.text.Chunk;
@@ -47,7 +46,7 @@ public class Glossary extends PdfPageEventHelper {
      * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
      */
     public void onGenericTag(PdfWriter writer, Document document, Rectangle rect, String text) {
-        glossary.put(text, new Integer(writer.getPageNumber()));
+        glossary.put(text, writer.getPageNumber());
     }
     
     /**
@@ -114,18 +113,16 @@ public class Glossary extends PdfPageEventHelper {
             
             // we add the glossary
             document.newPage();
-            for (Iterator i = generic.glossary.keySet().iterator(); i.hasNext(); ) {
-                String key = (String) i.next();
-                int page = ((Integer) generic.glossary.get(key)).intValue();
+            for (Object o : generic.glossary.keySet()) {
+                String key = (String) o;
+                int page = (Integer) generic.glossary.get(key);
                 Paragraph g = new Paragraph(key);
                 g.add(" : page ");
                 g.add(String.valueOf(page));
                 document.add(g);
             }
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

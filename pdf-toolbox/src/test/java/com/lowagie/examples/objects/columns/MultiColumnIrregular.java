@@ -102,9 +102,7 @@ public class MultiColumnIrregular {
                 mct.nextColumn();
             } while (mct.isOverflow());
             document.close();
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
+        } catch (DocumentException | FileNotFoundException e) {
             e.printStackTrace();
         }
 

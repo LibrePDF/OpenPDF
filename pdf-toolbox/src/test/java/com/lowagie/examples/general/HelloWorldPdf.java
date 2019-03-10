@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * Generates a simple 'Hello World' PDF.
@@ -67,7 +68,7 @@ class HelloWorldPdf {
             // step 5: we close the document
             document.close();
 
-            assertFalse(baos.size() == 0);
+            assertNotEquals(0, baos.size());
         }
 
     }

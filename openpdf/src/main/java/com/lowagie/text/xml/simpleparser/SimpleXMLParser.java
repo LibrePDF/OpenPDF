@@ -461,7 +461,7 @@ public final class SimpleXMLParser {
      */
     private int restoreState() {
         if(!stack.empty())
-            return ((Integer)stack.pop()).intValue();
+            return (Integer) stack.pop();
         else
             return UNKNOWN;
     }
@@ -470,7 +470,7 @@ public final class SimpleXMLParser {
      * @param    s    a state to add to the stack
      */
     private void saveState(int s) {
-        stack.push(new Integer(s));
+        stack.push(s);
     }
     /**
      * Flushes the text that is currently in the buffer.
@@ -566,7 +566,7 @@ public final class SimpleXMLParser {
 
         String decl = null;
         if (encoding.equals("UTF-8")) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             int c;
             while ((c = in.read()) != -1) {
                 if (c == '>')

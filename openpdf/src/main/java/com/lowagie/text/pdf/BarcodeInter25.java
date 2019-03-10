@@ -118,7 +118,7 @@ public class BarcodeInter25 extends Barcode{
      * @return a <CODE>String</CODE> with only numeric characters
      */    
     public static String keepNumbers(String text) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int k = 0; k < text.length(); ++k) {
             char c = text.charAt(k);
             if (c >= '0' && c <= '9')
@@ -281,8 +281,8 @@ public class BarcodeInter25 extends Barcode{
         boolean print = true;
         if (barColor != null)
             cb.setColorFill(barColor);
-        for (int k = 0; k < bars.length; ++k) {
-            float w = (bars[k] == 0 ? x : x * n);
+        for (byte bar : bars) {
+            float w = (bar == 0 ? x : x * n);
             if (print)
                 cb.rectangle(barStartX, barStartY, w - inkSpreading, barHeight);
             print = !print;
@@ -323,8 +323,8 @@ public class BarcodeInter25 extends Barcode{
         int ptr = 0;
         int height = (int)barHeight;
         int[] pix = new int[fullWidth * height];
-        for (int k = 0; k < bars.length; ++k) {
-            int w = (bars[k] == 0 ? 1 : nn);
+        for (byte bar : bars) {
+            int w = (bar == 0 ? 1 : nn);
             int c = g;
             if (print)
                 c = f;

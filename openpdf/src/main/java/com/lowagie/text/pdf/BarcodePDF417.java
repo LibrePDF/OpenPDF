@@ -707,7 +707,7 @@ public class BarcodePDF417 {
     }
     
     private void append(int in, int len) {
-        StringBuffer sb = new StringBuffer(len+1);
+        StringBuilder sb = new StringBuilder(len+1);
         sb.append(in);
         for(int i = sb.length(); i < len; i++) {
             sb.insert(0, "0");
@@ -747,7 +747,7 @@ public class BarcodePDF417 {
                 if (c[j] == '\r')
                     c[j] = '\n';
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(v.type);
             sb.append(c);
             System.out.println(sb.toString());

@@ -47,7 +47,6 @@
 
 package com.lowagie.text.pdf;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.lowagie.text.Rectangle;
 
@@ -195,16 +194,15 @@ public class PdfFormField extends PdfAnnotation {
     
     protected static PdfArray processOptions(String[] options) {
         PdfArray array = new PdfArray();
-        for (int k = 0; k < options.length; ++k) {
-            array.add(new PdfString(options[k], PdfObject.TEXT_UNICODE));
+        for (String option : options) {
+            array.add(new PdfString(option, PdfObject.TEXT_UNICODE));
         }
         return array;
     }
     
     protected static PdfArray processOptions(String[][] options) {
         PdfArray array = new PdfArray();
-        for (int k = 0; k < options.length; ++k) {
-            String[] subOption = options[k];
+        for (String[] subOption : options) {
             PdfArray ar2 = new PdfArray(new PdfString(subOption[0], PdfObject.TEXT_UNICODE));
             ar2.add(new PdfString(subOption[1], PdfObject.TEXT_UNICODE));
             array.add(ar2);
@@ -289,11 +287,11 @@ public class PdfFormField extends PdfAnnotation {
         PdfDictionary dic = null;
         PdfDictionary res = null;
         PdfName target = null;
-        for (int k = 0; k < mergeTarget.length; ++k) {
-            target = mergeTarget[k];
+        for (PdfName pdfName : mergeTarget) {
+            target = pdfName;
             PdfDictionary pdfDict = source.getAsDict(target);
             if ((dic = pdfDict) != null) {
-                if ((res = (PdfDictionary)PdfReader.getPdfObject(result.get(target), result)) == null) {
+                if ((res = (PdfDictionary) PdfReader.getPdfObject(result.get(target), result)) == null) {
                     res = new PdfDictionary();
                 }
                 res.mergeDifferent(dic);
@@ -314,16 +312,14 @@ public class PdfFormField extends PdfAnnotation {
             put(PdfName.PARENT, parent.getIndirectReference());
         if (kids != null) {
             PdfArray array = new PdfArray();
-            for (int k = 0; k < kids.size(); ++k)
-                array.add(((PdfFormField)kids.get(k)).getIndirectReference());
+            for (Object kid : kids) array.add(((PdfFormField) kid).getIndirectReference());
             put(PdfName.KIDS, array);
         }
         if (templates == null)
             return;
         PdfDictionary dic = new PdfDictionary();
-        for (Iterator it = templates.keySet().iterator(); it.hasNext();) {
-            PdfTemplate template = (PdfTemplate)it.next();
-            mergeResources(dic, (PdfDictionary)template.getResources());
+        for (PdfTemplate template : templates.keySet()) {
+            mergeResources(dic, (PdfDictionary) template.getResources());
         }
         put(PdfName.DR, dic);
     }

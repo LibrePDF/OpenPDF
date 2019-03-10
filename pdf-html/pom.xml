@@ -26,19 +26,5 @@
             <artifactId>openpdf</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!-- Test Dependencies -->
-
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>

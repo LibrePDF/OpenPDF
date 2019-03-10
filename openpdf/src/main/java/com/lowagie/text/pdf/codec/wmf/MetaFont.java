@@ -140,22 +140,22 @@ public class MetaFont extends MetaObject {
         if (font != null)
             return font;
         String fontName;
-        if (faceName.indexOf("courier") != -1 || faceName.indexOf("terminal") != -1
-            || faceName.indexOf("fixedsys") != -1) {
+        if (faceName.contains("courier") || faceName.contains("terminal")
+            || faceName.contains("fixedsys")) {
             fontName = fontNames[MARKER_COURIER + italic + bold];
         }
-        else if (faceName.indexOf("ms sans serif") != -1 || faceName.indexOf("arial") != -1
-            || faceName.indexOf("system") != -1) {
+        else if (faceName.contains("ms sans serif") || faceName.contains("arial")
+            || faceName.contains("system")) {
             fontName = fontNames[MARKER_HELVETICA + italic + bold];
         }
-        else if (faceName.indexOf("arial black") != -1) {
+        else if (faceName.contains("arial black")) {
             fontName = fontNames[MARKER_HELVETICA + italic + MARKER_BOLD];
         }
-        else if (faceName.indexOf("times") != -1 || faceName.indexOf("ms serif") != -1
-            || faceName.indexOf("roman") != -1) {
+        else if (faceName.contains("times") || faceName.contains("ms serif")
+            || faceName.contains("roman")) {
             fontName = fontNames[MARKER_TIMES + italic + bold];
         }
-        else if (faceName.indexOf("symbol") != -1) {
+        else if (faceName.contains("symbol")) {
             fontName = fontNames[MARKER_SYMBOL];
         }
         else {

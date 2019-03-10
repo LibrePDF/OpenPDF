@@ -284,9 +284,9 @@ public class DefaultFontMapper implements FontMapper {
     }
     BaseFontParameters p = new BaseFontParameters(path);
     mapper.put(main, p);
-    for (int k = 0; k < names.length; ++k) {
-      aliases.put(names[k][3], main);
-    }
+      for (String[] name : names) {
+          aliases.put(name[3], main);
+      }
     aliases.put((String) allNames[0], main);
   }
 

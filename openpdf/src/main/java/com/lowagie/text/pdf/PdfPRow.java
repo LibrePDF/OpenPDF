@@ -181,13 +181,11 @@ public class PdfPRow {
      */
     public float calculateHeights() {
         maxHeight = 0;
-        for (int k = 0; k < cells.length; ++k) {
-            PdfPCell cell = cells[k];
+        for (PdfPCell cell : cells) {
             float height = 0;
             if (cell == null) {
                 continue;
-            }
-            else {
+            } else {
                 height = cell.getMaxHeight();
                 if ((height > maxHeight) && (cell.getRowspan() == 1))
                     maxHeight = height;
@@ -545,16 +543,16 @@ public class PdfPRow {
 
     float[] getEventWidth(float xPos) {
         int n = 0;
-        for (int k = 0; k < cells.length; ++k) {
-            if (cells[k] != null)
+        for (PdfPCell cell1 : cells) {
+            if (cell1 != null)
                 ++n;
         }
         float[] width = new float[n + 1];
         n = 0;
         width[n++] = xPos;
-        for (int k = 0; k < cells.length; ++k) {
-            if (cells[k] != null) {
-                width[n] = width[n - 1] + cells[k].getWidth();
+        for (PdfPCell cell : cells) {
+            if (cell != null) {
+                width[n] = width[n - 1] + cell.getWidth();
                 ++n;
             }
         }

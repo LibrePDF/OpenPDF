@@ -66,13 +66,10 @@ public class Margins {
             document.add(new Paragraph("Starting on the next page, the margins will be mirrored."));
             document.add(paragraph);
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

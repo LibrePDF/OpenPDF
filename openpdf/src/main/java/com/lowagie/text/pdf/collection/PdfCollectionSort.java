@@ -25,8 +25,8 @@ public class PdfCollectionSort extends PdfDictionary {
     public PdfCollectionSort(String[] keys) {
         super(PdfName.COLLECTIONSORT);
         PdfArray array = new PdfArray();
-        for (int i = 0; i < keys.length; i++) {
-            array.add(new PdfName(keys[i]));
+        for (String key : keys) {
+            array.add(new PdfName(key));
         }
         put(PdfName.S, array);
     }
@@ -56,8 +56,8 @@ public class PdfCollectionSort extends PdfDictionary {
                 throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.number.of.booleans.in.this.array.doesn.t.correspond.with.the.number.of.fields"));
             }
             PdfArray array = new PdfArray();
-            for (int i = 0; i < ascending.length; i++) {
-                array.add(new PdfBoolean(ascending[i]));
+            for (boolean b : ascending) {
+                array.add(new PdfBoolean(b));
             }
             put(PdfName.A, array);
         }

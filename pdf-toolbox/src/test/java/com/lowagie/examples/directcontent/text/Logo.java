@@ -77,13 +77,10 @@ public class Logo {
             cb.addTemplate(template, 0.25f, 0, 0, 0.25f, 100, 100);
             cb.sanityCheck();
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

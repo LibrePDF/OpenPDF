@@ -158,8 +158,8 @@ public class PdfLine {
         //            alignment = Element.ALIGN_LEFT;
         if (chunk.isTab()) {
             Object[] tab = (Object[])chunk.getAttribute(Chunk.TAB);
-            float tabPosition = ((Float)tab[1]).floatValue();
-            boolean newline = ((Boolean)tab[2]).booleanValue();
+            float tabPosition = (Float) tab[1];
+            boolean newline = (Boolean) tab[2];
             if (newline && tabPosition < originalWidth - width) {
                 return chunk;
             }
@@ -362,9 +362,9 @@ public class PdfLine {
      */
     
     public String toString() {
-        StringBuffer tmp = new StringBuffer();
-        for (Iterator i = line.iterator(); i.hasNext(); ) {
-            tmp.append(i.next().toString());
+        StringBuilder tmp = new StringBuilder();
+        for (Object o : line) {
+            tmp.append(o.toString());
         }
         return tmp.toString();
     }
@@ -376,8 +376,8 @@ public class PdfLine {
      */
     public int GetLineLengthUtf32() {
         int total = 0;
-        for (Iterator i = line.iterator(); i.hasNext();) {
-            total += ((PdfChunk)i.next()).lengthUtf32();
+        for (Object o : line) {
+            total += ((PdfChunk) o).lengthUtf32();
         }
         return total;
     }
@@ -452,12 +452,11 @@ public class PdfLine {
         float normal_leading = 0;
         float image_leading = -10000;
         PdfChunk chunk;
-        for (int k = 0; k < line.size(); ++k) {
-            chunk = (PdfChunk)line.get(k);
+        for (Object o : line) {
+            chunk = (PdfChunk) o;
             if (!chunk.isImage()) {
                 normal_leading = Math.max(chunk.font().size(), normal_leading);
-            }
-            else {
+            } else {
                 image_leading = Math.max(chunk.getImage().getScaledHeight() + chunk.getImageOffsetY(), image_leading);
             }
         }
@@ -476,8 +475,8 @@ public class PdfLine {
     int getSeparatorCount() {
         int s = 0;
         PdfChunk ck;
-        for (Iterator i = line.iterator(); i.hasNext(); ) {
-            ck = (PdfChunk)i.next();
+        for (Object o : line) {
+            ck = (PdfChunk) o;
             if (ck.isTab()) {
                 return 0;
             }
@@ -496,8 +495,8 @@ public class PdfLine {
      */
     public float getWidthCorrected(float charSpacing, float wordSpacing) {
         float total = 0;
-        for (int k = 0; k < line.size(); ++k) {
-            PdfChunk ck = (PdfChunk)line.get(k);
+        for (Object o : line) {
+            PdfChunk ck = (PdfChunk) o;
             total += ck.getWidthCorrected(charSpacing, wordSpacing);
         }
         return total;
@@ -510,8 +509,8 @@ public class PdfLine {
  */
    public float getAscender() {
        float ascender = 0;
-       for (int k = 0; k < line.size(); ++k) {
-           PdfChunk ck = (PdfChunk)line.get(k);
+       for (Object o : line) {
+           PdfChunk ck = (PdfChunk) o;
            if (ck.isImage())
                ascender = Math.max(ascender, ck.getImage().getScaledHeight() + ck.getImageOffsetY());
            else {
@@ -529,8 +528,8 @@ public class PdfLine {
  */
     public float getDescender() {
         float descender = 0;
-        for (int k = 0; k < line.size(); ++k) {
-            PdfChunk ck = (PdfChunk)line.get(k);
+        for (Object o : line) {
+            PdfChunk ck = (PdfChunk) o;
             if (ck.isImage())
                 descender = Math.min(descender, ck.getImageOffsetY());
             else {

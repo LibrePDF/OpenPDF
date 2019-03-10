@@ -48,7 +48,7 @@ import com.lowagie.text.pdf.PdfPageLabels;
 public class PagesTable extends JTable implements JTableAutoModelInterface, Observer {
 
     /** A list with page nodes. */
-    protected ArrayList<PdfPageTreeNode> list = new ArrayList<PdfPageTreeNode>();
+    protected ArrayList<PdfPageTreeNode> list = new ArrayList<>();
     /** Nodes in the FormTree correspond with nodes in the main PdfTree. */
     protected PdfReaderController controller;
     /***/
@@ -68,7 +68,7 @@ public class PagesTable extends JTable implements JTableAutoModelInterface, Obse
      */
     public void update(Observable observable, Object obj) {
         if (obj == null) {
-            list = new ArrayList<PdfPageTreeNode>();
+            list = new ArrayList<>();
             repaint();
             return;
         }

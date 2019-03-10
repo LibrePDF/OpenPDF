@@ -85,11 +85,8 @@ public class HtmlParser extends XmlParser {
         try {
             parser.parse(is, new SAXmyHtmlHandler(document));
         }
-        catch(SAXException se) {
+        catch(SAXException | IOException se) {
             throw new ExceptionConverter(se);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -114,11 +111,8 @@ public class HtmlParser extends XmlParser {
         try {
             parser.parse(file, new SAXmyHtmlHandler(document));
         }
-        catch(SAXException se) {
+        catch(SAXException | IOException se) {
             throw new ExceptionConverter(se);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -143,11 +137,8 @@ public class HtmlParser extends XmlParser {
         try {
             parser.parse(new InputSource(is), new SAXmyHtmlHandler(document));
         }
-        catch(SAXException se) {
+        catch(SAXException | IOException se) {
             throw new ExceptionConverter(se);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
     
@@ -172,11 +163,8 @@ public class HtmlParser extends XmlParser {
         try {
             parser.parse(new InputSource(is), new SAXmyHtmlHandler(document));
         }
-        catch(SAXException se) {
+        catch(SAXException | IOException se) {
             throw new ExceptionConverter(se);
-        }
-        catch(IOException ioe) {
-            throw new ExceptionConverter(ioe);
         }
     }
     

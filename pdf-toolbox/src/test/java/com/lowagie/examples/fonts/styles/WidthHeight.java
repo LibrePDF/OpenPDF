@@ -73,13 +73,10 @@ public class WidthHeight {
             document.add(new Paragraph("descent: " + bfComic.getDescentPoint(text1 + text2 + text3, 12)));
             document.add(new Paragraph("height: " + (bfComic.getAscentPoint(text1 + text2 + text3, 12) - bfComic.getDescentPoint(text1 + text2 + text3, 12))));
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

@@ -131,8 +131,8 @@ public class BuildTutorial {
             File current;
             File[] xmlFiles = source.listFiles();
             if (xmlFiles != null) {
-                for (int i = 0; i < xmlFiles.length; i++) {
-                    current = xmlFiles[i];
+                for (File xmlFile : xmlFiles) {
+                    current = xmlFile;
                     action(current, dest, xsl_examples, xsl_site);
                 }
             }
@@ -183,7 +183,7 @@ public class BuildTutorial {
             // passing 2 parameters
             String branch = outfile.getParentFile().getCanonicalPath().substring(root.length());
             branch = branch.replace(File.separatorChar, '/');
-            StringBuffer path = new StringBuffer();
+            StringBuilder path = new StringBuilder();
             for (int i = 0; i < branch.length(); i++) {
                 if (branch.charAt(i) == '/') path.append("/pdf-core/src/test");
             }

@@ -985,7 +985,7 @@ public class BarcodeDatamatrix {
         }
         
         static short[] doPlacement(int nrow, int ncol) {
-            Integer key = new Integer(nrow * 1000 + ncol);
+            Integer key = nrow * 1000 + ncol;
             short[] pc = (short[])cache.get(key);
             if (pc != null)
                 return pc;

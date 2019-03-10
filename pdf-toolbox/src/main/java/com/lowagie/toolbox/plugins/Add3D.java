@@ -41,8 +41,6 @@ import com.lowagie.toolbox.arguments.*;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
 import com.lowagie.toolbox.arguments.filters.U3DFilter;
 
-import java.net.*;
-
 /**
  * This tool lets you add a embedded u3d 3d annotation to the first page of a document. Look for
  * sample files at http://u3d.svn.sourceforge.net/viewvc/u3d/trunk/Source/Samples/Data/
@@ -230,10 +228,8 @@ public class Add3D extends AbstractTool {
             PdfAction ac = PdfAction.javaScript(js, wr);
             ff.setAction(ac);
             wr.addAnnotation(ff);
-        } catch (MalformedURLException ex) {
-        } catch (IOException ex) {
-        } catch (BadElementException ex) {
-        } catch (DocumentException ex) {
+        } catch (IOException | DocumentException ignored) {
+            // ignored
         }
     }
 

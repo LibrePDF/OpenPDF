@@ -18,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -68,10 +67,7 @@ public class ProgressServlet extends HttpServlet {
                     Thread.sleep(500);
                     p++;
                 }
-            } catch (DocumentException e) {
-                p = -1;
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (DocumentException | InterruptedException e) {
                 p = -1;
                 e.printStackTrace();
             }

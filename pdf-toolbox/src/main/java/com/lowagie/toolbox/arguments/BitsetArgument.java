@@ -72,11 +72,11 @@ public class BitsetArgument extends AbstractArgument {
      * @return String
      */
     public String getUsage() {
-        StringBuffer buf = new StringBuffer(super.getUsage());
+        StringBuilder buf = new StringBuilder(super.getUsage());
         buf.append("    possible options:\n");
-        for (int i = 0; i < options.length; i++) {
+        for (JCheckBox option : options) {
             buf.append("    - ");
-            buf.append(options[i].getText());
+            buf.append(option.getText());
             buf.append('\n');
         }
         return buf.toString();
@@ -102,9 +102,9 @@ public class BitsetArgument extends AbstractArgument {
                 null
                      );
         if (result == 0) {
-            StringBuffer buf = new StringBuffer();
-            for (int i = 0; i < options.length; i++) {
-                if (options[i].isSelected()) {
+            StringBuilder buf = new StringBuilder();
+            for (JCheckBox option : options) {
+                if (option.isSelected()) {
                     buf.append('1');
                 } else {
                     buf.append('0');

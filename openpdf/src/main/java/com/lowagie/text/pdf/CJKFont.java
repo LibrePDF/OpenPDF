@@ -79,8 +79,8 @@ class CJKFont extends BaseFont {
 
     static Properties cjkFonts = new Properties();
     static Properties cjkEncodings = new Properties();
-    Hashtable<String, char[]> allCMaps = new Hashtable<String, char[]>();
-    static ConcurrentHashMap<String, HashMap<Object, Object>> allFonts = new ConcurrentHashMap<String, HashMap<Object, Object>>(
+    Hashtable<String, char[]> allCMaps = new Hashtable<>();
+    static ConcurrentHashMap<String, HashMap<Object, Object>> allFonts = new ConcurrentHashMap<>(
             500, 0.85f, 64);
     private static boolean propertiesLoaded = false;
     private static Object initLock = new Object();
@@ -225,8 +225,7 @@ class CJKFont extends BaseFont {
         loadProperties();
         String encodings = cjkFonts.getProperty(fontName);
         return encodings != null
-                && (enc.equals("Identity-H") || enc.equals("Identity-V") || encodings
-                        .indexOf("_" + enc + "_") >= 0);
+                && (enc.equals("Identity-H") || enc.equals("Identity-V") || encodings.contains("_" + enc + "_"));
     }
 
     /**
@@ -534,7 +533,7 @@ class CJKFont extends BaseFont {
         if (lastValue == 0) {
             return null;
         }
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append('[');
         buf.append(lastCid);
         int state = FIRST;
@@ -623,7 +622,7 @@ class CJKFont extends BaseFont {
         if (lastHValue == 0) {
             lastHValue = 1000;
         }
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append('[');
         buf.append(lastCid);
         int state = FIRST;
@@ -683,7 +682,7 @@ class CJKFont extends BaseFont {
             p.remove("W");
             IntHashtable W2 = createMetric(p.getProperty("W2"));
             p.remove("W2");
-            HashMap<Object, Object> map = new HashMap<Object, Object>();
+            HashMap<Object, Object> map = new HashMap<>();
             for (Enumeration e = p.keys(); e.hasMoreElements();) {
                 Object obj = e.nextElement();
                 map.put(obj, p.getProperty((String) obj));

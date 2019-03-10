@@ -186,8 +186,8 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
     public boolean process(ElementListener listener) {
         try {
             Element element;
-            for (Iterator i = iterator(); i.hasNext(); ) {
-                element = (Element)i.next();
+            for (Object o : this) {
+                element = (Element) o;
                 listener.add(element);
             }
             return true;
@@ -233,8 +233,8 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      */
     public ArrayList getChunks() {
         ArrayList tmp = new ArrayList();
-        for (Iterator i = iterator(); i.hasNext(); ) {
-            tmp.addAll(((Element) i.next()).getChunks());
+        for (Object o : this) {
+            tmp.addAll(((Element) o).getChunks());
         }
         return tmp;
     }
@@ -329,8 +329,8 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      * @throws    ClassCastException if one of the objects isn't a <CODE>Paragraph</CODE>, <CODE>List</CODE>, <CODE>Table</CODE>
      */
     public boolean addAll(Collection collection) {
-        for (Iterator iterator = collection.iterator(); iterator.hasNext(); ) {
-            this.add(iterator.next());
+        for (Object o : collection) {
+            this.add(o);
         }
         return true;
     }
@@ -478,7 +478,7 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
         if (depth < 1) {
             return title;
         }
-        StringBuffer buf = new StringBuffer(" ");
+        StringBuilder buf = new StringBuilder(" ");
         for (int i = 0; i < depth; i++) {
             buf.insert(0, ".");
             buf.insert(0, ((Integer) numbers.get(i)).intValue());
@@ -642,12 +642,12 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      * Changes the Chapter number.
      */
     public void setChapterNumber(int number) {
-        numbers.set(numbers.size() - 1, new Integer(number));
+        numbers.set(numbers.size() - 1, number);
         Object s;
-        for (Iterator i = iterator(); i.hasNext(); ) {
-            s = i.next();
+        for (Object o : this) {
+            s = o;
             if (s instanceof Section) {
-                ((Section)s).setChapterNumber(number);
+                ((Section) s).setChapterNumber(number);
             }
         }
     }
@@ -671,7 +671,7 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      */
     private void setNumbers(int number, ArrayList numbers) {
         this.numbers = new ArrayList();
-        this.numbers.add(new Integer(number));
+        this.numbers.add(number);
         this.numbers.addAll(numbers);
     }
 

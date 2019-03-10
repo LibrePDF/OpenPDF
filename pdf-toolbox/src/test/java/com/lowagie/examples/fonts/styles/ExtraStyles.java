@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * Demonstrates how to underline and strike through text.
@@ -64,7 +65,7 @@ class ExtraStyles {
             // step 5: we close the document
             document.close();
 
-            assertFalse(baos.size() == 0);
+            assertNotEquals(0, baos.size());
         }
 
     }

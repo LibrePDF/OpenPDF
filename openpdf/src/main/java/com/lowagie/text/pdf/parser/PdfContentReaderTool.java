@@ -59,7 +59,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -91,11 +90,10 @@ public class PdfContentReaderTool {
      * @return a String representation of the dictionary
      */
     static public String getDictionaryDetail(PdfDictionary dic, int depth) {
-        StringBuffer builder = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
         builder.append('(');
         List subDictionaries = new ArrayList();
-        for (Iterator i = dic.getKeys().iterator(); i.hasNext();) {
-            PdfName key = (PdfName) i.next();
+        for (PdfName key : dic.getKeys()) {
             PdfObject val = dic.getDirectObject(key);
             if (val.isDictionary()) {
                 subDictionaries.add(key);
@@ -108,8 +106,8 @@ public class PdfContentReaderTool {
         builder.setLength(builder.length() - 2);
         builder.append(')');
         PdfName pdfSubDictionaryName;
-        for (Iterator it = subDictionaries.iterator(); it.hasNext();) {
-            pdfSubDictionaryName = (PdfName) it.next();
+        for (Object subDictionary : subDictionaries) {
+            pdfSubDictionaryName = (PdfName) subDictionary;
             builder.append('\n');
             for (int i = 0; i < depth + 1; i++) {
                 builder.append('\t');

@@ -38,15 +38,13 @@ public class ListEncodings {
             out.write("\r\n\r\n");
             String[] codePages = bfComic.getCodePagesSupported();
             out.write("All available encodings:\n\n");
-            for (int i = 0; i < codePages.length; i++) {
-                out.write(codePages[i]);
+            for (String codePage : codePages) {
+                out.write(codePage);
                 out.write("\r\n");
             }
             out.flush();
             out.close();
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (DocumentException | IOException e) {
             e.printStackTrace();
         }
     }

@@ -120,7 +120,7 @@ public class PdfSmartCopy extends PdfCopy {
         }
         if (srcObj.isDictionary()) {
             PdfObject type = PdfReader.getPdfObjectRelease(((PdfDictionary)srcObj).get(PdfName.TYPE));
-            if (type != null && PdfName.PAGE.equals(type)) {
+            if (PdfName.PAGE.equals(type)) {
                 return theRef;
             }
         }
@@ -178,9 +178,9 @@ public class PdfSmartCopy extends PdfCopy {
                 return;
             Object[] keys = dic.getKeys().toArray();
             Arrays.sort(keys);
-            for (int k = 0; k < keys.length; ++k) {
-                serObject((PdfObject)keys[k], level, bb);
-                serObject(dic.get((PdfName)keys[k]), level, bb);
+            for (Object key : keys) {
+                serObject((PdfObject) key, level, bb);
+                serObject(dic.get((PdfName) key), level, bb);
             }
         }
         
@@ -218,8 +218,8 @@ public class PdfSmartCopy extends PdfCopy {
         public int hashCode() {
             if (hash == 0) {
                 int len = b.length;
-                for (int k = 0; k < len; ++k) {
-                    hash = hash * 31 + (b[k] & 0xff);
+                for (byte b1 : b) {
+                    hash = hash * 31 + (b1 & 0xff);
                 }
             }
             return hash;

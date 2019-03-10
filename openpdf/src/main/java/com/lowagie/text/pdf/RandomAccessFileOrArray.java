@@ -91,13 +91,9 @@ public class RandomAccessFileOrArray implements DataInput {
         if (!file.canRead()) {
             if (filename.startsWith("file:/") || filename.startsWith("http://") 
                     || filename.startsWith("https://") || filename.startsWith("jar:") || filename.startsWith("wsjar:")) {
-                InputStream is = new URL(filename).openStream();
-                try {
+                try (InputStream is = new URL(filename).openStream()) {
                     this.arrayIn = InputStreamToArray(is);
                     return;
-                }
-                finally {
-                    try {is.close();}catch(IOException ioe){}
                 }
             }
             else {
@@ -120,13 +116,8 @@ public class RandomAccessFileOrArray implements DataInput {
             }
         }
         else if (forceRead) {
-            InputStream s = null;
-            try {
-                s = new FileInputStream(file);
+            try (InputStream s = new FileInputStream(file)) {
                 this.arrayIn = InputStreamToArray(s);
-            }
-            finally {
-                try {if (s != null) {s.close();}}catch(Exception e){}
             }
             return;
         }
@@ -138,12 +129,8 @@ public class RandomAccessFileOrArray implements DataInput {
     }
 
     public RandomAccessFileOrArray(URL url) throws IOException {
-        InputStream is = url.openStream();
-        try {
+        try (InputStream is = url.openStream()) {
             this.arrayIn = InputStreamToArray(is);
-        }
-        finally {
-            try {is.close();}catch(IOException ioe){}
         }
     }
 
@@ -589,7 +576,7 @@ public class RandomAccessFileOrArray implements DataInput {
     }
     
     public String readLine() throws IOException {
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         int c = -1;
         boolean eol = false;
         

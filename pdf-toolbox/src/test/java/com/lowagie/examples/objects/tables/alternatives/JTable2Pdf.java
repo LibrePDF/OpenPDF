@@ -16,8 +16,6 @@ package com.lowagie.examples.objects.tables.alternatives;
 import java.awt.BorderLayout;
 import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileOutputStream;
@@ -61,15 +59,12 @@ public class JTable2Pdf extends JFrame {
      */
     private void createTable() {
         Object[][] data ={
-            {"Mary", "Campione", "Snowboarding", new
-             Integer(5), Boolean.FALSE},
-             {"Alison", "Huml", "Rowing", new
-              Integer(3), Boolean.TRUE},
+            {"Mary", "Campione", "Snowboarding", 5, Boolean.FALSE},
+             {"Alison", "Huml", "Rowing", 3, Boolean.TRUE},
               {"Kathy", "Walrath", "Chasing toddlers",
-               new Integer(2), Boolean.FALSE},
-               {"Mark", "Andrews", "Speed reading", new
-                Integer(20), Boolean.TRUE},
-                {"Angela", "Lih", "Teaching high school", new Integer(4), Boolean.FALSE}
+                      2, Boolean.FALSE},
+               {"Mark", "Andrews", "Speed reading", 20, Boolean.TRUE},
+                {"Angela", "Lih", "Teaching high school", 4, Boolean.FALSE}
         };
         
         String[] columnNames =
@@ -92,18 +87,10 @@ public class JTable2Pdf extends JFrame {
         JToolBar tb = new JToolBar();
         
         JButton printBtn = new JButton("Print");
-        printBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                print();
-            }
-        });
+        printBtn.addActionListener(e -> print());
         
         JButton exitBtn = new JButton("Exit");
-        exitBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                exit();
-            }
-        });
+        exitBtn.addActionListener(e -> exit());
         
         tb.add(printBtn);
         tb.add(exitBtn);

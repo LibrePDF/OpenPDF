@@ -76,9 +76,9 @@ public class PdfNumberTree {
         if (numbers.length <= leafSize) {
             PdfDictionary dic = new PdfDictionary();
             PdfArray ar = new PdfArray();
-            for (int k = 0; k < numbers.length; ++k) {
-                ar.add(new PdfNumber(numbers[k].intValue()));
-                ar.add((PdfObject)items.get(numbers[k]));
+            for (Integer number : numbers) {
+                ar.add(new PdfNumber(number));
+                ar.add((PdfObject) items.get(number));
             }
             dic.put(PdfName.NUMS, ar);
             return dic;
@@ -90,12 +90,12 @@ public class PdfNumberTree {
             int end = Math.min(offset + leafSize, numbers.length);
             PdfDictionary dic = new PdfDictionary();
             PdfArray arr = new PdfArray();
-            arr.add(new PdfNumber(numbers[offset].intValue()));
-            arr.add(new PdfNumber(numbers[end - 1].intValue()));
+            arr.add(new PdfNumber(numbers[offset]));
+            arr.add(new PdfNumber(numbers[end - 1]));
             dic.put(PdfName.LIMITS, arr);
             arr = new PdfArray();
             for (; offset < end; ++offset) {
-                arr.add(new PdfNumber(numbers[offset].intValue()));
+                arr.add(new PdfNumber(numbers[offset]));
                 arr.add((PdfObject)items.get(numbers[offset]));
             }
             dic.put(PdfName.NUMS, arr);
@@ -118,8 +118,8 @@ public class PdfNumberTree {
                 int end = Math.min(offset + leafSize, top);
                 PdfDictionary dic = new PdfDictionary();
                 PdfArray arr = new PdfArray();
-                arr.add(new PdfNumber(numbers[k * skip].intValue()));
-                arr.add(new PdfNumber(numbers[Math.min((k + 1) * skip, numbers.length) - 1].intValue()));
+                arr.add(new PdfNumber(numbers[k * skip]));
+                arr.add(new PdfNumber(numbers[Math.min((k + 1) * skip, numbers.length) - 1]));
                 dic.put(PdfName.LIMITS, arr);
                 arr = new PdfArray();
                 for (; offset < end; ++offset) {
@@ -137,7 +137,7 @@ public class PdfNumberTree {
         if (nn != null) {
             for (int k = 0; k < nn.size(); ++k) {
                 PdfNumber s = (PdfNumber)PdfReader.getPdfObjectRelease(nn.getPdfObject(k++));
-                items.put(new Integer(s.intValue()), nn.getPdfObject(k));
+                items.put(s.intValue(), nn.getPdfObject(k));
             }
         }
         else if ((nn = (PdfArray)PdfReader.getPdfObjectRelease(dic.get(PdfName.KIDS))) != null) {

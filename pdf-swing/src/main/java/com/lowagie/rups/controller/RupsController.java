@@ -134,11 +134,8 @@ public class RupsController extends Observable
                 super.notifyObservers(RupsMenuBar.OPEN);
                 readerController.startObjectLoader(pdfFile);
             }
-            catch(IOException ioe) {
+            catch(IOException | DocumentException ioe) {
                 JOptionPane.showMessageDialog(masterComponent, ioe.getMessage(), "Dialog", JOptionPane.ERROR_MESSAGE);
-            }
-            catch (DocumentException de) {
-                JOptionPane.showMessageDialog(masterComponent, de.getMessage(), "Dialog", JOptionPane.ERROR_MESSAGE);
             }
             return;
         }

@@ -50,11 +50,8 @@ public class Alignment {
             document.add(jpeg);
             document.add(png);
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
         // step 5: we close the document
         document.close();

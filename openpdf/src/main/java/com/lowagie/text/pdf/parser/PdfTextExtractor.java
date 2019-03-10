@@ -245,7 +245,7 @@ public class PdfTextExtractor {
         try {
             PdfContentParser ps = new PdfContentParser(new PRTokeniser(
                     contentBytes));
-            ArrayList<PdfObject> operands = new ArrayList<PdfObject>();
+            ArrayList<PdfObject> operands = new ArrayList<>();
             while (ps.parse(operands).size() > 0) {
                 PdfLiteral operator = (PdfLiteral) operands
                         .get(operands.size() - 1);

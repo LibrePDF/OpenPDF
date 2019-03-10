@@ -619,7 +619,7 @@ public class TernaryTree implements Cloneable, Serializable {
             }
             // The current node should be a data node and
             // the key should be in the key stack (at least partially)
-            StringBuffer buf = new StringBuffer(ks.toString());
+            StringBuilder buf = new StringBuilder(ks.toString());
             if (sc[cur] == 0xFFFF) {
                 int p = lo[cur];
                 while (kv.get(p) != 0) {

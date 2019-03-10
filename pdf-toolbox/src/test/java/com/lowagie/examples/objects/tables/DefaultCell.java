@@ -69,10 +69,8 @@ public class DefaultCell {
             table.getDefaultCell().setBackgroundColor(new Color(0xC0, 0xC0, 0xC0));
             table.addCell("cell test2");
             document.add(table);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

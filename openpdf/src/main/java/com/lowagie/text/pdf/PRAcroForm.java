@@ -185,15 +185,14 @@ public class PRAcroForm extends PdfDictionary {
     protected PdfDictionary mergeAttrib(PdfDictionary parent, PdfDictionary child) {
         PdfDictionary targ = new PdfDictionary();
         if (parent != null) targ.putAll(parent);
-        
-        for (Iterator it = child.getKeys().iterator(); it.hasNext();) {
-            PdfName key = (PdfName) it.next();
+
+        for (PdfName key : child.getKeys()) {
             if (key.equals(PdfName.DR) || key.equals(PdfName.DA) ||
-            key.equals(PdfName.Q)  || key.equals(PdfName.FF) ||
-            key.equals(PdfName.DV) || key.equals(PdfName.V)
-            || key.equals(PdfName.FT)
-            || key.equals(PdfName.F)) {
-                targ.put(key,child.get(key));
+                    key.equals(PdfName.Q) || key.equals(PdfName.FF) ||
+                    key.equals(PdfName.DV) || key.equals(PdfName.V)
+                    || key.equals(PdfName.FT)
+                    || key.equals(PdfName.F)) {
+                targ.put(key, child.get(key));
             }
         }
         return targ;

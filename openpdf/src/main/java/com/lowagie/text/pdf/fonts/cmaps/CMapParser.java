@@ -86,90 +86,75 @@ public class CMapParser
             if( token instanceof Operator )
             {
                 Operator op = (Operator)token;
-                if( op.op.equals( BEGIN_CODESPACE_RANGE ) )
-                {
-                    Number cosCount = (Number)previousToken;
-                    for( int j=0; j<cosCount.intValue(); j++ )
-                    {
-                        byte[] startRange = (byte[])parseNextToken( cmapStream );
-                        byte[] endRange = (byte[])parseNextToken( cmapStream );
-                        CodespaceRange range = new CodespaceRange();
-                        range.setStart( startRange );
-                        range.setEnd( endRange );
-                        result.addCodespaceRange( range );
+                switch (op.op) {
+                    case BEGIN_CODESPACE_RANGE: {
+                        Number cosCount = (Number) previousToken;
+                        for (int j = 0; j < cosCount.intValue(); j++) {
+                            byte[] startRange = (byte[]) parseNextToken(cmapStream);
+                            byte[] endRange = (byte[]) parseNextToken(cmapStream);
+                            CodespaceRange range = new CodespaceRange();
+                            range.setStart(startRange);
+                            range.setEnd(endRange);
+                            result.addCodespaceRange(range);
+                        }
+                        break;
                     }
-                }
-                else if( op.op.equals( BEGIN_BASE_FONT_CHAR ) )
-                {
-                    Number cosCount = (Number)previousToken;
-                    for( int j=0; j<cosCount.intValue(); j++ )
-                    {
-                        byte[] inputCode = (byte[])parseNextToken( cmapStream );
-                        Object nextToken = parseNextToken( cmapStream );
-                        if( nextToken instanceof byte[] )
-                        {
-                            byte[] bytes = (byte[])nextToken;
-                            String value = createStringFromBytes( bytes );
-                            result.addMapping( inputCode, value );
+                    case BEGIN_BASE_FONT_CHAR: {
+                        Number cosCount = (Number) previousToken;
+                        for (int j = 0; j < cosCount.intValue(); j++) {
+                            byte[] inputCode = (byte[]) parseNextToken(cmapStream);
+                            Object nextToken = parseNextToken(cmapStream);
+                            if (nextToken instanceof byte[]) {
+                                byte[] bytes = (byte[]) nextToken;
+                                String value = createStringFromBytes(bytes);
+                                result.addMapping(inputCode, value);
+                            } else if (nextToken instanceof LiteralName) {
+                                result.addMapping(inputCode, ((LiteralName) nextToken).name);
+                            } else {
+                                throw new IOException(MessageLocalization.getComposedMessage("error.parsing.cmap.beginbfchar.expected.cosstring.or.cosname.and.not.1", nextToken));
+                            }
                         }
-                        else if( nextToken instanceof LiteralName )
-                        {
-                            result.addMapping( inputCode, ((LiteralName)nextToken).name );
-                        }
-                        else
-                        {
-                            throw new IOException(MessageLocalization.getComposedMessage("error.parsing.cmap.beginbfchar.expected.cosstring.or.cosname.and.not.1", nextToken));
-                        }
+                        break;
                     }
-                }
-               else if( op.op.equals( BEGIN_BASE_FONT_RANGE ) )
-                {
-                    Number cosCount = (Number)previousToken;
-                    
-                    for( int j=0; j<cosCount.intValue(); j++ )
-                    {
-                        byte[] startCode = (byte[])parseNextToken( cmapStream );
-                        byte[] endCode = (byte[])parseNextToken( cmapStream );
-                        Object nextToken = parseNextToken( cmapStream );
-                        List array = null;
-                        byte[] tokenBytes = null;
-                        if( nextToken instanceof List )
-                        {
-                            array = (List)nextToken;
-                            tokenBytes = (byte[])array.get( 0 );
-                        }
-                        else
-                        {
-                            tokenBytes = (byte[])nextToken;
-                        }
-                        
-                        String value = null;
-                        
-                        int arrayIndex = 0;
-                        boolean done = false;
-                        while( !done )
-                        {
-                            if( compare( startCode, endCode ) >= 0 )
-                            {
-                                done = true;
+                    case BEGIN_BASE_FONT_RANGE: {
+                        Number cosCount = (Number) previousToken;
+
+                        for (int j = 0; j < cosCount.intValue(); j++) {
+                            byte[] startCode = (byte[]) parseNextToken(cmapStream);
+                            byte[] endCode = (byte[]) parseNextToken(cmapStream);
+                            Object nextToken = parseNextToken(cmapStream);
+                            List array = null;
+                            byte[] tokenBytes = null;
+                            if (nextToken instanceof List) {
+                                array = (List) nextToken;
+                                tokenBytes = (byte[]) array.get(0);
+                            } else {
+                                tokenBytes = (byte[]) nextToken;
                             }
-                            value = createStringFromBytes( tokenBytes );
-                            result.addMapping( startCode, value );
-                            increment( startCode );
-                            
-                            if( array == null )
-                            {
-                                increment( tokenBytes );
-                            }
-                            else
-                            {
-                                arrayIndex++;
-                                if( arrayIndex < array.size() )
-                                {
-                                    tokenBytes = (byte[])array.get( arrayIndex );
+
+                            String value = null;
+
+                            int arrayIndex = 0;
+                            boolean done = false;
+                            while (!done) {
+                                if (compare(startCode, endCode) >= 0) {
+                                    done = true;
+                                }
+                                value = createStringFromBytes(tokenBytes);
+                                result.addMapping(startCode, value);
+                                increment(startCode);
+
+                                if (array == null) {
+                                    increment(tokenBytes);
+                                } else {
+                                    arrayIndex++;
+                                    if (arrayIndex < array.size()) {
+                                        tokenBytes = (byte[]) array.get(arrayIndex);
+                                    }
                                 }
                             }
                         }
+                        break;
                     }
                 }
             }
@@ -201,7 +186,7 @@ public class CMapParser
             }
             case '(':
             {
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 int stringByte = is.read();
                 
                 while( stringByte != -1 && stringByte != ')' )
@@ -312,7 +297,7 @@ public class CMapParser
             }
             case '/':
             {
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 int stringByte = is.read();
                 
                 while( !isWhitespaceOrEOF( stringByte ) )
@@ -339,7 +324,7 @@ public class CMapParser
             case '8':
             case '9':
             {
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 buffer.append( (char)nextByte );
                 nextByte = is.read();
                 
@@ -358,13 +343,13 @@ public class CMapParser
                 }
                 else
                 {
-                    retval = new Integer( buffer.toString() );
+                    retval = Integer.valueOf(buffer.toString());
                 }
                 break;
             }
             default:
             {
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 buffer.append( (char)nextByte );
                 nextByte = is.read();
                 

@@ -105,32 +105,25 @@ public class Versions
     this.getContentPane().add(scroll_versions, BorderLayout.CENTER);
     Properties properties = System.getProperties();
     Runtime runtime = Runtime.getRuntime();
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append("<html>");
-    sb.append("<p>iTexttoolbox version: " + Versions.class.getPackage().getImplementationVersion() + "</p>");
-    sb.append("<p>iText version: " + Document.getVersion() + "</p>");
-    sb.append("<p>java.version: " + properties.getProperty("java.version")
-              + "</p>");
-    sb.append("<p>java.vendor: " + properties.getProperty("java.vendor")
-              + "</p>");
-    sb.append("<p>java.home: " + properties.getProperty("java.home")
-              + "</p>");
-    sb.append("<p>java.freeMemory: " + runtime.freeMemory() + " bytes"
-              + "</p>");
-    sb.append("<p>java.totalMemory: " + runtime.totalMemory() + " bytes"
-              + "</p>");
-    sb.append("<p>user.home: " + properties.getProperty("user.home")
-              + "</p>");
-    sb.append("<p>os.name: " + properties.getProperty("os.name") + "</p>");
-    sb.append("<p>os.arch: " + properties.getProperty("os.arch") + "</p>");
-    sb.append("<p>os.version: " + properties.getProperty("os.version")
-              + "</p>");
+    sb.append("<p>iTexttoolbox version: ").append(Versions.class.getPackage().getImplementationVersion()).append("</p>");
+    sb.append("<p>iText version: ").append(Document.getVersion()).append("</p>");
+    sb.append("<p>java.version: ").append(properties.getProperty("java.version")).append("</p>");
+    sb.append("<p>java.vendor: ").append(properties.getProperty("java.vendor")).append("</p>");
+    sb.append("<p>java.home: ").append(properties.getProperty("java.home")).append("</p>");
+    sb.append("<p>java.freeMemory: ").append(runtime.freeMemory()).append(" bytes").append("</p>");
+    sb.append("<p>java.totalMemory: ").append(runtime.totalMemory()).append(" bytes").append("</p>");
+    sb.append("<p>user.home: ").append(properties.getProperty("user.home")).append("</p>");
+    sb.append("<p>os.name: ").append(properties.getProperty("os.name")).append("</p>");
+    sb.append("<p>os.arch: ").append(properties.getProperty("os.arch")).append("</p>");
+    sb.append("<p>os.version: ").append(properties.getProperty("os.version")).append("</p>");
     sb.append("</html>");
     library_versions.setText(sb.toString());
 
     TableModel model = getVersionTableModel(AbstractTool.versionsarray);
     RowSorter<TableModel> sorter =
-        new TableRowSorter<TableModel> (model);
+            new TableRowSorter<>(model);
     plugin_versions.setRowSorter(sorter);
     plugin_versions.setModel(model);
 

@@ -168,8 +168,8 @@ public class BarcodePostnet extends Barcode{
             bars[bars.length - 1] = 0;
         }
         float startX = 0;
-        for (int k = 0; k < bars.length; ++k) {
-            cb.rectangle(startX, 0, x - inkSpreading, bars[k] == flip ? barHeight : size);
+        for (byte bar : bars) {
+            cb.rectangle(startX, 0, x - inkSpreading, bar == flip ? barHeight : size);
             startX += n;
         }
         cb.fill();
@@ -209,8 +209,8 @@ public class BarcodePostnet extends Barcode{
             bars[bars.length - 1] = 0;
         }
         int idx = 0;
-        for (int k = 0; k < bars.length; ++k) {
-            boolean dot = (bars[k] == flip);
+        for (byte bar : bars) {
+            boolean dot = (bar == flip);
             for (int j = 0; j < barDistance; ++j) {
                 pix[idx + j] = ((dot && j < barWidth) ? f : g);
             }

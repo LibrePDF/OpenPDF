@@ -102,8 +102,8 @@ public class PdfLister {
         out.println("<<");
         PdfName key;
         PdfObject value;
-        for (Iterator i = dictionary.getKeys().iterator(); i.hasNext(); ) {
-            key = (PdfName) i.next();
+        for (PdfName pdfName : dictionary.getKeys()) {
+            key = pdfName;
             value = dictionary.get(key);
             out.print(key.toString());
             out.print(' ');

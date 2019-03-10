@@ -959,7 +959,7 @@ public class Rectangle implements Element {
    */
   @Override
   public String toString() {
-    StringBuffer buf = new StringBuffer("Rectangle: ");
+    StringBuilder buf = new StringBuilder("Rectangle: ");
     buf.append(getWidth());
     buf.append('x');
     buf.append(getHeight());

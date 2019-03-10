@@ -101,10 +101,8 @@ public class Phrases {
             document.add(phrase5);
             document.add(phrase6);
             document.add(phrase7);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

@@ -41,7 +41,7 @@ public class TreeNodeFactory {
     /** The factory that can produce all indirect objects. */
     protected IndirectObjectFactory objects;
     /** An list containing the nodes of every indirect object. */
-    protected ArrayList<PdfObjectTreeNode> nodes = new ArrayList<PdfObjectTreeNode>();
+    protected ArrayList<PdfObjectTreeNode> nodes = new ArrayList<>();
     
     /**
      * Creates a factory that can produce TreeNode objects
@@ -100,8 +100,8 @@ public class TreeNodeFactory {
         case PdfObject.DICTIONARY:
         case PdfObject.STREAM:
             PdfDictionary dict = (PdfDictionary)object;
-            for (Iterator it = dict.getKeys().iterator(); it.hasNext(); ) {
-                leaf = PdfObjectTreeNode.getInstance(dict, (PdfName)it.next());
+            for (PdfName pdfName : dict.getKeys()) {
+                leaf = PdfObjectTreeNode.getInstance(dict, pdfName);
                 addNodes(node, leaf);
                 expandNode(leaf);
             }

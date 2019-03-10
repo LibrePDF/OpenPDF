@@ -91,7 +91,7 @@ public abstract class AbstractArgument implements ActionListener, PropertyChange
      * @return a String
      */
     public String getUsage() {
-        StringBuffer buf = new StringBuffer("  ");
+        StringBuilder buf = new StringBuilder("  ");
         buf.append(name);
         buf.append(" -  ");
         buf.append(description);
