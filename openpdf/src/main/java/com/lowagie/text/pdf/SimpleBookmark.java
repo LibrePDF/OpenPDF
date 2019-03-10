@@ -173,7 +173,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
                                     map.put("NamedN", PdfName.decodeName(dest.toString()));
                                 else if (dest.isArray()) {
                                     PdfArray arr = (PdfArray)dest;
-                                    StringBuffer s = new StringBuffer();
+                                    StringBuilder s = new StringBuilder();
                                     s.append(arr.getPdfObject(0).toString());
                                     s.append(' ').append(arr.getPdfObject(1).toString());
                                     for (int k = 2; k < arr.size(); ++k)
@@ -240,7 +240,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
 
     private static String makeBookmarkParam(PdfArray dest, IntHashtable pages)
     {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         PdfObject obj = dest.getPdfObject(0);
         if (obj.isNumber())
             s.append(((PdfNumber)obj).intValue() + 1);
@@ -356,10 +356,10 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     public static void shiftPageNumbers(List list, int pageShift, int[] pageRange) {
         if (list == null)
             return;
-        for (Iterator it = list.listIterator(); it.hasNext();) {
-            HashMap map = (HashMap)it.next();
+        for (Object o : list) {
+            HashMap map = (HashMap) o;
             if ("GoTo".equals(map.get("Action"))) {
-                String page = (String)map.get("Page");
+                String page = (String) map.get("Page");
                 if (page != null) {
                     page = page.trim();
                     int idx = page.indexOf(' ');
@@ -389,7 +389,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
                     map.put("Page", page);
                 }
             }
-            List kids = (List)map.get("Kids");
+            List kids = (List) map.get("Kids");
             if (kids != null)
                 shiftPageNumbers(kids, pageShift, pageRange);
         }
@@ -516,7 +516,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
             if (lower != null) {
                 outline.put(PdfName.FIRST, (PdfIndirectReference)lower[0]);
                 outline.put(PdfName.LAST, (PdfIndirectReference)lower[1]);
-                int n = ((Integer)lower[2]).intValue();
+                int n = (Integer) lower[2];
                 if ("false".equals(map.get("Open"))) {
                     outline.put(PdfName.COUNT, new PdfNumber(-n));
                 }
@@ -549,9 +549,9 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
             if (style != null) {
                 style = style.toLowerCase();
                 int bits = 0;
-                if (style.indexOf("italic") >= 0)
+                if (style.contains("italic"))
                     bits |= 1;
-                if (style.indexOf("bold") >= 0)
+                if (style.contains("bold"))
                     bits |= 2;
                 if (bits != 0)
                     outline.put(PdfName.F, new PdfNumber(bits));
@@ -559,7 +559,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
             createOutlineAction(outline, map, writer, namedAsNames);
             writer.addToBody(outline, refs[ptr]);
         }
-        return new Object[]{refs[0], refs[refs.length - 1], new Integer(count)};
+        return new Object[]{refs[0], refs[refs.length - 1], count};
     }
 
     /**
@@ -576,24 +576,22 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
         String dep = "";
         for (int k = 0; k < indent; ++k)
             dep += "  ";
-        for (Iterator it = list.iterator(); it.hasNext();) {
-            HashMap map = (HashMap)it.next();
+        for (Object o1 : list) {
+            HashMap map = (HashMap) o1;
             String title = null;
             out.write(dep);
             out.write("<Title ");
             List kids = null;
-            for (Iterator e = map.entrySet().iterator(); e.hasNext();) {
-                Map.Entry entry = (Map.Entry) e.next();
+            for (Object o : map.entrySet()) {
+                Map.Entry entry = (Map.Entry) o;
                 String key = (String) entry.getKey();
                 if (key.equals("Title")) {
                     title = (String) entry.getValue();
                     continue;
-                }
-                else if (key.equals("Kids")) {
+                } else if (key.equals("Kids")) {
                     kids = (List) entry.getValue();
                     continue;
-                }
-                else {
+                } else {
                     out.write(key);
                     out.write("=\"");
                     String value = (String) entry.getValue();

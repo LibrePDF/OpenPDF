@@ -80,10 +80,8 @@ public class OutlineActions {
             Paragraph p = new Paragraph("This paragraph contains a ");
             p.add(new Chunk("local destination").setLocalDestination("test"));
             remote.add(p);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

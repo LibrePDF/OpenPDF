@@ -101,8 +101,8 @@ public abstract class PdfSigGenericPKCS extends PdfSignature {
             pkcs.setExternalDigest(externalDigest, externalRSAdata, digestEncryptionAlgorithm);
             if (PdfName.ADBE_X509_RSA_SHA1.equals(get(PdfName.SUBFILTER))) {
                 ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                for (int k = 0; k < certChain.length; ++k) {
-                    bout.write(certChain[k].getEncoded());
+                for (Certificate certificate : certChain) {
+                    bout.write(certificate.getEncoded());
                 }
                 bout.close();
                 setCert(bout.toByteArray());

@@ -50,7 +50,6 @@ import com.lowagie.text.pdf.DocumentFont;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfString;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -277,7 +276,7 @@ public class ParsedText extends ParsedTextImpl {
      * @return list of Word objects.
      */
     public List<Word> getAsPartialWords() {
-        ArrayList<Word> result = new ArrayList<Word>();
+        ArrayList<Word> result = new ArrayList<>();
         CMapAwareDocumentFont font = gs.font;
         char[] chars = pdfText.getOriginalChars();
         boolean[] hasSpace = new boolean[chars.length];

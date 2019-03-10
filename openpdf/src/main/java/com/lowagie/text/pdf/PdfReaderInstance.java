@@ -51,7 +51,7 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 /**
  * Instance of PdfReader in each output document.
@@ -85,7 +85,7 @@ class PdfReaderInstance {
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("pdfreader.not.opened.with.owner.password"));
         if (pageNumber < 1 || pageNumber > reader.getNumberOfPages())
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("invalid.page.number.1", pageNumber));
-        Integer i = new Integer(pageNumber);
+        Integer i = pageNumber;
         PdfImportedPage pageT = (PdfImportedPage)importedPages.get(i);
         if (pageT == null) {
             pageT = new PdfImportedPage(this, writer, pageNumber);
@@ -97,7 +97,7 @@ class PdfReaderInstance {
     int getNewObjectNumber(int number, int generation) {
         if (myXref[number] == 0) {
             myXref[number] = writer.getIndirectReferenceNumber();
-            nextRound.add(new Integer(number));
+            nextRound.add(number);
         }
         return myXref[number];
     }
@@ -134,7 +134,7 @@ class PdfReaderInstance {
         dic.put(PdfName.RESOURCES, PdfReader.getPdfObjectRelease(page.get(PdfName.RESOURCES)));
         dic.put(PdfName.TYPE, PdfName.XOBJECT);
         dic.put(PdfName.SUBTYPE, PdfName.FORM);
-        PdfImportedPage impPage = (PdfImportedPage)importedPages.get(new Integer(pageNumber));
+        PdfImportedPage impPage = (PdfImportedPage)importedPages.get(pageNumber);
         dic.put(PdfName.BBOX, new PdfRectangle(impPage.getBoundingBox()));
         PdfArray matrix = impPage.getMatrix();
         if (matrix == null)
@@ -157,11 +157,11 @@ class PdfReaderInstance {
         while (!nextRound.isEmpty()) {
             ArrayList vec = nextRound;
             nextRound = new ArrayList();
-            for (int k = 0; k < vec.size(); ++k) {
-                Integer i = (Integer)vec.get(k);
+            for (Object o : vec) {
+                Integer i = (Integer) o;
                 if (!visited.containsKey(i)) {
                     visited.put(i, null);
-                    int n = i.intValue();
+                    int n = i;
                     writer.addToBody(reader.getPdfObjectRelease(n), myXref[n]);
                 }
             }
@@ -171,8 +171,8 @@ class PdfReaderInstance {
     void writeAllPages() throws IOException {
         try {
             file.reOpen();
-            for (Iterator it = importedPages.values().iterator(); it.hasNext();) {
-                PdfImportedPage ip = (PdfImportedPage)it.next();
+            for (Object o : importedPages.values()) {
+                PdfImportedPage ip = (PdfImportedPage) o;
                 writer.addToBody(ip.getFormXObject(writer.getCompressionLevel()), ip.getIndirectReference());
             }
             writeAllVisited();

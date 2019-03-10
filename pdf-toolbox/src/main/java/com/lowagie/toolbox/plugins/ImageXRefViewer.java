@@ -251,8 +251,7 @@ public class ImageXRefViewer extends AbstractTool {
                                 }
                             }
                         }
-                    } catch (InstantiationException ex) {
-                    } catch (IOException ex) {
+                    } catch (InstantiationException | IOException ex) {
                     }
                     internalFrame.setCursor(Cursor.getDefaultCursor());
                     return null;

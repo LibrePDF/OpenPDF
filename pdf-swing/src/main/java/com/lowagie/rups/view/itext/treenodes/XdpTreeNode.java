@@ -20,7 +20,6 @@
 
 package com.lowagie.rups.view.itext.treenodes;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Attribute;
@@ -75,8 +74,8 @@ public class XdpTreeNode extends IconTreeNode {
     }
 
     private void addChildNodes(List list) {
-        for (Iterator i = list.iterator(); i.hasNext(); ) {
-            Node n = (Node)i.next();
+        for (Object o : list) {
+            Node n = (Node) o;
             if (n instanceof Namespace) continue;
             if (n instanceof Comment) continue;
             this.add(new XdpTreeNode(n));
@@ -95,7 +94,7 @@ public class XdpTreeNode extends IconTreeNode {
         }
         if (node instanceof Attribute) {
             Attribute a = (Attribute)node;
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append(a.getName());
             buf.append("=\"");
             buf.append(a.getValue());
@@ -108,7 +107,7 @@ public class XdpTreeNode extends IconTreeNode {
         }
         if (node instanceof ProcessingInstruction) {
             ProcessingInstruction pi = (ProcessingInstruction)node;
-            StringBuffer buf = new StringBuffer("<?");
+            StringBuilder buf = new StringBuilder("<?");
             buf.append(pi.getName());
             buf.append(' ');
             buf.append(pi.getText());

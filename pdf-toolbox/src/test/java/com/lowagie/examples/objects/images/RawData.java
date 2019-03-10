@@ -72,13 +72,10 @@ public class RawData {
             img2.setAbsolutePosition(200, 200);
             document.add(img2);
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

@@ -59,7 +59,6 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -150,35 +149,35 @@ public class XmpWriter {
             XmpBasicSchema basic = new XmpBasicSchema();
             PdfName key;
             PdfObject obj;
-            for (Iterator it = info.getKeys().iterator(); it.hasNext();) {
-                key = (PdfName)it.next();
+            for (PdfName pdfName : info.getKeys()) {
+                key = pdfName;
                 obj = info.get(key);
                 if (obj == null)
                     continue;
                 if (PdfName.TITLE.equals(key)) {
-                    dc.addTitle(((PdfString)obj).toUnicodeString());
+                    dc.addTitle(((PdfString) obj).toUnicodeString());
                 }
                 if (PdfName.AUTHOR.equals(key)) {
-                    dc.addAuthor(((PdfString)obj).toUnicodeString());
+                    dc.addAuthor(((PdfString) obj).toUnicodeString());
                 }
                 if (PdfName.SUBJECT.equals(key)) {
-                    dc.addSubject(((PdfString)obj).toUnicodeString());
-                    dc.addDescription(((PdfString)obj).toUnicodeString());
+                    dc.addSubject(((PdfString) obj).toUnicodeString());
+                    dc.addDescription(((PdfString) obj).toUnicodeString());
                 }
                 if (PdfName.KEYWORDS.equals(key)) {
-                    p.addKeywords(((PdfString)obj).toUnicodeString());
+                    p.addKeywords(((PdfString) obj).toUnicodeString());
                 }
                 if (PdfName.CREATOR.equals(key)) {
-                    basic.addCreatorTool(((PdfString)obj).toUnicodeString());
+                    basic.addCreatorTool(((PdfString) obj).toUnicodeString());
                 }
                 if (PdfName.PRODUCER.equals(key)) {
-                    p.addProducer(((PdfString)obj).toUnicodeString());
+                    p.addProducer(((PdfString) obj).toUnicodeString());
                 }
                 if (PdfName.CREATIONDATE.equals(key)) {
-                    basic.addCreateDate(((PdfDate)obj).getW3CDate());
+                    basic.addCreateDate(((PdfDate) obj).getW3CDate());
                 }
                 if (PdfName.MODDATE.equals(key)) {
-                    basic.addModDate(((PdfDate)obj).getW3CDate());
+                    basic.addModDate(((PdfDate) obj).getW3CDate());
                 }
             }
             if (dc.size() > 0) addRdfDescription(dc);
@@ -208,8 +207,8 @@ public class XmpWriter {
             XmpBasicSchema basic = new XmpBasicSchema();
             String key;
             String value;
-            for (Iterator it = info.entrySet().iterator(); it.hasNext();) {
-                Map.Entry entry = (Map.Entry) it.next();
+            for (Object o : info.entrySet()) {
+                Map.Entry entry = (Map.Entry) o;
                 key = (String) entry.getKey();
                 value = (String) entry.getValue();
                 if (value == null)

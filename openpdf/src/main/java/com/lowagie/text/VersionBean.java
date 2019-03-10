@@ -24,7 +24,6 @@ package com.lowagie.text;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.CodeSource;
@@ -129,10 +128,8 @@ final class VersionBean {
                             }
                             manifestStream = urlToStream(manifestFileUrl);
                             return new Manifest(manifestStream);
-                        } catch (MalformedURLException e1) {
+                        } catch (IOException e1) {
 
-                        } catch (IOException e) {
- 
                         } finally {
                             if (manifestStream != null) {
                                 try {

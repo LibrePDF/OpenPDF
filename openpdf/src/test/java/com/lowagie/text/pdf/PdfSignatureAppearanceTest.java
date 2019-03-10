@@ -47,7 +47,7 @@ public class PdfSignatureAppearanceTest {
                 sap.setReason("Test");
 
                 HashMap exc = new HashMap();
-                exc.put(PdfName.CONTENTS, new Integer(10));
+                exc.put(PdfName.CONTENTS, 10);
                 sap.preClose(exc);
 
                 byte[] result = Utilities.toByteArray(sap.getRangeStream());
@@ -100,7 +100,7 @@ public class PdfSignatureAppearanceTest {
                 sap.setLayer2Text("Hello world");
 
                 HashMap exc = new HashMap();
-                exc.put(PdfName.CONTENTS, new Integer(10));
+                exc.put(PdfName.CONTENTS, 10);
                 sap.preClose(exc);
 
                 byte[] result = Utilities.toByteArray(sap.getRangeStream());

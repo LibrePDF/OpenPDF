@@ -361,12 +361,11 @@ public class PdfAction extends PdfDictionary {
     
     static PdfArray buildArray(Object[] names) {
         PdfArray array = new PdfArray();
-        for (int k = 0; k < names.length; ++k) {
-            Object obj = names[k];
+        for (Object obj : names) {
             if (obj instanceof String)
-                array.add(new PdfString((String)obj));
+                array.add(new PdfString((String) obj));
             else if (obj instanceof PdfAnnotation)
-                array.add(((PdfAnnotation)obj).getIndirectReference());
+                array.add(((PdfAnnotation) obj).getIndirectReference());
             else
                 throw new RuntimeException(MessageLocalization.getComposedMessage("the.array.must.contain.string.or.pdfannotation"));
         }
@@ -559,19 +558,18 @@ public class PdfAction extends PdfDictionary {
         PdfAction action = new PdfAction();
         action.put(PdfName.S, PdfName.SETOCGSTATE);
         PdfArray a = new PdfArray();
-        for (int k = 0; k < state.size(); ++k) {
-            Object o = state.get(k);
+        for (Object o : state) {
             if (o == null)
                 continue;
             if (o instanceof PdfIndirectReference)
-                a.add((PdfIndirectReference)o);
+                a.add((PdfIndirectReference) o);
             else if (o instanceof PdfLayer)
-                a.add(((PdfLayer)o).getRef());
+                a.add(((PdfLayer) o).getRef());
             else if (o instanceof PdfName)
-                a.add((PdfName)o);
+                a.add((PdfName) o);
             else if (o instanceof String) {
                 PdfName name = null;
-                String s = (String)o;
+                String s = (String) o;
                 if (s.equalsIgnoreCase("on"))
                     name = PdfName.ON;
                 else if (s.equalsIgnoreCase("off"))
@@ -581,8 +579,7 @@ public class PdfAction extends PdfDictionary {
                 else
                     throw new IllegalArgumentException(MessageLocalization.getComposedMessage("a.string.1.was.passed.in.state.only.on.off.and.toggle.are.allowed", s));
                 a.add(name);
-            }
-            else
+            } else
                 throw new IllegalArgumentException(MessageLocalization.getComposedMessage("invalid.type.was.passed.in.state.1", o.getClass().getName()));
         }
         action.put(PdfName.STATE, a);

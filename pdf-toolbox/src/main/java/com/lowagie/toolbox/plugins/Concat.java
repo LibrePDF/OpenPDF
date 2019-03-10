@@ -95,7 +95,7 @@ public class Concat extends AbstractTool {
             if (getValue("destfile") == null) throw new InstantiationException("You need to choose a destination file");
             File pdf_file = (File)getValue("destfile");
             int pageOffset = 0;
-            List<HashMap<String, Object>> master = new ArrayList<HashMap<String, Object>>();
+            List<HashMap<String, Object>> master = new ArrayList<>();
             Document document = null;
             PdfCopy  writer = null;
             for (int i = 0; i < 2; i++) {

@@ -49,7 +49,6 @@
 package com.lowagie.text.pdf;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 class PageResources {
     
@@ -77,13 +76,12 @@ class PageResources {
             return;
         originalResources = new PdfDictionary();
         originalResources.merge(resources);
-        for (Iterator i = resources.getKeys().iterator(); i.hasNext();) {
-            PdfName key = (PdfName)i.next();
+        for (PdfName key : resources.getKeys()) {
             PdfObject sub = PdfReader.getPdfObject(resources.get(key));
             if (sub != null && sub.isDictionary()) {
-                PdfDictionary dic = (PdfDictionary)sub;
-                for (Iterator j = dic.getKeys().iterator(); j.hasNext();) {
-                    forbiddenNames.put(j.next(), null);
+                PdfDictionary dic = (PdfDictionary) sub;
+                for (PdfName pdfName : dic.getKeys()) {
+                    forbiddenNames.put(pdfName, null);
                 }
                 PdfDictionary dic2 = new PdfDictionary();
                 dic2.merge(dic);
@@ -97,11 +95,9 @@ class PageResources {
         if (forbiddenNames != null) {
             translated = (PdfName)usedNames.get(name);
             if (translated == null) {
-                while (true) {
+                do {
                     translated = new PdfName("Xi" + (namePtr[0]++));
-                    if (!forbiddenNames.containsKey(translated))
-                        break;
-                }
+                } while (forbiddenNames.containsKey(translated));
                 usedNames.put(name, translated);
             }
         }

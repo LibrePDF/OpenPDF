@@ -98,10 +98,8 @@ public class Layers {
             PdfDictionary d = new PdfDictionary();
             d.put(PdfName.ORDER, order);
             p.put(PdfName.D, d);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

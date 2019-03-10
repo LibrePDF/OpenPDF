@@ -59,10 +59,8 @@ public class PageLabels {
             pageLabels.addPageLabel(5, PdfPageLabels.DECIMAL_ARABIC_NUMERALS);
             pageLabels.addPageLabel(8, PdfPageLabels.DECIMAL_ARABIC_NUMERALS, "A-", 8);
             writer.setPageLabels(pageLabels);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

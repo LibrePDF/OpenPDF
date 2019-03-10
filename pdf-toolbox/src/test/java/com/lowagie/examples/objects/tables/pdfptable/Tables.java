@@ -108,10 +108,8 @@ public class Tables {
             table.writeSelectedRows(0, -1, 50, pos, writer.getDirectContent());
         }
 
-        catch (DocumentException de) {
+        catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
         // step 5
         document.close();

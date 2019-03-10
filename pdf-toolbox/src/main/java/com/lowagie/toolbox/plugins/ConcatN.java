@@ -103,7 +103,7 @@ public class ConcatN extends AbstractTool {
             }
             File pdf_file = (File) getValue("destfile");
             int pageOffset = 0;
-            ArrayList<HashMap<String, Object>> master = new ArrayList<HashMap<String, Object>>();
+            ArrayList<HashMap<String, Object>> master = new ArrayList<>();
             Document document = null;
             PdfCopy writer = null;
             for (int i = 0; i < files.length; i++) {

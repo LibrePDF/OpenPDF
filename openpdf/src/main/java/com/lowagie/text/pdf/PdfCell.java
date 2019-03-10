@@ -252,8 +252,8 @@ public class PdfCell extends Rectangle {
                        line = new PdfLine(currentLeft, currentRight, alignment, currentLineLeading);
                     }
                     else {
-                        for (Iterator j = chunks.iterator(); j.hasNext();) {
-                            Chunk c = (Chunk) j.next();
+                        for (Object chunk1 : chunks) {
+                            Chunk c = (Chunk) chunk1;
                             chunk = new PdfChunk(c, (PdfAction) (allActions.get(aCounter++)));
                             while ((overflow = line.add(chunk)) != null) {
                                 addLine(line);
@@ -323,15 +323,15 @@ public class PdfCell extends Rectangle {
         ArrayList allActions = new ArrayList();
         processActions(list, null, allActions);
         int aCounter = 0;
-        for (Iterator it = list.getItems().iterator(); it.hasNext();) {
-            Element ele = (Element)it.next();
+        for (Object o1 : list.getItems()) {
+            Element ele = (Element) o1;
             switch (ele.type()) {
                 case Element.LISTITEM:
-                    ListItem item = (ListItem)ele;
+                    ListItem item = (ListItem) ele;
                     line = new PdfLine(left + item.getIndentationLeft(), right, alignment, item.getLeading());
                     line.setListItem(item);
-                    for (Iterator j = item.getChunks().iterator(); j.hasNext();) {
-                        chunk = new PdfChunk((Chunk) j.next(), (PdfAction) (allActions.get(aCounter++)));
+                    for (Object o : item.getChunks()) {
+                        chunk = new PdfChunk((Chunk) o, (PdfAction) (allActions.get(aCounter++)));
                         while ((overflow = line.add(chunk)) != null) {
                             addLine(line);
                             line = new PdfLine(left + item.getIndentationLeft(), right, alignment, item.getLeading());
@@ -343,7 +343,7 @@ public class PdfCell extends Rectangle {
                     }
                     break;
                 case Element.LIST:
-                    List sublist = (List)ele;
+                    List sublist = (List) ele;
                     addList(sublist, left + sublist.getIndentationLeft(), right, alignment);
                     break;
             }
@@ -603,8 +603,8 @@ public class PdfCell extends Rectangle {
         }
         if (difference > 0) {
             Image image;
-            for (Iterator i = images.iterator(); i.hasNext();) {
-                image = (Image) i.next();
+            for (Object image1 : images) {
+                image = (Image) image1;
                 image.setAbsolutePosition(image.getAbsoluteX(), image.getAbsoluteY() - difference - leading);
             }
         }
@@ -697,8 +697,8 @@ public class PdfCell extends Rectangle {
         float result = 0;
         int size = lines.size();
         PdfLine line;
-        for (int i = 0; i < size; i++) {
-            line = (PdfLine) lines.get(i);
+        for (Object line1 : lines) {
+            line = (PdfLine) line1;
             result += line.height();
         }
         return result;
@@ -712,8 +712,8 @@ public class PdfCell extends Rectangle {
 
     public float remainingHeight() {
         float result = 0f;
-        for (Iterator i = images.iterator(); i.hasNext();) {
-            Image image = (Image) i.next();
+        for (Object image1 : images) {
+            Image image = (Image) image1;
             result += image.getScaledHeight();
         }
         return remainingLinesHeight() + cellspacing + 2 * cellpadding + result;

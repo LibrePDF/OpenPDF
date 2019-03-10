@@ -91,11 +91,8 @@ public class SpecificCells {
             aTable.setConvert2pdfptable(true);
             document.add(aTable);
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
         // step 5: we close the document
         document.close();

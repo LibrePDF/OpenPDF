@@ -103,37 +103,32 @@ public class PdfInformationPanel extends JPanel implements PropertyChangeListene
 
                 StringBuilder sb = new StringBuilder();
                 sb.append("<html>=== Document Information ===<p>");
-                sb.append(reader.getCropBox(page).getHeight() + "*"
-                        + reader.getCropBox(page).getWidth() + "<p>");
-                sb.append("PDF Version: " + reader.getPdfVersion() + "<p>");
-                sb.append("Number of pages: " + reader.getNumberOfPages()
-                        + "<p>");
-                sb.append("Number of PDF objects: " + reader.getXrefSize()
-                        + "<p>");
-                sb.append("File length: " + reader.getFileLength() + "<p>");
-                sb.append("Encrypted= " + reader.isEncrypted() + "<p>");
+                sb.append(reader.getCropBox(page).getHeight()).append("*").append(reader.getCropBox(page).getWidth()).append("<p>");
+                sb.append("PDF Version: ").append(reader.getPdfVersion()).append("<p>");
+                sb.append("Number of pages: ").append(reader.getNumberOfPages()).append("<p>");
+                sb.append("Number of PDF objects: ").append(reader.getXrefSize()).append("<p>");
+                sb.append("File length: ").append(reader.getFileLength()).append("<p>");
+                sb.append("Encrypted= ").append(reader.isEncrypted()).append("<p>");
                 if (pdfinfo.get("Title") != null) {
-                    sb.append("Title= " + pdfinfo.get("Title") + "<p>");
+                    sb.append("Title= ").append(pdfinfo.get("Title")).append("<p>");
                 }
                 if (pdfinfo.get("Author") != null) {
-                    sb.append("Author= " + pdfinfo.get("Author") + "<p>");
+                    sb.append("Author= ").append(pdfinfo.get("Author")).append("<p>");
                 }
                 if (pdfinfo.get("Subject") != null) {
-                    sb.append("Subject= " + pdfinfo.get("Subject") + "<p>");
+                    sb.append("Subject= ").append(pdfinfo.get("Subject")).append("<p>");
                 }
                 if (pdfinfo.get("Producer") != null) {
-                    sb.append("Producer= " + pdfinfo.get("Producer") + "<p>");
+                    sb.append("Producer= ").append(pdfinfo.get("Producer")).append("<p>");
                 }
                 if (pdfinfo.get("ModDate") != null) {
-                    sb.append("ModDate= "
-                            + PdfDate.decode(pdfinfo.get("ModDate"))
-                                    .getTime() + "<p>");
+                    sb.append("ModDate= ").append(PdfDate.decode(pdfinfo.get("ModDate"))
+                            .getTime()).append("<p>");
                 }
                 if (pdfinfo.get("CreationDate") != null) {
-                    sb.append("CreationDate= "
-                            + PdfDate.decode(
-                                    pdfinfo.get("CreationDate"))
-                                    .getTime() + "<p>");
+                    sb.append("CreationDate= ").append(PdfDate.decode(
+                            pdfinfo.get("CreationDate"))
+                            .getTime()).append("<p>");
                 }
                 sb.append("</html>");
                 label.setText(sb.toString());

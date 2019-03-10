@@ -352,15 +352,15 @@ public class Font implements Comparable {
         default:
             if (baseFont != null) {
                 String[][] names = baseFont.getFamilyFontName();
-                for (int i = 0; i < names.length; i++) {
-                    if ("0".equals(names[i][2])) {
-                        return names[i][3];
+                for (String[] name : names) {
+                    if ("0".equals(name[2])) {
+                        return name[3];
                     }
-                    if ("1033".equals(names[i][2])) {
-                        tmp = names[i][3];
+                    if ("1033".equals(name[2])) {
+                        tmp = name[3];
                     }
-                    if ("".equals(names[i][2])) {
-                        tmp = names[i][3];
+                    if ("".equals(name[2])) {
+                        tmp = name[3];
                     }
                 }
             }
@@ -565,22 +565,22 @@ public class Font implements Comparable {
      */
     public static int getStyleValue(String style) {
         int s = 0;
-        if (style.indexOf(Markup.CSS_VALUE_NORMAL) != -1) {
+        if (style.contains(Markup.CSS_VALUE_NORMAL)) {
             s |= NORMAL;
         }
-        if (style.indexOf(Markup.CSS_VALUE_BOLD) != -1) {
+        if (style.contains(Markup.CSS_VALUE_BOLD)) {
             s |= BOLD;
         }
-        if (style.indexOf(Markup.CSS_VALUE_ITALIC) != -1) {
+        if (style.contains(Markup.CSS_VALUE_ITALIC)) {
             s |= ITALIC;
         }
-        if (style.indexOf(Markup.CSS_VALUE_OBLIQUE) != -1) {
+        if (style.contains(Markup.CSS_VALUE_OBLIQUE)) {
             s |= ITALIC;
         }
-        if (style.indexOf(Markup.CSS_VALUE_UNDERLINE) != -1) {
+        if (style.contains(Markup.CSS_VALUE_UNDERLINE)) {
             s |= UNDERLINE;
         }
-        if (style.indexOf(Markup.CSS_VALUE_LINETHROUGH) != -1) {
+        if (style.contains(Markup.CSS_VALUE_LINETHROUGH)) {
             s |= STRIKETHRU;
         }
         return s;

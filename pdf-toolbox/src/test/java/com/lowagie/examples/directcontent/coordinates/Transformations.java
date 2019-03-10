@@ -75,13 +75,10 @@ public class Transformations {
             cb.addTemplate(template, 2, 0, -1, 2, 200, 300);
             cb.sanityCheck();
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

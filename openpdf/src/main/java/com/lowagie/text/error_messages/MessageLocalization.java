@@ -221,13 +221,13 @@ public final class MessageLocalization {
                 file = language + "_" + country + ".lng";
             else
                 file = language + ".lng";
-            is = BaseFont.getResourceStream(BASE_PATH + file, new MessageLocalization().getClass().getClassLoader());
+            is = BaseFont.getResourceStream(BASE_PATH + file, MessageLocalization.class.getClassLoader());
             if (is != null)
                 return readLanguageStream(is);
             if (country == null)
                 return null;
             file = language + ".lng";
-            is = BaseFont.getResourceStream(BASE_PATH + file, new MessageLocalization().getClass().getClassLoader());
+            is = BaseFont.getResourceStream(BASE_PATH + file, MessageLocalization.class.getClassLoader());
             if (is != null)
                 return readLanguageStream(is);
             else
@@ -236,9 +236,9 @@ public final class MessageLocalization {
         finally {
             try {
                 is.close();
-            } catch (Exception exx) {
+            } catch (Exception ignored) {
+                // do nothing
             }
-            // do nothing
         }
     }
 

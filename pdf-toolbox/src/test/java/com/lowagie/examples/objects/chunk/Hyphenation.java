@@ -78,10 +78,8 @@ public class Hyphenation {
             p = new Paragraph(ck);
             p.setAlignment(Paragraph.ALIGN_JUSTIFIED);
             document.add(p);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

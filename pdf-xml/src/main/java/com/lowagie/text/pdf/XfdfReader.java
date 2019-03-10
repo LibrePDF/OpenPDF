@@ -91,18 +91,9 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
    * @throws IOException on error
    */
   public XfdfReader(String filename) throws IOException {
-    FileInputStream fin = null;
-    try {
-      fin = new FileInputStream(filename);
-      SimpleXMLParser.parse(this, fin);
-    } finally {
-      try {
-        if (fin != null) {
-          fin.close();
-        }
-      } catch (Exception e) {
+      try (FileInputStream fin = new FileInputStream(filename)) {
+          SimpleXMLParser.parse(this, fin);
       }
-    }
   }
 
   /**
@@ -185,18 +176,25 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
       }
     }
 
-    if (tag.equals("xfdf")) {
-      // intentionally left blank
-    } else if (tag.equals("f")) {
-      fileSpec = (String) h.get("href");
-    } else if (tag.equals("fields")) {
-      fields = new HashMap<>();    // init it!
-      listFields = new HashMap<>();
-    } else if (tag.equals("field")) {
-      String fName = (String) h.get("name");
-      fieldNames.push(fName);
-    } else if (tag.equals("value")) {
-      fieldValues.push("");
+    switch (tag) {
+      case "xfdf":
+        // intentionally left blank
+        break;
+      case "f":
+        fileSpec = (String) h.get("href");
+        break;
+      case "fields":
+        fields = new HashMap<>();    // init it!
+
+        listFields = new HashMap<>();
+        break;
+      case "field":
+        String fName = (String) h.get("name");
+        fieldNames.push(fName);
+        break;
+      case "value":
+        fieldValues.push("");
+        break;
     }
   }
 

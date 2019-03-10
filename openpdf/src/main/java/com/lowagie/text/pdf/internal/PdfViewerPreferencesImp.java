@@ -203,8 +203,8 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
      * Checks if some value is valid for a certain key.
      */
     private boolean isPossibleValue(PdfName value, PdfName[] accepted) {
-        for (int i = 0; i < accepted.length; i++) {
-            if (accepted[i].equals(value)) {
+        for (PdfName pdfName : accepted) {
+            if (pdfName.equals(value)) {
                 return true;
             }
         }
@@ -362,9 +362,9 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
                 .get(PdfName.VIEWERPREFERENCES));
         if (obj != null && obj.isDictionary()) {
             PdfDictionary vp = (PdfDictionary) obj;
-            for (int i = 0; i < VIEWER_PREFERENCES.length; i++) {
-                obj = PdfReader.getPdfObjectRelease(vp.get(VIEWER_PREFERENCES[i]));
-                preferences.addViewerPreference(VIEWER_PREFERENCES[i], obj);
+            for (PdfName viewerPreference : VIEWER_PREFERENCES) {
+                obj = PdfReader.getPdfObjectRelease(vp.get(viewerPreference));
+                preferences.addViewerPreference(viewerPreference, obj);
             }
         }
         return preferences;

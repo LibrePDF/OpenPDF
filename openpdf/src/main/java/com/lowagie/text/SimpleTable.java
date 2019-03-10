@@ -49,7 +49,7 @@
 package com.lowagie.text;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.ExceptionConverter;
@@ -109,8 +109,8 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
         SimpleCell row = (SimpleCell)content.get(0);
         SimpleCell cell;
         int columns = 0;
-        for (Iterator i = row.getContent().iterator(); i.hasNext(); ) {
-            cell = (SimpleCell)i.next();
+        for (Object o2 : row.getContent()) {
+            cell = (SimpleCell) o2;
             columns += cell.getColspan();
         }
         float[] widths = new float[columns];
@@ -121,11 +121,11 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
         table.setPadding(cellpadding);
         table.cloneNonPositionParameters(this);
         int pos;
-        for (Iterator rows = content.iterator(); rows.hasNext(); ) {
-            row = (SimpleCell)rows.next();
+        for (Object o1 : content) {
+            row = (SimpleCell) o1;
             pos = 0;
-            for (Iterator cells = row.getContent().iterator(); cells.hasNext(); ) {
-                cell = (SimpleCell)cells.next();
+            for (Object o : row.getContent()) {
+                cell = (SimpleCell) o;
                 table.addCell(cell.createCell(row));
                 if (cell.getColspan() == 1) {
                     if (cell.getWidth() > 0) widths[pos] = cell.getWidth();
@@ -179,8 +179,8 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
         SimpleCell row = (SimpleCell)content.get(0);
         SimpleCell cell;
         int columns = 0;
-        for (Iterator i = row.getContent().iterator(); i.hasNext(); ) {
-            cell = (SimpleCell)i.next();
+        for (Object o2 : row.getContent()) {
+            cell = (SimpleCell) o2;
             columns += cell.getColspan();
         }
         float[] widths = new float[columns];
@@ -189,21 +189,21 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
         table.setTableEvent(this);
         table.setHorizontalAlignment(alignment);
         int pos;
-        for (Iterator rows = content.iterator(); rows.hasNext(); ) {
-            row = (SimpleCell)rows.next();
+        for (Object o1 : content) {
+            row = (SimpleCell) o1;
             pos = 0;
-            for (Iterator cells = row.getContent().iterator(); cells.hasNext(); ) {
-                cell = (SimpleCell)cells.next();
-                if (Float.isNaN(cell.getSpacing_left()))    {
+            for (Object o : row.getContent()) {
+                cell = (SimpleCell) o;
+                if (Float.isNaN(cell.getSpacing_left())) {
                     cell.setSpacing_left(cellspacing / 2f);
                 }
-                if (Float.isNaN(cell.getSpacing_right()))    {
+                if (Float.isNaN(cell.getSpacing_right())) {
                     cell.setSpacing_right(cellspacing / 2f);
                 }
-                if (Float.isNaN(cell.getSpacing_top()))    {
+                if (Float.isNaN(cell.getSpacing_top())) {
                     cell.setSpacing_top(cellspacing / 2f);
                 }
-                if (Float.isNaN(cell.getSpacing_bottom()))    {
+                if (Float.isNaN(cell.getSpacing_bottom())) {
                     cell.setSpacing_bottom(cellspacing / 2f);
                 }
                 cell.setPadding(cellpadding);

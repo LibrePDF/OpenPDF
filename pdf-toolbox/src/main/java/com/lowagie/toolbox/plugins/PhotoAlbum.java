@@ -116,14 +116,14 @@ public class PhotoAlbum extends AbstractTool {
             PdfPageLabels pageLabels = new PdfPageLabels();
             int dpiX, dpiY;
             float imgWidthPica, imgHeightPica;
-            TreeSet<File> images = new TreeSet<File>();
+            TreeSet<File> images = new TreeSet<>();
             File[] files = directory.listFiles();
             if (files == null) {
                 throw new NullPointerException("listFiles() returns null");
             }
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isFile()) {
-                    images.add(files[i]);
+            for (File file : files) {
+                if (file.isFile()) {
+                    images.add(file);
                 }
             }
             String label;

@@ -376,8 +376,8 @@ public class BidiLine {
             lastValidChunk = ck;
             if (ck.isTab()) {
                 Object[] tab = (Object[])ck.getAttribute(Chunk.TAB);
-                float tabPosition = ((Float)tab[1]).floatValue();
-                boolean newLine = ((Boolean)tab[2]).booleanValue();
+                float tabPosition = (Float) tab[1];
+                boolean newLine = (Boolean) tab[2];
                 if (newLine && tabPosition < originalWidth - width) {
                     return new PdfLine(0, originalWidth, width, alignment, true, createArrayOfPdfChunks(oldCurrentChar, currentChar - 1), isRTL);
                 }

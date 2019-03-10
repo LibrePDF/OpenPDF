@@ -50,6 +50,8 @@
 package com.lowagie.text.xml.xmp;
 
 
+import java.util.Arrays;
+
 /**
  * An implementation of an XmpSchema.
  */
@@ -135,9 +137,7 @@ public class DublinCoreSchema extends XmpSchema {
      */
     public void addSubject(String[] subject) {
         XmpArray array = new XmpArray(XmpArray.UNORDERED);
-        for (int i = 0; i < subject.length; i++) {
-            array.add(subject[i]);
-        }
+        array.addAll(Arrays.asList(subject));
         setProperty(SUBJECT, array);
     }
     
@@ -157,9 +157,7 @@ public class DublinCoreSchema extends XmpSchema {
      */
     public void addAuthor(String[] author) {
         XmpArray array = new XmpArray(XmpArray.ORDERED);
-        for (int i = 0; i < author.length; i++) {
-            array.add(author[i]);
-        }
+        array.addAll(Arrays.asList(author));
         setProperty(CREATOR, array);
     }
 
@@ -179,9 +177,7 @@ public class DublinCoreSchema extends XmpSchema {
      */
     public void addPublisher(String[] publisher) {
         XmpArray array = new XmpArray(XmpArray.ORDERED);
-        for (int i = 0; i < publisher.length; i++) {
-            array.add(publisher[i]);
-        }
+        array.addAll(Arrays.asList(publisher));
         setProperty(PUBLISHER, array);
     }
 }

@@ -148,7 +148,7 @@ public class PRTokeniser {
     }
     
     public String readString(int size) throws IOException {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int ch;
         while ((size--) > 0) {
             ch = file.read();

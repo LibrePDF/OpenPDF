@@ -72,10 +72,8 @@ public class Paragraphs {
             Paragraph p3 = new Paragraph("This is my third paragraph.",
                     FontFactory.getFont(FontFactory.HELVETICA, 12));
             document.add(p3);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

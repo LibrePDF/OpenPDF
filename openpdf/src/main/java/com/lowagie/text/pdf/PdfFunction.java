@@ -122,8 +122,7 @@ public class PdfFunction {
         if (range != null)
             func.dictionary.put(PdfName.RANGE, new PdfArray(range));
         PdfArray array = new PdfArray();
-        for (int k = 0; k < functions.length; ++k)
-            array.add(functions[k].getReference());
+        for (PdfFunction function : functions) array.add(function.getReference());
         func.dictionary.put(PdfName.FUNCTIONS, array);
         func.dictionary.put(PdfName.BOUNDS, new PdfArray(bounds));
         func.dictionary.put(PdfName.ENCODE, new PdfArray(encode));

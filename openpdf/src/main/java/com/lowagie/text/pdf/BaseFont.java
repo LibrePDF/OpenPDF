@@ -56,7 +56,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -306,11 +305,11 @@ public abstract class BaseFont {
     protected boolean fontSpecific = true;
 
     /** cache for the fonts already used. */
-    protected static ConcurrentHashMap<String, BaseFont> fontCache = new ConcurrentHashMap<String, BaseFont>(
+    protected static ConcurrentHashMap<String, BaseFont> fontCache = new ConcurrentHashMap<>(
             500, 0.85f, 64);
 
     /** list of the 14 built in fonts. */
-    protected static final HashMap<String, PdfName> BuiltinFonts14 = new HashMap<String, PdfName>();
+    protected static final HashMap<String, PdfName> BuiltinFonts14 = new HashMap<>();
 
     /**
      * Forces the output of the width array. Only matters for the 14 built-in
@@ -1805,8 +1804,8 @@ public abstract class BaseFont {
         }
         PdfDictionary font = resources.getAsDict(PdfName.FONT);
         if (font != null) {
-            for (Iterator it = font.getKeys().iterator(); it.hasNext();) {
-                PdfObject ft = font.get((PdfName) it.next());
+            for (PdfName pdfName : font.getKeys()) {
+                PdfObject ft = font.get(pdfName);
                 if (ft == null || !ft.isIndirect()) {
                     continue;
                 }
@@ -1819,8 +1818,8 @@ public abstract class BaseFont {
         }
         PdfDictionary xobj = resources.getAsDict(PdfName.XOBJECT);
         if (xobj != null) {
-            for (Iterator it = xobj.getKeys().iterator(); it.hasNext();) {
-                recourseFonts(xobj.getAsDict((PdfName) it.next()), hits, fonts,
+            for (PdfName pdfName : xobj.getKeys()) {
+                recourseFonts(xobj.getAsDict(pdfName), hits, fonts,
                         level);
             }
         }
@@ -1838,7 +1837,7 @@ public abstract class BaseFont {
      */
     public static ArrayList<Object[]> getDocumentFonts(PdfReader reader) {
         IntHashtable hits = new IntHashtable();
-        ArrayList<Object[]> fonts = new ArrayList<Object[]>();
+        ArrayList<Object[]> fonts = new ArrayList<>();
         int npages = reader.getNumberOfPages();
         for (int k = 1; k <= npages; ++k) {
             recourseFonts(reader.getPageN(k), hits, fonts, 1);
@@ -1861,7 +1860,7 @@ public abstract class BaseFont {
     public static ArrayList<Object[]> getDocumentFonts(PdfReader reader,
             int page) {
         IntHashtable hits = new IntHashtable();
-        ArrayList<Object[]> fonts = new ArrayList<Object[]>();
+        ArrayList<Object[]> fonts = new ArrayList<>();
         recourseFonts(reader.getPageN(page), hits, fonts, 1);
         return fonts;
     }
@@ -1925,7 +1924,7 @@ public abstract class BaseFont {
      */
     public void addSubsetRange(int[] range) {
         if (subsetRanges == null) {
-            subsetRanges = new ArrayList<int[]>();
+            subsetRanges = new ArrayList<>();
         }
         subsetRanges.add(range);
     }

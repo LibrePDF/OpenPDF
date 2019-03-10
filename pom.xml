@@ -39,23 +39,25 @@
     </scm>
 
     <properties>
-        <java-module-name>com.github.librepdf.openpdf.parent</java-module-name>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.test.failure.ignore>false</maven.test.failure.ignore>
-        <java.version>1.8</java.version>
-        <maven.source.version>3.0.1</maven.source.version>
-        <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
-        <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
-        <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
-        <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
-        <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
-        <maven.jar.plugin.version>3.1.0</maven.jar.plugin.version>
-        <maven.plugin.repository.version>2.3.1</maven.plugin.repository.version>
-        <maven.plugin.bundle.version>3.2.0</maven.plugin.bundle.version>
+        
         <bouncycastle.version>1.61</bouncycastle.version>
+        <hamcrest.version>2.1</hamcrest.version>
+        <java-module-name>com.github.librepdf.openpdf.parent</java-module-name>
         <jupiter.version>5.4.0</jupiter.version>
+        <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
+        <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
+        <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
+        <maven.jar.plugin.version>3.1.0</maven.jar.plugin.version>
+        <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
+        <maven.plugin.bundle.version>3.2.0</maven.plugin.bundle.version>
+        <maven.plugin.repository.version>2.3.1</maven.plugin.repository.version>
+        <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
+        <maven.source.version>3.0.1</maven.source.version>
         <maven.surefire.plugin.version>2.22.1</maven.surefire.plugin.version>
+        <maven.test.failure.ignore>false</maven.test.failure.ignore>
         <mockito.version>2.25.0</mockito.version>
     </properties>
 
@@ -227,13 +229,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Test Dependencies -->
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>3.12.1</version>
-                <scope>test</scope>
-            </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk15on</artifactId>
@@ -247,6 +242,51 @@
         </dependencies>
     </dependencyManagement>
 
+    <dependencies>
+        <!-- Common test dependencies -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.12.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>${hamcrest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>${hamcrest.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <developers>
         <developer>
             <name>The OpenPDF Project</name>

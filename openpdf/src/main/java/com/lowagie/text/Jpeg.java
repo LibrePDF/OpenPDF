@@ -161,7 +161,7 @@ public class Jpeg extends Image {
      * @return    an int
      * @throws IOException
      */
-    private static final int getShort(InputStream is) throws IOException {
+    private static int getShort(InputStream is) throws IOException {
         return (is.read() << 8) + is.read();
     }
     
@@ -171,19 +171,19 @@ public class Jpeg extends Image {
      * @param    marker      an int
      * @return    a type: <VAR>VALID_MARKER</CODE>, <VAR>UNSUPPORTED_MARKER</VAR> or <VAR>NOPARAM_MARKER</VAR>
      */
-    private static final int marker(int marker) {
-        for (int i = 0; i < VALID_MARKERS.length; i++) {
-            if (marker == VALID_MARKERS[i]) {
+    private static int marker(int marker) {
+        for (int validMarker : VALID_MARKERS) {
+            if (marker == validMarker) {
                 return VALID_MARKER;
             }
         }
-        for (int i = 0; i < NOPARAM_MARKERS.length; i++) {
-            if (marker == NOPARAM_MARKERS[i]) {
+        for (int noparamMarker : NOPARAM_MARKERS) {
+            if (marker == noparamMarker) {
                 return NOPARAM_MARKER;
             }
         }
-        for (int i = 0; i < UNSUPPORTED_MARKERS.length; i++) {
-            if (marker == UNSUPPORTED_MARKERS[i]) {
+        for (int unsupportedMarker : UNSUPPORTED_MARKERS) {
+            if (marker == unsupportedMarker) {
                 return UNSUPPORTED_MARKER;
             }
         }
@@ -341,9 +341,9 @@ public class Jpeg extends Image {
             }
             byte[] ficc = new byte[total];
             total = 0;
-            for (int k = 0; k < icc.length; ++k) {
-                System.arraycopy(icc[k], 14, ficc, total, icc[k].length - 14);
-                total += icc[k].length - 14;
+            for (byte[] bytes : icc) {
+                System.arraycopy(bytes, 14, ficc, total, bytes.length - 14);
+                total += bytes.length - 14;
             }
             try {
                 ICC_Profile icc_prof = ICC_Profile.getInstance(ficc);

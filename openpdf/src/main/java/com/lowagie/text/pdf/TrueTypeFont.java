@@ -53,7 +53,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import com.lowagie.text.error_messages.MessageLocalization;
 
@@ -718,7 +717,7 @@ class TrueTypeFont extends BaseFont {
      * @throws IOException the font file could not be read
      */
     protected String readUnicodeString(int length) throws IOException {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         length /= 2;
         for (int k = 0; k < length; ++k) {
             buf.append(rf.readChar());
@@ -895,7 +894,7 @@ class TrueTypeFont extends BaseFont {
                 int[] r = new int[2];
                 r[0] = startGlyphID;
                 r[1] = getGlyphWidth(r[0]);
-                h.put(new Integer(i), r);
+                h.put(i, r);
                 startGlyphID++;
             }
         }
@@ -914,7 +913,7 @@ class TrueTypeFont extends BaseFont {
             int[] r = new int[2];
             r[0] = rf.readUnsignedByte();
             r[1] = getGlyphWidth(r[0]);
-            h.put(new Integer(k), r);
+            h.put(k, r);
         }
         return h;
     }
@@ -966,7 +965,7 @@ class TrueTypeFont extends BaseFont {
                 int[] r = new int[2];
                 r[0] = glyph;
                 r[1] = getGlyphWidth(r[0]);
-                h.put(new Integer(fontSpecific ? ((j & 0xff00) == 0xf000 ? j & 0xff : j) : j), r);
+                h.put(fontSpecific ? ((j & 0xff00) == 0xf000 ? j & 0xff : j) : j, r);
             }
         }
         return h;
@@ -987,7 +986,7 @@ class TrueTypeFont extends BaseFont {
             int[] r = new int[2];
             r[0] = rf.readUnsignedShort();
             r[1] = getGlyphWidth(r[0]);
-            h.put(new Integer(k + start_code), r);
+            h.put(k + start_code, r);
         }
         return h;
     }
@@ -1176,8 +1175,8 @@ class TrueTypeFont extends BaseFont {
     
     protected static int[] compactRanges(ArrayList ranges) {
         ArrayList simp = new ArrayList();
-        for (int k = 0; k < ranges.size(); ++k) {
-            int[] r = (int[])ranges.get(k);
+        for (Object range : ranges) {
+            int[] r = (int[]) range;
             for (int j = 0; j < r.length; j += 2) {
                 simp.add(new int[]{Math.max(0, Math.min(r[j], r[j + 1])), Math.min(0xffff, Math.max(r[j], r[j + 1]))});
             }
@@ -1215,13 +1214,13 @@ class TrueTypeFont extends BaseFont {
                 usemap = cmap31;
             else 
                 usemap = cmap10;
-            for (Iterator it = usemap.entrySet().iterator(); it.hasNext();) {
-                Map.Entry e = (Map.Entry)it.next();
-                int[] v = (int[])e.getValue();
-                Integer gi = new Integer(v[0]);
+            for (Object o : usemap.entrySet()) {
+                Map.Entry e = (Map.Entry) o;
+                int[] v = (int[]) e.getValue();
+                Integer gi = v[0];
                 if (longTag.containsKey(gi))
                     continue;
-                int c = ((Integer)e.getKey()).intValue();
+                int c = (Integer) e.getKey();
                 boolean skip = true;
                 for (int k = 0; k < rg.length; k += 2) {
                     if (c >= rg[k] && c <= rg[k + 1]) {
@@ -1243,10 +1242,10 @@ class TrueTypeFont extends BaseFont {
      * @throws DocumentException error in generating the object
      */
     void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException, IOException {
-        int firstChar = ((Integer)params[0]).intValue();
-        int lastChar = ((Integer)params[1]).intValue();
+        int firstChar = (Integer) params[0];
+        int lastChar = (Integer) params[1];
         byte[] shortTag = (byte[]) params[2];
-        boolean subsetp = ((Boolean)params[3]).booleanValue() && subset;
+        boolean subsetp = (Boolean) params[3] && subset;
         
         if (!subsetp) {
             firstChar = 0;
@@ -1283,7 +1282,7 @@ class TrueTypeFont extends BaseFont {
                                 metrics = getMetricsTT(unicodeDifferences[k]);
                         }
                         if (metrics != null)
-                            glyphs.put(new Integer(metrics[0]), null);
+                            glyphs.put(metrics[0], null);
                     }
                 }
                 addRangeUni(glyphs, false, subsetp);
@@ -1411,15 +1410,15 @@ class TrueTypeFont extends BaseFont {
      */    
     public int[] getMetricsTT(int c) {
         if (cmapExt != null)
-            return (int[])cmapExt.get(new Integer(c));
+            return (int[])cmapExt.get(c);
         if (!fontSpecific && cmap31 != null) 
-            return (int[])cmap31.get(new Integer(c));
+            return (int[])cmap31.get(c);
         if (fontSpecific && cmap10 != null) 
-            return (int[])cmap10.get(new Integer(c));
+            return (int[])cmap10.get(c);
         if (cmap31 != null) 
-            return (int[])cmap31.get(new Integer(c));
+            return (int[])cmap31.get(c);
         if (cmap10 != null) 
-            return (int[])cmap10.get(new Integer(c));
+            return (int[])cmap10.get(c);
         return null;
     }
 
@@ -1533,7 +1532,7 @@ class TrueTypeFont extends BaseFont {
             map = cmap31;
         if (map == null)
             return null;
-        int[] metric = (int[]) map.get(new Integer(c));
+        int[] metric = (int[]) map.get(c);
         if (metric == null || bboxes == null)
             return null;
         return bboxes[metric[0]];

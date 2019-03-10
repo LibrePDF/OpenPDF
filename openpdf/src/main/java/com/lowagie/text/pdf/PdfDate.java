@@ -84,7 +84,7 @@ public class PdfDate extends PdfString {
     
     public PdfDate(Calendar d) {
         super();
-        StringBuffer date = new StringBuffer("D:");
+        StringBuilder date = new StringBuilder("D:");
         date.append(setLength(d.get(Calendar.YEAR), 4));
         date.append(setLength(d.get(Calendar.MONTH) + 1, 2));
         date.append(setLength(d.get(Calendar.DATE), 2));
@@ -128,7 +128,7 @@ public class PdfDate extends PdfString {
  */
     
     private String setLength(int i, int length) { // 1.3-1.4 problem fixed by Finn Bock
-        StringBuffer tmp = new StringBuffer();
+        StringBuilder tmp = new StringBuilder();
         tmp.append(i);
         while (tmp.length() < length) {
             tmp.insert(0, "0");
@@ -153,7 +153,7 @@ public class PdfDate extends PdfString {
     public static String getW3CDate(String d) {
         if (d.startsWith("D:"))
             d = d.substring(2);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (d.length() < 4)
             return "0000";
         sb.append(d, 0, 4); //year

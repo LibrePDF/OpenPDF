@@ -57,13 +57,10 @@ public class FontFactoryStyles {
             myPhrase.add(new Phrase("bolditalic", FontFactory.getFont("Arial", 8, Font.BOLDITALIC)));
             document.add(myPhrase);
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

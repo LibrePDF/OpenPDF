@@ -128,7 +128,7 @@ public class Type3Font extends BaseFont {
         if (c == 0 || c > 255)
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.char.1.doesn.t.belong.in.this.type3.font", (int)c));
         usedSlot[c] = true;
-        Integer ck = new Integer(c);
+        Integer ck = (int) c;
         Type3Glyph glyph = (Type3Glyph)char2glyph.get(ck);
         if (glyph != null)
             return glyph;
@@ -238,7 +238,7 @@ public class Type3Font extends BaseFont {
                 s = "a" + c2;
             PdfName n = new PdfName(s);
             diffs.add(n);
-            Type3Glyph glyph = (Type3Glyph)char2glyph.get(new Integer(c2));
+            Type3Glyph glyph = (Type3Glyph)char2glyph.get(c2);
             PdfStream stream = new PdfStream(glyph.toPdf(null));
             stream.flateCompress(compressionLevel);
             PdfIndirectReference refp = writer.addToBody(stream).getIndirectReference();
@@ -277,10 +277,9 @@ public class Type3Font extends BaseFont {
         char[] cc = text.toCharArray();
         byte[] b = new byte[cc.length];
         int p = 0;
-        for (int k = 0; k < cc.length; ++k) {
-            char c = cc[k];
+        for (char c : cc) {
             if (charExists(c))
-                b[p++] = (byte)c;
+                b[p++] = (byte) c;
         }
         if (b.length == p)
             return b;
@@ -304,8 +303,7 @@ public class Type3Font extends BaseFont {
     public int getWidth(String text) {
         char[] c = text.toCharArray();
         int total = 0;
-        for (int k = 0; k < c.length; ++k)
-            total += getWidth(c[k]);
+        for (char c1 : c) total += getWidth(c1);
         return total;
     }
     

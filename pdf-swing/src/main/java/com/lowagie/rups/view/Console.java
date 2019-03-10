@@ -189,8 +189,8 @@ public class Console implements Observer {
                     printStream.print(snippet);
                     textArea.setCaretPosition(textArea.getDocument().
                                               getLength());
-                } catch (BadLocationException ex) {
-                } catch (IOException e) {
+                } catch (BadLocationException | IOException ignored) {
+                    // ignored
                 }
             }
         }

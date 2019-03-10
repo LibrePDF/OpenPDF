@@ -417,9 +417,9 @@ public class PdfAnnotation extends PdfDictionary {
     annot.put(PdfName.SUBTYPE, name);
     annot.put(PdfName.CONTENTS, new PdfString(contents, PdfObject.TEXT_UNICODE));
     PdfArray array = new PdfArray();
-    for (int k = 0; k < quadPoints.length; ++k) {
-      array.add(new PdfNumber(quadPoints[k]));
-    }
+      for (float quadPoint : quadPoints) {
+          array.add(new PdfNumber(quadPoint));
+      }
     annot.put(PdfName.QUADPOINTS, array);
     return annot;
   }
@@ -442,14 +442,14 @@ public class PdfAnnotation extends PdfDictionary {
     annot.put(PdfName.SUBTYPE, PdfName.INK);
     annot.put(PdfName.CONTENTS, new PdfString(contents, PdfObject.TEXT_UNICODE));
     PdfArray outer = new PdfArray();
-    for (int k = 0; k < inkList.length; ++k) {
-      PdfArray inner = new PdfArray();
-        float[] deep = inkList[k];
-      for (int j = 0; j < deep.length; ++j) {
-        inner.add(new PdfNumber(deep[j]));
+      for (float[] floats : inkList) {
+          PdfArray inner = new PdfArray();
+          float[] deep = floats;
+          for (float v : deep) {
+              inner.add(new PdfNumber(v));
+          }
+          outer.add(inner);
       }
-      outer.add(inner);
-    }
     annot.put(PdfName.INKLIST, outer);
     return annot;
   }

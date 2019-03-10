@@ -65,7 +65,7 @@ public class RupsMenuBar extends JMenuBar implements Observer {
      */
     public RupsMenuBar(Observable observable) {
         this.observable = observable;
-        items = new HashMap<String, JMenuItem>();
+        items = new HashMap<>();
         fileChooserAction = new FileChooserAction(observable, "Open", PdfFilter.INSTANCE, false);
         MessageAction message = new MessageAction();
         JMenu file = new JMenu(FILE_MENU);

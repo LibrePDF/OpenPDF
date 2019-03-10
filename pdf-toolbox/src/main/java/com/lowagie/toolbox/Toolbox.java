@@ -69,10 +69,10 @@ public class Toolbox extends JFrame implements ActionListener {
     /**
      * toolarray
      */
-    private ArrayList<AbstractTool> toolarray = new ArrayList<AbstractTool>();
+    private ArrayList<AbstractTool> toolarray = new ArrayList<>();
 
-    private Vector<String> menulist=new Vector<String>();
-    private Vector<String> menuitemlist=new Vector<String>();
+    private Vector<String> menulist= new Vector<>();
+    private Vector<String> menuitemlist= new Vector<>();
     /**
      * Constructs the Toolbox object.
      */
@@ -137,10 +137,7 @@ public class Toolbox extends JFrame implements ActionListener {
                 System.arraycopy(args, 1, nargs, 0, args.length - 1);
                 tool.setMainArguments(nargs);
                 tool.execute();
-            } catch (PropertyVetoException ex) {
-            } catch (ClassNotFoundException ex) {
-            } catch (IllegalAccessException ex) {
-            } catch (InstantiationException ex) {
+            } catch (PropertyVetoException | InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
             }
         }
     }
@@ -185,7 +182,7 @@ public class Toolbox extends JFrame implements ActionListener {
 //        JMenuItem create = new JMenuItem(CREATE);
 //        create.addActionListener(this);
 //        tools.add(create);
-        buildPluginMenuItems(new TreeMap<Object, Object>(p), tools);
+        buildPluginMenuItems(new TreeMap<>(p), tools);
         JMenu help = new JMenu(ToolMenuItems.HELP);
         JMenuItem about = new JMenuItem(ToolMenuItems.ABOUT);
 //        about.setIcon(new ImageIcon(Toolbox.class.getResource(
@@ -317,16 +314,16 @@ public class Toolbox extends JFrame implements ActionListener {
         } else if (ToolMenuItems.RESET.equals(evt.getActionCommand())) {
             JInternalFrame[] framearray = desktop.getAllFrames();
             int xx = 0, yy = 0;
-            for (int i = 0; i < framearray.length; i++) {
-                if (!framearray[i].isIcon()) {
+            for (JInternalFrame jInternalFrame : framearray) {
+                if (!jInternalFrame.isIcon()) {
                     try {
-                        int frameDistance = framearray[i].getHeight() -
-                                            framearray[i].getContentPane().
-                                            getHeight();
-                        framearray[i].setMaximum(false);
-                        int fwidth = framearray[i].getWidth();
-                        int fheight = framearray[i].getHeight();
-                        framearray[i].reshape(xx, yy, fwidth, fheight);
+                        int frameDistance = jInternalFrame.getHeight() -
+                                jInternalFrame.getContentPane().
+                                        getHeight();
+                        jInternalFrame.setMaximum(false);
+                        int fwidth = jInternalFrame.getWidth();
+                        int fheight = jInternalFrame.getHeight();
+                        jInternalFrame.reshape(xx, yy, fwidth, fheight);
                         xx += frameDistance;
                         yy += frameDistance;
                         if (xx + fwidth > desktop.getWidth()) {
@@ -436,8 +433,7 @@ public class Toolbox extends JFrame implements ActionListener {
                         oriout.print(snippet);
                         textArea.setCaretPosition(textArea.getDocument().
                                                   getLength());
-                    } catch (BadLocationException ex) {
-                    } catch (IOException e) {
+                    } catch (BadLocationException | IOException ex) {
                     }
                 }
             }

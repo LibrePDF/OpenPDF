@@ -29,13 +29,13 @@ public class Info {
     public static void main(String[] args) {
         try {
         BufferedWriter out = new BufferedWriter(new FileWriter("info.txt"));
-        for (int i = 0; i < args.length; i++) { 
-            PdfReader r = new PdfReader(args[i]);
-            out.write(args[i]);
-            out.write("\r\n------------------------------------\r\n");
-            out.write(r.getInfo().toString());
-            out.write("\r\n------------------------------------\r\n");
-        }
+            for (String arg : args) {
+                PdfReader r = new PdfReader(arg);
+                out.write(arg);
+                out.write("\r\n------------------------------------\r\n");
+                out.write(r.getInfo().toString());
+                out.write("\r\n------------------------------------\r\n");
+            }
         out.flush();
         out.close();
         }

@@ -50,7 +50,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -111,12 +110,12 @@ public class FdfWriter {
     }
     
     void iterateFields(HashMap values, HashMap map, String name) {
-        for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
+        for (Object o : map.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
             String s = (String) entry.getKey();
             Object obj = entry.getValue();
             if (obj instanceof HashMap)
-                iterateFields(values, (HashMap)obj, name + "." + s);
+                iterateFields(values, (HashMap) obj, name + "." + s);
             else
                 values.put((name + "." + s).substring(1), obj);
         }
@@ -249,8 +248,8 @@ public class FdfWriter {
      */    
     public void setFields(FdfReader fdf) {
         HashMap map = fdf.getFields();
-        for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
+        for (Object o : map.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
             String key = (String) entry.getKey();
             PdfDictionary dic = (PdfDictionary) entry.getValue();
             PdfObject v = dic.get(PdfName.V);
@@ -275,10 +274,10 @@ public class FdfWriter {
      * @param af the <CODE>AcroFields</CODE>
      */    
     public void setFields(AcroFields af) {
-        for (Iterator it = af.getFields().entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String fn = (String)entry.getKey();
-            AcroFields.Item item = (AcroFields.Item)entry.getValue();
+        for (Object o : af.getFields().entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
+            String fn = (String) entry.getKey();
+            AcroFields.Item item = (AcroFields.Item) entry.getValue();
             PdfDictionary dic = item.getMerged(0);
             PdfObject v = PdfReader.getPdfObjectRelease(dic.get(PdfName.V));
             if (v == null)
@@ -334,20 +333,18 @@ public class FdfWriter {
         
         PdfArray calculate(HashMap map) {
             PdfArray ar = new PdfArray();
-            for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
-                Map.Entry entry = (Map.Entry) it.next();
+            for (Object o : map.entrySet()) {
+                Map.Entry entry = (Map.Entry) o;
                 String key = (String) entry.getKey();
                 Object v = entry.getValue();
                 PdfDictionary dic = new PdfDictionary();
                 dic.put(PdfName.T, new PdfString(key, PdfObject.TEXT_UNICODE));
                 if (v instanceof HashMap) {
-                    dic.put(PdfName.KIDS, calculate((HashMap)v));
-                }
-                else if(v instanceof PdfAction) {    // (plaflamme)
-                       dic.put(PdfName.A, (PdfAction)v);
-                }
-                else {
-                    dic.put(PdfName.V, (PdfObject)v);
+                    dic.put(PdfName.KIDS, calculate((HashMap) v));
+                } else if (v instanceof PdfAction) {    // (plaflamme)
+                    dic.put(PdfName.A, (PdfAction) v);
+                } else {
+                    dic.put(PdfName.V, (PdfObject) v);
                 }
                 ar.add(dic);
             }

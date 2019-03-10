@@ -47,7 +47,6 @@
 package com.lowagie.text.pdf.events;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +80,7 @@ public class IndexEvents extends PdfPageEventHelper {
      */
     public void onGenericTag(PdfWriter writer, Document document,
             Rectangle rect, String text) {
-        indextag.put(text, new Integer(writer.getPageNumber()));
+        indextag.put(text, writer.getPageNumber());
     }
 
     // --------------------------------------------------------------------
@@ -181,30 +180,27 @@ public class IndexEvents extends PdfPageEventHelper {
     /**
      * Comparator for sorting the index
      */
-    private Comparator comparator = new Comparator() {
+    private Comparator comparator = (arg0, arg1) -> {
+        Entry en1 = (Entry) arg0;
+        Entry en2 = (Entry) arg1;
 
-        public int compare(Object arg0, Object arg1) {
-            Entry en1 = (Entry) arg0;
-            Entry en2 = (Entry) arg1;
-
-            int rt = 0;
-            if (en1.getIn1() != null && en2.getIn1() != null) {
-                if ((rt = en1.getIn1().compareToIgnoreCase(en2.getIn1())) == 0) {
-                    // in1 equals
-                    if (en1.getIn2() != null && en2.getIn2() != null) {
-                        if ((rt = en1.getIn2()
-                                .compareToIgnoreCase(en2.getIn2())) == 0) {
-                            // in2 equals
-                            if (en1.getIn3() != null && en2.getIn3() != null) {
-                                rt = en1.getIn3().compareToIgnoreCase(
-                                        en2.getIn3());
-                            }
+        int rt = 0;
+        if (en1.getIn1() != null && en2.getIn1() != null) {
+            if ((rt = en1.getIn1().compareToIgnoreCase(en2.getIn1())) == 0) {
+                // in1 equals
+                if (en1.getIn2() != null && en2.getIn2() != null) {
+                    if ((rt = en1.getIn2()
+                            .compareToIgnoreCase(en2.getIn2())) == 0) {
+                        // in2 equals
+                        if (en1.getIn3() != null && en2.getIn3() != null) {
+                            rt = en1.getIn3().compareToIgnoreCase(
+                                    en2.getIn3());
                         }
                     }
                 }
             }
-            return rt;
         }
+        return rt;
     };
 
     /**
@@ -223,8 +219,8 @@ public class IndexEvents extends PdfPageEventHelper {
 
         Map grouped = new HashMap();
 
-        for (int i = 0; i < indexentry.size(); i++) {
-            Entry e = (Entry) indexentry.get(i);
+        for (Object o : indexentry) {
+            Entry e = (Entry) o;
             String key = e.getKey();
 
             Entry master = (Entry) grouped.get(key);
@@ -238,7 +234,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         // copy to a list and sort it
         List sorted = new ArrayList(grouped.values());
-        Collections.sort(sorted, comparator);
+        sorted.sort(comparator);
         return sorted;
     }
 
@@ -337,7 +333,7 @@ public class IndexEvents extends PdfPageEventHelper {
             int rt = -1;
             Integer i = (Integer) indextag.get(tag);
             if (i != null) {
-                rt = i.intValue();
+                rt = i;
             }
             return rt;
         }
@@ -348,7 +344,7 @@ public class IndexEvents extends PdfPageEventHelper {
          * @param tag
          */
         public void addPageNumberAndTag(final int number, final String tag) {
-            pagenumbers.add(new Integer(number));
+            pagenumbers.add(number);
             tags.add(tag);
         }
 
@@ -381,12 +377,12 @@ public class IndexEvents extends PdfPageEventHelper {
          * @return the toString implementation of the entry
          */
         public String toString() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append(in1).append(' ');
             buf.append(in2).append(' ');
             buf.append(in3).append(' ');
-            for (int i = 0; i < pagenumbers.size(); i++) {
-                buf.append(pagenumbers.get(i)).append(' ');
+            for (Object pagenumber : pagenumbers) {
+                buf.append(pagenumber).append(' ');
             }
             return buf.toString();
         }

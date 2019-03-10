@@ -60,20 +60,16 @@ public abstract class EventDispatchingThread {
      * finally calls the finish().
      */
     public EventDispatchingThread() {
-        final Runnable doFinished = new Runnable() {
-           public void run() { finished(); }
-        };
+        final Runnable doFinished = this::finished;
 
-        Runnable doConstruct = new Runnable() {
-            public void run() {
-                try {
-                    value = construct();
-                }
-                finally {
-                    thread.clear();
-                }
-                SwingUtilities.invokeLater(doFinished);
+        Runnable doConstruct = () -> {
+            try {
+                value = construct();
             }
+            finally {
+                thread.clear();
+            }
+            SwingUtilities.invokeLater(doFinished);
         };
         Thread t = new Thread(doConstruct);
         thread = new ThreadWrapper(t);

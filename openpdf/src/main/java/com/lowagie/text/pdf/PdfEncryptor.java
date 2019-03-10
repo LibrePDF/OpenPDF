@@ -215,7 +215,7 @@ public final class PdfEncryptor {
      * @return a String that explains the meaning of the permissions value
      */
     public static String getPermissionsVerbose(int permissions) {
-        StringBuffer buf = new StringBuffer("Allowed:");
+        StringBuilder buf = new StringBuilder("Allowed:");
         if ((PdfWriter.ALLOW_PRINTING & permissions) == PdfWriter.ALLOW_PRINTING) buf.append(" Printing");
         if ((PdfWriter.ALLOW_MODIFY_CONTENTS & permissions) == PdfWriter.ALLOW_MODIFY_CONTENTS) buf.append(" Modify contents");
         if ((PdfWriter.ALLOW_COPY & permissions) == PdfWriter.ALLOW_COPY) buf.append(" Copy");

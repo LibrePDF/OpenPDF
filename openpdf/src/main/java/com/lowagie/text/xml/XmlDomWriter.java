@@ -141,8 +141,7 @@ public class XmlDomWriter {
                 fOut.print('<');
                 fOut.print(node.getNodeName());
                 Attr[] attrs = sortAttributes(node.getAttributes());
-                for (int i = 0; i < attrs.length; i++) {
-                    Attr attr = attrs[i];
+                for (Attr attr : attrs) {
                     fOut.print(' ');
                     fOut.print(attr.getNodeName());
                     fOut.print("=\"");

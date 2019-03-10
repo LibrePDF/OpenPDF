@@ -80,13 +80,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * This class is a Handler that controls the iText XML to PDF conversion.
@@ -449,8 +443,8 @@ public class SAXiTextHandler extends DefaultHandler {
             // Updated by Ricardo Coutinho. Only use if set in html!
             Rectangle pageSize = null;
             String orientation = null;
-            for (Iterator i = attributes.keySet().iterator(); i.hasNext();) {
-                key = (String) i.next();
+            for (Object o : attributes.keySet()) {
+                key = (String) o;
                 value = attributes.getProperty(key);
                 try {
                     // margin specific code suggested by Reza Nasiri
@@ -576,7 +570,7 @@ public class SAXiTextHandler extends DefaultHandler {
             return;
         }
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int len = content.length();
         char character;
         boolean newline = false;
@@ -758,7 +752,7 @@ public class SAXiTextHandler extends DefaultHandler {
                     cellWidths[i] = 0;
                     cellNulls[i] = true;
                 }
-                float total = 0;
+                float total = 0.0f;
                 int j = 0;
                 for (Iterator i = cells.iterator(); i.hasNext();) {
                     cell = (Cell) i.next();
@@ -766,7 +760,7 @@ public class SAXiTextHandler extends DefaultHandler {
                     if (cell.getWidth() == 0) {
                         if (cell.getColspan() == 1 && cellWidths[j] == 0) {
                             try {
-                                cellWidths[j] = 100f / columns;
+                                cellWidths[j] = 100.0f / columns;
                                 total += cellWidths[j];
                             } catch (Exception e) {
                                 // empty on purpose

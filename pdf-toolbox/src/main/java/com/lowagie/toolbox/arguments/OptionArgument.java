@@ -122,7 +122,7 @@ public class OptionArgument extends AbstractArgument {
     }
 
 
-    private TreeMap<String, Entry> options = new TreeMap<String, Entry>();
+    private TreeMap<String, Entry> options = new TreeMap<>();
 
     /**
      * Constructs an OptionArgument.
@@ -166,7 +166,7 @@ public class OptionArgument extends AbstractArgument {
      * @return String
      */
     public String getUsage() {
-        StringBuffer buf = new StringBuffer(super.getUsage());
+        StringBuilder buf = new StringBuilder(super.getUsage());
         buf.append("    possible options:\n");
         for (Entry entry: options.values()) {
             buf.append("    - ");

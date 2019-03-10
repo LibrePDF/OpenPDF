@@ -38,11 +38,11 @@ public class ListFields {
             PrintStream stream = new PrintStream(new FileOutputStream("listfields.txt"));
             stream.println("ListFields output file");
             stream.println("==================================================");
-            for (int i = 0; i < args.length; i++) {
+            for (String arg : args) {
                 stream.print("Filename: ");
-                stream.println(args[i]);
+                stream.println(arg);
                 stream.println();
-                PdfReader reader = new PdfReader(args[i]);
+                PdfReader reader = new PdfReader(arg);
                 PRAcroForm form = reader.getAcroForm();
                 if (form == null) {
                     stream.println("This document has no fields.");
@@ -51,9 +51,9 @@ public class ListFields {
                 PdfLister list = new PdfLister(stream);
                 HashMap refToField = new HashMap();
                 ArrayList fields = form.getFields();
-                for (int k = 0; k < fields.size(); ++k) {
-                    PRAcroForm.FieldInformation field = (PRAcroForm.FieldInformation)fields.get(k);
-                    refToField.put(new Integer(field.getRef().getNumber()), field);
+                for (Object field1 : fields) {
+                    PRAcroForm.FieldInformation field = (PRAcroForm.FieldInformation) field1;
+                    refToField.put(field.getRef().getNumber(), field);
                 }
                 for (int page = 1; page <= reader.getNumberOfPages(); ++page) {
                     PdfDictionary dPage = reader.getPageN(page);
@@ -62,7 +62,7 @@ public class ListFields {
                         continue;
                     for (int annotIdx = 0; annotIdx < annots.size(); ++annotIdx) {
                         PdfIndirectReference ref = annots.getAsIndirectObject(annotIdx);
-                        PdfDictionary annotDict = annots.getAsDict( annotIdx );
+                        PdfDictionary annotDict = annots.getAsDict(annotIdx);
                         PdfName subType = annotDict.getAsName(PdfName.SUBTYPE);
                         if (subType == null || !subType.equals(PdfName.WIDGET))
                             continue;
@@ -74,7 +74,7 @@ public class ListFields {
                             if (tName != null)
                                 fName = tName.toString() + "." + fName;
                             if (ref != null) {
-                                field = (PRAcroForm.FieldInformation)refToField.get(new Integer(ref.getNumber()));
+                                field = (PRAcroForm.FieldInformation) refToField.get(ref.getNumber());
                             }
                             ref = annotDict.getAsIndirectObject(PdfName.PARENT);
                             annotDict = annotDict.getAsDict(PdfName.PARENT);

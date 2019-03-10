@@ -118,7 +118,7 @@ public class PdfEncodings {
 
     static final IntHashtable pdfEncoding = new IntHashtable();
 
-    static ConcurrentHashMap<String, ExtraEncoding> extraEncodings = new ConcurrentHashMap<String, ExtraEncoding>(
+    static ConcurrentHashMap<String, ExtraEncoding> extraEncodings = new ConcurrentHashMap<>(
             200, 0.85f, 64);
 
     static {
@@ -185,8 +185,7 @@ public class PdfEncodings {
             int ptr = 0;
             byte[] b = new byte[len];
             int c = 0;
-            for (int k = 0; k < len; ++k) {
-                char char1 = cc[k];
+            for (char char1 : cc) {
                 if (char1 < 128 || char1 > 160 && char1 <= 255) {
                     c = char1;
                 } else {
@@ -211,8 +210,7 @@ public class PdfEncodings {
             b[0] = -2;
             b[1] = -1;
             int bptr = 2;
-            for (int k = 0; k < len; ++k) {
-                char c = cc[k];
+            for (char c : cc) {
                 b[bptr++] = (byte) (c >> 8);
                 b[bptr++] = (byte) (c & 0xff);
             }
@@ -355,7 +353,7 @@ public class PdfEncodings {
         return true;
     }
 
-    static final ConcurrentHashMap<String, char[][]> cmaps = new ConcurrentHashMap<String, char[][]>(
+    static final ConcurrentHashMap<String, char[][]> cmaps = new ConcurrentHashMap<>(
             100, 0.85f, 64);
     /**
      * Assumes that '\\n' and '\\r\\n' are the newline sequences. It may not
@@ -455,7 +453,7 @@ public class PdfEncodings {
 
     static String decodeSequence(byte[] seq, int start, int length,
                                  char[][] planes) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int end = start + length;
         int currentPlane = 0;
         for (int k = start; k < end; ++k) {
@@ -473,7 +471,7 @@ public class PdfEncodings {
     }
 
     static char[][] readCmap(String name, byte[][] newline) throws IOException {
-        ArrayList<char[]> planes = new ArrayList<char[]>();
+        ArrayList<char[]> planes = new ArrayList<>();
         planes.add(new char[256]);
         readCmap(name, planes);
         if (newline != null) {
@@ -511,11 +509,11 @@ public class PdfEncodings {
             }
             switch (state) {
             case CIDNONE: {
-                if (line.indexOf("begincidrange") >= 0) {
+                if (line.contains("begincidrange")) {
                     state = CIDRANGE;
-                } else if (line.indexOf("begincidchar") >= 0) {
+                } else if (line.contains("begincidchar")) {
                     state = CIDCHAR;
-                } else if (line.indexOf("usecmap") >= 0) {
+                } else if (line.contains("usecmap")) {
                     StringTokenizer tk = new StringTokenizer(line);
                     String t = tk.nextToken();
                     readCmap(t.substring(1), planes);
@@ -523,7 +521,7 @@ public class PdfEncodings {
                 break;
             }
             case CIDRANGE: {
-                if (line.indexOf("endcidrange") >= 0) {
+                if (line.contains("endcidrange")) {
                     state = CIDNONE;
                     break;
                 }
@@ -543,7 +541,7 @@ public class PdfEncodings {
                 break;
             }
             case CIDCHAR: {
-                if (line.indexOf("endcidchar") >= 0) {
+                if (line.contains("endcidchar")) {
                     state = CIDNONE;
                     break;
                 }
@@ -632,8 +630,7 @@ public class PdfEncodings {
             byte[] b = new byte[cc.length];
             int ptr = 0;
             int len = cc.length;
-            for (int k = 0; k < len; ++k) {
-                char c = cc[k];
+            for (char c : cc) {
                 if (c == ' ') {
                     b[ptr++] = (byte) c;
                 } else if (c >= '\u2701' && c <= '\u27BE') {
@@ -680,8 +677,7 @@ public class PdfEncodings {
             byte[] b = new byte[cc.length];
             int ptr = 0;
             int len = cc.length;
-            for (int k = 0; k < len; ++k) {
-                char c = cc[k];
+            for (char c : cc) {
                 if (c < 128) {
                     b[ptr++] = (byte) c;
                 } else {
@@ -718,8 +714,8 @@ public class PdfEncodings {
             int len = b.length;
             char[] cc = new char[len];
             int ptr = 0;
-            for (int k = 0; k < len; ++k) {
-                int c = b[k] & 0xff;
+            for (byte b1 : b) {
+                int c = b1 & 0xff;
                 if (c < ' ') {
                     continue;
                 }
@@ -783,8 +779,7 @@ public class PdfEncodings {
             byte[] b = new byte[cc.length];
             int ptr = 0;
             int len = cc.length;
-            for (int k = 0; k < len; ++k) {
-                char c = cc[k];
+            for (char c : cc) {
                 byte v = (byte) translation.get(c);
                 if (v != 0) {
                     b[ptr++] = v;
@@ -917,8 +912,7 @@ public class PdfEncodings {
             byte[] b = new byte[ch.length];
             int ptr = 0;
             int len = ch.length;
-            for (int k = 0; k < len; ++k) {
-                char c = ch[k];
+            for (char c : ch) {
                 if ((c & 0xff00) == 0 || (c & 0xff00) == 0xf000) {
                     b[ptr++] = (byte) c;
                 }

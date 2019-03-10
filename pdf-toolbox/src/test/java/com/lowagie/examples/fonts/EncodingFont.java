@@ -65,14 +65,12 @@ public class EncodingFont {
                 table.setWidthPercentage(100);
                 table.getDefaultCell().setBorderWidth(1);
                 table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-                for (int k = 0; k < tb.length; ++k) {
-                    char c = tb[k];
+                for (char c : tb) {
                     if (bf.charExists(c)) {
                         Phrase ph = new Phrase(12, new String(new char[]{c}), f);
                         ph.add(new Phrase(12, "\n\n" + cst(c), hex));
                         table.addCell(ph);
-                    }
-                    else {
+                    } else {
                         Phrase ph = new Phrase("\u00a0");
                         ph.add(new Phrase(12, "\n\n" + cst(c), hex));
                         table.addCell(ph);

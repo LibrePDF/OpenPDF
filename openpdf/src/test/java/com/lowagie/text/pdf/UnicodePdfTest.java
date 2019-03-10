@@ -1,21 +1,19 @@
 package com.lowagie.text.pdf;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import org.junit.jupiter.api.Test;
 
-public class UnicodePdfTest {
+class UnicodePdfTest {
 
     private static final String INPUT = "Symbol: '\u25b2' Latin: 'äöüÄÖÜß'";
 
     @Test
-    void testSimplePdf() throws FileNotFoundException, DocumentException {
+    void testSimplePdf() throws Exception {
         // create document
         Document document = PdfTestBase.createPdf("unicode.pdf");
         // Probably a good idea to write the document to a byte array, so you can read the result and make some checks.

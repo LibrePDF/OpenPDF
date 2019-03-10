@@ -55,12 +55,12 @@ import com.lowagie.tools.Executable;
 public abstract class AbstractTool implements ActionListener {
 
     /** An array with the plugin_versions of the tool. */
-    public static ArrayList<String> versionsarray = new ArrayList<String>();
+    public static ArrayList<String> versionsarray = new ArrayList<>();
 
     /** The internal frame of the tool. */
     protected JInternalFrame internalFrame = null;
     /** The list of arguments needed by the tool. */
-    protected ArrayList<AbstractArgument> arguments = new ArrayList<AbstractArgument>();
+    protected ArrayList<AbstractArgument> arguments = new ArrayList<>();
     /** Execute menu options */
     protected int menuoptions = MENU_EXECUTE;
     /** a menu option */
@@ -219,7 +219,7 @@ public abstract class AbstractTool implements ActionListener {
      * @return a String describing how to use the tool.
      */
     public String getUsage() {
-        StringBuffer buf = new StringBuffer("java ");
+        StringBuilder buf = new StringBuilder("java ");
         buf.append(getClass().getName());
         for (AbstractArgument argument: arguments) {
             buf.append(' ');
@@ -237,7 +237,7 @@ public abstract class AbstractTool implements ActionListener {
      * @return a String with the list of arguments and their values.
      */
     private String getArgs() {
-        StringBuffer buf = new StringBuffer("Current arguments:\n");
+        StringBuilder buf = new StringBuilder("Current arguments:\n");
         for (AbstractArgument argument: arguments) {
             buf.append("  ");
             buf.append(argument.getName());

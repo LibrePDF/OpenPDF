@@ -76,10 +76,8 @@ public class FontStylePropagation {
             myParagraph.add(new Paragraph("Hello 3bis! ", new Font(Font.TIMES_ROMAN, 8, Font.BOLD)));
             myParagraph.add(new Paragraph("This is the end of the sentence.", new Font(Font.TIMES_ROMAN, 8, Font.ITALIC)));
             document.add(myParagraph);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

@@ -76,13 +76,10 @@ public class ComplexText {
             cb.rectangle(250 - size/2, 690, size, 30);
             cb.stroke();
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

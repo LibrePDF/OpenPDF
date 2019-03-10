@@ -109,8 +109,7 @@ public class PdfImage extends PdfStream {
                 int[] transparency = image.getTransparency();
                 if (transparency != null && !image.isMask() && maskRef == null) {
                     String s = "[";
-                    for (int k = 0; k < transparency.length; ++k)
-                        s += transparency[k] + " ";
+                    for (int i : transparency) s += i + " ";
                     s += "]";
                     put(PdfName.MASK, new PdfLiteral(s));
                 }

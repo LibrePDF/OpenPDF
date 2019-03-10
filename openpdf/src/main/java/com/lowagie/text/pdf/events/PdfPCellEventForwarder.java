@@ -50,7 +50,6 @@
 package com.lowagie.text.pdf.events;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -82,8 +81,8 @@ public class PdfPCellEventForwarder implements PdfPCellEvent {
      */
     public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases) {
         PdfPCellEvent event;
-        for (Iterator i = events.iterator(); i.hasNext(); ) {
-            event = (PdfPCellEvent)i.next();
+        for (Object event1 : events) {
+            event = (PdfPCellEvent) event1;
             event.cellLayout(cell, position, canvases);
         }
     }

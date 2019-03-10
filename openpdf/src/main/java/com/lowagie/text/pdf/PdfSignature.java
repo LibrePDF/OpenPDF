@@ -62,8 +62,7 @@ public class PdfSignature extends PdfDictionary {
     
     public void setByteRange(int[] range) {
         PdfArray array = new PdfArray();
-        for (int k = 0; k < range.length; ++k)
-            array.add(new PdfNumber(range[k]));
+        for (int i : range) array.add(new PdfNumber(i));
         put(PdfName.BYTERANGE, array);
     }
     

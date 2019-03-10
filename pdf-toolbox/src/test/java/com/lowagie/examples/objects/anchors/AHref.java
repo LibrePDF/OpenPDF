@@ -66,10 +66,8 @@ public class AHref {
             Anchor anchor2 = new Anchor("please jump to a local destination", FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL, new Color(0, 0, 255)));
             anchor2.setReference("#top");
             document.add(anchor2);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

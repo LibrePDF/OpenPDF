@@ -70,7 +70,7 @@ public class Hyphenation {
     }
 
     public String toString() {
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
         int start = 0;
         for (int i = 0; i < len; i++) {
             str.append(word, start, hyphenPoints[i]).append('-');

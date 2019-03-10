@@ -144,7 +144,7 @@ public abstract class XmpSchema extends Properties {
      * @return an escaped string
      */
     public static String escape(String content) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (int i = 0; i < content.length(); i++) {
             switch(content.charAt(i)) {
             case '<':

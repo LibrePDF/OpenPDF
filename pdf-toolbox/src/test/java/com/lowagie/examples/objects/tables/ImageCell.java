@@ -57,10 +57,8 @@ public class ImageCell {
             table.addCell("This three");
             table.addCell(new PdfPCell(image, false));
             document.add(table);
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
 
         // step 5: we close the document

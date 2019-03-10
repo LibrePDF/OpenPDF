@@ -85,7 +85,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
         for (Iterator it = names.entrySet().iterator(); it.hasNext();) {
             Map.Entry entry = (Map.Entry)it.next();
             PdfArray arr = (PdfArray)entry.getValue();
-            StringBuffer s = new StringBuffer();
+            StringBuilder s = new StringBuilder();
             try {
                 s.append(pages.get(arr.getAsIndirectObject(0).getNumber()));
                 s.append(' ').append(arr.getPdfObject(1).toString().substring(1));
@@ -137,10 +137,10 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
         wrt.write("<?xml version=\"1.0\" encoding=\"");
         wrt.write(XMLUtil.escapeXML(encoding, onlyASCII));
         wrt.write("\"?>\n<Destination>\n");
-        for (Iterator it = names.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String key = (String)entry.getKey();
-            String value = (String)entry.getValue();
+        for (Object o : names.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
             wrt.write("  <Name Page=\"");
             wrt.write(XMLUtil.escapeXML(value, onlyASCII));
             wrt.write("\">");
@@ -202,16 +202,15 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
 
     public static PdfDictionary outputNamedDestinationAsNames(HashMap names, PdfWriter writer) {
         PdfDictionary dic = new PdfDictionary();
-        for (Iterator it = names.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry)it.next();
+        for (Object o : names.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
             try {
-                String key = (String)entry.getKey();
-                String value = (String)entry.getValue();
+                String key = (String) entry.getKey();
+                String value = (String) entry.getValue();
                 PdfArray ar = createDestinationArray(value, writer);
                 PdfName kn = new PdfName(key);
                 dic.put(kn, ar);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // empty on purpose
             }
         }
@@ -235,17 +234,15 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     }
 
     public static String escapeBinaryString(String s) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         char[] cc = s.toCharArray();
         int len = cc.length;
-        for (int k = 0; k < len; ++k) {
-            char c = cc[k];
+        for (char c : cc) {
             if (c < ' ') {
                 buf.append('\\');
                 String octal = "00" + Integer.toOctalString(c);
                 buf.append(octal.substring(octal.length() - 3));
-            }
-            else if (c == '\\')
+            } else if (c == '\\')
                 buf.append("\\\\");
             else
                 buf.append(c);
@@ -254,7 +251,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     }
 
     public static String unEscapeBinaryString(String s) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         char[] cc = s.toCharArray();
         int len = cc.length;
         for (int k = 0; k < len; ++k) {

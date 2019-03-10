@@ -255,8 +255,8 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      */
     public ArrayList getChunks() {
         ArrayList tmp = new ArrayList();
-        for (Iterator i = arrayList.iterator(); i.hasNext(); ) {
-            tmp.addAll(((Element) i.next()).getChunks());
+        for (Object o : arrayList) {
+            tmp.addAll(((Element) o).getChunks());
         }
         return tmp;
     }
@@ -679,8 +679,8 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
                     tmp = new Cell();
                     tmp.setBorder(NO_BORDER);
                     tmp.setColspan(3);
-                    for (Iterator i = arrayList.iterator(); i.hasNext(); ) {
-                        tmp.add(i.next());
+                    for (Object o : arrayList) {
+                        tmp.add(o);
                     }
                     table.addCell(tmp);
                 }

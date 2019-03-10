@@ -50,6 +50,8 @@
 package com.lowagie.text.xml.xmp;
 
 
+import java.util.Arrays;
+
 /**
  * An implementation of an XmpSchema.
  */
@@ -122,9 +124,7 @@ public class XmpBasicSchema extends XmpSchema {
      */
     public void addIdentifiers(String[] id) {
         XmpArray array = new XmpArray(XmpArray.UNORDERED);
-        for (int i = 0; i < id.length; i++) {
-            array.add(id[i]);
-        }
+        array.addAll(Arrays.asList(id));
         setProperty(IDENTIFIER, array);
     }
 

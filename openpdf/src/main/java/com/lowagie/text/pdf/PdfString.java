@@ -152,8 +152,7 @@ public class PdfString extends PdfObject {
             ByteBuffer buf = new ByteBuffer();
             buf.append('<');
             int len = b.length;
-            for (int k = 0; k < len; ++k)
-                buf.appendHex(b[k]);
+            for (byte b1 : b) buf.appendHex(b1);
             buf.append('>');
             os.write(buf.toByteArray());
         }

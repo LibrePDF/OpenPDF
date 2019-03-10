@@ -346,7 +346,7 @@ public class RectangleReadOnly extends Rectangle {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuffer buf = new StringBuffer("RectangleReadOnly: ");
+        StringBuilder buf = new StringBuilder("RectangleReadOnly: ");
         buf.append(getWidth());
         buf.append('x');
         buf.append(getHeight());

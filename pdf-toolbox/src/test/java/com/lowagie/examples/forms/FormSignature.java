@@ -55,13 +55,10 @@ public class FormSignature {
             acroForm.addSignature("mysig", 73, 705, 149, 759);
             
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

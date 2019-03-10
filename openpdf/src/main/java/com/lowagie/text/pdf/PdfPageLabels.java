@@ -123,7 +123,7 @@ public class PdfPageLabels {
         if (firstPage != 1) {
             dic.put(PdfName.ST, new PdfNumber(firstPage));
         }
-        map.put(new Integer(page - 1), dic);
+        map.put(page - 1, dic);
     }
 
     /**
@@ -170,7 +170,7 @@ public class PdfPageLabels {
         if (page <= 1) {
             return;
         }
-        map.remove(new Integer(page - 1));
+        map.remove(page - 1);
     }
 
     /**
@@ -212,7 +212,7 @@ public class PdfPageLabels {
         char type = 'D';
         String prefix = "";
         for (int i = 0; i < n; i++ ) {
-            current = new Integer(i);
+            current = i;
             if (numberTree.containsKey(current)) {
                 PdfDictionary d = (PdfDictionary) PdfReader.getPdfObjectRelease((PdfObject) numberTree.get(current));
                 if (d.contains(PdfName.ST)) {
@@ -311,7 +311,7 @@ public class PdfPageLabels {
             } else {
                 numberStyle = PdfPageLabels.EMPTY;
             }
-            formats[k] = new PdfPageLabelFormat(key.intValue() + 1, numberStyle, prefix, pagecount);
+            formats[k] = new PdfPageLabelFormat(key + 1, numberStyle, prefix, pagecount);
         }
         return formats;
     }

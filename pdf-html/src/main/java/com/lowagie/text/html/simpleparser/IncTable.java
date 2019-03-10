@@ -97,8 +97,8 @@ public class IncTable {
             return new PdfPTable(1);
         int ncol = 0;
         ArrayList c0 = (ArrayList)rows.get(0);
-        for (int k = 0; k < c0.size(); ++k) {
-            ncol += ((PdfPCell)c0.get(k)).getColspan();
+        for (Object o1 : c0) {
+            ncol += ((PdfPCell) o1).getColspan();
         }
         PdfPTable table = new PdfPTable(ncol);
         String width = (String)props.get("width");
@@ -112,10 +112,10 @@ public class IncTable {
                 table.setLockedWidth(true);
             }
         }
-        for (int row = 0; row < rows.size(); ++row) {
-            ArrayList col = (ArrayList)rows.get(row);
-            for (int k = 0; k < col.size(); ++k) {
-                table.addCell((PdfPCell)col.get(k));
+        for (Object row1 : rows) {
+            ArrayList col = (ArrayList) row1;
+            for (Object o : col) {
+                table.addCell((PdfPCell) o);
             }
         }
         return table;

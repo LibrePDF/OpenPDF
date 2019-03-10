@@ -75,9 +75,7 @@ public class SimpleRegistrationForm implements PdfPCellEvent {
         try {
             PdfFormField field = tf.getTextField();
             writer.addAnnotation(field);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (DocumentException e) {
+        } catch (IOException | DocumentException e) {
             e.printStackTrace();
         }
     }
@@ -127,10 +125,8 @@ public class SimpleRegistrationForm implements PdfPCellEvent {
 
             document.add(table);
 
-        } catch (DocumentException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         }
         // step 5
         document.close();

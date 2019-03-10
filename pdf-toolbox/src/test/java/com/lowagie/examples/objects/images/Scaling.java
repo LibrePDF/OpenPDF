@@ -65,13 +65,10 @@ public class Scaling {
             document.add(new Paragraph("scalePercent(100, 50)"));
             document.add(jpg4);
         }
-        catch(DocumentException de) {
+        catch(DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-        catch(IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        
+
         // step 5: we close the document
         document.close();
     }

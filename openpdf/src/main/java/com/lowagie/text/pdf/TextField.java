@@ -97,8 +97,7 @@ public class TextField extends BaseField {
         if (text == null || text.length() == 0)
             return false;
         char[] cc = text.toCharArray();
-        for (int k = 0; k < cc.length; ++k) {
-            int c = cc[k];
+        for (int c : cc) {
             if (c >= 0x590 && c < 0x0780)
                 return true;
         }
@@ -106,8 +105,7 @@ public class TextField extends BaseField {
     }
     
     private static void changeFontSize(Phrase p, float size) {
-        for (int k = 0; k < p.size(); ++k)
-            ((Chunk)p.get(k)).getFont().setSize(size);
+        for (Object o : p) ((Chunk) o).getFont().setSize(size);
     }
     
     private Phrase composePhrase(String text, BaseFont ufont, Color color, float fontSize) {
@@ -120,8 +118,8 @@ public class TextField extends BaseField {
             if (extensionFont != null)
                 fs.addFont(new Font(extensionFont, fontSize, 0, color));
             if (substitutionFonts != null) {
-                for (int k = 0; k < substitutionFonts.size(); ++k)
-                    fs.addFont(new Font((BaseFont)substitutionFonts.get(k), fontSize, 0, color));
+                for (Object substitutionFont : substitutionFonts)
+                    fs.addFont(new Font((BaseFont) substitutionFont, fontSize, 0, color));
             }
             phrase = fs.process(text);
         }
@@ -138,7 +136,7 @@ public class TextField extends BaseField {
     public static String removeCRLF(String text) {
         if (text.indexOf('\n') >= 0 || text.indexOf('\r') >= 0) {
             char[] p = text.toCharArray();
-            StringBuffer sb = new StringBuffer(p.length);
+            StringBuilder sb = new StringBuilder(p.length);
             for (int k = 0; k < p.length; ++k) {
                 char c = p[k];
                 if (c == '\n')
@@ -282,8 +280,8 @@ public class TextField extends BaseField {
                 else
                     app.setColorFill(textColor);
                 app.beginText();
-                for (int k = 0; k < phrase.size(); ++k) {
-                    Chunk ck = (Chunk)phrase.get(k);
+                for (Object o : phrase) {
+                    Chunk ck = (Chunk) o;
                     BaseFont bf = ck.getFont().getBaseFont();
                     app.setFontAndSize(bf, usize);
                     StringBuffer sb = ck.append("");
@@ -363,8 +361,8 @@ public class TextField extends BaseField {
         
         // background boxes for selected value[s]
         app.setColorFill(new Color(10, 36, 106));
-        for (int curVal = 0; curVal < choiceSelections.size(); ++curVal) {
-            int curChoice = ((Integer)choiceSelections.get( curVal )).intValue();
+        for (Object choiceSelection : choiceSelections) {
+            int curChoice = (Integer) choiceSelection;
             // only draw selections within our display range... not strictly necessary with 
             // that clipping rect from above, but it certainly doesn't hurt either 
             if (curChoice >= first && curChoice <= last) {
@@ -379,7 +377,7 @@ public class TextField extends BaseField {
             int rtl = checkRTL(ptext) ? PdfWriter.RUN_DIRECTION_LTR : PdfWriter.RUN_DIRECTION_NO_BIDI;
             ptext = removeCRLF(ptext);
             // highlight selected values against their (presumably) darker background
-            Color textCol = (choiceSelections.contains( new Integer( idx ))) ? GrayColor.GRAYWHITE : fcolor;
+            Color textCol = (choiceSelections.contains(idx)) ? GrayColor.GRAYWHITE : fcolor;
             Phrase phrase = composePhrase(ptext, ufont, textCol, usize);
             ColumnText.showTextAligned(app, Element.ALIGN_LEFT, phrase, xp, yp, 0, rtl, 0);
         }
@@ -497,7 +495,7 @@ public class TextField extends BaseField {
         
         int topChoice = 0;
         if (choices != null) {
-            topChoice = firstValue.intValue();
+            topChoice = firstValue;
             topChoice = Math.min( topChoice, choices.length );
             topChoice = Math.max( 0, topChoice);
         } // else topChoice still 0
@@ -613,14 +611,14 @@ public class TextField extends BaseField {
     private void writeMultipleValues(PdfFormField field, String[][] mix) {
         PdfArray indexes = new PdfArray();
         PdfArray values = new PdfArray();
-        for (int i = 0; i < choiceSelections.size(); ++i) {
-            int idx = ((Integer)choiceSelections.get( i )).intValue();
-            indexes.add( new PdfNumber( idx ) );
-            
-            if (mix != null) 
-                values.add( new PdfString( mix[idx][0] ) );
+        for (Object choiceSelection : choiceSelections) {
+            int idx = (Integer) choiceSelection;
+            indexes.add(new PdfNumber(idx));
+
+            if (mix != null)
+                values.add(new PdfString(mix[idx][0]));
             else if (choices != null)
-                values.add( new PdfString( choices[ idx ] ) );
+                values.add(new PdfString(choices[idx]));
         }
         
         field.put( PdfName.V, values );
@@ -696,7 +694,7 @@ public class TextField extends BaseField {
      */
     public void setChoiceSelection(int choiceSelection) {
         choiceSelections = new ArrayList();
-        choiceSelections.add( new Integer( choiceSelection ) );
+        choiceSelections.add(choiceSelection);
     }
     
     /**
@@ -706,7 +704,7 @@ public class TextField extends BaseField {
      */
     public void addChoiceSelection( int selection) {
         if ((this.options & BaseField.MULTISELECT) != 0) {
-            choiceSelections.add( new Integer( selection ) );
+            choiceSelections.add(selection);
         }
     }
     

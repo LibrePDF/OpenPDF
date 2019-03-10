@@ -46,8 +46,6 @@
  */
 package com.lowagie.text.pdf;
 
-import java.io.IOException;
-
 /**
  * Implements the PostScript XObject.
  */

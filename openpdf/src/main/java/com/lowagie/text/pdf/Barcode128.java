@@ -256,7 +256,7 @@ public class Barcode128 extends Barcode{
      */    
     public static String removeFNC1(String code) {
         int len = code.length();
-        StringBuffer buf = new StringBuffer(len);
+        StringBuilder buf = new StringBuilder(len);
         for (int k = 0; k < len; ++k) {
             char c = code.charAt(k);
             if (c >= 32 && c <= 126)
@@ -271,7 +271,7 @@ public class Barcode128 extends Barcode{
      * @return the human readable text
      */    
     public static String getHumanReadableUCCEAN(String code) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         String fnc1 = String.valueOf(FNC1);
         try {
             while (true) {
@@ -662,8 +662,8 @@ public class Barcode128 extends Barcode{
         boolean print = true;
         if (barColor != null)
             cb.setColorFill(barColor);
-        for (int k = 0; k < bars.length; ++k) {
-            float w = bars[k] * x;
+        for (byte bar : bars) {
+            float w = bar * x;
             if (print)
                 cb.rectangle(barStartX, barStartY, w - inkSpreading, barHeight);
             print = !print;
@@ -711,8 +711,7 @@ public class Barcode128 extends Barcode{
         int ptr = 0;
         int height = (int)barHeight;
         int[] pix = new int[fullWidth * height];
-        for (int k = 0; k < bars.length; ++k) {
-            int w = bars[k];
+        for (int w : bars) {
             int c = g;
             if (print)
                 c = f;

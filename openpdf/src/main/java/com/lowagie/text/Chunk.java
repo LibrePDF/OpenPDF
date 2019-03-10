@@ -200,8 +200,8 @@ public class Chunk implements Element {
         this(OBJECT_REPLACEMENT_CHARACTER, new Font());
         Image copyImage = Image.getInstance(image);
         copyImage.setAbsolutePosition(Float.NaN, Float.NaN);
-        setAttribute(IMAGE, new Object[] { copyImage, new Float(offsetX),
-                new Float(offsetY), Boolean.FALSE });
+        setAttribute(IMAGE, new Object[] { copyImage, offsetX,
+                offsetY, Boolean.FALSE });
     }
 
     /**
@@ -229,7 +229,7 @@ public class Chunk implements Element {
      */
     public Chunk(DrawInterface separator, boolean vertical) {
         this(OBJECT_REPLACEMENT_CHARACTER, new Font());
-        setAttribute(SEPARATOR, new Object[] {separator, Boolean.valueOf(vertical)});
+        setAttribute(SEPARATOR, new Object[] {separator, vertical});
     }
 
     /**
@@ -262,7 +262,7 @@ public class Chunk implements Element {
         if (tabPosition < 0) {
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("a.tab.position.may.not.be.lower.than.0.yours.is.1", String.valueOf(tabPosition)));
         }
-        setAttribute(TAB, new Object[] {separator, new Float(tabPosition), Boolean.valueOf(newline), new Float(0)});
+        setAttribute(TAB, new Object[] {separator, tabPosition, newline, (float) 0});
     }
 
     /**
@@ -280,8 +280,8 @@ public class Chunk implements Element {
     public Chunk(Image image, float offsetX, float offsetY,
             boolean changeLeading) {
         this(OBJECT_REPLACEMENT_CHARACTER, new Font());
-        setAttribute(IMAGE, new Object[] { image, new Float(offsetX),
-                new Float(offsetY), Boolean.valueOf(changeLeading) });
+        setAttribute(IMAGE, new Object[] { image, offsetX,
+                offsetY, changeLeading});
     }
 
     // implementation of the Element-methods
@@ -382,7 +382,7 @@ public class Chunk implements Element {
      */
     public boolean isEmpty() {
         return (content.toString().trim().length() == 0)
-                && (content.toString().indexOf("\n") == -1)
+                && (!content.toString().contains("\n"))
                 && (attributes == null);
     }
 
@@ -463,7 +463,7 @@ public class Chunk implements Element {
      * @return this <CODE>Chunk</CODE>
      */
     public Chunk setHorizontalScaling(float scale) {
-        return setAttribute(HSCALE, new Float(scale));
+        return setAttribute(HSCALE, scale);
     }
 
     /**
@@ -477,7 +477,7 @@ public class Chunk implements Element {
         Float f = (Float) attributes.get(HSCALE);
         if (f == null)
             return 1f;
-        return f.floatValue();
+        return f;
     }
 
     /** Key for underline. */
@@ -550,7 +550,7 @@ public class Chunk implements Element {
      */
 
     public Chunk setTextRise(float rise) {
-        return setAttribute(SUBSUPSCRIPT, new Float(rise));
+        return setAttribute(SUBSUPSCRIPT, rise);
     }
 
     /**
@@ -561,7 +561,7 @@ public class Chunk implements Element {
     public float getTextRise() {
         if (attributes != null && attributes.containsKey(SUBSUPSCRIPT)) {
             Float f = (Float) attributes.get(SUBSUPSCRIPT);
-            return f.floatValue();
+            return f;
         }
         return 0.0f;
     }
@@ -644,8 +644,8 @@ public class Chunk implements Element {
      */
     public Chunk setTextRenderMode(int mode, float strokeWidth,
             Color strokeColor) {
-        return setAttribute(TEXTRENDERMODE, new Object[] { new Integer(mode),
-                new Float(strokeWidth), strokeColor });
+        return setAttribute(TEXTRENDERMODE, new Object[] {mode,
+                strokeWidth, strokeColor });
     }
 
     /** Key for split character. */
@@ -706,7 +706,7 @@ public class Chunk implements Element {
 
     public Chunk setRemoteGoto(String filename, int page) {
         return setAttribute(REMOTEGOTO, new Object[] { filename,
-                new Integer(page) });
+                page});
     }
 
     /** Key for local goto. */
@@ -888,7 +888,7 @@ public class Chunk implements Element {
      * @return this <CODE>Chunk</CODE>
      */
     public Chunk setCharacterSpacing(float charSpace) {
-        return setAttribute(CHAR_SPACING, new Float(charSpace));
+        return setAttribute(CHAR_SPACING, charSpace);
     }
     
     /**
@@ -899,7 +899,7 @@ public class Chunk implements Element {
     public float getCharacterSpacing() {
         if (attributes != null && attributes.containsKey(CHAR_SPACING)) {
             Float f = (Float) attributes.get(CHAR_SPACING);
-            return f.floatValue();
+            return f;
         }
         return 0.0f;
     }
