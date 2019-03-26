@@ -3123,6 +3123,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Closes the reader
    */
+  @Override
   public void close() {
     if (!partial)
       return;

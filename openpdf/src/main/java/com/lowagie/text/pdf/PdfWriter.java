@@ -63,6 +63,7 @@ import com.lowagie.text.xml.xmp.XmpWriter;
 import java.awt.*;
 import java.awt.color.ICC_Profile;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.cert.Certificate;
@@ -78,6 +79,7 @@ import java.util.List;
  */
 
 public class PdfWriter extends DocWriter implements
+    Closeable,
     PdfViewerPreferences,
     PdfEncryptionSettings,
     PdfVersion,
@@ -1146,6 +1148,7 @@ public class PdfWriter extends DocWriter implements
      * to the outputstream embedded in a Trailer.
      * @see com.lowagie.text.DocWriter#close()
      */
+    @Override
     public void close() {
         if (open) {
             if ((currentPageNumber - 1) != pageReferences.size())
