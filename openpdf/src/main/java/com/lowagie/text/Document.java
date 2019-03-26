@@ -99,7 +99,7 @@ import java.util.List;
  * </BLOCKQUOTE>
  */
 
-public class Document implements DocListener {
+public class Document implements AutoCloseable, DocListener {
     
     // membervariables
     /**
@@ -442,6 +442,7 @@ public class Document implements DocListener {
      * Once all the content has been written in the body, you have to close the
      * body. After that nothing can be written to the body anymore.
      */
+    @Override
     public void close() {
         if (!close) {
             open = false;
