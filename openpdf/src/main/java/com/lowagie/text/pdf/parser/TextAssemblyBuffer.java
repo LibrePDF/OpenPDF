@@ -5,6 +5,8 @@ package com.lowagie.text.pdf.parser;
 
 import com.lowagie.text.pdf.PdfReader;
 
+import javax.annotation.Nullable;
+
 /**
  * @author dgd
  * 
@@ -14,6 +16,7 @@ public interface TextAssemblyBuffer {
     /**
      * @return the text to render
      */
+    @Nullable
     String getText();
 
     /**

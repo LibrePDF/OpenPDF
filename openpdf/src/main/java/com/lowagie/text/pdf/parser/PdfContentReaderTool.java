@@ -66,6 +66,7 @@ import java.util.List;
  * 
  * @since 2.1.4
  */
+@SuppressWarnings("WeakerAccess")
 public class PdfContentReaderTool {
 
     /**
@@ -76,7 +77,7 @@ public class PdfContentReaderTool {
      *            the dictionary of which you want the detail
      * @return a String representation of the dictionary
      */
-    static public String getDictionaryDetail(PdfDictionary dic) {
+    public static String getDictionaryDetail(PdfDictionary dic) {
         return getDictionaryDetail(dic, 0);
     }
 
@@ -89,10 +90,10 @@ public class PdfContentReaderTool {
      *            the depth of the current dictionary (for nested dictionaries)
      * @return a String representation of the dictionary
      */
-    static public String getDictionaryDetail(PdfDictionary dic, int depth) {
+    public static String getDictionaryDetail(PdfDictionary dic, int depth) {
         StringBuilder builder = new StringBuilder();
         builder.append('(');
-        List subDictionaries = new ArrayList();
+        List<PdfName> subDictionaries = new ArrayList<>();
         for (PdfName key : dic.getKeys()) {
             PdfObject val = dic.getDirectObject(key);
             if (val.isDictionary()) {
@@ -134,8 +135,8 @@ public class PdfContentReaderTool {
      *            the output stream to send the content to
      * @throws IOException
      */
-    static public void listContentStreamForPage(PdfReader reader, int pageNum,
-            PrintWriter out) throws IOException {
+    public static void listContentStreamForPage(PdfReader reader, int pageNum, PrintWriter out)
+            throws IOException {
         out.println("==============Page " + pageNum + "====================");
         out.println("- - - - - Dictionary - - - - - -");
         PdfDictionary pageDictionary = reader.getPageN(pageNum);
@@ -177,7 +178,7 @@ public class PdfContentReaderTool {
      *            the output stream to send the content to
      * @throws IOException
      */
-    static public void listContentStream(File pdfFile, PrintWriter out)
+    public static void listContentStream(File pdfFile, PrintWriter out)
             throws IOException {
         PdfReader reader = new PdfReader(pdfFile.getCanonicalPath());
 
@@ -202,7 +203,7 @@ public class PdfContentReaderTool {
      *            the output stream to send the content to
      * @throws IOException
      */
-    static public void listContentStream(File pdfFile, int pageNum,
+    public static void listContentStream(File pdfFile, int pageNum,
             PrintWriter out) throws IOException {
         PdfReader reader = new PdfReader(pdfFile.getCanonicalPath());
 
@@ -218,8 +219,7 @@ public class PdfContentReaderTool {
     public static void main(String[] args) {
         try {
             if (args.length < 1 || args.length > 3) {
-                System.out
-                        .println("Usage:  PdfContentReaderTool <pdf file> [<output file>|stdout] [<page num>]");
+                System.out.println("Usage:  PdfContentReaderTool <pdf file> [<output file>|stdout] [<page num>]");
                 return;
             }
 
@@ -227,8 +227,7 @@ public class PdfContentReaderTool {
             if (args.length >= 2) {
                 if (args[1].compareToIgnoreCase("stdout") != 0) {
                     System.out.println("Writing PDF content to " + args[1]);
-                    writer = new PrintWriter(new FileOutputStream(new File(
-                            args[1])));
+                    writer = new PrintWriter(new FileOutputStream(new File(args[1])));
                 }
             }
 

@@ -5,29 +5,33 @@ package com.lowagie.text.pdf.parser;
 
 import com.lowagie.text.pdf.PdfReader;
 
+import javax.annotation.Nullable;
+
 /**
  * @author dgd
- * 
  */
 public class FinalText implements TextAssemblyBuffer {
 
-    String _content;
+    private String content;
 
     public FinalText(String content) {
-        _content = content;
+        this.content = content;
     }
 
     /**
-     * @return
+     * {@inheritDoc}
+     *
      * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getText()
      */
+    @Nullable
     @Override
     public String getText() {
-        return _content;
+        return content;
     }
 
     /**
-     * @param p
+     * {@inheritDoc}
+     *
      * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#accumulate(com.lowagie.text.pdf.parser.TextAssembler, String)
      */
     @Override
@@ -36,7 +40,8 @@ public class FinalText implements TextAssemblyBuffer {
     }
 
     /**
-     * @param p
+     * {@inheritDoc}
+     *
      * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#assemble(com.lowagie.text.pdf.parser.TextAssembler)
      */
     @Override
@@ -45,9 +50,10 @@ public class FinalText implements TextAssemblyBuffer {
     }
 
     /**
-     * @return
+     * {@inheritDoc}
+     *
      * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getFinalText(PdfReader,
-     *      int, TextAssembler, boolean)
+     * int, TextAssembler, boolean)
      */
     @Override
     public FinalText getFinalText(PdfReader reader, int page, TextAssembler assembler, boolean useMarkup) {
@@ -58,5 +64,4 @@ public class FinalText implements TextAssemblyBuffer {
     public String toString() {
         return "[FinalText: [" + getText() + "] d]";
     }
-
 }
