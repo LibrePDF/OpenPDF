@@ -13,7 +13,7 @@
  */
 package com.lowagie.examples.directcontent.graphics2D;
 
-import java.awt.*;
+import java.awt.Font;
 import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;

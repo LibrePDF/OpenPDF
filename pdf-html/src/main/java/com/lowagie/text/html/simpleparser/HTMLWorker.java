@@ -53,7 +53,11 @@ package com.lowagie.text.html.simpleparser;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+import java.util.StringTokenizer;
 
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.html.HtmlTags;

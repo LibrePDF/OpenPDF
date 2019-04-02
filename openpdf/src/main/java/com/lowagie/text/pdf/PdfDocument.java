@@ -49,21 +49,48 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.*;
+import com.lowagie.text.Anchor;
+import com.lowagie.text.Annotation;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
+import com.lowagie.text.Font;
+import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Image;
 import com.lowagie.text.Image;
 import com.lowagie.text.List;
+import com.lowagie.text.List;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.MarkedObject;
+import com.lowagie.text.MarkedSection;
+import com.lowagie.text.Meta;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.Section;
+import com.lowagie.text.SimpleTable;
+import com.lowagie.text.Table;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.draw.DrawInterface;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 
 /**

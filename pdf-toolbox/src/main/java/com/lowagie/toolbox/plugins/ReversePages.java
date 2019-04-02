@@ -35,15 +35,20 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.swing.JInternalFrame;
 
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
-import com.lowagie.toolbox.*;
-import com.lowagie.toolbox.arguments.*;
-import com.lowagie.toolbox.arguments.filters.*;
+import com.lowagie.text.Document;
+import com.lowagie.text.pdf.PRAcroForm;
+import com.lowagie.text.pdf.PdfCopy;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.toolbox.AbstractTool;
+import com.lowagie.toolbox.arguments.AbstractArgument;
+import com.lowagie.toolbox.arguments.FileArgument;
+import com.lowagie.toolbox.arguments.filters.PdfFilter;
 
 /**
  * This tool lets you take pages from an existing PDF and copy them in reverse order into a new PDF.

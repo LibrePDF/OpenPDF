@@ -51,7 +51,13 @@ package com.lowagie.text.html;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.Date;
+import java.util.EmptyStackException;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Stack;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 

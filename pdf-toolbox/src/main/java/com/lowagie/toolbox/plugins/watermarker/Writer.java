@@ -3,7 +3,7 @@ package com.lowagie.toolbox.plugins.watermarker;
 import static com.lowagie.text.pdf.BaseFont.WINANSI;
 import static com.lowagie.text.pdf.BaseFont.createFont;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 
 import com.lowagie.text.DocumentException;

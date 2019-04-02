@@ -2,7 +2,7 @@ package com.lowagie.toolbox.plugins.watermarker;
 
 import static java.awt.Color.BLACK;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 

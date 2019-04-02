@@ -40,11 +40,12 @@ import static java.awt.Color.decode;
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import javax.swing.*;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;

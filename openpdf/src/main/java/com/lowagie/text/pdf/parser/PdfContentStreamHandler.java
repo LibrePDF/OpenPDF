@@ -43,13 +43,35 @@ package com.lowagie.text.pdf.parser;
 
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.CMapAwareDocumentFont;
+import com.lowagie.text.pdf.PRIndirectReference;
+import com.lowagie.text.pdf.PRStream;
+import com.lowagie.text.pdf.PRTokeniser;
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfContentParser;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfIndirectReference;
+import com.lowagie.text.pdf.PdfLiteral;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfNumber;
+import com.lowagie.text.pdf.PdfObject;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStream;
+import com.lowagie.text.pdf.PdfString;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Stack;
 
 /**
  * @author dgd

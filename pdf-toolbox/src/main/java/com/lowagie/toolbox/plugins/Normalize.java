@@ -26,16 +26,26 @@
  */
 package com.lowagie.toolbox.plugins;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.JInternalFrame;
 
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
-import com.lowagie.toolbox.*;
-import com.lowagie.toolbox.arguments.*;
-import com.lowagie.toolbox.arguments.filters.*;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfIndirectReference;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfNumber;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.toolbox.AbstractTool;
+import com.lowagie.toolbox.arguments.AbstractArgument;
+import com.lowagie.toolbox.arguments.FileArgument;
+import com.lowagie.toolbox.arguments.filters.PdfFilter;
 
 /**
  * @since 2.1.1 (imported from itexttoolbox project)

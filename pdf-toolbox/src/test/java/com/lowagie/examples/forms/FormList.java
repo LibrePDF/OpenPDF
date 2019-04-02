@@ -18,8 +18,14 @@ package com.lowagie.examples.forms;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfFormField;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.TextField;
 
 /**
  * Generates an Acroform with a List

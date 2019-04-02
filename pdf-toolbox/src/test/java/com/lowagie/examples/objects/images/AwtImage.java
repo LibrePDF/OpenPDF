@@ -20,7 +20,8 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Toolkit;
 import java.io.ByteArrayOutputStream;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
