@@ -49,7 +49,6 @@ package com.lowagie.text.html.simpleparser;
 
 import java.util.*;
 
-import com.lowagie.text.pdf.PdfCell;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 

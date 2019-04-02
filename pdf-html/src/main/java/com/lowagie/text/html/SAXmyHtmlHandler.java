@@ -120,7 +120,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
      * 
      * @param uri
      *            the Uniform Resource Identifier
-     * @param lname
+     * @param localName
      *            the local name (without prefix), or the empty string if
      *            Namespace processing is not being performed.
      * @param name
@@ -129,7 +129,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
      *            the list of attributes
      */
 
-    public void startElement(String uri, String lname, String name,
+    public void startElement(String uri, String localName, String name,
             Attributes attrs) {
         // System.err.println("Start: " + name);
 

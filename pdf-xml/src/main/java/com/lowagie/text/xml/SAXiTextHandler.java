@@ -49,29 +49,8 @@
 
 package com.lowagie.text.xml;
 
-import com.lowagie.text.Anchor;
-import com.lowagie.text.Annotation;
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Cell;
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.DocListener;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.ElementTags;
-
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
 import com.lowagie.text.List;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.Meta;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.Section;
-import com.lowagie.text.Table;
-import com.lowagie.text.TextElementArray;
-import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.*;
 import com.lowagie.text.factories.ElementFactory;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.draw.LineSeparator;
@@ -79,6 +58,7 @@ import com.lowagie.text.xml.simpleparser.EntitiesToSymbol;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -89,22 +69,30 @@ import java.util.*;
 
 public class SAXiTextHandler extends DefaultHandler {
 
-    /** This is the resulting document. */
+    /**
+     * This is the resulting document.
+     */
     protected DocListener document;
 
     /**
      * This is a <CODE>Stack</CODE> of objects, waiting to be added to the
      * document.
      */
-    protected Stack stack;
+    protected Stack<Element> stack;
 
-    /** Counts the number of chapters in this document. */
+    /**
+     * Counts the number of chapters in this document.
+     */
     protected int chapters = 0;
 
-    /** This is the current chunk to which characters can be added. */
+    /**
+     * This is the current chunk to which characters can be added.
+     */
     protected Chunk currentChunk = null;
 
-    /** This is the current chunk to which characters can be added. */
+    /**
+     * This is the current chunk to which characters can be added.
+     */
     protected boolean ignore = false;
 
     /**
@@ -112,37 +100,42 @@ public class SAXiTextHandler extends DefaultHandler {
      * Document-object yourself.
      */
     protected boolean controlOpenClose = true;
-
-    /** current margin of a page. */
+    /**
+     * This hashmap contains all the custom keys and peers.
+     */
+    protected HashMap myTags;
+    /**
+     * current margin of a page.
+     */
     float topMargin = 36;
-
-    /** current margin of a page. */
+    /**
+     * current margin of a page.
+     */
     float rightMargin = 36;
-
-    /** current margin of a page. */
+    /**
+     * current margin of a page.
+     */
     float leftMargin = 36;
-
-    /** current margin of a page. */
+    /**
+     * current margin of a page.
+     */
     float bottomMargin = 36;
+    private BaseFont bf = null;
 
     /**
      * @param document
      */
     public SAXiTextHandler(DocListener document) {
-        super();
         this.document = document;
-        stack = new Stack();
+        stack = new Stack<>();
     }
-
-    /** This hashmap contains all the custom keys and peers. */
-    protected HashMap myTags;
 
     /**
      * @param document
      * @param myTags
      * @param bf
      */
-    public SAXiTextHandler(DocListener document, HashMap myTags, BaseFont bf){
+    public SAXiTextHandler(DocListener document, HashMap myTags, BaseFont bf) {
         this(document, myTags);
         this.bf = bf;
     }
@@ -159,15 +152,14 @@ public class SAXiTextHandler extends DefaultHandler {
     /**
      * Sets the parameter that allows you to enable/disable the control over the
      * Document.open() and Document.close() method.
-     * <P>
+     * <p>
      * If you set this parameter to true (= default), the parser will open the
      * Document object when the start-root-tag is encountered and close it when
      * the end-root-tag is met. If you set it to false, you have to open and
      * close the Document object yourself.
-     * 
-     * @param controlOpenClose
-     *            set this to false if you plan to open/close the Document
-     *            yourself
+     *
+     * @param controlOpenClose set this to false if you plan to open/close the Document
+     *                         yourself
      */
 
     public void setControlOpenClose(boolean controlOpenClose) {
@@ -176,46 +168,34 @@ public class SAXiTextHandler extends DefaultHandler {
 
     /**
      * This method gets called when a start tag is encountered.
-     * 
-     * @param uri
-     *            the Uniform Resource Identifier
-     * @param lname
-     *            the local name (without prefix), or the empty string if
-     *            Namespace processing is not being performed.
-     * @param name
-     *            the name of the tag that is encountered
-     * @param attrs
-     *            the list of attributes
+     *
+     * @param uri        the Uniform Resource Identifier
+     * @param localName  the local name (without prefix), or the empty string if
+     *                   Namespace processing is not being performed.
+     * @param name       the name of the tag that is encountered
+     * @param attributes the list of attributes
      */
 
-    public void startElement(String uri, String lname, String name,
-            Attributes attrs) {
+    public void startElement(String uri, String localName, String name, @Nullable Attributes attributes) {
 
-        Properties attributes = new Properties();
-        if (attrs != null) {
-            for (int i = 0; i < attrs.getLength(); i++) {
-                String attribute = attrs.getQName(i);
-                attributes.setProperty(attribute, attrs.getValue(i));
+        Properties properties = new Properties();
+        if (attributes != null) {
+            for (int i = 0; i < attributes.getLength(); i++) {
+                String attribute = attributes.getQName(i);
+                properties.setProperty(attribute, attributes.getValue(i));
             }
         }
-        handleStartingTags(name, attributes);
+        handleStartingTags(name, properties);
     }
 
-    private boolean isNotBlank(String text) {
-        return text != null && !text.trim().isEmpty();
-    }
-    
     /**
      * This method deals with the starting tags.
-     * 
-     * @param name
-     *            the name of the tag
-     * @param attributes
-     *            the list of attributes
+     *
+     * @param name       the name of the tag
+     * @param attributes the list of attributes
      */
 
     public void handleStartingTags(String name, Properties attributes) {
-        // System.err.println("Start: " + name);
         if (ignore || ElementTags.IGNORE.equals(name)) {
             ignore = true;
             return;
@@ -229,8 +209,7 @@ public class SAXiTextHandler extends DefaultHandler {
             } catch (EmptyStackException ese) {
                 if (bf == null) {
                     current = new Paragraph("", new Font());
-                }
-                else {
+                } else {
                     current = new Paragraph("", new Font(this.bf));
                 }
             }
@@ -283,7 +262,7 @@ public class SAXiTextHandler extends DefaultHandler {
             stack.push(ElementFactory.getList(attributes));
             return;
         }
-        
+
         // listitems
         if (ElementTags.LISTITEM.equals(name)) {
             stack.push(ElementFactory.getListItem(attributes));
@@ -317,7 +296,7 @@ public class SAXiTextHandler extends DefaultHandler {
 
         // sections
         if (ElementTags.SECTION.equals(name)) {
-            Element previous = (Element) stack.pop();
+            Element previous = stack.pop();
             Section section;
             try {
                 section = ElementFactory.getSection((Section) previous, attributes);
@@ -434,7 +413,7 @@ public class SAXiTextHandler extends DefaultHandler {
             }
             return;
         }
-        
+
         // documentroot
         if (isDocumentRoot(name)) {
             String key;
@@ -462,8 +441,7 @@ public class SAXiTextHandler extends DefaultHandler {
                 if (ElementTags.PAGE_SIZE.equals(key)) {
                     try {
                         String pageSizeName = value;
-                        Field pageSizeField = PageSize.class
-                                .getField(pageSizeName);
+                        Field pageSizeField = PageSize.class.getField(pageSizeName);
                         pageSize = (Rectangle) pageSizeField.get(null);
                     } catch (Exception ex) {
                         throw new ExceptionConverter(ex);
@@ -484,14 +462,13 @@ public class SAXiTextHandler extends DefaultHandler {
                     }
                 }
             }
-            if(pageSize != null) {
+            if (pageSize != null) {
                 if ("landscape".equals(orientation)) {
                     pageSize = pageSize.rotate();
                 }
                 document.setPageSize(pageSize);
             }
-            document.setMargins(leftMargin, rightMargin, topMargin,
-                    bottomMargin);
+            document.setMargins(leftMargin, rightMargin, topMargin, bottomMargin);
 
             if (controlOpenClose)
                 document.open();
@@ -499,48 +476,12 @@ public class SAXiTextHandler extends DefaultHandler {
 
     }
 
-    protected void addImage(Image img) throws EmptyStackException {
-        // if there is an element on the stack...
-        Object current = stack.pop();
-        // ...and it's a Chapter or a Section, the Image can be
-        // added directly
-        if (current instanceof Chapter
-                || current instanceof Section
-                || current instanceof Cell) {
-            ((TextElementArray) current).add(img);
-            stack.push(current);
-            return;
-        }
-        // ...if not, we need to to a lot of stuff
-        else {
-            Stack newStack = new Stack();
-            while (!(current instanceof Chapter
-                    || current instanceof Section || current instanceof Cell)) {
-                newStack.push(current);
-                if (current instanceof Anchor) {
-                    img.setAnnotation(new Annotation(0, 0, 0,
-                            0, ((Anchor) current).getReference()));
-                }
-                current = stack.pop();
-            }
-            ((TextElementArray) current).add(img);
-            stack.push(current);
-            while (!newStack.empty()) {
-                stack.push(newStack.pop());
-            }
-            return;
-        }
-    }
-    
     /**
      * This method gets called when ignorable white space encountered.
-     * 
-     * @param ch
-     *            an array of characters
-     * @param start
-     *            the start position in the array
-     * @param length
-     *            the number of characters to read from the array
+     *
+     * @param ch     an array of characters
+     * @param start  the start position in the array
+     * @param length the number of characters to read from the array
      */
 
     public void ignorableWhitespace(char[] ch, int start, int length) {
@@ -549,24 +490,19 @@ public class SAXiTextHandler extends DefaultHandler {
 
     /**
      * This method gets called when characters are encountered.
-     * 
-     * @param ch
-     *            an array of characters
-     * @param start
-     *            the start position in the array
-     * @param length
-     *            the number of characters to read from the array
+     *
+     * @param ch     an array of characters
+     * @param start  the start position in the array
+     * @param length the number of characters to read from the array
      */
 
     public void characters(char[] ch, int start, int length) {
-
-        if (ignore)
+        if (ignore) {
             return;
+        }
 
         String content = new String(ch, start, length);
-        // System.err.println("'" + content + "'");
-
-        if (content.trim().length() == 0 && content.indexOf(' ') < 0) {
+        if (content.trim().isEmpty() && content.indexOf(' ') < 0) {
             return;
         }
 
@@ -576,31 +512,30 @@ public class SAXiTextHandler extends DefaultHandler {
         boolean newline = false;
         for (int i = 0; i < len; i++) {
             switch (character = content.charAt(i)) {
-            case ' ':
-                if (!newline) {
+                case ' ':
+                    if (!newline) {
+                        buf.append(character);
+                    }
+                    break;
+                case '\n':
+                    if (i > 0) {
+                        newline = true;
+                        buf.append(' ');
+                    }
+                    break;
+                case '\r':
+                    break;
+                case '\t':
+                    break;
+                default:
+                    newline = false;
                     buf.append(character);
-                }
-                break;
-            case '\n':
-                if (i > 0) {
-                    newline = true;
-                    buf.append(' ');
-                }
-                break;
-            case '\r':
-                break;
-            case '\t':
-                break;
-            default:
-                newline = false;
-                buf.append(character);
             }
         }
         if (currentChunk == null) {
             if (bf == null) {
                 currentChunk = new Chunk(buf.toString());
-            }
-            else {
+            } else {
                 currentChunk = new Chunk(buf.toString(), new Font(this.bf));
             }
         } else {
@@ -608,10 +543,9 @@ public class SAXiTextHandler extends DefaultHandler {
         }
     }
 
-    private BaseFont bf = null;
-    
     /**
      * Sets the font that has to be used.
+     *
      * @param bf
      */
     public void setBaseFont(BaseFont bf) {
@@ -620,14 +554,11 @@ public class SAXiTextHandler extends DefaultHandler {
 
     /**
      * This method gets called when an end tag is encountered.
-     * 
-     * @param uri
-     *            the Uniform Resource Identifier
-     * @param lname
-     *            the local name (without prefix), or the empty string if
-     *            Namespace processing is not being performed.
-     * @param name
-     *            the name of the tag that ends
+     *
+     * @param uri   the Uniform Resource Identifier
+     * @param lname the local name (without prefix), or the empty string if
+     *              Namespace processing is not being performed.
+     * @param name  the name of the tag that ends
      */
 
     public void endElement(String uri, String lname, String name) {
@@ -636,9 +567,8 @@ public class SAXiTextHandler extends DefaultHandler {
 
     /**
      * This method deals with the starting tags.
-     * 
-     * @param name
-     *            the name of the tag
+     *
+     * @param name the name of the tag
      */
 
     public void handleEndingTags(String name) {
@@ -692,7 +622,7 @@ public class SAXiTextHandler extends DefaultHandler {
             // phrases, anchors, lists, tables
             if (ElementTags.PHRASE.equals(name) || ElementTags.ANCHOR.equals(name) || ElementTags.LIST.equals(name)
                     || ElementTags.PARAGRAPH.equals(name)) {
-                Element current = (Element) stack.pop();
+                Element current = stack.pop();
                 try {
                     TextElementArray previous = (TextElementArray) stack.pop();
                     previous.add(current);
@@ -726,12 +656,12 @@ public class SAXiTextHandler extends DefaultHandler {
 
             // rows
             if (ElementTags.ROW.equals(name)) {
-                ArrayList cells = new ArrayList();
+                java.util.List<Cell> cells = new ArrayList<>();
                 int columns = 0;
                 Table table;
                 Cell cell;
                 while (true) {
-                    Element element = (Element) stack.pop();
+                    Element element = stack.pop();
                     if (element.type() == Element.CELL) {
                         cell = (Cell) element;
                         columns += cell.getColspan();
@@ -754,8 +684,8 @@ public class SAXiTextHandler extends DefaultHandler {
                 }
                 float total = 0.0f;
                 int j = 0;
-                for (Iterator i = cells.iterator(); i.hasNext();) {
-                    cell = (Cell) i.next();
+                for (Cell value : cells) {
+                    cell = value;
                     width = cell.getWidthAsString();
                     if (cell.getWidth() == 0) {
                         if (cell.getColspan() == 1 && cellWidths[j] == 0) {
@@ -770,9 +700,7 @@ public class SAXiTextHandler extends DefaultHandler {
                         }
                     } else if (cell.getColspan() == 1 && width.endsWith("%")) {
                         try {
-                            cellWidths[j] = Float.parseFloat(
-                                    width.substring(0, width.length() - 1)
-                                            + "f");
+                            cellWidths[j] = Float.parseFloat(width.substring(0, width.length() - 1) + "f");
                             total += cellWidths[j];
                             cellNulls[j] = false;
                         } catch (Exception e) {
@@ -794,8 +722,7 @@ public class SAXiTextHandler extends DefaultHandler {
                     if (100.0 >= total) {
                         for (int i = 0; i < widths.length; i++) {
                             if (cellWidths[i] == 0 && widths[i] != 0) {
-                                cellWidths[i] = (widths[i] / left)
-                                        * (100.0f - total);
+                                cellWidths[i] = (widths[i] / left) * (100.0f - total);
                             }
                         }
                     }
@@ -817,7 +744,7 @@ public class SAXiTextHandler extends DefaultHandler {
 
             // chapters
             if (ElementTags.CHAPTER.equals(name)) {
-                document.add((Element) stack.pop());
+                document.add(stack.pop());
                 return;
             }
 
@@ -825,10 +752,9 @@ public class SAXiTextHandler extends DefaultHandler {
             if (isDocumentRoot(name)) {
                 try {
                     while (true) {
-                        Element element = (Element) stack.pop();
+                        Element element = stack.pop();
                         try {
-                            TextElementArray previous = (TextElementArray) stack
-                                    .pop();
+                            TextElementArray previous = (TextElementArray) stack.pop();
                             previous.add(element);
                             stack.push(previous);
                         } catch (EmptyStackException es) {
@@ -838,20 +764,51 @@ public class SAXiTextHandler extends DefaultHandler {
                 } catch (EmptyStackException ese) {
                     // empty on purpose
                 }
-                if (controlOpenClose)
+                if (controlOpenClose) {
                     document.close();
-                return;
+                }
             }
         } catch (DocumentException de) {
             throw new ExceptionConverter(de);
         }
     }
 
+    private boolean isNotBlank(String text) {
+        return text != null && !text.trim().isEmpty();
+    }
+
+    protected void addImage(Image img) throws EmptyStackException {
+        // if there is an element on the stack...
+        Element current = stack.pop();
+        // ...and it's a Chapter or a Section, the Image can be
+        // added directly
+        if (current instanceof Section || current instanceof Cell) {
+            ((TextElementArray) current).add(img);
+            stack.push(current);
+        }
+        // ...if not, we need to to a lot of stuff
+        else {
+            Stack<Element> newStack = new Stack<>();
+            while (!(current instanceof Section || current instanceof Cell)) {
+                newStack.push(current);
+                if (current instanceof Anchor) {
+                    img.setAnnotation(new Annotation(0, 0, 0,
+                            0, ((Anchor) current).getReference()));
+                }
+                current = stack.pop();
+            }
+            ((TextElementArray) current).add(img);
+            stack.push(current);
+            while (!newStack.empty()) {
+                stack.push(newStack.pop());
+            }
+        }
+    }
+
     /**
      * Checks if a certain tag corresponds with the newpage-tag.
-     * 
-     * @param tag
-     *            a presumed tagname
+     *
+     * @param tag a presumed tagname
      * @return <CODE>true</CODE> or <CODE>false</CODE>
      */
 
@@ -861,9 +818,8 @@ public class SAXiTextHandler extends DefaultHandler {
 
     /**
      * Checks if a certain tag corresponds with the newpage-tag.
-     * 
-     * @param tag
-     *            a presumed tagname
+     *
+     * @param tag a presumed tagname
      * @return <CODE>true</CODE> or <CODE>false</CODE>
      */
 
@@ -873,11 +829,10 @@ public class SAXiTextHandler extends DefaultHandler {
 
     /**
      * Checks if a certain tag corresponds with the roottag.
-     * 
-     * @param tag
-     *            a presumed tagname
+     *
+     * @param tag a presumed tagname
      * @return <CODE>true</CODE> if <VAR>tag </VAR> equals <CODE>itext
-     *         </CODE>,<CODE>false</CODE> otherwise.
+     * </CODE>,<CODE>false</CODE> otherwise.
      */
 
     protected boolean isDocumentRoot(String tag) {

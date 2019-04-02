@@ -53,7 +53,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SignatureException;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.lowagie.text.error_messages.MessageLocalization;
