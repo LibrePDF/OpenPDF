@@ -627,7 +627,10 @@ public class FontFactoryImp implements FontProvider {
                                 register(name, null);
                                 ++count;
                             }
-                        } else if (".ttf".equals(suffix) || ".otf".equals(suffix) || ".ttc".equals(suffix)) {
+                        } else if (".ttf".equals(suffix) || ".otf".equals(suffix)) {
+                            register(name, file1);
+                            ++count;
+                        } else if (".ttc".equals(suffix)) {
                             register(name, null);
                             ++count;
                         }
@@ -690,4 +693,14 @@ public class FontFactoryImp implements FontProvider {
     public boolean isRegistered(String fontname) {
         return trueTypeFonts.containsKey(fontname.toLowerCase());
     }
+    
+/**
+ * Get a registered font path.
+ *
+ * @param   fontname    the name of the font to get.
+ * @return  the font path if found or null
+ */
+    public Object getFontPath(String fontname) {
+    	return trueTypeFonts.get(fontname.toLowerCase());
+	}
 }
