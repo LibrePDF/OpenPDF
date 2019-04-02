@@ -59,55 +59,70 @@ import java.util.Properties;
  */
 
 public class XmlPeer {
-    
-/** This is the name of the alias. */
+
+    /**
+     * This is the name of the alias.
+     */
     protected String tagname;
-    
-/** This is the name of the alias. */
+
+    /**
+     * This is the name of the alias.
+     */
     protected String customTagname;
-    
-/** This is the Map that contains the aliases of the attributes. */
+
+    /**
+     * This is the Map that contains the aliases of the attributes.
+     */
     protected Properties attributeAliases = new Properties();
-    
-/** This is the Map that contains the default values of the attributes. */
+
+    /**
+     * This is the Map that contains the default values of the attributes.
+     */
     protected Properties attributeValues = new Properties();
-    
-/** This is String that contains the default content of the attributes. */
+
+    /**
+     * This is String that contains the default content of the attributes.
+     */
     protected String defaultContent = null;
-    
-/**
- * Creates a XmlPeer.
- * @param name the iText name of a tag
- * @param alias the user defined name of a tag
- */
-    
+
+    /**
+     * Creates a XmlPeer.
+     *
+     * @param name  the iText name of a tag
+     * @param alias the user defined name of a tag
+     */
+
     public XmlPeer(String name, String alias) {
         this.tagname = name;
         this.customTagname = alias;
     }
-    
-/**
- * Gets the tagname of the peer.
- * @return the iText name of a tag
- */
-    
+
+    /**
+     * Gets the tagname of the peer.
+     *
+     * @return the iText name of a tag
+     */
+
     public String getTag() {
         return tagname;
     }
-    
-/**
- * Gets the tagname of the peer.
- * @return the user defined tagname
- */
-    
+
+    /**
+     * Gets the tagname of the peer.
+     *
+     * @return the user defined tagname
+     */
+
     public String getAlias() {
         return customTagname;
     }
-    
-/** Gets the list of attributes of the peer. 
- * @param attrs the user defined set of attributes
- * @return the set of attributes translated to iText attributes
- */
+
+    /**
+     * Gets the list of attributes of the peer.
+     *
+     * @param attrs the user defined set of attributes
+     * @return the set of attributes translated to iText attributes
+     */
     public Properties getAttributes(Attributes attrs) {
         Properties attributes = new Properties();
         attributes.putAll(attributeValues);
@@ -122,46 +137,46 @@ public class XmlPeer {
         }
         return attributes;
     }
-    
-/**
- * Sets an alias for an attribute.
- *
- * @param   name    the iText tagname
- * @param   alias   the custom tagname
- */
-    
+
+    /**
+     * Sets an alias for an attribute.
+     *
+     * @param name  the iText tagname
+     * @param alias the custom tagname
+     */
+
     public void addAlias(String name, String alias) {
         attributeAliases.put(alias, name);
     }
-    
-/**
- * Sets a value for an attribute.
- *
- * @param   name    the iText tagname
- * @param   value   the default value for this tag
- */
-    
+
+    /**
+     * Sets a value for an attribute.
+     *
+     * @param name  the iText tagname
+     * @param value the default value for this tag
+     */
+
     public void addValue(String name, String value) {
         attributeValues.put(name, value);
     }
-    
-/**
- * Sets the default content.
- *
- * @param   content    the default content
- */
-    
+
+    /**
+     * Sets the default content.
+     *
+     * @param content the default content
+     */
+
     public void setContent(String content) {
         this.defaultContent = content;
     }
-    
-/**
- * Returns the iText attribute name.
- *
- * @param   name   the custom attribute name
- * @return  iText translated attribute name
- */
-    
+
+    /**
+     * Returns the iText attribute name.
+     *
+     * @param name the custom attribute name
+     * @return iText translated attribute name
+     */
+
     public String getName(String name) {
         String value;
         if ((value = attributeAliases.getProperty(name)) != null) {
@@ -169,12 +184,13 @@ public class XmlPeer {
         }
         return name;
     }
-    
-/**
- * Returns the default values.
- * @return A set of default (user defined) values
- */
-    
+
+    /**
+     * Returns the default values.
+     *
+     * @return A set of default (user defined) values
+     */
+
     public Properties getDefaultValues() {
         return attributeValues;
     }

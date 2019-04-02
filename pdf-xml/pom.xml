@@ -21,5 +21,9 @@
             <artifactId>openpdf</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs</artifactId>
+        </dependency>
     </dependencies>
 </project>

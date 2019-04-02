@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
