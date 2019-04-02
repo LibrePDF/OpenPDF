@@ -53,10 +53,7 @@ package com.lowagie.text.html.simpleparser;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.html.HtmlTags;
@@ -172,19 +169,19 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
     }
 
     public void startDocument() {
-        HashMap h = new HashMap();
+        Map<String, String> h = new HashMap<>();
         style.applyStyle("body", h);
         cprops.addToChain("body", h);
     }
 
-    public void startElement(String tag, HashMap h) {
+    public void startElement(String tag, Map<String, String> h) {
         if (!tagsSupported.containsKey(tag))
             return;
         try {
             style.applyStyle(tag, h);
             String follow = (String) FactoryProperties.followTags.get(tag);
             if (follow != null) {
-                HashMap prop = new HashMap();
+                Map<String, String> prop = new HashMap<>();
                 prop.put(follow, null);
                 cprops.addToChain(follow, prop);
                 return;
@@ -257,7 +254,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 return;
             }
             if (tag.equals(HtmlTags.IMAGE)) {
-                String src = (String) h.get(ElementTags.SRC);
+                String src = h.get(ElementTags.SRC);
                 if (src == null)
                     return;
                 cprops.addToChain(tag, h);
@@ -295,9 +292,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     }
                     img = Image.getInstance(src);
                 }
-                String align = (String) h.get("align");
-                String width = (String) h.get("width");
-                String height = (String) h.get("height");
+                String align = h.get("align");
+                String width = h.get("width");
+                String height = h.get("height");
                 String before = cprops.getProperty("before");
                 String after = cprops.getProperty("after");
                 if (before != null)
@@ -369,7 +366,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 cprops.addToChain(tag, h);
                 com.lowagie.text.List list = new com.lowagie.text.List(false);
                 try{
-                    list.setIndentationLeft(new Float(cprops.getProperty("indent")));
+                    list.setIndentationLeft(Float.parseFloat(cprops.getProperty("indent")));
                 }catch (Exception e) {
                     list.setAutoindent(true);
                 }
@@ -384,7 +381,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 cprops.addToChain(tag, h);
                 com.lowagie.text.List list = new com.lowagie.text.List(true);
                 try{
-                    list.setIndentationLeft(new Float(cprops.getProperty("indent")));
+                    list.setIndentationLeft(Float.parseFloat(cprops.getProperty("indent")));
                 }catch (Exception e) {
                     list.setAutoindent(true);
                 }

@@ -84,7 +84,7 @@ public class PdfStamper
      * The writer
      */    
     protected PdfStamperImp stamper;
-    private HashMap moreInfo;
+    private Map<String, String> moreInfo;
     private boolean hasSignature;
     private PdfSignatureAppearance sigApp;
 
@@ -134,7 +134,7 @@ public class PdfStamper
      * @return the map or <CODE>null</CODE>
      *
      */
-    public HashMap getMoreInfo() {
+    public Map<String, String> getMoreInfo() {
         return this.moreInfo;
     }
 
@@ -144,7 +144,7 @@ public class PdfStamper
      * @param moreInfo additional entries to the info dictionary
      *
      */
-    public void setMoreInfo(HashMap moreInfo) {
+    public void setMoreInfo(Map<String, String> moreInfo) {
         this.moreInfo = moreInfo;
     }
 

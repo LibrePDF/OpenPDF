@@ -53,12 +53,14 @@ package com.lowagie.text.html.simpleparser;
 import com.lowagie.text.ElementTags;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ChainedProperties {
 
     public final static int[] fontSizes = {8, 10, 12, 14, 18, 24, 36};
 
-    public ArrayList chain = new ArrayList();
+    public List<Object[]> chain = new ArrayList<>();
 
     /** Creates a new instance of ChainedProperties */
     public ChainedProperties() {
@@ -66,7 +68,7 @@ public class ChainedProperties {
 
     public String getProperty(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
-            Object[] obj = (Object[]) chain.get(k);
+            Object[] obj = chain.get(k);
             HashMap prop = (HashMap) obj[1];
             String ret = (String) prop.get(key);
             if (ret != null)
@@ -77,7 +79,7 @@ public class ChainedProperties {
 
     public boolean hasProperty(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
-            Object[] obj = (Object[]) chain.get(k);
+            Object[] obj = chain.get(k);
             HashMap prop = (HashMap) obj[1];
             if (prop.containsKey(key))
                 return true;
@@ -85,9 +87,9 @@ public class ChainedProperties {
         return false;
     }
 
-    public void addToChain(String key, HashMap prop) {
+    public void addToChain(String key, Map<String, String> prop) {
         // adjust the font size
-        String value = (String) prop.get(ElementTags.SIZE);
+        String value = prop.get(ElementTags.SIZE);
         if (value != null) {
             if (value.endsWith("pt")) {
                 prop.put(ElementTags.SIZE, value.substring(0,
@@ -128,7 +130,7 @@ public class ChainedProperties {
 
     public void removeChain(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
-            if (key.equals(((Object[]) chain.get(k))[0])) {
+            if (key.equals(chain.get(k)[0])) {
                 chain.remove(k);
                 return;
             }

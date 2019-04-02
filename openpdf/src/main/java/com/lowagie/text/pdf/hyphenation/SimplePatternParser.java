@@ -59,6 +59,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /** Parses the xml hyphenation pattern.
@@ -216,10 +217,10 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
     public void startDocument() {
     }
 
-    public void startElement(String tag, java.util.HashMap h) {
+    public void startElement(String tag, Map<String, String> h) {
         switch (tag) {
             case "hyphen-char":
-                String hh = (String) h.get("value");
+                String hh = h.get("value");
                 if (hh != null && hh.length() == 1) {
                     hyphenChar = hh.charAt(0);
                 }
@@ -238,7 +239,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
                 if (token.length() > 0) {
                     exception.add(token.toString());
                 }
-                exception.add(new Hyphen((String) h.get("pre"), (String) h.get("no"), (String) h.get("post")));
+                exception.add(new Hyphen(h.get("pre"), h.get("no"), h.get("post")));
                 currElement = ELEM_HYPHEN;
                 break;
         }

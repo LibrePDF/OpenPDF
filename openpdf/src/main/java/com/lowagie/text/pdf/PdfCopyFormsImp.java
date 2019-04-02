@@ -51,7 +51,7 @@ package com.lowagie.text.pdf;
 
 import com.lowagie.text.DocumentException;
 import java.io.OutputStream;
-import java.util.HashMap;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
@@ -98,9 +98,8 @@ class PdfCopyFormsImp extends PdfCopyFieldsImp {
      * of PdfCopyFields.
      */
     void mergeFields() {
-        for (Object field : fields) {
-            HashMap fd = ((AcroFields) field).getFields();
-            mergeWithMaster(fd);
+        for (AcroFields field : fields) {
+            mergeWithMaster(field.getFields());
         }
     }
 

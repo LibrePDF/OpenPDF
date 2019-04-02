@@ -50,7 +50,7 @@ package com.lowagie.text.pdf;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
+import java.util.Map;
 
 import com.lowagie.text.DocumentException;
 
@@ -103,7 +103,7 @@ public final class PdfEncryptor {
      * @throws DocumentException on error
      * @throws IOException on error
      */
-    public static void encrypt(PdfReader reader, OutputStream os, byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits, HashMap newInfo) throws DocumentException, IOException {
+    public static void encrypt(PdfReader reader, OutputStream os, byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits, Map<String, String> newInfo) throws DocumentException, IOException {
         PdfStamper stamper = new PdfStamper(reader, os);
         stamper.setEncryption(userPassword, ownerPassword, permissions, strength128Bits);
         stamper.setMoreInfo(newInfo);
@@ -150,7 +150,7 @@ public final class PdfEncryptor {
      * @throws DocumentException on error
      * @throws IOException on error
      */
-    public static void encrypt(PdfReader reader, OutputStream os, boolean strength, String userPassword, String ownerPassword, int permissions, HashMap newInfo) throws DocumentException, IOException {
+    public static void encrypt(PdfReader reader, OutputStream os, boolean strength, String userPassword, String ownerPassword, int permissions, Map<String, String> newInfo) throws DocumentException, IOException {
         PdfStamper stamper = new PdfStamper(reader, os);
         stamper.setEncryption(strength, userPassword, ownerPassword, permissions);
         stamper.setMoreInfo(newInfo);
@@ -178,7 +178,7 @@ public final class PdfEncryptor {
      * @throws DocumentException on error
      * @throws IOException on error
      */
-    public static void encrypt(PdfReader reader, OutputStream os, int type, String userPassword, String ownerPassword, int permissions, HashMap newInfo) throws DocumentException, IOException {
+    public static void encrypt(PdfReader reader, OutputStream os, int type, String userPassword, String ownerPassword, int permissions, Map<String, String> newInfo) throws DocumentException, IOException {
         PdfStamper stamper = new PdfStamper(reader, os);
         stamper.setEncryption(type, userPassword, ownerPassword, permissions);
         stamper.setMoreInfo(newInfo);

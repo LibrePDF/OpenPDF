@@ -48,44 +48,44 @@
  * http://www.lowagie.com/iText/
  */
 
-/**
- *     The below 2 methods are from pdfbox.
- * 
- *     private DERObject createDERForRecipient(byte[] in, X509Certificate cert) ;
- *     private KeyTransRecipientInfo computeRecipientInfo(X509Certificate x509certificate, byte[] abyte0);
- *     
- *     2006-11-22 Aiken Sam.
+/*
+      The below 2 methods are from pdfbox.
+
+      private DERObject createDERForRecipient(byte[] in, X509Certificate cert) ;
+      private KeyTransRecipientInfo computeRecipientInfo(X509Certificate x509certificate, byte[] abyte0);
+
+      2006-11-22 Aiken Sam.
  */
 
-/**
- * Copyright (c) 2003-2006, www.pdfbox.org
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. Neither the name of pdfbox; nor the names of its
- *    contributors may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * http://www.pdfbox.org
- *
+/*
+  Copyright (c) 2003-2006, www.pdfbox.org
+  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  3. Neither the name of pdfbox; nor the names of its
+     contributors may be used to endorse or promote products derived from this
+     software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY
+  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+  http://www.pdfbox.org
+
  */
 
 package com.lowagie.text.pdf;
@@ -122,7 +122,7 @@ import org.bouncycastle.asn1.cms.RecipientIdentifier;
 import org.bouncycastle.asn1.cms.RecipientInfo;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.TBSCertificateStructure;
+import org.bouncycastle.asn1.x509.TBSCertificate;
 
 /**
  * @author Aiken Sam (aikensam@ieee.org)
@@ -278,19 +278,14 @@ public class PdfPublicKeySecurityHandler {
       throws GeneralSecurityException, IOException {
     ASN1InputStream asn1inputstream = new ASN1InputStream(
         new ByteArrayInputStream(x509certificate.getTBSCertificate()));
-    TBSCertificateStructure tbscertificatestructure = TBSCertificateStructure
-        .getInstance(asn1inputstream.readObject());
-    AlgorithmIdentifier algorithmidentifier = tbscertificatestructure
-        .getSubjectPublicKeyInfo().getAlgorithmId();
+    TBSCertificate tbsCertificate = TBSCertificate.getInstance(asn1inputstream.readObject());
+    AlgorithmIdentifier algorithmidentifier = tbsCertificate.getSubjectPublicKeyInfo().getAlgorithm();
     IssuerAndSerialNumber issuerandserialnumber = new IssuerAndSerialNumber(
-        tbscertificatestructure.getIssuer(), tbscertificatestructure
-            .getSerialNumber().getValue());
-    Cipher cipher = Cipher.getInstance(algorithmidentifier.getAlgorithm()
-        .getId());
+            tbsCertificate.getIssuer(), tbsCertificate.getSerialNumber().getValue());
+    Cipher cipher = Cipher.getInstance(algorithmidentifier.getAlgorithm().getId());
     cipher.init(1, x509certificate);
     DEROctetString deroctetstring = new DEROctetString(cipher.doFinal(abyte0));
     RecipientIdentifier recipId = new RecipientIdentifier(issuerandserialnumber);
-    return new KeyTransRecipientInfo(recipId, algorithmidentifier,
-        deroctetstring);
+    return new KeyTransRecipientInfo(recipId, algorithmidentifier, deroctetstring);
   }
 }

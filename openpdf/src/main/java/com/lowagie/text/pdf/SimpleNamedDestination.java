@@ -71,7 +71,7 @@ import com.lowagie.text.xml.XMLUtil;
 public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     
     private HashMap xmlNames;
-    private HashMap xmlLast;
+    private Map<String, String> xmlLast;
 
     private SimpleNamedDestination() {
     }
@@ -310,7 +310,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     public void startDocument() {
     }
 
-    public void startElement(String tag, HashMap h) {
+    public void startElement(String tag, Map<String, String> h) {
         if (xmlNames == null) {
             if (tag.equals("Destination")) {
                 xmlNames = new HashMap();

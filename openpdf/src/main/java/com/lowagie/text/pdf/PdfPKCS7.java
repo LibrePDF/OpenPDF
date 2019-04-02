@@ -56,17 +56,18 @@ import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.tsp.MessageImprint;
-import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.SingleResp;
+import org.bouncycastle.jcajce.provider.asymmetric.x509.CertificateFactory;
 import org.bouncycastle.jce.provider.X509CRLParser;
-import org.bouncycastle.jce.provider.X509CertParser;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.TimeStampToken;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.*;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -76,6 +77,8 @@ import java.security.cert.Certificate;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.*;
+
+import static org.bouncycastle.asn1.x509.Extension.authorityInfoAccess;
 
 /**
  * This class does all the processing related to signing and verifying a PKCS#7
@@ -88,8 +91,9 @@ public class PdfPKCS7 {
     private byte[] sigAttr;
     private byte[] digestAttr;
     private int version, signerversion;
-    private Set digestalgos;
-    private Collection certs, crls, signCerts;
+    private Set<String> digestalgos;
+    private List<Certificate> certs, signCerts;
+    private List<CRL> crls;
     private X509Certificate signCert;
     private byte[] digest;
     private MessageDigest messageDigest;
@@ -210,11 +214,8 @@ public class PdfPKCS7 {
      * @since 2.1.6
      */
     public static String getDigest(String oid) {
-        String ret = digestNames.get(oid);
-        if (ret == null)
-            return oid;
-        else
-            return ret;
+        return Optional.ofNullable(digestNames.get(oid))
+                .orElse(oid);
     }
 
     /**
@@ -225,11 +226,8 @@ public class PdfPKCS7 {
      * @since 2.1.6
      */
     public static String getAlgorithm(String oid) {
-        String ret = algorithmNames.get(oid);
-        if (ret == null)
-            return oid;
-        else
-            return ret;
+        return Optional.ofNullable(algorithmNames.get(oid))
+                .orElse(oid);
     }
 
     /**
@@ -248,6 +246,7 @@ public class PdfPKCS7 {
      * @return a date
      * @since 2.1.6
      */
+    @Nullable
     public Calendar getTimeStampDate() {
         if (timeStampToken == null)
             return null;
@@ -267,19 +266,19 @@ public class PdfPKCS7 {
     public PdfPKCS7(byte[] contentsKey, byte[] certsKey, String provider) {
         try {
             this.provider = provider;
-            X509CertParser cr = new X509CertParser();
-            cr.engineInit(new ByteArrayInputStream(certsKey));
-            certs = cr.engineReadAll();
+            CertificateFactory certificateFactory = new CertificateFactory();
+            Collection certificates = certificateFactory.engineGenerateCertificates(new ByteArrayInputStream(certsKey));
+            certs = new ArrayList<>((Collection<Certificate>) certificates);
             signCerts = certs;
             signCert = (X509Certificate) certs.iterator().next();
-            crls = new ArrayList();
-            ASN1InputStream in = new ASN1InputStream(new ByteArrayInputStream(
-                    contentsKey));
+            crls = new ArrayList<>();
+            ASN1InputStream in = new ASN1InputStream(new ByteArrayInputStream(contentsKey));
             digest = ((DEROctetString) in.readObject()).getOctets();
-            if (provider == null)
+            if (provider == null) {
                 sig = Signature.getInstance("SHA1withRSA");
-            else
+            } else {
                 sig = Signature.getInstance("SHA1withRSA", provider);
+            }
             sig.initVerify(signCert.getPublicKey());
         } catch (Exception e) {
             throw new ExceptionConverter(e);
@@ -300,11 +299,10 @@ public class PdfPKCS7 {
 
     private void findOcsp(ASN1Sequence seq) throws IOException {
         basicResp = null;
-        boolean ret = false;
         while ((!(seq.getObjectAt(0) instanceof ASN1ObjectIdentifier))
                 || !((ASN1ObjectIdentifier) seq.getObjectAt(0)).getId().equals(
                 OCSPObjectIdentifiers.id_pkix_ocsp_basic.getId())) {
-            ret = true;
+            boolean ret = true;
             int k = 0;
             while (k < seq.size()) {
                 if (seq.getObjectAt(k) instanceof ASN1Sequence) {
@@ -385,7 +383,7 @@ public class PdfPKCS7 {
             version = ((ASN1Integer) content.getObjectAt(0)).getValue().intValue();
 
             // the digestAlgorithms
-            digestalgos = new HashSet();
+            digestalgos = new HashSet<>();
             Enumeration e = ((ASN1Set) content.getObjectAt(1)).getObjects();
             while (e.hasMoreElements()) {
                 ASN1Sequence s = (ASN1Sequence) e.nextElement();
@@ -394,12 +392,12 @@ public class PdfPKCS7 {
             }
 
             // the certificates and crls
-            X509CertParser cr = new X509CertParser();
-            cr.engineInit(new ByteArrayInputStream(contentsKey));
-            certs = cr.engineReadAll();
+            CertificateFactory certificateFactory = new CertificateFactory();
+            Collection certificates = certificateFactory.engineGenerateCertificates(new ByteArrayInputStream(contentsKey));
+            this.certs = new ArrayList<>((Collection<Certificate>) certificates);
             X509CRLParser cl = new X509CRLParser();
             cl.engineInit(new ByteArrayInputStream(contentsKey));
-            crls = cl.engineReadAll();
+            crls = (List<CRL>) cl.engineReadAll();
 
             // the possible ID_PKCS7_DATA
             ASN1Sequence rsaData = (ASN1Sequence) content.getObjectAt(2);
@@ -433,7 +431,7 @@ public class PdfPKCS7 {
                     .getObjectAt(1);
             BigInteger serialNumber = ((ASN1Integer) issuerAndSerialNumber
                     .getObjectAt(1)).getValue();
-            for (Object cert1 : certs) {
+            for (Object cert1 : this.certs) {
                 X509Certificate cert = (X509Certificate) cert1;
                 if (serialNumber.equals(cert.getSerialNumber())) {
                     signCert = cert;
@@ -544,9 +542,9 @@ public class PdfPKCS7 {
                             hashAlgorithm));
 
         version = signerversion = 1;
-        certs = new ArrayList();
-        crls = new ArrayList();
-        digestalgos = new HashSet();
+        certs = new ArrayList<>();
+        crls = new ArrayList<>();
+        digestalgos = new HashSet<>();
         digestalgos.add(digestAlgorithm);
 
         //
@@ -646,12 +644,11 @@ public class PdfPKCS7 {
     public boolean verifyTimestampImprint() throws NoSuchAlgorithmException {
         if (timeStampToken == null)
             return false;
-        MessageImprint imprint = timeStampToken.getTimeStampInfo().toTSTInfo()
+        MessageImprint imprint = timeStampToken.getTimeStampInfo().toASN1Structure()
                 .getMessageImprint();
         byte[] md = MessageDigest.getInstance("SHA-1").digest(digest);
         byte[] imphashed = imprint.getHashedMessage();
-        boolean res = Arrays.equals(md, imphashed);
-        return res;
+        return Arrays.equals(md, imphashed);
     }
 
     /**
@@ -662,7 +659,7 @@ public class PdfPKCS7 {
      * @return the X.509 certificates associated with this PKCS#7 object
      */
     public Certificate[] getCertificates() {
-        return (X509Certificate[]) certs.toArray(new X509Certificate[0]);
+        return certs.toArray(new Certificate[0]);
     }
 
     /**
@@ -674,19 +671,18 @@ public class PdfPKCS7 {
      * @since 2.1.6
      */
     public Certificate[] getSignCertificateChain() {
-        return (X509Certificate[]) signCerts.toArray(new X509Certificate[0]);
+        return signCerts.toArray(new X509Certificate[0]);
     }
 
     private void signCertificateChain() {
-        ArrayList cc = new ArrayList();
+        List<Certificate> cc = new ArrayList<>();
         cc.add(signCert);
-        ArrayList oc = new ArrayList(certs);
+        List<Certificate> oc = new ArrayList<>(certs);
         for (int k = 0; k < oc.size(); ++k) {
             if (signCert.getSerialNumber().equals(
                     ((X509Certificate) oc.get(k)).getSerialNumber())) {
                 oc.remove(k);
                 --k;
-                continue;
             }
         }
         boolean found = true;
@@ -696,14 +692,14 @@ public class PdfPKCS7 {
             for (int k = 0; k < oc.size(); ++k) {
                 try {
                     if (provider == null)
-                        v.verify(((X509Certificate) oc.get(k)).getPublicKey());
+                        v.verify(oc.get(k).getPublicKey());
                     else
-                        v.verify(((X509Certificate) oc.get(k)).getPublicKey(), provider);
+                        v.verify(oc.get(k).getPublicKey(), provider);
                     found = true;
                     cc.add(oc.get(k));
                     oc.remove(k);
                     break;
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         }
@@ -867,13 +863,12 @@ public class PdfPKCS7 {
                         try {
                             cert.verify(certStoreX509.getPublicKey());
                             return null;
-                        } catch (Exception e) {
-                            continue;
+                        } catch (Exception ignored) {
                         }
-                    } catch (Exception ex) {
+                    } catch (Exception ignored) {
                     }
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             int j;
             for (j = 0; j < certs.length; ++j) {
@@ -883,7 +878,7 @@ public class PdfPKCS7 {
                 try {
                     cert.verify(certNext.getPublicKey());
                     break;
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
             if (j == certs.length)
@@ -975,8 +970,7 @@ public class PdfPKCS7 {
      */
     public static String getOCSPURL(X509Certificate certificate) {
         try {
-            ASN1Primitive obj = getExtensionValue(certificate,
-                    X509Extensions.AuthorityInfoAccess.getId());
+            ASN1Primitive obj = getExtensionValue(certificate, authorityInfoAccess.getId());
             if (obj == null) {
                 return null;
             }
@@ -989,17 +983,12 @@ public class PdfPKCS7 {
                     if ((AccessDescription.getObjectAt(0) instanceof ASN1ObjectIdentifier)
                             && ((ASN1ObjectIdentifier) AccessDescription.getObjectAt(0))
                             .getId().equals("1.3.6.1.5.5.7.48.1")) {
-                        String AccessLocation = getStringFromGeneralName((ASN1Primitive) AccessDescription
+                        return getStringFromGeneralName((ASN1Primitive) AccessDescription
                                 .getObjectAt(1));
-                        if (AccessLocation == null) {
-                            return "";
-                        } else {
-                            return AccessLocation;
-                        }
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return null;
     }
@@ -1033,11 +1022,12 @@ public class PdfPKCS7 {
 
             return id.equals(cid);
             // ******************************************************************************
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         return false;
     }
 
+    @Nullable
     private static ASN1Primitive getExtensionValue(X509Certificate cert,
                                                    String oid) throws IOException {
         byte[] bytes = cert.getExtensionValue(oid);
@@ -1050,8 +1040,8 @@ public class PdfPKCS7 {
         return aIn.readObject();
     }
 
-    private static String getStringFromGeneralName(ASN1Primitive names)
-            throws IOException {
+    @Nonnull
+    private static String getStringFromGeneralName(ASN1Primitive names) {
         DERTaggedObject taggedObject = (DERTaggedObject) names;
         return new String(ASN1OctetString.getInstance(taggedObject, false)
                 .getOctets(), StandardCharsets.ISO_8859_1);
@@ -1222,9 +1212,9 @@ public class PdfPKCS7 {
 
             // Create the set of Hash algorithms
             ASN1EncodableVector digestAlgorithms = new ASN1EncodableVector();
-            for (Object digestalgo : digestalgos) {
+            for (String digestalgo : digestalgos) {
                 ASN1EncodableVector algos = new ASN1EncodableVector();
-                algos.add(new ASN1ObjectIdentifier((String) digestalgo));
+                algos.add(new ASN1ObjectIdentifier(digestalgo));
                 algos.add(DERNull.INSTANCE);
                 digestAlgorithms.add(new DERSequence(algos));
             }
@@ -1263,7 +1253,7 @@ public class PdfPKCS7 {
             // Add the digestAlgorithm
             v = new ASN1EncodableVector();
             v.add(new ASN1ObjectIdentifier(digestAlgorithm));
-            v.add(new DERNull());
+            v.add(DERNull.INSTANCE);
             signerinfo.add(new DERSequence(v));
 
             // add the authenticated attribute if present
@@ -1274,7 +1264,7 @@ public class PdfPKCS7 {
             // Add the digestEncryptionAlgorithm
             v = new ASN1EncodableVector();
             v.add(new ASN1ObjectIdentifier(digestEncryptionAlgorithm));
-            v.add(new DERNull());
+            v.add(DERNull.INSTANCE);
             signerinfo.add(new DERSequence(v));
 
             // Add the digest
@@ -1627,30 +1617,30 @@ public class PdfPKCS7 {
         /**
          * A HashMap with default symbols
          */
-        public static HashMap DefaultSymbols = new HashMap();
+        public static Map<ASN1Encodable, String> defaultSymbols = new HashMap<>();
 
         static {
-            DefaultSymbols.put(C, "C");
-            DefaultSymbols.put(O, "O");
-            DefaultSymbols.put(T, "T");
-            DefaultSymbols.put(OU, "OU");
-            DefaultSymbols.put(CN, "CN");
-            DefaultSymbols.put(L, "L");
-            DefaultSymbols.put(ST, "ST");
-            DefaultSymbols.put(SN, "SN");
-            DefaultSymbols.put(EmailAddress, "E");
-            DefaultSymbols.put(DC, "DC");
-            DefaultSymbols.put(UID, "UID");
-            DefaultSymbols.put(SURNAME, "SURNAME");
-            DefaultSymbols.put(GIVENNAME, "GIVENNAME");
-            DefaultSymbols.put(INITIALS, "INITIALS");
-            DefaultSymbols.put(GENERATION, "GENERATION");
+            defaultSymbols.put(C, "C");
+            defaultSymbols.put(O, "O");
+            defaultSymbols.put(T, "T");
+            defaultSymbols.put(OU, "OU");
+            defaultSymbols.put(CN, "CN");
+            defaultSymbols.put(L, "L");
+            defaultSymbols.put(ST, "ST");
+            defaultSymbols.put(SN, "SN");
+            defaultSymbols.put(EmailAddress, "E");
+            defaultSymbols.put(DC, "DC");
+            defaultSymbols.put(UID, "UID");
+            defaultSymbols.put(SURNAME, "SURNAME");
+            defaultSymbols.put(GIVENNAME, "GIVENNAME");
+            defaultSymbols.put(INITIALS, "INITIALS");
+            defaultSymbols.put(GENERATION, "GENERATION");
         }
 
         /**
          * A HashMap with values
          */
-        public HashMap values = new HashMap();
+        public Map<String, List<String>> values = new HashMap<>();
 
         /**
          * Constructs an X509 name
@@ -1665,14 +1655,11 @@ public class PdfPKCS7 {
 
                 for (int i = 0; i < set.size(); i++) {
                     ASN1Sequence s = (ASN1Sequence) set.getObjectAt(i);
-                    String id = (String) DefaultSymbols.get(s.getObjectAt(0));
+                    ASN1Encodable encodable = s.getObjectAt(0);
+                    String id = defaultSymbols.get(encodable);
                     if (id == null)
                         continue;
-                    ArrayList vs = (ArrayList) values.get(id);
-                    if (vs == null) {
-                        vs = new ArrayList();
-                        values.put(id, vs);
-                    }
+                    List<String> vs = values.computeIfAbsent(id, k -> new ArrayList<>());
                     vs.add(((ASN1String) s.getObjectAt(1)).getString());
                 }
             }
@@ -1698,19 +1685,16 @@ public class PdfPKCS7 {
 
                 String id = token.substring(0, index).toUpperCase();
                 String value = token.substring(index + 1);
-                ArrayList vs = (ArrayList) values.get(id);
-                if (vs == null) {
-                    vs = new ArrayList();
-                    values.put(id, vs);
-                }
+                List<String> vs = values.computeIfAbsent(id, k -> new ArrayList<>());
                 vs.add(value);
             }
 
         }
 
+        @Nullable
         public String getField(String name) {
-            ArrayList vs = (ArrayList) values.get(name);
-            return vs == null ? null : (String) vs.get(0);
+            List<String> vs = values.get(name);
+            return vs == null ? null : vs.get(0);
         }
 
         /**
@@ -1719,9 +1703,8 @@ public class PdfPKCS7 {
          * @param name
          * @return an ArrayList
          */
-        public ArrayList getFieldArray(String name) {
-            ArrayList vs = (ArrayList) values.get(name);
-            return vs;
+        public List<String> getFieldArray(String name) {
+            return values.get(name);
         }
 
         /**
@@ -1729,12 +1712,12 @@ public class PdfPKCS7 {
          *
          * @return a HashMap with the fields of the X509 name
          */
-        public HashMap getFields() {
+        public Map<String, List<String>> getFields() {
             return values;
         }
 
         /**
-         * @return
+         * @return values string representation
          * @see java.lang.Object#toString()
          */
         @Override

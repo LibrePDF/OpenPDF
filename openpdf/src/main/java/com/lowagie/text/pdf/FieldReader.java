@@ -1,14 +1,14 @@
 package com.lowagie.text.pdf;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents the basic needs for reading fields.
  */
 public interface FieldReader {
 
-    HashMap<String, String> getFields();
+    Map<String, String> getFields();
 
     String getFieldValue(String fieldKey);
 

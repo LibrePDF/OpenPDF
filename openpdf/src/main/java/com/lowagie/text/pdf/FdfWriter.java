@@ -247,11 +247,10 @@ public class FdfWriter {
      * @param fdf the <CODE>FdfReader</CODE>
      */    
     public void setFields(FdfReader fdf) {
-        HashMap map = fdf.getFields();
-        for (Object o : map.entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            String key = (String) entry.getKey();
-            PdfDictionary dic = (PdfDictionary) entry.getValue();
+        Map<String, PdfDictionary> map = fdf.getFields();
+        for (Map.Entry<String, PdfDictionary> entry : map.entrySet()) {
+            String key = entry.getKey();
+            PdfDictionary dic = entry.getValue();
             PdfObject v = dic.get(PdfName.V);
             if (v != null) {
                 setField(key, v);

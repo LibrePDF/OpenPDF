@@ -76,10 +76,10 @@ public class PdfChunk {
     private static final PdfChunk[] thisChunk = new PdfChunk[1];
     private static final float ITALIC_ANGLE = 0.21256f;
 /** The allowed attributes in variable <CODE>attributes</CODE>. */
-    private static final HashMap keysAttributes = new HashMap();
+    private static final Map<String, Object> keysAttributes = new HashMap<>();
     
 /** The allowed attributes in variable <CODE>noStroke</CODE>. */
-    private static final HashMap keysNoStroke = new HashMap();
+    private static final Map<String, Object> keysNoStroke = new HashMap<>();
     
     static {
         keysAttributes.put(Chunk.ACTION, null);
@@ -124,7 +124,7 @@ public class PdfChunk {
  * This attributes require the measurement of characters widths when rendering
  * such as underline.
  */
-    protected HashMap attributes = new HashMap();
+    protected Map<String, Object> attributes = new HashMap<>();
     
 /**
  * Non metric attributes.
@@ -132,7 +132,7 @@ public class PdfChunk {
  * This attributes do not require the measurement of characters widths when rendering
  * such as Color.
  */
-    protected HashMap noStroke = new HashMap();
+    protected Map<String, Object> noStroke = new HashMap<>();
     
 /** <CODE>true</CODE> if the chunk split was cause by a newline. */
     protected boolean newlineSplit;
@@ -214,11 +214,10 @@ public class PdfChunk {
         }
         font = new PdfFont(baseFont, size);
         // other style possibilities
-        HashMap attr = chunk.getAttributes();
+        Map<String, Object> attr = chunk.getAttributes();
         if (attr != null) {
-            for (Object o : attr.entrySet()) {
-                Map.Entry entry = (Map.Entry) o;
-                Object name = entry.getKey();
+            for (Map.Entry<String, Object> entry : attr.entrySet()) {
+                String name = entry.getKey();
                 if (keysAttributes.containsKey(name)) {
                     attributes.put(name, entry.getValue());
                 } else if (keysNoStroke.containsKey(name)) {
@@ -302,7 +301,7 @@ public class PdfChunk {
             if (image.getScaledWidth() > width) {
                 PdfChunk pc = new PdfChunk(Chunk.OBJECT_REPLACEMENT_CHARACTER, this);
                 value = "";
-                attributes = new HashMap();
+                attributes = new HashMap<>();
                 image = null;
                 font = PdfFont.getDefaultFont();
                 return pc;
@@ -337,8 +336,7 @@ public class PdfChunk {
                     if (value.length() < 1) {
                         value = "\u0001";
                     }
-                    PdfChunk pc = new PdfChunk(returnValue, this);
-                    return pc;
+                    return new PdfChunk(returnValue, this);
                 }
                 currentWidth += getCharWidth(cidChar);
                 if (character == ' ') {
@@ -368,8 +366,7 @@ public class PdfChunk {
                     if (value.length() < 1) {
                         value = " ";
                     }
-                    PdfChunk pc = new PdfChunk(returnValue, this);
-                    return pc;
+                    return new PdfChunk(returnValue, this);
                 }
                 surrogate = Utilities.isSurrogatePair(valueArray, currentPosition);
                 if (surrogate)
@@ -399,8 +396,7 @@ public class PdfChunk {
         if (splitPosition < 0) {
             String returnValue = value;
             value = "";
-            PdfChunk pc = new PdfChunk(returnValue, this);
-            return pc;
+            return new PdfChunk(returnValue, this);
         }
         if (lastSpace > splitPosition && splitCharacter.isSplitCharacter(0, 0, 1, singleSpace, null))
             splitPosition = lastSpace;
@@ -412,15 +408,13 @@ public class PdfChunk {
                 if (pre.length() > 0) {
                     String returnValue = post + value.substring(wordIdx);
                     value = trim(value.substring(0, lastSpace) + pre);
-                    PdfChunk pc = new PdfChunk(returnValue, this);
-                    return pc;
+                    return new PdfChunk(returnValue, this);
                 }
             }
         }
         String returnValue = value.substring(splitPosition);
         value = trim(value.substring(0, splitPosition));
-        PdfChunk pc = new PdfChunk(returnValue, this);
-        return pc;
+        return new PdfChunk(returnValue, this);
     }
     
 /**
@@ -453,8 +447,7 @@ public class PdfChunk {
         if (width < font.width()) {
             String returnValue = value.substring(1);
             value = value.substring(0, 1);
-            PdfChunk pc = new PdfChunk(returnValue, this);
-            return pc;
+            return new PdfChunk(returnValue, this);
         }
         
         // loop over all the characters of a string
@@ -491,8 +484,7 @@ public class PdfChunk {
         }
         String returnValue = value.substring(currentPosition);
         value = value.substring(0, currentPosition);
-        PdfChunk pc = new PdfChunk(returnValue, this);
-        return pc;
+        return new PdfChunk(returnValue, this);
     }
     
     // methods to retrieve the membervariables

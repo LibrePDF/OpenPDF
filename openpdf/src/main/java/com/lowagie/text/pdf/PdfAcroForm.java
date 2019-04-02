@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 import com.lowagie.text.Rectangle;
@@ -93,7 +94,7 @@ public class PdfAcroForm extends PdfDictionary {
      * @param ft
      */
 
-    public void addFieldTemplates(HashMap ft) {
+    public void addFieldTemplates(Map<PdfTemplate, Object> ft) {
         fieldTemplates.putAll(ft);
     }
 

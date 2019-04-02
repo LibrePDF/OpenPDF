@@ -338,8 +338,8 @@ public class FactoryProperties {
      * @param cprops
      * @since 2.1.3
      */
-    public static void insertStyle(final Map<String, String> h, final ChainedProperties cprops) {
-        final String style = h.get("style");
+    public static void insertStyle(Map<String, String> h, ChainedProperties cprops) {
+        String style = h.get("style");
         if (style == null)
             return;
         Properties prop = Markup.parseAttributes(style);

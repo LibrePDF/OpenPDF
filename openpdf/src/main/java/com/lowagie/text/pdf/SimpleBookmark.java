@@ -110,17 +110,17 @@ import com.lowagie.text.xml.XMLUtil;
  */
 public final class SimpleBookmark implements SimpleXMLDocHandler {
     
-    private ArrayList topList;
-    private Stack attr = new Stack();
+    private List<Map<String, Object>> topList;
+    private Stack<Map<String, Object>> attr = new Stack<>();
     
     /** Creates a new instance of SimpleBookmark */
     private SimpleBookmark() {
     }
     
-    private static List bookmarkDepth(PdfReader reader, PdfDictionary outline, IntHashtable pages) {
-        ArrayList list = new ArrayList();
+    private static List<Map<String, Object>> bookmarkDepth(PdfReader reader, PdfDictionary outline, IntHashtable pages) {
+        List<Map<String, Object>> list = new ArrayList<>();
         while (outline != null) {
-            HashMap map = new HashMap();
+            Map<String, Object> map = new HashMap<>();
             PdfString title = (PdfString)PdfReader.getPdfObjectRelease(outline.get(PdfName.TITLE));
             map.put("Title", title.toUnicodeString());
             PdfArray color = (PdfArray)PdfReader.getPdfObjectRelease(outline.get(PdfName.C));
@@ -227,7 +227,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
         return list;
     }
     
-    private static void mapGotoBookmark(HashMap map, PdfObject dest, IntHashtable pages) 
+    private static void mapGotoBookmark(Map<String, Object> map, PdfObject dest, IntHashtable pages)
     {
         if (dest.isString())
             map.put("Named", dest.toString());
@@ -276,7 +276,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @return a <CODE>List</CODE> with the bookmarks or <CODE>null</CODE> if the
      * document doesn't have any
      */    
-    public static List getBookmark(PdfReader reader) {
+    public static List<Map<String, Object>> getBookmark(PdfReader reader) {
         PdfDictionary catalog = reader.getCatalog();
         PdfObject obj = PdfReader.getPdfObjectRelease(catalog.get(PdfName.OUTLINES));
         if (obj == null || !obj.isDictionary())
@@ -353,11 +353,10 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @param pageRange the page ranges, always in pairs. It can be <CODE>null</CODE>
      * to include all the pages
      */    
-    public static void shiftPageNumbers(List list, int pageShift, int[] pageRange) {
+    public static void shiftPageNumbers(List<Map<String, Object>> list, int pageShift, int[] pageRange) {
         if (list == null)
             return;
-        for (Object o : list) {
-            HashMap map = (HashMap) o;
+        for (Map<String, Object> map : list) {
             if ("GoTo".equals(map.get("Action"))) {
                 String page = (String) map.get("Page");
                 if (page != null) {
@@ -389,7 +388,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
                     map.put("Page", page);
                 }
             }
-            List kids = (List) map.get("Kids");
+            List<Map<String, Object>> kids = (List<Map<String, Object>>) map.get("Kids");
             if (kids != null)
                 shiftPageNumbers(kids, pageShift, pageRange);
         }
@@ -701,22 +700,22 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
         }
         if (!tag.equals("Title"))
             throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.end.tag.1", tag));
-        HashMap attributes = (HashMap)attr.pop();
-        String title = (String)attributes.get("Title");
+        Map<String, Object> attributes = attr.pop();
+        String title = (String) attributes.get("Title");
         attributes.put("Title",  title.trim());
-        String named = (String)attributes.get("Named");
+        String named = (String) attributes.get("Named");
         if (named != null)
             attributes.put("Named", SimpleNamedDestination.unEscapeBinaryString(named));
-        named = (String)attributes.get("NamedN");
+        named = (String) attributes.get("NamedN");
         if (named != null)
             attributes.put("NamedN", SimpleNamedDestination.unEscapeBinaryString(named));
         if (attr.isEmpty())
             topList.add(attributes);
         else {
-            HashMap parent = (HashMap)attr.peek();
-            List kids = (List)parent.get("Kids");
+            Map<String, Object> parent = attr.peek();
+            List<Map<String, Object>> kids = (List<Map<String, Object>>) parent.get("Kids");
             if (kids == null) {
-                kids = new ArrayList();
+                kids = new ArrayList<>();
                 parent.put("Kids", kids);
             }
             kids.add(attributes);
@@ -726,10 +725,10 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     public void startDocument() {
     }
 
-    public void startElement(String tag, HashMap h) {
+    public void startElement(String tag, Map<String, String> h) {
         if (topList == null) {
             if (tag.equals("Bookmark")) {
-                topList = new ArrayList();
+                topList = new ArrayList<>();
                 return;
             }
             else
@@ -737,7 +736,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
         }
         if (!tag.equals("Title"))
             throw new RuntimeException(MessageLocalization.getComposedMessage("tag.1.not.allowed", tag));
-        HashMap attributes = new HashMap(h);
+        Map<String, Object> attributes = new HashMap<>(h);
         attributes.put("Title", "");
         attributes.remove("Kids");
         attr.push(attributes);
@@ -746,8 +745,8 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     public void text(String str) {
         if (attr.isEmpty())
             return;
-        HashMap attributes = (HashMap)attr.peek();
-        String title = (String)attributes.get("Title");
+        Map<String, Object> attributes = attr.peek();
+        String title = (String) attributes.get("Title");
         title += str;
         attributes.put("Title", title);
     }

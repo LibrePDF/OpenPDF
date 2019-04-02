@@ -50,6 +50,7 @@ package com.lowagie.text.pdf;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
@@ -57,6 +58,8 @@ import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+
+import javax.annotation.Nullable;
 
 /**
  * Supports text, combo and list fields generating the correct appearances.
@@ -118,8 +121,8 @@ public class TextField extends BaseField {
             if (extensionFont != null)
                 fs.addFont(new Font(extensionFont, fontSize, 0, color));
             if (substitutionFonts != null) {
-                for (Object substitutionFont : substitutionFonts)
-                    fs.addFont(new Font((BaseFont) substitutionFont, fontSize, 0, color));
+                for (BaseFont substitutionFont : substitutionFonts)
+                    fs.addFont(new Font(substitutionFont, fontSize, 0, color));
             }
             phrase = fs.process(text);
         }
@@ -713,9 +716,9 @@ public class TextField extends BaseField {
      * list, all but the first element will be removed.
      * @param selections new selections.  If null, it clear()s the underlying ArrayList.
      */
-    public void setChoiceSelections( ArrayList selections ) {
+    public void setChoiceSelections(@Nullable List<Integer> selections ) {
         if (selections != null) {
-            choiceSelections = new ArrayList( selections );
+            choiceSelections = new ArrayList<>( selections );
             if (choiceSelections.size() > 1 && (options & BaseField.MULTISELECT) == 0 ) {
                 // can't have multiple selections in a single-select field
                 while (choiceSelections.size() > 1) {
@@ -745,14 +748,14 @@ public class TextField extends BaseField {
     /**
      * Holds value of property substitutionFonts.
      */
-    private ArrayList substitutionFonts;
+    private List<BaseFont> substitutionFonts;
 
     /**
      * Gets the list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can be <CODE>null</CODE>. The fonts in this list will be used if the original
      * font doesn't contain the needed glyphs.
      * @return the list
      */
-    public ArrayList getSubstitutionFonts() {
+    public List<BaseFont> getSubstitutionFonts() {
         return this.substitutionFonts;
     }
 
@@ -761,7 +764,7 @@ public class TextField extends BaseField {
      * font doesn't contain the needed glyphs.
      * @param substitutionFonts the list
      */
-    public void setSubstitutionFonts(ArrayList substitutionFonts) {
+    public void setSubstitutionFonts(List<BaseFont> substitutionFonts) {
         this.substitutionFonts = substitutionFonts;
     }
 

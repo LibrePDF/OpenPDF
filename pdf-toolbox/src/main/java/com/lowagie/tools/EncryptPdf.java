@@ -50,6 +50,7 @@ package com.lowagie.tools;
 
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.lowagie.text.pdf.PdfEncryptor;
 import com.lowagie.text.pdf.PdfReader;
@@ -114,7 +115,7 @@ public class EncryptPdf {
             System.out.println("Reading " + args[INPUT_FILE]);
             PdfReader reader = new PdfReader(args[INPUT_FILE]);
             System.out.println("Writing " + args[OUTPUT_FILE]);
-            HashMap moreInfo = new HashMap();
+            Map<String, String> moreInfo = new HashMap<>();
             for (int k = MOREINFO; k < args.length - 1; k += 2)
                 moreInfo.put(args[k], args[k + 1]);
             PdfEncryptor.encrypt(reader, new FileOutputStream(args[OUTPUT_FILE]),

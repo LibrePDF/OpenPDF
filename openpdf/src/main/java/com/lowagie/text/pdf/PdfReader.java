@@ -3453,7 +3453,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      * ArrayList with the indirect references to every page. Element 0 = page 1;
      * 1 = page 2;... Not used for partial reading.
      */
-    private ArrayList refsn;
+    private List<PdfObject> refsn;
     /** The number of pages, updated only in case of partial reading. */
     private int sizep;
     /**
@@ -3486,9 +3486,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       this.reader = reader;
       this.sizep = other.sizep;
       if (other.refsn != null) {
-        refsn = new ArrayList(other.refsn);
+        refsn = new ArrayList<>(other.refsn);
         for (int k = 0; k < refsn.size(); ++k) {
-          refsn.set(k, duplicatePdfObject((PdfObject) refsn.get(k), reader));
+          refsn.set(k, duplicatePdfObject(refsn.get(k), reader));
         }
       } else
         this.refsp = (IntHashtable) other.refsp.clone();
@@ -3505,7 +3505,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       if (refsn != null)
         return;
       refsp = null;
-      refsn = new ArrayList();
+      refsn = new ArrayList<>();
       pageInh = new ArrayList();
       iteratePages((PRIndirectReference) reader.catalog.get(PdfName.PAGES));
       pageInh = null;
@@ -3765,7 +3765,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       PRIndirectReference parent = (PRIndirectReference) reader.catalog
           .get(PdfName.PAGES);
       PdfDictionary topPages = (PdfDictionary) PdfReader.getPdfObject(parent);
-      ArrayList newPageRefs = new ArrayList(finalPages.size());
+      List<PdfObject> newPageRefs = new ArrayList<>(finalPages.size());
       PdfArray kids = new PdfArray();
       for (Object finalPage : finalPages) {
         int p = (Integer) finalPage;

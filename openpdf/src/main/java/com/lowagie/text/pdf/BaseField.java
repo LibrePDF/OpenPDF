@@ -49,9 +49,8 @@ package com.lowagie.text.pdf;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocumentException;
@@ -149,7 +148,7 @@ public abstract class BaseField {
     /** Holds value of property maxCharacterLength. */
     protected int maxCharacterLength;
 
-    private final static HashMap<PdfName, Integer> fieldKeys = new HashMap<>();
+    private final static Map<PdfName, Integer> fieldKeys = new HashMap<>();
 
     static {
         fieldKeys.putAll(PdfCopyFieldsImp.fieldKeys);
@@ -258,8 +257,8 @@ public abstract class BaseField {
         return app;
     }
 
-    protected static ArrayList getHardBreaks(String text) {
-        ArrayList arr = new ArrayList();
+    protected static List<String> getHardBreaks(String text) {
+        List<String> arr = new ArrayList<>();
         char[] cs = text.toCharArray();
         int len = cs.length;
         StringBuffer buf = new StringBuffer();
@@ -293,8 +292,8 @@ public abstract class BaseField {
         }
     }
 
-    protected static ArrayList breakLines(ArrayList breaks, BaseFont font, float fontSize, float width) {
-        ArrayList lines = new ArrayList();
+    protected static List<String> breakLines(ArrayList breaks, BaseFont font, float fontSize, float width) {
+        List<String> lines = new ArrayList<>();
         StringBuffer buf = new StringBuffer();
         for (Object aBreak : breaks) {
             buf.setLength(0);
