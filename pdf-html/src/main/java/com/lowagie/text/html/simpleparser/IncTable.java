@@ -47,10 +47,9 @@
 
 package com.lowagie.text.html.simpleparser;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
+import com.lowagie.text.pdf.PdfCell;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -59,23 +58,23 @@ import com.lowagie.text.pdf.PdfPTable;
  * @author  psoares
  */
 public class IncTable {
-    private HashMap props = new HashMap();
-    private ArrayList rows = new ArrayList();
-    private ArrayList cols;
+    private Map<String, String> props = new HashMap<>();
+    private List<List<PdfPCell>> rows = new ArrayList<>();
+    private List<PdfPCell> cols;
     /** Creates a new instance of IncTable */
-    public IncTable(HashMap props) {
+    public IncTable(Map<String, String> props) {
         this.props.putAll(props);
     }
     
     public void addCol(PdfPCell cell) {
         if (cols == null)
-            cols = new ArrayList();
+            cols = new ArrayList<>();
         cols.add(cell);
     }
     
-    public void addCols(ArrayList ncols) {
+    public void addCols(List<PdfPCell> ncols) {
         if (cols == null)
-            cols = new ArrayList(ncols);
+            cols = new ArrayList<>(ncols);
         else
             cols.addAll(ncols);
     }
@@ -88,7 +87,7 @@ public class IncTable {
         }
     }
     
-    public ArrayList getRows() {
+    public List<List<PdfPCell>> getRows() {
         return rows;
     }
     
@@ -96,12 +95,11 @@ public class IncTable {
         if (rows.isEmpty())
             return new PdfPTable(1);
         int ncol = 0;
-        ArrayList c0 = (ArrayList)rows.get(0);
-        for (Object o1 : c0) {
-            ncol += ((PdfPCell) o1).getColspan();
+        for (PdfPCell pCell : rows.get(0)) {
+            ncol += pCell.getColspan();
         }
         PdfPTable table = new PdfPTable(ncol);
-        String width = (String)props.get("width");
+        String width = props.get("width");
         if (width == null)
             table.setWidthPercentage(100);
         else {
@@ -112,10 +110,9 @@ public class IncTable {
                 table.setLockedWidth(true);
             }
         }
-        for (Object row1 : rows) {
-            ArrayList col = (ArrayList) row1;
-            for (Object o : col) {
-                table.addCell((PdfPCell) o);
+        for (List<PdfPCell> col : rows) {
+            for (PdfPCell pdfPCell : col) {
+                table.addCell(pdfPCell);
             }
         }
         return table;

@@ -59,6 +59,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.ExceptionConverter;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -701,10 +702,10 @@ public class PdfCopy extends PdfWriter {
 
     private void expandFields(PdfFormField field, ArrayList allAnnots) {
       allAnnots.add(field);
-      ArrayList kids = field.getKids();
+      List<PdfFormField> kids = field.getKids();
       if (kids != null) {
-          for (Object kid : kids) {
-              expandFields((PdfFormField) kid, allAnnots);
+          for (PdfFormField kid : kids) {
+              expandFields(kid, allAnnots);
           }
       }
     }

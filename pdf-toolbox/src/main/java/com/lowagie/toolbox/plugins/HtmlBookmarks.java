@@ -52,6 +52,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.swing.JInternalFrame;
@@ -150,12 +151,12 @@ public class HtmlBookmarks extends AbstractTool {
                 Paragraph d = new Paragraph((String) description);
                 document.add(d);
             }
-            List<HashMap<String, Object>> list = SimpleBookmark.getBookmark(reader);
+            List<Map<String, Object>> list = SimpleBookmark.getBookmark(reader);
             if (list == null) {
                 document.add(new Paragraph("This document has no bookmarks."));
             }
             else {
-                for (HashMap<String, Object> c: list) {
+                for (Map<String, Object> c: list) {
                     Chapter chapter = (Chapter)createBookmark(src.getName(), null, c);
                     List<HashMap<String, Object>> kids = (List<HashMap<String, Object>>) c.get("Kids");
                     if (kids != null) {
@@ -201,7 +202,7 @@ public class HtmlBookmarks extends AbstractTool {
      * @param bookmark the bookmark that has the data for the line
      * @return a subsection of section
      */
-    private static Section createBookmark(String pdf, Section section, HashMap<String, Object> bookmark) {
+    private static Section createBookmark(String pdf, Section section, Map<String, Object> bookmark) {
         Section s;
         Paragraph title = new Paragraph((String)bookmark.get("Title"));
         System.out.println((String)bookmark.get("Title"));

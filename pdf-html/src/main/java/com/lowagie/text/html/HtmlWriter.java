@@ -51,13 +51,8 @@ package com.lowagie.text.html;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Date;
-import java.util.EmptyStackException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Stack;
+import java.util.*;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Anchor;
@@ -133,7 +128,7 @@ public class HtmlWriter extends DocWriter {
     // membervariables
     
 /** This is the current font of the HTML. */
-    protected Stack currentfont = new Stack();
+    protected Stack<Font> currentfont = new Stack<>();
     
 /** This is the standard font of the HTML. */
     protected Font standardfont = new Font();
@@ -532,7 +527,7 @@ public class HtmlWriter extends DocWriter {
     
     public boolean isOtherFont(Font font) {
         try {
-            Font cFont = (Font) currentfont.peek();
+            Font cFont = currentfont.peek();
             return cFont.compareTo(font) != 0;
         }
         catch(EmptyStackException ese) {
@@ -635,7 +630,7 @@ public class HtmlWriter extends DocWriter {
                 }
                 
                 if (chunk.isEmpty()) return;
-                HashMap attributes = chunk.getAttributes();
+                Map<String, Object> attributes = chunk.getAttributes();
                 if (attributes != null && attributes.get(Chunk.NEWPAGE) != null) {
                     return;
                 }

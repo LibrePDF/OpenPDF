@@ -48,15 +48,12 @@ package com.lowagie.text.pdf;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.pdf.AcroFields.Item;
 import org.xml.sax.SAXException;
 
 import com.lowagie.text.Document;
@@ -85,10 +82,10 @@ class PdfStamperImp extends PdfWriter {
     protected boolean flat = false;
     protected boolean flatFreeText = false;
     protected int[] namePtr = {0};
-    protected HashSet partialFlattening = new HashSet();
+    protected Set<String> partialFlattening = new HashSet<>();
     protected boolean useVp = false;
     protected PdfViewerPreferencesImp viewerPreferences = new PdfViewerPreferencesImp();
-    protected HashMap fieldTemplates = new HashMap();
+    protected Map<PdfTemplate, Object> fieldTemplates = new HashMap<>();
     protected boolean fieldsAdded = false;
     protected int sigFlags = 0;
     protected boolean append;
@@ -152,7 +149,7 @@ class PdfStamperImp extends PdfWriter {
         initialXrefSize = reader.getXrefSize();
     }
 
-    void close(HashMap moreInfo) throws IOException {
+    void close(Map<String, String> moreInfo) throws IOException {
         if (closed)
             return;
         if (useVp) {
@@ -667,9 +664,8 @@ class PdfStamperImp extends PdfWriter {
             return;
         if (page > reader.getNumberOfPages())
             return;
-        HashMap fields = acroFields.getFields();
-        for (Object o : fields.values()) {
-            AcroFields.Item item = (AcroFields.Item) o;
+        Map<String, Item> fields = acroFields.getFields();
+        for (Item item : fields.values()) {
             for (int k = 0; k < item.size(); ++k) {
                 int p = item.getPage(k);
                 if (p >= page)
@@ -817,7 +813,7 @@ class PdfStamperImp extends PdfWriter {
         if (append)
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("field.flattening.is.not.supported.in.append.mode"));
         getAcroFields();
-        HashMap fields = acroFields.getFields();
+        Map<String, Item> fields = acroFields.getFields();
         if (fieldsAdded && partialFlattening.isEmpty()) {
             partialFlattening.addAll(fields.keySet());
         }
@@ -826,12 +822,11 @@ class PdfStamperImp extends PdfWriter {
         if (acroForm != null) {
             acroFds = (PdfArray)PdfReader.getPdfObject(acroForm.get(PdfName.FIELDS), acroForm);
         }
-        for (Object o : fields.entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            String name = (String) entry.getKey();
+        for (Map.Entry<String, Item> entry : fields.entrySet()) {
+            String name = entry.getKey();
             if (!partialFlattening.isEmpty() && !partialFlattening.contains(name))
                 continue;
-            AcroFields.Item item = (AcroFields.Item) entry.getValue();
+            Item item = entry.getValue();
             for (int k = 0; k < item.size(); ++k) {
                 PdfDictionary merged = item.getMerged(k);
                 PdfNumber ff = merged.getAsNumber(PdfName.F);
@@ -1129,8 +1124,7 @@ class PdfStamperImp extends PdfWriter {
             markUsed(acroForm);
         }
         markUsed(dr);
-        for (Object o : fieldTemplates.keySet()) {
-            PdfTemplate template = (PdfTemplate) o;
+        for (PdfTemplate template : fieldTemplates.keySet()) {
             PdfFormField.mergeResources(dr, (PdfDictionary) template.getResources(), this);
         }
         // if (dr.get(PdfName.ENCODING) == null) dr.put(PdfName.ENCODING, PdfName.WIN_ANSI_ENCODING);
@@ -1160,42 +1154,44 @@ class PdfStamperImp extends PdfWriter {
         }
     }
 
-    void expandFields(PdfFormField field, ArrayList allAnnots) {
-        allAnnots.add(field);
-        ArrayList kids = field.getKids();
+    void expandFields(PdfFormField field, List<PdfAnnotation> annotations) {
+        annotations.add(field);
+        List<PdfFormField> kids = field.getKids();
         if (kids != null) {
-            for (Object kid : kids) expandFields((PdfFormField) kid, allAnnots);
+            for (PdfFormField kid : kids) {
+                expandFields(kid, annotations);
+            }
         }
     }
 
-    void addAnnotation(PdfAnnotation annot, PdfDictionary pageN) {
+    void addAnnotation(PdfAnnotation annotation, PdfDictionary pageN) {
         try {
-            ArrayList allAnnots = new ArrayList();
-            if (annot.isForm()) {
+            List<PdfAnnotation> annotations = new ArrayList<>();
+            if (annotation.isForm()) {
                 fieldsAdded = true;
                 getAcroFields();
-                PdfFormField field = (PdfFormField)annot;
+                PdfFormField field = (PdfFormField)annotation;
                 if (field.getParent() != null)
                     return;
-                expandFields(field, allAnnots);
+                expandFields(field, annotations);
             }
             else
-                allAnnots.add(annot);
-            for (Object allAnnot : allAnnots) {
-                annot = (PdfAnnotation) allAnnot;
-                if (annot.getPlaceInPage() > 0)
-                    pageN = reader.getPageN(annot.getPlaceInPage());
-                if (annot.isForm()) {
-                    if (!annot.isUsed()) {
-                        HashMap templates = annot.getTemplates();
+                annotations.add(annotation);
+            for (PdfAnnotation pdfAnnotation : annotations) {
+                annotation = pdfAnnotation;
+                if (annotation.getPlaceInPage() > 0)
+                    pageN = reader.getPageN(annotation.getPlaceInPage());
+                if (annotation.isForm()) {
+                    if (!annotation.isUsed()) {
+                        Map<PdfTemplate, Object> templates = annotation.getTemplates();
                         if (templates != null)
                             fieldTemplates.putAll(templates);
                     }
-                    PdfFormField field = (PdfFormField) annot;
+                    PdfFormField field = (PdfFormField) annotation;
                     if (field.getParent() == null)
                         addDocumentField(field.getIndirectReference());
                 }
-                if (annot.isAnnotation()) {
+                if (annotation.isAnnotation()) {
                     PdfObject pdfobj = PdfReader.getPdfObject(pageN.get(PdfName.ANNOTS), pageN);
                     PdfArray annots = null;
                     if (pdfobj == null || !pdfobj.isArray()) {
@@ -1204,30 +1200,30 @@ class PdfStamperImp extends PdfWriter {
                         markUsed(pageN);
                     } else
                         annots = (PdfArray) pdfobj;
-                    annots.add(annot.getIndirectReference());
+                    annots.add(annotation.getIndirectReference());
                     markUsed(annots);
-                    if (!annot.isUsed()) {
-                        PdfRectangle rect = (PdfRectangle) annot.get(PdfName.RECT);
+                    if (!annotation.isUsed()) {
+                        PdfRectangle rect = (PdfRectangle) annotation.get(PdfName.RECT);
                         if (rect != null && (rect.left() != 0 || rect.right() != 0 || rect.top() != 0 || rect.bottom() != 0)) {
                             int rotation = reader.getPageRotation(pageN);
                             Rectangle pageSize = reader.getPageSizeWithRotation(pageN);
                             switch (rotation) {
                                 case 90:
-                                    annot.put(PdfName.RECT, new PdfRectangle(
+                                    annotation.put(PdfName.RECT, new PdfRectangle(
                                             pageSize.getTop() - rect.top(),
                                             rect.right(),
                                             pageSize.getTop() - rect.bottom(),
                                             rect.left()));
                                     break;
                                 case 180:
-                                    annot.put(PdfName.RECT, new PdfRectangle(
+                                    annotation.put(PdfName.RECT, new PdfRectangle(
                                             pageSize.getRight() - rect.left(),
                                             pageSize.getTop() - rect.bottom(),
                                             pageSize.getRight() - rect.right(),
                                             pageSize.getTop() - rect.top()));
                                     break;
                                 case 270:
-                                    annot.put(PdfName.RECT, new PdfRectangle(
+                                    annotation.put(PdfName.RECT, new PdfRectangle(
                                             rect.bottom(),
                                             pageSize.getRight() - rect.left(),
                                             rect.top(),
@@ -1237,9 +1233,9 @@ class PdfStamperImp extends PdfWriter {
                         }
                     }
                 }
-                if (!annot.isUsed()) {
-                    annot.setUsed();
-                    addToBody(annot, annot.getIndirectReference());
+                if (!annotation.isUsed()) {
+                    annotation.setUsed();
+                    addToBody(annotation, annotation.getIndirectReference());
                 }
             }
         }

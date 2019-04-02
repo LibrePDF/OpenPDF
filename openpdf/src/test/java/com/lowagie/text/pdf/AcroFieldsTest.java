@@ -3,7 +3,7 @@ package com.lowagie.text.pdf;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.Security;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Assertions;
@@ -29,7 +29,7 @@ public class AcroFieldsTest {
         PdfWriter writer = PdfWriter.getInstance(document, out);
 
         AcroFields fields = new AcroFields(reader, writer);
-        ArrayList<String> names = fields.getSignatureNames();
+        List<String> names = fields.getSignatureNames();
         Assertions.assertEquals(1, names.size());
 
         for (String signName : names) {

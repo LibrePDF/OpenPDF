@@ -49,13 +49,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
+
 /** Reads an FDF form and makes the fields available
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class FdfReader extends PdfReader {
 
-    private HashMap<String, PdfDictionary> fields;
-    String fileSpec;
+    private Map<String, PdfDictionary> fields;
+    private String fileSpec;
     PdfName encoding;
 
     /** Reads an FDF form.
@@ -155,7 +157,7 @@ public class FdfReader extends PdfReader {
      * with the field content.
      * @return all the fields
      */
-    public HashMap<String, PdfDictionary> getFields() {
+    public Map<String, PdfDictionary> getFields() {
         return fields;
     }
 

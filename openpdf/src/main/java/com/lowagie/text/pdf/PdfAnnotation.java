@@ -52,6 +52,8 @@ package com.lowagie.text.pdf;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Rectangle;
@@ -198,7 +200,7 @@ public class PdfAnnotation extends PdfDictionary {
    * @since 2.1.6; was removed in 2.1.5, but restored in 2.1.6
    */
   protected PdfIndirectReference reference;
-  protected HashMap<PdfTemplate, Object> templates;
+  protected Map<PdfTemplate, Object> templates;
   protected boolean form = false;
   protected boolean annotation = true;
 
@@ -645,7 +647,7 @@ public class PdfAnnotation extends PdfDictionary {
     used = true;
   }
 
-  public HashMap<PdfTemplate, Object> getTemplates() {
+  public Map<PdfTemplate, Object> getTemplates() {
     return templates;
   }
 

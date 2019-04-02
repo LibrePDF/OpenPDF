@@ -1284,8 +1284,7 @@ public class PdfWriter extends DocWriter implements
             }
         }
         // [F13] add the OCG layers
-        for (Object o : documentOCG) {
-            PdfOCG layer = (PdfOCG) o;
+        for (PdfOCG layer : documentOCG) {
             addToBody(layer.getPdfObject(), layer.getRef());
         }
     }
@@ -2402,9 +2401,9 @@ public class PdfWriter extends DocWriter implements
 
 //  [F13] Optional Content Groups
     /** A hashSet containing all the PdfLayer objects. */
-    protected HashSet documentOCG = new HashSet();
+    protected Set<PdfOCG> documentOCG = new HashSet<>();
     /** An array list used to define the order of an OCG tree. */
-    protected ArrayList documentOCGorder = new ArrayList();
+    protected List<PdfOCG> documentOCGorder = new ArrayList<>();
     /** The OCProperties in a catalog dictionary. */
     protected PdfOCProperties OCProperties;
     /** The RBGroups array in an OCG dictionary */
@@ -2478,7 +2477,7 @@ public class PdfWriter extends DocWriter implements
 
     private void addASEvent(PdfName event, PdfName category) {
         PdfArray arr = new PdfArray();
-        for (Object o : documentOCG) {
+        for (PdfOCG o : documentOCG) {
             PdfLayer layer = (PdfLayer) o;
             PdfDictionary usage = (PdfDictionary) layer.get(PdfName.USAGE);
             if (usage != null && usage.get(category) != null)
@@ -2511,7 +2510,7 @@ public class PdfWriter extends DocWriter implements
         }
         if (OCProperties.get(PdfName.OCGS) == null) {
             PdfArray gr = new PdfArray();
-            for (Object o : documentOCG) {
+            for (PdfOCG o : documentOCG) {
                 PdfLayer layer = (PdfLayer) o;
                 gr.add(layer.getRef());
             }
@@ -2519,14 +2518,14 @@ public class PdfWriter extends DocWriter implements
         }
         if (OCProperties.get(PdfName.D) != null)
             return;
-        ArrayList docOrder = new ArrayList(documentOCGorder);
-        for (Iterator it = docOrder.iterator(); it.hasNext();) {
+        List<PdfOCG> docOrder = new ArrayList<>(documentOCGorder);
+        for (Iterator<PdfOCG> it = docOrder.iterator(); it.hasNext();) {
             PdfLayer layer = (PdfLayer)it.next();
             if (layer.getParent() != null)
                 it.remove();
         }
         PdfArray order = new PdfArray();
-        for (Object o1 : docOrder) {
+        for (PdfOCG o1 : docOrder) {
             PdfLayer layer = (PdfLayer) o1;
             getOCGOrder(order, layer);
         }
@@ -2534,7 +2533,7 @@ public class PdfWriter extends DocWriter implements
         OCProperties.put(PdfName.D, d);
         d.put(PdfName.ORDER, order);
         PdfArray gr = new PdfArray();
-        for (Object o : documentOCG) {
+        for (PdfOCG o : documentOCG) {
             PdfLayer layer = (PdfLayer) o;
             if (!layer.isOn())
                 gr.add(layer.getRef());

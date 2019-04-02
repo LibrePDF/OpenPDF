@@ -61,12 +61,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
  */
 
-public class TagMap extends HashMap {
+public class TagMap extends HashMap<String, XmlPeer> {
 
     private static final long serialVersionUID = -6809383366554350820L;
 
@@ -91,7 +92,7 @@ public class TagMap extends HashMap {
         public static final String CONTENT = "content";
         
 /** This is the tagmap using the AttributeHandler */
-        private HashMap tagMap;
+        private Map<String, XmlPeer> tagMap;
         
 /** This is the current peer. */
         private XmlPeer currentPeer;
@@ -103,8 +104,7 @@ public class TagMap extends HashMap {
  * @param    tagMap  A Hashmap containing XmlPeer-objects
  */
         
-        public AttributeHandler(HashMap tagMap) {
-            super();
+        public AttributeHandler(Map<String, XmlPeer> tagMap) {
             this.tagMap = tagMap;
         }
         
@@ -183,7 +183,6 @@ public class TagMap extends HashMap {
      * @param tagfile the path to an XML file with the tagmap
      */
     public TagMap(String tagfile) {
-        super();
         try {
             init(TagMap.class.getClassLoader().getResourceAsStream(tagfile));
         }catch(Exception e) {
@@ -200,7 +199,6 @@ public class TagMap extends HashMap {
      * @param in    An InputStream with the tagmap xml
      */
     public TagMap(InputStream in) {
-        super();
         init(in);
     }
 

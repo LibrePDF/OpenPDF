@@ -40,6 +40,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JInternalFrame;
 
@@ -103,7 +104,7 @@ public class ConcatN extends AbstractTool {
             }
             File pdf_file = (File) getValue("destfile");
             int pageOffset = 0;
-            ArrayList<HashMap<String, Object>> master = new ArrayList<>();
+            List<Map<String, Object>> master = new ArrayList<>();
             Document document = null;
             PdfCopy writer = null;
             for (int i = 0; i < files.length; i++) {
@@ -112,7 +113,7 @@ public class ConcatN extends AbstractTool {
                 reader.consolidateNamedDestinations();
                 // we retrieve the total number of pages
                 int n = reader.getNumberOfPages();
-                List<HashMap<String, Object>> bookmarks = SimpleBookmark.getBookmark(reader);
+                List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmark(reader);
                 if (bookmarks != null) {
                     if (pageOffset != 0) {
                         SimpleBookmark.shiftPageNumbers(bookmarks, pageOffset, null);

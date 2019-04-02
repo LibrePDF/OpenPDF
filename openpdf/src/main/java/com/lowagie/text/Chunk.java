@@ -53,6 +53,8 @@ import java.awt.Color;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.HyphenationEvent;
@@ -108,7 +110,7 @@ public class Chunk implements Element {
     protected Font font = null;
 
     /** Contains some of the attributes for this Chunk. */
-    protected HashMap attributes = null;
+    protected Map<String, Object> attributes = null;
 
     // constructors
 
@@ -132,7 +134,7 @@ public class Chunk implements Element {
             font = new Font(ck.font);
         }
         if (ck.attributes != null) {
-            attributes = new HashMap(ck.attributes);
+            attributes = new HashMap<>(ck.attributes);
         }
     }
     
@@ -420,7 +422,7 @@ public class Chunk implements Element {
      * @return the attributes for this <CODE>Chunk</CODE>
      */
 
-    public HashMap getAttributes() {
+    public Map<String, Object> getAttributes() {
         return attributes;
     }
 
@@ -428,7 +430,7 @@ public class Chunk implements Element {
      * Sets the attributes all at once.
      * @param    attributes    the attributes of a Chunk
      */
-    public void setAttributes(HashMap attributes) {
+    public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 
@@ -444,7 +446,7 @@ public class Chunk implements Element {
 
     private Chunk setAttribute(String name, Object obj) {
         if (attributes == null)
-            attributes = new HashMap();
+            attributes = new HashMap<>();
         attributes.put(name, obj);
         return this;
     }
@@ -526,7 +528,7 @@ public class Chunk implements Element {
     public Chunk setUnderline(Color color, float thickness, float thicknessMul,
             float yPosition, float yPositionMul, int cap) {
         if (attributes == null)
-            attributes = new HashMap();
+            attributes = new HashMap<>();
         Object[] obj = {
                 color,
                 new float[]{thickness, thicknessMul, yPosition, yPositionMul, cap}};
@@ -560,8 +562,7 @@ public class Chunk implements Element {
      */
     public float getTextRise() {
         if (attributes != null && attributes.containsKey(SUBSUPSCRIPT)) {
-            Float f = (Float) attributes.get(SUBSUPSCRIPT);
-            return f;
+            return (Float) attributes.get(SUBSUPSCRIPT);
         }
         return 0.0f;
     }
@@ -898,8 +899,7 @@ public class Chunk implements Element {
      */
     public float getCharacterSpacing() {
         if (attributes != null && attributes.containsKey(CHAR_SPACING)) {
-            Float f = (Float) attributes.get(CHAR_SPACING);
-            return f;
+            return (Float) attributes.get(CHAR_SPACING);
         }
         return 0.0f;
     }
