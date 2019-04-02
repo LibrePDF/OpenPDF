@@ -49,8 +49,27 @@
 
 package com.lowagie.text.xml;
 
+import com.lowagie.text.Anchor;
+import com.lowagie.text.Annotation;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Cell;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.DocListener;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.ElementTags;
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
 import com.lowagie.text.List;
-import com.lowagie.text.*;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.Meta;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.Section;
+import com.lowagie.text.Table;
+import com.lowagie.text.TextElementArray;
 import com.lowagie.text.factories.ElementFactory;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.draw.LineSeparator;
@@ -60,7 +79,12 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.Properties;
+import java.util.Stack;
 
 /**
  * This class is a Handler that controls the iText XML to PDF conversion.

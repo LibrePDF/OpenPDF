@@ -36,11 +36,17 @@
 package com.lowagie.toolbox;
 
 import java.awt.Desktop;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.tools.Executable;

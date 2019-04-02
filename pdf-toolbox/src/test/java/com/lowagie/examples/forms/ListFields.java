@@ -15,9 +15,18 @@
 package com.lowagie.examples.forms;
 
 
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.PRAcroForm;
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfIndirectReference;
+import com.lowagie.text.pdf.PdfLister;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfString;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 

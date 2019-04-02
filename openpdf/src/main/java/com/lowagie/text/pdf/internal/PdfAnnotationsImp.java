@@ -59,7 +59,18 @@ import com.lowagie.text.Annotation;
 
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.PdfAcroForm;
+import com.lowagie.text.pdf.PdfAction;
+import com.lowagie.text.pdf.PdfAnnotation;
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfFileSpecification;
+import com.lowagie.text.pdf.PdfFormField;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfObject;
+import com.lowagie.text.pdf.PdfRectangle;
+import com.lowagie.text.pdf.PdfString;
+import com.lowagie.text.pdf.PdfTemplate;
+import com.lowagie.text.pdf.PdfWriter;
 
 public class PdfAnnotationsImp {
 

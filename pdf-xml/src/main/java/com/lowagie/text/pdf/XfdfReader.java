@@ -55,7 +55,11 @@ import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * Reads a XFDF.

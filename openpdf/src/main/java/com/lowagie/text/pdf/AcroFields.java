@@ -49,7 +49,13 @@ package com.lowagie.text.pdf;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 

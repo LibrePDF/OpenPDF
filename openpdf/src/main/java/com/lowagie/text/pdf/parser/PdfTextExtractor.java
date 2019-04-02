@@ -50,7 +50,17 @@ package com.lowagie.text.pdf.parser;
 
 
 import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.PRIndirectReference;
+import com.lowagie.text.pdf.PRStream;
+import com.lowagie.text.pdf.PRTokeniser;
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfContentParser;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfLiteral;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfObject;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.RandomAccessFileOrArray;
 
 import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;

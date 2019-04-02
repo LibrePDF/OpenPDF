@@ -30,14 +30,40 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import javax.swing.*;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfAction;
+import com.lowagie.text.pdf.PdfAnnotation;
+import com.lowagie.text.pdf.PdfAppearance;
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfBoolean;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfEncodings;
+import com.lowagie.text.pdf.PdfFormField;
+import com.lowagie.text.pdf.PdfIndirectObject;
+import com.lowagie.text.pdf.PdfIndirectReference;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfNumber;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
+import com.lowagie.text.pdf.PdfStream;
+import com.lowagie.text.pdf.PdfString;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.PushbuttonField;
 import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.arguments.*;
+import com.lowagie.toolbox.arguments.AbstractArgument;
+import com.lowagie.toolbox.arguments.FileArgument;
+import com.lowagie.toolbox.arguments.StringArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
 import com.lowagie.toolbox.arguments.filters.U3DFilter;
 

@@ -36,8 +36,14 @@ package com.lowagie.toolbox.swing;
 
 import java.awt.Toolkit;
 
-import javax.swing.*;
-import javax.swing.text.*;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 /**
  * @since 2.1.1 (imported from itexttoolbox project)
