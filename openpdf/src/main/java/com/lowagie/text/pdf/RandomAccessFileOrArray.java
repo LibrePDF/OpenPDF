@@ -50,24 +50,19 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.text.Document;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
+
+import java.io.*;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import com.lowagie.text.error_messages.MessageLocalization;
-/** An implementation of a RandomAccessFile for input only
+
+/**
+ * An implementation of a RandomAccessFile for input only
  * that accepts a file or a byte array as data source.
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
-public class RandomAccessFileOrArray implements DataInput {
+public class RandomAccessFileOrArray implements DataInput, Closeable {
     
     MappedRandomAccessFile rf;
     RandomAccessFile trf;

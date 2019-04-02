@@ -3,22 +3,22 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at http://www.mozilla.org/MPL/
- *
+ * <p>
  * Software distributed under the License is distributed on an "AS IS" basis,
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  * for the specific language governing rights and limitations under the License.
- *
+ * <p>
  * The Original Code is 'iText, a free JAVA-PDF library'.
- *
+ * <p>
  * The Initial Developer of the Original Code is Bruno Lowagie. Portions created by
  * the Initial Developer are Copyright (C) 1999-2008 by Bruno Lowagie.
  * All Rights Reserved.
  * Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer
  * are Copyright (C) 2000-2008 by Paulo Soares. All Rights Reserved.
- *
+ * <p>
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
- *
+ * <p>
  * Alternatively, the contents of this file may be used under the terms of the
  * LGPL license (the "GNU LIBRARY GENERAL PUBLIC LICENSE"), in which case the
  * provisions of LGPL are applicable instead of those above.  If you wish to
@@ -28,12 +28,12 @@
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
  * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
  * Library General Public License as published by the Free Software Foundation;
  * either version 2 of the License, or any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
@@ -41,22 +41,24 @@
  */
 package com.lowagie.text.pdf.parser;
 
+import javax.annotation.Nullable;
+
 /**
  * @author dgd
  */
 public abstract class ParsedTextImpl implements TextAssemblyBuffer {
     private final String text;
-    private float _ascent;
-    private float _descent;
-    private Vector _startPoint;
-    private Vector _endPoint;
-    float _spaceWidth;
+    private float ascent;
+    private float descent;
+    private Vector startPoint;
+    private Vector endPoint;
+    private float spaceWidth;
     /**
      * We track a vector representing our baseline, left->right, so that calculations of line-
      * change can be accurate, even with 0-length words (representing lone spaces, when
      * those are rendered by the PDF).
      */
-    Vector _baseline;
+    private Vector baseline;
 
     /**
      * @param text
@@ -74,26 +76,27 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
      * @param spaceWidth
      *            What is the width of the space in this font....
      */
-    ParsedTextImpl(String text,
+    ParsedTextImpl(@Nullable String text,
                    Vector startPoint,
                    Vector endPoint,
                    Vector baseline,
                    float ascent,
                    float descent,
                    float spaceWidth) {
-        _baseline = baseline;
+        this.baseline = baseline;
         this.text = text;
-        _startPoint = startPoint;
-        _endPoint = endPoint;
-        _ascent = ascent;
-        _descent = descent;
-        _spaceWidth = spaceWidth;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.ascent = ascent;
+        this.descent = descent;
+        this.spaceWidth = spaceWidth;
     }
 
     /**
-     * @return
+     * {@inheritDoc}
      * @see com.lowagie.text.pdf.parser.ParsedText#getText()
      */
+    @Nullable
     @Override
     public String getText() {
         return text;
@@ -104,15 +107,15 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
      *         the current font
      */
     public float getSingleSpaceWidth() {
-        return _spaceWidth;
+        return spaceWidth;
     }
 
     public float getAscent() {
-        return _ascent;
+        return ascent;
     }
 
     public float getDescent() {
-        return _descent;
+        return descent;
     }
 
     public float getWidth() {
@@ -123,7 +126,7 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
      * @return a vector in User space representing the start point of the text
      */
     public Vector getStartPoint() {
-        return _startPoint;
+        return startPoint;
     }
 
     /**
@@ -132,18 +135,18 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
      *         transformed by the applicable transformation matrices)
      */
     public Vector getEndPoint() {
-        return _endPoint;
+        return endPoint;
     }
-    
+
     /**
      * Return the vector representing the baseline of this text chunk, even if the length
      * of the text is zero.
      *
-     * @see ParsedTextImpl#_baseline
+     * @see ParsedTextImpl#baseline
      * @return baseline
      */
     public Vector getBaseline() {
-        return _baseline;
+        return baseline;
     }
 
     /**
@@ -151,7 +154,7 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
      * we assume further splitting is not needed.
      */
     public abstract boolean shouldNotSplit();
-    
+
     /**
      * @return true if this was a space or other item that should force a space before it.
      */

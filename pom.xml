@@ -44,6 +44,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         
         <bouncycastle.version>1.61</bouncycastle.version>
+        <spotbugs.version>3.1.12</spotbugs.version>
         <hamcrest.version>2.1</hamcrest.version>
         <java-module-name>com.github.librepdf.openpdf.parent</java-module-name>
         <jupiter.version>5.4.1</jupiter.version>
@@ -238,6 +239,11 @@
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcpkix-jdk15on</artifactId>
                 <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs</artifactId>
+                <version>${spotbugs.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

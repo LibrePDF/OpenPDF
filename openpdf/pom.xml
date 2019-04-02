@@ -35,6 +35,13 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs</artifactId>
+            <version>${spotbugs.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-tiff</artifactId>
             <version>${imageio-tiff.version}</version>

@@ -55,137 +55,153 @@ package com.lowagie.text.pdf.parser;
  * helps, just think of all PDF drawing operations as occurring in a single plane
  * with z=1.
  */
+@SuppressWarnings("WeakerAccess")
 public class Vector {
-    /** index of the X coordinate */
-    public static final int I1 = 0;
-    /** index of the Y coordinate */
-    public static final int I2 = 1;
-    /** index of the Z coordinate */
-    public static final int I3 = 2;
-    
-    /** the values inside the vector */
-    private final float[] vals = new float[]{
-            0,0,0
+    /**
+     * index of the X coordinate
+     */
+    private static final int I1 = 0;
+    /**
+     * index of the Y coordinate
+     */
+    private static final int I2 = 1;
+    /**
+     * index of the Z coordinate
+     */
+    private static final int I3 = 2;
+
+    /**
+     * the values inside the vector
+     */
+    private final float[] values = new float[]{
+            0, 0, 0
     };
 
     /**
      * Creates a new Vector
+     *
      * @param x the X coordinate
      * @param y the Y coordinate
      * @param z the Z coordinate
      */
     public Vector(float x, float y, float z) {
-        vals[I1] = x;
-        vals[I2] = y;
-        vals[I3] = z;
+        values[I1] = x;
+        values[I2] = y;
+        values[I3] = z;
     }
-    
+
     /**
      * Gets the value from a coordinate of the vector
+     *
      * @param index the index of the value to get (I1, I2 or I3)
-     * @return
+     * @return value from a coordinate of the vector
      */
-    public float get(int index){
-        return vals[index];
+    public float get(int index) {
+        return values[index];
     }
-    
+
     /**
      * Computes the cross product of this vector and the specified matrix
+     *
      * @param by the matrix to cross this vector with
      * @return the result of the cross product
      */
-    public Vector cross(Matrix by){
-        
-        float x = vals[I1]*by.get(Matrix.I11) + vals[I2]*by.get(Matrix.I21) + vals[I3]*by.get(Matrix.I31);
-        float y = vals[I1]*by.get(Matrix.I12) + vals[I2]*by.get(Matrix.I22) + vals[I3]*by.get(Matrix.I32);
-        float z = vals[I1]*by.get(Matrix.I13) + vals[I2]*by.get(Matrix.I23) + vals[I3]*by.get(Matrix.I33);
-        
+    public Vector cross(Matrix by) {
+        float x = values[I1] * by.get(Matrix.I11) + values[I2] * by.get(Matrix.I21) + values[I3] * by.get(Matrix.I31);
+        float y = values[I1] * by.get(Matrix.I12) + values[I2] * by.get(Matrix.I22) + values[I3] * by.get(Matrix.I32);
+        float z = values[I1] * by.get(Matrix.I13) + values[I2] * by.get(Matrix.I23) + values[I3] * by.get(Matrix.I33);
+
         return new Vector(x, y, z);
     }
-    
+
     /**
      * Computes the difference between this vector and the specified vector
+     *
      * @param v the vector to subtract from this one
      * @return the results of the subtraction
      */
-    public Vector subtract(Vector v){
-        float x = vals[I1] - v.vals[I1];
-        float y = vals[I2] - v.vals[I2];
-        float z = vals[I3] - v.vals[I3];
-        
+    public Vector subtract(Vector v) {
+        float x = values[I1] - v.values[I1];
+        float y = values[I2] - v.values[I2];
+        float z = values[I3] - v.values[I3];
+
         return new Vector(x, y, z);
     }
-    
+
     /**
      * Computes the sum of this vector and the specified vector
+     *
      * @param v the vector to subtract from this one
      * @return the results of the subtraction
      */
-    public Vector add(Vector v){
-        float x = vals[I1] + v.vals[I1];
-        float y = vals[I2] + v.vals[I2];
-        float z = vals[I3] + v.vals[I3];
-        
+    public Vector add(Vector v) {
+        float x = values[I1] + v.values[I1];
+        float y = values[I2] + v.values[I2];
+        float z = values[I3] + v.values[I3];
+
         return new Vector(x, y, z);
     }
-    
+
     /**
      * Computes the cross product of this vector and the specified vector
+     *
      * @param with the vector to cross this vector with
      * @return the cross product
      */
-    public Vector cross(Vector with){
-        float x = vals[I2]*with.vals[I3] - vals[I3]*with.vals[I2];
-        float y = vals[I3]*with.vals[I1] - vals[I1]*with.vals[I3];
-        float z = vals[I1]*with.vals[I2] - vals[I2]*with.vals[I1];
-        
+    public Vector cross(Vector with) {
+        float x = values[I2] * with.values[I3] - values[I3] * with.values[I2];
+        float y = values[I3] * with.values[I1] - values[I1] * with.values[I3];
+        float z = values[I1] * with.values[I2] - values[I2] * with.values[I1];
+
         return new Vector(x, y, z);
     }
-    
+
     /**
      * Computes the dot product of this vector with the specified vector
+     *
      * @param with the vector to dot product this vector with
      * @return the dot product
      */
-    public float dot(Vector with){
-        return vals[I1]*with.vals[I1] + vals[I2]*with.vals[I2] + vals[I3]*with.vals[I3];
+    public float dot(Vector with) {
+        return values[I1] * with.values[I1] + values[I2] * with.values[I2] + values[I3] * with.values[I3];
     }
-    
+
     /**
      * Computes the length of this vector
-     * 
-     * <b>Note:</b> If you are working with raw vectors from PDF, be careful - 
+     *
+     * <b>Note:</b> If you are working with raw vectors from PDF, be careful -
      * the Z axis will generally be set to 1.  If you want to compute the
      * length of a vector, subtract it from the origin first (this will set
      * the Z axis to 0).
-     * 
-     * For example: 
+     * <p>
+     * For example:
      * <code>aVector.subtract(originVector).length();</code>
-     *  
+     *
      * @return the length of this vector
      */
-    public float length(){
-        return (float)Math.sqrt(lengthSquared());
+    public float length() {
+        return (float) Math.sqrt(lengthSquared());
     }
-    
+
     /**
      * Computes the length squared of this vector.
-     * 
+     * <p>
      * The square of the length is less expensive to compute, and is often
      * useful without taking the square root.
      * <br><br>
      * <b>Note:</b> See the important note under {@link Vector#length()}
-     * 
+     *
      * @return the square of the length of the vector
      */
-    public float lengthSquared(){
-        return vals[I1]*vals[I1] + vals[I2]*vals[I2] + vals[I3]*vals[I3];
+    public float lengthSquared() {
+        return values[I1] * values[I1] + values[I2] * values[I2] + values[I3] * values[I3];
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
-        return vals[I1]+","+vals[I2]+","+vals[I3];
+        return values[I1] + "," + values[I2] + "," + values[I3];
     }
 }

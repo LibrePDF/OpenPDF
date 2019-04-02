@@ -51,6 +51,8 @@ package com.lowagie.text.pdf;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 /**
  * Parses the page or template content.
@@ -84,16 +86,18 @@ public class PdfContentParser {
      * @return the same <CODE>ArrayList</CODE> given as argument or a new one
      * @throws IOException on error
      */    
-    public ArrayList parse(ArrayList ls) throws IOException {
-        if (ls == null)
-            ls = new ArrayList();
-        else
+    public List<PdfObject> parse(List<PdfObject> ls) throws IOException {
+        if (ls == null) {
+            ls = new ArrayList<>();
+        } else {
             ls.clear();
-        PdfObject ob = null;
+        }
+        PdfObject ob;
         while ((ob = readPRObject()) != null) {
             ls.add(ob);
-            if (ob.type() == COMMAND_TYPE)
+            if (ob.type() == COMMAND_TYPE) {
                 break;
+            }
         }
         return ls;
     }

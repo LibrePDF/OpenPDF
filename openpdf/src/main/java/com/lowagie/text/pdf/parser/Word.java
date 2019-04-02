@@ -1,50 +1,52 @@
-/**
- * Copyright 2014 by Tizra Inc.
- * The contents of this file are subject to the Mozilla Public License Version 1.1
- * (the "License"); you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the License.
- *
- * The Original Code is 'iText, a free JAVA-PDF library'.
- *
- * The Initial Developer of the Original Code is Bruno Lowagie. Portions created by
- * the Initial Developer are Copyright (C) 1999-2008 by Bruno Lowagie.
- * All Rights Reserved.
- * Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer
- * are Copyright (C) 2000-2008 by Paulo Soares. All Rights Reserved.
- *
- * Contributor(s): all the names of the contributors are added in the source code
- * where applicable.
- *
- * Alternatively, the contents of this file may be used under the terms of the
- * LGPL license (the "GNU LIBRARY GENERAL PUBLIC LICENSE"), in which case the
- * provisions of LGPL are applicable instead of those above.  If you wish to
- * allow use of your version of this file only under the terms of the LGPL
- * License and not to allow others to use your version of this file under
- * the MPL, indicate your decision by deleting the provisions above and
- * replace them with the notice and other provisions required by the LGPL.
- * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE.
- *
- * This library is free software; you can redistribute it and/or modify it
- * under the terms of the MPL as stated above or under the terms of the GNU
- * Library General Public License as published by the Free Software Foundation;
- * either version 2 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
- * details.
- *
- * dgd: com.lowagie.text.pdf.parser
+/*
+  Copyright 2014 by Tizra Inc.
+  The contents of this file are subject to the Mozilla Public License Version 1.1
+  (the "License"); you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at http://www.mozilla.org/MPL/
+
+  Software distributed under the License is distributed on an "AS IS" basis,
+  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+  for the specific language governing rights and limitations under the License.
+
+  The Original Code is 'iText, a free JAVA-PDF library'.
+
+  The Initial Developer of the Original Code is Bruno Lowagie. Portions created by
+  the Initial Developer are Copyright (C) 1999-2008 by Bruno Lowagie.
+  All Rights Reserved.
+  Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer
+  are Copyright (C) 2000-2008 by Paulo Soares. All Rights Reserved.
+
+  Contributor(s): all the names of the contributors are added in the source code
+  where applicable.
+
+  Alternatively, the contents of this file may be used under the terms of the
+  LGPL license (the "GNU LIBRARY GENERAL PUBLIC LICENSE"), in which case the
+  provisions of LGPL are applicable instead of those above.  If you wish to
+  allow use of your version of this file only under the terms of the LGPL
+  License and not to allow others to use your version of this file under
+  the MPL, indicate your decision by deleting the provisions above and
+  replace them with the notice and other provisions required by the LGPL.
+  If you do not delete the provisions above, a recipient may use your version
+  of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE.
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the MPL as stated above or under the terms of the GNU
+  Library General Public License as published by the Free Software Foundation;
+  either version 2 of the License, or any later version.
+
+  This library is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
+  details.
+
+  dgd: com.lowagie.text.pdf.parser
  */
 package com.lowagie.text.pdf.parser;
 
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfReader;
+
+import javax.annotation.Nullable;
 
 /**
  * @author dgd
@@ -55,12 +57,12 @@ public class Word extends ParsedTextImpl {
      * Is this an indivisible fragment, because it contained a space or was split from a space-
      * containing string. Non-splittable words can be merged (into new non-splittable words).
      */
-    boolean shouldNotSplit;
+    private boolean shouldNotSplit;
     /**
-     * If this word or fragmant was preceded by a space, or a line break, it should never be merged
+     * If this word or fragment was preceded by a space, or a line break, it should never be merged
      * into a preceding word.
      */
-    boolean breakBefore;
+    private boolean breakBefore;
 
     /**
      * @param text text content
@@ -124,14 +126,16 @@ public class Word extends ParsedTextImpl {
      *            page.
      * @return markup to represent this one word.
      */
-    private String wordMarkup(String text, PdfReader reader, int page,
-            TextAssembler assembler) {
-
+    private String wordMarkup(@Nullable String text, PdfReader reader, int page, TextAssembler assembler) {
+        if (text == null) {
+            return "";
+        }
         Rectangle mediaBox = reader.getPageSize(page);
         Rectangle cropBox = reader.getBoxSize(page, "crop");
         text = text.replaceAll("[\u00A0\u202f]", " ").trim();
-        if (text.length() == 0)
+        if (text.length() == 0) {
             return text;
+        }
         mediaBox.normalize();
         if (cropBox != null) {
             cropBox.normalize(); 
@@ -149,8 +153,7 @@ public class Word extends ParsedTextImpl {
         Vector endPoint = getEndPoint();
         float pageWidth = cropBox.getWidth();
         float pageHeight = cropBox.getHeight();
-        float leftPercent = (float) ((startPoint.get(0) - xOffset  - mediaBox.getLeft()) / pageWidth
-                * 100.0);
+        float leftPercent = (float) ((startPoint.get(0) - xOffset  - mediaBox.getLeft()) / pageWidth * 100.0);
         float bottom = endPoint.get(1) + yOffset - getDescent() - mediaBox.getBottom();
         float bottomPercent =  bottom / pageHeight * 100f;
         StringBuilder result = new StringBuilder();

@@ -47,37 +47,60 @@
 package com.lowagie.text.pdf.parser;
 
 import com.lowagie.text.pdf.CMapAwareDocumentFont;
+import com.lowagie.text.pdf.DocumentFont;
 
 /**
  * Keeps all the parameters of the graphics state.
- * @since    2.1.4
+ *
+ * @since 2.1.4
  */
+@SuppressWarnings("WeakerAccess")
 public class GraphicsState {
-    /** The current transformation matrix. */
-    Matrix ctm;
-    /** The current character spacing. */
-    float characterSpacing;
-    /** The current word spacing. */
-    float wordSpacing;
-    /** The current horizontal scaling */
-    float horizontalScaling;
-    /** The current leading. */
-    float leading;
-    /** The active font. */
-    CMapAwareDocumentFont font;
-    /** The current font size. */
-    float fontSize;
-    /** The current render mode. */
-    int renderMode;
-    /** The current text rise */
-    float rise;
-    /** The current knockout value. */
-    boolean knockout;
-    
+    /**
+     * The current transformation matrix.
+     */
+    private Matrix ctm;
+    /**
+     * The current character spacing.
+     */
+    private float characterSpacing;
+    /**
+     * The current word spacing.
+     */
+    private float wordSpacing;
+    /**
+     * The current horizontal scaling
+     */
+    private float horizontalScaling;
+    /**
+     * The current leading.
+     */
+    private float leading;
+    /**
+     * The active font.
+     */
+    private CMapAwareDocumentFont font;
+    /**
+     * The current font size.
+     */
+    private float fontSize;
+    /**
+     * The current render mode.
+     */
+    private int renderMode;
+    /**
+     * The current text rise
+     */
+    private float rise;
+    /**
+     * The current knockout value.
+     */
+    private boolean knockout;
+
     /**
      * Constructs a new Graphics State object with the default values.
      */
-    public GraphicsState(){
+    public GraphicsState() {
         ctm = new Matrix();
         characterSpacing = 0;
         wordSpacing = 0;
@@ -89,12 +112,13 @@ public class GraphicsState {
         rise = 0;
         knockout = true;
     }
-    
+
     /**
      * Copy constructor.
-     * @param source    another GraphicsState object
+     *
+     * @param source another GraphicsState object
      */
-    public GraphicsState(GraphicsState source){
+    public GraphicsState(GraphicsState source) {
         // note: all of the following are immutable, with the possible exception of font
         // so it is safe to copy them as-is
         ctm = source.ctm;
@@ -107,5 +131,121 @@ public class GraphicsState {
         renderMode = source.renderMode;
         rise = source.rise;
         knockout = source.knockout;
+    }
+
+    /**
+     * Get the current transformation matrix.
+     *
+     * @return current transformation matrix
+     */
+    public Matrix getCtm() {
+        return ctm;
+    }
+
+    public float getCharacterSpacing() {
+        return characterSpacing;
+    }
+
+    public void setCharacterSpacing(float characterSpacing) {
+        this.characterSpacing = characterSpacing;
+    }
+
+    public float getWordSpacing() {
+        return wordSpacing;
+    }
+
+    public void setWordSpacing(float wordSpacing) {
+        this.wordSpacing = wordSpacing;
+    }
+
+    public float getHorizontalScaling() {
+        return horizontalScaling;
+    }
+
+    public void setHorizontalScaling(float horizontalScaling) {
+        this.horizontalScaling = horizontalScaling;
+    }
+
+    public float getLeading() {
+        return leading;
+    }
+
+    public void setLeading(float leading) {
+        this.leading = leading;
+    }
+
+    /**
+     * Get maximum height above the baseline reached by glyphs in this font,
+     * excluding the height of glyphs for accented characters.
+     *
+     * @return ascent descriptor value
+     */
+    public float getFontAscentDescriptor() {
+        return font.getFontDescriptor(DocumentFont.ASCENT, fontSize);
+    }
+
+    /**
+     * Get maximum depth below the baseline reached by glyphs in this font. The
+     * value is a negative number
+     *
+     * @return descent descriptor value
+     */
+    public float getFontDescentDescriptor() {
+        return font.getFontDescriptor(DocumentFont.DESCENT, fontSize);
+    }
+
+    public float calculateCharacterWidthWithSpace(float charFontWidth) {
+        return (charFontWidth * fontSize + characterSpacing + wordSpacing) * horizontalScaling;
+    }
+
+    public float calculateCharacterWidthWithoutSpace(float charFontWidth) {
+        return (charFontWidth * fontSize + characterSpacing) * horizontalScaling;
+    }
+
+    public CMapAwareDocumentFont getFont() {
+        return font;
+    }
+
+    public void setFont(CMapAwareDocumentFont font) {
+        this.font = font;
+    }
+
+    public float getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(float fontSize) {
+        this.fontSize = fontSize;
+    }
+
+    public int getRenderMode() {
+        return renderMode;
+    }
+
+    public void setRenderMode(int renderMode) {
+        this.renderMode = renderMode;
+    }
+
+    public float getRise() {
+        return rise;
+    }
+
+    public void setRise(float rise) {
+        this.rise = rise;
+    }
+
+    public boolean isKnockout() {
+        return knockout;
+    }
+
+    /**
+     * Multiply transformation matrix and get result. Result would be also stored in this {@link GraphicsState} instance
+     *
+     * @param matrix multiply by matrix
+     * @return result matrix
+     */
+    public Matrix multiplyCtm(Matrix matrix) {
+        ctm = ctm.multiply(matrix);
+        return ctm;
     }
 }
