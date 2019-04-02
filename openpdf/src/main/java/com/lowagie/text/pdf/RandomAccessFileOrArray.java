@@ -49,10 +49,8 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.FontFactory;
-
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -63,6 +61,9 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.FontFactory;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
@@ -93,8 +94,8 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         this.plainRandomAccess = plainRandomAccess;
         File file = new File(filename);
         if (!file.exists() && FontFactory.isRegistered(filename)) {
-        	filename = (String) FontFactory.getFontImp().getFontPath(filename);
-			file = new File(filename);
+            filename = (String) FontFactory.getFontImp().getFontPath(filename);
+            file = new File(filename);
         }
         if (!file.canRead()) {
             if (filename.startsWith("file:/") || filename.startsWith("http://") 
