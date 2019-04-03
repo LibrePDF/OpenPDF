@@ -48,7 +48,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 
 ## Dependencies ##
 ### Required Dependencies: ###
- - Java 8 or later is required to use OpenPDF.
+ - Java 8 or later is required to use OpenPDF. All versions Java 8 to Java 12 have been tested to work.
  - [Juniversalchardet](https://github.com/albfernandez/juniversalchardet)
 
 ### Optional: ###
