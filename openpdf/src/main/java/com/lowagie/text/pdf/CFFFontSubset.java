@@ -1630,6 +1630,8 @@ public class CFFFontSubset extends CFFFont {
         // Mark the beginning of the Subrs index
         OutputList.addLast(new SubrMarkerItem(Subrs,PrivateBase));
         // Put the subsetted new subrs index
-        OutputList.addLast(new RangeItem(new RandomAccessFileOrArray(NewSubrsIndexNonCID),0,NewSubrsIndexNonCID.length));
+        if (NewSubrsIndexNonCID != null) {
+            OutputList.addLast(new RangeItem(new RandomAccessFileOrArray(NewSubrsIndexNonCID), 0, NewSubrsIndexNonCID.length));
+        }
     }    
 }
