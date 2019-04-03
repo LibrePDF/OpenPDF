@@ -67,8 +67,9 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 
 
 ## Credits ##
-OpenPDF maintainers:
-Andreas Røsdal - [@andreasrosdal](https://github.com/andreasrosdal)
+OpenPDF maintainers: 
+
+Andreas Røsdal - [@andreasrosdal](https://github.com/andreasrosdal) 
 
 [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs/contributors) on GitHub.
 
