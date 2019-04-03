@@ -69,28 +69,24 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 ## Credits ##
 Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs/contributors) on GitHub:
 
-Andreas Røsdal - [@andreasrosdal](https://github.com/andreasrosdal) 
-David G. Durand - [@daviddurand](https://github.com/daviddurand) 
-[@tlxtellef](https://github.com/tlxtellef) 
-[@asturio](https://github.com/asturio) 
-[@ymasory](https://github.com/ymasory) 
-Alberto Fernández - [@albfernandez](https://github.com/albfernandez) 
-[@noavarice](https://github.com/noavarice) 
-Benjamin Golder - [@bengolder](https://github.com/bengolder) 
-[@glarfs](https://github.com/glarfs) 
-[@Kindrat](https://github.com/Kindrat) 
-[@syakovyn](https://github.com/syakovyn) 
-[@ubermichael](https://github.com/ubermichael) 
-[@weiyeh](https://github.com/weiyeh) 
-[@SuperPat45](https://github.com/SuperPat45) 
-[@lapo-luchini](https://github.com/lapo-luchini) 
-[@MartinKocour](https://github.com/MartinKocour) 
-[@jokimaki](https://github.com/jokimaki) 
-[@sullis](https://github.com/sullis) 
-[@lapo-luchini](https://github.com/lapo-luchini) 
-
-
-
-
+  Andreas Røsdal - [@andreasrosdal](https://github.com/andreasrosdal)  
+  David G. Durand - [@daviddurand](https://github.com/daviddurand)  
+  [@tlxtellef](https://github.com/tlxtellef)  
+  [@asturio](https://github.com/asturio)  
+  [@ymasory](https://github.com/ymasory)  
+  Alberto Fernández - [@albfernandez](https://github.com/albfernandez)  
+  [@noavarice](https://github.com/noavarice)  
+  Benjamin Golder - [@bengolder](https://github.com/bengolder)  
+  [@glarfs](https://github.com/glarfs)  
+  [@Kindrat](https://github.com/Kindrat)  
+  [@syakovyn](https://github.com/syakovyn)  
+  [@ubermichael](https://github.com/ubermichael)  
+  [@weiyeh](https://github.com/weiyeh)  
+  [@SuperPat45](https://github.com/SuperPat45)  
+  [@lapo-luchini](https://github.com/lapo-luchini)  
+  [@MartinKocour](https://github.com/MartinKocour)  
+  [@jokimaki](https://github.com/jokimaki)  
+  [@sullis](https://github.com/sullis)  
+  [@lapo-luchini](https://github.com/lapo-luchini)  
 
 Also, a very special thanks to the iText developers ;)
