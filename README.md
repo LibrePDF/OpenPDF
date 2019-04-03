@@ -74,9 +74,9 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@tlxtellef](https://github.com/tlxtellef)  
   [@asturio](https://github.com/asturio)  
   [@ymasory](https://github.com/ymasory)  
-  [@albfernandez](https://github.com/albfernandez) - Alberto Fernández 
+  [@albfernandez](https://github.com/albfernandez) - Alberto Fernández  
   [@noavarice](https://github.com/noavarice)  
-  [@bengolder](https://github.com/bengolder)  - Benjamin Golder
+  [@bengolder](https://github.com/bengolder)  - Benjamin Golder  
   [@glarfs](https://github.com/glarfs)  
   [@Kindrat](https://github.com/Kindrat)  
   [@syakovyn](https://github.com/syakovyn)  
