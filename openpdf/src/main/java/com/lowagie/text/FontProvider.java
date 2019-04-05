@@ -39,7 +39,7 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
  * details.
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * http://www.lowagie.com/iText/
@@ -47,32 +47,34 @@
 
 package com.lowagie.text;
 
+import javax.annotation.Nullable;
 import java.awt.Color;
 
 /**
  * These two methods are used by FactoryProperties (for HTMLWorker).
  * It's implemented by FontFactoryImp.
- * @since    iText 5.0
+ *
+ * @since iText 5.0
  */
 public interface FontProvider {
     /**
      * Checks if a certain font is registered.
      *
-     * @param   fontname    the name of the font that has to be checked.
-     * @return  true if the font is found
+     * @param fontName the name of the font that has to be checked.
+     * @return true if the font is found
      */
-    boolean isRegistered(String fontname);
+    boolean isRegistered(String fontName);
 
     /**
      * Constructs a <CODE>Font</CODE>-object.
      *
-     * @param    fontname    the name of the font
-     * @param    encoding    the encoding of the font
-     * @param       embedded    true if the font is to be embedded in the PDF
-     * @param    size        the size of this font
-     * @param    style        the style of this font
-     * @param    color        the <CODE>Color</CODE> of this font.
+     * @param fontName the name of the font
+     * @param encoding the encoding of the font
+     * @param embedded true if the font is to be embedded in the PDF
+     * @param size     the size of this font
+     * @param style    the style of this font
+     * @param color    the <CODE>Color</CODE> of this font.
      * @return the Font constructed based on the parameters
      */
-    Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color);
+    Font getFont(@Nullable String fontName, String encoding, boolean embedded, float size, int style, @Nullable Color color);
 }

@@ -49,58 +49,60 @@
 
 package com.lowagie.text.html;
 
-import java.awt.Color;
-
 import com.lowagie.text.Element;
+
+import java.awt.Color;
 
 /**
  * This class converts a <CODE>String</CODE> to the HTML-format of a String.
- * <P>
+ * <p>
  * To convert the <CODE>String</CODE>, each character is examined:
  * <UL>
  * <LI>ASCII-characters from 000 till 031 are represented as &amp;#xxx;<BR>
- *     (with xxx = the value of the character)
+ * (with xxx = the value of the character)
  * <LI>ASCII-characters from 032 t/m 127 are represented by the character itself, except for:
- *     <UL>
- *     <LI>'\n'    becomes &lt;BR&gt;\n
- *     <LI>&quot; becomes &amp;quot;
- *     <LI>&amp; becomes &amp;amp;
- *     <LI>&lt; becomes &amp;lt;
- *     <LI>&gt; becomes &amp;gt;
- *     </UL>
- * <LI>ASCII-characters from 128 till 255 are represented as &amp;#xxx;<BR>
- *     (with xxx = the value of the character)
+ * <UL>
+ * <LI>'\n'    becomes &lt;BR&gt;\n
+ * <LI>&quot; becomes &amp;quot;
+ * <LI>&amp; becomes &amp;amp;
+ * <LI>&lt; becomes &amp;lt;
+ * <LI>&gt; becomes &amp;gt;
  * </UL>
- * <P>
+ * <LI>ASCII-characters from 128 till 255 are represented as &amp;#xxx;<BR>
+ * (with xxx = the value of the character)
+ * </UL>
+ * <p>
  * Example:
  * <P><BLOCKQUOTE><PRE>
- *    String htmlPresentation = HtmlEncoder.encode("Marie-Th&#233;r&#232;se S&#248;rensen");
+ * String htmlPresentation = HtmlEncoder.encode("Marie-Th&#233;r&#232;se S&#248;rensen");
  * </PRE></BLOCKQUOTE><P>
  * for more info: see O'Reilly; "HTML: The Definitive Guide" (page 164)
  *
- * @author  mario.maccarini@ugent.be
+ * @author mario.maccarini@ugent.be
  */
 
 public final class HtmlEncoder {
-    
+
     // membervariables
-    
-/** List with the HTML translation of all the characters. */
+
+    /**
+     * List with the HTML translation of all the characters.
+     */
     private static final String[] htmlCode = new String[256];
-    
+
     static {
         for (int i = 0; i < 10; i++) {
             htmlCode[i] = "&#00" + i + ";";
         }
-        
+
         for (int i = 10; i < 32; i++) {
             htmlCode[i] = "&#0" + i + ";";
         }
-        
+
         for (int i = 32; i < 128; i++) {
-            htmlCode[i] = String.valueOf((char)i);
+            htmlCode[i] = String.valueOf((char) i);
         }
-        
+
         // Special characters
         htmlCode['\t'] = "\t";
         htmlCode['\n'] = "<" + HtmlTags.NEWLINE + " />\n";
@@ -108,32 +110,33 @@ public final class HtmlEncoder {
         htmlCode['&'] = "&amp;"; // ampersand
         htmlCode['<'] = "&lt;"; // lower than
         htmlCode['>'] = "&gt;"; // greater than
-        
+
         for (int i = 128; i < 256; i++) {
             htmlCode[i] = "&#" + i + ";";
         }
     }
-    
-    
+
+
     // constructors
-    
-/**
- * This class will never be constructed.
- * <P>
- * HtmlEncoder only contains static methods.
- */
-    
-    private HtmlEncoder () { }
-    
+
+    /**
+     * This class will never be constructed.
+     * <p>
+     * HtmlEncoder only contains static methods.
+     */
+
+    private HtmlEncoder() {
+    }
+
     // methods
-    
-/**
- * Converts a <CODE>String</CODE> to the HTML-format of this <CODE>String</CODE>.
- *
- * @param    string    The <CODE>String</CODE> to convert
- * @return    a <CODE>String</CODE>
- */
-    
+
+    /**
+     * Converts a <CODE>String</CODE> to the HTML-format of this <CODE>String</CODE>.
+     *
+     * @param string The <CODE>String</CODE> to convert
+     * @return a <CODE>String</CODE>
+     */
+
     public static String encode(String string) {
         int n = string.length();
         char character;
@@ -144,22 +147,21 @@ public final class HtmlEncoder {
             // the Htmlcode of these characters are added to a StringBuffer one by one
             if (character < 256) {
                 buffer.append(htmlCode[character]);
-            }
-            else {
+            } else {
                 // Improvement posted by Joachim Eyrich
-                buffer.append("&#").append((int)character).append(';');
+                buffer.append("&#").append((int) character).append(';');
             }
         }
         return buffer.toString();
     }
-    
-/**
- * Converts a <CODE>Color</CODE> into a HTML representation of this <CODE>Color</CODE>.
- *
- * @param    color    the <CODE>Color</CODE> that has to be converted.
- * @return    the HTML representation of this <COLOR>Color</COLOR>
- */
-    
+
+    /**
+     * Converts a <CODE>Color</CODE> into a HTML representation of this <CODE>Color</CODE>.
+     *
+     * @param color the <CODE>Color</CODE> that has to be converted.
+     * @return the HTML representation of this <COLOR>Color</COLOR>
+     */
+
     public static String encode(Color color) {
         StringBuilder buffer = new StringBuilder("#");
         if (color.getRed() < 16) {
@@ -176,16 +178,16 @@ public final class HtmlEncoder {
         buffer.append(Integer.toString(color.getBlue(), 16));
         return buffer.toString();
     }
-    
-/**
- * Translates the alignment value.
- *
- * @param   alignment   the alignment value
- * @return  the translated value
- */
-    
+
+    /**
+     * Translates the alignment value.
+     *
+     * @param alignment the alignment value
+     * @return the translated value
+     */
+
     public static String getAlignment(int alignment) {
-        switch(alignment) {
+        switch (alignment) {
             case Element.ALIGN_LEFT:
                 return HtmlTags.ALIGN_LEFT;
             case Element.ALIGN_CENTER:
@@ -203,8 +205,8 @@ public final class HtmlEncoder {
                 return HtmlTags.ALIGN_BOTTOM;
             case Element.ALIGN_BASELINE:
                 return HtmlTags.ALIGN_BASELINE;
-                default:
-                    return "";
+            default:
+                return "";
         }
     }
 }

@@ -55,13 +55,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StyleSheet {
-
     public HashMap classMap = new HashMap();
     public HashMap tagMap = new HashMap();
-
-    /** Creates a new instance of StyleSheet */
-    public StyleSheet() {
-    }
 
     @Deprecated
     public void applyStyle(String tag, HashMap props) {

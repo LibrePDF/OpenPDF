@@ -49,20 +49,18 @@
 
 package com.lowagie.text.html;
 
-import java.util.HashMap;
-import java.util.Properties;
-
-import com.lowagie.text.ExceptionConverter;
-import org.xml.sax.Attributes;
-
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
 import com.lowagie.text.ElementTags;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.xml.SAXiTextHandler;
 import com.lowagie.text.xml.XmlPeer;
+import org.xml.sax.Attributes;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
@@ -71,29 +69,32 @@ import com.lowagie.text.xml.XmlPeer;
 public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
 {
 
-    /** These are the properties of the body section. */
+    /**
+     * These are the properties of the body section.
+     */
     private Properties bodyAttributes = new Properties();
 
-    /** This is the status of the table border. */
+    /**
+     * This is the status of the table border.
+     */
     private boolean tableBorder = false;
 
     /**
      * Constructs a new SAXiTextHandler that will translate all the events
      * triggered by the parser to actions on the <CODE>Document</CODE>-object.
-     * 
-     * @param document
-     *            this is the document on which events must be triggered
+     *
+     * @param document this is the document on which events must be triggered
      */
 
     public SAXmyHtmlHandler(DocListener document) {
         super(document, new HtmlTagMap());
     }
+
     /**
      * Constructs a new SAXiTextHandler that will translate all the events
      * triggered by the parser to actions on the <CODE>Document</CODE>-object.
-     * 
-     * @param document
-     *            this is the document on which events must be triggered
+     *
+     * @param document this is the document on which events must be triggered
      * @param bf
      */
 
@@ -104,11 +105,9 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
     /**
      * Constructs a new SAXiTextHandler that will translate all the events
      * triggered by the parser to actions on the <CODE>Document</CODE>-object.
-     * 
-     * @param document
-     *            this is the document on which events must be triggered
-     * @param htmlTags
-     *            a tagmap translating HTML tags to iText tags
+     *
+     * @param document this is the document on which events must be triggered
+     * @param htmlTags a tagmap translating HTML tags to iText tags
      */
 
     public SAXmyHtmlHandler(DocListener document, HashMap htmlTags) {
@@ -117,38 +116,31 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
 
     /**
      * This method gets called when a start tag is encountered.
-     * 
-     * @param uri
-     *            the Uniform Resource Identifier
-     * @param localName
-     *            the local name (without prefix), or the empty string if
-     *            Namespace processing is not being performed.
-     * @param name
-     *            the name of the tag that is encountered
-     * @param attrs
-     *            the list of attributes
+     *
+     * @param uri       the Uniform Resource Identifier
+     * @param localName the local name (without prefix), or the empty string if
+     *                  Namespace processing is not being performed.
+     * @param name      the name of the tag that is encountered
+     * @param attrs     the list of attributes
      */
-
-    public void startElement(String uri, String localName, String name,
-            Attributes attrs) {
-        // System.err.println("Start: " + name);
-
+    @Override
+    public void startElement(String uri, String localName, String name, @Nullable Attributes attrs) {
         // super.handleStartingTags is replaced with handleStartingTags
         // suggestion by Vu Ngoc Tan/Hop
-        name = name.toLowerCase();
-        if (HtmlTagMap.isHtml(name)) {
+        String lowerCaseName = name.toLowerCase();
+        if (HtmlTagMap.isHtml(lowerCaseName)) {
             // we do nothing
             return;
         }
-        if (HtmlTagMap.isHead(name)) {
+        if (HtmlTagMap.isHead(lowerCaseName)) {
             // we do nothing
             return;
         }
-        if (HtmlTagMap.isTitle(name)) {
+        if (HtmlTagMap.isTitle(lowerCaseName)) {
             // we do nothing
             return;
         }
-        if (HtmlTagMap.isMeta(name)) {
+        if (HtmlTagMap.isMeta(lowerCaseName)) {
             // we look if we can change the body attributes
             String meta = null;
             String content = null;
@@ -166,16 +158,16 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
             }
             return;
         }
-        if (HtmlTagMap.isLink(name)) {
+        if (HtmlTagMap.isLink(lowerCaseName)) {
             // we do nothing for the moment, in a later version we could extract
             // the style sheet
             return;
         }
-        if (HtmlTagMap.isBody(name)) {
+        if (HtmlTagMap.isBody(lowerCaseName)) {
             // maybe we could extract some info about the document: color,
             // margins,...
             // but that's for a later version...
-            XmlPeer peer = new XmlPeer(ElementTags.ITEXT, name);
+            XmlPeer peer = new XmlPeer(ElementTags.ITEXT, lowerCaseName);
             peer.addAlias(ElementTags.TOP, HtmlTags.TOPMARGIN);
             peer.addAlias(ElementTags.BOTTOM, HtmlTags.BOTTOMMARGIN);
             peer.addAlias(ElementTags.RIGHT, HtmlTags.RIGHTMARGIN);
@@ -184,8 +176,8 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
             handleStartingTags(peer.getTag(), bodyAttributes);
             return;
         }
-        if (myTags.containsKey(name)) {
-            XmlPeer peer = (XmlPeer) myTags.get(name);
+        if (myTags.containsKey(lowerCaseName)) {
+            XmlPeer peer = (XmlPeer) myTags.get(lowerCaseName);
             if (ElementTags.TABLE.equals(peer.getTag()) || ElementTags.CELL.equals(peer.getTag())) {
                 Properties p = peer.getAttributes(attrs);
                 String value;
@@ -214,56 +206,52 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
                 attributes.setProperty(attribute, attrs.getValue(i).toLowerCase());
             }
         }
-        handleStartingTags(name, attributes);
+        handleStartingTags(lowerCaseName, attributes);
     }
 
     /**
      * This method gets called when an end tag is encountered.
-     * 
-     * @param uri
-     *            the Uniform Resource Identifier
-     * @param lname
-     *            the local name (without prefix), or the empty string if
-     *            Namespace processing is not being performed.
-     * @param name
-     *            the name of the tag that ends
+     *
+     * @param uri       the Uniform Resource Identifier
+     * @param localName the local name (without prefix), or the empty string if
+     *                  Namespace processing is not being performed.
+     * @param name      the name of the tag that ends
      */
-
-    public void endElement(String uri, String lname, String name) {
-        // System.err.println("End: " + name);
-        name = name.toLowerCase();
-        if (ElementTags.PARAGRAPH.equals(name)) {
+    @Override
+    public void endElement(String uri, String localName, String name) {
+        String lowerCaseName = name.toLowerCase();
+        if (ElementTags.PARAGRAPH.equals(lowerCaseName)) {
             try {
-                document.add((Element) stack.pop());
+                document.add(stack.pop());
                 return;
             } catch (DocumentException e) {
                 throw new ExceptionConverter(e);
             }
         }
-        if (HtmlTagMap.isHead(name)) {
+        if (HtmlTagMap.isHead(lowerCaseName)) {
             // we do nothing
             return;
         }
-        if (HtmlTagMap.isTitle(name)) {
+        if (HtmlTagMap.isTitle(lowerCaseName)) {
             if (currentChunk != null) {
                 bodyAttributes.put(ElementTags.TITLE, currentChunk.getContent());
             }
             return;
         }
-        if (HtmlTagMap.isMeta(name)) {
+        if (HtmlTagMap.isMeta(lowerCaseName)) {
             // we do nothing
             return;
         }
-        if (HtmlTagMap.isLink(name)) {
+        if (HtmlTagMap.isLink(lowerCaseName)) {
             // we do nothing
             return;
         }
-        if (HtmlTagMap.isBody(name)) {
+        if (HtmlTagMap.isBody(lowerCaseName)) {
             // we do nothing
             return;
         }
-        if (myTags.containsKey(name)) {
-            XmlPeer peer = (XmlPeer) myTags.get(name);
+        if (myTags.containsKey(lowerCaseName)) {
+            XmlPeer peer = (XmlPeer) myTags.get(lowerCaseName);
             if (ElementTags.TABLE.equals(peer.getTag())) {
                 tableBorder = false;
             }
@@ -272,6 +260,6 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
         }
         // super.handleEndingTags is replaced with handleEndingTags
         // suggestion by Ken Auer
-        handleEndingTags(name);
+        handleEndingTags(lowerCaseName);
     }
 }

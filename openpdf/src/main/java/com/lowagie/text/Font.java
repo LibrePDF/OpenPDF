@@ -55,6 +55,8 @@ import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
 
+import javax.annotation.Nullable;
+
 
 /**
  * Contains all the specifications of a font: fontfamily, size, style and color.
@@ -164,7 +166,7 @@ public class Font implements Comparable {
      *            the <CODE>Color</CODE> of this font.
      */
 
-    public Font(int family, float size, int style, Color color) {
+    public Font(int family, float size, int style, @Nullable Color color) {
         this.family = family;
         this.size = size;
         this.style = style;

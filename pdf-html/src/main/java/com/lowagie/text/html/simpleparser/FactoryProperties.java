@@ -42,7 +42,7 @@
  *
  * Contributions by:
  * Lubos Strapko
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * http://www.lowagie.com/iText/
@@ -63,148 +63,109 @@ import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.HyphenationAuto;
 import com.lowagie.text.pdf.HyphenationEvent;
+import com.lowagie.text.utils.NumberUtilities;
 
+import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import static com.lowagie.text.html.Markup.parseLength;
+
 /**
- *
- * @author  psoares
+ * @author psoares
  */
 public class FactoryProperties {
 
+    public static HashMap followTags = new HashMap();
+
+    static {
+        followTags.put("i", "i");
+        followTags.put("b", "b");
+        followTags.put("u", "u");
+        followTags.put("sub", "sub");
+        followTags.put("sup", "sup");
+        followTags.put("em", "i");
+        followTags.put("strong", "b");
+        followTags.put("s", "s");
+        followTags.put("strike", "s");
+    }
+
     /**
-     * @since    iText 5.0    This used to be a FontFactoryImp
+     * @since iText 5.0    This used to be a FontFactoryImp
      */
     private FontProvider fontImp = FontFactory.getFontImp();
 
-    /** Creates a new instance of FactoryProperties */
-    public FactoryProperties() {
-    }
-
-    public Chunk createChunk(String text, ChainedProperties props) {
-        Font font = getFont(props);
-        float size = font.getSize();
-        size /= 2;
-        Chunk ck = new Chunk(text, font);
-        if (props.hasProperty("sub"))
-            ck.setTextRise(-size);
-        else if (props.hasProperty("sup"))
-            ck.setTextRise(size);
-        ck.setHyphenation(getHyphenation(props));
-        return ck;
-    }
-
-    private static void setParagraphLeading(Paragraph p, String leading) {
+    private static void setParagraphLeading(Paragraph paragraph, @Nullable String leading) {
         if (leading == null) {
-            p.setLeading(0, 1.5f);
+            paragraph.setLeading(0, 1.5f);
             return;
         }
         try {
-            StringTokenizer tk = new StringTokenizer(leading, " ,");
-            String v = tk.nextToken();
+            StringTokenizer tokenizer = new StringTokenizer(leading, " ,");
+            String v = tokenizer.nextToken();
             float v1 = Float.parseFloat(v);
-            if (!tk.hasMoreTokens()) {
-                p.setLeading(v1, 0);
+            if (!tokenizer.hasMoreTokens()) {
+                paragraph.setLeading(v1, 0);
                 return;
             }
-            v = tk.nextToken();
+            v = tokenizer.nextToken();
             float v2 = Float.parseFloat(v);
-            p.setLeading(v1, v2);
+            paragraph.setLeading(v1, v2);
         } catch (Exception e) {
-            p.setLeading(0, 1.5f);
+            paragraph.setLeading(0, 1.5f);
         }
     }
 
-    public static void createParagraph(Paragraph p, ChainedProperties props) {
-        String value = props.getProperty("align");
-        if (value != null) {
-            if (value.equalsIgnoreCase("center"))
-                p.setAlignment(Element.ALIGN_CENTER);
-            else if (value.equalsIgnoreCase("right"))
-                p.setAlignment(Element.ALIGN_RIGHT);
-            else if (value.equalsIgnoreCase("justify"))
-                p.setAlignment(Element.ALIGN_JUSTIFIED);
-        }
-        p.setHyphenation(getHyphenation(props));
-        setParagraphLeading(p, props.getProperty("leading"));
-        value = props.getProperty("before");
-        if (value != null) {
-            try {
-                p.setSpacingBefore(Float.parseFloat(value));
-            } catch (Exception e) {
-            }
-        }
-        value = props.getProperty("after");
-        if (value != null) {
-            try {
-                p.setSpacingAfter(Float.parseFloat(value));
-            } catch (Exception e) {
-            }
-        }
-        value = props.getProperty("extraparaspace");
-        if (value != null) {
-            try {
-                p.setExtraParagraphSpace(Float.parseFloat(value));
-            } catch (Exception e) {
-            }
-        }
+    public static void createParagraph(Paragraph paragraph, ChainedProperties props) {
+        props.findProperty("align")
+                .map(String::trim)
+                .ifPresent(align -> {
+                    if (align.equalsIgnoreCase("center")) {
+                        paragraph.setAlignment(Element.ALIGN_CENTER);
+                    } else if (align.equalsIgnoreCase("right")) {
+                        paragraph.setAlignment(Element.ALIGN_RIGHT);
+                    } else if (align.equalsIgnoreCase("justify")) {
+                        paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
+                    }
+                });
+
+        paragraph.setHyphenation(getHyphenation(props));
+        setParagraphLeading(paragraph, props.getProperty("leading"));
+
+        props.findProperty("before")
+                .flatMap(NumberUtilities::parseFloat)
+                .ifPresent(paragraph::setSpacingBefore);
+
+        props.findProperty("after")
+                .flatMap(NumberUtilities::parseFloat)
+                .ifPresent(paragraph::setSpacingAfter);
+
+        props.findProperty("extraparaspace")
+                .flatMap(NumberUtilities::parseFloat)
+                .ifPresent(paragraph::setExtraParagraphSpace);
     }
 
     public static Paragraph createParagraph(ChainedProperties props) {
-        Paragraph p = new Paragraph();
-        createParagraph(p, props);
-        return p;
+        Paragraph paragraph = new Paragraph();
+        createParagraph(paragraph, props);
+        return paragraph;
     }
 
     public static ListItem createListItem(ChainedProperties props) {
-        ListItem p = new ListItem();
-        createParagraph(p, props);
-        return p;
-    }
-
-    public Font getFont(ChainedProperties props) {
-        String face = props.getProperty(ElementTags.FACE);
-        if (face != null) {
-            StringTokenizer tok = new StringTokenizer(face, ",");
-            while (tok.hasMoreTokens()) {
-                face = tok.nextToken().trim();
-                if (face.startsWith("\""))
-                    face = face.substring(1);
-                if (face.endsWith("\""))
-                    face = face.substring(0, face.length() - 1);
-                if (fontImp.isRegistered(face))
-                    break;
-            }
-        }
-        int style = 0;
-        if (props.hasProperty(HtmlTags.I))
-            style |= Font.ITALIC;
-        if (props.hasProperty(HtmlTags.B))
-            style |= Font.BOLD;
-        if (props.hasProperty(HtmlTags.U))
-            style |= Font.UNDERLINE;
-        if (props.hasProperty(HtmlTags.S))
-            style |= Font.STRIKETHRU;
-        String value = props.getProperty(ElementTags.SIZE);
-        float size = 12;
-        if (value != null)
-            size = Float.parseFloat(value);
-        Color color = Markup.decodeColor(props.getProperty("color"));
-        String encoding = props.getProperty("encoding");
-        if (encoding == null)
-            encoding = BaseFont.WINANSI;
-        return fontImp.getFont(face, encoding, true, size, style, color);
+        ListItem item = new ListItem();
+        createParagraph(item, props);
+        return item;
     }
 
     /**
      * Gets a HyphenationEvent based on the hyphenation entry in ChainedProperties.
-     * @param    props    ChainedProperties
-     * @return    a HyphenationEvent
-     * @since    2.1.2
+     *
+     * @param props ChainedProperties
+     * @return a HyphenationEvent
+     * @since 2.1.2
      */
     public static HyphenationEvent getHyphenation(ChainedProperties props) {
         return getHyphenation(props.getProperty("hyphenation"));
@@ -212,9 +173,10 @@ public class FactoryProperties {
 
     /**
      * Gets a HyphenationEvent based on the hyphenation entry in a HashMap.
-     * @param    props    a HashMap with properties
-     * @return    a HyphenationEvent
-     * @since    2.1.2
+     *
+     * @param props a HashMap with properties
+     * @return a HyphenationEvent
+     * @since 2.1.2
      */
     public static HyphenationEvent getHyphenation(HashMap props) {
         return getHyphenation((String) props.get("hyphenation"));
@@ -223,11 +185,13 @@ public class FactoryProperties {
     /**
      * Gets a HyphenationEvent based on a String.
      * For instance "en_UK,3,2" returns new HyphenationAuto("en", "UK", 3, 2);
-     * @param    s a String, for instance "en_UK,2,2"
-     * @return    a HyphenationEvent
-     * @since    2.1.2
+     *
+     * @param s a String, for instance "en_UK,2,2"
+     * @return a HyphenationEvent
+     * @since 2.1.2
      */
-    public static HyphenationEvent getHyphenation(String s) {
+    @Nullable
+    public static HyphenationEvent getHyphenation(@Nullable String s) {
         if (s == null || s.length() == 0) {
             return null;
         }
@@ -263,8 +227,9 @@ public class FactoryProperties {
      * the value of a style attribute inside a HashMap.
      * The different elements of the style attribute are added to the
      * HashMap as key-value pairs.
-     * @param    h    a HashMap that should have at least a key named
-     * style. After this method is invoked, more keys could be added.
+     *
+     * @param h a HashMap that should have at least a key named
+     *          style. After this method is invoked, more keys could be added.
      */
     public static void insertStyle(HashMap h) {
         String style = (String) h.get("style");
@@ -278,7 +243,7 @@ public class FactoryProperties {
                     h.put("face", prop.getProperty(key));
                     break;
                 case Markup.CSS_KEY_FONTSIZE:
-                    h.put("size", Markup.parseLength(prop
+                    h.put("size", parseLength(prop
                             .getProperty(key))
                             + "pt");
                     break;
@@ -313,7 +278,7 @@ public class FactoryProperties {
                     break;
                 case Markup.CSS_KEY_LINEHEIGHT: {
                     String ss = prop.getProperty(key).trim();
-                    float v = Markup.parseLength(prop.getProperty(key));
+                    float v = parseLength(prop.getProperty(key));
                     if (ss.endsWith("%")) {
                         h.put("leading", "0," + (v / 100));
                     } else if ("normal".equalsIgnoreCase(ss)) {
@@ -334,6 +299,7 @@ public class FactoryProperties {
 
     /**
      * New method contributed by Lubos Strapko
+     *
      * @param h
      * @param cprops
      * @since 2.1.3
@@ -350,12 +316,10 @@ public class FactoryProperties {
                     h.put(ElementTags.FACE, prop.getProperty(key));
                     break;
                 case Markup.CSS_KEY_FONTSIZE: {
-                    float actualFontSize = Markup.parseLength(cprops
-                                    .getProperty(ElementTags.SIZE),
-                            Markup.DEFAULT_FONT_SIZE);
+                    float actualFontSize = parseLength(cprops.getProperty(ElementTags.SIZE), Markup.DEFAULT_FONT_SIZE);
                     if (actualFontSize <= 0f)
                         actualFontSize = Markup.DEFAULT_FONT_SIZE;
-                    h.put(ElementTags.SIZE, Markup.parseLength(prop
+                    h.put(ElementTags.SIZE, parseLength(prop
                             .getProperty(key), actualFontSize)
                             + "pt");
                     break;
@@ -391,13 +355,11 @@ public class FactoryProperties {
                     break;
                 case Markup.CSS_KEY_LINEHEIGHT: {
                     String ss = prop.getProperty(key).trim();
-                    float actualFontSize = Markup.parseLength(cprops
-                                    .getProperty(ElementTags.SIZE),
+                    float actualFontSize = parseLength(cprops.getProperty(ElementTags.SIZE),
                             Markup.DEFAULT_FONT_SIZE);
                     if (actualFontSize <= 0f)
                         actualFontSize = Markup.DEFAULT_FONT_SIZE;
-                    float v = Markup.parseLength(prop.getProperty(key),
-                            actualFontSize);
+                    float v = parseLength(prop.getProperty(key), actualFontSize);
                     if (ss.endsWith("%")) {
                         h.put("leading", "0," + (v / 100));
                         return;
@@ -421,11 +383,58 @@ public class FactoryProperties {
                 }
                 case Markup.CSS_KEY_PADDINGLEFT: {
                     String ss = prop.getProperty(key).trim().toLowerCase();
-                    h.put("indent", Float.toString(Markup.parseLength(ss)));
+                    h.put("indent", Float.toString(parseLength(ss)));
                     break;
                 }
             }
         }
+    }
+
+    public Chunk createChunk(String text, ChainedProperties props) {
+        Font font = getFont(props);
+        float size = font.getSize();
+        size /= 2;
+        Chunk chunk = new Chunk(text, font);
+        if (props.hasProperty("sub")) {
+            chunk.setTextRise(-size);
+        } else if (props.hasProperty("sup")) {
+            chunk.setTextRise(size);
+        }
+        chunk.setHyphenation(getHyphenation(props));
+        return chunk;
+    }
+
+    public Font getFont(ChainedProperties props) {
+        String face = props.getProperty(ElementTags.FACE);
+        if (face != null) {
+            StringTokenizer tokenizer = new StringTokenizer(face, ",");
+            while (tokenizer.hasMoreTokens()) {
+                face = tokenizer.nextToken().trim();
+                if (face.startsWith("\""))
+                    face = face.substring(1);
+                if (face.endsWith("\""))
+                    face = face.substring(0, face.length() - 1);
+                if (fontImp.isRegistered(face))
+                    break;
+            }
+        }
+        int style = 0;
+        if (props.hasProperty(HtmlTags.I))
+            style |= Font.ITALIC;
+        if (props.hasProperty(HtmlTags.B))
+            style |= Font.BOLD;
+        if (props.hasProperty(HtmlTags.U))
+            style |= Font.UNDERLINE;
+        if (props.hasProperty(HtmlTags.S))
+            style |= Font.STRIKETHRU;
+
+        float size = props.findProperty(ElementTags.SIZE)
+                .flatMap(NumberUtilities::parseFloat)
+                .orElse(12f);
+
+        Color color = Markup.decodeColor(props.getProperty("color"));
+        String encoding = props.getOrDefault("encoding", BaseFont.WINANSI);
+        return fontImp.getFont(face, encoding, true, size, style, color);
     }
 
     public FontProvider getFontImp() {
@@ -434,18 +443,5 @@ public class FactoryProperties {
 
     public void setFontImp(FontProvider fontImp) {
         this.fontImp = fontImp;
-    }
-
-    public static HashMap followTags = new HashMap();
-    static {
-        followTags.put("i", "i");
-        followTags.put("b", "b");
-        followTags.put("u", "u");
-        followTags.put("sub", "sub");
-        followTags.put("sup", "sup");
-        followTags.put("em", "i");
-        followTags.put("strong", "b");
-        followTags.put("s", "s");
-        followTags.put("strike", "s");
     }
 }

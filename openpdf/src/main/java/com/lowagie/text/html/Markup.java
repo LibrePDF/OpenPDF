@@ -52,6 +52,8 @@
 
 package com.lowagie.text.html;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.Locale;
 import java.util.Properties;
@@ -346,7 +348,7 @@ public class Markup {
      * 
      * @since 2.1.3
      */
-    public static float parseLength(String string, float actualFontSize) {
+    public static float parseLength(@Nullable String string, float actualFontSize) {
         if (string == null)
             return 0f;
         int pos = 0;
@@ -412,17 +414,18 @@ public class Markup {
      * Converts a <CODE>Color</CODE> into a HTML representation of this <CODE>
      * Color</CODE>.
      * 
-     * @param s
+     * @param color
      *            the <CODE>Color</CODE> that has to be converted.
      * @return the HTML representation of this <COLOR>Color </COLOR>
      */
-
-    public static Color decodeColor(String s) {
-        if (s == null)
+    @Nullable
+    public static Color decodeColor(@Nullable String color) {
+        if (color == null) {
             return null;
-        s = s.toLowerCase(Locale.ROOT).trim();
+        }
+        String colorName = color.toLowerCase(Locale.ROOT).trim();
         try {
-            return WebColors.getRGBColor(s);
+            return WebColors.getRGBColor(colorName);
         }
         catch(IllegalArgumentException iae) {
             return null;
@@ -438,10 +441,12 @@ public class Markup {
      *            keyN="valueN" '
      * @return a Properties object
      */
-    public static Properties parseAttributes(String string) {
+    @Nonnull
+    public static Properties parseAttributes(@Nullable String string) {
         Properties result = new Properties();
-        if (string == null)
+        if (string == null) {
             return result;
+        }
         StringTokenizer keyValuePairs = new StringTokenizer(string, ";");
         StringTokenizer keyValuePair;
         String key;

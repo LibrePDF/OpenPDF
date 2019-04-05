@@ -63,6 +63,8 @@ import com.lowagie.text.pdf.PdfAnnotation;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.draw.DrawInterface;
 
+import javax.annotation.Nullable;
+
 /**
  * This is the smallest significant part of text that can be added to a
  * document.
@@ -354,6 +356,7 @@ public class Chunk implements Element {
      * 
      * @return a <CODE>Font</CODE>
      */
+    @Nullable
     public Font getFont() {
         return font;
     }

@@ -42,7 +42,7 @@
  *
  * Contributions by:
  * Lubos Strapko
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * http://www.lowagie.com/iText/
@@ -51,9 +51,13 @@
 package com.lowagie.text.html.simpleparser;
 
 import com.lowagie.text.ElementTags;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ChainedProperties {
 
@@ -65,19 +69,47 @@ public class ChainedProperties {
     @Deprecated
     public ArrayList chain = new ArrayList<>();
 
-    /** Creates a new instance of ChainedProperties */
+    /**
+     * Creates a new instance of ChainedProperties
+     */
     public ChainedProperties() {
     }
 
+    @Nullable
     public String getProperty(String key) {
+        return findProperty(key).orElse(null);
+    }
+
+    /**
+     * Try find property by its name
+     *
+     * @param key property name
+     * @return {@link Optional} containing the value or {@link Optional#empty()} if there is no value or
+     * it equals {@code null}
+     */
+    @Nonnull
+    public Optional<String> findProperty(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
             Object[] obj = (Object[]) chain.get(k);
             HashMap prop = (HashMap) obj[1];
             String ret = (String) prop.get(key);
-            if (ret != null)
-                return ret;
+            if (ret != null) {
+                return Optional.of(ret);
+            }
         }
-        return null;
+        return Optional.empty();
+    }
+
+    /**
+     * Get property by its name or return default value when property is not present or is <CODE>null</CODE>
+     *
+     * @param key          property name
+     * @param defaultValue default property value
+     * @return property or default value if it's null
+     */
+    @Nonnull
+    public String getOrDefault(String key, String defaultValue) {
+        return findProperty(key).orElse(defaultValue);
     }
 
     public boolean hasProperty(String key) {
@@ -105,9 +137,7 @@ public class ChainedProperties {
             } else {
                 int s = 0;
                 if (value.startsWith("+") || value.startsWith("-")) {
-                    String old = getProperty("basefontsize");
-                    if (old == null)
-                        old = "12";
+                    String old = getOrDefault("basefontsize", "12");
                     float f = Float.parseFloat(old);
                     int c = (int) f;
                     for (int k = fontSizes.length - 1; k >= 0; --k) {
@@ -133,12 +163,12 @@ public class ChainedProperties {
                 prop.put(ElementTags.SIZE, Integer.toString(fontSizes[s]));
             }
         }
-        chain.add(new Object[] { key, prop });
+        chain.add(new Object[]{key, prop});
     }
 
     public void removeChain(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
-            if (key.equals(((Object[])chain.get(k))[0])) {
+            if (key.equals(((Object[]) chain.get(k))[0])) {
                 chain.remove(k);
                 return;
             }
