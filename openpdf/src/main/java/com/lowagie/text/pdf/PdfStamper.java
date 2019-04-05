@@ -53,6 +53,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SignatureException;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.lowagie.text.error_messages.MessageLocalization;
@@ -130,11 +131,33 @@ public class PdfStamper
 
     /** Gets the optional <CODE>String</CODE> map to add or change values in
      * the info dictionary.
+     * @deprecated use {@link #getInfoDictionary()}
      * @return the map or <CODE>null</CODE>
      *
      */
-    public Map<String, String> getMoreInfo() {
-        return this.moreInfo;
+    @Deprecated
+    public HashMap getMoreInfo() {
+        return (HashMap) this.moreInfo;
+    }
+
+    /** Gets the optional <CODE>String</CODE> map to add or change values in
+     * the info dictionary.
+     * @return the map or <CODE>null</CODE>
+     *
+     */
+    public Map<String, String> getInfoDictionary() {
+        return moreInfo;
+    }
+
+    /** An optional <CODE>String</CODE> map to add or change values in
+     * the info dictionary. Entries with <CODE>null</CODE>
+     * values delete the key in the original info dictionary
+     * @param moreInfo additional entries to the info dictionary
+     * @deprecated use {@link #setInfoDictionary(Map)}
+     */
+    @Deprecated
+    public void setMoreInfo(HashMap moreInfo) {
+        this.moreInfo = moreInfo;
     }
 
     /** An optional <CODE>String</CODE> map to add or change values in
@@ -143,7 +166,7 @@ public class PdfStamper
      * @param moreInfo additional entries to the info dictionary
      *
      */
-    public void setMoreInfo(Map<String, String> moreInfo) {
+    public void setInfoDictionary(Map<String, String> moreInfo) {
         this.moreInfo = moreInfo;
     }
 

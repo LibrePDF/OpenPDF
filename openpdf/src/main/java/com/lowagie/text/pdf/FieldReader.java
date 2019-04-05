@@ -1,5 +1,6 @@
 package com.lowagie.text.pdf;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,10 @@ import java.util.Map;
  */
 public interface FieldReader {
 
-    Map<String, String> getFields();
+    @Deprecated
+    HashMap<String, String> getFields();
+
+    Map<String, String> getAllFields();
 
     String getFieldValue(String fieldKey);
 

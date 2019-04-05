@@ -261,7 +261,15 @@ public abstract class BaseField {
         return app;
     }
 
-    protected static List<String> getHardBreaks(String text) {
+    /**
+     * @deprecated use {@link BaseField#getAllHardBreaks(String)}
+     */
+    @Deprecated
+    protected static ArrayList getHardBreaks(String text) {
+        return (ArrayList) getAllHardBreaks(text);
+    }
+
+    protected static List<String> getAllHardBreaks(String text) {
         List<String> arr = new ArrayList<>();
         char[] cs = text.toCharArray();
         int len = cs.length;
@@ -296,13 +304,18 @@ public abstract class BaseField {
         }
     }
 
-    protected static List<String> breakLines(ArrayList breaks, BaseFont font, float fontSize, float width) {
+    @Deprecated
+    protected static ArrayList breakLines(ArrayList breaks, BaseFont font, float fontSize, float width) {
+        return (ArrayList) breakLines((List<String>) breaks, font, fontSize, width);
+    }
+
+    protected static List<String> breakLines(List<String> breaks, BaseFont font, float fontSize, float width) {
         List<String> lines = new ArrayList<>();
         StringBuffer buf = new StringBuffer();
-        for (Object aBreak : breaks) {
+        for (String aBreak : breaks) {
             buf.setLength(0);
             float w = 0;
-            char[] cs = ((String) aBreak).toCharArray();
+            char[] cs = aBreak.toCharArray();
             int len = cs.length;
             // 0 inline first, 1 inline, 2 spaces
             int state = 0;

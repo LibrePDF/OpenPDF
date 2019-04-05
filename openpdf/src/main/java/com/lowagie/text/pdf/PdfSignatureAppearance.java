@@ -935,8 +935,7 @@ public class PdfSignatureAppearance {
         continue;
       n1 += ".";
       found = true;
-        for (Object o : af.getFields().keySet()) {
-            String fn = (String) o;
+        for (String fn : af.getAllFields().keySet()) {
             if (fn.startsWith(n1)) {
                 found = false;
                 break;
@@ -1110,7 +1109,7 @@ public class PdfSignatureAppearance {
       docmdp.put(new PdfName("DocMDP"), refSig);
       writer.reader.getCatalog().put(new PdfName("Perms"), docmdp);
     }
-    writer.close(stamper.getMoreInfo());
+    writer.close(stamper.getInfoDictionary());
 
     range = new int[exclusionLocations.size() * 2];
     int byteRangePosition = ((PdfLiteral) exclusionLocations

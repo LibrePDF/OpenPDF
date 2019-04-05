@@ -1264,9 +1264,8 @@ public class AcroFields {
    */
   public void mergeXfaData(Node n) throws IOException, DocumentException {
     XfaForm.Xml2SomDatasets data = new XfaForm.Xml2SomDatasets(n);
-    for (Object o : data.getOrder()) {
-      String name = (String) o;
-      String text = XfaForm.getNodeText((Node) data.getName2Node().get(name));
+    for (String name : data.getNamesOrder()) {
+      String text = XfaForm.getNodeText(data.getNodesByName().get(name));
       setField(name, text);
     }
   }
@@ -1279,7 +1278,7 @@ public class AcroFields {
    * @throws DocumentException on error
    */
   public void setFields(FdfReader fdf) throws IOException, DocumentException {
-    Map<String, PdfDictionary> fd = fdf.getFields();
+    Map<String, PdfDictionary> fd = fdf.getAllFields();
     for (String f : fd.keySet()) {
       String v = fdf.getFieldValue(f);
       if (v != null) {
@@ -1296,7 +1295,7 @@ public class AcroFields {
    * @throws DocumentException on error
    */
   public void setFields(FieldReader fieldReader) throws IOException, DocumentException {
-    Map<String, String> fd = fieldReader.getFields();
+    Map<String, String> fd = fieldReader.getAllFields();
     for (String f : fd.keySet()) {
       String v = fieldReader.getFieldValue(f);
       if (v != null) {
@@ -1540,9 +1539,22 @@ public class AcroFields {
    * Gets all the fields. The fields are keyed by the fully qualified field name and the value is an instance of
    * <CODE>AcroFields.Item</CODE>.
    *
+   * @deprecated use {@link AcroFields#getAllFields()}
+   *
    * @return all the fields
    */
-  public Map<String, Item> getFields() {
+  @Deprecated
+  public HashMap getFields() {
+    return (HashMap) fields;
+  }
+
+  /**
+   * Gets all the fields. The fields are keyed by the fully qualified field name and the value is an instance of
+   * <CODE>AcroFields.Item</CODE>.
+   *
+   * @return all the fields
+   */
+  public Map<String, Item> getAllFields() {
     return fields;
   }
 
@@ -1866,41 +1878,41 @@ public class AcroFields {
      *
      * @deprecated (will remove ' public ' in the future)
      */
-    public List<PdfDictionary> values = new ArrayList<>();
+    public ArrayList<PdfDictionary> values = new ArrayList<>();
 
     /**
      * An array of <CODE>PdfDictionary</CODE> with the widgets.
      *
      * @deprecated (will remove ' public ' in the future)
      */
-    public List<PdfDictionary> widgets = new ArrayList<>();
+    public ArrayList<PdfDictionary> widgets = new ArrayList<>();
 
     /**
      * An array of <CODE>PdfDictionary</CODE> with the widget references.
      *
      * @deprecated (will remove ' public ' in the future)
      */
-    public List<PdfIndirectReference> widgetRefs = new ArrayList<>();
+    public ArrayList<PdfIndirectReference> widgetRefs = new ArrayList<>();
 
     /**
      * An array of <CODE>PdfDictionary</CODE> with all the field and widget tags merged.
      *
      * @deprecated (will remove ' public ' in the future)
      */
-    public List<PdfDictionary> merged = new ArrayList<>();
+    public ArrayList<PdfDictionary> merged = new ArrayList<>();
 
     /**
      * An array of <CODE>Integer</CODE> with the page numbers where the widgets are displayed.
      *
      * @deprecated (will remove ' public ' in the future)
      */
-    public List<Integer> page = new ArrayList<>();
+    public ArrayList<Integer> page = new ArrayList<>();
     /**
      * An array of <CODE>Integer</CODE> with the tab order of the field in the page.
      *
      * @deprecated (will remove ' public ' in the future)
      */
-    public List<Integer> tabOrder = new ArrayList<>();
+    public ArrayList<Integer> tabOrder = new ArrayList<>();
 
     /**
      * Preferred method of determining the number of instances of a given field.
@@ -2081,9 +2093,21 @@ public class AcroFields {
   /**
    * Gets the field names that have signatures and are signed.
    *
+   * @deprecated user {@link AcroFields#getSignedFieldNames()}
+   *
    * @return the field names that have signatures and are signed
    */
-  public List<String> getSignatureNames() {
+  @Deprecated
+  public ArrayList getSignatureNames() {
+    return (ArrayList) getSignedFieldNames();
+  }
+
+  /**
+   * Gets the field names that have signatures and are signed.
+   *
+   * @return the field names that have signatures and are signed
+   */
+  public List<String> getSignedFieldNames() {
     if (sigNames != null) {
       return new ArrayList<>(sigNames.keySet());
     }
@@ -2145,10 +2169,22 @@ public class AcroFields {
   /**
    * Gets the field names that have blank signatures.
    *
+   * @deprecated use {@link AcroFields#getFieldNamesWithBlankSignatures()}
+   *
    * @return the field names that have blank signatures
    */
-  public List<String> getBlankSignatureNames() {
-    getSignatureNames();
+  @Deprecated
+  public ArrayList getBlankSignatureNames() {
+    return (ArrayList) getFieldNamesWithBlankSignatures();
+  }
+
+    /**
+     * Gets the field names that have blank signatures.
+     *
+     * @return the field names that have blank signatures
+     */
+  public List<String> getFieldNamesWithBlankSignatures() {
+    getSignedFieldNames();
     List<String> sigs = new ArrayList<>();
     for (Map.Entry<String, Item> entry : fields.entrySet()) {
       Item item = entry.getValue();
@@ -2171,7 +2207,7 @@ public class AcroFields {
    * @return the signature dictionary keyed by /V or <CODE>null</CODE> if the field is not a signature
    */
   public PdfDictionary getSignatureDictionary(String name) {
-    getSignatureNames();
+    getSignedFieldNames();
     name = getTranslatedFieldName(name);
     if (!sigNames.containsKey(name)) {
       return null;
@@ -2189,7 +2225,7 @@ public class AcroFields {
    * <CODE>false</CODE> otherwise
    */
   public boolean signatureCoversWholeDocument(String name) {
-    getSignatureNames();
+    getSignedFieldNames();
     name = getTranslatedFieldName(name);
     if (!sigNames.containsKey(name)) {
       return false;
@@ -2342,7 +2378,7 @@ public class AcroFields {
    * @return the total number of revisions
    */
   public int getTotalRevisions() {
-    getSignatureNames();
+    getSignedFieldNames();
     return this.totalRevisions;
   }
 
@@ -2353,7 +2389,7 @@ public class AcroFields {
    * @return the revision or zero if it's not a signature field
    */
   public int getRevision(String field) {
-    getSignatureNames();
+    getSignedFieldNames();
     field = getTranslatedFieldName(field);
     if (!sigNames.containsKey(field)) {
       return 0;
@@ -2369,7 +2405,7 @@ public class AcroFields {
    * @throws IOException on error
    */
   public InputStream extractRevision(String field) throws IOException {
-    getSignatureNames();
+    getSignedFieldNames();
     field = getTranslatedFieldName(field);
     if (!sigNames.containsKey(field)) {
       return null;
@@ -2383,12 +2419,53 @@ public class AcroFields {
 
   /**
    * Gets the appearances cache.
-   *
+   * @deprecated use {@link AcroFields#getFieldCacheMap()}
    * @return the appearances cache
    * @since 2.1.5  this method used to return a HashMap
    */
+  @Deprecated
   public Map getFieldCache() {
-    return this.fieldCache;
+    return fieldCache;
+  }
+
+  /**
+   * Gets the appearances cache.
+   *
+   * @return the appearances cache
+   */
+  public Map<String, BaseField> getFieldCacheMap() {
+    return fieldCache;
+  }
+
+  /**
+   * Sets a cache for field appearances. Parsing the existing PDF to create a new TextField is time expensive. For those tasks that
+   * repeatedly fill the same PDF with different field values the use of the cache has dramatic speed advantages. An example usage:
+   * <p>
+   * <pre>
+   * String pdfFile = ...;// the pdf file used as template
+   * ArrayList xfdfFiles = ...;// the xfdf file names
+   * ArrayList pdfOutFiles = ...;// the output file names, one for each element in xpdfFiles
+   * HashMap cache = new HashMap();// the appearances cache
+   * PdfReader originalReader = new PdfReader(pdfFile);
+   * for (int k = 0; k &lt; xfdfFiles.size(); ++k) {
+   *    PdfReader reader = new PdfReader(originalReader);
+   *    XfdfReader xfdf = new XfdfReader((String)xfdfFiles.get(k));
+   *    PdfStamper stp = new PdfStamper(reader, new FileOutputStream((String)pdfOutFiles.get(k)));
+   *    AcroFields af = stp.getAcroFields();
+   *    af.setFieldCache(cache);
+   *    af.setFields(xfdf);
+   *    stp.close();
+   * }
+   * </pre>
+   *
+   * @deprecated use {@link AcroFields#setFieldCacheMap(Map)}
+   *
+   * @param fieldCache a Map that will carry the cached appearances
+   * @since 2.1.5  this method used to take a HashMap as parameter
+   */
+  @Deprecated
+  public void setFieldCache(Map fieldCache) {
+    this.fieldCache = fieldCache;
   }
 
   /**
@@ -2413,9 +2490,8 @@ public class AcroFields {
    * </pre>
    *
    * @param fieldCache a Map that will carry the cached appearances
-   * @since 2.1.5  this method used to take a HashMap as parameter
    */
-  public void setFieldCache(Map<String, BaseField> fieldCache) {
+  public void setFieldCacheMap(Map<String, BaseField> fieldCache) {
     this.fieldCache = fieldCache;
   }
 
@@ -2541,10 +2617,34 @@ public class AcroFields {
    * Gets the list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can be <CODE>null</CODE>. The fonts in this list
    * will be used if the original font doesn't contain the needed glyphs.
    *
+   * @deprecated use {@link AcroFields#getAllSubstitutionFonts()}
    * @return the list
    */
-  public List<BaseFont> getSubstitutionFonts() {
+  @Deprecated
+  public ArrayList getSubstitutionFonts() {
+    return (ArrayList) substitutionFonts;
+  }
+
+  /**
+   * Gets the list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can be <CODE>null</CODE>. The fonts in this list
+   * will be used if the original font doesn't contain the needed glyphs.
+   *
+   * @return the list
+   */
+  public List<BaseFont> getAllSubstitutionFonts() {
     return substitutionFonts;
+  }
+
+  /**
+   * Sets a list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can also be <CODE>null</CODE>. The fonts in this
+   * list will be used if the original font doesn't contain the needed glyphs.
+   *
+   * @deprecated use {@link AcroFields#setAllSubstitutionFonts(List)}
+   * @param substitutionFonts the list
+   */
+  @Deprecated
+  public void setSubstitutionFonts(ArrayList substitutionFonts) {
+    this.substitutionFonts = substitutionFonts;
   }
 
   /**
@@ -2553,7 +2653,7 @@ public class AcroFields {
    *
    * @param substitutionFonts the list
    */
-  public void setSubstitutionFonts(List<BaseFont> substitutionFonts) {
+  public void setAllSubstitutionFonts(List<BaseFont> substitutionFonts) {
     this.substitutionFonts = substitutionFonts;
   }
 

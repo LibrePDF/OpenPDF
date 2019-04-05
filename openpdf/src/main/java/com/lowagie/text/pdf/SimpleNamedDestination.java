@@ -303,11 +303,16 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
             throw new RuntimeException(MessageLocalization.getComposedMessage("name.end.tag.out.of.place"));
         if (!xmlLast.containsKey("Page"))
             throw new RuntimeException(MessageLocalization.getComposedMessage("page.attribute.missing"));
-        xmlNames.put(unEscapeBinaryString((String)xmlLast.get("Name")), xmlLast.get("Page"));
+        xmlNames.put(unEscapeBinaryString(xmlLast.get("Name")), xmlLast.get("Page"));
         xmlLast = null;
     }
 
     public void startDocument() {
+    }
+
+    @Deprecated
+    public void startElement(String tag, HashMap h) {
+        startElement(tag, (Map<String, String>) h);
     }
 
     public void startElement(String tag, Map<String, String> h) {

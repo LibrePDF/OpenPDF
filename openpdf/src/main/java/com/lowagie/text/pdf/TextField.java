@@ -710,6 +710,17 @@ public class TextField extends BaseField {
             choiceSelections.add(selection);
         }
     }
+
+    /**
+     * replaces the existing selections with the param. If this field isn't a MULTISELECT
+     * list, all but the first element will be removed.
+     * @param selections new selections.  If null, it clear()s the underlying ArrayList.
+     * @deprecated use {@link #setChoiceSelections(List)}
+     */
+    @Deprecated
+    public void setChoiceSelections(@Nullable ArrayList selections ) {
+        setChoiceSelections((List<Integer>) selections);
+    }
     
     /**
      * replaces the existing selections with the param. If this field isn't a MULTISELECT
@@ -753,9 +764,20 @@ public class TextField extends BaseField {
     /**
      * Gets the list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can be <CODE>null</CODE>. The fonts in this list will be used if the original
      * font doesn't contain the needed glyphs.
+     * @deprecated use {@link #getSubstitutionFontList()}
      * @return the list
      */
-    public List<BaseFont> getSubstitutionFonts() {
+    @Deprecated
+    public ArrayList getSubstitutionFonts() {
+        return (ArrayList) this.substitutionFonts;
+    }
+
+    /**
+     * Gets the list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can be <CODE>null</CODE>. The fonts in this list will be used if the original
+     * font doesn't contain the needed glyphs.
+     * @return the list
+     */
+    public List<BaseFont> getSubstitutionFontList() {
         return this.substitutionFonts;
     }
 
@@ -763,8 +785,19 @@ public class TextField extends BaseField {
      * Sets a list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can also be <CODE>null</CODE>. The fonts in this list will be used if the original
      * font doesn't contain the needed glyphs.
      * @param substitutionFonts the list
+     * @deprecated use {@link #setSubstitutionFontList(List)}
      */
+    @Deprecated
     public void setSubstitutionFonts(List<BaseFont> substitutionFonts) {
+        this.substitutionFonts = substitutionFonts;
+    }
+
+    /**
+     * Sets a list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can also be <CODE>null</CODE>. The fonts in this list will be used if the original
+     * font doesn't contain the needed glyphs.
+     * @param substitutionFonts the list
+     */
+    public void setSubstitutionFontList(List<BaseFont> substitutionFonts) {
         this.substitutionFonts = substitutionFonts;
     }
 

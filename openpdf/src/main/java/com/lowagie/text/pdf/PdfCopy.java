@@ -702,7 +702,7 @@ public class PdfCopy extends PdfWriter {
 
     private void expandFields(PdfFormField field, ArrayList allAnnots) {
       allAnnots.add(field);
-      List<PdfFormField> kids = field.getKids();
+      List<PdfFormField> kids = field.getKidFields();
       if (kids != null) {
           for (PdfFormField kid : kids) {
               expandFields(kid, allAnnots);

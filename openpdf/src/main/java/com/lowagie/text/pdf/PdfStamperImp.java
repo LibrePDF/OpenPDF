@@ -671,7 +671,7 @@ class PdfStamperImp extends PdfWriter {
             return;
         if (page > reader.getNumberOfPages())
             return;
-        Map<String, Item> fields = acroFields.getFields();
+        Map<String, Item> fields = acroFields.getAllFields();
         for (Item item : fields.values()) {
             for (int k = 0; k < item.size(); ++k) {
                 int p = item.getPage(k);
@@ -810,7 +810,7 @@ class PdfStamperImp extends PdfWriter {
         getAcroFields();
         if (acroFields.getXfa().isXfaPresent())
             throw new UnsupportedOperationException(MessageLocalization.getComposedMessage("partial.form.flattening.is.not.supported.with.xfa.forms"));
-        if (!acroFields.getFields().containsKey(name))
+        if (!acroFields.getAllFields().containsKey(name))
             return false;
         partialFlattening.add(name);
         return true;
@@ -820,7 +820,7 @@ class PdfStamperImp extends PdfWriter {
         if (append)
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("field.flattening.is.not.supported.in.append.mode"));
         getAcroFields();
-        Map<String, Item> fields = acroFields.getFields();
+        Map<String, Item> fields = acroFields.getAllFields();
         if (fieldsAdded && partialFlattening.isEmpty()) {
             partialFlattening.addAll(fields.keySet());
         }
@@ -1163,7 +1163,7 @@ class PdfStamperImp extends PdfWriter {
 
     void expandFields(PdfFormField field, List<PdfAnnotation> annotations) {
         annotations.add(field);
-        List<PdfFormField> kids = field.getKids();
+        List<PdfFormField> kids = field.getKidFields();
         if (kids != null) {
             for (PdfFormField kid : kids) {
                 expandFields(kid, annotations);

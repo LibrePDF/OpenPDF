@@ -106,7 +106,7 @@ public final class PdfEncryptor {
     public static void encrypt(PdfReader reader, OutputStream os, byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits, Map<String, String> newInfo) throws DocumentException, IOException {
         PdfStamper stamper = new PdfStamper(reader, os);
         stamper.setEncryption(userPassword, ownerPassword, permissions, strength128Bits);
-        stamper.setMoreInfo(newInfo);
+        stamper.setInfoDictionary(newInfo);
         stamper.close();
     }
     
@@ -153,7 +153,7 @@ public final class PdfEncryptor {
     public static void encrypt(PdfReader reader, OutputStream os, boolean strength, String userPassword, String ownerPassword, int permissions, Map<String, String> newInfo) throws DocumentException, IOException {
         PdfStamper stamper = new PdfStamper(reader, os);
         stamper.setEncryption(strength, userPassword, ownerPassword, permissions);
-        stamper.setMoreInfo(newInfo);
+        stamper.setInfoDictionary(newInfo);
         stamper.close();
     }
 
@@ -181,7 +181,7 @@ public final class PdfEncryptor {
     public static void encrypt(PdfReader reader, OutputStream os, int type, String userPassword, String ownerPassword, int permissions, Map<String, String> newInfo) throws DocumentException, IOException {
         PdfStamper stamper = new PdfStamper(reader, os);
         stamper.setEncryption(type, userPassword, ownerPassword, permissions);
-        stamper.setMoreInfo(newInfo);
+        stamper.setInfoDictionary(newInfo);
         stamper.close();
     }
     

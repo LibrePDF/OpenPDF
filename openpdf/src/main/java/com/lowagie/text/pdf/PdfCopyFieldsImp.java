@@ -263,7 +263,12 @@ class PdfCopyFieldsImp extends PdfWriter {
             }
         }
     }
-    
+
+    @Deprecated
+    protected PdfArray branchForm(HashMap level, PdfIndirectReference parent, String fname) throws IOException {
+        return branchForm((Map<String, Object>) level, parent, fname);
+    }
+
     protected PdfArray branchForm(Map<String, Object> level, PdfIndirectReference parent, String fname) throws IOException {
         PdfArray arr = new PdfArray();
         for (Map.Entry<String, Object> entry : level.entrySet()) {
@@ -515,7 +520,7 @@ class PdfCopyFieldsImp extends PdfWriter {
     void mergeFields() {
         int pageOffset = 0;
         for (int k = 0; k < fields.size(); ++k) {
-            Map<String, Item> fd = fields.get(k).getFields();
+            Map<String, Item> fd = fields.get(k).getAllFields();
             addPageOffsetToField(fd, pageOffset);
             mergeWithMaster(fd);
             pageOffset += readers.get(k).getNumberOfPages();

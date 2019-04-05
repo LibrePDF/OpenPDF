@@ -29,7 +29,7 @@ public class AcroFieldsTest {
         PdfWriter writer = PdfWriter.getInstance(document, out);
 
         AcroFields fields = new AcroFields(reader, writer);
-        List<String> names = fields.getSignatureNames();
+        List<String> names = fields.getSignedFieldNames();
         Assertions.assertEquals(1, names.size());
 
         for (String signName : names) {

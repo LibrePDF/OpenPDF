@@ -104,10 +104,10 @@ public class Concat extends AbstractTool {
                 reader.consolidateNamedDestinations();
                 // we retrieve the total number of pages
                 int n = reader.getNumberOfPages();
-                List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmark(reader);
+                List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmarkList(reader);
                 if (bookmarks != null) {
                     if (pageOffset != 0)
-                        SimpleBookmark.shiftPageNumbers(bookmarks, pageOffset, null);
+                        SimpleBookmark.shiftPageNumbersInRange(bookmarks, pageOffset, null);
                     master.addAll(bookmarks);
                 }
                 pageOffset += n;

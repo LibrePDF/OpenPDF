@@ -59,6 +59,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -214,9 +215,20 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
         }
     }
 
+    @Override
     public void startDocument() {
     }
 
+    /**
+     * @deprecated use {@link SimplePatternParser#startElement(String, Map)}
+     */
+    @Override
+    @Deprecated
+    public void startElement(String tag, HashMap h) {
+        startElement(tag, ((Map<String, String>) h));
+    }
+
+    @Override
     public void startElement(String tag, Map<String, String> h) {
         switch (tag) {
             case "hyphen-char":

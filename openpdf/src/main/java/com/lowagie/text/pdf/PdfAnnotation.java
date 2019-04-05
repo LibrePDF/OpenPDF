@@ -647,8 +647,8 @@ public class PdfAnnotation extends PdfDictionary {
     used = true;
   }
 
-  public Map<PdfTemplate, Object> getTemplates() {
-    return templates;
+  public HashMap<PdfTemplate, Object> getTemplates() {
+    return (HashMap<PdfTemplate, Object>) templates;
   }
 
   /**

@@ -400,7 +400,7 @@ public class Phrase extends ArrayList implements TextElementArray {
             }
         }
         Chunk newChunk = new Chunk(c, f);
-        newChunk.setAttributes(chunk.getAttributes());
+        newChunk.setChunkAttributes(chunk.getChunkAttributes());
         if (hyphenation != null && newChunk.getHyphenation() == null && !newChunk.isEmpty()) {
             newChunk.setHyphenation(hyphenation);
         }
