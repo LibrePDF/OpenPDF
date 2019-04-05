@@ -155,9 +155,20 @@ public class FdfReader extends PdfReader {
     /** Gets all the fields. The map is keyed by the fully qualified
      * field name and the value is a merged <CODE>PdfDictionary</CODE>
      * with the field content.
+     * @deprecated use {@link #getAllFields()}
      * @return all the fields
      */
-    public Map<String, PdfDictionary> getFields() {
+    @Deprecated
+    public HashMap<String, PdfDictionary> getFields() {
+        return (HashMap<String, PdfDictionary>) fields;
+    }
+
+    /** Gets all the fields. The map is keyed by the fully qualified
+     * field name and the value is a merged <CODE>PdfDictionary</CODE>
+     * with the field content.
+     * @return all the fields
+     */
+    public Map<String, PdfDictionary> getAllFields() {
         return fields;
     }
 

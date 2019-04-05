@@ -99,7 +99,7 @@ class PdfCopyFormsImp extends PdfCopyFieldsImp {
      */
     void mergeFields() {
         for (AcroFields field : fields) {
-            mergeWithMaster(field.getFields());
+            mergeWithMaster(field.getAllFields());
         }
     }
 

@@ -52,6 +52,7 @@ package com.lowagie.tools;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfCopy;
@@ -88,10 +89,10 @@ public class ConcatPdf {
                     reader.consolidateNamedDestinations();
                     // we retrieve the total number of pages
                     int n = reader.getNumberOfPages();
-                    List bookmarks = SimpleBookmark.getBookmark(reader);
+                    List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmarkList(reader);
                     if (bookmarks != null) {
                         if (pageOffset != 0)
-                            SimpleBookmark.shiftPageNumbers(bookmarks, pageOffset, null);
+                            SimpleBookmark.shiftPageNumbersInRange(bookmarks, pageOffset, null);
                         master.addAll(bookmarks);
                     }
                     pageOffset += n;

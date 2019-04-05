@@ -87,7 +87,7 @@ public class Bookmarks2XML extends AbstractTool {
             if (getValue("pdffile") == null) throw new InstantiationException("You need to choose a source PDF file");
             PdfReader reader = new PdfReader(((File)getValue("pdffile")).getAbsolutePath());
             reader.consolidateNamedDestinations();
-            List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmark( reader );
+            List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmarkList( reader );
             // save them in XML format
             FileOutputStream bmWriter = new FileOutputStream( (File)getValue("xmlfile") );
             SimpleBookmark.exportToXML(bookmarks, bmWriter, "UTF-8", false);

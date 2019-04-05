@@ -66,7 +66,7 @@ public class PdfAcroForm extends PdfDictionary {
 
 
     /** This is a map containing FieldTemplates. */
-    private HashMap fieldTemplates = new HashMap();
+    private Map<PdfTemplate, Object> fieldTemplates = new HashMap<>();
 
     /** This is an array containing DocumentFields. */
     private PdfArray documentFields = new PdfArray();
@@ -81,12 +81,21 @@ public class PdfAcroForm extends PdfDictionary {
      * @param writer
      */
     public PdfAcroForm(PdfWriter writer) {
-        super();
         this.writer = writer;
     }
     
     public void setNeedAppearances(boolean value) {
         put(PdfName.NEEDAPPEARANCES, new PdfBoolean(value));
+    }
+
+    /**
+     * Adds fieldTemplates.
+     * @param ft
+     * @deprecated use {@link #addFieldTemplates(Map)}
+     */
+    @Deprecated
+    public void addFieldTemplates(HashMap ft) {
+        fieldTemplates.putAll(ft);
     }
 
     /**

@@ -214,7 +214,7 @@ public class PdfChunk {
         }
         font = new PdfFont(baseFont, size);
         // other style possibilities
-        Map<String, Object> attr = chunk.getAttributes();
+        Map<String, Object> attr = chunk.getChunkAttributes();
         if (attr != null) {
             for (Map.Entry<String, Object> entry : attr.entrySet()) {
                 String name = entry.getKey();

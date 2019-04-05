@@ -151,7 +151,7 @@ public class HtmlBookmarks extends AbstractTool {
                 Paragraph d = new Paragraph((String) description);
                 document.add(d);
             }
-            List<Map<String, Object>> list = SimpleBookmark.getBookmark(reader);
+            List<Map<String, Object>> list = SimpleBookmark.getBookmarkList(reader);
             if (list == null) {
                 document.add(new Paragraph("This document has no bookmarks."));
             }

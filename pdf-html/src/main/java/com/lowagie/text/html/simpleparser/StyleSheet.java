@@ -56,15 +56,20 @@ import java.util.Map;
 
 public class StyleSheet {
 
-    private Map<String, Map<String, String>> classMap = new HashMap<>();
-    private Map<String, Map<String, String>> tagMap = new HashMap<>();
+    public HashMap classMap = new HashMap();
+    public HashMap tagMap = new HashMap();
 
     /** Creates a new instance of StyleSheet */
     public StyleSheet() {
     }
 
+    @Deprecated
+    public void applyStyle(String tag, HashMap props) {
+        applyStyle(tag, (Map<String, String>) props);
+    }
+
     public void applyStyle(String tag, Map<String, String> props) {
-        Map<String, String> map = tagMap.get(tag.toLowerCase());
+        HashMap map = (HashMap) tagMap.get(tag.toLowerCase());
         if (map != null) {
             Map<String, String> temp = new HashMap<>(map);
             temp.putAll(props);
@@ -73,7 +78,7 @@ public class StyleSheet {
         String cm = props.get(Markup.HTML_ATTR_CSS_CLASS);
         if (cm == null)
             return;
-        map = classMap.get(cm.toLowerCase());
+        map = (HashMap) classMap.get(cm.toLowerCase());
         if (map == null)
             return;
         props.remove(Markup.HTML_ATTR_CSS_CLASS);
@@ -88,7 +93,7 @@ public class StyleSheet {
 
     public void loadStyle(String style, String key, String value) {
         style = style.toLowerCase();
-        Map<String, String> props = classMap.computeIfAbsent(style, k -> new HashMap<>());
+        HashMap props = (HashMap) classMap.computeIfAbsent(style, k -> new HashMap<>());
         props.put(key, value);
     }
 
@@ -98,7 +103,7 @@ public class StyleSheet {
 
     public void loadTagStyle(String tag, String key, String value) {
         tag = tag.toLowerCase();
-        Map<String, String> props = tagMap.computeIfAbsent(tag, k -> new HashMap<>());
+        Map<String, String> props = (Map<String, String>) tagMap.computeIfAbsent(tag, k -> new HashMap<>());
         props.put(key, value);
     }
 

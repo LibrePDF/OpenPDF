@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
@@ -75,6 +76,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.TextElementArray;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.draw.LineSeparator;
 import com.lowagie.text.FontProvider;
@@ -178,6 +180,11 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         cprops.addToChain("body", h);
     }
 
+    @Deprecated
+    public void startElement(String tag, HashMap h) {
+        startElement(tag, (Map<String, String>) h);
+    }
+
     public void startElement(String tag, Map<String, String> h) {
         if (!tagsSupported.containsKey(tag))
             return;
@@ -267,7 +274,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     ImageProvider ip = (ImageProvider) interfaceProps
                             .get("img_provider");
                     if (ip != null)
-                        img = ip.getImage(src, h, cprops, document);
+                        img = ip.getImage(src, (HashMap) h, cprops, document);
                     if (img == null) {
                         HashMap images = (HashMap) interfaceProps
                                 .get("img_static");
@@ -338,7 +345,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     if (interfaceProps != null) {
                         i = (Img) interfaceProps.get("img_interface");
                         if (i != null)
-                            skip = i.process(img, h, cprops, document);
+                            skip = i.process(img, (HashMap) h, cprops, document);
                     }
                     if (!skip)
                         document.add(img);
@@ -603,7 +610,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                         break;
                     }
                 }
-                table.addCols(cells);
+                table.addCols((List<PdfPCell>) cells);
                 table.endRow();
                 stack.push(table);
                 skipText = true;

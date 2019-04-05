@@ -53,14 +53,17 @@ package com.lowagie.text.html.simpleparser;
 import com.lowagie.text.ElementTags;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ChainedProperties {
 
     public final static int[] fontSizes = {8, 10, 12, 14, 18, 24, 36};
 
-    public List<Object[]> chain = new ArrayList<>();
+    /**
+     * Will be replaced with types alternative
+     */
+    @Deprecated
+    public ArrayList chain = new ArrayList<>();
 
     /** Creates a new instance of ChainedProperties */
     public ChainedProperties() {
@@ -68,7 +71,7 @@ public class ChainedProperties {
 
     public String getProperty(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
-            Object[] obj = chain.get(k);
+            Object[] obj = (Object[]) chain.get(k);
             HashMap prop = (HashMap) obj[1];
             String ret = (String) prop.get(key);
             if (ret != null)
@@ -79,12 +82,17 @@ public class ChainedProperties {
 
     public boolean hasProperty(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
-            Object[] obj = chain.get(k);
+            Object[] obj = (Object[]) chain.get(k);
             HashMap prop = (HashMap) obj[1];
             if (prop.containsKey(key))
                 return true;
         }
         return false;
+    }
+
+    @Deprecated
+    public void addToChain(String key, HashMap prop) {
+        addToChain(key, (Map<String, String>) prop);
     }
 
     public void addToChain(String key, Map<String, String> prop) {
@@ -130,7 +138,7 @@ public class ChainedProperties {
 
     public void removeChain(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
-            if (key.equals(chain.get(k)[0])) {
+            if (key.equals(((Object[])chain.get(k))[0])) {
                 chain.remove(k);
                 return;
             }

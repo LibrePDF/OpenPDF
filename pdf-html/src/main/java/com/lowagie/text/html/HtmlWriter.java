@@ -636,7 +636,7 @@ public class HtmlWriter extends DocWriter {
                 }
                 
                 if (chunk.isEmpty()) return;
-                Map<String, Object> attributes = chunk.getAttributes();
+                Map<String, Object> attributes = chunk.getChunkAttributes();
                 if (attributes != null && attributes.get(Chunk.NEWPAGE) != null) {
                     return;
                 }

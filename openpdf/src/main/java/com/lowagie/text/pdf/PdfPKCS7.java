@@ -1660,6 +1660,8 @@ public class PdfPKCS7 {
         /**
          * A HashMap with default symbols
          */
+        @Deprecated
+        public static HashMap DefaultSymbols = new HashMap();
         public static Map<ASN1Encodable, String> defaultSymbols = new HashMap<>();
 
         static {
@@ -1678,12 +1680,16 @@ public class PdfPKCS7 {
             defaultSymbols.put(GIVENNAME, "GIVENNAME");
             defaultSymbols.put(INITIALS, "INITIALS");
             defaultSymbols.put(GENERATION, "GENERATION");
+
+            DefaultSymbols.putAll(defaultSymbols);
         }
 
         /**
          * A HashMap with values
          */
-        public Map<String, List<String>> values = new HashMap<>();
+        @Deprecated
+        public HashMap values = new HashMap();
+        public Map<String, List<String>> valuesMap = new HashMap<>();
 
         /**
          * Constructs an X509 name
@@ -1702,7 +1708,7 @@ public class PdfPKCS7 {
                     String id = defaultSymbols.get(encodable);
                     if (id == null)
                         continue;
-                    List<String> vs = values.computeIfAbsent(id, k -> new ArrayList<>());
+                    List<String> vs = valuesMap.computeIfAbsent(id, k -> new ArrayList<>());
                     vs.add(((ASN1String) s.getObjectAt(1)).getString());
                 }
             }
@@ -1728,7 +1734,7 @@ public class PdfPKCS7 {
 
                 String id = token.substring(0, index).toUpperCase();
                 String value = token.substring(index + 1);
-                List<String> vs = values.computeIfAbsent(id, k -> new ArrayList<>());
+                List<String> vs = valuesMap.computeIfAbsent(id, k -> new ArrayList<>());
                 vs.add(value);
             }
 
@@ -1736,8 +1742,20 @@ public class PdfPKCS7 {
 
         @Nullable
         public String getField(String name) {
-            List<String> vs = values.get(name);
+            List<String> vs = valuesMap.get(name);
             return vs == null ? null : vs.get(0);
+        }
+
+        /**
+         * gets a field array from the values Hashmap
+         *
+         * @param name
+         * @deprecated use {@link #getFieldsByName(String)}
+         * @return an ArrayList
+         */
+        @Deprecated
+        public ArrayList getFieldArray(String name) {
+            return (ArrayList) valuesMap.get(name);
         }
 
         /**
@@ -1746,8 +1764,19 @@ public class PdfPKCS7 {
          * @param name
          * @return an ArrayList
          */
-        public List<String> getFieldArray(String name) {
-            return values.get(name);
+        public List<String> getFieldsByName(String name) {
+            return valuesMap.get(name);
+        }
+
+        /**
+         * getter for values
+         *
+         * @deprecated use {@link #getAllFields()}
+         * @return a HashMap with the fields of the X509 name
+         */
+        @Deprecated
+        public HashMap getFields() {
+            return (HashMap) valuesMap;
         }
 
         /**
@@ -1755,8 +1784,8 @@ public class PdfPKCS7 {
          *
          * @return a HashMap with the fields of the X509 name
          */
-        public Map<String, List<String>> getFields() {
-            return values;
+        public Map<String, List<String>> getAllFields() {
+            return valuesMap;
         }
 
         /**
@@ -1765,7 +1794,7 @@ public class PdfPKCS7 {
          */
         @Override
         public String toString() {
-            return values.toString();
+            return valuesMap.toString();
         }
     }
 

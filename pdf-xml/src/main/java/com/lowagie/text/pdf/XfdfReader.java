@@ -112,9 +112,17 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
      * <CODE>PdfDictionary</CODE> with the
      * field content.
      *
+     * @deprecated use {@link #getAllFields()}
      * @return all the fields
      */
-    public Map<String, String> getFields() {
+    @Override
+    @Deprecated
+    public HashMap<String, String> getFields() {
+        return (HashMap<String, String>) fields;
+    }
+
+    @Override
+    public Map<String, String> getAllFields() {
         return fields;
     }
 
@@ -134,6 +142,7 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
      * @param name the fully qualified field name
      * @return the field value or <CODE>null</CODE>
      */
+    @Override
     public String getFieldValue(String name) {
         return fields.get(name);
     }
@@ -145,6 +154,7 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
      * @return the field values or <CODE>null</CODE>
      * @since 2.1.4
      */
+    @Override
     public List<String> getListValues(String name) {
         return listFields.get(name);
     }
@@ -164,6 +174,19 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
      * @param tag the tag name
      * @param h   the tag's attributes
      */
+    @Deprecated
+    @Override
+    public void startElement(String tag, HashMap h) {
+        startElement(tag, (Map<String, String>) h);
+    }
+
+    /**
+     * Called when a start tag is found.
+     *
+     * @param tag the tag name
+     * @param h   the tag's attributes
+     */
+    @Override
     public void startElement(String tag, Map<String, String> h) {
         if (!foundRoot) {
             if (!tag.equals("xfdf")) {
@@ -200,6 +223,7 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
      *
      * @param tag the tag name
      */
+    @Override
     public void endElement(String tag) {
         if (tag.equals("value")) {
             StringBuilder fName = new StringBuilder();

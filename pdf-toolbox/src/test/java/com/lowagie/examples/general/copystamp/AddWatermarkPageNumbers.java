@@ -44,7 +44,7 @@ public class AddWatermarkPageNumbers {
             // adding some metadata
             Map<String, String> moreInfo = new HashMap<>();
             moreInfo.put("Author", "Bruno Lowagie");
-            stamp.setMoreInfo(moreInfo);
+            stamp.setInfoDictionary(moreInfo);
             // adding content to each page
             int i = 0;
             PdfContentByte under;

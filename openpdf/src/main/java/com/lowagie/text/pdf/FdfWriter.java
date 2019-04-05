@@ -247,7 +247,7 @@ public class FdfWriter {
      * @param fdf the <CODE>FdfReader</CODE>
      */    
     public void setFields(FdfReader fdf) {
-        Map<String, PdfDictionary> map = fdf.getFields();
+        Map<String, PdfDictionary> map = fdf.getAllFields();
         for (Map.Entry<String, PdfDictionary> entry : map.entrySet()) {
             String key = entry.getKey();
             PdfDictionary dic = entry.getValue();
@@ -273,10 +273,9 @@ public class FdfWriter {
      * @param af the <CODE>AcroFields</CODE>
      */    
     public void setFields(AcroFields af) {
-        for (Object o : af.getFields().entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            String fn = (String) entry.getKey();
-            AcroFields.Item item = (AcroFields.Item) entry.getValue();
+        for (Map.Entry<String, AcroFields.Item> entry : af.getAllFields().entrySet()) {
+            String fn = entry.getKey();
+            AcroFields.Item item = entry.getValue();
             PdfDictionary dic = item.getMerged(0);
             PdfObject v = PdfReader.getPdfObjectRelease(dic.get(PdfName.V));
             if (v == null)

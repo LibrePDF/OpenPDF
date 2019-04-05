@@ -53,6 +53,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -527,7 +528,7 @@ public final class SimpleXMLParser {
     private void processTag(boolean start) {
         if (start) {
             nested++;
-            doc.startElement(tag,attributes);
+            doc.startElement(tag, (Map<String, String>) attributes);
         }
         else {
             nested--;

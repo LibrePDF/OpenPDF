@@ -3776,7 +3776,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         getPageN(p).put(PdfName.PARENT, parent);
       }
       AcroFields af = reader.getAcroFields();
-      boolean removeFields = (af.getFields().size() > 0);
+      boolean removeFields = (af.getAllFields().size() > 0);
       for (int k = 1; k <= psize; ++k) {
         if (!pg.containsKey(k)) {
           if (removeFields)

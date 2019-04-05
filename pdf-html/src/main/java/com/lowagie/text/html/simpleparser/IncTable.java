@@ -65,6 +65,12 @@ public class IncTable {
     private List<List<PdfPCell>> rows = new ArrayList<>();
     private List<PdfPCell> cols;
     /** Creates a new instance of IncTable */
+
+    @Deprecated
+    public IncTable(HashMap props) {
+        this.props.putAll(props);
+    }
+
     public IncTable(Map<String, String> props) {
         this.props.putAll(props);
     }
@@ -73,6 +79,14 @@ public class IncTable {
         if (cols == null)
             cols = new ArrayList<>();
         cols.add(cell);
+    }
+
+    @Deprecated
+    public void addCols(ArrayList ncols) {
+        if (cols == null)
+            cols = new ArrayList<>(ncols);
+        else
+            cols.addAll(ncols);
     }
     
     public void addCols(List<PdfPCell> ncols) {
@@ -89,8 +103,16 @@ public class IncTable {
             cols = null;
         }
     }
+
+    /**
+     * @deprecated use {@link #getTableRows()}
+     */
+    @Deprecated
+    public ArrayList getRows() {
+        return (ArrayList) rows;
+    }
     
-    public List<List<PdfPCell>> getRows() {
+    public List<List<PdfPCell>> getTableRows() {
         return rows;
     }
     

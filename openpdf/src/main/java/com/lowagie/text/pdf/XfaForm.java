@@ -276,18 +276,18 @@ public class XfaForm {
      * @return the complete name or <CODE>null</CODE> if not found
      */
     public String findFieldName(String name, AcroFields af) {
-        Map<String, AcroFields.Item> items = af.getFields();
+        Map<String, AcroFields.Item> items = af.getAllFields();
         if (items.containsKey(name))
             return name;
         if (acroFieldsSom == null) {
             if (items.isEmpty() && xfaPresent)
-                acroFieldsSom = new AcroFieldsSearch(datasetsSom.getName2Node().keySet());
+                acroFieldsSom = new AcroFieldsSearch(datasetsSom.getNodesByName().keySet());
             else
                 acroFieldsSom = new AcroFieldsSearch(items.keySet());
         }
-        if (acroFieldsSom.getAcroShort2LongName().containsKey(name))
-            return acroFieldsSom.getAcroShort2LongName().get(name);
-        return acroFieldsSom.inverseSearchGlobal(Xml2Som.splitParts(name));
+        if (acroFieldsSom.getLongByShortNames().containsKey(name))
+            return acroFieldsSom.getLongByShortNames().get(name);
+        return acroFieldsSom.inverseSearch(Xml2Som.splitParts(name));
     }
     
     /**
@@ -297,9 +297,9 @@ public class XfaForm {
      * @return the complete name or <CODE>null</CODE> if not found
      */
     public String findDatasetsName(String name) {
-        if (datasetsSom.getName2Node().containsKey(name))
+        if (datasetsSom.getNodesByName().containsKey(name))
             return name;
-        return datasetsSom.inverseSearchGlobal(Xml2Som.splitParts(name));
+        return datasetsSom.inverseSearch(Xml2Som.splitParts(name));
     }
 
     /**
@@ -314,7 +314,7 @@ public class XfaForm {
         name = findDatasetsName(name);
         if (name == null)
             return null;
-        return datasetsSom.getName2Node().get(name);
+        return datasetsSom.getNodesByName().get(name);
     }
 
     /**
@@ -610,7 +610,19 @@ public class XfaForm {
          * @param unstack the SOM name
          */
         public void inverseSearchAdd(String unstack) {
-            inverseSearchAdd(inverseSearch, stack, unstack);
+            addSomNameToSearchNodeChain(inverseSearch, stack, unstack);
+        }
+
+        /**
+         * Adds a SOM name to the search node chain.
+         * @param inverseSearch the start point
+         * @param stack the stack with the separated SOM parts
+         * @param unstack the full name
+         * @deprecated use {@link #addSomNameToSearchNodeChain(Map, Stack2, String)}
+         */
+        @Deprecated
+        public static void inverseSearchAdd(HashMap inverseSearch, Stack2 stack, String unstack) {
+            addSomNameToSearchNodeChain(inverseSearch, stack, unstack);
         }
         
         /**
@@ -619,7 +631,7 @@ public class XfaForm {
          * @param stack the stack with the separated SOM parts
          * @param unstack the full name
          */
-        public static void inverseSearchAdd(Map<String, InverseStore> inverseSearch, Stack2 stack, String unstack) {
+        public static void addSomNameToSearchNodeChain(Map<String, InverseStore> inverseSearch, Stack2 stack, String unstack) {
             String last = stack.peek();
             InverseStore store = inverseSearch.get(last);
             if (store == null) {
@@ -646,9 +658,20 @@ public class XfaForm {
         /**
          * Searches the SOM hierarchy from the bottom.
          * @param parts the SOM parts
+         * @deprecated use {@link #inverseSearch(List)}
          * @return the full name or <CODE>null</CODE> if not found
          */
-        public String inverseSearchGlobal(List<String> parts) {
+        @Deprecated
+        public String inverseSearchGlobal(ArrayList parts) {
+            return inverseSearch(parts);
+        }
+
+        /**
+         * Searches the SOM hierarchy from the bottom.
+         * @param parts the SOM parts
+         * @return the full name or <CODE>null</CODE> if not found
+         */
+        public String inverseSearch(List<String> parts) {
             if (parts.isEmpty())
                 return null;
             InverseStore store = inverseSearch.get(parts.get(parts.size() - 1));
@@ -707,49 +730,109 @@ public class XfaForm {
 
         /**
          * Gets the order the names appear in the XML, depth first.
+         * @deprecated use {@link #getNamesOrder()}
          * @return the order the names appear in the XML, depth first
          */
-        public List<String> getOrder() {
+        @Deprecated
+        public ArrayList getOrder() {
+            return (ArrayList) order;
+        }
+
+        /**
+         * Gets the order the names appear in the XML, depth first.
+         * @return the order the names appear in the XML, depth first
+         */
+        public List<String> getNamesOrder() {
             return order;
+        }
+
+        /**
+         * Sets the order the names appear in the XML, depth first
+         * @deprecated use {@link #setNamesOrder(List)}
+         * @param order the order the names appear in the XML, depth first
+         */
+        @Deprecated
+        public void setOrder(ArrayList order) {
+            this.order = order;
         }
 
         /**
          * Sets the order the names appear in the XML, depth first
          * @param order the order the names appear in the XML, depth first
          */
-        public void setOrder(List<String> order) {
+        public void setNamesOrder(List<String> order) {
             this.order = order;
+        }
+
+        /**
+         * Gets the mapping of full names to nodes.
+         * @deprecated use {@link #getNodesByName()}
+         * @return the mapping of full names to nodes
+         */
+        @Deprecated
+        public HashMap getName2Node() {
+            return (HashMap) name2Node;
         }
 
         /**
          * Gets the mapping of full names to nodes.
          * @return the mapping of full names to nodes
          */
-        public Map<String, Node> getName2Node() {
+        public Map<String, Node> getNodesByName() {
             return name2Node;
+        }
+
+        /**
+         * Sets the mapping of full names to nodes.
+         * @deprecated use {@link #setNodesByName(Map)}
+         * @param name2Node the mapping of full names to nodes
+         */
+        @Deprecated
+        public void setName2Node(HashMap name2Node) {
+            this.name2Node = name2Node;
         }
 
         /**
          * Sets the mapping of full names to nodes.
          * @param name2Node the mapping of full names to nodes
          */
-        public void setName2Node(Map<String, Node> name2Node) {
+        public void setNodesByName(Map<String, Node> name2Node) {
             this.name2Node = name2Node;
+        }
+
+        /**
+         * Gets the data to do a search from the bottom hierarchy.
+         * @deprecated use {@link #getInverseSearchData()}
+         * @return the data to do a search from the bottom hierarchy
+         */
+        @Deprecated
+        public HashMap getInverseSearch() {
+            return (HashMap) inverseSearch;
         }
 
         /**
          * Gets the data to do a search from the bottom hierarchy.
          * @return the data to do a search from the bottom hierarchy
          */
-        public Map<String, InverseStore> getInverseSearch() {
+        public Map<String, InverseStore> getInverseSearchData() {
             return inverseSearch;
+        }
+
+        /**
+         * Sets the data to do a search from the bottom hierarchy.
+         * @deprecated use {@link #setInverseSearchData(Map)}
+         * @param inverseSearch the data to do a search from the bottom hierarchy
+         */
+        @Deprecated
+        public void setInverseSearch(Map<String, InverseStore> inverseSearch) {
+            this.inverseSearch = inverseSearch;
         }
 
         /**
          * Sets the data to do a search from the bottom hierarchy.
          * @param inverseSearch the data to do a search from the bottom hierarchy
          */
-        public void setInverseSearch(Map<String, InverseStore> inverseSearch) {
+        public void setInverseSearchData(Map<String, InverseStore> inverseSearch) {
             this.inverseSearch = inverseSearch;
         }
     }
@@ -808,7 +891,7 @@ public class XfaForm {
                 }
                 n = n2;
             }
-            inverseSearchAdd(inverseSearch, stack, shortName);
+            addSomNameToSearchNodeChain(inverseSearch, stack, shortName);
             name2Node.put(shortName, n2);
             order.add(shortName);
             return n2;
@@ -871,7 +954,7 @@ public class XfaForm {
      */
     public static class AcroFieldsSearch extends Xml2Som {
         private Map<String, String> acroShort2LongName;
-        
+
         /**
          * Creates a new instance from a Collection with the full names.
          * @param items the Collection
@@ -882,7 +965,7 @@ public class XfaForm {
             for (String itemName : items) {
                 String itemShort = getShortName(itemName);
                 acroShort2LongName.put(itemShort, itemName);
-                inverseSearchAdd(inverseSearch, splitParts(itemShort), itemName);
+                addSomNameToSearchNodeChain(inverseSearch, splitParts(itemShort), itemName);
             }
         }
 
@@ -891,8 +974,9 @@ public class XfaForm {
          * name may contain the #subform name part.
          * @return the mapping from short names to long names
          */
-        public Map<String, String> getAcroShort2LongName() {
-            return acroShort2LongName;
+        @Deprecated
+        public HashMap getAcroShort2LongName() {
+            return (HashMap) acroShort2LongName;
         }
 
         /**
@@ -900,7 +984,26 @@ public class XfaForm {
          * name may contain the #subform name part.
          * @param acroShort2LongName the mapping from short names to long names
          */
-        public void setAcroShort2LongName(Map<String, String> acroShort2LongName) {
+        @Deprecated
+        public void setAcroShort2LongName(HashMap acroShort2LongName) {
+            this.acroShort2LongName = acroShort2LongName;
+        }
+
+        /**
+         * Gets the mapping from short names to long names. A long
+         * name may contain the #subform name part.
+         * @return the mapping from short names to long names
+         */
+        public Map<String, String> getLongByShortNames() {
+            return acroShort2LongName;
+        }
+
+        /**
+         * Sets the mapping from short names to long names. A long
+         * name may contain the #subform name part.
+         * @param acroShort2LongName the mapping from short names to long names
+         */
+        public void setLongByShortNames(Map<String, String> acroShort2LongName) {
             this.acroShort2LongName = acroShort2LongName;
         }
     }

@@ -230,8 +230,16 @@ public class PdfFormField extends PdfAnnotation {
             kids = new ArrayList<>();
         kids.add(field);
     }
+
+    /**
+     * @deprecated use {@link #getKidFields()}
+     */
+    @Deprecated
+    public ArrayList getKids() {
+        return (ArrayList) kids;
+    }
     
-    public List<PdfFormField> getKids() {
+    public List<PdfFormField> getKidFields() {
         return kids;
     }
     
