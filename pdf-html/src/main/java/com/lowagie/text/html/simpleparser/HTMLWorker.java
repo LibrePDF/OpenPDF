@@ -42,7 +42,7 @@
  *
  * Contributions by:
  * Lubos Strapko
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * http://www.lowagie.com/iText/
@@ -50,6 +50,30 @@
 
 package com.lowagie.text.html.simpleparser;
 
+import com.lowagie.text.Chunk;
+import com.lowagie.text.DocListener;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.ElementTags;
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.FontProvider;
+import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Image;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.TextElementArray;
+import com.lowagie.text.html.HtmlTags;
+import com.lowagie.text.html.Markup;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.draw.LineSeparator;
+import com.lowagie.text.utils.NumberUtilities;
+import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
+import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
+
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -60,72 +84,71 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.html.HtmlTags;
-import com.lowagie.text.html.Markup;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.DocListener;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.ElementTags;
-
-import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Image;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.TextElementArray;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.draw.LineSeparator;
-import com.lowagie.text.FontProvider;
-import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
-import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
+import static com.lowagie.text.html.Markup.parseLength;
 
 public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
+    public static final String tagsSupportedString = "ol ul li a pre font span br p div body table td th tr i b u sub sup em strong s strike"
+            + " h1 h2 h3 h4 h5 h6 img hr";
+    public static final HashMap tagsSupported = new HashMap();
+
+    static {
+        StringTokenizer tok = new StringTokenizer(tagsSupportedString);
+        while (tok.hasMoreTokens())
+            tagsSupported.put(tok.nextToken(), null);
+    }
+
     protected ArrayList objectList;
-
     protected DocListener document;
-
     private Paragraph currentParagraph;
-
     private ChainedProperties cprops = new ChainedProperties();
-
     private Stack stack = new Stack();
-
     private boolean pendingTR = false;
-
     private boolean pendingTD = false;
-
     private boolean pendingLI = false;
-
     private StyleSheet style = new StyleSheet();
-
     private boolean isPRE = false;
-
     private Stack tableState = new Stack();
-
     private boolean skipText = false;
-
     private HashMap interfaceProps;
-
     private FactoryProperties factoryProperties = new FactoryProperties();
 
-    /** Creates a new instance of HTMLWorker
+    /**
+     * Creates a new instance of HTMLWorker
+     *
      * @param document A class that implements <CODE>DocListener</CODE>
-     * */
+     */
     public HTMLWorker(DocListener document) {
         this.document = document;
+    }
+
+    public static ArrayList parseToList(Reader reader, StyleSheet style) throws IOException {
+        return parseToList(reader, style, null);
+    }
+
+    public static ArrayList parseToList(Reader reader, @Nullable StyleSheet style, HashMap interfaceProps)
+            throws IOException {
+        HTMLWorker worker = new HTMLWorker(null);
+        if (style != null) {
+            worker.style = style;
+        }
+        worker.document = worker;
+        worker.setInterfaceProps(interfaceProps);
+        worker.objectList = new ArrayList();
+        worker.parse(reader);
+        return worker.objectList;
+    }
+
+    public StyleSheet getStyleSheet() {
+        return style;
     }
 
     public void setStyleSheet(StyleSheet style) {
         this.style = style;
     }
 
-    public StyleSheet getStyleSheet() {
-        return style;
+    public HashMap getInterfaceProps() {
+        return interfaceProps;
     }
 
     public void setInterfaceProps(HashMap interfaceProps) {
@@ -137,37 +160,16 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
             factoryProperties.setFontImp(ff);
     }
 
-    public HashMap getInterfaceProps() {
-        return interfaceProps;
-    }
-
     public void parse(Reader reader) throws IOException {
         SimpleXMLParser.parse(this, null, reader, true);
     }
 
-    public static ArrayList parseToList(Reader reader, StyleSheet style)
-            throws IOException {
-        return parseToList(reader, style, null);
-    }
-
-    public static ArrayList parseToList(Reader reader, StyleSheet style,
-            HashMap interfaceProps) throws IOException {
-        HTMLWorker worker = new HTMLWorker(null);
-        if (style != null)
-            worker.style = style;
-        worker.document = worker;
-        worker.setInterfaceProps(interfaceProps);
-        worker.objectList = new ArrayList();
-        worker.parse(reader);
-        return worker.objectList;
-    }
-
     public void endDocument() {
         try {
-            for (int k = 0; k < stack.size(); ++k)
-                document.add((Element) stack.elementAt(k));
-            if (currentParagraph != null)
+            stack.forEach(o -> document.add((Element) o));
+            if (currentParagraph != null) {
                 document.add(currentParagraph);
+            }
             currentParagraph = null;
         } catch (Exception e) {
             throw new ExceptionConverter(e);
@@ -185,11 +187,12 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         startElement(tag, (Map<String, String>) h);
     }
 
-    public void startElement(String tag, Map<String, String> h) {
-        if (!tagsSupported.containsKey(tag))
+    public void startElement(String tag, Map<String, String> style) {
+        if (!tagsSupported.containsKey(tag)) {
             return;
+        }
         try {
-            style.applyStyle(tag, h);
+            this.style.applyStyle(tag, style);
             String follow = (String) FactoryProperties.followTags.get(tag);
             if (follow != null) {
                 Map<String, String> prop = new HashMap<>();
@@ -197,9 +200,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 cprops.addToChain(follow, prop);
                 return;
             }
-            FactoryProperties.insertStyle(h, cprops);
+            FactoryProperties.insertStyle(style, cprops);
             if (tag.equals(HtmlTags.ANCHOR)) {
-                cprops.addToChain(tag, h);
+                cprops.addToChain(tag, style);
                 if (currentParagraph == null) {
                     currentParagraph = new Paragraph();
                 }
@@ -211,8 +214,8 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 if (currentParagraph == null) {
                     currentParagraph = new Paragraph();
                 }
-                currentParagraph.add(factoryProperties
-                        .createChunk("\n", cprops));
+                Chunk chunk = factoryProperties.createChunk("\n", cprops);
+                currentParagraph.add(chunk);
                 return;
             }
             if (tag.equals(HtmlTags.HORIZONTALRULE)) {
@@ -228,66 +231,70 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 if (addLeadingBreak) { // Not a new paragraph
                     int numChunks = currentParagraph.getChunks().size();
                     if (numChunks == 0 ||
-                            ((Chunk)(currentParagraph.getChunks().get(numChunks - 1))).getContent().endsWith("\n"))
+                            ((Chunk) (currentParagraph.getChunks().get(numChunks - 1))).getContent().endsWith("\n"))
                         addLeadingBreak = false;
                 }
-                String align = (String) h.get("align");
+                String align = style.get("align");
                 int hrAlign = Element.ALIGN_CENTER;
                 if (align != null) {
-                    if (align.equalsIgnoreCase("left"))
-                        hrAlign = Element.ALIGN_LEFT; 
-                    if (align.equalsIgnoreCase("right"))
+                    if (align.equalsIgnoreCase("left")) {
+                        hrAlign = Element.ALIGN_LEFT;
+                    }
+                    if (align.equalsIgnoreCase("right")) {
                         hrAlign = Element.ALIGN_RIGHT;
+                    }
                 }
-                String width = (String) h.get("width");
+                String width = style.get("width");
                 float hrWidth = 1;
                 if (width != null) {
-                    float tmpWidth = Markup.parseLength(width, Markup.DEFAULT_FONT_SIZE);
+                    float tmpWidth = parseLength(width, Markup.DEFAULT_FONT_SIZE);
                     if (tmpWidth > 0) hrWidth = tmpWidth;
                     if (!width.endsWith("%"))
                         hrWidth = 100; // Treat a pixel width as 100% for now.
                 }
-                String size = (String) h.get("size");
+                String size = style.get("size");
                 float hrSize = 1;
                 if (size != null) {
-                    float tmpSize = Markup.parseLength(size, Markup.DEFAULT_FONT_SIZE);
-                    if (tmpSize > 0)
+                    float tmpSize = parseLength(size, Markup.DEFAULT_FONT_SIZE);
+                    if (tmpSize > 0) {
                         hrSize = tmpSize;
+                    }
                 }
-                if (addLeadingBreak)
+                if (addLeadingBreak) {
                     currentParagraph.add(Chunk.NEWLINE);
-                currentParagraph.add(new LineSeparator(hrSize, hrWidth, null, hrAlign, currentParagraph.getLeading()/2));
+                }
+                currentParagraph.add(new LineSeparator(hrSize, hrWidth, null, hrAlign, currentParagraph.getLeading() / 2));
                 currentParagraph.add(Chunk.NEWLINE);
                 return;
             }
             if (tag.equals(HtmlTags.CHUNK) || tag.equals(HtmlTags.SPAN)) {
-                cprops.addToChain(tag, h);
+                cprops.addToChain(tag, style);
                 return;
             }
             if (tag.equals(HtmlTags.IMAGE)) {
-                String src = h.get(ElementTags.SRC);
-                if (src == null)
+                String src = style.get(ElementTags.SRC);
+                if (src == null) {
                     return;
-                cprops.addToChain(tag, h);
+                }
+                cprops.addToChain(tag, style);
                 Image img = null;
                 if (interfaceProps != null) {
-                    ImageProvider ip = (ImageProvider) interfaceProps
-                            .get("img_provider");
-                    if (ip != null)
-                        img = ip.getImage(src, (HashMap) h, cprops, document);
+                    ImageProvider ip = (ImageProvider) interfaceProps.get("img_provider");
+                    if (ip != null) {
+                        img = ip.getImage(src, (HashMap) style, cprops, document);
+                    }
                     if (img == null) {
-                        HashMap images = (HashMap) interfaceProps
-                                .get("img_static");
+                        HashMap images = (HashMap) interfaceProps.get("img_static");
                         if (images != null) {
                             Image tim = (Image) images.get(src);
-                            if (tim != null)
+                            if (tim != null) {
                                 img = Image.getInstance(tim);
+                            }
                         } else {
                             if (!src.startsWith("http")) { // relative src references only
-                                String baseurl = (String) interfaceProps
-                                        .get("img_baseurl");
-                                if (baseurl != null) {
-                                    src = baseurl + src;
+                                String baseUrl = (String) interfaceProps.get("img_baseurl");
+                                if (baseUrl != null) {
+                                    src = baseUrl + src;
                                     img = Image.getInstance(src);
                                 }
                             }
@@ -296,30 +303,29 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 }
                 if (img == null) {
                     if (!src.startsWith("http")) {
-                        String path = cprops.getProperty("image_path");
-                        if (path == null)
-                            path = "";
+                        String path = cprops.getOrDefault("image_path", "");
                         src = new File(path, src).getPath();
                     }
                     img = Image.getInstance(src);
                 }
-                String align = h.get("align");
-                String width = h.get("width");
-                String height = h.get("height");
-                String before = cprops.getProperty("before");
-                String after = cprops.getProperty("after");
-                if (before != null)
-                    img.setSpacingBefore(Float.parseFloat(before));
-                if (after != null)
-                    img.setSpacingAfter(Float.parseFloat(after));
-                float actualFontSize = Markup.parseLength(cprops
-                        .getProperty(ElementTags.SIZE),
-                        Markup.DEFAULT_FONT_SIZE);
+                String align = style.get("align");
+                String width = style.get("width");
+                String height = style.get("height");
+
+                cprops.findProperty("before")
+                        .flatMap(NumberUtilities::parseFloat)
+                        .ifPresent(img::setSpacingBefore);
+
+                cprops.findProperty("after")
+                        .flatMap(NumberUtilities::parseFloat)
+                        .ifPresent(img::setSpacingAfter);
+
+                float actualFontSize = parseLength(cprops.getProperty(ElementTags.SIZE), Markup.DEFAULT_FONT_SIZE);
+
                 if (actualFontSize <= 0f)
                     actualFontSize = Markup.DEFAULT_FONT_SIZE;
-                float widthInPoints = Markup.parseLength(width, actualFontSize);
-                float heightInPoints = Markup.parseLength(height,
-                        actualFontSize);
+                float widthInPoints = parseLength(width, actualFontSize);
+                float heightInPoints = parseLength(height, actualFontSize);
                 if (widthInPoints > 0 && heightInPoints > 0) {
                     img.scaleAbsolute(widthInPoints, heightInPoints);
                 } else if (widthInPoints > 0) {
@@ -345,7 +351,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     if (interfaceProps != null) {
                         i = (Img) interfaceProps.get("img_interface");
                         if (i != null)
-                            skip = i.process(img, (HashMap) h, cprops, document);
+                            skip = i.process(img, (HashMap) style, cprops, document);
                     }
                     if (!skip)
                         document.add(img);
@@ -363,22 +369,22 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
             endElement("p");
             if (tag.equals("h1") || tag.equals("h2") || tag.equals("h3")
                     || tag.equals("h4") || tag.equals("h5") || tag.equals("h6")) {
-                if (!h.containsKey(ElementTags.SIZE)) {
+                if (!style.containsKey(ElementTags.SIZE)) {
                     int v = 7 - Integer.parseInt(tag.substring(1));
-                    h.put(ElementTags.SIZE, Integer.toString(v));
+                    style.put(ElementTags.SIZE, Integer.toString(v));
                 }
-                cprops.addToChain(tag, h);
+                cprops.addToChain(tag, style);
                 return;
             }
             if (tag.equals(HtmlTags.UNORDEREDLIST)) {
                 if (pendingLI)
                     endElement(HtmlTags.LISTITEM);
                 skipText = true;
-                cprops.addToChain(tag, h);
+                cprops.addToChain(tag, style);
                 com.lowagie.text.List list = new com.lowagie.text.List(false);
-                try{
+                try {
                     list.setIndentationLeft(Float.parseFloat(cprops.getProperty("indent")));
-                }catch (Exception e) {
+                } catch (Exception e) {
                     list.setAutoindent(true);
                 }
                 list.setListSymbol("\u2022");
@@ -389,11 +395,11 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 if (pendingLI)
                     endElement(HtmlTags.LISTITEM);
                 skipText = true;
-                cprops.addToChain(tag, h);
+                cprops.addToChain(tag, style);
                 com.lowagie.text.List list = new com.lowagie.text.List(true);
-                try{
+                try {
                     list.setIndentationLeft(Float.parseFloat(cprops.getProperty("indent")));
-                }catch (Exception e) {
+                } catch (Exception e) {
                     list.setAutoindent(true);
                 }
                 stack.push(list);
@@ -404,20 +410,20 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     endElement(HtmlTags.LISTITEM);
                 skipText = false;
                 pendingLI = true;
-                cprops.addToChain(tag, h);
+                cprops.addToChain(tag, style);
                 ListItem item = FactoryProperties.createListItem(cprops);
                 stack.push(item);
                 return;
             }
             if (tag.equals(HtmlTags.DIV) || tag.equals(HtmlTags.BODY) || tag.equals("p")) {
-                cprops.addToChain(tag, h);
+                cprops.addToChain(tag, style);
                 return;
             }
             if (tag.equals(HtmlTags.PRE)) {
-                if (!h.containsKey(ElementTags.FACE)) {
-                    h.put(ElementTags.FACE, "Courier");
+                if (!style.containsKey(ElementTags.FACE)) {
+                    style.put(ElementTags.FACE, "Courier");
                 }
-                cprops.addToChain(tag, h);
+                cprops.addToChain(tag, style);
                 isPRE = true;
                 return;
             }
@@ -426,7 +432,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     endElement("tr");
                 skipText = true;
                 pendingTR = true;
-                cprops.addToChain("tr", h);
+                cprops.addToChain("tr", style);
                 return;
             }
             if (tag.equals("td") || tag.equals("th")) {
@@ -434,15 +440,15 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     endElement(tag);
                 skipText = false;
                 pendingTD = true;
-                cprops.addToChain("td", h);
+                cprops.addToChain("td", style);
                 stack.push(new IncCell(tag, cprops));
                 return;
             }
             if (tag.equals("table")) {
-                cprops.addToChain("table", h);
-                IncTable table = new IncTable(h);
+                cprops.addToChain("table", style);
+                IncTable table = new IncTable(style);
                 stack.push(table);
-                tableState.push(new boolean[] { pendingTR, pendingTD });
+                tableState.push(new boolean[]{pendingTR, pendingTD});
                 pendingTR = pendingTD = false;
                 skipText = true;
                 return;
@@ -476,15 +482,13 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                         skip = i.process(currentParagraph, cprops);
                 }
                 if (!skip) {
-                    String href = cprops.getProperty("href");
-                    if (href != null) {
+                    cprops.findProperty("href").ifPresent(href -> {
                         ArrayList chunks = currentParagraph.getChunks();
-                        int size = chunks.size();
                         for (Object chunk : chunks) {
                             Chunk ck = (Chunk) chunk;
                             ck.setAnchor(href);
                         }
-                    }
+                    });
                 }
                 Paragraph tmp = (Paragraph) stack.pop();
                 Phrase tmp2 = new Phrase();
@@ -598,8 +602,8 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     endElement("td");
                 pendingTR = false;
                 cprops.removeChain("tr");
-                ArrayList cells = new ArrayList();
-                IncTable table = null;
+                List<PdfPCell> cells = new ArrayList<>();
+                IncTable table;
                 while (true) {
                     Object obj = stack.pop();
                     if (obj instanceof IncCell) {
@@ -610,7 +614,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                         break;
                     }
                 }
-                table.addCols((List<PdfPCell>) cells);
+                table.addCols(cells);
                 table.endRow();
                 stack.push(table);
                 skipText = true;
@@ -649,24 +653,24 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         boolean newline = false;
         for (int i = 0; i < len; i++) {
             switch (character = content.charAt(i)) {
-            case ' ':
-                if (!newline) {
+                case ' ':
+                    if (!newline) {
+                        buf.append(character);
+                    }
+                    break;
+                case '\n':
+                    if (i > 0) {
+                        newline = true;
+                        buf.append(' ');
+                    }
+                    break;
+                case '\r':
+                    break;
+                case '\t':
+                    break;
+                default:
+                    newline = false;
                     buf.append(character);
-                }
-                break;
-            case '\n':
-                if (i > 0) {
-                    newline = true;
-                    buf.append(' ');
-                }
-                break;
-            case '\r':
-                break;
-            case '\t':
-                break;
-            default:
-                newline = false;
-                buf.append(character);
             }
         }
         if (currentParagraph == null) {
@@ -715,14 +719,14 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
     /**
      * @see com.lowagie.text.DocListener#setMarginMirroring(boolean)
-     * @since    2.1.6
+     * @since 2.1.6
      */
     public boolean setMarginMirroringTopBottom(boolean marginMirroring) {
         return false;
     }
 
     public boolean setMargins(float marginLeft, float marginRight,
-            float marginTop, float marginBottom) {
+                              float marginTop, float marginBottom) {
         return true;
     }
 
@@ -731,17 +735,6 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
     public boolean setPageSize(Rectangle pageSize) {
         return true;
-    }
-
-    public static final String tagsSupportedString = "ol ul li a pre font span br p div body table td th tr i b u sub sup em strong s strike"
-            + " h1 h2 h3 h4 h5 h6 img hr";
-
-    public static final HashMap tagsSupported = new HashMap();
-
-    static {
-        StringTokenizer tok = new StringTokenizer(tagsSupportedString);
-        while (tok.hasMoreTokens())
-            tagsSupported.put(tok.nextToken(), null);
     }
 
 }

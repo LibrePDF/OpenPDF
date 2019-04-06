@@ -59,9 +59,10 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
+
+import javax.annotation.Nullable;
 
 
 /**
@@ -141,7 +142,7 @@ public class FontFactoryImp implements FontProvider {
     /**
      * Constructs a <CODE>Font</CODE>-object.
      *
-     * @param    fontname    the name of the font
+     * @param    fontName    the name of the font
      * @param    encoding    the encoding of the font
      * @param       embedded    true if the font is to be embedded in the PDF
      * @param    size        the size of this font
@@ -149,8 +150,8 @@ public class FontFactoryImp implements FontProvider {
      * @param    color        the <CODE>Color</CODE> of this font.
      * @return the Font constructed based on the parameters
      */
-    public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color) {
-        return getFont(fontname, encoding, embedded, size, style, color, true);
+    public Font getFont(@Nullable String fontName, String encoding, boolean embedded, float size, int style, @Nullable Color color) {
+        return getFont(fontName, encoding, embedded, size, style, color, true);
     }
     
     
@@ -168,8 +169,10 @@ public class FontFactoryImp implements FontProvider {
      *                 the cache if new, false if the font is always created new
      * @return the Font constructed based on the parameters
      */
-    public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color, boolean cached) {
-        if (fontname == null) return new Font(Font.UNDEFINED, size, style, color);
+    public Font getFont(@Nullable String fontname, String encoding, boolean embedded, float size, int style, @Nullable Color color, boolean cached) {
+        if (fontname == null) {
+            return new Font(Font.UNDEFINED, size, style, color);
+        }
         String lowercasefontname = fontname.toLowerCase(Locale.ROOT);
         ArrayList tmp = (ArrayList) fontFamilies.get(lowercasefontname);
         if (tmp != null) {
@@ -687,11 +690,11 @@ public class FontFactoryImp implements FontProvider {
 /**
  * Checks if a certain font is registered.
  *
- * @param   fontname    the name of the font that has to be checked.
+ * @param   fontName    the name of the font that has to be checked.
  * @return  true if the font is found
  */
-    public boolean isRegistered(String fontname) {
-        return trueTypeFonts.containsKey(fontname.toLowerCase());
+    public boolean isRegistered(String fontName) {
+        return trueTypeFonts.containsKey(fontName.toLowerCase());
     }
     
 /**

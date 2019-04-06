@@ -49,18 +49,6 @@
 
 package com.lowagie.text.html;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Date;
-import java.util.EmptyStackException;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Stack;
-
-import com.lowagie.text.error_messages.MessageLocalization;
-
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
 import com.lowagie.text.BadElementException;
@@ -70,7 +58,7 @@ import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
 import com.lowagie.text.Header;
 import com.lowagie.text.HeaderFooter;
@@ -87,31 +75,43 @@ import com.lowagie.text.Row;
 import com.lowagie.text.Section;
 import com.lowagie.text.SimpleTable;
 import com.lowagie.text.Table;
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.BaseFont;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.EmptyStackException;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Stack;
+
+import static com.lowagie.text.error_messages.MessageLocalization.getComposedMessage;
 
 /**
  * A <CODE>DocWriter</CODE> class for HTML.
- * <P>
+ * <p>
  * An <CODE>HtmlWriter</CODE> can be added as a <CODE>DocListener</CODE>
  * to a certain <CODE>Document</CODE> by getting an instance.
  * Every <CODE>Element</CODE> added to the original <CODE>Document</CODE>
  * will be written to the <CODE>OutputStream</CODE> of this <CODE>HtmlWriter</CODE>.
- * <P>
+ * <p>
  * Example:
  * <BLOCKQUOTE><PRE>
  * // creation of the document with a certain size and certain margins
  * Document document = new Document(PageSize.A4, 50, 50, 50, 50);
  * try {
- *    // this will write HTML to the Standard OutputStream
- *    <STRONG>HtmlWriter.getInstance(document, System.out);</STRONG>
- *    // this will write HTML to a file called text.html
- *    <STRONG>HtmlWriter.getInstance(document, new FileOutputStream("text.html"));</STRONG>
- *    // this will write HTML to for instance the OutputStream of a HttpServletResponse-object
- *    <STRONG>HtmlWriter.getInstance(document, response.getOutputStream());</STRONG>
+ * // this will write HTML to the Standard OutputStream
+ * <STRONG>HtmlWriter.getInstance(document, System.out);</STRONG>
+ * // this will write HTML to a file called text.html
+ * <STRONG>HtmlWriter.getInstance(document, new FileOutputStream("text.html"));</STRONG>
+ * // this will write HTML to for instance the OutputStream of a HttpServletResponse-object
+ * <STRONG>HtmlWriter.getInstance(document, response.getOutputStream());</STRONG>
  * }
  * catch(DocumentException de) {
- *    System.err.println(de.getMessage());
+ * System.err.println(de.getMessage());
  * }
  * // this will close the document and all the OutputStreams listening to it
  * <STRONG>document.close();</CODE>
@@ -119,53 +119,73 @@ import com.lowagie.text.pdf.BaseFont;
  */
 
 public class HtmlWriter extends DocWriter {
-    
+
     // static membervariables (tags)
-    
-/** This is a possible HTML-tag. */
+
+    /**
+     * This is a possible HTML-tag.
+     */
     public static final byte[] BEGINCOMMENT = getISOBytes("<!-- ");
-    
-/** This is a possible HTML-tag. */
+
+    /**
+     * This is a possible HTML-tag.
+     */
     public static final byte[] ENDCOMMENT = getISOBytes(" -->");
-    
-/** This is a possible HTML-tag. */
+
+    /**
+     * This is a possible HTML-tag.
+     */
     public static final String NBSP = "&nbsp;";
-    
+
     // membervariables
-    
-/** This is the current font of the HTML. */
+
+    /**
+     * This is the current font of the HTML.
+     */
     protected Stack<Font> currentfont = new Stack<>();
-    
-/** This is the standard font of the HTML. */
+
+    /**
+     * This is the standard font of the HTML.
+     */
     protected Font standardfont = new Font();
-    
-/** This is a path for images. */
+
+    /**
+     * This is a path for images.
+     */
     protected String imagepath = null;
-    
-/** Stores the page number. */
+
+    /**
+     * Stores the page number.
+     */
     protected int pageN = 0;
-    
-/** This is the textual part of a header */
+
+    /**
+     * This is the textual part of a header
+     */
     protected HeaderFooter header = null;
-    
-/** This is the textual part of the footer */
+
+    /**
+     * This is the textual part of the footer
+     */
     protected HeaderFooter footer = null;
-    
-/** Store the markup properties of a MarkedObject. */
+
+    /**
+     * Store the markup properties of a MarkedObject.
+     */
     protected Properties markup = new Properties();
-    
+
     // constructor
-    
-/**
- * Constructs a <CODE>HtmlWriter</CODE>.
- *
- * @param doc     The <CODE>Document</CODE> that has to be written as HTML
- * @param os      The <CODE>OutputStream</CODE> the writer has to write to.
- */
-    
+
+    /**
+     * Constructs a <CODE>HtmlWriter</CODE>.
+     *
+     * @param doc The <CODE>Document</CODE> that has to be written as HTML
+     * @param os  The <CODE>OutputStream</CODE> the writer has to write to.
+     */
+
     protected HtmlWriter(Document doc, OutputStream os) {
         super(doc, os);
-        
+
         document.addDocListener(this);
         this.pageN = document.getPageNumber();
         try {
@@ -177,34 +197,32 @@ public class HtmlWriter extends DocWriter {
             os.write(LT);
             os.write(getISOBytes(HtmlTags.HEAD));
             os.write(GT);
-        }
-        catch(IOException ioe) {
+        } catch (IOException ioe) {
             throw new ExceptionConverter(ioe);
         }
     }
-    
+
     // get an instance of the HtmlWriter
-    
-/**
- * Gets an instance of the <CODE>HtmlWriter</CODE>.
- *
- * @param document  The <CODE>Document</CODE> that has to be written
- * @param os  The <CODE>OutputStream</CODE> the writer has to write to.
- * @return  a new <CODE>HtmlWriter</CODE>
- */
-    
+
+    /**
+     * Gets an instance of the <CODE>HtmlWriter</CODE>.
+     *
+     * @param document The <CODE>Document</CODE> that has to be written
+     * @param os       The <CODE>OutputStream</CODE> the writer has to write to.
+     * @return a new <CODE>HtmlWriter</CODE>
+     */
     public static HtmlWriter getInstance(Document document, OutputStream os) {
         return new HtmlWriter(document, os);
     }
-    
+
     // implementation of the DocListener methods
-    
-/**
- * Signals that an new page has to be started.
- *
- * @return  <CODE>true</CODE> if this action succeeded, <CODE>false</CODE> if not.
- */
-    
+
+    /**
+     * Signals that an new page has to be started.
+     *
+     * @return <CODE>true</CODE> if this action succeeded, <CODE>false</CODE> if not.
+     */
+    @Override
     public boolean newPage() {
         try {
             writeStart(HtmlTags.DIV);
@@ -214,44 +232,40 @@ public class HtmlWriter extends DocWriter {
             writeCssProperty(Markup.CSS_KEY_PAGE_BREAK_BEFORE, Markup.CSS_VALUE_ALWAYS);
             write("\" /");
             os.write(GT);
-        }
-        catch(IOException ioe) {
+        } catch (IOException ioe) {
             throw new ExceptionConverter(ioe);
         }
         return true;
     }
-    
-/**
- * Signals that an <CODE>Element</CODE> was added to the <CODE>Document</CODE>.
- * 
- * @param element a high level object that has to be translated to HTML
- * @return  <CODE>true</CODE> if the element was added, <CODE>false</CODE> if not.
- * @throws  DocumentException when a document isn't open yet, or has been closed
- */
-    
+
+    /**
+     * Signals that an <CODE>Element</CODE> was added to the <CODE>Document</CODE>.
+     *
+     * @param element a high level object that has to be translated to HTML
+     * @return <CODE>true</CODE> if the element was added, <CODE>false</CODE> if not.
+     * @throws DocumentException when a document isn't open yet, or has been closed
+     */
+    @Override
     public boolean add(Element element) throws DocumentException {
         if (pause) {
             return false;
         }
         if (open && !element.isContent()) {
-                throw new DocumentException(MessageLocalization.getComposedMessage("the.document.is.open.you.can.only.add.elements.with.content"));
+            throw new DocumentException(getComposedMessage("the.document.is.open.you.can.only.add.elements.with.content"));
         }
         try {
-            switch(element.type()) {
+            switch (element.type()) {
                 case Element.HEADER:
                     try {
-                        Header h = (Header) element;
-                        if (HtmlTags.STYLESHEET.equals(h.getName())) {
-                            writeLink(h);
+                        Header header = (Header) element;
+                        if (HtmlTags.STYLESHEET.equals(header.getName())) {
+                            writeLink(header);
+                        } else if (HtmlTags.JAVASCRIPT.equals(header.getName())) {
+                            writeJavaScript(header);
+                        } else {
+                            writeHeader(header);
                         }
-                        else if (HtmlTags.JAVASCRIPT.equals(h.getName())) {
-                            writeJavaScript(h);
-                        }
-                        else {
-                            writeHeader(h);
-                        }
-                    }
-                    catch(ClassCastException cce) {
+                    } catch (ClassCastException ignored) {
                     }
                     return true;
                 case Element.SUBJECT:
@@ -265,27 +279,27 @@ public class HtmlWriter extends DocWriter {
                     writeStart(HtmlTags.TITLE);
                     os.write(GT);
                     addTabs(3);
-                    write(HtmlEncoder.encode(((Meta)element).getContent()));
+                    write(HtmlEncoder.encode(((Meta) element).getContent()));
                     addTabs(2);
                     writeEnd(HtmlTags.TITLE);
                     return true;
                 case Element.CREATOR:
-                    writeComment("Creator: " + HtmlEncoder.encode(((Meta)element).getContent()));
+                    writeComment("Creator: " + HtmlEncoder.encode(((Meta) element).getContent()));
                     return true;
                 case Element.PRODUCER:
-                    writeComment("Producer: " + HtmlEncoder.encode(((Meta)element).getContent()));
+                    writeComment("Producer: " + HtmlEncoder.encode(((Meta) element).getContent()));
                     return true;
                 case Element.CREATIONDATE:
-                    writeComment("Creationdate: " + HtmlEncoder.encode(((Meta)element).getContent()));
+                    writeComment("Creationdate: " + HtmlEncoder.encode(((Meta) element).getContent()));
                     return true;
                 case Element.MARKED:
                     if (element instanceof MarkedSection) {
-                        MarkedSection ms = (MarkedSection)element;
+                        MarkedSection ms = (MarkedSection) element;
                         addTabs(1);
                         writeStart(HtmlTags.DIV);
                         writeMarkupAttributes(ms.getMarkupAttributes());
                         os.write(GT);
-                        MarkedObject mo = ((MarkedSection)element).getTitle();
+                        MarkedObject mo = ((MarkedSection) element).getTitle();
                         if (mo != null) {
                             markup = mo.getMarkupAttributes();
                             mo.process(this);
@@ -293,8 +307,7 @@ public class HtmlWriter extends DocWriter {
                         ms.process(this);
                         writeEnd(HtmlTags.DIV);
                         return true;
-                    }
-                    else {
+                    } else {
                         MarkedObject mo = (MarkedObject) element;
                         markup = mo.getMarkupAttributes();
                         return mo.process(this);
@@ -303,19 +316,18 @@ public class HtmlWriter extends DocWriter {
                     write(element, 2);
                     return true;
             }
-        }
-        catch(IOException ioe) {
+        } catch (IOException ioe) {
             throw new ExceptionConverter(ioe);
         }
     }
-    
-/**
- * Signals that the <CODE>Document</CODE> has been opened and that
- * <CODE>Elements</CODE> can be added.
- * <P>
- * The <CODE>HEAD</CODE>-section of the HTML-document is written.
- */
-    
+
+    /**
+     * Signals that the <CODE>Document</CODE> has been opened and that
+     * <CODE>Elements</CODE> can be added.
+     * <p>
+     * The <CODE>HEAD</CODE>-section of the HTML-document is written.
+     */
+    @Override
     public void open() {
         super.open();
         try {
@@ -351,17 +363,16 @@ public class HtmlWriter extends DocWriter {
             }
             os.write(GT);
             initHeader(); // line added by David Freels
-        }
-        catch(IOException ioe) {
+        } catch (IOException ioe) {
             throw new ExceptionConverter(ioe);
         }
     }
-    
-/**
- * Signals that the <CODE>Document</CODE> was closed and that no other
- * <CODE>Elements</CODE> will be added.
- */
-    
+
+    /**
+     * Signals that the <CODE>Document</CODE> was closed and that no other
+     * <CODE>Elements</CODE> will be added.
+     */
+    @Override
     public void close() {
         try {
             initFooter(); // line added by David Freels
@@ -370,33 +381,29 @@ public class HtmlWriter extends DocWriter {
             os.write(NEWLINE);
             writeEnd(HtmlTags.HTML);
             super.close();
-        }
-        catch(IOException ioe) {
+        } catch (IOException ioe) {
             throw new ExceptionConverter(ioe);
         }
     }
-    
+
     // some protected methods
-    
-/**
- * Adds the header to the top of the </CODE>Document</CODE>
- */
-    
+
+    /**
+     * Adds the header to the top of the </CODE>Document</CODE>
+     */
     protected void initHeader() {
         if (header != null) {
             try {
                 add(header.paragraph());
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 throw new ExceptionConverter(e);
             }
         }
     }
-    
-/**
- *  Adds the header to the top of the </CODE>Document</CODE>
- */
-    
+
+    /**
+     * Adds the header to the top of the </CODE>Document</CODE>
+     */
     protected void initFooter() {
         if (footer != null) {
             try {
@@ -404,24 +411,22 @@ public class HtmlWriter extends DocWriter {
                 // add up to 1
                 footer.setPageNumber(pageN + 1);
                 add(footer.paragraph());
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 throw new ExceptionConverter(e);
             }
         }
     }
-    
-/**
- * Writes a Metatag in the header.
- *
- * @param   meta   the element that has to be written
- * @throws  IOException
- */
-    
+
+    /**
+     * Writes a Metatag in the header.
+     *
+     * @param meta the element that has to be written
+     * @throws IOException
+     */
     protected void writeHeader(Meta meta) throws IOException {
         addTabs(2);
         writeStart(HtmlTags.META);
-        switch(meta.type()) {
+        switch (meta.type()) {
             case Element.HEADER:
                 write(HtmlTags.NAME, meta.getName());
                 break;
@@ -438,14 +443,13 @@ public class HtmlWriter extends DocWriter {
         write(HtmlTags.CONTENT, HtmlEncoder.encode(meta.getContent()));
         writeEnd();
     }
-    
-/**
- * Writes a link in the header.
- *
- * @param   header   the element that has to be written
- * @throws  IOException
- */
-    
+
+    /**
+     * Writes a link in the header.
+     *
+     * @param header the element that has to be written
+     * @throws IOException
+     */
     protected void writeLink(Header header) throws IOException {
         addTabs(2);
         writeStart(HtmlTags.LINK);
@@ -454,169 +458,157 @@ public class HtmlWriter extends DocWriter {
         write(HtmlTags.REFERENCE, header.getContent());
         writeEnd();
     }
-    
-/**
- * Writes a JavaScript section or, if the markup attribute HtmlTags.URL is set, a JavaScript reference in the header.
- *
- * @param   header   the element that has to be written
- * @throws  IOException
- */
-    
+
+    /**
+     * Writes a JavaScript section or, if the markup attribute HtmlTags.URL is set, a JavaScript reference in the header.
+     *
+     * @param header the element that has to be written
+     * @throws IOException
+     */
     protected void writeJavaScript(Header header) throws IOException {
         addTabs(2);
         writeStart(HtmlTags.SCRIPT);
         write(HtmlTags.LANGUAGE, HtmlTags.JAVASCRIPT);
         if (markup.size() > 0) {
-          /* JavaScript reference example:
-           *
-           * <script language="JavaScript" src="/myPath/MyFunctions.js"/>
-           */ 
-          writeMarkupAttributes(markup);
-          os.write(GT);
-          writeEnd(HtmlTags.SCRIPT);
-        }
-        else {
-          /* JavaScript coding convention:
-           *
-           * <script language="JavaScript" type="text/javascript">
-           * <!--
-           * // ... JavaScript methods ...
-           * //-->
-           * </script>
-           */ 
-          write(HtmlTags.TYPE, Markup.HTML_VALUE_JAVASCRIPT);
-          os.write(GT);
-          addTabs(2);
-          write(new String(BEGINCOMMENT) + "\n");
-          write(header.getContent());
-          addTabs(2);
-          write("//" + new String(ENDCOMMENT));
-          addTabs(2);
-          writeEnd(HtmlTags.SCRIPT);
+            /* JavaScript reference example:
+             *
+             * <script language="JavaScript" src="/myPath/MyFunctions.js"/>
+             */
+            writeMarkupAttributes(markup);
+            os.write(GT);
+            writeEnd(HtmlTags.SCRIPT);
+        } else {
+            /* JavaScript coding convention:
+             *
+             * <script language="JavaScript" type="text/javascript">
+             * <!--
+             * // ... JavaScript methods ...
+             * //-->
+             * </script>
+             */
+            write(HtmlTags.TYPE, Markup.HTML_VALUE_JAVASCRIPT);
+            os.write(GT);
+            addTabs(2);
+            write(new String(BEGINCOMMENT) + "\n");
+            write(header.getContent());
+            addTabs(2);
+            write("//" + new String(ENDCOMMENT));
+            addTabs(2);
+            writeEnd(HtmlTags.SCRIPT);
         }
     }
-    
-/**
- * Writes some comment.
- * <P>
- * This method writes some comment.
- *
- * @param comment   the comment that has to be written
- * @throws  IOException
- */
-    
+
+    /**
+     * Writes some comment.
+     * <p>
+     * This method writes some comment.
+     *
+     * @param comment the comment that has to be written
+     * @throws IOException
+     */
     protected void writeComment(String comment) throws IOException {
         addTabs(2);
         os.write(BEGINCOMMENT);
         write(comment);
         os.write(ENDCOMMENT);
     }
-    
+
     // public methods
-    
-/**
- * Changes the standardfont.
- *
- * @param standardfont  The font
- */
-    
+
+    /**
+     * Changes the standardfont.
+     *
+     * @param standardfont The font
+     */
     public void setStandardFont(Font standardfont) {
         this.standardfont = standardfont;
     }
-    
-/**
- * Checks if a given font is the same as the font that was last used.
- *
- * @param   font    the font of an object
- * @return  true if the font differs
- */
-    
-    public boolean isOtherFont(Font font) {
+
+    /**
+     * Checks if a given font is the same as the font that was last used.
+     *
+     * @param font the font of an object
+     * @return true if the font differs
+     */
+    public boolean isOtherFont(@Nullable Font font) {
         try {
             Font cFont = currentfont.peek();
             return cFont.compareTo(font) != 0;
-        }
-        catch(EmptyStackException ese) {
+        } catch (EmptyStackException ese) {
             return standardfont.compareTo(font) != 0;
         }
     }
-    
-/**
- * Sets the basepath for images.
- * <P>
- * This is especially useful if you add images using a file,
- * rather than an URL. In PDF there is no problem, since
- * the images are added inline, but in HTML it is sometimes
- * necessary to use a relative path or a special path to some
- * images directory.
- *
- * @param imagepath the new imagepath
- */
-    
+
+    /**
+     * Sets the basepath for images.
+     * <p>
+     * This is especially useful if you add images using a file,
+     * rather than an URL. In PDF there is no problem, since
+     * the images are added inline, but in HTML it is sometimes
+     * necessary to use a relative path or a special path to some
+     * images directory.
+     *
+     * @param imagepath the new imagepath
+     */
     public void setImagepath(String imagepath) {
         this.imagepath = imagepath;
     }
-    
-/**
- * Resets the imagepath.
- */
-    
+
+    /**
+     * Resets the imagepath.
+     */
     public void resetImagepath() {
         imagepath = null;
     }
-    
-/**
- * Changes the header of this document.
- *
- * @param header    the new header
- */
-    
+
+    /**
+     * Changes the header of this document.
+     *
+     * @param header the new header
+     */
+    @Override
     public void setHeader(HeaderFooter header) {
         this.header = header;
     }
-    
-/**
- * Changes the footer of this document.
- *
- * @param footer    the new footer
- */
-    
+
+    /**
+     * Changes the footer of this document.
+     *
+     * @param footer the new footer
+     */
+    @Override
     public void setFooter(HeaderFooter footer) {
         this.footer = footer;
     }
-    
-/**
- * Signals that a <CODE>String</CODE> was added to the <CODE>Document</CODE>.
- * 
- * @param string a String to add to the HTML
- * @return  <CODE>true</CODE> if the string was added, <CODE>false</CODE> if not.
- */
-    
+
+    /**
+     * Signals that a <CODE>String</CODE> was added to the <CODE>Document</CODE>.
+     *
+     * @param string a String to add to the HTML
+     * @return <CODE>true</CODE> if the string was added, <CODE>false</CODE> if not.
+     */
     public boolean add(String string) {
         if (pause) {
             return false;
         }
-        try
-        {
+        try {
             write(string);
             return true;
-        }
-        catch(IOException ioe) {
+        } catch (IOException ioe) {
             throw new ExceptionConverter(ioe);
         }
     }
-    
-/**
- * Writes the HTML representation of an element.
- *
- * @param   element     the element
- * @param   indent      the indentation
- * @throws IOException
- */
-    
+
+    /**
+     * Writes the HTML representation of an element.
+     *
+     * @param element the element
+     * @param indent  the indentation
+     * @throws IOException
+     */
     protected void write(Element element, int indent) throws IOException {
-        Properties styleAttributes = null;
-        switch(element.type()) {
+        Properties styleAttributes;
+        switch (element.type()) {
             case Element.MARKED: {
                 try {
                     add(element);
@@ -625,8 +617,7 @@ public class HtmlWriter extends DocWriter {
                 }
                 return;
             }
-            case Element.CHUNK:
-            {
+            case Element.CHUNK: {
                 Chunk chunk = (Chunk) element;
                 // if the chunk contains an image, return the image representation
                 Image image = chunk.getImage();
@@ -634,7 +625,7 @@ public class HtmlWriter extends DocWriter {
                     write(image, indent);
                     return;
                 }
-                
+
                 if (chunk.isEmpty()) return;
                 Map<String, Object> attributes = chunk.getChunkAttributes();
                 if (attributes != null && attributes.get(Chunk.NEWPAGE) != null) {
@@ -655,8 +646,7 @@ public class HtmlWriter extends DocWriter {
                     // start sup or sub tag
                     if ((Float) attributes.get(Chunk.SUBSUPSCRIPT) > 0) {
                         writeStart(HtmlTags.SUP);
-                    }
-                    else {
+                    } else {
                         writeStart(HtmlTags.SUB);
                     }
                     os.write(GT);
@@ -669,8 +659,7 @@ public class HtmlWriter extends DocWriter {
                     os.write(FORWARD);
                     if ((Float) attributes.get(Chunk.SUBSUPSCRIPT) > 0) {
                         write(HtmlTags.SUP);
-                    }
-                    else {
+                    } else {
                         write(HtmlTags.SUB);
                     }
                     os.write(GT);
@@ -681,12 +670,12 @@ public class HtmlWriter extends DocWriter {
                 }
                 return;
             }
-            case Element.PHRASE:
-            {
+            case Element.PHRASE: {
                 Phrase phrase = (Phrase) element;
                 styleAttributes = new Properties();
-                if (phrase.hasLeading()) styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, phrase.getLeading() + "pt");
-                
+                if (phrase.hasLeading())
+                    styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, phrase.getLeading() + "pt");
+
                 // start tag
                 addTabs(indent);
                 writeStart(Markup.HTML_TAG_SPAN);
@@ -704,12 +693,12 @@ public class HtmlWriter extends DocWriter {
                 currentfont.pop();
                 return;
             }
-            case Element.ANCHOR:
-            {
+            case Element.ANCHOR: {
                 Anchor anchor = (Anchor) element;
                 styleAttributes = new Properties();
-                if (anchor.hasLeading()) styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, anchor.getLeading() + "pt");
-                
+                if (anchor.hasLeading())
+                    styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, anchor.getLeading() + "pt");
+
                 // start tag
                 addTabs(indent);
                 writeStart(HtmlTags.ANCHOR);
@@ -733,11 +722,11 @@ public class HtmlWriter extends DocWriter {
                 currentfont.pop();
                 return;
             }
-            case Element.PARAGRAPH:
-            {
+            case Element.PARAGRAPH: {
                 Paragraph paragraph = (Paragraph) element;
                 styleAttributes = new Properties();
-                if (paragraph.hasLeading()) styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, paragraph.getTotalLeading() + "pt");
+                if (paragraph.hasLeading())
+                    styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, paragraph.getTotalLeading() + "pt");
                 // start tag
                 addTabs(indent);
                 writeStart(HtmlTags.DIV);
@@ -760,21 +749,18 @@ public class HtmlWriter extends DocWriter {
                 return;
             }
             case Element.SECTION:
-            case Element.CHAPTER:
-            {
+            case Element.CHAPTER: {
                 // part of the start tag + contents
                 writeSection((Section) element, indent);
                 return;
             }
-            case Element.LIST:
-            {
+            case Element.LIST: {
                 List list = (List) element;
                 // start tag
                 addTabs(indent);
                 if (list.isNumbered()) {
                     writeStart(HtmlTags.ORDEREDLIST);
-                }
-                else {
+                } else {
                     writeStart(HtmlTags.UNORDEREDLIST);
                 }
                 writeMarkupAttributes(markup);
@@ -787,18 +773,17 @@ public class HtmlWriter extends DocWriter {
                 addTabs(indent);
                 if (list.isNumbered()) {
                     writeEnd(HtmlTags.ORDEREDLIST);
-                }
-                else {
+                } else {
                     writeEnd(HtmlTags.UNORDEREDLIST);
                 }
                 return;
             }
-            case Element.LISTITEM:
-            {
+            case Element.LISTITEM: {
                 ListItem listItem = (ListItem) element;
                 styleAttributes = new Properties();
-                if (listItem.hasLeading()) styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, listItem.getTotalLeading() + "pt");
-                
+                if (listItem.hasLeading())
+                    styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, listItem.getTotalLeading() + "pt");
+
                 // start tag
                 addTabs(indent);
                 writeStart(HtmlTags.LISTITEM);
@@ -816,16 +801,14 @@ public class HtmlWriter extends DocWriter {
                 currentfont.pop();
                 return;
             }
-            case Element.CELL:
-            {
+            case Element.CELL: {
                 Cell cell = (Cell) element;
-                
+
                 // start tag
                 addTabs(indent);
                 if (cell.isHeader()) {
                     writeStart(HtmlTags.HEADERCELL);
-                }
-                else {
+                } else {
                     writeStart(HtmlTags.CELL);
                 }
                 writeMarkupAttributes(markup);
@@ -871,16 +854,14 @@ public class HtmlWriter extends DocWriter {
                 addTabs(indent);
                 if (cell.isHeader()) {
                     writeEnd(HtmlTags.HEADERCELL);
-                }
-                else {
+                } else {
                     writeEnd(HtmlTags.CELL);
                 }
                 return;
             }
-            case Element.ROW:
-            {
+            case Element.ROW: {
                 Row row = (Row) element;
-                
+
                 // start tag
                 addTabs(indent);
                 writeStart(HtmlTags.ROW);
@@ -889,7 +870,7 @@ public class HtmlWriter extends DocWriter {
                 // contents
                 Element cell;
                 for (int i = 0; i < row.getColumns(); i++) {
-                    if ((cell = (Element)row.getCell(i)) != null) {
+                    if ((cell = (Element) row.getCell(i)) != null) {
                         write(cell, indent + 1);
                     }
                 }
@@ -898,15 +879,13 @@ public class HtmlWriter extends DocWriter {
                 writeEnd(HtmlTags.ROW);
                 return;
             }
-            case Element.TABLE:
-            {
+            case Element.TABLE: {
                 Table table;
                 try {
                     table = (Table) element;
-                }
-                catch(ClassCastException cce) {
+                } catch (ClassCastException cce) {
                     try {
-                        table = ((SimpleTable)element).createTable();
+                        table = ((SimpleTable) element).createTable();
                     } catch (BadElementException e) {
                         throw new ExceptionConverter(e);
                     }
@@ -921,7 +900,7 @@ public class HtmlWriter extends DocWriter {
                 os.write(EQUALS);
                 os.write(QUOTE);
                 write(String.valueOf(table.getWidth()));
-                if (!table.isLocked()){
+                if (!table.isLocked()) {
                     write("%");
                 }
                 os.write(QUOTE);
@@ -952,8 +931,7 @@ public class HtmlWriter extends DocWriter {
                 writeEnd(HtmlTags.TABLE);
                 return;
             }
-            case Element.ANNOTATION:
-            {
+            case Element.ANNOTATION: {
                 Annotation annotation = (Annotation) element;
                 writeComment(annotation.title() + ": " + annotation.content());
                 return;
@@ -961,13 +939,12 @@ public class HtmlWriter extends DocWriter {
             case Element.IMGRAW:
             case Element.JPEG:
             case Element.JPEG2000:
-            case Element.IMGTEMPLATE:
-            {
+            case Element.IMGTEMPLATE: {
                 Image image = (Image) element;
                 if (image.getUrl() == null) {
                     return;
                 }
-                
+
                 // start tag
                 addTabs(indent);
                 writeStart(HtmlTags.IMAGE);
@@ -975,19 +952,16 @@ public class HtmlWriter extends DocWriter {
                 if (imagepath != null) {
                     if (path.indexOf('/') > 0) {
                         path = imagepath + path.substring(path.lastIndexOf('/') + 1);
-                    }
-                    else {
+                    } else {
                         path = imagepath + path;
                     }
                 }
                 write(HtmlTags.URL, path);
                 if ((image.getAlignment() & Image.RIGHT) > 0) {
                     write(HtmlTags.ALIGN, HtmlTags.ALIGN_RIGHT);
-                }
-                else if ((image.getAlignment() & Image.MIDDLE) > 0) {
+                } else if ((image.getAlignment() & Image.MIDDLE) > 0) {
                     write(HtmlTags.ALIGN, HtmlTags.ALIGN_MIDDLE);
-                }
-                else {
+                } else {
                     write(HtmlTags.ALIGN, HtmlTags.ALIGN_LEFT);
                 }
                 if (image.getAlt() != null) {
@@ -999,20 +973,18 @@ public class HtmlWriter extends DocWriter {
                 writeEnd();
                 return;
             }
-            
+
             default:
-                return;
         }
     }
-    
-/**
- * Writes the HTML representation of a section.
- *
- * @param   section     the section to write
- * @param   indent      the indentation
- * @throws IOException
- */
-    
+
+    /**
+     * Writes the HTML representation of a section.
+     *
+     * @param section the section to write
+     * @param indent  the indentation
+     * @throws IOException
+     */
     protected void writeSection(Section section, int indent) throws IOException {
         if (section.getTitle() != null) {
             int depth = section.getDepth() - 1;
@@ -1020,7 +992,8 @@ public class HtmlWriter extends DocWriter {
                 depth = 5;
             }
             Properties styleAttributes = new Properties();
-            if (section.getTitle().hasLeading()) styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, section.getTitle().getTotalLeading() + "pt");
+            if (section.getTitle().hasLeading())
+                styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, section.getTitle().getTotalLeading() + "pt");
             // start tag
             addTabs(indent);
             writeStart(HtmlTags.H[depth]);
@@ -1045,37 +1018,38 @@ public class HtmlWriter extends DocWriter {
             write((Element) o, indent);
         }
     }
-    
+
     /**
      * Writes the representation of a <CODE>Font</CODE>.
      *
-     * @param font              a <CODE>Font</CODE>
-     * @param styleAttributes   the style of the font
+     * @param font            a <CODE>Font</CODE>
+     * @param styleAttributes the style of the font
      * @throws IOException
      */
-    
-    protected void write(Font font, Properties styleAttributes) throws IOException {
-        if (font == null || !isOtherFont(font) /* || styleAttributes == null*/) return;
+    protected void write(@Nullable Font font, @Nullable Properties styleAttributes) throws IOException {
+        if (font == null || !isOtherFont(font)) {
+            return;
+        }
         write(" ");
         write(HtmlTags.STYLE);
         write("=\"");
         if (styleAttributes != null) {
             String key;
             for (Enumeration e = styleAttributes.propertyNames(); e.hasMoreElements(); ) {
-                key = (String)e.nextElement();
+                key = (String) e.nextElement();
                 writeCssProperty(key, styleAttributes.getProperty(key));
             }
         }
         if (isOtherFont(font)) {
             writeCssProperty(Markup.CSS_KEY_FONTFAMILY, font.getFamilyname());
-            
+
             if (font.getSize() != Font.UNDEFINED) {
                 writeCssProperty(Markup.CSS_KEY_FONTSIZE, font.getSize() + "pt");
             }
             if (font.getColor() != null) {
                 writeCssProperty(Markup.CSS_KEY_COLOR, HtmlEncoder.encode(font.getColor()));
             }
-            
+
             int fontstyle = font.getStyle();
             BaseFont bf = font.getBaseFont();
             if (bf != null) {
@@ -1104,7 +1078,7 @@ public class HtmlWriter extends DocWriter {
                         writeCssProperty(Markup.CSS_KEY_FONTSTYLE, Markup.CSS_VALUE_ITALIC);
                         break;
                 }
-                
+
                 // CSS only supports one decoration tag so if both are specified
                 // only one of the two will display
                 if ((fontstyle & Font.UNDERLINE) > 0) {
@@ -1117,14 +1091,15 @@ public class HtmlWriter extends DocWriter {
         }
         write("\"");
     }
-    
+
     /**
      * Writes out a CSS property.
-     * @param prop a CSS property
+     *
+     * @param prop  a CSS property
      * @param value the value of the CSS property
      * @throws IOException
      */
     protected void writeCssProperty(String prop, String value) throws IOException {
-        write(new StringBuffer(prop).append(": ").append(value).append("; ").toString());
+        write(prop + ": " + value + "; ");
     }
 }
