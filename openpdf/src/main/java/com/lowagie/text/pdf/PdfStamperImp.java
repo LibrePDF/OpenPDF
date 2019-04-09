@@ -61,7 +61,6 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.AcroFields.Item;
-import org.xml.sax.SAXException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -72,7 +71,6 @@ import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-import com.lowagie.text.xml.xmp.XmpReader;
 
 class PdfStamperImp extends PdfWriter {
     HashMap readers2intrefs = new HashMap();
