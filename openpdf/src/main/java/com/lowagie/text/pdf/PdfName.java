@@ -584,6 +584,8 @@ public class PdfName extends PdfObject implements Comparable{
     /** A name */
     public static final PdfName FILEATTACHMENT = new PdfName("FileAttachment");
     /** A name */
+    public static final PdfName FILEID = new PdfName("FileId");
+    /** A name */
     public static final PdfName FILESPEC = new PdfName("Filespec");
     /** A name */
     public static final PdfName FILTER = new PdfName("Filter");
