@@ -1222,9 +1222,11 @@ public class PdfWriter extends DocWriter implements
                     PdfIndirectObject encryptionObject = addToBody(crypto.getEncryptionDictionary(), false);
                     encryption = encryptionObject.getIndirectReference();
                     fileID = crypto.getFileID();
-                }
-                else
+                } else if (getInfo().contains(PdfName.FILEID)) {
+                    fileID = getInfo().get(PdfName.FILEID);
+                } else {
                     fileID = PdfEncryption.createInfoId(PdfEncryption.createDocumentId());
+                }
 
                 // write the cross-reference table of the body
                 body.writeCrossReferenceTable(os, indirectCatalog.getIndirectReference(),
