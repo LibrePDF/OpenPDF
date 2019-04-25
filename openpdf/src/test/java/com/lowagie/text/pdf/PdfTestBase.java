@@ -15,7 +15,7 @@ class PdfTestBase {
         // create a new file in target dir
         return createPdf(
                 new FileOutputStream(
-                        File.createTempFile("filename", "pdf")));
+                        File.createTempFile(filename, ".pdf")));
     }
 
     static Document createPdf(OutputStream outputStream) throws DocumentException {
