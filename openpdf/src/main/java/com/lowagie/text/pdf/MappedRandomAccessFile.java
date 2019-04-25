@@ -100,7 +100,9 @@ public class MappedRandomAccessFile {
      */
     private void init(FileChannel channel, FileChannel.MapMode mapMode)
     throws IOException {
-        
+
+        if (channel.size() > Integer.MAX_VALUE) throw new PdfException("The PDF file is too large. Max 2GB. Size: " + channel.size());
+
         this.channel = channel;
         this.mappedByteBuffer = channel.map(mapMode, 0L, channel.size());
         mappedByteBuffer.load();
