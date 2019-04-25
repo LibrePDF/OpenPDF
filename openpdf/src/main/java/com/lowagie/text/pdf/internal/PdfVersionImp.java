@@ -79,7 +79,7 @@ public class PdfVersionImp implements PdfVersion {
     /** Indicates if we are working in append mode. */
     protected boolean appendmode = false;
     /** The version that was or will be written to the header. */
-    protected char header_version = PdfWriter.VERSION_1_4;
+    protected char header_version = PdfWriter.VERSION_1_5;
     /** The version that will be written to the catalog. */
     protected PdfName catalog_version = null;
     /**
