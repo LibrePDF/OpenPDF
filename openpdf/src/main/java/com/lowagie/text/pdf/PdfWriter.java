@@ -1176,6 +1176,11 @@ public class PdfWriter extends DocWriter implements
     public void close() {
         if (open) {
             if ((currentPageNumber - 1) != pageReferences.size())
+                // 2019-04-26: If you get this error, it could be that you are using OpenPDF or
+                // another library such as flying-saucer's ITextRenderer in a non-threadsafe way.
+                // ITextRenderer is not thread safe. So if you get this problem here, create a new
+                // instance, rather than re-using it.
+                // See: https://github.com/LibrePDF/OpenPDF/issues/164
                 throw new RuntimeException("The page " + pageReferences.size() +
                 " was requested but the document has only " + (currentPageNumber - 1) + " pages.");
             pdf.close();
