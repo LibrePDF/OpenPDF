@@ -23,8 +23,6 @@
 
     <modules>
         <module>openpdf</module>
-        <module>pdf-xml</module>
-        <module>pdf-html</module>
         <module>pdf-swing</module>
         <module>pdf-toolbox</module>
     </modules>
