@@ -12,7 +12,7 @@
     <artifactId>pdf-xml</artifactId>
 
     <properties>
-        <java-module-name>com.github.librepdf.pdf-xml</java-module-name>
+        <java-module-name>com.github.librepdf.pdfXml</java-module-name>
     </properties>
 
     <dependencies>
