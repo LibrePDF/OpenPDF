@@ -114,8 +114,12 @@ public class Toolbox extends JFrame implements ActionListener {
         setTitle("iText Toolbox");
         desktop = new JDesktopPane();
         setJMenuBar(getMenubar());
-        setIconImage(new ImageIcon(com.lowagie.toolbox.Toolbox.class.getResource(
-                "1t3xt.gif")).getImage());
+        try {
+            setIconImage(new ImageIcon(com.lowagie.toolbox.Toolbox.class.getResource(
+                    "1t3xt.gif")).getImage());
+        } catch (Exception err) {
+            System.err.println("Problem loading icon image.");
+        }
         Console c;
         try {
             c = new Console();
@@ -181,7 +185,7 @@ public class Toolbox extends JFrame implements ActionListener {
         Properties p = new Properties();
         try {
             p.load(Toolbox.class.getClassLoader().getResourceAsStream(
-                    "com/lowagie/toolbox/tools.txt"));
+                    "tools.txt"));
             String usertoolstxt = System.getProperty("user.home") +
                                   System.getProperty("file.separator") +
                                   "tools.txt";
