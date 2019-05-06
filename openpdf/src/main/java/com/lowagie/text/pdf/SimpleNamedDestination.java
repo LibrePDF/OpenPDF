@@ -335,7 +335,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     public void text(String str) {
         if (xmlLast == null)
             return;
-        String name = (String)xmlLast.get("Name");
+        String name = xmlLast.get("Name");
         name += str;
         xmlLast.put("Name", name);
     }

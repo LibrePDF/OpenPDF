@@ -578,7 +578,7 @@ public class PdfPKCS7 {
         this.privKey = privKey;
         this.provider = provider;
 
-        digestAlgorithm = (String) allowedDigests.get(hashAlgorithm.toUpperCase());
+        digestAlgorithm = allowedDigests.get(hashAlgorithm.toUpperCase());
         if (digestAlgorithm == null)
             throw new NoSuchAlgorithmException(
                     MessageLocalization.getComposedMessage("unknown.hash.algorithm.1",
