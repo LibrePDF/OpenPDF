@@ -470,6 +470,7 @@ public class PdfWriter extends DocWriter implements
             }
             sections.add(first);
             sections.add(len);
+            PdfTrailer trailer = new PdfTrailer(size(), root, info, encryption, fileID, prevxref);
             if (writer.isFullCompression()) {
                 int mid = 4;
                 int mask = 0xff000000;
@@ -487,22 +488,12 @@ public class PdfWriter extends DocWriter implements
                 PdfStream xr = new PdfStream(buf.toByteArray());
                 buf = null;
                 xr.flateCompress(writer.getCompressionLevel());
-                xr.put(PdfName.SIZE, new PdfNumber(size()));
-                xr.put(PdfName.ROOT, root);
-                if (info != null) {
-                    xr.put(PdfName.INFO, info);
-                }
-                if (encryption != null)
-                    xr.put(PdfName.ENCRYPT, encryption);
-                if (fileID != null)
-                    xr.put(PdfName.ID, fileID);
+                xr.putAll(trailer);
                 xr.put(PdfName.W, new PdfArray(new int[]{1, mid, 2}));
                 xr.put(PdfName.TYPE, PdfName.XREF);
                 PdfArray idx = new PdfArray();
                 for (Integer section : sections) idx.add(new PdfNumber(section));
                 xr.put(PdfName.INDEX, idx);
-                if (prevxref > 0)
-                    xr.put(PdfName.PREV, new PdfNumber(prevxref));
                 PdfEncryption enc = writer.crypto;
                 writer.crypto = null;
                 PdfIndirectObject indirect = new PdfIndirectObject(refNumber, xr, writer);
@@ -524,6 +515,8 @@ public class PdfWriter extends DocWriter implements
                         entry.toPdf(os);
                     }
                 }
+                // make the trailer
+                trailer.toPdf(writer, os);
             }
         }
     }
@@ -536,10 +529,6 @@ public class PdfWriter extends DocWriter implements
      */
 
     static class PdfTrailer extends PdfDictionary {
-
-        // membervariables
-
-        int offset;
 
         // constructors
 
@@ -555,8 +544,7 @@ public class PdfWriter extends DocWriter implements
          * @param prevxref
          */
 
-        PdfTrailer(int size, int offset, PdfIndirectReference root, PdfIndirectReference info, PdfIndirectReference encryption, PdfObject fileID, int prevxref) {
-            this.offset = offset;
+        PdfTrailer(int size, PdfIndirectReference root, PdfIndirectReference info, PdfIndirectReference encryption, PdfObject fileID, int prevxref) {
             put(PdfName.SIZE, new PdfNumber(size));
             put(PdfName.ROOT, root);
             if (info != null) {
@@ -579,9 +567,7 @@ public class PdfWriter extends DocWriter implements
         public void toPdf(PdfWriter writer, OutputStream os) throws IOException {
             os.write(getISOBytes("trailer\n"));
             super.toPdf(null, os);
-            os.write(getISOBytes("\nstartxref\n"));
-            os.write(getISOBytes(String.valueOf(offset)));
-            os.write(getISOBytes("\n%%EOF\n"));
+            os.write('\n');
         }
     }
 
@@ -1237,22 +1223,9 @@ public class PdfWriter extends DocWriter implements
                 body.writeCrossReferenceTable(os, indirectCatalog.getIndirectReference(),
                     infoObj.getIndirectReference(), encryption,  fileID, prevxref);
 
-                // make the trailer
-                // [F2] full compression
-                if (fullCompression) {
-                    os.write(getISOBytes("startxref\n"));
-                    os.write(getISOBytes(String.valueOf(body.offset())));
-                    os.write(getISOBytes("\n%%EOF\n"));
-                }
-                else {
-                    PdfTrailer trailer = new PdfTrailer(body.size(),
-                    body.offset(),
-                    indirectCatalog.getIndirectReference(),
-                    infoObj.getIndirectReference(),
-                    encryption,
-                    fileID, prevxref);
-                    trailer.toPdf(this, os);
-                }
+                os.write(getISOBytes("startxref\n"));
+                os.write(getISOBytes(String.valueOf(body.offset())));
+                os.write(getISOBytes("\n%%EOF\n"));
                 super.close();
             }
             catch(IOException ioe) {
