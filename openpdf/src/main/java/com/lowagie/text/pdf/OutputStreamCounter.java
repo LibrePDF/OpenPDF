@@ -55,7 +55,7 @@ import java.io.OutputStream;
 public class OutputStreamCounter extends OutputStream {
     
     protected OutputStream out;
-    protected int counter = 0;
+    protected long counter = 0;
     
     /** Creates a new instance of OutputStreamCounter */
     public OutputStreamCounter(OutputStream out) {
@@ -160,7 +160,7 @@ public class OutputStreamCounter extends OutputStream {
         out.write(b, off, len);
     }
     
-    public int getCounter() {
+    public long getCounter() {
         return counter;
     }
     
