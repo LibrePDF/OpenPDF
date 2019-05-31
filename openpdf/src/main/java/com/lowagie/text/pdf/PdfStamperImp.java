@@ -326,20 +326,9 @@ class PdfStamperImp extends PdfWriter {
         }
         // write the cross-reference table of the body
         body.writeCrossReferenceTable(os, root, info, encryption, fileID, prevxref);
-        if (fullCompression) {
-            os.write(getISOBytes("startxref\n"));
-            os.write(getISOBytes(String.valueOf(body.offset())));
-            os.write(getISOBytes("\n%%EOF\n"));
-        }
-        else {
-            PdfTrailer trailer = new PdfTrailer(body.size(),
-            body.offset(),
-            root,
-            info,
-            encryption,
-            fileID, prevxref);
-            trailer.toPdf(this, os);
-        }
+        os.write(getISOBytes("startxref\n"));
+        os.write(getISOBytes(String.valueOf(body.offset())));
+        os.write(getISOBytes("\n%%EOF\n"));
         os.flush();
         if (isCloseStream())
             os.close();

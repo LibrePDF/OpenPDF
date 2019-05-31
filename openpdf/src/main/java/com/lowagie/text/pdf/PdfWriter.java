@@ -154,7 +154,7 @@ public class PdfWriter extends DocWriter implements
             private int type;
 
             /**    Byte offset in the PDF file. */
-            private int offset;
+            private long offset;
 
             private int refnum;
             /**    generation of the object. */
@@ -168,7 +168,7 @@ public class PdfWriter extends DocWriter implements
              * @param    generation    generation number of the object
              */
 
-            public PdfCrossReference(int refnum, int offset, int generation) {
+            public PdfCrossReference(int refnum, long offset, int generation) {
                 type = 0;
                 this.offset = offset;
                 this.refnum = refnum;
@@ -181,14 +181,14 @@ public class PdfWriter extends DocWriter implements
              * @param    offset        byte offset of the object
              */
 
-            public PdfCrossReference(int refnum, int offset) {
+            public PdfCrossReference(int refnum, long offset) {
                 type = 1;
                 this.offset = offset;
                 this.refnum = refnum;
                 this.generation = 0;
             }
 
-            public PdfCrossReference(int type, int refnum, int offset, int generation) {
+            public PdfCrossReference(int type, int refnum, long offset, int generation) {
                 this.type = type;
                 this.offset = offset;
                 this.refnum = refnum;
@@ -264,7 +264,7 @@ public class PdfWriter extends DocWriter implements
         private TreeSet<PdfCrossReference> xrefs;
         private int refnum;
         /** the current byte position in the body. */
-        private int position;
+        private long position;
         private PdfWriter writer;
         private ByteBuffer index;
         private ByteBuffer streamObjects;
@@ -421,7 +421,7 @@ public class PdfWriter extends DocWriter implements
          * @return        an offset
          */
 
-        int offset() {
+        long offset() {
             return position;
         }
 
@@ -448,7 +448,9 @@ public class PdfWriter extends DocWriter implements
 
         void writeCrossReferenceTable(OutputStream os, PdfIndirectReference root, PdfIndirectReference info, PdfIndirectReference encryption, PdfObject fileID, int prevxref) throws IOException {
             int refNumber = 0;
-            if (writer.isFullCompression()) {
+            // Old-style xref tables limit object offsets to 10 digits
+            boolean useNewXrefFormat = writer.isFullCompression() || position > 9_999_999_999L;
+            if (useNewXrefFormat) {
                 flushObjStm();
                 refNumber = getIndirectReferenceNumber();
                 xrefs.add(new PdfCrossReference(refNumber, position));
@@ -470,14 +472,9 @@ public class PdfWriter extends DocWriter implements
             }
             sections.add(first);
             sections.add(len);
-            if (writer.isFullCompression()) {
-                int mid = 4;
-                int mask = 0xff000000;
-                for (; mid > 1; --mid) {
-                    if ((mask & position) != 0)
-                        break;
-                    mask >>>= 8;
-                }
+            PdfTrailer trailer = new PdfTrailer(size(), root, info, encryption, fileID, prevxref);
+            if (useNewXrefFormat) {
+                int mid = 8 - (Long.numberOfLeadingZeros(position) >> 3);
                 ByteBuffer buf = new ByteBuffer();
 
                 for (PdfCrossReference xref : xrefs) {
@@ -487,22 +484,12 @@ public class PdfWriter extends DocWriter implements
                 PdfStream xr = new PdfStream(buf.toByteArray());
                 buf = null;
                 xr.flateCompress(writer.getCompressionLevel());
-                xr.put(PdfName.SIZE, new PdfNumber(size()));
-                xr.put(PdfName.ROOT, root);
-                if (info != null) {
-                    xr.put(PdfName.INFO, info);
-                }
-                if (encryption != null)
-                    xr.put(PdfName.ENCRYPT, encryption);
-                if (fileID != null)
-                    xr.put(PdfName.ID, fileID);
+                xr.putAll(trailer);
                 xr.put(PdfName.W, new PdfArray(new int[]{1, mid, 2}));
                 xr.put(PdfName.TYPE, PdfName.XREF);
                 PdfArray idx = new PdfArray();
                 for (Integer section : sections) idx.add(new PdfNumber(section));
                 xr.put(PdfName.INDEX, idx);
-                if (prevxref > 0)
-                    xr.put(PdfName.PREV, new PdfNumber(prevxref));
                 PdfEncryption enc = writer.crypto;
                 writer.crypto = null;
                 PdfIndirectObject indirect = new PdfIndirectObject(refNumber, xr, writer);
@@ -524,6 +511,8 @@ public class PdfWriter extends DocWriter implements
                         entry.toPdf(os);
                     }
                 }
+                // make the trailer
+                trailer.toPdf(writer, os);
             }
         }
     }
@@ -536,10 +525,6 @@ public class PdfWriter extends DocWriter implements
      */
 
     static class PdfTrailer extends PdfDictionary {
-
-        // membervariables
-
-        int offset;
 
         // constructors
 
@@ -555,8 +540,7 @@ public class PdfWriter extends DocWriter implements
          * @param prevxref
          */
 
-        PdfTrailer(int size, int offset, PdfIndirectReference root, PdfIndirectReference info, PdfIndirectReference encryption, PdfObject fileID, int prevxref) {
-            this.offset = offset;
+        PdfTrailer(int size, PdfIndirectReference root, PdfIndirectReference info, PdfIndirectReference encryption, PdfObject fileID, int prevxref) {
             put(PdfName.SIZE, new PdfNumber(size));
             put(PdfName.ROOT, root);
             if (info != null) {
@@ -579,9 +563,7 @@ public class PdfWriter extends DocWriter implements
         public void toPdf(PdfWriter writer, OutputStream os) throws IOException {
             os.write(getISOBytes("trailer\n"));
             super.toPdf(null, os);
-            os.write(getISOBytes("\nstartxref\n"));
-            os.write(getISOBytes(String.valueOf(offset)));
-            os.write(getISOBytes("\n%%EOF\n"));
+            os.write('\n');
         }
     }
 
@@ -1237,22 +1219,9 @@ public class PdfWriter extends DocWriter implements
                 body.writeCrossReferenceTable(os, indirectCatalog.getIndirectReference(),
                     infoObj.getIndirectReference(), encryption,  fileID, prevxref);
 
-                // make the trailer
-                // [F2] full compression
-                if (fullCompression) {
-                    os.write(getISOBytes("startxref\n"));
-                    os.write(getISOBytes(String.valueOf(body.offset())));
-                    os.write(getISOBytes("\n%%EOF\n"));
-                }
-                else {
-                    PdfTrailer trailer = new PdfTrailer(body.size(),
-                    body.offset(),
-                    indirectCatalog.getIndirectReference(),
-                    infoObj.getIndirectReference(),
-                    encryption,
-                    fileID, prevxref);
-                    trailer.toPdf(this, os);
-                }
+                os.write(getISOBytes("startxref\n"));
+                os.write(getISOBytes(String.valueOf(body.offset())));
+                os.write(getISOBytes("\n%%EOF\n"));
                 super.close();
             }
             catch(IOException ioe) {
@@ -2283,7 +2252,7 @@ public class PdfWriter extends DocWriter implements
      * the current size is needed.
      * @return the approximate size without fonts or templates
      */
-    public int getCurrentDocumentSize() {
+    public long getCurrentDocumentSize() {
         return body.offset() + body.size() * 20 + 0x48;
     }
 

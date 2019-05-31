@@ -139,7 +139,7 @@ public class PdfSignatureAppearance {
   private PdfStamper stamper;
   private boolean preClosed = false;
   private PdfSigGenericPKCS sigStandard;
-  private int[] range;
+  private long[] range;
   private RandomAccessFile raf;
   private byte[] bout;
   private int boutLen;
@@ -1111,14 +1111,14 @@ public class PdfSignatureAppearance {
     }
     writer.close(stamper.getInfoDictionary());
 
-    range = new int[exclusionLocations.size() * 2];
-    int byteRangePosition = ((PdfLiteral) exclusionLocations
+    range = new long[exclusionLocations.size() * 2];
+    long byteRangePosition = ((PdfLiteral) exclusionLocations
         .get(PdfName.BYTERANGE)).getPosition();
     exclusionLocations.remove(PdfName.BYTERANGE);
     int idx = 1;
       for (Object o : exclusionLocations.values()) {
           PdfLiteral lit = (PdfLiteral) o;
-          int n = lit.getPosition();
+          long n = lit.getPosition();
           range[idx++] = n;
           range[idx++] = lit.getPosLength() + n;
       }
@@ -1132,17 +1132,17 @@ public class PdfSignatureAppearance {
       range[range.length - 1] = boutLen - range[range.length - 2];
       ByteBuffer bf = new ByteBuffer();
       bf.append('[');
-        for (int i : range) bf.append(i).append(' ');
+        for (long i : range) bf.append(i).append(' ');
       bf.append(']');
-      System.arraycopy(bf.getBuffer(), 0, bout, byteRangePosition, bf.size());
+      System.arraycopy(bf.getBuffer(), 0, bout, (int) byteRangePosition, bf.size());
     } else {
       try {
         raf = new RandomAccessFile(tempFile, "rw");
-        int boutL = (int) raf.length();
+        long boutL = raf.length();
         range[range.length - 1] = boutL - range[range.length - 2];
         ByteBuffer bf = new ByteBuffer();
         bf.append('[');
-          for (int i : range) bf.append(i).append(' ');
+          for (long i : range) bf.append(i).append(' ');
         bf.append(']');
         raf.seek(byteRangePosition);
         raf.write(bf.getBuffer(), 0, bf.size());
@@ -1197,7 +1197,7 @@ public class PdfSignatureAppearance {
                                 "the.key.1.is.too.big.is.2.reserved.3", key.toString(),
                                 String.valueOf(bf.size()), String.valueOf(lit.getPosLength())));
             if (tempFile == null)
-                System.arraycopy(bf.getBuffer(), 0, bout, lit.getPosition(),
+                System.arraycopy(bf.getBuffer(), 0, bout, (int) lit.getPosition(),
                         bf.size());
             else {
                 raf.seek(lit.getPosition());
@@ -1213,10 +1213,10 @@ public class PdfSignatureAppearance {
       } else {
         if (originalout != null) {
           raf.seek(0);
-          int length = (int) raf.length();
+          long length = raf.length();
           byte[] buf = new byte[8192];
           while (length > 0) {
-            int r = raf.read(buf, 0, Math.min(buf.length, length));
+            int r = raf.read(buf, 0, (int) Math.min(buf.length, length));
             if (r < 0)
               throw new EOFException(
                   MessageLocalization.getComposedMessage("unexpected.eof"));
@@ -1543,10 +1543,10 @@ public class PdfSignatureAppearance {
     private final byte[] b = new byte[1];
     private final RandomAccessFile raf;
     private final byte[] bout;
-    private final int[] range;
-    private int rangePosition = 0;
+    private final long[] range;
+    private long rangePosition = 0;
 
-    private RangeStream(RandomAccessFile raf, byte[] bout, int[] range) {
+    private RangeStream(RandomAccessFile raf, byte[] bout, long[] range) {
       this.raf = raf;
       this.bout = bout;
       this.range = range;
@@ -1580,14 +1580,14 @@ public class PdfSignatureAppearance {
         return -1;
       }
       for (int k = 0; k < range.length; k += 2) {
-        int start = range[k];
-        int end = start + range[k + 1];
+        long start = range[k];
+        long end = start + range[k + 1];
         if (rangePosition < start)
           rangePosition = start;
         if (rangePosition >= start && rangePosition < end) {
-          int lenf = Math.min(len, end - rangePosition);
+          int lenf = (int) Math.min(len, end - rangePosition);
           if (raf == null)
-            System.arraycopy(bout, rangePosition, b, off, lenf);
+            System.arraycopy(bout, (int) rangePosition, b, off, lenf);
           else {
             raf.seek(rangePosition);
             raf.readFully(b, off, lenf);
