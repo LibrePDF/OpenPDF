@@ -6,7 +6,7 @@
     <groupId>com.github.librepdf</groupId>
     <artifactId>openpdf-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.18-SNAPSHOT</version>
+    <version>1.2.18</version>
 
     <licenses>
         <license>
