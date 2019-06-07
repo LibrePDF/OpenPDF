@@ -1,14 +1,11 @@
 package com.lowagie.text.pdf.sign;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
 
 import org.junit.jupiter.api.Test;
 
