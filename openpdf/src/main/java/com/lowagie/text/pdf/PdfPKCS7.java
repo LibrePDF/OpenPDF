@@ -543,9 +543,9 @@ public class PdfPKCS7 {
             }
             if (RSAdata != null || digestAttr != null) {
                 if (provider == null || provider.startsWith("SunPKCS11"))
-                    messageDigest = MessageDigest.getInstance(getHashAlgorithm());
+                    messageDigest = MessageDigest.getInstance(getStandardJavaName(getHashAlgorithm()));
                 else
-                    messageDigest = MessageDigest.getInstance(getHashAlgorithm(),
+                    messageDigest = MessageDigest.getInstance(getStandardJavaName(getHashAlgorithm()),
                             provider);
             }
             if (provider == null)
@@ -619,9 +619,9 @@ public class PdfPKCS7 {
         if (hasRSAdata) {
             RSAdata = new byte[0];
             if (provider == null || provider.startsWith("SunPKCS11"))
-                messageDigest = MessageDigest.getInstance(getHashAlgorithm());
+                messageDigest = MessageDigest.getInstance(getStandardJavaName(getHashAlgorithm()));
             else
-                messageDigest = MessageDigest.getInstance(getHashAlgorithm(), provider);
+                messageDigest = MessageDigest.getInstance(getStandardJavaName(getHashAlgorithm()), provider);
         }
 
         if (privKey != null) {
@@ -1553,6 +1553,27 @@ public class PdfPKCS7 {
         this.signName = signName;
     }
 
+    
+    private static String getStandardJavaName(String algName) {
+    	if ("SHA1".equals(algName)) {
+    		return "SHA-1";
+    	}
+    	if ("SHA224".equals(algName)) {
+    		return "SHA-224";
+    	}
+    	if ("SHA256".equals(algName)) {
+    		return "SHA-256";
+    	}
+    	if ("SHA384".equals(algName)) {
+    		return "SHA-384";
+    	}
+    	if ("SHA512".equals(algName)) {
+    		return "SHA-512";
+    	}
+    	return algName;
+
+    }
+    
     /**
      * a class that holds an X509 name
      */
