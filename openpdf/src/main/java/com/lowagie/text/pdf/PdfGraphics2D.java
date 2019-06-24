@@ -97,6 +97,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.lowagie.text.pdf.internal.PolylineShape;
@@ -377,29 +378,32 @@ public class PdfGraphics2D extends Graphics2D {
             cb.beginText();
             cb.setFontAndSize(baseFont, fontSize);
             // Check if we need to simulate an italic font.
-            // When there are different fonts for italic, bold, italic bold
-            // the font.getName() will be different from the font.getFontName()
-            // value. When they are the same value then we are normally dealing
-            // with a single font that has been made into an italic or bold
-            // font.
-            if (font.isItalic() && font.getFontName().equals(font.getName())) {
-                float angle = baseFont.getFontDescriptor(BaseFont.ITALICANGLE, 1000);
-                float angle2 = font.getItalicAngle();
-                // We don't have an italic version of this font so we need
-                // to set the font angle ourselves to produce an italic font.
-                if (angle2 == 0) {
-                    // The JavaVM didn't have an angle setting for making
-                    // the font an italic font so use a default of
-                    // italic angle of 15 degrees.
-                    angle2 = 15.0f;
-                } else {
-                    // This sign of the angle for Java and PDF seams
-                    // seams to be reversed.
-                    angle2 = -angle2;
-                }
-                if (angle == 0) {
-                    mx[2] = angle2 / 100.0f;
-                }
+            if (font.isItalic()) {
+            	 float angle = baseFont.getFontDescriptor(BaseFont.ITALICANGLE, 1000);
+                 float angle2 = font.getItalicAngle();
+                 // When there are different fonts for italic, bold, italic bold
+                 // the font.getName() will be different from the font.getFontName()
+                 // value. When they are the same value then we are normally dealing
+                 // with a single font that has been made into an italic or bold
+                 // font. When there are only a plain and a bold font available,
+                 // we need to enter this logic too.
+                 if (Objects.equals(font.getFontName(), font.getName()) || (angle == 0f && angle2 == 0f)) {
+                	 // We don't have an italic version of this font so we need
+                	 // to set the font angle ourselves to produce an italic font.
+                	 if (angle2 == 0) {
+                		 // The JavaVM didn't have an angle setting for making
+                		 // the font an italic font so use a default of
+                		 // italic angle of 15 degrees.
+                		 angle2 = 15.0f;
+                	 } else {
+                		 // This sign of the angle for Java and PDF seams
+                		 // seams to be reversed.
+                		 angle2 = -angle2;
+                	 }
+                	 if (angle == 0) {
+                		 mx[2] = angle2 / 100.0f;
+                	 }
+                 }
             } 
             cb.setTextMatrix((float)mx[0], (float)mx[1], (float)mx[2], (float)mx[3], (float)mx[4], (float)mx[5]);
             Float fontTextAttributeWidth = (Float)font.getAttributes().get(TextAttribute.WIDTH);
