@@ -54,14 +54,14 @@ public class ExtractCertificatesTest {
 	
 				PdfPKCS7 pk = fields.verifySignature(signature);
 				Calendar cal = pk.getSignDate();
-				Certificate pkc[] = pk.getCertificates();
+				Certificate[] pkc = pk.getCertificates();
 				X509Certificate certificate = pk.getSigningCertificate();
 				certificates.add(certificate);
 				System.out.println("sign date:" + cal.getTime());
 				System.out.println("Subject: " + PdfPKCS7.getSubjectFields(certificate));
 				System.out.println("Document modified: " + !pk.verify());
-	
-				Object fails[] = PdfPKCS7.verifyCertificates(pkc, kall, null, cal);
+
+				Object[] fails = PdfPKCS7.verifyCertificates(pkc, kall, null, cal);
 				if (fails == null) {
 					System.out.println("Certificates verified against the KeyStore");
 				}
