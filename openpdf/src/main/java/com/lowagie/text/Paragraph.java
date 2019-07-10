@@ -224,7 +224,7 @@ public class Paragraph extends Phrase {
      * @param    o   object        the object to add.
      * @return true is adding the object succeeded
      */
-    public boolean add(Object o) {
+    public boolean add(Element o) {
         if (o instanceof List) {
             List list = (List) o;
             list.setIndentationLeft(list.getIndentationLeft() + indentationLeft);

@@ -49,7 +49,6 @@
 
 package com.lowagie.text;
 
-import java.util.ArrayList;
 import java.util.Properties;
 
 /**
@@ -87,7 +86,7 @@ public class MarkedObject implements Element {
      *
      * @return  an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
+    public java.util.List<Element> getChunks() {
         return element.getChunks();
     }
 

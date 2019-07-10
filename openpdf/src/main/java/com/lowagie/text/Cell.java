@@ -95,7 +95,7 @@ import com.lowagie.text.pdf.PdfPCell;
  * @see        Row
  */
 
-public class Cell extends Rectangle implements TextElementArray, WithHorizontalAlignment, WithVerticalAlignment {
+public class Cell extends TableRectangle implements TextElementArray, WithHorizontalAlignment, WithVerticalAlignment {
 
     // membervariables
 
@@ -103,7 +103,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      * The <CODE>ArrayList</CODE> of <CODE>Element</CODE>s
      * that are part of the content of the Cell.
      */
-    protected ArrayList arrayList = null;
+    protected java.util.List<Element> arrayList = null;
 
     /** The horizontal alignment of the cell content. */
     protected int horizontalAlignment = Element.ALIGN_UNDEFINED;
@@ -178,7 +178,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
         setBorder(UNDEFINED);
         setBorderWidth(0.5f);
         // initializes the arraylist
-        arrayList = new ArrayList();
+        arrayList = new ArrayList<>();
     }
 
     /**
@@ -253,10 +253,10 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
-        ArrayList tmp = new ArrayList();
-        for (Object o : arrayList) {
-            tmp.addAll(((Element) o).getChunks());
+    public java.util.List<Element> getChunks() {
+        java.util.List<Element> tmp = new ArrayList<>();
+        for (Element o : arrayList) {
+            tmp.addAll(o.getChunks());
         }
         return tmp;
     }
@@ -679,7 +679,7 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
                     tmp = new Cell();
                     tmp.setBorder(NO_BORDER);
                     tmp.setColspan(3);
-                    for (Object o : arrayList) {
+                    for (Element o : arrayList) {
                         tmp.add(o);
                     }
                     table.addCell(tmp);
@@ -706,9 +706,9 @@ public class Cell extends Rectangle implements TextElementArray, WithHorizontalA
      * @param o the object to add
      * @return always <CODE>true</CODE>
      */
-    public boolean add(Object o) {
+    public boolean add(Element o) {
         try {
-            this.addElement((Element) o);
+            this.addElement(o);
             return true;
         }
         catch(ClassCastException cce) {

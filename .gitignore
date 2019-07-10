@@ -179,3 +179,5 @@ buildNumber.properties
 ### Custom
 *.rtf
 *.html
+
+*.pdf

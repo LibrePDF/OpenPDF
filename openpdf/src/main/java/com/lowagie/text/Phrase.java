@@ -83,7 +83,7 @@ import com.lowagie.text.pdf.HyphenationEvent;
  * @see        Anchor
  */
 
-public class Phrase extends ArrayList implements TextElementArray {
+public class Phrase extends java.util.ArrayList<Element> implements TextElementArray {
 
     // constants
     private static final long serialVersionUID = 2643594602455068231L;
@@ -236,10 +236,10 @@ public class Phrase extends ArrayList implements TextElementArray {
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
-        ArrayList tmp = new ArrayList();
-        for (Object o : this) {
-            tmp.addAll(((Element) o).getChunks());
+    public java.util.List<Element> getChunks() {
+        java.util.List<Element> tmp = new ArrayList<>();
+        for (Element element : this) {
+            tmp.addAll(element.getChunks());
         }
         return tmp;
     }
@@ -267,13 +267,12 @@ public class Phrase extends ArrayList implements TextElementArray {
      * to this <CODE>Phrase</CODE>.
      *
      * @param    index    index at which the specified element is to be inserted
-     * @param    o       an object of type <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
+     * @param    element       an object of type <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
      * @throws    ClassCastException    when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
      */
-    public void add(int index, Object o) {
-        if (o == null) return;
+    public void add(int index, Element element) {
+        if (element == null) return;
         try {
-            Element element = (Element) o;
             if (element.type() == Element.CHUNK) {
                 Chunk chunk = (Chunk) element;
                 if (!font.isStandardFont()) {
@@ -309,22 +308,22 @@ public class Phrase extends ArrayList implements TextElementArray {
      * @return    a boolean
      * @throws    ClassCastException    when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
      */
-    public boolean add(Object o) {
+    public boolean add(String o) {
         if (o == null) return false;
-        if (o instanceof String) {
-            return super.add(new Chunk((String) o, font));
-        }
-        if (o instanceof RtfElementInterface) {
-            return super.add(o);
+        return super.add(new Chunk(o, font));
+    }
+    public boolean add(Element element) {
+        if (element == null) return false;
+        if (element instanceof RtfElementInterface) {
+            return super.add(element);
         }
         try {
-            Element element = (Element) o;
             switch(element.type()) {
                 case Element.CHUNK:
-                    return addChunk((Chunk) o);
+                    return addChunk((Chunk) element);
                 case Element.PHRASE:
                 case Element.PARAGRAPH:
-                    Phrase phrase = (Phrase) o;
+                    Phrase phrase = (Phrase) element;
                     boolean success = true;
                     Element e;
                     for (Object o1 : phrase) {
@@ -345,7 +344,7 @@ public class Phrase extends ArrayList implements TextElementArray {
                     // This will only work for PDF!!! Not for RTF/HTML
                 case Element.LIST:
                 case Element.YMARK:
-                    return super.add(o);
+                    return super.add(element);
                     default:
                         throw new ClassCastException(String.valueOf(element.type()));
             }
@@ -363,8 +362,8 @@ public class Phrase extends ArrayList implements TextElementArray {
      * @return    <CODE>true</CODE> if the action succeeded, <CODE>false</CODE> if not.
      * @throws    ClassCastException    when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
      */
-    public boolean addAll(Collection collection) {
-        for (Object o : collection) {
+    public boolean addAll(Collection<? extends Element> collection) {
+        for (Element o : collection) {
             this.add(o);
         }
         return true;
@@ -413,7 +412,8 @@ public class Phrase extends ArrayList implements TextElementArray {
      * @param    object        the object to add.
      */
     protected void addSpecial(Object object) {
-        super.add(object);
+        //TODO: remove this comment
+//        super.add(object);
     }
 
     // other methods that change the member variables
