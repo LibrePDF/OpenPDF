@@ -21,6 +21,8 @@ package com.lowagie.text.pdf.hyphenation;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This tree structure stores the hyphenation patterns in an efficient
@@ -42,7 +44,7 @@ public class HyphenationTree extends TernaryTree
     /**
      * This map stores hyphenation exceptions
      */
-    protected HashMap stoplist;
+    protected Map<String, List> stoplist;
 
     /**
      * This map stores the character classes
@@ -55,7 +57,7 @@ public class HyphenationTree extends TernaryTree
     private transient TernaryTree ivalues;
 
     public HyphenationTree() {
-        stoplist = new HashMap(23);    // usually a small table
+        stoplist = new HashMap<>(23);    // usually a small table
         classmap = new TernaryTree();
         vspace = new ByteVector();
         vspace.alloc(1);    // this reserves index 0, which we don't use

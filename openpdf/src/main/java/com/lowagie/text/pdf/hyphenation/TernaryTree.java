@@ -492,7 +492,7 @@ public class TernaryTree implements Cloneable, Serializable {
         /**
          * Node stack
          */
-        Stack ns;
+        Stack<Item> ns;
 
         /**
          * key stack implemented with a StringBuffer
@@ -501,7 +501,7 @@ public class TernaryTree implements Cloneable, Serializable {
 
         public Iterator() {
             cur = -1;
-            ns = new Stack();
+            ns = new Stack<>();
             ks = new StringBuffer();
             rewind();
         }
@@ -549,17 +549,17 @@ public class TernaryTree implements Cloneable, Serializable {
             boolean climb = true;
 
             while (climb) {
-                i = (Item)ns.pop();
+                i = ns.pop();
                 i.child++;
                 switch (i.child) {
                 case 1:
                     if (sc[i.parent] != 0) {
                         res = eq[i.parent];
-                        ns.push(i.clone());
+                        ns.push((Item)i.clone());
                         ks.append(sc[i.parent]);
                     } else {
                         i.child++;
-                        ns.push(i.clone());
+                        ns.push((Item)i.clone());
                         res = hi[i.parent];
                     }
                     climb = false;
@@ -567,7 +567,7 @@ public class TernaryTree implements Cloneable, Serializable {
 
                 case 2:
                     res = hi[i.parent];
-                    ns.push(i.clone());
+                    ns.push((Item)i.clone());
                     if (ks.length() > 0) {
                         ks.setLength(ks.length() - 1);    // pop
                     }
