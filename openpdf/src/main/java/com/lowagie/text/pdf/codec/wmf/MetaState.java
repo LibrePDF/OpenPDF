@@ -52,6 +52,7 @@ package com.lowagie.text.pdf.codec.wmf;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import com.lowagie.text.pdf.PdfContentByte;
@@ -73,8 +74,8 @@ public class MetaState {
     public static final int ALTERNATE = 1;
     public static final int WINDING = 2;
 
-    public Stack savedStates;
-    public ArrayList MetaObjects;
+    public Stack<MetaState> savedStates;
+    public List<Object> MetaObjects;
     public Point currentPoint;
     public MetaPen currentPen;
     public MetaBrush currentBrush;
@@ -95,8 +96,8 @@ public class MetaState {
 
     /** Creates new MetaState */
     public MetaState() {
-        savedStates = new Stack();
-        MetaObjects = new ArrayList();
+        savedStates = new Stack<>();
+        MetaObjects = new ArrayList<>();
         currentPoint = new Point(0, 0);
         currentPen = new MetaPen();
         currentBrush = new MetaBrush();
