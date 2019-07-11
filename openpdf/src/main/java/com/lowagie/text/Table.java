@@ -53,11 +53,14 @@
 package com.lowagie.text;
 
 import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.VerticalAlignment;
 import com.lowagie.text.alignment.WithHorizontalAlignment;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Optional;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.PdfPCell;
@@ -154,7 +157,7 @@ import com.lowagie.text.pdf.PdfPTable;
  * @see         Cell
  */
 
-public class Table extends Rectangle implements LargeElement, WithHorizontalAlignment {
+public class Table extends TableRectangle implements LargeElement, WithHorizontalAlignment {
     
     // membervariables
     
@@ -162,7 +165,7 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
     private int columns;
     
     /** This is the list of <CODE>Row</CODE>s. */
-    private ArrayList rows = new ArrayList();
+    private ArrayList<Row> rows = new ArrayList<>();
     
     /** The current Position in the table. */
     private Point curPosition = new Point(0, 0);
@@ -327,8 +330,8 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
      * @return  an <CODE>ArrayList</CODE>
      */
     
-    public ArrayList getChunks() {
-        return new ArrayList();
+    public java.util.List<Element> getChunks() {
+        return new ArrayList<>();
     }
 
     /**
@@ -770,8 +773,10 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
         cell.setBorderWidth(defaultCell.getBorderWidth());
         cell.setBorderColor(defaultCell.getBorderColor());
         cell.setBackgroundColor(defaultCell.getBackgroundColor());
-        cell.setHorizontalAlignment(defaultCell.getHorizontalAlignment());
-        cell.setVerticalAlignment(defaultCell.getVerticalAlignment());
+        Optional<HorizontalAlignment> optionalHorizontalAlignment = HorizontalAlignment.of(defaultCell.getHorizontalAlignment());
+        cell.setHorizontalAlignment(optionalHorizontalAlignment.orElse(HorizontalAlignment.UNDEFINED));
+        Optional<VerticalAlignment> optionalVerticalAlignment = VerticalAlignment.of(defaultCell.getVerticalAlignment());
+        cell.setVerticalAlignment(optionalVerticalAlignment.orElse(VerticalAlignment.UNDEFINED));
         cell.setColspan(defaultCell.getColspan());
         cell.setRowspan(defaultCell.getRowspan());
         addCell(cell, location);
@@ -855,7 +860,7 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
             }
         }
         
-        ((Row) rows.get(aLocation.x)).setElement(aTable,aLocation.y);
+        rows.get(aLocation.x).setElement(aTable,aLocation.y);
         
         setCurrentLocationToNextValidPosition(aLocation);
     }
@@ -866,14 +871,14 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
      * @param   aColumns    the number of columns to add
      */
     public void addColumns(int aColumns) {
-        ArrayList newRows = new ArrayList(rows.size());
+        ArrayList<Row> newRows = new ArrayList<>(rows.size());
         
         int newColumns = columns + aColumns;
         Row row;
         for (int i = 0; i < rows.size(); i++) {
             row = new Row(newColumns);
             for (int j = 0; j < columns; j++) {
-                row.setElement(((Row) rows.get(i)).getCell(j) ,j);
+                row.setElement(rows.get(i).getCell(j) ,j);
             }
             for (int j = columns; j < newColumns && i < curPosition.x; j++) {
                 row.setElement(null, j);
@@ -907,7 +912,7 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
         Row row;
         int size = rows.size();
         for (int i = 0; i < size; i++) {
-            row = (Row) rows.get(i);
+            row = rows.get(i);
             row.deleteColumn(column);
             rows.set(i, row);
         }
@@ -975,25 +980,25 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
      * @return  dimension
      * @since  2.1.0 (was made private in 2.0.3)
      */
-    public Object getElement(int row, int column) {
-        return ((Row) rows.get(row)).getCell(column);
+    public TableRectangle getElement(int row, int column) {
+        return rows.get(row).getCell(column);
     }
     
     /**
      * Integrates all added tables and recalculates column widths.
      */
     private void mergeInsertedTables() {
-        int i=0, j=0;
-        float [] lNewWidths = null;
+        int i, j;
+        float [] lNewWidths;
         int [] lDummyWidths = new int[columns];     // to keep track in how many new cols this one will be split
         float[][] lDummyColumnWidths = new float[columns][]; // bugfix Tony Copping
         int [] lDummyHeights = new int[rows.size()]; // to keep track in how many new rows this one will be split
-        ArrayList newRows = null;
+        ArrayList<Row> newRows;
         boolean isTable=false;
         int lTotalRows  = 0, lTotalColumns      = 0;
-        int lNewMaxRows = 0, lNewMaxColumns     = 0;
+        int lNewMaxRows, lNewMaxColumns;
         
-        Table lDummyTable = null;
+        Table lDummyTable;
         
         // first we'll add new columns when needed
         // check one column at a time, find maximum needed nr of cols
@@ -1002,9 +1007,9 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
             lNewMaxColumns = 1; // value to hold in how many columns the current one will be split
             float [] tmpWidths = null;
             for (i=0; i < rows.size(); i++) {
-                if (((Row) rows.get(i)).getCell(j) instanceof Table) {
+                if (rows.get(i).getCell(j) instanceof Table) {
                     isTable=true;
-                    lDummyTable = ((Table) ((Row) rows.get(i)).getCell(j));
+                    lDummyTable = ((Table) rows.get(i).getCell(j));
                     if( tmpWidths == null) {
                         tmpWidths = lDummyTable.widths;
                         lNewMaxColumns=tmpWidths.length;
@@ -1069,9 +1074,9 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
         for (i=0; i < rows.size(); i++) {
             lNewMaxRows = 1;    // holds value in how many rows the current one will be split
             for (j=0; j < columns; j++) {
-                if (((Row) rows.get(i)).getCell(j) instanceof Table) {
+                if (rows.get(i).getCell(j) instanceof Table) {
                     isTable=true;
-                    lDummyTable = (Table) ((Row) rows.get(i)).getCell(j);
+                    lDummyTable = (Table) rows.get(i).getCell(j);
                     if ( lDummyTable.getDimension().height > lNewMaxRows ) {
                         lNewMaxRows = lDummyTable.getDimension().height;
                     }
@@ -1108,19 +1113,18 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
             // generate new table
             // set new widths
             // copy old values
-            newRows = new ArrayList(lTotalRows);
+            newRows = new ArrayList<>(lTotalRows);
             for (i = 0; i < lTotalRows; i++) {
                 newRows.add(new Row(lTotalColumns));
             }
-            int lDummyRow = 0, lDummyColumn = 0;        // to remember where we are in the new, larger table
-            Object lDummyElement = null;
+            int lDummyRow = 0, lDummyColumn;        // to remember where we are in the new, larger table
+            TableRectangle lDummyElement;
             for (i=0; i < rows.size(); i++) {
                 lDummyColumn = 0;
-                lNewMaxRows = 1;
                 for (j=0; j < columns; j++) {
-                    if (((Row) rows.get(i)).getCell(j) instanceof Table)       // copy values from embedded table
+                    if (rows.get(i).getCell(j) instanceof Table)       // copy values from embedded table
                     {
-                        lDummyTable = (Table) ((Row) rows.get(i)).getCell(j);
+                        lDummyTable = (Table) rows.get(i).getCell(j);
                         
                         // Work out where columns in table table correspond to columns in current table
                         int[] colMap = new int[lDummyTable.widths.length + 1];
@@ -1156,20 +1160,20 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
                                         lDummyC.setColspan(ot-col);
                                     }
                                     
-                                    ((Row) newRows.get(k + lDummyRow)).addElement(lDummyElement,col);  // use addElement to set reserved status ok in row
+                                    newRows.get(k + lDummyRow).addElement(lDummyElement,col);  // use addElement to set reserved status ok in row
                                 }
                             }
                         }
                     }
                     else        // copy others values
                     {
-                        Object aElement = getElement(i,j);
+                        TableRectangle aElement = getElement(i,j);
                         
                         if (aElement instanceof Cell) {
                             
                             // adjust spans for cell
-                            ((Cell) aElement).setRowspan(((Cell) ((Row) rows.get(i)).getCell(j)).getRowspan() + lDummyHeights[i] - 1);
-                            ((Cell) aElement).setColspan(((Cell) ((Row) rows.get(i)).getCell(j)).getColspan() + lDummyWidths[j] - 1);
+                            ((Cell) aElement).setRowspan(((Cell) rows.get(i).getCell(j)).getRowspan() + lDummyHeights[i] - 1);
+                            ((Cell) aElement).setColspan(((Cell) rows.get(i).getCell(j)).getColspan() + lDummyWidths[j] - 1);
                             
                             // most likely this cell covers a larger area because of the row/cols splits : define not-to-be-filled cells
                             placeCell(newRows,((Cell) aElement), new Point(lDummyRow,lDummyColumn));
@@ -1194,7 +1198,7 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
         try {
             for (int i=0; i < rows.size(); i++) {
                 for (int j=0; j < columns; j++) {
-                    if (!((Row) rows.get(i)).isReserved(j)) {
+                    if (!rows.get(i).isReserved(j)) {
                         addCell(defaultCell, new Point(i, j));
                     }
                 }
@@ -1228,7 +1232,7 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
             // no other content at cells targeted by rowspan/colspan
             for (int i=aLocation.x; i < (aLocation.x + difx); i++) {
                 for (int j=aLocation.y; j < (aLocation.y + dify); j++) {
-                    if (((Row) rows.get(i)).isReserved(j)) {
+                    if (rows.get(i).isReserved(j)) {
                         return false;
                     }
                 }
@@ -1261,10 +1265,12 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
             aCell.setBackgroundColor(defaultCell.getBackgroundColor());
         }
         if (aCell.getHorizontalAlignment() == Element.ALIGN_UNDEFINED) {
-            aCell.setHorizontalAlignment(defaultCell.getHorizontalAlignment());
+            final Optional<HorizontalAlignment> of = HorizontalAlignment.of(defaultCell.getHorizontalAlignment());
+            aCell.setHorizontalAlignment(of.orElse(HorizontalAlignment.UNDEFINED));
         }
         if (aCell.getVerticalAlignment() == Element.ALIGN_UNDEFINED) {
-            aCell.setVerticalAlignment(defaultCell.getVerticalAlignment());
+            final Optional<VerticalAlignment> of = VerticalAlignment.of(defaultCell.getVerticalAlignment());
+            aCell.setVerticalAlignment(of.orElse(VerticalAlignment.UNDEFINED));
         }
     }
     
@@ -1275,9 +1281,9 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
      * @param   aCell       the cell that has to be inserted
      * @param   aPosition   the position where the cell has to be placed
      */
-    private void placeCell(ArrayList someRows, Cell aCell, Point aPosition) {
+    private void placeCell(ArrayList<Row> someRows, Cell aCell, Point aPosition) {
         int i;
-        Row row = null;
+        Row row;
         int rowCount = aPosition.x + aCell.getRowspan() - someRows.size();
         assumeTableDefaults(aCell);
         if ( (aPosition.x + aCell.getRowspan()) > someRows.size() ) {
@@ -1289,13 +1295,13 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
         
         // reserve cell in rows below
         for (i = aPosition.x + 1; i < (aPosition.x  + aCell.getRowspan()); i++) {
-            if ( !((Row) someRows.get(i)).reserve(aPosition.y, aCell.getColspan())) {
+            if ( !someRows.get(i).reserve(aPosition.y, aCell.getColspan())) {
                 
                 // should be impossible to come here :-)
                 throw new RuntimeException(MessageLocalization.getComposedMessage("addcell.error.in.reserve"));
             }
         }
-        row = (Row) someRows.get(aPosition.x);
+        row = someRows.get(aPosition.x);
         row.addElement(aCell, aPosition.y);
         
     }
@@ -1319,7 +1325,7 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
             }
         }
         while (
-        (i < rows.size()) && (j < columns) && (((Row) rows.get(i)).isReserved(j))
+        (i < rows.size()) && (j < columns) && (rows.get(i).isReserved(j))
         );
         curPosition = new Point(i, j);
     }
@@ -1418,7 +1424,7 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
             Element cell;
             PdfPCell pcell;
             for (int i = 0; i < row.getColumns(); i++) {
-                if ((cell = (Element)row.getCell(i)) != null) {
+                if ((cell = row.getCell(i)) != null) {
                     if (cell instanceof Table) {
                         pcell = new PdfPCell(((Table)cell).createPdfPTable());
                     }
@@ -1465,11 +1471,11 @@ public class Table extends Rectangle implements LargeElement, WithHorizontalAlig
      */
     public void flushContent() {        
         this.setNotAddedYet(false);
-        ArrayList headerrows = new ArrayList();
+        ArrayList<Row> headerRows = new ArrayList<>();
         for (int i = 0; i < getLastHeaderRow() + 1; i++) {
-            headerrows.add(rows.get(i));
+            headerRows.add(rows.get(i));
         }
-        rows = headerrows;
+        rows = headerRows;
     }
 
     /**

@@ -79,7 +79,7 @@ import static com.lowagie.text.html.Markup.parseLength;
  */
 public class FactoryProperties {
 
-    public static HashMap followTags = new HashMap();
+    public static Map<String, String> followTags = new HashMap<>();
 
     static {
         followTags.put("i", "i");
@@ -230,9 +230,17 @@ public class FactoryProperties {
      *
      * @param h a HashMap that should have at least a key named
      *          style. After this method is invoked, more keys could be added.
+     *
+     * @deprecated use {@link FactoryProperties#insertStyle(Map<String, String>)} instead. (since 1.2.22)
      */
+    @SuppressWarnings("unchecked")
+    @Deprecated
     public static void insertStyle(HashMap h) {
-        String style = (String) h.get("style");
+        insertStyle((Map<String, String>) h);
+    }
+
+    public static void insertStyle(Map<String, String> h) {
+        String style = h.get("style");
         if (style == null)
             return;
         Properties prop = Markup.parseAttributes(style);

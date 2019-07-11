@@ -88,7 +88,7 @@ public class PdfIndirectReference extends PdfObject {
  */
     
     PdfIndirectReference(int type, int number, int generation) {
-        super(0, new StringBuffer().append(number).append(" ").append(generation).append(" R").toString());
+        super(0, number + " " + generation + " R");
         this.number = number;
         this.generation = generation;
     }
