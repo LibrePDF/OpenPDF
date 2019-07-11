@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf.events;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
@@ -67,7 +68,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class PdfPageEventForwarder implements PdfPageEvent {
 
     /** ArrayList containing all the PageEvents that have to be executed. */
-    protected ArrayList events = new ArrayList();
+    protected List<PdfPageEvent> events = new ArrayList<>();
     
     /** 
      * Add a page event to the forwarder.

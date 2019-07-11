@@ -49,7 +49,7 @@
 package com.lowagie.text.pdf.crypto;
 
 import org.bouncycastle.crypto.BlockCipher;
-import org.bouncycastle.crypto.engines.AESFastEngine;
+import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.bouncycastle.crypto.params.KeyParameter;
@@ -65,7 +65,7 @@ public class AESCipher {
 
   /** Creates a new instance of AESCipher */
   public AESCipher(boolean forEncryption, byte[] key, byte[] iv) {
-    BlockCipher aes = new AESFastEngine();
+    BlockCipher aes = new AESEngine();
     BlockCipher cbc = new CBCBlockCipher(aes);
     bp = new PaddedBufferedBlockCipher(cbc);
     KeyParameter kp = new KeyParameter(key);

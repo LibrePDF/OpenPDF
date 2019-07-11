@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf.events;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -66,7 +67,7 @@ import com.lowagie.text.pdf.PdfPCellEvent;
 public class PdfPCellEventForwarder implements PdfPCellEvent {
 
     /** ArrayList containing all the PageEvents that have to be executed. */
-    protected ArrayList events = new ArrayList();
+    protected List<PdfPCellEvent> events = new ArrayList<>();
     
     /** 
      * Add a page event to the forwarder.
