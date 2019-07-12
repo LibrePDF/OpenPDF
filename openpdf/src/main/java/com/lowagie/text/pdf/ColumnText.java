@@ -1155,7 +1155,7 @@ public class ColumnText {
         while (true) {
             if (compositeElements.isEmpty())
                 return NO_MORE_TEXT;
-            Element element = (Element)compositeElements.getFirst();
+            Element element = compositeElements.getFirst();
             if (element.type() == Element.PARAGRAPH) {
                 Paragraph para = (Paragraph)element;
                 int status = 0;
@@ -1460,7 +1460,7 @@ public class ColumnText {
                     float rowHeight = 0;
                     int index = sub.size() - 1;
                     if (showFooter) index -= footerRows;
-                    PdfPRow last = (PdfPRow)sub.get(index);
+                    PdfPRow last = sub.get(index);
                     if (table.isExtendLastRow(newPageFollows)) {
                         rowHeight = last.getMaxHeights();
                         last.setMaxHeights(yTemp - minY + rowHeight);
@@ -1560,7 +1560,7 @@ public class ColumnText {
      * @since 2.1.2
      */
     public boolean zeroHeightElement() {
-        return composite && !compositeElements.isEmpty() && ((Element)compositeElements.getFirst()).type() == Element.YMARK;
+        return composite && !compositeElements.isEmpty() && compositeElements.getFirst().type() == Element.YMARK;
     }
     
     /**

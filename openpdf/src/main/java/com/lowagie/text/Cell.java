@@ -572,7 +572,7 @@ public class Cell extends TableRectangle implements TextElementArray, WithHorizo
             case 0:
                 return true;
             case 1:
-                Element element = (Element) arrayList.get(0);
+                Element element = arrayList.get(0);
                 switch (element.type()) {
                     case Element.CHUNK:
                         return ((Chunk) element).isEmpty();
@@ -605,7 +605,7 @@ public class Cell extends TableRectangle implements TextElementArray, WithHorizo
      */
     public boolean isTable() {
         return (size() == 1)
-            && (((Element)arrayList.get(0)).type() == Element.TABLE);
+            && (arrayList.get(0).type() == Element.TABLE);
     }
     
     /**

@@ -254,7 +254,7 @@ public class PdfCell extends Rectangle {
                     else {
                         for (Object chunk1 : chunks) {
                             Chunk c = (Chunk) chunk1;
-                            chunk = new PdfChunk(c, (PdfAction) (allActions.get(aCounter++)));
+                            chunk = new PdfChunk(c, (allActions.get(aCounter++)));
                             while ((overflow = line.add(chunk)) != null) {
                                 addLine(line);
                                 line = new PdfLine(currentLeft, currentRight, alignment, currentLineLeading);
