@@ -47,14 +47,14 @@
 
 package com.lowagie.text.html.simpleparser;
 
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 
 /**
  *
@@ -67,6 +67,7 @@ public class IncTable {
     /** Creates a new instance of IncTable */
 
     @Deprecated
+    @SuppressWarnings("unchecked")
     public IncTable(HashMap props) {
         this.props.putAll(props);
     }
@@ -82,9 +83,10 @@ public class IncTable {
     }
 
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void addCols(ArrayList ncols) {
         if (cols == null)
-            cols = new ArrayList<>(ncols);
+            cols = (List<PdfPCell>)ncols;
         else
             cols.addAll(ncols);
     }

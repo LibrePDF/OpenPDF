@@ -122,7 +122,11 @@ public class ChainedProperties {
         return false;
     }
 
+    /**
+     * @deprecated use {@link ChainedProperties#addToChain(String, Map<String, String>)}
+     */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void addToChain(String key, HashMap prop) {
         addToChain(key, (Map<String, String>) prop);
     }

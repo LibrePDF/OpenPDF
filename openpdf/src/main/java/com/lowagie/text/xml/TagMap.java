@@ -67,7 +67,7 @@ import java.util.Map;
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
  */
 
-public class TagMap extends HashMap {
+public class TagMap extends HashMap<String, XmlPeer> {
 
     private static final long serialVersionUID = -6809383366554350820L;
 
@@ -155,6 +155,7 @@ public class TagMap extends HashMap {
          * @param tagMap A Hashmap containing XmlPeer-objects
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public AttributeHandler(HashMap tagMap) {
             this.tagMap = tagMap;
         }
