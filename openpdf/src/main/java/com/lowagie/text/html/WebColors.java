@@ -62,7 +62,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * 
  * @author blowagie
  */
-public class WebColors extends HashMap {
+public class WebColors extends HashMap<String, int[]> {
     
     private static final long serialVersionUID = 3542523100813372896L;
     /** HashMap containing all the names and corresponding color values. */

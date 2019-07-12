@@ -61,7 +61,7 @@ import com.lowagie.text.FontFactory;
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
  */
 
-public class HtmlTagMap extends HashMap {
+public class HtmlTagMap extends HashMap<String, HtmlPeer> {
 
     private static final long serialVersionUID = 5287430058473705350L;
 
