@@ -258,7 +258,7 @@ public class WebColors extends HashMap<String, int[]> {
         if (!NAMES.containsKey(name))
             throw new IllegalArgumentException("Color '" + name
                     + "' not found.");
-        c = (int[]) NAMES.get(name);
+        c = NAMES.get(name);
         return new Color(c[0], c[1], c[2], c[3]);
     }
 }
