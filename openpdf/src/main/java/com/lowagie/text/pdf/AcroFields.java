@@ -1286,6 +1286,17 @@ public class AcroFields {
       }
     }
   }
+  
+  /**
+   * Allows merging the fields by a field reader. One use would be to set the fields by XFDF merging.
+   *
+   * @param fieldReader The fields to merge.
+   * @throws IOException on error
+   * @throws DocumentException on error
+   */
+  public void setFields(XfdfReader fieldReader) throws IOException, DocumentException {
+    setFields((FieldReader) fieldReader);
+  }
 
   /**
    * Allows merging the fields by a field reader. One use would be to set the fields by XFDF merging.

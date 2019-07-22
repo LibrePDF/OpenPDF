@@ -60,6 +60,20 @@ public class PdfNameTree {
 
   private static final int leafSize = 64;
 
+  
+  /**
+   * Writes a name tree to a PdfWriter.
+   *
+   * @param items the item of the name tree. The key is a <CODE>String</CODE> and the value is a <CODE>PdfObject</CODE>. Note that although
+   * the keys are strings only the lower byte is used and no check is made for chars with the same lower byte and different upper byte. This
+   * will generate a wrong tree name.
+   * @param writer the writer
+   * @return the dictionary with the name tree. This dictionary is the one generally pointed to by the key /Dests, for example
+   * @throws IOException on error
+   */
+  public static PdfDictionary writeTree(HashMap<String, ? extends PdfObject> items, PdfWriter writer) throws IOException {
+    return writeTree((Map<String, ? extends PdfObject>) items, writer);
+  }
   /**
    * Writes a name tree to a PdfWriter.
    *
