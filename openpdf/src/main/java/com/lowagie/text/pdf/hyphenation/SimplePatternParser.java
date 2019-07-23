@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -75,7 +76,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
 
     StringBuffer token;
 
-    ArrayList exception;
+    List<Object> exception;
 
     char hyphenChar;
 
@@ -120,8 +121,8 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
         return pat.toString();
     }
 
-    protected ArrayList normalizeException(ArrayList ex) {
-        ArrayList res = new ArrayList();
+    protected List<Object> normalizeException(List<Object> ex) {
+        List<Object> res = new ArrayList<>();
         for (Object item : ex) {
             if (item instanceof String) {
                 String str = (String) item;
@@ -150,7 +151,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
         return res;
     }
 
-    protected String getExceptionWord(ArrayList ex) {
+    protected String getExceptionWord(List<Object> ex) {
         StringBuilder res = new StringBuilder();
         for (Object item : ex) {
             if (item instanceof String) {
@@ -194,7 +195,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
                 exception.add(word);
                 exception = normalizeException(exception);
                 consumer.addException(getExceptionWord(exception),
-                        (ArrayList) exception.clone());
+                        (ArrayList) ((ArrayList) exception).clone());
                 break;
             case ELEM_PATTERNS:
                 consumer.addPattern(getPattern(word),
@@ -224,6 +225,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
      */
     @Override
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void startElement(String tag, HashMap h) {
         startElement(tag, ((Map<String, String>) h));
     }
@@ -245,7 +247,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
                 break;
             case "exceptions":
                 currElement = ELEM_EXCEPTIONS;
-                exception = new ArrayList();
+                exception = new ArrayList<>();
                 break;
             case "hyphen":
                 if (token.length() > 0) {
@@ -271,7 +273,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
                 exception.add(word);
                 exception = normalizeException(exception);
                 consumer.addException(getExceptionWord(exception),
-                        (ArrayList) exception.clone());
+                        (ArrayList)((ArrayList) exception).clone());
                 exception.clear();
                 break;
             case ELEM_PATTERNS:

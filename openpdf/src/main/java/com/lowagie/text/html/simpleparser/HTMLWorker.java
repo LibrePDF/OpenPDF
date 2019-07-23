@@ -90,7 +90,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
     public static final String tagsSupportedString = "ol ul li a pre font span br p div body table td th tr i b u sub sup em strong s strike"
             + " h1 h2 h3 h4 h5 h6 img hr";
-    public static final HashMap tagsSupported = new HashMap();
+    public static final Map<String, Object> tagsSupported = new HashMap<>();
 
     static {
         StringTokenizer tok = new StringTokenizer(tagsSupportedString);
@@ -98,19 +98,19 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
             tagsSupported.put(tok.nextToken(), null);
     }
 
-    protected ArrayList objectList;
+    protected List<Element> objectList;
     protected DocListener document;
     private Paragraph currentParagraph;
     private ChainedProperties cprops = new ChainedProperties();
-    private Stack stack = new Stack();
+    private Stack<Object> stack = new Stack<>();
     private boolean pendingTR = false;
     private boolean pendingTD = false;
     private boolean pendingLI = false;
     private StyleSheet style = new StyleSheet();
     private boolean isPRE = false;
-    private Stack tableState = new Stack();
+    private Stack<Object> tableState = new Stack<>();
     private boolean skipText = false;
-    private HashMap interfaceProps;
+    private Map<String, Object> interfaceProps;
     private FactoryProperties factoryProperties = new FactoryProperties();
 
     /**
@@ -122,11 +122,22 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         this.document = document;
     }
 
-    public static ArrayList parseToList(Reader reader, StyleSheet style) throws IOException {
-        return parseToList(reader, style, null);
+    public static List<Element> parseToList(Reader reader, StyleSheet style) throws IOException {
+        Map<String, Object> interfaceProps = null;
+        return parseToList(reader, style, interfaceProps);
     }
 
-    public static ArrayList parseToList(Reader reader, @Nullable StyleSheet style, HashMap interfaceProps)
+    /**
+     * @deprecated use {@link HTMLWorker#parseToList(Reader, StyleSheet, Map)} since 1.2.22
+     */
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public static List<Element> parseToList(Reader reader, @Nullable StyleSheet style, HashMap interfaceProps)
+            throws IOException {
+        return parseToList(reader, style, (Map<String, Object>) interfaceProps);
+    }
+
+    public static List<Element> parseToList(Reader reader, @Nullable StyleSheet style, Map<String, Object> interfaceProps)
             throws IOException {
         HTMLWorker worker = new HTMLWorker(null);
         if (style != null) {
@@ -134,7 +145,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         }
         worker.document = worker;
         worker.setInterfaceProps(interfaceProps);
-        worker.objectList = new ArrayList();
+        worker.objectList = new ArrayList<>();
         worker.parse(reader);
         return worker.objectList;
     }
@@ -147,11 +158,21 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         this.style = style;
     }
 
-    public HashMap getInterfaceProps() {
+    public Map<String, Object> getInterfaceProps() {
         return interfaceProps;
     }
 
+    /**
+     *
+     * @deprecated use {@link HTMLWorker#setInterfaceProps(Map<String, Object>)} since 1.2.22
+     */
+    @SuppressWarnings("unchecked")
+    @Deprecated
     public void setInterfaceProps(HashMap interfaceProps) {
+        setInterfaceProps((Map<String, Object>) interfaceProps);
+    }
+
+    public void setInterfaceProps(Map<String, Object> interfaceProps) {
         this.interfaceProps = interfaceProps;
         FontProvider ff = null;
         if (interfaceProps != null)
@@ -182,7 +203,11 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         cprops.addToChain("body", h);
     }
 
+    /**
+     * @deprecated use {@link HTMLWorker#startElement(String, Map<String, String>)}  } since 1.2.22
+     */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void startElement(String tag, HashMap h) {
         startElement(tag, (Map<String, String>) h);
     }
@@ -193,7 +218,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         }
         try {
             this.style.applyStyle(tag, style);
-            String follow = (String) FactoryProperties.followTags.get(tag);
+            String follow = FactoryProperties.followTags.get(tag);
             if (follow != null) {
                 Map<String, String> prop = new HashMap<>();
                 prop.put(follow, null);
@@ -284,7 +309,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                         img = ip.getImage(src, (HashMap) style, cprops, document);
                     }
                     if (img == null) {
-                        HashMap images = (HashMap) interfaceProps.get("img_static");
+                        Map images = (HashMap) interfaceProps.get("img_static");
                         if (images != null) {
                             Image tim = (Image) images.get(src);
                             if (tim != null) {
@@ -462,7 +487,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         if (!tagsSupported.containsKey(tag))
             return;
         try {
-            String follow = (String) FactoryProperties.followTags.get(tag);
+            String follow = FactoryProperties.followTags.get(tag);
             if (follow != null) {
                 cprops.removeChain(follow);
                 return;
@@ -483,8 +508,8 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 }
                 if (!skip) {
                     cprops.findProperty("href").ifPresent(href -> {
-                        ArrayList chunks = currentParagraph.getChunks();
-                        for (Object chunk : chunks) {
+                        List<Element> chunks = currentParagraph.getChunks();
+                        for (Element chunk : chunks) {
                             Chunk ck = (Chunk) chunk;
                             ck.setAnchor(href);
                         }
@@ -530,7 +555,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 if (stack.empty())
                     document.add((Element) obj);
                 else
-                    ((TextElementArray) stack.peek()).add(obj);
+                    ((TextElementArray) stack.peek()).add((Element) obj);
                 return;
             }
             if (tag.equals(HtmlTags.LISTITEM)) {
@@ -555,7 +580,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 }
                 ListItem item = (ListItem) obj;
                 ((com.lowagie.text.List) list).add(item);
-                ArrayList cks = item.getChunks();
+                List<Element> cks = item.getChunks();
                 if (!cks.isEmpty())
                     item.getListSymbol()
                             .setFont(((Chunk) cks.get(0)).getFont());

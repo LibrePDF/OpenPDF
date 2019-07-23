@@ -1,5 +1,8 @@
 package com.lowagie.text.pdf;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import com.lowagie.text.Annotation;
 import com.lowagie.text.Document;
 import com.lowagie.text.Rectangle;
@@ -27,4 +30,19 @@ public class SimplePdfTest {
 
     }
 
+    @Test
+    void testTryWithResources() throws Exception {
+        try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
+            Document document = new Document();
+            FileOutputStream os = new FileOutputStream(File.createTempFile("temp-file-name", ".pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, os)
+        ) {
+            document.open();
+            final PdfContentByte cb = writer.getDirectContent();
+
+            document.newPage();
+            PdfImportedPage page = writer.getImportedPage(reader, 1);
+            cb.addTemplate(page, 1, 0, 0, 1, 0, 0);
+        }
+    }
 }

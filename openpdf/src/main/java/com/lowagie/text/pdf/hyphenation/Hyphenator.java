@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Hashtable;
+import java.util.Map;
 
 import com.lowagie.text.pdf.BaseFont;
 
@@ -32,7 +33,7 @@ import com.lowagie.text.pdf.BaseFont;
 public class Hyphenator {
     
     /** TODO: Don't use statics */
-    private static Hashtable hyphenTrees = new Hashtable();
+    private static Map<String, HyphenationTree> hyphenTrees = new Hashtable<>();
 
     private HyphenationTree hyphenTree = null;
     private int remainCharCount = 2;
@@ -69,10 +70,10 @@ public class Hyphenator {
         }
             // first try to find it in the cache
         if (hyphenTrees.containsKey(key)) {
-            return (HyphenationTree)hyphenTrees.get(key);
+            return hyphenTrees.get(key);
         }
         if (hyphenTrees.containsKey(lang)) {
-            return (HyphenationTree)hyphenTrees.get(lang);
+            return hyphenTrees.get(lang);
         }
 
         HyphenationTree hTree = getResourceHyphenationTree(key);

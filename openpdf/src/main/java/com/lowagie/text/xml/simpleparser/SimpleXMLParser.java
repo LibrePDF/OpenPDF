@@ -72,7 +72,6 @@ import java.util.Stack;
  * </ul>
  * <p>
  */
-@Deprecated
 public final class SimpleXMLParser {
     /** possible states */
     private final static int UNKNOWN = 0;
@@ -92,7 +91,7 @@ public final class SimpleXMLParser {
     private final static int ATTRIBUTE_VALUE = 14;
     
     /** the state stack */
-    Stack stack;
+    Stack<Integer> stack;
     /** The current character. */
     int character = 0;
     /** The previous character. */
@@ -121,7 +120,7 @@ public final class SimpleXMLParser {
     /** current tagname */
     String tag = null;
     /** current attributes */
-    HashMap attributes = null;
+    Map<String, String> attributes = null;
     /** The handler to which we are going to forward document content */
     SimpleXMLDocHandler doc;
     /** The handler to which we are going to forward comments. */
@@ -143,7 +142,7 @@ public final class SimpleXMLParser {
         this.doc = doc;
         this.comment = comment;
         this.html = html;
-        stack = new Stack();
+        stack = new Stack<>();
         state = html ? TEXT : UNKNOWN;
     }
     
@@ -462,7 +461,7 @@ public final class SimpleXMLParser {
      */
     private int restoreState() {
         if(!stack.empty())
-            return (Integer) stack.pop();
+            return stack.pop();
         else
             return UNKNOWN;
     }
@@ -499,7 +498,7 @@ public final class SimpleXMLParser {
         case QUOTE:
         case ATTRIBUTE_VALUE:
             attributevalue = text.toString();
-            attributes.put(attributekey,attributevalue);
+            attributes.put(attributekey, attributevalue);
             break;
         default:
             // do nothing
@@ -511,7 +510,7 @@ public final class SimpleXMLParser {
      */
     private void initTag() {
         tag = null;
-        attributes = new HashMap();
+        attributes = new HashMap<>();
     }
     /** Sets the name of the tag. */
     private void doTag() {
@@ -528,7 +527,7 @@ public final class SimpleXMLParser {
     private void processTag(boolean start) {
         if (start) {
             nested++;
-            doc.startElement(tag, (Map<String, String>) attributes);
+            doc.startElement(tag, attributes);
         }
         else {
             nested--;

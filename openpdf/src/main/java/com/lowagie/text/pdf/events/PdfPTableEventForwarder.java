@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf.events;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
@@ -65,7 +66,7 @@ import com.lowagie.text.pdf.PdfPTableEvent;
 public class PdfPTableEventForwarder implements PdfPTableEvent {
 
     /** ArrayList containing all the PageEvents that have to be executed. */
-    protected ArrayList events = new ArrayList();
+    protected List<PdfPTableEvent> events = new ArrayList<>();
     
     /** 
      * Add a page event to the forwarder.

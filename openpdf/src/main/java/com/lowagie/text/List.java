@@ -118,7 +118,7 @@ public class List implements TextElementArray {
     // member variables
     
     /** This is the <CODE>ArrayList</CODE> containing the different <CODE>ListItem</CODE>s. */
-    protected ArrayList list = new ArrayList();
+    protected java.util.List<Element> list = new ArrayList<>();
     
     /** Indicates if the list has to be numbered. */
     protected boolean numbered = false;
@@ -250,10 +250,10 @@ public class List implements TextElementArray {
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
-        ArrayList tmp = new ArrayList();
-        for (Object o : list) {
-            tmp.addAll(((Element) o).getChunks());
+    public java.util.List<Element> getChunks() {
+        java.util.List<Element> tmp = new ArrayList<>();
+        for (Element o : list) {
+            tmp.addAll(o.getChunks());
         }
         return tmp;
     }
@@ -266,7 +266,7 @@ public class List implements TextElementArray {
      * @param    o        the object to add.
      * @return true if adding the object succeeded
      */
-    public boolean add(Object o) {
+    public boolean add(Element o) {
         if (o instanceof ListItem) {
             ListItem item = (ListItem) o;
             if (numbered || lettered) {
@@ -286,19 +286,20 @@ public class List implements TextElementArray {
             item.setIndentationRight(0);
             return list.add(item);
         }
-        else if (o instanceof List) {
-            List nested = (List) o;
-            nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
-            first--;
-            return list.add(nested);
-        }
-        else if (o instanceof String) {
-            return this.add(new ListItem((String) o));
-        }
         return false;
     }
-    
-    // extra methods
+
+    public boolean add(List nested) {
+        nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
+        first--;
+        return list.add(nested);
+    }
+
+    public boolean add(String o) {
+        return this.add(new ListItem(o));
+    }
+
+        // extra methods
     
     /** Makes sure all the items in the list have the same indentation. */
     public void normalizeIndentation() {
@@ -415,7 +416,7 @@ public class List implements TextElementArray {
      *
      * @return    an <CODE>ArrayList</CODE> containing <CODE>ListItem</CODE>s.
      */
-    public ArrayList getItems() {
+    public java.util.List<Element> getItems() {
         return list;
     }
     
