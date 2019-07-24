@@ -167,6 +167,8 @@ public class PdfContentByte {
     public static final int TEXT_RENDER_MODE_FILL_STROKE_CLIP = 6;
     /** A possible text rendering value */
     public static final int TEXT_RENDER_MODE_CLIP = 7;
+    
+    static final float MIN_FONT_SIZE = 0.0001f;
 
     private static final float[] unitRect = {0, 0, 0, 1, 1, 0, 1, 1};
     // membervariables
@@ -1384,8 +1386,9 @@ public class PdfContentByte {
      */
     public void setFontAndSize(BaseFont bf, float size) {
         checkWriter();
-        if (size < 0.0001f && size > -0.0001f)
+        if (size < MIN_FONT_SIZE && size > -MIN_FONT_SIZE) {
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("font.size.too.small.1", String.valueOf(size)));
+        }
         state.size = size;
         state.fontDetails = writer.addSimple(bf);
         PageResources prs = getPageResources();
