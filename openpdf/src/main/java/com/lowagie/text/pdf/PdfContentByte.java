@@ -59,15 +59,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.lowagie.text.Annotation;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-
-import com.lowagie.text.Image;
-import com.lowagie.text.ImgJBIG2;
-import com.lowagie.text.Rectangle;
+import com.lowagie.text.*;
 import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.exceptions.IllegalPdfSyntaxException;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfXConformanceImp;
@@ -168,6 +161,8 @@ public class PdfContentByte {
     /** A possible text rendering value */
     public static final int TEXT_RENDER_MODE_CLIP = 7;
 
+    static final float MIN_FONT_SIZE = 0.0001f;
+
     private static final float[] unitRect = {0, 0, 0, 1, 1, 0, 1, 1};
     // membervariables
 
@@ -190,7 +185,7 @@ public class PdfContentByte {
     /** The separator between commands.
      */
     protected int separator = '\n';
-    
+
     private int mcDepth = 0;
     private boolean inText = false;
     /** The list were we save/restore the layer depth */
@@ -232,7 +227,8 @@ public class PdfContentByte {
      * @return      a <CODE>String</CODE>
      */
 
-    public String toString() {
+    @Override
+	public String toString() {
         return content.toString();
     }
 
@@ -1384,7 +1380,7 @@ public class PdfContentByte {
      */
     public void setFontAndSize(BaseFont bf, float size) {
         checkWriter();
-        if (size < 0.0001f && size > -0.0001f)
+        if (size < MIN_FONT_SIZE && size > -MIN_FONT_SIZE)
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("font.size.too.small.1", String.valueOf(size)));
         state.size = size;
         state.fontDetails = writer.addSimple(bf);
@@ -1436,13 +1432,13 @@ public class PdfContentByte {
         showText2(text);
         content.append("Tj").append_i(separator);
     }
-    
+
     public void showText(GlyphVector glyphVector) {
         byte[] b = state.fontDetails.convertToBytes(glyphVector);
         escapeString(b, content);
         content.append("Tj").append_i(separator);
     }
-    
+
     /**
      * Constructs a kern array for a text in a certain font
      * @param text the text
@@ -3024,7 +3020,7 @@ public class PdfContentByte {
         PdfDictionary dict = new PdfDictionary();
         beginMarkedContentSequence(struc, dict);
     }
-    
+
     public void beginMarkedContentSequence(PdfStructureElement struc, PdfDictionary dict) {
         PdfObject obj = struc.get(PdfName.K);
         int mark = pdf.getMarkPoint();
@@ -3119,12 +3115,12 @@ public class PdfContentByte {
     public void beginMarkedContentSequence(PdfName tag) {
         beginMarkedContentSequence(tag, null, false);
     }
-    
+
     /**
      * Checks for any dangling state: Mismatched save/restore state, begin/end text,
      * begin/end layer, or begin/end marked content sequence.
      * If found, this function will throw.  This function is called automatically
-     * during a reset() (from Document.newPage() for example), and before writing 
+     * during a reset() (from Document.newPage() for example), and before writing
      * itself out in toPdf().
      * One possible cause: not calling myPdfGraphics2D.dispose() will leave dangling
      *                     saveState() calls.
