@@ -355,8 +355,9 @@ public class PdfGraphics2D extends Graphics2D {
      * @see Graphics2D#drawString(String, float, float)
      */
     public void drawString(String s, float x, float y) {
-        if (s.length() == 0)
+        if (s.length() == 0 || (!Float.isFinite(fontSize) || fontSize < PdfContentByte.MIN_FONT_SIZE)) {
             return;
+        }
         setFillPaint();
         if (onlyShapes) {
             drawGlyphVector(this.font.layoutGlyphVector(getFontRenderContext(), s.toCharArray(), 0, s.length(), java.awt.Font.LAYOUT_LEFT_TO_RIGHT), x, y);

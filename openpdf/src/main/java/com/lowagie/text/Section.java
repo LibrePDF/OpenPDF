@@ -231,8 +231,8 @@ public class Section extends java.util.ArrayList<Element> implements TextElement
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public java.util.List<Element> getChunks() {
-        java.util.List<Element> tmp = new ArrayList<>();
+    public java.util.ArrayList<Element> getChunks() {
+        java.util.ArrayList<Element> tmp = new ArrayList<>();
         for (Element o : this) {
             tmp.addAll(o.getChunks());
         }

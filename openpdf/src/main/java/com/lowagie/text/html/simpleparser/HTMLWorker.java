@@ -98,7 +98,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
             tagsSupported.put(tok.nextToken(), null);
     }
 
-    protected List<Element> objectList;
+    protected ArrayList<Element> objectList;
     protected DocListener document;
     private Paragraph currentParagraph;
     private ChainedProperties cprops = new ChainedProperties();
@@ -122,7 +122,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         this.document = document;
     }
 
-    public static List<Element> parseToList(Reader reader, StyleSheet style) throws IOException {
+    public static ArrayList<Element> parseToList(Reader reader, StyleSheet style) throws IOException {
         Map<String, Object> interfaceProps = null;
         return parseToList(reader, style, interfaceProps);
     }
@@ -132,12 +132,12 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
      */
     @Deprecated
     @SuppressWarnings("unchecked")
-    public static List<Element> parseToList(Reader reader, @Nullable StyleSheet style, HashMap interfaceProps)
+    public static ArrayList<Element> parseToList(Reader reader, @Nullable StyleSheet style, HashMap interfaceProps)
             throws IOException {
         return parseToList(reader, style, (Map<String, Object>) interfaceProps);
     }
 
-    public static List<Element> parseToList(Reader reader, @Nullable StyleSheet style, Map<String, Object> interfaceProps)
+    public static ArrayList<Element> parseToList(Reader reader, @Nullable StyleSheet style, Map<String, Object> interfaceProps)
             throws IOException {
         HTMLWorker worker = new HTMLWorker(null);
         if (style != null) {

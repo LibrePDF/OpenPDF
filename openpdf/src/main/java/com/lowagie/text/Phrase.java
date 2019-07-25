@@ -236,8 +236,8 @@ public class Phrase extends java.util.ArrayList<Element> implements TextElementA
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public java.util.List<Element> getChunks() {
-        java.util.List<Element> tmp = new ArrayList<>();
+    public java.util.ArrayList<Element> getChunks() {
+        java.util.ArrayList<Element> tmp = new ArrayList<>();
         for (Element element : this) {
             tmp.addAll(element.getChunks());
         }

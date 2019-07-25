@@ -344,7 +344,7 @@ public interface Element {
      * @return an <CODE>ArrayList</CODE>
      */
 
-    java.util.List<Element> getChunks();
+    java.util.ArrayList<Element> getChunks();
 
     /**
      * Gets the content of the text element.
