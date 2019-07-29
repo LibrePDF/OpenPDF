@@ -45,6 +45,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 ## Projects using OpenPDF ##
 - Spring Framework https://github.com/spring-projects/spring-framework
 - flyingsaucer https://github.com/flyingsaucerproject/flyingsaucer
+- Confluence PDF Export
 - OpenCMS, Nuxeo Web Framework, QR Invoice Library and many closed source commercial applications as well.
 - Full list here: https://mvnrepository.com/artifact/com.github.librepdf/openpdf/usages
 
