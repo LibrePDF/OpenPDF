@@ -372,8 +372,9 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      * @return the comparison
      */    
     public int compare(Object o1, Object o2) {
-        int m1 = ((int[])o1)[0];
-        int m2 = ((int[])o2)[0];
+
+        int m1 = (o1 != null) ? ((int[])o1)[0] : 0;
+        int m2 = (o2 != null) ? ((int[])o2)[0] : 0;
         return Integer.compare(m1, m2);
     }
     
@@ -387,9 +388,9 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      * @throws DocumentException error in generating the object
      */
     void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException, IOException {
-        HashMap longTag = (HashMap)params[0];
+        HashMap<Integer, int[]> longTag = (HashMap<Integer, int[]>)params[0];
         addRangeUni(longTag, true, subset);
-        Object[] metrics = longTag.values().toArray();
+        int[][] metrics = longTag.values().toArray(new int[0][]);
         Arrays.sort(metrics, this);
         PdfIndirectReference ind_font = null;
         PdfObject pobj = null;
