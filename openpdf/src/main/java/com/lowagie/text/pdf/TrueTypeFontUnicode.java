@@ -294,7 +294,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      * @param metrics the horizontal width metrics
      * @return a stream
      */    
-    private PdfDictionary getCIDFontType2(PdfIndirectReference fontDescriptor, String subsetPrefix, Object[] metrics) {
+    private PdfDictionary getCIDFontType2(PdfIndirectReference fontDescriptor, String subsetPrefix, int[][] metrics) {
         PdfDictionary dic = new PdfDictionary(PdfName.FONT);
         // sivan; cff
         if (cff) {
@@ -318,9 +318,8 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
             StringBuilder buf = new StringBuilder("[");
             int lastNumber = -10;
             boolean firstTime = true;
-            for (Object metric1 : metrics) {
-                int[] metric = (int[]) metric1;
-                if (metric[1] == 1000)
+            for (int[] metric : metrics) {
+                if (metric == null || metric[1] == 1000)
                     continue;
                 int m = metric[0];
                 if (m == lastNumber + 1) {
