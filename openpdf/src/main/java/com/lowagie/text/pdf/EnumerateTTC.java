@@ -76,7 +76,7 @@ class EnumerateTTC extends TrueTypeFont{
     }
     
     void findNames() throws DocumentException, IOException {
-        tables = new HashMap();
+        tables = new HashMap<>();
         
         try {
             String mainTag = readStandardString(4);
