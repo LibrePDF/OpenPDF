@@ -56,7 +56,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.utils.NumberUtilities;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * @author psoares
@@ -64,7 +64,7 @@ import java.util.List;
 public class IncCell implements TextElementArray {
 
     private final PdfPCell cell;
-    private List<Element> chunks = new ArrayList<>();
+    private ArrayList<Element> chunks = new ArrayList<>();
 
     /**
      * Creates a new instance of IncCell
@@ -122,7 +122,7 @@ public class IncCell implements TextElementArray {
     }
 
     @Override
-    public List<Element> getChunks() {
+    public ArrayList<Element> getChunks() {
         return chunks;
     }
 

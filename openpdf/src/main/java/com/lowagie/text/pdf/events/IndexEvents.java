@@ -328,7 +328,7 @@ public class IndexEvents extends PdfPageEventHelper {
          */
         public int getPageNumber() {
             int rt = -1;
-            Integer i = (Integer) indextag.get(tag);
+            Integer i = indextag.get(tag);
             if (i != null) {
                 rt = i;
             }

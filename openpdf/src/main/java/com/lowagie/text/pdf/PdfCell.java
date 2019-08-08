@@ -254,7 +254,7 @@ public class PdfCell extends Rectangle {
                     else {
                         for (Object chunk1 : chunks) {
                             Chunk c = (Chunk) chunk1;
-                            chunk = new PdfChunk(c, (PdfAction) (allActions.get(aCounter++)));
+                            chunk = new PdfChunk(c, (allActions.get(aCounter++)));
                             while ((overflow = line.add(chunk)) != null) {
                                 addLine(line);
                                 line = new PdfLine(currentLeft, currentRight, alignment, currentLineLeading);
@@ -562,11 +562,11 @@ public class PdfCell extends Rectangle {
      * @return    an <CODE>ArrayList</CODE> of <CODE>PdfLine</CODE>s
      */
 
-    public java.util.List<PdfLine> getLines(float top, float bottom) {
+    public java.util.ArrayList<PdfLine> getLines(float top, float bottom) {
         float lineHeight;
         float currentPosition = Math.min(getTop(), top);
         setTop(currentPosition + cellspacing);
-        java.util.List<PdfLine> result = new ArrayList<>();
+        java.util.ArrayList<PdfLine> result = new ArrayList<>();
 
         // if the bottom of the page is higher than the top of the cell: do nothing
         if (getTop() < bottom) {
@@ -619,7 +619,7 @@ public class PdfCell extends Rectangle {
      * @return    an <CODE>ArrayList</CODE> of <CODE>Image</CODE>s
      */
 
-    public java.util.List<Image> getImages(float top, float bottom) {
+    public java.util.ArrayList<Image> getImages(float top, float bottom) {
 
         // if the bottom of the page is higher than the top of the cell: do nothing
         if (getTop() < bottom) {
@@ -629,7 +629,7 @@ public class PdfCell extends Rectangle {
         // initializations
         Image image;
         float height;
-        java.util.List<Image> result = new ArrayList<>();
+        java.util.ArrayList<Image> result = new ArrayList<>();
         // we loop over the images
         for (Iterator<Image> i = images.iterator(); i.hasNext() && !header;) {
             image = i.next();

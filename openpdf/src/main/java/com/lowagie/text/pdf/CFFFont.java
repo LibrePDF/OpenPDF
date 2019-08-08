@@ -1112,10 +1112,6 @@ public class CFFFont {
                     fonts[j].charsetOffset = (Integer) args[0];
                     
                 }
-                else if (Objects.equals(key, "Encoding")){
-                    fonts[j].encodingOffset = (Integer) args[0];
-                    ReadEncoding(fonts[j].encodingOffset);
-                }
                 else if (Objects.equals(key, "CharStrings")) {
                     fonts[j].charstringsOffset = (Integer) args[0];
                     //System.err.println("charstrings "+fonts[j].charstringsOffset);
@@ -1167,12 +1163,4 @@ public class CFFFont {
         }
         //System.err.println("CFF: done");
     }
-    
-    // ADDED BY Oren & Ygal
-    
-    void ReadEncoding(int nextIndexOffset){
-        int format;
-        seek(nextIndexOffset);
-        format = getCard8();
-    }    
 }

@@ -236,8 +236,8 @@ public class Phrase extends java.util.ArrayList<Element> implements TextElementA
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public java.util.List<Element> getChunks() {
-        java.util.List<Element> tmp = new ArrayList<>();
+    public java.util.ArrayList<Element> getChunks() {
+        java.util.ArrayList<Element> tmp = new ArrayList<>();
         for (Element element : this) {
             tmp.addAll(element.getChunks());
         }
@@ -412,8 +412,7 @@ public class Phrase extends java.util.ArrayList<Element> implements TextElementA
      * @param    object        the object to add.
      */
     protected void addSpecial(Object object) {
-        //TODO: remove this comment
-//        super.add(object);
+        super.add((Element) object);
     }
 
     // other methods that change the member variables
@@ -491,7 +490,7 @@ public class Phrase extends java.util.ArrayList<Element> implements TextElementA
             case 0:
                 return true;
             case 1:
-                Element element = (Element) get(0);
+                Element element = get(0);
                 return element.type() == Element.CHUNK && ((Chunk) element).isEmpty();
             default:
                     return false;

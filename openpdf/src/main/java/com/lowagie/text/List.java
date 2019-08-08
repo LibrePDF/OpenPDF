@@ -250,8 +250,8 @@ public class List implements TextElementArray {
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public java.util.List<Element> getChunks() {
-        java.util.List<Element> tmp = new ArrayList<>();
+    public java.util.ArrayList<Element> getChunks() {
+        java.util.ArrayList<Element> tmp = new ArrayList<>();
         for (Element o : list) {
             tmp.addAll(o.getChunks());
         }

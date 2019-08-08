@@ -35,8 +35,8 @@ public class SimplePdfTest {
         try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
             Document document = new Document();
             FileOutputStream os = new FileOutputStream(File.createTempFile("temp-file-name", ".pdf"));
-            PdfWriter writer = PdfWriter.getInstance(document, os);
-            ) {
+            PdfWriter writer = PdfWriter.getInstance(document, os)
+        ) {
             document.open();
             final PdfContentByte cb = writer.getDirectContent();
 

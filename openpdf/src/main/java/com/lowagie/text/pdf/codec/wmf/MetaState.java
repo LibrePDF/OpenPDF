@@ -214,7 +214,7 @@ public class MetaState {
         MetaState state = null;
         while (pops-- != 0) {
             cb.restoreState();
-            state = (MetaState)savedStates.pop();
+            state = savedStates.pop();
         }
         setMetaState(state);
     }

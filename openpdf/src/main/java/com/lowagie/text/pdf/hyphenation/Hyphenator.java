@@ -70,10 +70,10 @@ public class Hyphenator {
         }
             // first try to find it in the cache
         if (hyphenTrees.containsKey(key)) {
-            return (HyphenationTree)hyphenTrees.get(key);
+            return hyphenTrees.get(key);
         }
         if (hyphenTrees.containsKey(lang)) {
-            return (HyphenationTree)hyphenTrees.get(lang);
+            return hyphenTrees.get(lang);
         }
 
         HyphenationTree hTree = getResourceHyphenationTree(key);

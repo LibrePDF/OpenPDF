@@ -146,7 +146,7 @@ public class Row implements Element, WithHorizontalAlignment {
      *
      * @return  an <CODE>ArrayList</CODE>
      */
-    public java.util.List<Element> getChunks() {
+    public java.util.ArrayList<Element> getChunks() {
         return new ArrayList<>();
     }
     

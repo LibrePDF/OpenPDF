@@ -870,7 +870,7 @@ public class HtmlWriter extends DocWriter {
                 // contents
                 Element cell;
                 for (int i = 0; i < row.getColumns(); i++) {
-                    if ((cell = (Element) row.getCell(i)) != null) {
+                    if ((cell = row.getCell(i)) != null) {
                         write(cell, indent + 1);
                     }
                 }
