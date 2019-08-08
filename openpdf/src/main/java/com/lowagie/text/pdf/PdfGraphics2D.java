@@ -92,13 +92,17 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderableImage;
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.lowagie.text.pdf.internal.PolylineShape;
 import java.util.Locale;
@@ -178,6 +182,8 @@ public class PdfGraphics2D extends Graphics2D {
 
     // Added by Alexej Suchov
     private Paint realPaint;
+    
+    private final CompositeFontDrawer compositeFontDrawer = new CompositeFontDrawer();
 
     private PdfGraphics2D() {
         dg2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -363,10 +369,39 @@ public class PdfGraphics2D extends Graphics2D {
             drawGlyphVector(this.font.layoutGlyphVector(getFontRenderContext(), s.toCharArray(), 0, s.length(), java.awt.Font.LAYOUT_LEFT_TO_RIGHT), x, y);
 //            Use the following line to compile in JDK 1.3    
 //            drawGlyphVector(this.font.createGlyphVector(getFontRenderContext(), s), x, y);
+        } else {
+            double width = 0;
+            if (CompositeFontDrawer.isSupported() && compositeFontDrawer.isCompositeFont(font)) {
+                width = compositeFontDrawer.drawString(s, font, x, y, this::getCachedBaseFont, this::drawString);
+            } else {
+                // Splitting string to the parts depending on they visibility preserves
+                // the position of the visible parts of string and prevents alignment of the text in width
+                // (increasing value of the character spacing parameter of the PdfContentByte)
+                List<String> substrings = splitIntoSubstringsByVisibility(s);
+                for (String str : substrings) {
+                    width += drawString(str, baseFont, x + width, y);
+                }
+            }
+            if(underline) {
+                // These two are supposed to be taken from the .AFM file
+                //int UnderlinePosition = -100;
+                int UnderlineThickness = 50;
+                //
+                double d = asPoints(UnderlineThickness, (int)fontSize);
+                Stroke savedStroke = originalStroke;
+                setStroke(new BasicStroke((float)d));
+                y = (float)(y + asPoints(UnderlineThickness, (int)fontSize));
+                Line2D line = new Line2D.Double(x, y, width+x, y);
+                draw(line);
+                setStroke(savedStroke);
+            }
         }
-        else {
-            boolean restoreTextRenderingMode = false;
-            AffineTransform at = getTransform();
+    }
+    
+    private double drawString(String s, BaseFont baseFont, double x, double y) {
+        boolean restoreTextRenderingMode = false;
+        AffineTransform at = getTransform();
+        try {
             AffineTransform at2 = getTransform();
             at2.translate(x, y);
             at2.concatenate(font.getTransform());
@@ -380,40 +415,42 @@ public class PdfGraphics2D extends Graphics2D {
             cb.setFontAndSize(baseFont, fontSize);
             // Check if we need to simulate an italic font.
             if (font.isItalic()) {
-            	 float angle = baseFont.getFontDescriptor(BaseFont.ITALICANGLE, 1000);
-                 float angle2 = font.getItalicAngle();
-                 // When there are different fonts for italic, bold, italic bold
-                 // the font.getName() will be different from the font.getFontName()
-                 // value. When they are the same value then we are normally dealing
-                 // with a single font that has been made into an italic or bold
-                 // font. When there are only a plain and a bold font available,
-                 // we need to enter this logic too.
-                 if (Objects.equals(font.getFontName(), font.getName()) || (angle == 0f && angle2 == 0f)) {
-                	 // We don't have an italic version of this font so we need
-                	 // to set the font angle ourselves to produce an italic font.
-                	 if (angle2 == 0) {
-                		 // The JavaVM didn't have an angle setting for making
-                		 // the font an italic font so use a default of
-                		 // italic angle of 15 degrees.
-                		 angle2 = 15.0f;
-                	 } else {
-                		 // This sign of the angle for Java and PDF seams
-                		 // seams to be reversed.
-                		 angle2 = -angle2;
-                	 }
-                	 if (angle == 0) {
-                		 mx[2] = angle2 / 100.0f;
-                	 }
-                 }
-            } 
-            cb.setTextMatrix((float)mx[0], (float)mx[1], (float)mx[2], (float)mx[3], (float)mx[4], (float)mx[5]);
-            Float fontTextAttributeWidth = (Float)font.getAttributes().get(TextAttribute.WIDTH);
-            fontTextAttributeWidth = (fontTextAttributeWidth == null)
-                                     ? TextAttribute.WIDTH_REGULAR
-                                     : fontTextAttributeWidth;
-            if (!TextAttribute.WIDTH_REGULAR.equals(fontTextAttributeWidth))
+                float angle = baseFont.getFontDescriptor(BaseFont.ITALICANGLE, 1000);
+                float angle2 = font.getItalicAngle();
+                // When there are different fonts for italic, bold, italic bold
+                // the font.getName() will be different from the font.getFontName()
+                // value. When they are the same value then we are normally dealing
+                // with a single font that has been made into an italic or bold
+                // font. When there are only a plain and a bold font available,
+                // we need to enter this logic too.
+                if (Objects.equals(font.getFontName(), font.getName()) || (angle == 0f && angle2 == 0f)) {
+                    // We don't have an italic version of this font so we need
+                    // to set the font angle ourselves to produce an italic font.
+                    if (angle2 == 0) {
+                        // The JavaVM didn't have an angle setting for making
+                        // the font an italic font so use a default of
+                        // italic angle of 15 degrees.
+                        angle2 = 15.0f;
+                    } else {
+                        // This sign of the angle for Java and PDF seams
+                        // seams to be reversed.
+                        angle2 = -angle2;
+                    }
+                    if (angle == 0) {
+                         mx[2] = angle2 / 100.0f;
+                    }
+                }
+           }
+           cb.setTextMatrix((float)mx[0], (float)mx[1], (float)mx[2], (float)mx[3], (float)mx[4], (float)mx[5]);
+           Float fontTextAttributeWidth = (Float)font.getAttributes().get(TextAttribute.WIDTH);
+           fontTextAttributeWidth = (fontTextAttributeWidth == null)
+                                    ? TextAttribute.WIDTH_REGULAR
+                                    : fontTextAttributeWidth;
+
+            if (!TextAttribute.WIDTH_REGULAR.equals(fontTextAttributeWidth)) {
                 cb.setHorizontalScaling(100.0f / fontTextAttributeWidth);
-            
+            }
+
             // Check if we need to simulate a bold font.
             // Do nothing if the BaseFont is already bold. This test is not foolproof but it will work most of the times.
             if (!baseFont.getPostscriptFontName().toLowerCase(Locale.ROOT).contains("bold")) {
@@ -456,18 +493,19 @@ public class PdfGraphics2D extends Graphics2D {
                 float scale = 1000 / font.getSize2D();
                 Font derivedFont = font.deriveFont(AffineTransform.getScaleInstance(scale, scale));
                 width = derivedFont.getStringBounds(s, getFontRenderContext()).getWidth();
-                if (derivedFont.isTransformed())
+                if (derivedFont.isTransformed()) {
                     width /= scale;
+                }
             }
             // if the hyperlink flag is set add an action to the text
             Object url = getRenderingHint(HyperLinkKey.KEY_INSTANCE);
-            if (url != null && !url.equals(HyperLinkKey.VALUE_HYPERLINKKEY_OFF))
-            {
+            if (url != null && !url.equals(HyperLinkKey.VALUE_HYPERLINKKEY_OFF)) {
                 float scale = 1000 / font.getSize2D();
                 Font derivedFont = font.deriveFont(AffineTransform.getScaleInstance(scale, scale));
                 double height = derivedFont.getStringBounds(s, getFontRenderContext()).getHeight();
-                if (derivedFont.isTransformed())
+                if (derivedFont.isTransformed()) {
                     height /= scale;
+                }
                 double leftX = cb.getXTLM();
                 double leftY = cb.getYTLM();
                 PdfAction action = new  PdfAction(url.toString());
@@ -481,30 +519,19 @@ public class PdfGraphics2D extends Graphics2D {
             if (s.length() > 1) {
                 cb.setCharacterSpacing(0);
             }
-            if (!TextAttribute.WIDTH_REGULAR.equals(fontTextAttributeWidth))
+            if (!TextAttribute.WIDTH_REGULAR.equals(fontTextAttributeWidth)) {
                 cb.setHorizontalScaling(100);
-                
+            }
+
             // Restore the original TextRenderingMode if needed.
             if (restoreTextRenderingMode) {
                 cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
-            } 
+            }
 
             cb.endText();
+            return width;
+        } finally {
             setTransform(at);
-            if(underline)
-            {
-                // These two are supposed to be taken from the .AFM file
-                //int UnderlinePosition = -100;
-                int UnderlineThickness = 50;
-                //
-                double d = asPoints(UnderlineThickness, (int)fontSize);
-                Stroke savedStroke = originalStroke;
-                setStroke(new BasicStroke((float)d));
-                y = (float)(y + asPoints(UnderlineThickness, (int)fontSize));
-                Line2D line = new Line2D.Double(x, y, width+x, y);
-                draw(line);
-                setStroke(savedStroke);
-            }
         }
     }
 
@@ -1649,6 +1676,34 @@ public class PdfGraphics2D extends Graphics2D {
         }
         mediaTracker.removeImage(image);
     }
+
+    /**
+     * Split the given string into substrings depending on if all characters of substring can be
+     * displayed with the defined font or not.
+     *
+     * @param s
+     *            given string
+     * @return list of substrings that can be displayed by with the defined font or not.
+     *
+     */
+    private List<String> splitIntoSubstringsByVisibility(String s) {
+        List<String> stringParts = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        boolean displayableLastChar = true;
+        for (int charIndex = 0; charIndex < s.length(); charIndex++) {
+            char c = s.charAt(charIndex);
+            boolean b = font.canDisplay(c);
+            if (charIndex > 0 && displayableLastChar != b) {
+                stringParts.add(sb.toString());
+                sb.setLength(0);
+            }
+            displayableLastChar = b;
+            sb.append(c);
+        }
+        stringParts.add(sb.toString());
+        return stringParts;
+    }
+
         
     static private class FakeComponent extends Component {
 
@@ -1677,4 +1732,257 @@ public class PdfGraphics2D extends Graphics2D {
         }
     }
 
+
+    /**
+     * Wrapper class that helps to draw string with sun.font.CompositeFont (Windows logical
+     * fonts).</br>
+     * If the given font is a sun.font.CompositeFont than try to find some font (an implementation
+     * of sun.font.Font2D) that will display current text. For some symbols that cannot be displayed
+     * with the font from the first slot of the composite font all other font will be checked.</br>
+     * </br>
+     * This processing is necessary only for Windows OS (On Mac isn't used "sun.font.CompositeFont",
+     * but "sun.font.CFont").</br>
+     * </br>
+     * Since the <code>sun.*</code> packages are not part of the supported, public interface the
+     * reflection will be used.
+     */
+    private static class CompositeFontDrawer
+    {
+
+        static boolean isSupported() {
+            return SUPPORTED;
+        }
+
+        private static final String    COMPOSITE_FONT_CLASS_NAME    = "sun.font.CompositeFont";
+        private static final Class<?>  COMPOSITE_FONT_CLASS;
+        private static final String    GET_NUM_SLOTS_METHOD_NAME    = "getNumSlots";
+        private static final Method    GET_NUM_SLOTS_METHOD;
+        private static final String    GET_SLOT_FONT_METHOD_NAME    = "getSlotFont";
+        private static final Method    GET_SLOT_FONT_METHOD;
+
+        private static final String    FONT_UTILITIES_CLASS_NAME    = "sun.font.FontUtilities";
+        private static final Class<?>  FONT_UTILITIES_CLASS;
+        private static final String    GET_FONT2D_METHOD_NAME       = "getFont2D";
+        private static final Method    GET_FONT2D_METHOD;
+
+        private static final String    FONT2D_CLASS_NAME            = "sun.font.Font2D";
+        private static final Class<?>  FONT2D_CLASS;
+        private static final String    CAN_DISPLAY_METHOD_NAME      = "canDisplay";
+        private static final Method    CAN_DYSPLAY_METHOD;
+        private static final String    GET_FONT_NAME_METHOD_NAME    = "getFontName";
+        private static final Method    GET_FONT_NAME_METHOD;
+
+        private static final boolean   SUPPORTED;
+
+        static {
+            String osName = System.getProperty("os.name", "unknownOS");
+            boolean windowsOS = osName.startsWith("Windows");
+            if (windowsOS) {
+                FONT_UTILITIES_CLASS = getClassForName(FONT_UTILITIES_CLASS_NAME);
+                GET_FONT2D_METHOD = getMethod(FONT_UTILITIES_CLASS, GET_FONT2D_METHOD_NAME, Font.class);
+                COMPOSITE_FONT_CLASS = getClassForName(COMPOSITE_FONT_CLASS_NAME);
+                GET_NUM_SLOTS_METHOD = getMethod(COMPOSITE_FONT_CLASS, GET_NUM_SLOTS_METHOD_NAME);
+                GET_SLOT_FONT_METHOD = getMethod(COMPOSITE_FONT_CLASS, GET_SLOT_FONT_METHOD_NAME, int.class);
+                FONT2D_CLASS = getClassForName(FONT2D_CLASS_NAME);
+                CAN_DYSPLAY_METHOD = getMethod(FONT2D_CLASS, CAN_DISPLAY_METHOD_NAME, char.class);
+                GET_FONT_NAME_METHOD = getMethod(FONT2D_CLASS, GET_FONT_NAME_METHOD_NAME, Locale.class);
+            } else {
+                FONT_UTILITIES_CLASS = null;
+                GET_FONT2D_METHOD = null;
+                COMPOSITE_FONT_CLASS = null;
+                GET_NUM_SLOTS_METHOD = null;
+                GET_SLOT_FONT_METHOD = null;
+                FONT2D_CLASS = null;
+                CAN_DYSPLAY_METHOD = null;
+                GET_FONT_NAME_METHOD = null;
+            }
+
+            SUPPORTED = FONT_UTILITIES_CLASS != null && COMPOSITE_FONT_CLASS != null &&
+                    FONT2D_CLASS != null && GET_FONT2D_METHOD != null && GET_NUM_SLOTS_METHOD != null &&
+                    GET_SLOT_FONT_METHOD != null && CAN_DYSPLAY_METHOD != null || GET_FONT_NAME_METHOD != null;
+        }
+
+        private static Class<?> getClassForName(String className) {
+            try {
+                return Class.forName(className);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        private static Method getMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+            if (clazz == null) {
+                return null;
+            }
+            Method method;
+            try {
+                method = clazz.getDeclaredMethod(methodName, parameterTypes);
+                method.setAccessible(true);
+            } catch (Exception e) {
+                method = null;
+            }
+            return method;
+        }
+
+        private final transient StringBuilder            sb                                = new StringBuilder();
+        /**
+         * Splitted parts of the string.
+         */
+        private final transient List<String>            stringParts                        = new ArrayList<>();
+        /**
+         * Fonts that corresponds to the splitted part of the string
+         */
+        private final transient List<Font>              correspondingFontsForParts         = new ArrayList<>();
+
+        private final transient Map<String, Boolean>    fontFamilyComposite                = new HashMap<>();
+
+        /**
+         * Check if the given font is a composite font.
+         *
+         * @param font
+         *            given font
+         * @return <code>true</code> if the given font is sun.font.CompositeFont. <code>False</code>
+         *         otherwise.
+         */
+        boolean isCompositeFont(Font font) {
+            if (!isSupported() || font == null) {
+                assert false;
+                return false;
+            }
+            String fontFamily = font.getFamily();
+            if (fontFamily != null && fontFamilyComposite.containsKey(fontFamily)) {
+                return fontFamilyComposite.get(fontFamily);
+            }
+
+            try {
+                Object result = GET_FONT2D_METHOD.invoke(null, font);
+                boolean composite = result != null && result.getClass() == COMPOSITE_FONT_CLASS;
+                if (fontFamily != null) {
+                    fontFamilyComposite.put(fontFamily, composite);
+                }
+                return composite;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        /**
+         * Draw text with the given font at the specified position. This method splits the string
+         * into parts so that it can be displayed with a matching (font that can display all symbols
+         * of this part of string) slot font.</br>
+         * If some class/method cannot be found or throw exception the default drawing string
+         * function will be used for a drawing string.
+         *
+         * @param s
+         *            given string that should be drawn
+         * @param compositeFont
+         *            composite font. This font should be an instance of composite font, otherwise
+         *            the default drawing function will be called.
+         * @param x
+         *            the x coordinate of the location
+         * @param y
+         *            the y coordinate of the location
+         * @param fontConverter
+         *            function that convert {@link java.awt.Font font} to the needed
+         *            {@link com.lowagie.text.pdf.BaseFont base font}
+         * @param defaultDrawingFunction
+         *            default drawing function that will be used for drawing string.
+         * @return width of the drawn string.
+         */
+        double drawString(String s, Font compositeFont, double x, double y, Function<Font, BaseFont> fontConverter, DrawStringFunction defaultDrawingFunction) {
+            String fontFamily = compositeFont.getFamily();
+            if (!isSupported() || (fontFamily != null && !fontFamilyComposite.get(fontFamily))) {
+                assert false;
+                return defaultDrawingFunction.drawString(s, fontConverter.apply(compositeFont), x, y);
+            }
+
+            try {
+                splitStringIntoDisplayableParts(s, compositeFont);
+                double width = 0;
+                for (int i = 0; i < stringParts.size(); i++) {
+                    String strPart = stringParts.get(i);
+                    Font correspondingFont = correspondingFontsForParts.get(i);
+                    BaseFont correspondingBaseFont = fontConverter.apply(correspondingFont);
+                    BaseFont baseFont = correspondingBaseFont == null ? fontConverter.apply(compositeFont) : correspondingBaseFont;
+                    width += defaultDrawingFunction.drawString(strPart, baseFont, x + width, y);
+                }
+                return width;
+            } catch (Exception e) {
+                BaseFont baseFont = fontConverter.apply(compositeFont);
+                return defaultDrawingFunction.drawString(s, baseFont, x, y);
+            }
+        }
+
+        /**
+         * Split string into visible and not visible parts.</br>
+         * This method split string into substring parts. For each splitted part correspond found
+         * font from the slots of the composite font witch can display all characters of the part of
+         * string. If no font found the own composite font will be used.
+         *
+         * @param s
+         * @param compositeFont
+         * @throws IllegalAccessException
+         * @throws IllegalArgumentException
+         * @throws InvocationTargetException
+         */
+        private void splitStringIntoDisplayableParts(String s, Font compositeFont) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+            Object result = GET_FONT2D_METHOD.invoke(null, compositeFont);
+            if (result.getClass() != COMPOSITE_FONT_CLASS) {
+                throw new IllegalArgumentException("Given font isn't a composite font.");
+            }
+            sb.setLength(0);
+            stringParts.clear();
+            correspondingFontsForParts.clear();
+            Object lastPhysicalFont = null;
+            Object numSlotsResult = GET_NUM_SLOTS_METHOD.invoke(result);
+            int numSlots = (Integer) numSlotsResult;
+            for (int charIndex = 0; charIndex < s.length(); charIndex++) {
+                char c = s.charAt(charIndex);
+                boolean found = false;
+                for (int slotIndex = 0; slotIndex < numSlots; slotIndex++) {
+                    Object phFont = GET_SLOT_FONT_METHOD.invoke(result, slotIndex);
+                    if (phFont == null) {
+                        continue;
+                    }
+                    Boolean canDysplayResult = (Boolean) CAN_DYSPLAY_METHOD.invoke(phFont, c);
+                    if (canDysplayResult) {
+                        if (sb.length() == 0) {
+                            Object fontNameResult = GET_FONT_NAME_METHOD.invoke(phFont, (Locale) null);
+                            correspondingFontsForParts.add(new Font((String) fontNameResult, compositeFont.getStyle(), compositeFont.getSize()));
+                            lastPhysicalFont = phFont;
+                        } else if (!Objects.equals(lastPhysicalFont, phFont)) {
+                            stringParts.add(sb.toString());
+                            sb.setLength(0);
+                            Object fontNameResult = GET_FONT_NAME_METHOD.invoke(phFont, (Locale) null);
+                            correspondingFontsForParts.add(new Font((String) fontNameResult, compositeFont.getStyle(), compositeFont.getSize()));
+                            lastPhysicalFont = phFont;
+                        }
+                        sb.append(c);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    if (sb.length() == 0) {
+                        correspondingFontsForParts.add(compositeFont);
+                        lastPhysicalFont = null;
+                    } else if (lastPhysicalFont != null) {
+                        stringParts.add(sb.toString());
+                        sb.setLength(0);
+                        correspondingFontsForParts.add(compositeFont);
+                        lastPhysicalFont = null;
+                    }
+                    sb.append(c);
+                }
+            }
+            stringParts.add(sb.toString());
+            sb.setLength(0);
+        }
+
+        @FunctionalInterface
+        public static interface DrawStringFunction
+        {
+            public double drawString(String s, BaseFont basicFont, double x, double y);
+        }
+    }
 }
