@@ -444,7 +444,7 @@ public class PdfGraphics2D extends Graphics2D {
                                 }
                                 cb.setGState(gs);
                             }
-                            cb.setColorStroke(color);
+                            setStrokePaint();
                             restoreTextRenderingMode = true;
                         }
                     }
