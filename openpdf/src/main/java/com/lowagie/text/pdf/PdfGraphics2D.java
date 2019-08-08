@@ -415,7 +415,7 @@ public class PdfGraphics2D extends Graphics2D {
             cb.setFontAndSize(baseFont, fontSize);
             // Check if we need to simulate an italic font.
             if (font.isItalic()) {
-             float angle = baseFont.getFontDescriptor(BaseFont.ITALICANGLE, 1000);
+                float angle = baseFont.getFontDescriptor(BaseFont.ITALICANGLE, 1000);
                 float angle2 = font.getItalicAngle();
                 // When there are different fonts for italic, bold, italic bold
                 // the font.getName() will be different from the font.getFontName()
@@ -424,33 +424,33 @@ public class PdfGraphics2D extends Graphics2D {
                 // font. When there are only a plain and a bold font available,
                 // we need to enter this logic too.
                 if (Objects.equals(font.getFontName(), font.getName()) || (angle == 0f && angle2 == 0f)) {
-                 // We don't have an italic version of this font so we need
-                 // to set the font angle ourselves to produce an italic font.
-                 if (angle2 == 0) {
-                     // The JavaVM didn't have an angle setting for making
-                     // the font an italic font so use a default of
-                     // italic angle of 15 degrees.
-                     angle2 = 15.0f;
-                 } else {
-                     // This sign of the angle for Java and PDF seams
-                     // seams to be reversed.
-                     angle2 = -angle2;
-                 }
-                 if (angle == 0) {
-                     mx[2] = angle2 / 100.0f;
-               	 }
+                    // We don't have an italic version of this font so we need
+                    // to set the font angle ourselves to produce an italic font.
+                    if (angle2 == 0) {
+                        // The JavaVM didn't have an angle setting for making
+                        // the font an italic font so use a default of
+                        // italic angle of 15 degrees.
+                        angle2 = 15.0f;
+                    } else {
+                        // This sign of the angle for Java and PDF seams
+                        // seams to be reversed.
+                        angle2 = -angle2;
+                    }
+                    if (angle == 0) {
+                         mx[2] = angle2 / 100.0f;
+                    }
                 }
-           } 
+           }
            cb.setTextMatrix((float)mx[0], (float)mx[1], (float)mx[2], (float)mx[3], (float)mx[4], (float)mx[5]);
            Float fontTextAttributeWidth = (Float)font.getAttributes().get(TextAttribute.WIDTH);
            fontTextAttributeWidth = (fontTextAttributeWidth == null)
                                     ? TextAttribute.WIDTH_REGULAR
                                     : fontTextAttributeWidth;
-           
+
             if (!TextAttribute.WIDTH_REGULAR.equals(fontTextAttributeWidth)) {
                 cb.setHorizontalScaling(100.0f / fontTextAttributeWidth);
             }
-            
+
             // Check if we need to simulate a bold font.
             // Do nothing if the BaseFont is already bold. This test is not foolproof but it will work most of the times.
             if (!baseFont.getPostscriptFontName().toLowerCase(Locale.ROOT).contains("bold")) {
@@ -522,12 +522,12 @@ public class PdfGraphics2D extends Graphics2D {
             if (!TextAttribute.WIDTH_REGULAR.equals(fontTextAttributeWidth)) {
                 cb.setHorizontalScaling(100);
             }
-                
+
             // Restore the original TextRenderingMode if needed.
             if (restoreTextRenderingMode) {
                 cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
             }
-            
+
             cb.endText();
             return width;
         } finally {
