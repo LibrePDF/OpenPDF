@@ -1799,7 +1799,7 @@ public class PdfGraphics2D extends Graphics2D {
 
             SUPPORTED = FONT_UTILITIES_CLASS != null && COMPOSITE_FONT_CLASS != null &&
                     FONT2D_CLASS != null && GET_FONT2D_METHOD != null && GET_NUM_SLOTS_METHOD != null &&
-                    GET_SLOT_FONT_METHOD != null && CAN_DYSPLAY_METHOD != null || GET_FONT_NAME_METHOD != null;
+                    GET_SLOT_FONT_METHOD != null && CAN_DYSPLAY_METHOD != null && GET_FONT_NAME_METHOD != null;
         }
 
         private static Class<?> getClassForName(String className) {
