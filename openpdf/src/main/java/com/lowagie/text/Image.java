@@ -697,7 +697,6 @@ public abstract class Image extends Rectangle {
                                 transparency[0] = transparency[1] = (transparentPixel >> 16) & 0xff;
                                 transparency[2] = transparency[3] = (transparentPixel >> 8) & 0xff;
                                 transparency[4] = transparency[5] = transparentPixel & 0xff;
-                                // Transparency fix based on https://github.com/itext/itextpdf/pull/20 by tombueng
                                 for (int prevPixel = 0; prevPixel < j; prevPixel++) {
                                     if ((pixels[prevPixel] & 0xffffff) == transparentPixel) {
                                         shades = true;
