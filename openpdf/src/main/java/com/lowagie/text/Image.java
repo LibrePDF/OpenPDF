@@ -697,8 +697,15 @@ public abstract class Image extends Rectangle {
                                 transparency[0] = transparency[1] = (transparentPixel >> 16) & 0xff;
                                 transparency[2] = transparency[3] = (transparentPixel >> 8) & 0xff;
                                 transparency[4] = transparency[5] = transparentPixel & 0xff;
+                                for (int prevPixel = 0; prevPixel < j; prevPixel++) {
+                                    if ((pixels[prevPixel] & 0xffffff) == transparentPixel) {
+                                        shades = true;
+                                        break;
+                                    }
+                                }
                             }
-                        } else if ((pixels[j] & 0xffffff) != transparentPixel) {
+                        } else if ((pixels[j] & 0xffffff) != transparentPixel && alpha == 0
+                                || (pixels[j] & 0xffffff) == transparentPixel && alpha != 0) {
                             shades = true;
                         }
                     }
