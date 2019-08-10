@@ -747,7 +747,7 @@ public class AcroFields {
       tx = new TextField(writer, null, null);
       tx.setExtraMargin(extraMarginLeft, extraMarginTop);
       tx.setBorderWidth(0);
-      tx.setSubstitutionFonts(substitutionFonts);
+      tx.setSubstitutionFontList(substitutionFonts);
       decodeGenericDictionary(merged, tx);
       //rect
       PdfArray rect = merged.getAsArray(PdfName.RECT);
@@ -2475,6 +2475,7 @@ public class AcroFields {
    * @since 2.1.5  this method used to take a HashMap as parameter
    */
   @Deprecated
+  @SuppressWarnings("unchecked")
   public void setFieldCache(Map fieldCache) {
     this.fieldCache = fieldCache;
   }
@@ -2654,6 +2655,7 @@ public class AcroFields {
    * @param substitutionFonts the list
    */
   @Deprecated
+  @SuppressWarnings("unchecked")
   public void setSubstitutionFonts(ArrayList substitutionFonts) {
     this.substitutionFonts = substitutionFonts;
   }
