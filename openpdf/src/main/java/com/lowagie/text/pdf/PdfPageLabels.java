@@ -35,6 +35,7 @@ import com.lowagie.text.factories.RomanNumberFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Page labels are used to identify each page visually on the screen or in print.
@@ -86,13 +87,13 @@ public class PdfPageLabels {
     /**
      * The sequence of logical pages. Will contain at least a value for page 1
      */
-    private HashMap map;
+    private HashMap<Integer, PdfDictionary> map;
 
     /**
      * Creates a new PdfPageLabel with a default logical page 1
      */
     public PdfPageLabels() {
-        map = new HashMap();
+        map = new HashMap<>();
         addPageLabel(1, PdfPageLabels.DECIMAL_ARABIC_NUMERALS, null, 1);
     }
 
@@ -205,7 +206,7 @@ public class PdfPageLabels {
 
         String[] labelstrings = new String[n];
 
-        HashMap numberTree = PdfNumberTree.readTree(labels);
+        Map<PdfObject, PdfObject> numberTree = PdfNumberTree.readTree(labels);
 
         int pagecount = 1;
         Integer current;
@@ -214,7 +215,7 @@ public class PdfPageLabels {
         for (int i = 0; i < n; i++ ) {
             current = i;
             if (numberTree.containsKey(current)) {
-                PdfDictionary d = (PdfDictionary) PdfReader.getPdfObjectRelease((PdfObject) numberTree.get(current));
+                PdfDictionary d = (PdfDictionary) PdfReader.getPdfObjectRelease(numberTree.get(current));
                 if (d.contains(PdfName.ST)) {
                     pagecount = ((PdfNumber) d.get(PdfName.ST)).intValue();
                 } else {
@@ -266,10 +267,9 @@ public class PdfPageLabels {
         if (labels == null) {
             return null;
         }
-        HashMap numberTree = PdfNumberTree.readTree(labels);
+        Map<PdfObject, PdfObject> numberTree = PdfNumberTree.readTree(labels);
         Integer[] numbers = new Integer[numberTree.size()];
-        numbers = (Integer[]) numberTree.keySet()
-                                        .toArray(numbers);
+        numbers = numberTree.keySet().toArray(numbers);
         Arrays.sort(numbers);
         PdfPageLabelFormat[] formats = new PdfPageLabelFormat[numberTree.size()];
         String prefix;
@@ -277,7 +277,7 @@ public class PdfPageLabels {
         int pagecount;
         for (int k = 0; k < numbers.length; ++k) {
             Integer key = numbers[k];
-            PdfDictionary d = (PdfDictionary) PdfReader.getPdfObjectRelease((PdfObject) numberTree.get(key));
+            PdfDictionary d = (PdfDictionary) PdfReader.getPdfObjectRelease(numberTree.get(key));
             if (d.contains(PdfName.ST)) {
                 pagecount = ((PdfNumber) d.get(PdfName.ST)).intValue();
             } else {
@@ -289,8 +289,7 @@ public class PdfPageLabels {
                 prefix = "";
             }
             if (d.contains(PdfName.S)) {
-                char type = d.get(PdfName.S).toString()
-                                                        .charAt(1);
+                char type = d.get(PdfName.S).toString().charAt(1);
                 switch (type) {
                     case 'R':
                         numberStyle = PdfPageLabels.UPPERCASE_ROMAN_NUMERALS;
