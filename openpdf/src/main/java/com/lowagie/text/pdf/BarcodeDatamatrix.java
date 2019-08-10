@@ -58,6 +58,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * A DataMatrix 2D barcode generator.
@@ -979,14 +980,14 @@ public class BarcodeDatamatrix {
         private int nrow;
         private int ncol;
         private short[] array;
-        private static final Hashtable cache = new Hashtable();
+        private static final Map<Integer, short[]> cache = new Hashtable<>();
 
         private Placement() {
         }
         
         static short[] doPlacement(int nrow, int ncol) {
             Integer key = nrow * 1000 + ncol;
-            short[] pc = (short[])cache.get(key);
+            short[] pc = cache.get(key);
             if (pc != null)
                 return pc;
             Placement p = new Placement();

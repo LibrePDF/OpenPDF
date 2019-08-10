@@ -52,6 +52,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.image.MemoryImageSource;
 import java.util.ArrayList;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.BadElementException;
@@ -1590,7 +1591,7 @@ public class BarcodePDF417 {
     }
     
     protected static class SegmentList {
-        protected ArrayList list = new ArrayList();
+        protected ArrayList<Segment> list = new ArrayList<>();
         
         public void add(char type, int start, int end) {
             list.add(new Segment(type, start, end));
@@ -1599,7 +1600,7 @@ public class BarcodePDF417 {
         public Segment get(int idx) {
             if (idx < 0 || idx >= list.size())
                 return null;
-            return (Segment)list.get(idx);
+            return list.get(idx);
         }
 
         public void remove(int idx) {
