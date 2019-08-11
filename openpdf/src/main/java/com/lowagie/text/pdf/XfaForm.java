@@ -621,6 +621,7 @@ public class XfaForm {
          * @deprecated use {@link #addSomNameToSearchNodeChain(Map, Stack2, String)}
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public static void inverseSearchAdd(HashMap inverseSearch, Stack2 stack, String unstack) {
             addSomNameToSearchNodeChain(inverseSearch, stack, unstack);
         }
@@ -662,6 +663,7 @@ public class XfaForm {
          * @return the full name or <CODE>null</CODE> if not found
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public String inverseSearchGlobal(ArrayList parts) {
             return inverseSearch(parts);
         }
@@ -752,6 +754,7 @@ public class XfaForm {
          * @param order the order the names appear in the XML, depth first
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public void setOrder(ArrayList order) {
             this.order = order;
         }
@@ -788,6 +791,7 @@ public class XfaForm {
          * @param name2Node the mapping of full names to nodes
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public void setName2Node(HashMap name2Node) {
             this.name2Node = name2Node;
         }
@@ -985,6 +989,7 @@ public class XfaForm {
          * @param acroShort2LongName the mapping from short names to long names
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public void setAcroShort2LongName(HashMap acroShort2LongName) {
             this.acroShort2LongName = acroShort2LongName;
         }

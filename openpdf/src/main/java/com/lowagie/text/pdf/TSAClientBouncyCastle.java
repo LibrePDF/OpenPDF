@@ -178,8 +178,7 @@ public class TSAClientBouncyCastle implements TSAClient {
       tsqGenerator.setCertReq(true);
       // tsqGenerator.setReqPolicy("1.3.6.1.4.1.601.10.3.1");
       BigInteger nonce = BigInteger.valueOf(System.currentTimeMillis());
-      TimeStampRequest request = tsqGenerator.generate(
-          X509ObjectIdentifiers.id_SHA1.getId(), imprint, nonce);
+      TimeStampRequest request = tsqGenerator.generate(X509ObjectIdentifiers.id_SHA1, imprint, nonce);
       byte[] requestBytes = request.getEncoded();
 
       // Call the communications layer

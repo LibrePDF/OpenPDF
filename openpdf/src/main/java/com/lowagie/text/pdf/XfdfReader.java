@@ -176,6 +176,7 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
      */
     @Deprecated
     @Override
+    @SuppressWarnings("unchecked")
     public void startElement(String tag, HashMap h) {
         startElement(tag, (Map<String, String>) h);
     }
