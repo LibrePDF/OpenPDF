@@ -70,20 +70,21 @@ import com.lowagie.text.xml.XMLUtil;
  */
 public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     
-    private HashMap xmlNames;
+    private HashMap<String, String> xmlNames;
     private Map<String, String> xmlLast;
 
     private SimpleNamedDestination() {
     }
-    
-    public static HashMap getNamedDestination(PdfReader reader, boolean fromNames) {
+
+    @SuppressWarnings("unchecked")
+    public static HashMap<Object, Object> getNamedDestination(PdfReader reader, boolean fromNames) {
         IntHashtable pages = new IntHashtable();
         int numPages = reader.getNumberOfPages();
         for (int k = 1; k <= numPages; ++k)
             pages.put(reader.getPageOrigRef(k).getNumber(), k);
-        HashMap names = fromNames ? reader.getNamedDestinationFromNames() : reader.getNamedDestinationFromStrings();
-        for (Iterator it = names.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry)it.next();
+        HashMap<Object, Object> names = fromNames ? (HashMap<Object, Object>) reader.getNamedDestinationFromNames() : (HashMap<Object, Object>) reader.getNamedDestinationFromStrings();
+        for (Iterator<Map.Entry<Object, Object>> it = names.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<Object, Object> entry = it.next();
             PdfArray arr = (PdfArray)entry.getValue();
             StringBuilder s = new StringBuilder();
             try {
@@ -157,7 +158,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
      * @throws IOException on error
      * @return the names
      */
-    public static HashMap importFromXML(InputStream in) throws IOException {
+    public static HashMap<String, String> importFromXML(InputStream in) throws IOException {
         SimpleNamedDestination names = new SimpleNamedDestination();
         SimpleXMLParser.parse(names, in);
         return names.xmlNames;
@@ -169,7 +170,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
      * @throws IOException on error
      * @return the names
      */
-    public static HashMap importFromXML(Reader in) throws IOException {
+    public static HashMap<String, String> importFromXML(Reader in) throws IOException {
         SimpleNamedDestination names = new SimpleNamedDestination();
         SimpleXMLParser.parse(names, in);
         return names.xmlNames;
@@ -217,14 +218,14 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
         return dic;
     }
 
-    public static PdfDictionary outputNamedDestinationAsStrings(HashMap names, PdfWriter writer) throws IOException {
-        HashMap n2 = new HashMap(names);
-        for (Iterator it = n2.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry)it.next();
+    public static PdfDictionary outputNamedDestinationAsStrings(Map<String, String> names, PdfWriter writer) throws IOException {
+        Map<String, PdfIndirectReference> n2 = new HashMap<>();
+        for (Iterator<Map.Entry<String, String>> it = names.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<String, String> entry = it.next();
             try {
-                String value = (String)entry.getValue();
+                String value = entry.getValue();
                 PdfArray ar = createDestinationArray(value, writer);
-                entry.setValue(writer.addToBody(ar).getIndirectReference());
+                n2.put(entry.getKey(), writer.addToBody(ar).getIndirectReference());
             }
             catch (Exception e) {
                 it.remove();
@@ -236,7 +237,6 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     public static String escapeBinaryString(String s) {
         StringBuilder buf = new StringBuilder();
         char[] cc = s.toCharArray();
-        int len = cc.length;
         for (char c : cc) {
             if (c < ' ') {
                 buf.append('\\');
@@ -311,6 +311,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     }
 
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void startElement(String tag, HashMap h) {
         startElement(tag, (Map<String, String>) h);
     }
@@ -318,7 +319,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     public void startElement(String tag, Map<String, String> h) {
         if (xmlNames == null) {
             if (tag.equals("Destination")) {
-                xmlNames = new HashMap();
+                xmlNames = new HashMap<>();
                 return;
             }
             else
@@ -328,7 +329,7 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
             throw new RuntimeException(MessageLocalization.getComposedMessage("tag.1.not.allowed", tag));
         if (xmlLast != null)
             throw new RuntimeException(MessageLocalization.getComposedMessage("nested.tags.are.not.allowed"));
-        xmlLast = new HashMap(h);
+        xmlLast = new HashMap<>(h);
         xmlLast.put("Name", "");
     }
 
