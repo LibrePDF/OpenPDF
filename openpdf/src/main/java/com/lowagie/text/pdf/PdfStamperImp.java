@@ -73,13 +73,13 @@ import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
 
 class PdfStamperImp extends PdfWriter {
-    HashMap readers2intrefs = new HashMap();
-    HashMap readers2file = new HashMap();
+    HashMap<PdfReader, IntHashtable> readers2intrefs = new HashMap<>();
+    HashMap<PdfReader, RandomAccessFileOrArray> readers2file = new HashMap<>();
     RandomAccessFileOrArray file;
     PdfReader reader;
     IntHashtable myXref = new IntHashtable();
     /** Integer(page number) -> PageStamp */
-    HashMap pagesToContent = new HashMap();
+    HashMap<PdfDictionary, PageStamp> pagesToContent = new HashMap<>();
     boolean closed = false;
     /** Holds value of property rotateContents. */
     private boolean rotateContents = true;
@@ -220,9 +220,6 @@ class PdfStamperImp extends PdfWriter {
         int skipInfo = -1;
         PRIndirectReference iInfo = (PRIndirectReference)reader.getTrailer().get(PdfName.INFO);
       
-
-
-
 
         // XMP
         byte[] altMetadata = xmpMetadata;
@@ -418,7 +415,7 @@ class PdfStamperImp extends PdfWriter {
     }
 
     protected int getNewObjectNumber(PdfReader reader, int number, int generation) {
-        IntHashtable ref = (IntHashtable)readers2intrefs.get(reader);
+        IntHashtable ref = readers2intrefs.get(reader);
         if (ref != null) {
             int n = ref.get(number);
             if (n == 0) {
@@ -443,7 +440,7 @@ class PdfStamperImp extends PdfWriter {
 
     RandomAccessFileOrArray getReaderFile(PdfReader reader) {
         if (readers2intrefs.containsKey(reader)) {
-            RandomAccessFileOrArray raf = (RandomAccessFileOrArray)readers2file.get(reader);
+            RandomAccessFileOrArray raf = readers2file.get(reader);
             if (raf != null)
                 return raf;
             return reader.getSafeFile();
@@ -477,7 +474,7 @@ class PdfStamperImp extends PdfWriter {
         if (!readers2intrefs.containsKey(reader))
             return;
         readers2intrefs.remove(reader);
-        RandomAccessFileOrArray raf = (RandomAccessFileOrArray)readers2file.get(reader);
+        RandomAccessFileOrArray raf = readers2file.get(reader);
         if (raf == null)
             return;
         readers2file.remove(reader);
@@ -529,8 +526,8 @@ class PdfStamperImp extends PdfWriter {
             return;
         registerReader(fdf, false);
         IntHashtable hits = new IntHashtable();
-        HashMap irt = new HashMap();
-        ArrayList an = new ArrayList();
+        Map<String, PdfObject> irt = new HashMap<>();
+        List<PdfObject> an = new ArrayList<>();
         for (int k = 0; k < annots.size(); ++k) {
             PdfObject obj = annots.getPdfObject(k);
             PdfDictionary annot = (PdfDictionary)PdfReader.getPdfObject(obj);
@@ -551,7 +548,7 @@ class PdfStamperImp extends PdfWriter {
             if (obj.type() == PdfObject.DICTIONARY) {
                 PdfObject str = PdfReader.getPdfObject(((PdfDictionary) obj).get(PdfName.IRT));
                 if (str != null && str.type() == PdfObject.STRING) {
-                    PdfObject i = (PdfObject) irt.get(str.toString());
+                    PdfObject i = irt.get(str.toString());
                     if (i != null) {
                         PdfDictionary dic2 = new PdfDictionary();
                         dic2.merge((PdfDictionary) obj);
@@ -580,7 +577,7 @@ class PdfStamperImp extends PdfWriter {
 
     PageStamp getPageStamp(int pageNum) {
         PdfDictionary pageN = reader.getPageN(pageNum);
-        PageStamp ps = (PageStamp)pagesToContent.get(pageN);
+        PageStamp ps = pagesToContent.get(pageN);
         if (ps == null) {
             ps = new PageStamp(this, reader, pageN);
             pagesToContent.put(pageN, ps);
@@ -1222,7 +1219,7 @@ class PdfStamperImp extends PdfWriter {
     }
 
     void setJavaScript() throws IOException {
-        HashMap djs = pdf.getDocumentLevelJS();
+        Map<String, PdfIndirectReference> djs = pdf.getDocumentLevelJS();
         if (djs.isEmpty())
             return;
         PdfDictionary catalog = reader.getCatalog();
@@ -1238,7 +1235,7 @@ class PdfStamperImp extends PdfWriter {
     }
 
     void addFileAttachments() throws IOException {
-        HashMap fs = pdf.getDocumentFileAttachment();
+        Map<String, PdfIndirectReference> fs = pdf.getDocumentFileAttachment();
         if (fs.isEmpty())
             return;
         PdfDictionary catalog = reader.getCatalog();
@@ -1249,10 +1246,9 @@ class PdfStamperImp extends PdfWriter {
             markUsed(catalog);
         }
         markUsed(names);
-        HashMap old = PdfNameTree.readTree((PdfDictionary)PdfReader.getPdfObjectRelease(names.get(PdfName.EMBEDDEDFILES)));
-        for (Object o : fs.entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            String name = (String) entry.getKey();
+        Map<String, PdfObject> old = PdfNameTree.readTree((PdfDictionary)PdfReader.getPdfObjectRelease(names.get(PdfName.EMBEDDEDFILES)));
+        for (Map.Entry<String, PdfIndirectReference> entry : fs.entrySet()) {
+            String name = entry.getKey();
             int k = 0;
             String nn = name;
             while (old.containsKey(nn)) {
@@ -1508,7 +1504,7 @@ class PdfStamperImp extends PdfWriter {
         PdfArray ocgs = dict.getAsArray(PdfName.OCGS);
         PdfIndirectReference ref;
         PdfLayer layer;
-        HashMap ocgmap = new HashMap();
+        Map<String, PdfLayer> ocgmap = new HashMap<>();
         for (Iterator i = ocgs.listIterator(); i.hasNext(); ) {
             ref = (PdfIndirectReference)i.next();
             layer = new PdfLayer(null);
@@ -1522,7 +1518,7 @@ class PdfStamperImp extends PdfWriter {
         if (off != null) {
             for (Iterator i = off.listIterator(); i.hasNext(); ) {
                 ref = (PdfIndirectReference)i.next();
-                layer = (PdfLayer)ocgmap.get(ref.toString());
+                layer = ocgmap.get(ref.toString());
                 layer.setOn(false);
             }
         }
@@ -1595,7 +1591,7 @@ class PdfStamperImp extends PdfWriter {
         if (documentOCG.isEmpty()) {
             readOCProperties();
         }
-        HashMap map = new HashMap();
+        Map<String, PdfLayer> map = new HashMap<>();
         PdfLayer layer;
         String key;
         for (Object o : documentOCG) {

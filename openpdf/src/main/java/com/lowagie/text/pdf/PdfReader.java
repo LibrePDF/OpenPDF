@@ -2742,7 +2742,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * 
    * @return gets all the named destinations
    */
-  public HashMap getNamedDestination() {
+  public HashMap<Object, PdfObject> getNamedDestination() {
     return getNamedDestination(false);
   }
 
@@ -2755,8 +2755,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @return gets all the named destinations
    * @since 2.1.6
    */
-  public HashMap getNamedDestination(boolean keepNames) {
-    HashMap names = getNamedDestinationFromNames(keepNames);
+  public HashMap<Object, PdfObject> getNamedDestination(boolean keepNames) {
+    HashMap<Object, PdfObject> names = getNamedDestinationFromNames(keepNames);
     names.putAll(getNamedDestinationFromStrings());
     return names;
   }
@@ -2768,7 +2768,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * 
    * @return gets the named destinations
    */
-  public HashMap getNamedDestinationFromNames() {
+  public HashMap<Object, PdfObject> getNamedDestinationFromNames() {
     return getNamedDestinationFromNames(false);
   }
 
@@ -2782,11 +2782,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @return gets the named destinations
    * @since 2.1.6
    */
-  public HashMap getNamedDestinationFromNames(boolean keepNames) {
-    HashMap names = new HashMap();
+  public HashMap<Object, PdfObject> getNamedDestinationFromNames(boolean keepNames) {
+    HashMap<Object, PdfObject> names = new HashMap<>();
     if (catalog.get(PdfName.DESTS) != null) {
-      PdfDictionary dic = (PdfDictionary) getPdfObjectRelease(catalog
-          .get(PdfName.DESTS));
+      PdfDictionary dic = (PdfDictionary) getPdfObjectRelease(catalog.get(PdfName.DESTS));
       if (dic == null)
         return names;
       Set keys = dic.getKeys();
@@ -2813,17 +2812,17 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * 
    * @return gets the named destinations
    */
-  public HashMap getNamedDestinationFromStrings() {
+  public HashMap<String, PdfObject> getNamedDestinationFromStrings() {
     if (catalog.get(PdfName.NAMES) != null) {
       PdfDictionary dic = (PdfDictionary) getPdfObjectRelease(catalog
           .get(PdfName.NAMES));
       if (dic != null) {
         dic = (PdfDictionary) getPdfObjectRelease(dic.get(PdfName.DESTS));
         if (dic != null) {
-          HashMap names = PdfNameTree.readTree(dic);
-          for (Iterator it = names.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
-            PdfArray arr = getNameArray((PdfObject) entry.getValue());
+          HashMap<String, PdfObject> names = PdfNameTree.readTree(dic);
+          for (Iterator<Map.Entry<String, PdfObject>> it = names.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<String, PdfObject> entry = it.next();
+            PdfArray arr = getNameArray(entry.getValue());
             if (arr != null)
               entry.setValue(arr);
             else
@@ -2833,7 +2832,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         }
       }
     }
-    return new HashMap();
+    return new HashMap<>();
   }
 
   /**
@@ -2881,9 +2880,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     pageRefs.resetReleasePage();
   }
 
-  public ArrayList getLinks(int page) {
+  public ArrayList<PdfAnnotation.PdfImportedLink> getLinks(int page) {
     pageRefs.resetReleasePage();
-    ArrayList result = new ArrayList();
+    ArrayList<PdfAnnotation.PdfImportedLink> result = new ArrayList<>();
     PdfDictionary pageDic = pageRefs.getPageN(page);
     if (pageDic.get(PdfName.ANNOTS) != null) {
       PdfArray annots = pageDic.getAsArray(PdfName.ANNOTS);
@@ -2901,7 +2900,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     return result;
   }
 
-  private void iterateBookmarks(PdfObject outlineRef, HashMap names) {
+  private void iterateBookmarks(PdfObject outlineRef, Map<Object, PdfObject> names) {
     while (outlineRef != null) {
       replaceNamedDestination(outlineRef, names);
       PdfDictionary outline = (PdfDictionary) getPdfObjectRelease(outlineRef);
@@ -2923,7 +2922,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     if (remoteToLocalNamedDestinations)
       return;
     remoteToLocalNamedDestinations = true;
-    HashMap names = getNamedDestination(true);
+    Map<Object, PdfObject> names = getNamedDestination(true);
     if (names.isEmpty())
       return;
     for (int k = 1; k <= pageRefs.size(); ++k) {
@@ -2961,7 +2960,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    *          a map with names of local named destinations
    * @since iText 5.0
    */
-  private boolean convertNamedDestination(PdfObject obj, HashMap names) {
+  private boolean convertNamedDestination(PdfObject obj, Map<Object, PdfObject> names) {
     obj = getPdfObject(obj);
     int objIdx = lastXrefPartial;
     releaseLastXrefPartial();
@@ -3001,7 +3000,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     if (consolidateNamedDestinations)
       return;
     consolidateNamedDestinations = true;
-    HashMap names = getNamedDestination(true);
+    Map<Object, PdfObject> names = getNamedDestination(true);
     if (names.isEmpty())
       return;
     for (int k = 1; k <= pageRefs.size(); ++k) {
@@ -3033,7 +3032,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     iterateBookmarks(outlines.get(PdfName.FIRST), names);
   }
 
-  private boolean replaceNamedDestination(PdfObject obj, HashMap names) {
+  private boolean replaceNamedDestination(PdfObject obj, Map<Object, PdfObject> names) {
     obj = getPdfObject(obj);
     int objIdx = lastXrefPartial;
     releaseLastXrefPartial();
@@ -3134,6 +3133,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
   }
 
+  @SuppressWarnings("unchecked")
   protected void removeUnusedNode(PdfObject obj, boolean[] hits) {
     Stack state = new Stack();
     state.push(obj);
@@ -3279,14 +3279,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         .get(PdfName.JAVASCRIPT));
     if (js == null)
       return null;
-    HashMap jscript = PdfNameTree.readTree(js);
+    Map<String, PdfObject> jscript = PdfNameTree.readTree(js);
     String[] sortedNames = new String[jscript.size()];
-    sortedNames = (String[]) jscript.keySet().toArray(sortedNames);
+    sortedNames = jscript.keySet().toArray(sortedNames);
     Arrays.sort(sortedNames);
     StringBuilder buf = new StringBuilder();
     for (String sortedName : sortedNames) {
-      PdfDictionary j = (PdfDictionary) getPdfObjectRelease((PdfIndirectReference) jscript
-              .get(sortedName));
+      PdfDictionary j = (PdfDictionary) getPdfObjectRelease(jscript.get(sortedName));
       if (j == null)
         continue;
       PdfObject obj = getPdfObjectRelease(j.get(PdfName.JS));
@@ -3350,7 +3349,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @param pagesToKeep
    *          the pages to keep in the document
    */
-  public void selectPages(List pagesToKeep) {
+  public void selectPages(List<Integer> pagesToKeep) {
     pageRefs.selectPages(pagesToKeep);
     removeUnusedObjects();
   }
@@ -3467,7 +3466,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      * stack to which pages dictionaries are pushed to keep track of the current
      * page attributes
      */
-    private ArrayList pageInh;
+    private List<PdfDictionary> pageInh;
     private boolean keepPages;
 
     private PageRefs(PdfReader reader) {
@@ -3506,7 +3505,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         return;
       refsp = null;
       refsn = new ArrayList<>();
-      pageInh = new ArrayList();
+      pageInh = new ArrayList<>();
       iteratePages((PRIndirectReference) reader.catalog.get(PdfName.PAGES));
       pageInh = null;
       reader.rootPages.put(PdfName.COUNT, new PdfNumber(refsn.size()));
@@ -3656,7 +3655,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     private void pushPageAttributes(PdfDictionary nodePages) {
       PdfDictionary dic = new PdfDictionary();
       if (!pageInh.isEmpty()) {
-        dic.putAll((PdfDictionary) pageInh.get(pageInh.size() - 1));
+        dic.putAll(pageInh.get(pageInh.size() - 1));
       }
       for (PdfName pageInhCandidate : pageInhCandidates) {
         PdfObject obj = nodePages.get(pageInhCandidate);
@@ -3679,7 +3678,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       // reference to a leaf
       if (kidsPR == null) {
         page.put(PdfName.TYPE, PdfName.PAGE);
-        PdfDictionary dic = (PdfDictionary) pageInh.get(pageInh.size() - 1);
+        PdfDictionary dic = pageInh.get(pageInh.size() - 1);
         PdfName key;
         for (Object o : dic.getKeys()) {
           key = (PdfName) o;
@@ -3746,15 +3745,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       }
     }
 
-    private void selectPages(List pagesToKeep) {
+    private void selectPages(List<Integer> pagesToKeep) {
       IntHashtable pg = new IntHashtable();
-      ArrayList finalPages = new ArrayList();
+      List<Integer> finalPages = new ArrayList<>();
       int psize = size();
-      for (Object aPagesToKeep : pagesToKeep) {
-        Integer pi = (Integer) aPagesToKeep;
-        int p = pi;
-        if (p >= 1 && p <= psize && pg.put(p, 1) == 0)
-          finalPages.add(pi);
+      for (Integer aPagesToKeep : pagesToKeep) {
+        if (aPagesToKeep >= 1 && aPagesToKeep <= psize && pg.put(aPagesToKeep, 1) == 0)
+          finalPages.add(aPagesToKeep);
       }
       if (reader.partial) {
         for (int k = 1; k <= psize; ++k) {

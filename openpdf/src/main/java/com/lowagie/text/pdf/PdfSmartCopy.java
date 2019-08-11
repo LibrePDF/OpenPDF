@@ -55,6 +55,7 @@ import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -73,12 +74,12 @@ import com.lowagie.text.ExceptionConverter;
 public class PdfSmartCopy extends PdfCopy {
 
     /** the cache with the streams and references. */
-    private HashMap streamMap = null;
+    private Map<ByteStore, PdfIndirectReference> streamMap = null;
 
     /** Creates a PdfSmartCopy instance. */
     public PdfSmartCopy(Document document, OutputStream os) throws DocumentException {
         super(document, os);
-        this.streamMap = new HashMap();
+        this.streamMap = new HashMap<>();
     }
     /**
      * Translate a PRIndirectReference to a PdfIndirectReference
@@ -99,7 +100,7 @@ public class PdfSmartCopy extends PdfCopy {
         if (srcObj.isStream()) {
             streamKey = new ByteStore((PRStream)srcObj);
             validStream = true;
-            PdfIndirectReference streamRef = (PdfIndirectReference) streamMap.get(streamKey);
+            PdfIndirectReference streamRef = streamMap.get(streamKey);
             if (streamRef != null) {
                 return streamRef;
             }

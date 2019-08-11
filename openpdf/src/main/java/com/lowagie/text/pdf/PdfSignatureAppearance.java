@@ -146,7 +146,7 @@ public class PdfSignatureAppearance {
   private byte[] externalDigest;
   private byte[] externalRSAdata;
   private String digestEncryptionAlgorithm;
-  private HashMap exclusionLocations;
+  private Map<PdfName, PdfLiteral> exclusionLocations;
 
   private Certificate[] certChain;
 
@@ -984,7 +984,7 @@ public class PdfSignatureAppearance {
    * @throws DocumentException
    *           on error
    */
-  public void preClose(HashMap exclusionSizes) throws IOException,
+  public void preClose(Map<PdfName, Integer> exclusionSizes) throws IOException,
       DocumentException {
     if (preClosed)
       throw new DocumentException(
@@ -1047,7 +1047,7 @@ public class PdfSignatureAppearance {
       writer.addAnnotation(sigField, pagen);
     }
 
-    exclusionLocations = new HashMap();
+    exclusionLocations = new HashMap<>();
     if (cryptoDictionary == null) {
       if (PdfName.ADOBE_PPKLITE.equals(getFilter()))
         sigStandard = new PdfSigGenericPKCS.PPKLite(getProvider());
