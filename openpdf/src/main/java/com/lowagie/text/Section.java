@@ -81,7 +81,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * </PRE></BLOCKQUOTE>
  */
 
-public class Section extends java.util.ArrayList<Element> implements TextElementArray, LargeElement {
+public class Section extends ArrayList<Element> implements TextElementArray, LargeElement {
     // constant
     /**
      * A possible number style. The default number style: "1.2.3."
@@ -231,8 +231,8 @@ public class Section extends java.util.ArrayList<Element> implements TextElement
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public java.util.ArrayList<Element> getChunks() {
-        java.util.ArrayList<Element> tmp = new ArrayList<>();
+    public ArrayList<Element> getChunks() {
+        ArrayList<Element> tmp = new ArrayList<>();
         for (Element o : this) {
             tmp.addAll(o.getChunks());
         }

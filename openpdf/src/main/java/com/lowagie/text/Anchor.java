@@ -218,8 +218,8 @@ public class Anchor extends Phrase {
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public java.util.ArrayList<Element> getChunks() {
-        java.util.ArrayList<Element> tmp = new ArrayList<>();
+    public ArrayList<Element> getChunks() {
+        ArrayList<Element> tmp = new ArrayList<>();
         Chunk chunk;
         Iterator<Element> i = iterator();
         boolean localDestination = (reference != null && reference.startsWith("#"));

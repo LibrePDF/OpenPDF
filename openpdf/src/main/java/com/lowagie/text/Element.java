@@ -49,6 +49,8 @@
 
 package com.lowagie.text;
 
+import java.util.ArrayList;
+
 /**
  * Interface for a text element.
  * <P>
@@ -344,7 +346,7 @@ public interface Element {
      * @return an <CODE>ArrayList</CODE>
      */
 
-    java.util.ArrayList<Element> getChunks();
+    ArrayList<Element> getChunks();
 
     /**
      * Gets the content of the text element.
