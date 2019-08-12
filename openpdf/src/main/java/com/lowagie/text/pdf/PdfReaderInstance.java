@@ -87,7 +87,7 @@ class PdfReaderInstance {
         if (pageNumber < 1 || pageNumber > reader.getNumberOfPages())
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("invalid.page.number.1", pageNumber));
         Integer i = pageNumber;
-        PdfImportedPage pageT = (PdfImportedPage)importedPages.get(i);
+        PdfImportedPage pageT = importedPages.get(i);
         if (pageT == null) {
             pageT = new PdfImportedPage(this, writer, pageNumber);
             importedPages.put(i, pageT);
@@ -135,7 +135,7 @@ class PdfReaderInstance {
         dic.put(PdfName.RESOURCES, PdfReader.getPdfObjectRelease(page.get(PdfName.RESOURCES)));
         dic.put(PdfName.TYPE, PdfName.XOBJECT);
         dic.put(PdfName.SUBTYPE, PdfName.FORM);
-        PdfImportedPage impPage = (PdfImportedPage)importedPages.get(pageNumber);
+        PdfImportedPage impPage = importedPages.get(pageNumber);
         dic.put(PdfName.BBOX, new PdfRectangle(impPage.getBoundingBox()));
         PdfArray matrix = impPage.getMatrix();
         if (matrix == null)

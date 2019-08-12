@@ -323,7 +323,7 @@ class Type1Font extends BaseFont
         String second = GlyphList.unicodeToName(char2);
         if (second == null)
             return 0;
-        Object[] obj = (Object[]) KernPairs.get(first);
+        Object[] obj = KernPairs.get(first);
         if (obj == null)
             return 0;
         for (int k = 0; k < obj.length; k += 2) {

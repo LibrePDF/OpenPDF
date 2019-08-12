@@ -512,7 +512,7 @@ class TrueTypeFont extends BaseFont {
      */
     String getBaseFont() throws DocumentException, IOException {
         int[] table_location;
-        table_location = (int[])tables.get("name");
+        table_location = tables.get("name");
         if (table_location == null)
             throw new DocumentException(MessageLocalization.getComposedMessage("table.1.does.not.exist.in.2", "name", fileName + style));
         rf.seek(table_location[0] + 2);

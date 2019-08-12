@@ -1980,9 +1980,9 @@ public class PdfGraphics2D extends Graphics2D {
         }
 
         @FunctionalInterface
-        public static interface DrawStringFunction
+        public interface DrawStringFunction
         {
-            public double drawString(String s, BaseFont basicFont, double x, double y);
+            double drawString(String s, BaseFont basicFont, double x, double y);
         }
     }
 }

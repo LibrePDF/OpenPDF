@@ -212,7 +212,7 @@ public class PdfTable extends Rectangle {
      */
     
     int rows() {
-        return cells.isEmpty() ? 0 : ((PdfCell)cells.get(cells.size()-1)).rownumber()+1; 
+        return cells.isEmpty() ? 0 : cells.get(cells.size()-1).rownumber()+1;
     }
 
     /** @see com.lowagie.text.Element#type() */

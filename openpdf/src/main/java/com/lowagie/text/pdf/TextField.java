@@ -490,7 +490,7 @@ public class TextField extends BaseField {
             return 0;
         }
         
-        Integer firstValue = (Integer)choiceSelections.get(0);
+        Integer firstValue = choiceSelections.get(0);
         
         if (firstValue == null) {
             return 0;

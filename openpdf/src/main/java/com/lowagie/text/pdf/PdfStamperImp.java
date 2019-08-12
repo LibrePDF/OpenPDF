@@ -642,7 +642,7 @@ class PdfStamperImp extends PdfWriter {
         dic2.put(PdfName.ROTATE, new PdfNumber(r.getPageRotation(pageImported)));
         PdfContentByte cb = getOverContent(pageReplaced);
         cb.addTemplate(p, 0, 0);
-        PageStamp ps = (PageStamp)pagesToContent.get(pageN);
+        PageStamp ps = pagesToContent.get(pageN);
         ps.replacePoint = ps.over.getInternalBuffer().size();
     }
 

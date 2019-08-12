@@ -1112,8 +1112,8 @@ public class PdfSignatureAppearance {
     writer.close(stamper.getInfoDictionary());
 
     range = new long[exclusionLocations.size() * 2];
-    long byteRangePosition = ((PdfLiteral) exclusionLocations
-        .get(PdfName.BYTERANGE)).getPosition();
+    long byteRangePosition = exclusionLocations
+        .get(PdfName.BYTERANGE).getPosition();
     exclusionLocations.remove(PdfName.BYTERANGE);
     int idx = 1;
       for (Object o : exclusionLocations.values()) {
@@ -1184,7 +1184,7 @@ public class PdfSignatureAppearance {
       ByteBuffer bf = new ByteBuffer();
         for (PdfName key : update.getKeys()) {
             PdfObject obj = update.get(key);
-            PdfLiteral lit = (PdfLiteral) exclusionLocations.get(key);
+            PdfLiteral lit = exclusionLocations.get(key);
             if (lit == null)
                 throw new IllegalArgumentException(
                         MessageLocalization.getComposedMessage(
