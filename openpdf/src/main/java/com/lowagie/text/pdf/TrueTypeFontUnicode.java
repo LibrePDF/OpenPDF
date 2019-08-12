@@ -203,7 +203,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      * contains the Unicode code
      * @return the stream representing this CMap or <CODE>null</CODE>
      */    
-    private PdfStream getToUnicode(Object[] metrics) {
+    private PdfStream getToUnicode(int[][] metrics) {
         metrics = filterCmapMetrics(metrics);
         if (metrics.length == 0)
             return null;
@@ -231,7 +231,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
                 buf.append(size).append(" beginbfrange\n");
             }
             --size;
-            int[] metric = (int[]) metrics[k];
+            int[] metric = metrics[k];
             String fromTo = toHex(metric[0]);
             buf.append(fromTo).append(fromTo).append(toHex(metric[2])).append('\n');
         }
@@ -246,14 +246,14 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         return stream;
     }
     
-    private Object[] filterCmapMetrics(Object[] metrics) {
+    private int[][] filterCmapMetrics(int[][] metrics) {
         if (metrics.length == 0) {
             return metrics;
         }
 
         List<int[]> cmapMetrics = new ArrayList<>(metrics.length);
-        for (Object metric1 : metrics) {
-            int[] metric = (int[]) metric1;
+        for (int[] metric1 : metrics) {
+            int[] metric = metric1;
             // PdfContentByte.showText(GlyphVector) uses glyphs that might not
             // map to a character.
             // the glyphs are included in the metrics array, but we need to
@@ -267,7 +267,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
             return metrics;
         }
 
-        return cmapMetrics.toArray();
+        return cmapMetrics.toArray(new int[0][]);
     }
     
     private static String toHex4(int n) {
@@ -294,7 +294,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      * @param metrics the horizontal width metrics
      * @return a stream
      */    
-    private PdfDictionary getCIDFontType2(PdfIndirectReference fontDescriptor, String subsetPrefix, Object[] metrics) {
+    private PdfDictionary getCIDFontType2(PdfIndirectReference fontDescriptor, String subsetPrefix, int[][] metrics) {
         PdfDictionary dic = new PdfDictionary(PdfName.FONT);
         // sivan; cff
         if (cff) {
@@ -318,8 +318,8 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
             StringBuilder buf = new StringBuilder("[");
             int lastNumber = -10;
             boolean firstTime = true;
-            for (Object metric1 : metrics) {
-                int[] metric = (int[]) metric1;
+            for (int[] metric1 : metrics) {
+                int[] metric = metric1;
                 if (metric[1] == 1000)
                     continue;
                 int m = metric[0];
@@ -386,10 +386,11 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      * @throws IOException on error
      * @throws DocumentException error in generating the object
      */
+    @SuppressWarnings("unchecked")
     void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException, IOException {
-        HashMap longTag = (HashMap)params[0];
+        HashMap<Integer, int[]> longTag = (HashMap<Integer, int[]>)params[0];
         addRangeUni(longTag, true, subset);
-        Object[] metrics = longTag.values().toArray();
+        int[][] metrics = longTag.values().toArray(new int[0][]);
         Arrays.sort(metrics, this);
         PdfIndirectReference ind_font = null;
         PdfObject pobj = null;
@@ -401,10 +402,10 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
                 stream = new PdfStream(new byte[]{(byte)0x80});
             }
             else {
-                int top = ((int[])metrics[metrics.length - 1])[0];
+                int top = metrics[metrics.length - 1][0];
                 byte[] bt = new byte[top / 8 + 1];
-                for (Object metric : metrics) {
-                    int v = ((int[]) metric)[0];
+                for (int[] metric : metrics) {
+                    int v = metric[0];
                     bt[v / 8] |= rotbits[v % 8];
                 }
                 stream = new PdfStream(bt);
@@ -489,8 +490,8 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      */    
     public int[] getMetricsTT(int c) {
         if (cmapExt != null)
-            return (int[])cmapExt.get(c);
-        HashMap map = null;
+            return cmapExt.get(c);
+        Map<Integer, int[]> map;
         if (fontSpecific)
             map = cmap10;
         else
@@ -499,12 +500,12 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
             return null;
         if (fontSpecific) {
             if ((c & 0xffffff00) == 0 || (c & 0xffffff00) == 0xf000)
-                return (int[])map.get(c & 0xff);
+                return map.get(c & 0xff);
             else
                 return null;
         }
         else
-            return (int[])map.get(c);
+            return map.get(c);
     }
     
     /**

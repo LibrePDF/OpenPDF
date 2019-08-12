@@ -368,6 +368,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @deprecated use {@link #shiftPageNumbersInRange(List, int, int[])}
      */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public static void shiftPageNumbers(List list, int pageShift, int[] pageRange) {
         shiftPageNumbersInRange(list, pageShift, pageRange);
     }
@@ -699,7 +700,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @throws IOException on error
      * @return the bookmarks
      */
-    public static List importFromXML(InputStream in) throws IOException {
+    public static List<Map<String, Object>> importFromXML(InputStream in) throws IOException {
         SimpleBookmark book = new SimpleBookmark();
         SimpleXMLParser.parse(book, in);
         return book.topList;
@@ -754,7 +755,11 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     public void startDocument() {
     }
 
+    /**
+     * @deprecated user {@link SimpleBookmark#startElement(String, Map<String, String>)}
+     */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void startElement(String tag, HashMap h) {
         startElement(tag, (Map<String, String>) h);
     }
