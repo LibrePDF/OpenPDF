@@ -2768,7 +2768,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * 
    * @return gets the named destinations
    */
-  public HashMap<Object, PdfObject> getNamedDestinationFromNames() {
+  public HashMap getNamedDestinationFromNames() {
     return getNamedDestinationFromNames(false);
   }
 
@@ -2812,7 +2812,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * 
    * @return gets the named destinations
    */
-  public HashMap<String, PdfObject> getNamedDestinationFromStrings() {
+  public HashMap getNamedDestinationFromStrings() {
     if (catalog.get(PdfName.NAMES) != null) {
       PdfDictionary dic = (PdfDictionary) getPdfObjectRelease(catalog
           .get(PdfName.NAMES));
