@@ -103,7 +103,7 @@ public class PdfCopyFields
      * @param pagesToKeep the pages to keep
      * @throws DocumentException on error
      */    
-    public void addDocument(PdfReader reader, List pagesToKeep) throws DocumentException, IOException {
+    public void addDocument(PdfReader reader, List<Integer> pagesToKeep) throws DocumentException, IOException {
         fc.addDocument(reader, pagesToKeep);
     }
 

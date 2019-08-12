@@ -103,7 +103,7 @@ class PdfCopyFieldsImp extends PdfWriter {
         nd.addDocListener(pdf);
     }
     
-    void addDocument(PdfReader reader, List pagesToKeep) throws DocumentException, IOException {
+    void addDocument(PdfReader reader, List<Integer> pagesToKeep) throws DocumentException, IOException {
         if (!readers2intrefs.containsKey(reader) && reader.isTampered())
             throw new DocumentException(MessageLocalization.getComposedMessage("the.document.was.reused"));
         reader = new PdfReader(reader);        
@@ -264,7 +264,11 @@ class PdfCopyFieldsImp extends PdfWriter {
         }
     }
 
+    /**
+     * @deprecated use {@link PdfCopyFieldsImp#branchForm(Map, PdfIndirectReference, String)}
+     */
     @Deprecated
+    @SuppressWarnings("unchecked")
     protected PdfArray branchForm(HashMap level, PdfIndirectReference parent, String fname) throws IOException {
         return branchForm((Map<String, Object>) level, parent, fname);
     }

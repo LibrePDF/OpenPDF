@@ -94,6 +94,7 @@ public class PdfAcroForm extends PdfDictionary {
      * @deprecated use {@link #addFieldTemplates(Map)}
      */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void addFieldTemplates(HashMap ft) {
         fieldTemplates.putAll(ft);
     }
