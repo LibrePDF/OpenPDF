@@ -17,6 +17,22 @@ import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class CleanMetaDataTest {
+  
+  public CleanMetaDataTest() {
+    super();
+  }
+  
+  private HashMap<String, String> createCleanerMoreInfo() {
+    HashMap<String, String> moreInfo = new HashMap<String, String>();
+    moreInfo.put("Title", null);
+    moreInfo.put("Author", null);
+    moreInfo.put("Subject", null);
+    moreInfo.put("Producer", null);
+    moreInfo.put("Keywords", null);
+    moreInfo.put("Creator", null);
+    moreInfo.put("ModDate",null);
+    return moreInfo;
+  }
 
 	@Test
 	public void testProducer() throws Exception {
@@ -65,18 +81,20 @@ public class CleanMetaDataTest {
 
 	@Test
 	public void testStamperMetadata() throws Exception {
-		byte[] data = addWatermark(new File("src/test/resources/HelloWorldMeta.pdf"), false, null);
+		byte[] data = addWatermark(new File("src/test/resources/HelloWorldMeta.pdf"), false, createCleanerMoreInfo());
 		PdfReader r = new PdfReader(data);
 		Assertions.assertNull(r.getInfo().get("Producer"));
 		Assertions.assertNull(r.getInfo().get("Author"));
 		Assertions.assertNull(r.getInfo().get("Title"));
 		Assertions.assertNull(r.getInfo().get("Subject"));	
 		r.close();
+		String dataString = new String(data);
+		Assertions.assertFalse(dataString.contains("This example explains how to add metadata."));
 	}
 	
 	@Test
 	public void testStamperEncryptMetadata() throws Exception {
-		byte[] data = addWatermark(new File("src/test/resources/HelloWorldMeta.pdf"), true, null);
+		byte[] data = addWatermark(new File("src/test/resources/HelloWorldMeta.pdf"), true, createCleanerMoreInfo());
 		PdfReader r = new PdfReader(data);
 		Assertions.assertNull(r.getInfo().get("Producer"));
 		Assertions.assertNull(r.getInfo().get("Author"));
@@ -100,6 +118,28 @@ public class CleanMetaDataTest {
 		Assertions.assertEquals("Title2", r.getInfo().get("Title"));
 		Assertions.assertEquals("Subject3", r.getInfo().get("Subject"));	
 		r.close();
+	}
+	
+	@Test
+	public void testCleanMetadataMethodInStamper() throws Exception {
+	  byte[] data = cleanMetadata(new File("src/test/resources/HelloWorldMeta.pdf"));
+	  PdfReader r = new PdfReader(data);
+    Assertions.assertNull(r.getInfo().get("Producer"));
+    Assertions.assertNull(r.getInfo().get("Author"));
+    Assertions.assertNull(r.getInfo().get("Title"));
+    Assertions.assertNull(r.getInfo().get("Subject"));  
+    r.close();
+    String dataString = new String(data);
+    Assertions.assertFalse(dataString.contains("This example explains how to add metadata."));
+	}
+	
+	private byte[] cleanMetadata(File origin) throws Exception {
+	  ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PdfReader reader = new PdfReader(origin.getAbsolutePath());
+    PdfStamper stamp = new PdfStamper(reader, baos);
+    stamp.cleanMetadata();
+    stamp.close();
+    return baos.toByteArray();
 	}
 	
 
