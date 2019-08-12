@@ -156,6 +156,7 @@ public class PdfStamper
      * @deprecated use {@link #setInfoDictionary(Map)}
      */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void setMoreInfo(HashMap moreInfo) {
         this.moreInfo = moreInfo;
     }
