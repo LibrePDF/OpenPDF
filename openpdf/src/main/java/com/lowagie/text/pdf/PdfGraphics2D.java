@@ -141,13 +141,13 @@ public class PdfGraphics2D extends Graphics2D {
     private PdfContentByte cb;
     
     /** Storage for BaseFont objects created. */
-    private HashMap baseFonts;
+    private Map<String, BaseFont> baseFonts;
     
     private boolean disposeCalled = false;
     
     private FontMapper fontMapper;
     
-    private ArrayList kids;
+    private List<Object> kids;
     
     private boolean kid = false;
     
@@ -212,7 +212,7 @@ public class PdfGraphics2D extends Graphics2D {
         this.jpegQuality = quality;
         this.onlyShapes = onlyShapes;
         this.transform = new AffineTransform();
-        this.baseFonts = new HashMap();
+        this.baseFonts = new HashMap<>();
         if (!onlyShapes) {
             this.fontMapper = fontMapper;
             if (this.fontMapper == null)
@@ -271,7 +271,7 @@ public class PdfGraphics2D extends Graphics2D {
             int height = img.getHeight();
             WritableRaster raster = cm.createCompatibleWritableRaster(width, height);
             boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-            Hashtable properties = new Hashtable();
+            Hashtable<String, Object> properties = new Hashtable<>();
             String[] keys = img.getPropertyNames();
             if (keys!=null) {
                 for (String key : keys) {
@@ -313,11 +313,11 @@ public class PdfGraphics2D extends Graphics2D {
      * before calling the actual string drawing routine
      * @param iter
      */
+    @SuppressWarnings("unchecked")
     protected void doAttributes(AttributedCharacterIterator iter) {
         underline = false;
-        Set set = iter.getAttributes().keySet();
-        for (Object o : set) {
-            AttributedCharacterIterator.Attribute attribute = (AttributedCharacterIterator.Attribute) o;
+        Set<AttributedCharacterIterator.Attribute> set = iter.getAttributes().keySet();
+        for (AttributedCharacterIterator.Attribute attribute : set) {
             if (!(attribute instanceof TextAttribute))
                 continue;
             TextAttribute textattribute = (TextAttribute) attribute;
@@ -340,17 +340,17 @@ public class PdfGraphics2D extends Graphics2D {
                 setColor((Color) iter.getAttributes().get(textattribute));
             } else if (textattribute.equals(TextAttribute.FAMILY)) {
                 Font font = getFont();
-                Map fontAttributes = font.getAttributes();
+                Map<TextAttribute, Object> fontAttributes = (Map<TextAttribute, Object>)font.getAttributes();
                 fontAttributes.put(TextAttribute.FAMILY, iter.getAttributes().get(textattribute));
                 setFont(font.deriveFont(fontAttributes));
             } else if (textattribute.equals(TextAttribute.POSTURE)) {
                 Font font = getFont();
-                Map fontAttributes = font.getAttributes();
+                Map<TextAttribute, Object> fontAttributes = (Map<TextAttribute, Object>)font.getAttributes();
                 fontAttributes.put(TextAttribute.POSTURE, iter.getAttributes().get(textattribute));
                 setFont(font.deriveFont(fontAttributes));
             } else if (textattribute.equals(TextAttribute.WEIGHT)) {
                 Font font = getFont();
-                Map fontAttributes = font.getAttributes();
+                Map<TextAttribute, Object> fontAttributes = (Map<TextAttribute, Object>)font.getAttributes();
                 fontAttributes.put(TextAttribute.WEIGHT, iter.getAttributes().get(textattribute));
                 setFont(font.deriveFont(fontAttributes));
             }
@@ -958,7 +958,7 @@ public class PdfGraphics2D extends Graphics2D {
             g2.followPath(g2.clip, CLIP);
         g2.kid = true;
         if (this.kids == null)
-            this.kids = new ArrayList();
+            this.kids = new ArrayList<>();
         this.kids.add(cb.getInternalBuffer().size());
         this.kids.add(g2);
         return g2;
@@ -1026,7 +1026,7 @@ public class PdfGraphics2D extends Graphics2D {
     
     private BaseFont getCachedBaseFont(Font f) {
         synchronized (baseFonts) {
-            BaseFont bf = (BaseFont)baseFonts.get(f.getFontName());
+            BaseFont bf = baseFonts.get(f.getFontName());
             if (bf == null) {
                 bf = fontMapper.awtToPdf(f);
                 baseFonts.put(f.getFontName(), bf);
