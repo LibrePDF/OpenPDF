@@ -49,6 +49,7 @@ package com.lowagie.text.pdf;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Chunk;
@@ -69,7 +70,7 @@ public class VerticalText {
     public static final int NO_MORE_COLUMN = 2;
 
 /** The chunks that form the text. */    
-    protected ArrayList chunks = new ArrayList();
+    protected ArrayList<PdfChunk> chunks = new ArrayList<>();
 
     /** The <CODE>PdfContent</CODE> where the text will be written to. */    
     protected PdfContentByte text;
@@ -174,7 +175,7 @@ public class VerticalText {
         PdfLine line = new PdfLine(0, width, alignment, 0);
         String total;
         for (currentChunkMarker = 0; currentChunkMarker < chunks.size(); ++currentChunkMarker) {
-            PdfChunk original = (PdfChunk)(chunks.get(currentChunkMarker));
+            PdfChunk original = chunks.get(currentChunkMarker);
             total = original.toString();
             currentStandbyChunk = line.add(original);
             if (currentStandbyChunk != null) {
@@ -196,7 +197,7 @@ public class VerticalText {
             chunks.clear();
             return;
         }
-        PdfChunk split = (PdfChunk)(chunks.get(currentChunkMarker));
+        PdfChunk split = chunks.get(currentChunkMarker);
         split.setValue(splittedChunkText);
         chunks.set(currentChunkMarker, currentStandbyChunk);
         if (currentChunkMarker > 0) {

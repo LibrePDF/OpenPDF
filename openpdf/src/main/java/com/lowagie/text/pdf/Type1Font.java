@@ -53,6 +53,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import com.lowagie.text.error_messages.MessageLocalization;
 
@@ -142,14 +143,14 @@ class Type1Font extends BaseFont
  *  Integer, Integer, String and int[]. This is the code, width, name and char bbox.
  *  The key is the name of the char and also an Integer with the char number.
  */
-    private HashMap CharMetrics = new HashMap();
+    private Map<Object, Object[]> CharMetrics = new HashMap<>();
 /** Represents the section KernPairs in the AFM file. The key is
  *  the name of the first character and the value is a <CODE>Object[]</CODE>
  *  with 2 elements for each kern pair. Position 0 is the name of
  *  the second character and position 1 is the kerning distance. This is
  *  repeated for all the pairs.
  */
-    private HashMap KernPairs = new HashMap();
+    private Map<String, Object[]> KernPairs = new HashMap<>();
 /** The file in use.
  */
     private String fileName;
@@ -295,12 +296,12 @@ class Type1Font extends BaseFont
     int getRawWidth(int c, String name) {
         Object[] metrics;
         if (name == null) { // font specific
-            metrics = (Object[])CharMetrics.get(c);
+            metrics = CharMetrics.get(c);
         }
         else {
             if (name.equals(".notdef"))
                 return 0;
-            metrics = (Object[])CharMetrics.get(name);
+            metrics = CharMetrics.get(name);
         }
         if (metrics != null)
             return (Integer) (metrics[1]);
@@ -459,7 +460,7 @@ class Type1Font extends BaseFont
         if (isMetrics)
             throw new DocumentException(MessageLocalization.getComposedMessage("missing.endcharmetrics.in.1", fileName));
         if (!CharMetrics.containsKey("nonbreakingspace")) {
-            Object[] space = (Object[])CharMetrics.get("space");
+            Object[] space = CharMetrics.get("space");
             if (space != null)
                 CharMetrics.put("nonbreakingspace", space);
         }
@@ -490,7 +491,7 @@ class Type1Font extends BaseFont
                 String first = tok.nextToken();
                 String second = tok.nextToken();
                 Integer width = (int) Float.parseFloat(tok.nextToken());
-                Object[] relates = (Object[]) KernPairs.get(first);
+                Object[] relates = KernPairs.get(first);
                 if (relates == null)
                     KernPairs.put(first, new Object[]{second, width});
                 else
@@ -811,7 +812,7 @@ class Type1Font extends BaseFont
         String second = GlyphList.unicodeToName(char2);
         if (second == null)
             return false;
-        Object[] obj = (Object[]) KernPairs.get(first);
+        Object[] obj = KernPairs.get(first);
         if (obj == null) {
             obj = new Object[]{second, kern};
             KernPairs.put(first, obj);
@@ -835,12 +836,12 @@ class Type1Font extends BaseFont
     protected int[] getRawCharBBox(int c, String name) {
         Object[] metrics;
         if (name == null) { // font specific
-            metrics = (Object[])CharMetrics.get(c);
+            metrics = CharMetrics.get(c);
         }
         else {
             if (name.equals(".notdef"))
                 return null;
-            metrics = (Object[])CharMetrics.get(name);
+            metrics = CharMetrics.get(name);
         }
         if (metrics != null)
             return ((int[])(metrics[3]));

@@ -50,17 +50,27 @@
 package com.lowagie.text.xml.simpleparser;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class contains entities that can be used in an entity tag.
  */
 
+@SuppressWarnings("deprecated")
 public class EntitiesToUnicode {
-    
+
+    public static Map<String, Character> getMap() {
+        return map;
+    }
+
     /**
      * This is a map that contains the names of entities and their unicode value.
+     *
+     * @deprecated use the getter ({@link EntitiesToUnicode#getMap()}) instead of accessing this field directly
      */
-    public static final HashMap map = new HashMap();
+    @Deprecated
+    public static final HashMap<String, Character> map = new HashMap<>();
+
     static {
         map.put("nbsp", '\u00a0'); // no-break space = non-breaking space, U+00A0 ISOnum
         map.put("iexcl", '\u00a1'); // inverted exclamation mark, U+00A1 ISOnum
@@ -383,7 +393,7 @@ public class EntitiesToUnicode {
                 return '\0';
             }
         }
-        Character c = (Character)map.get(name);
+        Character c = map.get(name);
         if (c == null)
             return '\0';
         else

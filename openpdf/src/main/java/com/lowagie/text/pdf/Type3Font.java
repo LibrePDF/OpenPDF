@@ -48,6 +48,8 @@
 package com.lowagie.text.pdf;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocumentException;
@@ -59,7 +61,7 @@ public class Type3Font extends BaseFont {
     
     private boolean[] usedSlot;
     private IntHashtable widths3 = new IntHashtable();
-    private HashMap char2glyph = new HashMap();
+    private Map<Integer, Type3Glyph> char2glyph = new HashMap<>();
     private PdfWriter writer;
     private float llx = Float.NaN, lly, urx, ury;
     private PageResources pageResources = new PageResources();
@@ -129,7 +131,7 @@ public class Type3Font extends BaseFont {
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.char.1.doesn.t.belong.in.this.type3.font", (int)c));
         usedSlot[c] = true;
         Integer ck = (int) c;
-        Type3Glyph glyph = (Type3Glyph)char2glyph.get(ck);
+        Type3Glyph glyph = char2glyph.get(ck);
         if (glyph != null)
             return glyph;
         widths3.put(c, (int)wx);
@@ -238,7 +240,7 @@ public class Type3Font extends BaseFont {
                 s = "a" + c2;
             PdfName n = new PdfName(s);
             diffs.add(n);
-            Type3Glyph glyph = (Type3Glyph)char2glyph.get(c2);
+            Type3Glyph glyph = char2glyph.get(c2);
             PdfStream stream = new PdfStream(glyph.toPdf(null));
             stream.flateCompress(compressionLevel);
             PdfIndirectReference refp = writer.addToBody(stream).getIndirectReference();
