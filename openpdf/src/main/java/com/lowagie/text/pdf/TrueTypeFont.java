@@ -879,6 +879,7 @@ class TrueTypeFont extends BaseFont {
     HashMap<Integer, int[]> readFormat12() throws IOException {
         HashMap<Integer, int[]> h = new HashMap<>();
         rf.skipBytes(2);
+        int table_lenght = rf.readInt(); // KEEP THIS
         rf.skipBytes(4);
         int nGroups = rf.readInt();
         for (int k = 0; k < nGroups; k++) {
