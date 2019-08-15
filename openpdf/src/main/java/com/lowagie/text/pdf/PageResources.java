@@ -59,10 +59,10 @@ class PageResources {
     protected PdfDictionary shadingDictionary = new PdfDictionary();
     protected PdfDictionary extGStateDictionary = new PdfDictionary();
     protected PdfDictionary propertyDictionary = new PdfDictionary();
-    protected HashMap forbiddenNames;
+    protected HashMap<PdfName, ?> forbiddenNames;
     protected PdfDictionary originalResources;
     protected int[] namePtr = {0};
-    protected HashMap usedNames;
+    protected HashMap<PdfName, PdfName> usedNames;
 
     PageResources() {
     }
@@ -70,8 +70,8 @@ class PageResources {
     void setOriginalResources(PdfDictionary resources, int[] newNamePtr) {
         if (newNamePtr != null)
             namePtr = newNamePtr;
-        forbiddenNames = new HashMap();
-        usedNames = new HashMap();
+        forbiddenNames = new HashMap<>();
+        usedNames = new HashMap<>();
         if (resources == null)
             return;
         originalResources = new PdfDictionary();
@@ -93,7 +93,7 @@ class PageResources {
     PdfName translateName(PdfName name) {
         PdfName translated = name;
         if (forbiddenNames != null) {
-            translated = (PdfName)usedNames.get(name);
+            translated = usedNames.get(name);
             if (translated == null) {
                 do {
                     translated = new PdfName("Xi" + (namePtr[0]++));

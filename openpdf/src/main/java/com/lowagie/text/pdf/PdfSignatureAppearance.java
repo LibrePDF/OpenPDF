@@ -146,7 +146,7 @@ public class PdfSignatureAppearance {
   private byte[] externalDigest;
   private byte[] externalRSAdata;
   private String digestEncryptionAlgorithm;
-  private HashMap exclusionLocations;
+  private Map<PdfName, PdfLiteral> exclusionLocations;
 
   private Certificate[] certChain;
 
@@ -984,7 +984,7 @@ public class PdfSignatureAppearance {
    * @throws DocumentException
    *           on error
    */
-  public void preClose(HashMap exclusionSizes) throws IOException,
+  public void preClose(Map<PdfName, Integer> exclusionSizes) throws IOException,
       DocumentException {
     if (preClosed)
       throw new DocumentException(
@@ -1047,7 +1047,7 @@ public class PdfSignatureAppearance {
       writer.addAnnotation(sigField, pagen);
     }
 
-    exclusionLocations = new HashMap();
+    exclusionLocations = new HashMap<>();
     if (cryptoDictionary == null) {
       if (PdfName.ADOBE_PPKLITE.equals(getFilter()))
         sigStandard = new PdfSigGenericPKCS.PPKLite(getProvider());
@@ -1112,8 +1112,8 @@ public class PdfSignatureAppearance {
     writer.close(stamper.getInfoDictionary());
 
     range = new long[exclusionLocations.size() * 2];
-    long byteRangePosition = ((PdfLiteral) exclusionLocations
-        .get(PdfName.BYTERANGE)).getPosition();
+    long byteRangePosition = exclusionLocations
+        .get(PdfName.BYTERANGE).getPosition();
     exclusionLocations.remove(PdfName.BYTERANGE);
     int idx = 1;
       for (Object o : exclusionLocations.values()) {
@@ -1184,7 +1184,7 @@ public class PdfSignatureAppearance {
       ByteBuffer bf = new ByteBuffer();
         for (PdfName key : update.getKeys()) {
             PdfObject obj = update.get(key);
-            PdfLiteral lit = (PdfLiteral) exclusionLocations.get(key);
+            PdfLiteral lit = exclusionLocations.get(key);
             if (lit == null)
                 throw new IllegalArgumentException(
                         MessageLocalization.getComposedMessage(

@@ -79,9 +79,9 @@ public class PRAcroForm extends PdfDictionary {
         public PRIndirectReference getRef() { return ref; }
     }
 
-    ArrayList fields;
-    ArrayList stack;
-    HashMap fieldByName;
+    ArrayList<FieldInformation> fields;
+    ArrayList<PdfDictionary> stack;
+    HashMap<String, FieldInformation> fieldByName;
     PdfReader reader;
     
     /**
@@ -90,9 +90,9 @@ public class PRAcroForm extends PdfDictionary {
      */
     public PRAcroForm(PdfReader reader) {
         this.reader = reader;
-        fields = new ArrayList();
-        fieldByName = new HashMap();
-        stack = new ArrayList();
+        fields = new ArrayList<>();
+        fieldByName = new HashMap<>();
+        stack = new ArrayList<>();
     }
     /**
      * Number of fields found
@@ -102,12 +102,12 @@ public class PRAcroForm extends PdfDictionary {
         return fields.size();
     }
     
-    public ArrayList getFields() {
+    public ArrayList<FieldInformation> getFields() {
         return fields;
     }
     
     public FieldInformation getField(String name) {
-        return (FieldInformation)fieldByName.get(name);
+        return fieldByName.get(name);
     }
     
     /**
@@ -116,7 +116,7 @@ public class PRAcroForm extends PdfDictionary {
      * @return a reference to the field, or null
      */
     public PRIndirectReference getRefByName(String name) {
-        FieldInformation fi = (FieldInformation)fieldByName.get(name);
+        FieldInformation fi = fieldByName.get(name);
         if (fi == null) return null;
         return fi.getRef();
     }
@@ -164,7 +164,7 @@ public class PRAcroForm extends PdfDictionary {
             }
             else {          // leaf node
                 if (myFieldDict != null) {
-                    PdfDictionary mergedDict = (PdfDictionary)stack.get(stack.size() - 1);
+                    PdfDictionary mergedDict = stack.get(stack.size() - 1);
                     if (isFieldDict)
                         mergedDict = mergeAttrib(mergedDict, dict);
                     
@@ -203,7 +203,7 @@ public class PRAcroForm extends PdfDictionary {
     protected void pushAttrib(PdfDictionary dict) {
         PdfDictionary dic = null;
         if (!stack.isEmpty()) {
-            dic = (PdfDictionary)stack.get(stack.size() - 1);
+            dic = stack.get(stack.size() - 1);
         }
         dic = mergeAttrib(dic, dict);
         stack.add(dic);

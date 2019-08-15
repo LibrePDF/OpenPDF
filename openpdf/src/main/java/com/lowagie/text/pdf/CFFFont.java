@@ -70,6 +70,7 @@ package com.lowagie.text.pdf;
 
 import com.lowagie.text.ExceptionConverter;
 
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -694,8 +695,8 @@ public class CFFFont {
         for (j=0; j<fonts.length; j++)
             if (fontName.equals(fonts[j].name)) break;
         if (j==fonts.length) return null;
-        
-        LinkedList l = new LinkedList();
+
+        Deque<Item> l = new LinkedList<>();
         
         // copy the header
         

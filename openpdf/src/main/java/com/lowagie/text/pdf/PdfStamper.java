@@ -156,8 +156,26 @@ public class PdfStamper
      * @deprecated use {@link #setInfoDictionary(Map)}
      */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void setMoreInfo(HashMap moreInfo) {
         this.moreInfo = moreInfo;
+    }
+    
+    /**
+     * An option to make this stamper to clean metadata in the generated file. You must call this method before closing the stamper.
+     */
+    
+    public void cleanMetadata() {
+      Map<String, String> meta = new HashMap<>();
+      meta.put("Title", null);
+      meta.put("Author", null);
+      meta.put("Subject", null);
+      meta.put("Producer", null);
+      meta.put("Keywords", null);
+      meta.put("Creator", null);
+      meta.put("CreationDate", null);
+      meta.put("ModDate",null);
+      setInfoDictionary(meta);
     }
 
     /** An optional <CODE>String</CODE> map to add or change values in

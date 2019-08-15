@@ -75,10 +75,10 @@ public class PdfTable extends Rectangle {
     private int columns;
     
     /** this is the ArrayList with all the cell of the table header. */
-    private ArrayList headercells;
+    private ArrayList<PdfCell> headercells;
     
     /** this is the ArrayList with all the cells in the table. */
-    private ArrayList cells;
+    private ArrayList<PdfCell> cells;
     
     /** Original table used to build this object*/
     protected Table table;
@@ -114,8 +114,8 @@ public class PdfTable extends Rectangle {
         setLeft(positions[0]);
         setRight(positions[positions.length - 1]);
         
-        headercells = new ArrayList();
-        cells = new ArrayList();
+        headercells = new ArrayList<>();
+        cells = new ArrayList<>();
 
         updateRowAdditionsInternal();
     }
@@ -148,7 +148,7 @@ public class PdfTable extends Rectangle {
         int firstDataRow = table.getLastHeaderRow() + 1;
         Cell cell;
         PdfCell currentCell;
-        ArrayList newCells = new ArrayList();
+        ArrayList<PdfCell> newCells = new ArrayList<>();
         int rows = table.size() + 1;
         float[] offsets = new float[rows];
         for (int i = 0; i < rows; i++) {
@@ -212,7 +212,7 @@ public class PdfTable extends Rectangle {
      */
     
     int rows() {
-        return cells.isEmpty() ? 0 : ((PdfCell)cells.get(cells.size()-1)).rownumber()+1; 
+        return cells.isEmpty() ? 0 : cells.get(cells.size()-1).rownumber()+1;
     }
 
     /** @see com.lowagie.text.Element#type() */
@@ -226,7 +226,7 @@ public class PdfTable extends Rectangle {
      * @return    an <CODE>ArrayList</CODE>
      */
     
-    ArrayList getHeaderCells() {
+    ArrayList<PdfCell> getHeaderCells() {
         return headercells;
     }
     
@@ -246,7 +246,7 @@ public class PdfTable extends Rectangle {
      * @return    an <CODE>ArrayList</CODE>
      */
     
-    ArrayList getCells() {
+    ArrayList<PdfCell> getCells() {
         return cells;
     }
     

@@ -330,7 +330,7 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
      * @return  an <CODE>ArrayList</CODE>
      */
     
-    public java.util.ArrayList<Element> getChunks() {
+    public ArrayList<Element> getChunks() {
         return new ArrayList<>();
     }
 

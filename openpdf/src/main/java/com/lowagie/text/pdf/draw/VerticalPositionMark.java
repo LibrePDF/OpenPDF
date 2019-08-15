@@ -134,8 +134,8 @@ public class VerticalPositionMark implements DrawInterface, Element {
     /**
      * @see com.lowagie.text.Element#getChunks()
      */
-    public ArrayList getChunks() {
-        ArrayList list = new ArrayList();
+    public ArrayList<Element> getChunks() {
+        ArrayList<Element> list = new ArrayList<>();
         list.add(new Chunk(this, true));
         return list;
     }

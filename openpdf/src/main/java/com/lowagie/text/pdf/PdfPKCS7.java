@@ -306,12 +306,13 @@ public class PdfPKCS7 {
      * @param certsKey    the /Cert key
      * @param provider    the provider or <code>null</code> for the default provider
      */
+    @SuppressWarnings("unchecked")
     public PdfPKCS7(byte[] contentsKey, byte[] certsKey, String provider) {
         try {
             this.provider = provider;
             CertificateFactory certificateFactory = new CertificateFactory();
-            Collection certificates = certificateFactory.engineGenerateCertificates(new ByteArrayInputStream(certsKey));
-            certs = new ArrayList<>((Collection<Certificate>) certificates);
+            Collection<Certificate> certificates = certificateFactory.engineGenerateCertificates(new ByteArrayInputStream(certsKey));
+            certs = new ArrayList<>(certificates);
             signCerts = certs;
             signCert = (X509Certificate) certs.iterator().next();
             crls = new ArrayList<>();
@@ -380,6 +381,7 @@ public class PdfPKCS7 {
      * @param contentsKey the /Contents key
      * @param provider    the provider or <code>null</code> for the default provider
      */
+    @SuppressWarnings("unchecked")
     public PdfPKCS7(byte[] contentsKey, String provider) {
         try {
             this.provider = provider;
@@ -436,8 +438,8 @@ public class PdfPKCS7 {
 
             // the certificates and crls
             CertificateFactory certificateFactory = new CertificateFactory();
-            Collection certificates = certificateFactory.engineGenerateCertificates(new ByteArrayInputStream(contentsKey));
-            this.certs = new ArrayList<>((Collection<Certificate>) certificates);
+            Collection<Certificate> certificates = certificateFactory.engineGenerateCertificates(new ByteArrayInputStream(contentsKey));
+            this.certs = new ArrayList<>(certificates);
             X509CRLParser cl = new X509CRLParser();
             cl.engineInit(new ByteArrayInputStream(contentsKey));
             crls = (List<CRL>) cl.engineReadAll();
@@ -537,7 +539,7 @@ public class PdfPKCS7 {
                     ASN1Set attributeValues = ts.getAttrValues();
                     ASN1Sequence tokenSequence = ASN1Sequence.getInstance(attributeValues
                             .getObjectAt(0));
-                    ContentInfo contentInfo = new ContentInfo(tokenSequence);
+                    ContentInfo contentInfo = ContentInfo.getInstance(tokenSequence);
                     this.timeStampToken = new TimeStampToken(contentInfo);
                 }
             }

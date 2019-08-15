@@ -283,7 +283,7 @@ public class Rectangle implements Element {
    * @return an <CODE>ArrayList</CODE>
    */
   @Override
-  public java.util.ArrayList<Element> getChunks() {
+  public ArrayList<Element> getChunks() {
     return new ArrayList<>();
   }
 

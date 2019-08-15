@@ -700,7 +700,7 @@ public class PdfCopy extends PdfWriter {
       cstp.fieldArray.add(ref);
     }
 
-    private void expandFields(PdfFormField field, ArrayList allAnnots) {
+    private void expandFields(PdfFormField field, List<PdfAnnotation> allAnnots) {
       allAnnots.add(field);
       List<PdfFormField> kids = field.getKidFields();
       if (kids != null) {
@@ -712,7 +712,7 @@ public class PdfCopy extends PdfWriter {
 
     public void addAnnotation(PdfAnnotation annot) {
       try {
-        ArrayList<PdfAnnotation> allAnnots = new ArrayList<>();
+        List<PdfAnnotation> allAnnots = new ArrayList<>();
         if (annot.isForm()) {
           PdfFormField field = (PdfFormField) annot;
           if (field.getParent() != null) {

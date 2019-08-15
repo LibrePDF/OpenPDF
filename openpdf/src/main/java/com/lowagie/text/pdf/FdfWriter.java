@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -60,7 +61,7 @@ import com.lowagie.text.DocWriter;
  */
 public class FdfWriter {
     private static final byte[] HEADER_FDF = DocWriter.getISOBytes("%FDF-1.2\n%\u00e2\u00e3\u00cf\u00d3\n");
-    HashMap fields = new HashMap();
+    HashMap<String, Object> fields = new HashMap<>();
 
     /** The PDF file associated with the FDF. */
     private String file;
@@ -77,9 +78,10 @@ public class FdfWriter {
         Wrt wrt = new Wrt(os, this);
         wrt.writeTo();
     }
-    
+
+    @SuppressWarnings("unchecked")
     boolean setField(String field, PdfObject value) {
-        HashMap map = fields;
+        Map<String, Object> map = fields;
         StringTokenizer tk = new StringTokenizer(field, ".");
         if (!tk.hasMoreTokens())
             return false;
@@ -90,16 +92,16 @@ public class FdfWriter {
                 if (obj == null) {
                     obj = new HashMap();
                     map.put(s, obj);
-                    map = (HashMap)obj;
+                    map = (Map<String, Object>)obj;
                     continue;
                 }
-                else if (obj instanceof HashMap)
-                    map = (HashMap)obj;
+                else if (obj instanceof Map)
+                    map = (Map<String, Object>)obj;
                 else
                     return false;
             }
             else {
-                if (!(obj instanceof HashMap)) {
+                if (!(obj instanceof Map)) {
                     map.put(s, value);
                     return true;
                 }
@@ -108,11 +110,11 @@ public class FdfWriter {
             }
         }
     }
-    
-    void iterateFields(HashMap values, HashMap map, String name) {
-        for (Object o : map.entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            String s = (String) entry.getKey();
+
+    @SuppressWarnings("unchecked")
+    void iterateFields(HashMap<String, Object> values, HashMap<String, Object> map, String name) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String s = entry.getKey();
             Object obj = entry.getValue();
             if (obj instanceof HashMap)
                 iterateFields(values, (HashMap) obj, name + "." + s);
@@ -125,36 +127,38 @@ public class FdfWriter {
      * @param field the field name
      * @return <CODE>true</CODE> if the field was found and removed,
      * <CODE>false</CODE> otherwise
-     */    
+     */
+    @SuppressWarnings("unchecked")
     public boolean removeField(String field) {
-        HashMap map = fields;
+        Map<String, Object> map = fields;
         StringTokenizer tk = new StringTokenizer(field, ".");
         if (!tk.hasMoreTokens())
             return false;
-        ArrayList hist = new ArrayList();
+        List<Map<String, Object>> histMap = new ArrayList<>();
+        List<String> histStr = new ArrayList<>();
         while (true) {
             String s = tk.nextToken();
             Object obj = map.get(s);
             if (obj == null)
                 return false;
-            hist.add(map);
-            hist.add(s);
+            histMap.add(map);
+            histStr.add(s);
             if (tk.hasMoreTokens()) {
-                if (obj instanceof HashMap)
-                    map = (HashMap)obj;
+                if (obj instanceof Map)
+                    map = (Map)obj;
                 else
                     return false;
             }
             else {
-                if (obj instanceof HashMap)
+                if (obj instanceof Map)
                     return false;
                 else
                     break;
             }
         }
-        for (int k = hist.size() - 2; k >= 0; k -= 2) {
-            map = (HashMap)hist.get(k);
-            String s = (String)hist.get(k + 1);
+        for (int k = histMap.size() - 1; k >= 0; k -= 1) {
+            map = histMap.get(k);
+            String s = histStr.get(k);
             map.remove(s);
             if (!map.isEmpty())
                 break;
@@ -166,8 +170,8 @@ public class FdfWriter {
      * field name and the values are <CODE>PdfObject</CODE>.
      * @return a map with all the fields
      */    
-    public HashMap getFields() {
-        HashMap values = new HashMap();
+    public HashMap<String, Object> getFields() {
+        HashMap<String, Object> values = new HashMap<>();
         iterateFields(values, fields, "");
         return values;
     }
@@ -175,9 +179,10 @@ public class FdfWriter {
     /** Gets the field value.
      * @param field the field name
      * @return the field value or <CODE>null</CODE> if not found
-     */    
+     */
+    @SuppressWarnings("unchecked")
     public String getField(String field) {
-        HashMap map = fields;
+        Map<String, Object> map = fields;
         StringTokenizer tk = new StringTokenizer(field, ".");
         if (!tk.hasMoreTokens())
             return null;
@@ -187,13 +192,13 @@ public class FdfWriter {
             if (obj == null)
                 return null;
             if (tk.hasMoreTokens()) {
-                if (obj instanceof HashMap)
-                    map = (HashMap)obj;
+                if (obj instanceof Map)
+                    map = (Map)obj;
                 else
                     return null;
             }
             else {
-                if (obj instanceof HashMap)
+                if (obj instanceof Map)
                     return null;
                 else {
                     if (((PdfObject)obj).isString())
@@ -327,18 +332,17 @@ public class FdfWriter {
             os.write(getISOBytes("\n%%EOF\n"));
             os.close();
         }
-        
-        
-        PdfArray calculate(HashMap map) {
+
+        @SuppressWarnings("unchecked")
+        PdfArray calculate(HashMap<String, Object> map) {
             PdfArray ar = new PdfArray();
-            for (Object o : map.entrySet()) {
-                Map.Entry entry = (Map.Entry) o;
-                String key = (String) entry.getKey();
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String key = entry.getKey();
                 Object v = entry.getValue();
                 PdfDictionary dic = new PdfDictionary();
                 dic.put(PdfName.T, new PdfString(key, PdfObject.TEXT_UNICODE));
                 if (v instanceof HashMap) {
-                    dic.put(PdfName.KIDS, calculate((HashMap) v));
+                    dic.put(PdfName.KIDS, calculate((HashMap)v));
                 } else if (v instanceof PdfAction) {    // (plaflamme)
                     dic.put(PdfName.A, (PdfAction) v);
                 } else {

@@ -51,6 +51,7 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 /**
@@ -64,10 +65,10 @@ class PdfReaderInstance {
     int[] myXref;
     PdfReader reader;
     RandomAccessFileOrArray file;
-    HashMap importedPages = new HashMap();
+    HashMap<Integer, PdfImportedPage> importedPages = new HashMap<>();
     PdfWriter writer;
-    HashMap visited = new HashMap();
-    ArrayList nextRound = new ArrayList();
+    HashMap<Integer, ?> visited = new HashMap<>();
+    ArrayList<Integer> nextRound = new ArrayList<>();
     
     PdfReaderInstance(PdfReader reader, PdfWriter writer) {
         this.reader = reader;
@@ -86,7 +87,7 @@ class PdfReaderInstance {
         if (pageNumber < 1 || pageNumber > reader.getNumberOfPages())
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("invalid.page.number.1", pageNumber));
         Integer i = pageNumber;
-        PdfImportedPage pageT = (PdfImportedPage)importedPages.get(i);
+        PdfImportedPage pageT = importedPages.get(i);
         if (pageT == null) {
             pageT = new PdfImportedPage(this, writer, pageNumber);
             importedPages.put(i, pageT);
@@ -134,7 +135,7 @@ class PdfReaderInstance {
         dic.put(PdfName.RESOURCES, PdfReader.getPdfObjectRelease(page.get(PdfName.RESOURCES)));
         dic.put(PdfName.TYPE, PdfName.XOBJECT);
         dic.put(PdfName.SUBTYPE, PdfName.FORM);
-        PdfImportedPage impPage = (PdfImportedPage)importedPages.get(pageNumber);
+        PdfImportedPage impPage = importedPages.get(pageNumber);
         dic.put(PdfName.BBOX, new PdfRectangle(impPage.getBoundingBox()));
         PdfArray matrix = impPage.getMatrix();
         if (matrix == null)
@@ -155,10 +156,9 @@ class PdfReaderInstance {
     
     void writeAllVisited() throws IOException {
         while (!nextRound.isEmpty()) {
-            ArrayList vec = nextRound;
-            nextRound = new ArrayList();
-            for (Object o : vec) {
-                Integer i = (Integer) o;
+            List<Integer> vec = nextRound;
+            nextRound = new ArrayList<>();
+            for (Integer i : vec) {
                 if (!visited.containsKey(i)) {
                     visited.put(i, null);
                     int n = i;
