@@ -881,7 +881,6 @@ class TrueTypeFont extends BaseFont {
         rf.skipBytes(2);
         rf.readInt();
         rf.skipBytes(4);
-        rf.skipBytes(4);
         int nGroups = rf.readInt();
         for (int k = 0; k < nGroups; k++) {
             int startCharCode = rf.readInt();
