@@ -34,7 +34,6 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
-
 /**
  * Vendor and version information for A4J project
  *
@@ -43,6 +42,11 @@ import java.util.jar.Manifest;
  */
 final class VersionBean {
     public static final Version VERSION = new Version();
+
+    // Only for Tests
+    void setManifest(Manifest manifest) {
+        VERSION.processManifest(manifest);
+    }
 
     /**
      * Class for incapsulate version info.
@@ -75,17 +79,19 @@ final class VersionBean {
         }
 
         private void initialize() {
-            Manifest manifest = null;
+            Manifest manifest;
             try {
                 manifest = readManifest();
-                if (manifest != null) {
-                    initializePropertiesFromManifest(manifest);
-                    initializeDerivativeProperties();
-                }
-            } catch (Exception e) {
+                processManifest(manifest);
+            } catch (Exception ignored) {
             }
+        }
 
-            
+        private void processManifest(Manifest manifest) {
+            if (manifest != null) {
+                initializePropertiesFromManifest(manifest);
+                initializeDerivativeProperties();
+            }
         }
 
         private void initializePropertiesFromManifest(Manifest manifest) {
@@ -103,7 +109,7 @@ final class VersionBean {
             }
         }
         private boolean isEmpty(String value) {
-            return value == null || value.length() == 0;
+            return value == null || value.isEmpty();
         }
 
         private void initializeDerivativeProperties() {
@@ -128,18 +134,17 @@ final class VersionBean {
                             }
                             manifestStream = urlToStream(manifestFileUrl);
                             return new Manifest(manifestStream);
-                        } catch (IOException e1) {
+                        } catch (IOException ignored) {
 
                         } finally {
                             if (manifestStream != null) {
                                 try {
                                     manifestStream.close();
-                                } catch (IOException e) {
+                                } catch (IOException ignored) {
                                 }
                             }
                         }
 
-                        JarInputStream jis = null;
                         try {
                             URLConnection urlConnection = url.openConnection();
                             urlConnection.setUseCaches(false);
@@ -148,17 +153,13 @@ final class VersionBean {
                                 JarURLConnection jarUrlConnection = (JarURLConnection) urlConnection;
                                 return jarUrlConnection.getManifest();
                             } else {
-                                jis = new JarInputStream(urlConnection.getInputStream());
-                                return jis.getManifest();
-                            }
-                        } catch (IOException e) {
-                        } finally {
-                            if (jis != null) {
-                                try {
-                                    jis.close();
-                                } catch (IOException e) {
+                                Manifest manifest;
+                                try (JarInputStream jis = new JarInputStream(urlConnection.getInputStream())) {
+                                    manifest = jis.getManifest();
                                 }
+                                return manifest;
                             }
+                        } catch (IOException ignored) {
                         }
                     }
                 }
@@ -181,7 +182,7 @@ final class VersionBean {
 
                 try {
                     connection.setUseCaches(false);
-                } catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException ignored) {
                 }
 
                 return connection.getInputStream();
@@ -189,7 +190,8 @@ final class VersionBean {
                 return null;
             }
         }
-        boolean containsDataFromManifest() {
+
+        private boolean containsDataFromManifest() {
             return containsDataFromManifest;
         }
 

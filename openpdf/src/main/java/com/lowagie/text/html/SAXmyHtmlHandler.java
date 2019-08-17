@@ -49,6 +49,10 @@
 
 package com.lowagie.text.html;
 
+import java.util.HashMap;
+import java.util.Properties;
+import javax.annotation.Nullable;
+
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ElementTags;
@@ -57,10 +61,6 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.xml.SAXiTextHandler;
 import com.lowagie.text.xml.XmlPeer;
 import org.xml.sax.Attributes;
-
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
@@ -87,7 +87,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
      */
 
     public SAXmyHtmlHandler(DocListener document) {
-        super(document, new HtmlTagMap());
+        super(document, new HashMap<>());
     }
 
     /**
@@ -99,7 +99,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
      */
 
     public SAXmyHtmlHandler(DocListener document, BaseFont bf) {
-        super(document, new HtmlTagMap(), bf);
+        super(document, new HashMap<>(), bf);
     }
 
     /**
@@ -177,7 +177,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
             return;
         }
         if (myTags.containsKey(lowerCaseName)) {
-            XmlPeer peer = (XmlPeer) myTags.get(lowerCaseName);
+            XmlPeer peer = myTags.get(lowerCaseName);
             if (ElementTags.TABLE.equals(peer.getTag()) || ElementTags.CELL.equals(peer.getTag())) {
                 Properties p = peer.getAttributes(attrs);
                 String value;
@@ -251,7 +251,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
             return;
         }
         if (myTags.containsKey(lowerCaseName)) {
-            XmlPeer peer = (XmlPeer) myTags.get(lowerCaseName);
+            XmlPeer peer = myTags.get(lowerCaseName);
             if (ElementTags.TABLE.equals(peer.getTag())) {
                 tableBorder = false;
             }
