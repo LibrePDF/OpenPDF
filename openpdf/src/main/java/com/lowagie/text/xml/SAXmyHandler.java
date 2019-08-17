@@ -49,11 +49,11 @@
 
 package com.lowagie.text.xml;
 
+import java.util.Map;
+import java.util.Properties;
+
 import com.lowagie.text.DocListener;
 import org.xml.sax.Attributes;
-
-import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
@@ -68,8 +68,8 @@ public class SAXmyHandler extends SAXiTextHandler {
  * @param    document    this is the document on which events must be triggered
  * @param myTags a user defined tagmap
  */
-    
-    public SAXmyHandler(DocListener document, HashMap myTags) {
+
+public SAXmyHandler(DocListener document, Map<String, XmlPeer> myTags) {
         super(document, myTags);
     }
     
@@ -84,7 +84,7 @@ public class SAXmyHandler extends SAXiTextHandler {
     
     public void startElement(String uri, String localName, String name, Attributes attrs) {
         if (myTags.containsKey(name)) {
-            XmlPeer peer = (XmlPeer) myTags.get(name);
+            XmlPeer peer = myTags.get(name);
             handleStartingTags(peer.getTag(), peer.getAttributes(attrs));
         }
         else {
@@ -109,7 +109,7 @@ public class SAXmyHandler extends SAXiTextHandler {
     
     public void endElement(String uri, String lname, String name) {
         if (myTags.containsKey(name)) {
-            XmlPeer peer = (XmlPeer) myTags.get(name);
+            XmlPeer peer = myTags.get(name);
             handleEndingTags(peer.getTag());
         }
         else {

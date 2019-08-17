@@ -15,6 +15,13 @@
 package com.lowagie.examples.forms;
 
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.lowagie.text.pdf.PRAcroForm;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDictionary;
@@ -23,12 +30,6 @@ import com.lowagie.text.pdf.PdfLister;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfString;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Demonstrates the use of PageSize.
@@ -58,7 +59,7 @@ public class ListFields {
                     break;
                 }
                 PdfLister list = new PdfLister(stream);
-                HashMap refToField = new HashMap();
+                Map<Integer, PRAcroForm.FieldInformation> refToField = new HashMap<>();
                 ArrayList fields = form.getFields();
                 for (Object field1 : fields) {
                     PRAcroForm.FieldInformation field = (PRAcroForm.FieldInformation) field1;
@@ -76,20 +77,20 @@ public class ListFields {
                         if (subType == null || !subType.equals(PdfName.WIDGET))
                             continue;
                         PdfArray rect = annotDict.getAsArray(PdfName.RECT);
-                        String fName = "";
+                        StringBuilder fName = new StringBuilder();
                         PRAcroForm.FieldInformation field = null;
                         while (annotDict != null) {
                             PdfString tName = annotDict.getAsString(PdfName.T);
                             if (tName != null)
-                                fName = tName.toString() + "." + fName;
+                                fName.insert(0, tName.toString() + ".");
                             if (ref != null) {
-                                field = (PRAcroForm.FieldInformation) refToField.get(ref.getNumber());
+                                field = refToField.get(ref.getNumber());
                             }
                             ref = annotDict.getAsIndirectObject(PdfName.PARENT);
                             annotDict = annotDict.getAsDict(PdfName.PARENT);
                         }
-                        if (fName.endsWith("."))
-                            fName = fName.substring(0, fName.length() - 1);
+                        if (fName.toString().endsWith("."))
+                            fName = new StringBuilder(fName.substring(0, fName.length() - 1));
                         stream.println("page " + page + ", name - " + fName);
                         list.listAnyObject(rect);
                         if (field != null) {

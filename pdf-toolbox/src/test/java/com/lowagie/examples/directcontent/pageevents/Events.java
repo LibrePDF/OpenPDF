@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.pageevents;
 
@@ -17,9 +17,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.EmptyStackException;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeSet;
-
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -57,7 +56,7 @@ public class Events {
     class MyPageEvents extends PdfPageEventHelper {
 
         /** we will keep a list of speakers */
-        TreeSet speakers = new TreeSet();
+        TreeSet<Speaker> speakers = new TreeSet<>();
 
         /** This is the contentbyte object of the writer */
         PdfContentByte cb;
@@ -70,7 +69,7 @@ public class Events {
 
         /** this is the current act of the play */
         String act = "";
-        
+
         /**
          * Every speaker will be tagged, so that he can be added to the list of speakers.
          * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
@@ -92,7 +91,7 @@ public class Events {
                         BaseFont.NOT_EMBEDDED);
                 cb = writer.getDirectContent();
                 template = cb.createTemplate(50, 50);
-            } catch (DocumentException | IOException de) {
+            } catch (DocumentException | IOException ignored) {
             }
         }
 
@@ -179,7 +178,7 @@ public class Events {
         }
         return null;
     }
-    
+
     /**
      * Converts a play in XML into PDF.
      * @param args no arguments needed
@@ -235,7 +234,7 @@ public class Events {
          * @param document    the Document object
          * @param tagmap    the tagmap
          */
-        public MyHandler(Document document, HashMap tagmap) {
+        public MyHandler(Document document, Map<String, XmlPeer> tagmap) {
             super(document, tagmap);
         }
 
@@ -247,7 +246,7 @@ public class Events {
          */
         public void endElement(String uri, String lname, String name) {
             if (myTags.containsKey(name)) {
-                XmlPeer peer = (XmlPeer) myTags.get(name);
+                XmlPeer peer = myTags.get(name);
                 // we don't want the document to be close
                 // because we are going to add a page after the xml is parsed
                 if (isDocumentRoot(peer.getTag())) {
@@ -261,7 +260,7 @@ public class Events {
                                 .pop();
                         previous.add(new Paragraph(16));
                         stack.push(previous);
-                    } catch (EmptyStackException ese) {
+                    } catch (EmptyStackException ignored) {
                     }
                 }
             } else {
@@ -287,7 +286,7 @@ public class Events {
          * and/or on XmlPeer objects that are added.
          * @throws IOException
          */
-        public RomeoJulietMap() throws IOException {
+        RomeoJulietMap() throws IOException {
             super(new FileInputStream("tagmapRomeoJuliet.xml"));
             XmlPeer peer = new XmlPeer(ElementTags.CHUNK, "SPEAKER");
             peer.addValue(Markup.CSS_KEY_FONTSIZE, "10");
@@ -329,7 +328,7 @@ public class Events {
          * Gets the number of occurrences of the speaker.
          * @return a number of textblocks
          */
-        public int getOccurrence() {
+        int getOccurrence() {
             return occurrence;
         }
 

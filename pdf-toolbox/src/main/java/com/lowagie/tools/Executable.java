@@ -52,6 +52,7 @@ package com.lowagie.tools;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
@@ -62,7 +63,7 @@ public class Executable {
     /**
      * The path to Acrobat Reader.
      */
-    public static String acroread = null;
+    private static String acroread = null;
 
     
     /**
@@ -109,7 +110,7 @@ public class Executable {
         try {
             if (process != null && waitForTermination)
                 process.waitFor();
-        } catch (InterruptedException ie) {
+        } catch (InterruptedException ignored) {
         }
         return process;
     }
@@ -131,8 +132,8 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process openDocument(String fileName,
-            boolean waitForTermination) throws IOException {
+    public static Process openDocument(String fileName,
+                                       boolean waitForTermination) throws IOException {
         return action(fileName, "", waitForTermination);
     }
 
@@ -143,8 +144,8 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process openDocument(File file,
-            boolean waitForTermination) throws IOException {
+    public static Process openDocument(File file,
+                                       boolean waitForTermination) throws IOException {
         return openDocument(file.getAbsolutePath(), waitForTermination);
     }
 
@@ -154,7 +155,7 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process openDocument(String fileName) throws IOException {
+    public static Process openDocument(String fileName) throws IOException {
         return openDocument(fileName, false);
     }
 
@@ -164,7 +165,7 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process openDocument(File file) throws IOException {
+    public static Process openDocument(File file) throws IOException {
         return openDocument(file, false);
     }
     
@@ -175,8 +176,8 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process printDocument(String fileName,
-            boolean waitForTermination) throws IOException {
+    public static Process printDocument(String fileName,
+                                        boolean waitForTermination) throws IOException {
         return action(fileName, "/p", waitForTermination);
     }
 
@@ -187,8 +188,8 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process printDocument(File file,
-            boolean waitForTermination) throws IOException {
+    public static Process printDocument(File file,
+                                        boolean waitForTermination) throws IOException {
         return printDocument(file.getAbsolutePath(), waitForTermination);
     }
 
@@ -198,7 +199,7 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process printDocument(String fileName) throws IOException {
+    public static Process printDocument(String fileName) throws IOException {
         return printDocument(fileName, false);
     }
 
@@ -208,7 +209,7 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process printDocument(File file) throws IOException {
+    public static Process printDocument(File file) throws IOException {
         return printDocument(file, false);
     }
     
@@ -219,8 +220,8 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process printDocumentSilent(String fileName,
-            boolean waitForTermination) throws IOException {
+    public static Process printDocumentSilent(String fileName,
+                                              boolean waitForTermination) throws IOException {
         return action(fileName, "/p /h", waitForTermination);
     }
 
@@ -231,8 +232,8 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process printDocumentSilent(File file,
-            boolean waitForTermination) throws IOException {
+    public static Process printDocumentSilent(File file,
+                                              boolean waitForTermination) throws IOException {
         return printDocumentSilent(file.getAbsolutePath(), waitForTermination);
     }
 
@@ -242,7 +243,7 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process printDocumentSilent(String fileName) throws IOException {
+    public static Process printDocumentSilent(String fileName) throws IOException {
         return printDocumentSilent(fileName, false);
     }
 
@@ -252,7 +253,7 @@ public class Executable {
      * @return a process
      * @throws IOException
      */
-    public static final Process printDocumentSilent(File file) throws IOException {
+    public static Process printDocumentSilent(File file) throws IOException {
         return printDocumentSilent(file, false);
     }
     
@@ -262,10 +263,10 @@ public class Executable {
      * @param url the URL you want to open in the browser
      * @throws IOException
      */
-    public static final void launchBrowser(String url) throws IOException {
+    public static void launchBrowser(String url) throws IOException {
         try {
             if (isMac()) {
-                Class macUtils = Class.forName("com.apple.mrj.MRJFileUtils");
+                Class<?> macUtils = Class.forName("com.apple.mrj.MRJFileUtils");
                 Method openURL = macUtils.getDeclaredMethod("openURL", String.class);
                 openURL.invoke(null, url);
             }

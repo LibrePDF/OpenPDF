@@ -53,8 +53,8 @@ package com.lowagie.text;
 import java.awt.Color;
 import java.util.Properties;
 import java.util.Set;
-import com.lowagie.text.error_messages.MessageLocalization;
 
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.BaseFont;
 
 /**
@@ -393,8 +393,8 @@ public final class FontFactory {
  * Gets a set of registered fontnames.
  * @return a set of registered fonts
  */
-    
-    public static Set getRegisteredFonts() {
+
+public static Set<String> getRegisteredFonts() {
         return fontImp.getRegisteredFonts();
     }
     
@@ -402,8 +402,8 @@ public final class FontFactory {
  * Gets a set of registered fontnames.
  * @return a set of registered font families
  */
-    
-    public static Set getRegisteredFamilies() {
+
+public static Set<String> getRegisteredFamilies() {
         return fontImp.getRegisteredFamilies();
     }
     

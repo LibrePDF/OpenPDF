@@ -18,7 +18,6 @@ import java.io.FileOutputStream;
 
 import com.lowagie.text.Cell;
 import com.lowagie.text.Document;
-import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.PageSize;
@@ -26,6 +25,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
+import com.lowagie.text.alignment.HorizontalAlignment;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
@@ -61,7 +61,7 @@ public class RepeatingTable {
             
             // the first cell spans 10 columns
             Cell cell = new Cell(new Phrase("Administration -System Users Report", FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD)));
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setHorizontalAlignment(HorizontalAlignment.CENTER);
             cell.setLeading(30);
             cell.setColspan(10);
             cell.setBorder(Rectangle.NO_BORDER);
@@ -70,7 +70,7 @@ public class RepeatingTable {
             
             // These cells span 2 rows
             datatable.getDefaultCell().setBorderWidth(2);
-            datatable.getDefaultCell().setHorizontalAlignment(1);
+            datatable.getDefaultCell().setHorizontalAlignment(HorizontalAlignment.CENTER);
             datatable.addCell("User Id");
             datatable.addCell("Name\nAddress");
             datatable.addCell("Company");
@@ -88,15 +88,15 @@ public class RepeatingTable {
             datatable.getDefaultCell().setBorderWidth(1);
             
             for (int i = 1; i < 30; i++) {
-                
-                datatable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+
+                datatable.getDefaultCell().setHorizontalAlignment(HorizontalAlignment.LEFT);
                 
                 datatable.addCell("myUserId");
                 datatable.addCell("Somebody with a very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very long long name");
                 datatable.addCell("No Name Company");
                 datatable.addCell("D" + i);
-                
-                datatable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+
+                datatable.getDefaultCell().setHorizontalAlignment(HorizontalAlignment.CENTER);
                 datatable.addCell("No");
                 datatable.addCell("Yes");
                 datatable.addCell("No");

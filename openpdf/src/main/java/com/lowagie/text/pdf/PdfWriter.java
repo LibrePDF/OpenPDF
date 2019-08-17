@@ -49,6 +49,26 @@
 
 package com.lowagie.text.pdf;
 
+import java.awt.Color;
+import java.awt.color.ICC_Profile;
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.security.cert.Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Formatter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
@@ -73,26 +93,6 @@ import com.lowagie.text.pdf.interfaces.PdfXConformance;
 import com.lowagie.text.pdf.internal.PdfVersionImp;
 import com.lowagie.text.pdf.internal.PdfXConformanceImp;
 import com.lowagie.text.xml.xmp.XmpWriter;
-
-import java.awt.Color;
-import java.awt.color.ICC_Profile;
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Formatter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * A <CODE>DocWriter</CODE> class for PDF.
@@ -2440,7 +2440,7 @@ public class PdfWriter extends DocWriter implements
      * ON, all others must be turned OFF.
      * @param group the radio group
      */
-    public void addOCGRadioGroup(ArrayList<PdfLayer> group) {
+    public void addOCGRadioGroup(List<PdfLayer> group) {
         PdfArray ar = new PdfArray();
         for (PdfLayer layer : group) {
             if (layer.getTitle() == null)
