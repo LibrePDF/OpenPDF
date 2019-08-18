@@ -155,7 +155,8 @@ public class TagMap extends HashMap<String, XmlPeer> {
          * @param tagMap A Hashmap containing XmlPeer-objects
          */
         @Deprecated
-        public AttributeHandler(HashMap<String, XmlPeer> tagMap) {
+        @SuppressWarnings("unchecked")
+        public AttributeHandler(HashMap tagMap) {
             this.tagMap = tagMap;
         }
 

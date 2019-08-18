@@ -53,7 +53,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EmptyStackException;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Stack;
 import javax.annotation.Nullable;
@@ -127,23 +127,23 @@ public class SAXiTextHandler extends DefaultHandler {
     /**
      * This hashmap contains all the custom keys and peers.
      */
-    protected Map<String, XmlPeer> myTags;
+    protected HashMap myTags;
     /**
      * current margin of a page.
      */
-    float topMargin = 36;
+    private float topMargin = 36;
     /**
      * current margin of a page.
      */
-    float rightMargin = 36;
+    private float rightMargin = 36;
     /**
      * current margin of a page.
      */
-    float leftMargin = 36;
+    private float leftMargin = 36;
     /**
      * current margin of a page.
      */
-    float bottomMargin = 36;
+    private float bottomMargin = 36;
     private BaseFont bf = null;
 
     /**
@@ -159,7 +159,7 @@ public class SAXiTextHandler extends DefaultHandler {
      * @param myTags
      * @param bf
      */
-    public SAXiTextHandler(DocListener document, Map<String, XmlPeer> myTags, BaseFont bf) {
+    public SAXiTextHandler(DocListener document, HashMap myTags, BaseFont bf) {
         this(document, myTags);
         this.bf = bf;
     }
@@ -168,7 +168,7 @@ public class SAXiTextHandler extends DefaultHandler {
      * @param document
      * @param myTags
      */
-    public SAXiTextHandler(DocListener document, Map<String, XmlPeer> myTags) {
+    public SAXiTextHandler(DocListener document, HashMap myTags) {
         this(document);
         this.myTags = myTags;
     }

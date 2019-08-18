@@ -87,7 +87,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
      */
 
     public SAXmyHtmlHandler(DocListener document) {
-        super(document, new HashMap<>());
+        super(document, new HtmlTagMap());
     }
 
     /**
@@ -99,7 +99,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
      */
 
     public SAXmyHtmlHandler(DocListener document, BaseFont bf) {
-        super(document, new HashMap<>(), bf);
+        super(document, new HtmlTagMap(), bf);
     }
 
     /**
@@ -177,7 +177,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
             return;
         }
         if (myTags.containsKey(lowerCaseName)) {
-            XmlPeer peer = myTags.get(lowerCaseName);
+            XmlPeer peer = (XmlPeer) myTags.get(lowerCaseName);
             if (ElementTags.TABLE.equals(peer.getTag()) || ElementTags.CELL.equals(peer.getTag())) {
                 Properties p = peer.getAttributes(attrs);
                 String value;
@@ -251,7 +251,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
             return;
         }
         if (myTags.containsKey(lowerCaseName)) {
-            XmlPeer peer = myTags.get(lowerCaseName);
+            XmlPeer peer = (XmlPeer) myTags.get(lowerCaseName);
             if (ElementTags.TABLE.equals(peer.getTag())) {
                 tableBorder = false;
             }

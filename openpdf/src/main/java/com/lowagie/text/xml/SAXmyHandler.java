@@ -49,7 +49,7 @@
 
 package com.lowagie.text.xml;
 
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Properties;
 
 import com.lowagie.text.DocListener;
@@ -69,7 +69,7 @@ public class SAXmyHandler extends SAXiTextHandler {
  * @param myTags a user defined tagmap
  */
 
-public SAXmyHandler(DocListener document, Map<String, XmlPeer> myTags) {
+public SAXmyHandler(DocListener document, HashMap myTags) {
         super(document, myTags);
     }
     
@@ -84,7 +84,7 @@ public SAXmyHandler(DocListener document, Map<String, XmlPeer> myTags) {
     
     public void startElement(String uri, String localName, String name, Attributes attrs) {
         if (myTags.containsKey(name)) {
-            XmlPeer peer = myTags.get(name);
+            XmlPeer peer = (XmlPeer) myTags.get(name);
             handleStartingTags(peer.getTag(), peer.getAttributes(attrs));
         }
         else {
@@ -109,7 +109,7 @@ public SAXmyHandler(DocListener document, Map<String, XmlPeer> myTags) {
     
     public void endElement(String uri, String lname, String name) {
         if (myTags.containsKey(name)) {
-            XmlPeer peer = myTags.get(name);
+            XmlPeer peer = (XmlPeer) myTags.get(name);
             handleEndingTags(peer.getTag());
         }
         else {

@@ -17,7 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.EmptyStackException;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.TreeSet;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -153,7 +153,7 @@ public class Events {
          * Getting the list of speakers.
          * @return    a list of speakers and the number of occurrences.
          */
-        public TreeSet getSpeakers() {
+        TreeSet getSpeakers() {
             return speakers;
         }
     }
@@ -162,7 +162,7 @@ public class Events {
      * Gets a PageEvents object.
      * @return a new PageEvents object
      */
-    public MyPageEvents getPageEvents() {
+    private MyPageEvents getPageEvents() {
         return new MyPageEvents();
     }
     /**
@@ -170,7 +170,7 @@ public class Events {
      * @param document  the document on which the handler operates
      * @return a Handler object
      */
-    public MyHandler getXmlHandler(Document document) {
+    private MyHandler getXmlHandler(Document document) {
         try {
             return new MyHandler(document, new RomeoJulietMap());
         } catch (IOException e) {
@@ -234,7 +234,7 @@ public class Events {
          * @param document    the Document object
          * @param tagmap    the tagmap
          */
-        public MyHandler(Document document, Map<String, XmlPeer> tagmap) {
+        MyHandler(Document document, HashMap tagmap) {
             super(document, tagmap);
         }
 
@@ -246,7 +246,7 @@ public class Events {
          */
         public void endElement(String uri, String lname, String name) {
             if (myTags.containsKey(name)) {
-                XmlPeer peer = myTags.get(name);
+                XmlPeer peer = (XmlPeer) myTags.get(name);
                 // we don't want the document to be close
                 // because we are going to add a page after the xml is parsed
                 if (isDocumentRoot(peer.getTag())) {
@@ -284,7 +284,6 @@ public class Events {
         /**
          * Constructs a TagMap based on an XML file
          * and/or on XmlPeer objects that are added.
-         * @throws IOException
          */
         RomeoJulietMap() throws IOException {
             super(new FileInputStream("tagmapRomeoJuliet.xml"));
@@ -310,7 +309,6 @@ public class Events {
 
         /**
          * One of the speakers in the play.
-         * @param name
          */
         public Speaker(String name) {
             this.name = name;

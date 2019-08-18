@@ -76,7 +76,7 @@ public class FileList
     }
   }
 
-  private void jbInit() throws Exception {
+  private void jbInit() {
     this.getContentPane().setLayout(borderLayout1);
     jTable1.addKeyListener(new FileList_jTable1_keyAdapter(this));
     jLabel1.setText("pages");
@@ -126,14 +126,12 @@ public class FileList
       return;
     }
     dtde.acceptDrop(DnDConstants.ACTION_COPY);
-      List<RowContainer> oldvec = this.filevector;
 
     Transferable transferable = dtde.getTransferable();
-      DataFlavor javaFileListFlavor = DataFlavor.javaFileListFlavor;
     try {
-        // Transferable is not generic, so the cast can only be unchecked.
-        @SuppressWarnings("unchecked")
-        List<File> filelist = (List<File>) transferable.getTransferData(javaFileListFlavor);
+      // Transferable is not generic, so the cast can only be unchecked.
+      @SuppressWarnings("unchecked")
+      List<File> filelist = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
       for (File f: filelist) {
         filevector.add(new RowContainer(f));
 
