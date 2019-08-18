@@ -1032,7 +1032,7 @@ public class PdfPTable implements LargeElement{
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
+    public ArrayList<Element> getChunks() {
         return new ArrayList<>();
     }
     

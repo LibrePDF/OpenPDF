@@ -46,7 +46,7 @@ public class PdfSignatureAppearanceTest {
                 sap.setCertificationLevel(2);
                 sap.setReason("Test");
 
-                HashMap exc = new HashMap();
+                HashMap<PdfName, Integer> exc = new HashMap<>();
                 exc.put(PdfName.CONTENTS, 10);
                 sap.preClose(exc);
 
@@ -99,7 +99,7 @@ public class PdfSignatureAppearanceTest {
                 sap.setVisibleSignature(new Rectangle(100, 100), 1);
                 sap.setLayer2Text("Hello world");
 
-                HashMap exc = new HashMap();
+                HashMap<PdfName, Integer> exc = new HashMap<>();
                 exc.put(PdfName.CONTENTS, 10);
                 sap.preClose(exc);
 
