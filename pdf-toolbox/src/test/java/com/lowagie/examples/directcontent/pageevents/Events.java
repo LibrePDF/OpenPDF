@@ -17,7 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.EmptyStackException;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeSet;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -234,7 +234,7 @@ public class Events {
          * @param document    the Document object
          * @param tagmap    the tagmap
          */
-        MyHandler(Document document, HashMap tagmap) {
+        MyHandler(Document document, Map<String, XmlPeer> tagmap) {
             super(document, tagmap);
         }
 
@@ -246,7 +246,7 @@ public class Events {
          */
         public void endElement(String uri, String lname, String name) {
             if (myTags.containsKey(name)) {
-                XmlPeer peer = (XmlPeer) myTags.get(name);
+                XmlPeer peer = myTags.get(name);
                 // we don't want the document to be close
                 // because we are going to add a page after the xml is parsed
                 if (isDocumentRoot(peer.getTag())) {

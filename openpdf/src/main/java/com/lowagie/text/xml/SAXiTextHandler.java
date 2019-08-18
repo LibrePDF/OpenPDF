@@ -53,7 +53,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EmptyStackException;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 import javax.annotation.Nullable;
@@ -91,7 +91,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * Subclass it, if you want to change the way iText translates XML to PDF.
  */
 
-public class SAXiTextHandler extends DefaultHandler {
+public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
 
     /**
      * This is the resulting document.
@@ -123,11 +123,11 @@ public class SAXiTextHandler extends DefaultHandler {
      * This is a flag that can be set, if you want to open and close the
      * Document-object yourself.
      */
-    protected boolean controlOpenClose = true;
+    private boolean controlOpenClose = true;
     /**
      * This hashmap contains all the custom keys and peers.
      */
-    protected HashMap myTags;
+    protected Map<String, T> myTags;
     /**
      * current margin of a page.
      */
@@ -159,7 +159,7 @@ public class SAXiTextHandler extends DefaultHandler {
      * @param myTags
      * @param bf
      */
-    public SAXiTextHandler(DocListener document, HashMap myTags, BaseFont bf) {
+    public SAXiTextHandler(DocListener document, Map<String, T> myTags, BaseFont bf) {
         this(document, myTags);
         this.bf = bf;
     }
@@ -168,7 +168,7 @@ public class SAXiTextHandler extends DefaultHandler {
      * @param document
      * @param myTags
      */
-    public SAXiTextHandler(DocListener document, HashMap myTags) {
+    public SAXiTextHandler(DocListener document, Map<String, T> myTags) {
         this(document);
         this.myTags = myTags;
     }
