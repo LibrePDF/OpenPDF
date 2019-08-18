@@ -85,7 +85,7 @@ public class Chapter extends Section {
      */
     public Chapter(int number) {
         super(null, 1);
-        numbers = new ArrayList();
+        numbers = new ArrayList<>();
         numbers.add(number);
         triggerNewPage = true;
     }
@@ -99,7 +99,7 @@ public class Chapter extends Section {
     
     public Chapter(Paragraph title, int number) {
         super(title, 1);
-        numbers = new ArrayList();
+        numbers = new ArrayList<>();
         numbers.add(number);
         triggerNewPage = true;
     }

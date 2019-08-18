@@ -426,8 +426,8 @@ public class Annotation implements Element {
      * @return an <CODE>ArrayList</CODE>
      */
 
-    public ArrayList getChunks() {
-        return new ArrayList();
+    public ArrayList<Element> getChunks() {
+        return new ArrayList<>();
     }
 
     // methods

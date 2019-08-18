@@ -40,7 +40,7 @@ public class ExtractCertificatesTest {
         try (PdfReader reader = new PdfReader(pdf)) {
             AcroFields fields = reader.getAcroFields();
 
-            ArrayList<String> signatures = fields.getSignatureNames();
+            List<String> signatures = fields.getSignedFieldNames();
             System.out.println("Signs: " + signatures.size());
             for (String signature : signatures) {
 
