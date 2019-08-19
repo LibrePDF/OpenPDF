@@ -49,24 +49,22 @@
 
 package com.lowagie.text.html;
 
+import java.util.Properties;
+import javax.annotation.Nullable;
+
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ElementTags;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.xml.SAXiTextHandler;
-import com.lowagie.text.xml.XmlPeer;
 import org.xml.sax.Attributes;
-
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
  */
 
-public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
+public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
 {
 
     /**
@@ -85,21 +83,8 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
      *
      * @param document this is the document on which events must be triggered
      */
-
     public SAXmyHtmlHandler(DocListener document) {
-        super(document, new HtmlTagMap());
-    }
-
-    /**
-     * Constructs a new SAXiTextHandler that will translate all the events
-     * triggered by the parser to actions on the <CODE>Document</CODE>-object.
-     *
-     * @param document this is the document on which events must be triggered
-     * @param bf
-     */
-
-    public SAXmyHtmlHandler(DocListener document, BaseFont bf) {
-        super(document, new HtmlTagMap(), bf);
+        this(document, new HtmlTagMap());
     }
 
     /**
@@ -109,9 +94,23 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
      * @param document this is the document on which events must be triggered
      * @param htmlTags a tagmap translating HTML tags to iText tags
      */
+    public SAXmyHtmlHandler(DocListener document, HtmlTagMap htmlTags) {
+        this(document, htmlTags, null);
+    }
 
-    public SAXmyHtmlHandler(DocListener document, HashMap htmlTags) {
-        super(document, htmlTags);
+    public SAXmyHtmlHandler(DocListener document, HtmlTagMap htmlTags, BaseFont bf) {
+        super(document, htmlTags, bf);
+    }
+
+    /**
+     * Constructs a new SAXiTextHandler that will translate all the events
+     * triggered by the parser to actions on the <CODE>Document</CODE>-object.
+     *
+     * @param document this is the document on which events must be triggered
+     * @param bf
+     */
+    public SAXmyHtmlHandler(DocListener document, BaseFont bf) {
+        this(document, new HtmlTagMap(), bf);
     }
 
     /**
@@ -167,7 +166,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
             // maybe we could extract some info about the document: color,
             // margins,...
             // but that's for a later version...
-            XmlPeer peer = new XmlPeer(ElementTags.ITEXT, lowerCaseName);
+            HtmlPeer peer = new HtmlPeer(ElementTags.ITEXT, lowerCaseName);
             peer.addAlias(ElementTags.TOP, HtmlTags.TOPMARGIN);
             peer.addAlias(ElementTags.BOTTOM, HtmlTags.BOTTOMMARGIN);
             peer.addAlias(ElementTags.RIGHT, HtmlTags.RIGHTMARGIN);
@@ -177,7 +176,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
             return;
         }
         if (myTags.containsKey(lowerCaseName)) {
-            XmlPeer peer = (XmlPeer) myTags.get(lowerCaseName);
+            HtmlPeer peer = myTags.get(lowerCaseName);
             if (ElementTags.TABLE.equals(peer.getTag()) || ElementTags.CELL.equals(peer.getTag())) {
                 Properties p = peer.getAttributes(attrs);
                 String value;
@@ -251,7 +250,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler // SAXmyHandler
             return;
         }
         if (myTags.containsKey(lowerCaseName)) {
-            XmlPeer peer = (XmlPeer) myTags.get(lowerCaseName);
+            HtmlPeer peer = myTags.get(lowerCaseName);
             if (ElementTags.TABLE.equals(peer.getTag())) {
                 tableBorder = false;
             }

@@ -55,13 +55,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-
-import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.AcroFields.Item;
 
 /**
@@ -72,10 +71,10 @@ class PdfCopyFieldsImp extends PdfWriter {
 
     private static final PdfName iTextTag = new PdfName("_iTextTag_");
     private static final Integer zero = 0;
-    List<PdfReader> readers = new ArrayList<>();
+    private List<PdfReader> readers = new ArrayList<>();
     Map<PdfReader, IntHashtable> readers2intrefs = new HashMap<>();
-    Map<PdfReader, IntHashtable> pages2intrefs = new HashMap<>();
-    Map<PdfReader, IntHashtable> visited = new HashMap<>();
+    private Map<PdfReader, IntHashtable> pages2intrefs = new HashMap<>();
+    private Map<PdfReader, IntHashtable> visited = new HashMap<>();
     List<AcroFields> fields = new ArrayList<>();
     RandomAccessFileOrArray file;
     Map<String, Object> fieldTree = new HashMap<>();
@@ -185,8 +184,8 @@ class PdfCopyFieldsImp extends PdfWriter {
             calculationOrder.add(name);
         }
     }
-    
-    void propagate(PdfObject obj, PdfIndirectReference refo, boolean restricted) {
+
+    private void propagate(PdfObject obj, PdfIndirectReference refo, boolean restricted) {
         if (obj == null)
             return;
 //        if (refo != null)
@@ -277,7 +276,6 @@ class PdfCopyFieldsImp extends PdfWriter {
         PdfArray arr = new PdfArray();
         for (Map.Entry<String, Object> entry : level.entrySet()) {
             String name = entry.getKey();
-            Object obj = entry.getValue();
             PdfIndirectReference ind = getPdfIndirectReference();
             PdfDictionary dic = new PdfDictionary();
             if (parent != null)
@@ -287,8 +285,11 @@ class PdfCopyFieldsImp extends PdfWriter {
             int coidx = calculationOrder.indexOf(fname2);
             if (coidx >= 0)
                 calculationOrderRefs.set(coidx, ind);
-            if (obj instanceof HashMap) {
-                dic.put(PdfName.KIDS, branchForm((Map<String, Object>) obj, ind, fname2));
+            Object obj = entry.getValue();
+            if (obj instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> map = (Map<String, Object>) obj;
+                dic.put(PdfName.KIDS, branchForm(map, ind, fname2));
                 arr.add(ind);
                 addToBody(dic, ind);
             } else {
@@ -445,7 +446,7 @@ class PdfCopyFieldsImp extends PdfWriter {
             list.add(widget);
         }
     }
-    
+
     void mergeField(String name, Item item) {
         Map<String, Object> map = fieldTree;
         StringTokenizer tk = new StringTokenizer(name, ".");
@@ -456,12 +457,14 @@ class PdfCopyFieldsImp extends PdfWriter {
             Object obj = map.get(s);
             if (tk.hasMoreTokens()) {
                 if (obj == null) {
-                    obj = new HashMap();
-                    map.put(s, obj);
-                    map = (HashMap)obj;
+                    Map<String, Object> tempMap = new HashMap<>();
+                    map.put(s, tempMap);
+                    map = tempMap;
+                } else if (obj instanceof Map) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> castMap = (Map<String, Object>) obj;
+                    map = castMap;
                 }
-                else if (obj instanceof HashMap)
-                    map = (HashMap)obj;
                 else
                     return;
             }

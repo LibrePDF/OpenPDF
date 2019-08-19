@@ -49,6 +49,15 @@
 
 package com.lowagie.text.xml;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EmptyStackException;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Stack;
+import javax.annotation.Nullable;
+
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
 import com.lowagie.text.BadElementException;
@@ -77,21 +86,12 @@ import com.lowagie.text.xml.simpleparser.EntitiesToSymbol;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Stack;
-
 /**
  * This class is a Handler that controls the iText XML to PDF conversion.
  * Subclass it, if you want to change the way iText translates XML to PDF.
  */
 
-public class SAXiTextHandler extends DefaultHandler {
+public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
 
     /**
      * This is the resulting document.
@@ -123,27 +123,27 @@ public class SAXiTextHandler extends DefaultHandler {
      * This is a flag that can be set, if you want to open and close the
      * Document-object yourself.
      */
-    protected boolean controlOpenClose = true;
+    private boolean controlOpenClose = true;
     /**
      * This hashmap contains all the custom keys and peers.
      */
-    protected HashMap myTags;
+    protected Map<String, T> myTags;
     /**
      * current margin of a page.
      */
-    float topMargin = 36;
+    private float topMargin = 36;
     /**
      * current margin of a page.
      */
-    float rightMargin = 36;
+    private float rightMargin = 36;
     /**
      * current margin of a page.
      */
-    float leftMargin = 36;
+    private float leftMargin = 36;
     /**
      * current margin of a page.
      */
-    float bottomMargin = 36;
+    private float bottomMargin = 36;
     private BaseFont bf = null;
 
     /**
@@ -159,7 +159,7 @@ public class SAXiTextHandler extends DefaultHandler {
      * @param myTags
      * @param bf
      */
-    public SAXiTextHandler(DocListener document, HashMap myTags, BaseFont bf) {
+    public SAXiTextHandler(DocListener document, Map<String, T> myTags, BaseFont bf) {
         this(document, myTags);
         this.bf = bf;
     }
@@ -168,7 +168,7 @@ public class SAXiTextHandler extends DefaultHandler {
      * @param document
      * @param myTags
      */
-    public SAXiTextHandler(DocListener document, HashMap myTags) {
+    public SAXiTextHandler(DocListener document, Map<String, T> myTags) {
         this(document);
         this.myTags = myTags;
     }
@@ -464,8 +464,7 @@ public class SAXiTextHandler extends DefaultHandler {
                 }
                 if (ElementTags.PAGE_SIZE.equals(key)) {
                     try {
-                        String pageSizeName = value;
-                        Field pageSizeField = PageSize.class.getField(pageSizeName);
+                        Field pageSizeField = PageSize.class.getField(value);
                         pageSize = (Rectangle) pageSizeField.get(null);
                     } catch (Exception ex) {
                         throw new ExceptionConverter(ex);

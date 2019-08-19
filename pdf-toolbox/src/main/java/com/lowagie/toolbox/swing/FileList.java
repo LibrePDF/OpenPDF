@@ -42,7 +42,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -65,7 +64,7 @@ public class FileList
 
   private static final long serialVersionUID = -7238230038043975672L;
 
-  Vector<RowContainer> filevector = new Vector<>();
+    private Vector<RowContainer> filevector = new Vector<>();
 
   public FileList() {
     super("FileList", true, true, true);
@@ -77,7 +76,7 @@ public class FileList
     }
   }
 
-  private void jbInit() throws Exception {
+  private void jbInit() {
     this.getContentPane().setLayout(borderLayout1);
     jTable1.addKeyListener(new FileList_jTable1_keyAdapter(this));
     jLabel1.setText("pages");
@@ -97,19 +96,19 @@ public class FileList
     this.pack();
   }
 
-  JPanel jPanel1 = new JPanel();
-  BorderLayout borderLayout1 = new BorderLayout();
-  JPanel jPanel2 = new JPanel();
-  BorderLayout borderLayout2 = new BorderLayout();
-  JScrollPane jScrollPane1 = new JScrollPane();
-  FileTableModel model = new FileTableModel();
-  JTable jTable1 = new JTable(model);
-  RowSorter<TableModel> sorter= new TableRowSorter<>(model);
-  BorderLayout borderLayout3 = new BorderLayout();
-  DropTarget dt = new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this, true, null);
-  JPanel jPanel3 = new JPanel();
-  JLabel jLabel1 = new JLabel();
-  JLabel jLabel2 = new JLabel();
+    private JPanel jPanel1 = new JPanel();
+    private BorderLayout borderLayout1 = new BorderLayout();
+    private JPanel jPanel2 = new JPanel();
+    private BorderLayout borderLayout2 = new BorderLayout();
+    private JScrollPane jScrollPane1 = new JScrollPane();
+    private FileTableModel model = new FileTableModel();
+    private JTable jTable1 = new JTable(model);
+    private RowSorter<TableModel> sorter = new TableRowSorter<>(model);
+    private BorderLayout borderLayout3 = new BorderLayout();
+    private DropTarget dt = new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this, true, null);
+    private JPanel jPanel3 = new JPanel();
+    private JLabel jLabel1 = new JLabel();
+    private JLabel jLabel2 = new JLabel();
 
   public void dragEnter(DropTargetDragEvent dtde) {
   }
@@ -127,12 +126,12 @@ public class FileList
       return;
     }
     dtde.acceptDrop(DnDConstants.ACTION_COPY);
-    Vector<RowContainer> oldvec=this.filevector;
 
     Transferable transferable = dtde.getTransferable();
     try {
-      List<File> filelist = (List<File>) transferable.getTransferData(
-          DataFlavor.javaFileListFlavor);
+      // Transferable is not generic, so the cast can only be unchecked.
+      @SuppressWarnings("unchecked")
+      List<File> filelist = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
       for (File f: filelist) {
         filevector.add(new RowContainer(f));
 
@@ -225,7 +224,7 @@ public class FileList
     }
     public String getStringreprasentation(){
         StringBuilder sb=new StringBuilder();
-       Vector<RowContainer> vec=getFilevector();
+        List<RowContainer> vec = getFilevector();
        for(RowContainer c: vec){
            sb.append(c.getFile().getAbsolutePath()).append('\n');
        }
@@ -285,8 +284,7 @@ class RowContainer {
     try {
       reader = new PdfReader(file.
                              getAbsolutePath());
-    }
-    catch (IOException ex) {
+    } catch (IOException ignored) {
     }
     this.pages = reader.getNumberOfPages();
   }

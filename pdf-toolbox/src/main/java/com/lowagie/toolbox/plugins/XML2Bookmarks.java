@@ -104,7 +104,7 @@ public class XML2Bookmarks extends AbstractTool {
             if (getValue("pdffile") == null) throw new InstantiationException("You need to choose a source PDF file");
             if (getValue("destfile") == null) throw new InstantiationException("You need to choose a destination PDF file");
             FileInputStream bmReader = new FileInputStream( (File) getValue("xmlfile") );
-            List<Map<String, Object>> bookmarks = SimpleBookmark.importFromXML( bmReader );
+            List<Map<String, Object>> bookmarks = SimpleBookmark.importFromXML(bmReader);
             bmReader.close();
             PdfReader reader = new PdfReader(((File)getValue("pdffile")).getAbsolutePath());
             reader.consolidateNamedDestinations();

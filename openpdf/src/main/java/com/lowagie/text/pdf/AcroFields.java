@@ -57,16 +57,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.ExceptionConverter;
-import org.w3c.dom.Node;
-
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
+import org.w3c.dom.Node;
 
 /**
  * Query and change fields in existing documents either by method calls or by FDF merging.
@@ -2109,8 +2106,9 @@ public class AcroFields {
    * @return the field names that have signatures and are signed
    */
   @Deprecated
-  public ArrayList getSignatureNames() {
-    return (ArrayList) getSignedFieldNames();
+  @SuppressWarnings("unchecked")
+  public ArrayList<String> getSignatureNames() {
+      return (ArrayList<String>) getSignedFieldNames();
   }
 
   /**
