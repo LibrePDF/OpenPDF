@@ -756,7 +756,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     }
 
     /**
-     * @deprecated user {@link SimpleBookmark#startElement(String, Map<String, String>)}
+     * @deprecated user {@link SimpleBookmark#startElement(String, Map)}
      */
     @Deprecated
     @SuppressWarnings("unchecked")

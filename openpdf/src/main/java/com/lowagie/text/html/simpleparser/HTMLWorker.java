@@ -164,7 +164,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
     /**
      *
-     * @deprecated use {@link HTMLWorker#setInterfaceProps(Map<String, Object>)} since 1.2.22
+     * @deprecated use {@link HTMLWorker#setInterfaceProps(Map)} since 1.2.22
      */
     @SuppressWarnings("unchecked")
     @Deprecated
@@ -204,7 +204,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
     }
 
     /**
-     * @deprecated use {@link HTMLWorker#startElement(String, Map<String, String>)}  } since 1.2.22
+     * @deprecated use {@link HTMLWorker#startElement(String, Map)}  } since 1.2.22
      */
     @Deprecated
     @SuppressWarnings("unchecked")

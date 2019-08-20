@@ -123,7 +123,7 @@ public class ChainedProperties {
     }
 
     /**
-     * @deprecated use {@link ChainedProperties#addToChain(String, Map<String, String>)}
+     * @deprecated use {@link ChainedProperties#addToChain(String, HashMap)}
      */
     @Deprecated
     @SuppressWarnings("unchecked")

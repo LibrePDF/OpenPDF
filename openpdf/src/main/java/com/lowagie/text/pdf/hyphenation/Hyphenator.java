@@ -28,7 +28,7 @@ import com.lowagie.text.pdf.BaseFont;
  * This class is the main entry point to the hyphenation package.
  * You can use only the static methods or create an instance.
  *
- * @author Carlos Villegas <cav@uniscope.co.jp>
+ * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
 public class Hyphenator {
     

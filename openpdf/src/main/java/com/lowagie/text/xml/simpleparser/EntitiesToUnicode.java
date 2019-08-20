@@ -401,7 +401,7 @@ public class EntitiesToUnicode {
     }
     
     /**
-     * Translates a String with entities (&...;) to a String without entities,
+     * Translates a String with entities {@literal (&...;)} to a String without entities,
      * replacing the entity with the right (unicode) character.
      */
     public static String decodeString(String s) {

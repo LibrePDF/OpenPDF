@@ -985,7 +985,7 @@ public class CFFFont {
     protected int[] gsubrOffsets;
     
     /**
-     * TODO Changed from private to protected by Ygal&Oren
+     * TODO Changed from private to protected by {@literal Ygal&Oren}
      */
     protected final class Font {
         public String    name;
