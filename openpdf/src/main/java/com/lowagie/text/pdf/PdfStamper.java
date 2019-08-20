@@ -46,6 +46,7 @@
  */
 package com.lowagie.text.pdf;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -67,6 +68,8 @@ import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.interfaces.PdfEncryptionSettings;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
+import com.lowagie.text.xml.xmp.XmpWriter;
+
 import java.security.cert.Certificate;
 
 /** Applies extra content to the pages of a PDF document.
@@ -87,6 +90,7 @@ public class PdfStamper
     private Map<String, String> moreInfo;
     private boolean hasSignature;
     private PdfSignatureAppearance sigApp;
+    private boolean cleanMetadata = false;
 
     /** Starts the process of adding extra content to an existing PDF
      * document.
@@ -176,6 +180,7 @@ public class PdfStamper
       meta.put("CreationDate", null);
       meta.put("ModDate",null);
       setInfoDictionary(meta);
+      this.cleanMetadata = true;
     }
 
     /** An optional <CODE>String</CODE> map to add or change values in
@@ -231,6 +236,17 @@ public class PdfStamper
      */
     public void close() throws DocumentException, IOException {
         if (!hasSignature) {
+            if (cleanMetadata && stamper.xmpMetadata == null) {
+              ByteArrayOutputStream baos = new ByteArrayOutputStream();
+              try {
+                XmpWriter writer = new XmpWriter(baos, moreInfo);
+                writer.close();
+                stamper.setXmpMetadata(baos.toByteArray());
+              }
+              catch (IOException ignore) {
+                // ignore exception
+              }
+            }
             stamper.close(moreInfo);
             return;
         }
