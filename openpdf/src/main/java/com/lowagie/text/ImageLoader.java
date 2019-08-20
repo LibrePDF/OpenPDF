@@ -72,36 +72,27 @@ public class ImageLoader {
      * @return
      */
     public static Image getPngImage(URL url) {
-        try {
-            InputStream is = url.openStream();
+        try (InputStream is = url.openStream()) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            is.close();
             return Image.getInstance(bufferedImage, null, false);
-
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
 
     public static Image getGifImage(URL url) {
-        try {
-            InputStream is = url.openStream();
+        try (InputStream is = url.openStream()) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            is.close();
             return Image.getInstance(bufferedImage, null, false);
-
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
 
     public static Image getTiffImage(URL url) {
-        try {
-            InputStream is = url.openStream();
+        try (InputStream is = url.openStream()) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            is.close();
             return Image.getInstance(bufferedImage, null, false);
-
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -109,12 +100,9 @@ public class ImageLoader {
 
 
     public static Image getBmpImage(URL url) {
-        try {
-            InputStream is = url.openStream();
+        try (InputStream is = url.openStream()) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            is.close();
             return Image.getInstance(bufferedImage, null, false);
-
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -127,42 +115,35 @@ public class ImageLoader {
      * @return
      */
     public static Image getJpegImage(URL url) {
-        try {
-            InputStream is = url.openStream();
+        try (InputStream is = url.openStream()) {
             byte[] imageBytes = Utilities.toByteArray(is);
-            is.close();
             return new Jpeg(imageBytes);
-
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
 
     public static Image getJpeg2000Image(URL url) {
-        try {
-            InputStream is = url.openStream();
+        try (InputStream is = url.openStream()) {
             byte[] imageBytes = Utilities.toByteArray(is);
-            is.close();
             return new Jpeg2000(imageBytes);
-
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
 
     public static Image getGifImage(byte[] imageData) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
+        try (InputStream is = new ByteArrayInputStream(imageData)) {
+            BufferedImage bufferedImage = ImageIO.read(is);
             return Image.getInstance(bufferedImage, null, false);
-
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
 
     public static Image getPngImage(byte[] imageData) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
+        try (InputStream is = new ByteArrayInputStream(imageData)) {
+            BufferedImage bufferedImage = ImageIO.read(is);
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
@@ -171,8 +152,8 @@ public class ImageLoader {
     }
 
     public static Image getBmpImage(byte[] imageData) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
+        try (InputStream is = new ByteArrayInputStream(imageData)) {
+            BufferedImage bufferedImage = ImageIO.read(is);
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
@@ -181,8 +162,8 @@ public class ImageLoader {
     }
 
     public static Image getTiffImage(byte[] imageData) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
+        try (InputStream is = new ByteArrayInputStream(imageData)) {
+            BufferedImage bufferedImage = ImageIO.read(is);
             return Image.getInstance(bufferedImage, null, false);
 
         } catch (Exception e) {
