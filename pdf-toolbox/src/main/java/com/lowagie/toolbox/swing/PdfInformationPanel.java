@@ -97,8 +97,8 @@ public class PdfInformationPanel extends JPanel implements PropertyChangeListene
             int page = 1;
             PdfReader reader = null;
 
-            try {
-                reader = new PdfReader(new RandomAccessFileOrArray(file.getAbsolutePath()), null);
+            try (RandomAccessFileOrArray raf = new RandomAccessFileOrArray(file.getAbsolutePath())){
+                reader = new PdfReader(raf, null);
                 Map<String, String> pdfinfo = reader.getInfo();
 
                 StringBuilder sb = new StringBuilder();
