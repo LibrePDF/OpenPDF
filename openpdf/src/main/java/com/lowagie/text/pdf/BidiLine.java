@@ -207,7 +207,7 @@ public class BidiLine {
     }
 
     /**
-     * Deprecated use {@link BidiLine#addChunks(List<PdfChunk>)}, since 1.2.22
+     * Deprecated use {@link BidiLine#addChunks(List)}, since 1.2.22
      */
     @Deprecated
     @SuppressWarnings("unchecked")

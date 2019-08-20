@@ -429,7 +429,7 @@ public class CFFFontSubset extends CFFFont {
     }
     
     /**
-     * Function builds the new local & global subsrs indices. IF CID then All of 
+     * Function builds the new local and global subsrs indices. IF CID then All of
      * the FD Array lsubrs will be subsetted. 
      * @param Font the font
      * @throws IOException
@@ -519,8 +519,8 @@ public class CFFFontSubset extends CFFFont {
     }
 
     /**
-     * Function uses ReadAsubr on the glyph used to build the LSubr & Gsubr HashMap.
-     * The HashMap (of the lsubr only) is then scanned recursively for Lsubr & Gsubrs
+     * Function uses ReadAsubr on the glyph used to build the LSubr and Gsubr HashMap.
+     * The HashMap (of the lsubr only) is then scanned recursively for Lsubr and Gsubrs
      * calls.  
      * @param Font the font
      * @param FD FD array processed. 0 indicates function was called by non CID font
@@ -574,7 +574,7 @@ public class CFFFontSubset extends CFFFont {
     
     /**
      * Function scans the Glsubr used ArrayList to find recursive calls 
-     * to Gsubrs and adds to Hashmap & ArrayList
+     * to Gsubrs and adds to Hashmap and ArrayList
      * @param Font the font
      */
     protected void BuildGSubrsUsed(int Font)
@@ -737,7 +737,7 @@ public class CFFFontSubset extends CFFFont {
     
     /**
      * Function checks the key and return the change to the stack after the operator
-     * @return The change in the stack. 2-> flush the stack
+     * @return The change in the stack. {@literal 2->} flush the stack
      */
     protected int StackOpp()
     {

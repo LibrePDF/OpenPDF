@@ -702,7 +702,7 @@ public class TextField extends BaseField {
     
     /**
      * adds another (or a first I suppose) selection to a MULTISELECT list.
-     * This doesn't do anything unless this.options & MUTLISELECT != 0 
+     * This doesn't do anything unless {@code this.options & MUTLISELECT != 0}
      * @param selection new selection
      */
     public void addChoiceSelection( int selection) {

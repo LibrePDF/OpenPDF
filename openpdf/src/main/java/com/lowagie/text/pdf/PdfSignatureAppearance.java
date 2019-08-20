@@ -1165,11 +1165,11 @@ public class PdfSignatureAppearance {
    * general sequence is: preClose(), getDocumentBytes() and close().
    * <p>
    * <CODE>update</CODE> is a <CODE>PdfDictionary</CODE> that must have exactly
-   * the same keys as the ones provided in {@link #preClose(HashMap)}.
+   * the same keys as the ones provided in {@link PdfSignatureAppearance#preClose(Map)}.
    * 
    * @param update
    *          a <CODE>PdfDictionary</CODE> with the key/value that will fill the
-   *          holes defined in {@link #preClose(HashMap)}
+   *          holes defined in {@link PdfSignatureAppearance#preClose(Map)}
    * @throws DocumentException
    *           on error
    * @throws IOException

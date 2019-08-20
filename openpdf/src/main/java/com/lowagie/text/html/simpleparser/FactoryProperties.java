@@ -231,7 +231,7 @@ public class FactoryProperties {
      * @param h a HashMap that should have at least a key named
      *          style. After this method is invoked, more keys could be added.
      *
-     * @deprecated use {@link FactoryProperties#insertStyle(Map<String, String>)} instead. (since 1.2.22)
+     * @deprecated use {@link FactoryProperties#insertStyle(Map)} instead. (since 1.2.22)
      */
     @SuppressWarnings("unchecked")
     @Deprecated
