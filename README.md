@@ -38,16 +38,17 @@ We want OpenPDF to consist of source code which is consistently licensed with th
 OpenPDF is open source software with a LGPL and MPL license. It is a fork of iText version 4, more specifically iText svn tag 4.2.0, which was hosted publicly on sourceforge with LGPL and MPL license headers in the source code, and lgpl and mpl license documents in the svn repository.
 Beginning with version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell commercial licenses. 
 
-## Contributing ##
-Release the hounds!  Please send all pull requests.
-Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
-
 ## Projects using OpenPDF ##
 - Spring Framework https://github.com/spring-projects/spring-framework
 - flyingsaucer https://github.com/flyingsaucerproject/flyingsaucer
 - Confluence PDF Export
+- Digital Signature Service - https://github.com/esig/dss
 - OpenCMS, Nuxeo Web Framework, QR Invoice Library and many closed source commercial applications as well.
 - Full list here: https://mvnrepository.com/artifact/com.github.librepdf/openpdf/usages
+
+## Contributing ##
+Release the hounds!  Please send all pull requests.
+Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
 
 ### Coding Style ###
 - Code indentation style is 4 spaces.
