@@ -361,7 +361,7 @@ public class PdfGraphics2D extends Graphics2D {
      * @see Graphics2D#drawString(String, float, float)
      */
     public void drawString(String s, float x, float y) {
-        if (s.length() == 0 || (!Float.isFinite(fontSize) || fontSize < PdfContentByte.MIN_FONT_SIZE)) {
+        if (s.length() == 0) {
             return;
         }
         setFillPaint();
@@ -370,6 +370,9 @@ public class PdfGraphics2D extends Graphics2D {
 //            Use the following line to compile in JDK 1.3    
 //            drawGlyphVector(this.font.createGlyphVector(getFontRenderContext(), s), x, y);
         } else {
+            if (!Float.isFinite(fontSize) || fontSize < PdfContentByte.MIN_FONT_SIZE) {
+                return;
+            }
             double width = 0;
             if (CompositeFontDrawer.isSupported() && compositeFontDrawer.isCompositeFont(font)) {
                 width = compositeFontDrawer.drawString(s, font, x, y, this::getCachedBaseFont, this::drawString);
