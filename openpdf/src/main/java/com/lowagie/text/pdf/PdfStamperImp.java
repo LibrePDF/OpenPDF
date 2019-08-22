@@ -52,7 +52,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1567,8 +1566,8 @@ class PdfStamperImp extends PdfWriter {
         PdfIndirectReference ref;
         PdfLayer layer;
         Map<String, PdfLayer> ocgmap = new HashMap<>();
-        for (Iterator i = ocgs.listIterator(); i.hasNext(); ) {
-            ref = (PdfIndirectReference)i.next();
+        for (PdfObject pdfObject : ocgs.getElements()) {
+            ref = (PdfIndirectReference)pdfObject;
             layer = new PdfLayer(null);
             layer.setRef(ref);
             layer.setOnPanel(false);
@@ -1578,8 +1577,8 @@ class PdfStamperImp extends PdfWriter {
         PdfDictionary d = dict.getAsDict(PdfName.D);
         PdfArray off = d.getAsArray(PdfName.OFF);
         if (off != null) {
-            for (Iterator i = off.listIterator(); i.hasNext(); ) {
-                ref = (PdfIndirectReference)i.next();
+            for (PdfObject pdfObject : off.getElements() ) {
+                ref = (PdfIndirectReference)pdfObject;
                 layer = ocgmap.get(ref.toString());
                 layer.setOn(false);
             }
@@ -1631,9 +1630,7 @@ class PdfStamperImp extends PdfWriter {
                         parent.addChild(layer);
                     }
                     PdfArray array = new PdfArray();
-                    for (Iterator j = sub.listIterator(); j.hasNext(); ) {
-                        array.add((PdfObject)j.next());
-                    }
+                    sub.getElements().forEach(array::add);
                     addOrder(layer, array, ocgmap);
                 }
                 else {

@@ -53,7 +53,6 @@
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Iterator;
 /**
  * List a PDF file in human-readable form (for debugging reasons mostly)
  * @author Mark Thompson
@@ -119,10 +118,7 @@ public class PdfLister {
     public void listArray(PdfArray array)
     {
         out.println('[');
-        for (Iterator i = array.listIterator(); i.hasNext(); ) {
-            PdfObject item = (PdfObject)i.next();
-            listAnyObject(item);
-        }
+        array.getElements().forEach(this::listAnyObject);
         out.println(']');
     }
     /**
@@ -178,8 +174,8 @@ public class PdfLister {
             listStream((PRStream)obj, readerInst);
             break;
         case PdfObject.ARRAY:
-            for (Iterator i = ((PdfArray)obj).listIterator(); i.hasNext();) {
-                PdfObject o = PdfReader.getPdfObject((PdfObject)i.next());
+            for (PdfObject pdfObject : ((PdfArray)obj).getElements()) {
+                PdfObject o = PdfReader.getPdfObject(pdfObject);
                 listStream((PRStream)o, readerInst);
                 out.println("-----------");
             }
