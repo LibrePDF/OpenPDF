@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -954,8 +953,8 @@ public class AcroFields {
     String[] options = getListOptionExport(name);
     PdfNumber n;
     int idx = 0;
-    for (Iterator i = values.listIterator(); i.hasNext(); ) {
-      n = (PdfNumber) i.next();
+    for (PdfObject pdfObject : values.getElements()) {
+      n = (PdfNumber) pdfObject;
       ret[idx++] = options[n.intValue()];
     }
     return ret;

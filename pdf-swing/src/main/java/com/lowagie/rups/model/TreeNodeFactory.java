@@ -22,7 +22,6 @@ package com.lowagie.rups.model;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 
 import com.lowagie.rups.view.itext.treenodes.PdfObjectTreeNode;
 import com.lowagie.rups.view.itext.treenodes.PdfPagesTreeNode;
@@ -91,8 +90,8 @@ public class TreeNodeFactory {
             return;
         case PdfObject.ARRAY:
             PdfArray array = (PdfArray)object;
-            for (Iterator it = array.listIterator(); it.hasNext(); ) {
-                leaf = PdfObjectTreeNode.getInstance((PdfObject)it.next());
+            for (PdfObject pdfObject : array.getElements()) {
+                leaf = PdfObjectTreeNode.getInstance(pdfObject);
                 addNodes(node, leaf);
                 expandNode(leaf);
             }

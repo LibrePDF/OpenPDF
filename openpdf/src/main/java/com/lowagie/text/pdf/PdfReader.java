@@ -3104,9 +3104,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
     case PdfObject.ARRAY: {
       PdfArray arr = new PdfArray();
-      for (Iterator it = ((PdfArray) original).listIterator(); it.hasNext();) {
-        arr.add(duplicatePdfObject((PdfObject) it.next(), newReader));
-      }
+      ((PdfArray) original).getElements().forEach(pdfObject -> arr.add(duplicatePdfObject(pdfObject, newReader)));
       return arr;
     }
     case PdfObject.INDIRECT: {
@@ -3719,10 +3717,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           if (obj != null)
             acc.put(pageInhCandidate, obj);
         }
-        PdfArray kids = (PdfArray) PdfReader.getPdfObjectRelease(top
-            .get(PdfName.KIDS));
-        for (Iterator it = kids.listIterator(); it.hasNext();) {
-          PRIndirectReference ref = (PRIndirectReference) it.next();
+        PdfArray kids = (PdfArray) PdfReader.getPdfObjectRelease(top.get(PdfName.KIDS));
+        for (PdfObject pdfObject : kids.getElements()) {
+          PRIndirectReference ref = (PRIndirectReference) pdfObject;
           PdfDictionary dic = (PdfDictionary) getPdfObject(ref);
           int last = reader.lastXrefPartial;
           PdfObject count = getPdfObjectRelease(dic.get(PdfName.COUNT));

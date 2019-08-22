@@ -51,7 +51,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -213,8 +212,7 @@ class PdfCopyFieldsImp extends PdfWriter {
             }
             case PdfObject.ARRAY: {
                 //PdfArray arr = new PdfArray();
-                for (Iterator it = ((PdfArray)obj).listIterator(); it.hasNext();) {
-                    PdfObject ob = (PdfObject)it.next();
+                for (PdfObject ob : ((PdfArray)obj).getElements()) {
                     if (ob != null && ob.isIndirect()) {
                         PRIndirectReference ind = (PRIndirectReference)ob;
                         if (!isVisited(ind) && !isPage(ind)) {

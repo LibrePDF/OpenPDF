@@ -68,6 +68,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocWriter;
@@ -532,7 +533,6 @@ public class PdfWriter extends DocWriter implements
          * Constructs a PDF-Trailer.
          *
          * @param        size        the number of entries in the <CODE>PdfCrossReferenceTable</CODE>
-         * @param        offset        offset of the <CODE>PdfCrossReferenceTable</CODE>
          * @param        root        an indirect reference to the root of the PDF document
          * @param        info        an indirect reference to the info object of the PDF document
          * @param encryption
@@ -2524,12 +2524,11 @@ public class PdfWriter extends DocWriter implements
         }
         if (OCProperties.get(PdfName.D) != null)
             return;
-        List<PdfOCG> docOrder = new ArrayList<>(documentOCGorder);
-        for (Iterator<PdfOCG> it = docOrder.iterator(); it.hasNext();) {
-            PdfLayer layer = (PdfLayer)it.next();
-            if (layer.getParent() != null)
-                it.remove();
-        }
+
+        List<PdfOCG> docOrder = documentOCGorder.stream()
+                .filter(pdfOCG -> ((PdfLayer)pdfOCG).getParent() == null)
+                .collect(Collectors.toList());
+
         PdfArray order = new PdfArray();
         for (PdfOCG o1 : docOrder) {
             PdfLayer layer = (PdfLayer) o1;

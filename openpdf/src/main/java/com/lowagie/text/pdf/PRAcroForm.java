@@ -53,7 +53,6 @@ package com.lowagie.text.pdf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * This class captures an AcroForm on input. Basically, it extends Dictionary
@@ -140,8 +139,8 @@ public class PRAcroForm extends PdfDictionary {
      * @param title the pathname of the field, up to this point or null
      */
     protected void iterateFields(PdfArray fieldlist, PRIndirectReference fieldDict, String title) {
-        for (Iterator it = fieldlist.listIterator(); it.hasNext();) {
-            PRIndirectReference ref = (PRIndirectReference)it.next();
+        for (PdfObject pdfObject : fieldlist.getElements()) {
+            PRIndirectReference ref = (PRIndirectReference)pdfObject;
             PdfDictionary dict = (PdfDictionary) PdfReader.getPdfObjectRelease(ref);
             
             // if we are not a field dictionary, pass our parent's values
