@@ -168,6 +168,7 @@ public class CleanMetaDataTest {
       String metadataString = new String(metadata);
       Assertions.assertFalse(metadataString.contains("Bruno Lowagie"));
       Assertions.assertFalse(metadataString.contains(" 1.2.12.SNAPSHOT"));
+      Assertions.assertTrue(metadataString.contains("<pdf:Producer></pdf:Producer>"));
     }  
   }
 	
