@@ -231,10 +231,15 @@ class PdfStamperImp extends PdfWriter {
           producer = Document.getVersion();
         }
         else if (!producer.contains(Document.getProduct())) {
-          StringBuffer buf = new StringBuffer(producer);
+          StringBuilder buf = new StringBuilder(producer);
           buf.append("; modified using ");
           buf.append(Document.getVersion());
           producer = buf.toString();
+        }
+        
+        // if we explicitly set Producer key
+        if (moreInfo != null && moreInfo.containsKey("Producer")) {
+          producer = moreInfo.get("Producer");
         }
           
         // XMP
@@ -261,9 +266,16 @@ class PdfStamperImp extends PdfWriter {
             PdfStream xmp = null;
             try {
               XmpReader xmpr = new XmpReader(altMetadata);
-              if (!xmpr.replace("http://ns.adobe.com/pdf/1.3/", "Producer", producer)) {
-                xmpr.add("rdf:Description", "http://ns.adobe.com/pdf/1.3/", "pdf:Producer", producer);
+              String producerXMP = producer;
+              if (producerXMP == null) {
+                producerXMP = "";
+              }              
+              if (!xmpr.replace("http://ns.adobe.com/pdf/1.3/", "Producer", producerXMP)) {
+                if (!"".equals(producerXMP)) {
+                  xmpr.add("rdf:Description", "http://ns.adobe.com/pdf/1.3/", "pdf:Producer", producerXMP);
+                }
               }
+              
               if (!xmpr.replace("http://ns.adobe.com/xap/1.0/", "ModifyDate", date.getW3CDate())) {
                 xmpr.add("rdf:Description", "http://ns.adobe.com/xap/1.0/", "xmp:ModifyDate", date.getW3CDate());
               }
@@ -356,7 +368,9 @@ class PdfStamperImp extends PdfWriter {
         }
         
         newInfo.put(PdfName.MODDATE, date);
-        newInfo.put(PdfName.PRODUCER, new PdfString(producer));
+        if (producer != null) {
+          newInfo.put(PdfName.PRODUCER, new PdfString(producer));
+        }
         
         if (moreInfo != null) {
             for (Map.Entry<String, String> entry : moreInfo.entrySet()) {
