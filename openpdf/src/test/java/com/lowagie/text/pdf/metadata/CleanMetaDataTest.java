@@ -3,6 +3,7 @@ package com.lowagie.text.pdf.metadata;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.xml.xmp.XmpWriter;
 
 public class CleanMetaDataTest {
   
@@ -132,6 +134,42 @@ public class CleanMetaDataTest {
     String dataString = new String(data);
     Assertions.assertFalse(dataString.contains("This example explains how to add metadata."));
 	}
+	
+	@Test
+  public void testXMPMetadata() throws Exception {
+    File file = new File("src/test/resources/HelloWorldMeta.pdf");
+    PdfReader reader = new PdfReader(file.getAbsolutePath());
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PdfStamper stamp = new PdfStamper(reader, baos);
+    Map<String, String> moreInfo = createCleanerMoreInfo();
+    ByteArrayOutputStream meta = new ByteArrayOutputStream();
+    XmpWriter writer = new XmpWriter(meta, moreInfo);
+    writer.close();
+    // Manually set clean metadata
+    stamp.setInfoDictionary(moreInfo);
+    stamp.setXmpMetadata(meta.toByteArray());
+        
+    stamp.close();
+    
+    
+    byte[] data = baos.toByteArray();
+    PdfReader r = new PdfReader(data);
+    Assertions.assertNull(r.getInfo().get("Producer"));
+    Assertions.assertNull(r.getInfo().get("Author"));
+    Assertions.assertNull(r.getInfo().get("Title"));
+    Assertions.assertNull(r.getInfo().get("Subject"));  
+    byte[] metadata = r.getMetadata();
+    r.close();
+    String dataString = new String(data);
+
+    Assertions.assertFalse(dataString.contains("Bruno Lowagie"));
+    Assertions.assertFalse(dataString.contains(" 1.2.12.SNAPSHOT"));
+    if (metadata != null) {
+      String metadataString = new String(metadata);
+      Assertions.assertFalse(metadataString.contains("Bruno Lowagie"));
+      Assertions.assertFalse(metadataString.contains(" 1.2.12.SNAPSHOT"));
+    }  
+  }
 	
 	private byte[] cleanMetadata(File origin) throws Exception {
 	  ByteArrayOutputStream baos = new ByteArrayOutputStream();
