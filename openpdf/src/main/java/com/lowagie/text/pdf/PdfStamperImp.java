@@ -57,20 +57,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.pdf.AcroFields.Item;
+import org.xml.sax.SAXException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.exceptions.BadPasswordException;
+import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
+import com.lowagie.text.xml.xmp.XmpReader;
 
 class PdfStamperImp extends PdfWriter {
     HashMap readers2intrefs = new HashMap();
@@ -221,26 +221,83 @@ class PdfStamperImp extends PdfWriter {
         PRIndirectReference iInfo = (PRIndirectReference)reader.getTrailer().get(PdfName.INFO);
       
 
-
+        PdfDictionary oldInfo = (PdfDictionary)PdfReader.getPdfObject(iInfo);
+        String producer = null;
+        if (iInfo != null)
+            skipInfo = iInfo.getNumber();
+        if (oldInfo != null && oldInfo.get(PdfName.PRODUCER) != null)
+            producer = oldInfo.getAsString(PdfName.PRODUCER).toString();
+        if (producer == null) {
+            producer = Document.getVersion();
+        }
+        else if (!producer.contains(Document.getProduct())) {
+            StringBuilder buf = new StringBuilder(producer);
+            buf.append("; modified using ");
+            buf.append(Document.getVersion());
+            producer = buf.toString();
+        }
+        if (moreInfo != null && moreInfo.containsKey("Producer")) {
+          producer = moreInfo.get("Producer");
+        }
 
 
         // XMP
-        byte[] altMetadata = xmpMetadata;
+        byte[] altMetadata = null;
+        PdfObject xmpo = PdfReader.getPdfObject(catalog.get(PdfName.METADATA));
+        if (xmpo != null && xmpo.isStream()) {
+            altMetadata = PdfReader.getStreamBytesRaw((PRStream)xmpo);
+            PdfReader.killIndirect(catalog.get(PdfName.METADATA));
+        }
+        if (xmpMetadata != null) {
+            altMetadata = xmpMetadata;
+        }
+        // if there is XMP data to add: add it
+
+        PdfDate date = null;
+        if (modificationDate == null) {
+            date = new PdfDate();
+        } else {
+            date = new PdfDate(modificationDate);
+        }
 
         // if there is XMP data to add: add it
-        
         if (altMetadata != null) {
-            PdfStream xmp = new PdfStream(altMetadata);
-            xmp.put(PdfName.TYPE, PdfName.METADATA);
-            xmp.put(PdfName.SUBTYPE, PdfName.XML);
-            if (crypto != null && !crypto.isMetadataEncrypted()) {
-                PdfArray ar = new PdfArray();
-                ar.add(PdfName.CRYPT);
-                xmp.put(PdfName.FILTER, ar);
-            }
-            catalog.put(PdfName.METADATA, body.add(xmp).getIndirectReference());
-            markUsed(catalog);            
-        }
+          PdfStream xmp;
+          try {
+              XmpReader xmpr = new XmpReader(altMetadata);
+              String producerXMP = producer;
+              if (producerXMP == null) {
+                producerXMP = "";
+              }
+              if (!xmpr.replace("http://ns.adobe.com/pdf/1.3/", "Producer", producer)) {
+                if (!"".equals(producerXMP)) {
+                  xmpr.add("rdf:Description", "http://ns.adobe.com/pdf/1.3/", "pdf:Producer", producer);
+                }
+              }
+              if (!xmpr.replace("http://ns.adobe.com/xap/1.0/", "ModifyDate", date.getW3CDate())) {
+                  xmpr.add("rdf:Description", "http://ns.adobe.com/xap/1.0/", "xmp:ModifyDate", date.getW3CDate());
+              }
+              xmpr.replace("http://ns.adobe.com/xap/1.0/", "MetadataDate", date.getW3CDate());
+              xmp = new PdfStream(xmpr.serializeDoc());
+          }
+          catch(SAXException | IOException e) {
+              xmp = new PdfStream(altMetadata);
+          }
+          xmp.put(PdfName.TYPE, PdfName.METADATA);
+          xmp.put(PdfName.SUBTYPE, PdfName.XML);
+          if (crypto != null && !crypto.isMetadataEncrypted()) {
+              PdfArray ar = new PdfArray();
+              ar.add(PdfName.CRYPT);
+              xmp.put(PdfName.FILTER, ar);
+          }
+          if (append && xmpo != null) {
+              body.add(xmp, xmpo.getIndRef());
+          }
+          else {
+              catalog.put(PdfName.METADATA, body.add(xmp).getIndirectReference());
+              markUsed(catalog);
+          }
+      }
         try {
             file.reOpen();
             alterContents();
@@ -302,17 +359,28 @@ class PdfStamperImp extends PdfWriter {
         PdfIndirectReference info = null;
         PdfDictionary newInfo = new PdfDictionary();
 
-        if (moreInfo != null) {
-            for (Map.Entry<String, String> entry : moreInfo.entrySet()) {
-                String key = entry.getKey();
-                PdfName keyName = new PdfName(key);
-                String value = entry.getValue();
-                if (value == null)
-                    newInfo.remove(keyName);
-                else
-                    newInfo.put(keyName, new PdfString(value, PdfObject.TEXT_UNICODE));
-            }
-        }
+        if (oldInfo != null) {
+          for (PdfName key : oldInfo.getKeys()) {
+              PdfObject value = PdfReader.getPdfObject(oldInfo.get(key));
+              newInfo.put(key, value);
+          }
+      }
+      if (moreInfo != null) {
+          for (Object o : moreInfo.entrySet()) {
+              Map.Entry entry = (Map.Entry) o;
+              String key = (String) entry.getKey();
+              PdfName keyName = new PdfName(key);
+              String value = (String) entry.getValue();
+              if (value == null)
+                  newInfo.remove(keyName);
+              else
+                  newInfo.put(keyName, new PdfString(value, PdfObject.TEXT_UNICODE));
+          }
+      }
+      newInfo.put(PdfName.MODDATE, date);
+      if (producer != null) {
+        newInfo.put(PdfName.PRODUCER, new PdfString(producer));
+      }
 
 
         if (append) {
