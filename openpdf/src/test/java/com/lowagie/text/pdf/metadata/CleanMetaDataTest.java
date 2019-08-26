@@ -3,6 +3,7 @@ package com.lowagie.text.pdf.metadata;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,15 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.xml.xmp.XmpWriter;
 
 public class CleanMetaDataTest {
+  
+  
+  public CleanMetaDataTest() {
+    super();
+  }
+
 
 	@Test
 	public void testProducer() throws Exception {
@@ -65,7 +73,7 @@ public class CleanMetaDataTest {
 
 	@Test
 	public void testStamperMetadata() throws Exception {
-		byte[] data = addWatermark(new File("src/test/resources/HelloWorldMeta.pdf"), false, null);
+		byte[] data = addWatermark(new File("src/test/resources/HelloWorldMeta.pdf"), false, createCleanerMoreInfo());
 		PdfReader r = new PdfReader(data);
 		Assertions.assertNull(r.getInfo().get("Producer"));
 		Assertions.assertNull(r.getInfo().get("Author"));
@@ -76,7 +84,7 @@ public class CleanMetaDataTest {
 	
 	@Test
 	public void testStamperEncryptMetadata() throws Exception {
-		byte[] data = addWatermark(new File("src/test/resources/HelloWorldMeta.pdf"), true, null);
+		byte[] data = addWatermark(new File("src/test/resources/HelloWorldMeta.pdf"), true, createCleanerMoreInfo());
 		PdfReader r = new PdfReader(data);
 		Assertions.assertNull(r.getInfo().get("Producer"));
 		Assertions.assertNull(r.getInfo().get("Author"));
@@ -88,7 +96,7 @@ public class CleanMetaDataTest {
 	
 	@Test
 	public void testStamperExtraMetadata() throws Exception {
-		HashMap<String, String> moreInfo = new HashMap<String, String>();
+		HashMap<String, String> moreInfo = createCleanerMoreInfo();
 		moreInfo.put("Producer", Document.getVersion());
 		moreInfo.put("Author", "Author1");
 		moreInfo.put("Title", "Title2");
@@ -101,7 +109,63 @@ public class CleanMetaDataTest {
 		Assertions.assertEquals("Subject3", r.getInfo().get("Subject"));	
 		r.close();
 	}
+	@Test
+  public void testCleanMetadataMethodInStamper() throws Exception {
+    byte[] data = cleanMetadata(new File("src/test/resources/HelloWorldMeta.pdf"));
+    PdfReader r = new PdfReader(data);
+    Assertions.assertNull(r.getInfo().get("Producer"));
+    Assertions.assertNull(r.getInfo().get("Author"));
+    Assertions.assertNull(r.getInfo().get("Title"));
+    Assertions.assertNull(r.getInfo().get("Subject"));  
+    r.close();
+    String dataString = new String(data);
+    Assertions.assertFalse(dataString.contains("This example explains how to add metadata."));
+  }
+	@Test
+  public void testXMPMetadata() throws Exception {
+    File file = new File("src/test/resources/HelloWorldMeta.pdf");
+    PdfReader reader = new PdfReader(file.getAbsolutePath());
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PdfStamper stamp = new PdfStamper(reader, baos);
+    Map<String, String> moreInfo = createCleanerMoreInfo();
+    ByteArrayOutputStream meta = new ByteArrayOutputStream();
+    XmpWriter writer = new XmpWriter(meta, moreInfo);
+    writer.close();
+    // Manually set clean metadata
+    stamp.setInfoDictionary(moreInfo);
+    stamp.setXmpMetadata(meta.toByteArray());
+        
+    stamp.close();
+    
+    
+    byte[] data = baos.toByteArray();
+    PdfReader r = new PdfReader(data);
+    Assertions.assertNull(r.getInfo().get("Producer"));
+    Assertions.assertNull(r.getInfo().get("Author"));
+    Assertions.assertNull(r.getInfo().get("Title"));
+    Assertions.assertNull(r.getInfo().get("Subject"));  
+    byte[] metadata = r.getMetadata();
+    r.close();
+    String dataString = new String(data);
+
+    Assertions.assertFalse(dataString.contains("Bruno Lowagie"));
+    Assertions.assertFalse(dataString.contains(" 1.2.12.SNAPSHOT"));
+    if (metadata != null) {
+      String metadataString = new String(metadata);
+      Assertions.assertFalse(metadataString.contains("Bruno Lowagie"));
+      Assertions.assertFalse(metadataString.contains(" 1.2.12.SNAPSHOT"));
+      Assertions.assertTrue(metadataString.contains("<pdf:Producer></pdf:Producer>"));
+    }  
+  }
 	
+	private byte[] cleanMetadata(File origin) throws Exception {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PdfReader reader = new PdfReader(origin.getAbsolutePath());
+    PdfStamper stamp = new PdfStamper(reader, baos);
+    stamp.cleanMetadata();
+    stamp.close();
+    return baos.toByteArray();
+  }
 
 	private byte[] addWatermark(File origin, boolean encrypt, HashMap<String, String> moreInfo) throws Exception {
 		int text_angle = 45;
@@ -139,5 +203,19 @@ public class CleanMetaDataTest {
 
 		return baos.toByteArray();
 	}
+	
+	
+  
+  private HashMap<String, String> createCleanerMoreInfo() {
+    HashMap<String, String> moreInfo = new HashMap<String, String>();
+    moreInfo.put("Title", null);
+    moreInfo.put("Author", null);
+    moreInfo.put("Subject", null);
+    moreInfo.put("Producer", null);
+    moreInfo.put("Keywords", null);
+    moreInfo.put("Creator", null);
+    moreInfo.put("ModDate",null);
+    return moreInfo;
+  }
 
 }
