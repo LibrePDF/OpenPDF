@@ -31,11 +31,26 @@ public class SimplePdfTest {
     }
 
     @Test
-    void testTryWithResources() throws Exception {
+    void testTryWithResources_with_os_before_doc() throws Exception {
         try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
-            Document document = new Document();
             FileOutputStream os = new FileOutputStream(File.createTempFile("temp-file-name", ".pdf"));
-            PdfWriter writer = PdfWriter.getInstance(document, os)
+             Document document = new Document();
+             PdfWriter writer = PdfWriter.getInstance(document, os)
+        ) {
+            document.open();
+            final PdfContentByte cb = writer.getDirectContent();
+
+            document.newPage();
+            PdfImportedPage page = writer.getImportedPage(reader, 1);
+            cb.addTemplate(page, 1, 0, 0, 1, 0, 0);
+        }
+    }
+
+    @Test
+    void testTryWithResources_with_unknown_os() throws Exception {
+        try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
+             Document document = new Document();
+             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(File.createTempFile("temp-file-name", ".pdf")))
         ) {
             document.open();
             final PdfContentByte cb = writer.getDirectContent();
