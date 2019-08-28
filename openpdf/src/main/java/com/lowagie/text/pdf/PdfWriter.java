@@ -104,6 +104,7 @@ import com.lowagie.text.xml.xmp.XmpWriter;
  */
 
 public class PdfWriter extends DocWriter implements
+    AutoCloseable,
     Closeable,
     PdfViewerPreferences,
     PdfEncryptionSettings,
@@ -1165,7 +1166,7 @@ public class PdfWriter extends DocWriter implements
                 // See: https://github.com/LibrePDF/OpenPDF/issues/164
                 throw new RuntimeException("The page " + pageReferences.size() +
                 " was requested but the document has only " + (currentPageNumber - 1) + " pages.");
-            pdf.close();
+
             try {
                 addSharedObjectsToBody();
                 // add the root to the body
@@ -1224,8 +1225,7 @@ public class PdfWriter extends DocWriter implements
                 os.write(getISOBytes("\n%%EOF\n"));
                 super.close();
             }
-            catch(IOException ioe) {
-                throw new ExceptionConverter(ioe);
+            catch(IOException ignored) {
             }
         }
     }
