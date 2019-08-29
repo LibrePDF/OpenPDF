@@ -1158,6 +1158,8 @@ public class PdfWriter extends DocWriter implements
     @Override
     public void close() {
         if (open) {
+            if (this.document.isOpen()) this.document.close();
+            
             if ((currentPageNumber - 1) != pageReferences.size())
                 // 2019-04-26: If you get this error, it could be that you are using OpenPDF or
                 // another library such as flying-saucer's ITextRenderer in a non-threadsafe way.
@@ -1225,7 +1227,8 @@ public class PdfWriter extends DocWriter implements
                 os.write(getISOBytes("\n%%EOF\n"));
                 super.close();
             }
-            catch(IOException ignored) {
+            catch(IOException ioe) {
+                throw new ExceptionConverter(ioe);
             }
         }
     }
