@@ -34,9 +34,9 @@ public class SimplePdfTest {
     void testTryWithResources_with_os_before_doc() throws Exception {
         try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
             FileOutputStream os = new FileOutputStream(File.createTempFile("temp-file-name", ".pdf"));
-             Document document = new Document();
-             PdfWriter writer = PdfWriter.getInstance(document, os)
+             Document document = new Document()
         ) {
+            PdfWriter writer = PdfWriter.getInstance(document, os);
             document.open();
             final PdfContentByte cb = writer.getDirectContent();
 
@@ -49,9 +49,9 @@ public class SimplePdfTest {
     @Test
     void testTryWithResources_with_unknown_os() throws Exception {
         try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
-             Document document = new Document();
-             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(File.createTempFile("temp-file-name", ".pdf")))
+             Document document = new Document()
         ) {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(File.createTempFile("temp-file-name", ".pdf")));
             document.open();
             final PdfContentByte cb = writer.getDirectContent();
 

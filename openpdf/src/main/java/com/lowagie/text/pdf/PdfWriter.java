@@ -52,7 +52,6 @@ package com.lowagie.text.pdf;
 import java.awt.Color;
 import java.awt.color.ICC_Profile;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.cert.Certificate;
@@ -104,8 +103,6 @@ import com.lowagie.text.xml.xmp.XmpWriter;
  */
 
 public class PdfWriter extends DocWriter implements
-    AutoCloseable,
-    Closeable,
     PdfViewerPreferences,
     PdfEncryptionSettings,
     PdfVersion,
@@ -1158,8 +1155,7 @@ public class PdfWriter extends DocWriter implements
     @Override
     public void close() {
         if (open) {
-            if (this.document.isOpen()) this.document.close();
-            
+
             if ((currentPageNumber - 1) != pageReferences.size())
                 // 2019-04-26: If you get this error, it could be that you are using OpenPDF or
                 // another library such as flying-saucer's ITextRenderer in a non-threadsafe way.
