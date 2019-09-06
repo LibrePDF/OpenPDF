@@ -46,6 +46,9 @@ Beginning with version 5.0 of iText, the developers have moved to the AGPL to im
 - OpenCMS, Nuxeo Web Framework, QR Invoice Library and many closed source commercial applications as well.
 - Full list here: https://mvnrepository.com/artifact/com.github.librepdf/openpdf/usages
 
+## Android support ##
+OpenPDF now has Android support, more info here: [Android-support](https://github.com/LibrePDF/OpenPDF/wiki/Android-support)
+
 ## Contributing ##
 Release the hounds!  Please send all pull requests.
 Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
