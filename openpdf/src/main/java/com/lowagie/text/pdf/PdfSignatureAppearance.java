@@ -1581,7 +1581,10 @@ public class PdfSignatureAppearance {
       }
       for (int k = 0; k < range.length; k += 2) {
         long start = range[k];
-        long end = start + range[k + 1];
+        long end = start;
+        if (range.length > k + 1) {
+          end = start + range[k + 1];
+        }
         if (rangePosition < start)
           rangePosition = start;
         if (rangePosition >= start && rangePosition < end) {

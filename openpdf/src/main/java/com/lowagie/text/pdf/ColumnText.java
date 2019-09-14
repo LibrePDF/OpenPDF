@@ -484,6 +484,9 @@ public class ColumnText {
             throw new RuntimeException(MessageLocalization.getComposedMessage("no.valid.column.line.found"));
         List<float[]> cc = new ArrayList<>();
         for (int k = 0; k < cLine.length - 2; k += 2) {
+            if (cLine.length == k + 3){
+                break;
+            }
             float x1 = cLine[k];
             float y1 = cLine[k + 1];
             float x2 = cLine[k + 2];

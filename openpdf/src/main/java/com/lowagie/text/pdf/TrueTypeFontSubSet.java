@@ -297,7 +297,10 @@ class TrueTypeFontSubSet {
                 ++listGlyf;
                 newLocaTable[k] = glyfPtr;
                 int start = locaTable[k];
-                int len = locaTable[k + 1] - start;
+                int len = 0;
+                if (locaTable.length > k + 1) {
+                    len = locaTable[k + 1] - start;
+                }
                 if (len > 0) {
                     rf.seek(tableGlyphOffset + start);
                     rf.readFully(newGlyfTable, glyfPtr, len);

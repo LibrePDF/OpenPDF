@@ -117,7 +117,9 @@ public class FontSelector {
                             lastidx = f;
                         }
                         sb.append(c);
-                        sb.append(cc[++k]);
+                        if (cc.length > k + 1) {
+                            sb.append(cc[++k]);
+                        }
                         break;
                     }
                 }

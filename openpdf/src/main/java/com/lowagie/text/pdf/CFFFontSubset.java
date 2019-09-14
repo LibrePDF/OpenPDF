@@ -945,7 +945,9 @@ public class CFFFontSubset extends CFFFont {
             // If the object in the offset is also present in the used
             // HashMap then increment the offset var by its size
             if (Used.containsKey(i)) {
-                Offset += Offsets[i+1] - Offsets[i];
+                if (Offsets.length > i + 1) {
+                    Offset += Offsets[i + 1] - Offsets[i];
+                }
             } else {
                 // Else the same offset is kept in i+1.
                 unusedCount++;

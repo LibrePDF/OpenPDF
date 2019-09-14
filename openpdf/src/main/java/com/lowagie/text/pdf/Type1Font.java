@@ -327,7 +327,7 @@ class Type1Font extends BaseFont
         if (obj == null)
             return 0;
         for (int k = 0; k < obj.length; k += 2) {
-            if (second.equals(obj[k]))
+            if (second.equals(obj[k]) && obj.length > k + 1)
                 return (Integer) obj[k + 1];
         }
         return 0;
@@ -819,7 +819,7 @@ class Type1Font extends BaseFont
             return true;
         }
         for (int k = 0; k < obj.length; k += 2) {
-            if (second.equals(obj[k])) {
+            if (second.equals(obj[k]) && obj.length > k + 1) {
                 obj[k + 1] = kern;
                 return true;
             }

@@ -1186,8 +1186,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
     for (int k = 2; k < xref.length; k += 2) {
       int pos = xref[k];
-      if (pos <= 0 || xref[k + 1] > 0)
+      if (pos <= 0 || ((xref.length > k + 1) && (xref[k + 1] > 0))) {
         continue;
+      }
       tokens.seek(pos);
       tokens.nextValidToken();
       if (tokens.getTokenType() != PRTokeniser.TK_NUMBER)
