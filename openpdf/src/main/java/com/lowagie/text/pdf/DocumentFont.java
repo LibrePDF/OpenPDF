@@ -586,7 +586,7 @@ public class DocumentFont extends BaseFont {
       char[] chars = text.toCharArray();
       int total = 0;
       for (char aChar : chars) {
-        int[] ws = metrics.get(aChar);
+        int[] ws = metrics.get(Character.getNumericValue(aChar));
         if (ws != null) {
           total += ws[1];
         }
@@ -606,7 +606,7 @@ public class DocumentFont extends BaseFont {
       byte[] b = new byte[len * 2];
       int bptr = 0;
       for (char aChar : chars) {
-        int[] ws = metrics.get(aChar);
+        int[] ws = metrics.get(Character.getNumericValue(aChar));
         if (ws != null) {
           int g = ws[0];
           b[bptr++] = (byte) (g / 256);

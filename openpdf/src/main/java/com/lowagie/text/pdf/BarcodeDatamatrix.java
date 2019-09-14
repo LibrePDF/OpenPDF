@@ -327,10 +327,13 @@ public class BarcodeDatamatrix {
             if (ptrOut >= dataLength)
                 break;
             if (c < 40) {
-                if (ptrIn == 0 || (ptrIn > 0 && x[ptrIn - 1] > 40))
+                if (ptrIn == 0 || x[ptrIn - 1] > 40)
                     data[dataOffset + ptrOut++] = (byte)238;
                 if (ptrOut + 2 > dataLength)
                     break;
+                if(x.length -1 < ptrIn + 2) {
+                    break;
+                }
                 n = 1600 * x[ptrIn] + 40 * x[ptrIn + 1] + x[ptrIn + 2] + 1;
                 data[dataOffset + ptrOut++] = (byte)(n / 256);
                 data[dataOffset + ptrOut++] = (byte)n;

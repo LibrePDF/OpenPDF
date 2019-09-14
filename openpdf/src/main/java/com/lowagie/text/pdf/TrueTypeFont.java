@@ -1173,7 +1173,9 @@ class TrueTypeFont extends BaseFont {
         for (Object range : ranges) {
             int[] r = (int[]) range;
             for (int j = 0; j < r.length; j += 2) {
-                simp.add(new int[]{Math.max(0, Math.min(r[j], r[j + 1])), Math.min(0xffff, Math.max(r[j], r[j + 1]))});
+                if (r.length > j + 1){
+                    simp.add(new int[]{Math.max(0, Math.min(r[j], r[j + 1])), Math.min(0xffff, Math.max(r[j], r[j + 1]))});
+                }
             }
         }
         for (int k1 = 0; k1 < simp.size() - 1; ++k1) {
@@ -1217,7 +1219,7 @@ class TrueTypeFont extends BaseFont {
                 int c = e.getKey();
                 boolean skip = true;
                 for (int k = 0; k < rg.length; k += 2) {
-                    if (c >= rg[k] && c <= rg[k + 1]) {
+                    if (c >= rg[k] && rg.length > k + 1 && c <= rg[k + 1]) {
                         skip = false;
                         break;
                     }

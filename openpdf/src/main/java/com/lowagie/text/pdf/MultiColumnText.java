@@ -375,12 +375,16 @@ public class MultiColumnText implements Element {
         float max = Float.MIN_VALUE;
         float min = Float.MAX_VALUE;
         for (int i = 0; i < left.length; i += 2) {
-            min = Math.min(min, left[i + 1]);
-            max = Math.max(max, left[i + 1]);
+            if (left.length > i + 1) {
+                min = Math.min(min, left[i + 1]);
+                max = Math.max(max, left[i + 1]);
+            }
         }
         for (int i = 0; i < right.length; i += 2) {
-            min = Math.min(min, right[i + 1]);
-            max = Math.max(max, right[i + 1]);
+            if (right.length > i + 1) {
+                min = Math.min(min, right[i + 1]);
+                max = Math.max(max, right[i + 1]);
+            }
         }
         return max - min;
     }

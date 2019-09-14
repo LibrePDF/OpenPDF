@@ -536,7 +536,10 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
                 names = (String[][])allNames[1]; //family name
                 for (int k = 0; k < TTFamilyOrder.length; k += 3) {
                     for (String[] name : names) {
-                        if (TTFamilyOrder[k].equals(name[0]) && TTFamilyOrder[k + 1].equals(name[1]) && TTFamilyOrder[k + 2].equals(name[2])) {
+                        if (name.length == 4 && TTFamilyOrder.length > k + 2
+                                && TTFamilyOrder[k].equals(name[0])
+                                && TTFamilyOrder[k + 1].equals(name[1])
+                                && TTFamilyOrder[k + 2].equals(name[2])) {
                             familyName = name[3].toLowerCase();
                             k = TTFamilyOrder.length;
                             break;
@@ -548,7 +551,10 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
                     names = (String[][])allNames[2]; //full name
                     for (String[] name : names) {
                         for (int k = 0; k < TTFamilyOrder.length; k += 3) {
-                            if (TTFamilyOrder[k].equals(name[0]) && TTFamilyOrder[k + 1].equals(name[1]) && TTFamilyOrder[k + 2].equals(name[2])) {
+                            if (name.length == 4 && TTFamilyOrder.length > k + 2
+                                    && TTFamilyOrder[k].equals(name[0])
+                                    && TTFamilyOrder[k + 1].equals(name[1])
+                                    && TTFamilyOrder[k + 2].equals(name[2])) {
                                 String fullName = name[3];
                                 if (fullName.equals(lastName))
                                     continue;
