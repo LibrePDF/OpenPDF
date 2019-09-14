@@ -286,7 +286,7 @@ public class CMapParser
                         {
                             multiplyer = 16;
                         }
-                        tokenParserByteBuffer[bufferIndex]+= intValue;
+                        tokenParserByteBuffer[bufferIndex]+= (byte) intValue;
                         theNextByte = is.read();
                     }
                     byte[] finalResult = new byte[bufferIndex+1];
@@ -339,7 +339,7 @@ public class CMapParser
                 String value = buffer.toString();
                 if( value.indexOf( '.' ) >=0 )
                 {
-                    retval = new Double( value );
+                    retval = Double.valueOf( value );
                 }
                 else
                 {

@@ -423,7 +423,7 @@ class Type1Font extends BaseFont
                 break;
             }
             Integer C = -1;
-            Integer WX = 250;
+            int WX = 250;
             String N = "";
             int[] B = null;
 
@@ -490,7 +490,7 @@ class Type1Font extends BaseFont
             {
                 String first = tok.nextToken();
                 String second = tok.nextToken();
-                Integer width = (int) Float.parseFloat(tok.nextToken());
+                int width = Integer.parseInt(tok.nextToken());
                 Object[] relates = KernPairs.get(first);
                 if (relates == null)
                     KernPairs.put(first, new Object[]{second, width});

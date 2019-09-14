@@ -1314,8 +1314,7 @@ public class PdfDocument extends Document {
         PdfFont currentFont = null;
         float displacement = 0;
         PdfLine l;
-        Float lastBaseFactor = (float) 0;
-        currentValues[1] = lastBaseFactor;
+        currentValues[1] = 0.0F;
         // looping over all the lines
         for (PdfLine line1 : lines) {
 
@@ -2790,8 +2789,8 @@ public class PdfDocument extends Document {
                         }
                         lines = cell.getLines(indentTop(), indentBottom());
                         float cellTop = cell.getTop(indentTop());
-                        text.moveText(0, cellTop-heightCorrection);
-                        float cellDisplacement = flushLines() - cellTop+heightCorrection;
+                        text.moveText(0, cellTop - heightCorrection);
+                        float cellDisplacement = flushLines() - cellTop + heightCorrection;
                         text.moveText(0, cellDisplacement);
                     }
 

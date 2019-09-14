@@ -816,8 +816,7 @@ public class ColumnText {
         float ratio = spaceCharRatio;
         Object[] currentValues = new Object[2];
         PdfFont currentFont = null;
-        Float lastBaseFactor = (float) 0;
-        currentValues[1] = lastBaseFactor;
+        currentValues[1] = 0.0F;
         PdfDocument pdf = null;
         PdfContentByte graphics = null;
         PdfContentByte text = null;
