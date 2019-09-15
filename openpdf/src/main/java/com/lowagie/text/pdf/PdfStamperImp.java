@@ -178,11 +178,9 @@ class PdfStamperImp extends PdfWriter {
                     acroFields.getXfa().setXfa(this);
             }
             if (sigFlags != 0) {
-                if (acroForm != null) {
-                    acroForm.put(PdfName.SIGFLAGS, new PdfNumber(sigFlags));
-                    markUsed(acroForm);
-                    markUsed(catalog);
-                }
+                acroForm.put(PdfName.SIGFLAGS, new PdfNumber(sigFlags));
+                markUsed(acroForm);
+                markUsed(catalog);
             }
         }
         closed = true;

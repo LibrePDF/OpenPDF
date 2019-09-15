@@ -1845,10 +1845,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         break;
       case 3: // PNG_FILTER_AVERAGE
         for (int i = 0; i < bytesPerPixel; i++) {
-          curr[i] += prior[i] / 2;
+          curr[i] += prior[i] / (byte) 2;
         }
         for (int i = bytesPerPixel; i < bytesPerRow; i++) {
-          curr[i] += ((curr[i - bytesPerPixel] & 0xff) + (prior[i] & 0xff)) / 2;
+          curr[i] += ((curr[i - bytesPerPixel] & 0xff) + (prior[i] & 0xff)) / (byte) 2;
         }
         break;
       case 4: // PNG_FILTER_PAETH

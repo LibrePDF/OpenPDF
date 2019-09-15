@@ -1585,13 +1585,14 @@ public class PdfSignatureAppearance {
         if (range.length > k + 1) {
           end = start + range[k + 1];
         }
-        if (rangePosition < start)
+        if (rangePosition < start) {
           rangePosition = start;
-        if (rangePosition >= start && rangePosition < end) {
+        }
+        if (rangePosition < end) {
           int lenf = (int) Math.min(len, end - rangePosition);
-          if (raf == null)
+          if (raf == null) {
             System.arraycopy(bout, (int) rangePosition, b, off, lenf);
-          else {
+          }else {
             raf.seek(rangePosition);
             raf.readFully(b, off, lenf);
           }

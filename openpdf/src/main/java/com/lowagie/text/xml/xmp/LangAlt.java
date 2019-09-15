@@ -92,7 +92,7 @@ public class LangAlt extends Properties {
     /**
      * Creates a String that can be used in an XmpSchema.
      */
-    public String toString() {
+    public synchronized String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("<rdf:Alt>");
         for (Enumeration e = this.propertyNames(); e.hasMoreElements();) {

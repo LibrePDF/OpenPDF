@@ -173,13 +173,12 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
         if (fontname == null) {
             return new Font(Font.UNDEFINED, size, style, color);
         }
-        String lowercasefontname = fontname.toLowerCase(Locale.ROOT);
-        ArrayList tmp = (ArrayList) fontFamilies.get(lowercasefontname);
+        String lowerCaseFontname = fontname.toLowerCase(Locale.ROOT);
+        List<String> tmp = fontFamilies.get(lowerCaseFontname);
         if (tmp != null) {
             // some bugs were fixed here by Daniel Marczisovszky
             int s = style == Font.UNDEFINED ? Font.NORMAL : style;
-            for (Object o : tmp) {
-                String f = (String) o;
+            for (String f : tmp) {
                 String lcf = f.toLowerCase(Locale.ROOT);
                 int fs = Font.NORMAL;
                 if (lcf.contains("bold")) fs |= Font.BOLD;
@@ -199,7 +198,7 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
             }
             if (basefont == null) {
                 // the font is a true type font or an unknown font
-                fontname = trueTypeFonts.get(lowercasefontname);
+                fontname = trueTypeFonts.get(lowerCaseFontname);
                 // the font is not registered as truetype font
                 if (fontname == null) return new Font(Font.UNDEFINED, size, style, color);
                 // the font is registered as truetype font
@@ -559,7 +558,7 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
                                 if (fullName.equals(lastName))
                                     continue;
                                 lastName = fullName;
-                                registerFamily(familyName, fullName, null);
+                                registerFamily(familyName, fullName, path);
                                 break;
                             }
                         }

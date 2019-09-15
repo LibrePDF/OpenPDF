@@ -1344,8 +1344,8 @@ public abstract class Image extends Rectangle {
      * @return the current image rotation in radians
      */
     public float getImageRotation() {
-        double d = 2.0 * Math.PI;
-        float rot = (float) ((rotationRadians - initialRotation) % d);
+        float d = 2.0F * (float) Math.PI;
+        float rot = ((rotationRadians - initialRotation) % d);
         if (rot < 0) {
             rot += d;
         }
@@ -1359,8 +1359,8 @@ public abstract class Image extends Rectangle {
      *            rotation in radians
      */
     public void setRotation(float r) {
-        double d = 2.0 * Math.PI;
-        rotationRadians = (float) ((r + initialRotation) % d);
+        float d = 2.0F * (float) Math.PI;
+        rotationRadians = ((r + initialRotation) % d);
         if (rotationRadians < 0) {
             rotationRadians += d;
         }
@@ -1376,8 +1376,8 @@ public abstract class Image extends Rectangle {
      *            rotation in degrees
      */
     public void setRotationDegrees(float deg) {
-        double d = Math.PI;
-        setRotation(deg / 180 * (float) d);
+        float d = (float) Math.PI;
+        setRotation(deg / 180 * d);
     }
 
     /**

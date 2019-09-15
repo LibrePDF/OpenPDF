@@ -152,10 +152,8 @@ public class PdfSmartCopy extends PdfCopy {
             if (obj.isStream()) {
                 bb.append("$B");
                 serDic((PdfDictionary)obj, level - 1, bb);
-                if (level > 0) {
-                    md5.reset();
-                    bb.append(md5.digest(PdfReader.getStreamBytesRaw((PRStream)obj)));
-                }
+                md5.reset();
+                bb.append(md5.digest(PdfReader.getStreamBytesRaw((PRStream)obj)));
             }
             else if (obj.isDictionary()) {
                 serDic((PdfDictionary)obj, level - 1, bb);

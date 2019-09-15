@@ -2252,7 +2252,7 @@ public class PdfWriter extends DocWriter implements
      * @return the approximate size without fonts or templates
      */
     public long getCurrentDocumentSize() {
-        return body.offset() + body.size() * 20 + 0x48;
+        return body.offset() + (long)body.size() * 20L + 0x48;
     }
 
     protected PdfReaderInstance currentPdfReaderInstance;

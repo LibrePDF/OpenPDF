@@ -840,7 +840,7 @@ public class CFFFontSubset extends CFFFont {
                 arg_count++;
                 continue;
             }
-            if (b0<=31 && b0 != 28) // An operator was found.. Set Key.
+            if (b0 <= 31) // An operator was found.. Set Key.
             {
                 gotKey=true;
                 // 12 is an escape command therefore the next byte is a part
@@ -854,7 +854,6 @@ public class CFFFontSubset extends CFFFont {
                 }
                 else
                     key = SubrsFunctions[b0];
-                continue;
             }
         }        
     }

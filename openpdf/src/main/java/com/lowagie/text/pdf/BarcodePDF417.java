@@ -612,7 +612,6 @@ public class BarcodePDF417 {
                 }
                 if (redo) {
                     k = -1;
-                    continue;
                 }
             }
         }
@@ -636,7 +635,6 @@ public class BarcodePDF417 {
                 }
                 if (redo) {
                     k = -1;
-                    continue;
                 }
             }
         }
@@ -688,9 +686,6 @@ public class BarcodePDF417 {
         }
         if (macroSegmentId >= macroSegmentCount) {
             throw new IllegalStateException(MessageLocalization.getComposedMessage("macrosegmentid.must.be.lt.macrosemgentcount"));
-        }
-        if (macroSegmentCount < 1) {
-            throw new IllegalStateException(MessageLocalization.getComposedMessage("macrosemgentcount.must.be.gt.0"));
         }
 
         macroIndex = cwPtr;
