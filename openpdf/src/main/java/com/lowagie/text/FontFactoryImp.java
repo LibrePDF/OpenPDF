@@ -179,12 +179,12 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
             // some bugs were fixed here by Daniel Marczisovszky
             int s = style == Font.UNDEFINED ? Font.NORMAL : style;
             for (String f : tmp) {
-                String lcf = f.toLowerCase(Locale.ROOT);
-                int fs = Font.NORMAL;
-                if (lcf.contains("bold")) fs |= Font.BOLD;
-                if (lcf.contains("italic") || lcf.contains("oblique")) fs |= Font.ITALIC;
+                int fs = getFontStyle(f);
                 if ((s & Font.BOLDITALIC) == fs) {
                     fontname = f;
+                    // If a styled font already exists, we don't want to use the separate style-Attribut.
+                    // For example: Helvetica-Bold should have a normal style, because it's already bold.
+                    style = s == fs ? Font.NORMAL : s;
                     break;
                 }
             }
@@ -216,8 +216,31 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
 
         return new Font(basefont, size, style, color);
     }
-    
-    
+
+    /**
+     * Returns the fontstyle, if the font is already styled. <br>
+     * <pre>
+     * For example:
+     * font: Helvetica - style: normal
+     * font: Helvetica-Bold - style: bold
+     * </pre>
+     * 
+     * @param fontname
+     * @return
+     */
+    private int getFontStyle(final String fontname) {
+        String lcf = fontname.toLowerCase(Locale.ROOT);
+
+        int fontStyle = Font.NORMAL;
+        if (lcf.contains("bold")) {
+            fontStyle |= Font.BOLD;
+        }
+        if (lcf.contains("italic") || lcf.contains("oblique")) {
+            fontStyle |= Font.ITALIC;
+        }
+        return fontStyle;
+    }
+
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
