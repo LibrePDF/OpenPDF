@@ -28,7 +28,9 @@ class FontTest {
         put(Font.BOLDITALIC, f -> f.isBold() && f.isItalic());
     }};
 
-    private static final String DEFAULT_FONT_NAME = "Courier";
+    private static final String FONT_NAME_WITHOUT_STYLES = "Tahoma";
+    
+    private static final String FONT_NAME_WITH_STYLES = "Courier";
 
     private static final float DEFAULT_FONT_SIZE = 16.0f;
 
@@ -42,7 +44,7 @@ class FontTest {
     void testStyleSettingByValue() {
         FontFactory.registerDirectories();
         for (final int style: STYLES_TO_TEST_METHOD.keySet()) { // TODO: complement tests after adding enum with font styles
-            final Font font = FontFactory.getFont(DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, style);
+            final Font font = FontFactory.getFont(FONT_NAME_WITHOUT_STYLES, DEFAULT_FONT_SIZE, style);
             assertEquals(font.getStyle(), style);
         }
     }
@@ -59,9 +61,24 @@ class FontTest {
     @Test
     void testStyleSettingByPredicate() {
         for (final int style: STYLES_TO_TEST_METHOD.keySet()) {
-            final Font font = FontFactory.getFont(DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, style);
+            final Font font = FontFactory.getFont(FONT_NAME_WITHOUT_STYLES, DEFAULT_FONT_SIZE, style);
             final Predicate<Font> p = STYLES_TO_TEST_METHOD.get(style);
             assertTrue(p.test(font));
         }
     }
+
+    @Test
+    void testFontStyleOfStyledFont() {
+        for (final int style : STYLES_TO_TEST_METHOD.keySet()) {
+            final Font font = FontFactory.getFont(FONT_NAME_WITH_STYLES, DEFAULT_FONT_SIZE, style);
+
+            // For the font Courier, there is no Courier-Underline or Courier-Strikethru font available.
+            if (style == Font.UNDERLINE || style == Font.STRIKETHRU) {
+                assertEquals(font.getStyle(), style);
+            } else {
+                assertEquals(Font.NORMAL, font.getStyle());
+            }
+        }
+    }
+
 }
