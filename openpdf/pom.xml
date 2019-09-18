@@ -13,7 +13,7 @@
 
     <properties>
         <java-module-name>com.github.librepdf.openpdf</java-module-name>
-        <bouncycastle.version>1.62</bouncycastle.version>
+        <bouncycastle.version>1.63</bouncycastle.version>
         <juniversalchardet.version>2.3.0</juniversalchardet.version>
         <imageio-tiff.version>3.4.2</imageio-tiff.version>
     </properties>
