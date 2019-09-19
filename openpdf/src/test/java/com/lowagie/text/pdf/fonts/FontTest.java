@@ -2,7 +2,6 @@ package com.lowagie.text.pdf.fonts;
 
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -29,7 +28,7 @@ class FontTest {
         put(Font.BOLDITALIC, f -> f.isBold() && f.isItalic());
     }};
 
-    private static final String FONT_NAME_WITHOUT_STYLES = "Tahoma";
+    private static final String FONT_NAME_WITHOUT_STYLES = "non-existing-font";
     
     private static final String FONT_NAME_WITH_STYLES = "Courier";
 
@@ -42,7 +41,6 @@ class FontTest {
      * @see Font#getStyle()
      */
     @Test
-    @Disabled  //TODO: see issue https://github.com/LibrePDF/OpenPDF/issues/264
     void testStyleSettingByValue() {
         FontFactory.registerDirectories();
         for (final int style: STYLES_TO_TEST_METHOD.keySet()) { // TODO: complement tests after adding enum with font styles
