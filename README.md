@@ -82,7 +82,7 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
 
   [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal  
   [@daviddurand](https://github.com/daviddurand) -  David G. Durand  
-  [@tlxtellef](https://github.com/tlxtellef)  
+  [@tlxtellef](https://github.com/tlxtellef) - Tellef 
   [@asturio](https://github.com/asturio)  
   [@ymasory](https://github.com/ymasory)  
   [@albfernandez](https://github.com/albfernandez) - Alberto Fernández  
@@ -91,11 +91,11 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@glarfs](https://github.com/glarfs)  
   [@Kindrat](https://github.com/Kindrat)  
   [@syakovyn](https://github.com/syakovyn)  
-  [@ubermichael](https://github.com/ubermichael)  
+  [@ubermichael](https://github.com/ubermichael) - Michael Joyce
   [@weiyeh](https://github.com/weiyeh)  
   [@SuperPat45](https://github.com/SuperPat45)  
   [@lapo-luchini](https://github.com/lapo-luchini)  
-  [@MartinKocour](https://github.com/MartinKocour)  
+  [@MartinKocour](https://github.com/MartinKocour)  - Martin Kocour
   [@jokimaki](https://github.com/jokimaki)  
   [@sullis](https://github.com/sullis)  
   [@lapo-luchini](https://github.com/lapo-luchini)  
