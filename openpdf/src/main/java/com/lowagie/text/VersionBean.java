@@ -29,6 +29,7 @@ import java.net.URLConnection;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.text.MessageFormat;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
@@ -58,8 +59,8 @@ final class VersionBean {
         private static final String UNKNOWN = "";
         private String implementationVendor = UNKNOWN;
         // TODO nick - default value for manifest file absense - review
-        private String implementationVersion = "1.0.0";
-        private String bundleVersion = "1.0.0";
+        private String implementationVersion = UNKNOWN;
+        private String bundleVersion = UNKNOWN;
         private String implementationTitle = UNKNOWN;
         private String scmTimestamp = UNKNOWN;
         private String fullVersionString = UNKNOWN;
@@ -82,8 +83,22 @@ final class VersionBean {
             Manifest manifest;
             try {
                 manifest = readManifest();
+                readVersionProperties();
                 processManifest(manifest);
             } catch (Exception ignored) {
+            }
+        }
+
+        private void readVersionProperties() {
+            try (InputStream input = VersionBean.class.getClassLoader().getResourceAsStream("com/lowagie/text/version.properties")) {
+                Properties prop = new Properties();
+                // load a properties file
+                if (input != null) {
+                    prop.load(input);
+                    this.bundleVersion = prop.getProperty("bundleVersion", "");
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
 
@@ -99,8 +114,8 @@ final class VersionBean {
 
             Attributes attributes = manifest.getMainAttributes();
             implementationVendor = getAttributeValueOrDefault(attributes, "Implementation-Vendor");
-            implementationVersion = getAttributeValueOrDefault(attributes, "Implementation-Version");
-            bundleVersion = getAttributeValueOrDefault(attributes, "Bundle-Version");
+//            implementationVersion = getAttributeValueOrDefault(attributes, "Implementation-Version");
+//            bundleVersion = getAttributeValueOrDefault(attributes, "Bundle-Version");
             implementationTitle = getAttributeValueOrDefault(attributes, "Implementation-Title");
             scmTimestamp = getAttributeValueOrDefault(attributes, "SCM-Timestamp");
             

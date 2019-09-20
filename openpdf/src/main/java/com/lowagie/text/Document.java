@@ -109,7 +109,7 @@ public class Document implements AutoCloseable, DocListener {
     /**
      * @since    2.1.6
      */
-    private static final String RELEASE = VersionBean.VERSION.getImplementationVersion();
+    private static final String RELEASE = VersionBean.VERSION.getVersion();
     private static final String OPENPDF_VERSION = OPENPDF + " " + RELEASE;
     
     /**
