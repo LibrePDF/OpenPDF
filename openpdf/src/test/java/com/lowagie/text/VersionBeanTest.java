@@ -9,6 +9,7 @@ import java.util.jar.Manifest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@Deprecated
 class VersionBeanTest {
 
     private VersionBean versionBean;
