@@ -16,19 +16,22 @@ public class DocumentTest {
         // Given
         String versionFromPom = getProjectVersion();
         String versionInCode = Document.getVersion();
-        // maven-bundle-plugin transforms 1.0.5-SNAPSHOT to 1.0.5.SNAPSHOT
-        String versionFromPomNormalized = versionFromPom.replace('-', '.');
+
         // Then
         Assertions.assertTrue(
-            versionInCode.endsWith(versionFromPomNormalized),
+            versionInCode.endsWith(versionFromPom),
             String.format(ERROR_MESSAGE_TEMPLATE, versionInCode, versionFromPom));
     }
 
     private String getProjectVersion() {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("version.txt");
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("com/lowagie/text/version.properties");
         String version = null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             version = reader.readLine();
+            int eqPosition = version.indexOf('=');
+            if (eqPosition >= 0){
+                version = version.substring(eqPosition + 1);
+            }
         } catch (IOException ignored) {
         }
         return version;

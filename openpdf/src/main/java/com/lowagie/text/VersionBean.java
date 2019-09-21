@@ -39,7 +39,9 @@ import java.util.jar.Manifest;
  *
  * @author asmirnov@exadel.com (latest modification by $Author$)
  * @version $Revision$ $Date$
+ * @deprecated simce 1.3.11. Use Document.RELEASE
  */
+@Deprecated
 final class VersionBean {
     public static final Version VERSION = new Version();
 
@@ -53,7 +55,9 @@ final class VersionBean {
      *
      * @author asmirnov@exadel.com (latest modification by $Author$)
      * @version $Revision$ $Date$
+     * @deprecated simce 1.3.11. Use Document.RELEASE
      */
+    @Deprecated
     public static class Version {
         private static final String UNKNOWN = "";
         private String implementationVendor = UNKNOWN;
