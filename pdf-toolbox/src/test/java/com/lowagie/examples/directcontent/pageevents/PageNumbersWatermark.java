@@ -161,8 +161,8 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
             catch(Exception e) {
                 throw new ExceptionConverter(e);
             }
-            cb.restoreState();
         }
+        cb.restoreState();
         cb.sanityCheck();
     }
     
