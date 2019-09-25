@@ -528,13 +528,9 @@ public class PdfDocument extends Document {
                     // if a paragraph has to be kept together, we wrap it in a table object
                     if (paragraph.getKeepTogether()) {
                         carriageReturn();
-                        PdfPTable table = new PdfPTable(1);
-                        table.setWidthPercentage(100f);
-                        PdfPCell cell = new PdfPCell();
-                        cell.addElement(paragraph);
-                        cell.setBorder(Table.NO_BORDER);
-                        cell.setPadding(0);
-                        table.addCell(cell);
+                        // fixes bug with nested tables not shown
+                        // Paragraph#getChunks() doesn't contain the nested table element
+                        PdfPTable table = createInOneCell(paragraph.iterator());
                         indentation.indentLeft -= paragraph.getIndentationLeft();
                         indentation.indentRight -= paragraph.getIndentationRight();
                         this.add(table);
@@ -774,6 +770,20 @@ public class PdfDocument extends Document {
         catch(Exception e) {
             throw new DocumentException(e);
         }
+    }
+
+    static PdfPTable createInOneCell(Iterator<Element> elements) {
+        PdfPTable table = new PdfPTable(1);
+        table.setWidthPercentage(100f);
+
+        PdfPCell cell = new PdfPCell();
+        cell.setBorder(Table.NO_BORDER);
+        cell.setPadding(0);
+        while (elements.hasNext()) {
+            cell.addElement(elements.next());
+        }
+        table.addCell(cell);
+        return table;
     }
 
 //    [L1] DocListener interface
