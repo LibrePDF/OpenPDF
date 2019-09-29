@@ -13,7 +13,7 @@ public class SimplePdfTest {
     @Test
     void testSimplePdf() throws Exception {
         // create document
-        Document document = PdfTestBase.createPdf("testSimplePdf.pdf");
+        Document document = PdfTestBase.createTempPdf("testSimplePdf.pdf");
         try {
             // new page with a rectangle
             document.open();
