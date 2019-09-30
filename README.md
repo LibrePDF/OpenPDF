@@ -28,10 +28,18 @@ Mozilla Public License Version 2.0 - http://www.mozilla.org/MPL/2.0/
 We want OpenPDF to consist of source code which is consistently licensed with the LGPL and MPL licences only. This also means that any new contributions to the project must have a dual LGPL and MPL license only.
 
 ## Documentation ##
+- [Samples](pdf-sample/src/main/java/com/lowagie/examples/)
 - [Examples](pdf-toolbox/src/test/java/com/lowagie/examples/)
 - [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-3-3/?)
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 
+To run the samples 
+
+```shell script
+  mvn exec:java -Dexec.mainClass="com.lowagie.examples.RunAll" -Dexec.args="./output" -f pdf-sample/pom.xml
+```
+
+You can then check in the ``output`` directory all the rendered samples.
 
 ## Background ##
 
