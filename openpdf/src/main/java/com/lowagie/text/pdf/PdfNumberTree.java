@@ -132,12 +132,12 @@ public class PdfNumberTree {
         }
     }
     
-    private static void iterateItems(PdfDictionary dic, Map<PdfObject, PdfObject> items) {
+    private static void iterateItems(PdfDictionary dic, Map<Integer, PdfObject> items) {
         PdfArray nn = (PdfArray)PdfReader.getPdfObjectRelease(dic.get(PdfName.NUMS));
         if (nn != null) {
             for (int k = 0; k < nn.size(); ++k) {
                 PdfNumber s = (PdfNumber)PdfReader.getPdfObjectRelease(nn.getPdfObject(k++));
-                items.put(s, nn.getPdfObject(k));
+                items.put(s.intValue(), nn.getPdfObject(k));
             }
         }
         else if ((nn = (PdfArray)PdfReader.getPdfObjectRelease(dic.get(PdfName.KIDS))) != null) {
@@ -148,8 +148,8 @@ public class PdfNumberTree {
         }
     }
     
-    public static HashMap<PdfObject, PdfObject> readTree(PdfDictionary dic) {
-        HashMap<PdfObject, PdfObject> items = new HashMap<>();
+    public static HashMap<Integer, PdfObject> readTree(PdfDictionary dic) {
+        HashMap<Integer, PdfObject> items = new HashMap<>();
         if (dic != null)
             iterateItems(dic, items);
         return items;
