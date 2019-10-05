@@ -350,7 +350,7 @@ public class HyphenationTree extends TernaryTree
         String sw = new String(word, 1, len);
         if (stoplist.containsKey(sw)) {
             // assume only simple hyphens (Hyphen.pre="-", Hyphen.post = Hyphen.no = null)
-            ArrayList hw = (ArrayList)stoplist.get(sw);
+            List hw = stoplist.get(sw);
             int j = 0;
             for (i = 0; i < hw.size(); i++) {
                 Object o = hw.get(i);

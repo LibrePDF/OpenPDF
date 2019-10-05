@@ -73,7 +73,8 @@ public abstract class XmpSchema extends Properties {
      * The String representation of the contents.
      * @return a String representation.
      */
-    public String toString() {
+    @Override
+    public synchronized String toString() {
         StringBuffer buf = new StringBuffer();
         for (Enumeration e = this.propertyNames(); e.hasMoreElements(); ) {
             process(buf, e.nextElement());
@@ -113,15 +114,16 @@ public abstract class XmpSchema extends Properties {
     /**
      * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
      */
-    public Object setProperty(String key, String value) {
+    @Override
+    public synchronized Object setProperty(String key, String value) {
         return super.setProperty(key, escape(value));
     }
     
     /**
      * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
      * 
-     * @param key
-     * @param value
+     * @param key used as key
+     * @param value toString called on this value
      * @return the previous property (null if there wasn't one)
      */
     public Object setProperty(String key, XmpArray value) {
@@ -130,9 +132,9 @@ public abstract class XmpSchema extends Properties {
     
     /**
      * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
-     * 
-     * @param key
-     * @param value
+     *
+     * @param key used as key
+     * @param value toString called on this value
      * @return the previous property (null if there wasn't one)
      */
     public Object setProperty(String key, LangAlt value) {
