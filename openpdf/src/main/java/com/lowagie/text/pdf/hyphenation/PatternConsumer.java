@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * This interface is used to connect the XML pattern file parser to
  * the hyphenation tree.
  *
- * @author Carlos Villegas <cav@uniscope.co.jp>
+ * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
 public interface PatternConsumer {
 

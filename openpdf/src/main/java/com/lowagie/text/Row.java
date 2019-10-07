@@ -95,7 +95,7 @@ public class Row implements Element, WithHorizontalAlignment {
     protected boolean[] reserved;
     
     /** This is the array of Objects (<CODE>Cell</CODE> or <CODE>Table</CODE>). */
-    protected Object[] cells;
+    protected TableRectangle[] cells;
     
     /** This is the vertical alignment. */
     protected int horizontalAlignment;
@@ -110,7 +110,7 @@ public class Row implements Element, WithHorizontalAlignment {
     protected Row(int columns) {
         this.columns = columns;
         reserved = new boolean[columns];
-        cells = new Object[columns];
+        cells = new TableRectangle[columns];
         currentColumn = 0;
     }
     
@@ -146,8 +146,8 @@ public class Row implements Element, WithHorizontalAlignment {
      *
      * @return  an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
-        return new ArrayList();
+    public ArrayList<Element> getChunks() {
+        return new ArrayList<>();
     }
     
     /**
@@ -180,7 +180,7 @@ public class Row implements Element, WithHorizontalAlignment {
         }
         columns--;
         boolean[] newReserved = new boolean[columns];
-        Object[] newCells = new Cell[columns];
+        TableRectangle[] newCells = new Cell[columns];
         
         for (int i = 0; i < column; i++) {
             newReserved[i] = reserved[i];
@@ -210,7 +210,7 @@ public class Row implements Element, WithHorizontalAlignment {
      * @return      the column position the <CODE>Cell</CODE> was added,
      *                      or <CODE>-1</CODE> if the <CODE>element</CODE> couldn't be added.
      */
-    int addElement(Object element) {
+    int addElement(TableRectangle element) {
         return addElement(element, currentColumn);
     }
     
@@ -222,7 +222,7 @@ public class Row implements Element, WithHorizontalAlignment {
      * @return      the column position the <CODE>Cell</CODE> was added,
      *                      or <CODE>-1</CODE> if the <CODE>Cell</CODE> couldn't be added.
      */
-    int addElement(Object element, int column) {
+    int addElement(TableRectangle element, int column) {
         if (element == null) throw new NullPointerException(MessageLocalization.getComposedMessage("addcell.null.argument"));
         if ((column < 0) || (column > columns)) throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("addcell.illegal.column.argument"));
         if ( !((getObjectID(element) == CELL) || (getObjectID(element) == TABLE)) ) throw new IllegalArgumentException(MessageLocalization.getComposedMessage("addcell.only.cells.or.tables.allowed"));
@@ -245,7 +245,7 @@ public class Row implements Element, WithHorizontalAlignment {
      * @param   aElement    the cell to add.
      * @param   column  the position where to add the cell.
      */
-    void setElement(Object aElement, int column) {
+    void setElement(TableRectangle aElement, int column) {
         if (reserved[column]) throw new IllegalArgumentException(MessageLocalization.getComposedMessage("setelement.position.already.taken"));
         
         cells[column] = aElement;
@@ -335,7 +335,7 @@ public class Row implements Element, WithHorizontalAlignment {
      * @return  the <CODE>Cell</CODE>,<CODE>Table</CODE> or <VAR>Object</VAR> if the column was
      *                  reserved or null if empty.
      */
-    public Object getCell(int column) {
+    public TableRectangle getCell(int column) {
         if ((column < 0) || (column > columns)) {
             throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("getcell.at.illegal.index.1.max.is.2", String.valueOf(column), String.valueOf(columns)));
         }

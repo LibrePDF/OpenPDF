@@ -53,22 +53,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SignatureException;
-import java.security.cert.Certificate;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
+
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.interfaces.PdfEncryptionSettings;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.xml.xmp.XmpWriter;
+
+import java.security.cert.Certificate;
 
 /** Applies extra content to the pages of a PDF document.
  * This extra content can be all the objects allowed in PdfContentByte
@@ -158,10 +160,14 @@ public class PdfStamper
      * @deprecated use {@link #setInfoDictionary(Map)}
      */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void setMoreInfo(HashMap moreInfo) {
         this.moreInfo = moreInfo;
     }
-    
+
+    /**
+     * An option to make this stamper to clean metadata in the generated file. You must call this method before closing the stamper.
+     */
     public void cleanMetadata() {
       Map<String, String> meta = new HashMap<>();
       meta.put("Title", null);
@@ -229,17 +235,17 @@ public class PdfStamper
      */
     public void close() throws DocumentException, IOException {
         if (!hasSignature) {
-          if (cleanMetadata && stamper.xmpMetadata == null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
-              XmpWriter writer = new XmpWriter(baos, moreInfo);
-              writer.close();
-              stamper.setXmpMetadata(baos.toByteArray());
+            if (cleanMetadata && stamper.xmpMetadata == null) {
+              ByteArrayOutputStream baos = new ByteArrayOutputStream();
+              try {
+                XmpWriter writer = new XmpWriter(baos, moreInfo);
+                writer.close();
+                stamper.setXmpMetadata(baos.toByteArray());
+              }
+              catch (IOException ignore) {
+                // ignore exception
+              }
             }
-            catch (IOException ignore) {
-              // ignore exception
-            }
-          }
             stamper.close(moreInfo);
             return;
         }

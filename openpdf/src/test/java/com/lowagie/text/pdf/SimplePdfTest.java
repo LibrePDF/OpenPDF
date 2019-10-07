@@ -1,5 +1,8 @@
 package com.lowagie.text.pdf;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import com.lowagie.text.Annotation;
 import com.lowagie.text.Document;
 import com.lowagie.text.Rectangle;
@@ -10,7 +13,7 @@ public class SimplePdfTest {
     @Test
     void testSimplePdf() throws Exception {
         // create document
-        Document document = PdfTestBase.createPdf("testSimplePdf.pdf");
+        Document document = PdfTestBase.createTempPdf("testSimplePdf.pdf");
         try {
             // new page with a rectangle
             document.open();
@@ -27,4 +30,34 @@ public class SimplePdfTest {
 
     }
 
+    @Test
+    void testTryWithResources_with_os_before_doc() throws Exception {
+        try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
+            FileOutputStream os = new FileOutputStream(File.createTempFile("temp-file-name", ".pdf"));
+             Document document = new Document()
+        ) {
+            PdfWriter writer = PdfWriter.getInstance(document, os);
+            document.open();
+            final PdfContentByte cb = writer.getDirectContent();
+
+            document.newPage();
+            PdfImportedPage page = writer.getImportedPage(reader, 1);
+            cb.addTemplate(page, 1, 0, 0, 1, 0, 0);
+        }
+    }
+
+    @Test
+    void testTryWithResources_with_unknown_os() throws Exception {
+        try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
+             Document document = new Document()
+        ) {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(File.createTempFile("temp-file-name", ".pdf")));
+            document.open();
+            final PdfContentByte cb = writer.getDirectContent();
+
+            document.newPage();
+            PdfImportedPage page = writer.getImportedPage(reader, 1);
+            cb.addTemplate(page, 1, 0, 0, 1, 0, 0);
+        }
+    }
 }

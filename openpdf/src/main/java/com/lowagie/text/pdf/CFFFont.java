@@ -70,6 +70,7 @@ package com.lowagie.text.pdf;
 
 import com.lowagie.text.ExceptionConverter;
 
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -694,8 +695,8 @@ public class CFFFont {
         for (j=0; j<fonts.length; j++)
             if (fontName.equals(fonts[j].name)) break;
         if (j==fonts.length) return null;
-        
-        LinkedList l = new LinkedList();
+
+        Deque<Item> l = new LinkedList<>();
         
         // copy the header
         
@@ -984,7 +985,7 @@ public class CFFFont {
     protected int[] gsubrOffsets;
     
     /**
-     * TODO Changed from private to protected by Ygal&Oren
+     * TODO Changed from private to protected by {@literal Ygal&Oren}
      */
     protected final class Font {
         public String    name;
@@ -1112,10 +1113,6 @@ public class CFFFont {
                     fonts[j].charsetOffset = (Integer) args[0];
                     
                 }
-                else if (Objects.equals(key, "Encoding")){
-                    fonts[j].encodingOffset = (Integer) args[0];
-                    ReadEncoding(fonts[j].encodingOffset);
-                }
                 else if (Objects.equals(key, "CharStrings")) {
                     fonts[j].charstringsOffset = (Integer) args[0];
                     //System.err.println("charstrings "+fonts[j].charstringsOffset);
@@ -1167,12 +1164,4 @@ public class CFFFont {
         }
         //System.err.println("CFF: done");
     }
-    
-    // ADDED BY Oren & Ygal
-    
-    void ReadEncoding(int nextIndexOffset){
-        int format;
-        seek(nextIndexOffset);
-        format = getCard8();
-    }    
 }

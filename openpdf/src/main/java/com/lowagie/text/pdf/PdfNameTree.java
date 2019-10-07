@@ -49,6 +49,7 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Creates a name tree.
@@ -59,6 +60,7 @@ public class PdfNameTree {
 
   private static final int leafSize = 64;
 
+  
   /**
    * Writes a name tree to a PdfWriter.
    *
@@ -69,19 +71,31 @@ public class PdfNameTree {
    * @return the dictionary with the name tree. This dictionary is the one generally pointed to by the key /Dests, for example
    * @throws IOException on error
    */
-  public static PdfDictionary writeTree(HashMap items, PdfWriter writer) throws IOException {
+  public static PdfDictionary writeTree(HashMap<String, ? extends PdfObject> items, PdfWriter writer) throws IOException {
+    return writeTree((Map<String, ? extends PdfObject>) items, writer);
+  }
+  /**
+   * Writes a name tree to a PdfWriter.
+   *
+   * @param items the item of the name tree. The key is a <CODE>String</CODE> and the value is a <CODE>PdfObject</CODE>. Note that although
+   * the keys are strings only the lower byte is used and no check is made for chars with the same lower byte and different upper byte. This
+   * will generate a wrong tree name.
+   * @param writer the writer
+   * @return the dictionary with the name tree. This dictionary is the one generally pointed to by the key /Dests, for example
+   * @throws IOException on error
+   */
+  public static PdfDictionary writeTree(Map<String, ? extends PdfObject> items, PdfWriter writer) throws IOException {
     if (items.isEmpty()) {
       return null;
     }
-    String[] names = new String[items.size()];
-    names = (String[]) items.keySet().toArray(names);
+    String[] names = items.keySet().toArray(new String[0]);
     Arrays.sort(names);
     if (names.length <= leafSize) {
       PdfDictionary dic = new PdfDictionary();
       PdfArray ar = new PdfArray();
       for (String name : names) {
         ar.add(new PdfString(name, null));
-        ar.add((PdfObject) items.get(name));
+        ar.add(items.get(name));
       }
       dic.put(PdfName.NAMES, ar);
       return dic;
@@ -99,7 +113,7 @@ public class PdfNameTree {
       arr = new PdfArray();
       for (; offset < end; ++offset) {
         arr.add(new PdfString(names[offset], null));
-        arr.add((PdfObject) items.get(names[offset]));
+        arr.add(items.get(names[offset]));
       }
       dic.put(PdfName.NAMES, arr);
       kids[k] = writer.addToBody(dic).getIndirectReference();

@@ -81,7 +81,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * </PRE></BLOCKQUOTE>
  */
 
-public class Section extends ArrayList implements TextElementArray, LargeElement {
+public class Section extends ArrayList<Element> implements TextElementArray, LargeElement {
     // constant
     /**
      * A possible number style. The default number style: "1.2.3."
@@ -133,7 +133,7 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
     protected int subsections = 0;
     
     /** This is the complete list of sectionnumbers of this section and the parents of this section. */
-    protected ArrayList numbers = null;
+    protected java.util.List<Integer> numbers = null;
     
     /**
      * Indicates if the Section will be complete once added to the document.
@@ -231,10 +231,10 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
-        ArrayList tmp = new ArrayList();
-        for (Object o : this) {
-            tmp.addAll(((Element) o).getChunks());
+    public ArrayList<Element> getChunks() {
+        ArrayList<Element> tmp = new ArrayList<>();
+        for (Element o : this) {
+            tmp.addAll(o.getChunks());
         }
         return tmp;
     }
@@ -265,12 +265,12 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      * @param    o       an object of type <CODE>Paragraph</CODE>, <CODE>List</CODE> or <CODE>Table</CODE>=
      * @throws    ClassCastException if the object is not a <CODE>Paragraph</CODE>, <CODE>List</CODE> or <CODE>Table</CODE>
      */
-    public void add(int index, Object o) {
+    public void add(int index, Element o) {
         if (isAddedCompletely()) {
             throw new IllegalStateException(MessageLocalization.getComposedMessage("this.largeelement.has.already.been.added.to.the.document"));
         }
         try {
-            Element element = (Element) o;
+            Element element = o;
             if (element.isNestable()) {
                 super.add(index, element);
             }
@@ -291,12 +291,12 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      * @return    a boolean
      * @throws    ClassCastException if the object is not a <CODE>Paragraph</CODE>, <CODE>List</CODE>, <CODE>Table</CODE> or <CODE>Section</CODE>
      */
-    public boolean add(Object o) {
+    public boolean add(Element o) {
         if (isAddedCompletely()) {
             throw new IllegalStateException(MessageLocalization.getComposedMessage("this.largeelement.has.already.been.added.to.the.document"));
         }
         try {
-            Element element = (Element) o;
+            Element element = o;
             if (element.type() == Element.SECTION) {
                 Section section = (Section) o;
                 section.setNumbers(++subsections, numbers);
@@ -328,8 +328,8 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      * @return    <CODE>true</CODE> if the action succeeded, <CODE>false</CODE> if not.
      * @throws    ClassCastException if one of the objects isn't a <CODE>Paragraph</CODE>, <CODE>List</CODE>, <CODE>Table</CODE>
      */
-    public boolean addAll(Collection collection) {
-        for (Object o : collection) {
+    public boolean addAll(Collection<? extends Element> collection) {
+        for (Element o : collection) {
             this.add(o);
         }
         return true;
@@ -469,7 +469,7 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      * @return    a Paragraph object
      * @since    iText 2.0.8
      */
-    public static Paragraph constructTitle(Paragraph title, ArrayList numbers, int numberDepth, int numberStyle) {
+    public static Paragraph constructTitle(Paragraph title, java.util.List<Integer> numbers, int numberDepth, int numberStyle) {
         if (title == null) {
             return null;
         }
@@ -481,7 +481,7 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
         StringBuilder buf = new StringBuilder(" ");
         for (int i = 0; i < depth; i++) {
             buf.insert(0, ".");
-            buf.insert(0, ((Integer) numbers.get(i)).intValue());
+            buf.insert(0, numbers.get(i).intValue());
         }
         if (numberStyle == NUMBERSTYLE_DOTTED_WITHOUT_FINAL_DOT) {
             buf.deleteCharAt(buf.length() - 2);
@@ -496,7 +496,7 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      * <P>
      * If the numberdepth is 0, the sections will not be numbered. If the numberdepth
      * is 1, the section will be numbered with their own number. If the numberdepth is
-     * higher (for instance x > 1), the numbers of x - 1 parents will be shown.
+     * higher (for instance {@literal x > 1}), the numbers of {@literal x - 1} parents will be shown.
      *
      * @param    numberDepth        the new numberDepth
      */
@@ -669,8 +669,8 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
      * @param    number        the number of this section
      * @param    numbers        an <CODE>ArrayList</CODE>, containing the numbers of the Parent
      */
-    private void setNumbers(int number, ArrayList numbers) {
-        this.numbers = new ArrayList();
+    private void setNumbers(int number, java.util.List<Integer> numbers) {
+        this.numbers = new ArrayList<>();
         this.numbers.add(number);
         this.numbers.addAll(numbers);
     }

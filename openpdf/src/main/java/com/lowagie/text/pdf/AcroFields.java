@@ -53,20 +53,16 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.ExceptionConverter;
-import org.w3c.dom.Node;
-
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
+import org.w3c.dom.Node;
 
 /**
  * Query and change fields in existing documents either by method calls or by FDF merging.
@@ -747,7 +743,7 @@ public class AcroFields {
       tx = new TextField(writer, null, null);
       tx.setExtraMargin(extraMarginLeft, extraMarginTop);
       tx.setBorderWidth(0);
-      tx.setSubstitutionFonts(substitutionFonts);
+      tx.setSubstitutionFontList(substitutionFonts);
       decodeGenericDictionary(merged, tx);
       //rect
       PdfArray rect = merged.getAsArray(PdfName.RECT);
@@ -957,8 +953,8 @@ public class AcroFields {
     String[] options = getListOptionExport(name);
     PdfNumber n;
     int idx = 0;
-    for (Iterator i = values.listIterator(); i.hasNext(); ) {
-      n = (PdfNumber) i.next();
+    for (PdfObject pdfObject : values.getElements()) {
+      n = (PdfNumber) pdfObject;
       ret[idx++] = options[n.intValue()];
     }
     return ret;
@@ -1285,6 +1281,17 @@ public class AcroFields {
         setField(f, v);
       }
     }
+  }
+  
+  /**
+   * Allows merging the fields by a field reader. One use would be to set the fields by XFDF merging.
+   *
+   * @param fieldReader The fields to merge.
+   * @throws IOException on error
+   * @throws DocumentException on error
+   */
+  public void setFields(XfdfReader fieldReader) throws IOException, DocumentException {
+    setFields((FieldReader) fieldReader);
   }
 
   /**
@@ -2098,8 +2105,9 @@ public class AcroFields {
    * @return the field names that have signatures and are signed
    */
   @Deprecated
-  public ArrayList getSignatureNames() {
-    return (ArrayList) getSignedFieldNames();
+  @SuppressWarnings("unchecked")
+  public ArrayList<String> getSignatureNames() {
+      return (ArrayList<String>) getSignedFieldNames();
   }
 
   /**
@@ -2464,6 +2472,7 @@ public class AcroFields {
    * @since 2.1.5  this method used to take a HashMap as parameter
    */
   @Deprecated
+  @SuppressWarnings("unchecked")
   public void setFieldCache(Map fieldCache) {
     this.fieldCache = fieldCache;
   }
@@ -2643,6 +2652,7 @@ public class AcroFields {
    * @param substitutionFonts the list
    */
   @Deprecated
+  @SuppressWarnings("unchecked")
   public void setSubstitutionFonts(ArrayList substitutionFonts) {
     this.substitutionFonts = substitutionFonts;
   }

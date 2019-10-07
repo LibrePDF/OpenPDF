@@ -113,8 +113,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
 
     /**
      * {@inheritDoc}
-     * @see com.lowagie.text.pdf.parser.TextAssembler#process(com.lowagie.text.pdf.parser.Word,
-     *      String)
+     * @see com.lowagie.text.pdf.parser.TextAssembler#process(Word, String)
      */
     @Override
     public void process(Word completed, String contextName) {
@@ -193,10 +192,8 @@ public class MarkedUpTextAssembler implements TextAssembler {
      * Captures text using a simplified algorithm for inserting hard returns and
      * spaces
      *
-     * @see com.lowagie.text.pdf.parser.AbstractRenderListener#renderText(java.lang.String,
-     *      com.lowagie.text.pdf.parser.GraphicsState,
-     *      com.lowagie.text.pdf.parser.Matrix,
-     *      com.lowagie.text.pdf.parser.Matrix)
+     * @see com.lowagie.text.pdf.parser.GraphicsState
+     * @see com.lowagie.text.pdf.parser.Matrix
      */
     @Override
     public void renderText(ParsedTextImpl partialWord) {
@@ -258,7 +255,6 @@ public class MarkedUpTextAssembler implements TextAssembler {
     /**
      * Getter.
      *
-     * @see SimpleTextExtractingPdfContentRenderListener#_reader
      * @return reader
      */
     protected PdfReader getReader() {

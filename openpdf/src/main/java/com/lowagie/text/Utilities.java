@@ -55,7 +55,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -75,8 +75,8 @@ public class Utilities {
      *            a Hashtable
      * @return the keyset of a Hashtable (or an empty set if table is null)
      */
-    public static Set getKeySet(Hashtable table) {
-        return (table == null) ? Collections.EMPTY_SET : table.keySet();
+    public static Set<String> getKeySet(Map<String, ?> table) {
+        return (table == null) ? Collections.emptySet() : table.keySet();
     }
 
     /**

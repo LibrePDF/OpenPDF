@@ -19,7 +19,7 @@ package com.lowagie.text.pdf.hyphenation;
 /**
  * This class represents a hyphenated word.
  *
- * @author Carlos Villegas <cav@uniscope.co.jp>
+ * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
 public class Hyphenation {
     

@@ -53,21 +53,30 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Font;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class contains entities that can be used in an entity tag.
  */
 
+@SuppressWarnings("deprecated")
 public class EntitiesToSymbol {
-    
+
+    public static Map<String, Character> getMap() {
+        return map;
+    }
+
     /**
      * This is a map that contains all possible id values of the entity tag
      * that can be translated to a character in font Symbol.
+     *
+     * @deprecated use the getter ({@link EntitiesToSymbol#getMap()}) instead of accessing this field directly
      */
-    public static final HashMap map;
-    
+    @Deprecated
+    public static final HashMap<String, Character> map;
+
     static {
-        map = new HashMap();
+        map = new HashMap<>(300);
         map.put("169", (char) 227);
         map.put("172", (char) 216);
         map.put("174", (char) 210);
@@ -343,7 +352,7 @@ public class EntitiesToSymbol {
         map.put("xi", (char) 120);
         map.put("zeta", (char) 122);
     }
-    
+
     /**
      * Gets a chunk with a symbol character.
      * @param e a symbol value (see Entities class: alfa is greek alfa,...)
@@ -363,7 +372,7 @@ public class EntitiesToSymbol {
         Font symbol = new Font(Font.SYMBOL, font.getSize(), font.getStyle(), font.getColor());
         return new Chunk(String.valueOf(s), symbol);
     }
-    
+
     /**
      * Looks for the corresponding symbol in the font Symbol.
      *
@@ -371,7 +380,7 @@ public class EntitiesToSymbol {
      * @return    the corresponding character in font Symbol
      */
     public static char getCorrespondingSymbol(String name) {
-        Character symbol = (Character) map.get(name);
+        Character symbol = map.get(name);
         if (symbol == null) {
             return (char)0;
         }

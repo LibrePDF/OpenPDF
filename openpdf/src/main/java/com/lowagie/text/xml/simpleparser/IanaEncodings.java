@@ -68,6 +68,7 @@
 package com.lowagie.text.xml.simpleparser;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Translates a IANA encoding name to a Java encoding.
@@ -76,7 +77,7 @@ import java.util.HashMap;
 public class IanaEncodings {
 
     /** The object that maps IANA to Java encodings. */
-    private static final HashMap map = new HashMap();
+    private static final Map<String, String> map = new HashMap<>();
 
     static {        
         // add IANA to Java encoding mappings.
@@ -279,7 +280,7 @@ public class IanaEncodings {
      */    
     public static String getJavaEncoding(String iana) {
         String IANA = iana.toUpperCase();
-        String jdec = (String)map.get(IANA);
+        String jdec = map.get(IANA);
         if (jdec == null)
             jdec = iana;
         return jdec;

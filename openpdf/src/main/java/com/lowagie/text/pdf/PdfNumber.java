@@ -51,6 +51,8 @@ package com.lowagie.text.pdf;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 
+import java.util.Objects;
+
 /**
  * <CODE>PdfNumber</CODE> provides two types of numbers, integer and real.
  * <P>
@@ -62,7 +64,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * @see        PdfObject
  * @see        BadPdfFormatException
  */
-public class PdfNumber extends PdfObject {
+public class PdfNumber extends PdfObject implements Comparable<PdfNumber> {
 
     // CLASS VARIABLES
     
@@ -101,6 +103,17 @@ public class PdfNumber extends PdfObject {
         setContent(String.valueOf(value));
     }
     
+    /**
+     * Constructs a new <CODE>PdfNumber</CODE>-object of type long.
+     *
+     * @param value    value of the new <CODE>PdfNumber</CODE>-object
+     */
+    public PdfNumber(long value) {
+        super(NUMBER);
+        this.value = value;
+        setContent(String.valueOf(value));
+    }
+
     /**
      * Constructs a new <CODE>PdfNumber</CODE>-object of type real.
      *
@@ -158,5 +171,29 @@ public class PdfNumber extends PdfObject {
     public void increment() {
         value += 1.0;
         setContent(ByteBuffer.formatDouble(value));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PdfNumber)) {
+            return false;
+        }
+        PdfNumber pdfNumber = (PdfNumber) o;
+        return Double.compare(pdfNumber.value, value) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public int compareTo(PdfNumber o) {
+        Objects.requireNonNull(o, "PdfNumber is null, can't be compared to current instance.");
+        if (this == o) return 0;
+        return Double.compare(o.value, value);
     }
 }

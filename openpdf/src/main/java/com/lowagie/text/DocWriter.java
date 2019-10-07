@@ -281,6 +281,9 @@ public abstract class DocWriter implements DocListener {
  */
 
     public void close() {
+        if (!open) {
+            return;
+        }
         open = false;
         try {
             os.flush();

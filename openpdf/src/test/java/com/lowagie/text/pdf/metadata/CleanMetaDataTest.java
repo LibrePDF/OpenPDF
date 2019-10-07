@@ -19,12 +19,22 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.xml.xmp.XmpWriter;
 
 public class CleanMetaDataTest {
-  
-  
+
   public CleanMetaDataTest() {
     super();
   }
 
+  private HashMap<String, String> createCleanerMoreInfo() {
+    HashMap<String, String> moreInfo = new HashMap<String, String>();
+    moreInfo.put("Title", null);
+    moreInfo.put("Author", null);
+    moreInfo.put("Subject", null);
+    moreInfo.put("Producer", null);
+    moreInfo.put("Keywords", null);
+    moreInfo.put("Creator", null);
+    moreInfo.put("ModDate",null);
+    return moreInfo;
+  }
 
 	@Test
 	public void testProducer() throws Exception {
@@ -80,6 +90,8 @@ public class CleanMetaDataTest {
 		Assertions.assertNull(r.getInfo().get("Title"));
 		Assertions.assertNull(r.getInfo().get("Subject"));	
 		r.close();
+		String dataString = new String(data);
+		Assertions.assertFalse(dataString.contains("This example explains how to add metadata."));
 	}
 	
 	@Test
@@ -109,18 +121,20 @@ public class CleanMetaDataTest {
 		Assertions.assertEquals("Subject3", r.getInfo().get("Subject"));	
 		r.close();
 	}
+
 	@Test
-  public void testCleanMetadataMethodInStamper() throws Exception {
-    byte[] data = cleanMetadata(new File("src/test/resources/HelloWorldMeta.pdf"));
-    PdfReader r = new PdfReader(data);
+	public void testCleanMetadataMethodInStamper() throws Exception {
+	  byte[] data = cleanMetadata(new File("src/test/resources/HelloWorldMeta.pdf"));
+	  PdfReader r = new PdfReader(data);
     Assertions.assertNull(r.getInfo().get("Producer"));
     Assertions.assertNull(r.getInfo().get("Author"));
     Assertions.assertNull(r.getInfo().get("Title"));
-    Assertions.assertNull(r.getInfo().get("Subject"));  
+    Assertions.assertNull(r.getInfo().get("Subject"));
     r.close();
     String dataString = new String(data);
     Assertions.assertFalse(dataString.contains("This example explains how to add metadata."));
-  }
+	}
+
 	@Test
   public void testXMPMetadata() throws Exception {
     File file = new File("src/test/resources/HelloWorldMeta.pdf");
@@ -134,16 +148,16 @@ public class CleanMetaDataTest {
     // Manually set clean metadata
     stamp.setInfoDictionary(moreInfo);
     stamp.setXmpMetadata(meta.toByteArray());
-        
+
     stamp.close();
-    
-    
+
+
     byte[] data = baos.toByteArray();
     PdfReader r = new PdfReader(data);
     Assertions.assertNull(r.getInfo().get("Producer"));
     Assertions.assertNull(r.getInfo().get("Author"));
     Assertions.assertNull(r.getInfo().get("Title"));
-    Assertions.assertNull(r.getInfo().get("Subject"));  
+    Assertions.assertNull(r.getInfo().get("Subject"));
     byte[] metadata = r.getMetadata();
     r.close();
     String dataString = new String(data);
@@ -155,17 +169,17 @@ public class CleanMetaDataTest {
       Assertions.assertFalse(metadataString.contains("Bruno Lowagie"));
       Assertions.assertFalse(metadataString.contains(" 1.2.12.SNAPSHOT"));
       Assertions.assertTrue(metadataString.contains("<pdf:Producer></pdf:Producer>"));
-    }  
+    }
   }
-	
+
 	private byte[] cleanMetadata(File origin) throws Exception {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	  ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PdfReader reader = new PdfReader(origin.getAbsolutePath());
     PdfStamper stamp = new PdfStamper(reader, baos);
     stamp.cleanMetadata();
     stamp.close();
     return baos.toByteArray();
-  }
+	}
 
 	private byte[] addWatermark(File origin, boolean encrypt, HashMap<String, String> moreInfo) throws Exception {
 		int text_angle = 45;
@@ -203,19 +217,5 @@ public class CleanMetaDataTest {
 
 		return baos.toByteArray();
 	}
-	
-	
-  
-  private HashMap<String, String> createCleanerMoreInfo() {
-    HashMap<String, String> moreInfo = new HashMap<String, String>();
-    moreInfo.put("Title", null);
-    moreInfo.put("Author", null);
-    moreInfo.put("Subject", null);
-    moreInfo.put("Producer", null);
-    moreInfo.put("Keywords", null);
-    moreInfo.put("Creator", null);
-    moreInfo.put("ModDate",null);
-    return moreInfo;
-  }
 
 }

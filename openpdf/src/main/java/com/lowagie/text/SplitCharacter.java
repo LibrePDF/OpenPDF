@@ -64,7 +64,7 @@ public interface SplitCharacter {
      * <p>
      * The default implementation is:
      * <p>
-     * <pre>
+     * <pre>{@code
      * public boolean isSplitCharacter(int start, int current, int end, char[] cc, PdfChunk[] ck) {
      *    char c;
      *    if (ck == null)
@@ -81,7 +81,7 @@ public interface SplitCharacter {
      *    || (c >= 0xfe30 && c < 0xfe50)
      *    || (c >= 0xff61 && c < 0xffa0));
      * }
-     * </pre>
+     * }</pre>
      * @param start the lower limit of <CODE>cc</CODE> inclusive
      * @param current the pointer to the character in <CODE>cc</CODE>
      * @param end the upper limit of <CODE>cc</CODE> exclusive

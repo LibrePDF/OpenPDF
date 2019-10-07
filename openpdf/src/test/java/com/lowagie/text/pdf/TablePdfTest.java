@@ -9,7 +9,7 @@ public class TablePdfTest {
 
     @Test
     void testTableSpacingPercentage() throws Exception {
-        Document document = PdfTestBase.createPdf("testTableSpacingPercentage.pdf");
+        Document document = PdfTestBase.createTempPdf("testTableSpacingPercentage.pdf");
         document.setMargins(72, 72, 72, 72);
         document.open();
         PdfPTable table = new PdfPTable(1);
@@ -30,7 +30,7 @@ public class TablePdfTest {
     @Test
     void testTableArrayOutOfBoundsSpan() throws Exception {
         Document document = PdfTestBase
-                .createPdf("testTableArrayOutOfBoundsSpan.pdf");
+                .createTempPdf("testTableArrayOutOfBoundsSpan.pdf");
         document.open();
         PdfPTable table = new PdfPTable(2);
         table.setComplete(false);
@@ -84,7 +84,7 @@ public class TablePdfTest {
     @Test
     void testCreateTable() throws Exception {
         // create document
-        Document document = PdfTestBase.createPdf("testCreateTable.pdf");
+        Document document = PdfTestBase.createTempPdf("testCreateTable.pdf");
         try {
             // new page with a table
             document.open();

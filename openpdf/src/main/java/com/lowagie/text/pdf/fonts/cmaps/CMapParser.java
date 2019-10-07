@@ -217,7 +217,7 @@ public class CMapParser
             }
             case '[':
             {
-                List list = new ArrayList();
+                List<Object> list = new ArrayList<>();
                 
                 Object nextToken = parseNextToken( is ); 
                 while( nextToken != MARK_END_OF_ARRAY )
@@ -233,7 +233,7 @@ public class CMapParser
                 int theNextByte = is.read();
                 if( theNextByte == '<' )
                 {
-                    Map result = new HashMap();
+                    Map<String, Object> result = new HashMap<>();
                     //we are reading a dictionary
                     Object key = parseNextToken( is ); 
                     while( key instanceof LiteralName && key != MARK_END_OF_DICTIONARY )
@@ -286,7 +286,7 @@ public class CMapParser
                         {
                             multiplyer = 16;
                         }
-                        tokenParserByteBuffer[bufferIndex]+= intValue;
+                        tokenParserByteBuffer[bufferIndex]+= (byte) intValue;
                         theNextByte = is.read();
                     }
                     byte[] finalResult = new byte[bufferIndex+1];
@@ -339,7 +339,7 @@ public class CMapParser
                 String value = buffer.toString();
                 if( value.indexOf( '.' ) >=0 )
                 {
-                    retval = new Double( value );
+                    retval = Double.valueOf( value );
                 }
                 else
                 {

@@ -320,8 +320,8 @@ public class Chunk implements Element {
      * 
      * @return an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
-        ArrayList tmp = new ArrayList();
+    public ArrayList<Element> getChunks() {
+        ArrayList<Element> tmp = new ArrayList<>();
         tmp.add(this);
         return tmp;
     }
@@ -447,6 +447,7 @@ public class Chunk implements Element {
      * @deprecated use {@link #setChunkAttributes(Map)}
      */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void setAttributes(HashMap attributes) {
         this.attributes = attributes;
     }

@@ -58,7 +58,7 @@ public class UsingFontFactory {
             Paragraph p = new Paragraph("Font Families", FontFactory.getFont(FontFactory.HELVETICA, 16f));
             document.add(p);
             FontFactory.registerDirectories();
-            TreeSet families = new TreeSet(FontFactory.getRegisteredFamilies());
+            TreeSet<String> families = new TreeSet<>(FontFactory.getRegisteredFamilies());
             int c = 0;
             for (Iterator i = families.iterator(); i.hasNext() && c < 15; ) {
                 name = (String) i.next();

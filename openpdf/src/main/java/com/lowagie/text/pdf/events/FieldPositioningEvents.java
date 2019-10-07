@@ -48,6 +48,8 @@ package com.lowagie.text.pdf.events;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
@@ -73,7 +75,7 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
     /**
      * Keeps a map with fields that are to be positioned in inGenericTag.
      */
-    protected HashMap genericChunkFields = new HashMap();
+    protected Map<String, PdfFormField> genericChunkFields = new HashMap<>();
 
     /**
      * Keeps the form field that is to be positioned in a cellLayout event.
@@ -153,7 +155,7 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
     public void onGenericTag(PdfWriter writer, Document document,
             Rectangle rect, String text) {
         rect.setBottom(rect.getBottom() - 3);
-        PdfFormField field = (PdfFormField) genericChunkFields.get(text);
+        PdfFormField field = genericChunkFields.get(text);
         if (field == null) {
             TextField tf = new TextField(writer, new Rectangle(rect.getLeft(padding), rect.getBottom(padding), rect.getRight(padding), rect.getTop(padding)), text);
             tf.setFontSize(14);

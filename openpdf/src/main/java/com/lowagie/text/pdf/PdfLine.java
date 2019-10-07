@@ -66,7 +66,7 @@ public class PdfLine {
     // membervariables
     
     /** The arraylist containing the chunks. */
-    protected ArrayList line;
+    protected ArrayList<PdfChunk> line;
     
     /** The left indentation of the line. */
     protected float left;
@@ -111,7 +111,7 @@ public class PdfLine {
         this.originalWidth = this.width;
         this.alignment = alignment;
         this.height = height;
-        this.line = new ArrayList();
+        this.line = new ArrayList<>();
     }
     
     /**
@@ -124,7 +124,7 @@ public class PdfLine {
      * @param line                an array of PdfChunk objects
      * @param isRTL                do you have to read the line from Right to Left?
      */
-    PdfLine(float left, float originalWidth, float remainingWidth, int alignment, boolean newlineSplit, ArrayList line, boolean isRTL) {
+    PdfLine(float left, float originalWidth, float remainingWidth, int alignment, boolean newlineSplit, ArrayList<PdfChunk> line, boolean isRTL) {
         this.left = left;
         this.originalWidth = originalWidth;
         this.width = remainingWidth;
@@ -192,7 +192,7 @@ public class PdfLine {
             }
         }
         else {
-            width += ((PdfChunk)(line.get(line.size() - 1))).trimLastSpace();
+            width += line.get(line.size() - 1).trimLastSpace();
         }
         return overflow;
     }
@@ -397,7 +397,7 @@ public class PdfLine {
     public int getLastStrokeChunk() {
         int lastIdx = line.size() - 1;
         for (; lastIdx >= 0; --lastIdx) {
-            PdfChunk chunk = (PdfChunk)line.get(lastIdx);
+            PdfChunk chunk = line.get(lastIdx);
             if (chunk.isStroked())
                 break;
         }
@@ -412,7 +412,7 @@ public class PdfLine {
     public PdfChunk getChunk(int idx) {
         if (idx < 0 || idx >= line.size())
             return null;
-        return (PdfChunk)line.get(idx);
+        return line.get(idx);
     }
     
     /**
@@ -422,26 +422,7 @@ public class PdfLine {
     public float getOriginalWidth() {
         return originalWidth;
     }
-    
-    /*
-     * Gets the maximum size of all the fonts used in this line
-     * including images.
-     * @return maximum size of all the fonts used in this line
-     float getMaxSizeSimple() {
-        float maxSize = 0;
-        PdfChunk chunk;
-        for (int k = 0; k < line.size(); ++k) {
-            chunk = (PdfChunk)line.get(k);
-            if (!chunk.isImage()) {
-                maxSize = Math.max(chunk.font().size(), maxSize);
-            }
-            else {
-                maxSize = Math.max(chunk.getImage().getScaledHeight() + chunk.getImageOffsetY() , maxSize);
-            }
-        }
-        return maxSize;
-    }*/
-    
+
     /**
      * Gets the difference between the "normal" leading and the maximum
      * size (for instance when there are images in the chunk).

@@ -22,13 +22,14 @@ public class BouncyCastleHelper {
     public static void checkCertificateEncodingOrThrowException(Certificate certificate) {
         // OJO...
         try {
-            X509CertificateHolder certificateHolder = new X509CertificateHolder(certificate.getEncoded());
+            new X509CertificateHolder(certificate.getEncoded());
         } catch (CertificateEncodingException | IOException f) {
             throw new ExceptionConverter(f);
         }
         // ******************************************************************************
     }
 
+    @SuppressWarnings("unchecked")
     public static byte[] getEnvelopedData(PdfArray recipients, List<PdfObject> strings, Certificate certificate, Key certificateKey, String certificateKeyProvider) {
         byte[] envelopedData = null;
         for (PdfObject recipient : recipients.getElements()) {

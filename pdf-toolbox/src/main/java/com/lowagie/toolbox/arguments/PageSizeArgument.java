@@ -38,7 +38,6 @@ package com.lowagie.toolbox.arguments;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
 import java.util.TreeMap;
-
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
@@ -51,7 +50,7 @@ import com.lowagie.toolbox.AbstractTool;
  */
 public class PageSizeArgument extends OptionArgument {
 
-    private TreeMap<Object, Object> options = new TreeMap<>();
+    private TreeMap<String, String> options = new TreeMap<>();
 
     /**
      * Constructs an OptionArgument.
@@ -81,7 +80,7 @@ public class PageSizeArgument extends OptionArgument {
      * @param description the description of the option
      * @param value the value of the option
      */
-    public void addOption(Object description, Object value) {
+    public void addOption(String description, String value) {
         options.put(description, value);
     }
 
@@ -89,7 +88,7 @@ public class PageSizeArgument extends OptionArgument {
      * Gets the options.
      * @return Returns the options.
      */
-    public TreeMap<Object, Object> getOptions() {
+    public TreeMap<String, String> getOptions() {
         return options;
     }
 
@@ -139,8 +138,8 @@ public class PageSizeArgument extends OptionArgument {
     public void actionPerformed(ActionEvent evt) {
         Object[] message = new Object[2];
         message[0] = "Choose one of the following pagesizes:";
-        JComboBox cb = new JComboBox();
-        for (Object o : options.keySet()) {
+        JComboBox<String> cb = new JComboBox<>();
+        for (String o : options.keySet()) {
             cb.addItem(o);
         }
         message[1] = cb;

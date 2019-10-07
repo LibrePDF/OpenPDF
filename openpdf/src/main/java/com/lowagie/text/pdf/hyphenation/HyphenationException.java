@@ -17,7 +17,7 @@
 package com.lowagie.text.pdf.hyphenation;
 
 /**
- * @author Carlos Villegas <cav@uniscope.co.jp>
+ * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
 public class HyphenationException extends Exception {
 

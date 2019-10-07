@@ -51,9 +51,9 @@ package com.lowagie.text.pdf;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import com.lowagie.text.error_messages.MessageLocalization;
+import java.util.List;
 
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.collection.PdfTargetDictionary;
 
 /**
@@ -553,8 +553,8 @@ public class PdfAction extends PdfDictionary {
      * group are turned OFF. If a group is set to OFF, there is no effect on other groups.<br>
      * If <CODE>false</CODE>, radio-button state relationships, if any, are ignored
      * @return the action
-     */    
-    public static PdfAction setOCGstate(ArrayList state, boolean preserveRB) {
+     */
+    public static PdfAction setOCGstate(List<Object> state, boolean preserveRB) {
         PdfAction action = new PdfAction();
         action.put(PdfName.S, PdfName.SETOCGSTATE);
         PdfArray a = new PdfArray();

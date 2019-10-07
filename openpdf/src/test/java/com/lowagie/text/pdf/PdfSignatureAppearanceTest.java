@@ -9,11 +9,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.HashMap;
-
-import com.lowagie.text.Utilities;
+import java.util.Map;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.Utilities;
 import org.junit.jupiter.api.Test;
 
 public class PdfSignatureAppearanceTest {
@@ -46,7 +46,7 @@ public class PdfSignatureAppearanceTest {
                 sap.setCertificationLevel(2);
                 sap.setReason("Test");
 
-                HashMap exc = new HashMap();
+                Map<PdfName, Integer> exc = new HashMap<>();
                 exc.put(PdfName.CONTENTS, 10);
                 sap.preClose(exc);
 
@@ -99,7 +99,7 @@ public class PdfSignatureAppearanceTest {
                 sap.setVisibleSignature(new Rectangle(100, 100), 1);
                 sap.setLayer2Text("Hello world");
 
-                HashMap exc = new HashMap();
+                Map<PdfName, Integer> exc = new HashMap<>();
                 exc.put(PdfName.CONTENTS, 10);
                 sap.preClose(exc);
 

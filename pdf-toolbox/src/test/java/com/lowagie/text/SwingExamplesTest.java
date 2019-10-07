@@ -1,11 +1,10 @@
 package com.lowagie.text;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
+import com.lowagie.examples.objects.tables.alternatives.JTable2Pdf;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Method;
-
-import static org.junit.jupiter.api.Assertions.fail;
 
 @Disabled  //ignored until we can fix headless GUI on Travis CI.
 class SwingExamplesTest {
@@ -14,20 +13,18 @@ class SwingExamplesTest {
         SwingExamplesTest r = new SwingExamplesTest();
         r.testJTable2Pdf();
     }
-    
-    void runSingleTest(Class c, String... args) {
+
+    void runSingleTest(String... args) {
         try {
-            Method m = c.getMethod("main", String[].class);
-            m.invoke(null, new Object[] {args});
+            JTable2Pdf.main(args);
         } catch (Exception e) {
-            e.printStackTrace();
-            fail("Test " + c.getName() + " failed: " + e.getCause());
+            fail("Test " + JTable2Pdf.class.getName() + " failed: " + e.getCause());
         }
     }
 
     @Test
     void testJTable2Pdf() {
-        runSingleTest(com.lowagie.examples.objects.tables.alternatives.JTable2Pdf.class);
+        runSingleTest();
     }
 
 }

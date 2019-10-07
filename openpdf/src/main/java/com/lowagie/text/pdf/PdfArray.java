@@ -135,7 +135,7 @@ public class PdfArray extends PdfObject {
      *            added to the array
      * @since 2.1.3
      */
-    public PdfArray(List<PdfObject> pdfObjectList) {
+    public PdfArray(List<? extends PdfObject> pdfObjectList) {
         this();
         if (pdfObjectList != null) {
             arrayList.addAll(pdfObjectList);
