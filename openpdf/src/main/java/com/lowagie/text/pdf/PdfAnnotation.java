@@ -297,7 +297,7 @@ public class PdfAnnotation extends PdfDictionary {
       annot.put(PdfName.CONTENTS, new PdfString(contents, PdfObject.TEXT_UNICODE));
     }
     if (open) {
-      annot.put(PdfName.OPEN, PdfBoolean.PDFTRUE);
+      annot.put(PdfName.OPEN, PdfBoolean.TRUE);
     }
     if (icon != null) {
       annot.put(PdfName.NAME, new PdfName(icon));
@@ -502,7 +502,7 @@ public class PdfAnnotation extends PdfDictionary {
       annot.put(PdfName.CONTENTS, new PdfString(contents, PdfObject.TEXT_UNICODE));
     }
     if (open) {
-      annot.put(PdfName.OPEN, PdfBoolean.PDFTRUE);
+      annot.put(PdfName.OPEN, PdfBoolean.TRUE);
     }
     return annot;
   }
@@ -796,7 +796,7 @@ public class PdfAnnotation extends PdfDictionary {
       dic.put(PdfName.A, array);
     }
     if (fitInBounds) {
-      dic.put(PdfName.FB, PdfBoolean.PDFTRUE);
+      dic.put(PdfName.FB, PdfBoolean.TRUE);
     }
     getMK().put(PdfName.IF, dic);
   }

@@ -288,7 +288,7 @@ public class PdfFileSpecification extends PdfDictionary {
      * @param volatile_file    if true, the external file should not be cached
      */
     public void setVolatile(boolean volatile_file) {
-        put(PdfName.V, new PdfBoolean(volatile_file));
+        put(PdfName.V, PdfBoolean.fromValue(volatile_file));
     }
     
     /**

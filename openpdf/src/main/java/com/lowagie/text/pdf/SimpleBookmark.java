@@ -496,10 +496,11 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
                     dic.put(PdfName.F, new PdfString(file));
                     String nw = (String)map.get("NewWindow");
                     if (nw != null) {
-                        if (nw.equals("true"))
-                            dic.put(PdfName.NEWWINDOW, PdfBoolean.PDFTRUE);
-                        else if (nw.equals("false"))
-                            dic.put(PdfName.NEWWINDOW, PdfBoolean.PDFFALSE);
+                        if (nw.equals("true")) {
+                            dic.put(PdfName.NEWWINDOW, PdfBoolean.TRUE);
+                        } else if (nw.equals("false")) {
+                            dic.put(PdfName.NEWWINDOW, PdfBoolean.FALSE);
+                        }
                     }
                     outline.put(PdfName.A, dic);
                 }

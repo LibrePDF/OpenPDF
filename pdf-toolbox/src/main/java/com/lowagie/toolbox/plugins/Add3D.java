@@ -206,7 +206,7 @@ public class Add3D extends AbstractTool {
             annot.put(PdfName.TYPE, PdfName.ANNOT);
             annot.put(new PdfName(PDF_NAME_3DD), streamRef); // Reference to stream object
             annot.put(new PdfName(PDF_NAME_3DV), objRef.getIndirectReference()); // Reference to view dictionary object
-            annot.put(new PdfName("3DI"), PdfBoolean.PDFFALSE);
+            annot.put(new PdfName("3DI"), PdfBoolean.FALSE);
 
             PdfDictionary adi = new PdfDictionary();
             adi.put(PdfName.A, new PdfName("PO"));

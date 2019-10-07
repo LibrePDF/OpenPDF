@@ -12,7 +12,7 @@ class PdfNameTreeTest {
   void shouldReadTree() {
 
     PdfDictionary pdfDictionary = new PdfDictionary(PdfName.PDF);
-    final PdfBoolean pdfBoolean = new PdfBoolean(true);
+    final PdfBoolean pdfBoolean = PdfBoolean.TRUE;
     final String keyName = "test";
     pdfDictionary.put(PdfName.NAMES, new PdfArray(Arrays.asList(new PdfString(keyName), pdfBoolean)));
 

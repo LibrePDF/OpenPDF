@@ -87,7 +87,7 @@ public class PdfCollectionField extends PdfDictionary {
      * @param visible    the default is true (visible)
      */
     public void setVisible(boolean visible) {
-        put(PdfName.V, new PdfBoolean(visible));
+        put(PdfName.V, PdfBoolean.fromValue(visible));
     }
     
     /**
@@ -95,7 +95,7 @@ public class PdfCollectionField extends PdfDictionary {
      * @param editable    the default is false (not editable)
      */
     public void setEditable(boolean editable) {
-        put(PdfName.E, new PdfBoolean(editable));
+        put(PdfName.E, PdfBoolean.fromValue(editable));
     }
 
     /**

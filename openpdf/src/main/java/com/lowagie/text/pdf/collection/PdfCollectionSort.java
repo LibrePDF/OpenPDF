@@ -38,7 +38,7 @@ public class PdfCollectionSort extends PdfDictionary {
     public void setSortOrder(boolean ascending) {
         PdfObject o = get(PdfName.S);
         if (o instanceof PdfName) {
-            put(PdfName.A, new PdfBoolean(ascending));
+            put(PdfName.A, PdfBoolean.fromValue(ascending));
         }
         else {
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("you.have.to.define.a.boolean.array.for.this.collection.sort.dictionary"));
@@ -57,7 +57,7 @@ public class PdfCollectionSort extends PdfDictionary {
             }
             PdfArray array = new PdfArray();
             for (boolean b : ascending) {
-                array.add(new PdfBoolean(b));
+                array.add(PdfBoolean.fromValue(b));
             }
             put(PdfName.A, array);
         }

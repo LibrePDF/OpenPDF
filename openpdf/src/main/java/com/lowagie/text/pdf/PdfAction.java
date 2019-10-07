@@ -155,8 +155,9 @@ public class PdfAction extends PdfDictionary {
     public PdfAction(String url, boolean isMap) {
         put(PdfName.S, PdfName.URI);
         put(PdfName.URI, new PdfString(url));
-        if (isMap)
-            put(PdfName.ISMAP, PdfBoolean.PDFTRUE);
+        if (isMap) {
+            put(PdfName.ISMAP, PdfBoolean.TRUE);
+        }
     }
     
     /**
@@ -334,8 +335,10 @@ public class PdfAction extends PdfDictionary {
         PdfAction action = new PdfAction();
         action.put(PdfName.S, PdfName.HIDE);
         action.put(PdfName.T, obj);
-        if (!hide)
-            action.put(PdfName.H, PdfBoolean.PDFFALSE);
+        if (!hide) {
+            action.put(PdfName.H, PdfBoolean.FALSE);
+        }
+
         return action;
     }
     
@@ -493,8 +496,10 @@ public class PdfAction extends PdfDictionary {
             action.put(PdfName.D, new PdfName(dest));
         else
             action.put(PdfName.D, new PdfString(dest, null));
-        if (newWindow)
-            action.put(PdfName.NEWWINDOW, PdfBoolean.PDFTRUE);
+        if (newWindow) {
+            action.put(PdfName.NEWWINDOW, PdfBoolean.TRUE);
+        }
+
         return action;
     }
 
@@ -525,7 +530,7 @@ public class PdfAction extends PdfDictionary {
         action.put(PdfName.S, PdfName.GOTOE);
         action.put(PdfName.T, target);
         action.put(PdfName.D, dest);
-        action.put(PdfName.NEWWINDOW, new PdfBoolean(newWindow));
+        action.put(PdfName.NEWWINDOW, PdfBoolean.fromValue(newWindow));
         if (filename != null) {
             action.put(PdfName.F, new PdfString(filename));
         }
@@ -583,8 +588,10 @@ public class PdfAction extends PdfDictionary {
                 throw new IllegalArgumentException(MessageLocalization.getComposedMessage("invalid.type.was.passed.in.state.1", o.getClass().getName()));
         }
         action.put(PdfName.STATE, a);
-        if (!preserveRB)
-            action.put(PdfName.PRESERVERB, PdfBoolean.PDFFALSE);
+        if (!preserveRB) {
+            action.put(PdfName.PRESERVERB, PdfBoolean.FALSE);
+        }
+
         return action;
     }
 }

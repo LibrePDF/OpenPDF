@@ -153,19 +153,30 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
         // to set the following viewer preferences with this method:
         if ((preferences & viewerPreferencesMask) != 0) {
             pageLayoutAndMode = ~viewerPreferencesMask & pageLayoutAndMode;
-            if ((preferences & PdfWriter.HideToolbar) != 0)
-                viewerPreferences.put(PdfName.HIDETOOLBAR, PdfBoolean.PDFTRUE);
-            if ((preferences & PdfWriter.HideMenubar) != 0)
-                viewerPreferences.put(PdfName.HIDEMENUBAR, PdfBoolean.PDFTRUE);
-            if ((preferences & PdfWriter.HideWindowUI) != 0)
-                viewerPreferences.put(PdfName.HIDEWINDOWUI, PdfBoolean.PDFTRUE);
-            if ((preferences & PdfWriter.FitWindow) != 0)
-                viewerPreferences.put(PdfName.FITWINDOW, PdfBoolean.PDFTRUE);
-            if ((preferences & PdfWriter.CenterWindow) != 0)
-                viewerPreferences.put(PdfName.CENTERWINDOW, PdfBoolean.PDFTRUE);
-            if ((preferences & PdfWriter.DisplayDocTitle) != 0)
-                viewerPreferences.put(PdfName.DISPLAYDOCTITLE, PdfBoolean.PDFTRUE);
-            
+            if ((preferences & PdfWriter.HideToolbar) != 0) {
+                viewerPreferences.put(PdfName.HIDETOOLBAR, PdfBoolean.TRUE);
+            }
+
+            if ((preferences & PdfWriter.HideMenubar) != 0) {
+                viewerPreferences.put(PdfName.HIDEMENUBAR, PdfBoolean.TRUE);
+            }
+
+            if ((preferences & PdfWriter.HideWindowUI) != 0) {
+                viewerPreferences.put(PdfName.HIDEWINDOWUI, PdfBoolean.TRUE);
+            }
+
+            if ((preferences & PdfWriter.FitWindow) != 0) {
+                viewerPreferences.put(PdfName.FITWINDOW, PdfBoolean.TRUE);
+            }
+
+            if ((preferences & PdfWriter.CenterWindow) != 0) {
+                viewerPreferences.put(PdfName.CENTERWINDOW, PdfBoolean.TRUE);
+            }
+
+            if ((preferences & PdfWriter.DisplayDocTitle) != 0) {
+                viewerPreferences.put(PdfName.DISPLAYDOCTITLE, PdfBoolean.TRUE);
+            }
+
             if ((preferences & PdfWriter.NonFullScreenPageModeUseNone) != 0)
                 viewerPreferences.put(PdfName.NONFULLSCREENPAGEMODE, PdfName.USENONE);
             else if ((preferences & PdfWriter.NonFullScreenPageModeUseOutlines) != 0)

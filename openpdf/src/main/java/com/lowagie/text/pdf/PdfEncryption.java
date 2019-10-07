@@ -454,8 +454,9 @@ public class PdfEncryption {
 
                 PdfDictionary stdcf = new PdfDictionary();
                 stdcf.put(PdfName.RECIPIENTS, recipients);
-                if (!encryptMetadata)
-                    stdcf.put(PdfName.ENCRYPTMETADATA, PdfBoolean.PDFFALSE);
+                if (!encryptMetadata) {
+                    stdcf.put(PdfName.ENCRYPTMETADATA, PdfBoolean.FALSE);
+                }
 
                 if (revision == AES_128)
                     stdcf.put(PdfName.CFM, PdfName.AESV2);
@@ -510,8 +511,10 @@ public class PdfEncryption {
                 dic.put(PdfName.LENGTH, new PdfNumber(128));
 
             } else {
-                if (!encryptMetadata)
-                    dic.put(PdfName.ENCRYPTMETADATA, PdfBoolean.PDFFALSE);
+                if (!encryptMetadata) {
+                    dic.put(PdfName.ENCRYPTMETADATA, PdfBoolean.FALSE);
+                }
+
                 dic.put(PdfName.R, new PdfNumber(AES_128));
                 dic.put(PdfName.V, new PdfNumber(4));
                 dic.put(PdfName.LENGTH, new PdfNumber(128));

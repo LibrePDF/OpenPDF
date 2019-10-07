@@ -890,9 +890,11 @@ public class PdfWriter extends DocWriter implements
             }
             catalog.put(PdfName.STRUCTTREEROOT, structureTreeRoot.getReference());
             PdfDictionary mi = new PdfDictionary();
-            mi.put(PdfName.MARKED, PdfBoolean.PDFTRUE);
-            if (userProperties)
-                mi.put(PdfName.USERPROPERTIES, PdfBoolean.PDFTRUE);
+            mi.put(PdfName.MARKED, PdfBoolean.TRUE);
+            if (userProperties) {
+                mi.put(PdfName.USERPROPERTIES, PdfBoolean.FALSE);
+            }
+
             catalog.put(PdfName.MARKINFO, mi);
         }
         // [F13] OCG

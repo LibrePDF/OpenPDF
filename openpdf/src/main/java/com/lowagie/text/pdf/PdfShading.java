@@ -175,8 +175,8 @@ public class PdfShading {
             sp.shading.put(PdfName.DOMAIN, new PdfArray(domain));
         sp.shading.put(PdfName.FUNCTION, function.getReference());
         if (extend != null && (extend[0] || extend[1])) {
-            PdfArray array = new PdfArray(extend[0] ? PdfBoolean.PDFTRUE : PdfBoolean.PDFFALSE);
-            array.add(extend[1] ? PdfBoolean.PDFTRUE : PdfBoolean.PDFFALSE);
+            PdfArray array = new PdfArray(PdfBoolean.fromValue(extend[0]));
+            array.add(PdfBoolean.fromValue(extend[1]));
             sp.shading.put(PdfName.EXTEND, array);
         }
         return sp;
@@ -228,8 +228,10 @@ public class PdfShading {
     void addToBody() throws IOException {
         if (bBox != null)
             shading.put(PdfName.BBOX, new PdfArray(bBox));
-        if (antiAlias)
-            shading.put(PdfName.ANTIALIAS, PdfBoolean.PDFTRUE);
+        if (antiAlias) {
+            shading.put(PdfName.ANTIALIAS, PdfBoolean.TRUE);
+        }
+
         writer.addToBody(shading, getShadingReference());
     }
     

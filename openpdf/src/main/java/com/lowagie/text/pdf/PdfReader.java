@@ -927,7 +927,6 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             obj = new PdfNull();
             break;
           case PdfObject.BOOLEAN:
-            obj = new PdfBoolean(((PdfBoolean) obj).booleanValue());
             break;
           case PdfObject.NAME:
             obj = new PdfName(obj.getBytes());
@@ -972,7 +971,6 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           obj = new PdfNull();
           break;
         case PdfObject.BOOLEAN:
-          obj = new PdfBoolean(((PdfBoolean) obj).booleanValue());
           break;
         case PdfObject.NAME:
           obj = new PdfName(obj.getBytes());
@@ -1755,15 +1753,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         } // else
         return PdfNull.PDFNULL;
       } else if ("true".equals(sv)) {
-        if (readDepth == 0) {
-          return new PdfBoolean(true);
-        } // else
-        return PdfBoolean.PDFTRUE;
+        return PdfBoolean.TRUE;
       } else if ("false".equals(sv)) {
-        if (readDepth == 0) {
-          return new PdfBoolean(false);
-        } // else
-        return PdfBoolean.PDFFALSE;
+        return PdfBoolean.FALSE;
       }
       return new PdfLiteral(-type, tokens.getStringValue());
     }

@@ -65,10 +65,11 @@ public class PdfTransparencyGroup extends PdfDictionary {
      * @param isolated
      */
     public void setIsolated(boolean isolated) {
-        if (isolated)
-            put(PdfName.I, PdfBoolean.PDFTRUE);
-        else
+        if (isolated) {
+            put(PdfName.I, PdfBoolean.TRUE);
+        } else {
             remove(PdfName.I);
+        }
     }
     
     /**
@@ -76,10 +77,11 @@ public class PdfTransparencyGroup extends PdfDictionary {
      * @param knockout
      */
     public void setKnockout(boolean knockout) {
-        if (knockout)
-            put(PdfName.K, PdfBoolean.PDFTRUE);
-        else
+        if (knockout) {
+            put(PdfName.K, PdfBoolean.TRUE);
+        } else {
             remove(PdfName.K);
+        }
     }
 
 }

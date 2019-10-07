@@ -314,7 +314,8 @@ public class PdfCopy extends PdfWriter {
         if (in.type < 0) {
           String lit = in.toString();
           if (lit.equals("true") || lit.equals("false")) {
-            return new PdfBoolean(lit);
+            final boolean value = Boolean.parseBoolean(lit);
+            return PdfBoolean.fromValue(value);
           }
           return new PdfLiteral(lit);
         }

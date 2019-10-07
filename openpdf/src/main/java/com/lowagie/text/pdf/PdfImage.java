@@ -88,8 +88,10 @@ public class PdfImage extends PdfStream {
         put(PdfName.HEIGHT, new PdfNumber(image.getHeight()));
         if (image.getLayer() != null)
             put(PdfName.OC, image.getLayer().getRef());
-        if (image.isMask() && (image.getBpc() == 1 || image.getBpc() > 0xff))
-            put(PdfName.IMAGEMASK, PdfBoolean.PDFTRUE);
+        if (image.isMask() && (image.getBpc() == 1 || image.getBpc() > 0xff)) {
+            put(PdfName.IMAGEMASK, PdfBoolean.TRUE);
+        }
+
         if (maskRef != null) {
             if (image.isSmask())
                 put(PdfName.SMASK, maskRef);
@@ -98,8 +100,10 @@ public class PdfImage extends PdfStream {
         }
         if (image.isMask() && image.isInverted())
             put(PdfName.DECODE, new PdfLiteral("[1 0]"));
-        if (image.isInterpolation())
-            put(PdfName.INTERPOLATE, PdfBoolean.PDFTRUE);
+        if (image.isInterpolation()) {
+            put(PdfName.INTERPOLATE, PdfBoolean.TRUE);
+        }
+
         InputStream is = null;
         try {
             // Raw Image data
@@ -125,14 +129,22 @@ public class PdfImage extends PdfStream {
                     PdfDictionary decodeparms = new PdfDictionary();
                     if (k != 0)
                         decodeparms.put(PdfName.K, new PdfNumber(k));
-                    if ((colorspace & Image.CCITT_BLACKIS1) != 0)
-                        decodeparms.put(PdfName.BLACKIS1, PdfBoolean.PDFTRUE);
-                    if ((colorspace & Image.CCITT_ENCODEDBYTEALIGN) != 0)
-                        decodeparms.put(PdfName.ENCODEDBYTEALIGN, PdfBoolean.PDFTRUE);
-                    if ((colorspace & Image.CCITT_ENDOFLINE) != 0)
-                        decodeparms.put(PdfName.ENDOFLINE, PdfBoolean.PDFTRUE);
-                    if ((colorspace & Image.CCITT_ENDOFBLOCK) != 0)
-                        decodeparms.put(PdfName.ENDOFBLOCK, PdfBoolean.PDFFALSE);
+                    if ((colorspace & Image.CCITT_BLACKIS1) != 0) {
+                        decodeparms.put(PdfName.BLACKIS1, PdfBoolean.TRUE);
+                    }
+
+                    if ((colorspace & Image.CCITT_ENCODEDBYTEALIGN) != 0) {
+                        decodeparms.put(PdfName.ENCODEDBYTEALIGN, PdfBoolean.TRUE);
+                    }
+
+                    if ((colorspace & Image.CCITT_ENDOFLINE) != 0) {
+                        decodeparms.put(PdfName.ENDOFLINE, PdfBoolean.TRUE);
+                    }
+
+                    if ((colorspace & Image.CCITT_ENDOFBLOCK) != 0) {
+                        decodeparms.put(PdfName.ENDOFBLOCK, PdfBoolean.FALSE);
+                    }
+
                     decodeparms.put(PdfName.COLUMNS, new PdfNumber(image.getWidth()));
                     decodeparms.put(PdfName.ROWS, new PdfNumber(image.getHeight()));
                     put(PdfName.DECODEPARMS, decodeparms);

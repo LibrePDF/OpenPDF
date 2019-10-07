@@ -85,7 +85,7 @@ public class PdfAcroForm extends PdfDictionary {
     }
     
     public void setNeedAppearances(boolean value) {
-        put(PdfName.NEEDAPPEARANCES, new PdfBoolean(value));
+        put(PdfName.NEEDAPPEARANCES, PdfBoolean.fromValue(value));
     }
 
     /**

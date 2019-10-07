@@ -1799,7 +1799,7 @@ public class AcroFields {
     if (generateAppearances) {
       top.remove(PdfName.NEEDAPPEARANCES);
     } else {
-      top.put(PdfName.NEEDAPPEARANCES, PdfBoolean.PDFTRUE);
+      top.put(PdfName.NEEDAPPEARANCES, PdfBoolean.TRUE);
     }
   }
 

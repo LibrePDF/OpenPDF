@@ -83,7 +83,7 @@ public class PdfGState extends PdfDictionary {
      * @param ov
      */
     public void setOverPrintStroking(boolean ov) {
-        put(PdfName.OP, ov ? PdfBoolean.PDFTRUE : PdfBoolean.PDFFALSE);
+        put(PdfName.OP, PdfBoolean.fromValue(ov));
     }
 
     /**
@@ -91,7 +91,7 @@ public class PdfGState extends PdfDictionary {
      * @param ov
      */
     public void setOverPrintNonStroking(boolean ov) {
-        put(PdfName.op, ov ? PdfBoolean.PDFTRUE : PdfBoolean.PDFFALSE);
+        put(PdfName.op, PdfBoolean.fromValue(ov));
     }
 
     /**
@@ -129,7 +129,7 @@ public class PdfGState extends PdfDictionary {
      * @param v
      */
     public void setAlphaIsShape(boolean v) {
-        put(PdfName.AIS, v ? PdfBoolean.PDFTRUE : PdfBoolean.PDFFALSE);
+        put(PdfName.AIS, PdfBoolean.fromValue(v));
     }
     
     /**
@@ -138,7 +138,7 @@ public class PdfGState extends PdfDictionary {
      * @param v
      */
     public void setTextKnockout(boolean v) {
-        put(PdfName.TK, v ? PdfBoolean.PDFTRUE : PdfBoolean.PDFFALSE);
+        put(PdfName.TK, PdfBoolean.fromValue(v));
     }
     
     /**
