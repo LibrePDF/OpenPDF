@@ -1472,6 +1472,8 @@ public class PdfDocument extends Document {
                         tabPosition = tmp;
                     }
                     if (chunk.isAttribute(Chunk.BACKGROUND)) {
+                        graphics.saveState();
+
                         float subtract = lastBaseFactor;
                         if (nextChunk != null && nextChunk.isAttribute(Chunk.BACKGROUND))
                             subtract = 0;
@@ -1481,7 +1483,9 @@ public class PdfDocument extends Document {
                         float ascender = chunk.font().getFont().getFontDescriptor(BaseFont.ASCENT, fontSize);
                         float descender = chunk.font().getFont().getFontDescriptor(BaseFont.DESCENT, fontSize);
                         Object[] bgr = (Object[]) chunk.getAttribute(Chunk.BACKGROUND);
-                        graphics.setColorFill((Color)bgr[0]);
+
+                        graphics.setColorFill((ExtendedColor) bgr[0]);
+
                         float[] extra = (float[]) bgr[1];
                         graphics.rectangle(xMarker - extra[0],
                             yMarker + descender - extra[1] + chunk.getTextRise(),
@@ -1489,6 +1493,8 @@ public class PdfDocument extends Document {
                             ascender - descender + extra[1] + extra[3]);
                         graphics.fill();
                         graphics.setGrayFill(0);
+
+                        graphics.restoreState();
                     }
                     if (chunk.isAttribute(Chunk.UNDERLINE)) {
                         float subtract = lastBaseFactor;

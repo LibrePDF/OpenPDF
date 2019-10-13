@@ -113,8 +113,8 @@ public class PdfGState extends PdfDictionary {
     }
     
     /**
-     * Sets the current stroking alpha constant, specifying the constant shape or
-     * constant opacity value to be used for nonstroking operations in the transparent
+     * Sets the current fill alpha constant, specifying the constant shape or
+     * constant opacity value to be used for filling operations in the transparent
      * imaging model.
      * @param n
      */

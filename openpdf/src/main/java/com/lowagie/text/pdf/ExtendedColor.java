@@ -69,7 +69,13 @@ public abstract class ExtendedColor extends Color{
     public static final int TYPE_PATTERN = 4;
     /** a type of extended color. */
     public static final int TYPE_SHADING = 5;
-    
+    /** the max int color value (255) expressed in int */
+    public static final int MAX_COLOR_VALUE = 0xFF;
+    /** the max int color value (255) expressed in float */
+    public static final float MAX_INT_COLOR_VALUE = 0xFF;
+    /** the max float color value (1) expressed in float */
+    public static final float MAX_FLOAT_COLOR_VALUE = 0x1;
+
     protected int type;
 
     /**
@@ -89,10 +95,21 @@ public abstract class ExtendedColor extends Color{
      * @param blue
      */
     public ExtendedColor(int type, float red, float green, float blue) {
-        super(normalize(red), normalize(green), normalize(blue));
+        this(type, normalize(red), normalize(green), normalize(blue), MAX_FLOAT_COLOR_VALUE);
+    }
+
+    /**
+     * Constructs an extended color of a certain type and a certain color.
+     * @param type
+     * @param red
+     * @param green
+     * @param blue
+     */
+    public ExtendedColor(int type, float red, float green, float blue, float alpha) {
+        super(normalize(red), normalize(green), normalize(blue), normalize(alpha));
         this.type = type;
     }
-    
+
     /**
      * Gets the type of this color.
      * @return one of the types (see constants)
@@ -113,10 +130,18 @@ public abstract class ExtendedColor extends Color{
     }
 
     static final float normalize(float value) {
+        if (value < 0f)
+            return 0f;
+        if (value > MAX_FLOAT_COLOR_VALUE)
+            return MAX_FLOAT_COLOR_VALUE;
+        return value;
+    }
+
+    static final int normalize(int value) {
         if (value < 0)
             return 0;
-        if (value > 1)
-            return 1;
+        if (value > (int)MAX_INT_COLOR_VALUE)
+            return (int)MAX_INT_COLOR_VALUE;
         return value;
     }
 }
