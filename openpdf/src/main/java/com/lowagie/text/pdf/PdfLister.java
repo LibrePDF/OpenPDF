@@ -53,6 +53,8 @@
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
+
 /**
  * List a PDF file in human-readable form (for debugging reasons mostly)
  * @author Mark Thompson
@@ -118,7 +120,10 @@ public class PdfLister {
     public void listArray(PdfArray array)
     {
         out.println('[');
-        array.getElements().forEach(this::listAnyObject);
+        final List<PdfObject> elements = array.getElements();
+        for (PdfObject element : elements) {
+           this.listAnyObject(element);
+        }
         out.println(']');
     }
     /**

@@ -50,6 +50,9 @@
 
 package com.lowagie.text.html.simpleparser;
 
+import static com.lowagie.text.html.Markup.parseLength;
+
+import com.lowagie.compatibility.Java8to7Layer;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
@@ -69,11 +72,8 @@ import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.draw.LineSeparator;
-import com.lowagie.text.utils.NumberUtilities;
 import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
 import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
-
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -83,8 +83,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
-
-import static com.lowagie.text.html.Markup.parseLength;
+import javax.annotation.Nullable;
 
 public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
@@ -187,7 +186,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
     public void endDocument() {
         try {
-            stack.forEach(o -> document.add((Element) o));
+            Java8to7Layer.addStackContentToDocument(stack, document);
             if (currentParagraph != null) {
                 document.add(currentParagraph);
             }
@@ -337,13 +336,15 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 String width = style.get("width");
                 String height = style.get("height");
 
-                cprops.findProperty("before")
-                        .flatMap(NumberUtilities::parseFloat)
-                        .ifPresent(img::setSpacingBefore);
+                final Float before = cprops.findFloatProperty("before");
+                if (before != null) {
+                    img.setSpacingBefore(before);
+                }
 
-                cprops.findProperty("after")
-                        .flatMap(NumberUtilities::parseFloat)
-                        .ifPresent(img::setSpacingAfter);
+                final Float after = cprops.findFloatProperty("after");
+                if (after != null) {
+                    img.setSpacingAfter(after);
+                }
 
                 float actualFontSize = parseLength(cprops.getProperty(ElementTags.SIZE), Markup.DEFAULT_FONT_SIZE);
 
@@ -507,13 +508,14 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                         skip = i.process(currentParagraph, cprops);
                 }
                 if (!skip) {
-                    cprops.findProperty("href").ifPresent(href -> {
+                    final String href = cprops.findProperty("href");
+                    if (href != null) {
                         List<Element> chunks = currentParagraph.getChunks();
                         for (Element chunk : chunks) {
                             Chunk ck = (Chunk) chunk;
                             ck.setAnchor(href);
                         }
-                    });
+                    }
                 }
                 Paragraph tmp = (Paragraph) stack.pop();
                 Phrase tmp2 = new Phrase();

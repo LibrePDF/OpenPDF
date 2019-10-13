@@ -1,7 +1,6 @@
 package com.lowagie.text.alignment;
 
 import com.lowagie.text.Element;
-import java.util.Optional;
 
 /**
  * Represents a possible horizontal alignment modes for document elements that can be aligned horizontally.
@@ -40,17 +39,16 @@ public enum HorizontalAlignment {
     * @see Element#ALIGN_RIGHT
     * @see Element#ALIGN_JUSTIFIED
     * @see Element#ALIGN_JUSTIFIED_ALL
-    * @return {@link Optional} containing alignment instance. If {@code id} is not recognized,
-    * {@link Optional#empty()} will be returned
+     * @return the instance or UNDEFINED if {@code id} is not recognized,
     */
-    public static Optional<HorizontalAlignment> of(final int id) {
+    public static HorizontalAlignment of(final int id) {
         for (final HorizontalAlignment alignment: values()) {
             if (alignment.id == id) {
-                return Optional.of(alignment);
+                return alignment;
             }
         }
 
-        return Optional.empty();
+        return UNDEFINED;
     }
 }
 

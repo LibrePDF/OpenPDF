@@ -14,18 +14,16 @@
 
 package com.lowagie.examples.objects.bookmarks;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPageLabels;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Demonstrates how pagelabels work.

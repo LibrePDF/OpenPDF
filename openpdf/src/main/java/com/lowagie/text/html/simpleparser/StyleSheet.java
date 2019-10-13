@@ -55,8 +55,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StyleSheet {
-    public HashMap classMap = new HashMap();
-    public HashMap tagMap = new HashMap();
+    private Map<String, Map<String, String>> classMap = new HashMap<>();
+    private Map<String, Map<String, String>> tagMap = new HashMap<>();
 
     @Deprecated
     public void applyStyle(String tag, HashMap props) {
@@ -64,7 +64,7 @@ public class StyleSheet {
     }
 
     public void applyStyle(String tag, Map<String, String> props) {
-        HashMap map = (HashMap) tagMap.get(tag.toLowerCase());
+        Map<String, String> map = tagMap.get(tag.toLowerCase());
         if (map != null) {
             Map<String, String> temp = new HashMap<>(map);
             temp.putAll(props);
@@ -73,7 +73,7 @@ public class StyleSheet {
         String cm = props.get(Markup.HTML_ATTR_CSS_CLASS);
         if (cm == null)
             return;
-        map = (HashMap) classMap.get(cm.toLowerCase());
+        map = classMap.get(cm.toLowerCase());
         if (map == null)
             return;
         props.remove(Markup.HTML_ATTR_CSS_CLASS);
@@ -88,8 +88,12 @@ public class StyleSheet {
 
     public void loadStyle(String style, String key, String value) {
         style = style.toLowerCase();
-        HashMap props = (HashMap) classMap.computeIfAbsent(style, k -> new HashMap<>());
-        props.put(key, value);
+        Map<String, String> map = classMap.get(style);
+        if (map == null) {
+            map = new HashMap<>();
+            classMap.put(key, map);
+        }
+        map.put(key, value);
     }
 
     public void loadTagStyle(String tag, Map<String, String> props) {
@@ -98,8 +102,12 @@ public class StyleSheet {
 
     public void loadTagStyle(String tag, String key, String value) {
         tag = tag.toLowerCase();
-        Map<String, String> props = (Map<String, String>) tagMap.computeIfAbsent(tag, k -> new HashMap<>());
-        props.put(key, value);
+        Map<String, String> map = tagMap.get(tag);
+        if (map == null) {
+            map = new HashMap<>();
+            tagMap.put(key, map);
+        }
+        map.put(key, value);
     }
 
 }

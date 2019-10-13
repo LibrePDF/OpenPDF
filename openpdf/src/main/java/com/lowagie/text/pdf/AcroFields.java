@@ -46,22 +46,22 @@
  */
 package com.lowagie.text.pdf;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
+import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.bouncycastle.util.encoders.Base64;
 import org.w3c.dom.Node;
 
 /**
@@ -1435,7 +1435,7 @@ public class AcroFields {
         //we'll assume that the value is an image in base64
         Image img;
         try {
-          img = Image.getInstance(Base64.getDecoder().decode(value));
+          img = Image.getInstance(Base64.decode(value));
         } catch (Exception e) {
           return false;
         }
@@ -2156,7 +2156,7 @@ public class AcroFields {
       int length = lengthOfSignedBlocks + unsignedBlock;
       sorter.add(new Object[]{entry.getKey(), new int[]{length, 0}});
     }
-    sorter.sort(new SorterComparator());
+    Collections.sort(sorter, new SorterComparator());
     if (!sorter.isEmpty()) {
       if (((int[]) sorter.get(sorter.size() - 1)[1])[0] == reader.getFileLength()) {
         totalRevisions = sorter.size();

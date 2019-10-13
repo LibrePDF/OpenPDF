@@ -50,17 +50,15 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.bouncycastle.BouncyCastleHelper;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.exceptions.BadPasswordException;
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.exceptions.InvalidPdfException;
 import com.lowagie.text.exceptions.UnsupportedPdfException;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -1075,7 +1073,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   protected void readDocObjPartial() throws IOException {
     xrefObj = new ArrayList<>(xref.length / 2);
-    xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
+    xrefObj.addAll(Collections.<PdfObject>nCopies(xref.length / 2, null));
     readDecryptedDocObj();
     if (objStmToOffset != null) {
       int[] keys = objStmToOffset.getKeys();
@@ -1183,7 +1181,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   protected void readDocObj() throws IOException {
     List<PdfObject> streams = new ArrayList<>();
     xrefObj = new ArrayList<>(xref.length / 2);
-    xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
+    xrefObj.addAll(Collections.<PdfObject>nCopies(xref.length / 2, null));
     for (int k = 2; k < xref.length; k += 2) {
       int pos = xref[k];
       if (pos <= 0 || ((xref.length > k + 1) && (xref[k + 1] > 0))) {
@@ -3105,7 +3103,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
     case PdfObject.ARRAY: {
       PdfArray arr = new PdfArray();
-      ((PdfArray) original).getElements().forEach(pdfObject -> arr.add(duplicatePdfObject(pdfObject, newReader)));
+      for (PdfObject element : ((PdfArray) original).getElements()) {
+        arr.add(duplicatePdfObject(element, newReader));
+      }
       return arr;
     }
     case PdfObject.INDIRECT: {

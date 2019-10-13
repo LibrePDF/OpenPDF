@@ -13,23 +13,23 @@
  */
 package com.lowagie.examples.objects.tables.alternatives;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfWriter;
 import java.awt.BorderLayout;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileOutputStream;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Constructing a JTable and printing it to PDF.
@@ -87,10 +87,20 @@ public class JTable2Pdf extends JFrame {
         JToolBar tb = new JToolBar();
         
         JButton printBtn = new JButton("Print");
-        printBtn.addActionListener(e -> print());
+        printBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JTable2Pdf.this.print();
+            }
+        });
         
         JButton exitBtn = new JButton("Exit");
-        exitBtn.addActionListener(e -> exit());
+        exitBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JTable2Pdf.this.exit();
+            }
+        });
         
         tb.add(printBtn);
         tb.add(exitBtn);

@@ -51,13 +51,12 @@
 package com.lowagie.text.html.simpleparser;
 
 import com.lowagie.text.ElementTags;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.lowagie.text.utils.NumberUtilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ChainedProperties {
 
@@ -77,27 +76,37 @@ public class ChainedProperties {
 
     @Nullable
     public String getProperty(String key) {
-        return findProperty(key).orElse(null);
+        return findProperty(key);
     }
 
     /**
      * Try find property by its name
      *
      * @param key property name
-     * @return {@link Optional} containing the value or {@link Optional#empty()} if there is no value or
+     * @return containing the value or null if there is no value or
      * it equals {@code null}
      */
-    @Nonnull
-    public Optional<String> findProperty(String key) {
+    public String findProperty(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
             Object[] obj = (Object[]) chain.get(k);
             HashMap prop = (HashMap) obj[1];
             String ret = (String) prop.get(key);
             if (ret != null) {
-                return Optional.of(ret);
+                return (ret);
             }
         }
-        return Optional.empty();
+        return null;
+    }
+
+    public Float findFloatProperty(String key) {
+        final String property = findProperty(key);
+        return NumberUtilities.parseFloat(property);
+    }
+
+
+    public Integer findIntegerProperty(String key) {
+        final String property = findProperty(key);
+        return NumberUtilities.parseInt(property);
     }
 
     /**
@@ -109,7 +118,8 @@ public class ChainedProperties {
      */
     @Nonnull
     public String getOrDefault(String key, String defaultValue) {
-        return findProperty(key).orElse(defaultValue);
+        final String property = findProperty(key);
+        return property == null ? defaultValue : property;
     }
 
     public boolean hasProperty(String key) {

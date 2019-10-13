@@ -10,11 +10,12 @@ import com.lowagie.text.alignment.HorizontalAlignment;
 import com.lowagie.text.alignment.VerticalAlignment;
 import com.lowagie.text.alignment.WithHorizontalAlignment;
 import com.lowagie.text.alignment.WithVerticalAlignment;
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.function.Executable;
 
 /**
  * Tests for setting alignment through {@link WithHorizontalAlignment} and {@link WithVerticalAlignment} interfaces.
@@ -29,13 +30,21 @@ public class TableElementsAlignmentTest {
     @TestFactory
     Iterable<DynamicTest> testSettingTableAlignment() {
         final Table table = new Table(1);
-        return Arrays.stream(HorizontalAlignment.values())
-            .map(alignment -> dynamicTest(TEST_TITLE + alignment, () -> {
-                table.setHorizontalAlignment(alignment);
-                final int alignmentId = table.getAlignment();
-                assertEquals(alignmentId, alignment.getId());
-            }))
-            .collect(Collectors.toList());
+        final HorizontalAlignment[] values = HorizontalAlignment.values();
+        List<DynamicTest> tests = new ArrayList<>();
+        for (final HorizontalAlignment alignment : values) {
+            final DynamicTest dynamicTest = dynamicTest(TEST_TITLE + alignment,
+                    new Executable() {
+                        @Override
+                        public void execute() {
+                            table.setHorizontalAlignment(alignment);
+                            final int alignmentId = table.getAlignment();
+                            assertEquals(alignmentId, alignment.getId());
+                        }
+                    });
+            tests.add(dynamicTest);
+        }
+        return tests;
     }
 
     @Test

@@ -1,40 +1,44 @@
 package com.lowagie.text.utils;
 
-import javax.annotation.Nonnull;
-import java.util.Optional;
-
 public final class NumberUtilities {
 
     private NumberUtilities() {
     }
 
     /**
-     * Try parse float from string and return {@link Optional#empty()} in case of {@link NumberFormatException}
+     * Try parse float from string and return null in case of {@link NumberFormatException}
      *
      * @param value string value
-     * @return {@link Optional} containing parsed value or empty
+     * @return parsed value or null
      */
-    @Nonnull
-    public static Optional<Float> parseFloat(String value) {
+    public static Float parseFloat(String value) {
         try {
-            return Optional.of(Float.parseFloat(value));
+            return Float.parseFloat(value);
         } catch (NumberFormatException e) {
-            return Optional.empty();
+            return null;
         }
     }
 
+    public static float parseFloat(String value, float defaultValue) {
+        Float result = parseFloat(value);
+        if (result == null) {
+            result = defaultValue;
+        }
+        return result;
+    }
+
+
     /**
-     * Try parse int from string and return {@link Optional#empty()} in case of {@link NumberFormatException}
+     * Try parse int from string and return null in case of {@link NumberFormatException}
      *
      * @param value string value
-     * @return {@link Optional} containing parsed value or empty
+     * @return parsed value or null
      */
-    @Nonnull
-    public static Optional<Integer> parseInt(String value) {
+    public static Integer parseInt(String value) {
         try {
-            return Optional.of(Integer.parseInt(value));
+            return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            return Optional.empty();
+            return null;
         }
     }
 }

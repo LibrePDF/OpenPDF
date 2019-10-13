@@ -53,8 +53,6 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.TextElementArray;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.utils.NumberUtilities;
-
 import java.util.ArrayList;
 
 
@@ -73,43 +71,40 @@ public class IncCell implements TextElementArray {
         cell = new PdfPCell((Phrase) null);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
-        props.findProperty("colspan")
-                .flatMap(NumberUtilities::parseInt)
-                .ifPresent(cell::setColspan);
+        final Integer colspan = props.findIntegerProperty("colspan");
+        if (colspan != null) {
+            cell.setColspan(colspan);
+        }
 
         if (tag.equals("th")) {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         }
 
-        props.findProperty("align")
-                .ifPresent(align -> {
-                    if ("center".equalsIgnoreCase(align)) {
-                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    } else if ("right".equalsIgnoreCase(align)) {
-                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                    } else if ("left".equalsIgnoreCase(align))
-                        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-                    else if ("justify".equalsIgnoreCase(align))
-                        cell.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
-                });
+        String align = props.findProperty("align");
+        if ("center".equalsIgnoreCase(align)) {
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        } else if ("right".equalsIgnoreCase(align)) {
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        } else if ("left".equalsIgnoreCase(align)) {
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        } else if ("justify".equalsIgnoreCase(align)) {
+            cell.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+        }
 
-        props.findProperty("valign")
-                .ifPresent(valign -> {
-                    if ("top".equalsIgnoreCase(valign)) {
-                        cell.setVerticalAlignment(Element.ALIGN_TOP);
-                    } else if ("bottom".equalsIgnoreCase(valign)) {
-                        cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
-                    }
-                });
+        final String valign = props.findProperty("valign");
+        if ("top".equalsIgnoreCase(valign)) {
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+        } else if ("bottom".equalsIgnoreCase(valign)) {
+            cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
+        }
 
-        float border = props.findProperty("border")
-                .flatMap(NumberUtilities::parseFloat)
-                .orElse(0f);
-        cell.setBorderWidth(border);
+        Float border = props.findFloatProperty("border");
+        cell.setBorderWidth(border == null ? 0 : border);
 
-        props.findProperty("cellpadding")
-                .flatMap(NumberUtilities::parseFloat)
-                .ifPresent(cell::setPadding);
+        final Float cellpadding = props.findFloatProperty("cellpadding");
+        if (cellpadding != null) {
+            cell.setPadding(cellpadding);
+        }
 
         cell.setUseDescender(true);
         cell.setBackgroundColor(Markup.decodeColor(props.getProperty("bgcolor")));

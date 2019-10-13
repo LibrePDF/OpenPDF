@@ -211,41 +211,49 @@ public class MappedRandomAccessFile {
     }
     
     private static boolean cleanJava9(final java.nio.ByteBuffer buffer) {
-        Boolean b = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
-            Boolean success = Boolean.FALSE;
-            try {
-                final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
-                final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
-                theUnsafeField.setAccessible(true);
-                final Object theUnsafe = theUnsafeField.get(null);
-                final Method invokeCleanerMethod = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
-                invokeCleanerMethod.invoke(theUnsafe, buffer);
-                success = Boolean.TRUE;
-            } catch (Exception ignore) {
-                // Ignore
+        Boolean b = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            public Boolean run() {
+                Boolean success = Boolean.FALSE;
+                try {
+                    final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+                    final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
+                    theUnsafeField.setAccessible(true);
+                    final Object theUnsafe = theUnsafeField.get(null);
+                    final Method invokeCleanerMethod = unsafeClass
+                            .getMethod("invokeCleaner", ByteBuffer.class);
+                    invokeCleanerMethod.invoke(theUnsafe, buffer);
+                    success = Boolean.TRUE;
+                } catch (Exception ignore) {
+                    // Ignore
+                }
+                return success;
             }
-            return success;
         });
         
         return b;
     }
 
     private static boolean cleanOldsJDK(final java.nio.ByteBuffer buffer) {
-        Boolean b = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
-            Boolean success = Boolean.FALSE;
-            try {
-                Method getCleanerMethod = buffer.getClass().getMethod("cleaner", (Class[])null);
-                if (!getCleanerMethod.isAccessible()) {
-                    getCleanerMethod.setAccessible(true);
+        Boolean b = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            public Boolean run() {
+                Boolean success = Boolean.FALSE;
+                try {
+                    Method getCleanerMethod = buffer.getClass()
+                            .getMethod("cleaner", (Class[]) null);
+                    if (!getCleanerMethod.isAccessible()) {
+                        getCleanerMethod.setAccessible(true);
+                    }
+                    Object cleaner = getCleanerMethod.invoke(buffer, (Object[]) null);
+                    Method clean = cleaner.getClass().getMethod("clean", (Class[]) null);
+                    clean.invoke(cleaner, (Object[]) null);
+                    success = Boolean.TRUE;
+                } catch (Exception e) {
+                    // Ignore
                 }
-                Object cleaner = getCleanerMethod.invoke(buffer, (Object[])null);
-                Method clean = cleaner.getClass().getMethod("clean", (Class[])null);
-                clean.invoke(cleaner, (Object[])null);
-                success = Boolean.TRUE;
-            } catch (Exception e) {
-                // Ignore
+                return success;
             }
-            return success;
         });
         
         return b;

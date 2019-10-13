@@ -50,6 +50,8 @@
 
 package com.lowagie.text.html.simpleparser;
 
+import static com.lowagie.text.html.Markup.parseLength;
+
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Element;
 import com.lowagie.text.ElementTags;
@@ -64,15 +66,12 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.HyphenationAuto;
 import com.lowagie.text.pdf.HyphenationEvent;
 import com.lowagie.text.utils.NumberUtilities;
-
-import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
-import static com.lowagie.text.html.Markup.parseLength;
+import javax.annotation.Nullable;
 
 /**
  * @author psoares
@@ -120,32 +119,32 @@ public class FactoryProperties {
     }
 
     public static void createParagraph(Paragraph paragraph, ChainedProperties props) {
-        props.findProperty("align")
-                .map(String::trim)
-                .ifPresent(align -> {
-                    if (align.equalsIgnoreCase("center")) {
-                        paragraph.setAlignment(Element.ALIGN_CENTER);
-                    } else if (align.equalsIgnoreCase("right")) {
-                        paragraph.setAlignment(Element.ALIGN_RIGHT);
-                    } else if (align.equalsIgnoreCase("justify")) {
-                        paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
-                    }
-                });
+        String align = props.findProperty("align");
+        if ("center".equalsIgnoreCase(align)) {
+            paragraph.setAlignment(Element.ALIGN_CENTER);
+        } else if ("right".equalsIgnoreCase(align)) {
+            paragraph.setAlignment(Element.ALIGN_RIGHT);
+        } else if ("justify".equalsIgnoreCase(align)) {
+            paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
+        }
 
         paragraph.setHyphenation(getHyphenation(props));
         setParagraphLeading(paragraph, props.getProperty("leading"));
 
-        props.findProperty("before")
-                .flatMap(NumberUtilities::parseFloat)
-                .ifPresent(paragraph::setSpacingBefore);
+        final Float before = props.findFloatProperty("before");
+        if (before != null) {
+            paragraph.setSpacingBefore(before);
+        }
 
-        props.findProperty("after")
-                .flatMap(NumberUtilities::parseFloat)
-                .ifPresent(paragraph::setSpacingAfter);
+        final Float after = props.findFloatProperty("after");
+        if (after != null) {
+            paragraph.setSpacingAfter(after);
+        }
 
-        props.findProperty("extraparaspace")
-                .flatMap(NumberUtilities::parseFloat)
-                .ifPresent(paragraph::setExtraParagraphSpace);
+        final Float extraParaSpace = props.findFloatProperty("extraparaspace");
+        if (extraParaSpace != null) {
+            paragraph.setExtraParagraphSpace(extraParaSpace);
+        }
     }
 
     public static Paragraph createParagraph(ChainedProperties props) {
@@ -436,9 +435,8 @@ public class FactoryProperties {
         if (props.hasProperty(HtmlTags.S))
             style |= Font.STRIKETHRU;
 
-        float size = props.findProperty(ElementTags.SIZE)
-                .flatMap(NumberUtilities::parseFloat)
-                .orElse(12f);
+        final String sizeString = props.findProperty(ElementTags.SIZE);
+        float size = NumberUtilities.parseFloat(sizeString, 12f);
 
         Color color = Markup.decodeColor(props.getProperty("color"));
         String encoding = props.getOrDefault("encoding", BaseFont.WINANSI);

@@ -46,8 +46,43 @@
  */
 package com.lowagie.text.pdf;
 
+import static org.bouncycastle.asn1.x509.Extension.authorityInfoAccess;
+
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.error_messages.MessageLocalization;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.cert.CRL;
+import java.security.cert.Certificate;
+import java.security.cert.X509CRL;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -84,43 +119,6 @@ import org.bouncycastle.jce.provider.X509CRLParser;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.TimeStampToken;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.cert.CRL;
-import java.security.cert.Certificate;
-import java.security.cert.X509CRL;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.bouncycastle.asn1.x509.Extension.authorityInfoAccess;
 
 /**
  * This class does all the processing related to signing and verifying a PKCS#7
@@ -256,8 +254,11 @@ public class PdfPKCS7 {
      * @since 2.1.6
      */
     public static String getDigest(String oid) {
-        return Optional.ofNullable(digestNames.get(oid))
-                .orElse(oid);
+        String digest = digestNames.get(oid);
+        if (digest == null) {
+            digest = oid;
+        }
+        return digest;
     }
 
     /**
@@ -268,8 +269,11 @@ public class PdfPKCS7 {
      * @since 2.1.6
      */
     public static String getAlgorithm(String oid) {
-        return Optional.ofNullable(algorithmNames.get(oid))
-                .orElse(oid);
+        String alg = algorithmNames.get(oid);
+        if (alg == null) {
+            alg = oid;
+        }
+        return alg;
     }
 
     /**
@@ -1723,7 +1727,10 @@ public class PdfPKCS7 {
                     String id = defaultSymbols.get(encodable);
                     if (id == null)
                         continue;
-                    List<String> vs = valuesMap.computeIfAbsent(id, k -> new ArrayList<>());
+                    List<String> vs = valuesMap.get(id);
+                    if (vs == null) {
+                        vs = new ArrayList<>();
+                    }
                     vs.add(((ASN1String) s.getObjectAt(1)).getString());
                 }
             }
@@ -1749,7 +1756,11 @@ public class PdfPKCS7 {
 
                 String id = token.substring(0, index).toUpperCase();
                 String value = token.substring(index + 1);
-                List<String> vs = valuesMap.computeIfAbsent(id, k -> new ArrayList<>());
+                List<String> vs = valuesMap.get(id);
+                if (vs == null) {
+                    vs = new ArrayList<>();
+                    valuesMap.put(id, vs);
+                }
                 vs.add(value);
             }
 

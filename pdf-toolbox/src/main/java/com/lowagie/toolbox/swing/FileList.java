@@ -26,6 +26,7 @@
  */
 package com.lowagie.toolbox.swing;
 
+import com.lowagie.text.pdf.PdfReader;
 import java.awt.BorderLayout;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -53,8 +54,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-
-import com.lowagie.text.pdf.PdfReader;
 
 /**
  * @since 2.1.1 (imported from itexttoolbox project)
@@ -103,7 +102,7 @@ public class FileList
     private JScrollPane jScrollPane1 = new JScrollPane();
     private FileTableModel model = new FileTableModel();
     private JTable jTable1 = new JTable(model);
-    private RowSorter<TableModel> sorter = new TableRowSorter<>(model);
+    private RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
     private BorderLayout borderLayout3 = new BorderLayout();
     private DropTarget dt = new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this, true, null);
     private JPanel jPanel3 = new JPanel();

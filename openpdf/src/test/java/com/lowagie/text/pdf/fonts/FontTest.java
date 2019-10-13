@@ -1,15 +1,13 @@
 package com.lowagie.text.pdf.fonts;
 
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Predicate;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 /**
  * {@link Font Font}-related test cases.
@@ -19,17 +17,47 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class FontTest {
 
-    private static final Map<Integer, Predicate<Font>> STYLES_TO_TEST_METHOD = new HashMap<Integer, Predicate<Font>> () {{
-        put(Font.NORMAL, f -> !f.isBold() && !f.isItalic() && !f.isStrikethru() && !f.isUnderlined());
-        put(Font.BOLD, Font::isBold);
-        put(Font.ITALIC, Font::isItalic);
-        put(Font.UNDERLINE, Font::isUnderlined);
-        put(Font.STRIKETHRU, Font::isStrikethru);
-        put(Font.BOLDITALIC, f -> f.isBold() && f.isItalic());
+    private static final Map<Integer, FontTester> STYLES_TO_TEST_METHOD = new HashMap<Integer, FontTester>() {{
+        put(Font.NORMAL, new FontTester() {
+            @Override
+            public boolean test(Font f) {
+                return !f.isBold() && !f.isItalic() && !f.isStrikethru() && !f.isUnderlined();
+            }
+        });
+        put(Font.BOLD, new FontTester() {
+            @Override
+            public boolean test(Font font) {
+                return font.isBold();
+            }
+        });
+        put(Font.ITALIC, new FontTester() {
+            @Override
+            public boolean test(Font font) {
+                return font.isItalic();
+            }
+        });
+        put(Font.UNDERLINE, new FontTester() {
+            @Override
+            public boolean test(Font font) {
+                return font.isUnderlined();
+            }
+        });
+        put(Font.STRIKETHRU, new FontTester() {
+            @Override
+            public boolean test(Font font) {
+                return font.isStrikethru();
+            }
+        });
+        put(Font.BOLDITALIC, new FontTester() {
+            @Override
+            public boolean test(Font f) {
+                return f.isBold() && f.isItalic();
+            }
+        });
     }};
 
     private static final String FONT_NAME_WITHOUT_STYLES = "non-existing-font";
-    
+
     private static final String FONT_NAME_WITH_STYLES = "Courier";
 
     private static final float DEFAULT_FONT_SIZE = 16.0f;
@@ -62,7 +90,7 @@ class FontTest {
     void testStyleSettingByPredicate() {
         for (final int style: STYLES_TO_TEST_METHOD.keySet()) {
             final Font font = FontFactory.getFont(FONT_NAME_WITHOUT_STYLES, DEFAULT_FONT_SIZE, style);
-            final Predicate<Font> p = STYLES_TO_TEST_METHOD.get(style);
+            final FontTester p = STYLES_TO_TEST_METHOD.get(style);
             assertTrue(p.test(font));
         }
     }
@@ -79,6 +107,10 @@ class FontTest {
                 assertEquals(Font.NORMAL, font.getStyle());
             }
         }
+    }
+
+    private interface FontTester {
+        boolean test(Font font);
     }
 
 }

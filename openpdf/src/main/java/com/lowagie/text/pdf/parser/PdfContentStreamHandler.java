@@ -58,9 +58,6 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,8 +65,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Stack;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author dgd
@@ -193,8 +191,8 @@ public class PdfContentStreamHandler {
      * @return the operator or null if none present
      */
     @Nonnull
-    public Optional<ContentOperator> lookupOperator(String operatorName) {
-        return Optional.ofNullable(operators.get(operatorName));
+    public ContentOperator lookupOperator(String operatorName) {
+        return operators.get(operatorName);
     }
 
     /**
@@ -206,8 +204,10 @@ public class PdfContentStreamHandler {
      */
     public void invokeOperator(PdfLiteral operator, List<PdfObject> operands, PdfDictionary resources) {
         String operatorName = operator.toString();
-        lookupOperator(operatorName)
-                .ifPresent(contentOperator -> contentOperator.invoke(operands, this, resources));
+        final ContentOperator contentOperator = lookupOperator(operatorName);
+        if (contentOperator != null) {
+            contentOperator.invoke(operands, this, resources);
+        }
     }
 
     void popContext() {
@@ -219,10 +219,12 @@ public class PdfContentStreamHandler {
             fragment.accumulate(renderListener, contextName);
         }
         FinalText contextResult = renderListener.endParsingContext(contextName);
-        Optional.ofNullable(contextResult)
-                .map(FinalText::getText)
-                .filter(text -> !text.isEmpty())
-                .ifPresent(text -> newBuffer.add(contextResult));
+        if (contextResult != null) {
+            final String text = contextResult.getText();
+            if (!text.isEmpty()) {
+                newBuffer.add(contextResult);
+            }
+        }
 
         textFragments = newBuffer;
     }
@@ -433,7 +435,7 @@ public class PdfContentStreamHandler {
 
         @Override
         public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            textMoveNextLine.invoke(new ArrayList<>(0), handler, resources);
+            textMoveNextLine.invoke(new ArrayList<PdfObject>(0), handler, resources);
             showText.invoke(operands, handler, resources);
         }
     }

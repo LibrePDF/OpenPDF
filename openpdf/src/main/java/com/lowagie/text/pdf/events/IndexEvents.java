@@ -46,18 +46,18 @@
  */
 package com.lowagie.text.pdf.events;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Class for an index.
@@ -180,25 +180,28 @@ public class IndexEvents extends PdfPageEventHelper {
     /**
      * Comparator for sorting the index
      */
-    private Comparator<Entry> comparator = (en1, en2) -> {
+    private Comparator<Entry> comparator = new Comparator<Entry>() {
+        @Override
+        public int compare(Entry en1, Entry en2) {
 
-        int rt = 0;
-        if (en1.getIn1() != null && en2.getIn1() != null) {
-            if ((rt = en1.getIn1().compareToIgnoreCase(en2.getIn1())) == 0) {
-                // in1 equals
-                if (en1.getIn2() != null && en2.getIn2() != null) {
-                    if ((rt = en1.getIn2()
-                            .compareToIgnoreCase(en2.getIn2())) == 0) {
-                        // in2 equals
-                        if (en1.getIn3() != null && en2.getIn3() != null) {
-                            rt = en1.getIn3().compareToIgnoreCase(
-                                    en2.getIn3());
+            int rt = 0;
+            if (en1.getIn1() != null && en2.getIn1() != null) {
+                if ((rt = en1.getIn1().compareToIgnoreCase(en2.getIn1())) == 0) {
+                    // in1 equals
+                    if (en1.getIn2() != null && en2.getIn2() != null) {
+                        if ((rt = en1.getIn2()
+                                .compareToIgnoreCase(en2.getIn2())) == 0) {
+                            // in2 equals
+                            if (en1.getIn3() != null && en2.getIn3() != null) {
+                                rt = en1.getIn3().compareToIgnoreCase(
+                                        en2.getIn3());
+                            }
                         }
                     }
                 }
             }
+            return rt;
         }
-        return rt;
     };
 
     /**
@@ -231,7 +234,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         // copy to a list and sort it
         List<Entry> sorted = new ArrayList<>(grouped.values());
-        sorted.sort(comparator);
+        Collections.sort(sorted, comparator);
         return sorted;
     }
 

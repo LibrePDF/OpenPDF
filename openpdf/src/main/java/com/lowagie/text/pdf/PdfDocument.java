@@ -76,7 +76,6 @@ import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.draw.DrawInterface;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -2620,7 +2619,11 @@ public class PdfDocument extends Document {
             pageMap.put(cell, i);
 
             Integer pageInteger = pageNumber;
-            Set<PdfCell> set = pageCellSetMap.computeIfAbsent(pageInteger, k -> new HashSet<>());
+            Set<PdfCell> set = pageCellSetMap.get(pageInteger);
+            if (set == null) {
+                set = new HashSet<>();
+                pageCellSetMap.put(pageInteger, set);
+            }
             set.add(cell);
 
             return i;

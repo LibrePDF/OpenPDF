@@ -48,16 +48,12 @@
  */
 package com.lowagie.text;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import com.lowagie.text.alignment.HorizontalAlignment;
 import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPTableEvent;
+import java.util.ArrayList;
 
 
 /**
@@ -118,8 +114,8 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
         float[] widths = new float[columns];
         float[] widthpercentages = new float[columns];
         Table table = new Table(columns);
-        final Optional<HorizontalAlignment> of = HorizontalAlignment.of(alignment);
-        table.setHorizontalAlignment(of.orElse(HorizontalAlignment.UNDEFINED));
+        final HorizontalAlignment alignment = HorizontalAlignment.of(this.alignment);
+        table.setHorizontalAlignment(alignment);
         table.setSpacing(cellspacing);
         table.setPadding(cellpadding);
         table.cloneNonPositionParameters(this);

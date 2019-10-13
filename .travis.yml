@@ -1,5 +1,9 @@
+dist: trusty
 language: java
-jdk:
-  - openjdk7
+jdk: openjdk7
 
-install: mvn install -Dgpg.skip
+install:
+  - mvn compile
+  - jdk_switcher use openjdk8
+  - mvn -version
+  - mvn clean install -Dgpg.skip

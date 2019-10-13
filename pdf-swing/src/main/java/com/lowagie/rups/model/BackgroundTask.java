@@ -50,16 +50,23 @@ public abstract class BackgroundTask {
      * finally calls the finish().
      */
     public BackgroundTask() {
-        final Runnable doFinished = this::finished;
+        final Runnable doFinished = new Runnable() {
+            @Override
+            public void run() {
+                BackgroundTask.this.finished();
+            }
+        };
 
-        Runnable doConstruct = () -> {
-            try {
-                doTask();
+        Runnable doConstruct = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    BackgroundTask.this.doTask();
+                } finally {
+                    thread.clear();
+                }
+                SwingUtilities.invokeLater(doFinished);
             }
-            finally {
-                thread.clear();
-            }
-            SwingUtilities.invokeLater(doFinished);
         };
         Thread t = new Thread(doConstruct);
         thread = new ThreadWrapper(t);

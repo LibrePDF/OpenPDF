@@ -49,6 +49,8 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.compatibility.Java8to7Layer;
+import com.lowagie.text.pdf.internal.PolylineShape;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -66,11 +68,11 @@ import java.awt.Paint;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.RenderingHints.Key;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.Transparency;
-import java.awt.RenderingHints.Key;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
@@ -99,13 +101,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
-
-import com.lowagie.text.pdf.internal.PolylineShape;
-import java.util.Locale;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -370,12 +369,12 @@ public class PdfGraphics2D extends Graphics2D {
 //            Use the following line to compile in JDK 1.3    
 //            drawGlyphVector(this.font.createGlyphVector(getFontRenderContext(), s), x, y);
         } else {
-            if (!Float.isFinite(fontSize) || fontSize < PdfContentByte.MIN_FONT_SIZE) {
+            if (!Java8to7Layer.isFinite(fontSize) || fontSize < PdfContentByte.MIN_FONT_SIZE) {
                 return;
             }
             double width = 0;
             if (CompositeFontDrawer.isSupported() && compositeFontDrawer.isCompositeFont(font)) {
-                width = compositeFontDrawer.drawString(s, font, x, y, this::getCachedBaseFont, this::drawString);
+                width = compositeFontDrawer.drawString(this, s, font, x, y);
             } else {
                 // Splitting string to the parts depending on they visibility preserves
                 // the position of the visible parts of string and prevents alignment of the text in width
@@ -1876,6 +1875,8 @@ public class PdfGraphics2D extends Graphics2D {
          * If some class/method cannot be found or throw exception the default drawing string
          * function will be used for a drawing string.
          *
+         *
+         * @param graphics
          * @param s
          *            given string that should be drawn
          * @param compositeFont
@@ -1885,18 +1886,15 @@ public class PdfGraphics2D extends Graphics2D {
          *            the x coordinate of the location
          * @param y
          *            the y coordinate of the location
-         * @param fontConverter
-         *            function that convert {@link java.awt.Font font} to the needed
-         *            {@link com.lowagie.text.pdf.BaseFont base font}
-         * @param defaultDrawingFunction
-         *            default drawing function that will be used for drawing string.
          * @return width of the drawn string.
          */
-        double drawString(String s, Font compositeFont, double x, double y, Function<Font, BaseFont> fontConverter, DrawStringFunction defaultDrawingFunction) {
+        double drawString(PdfGraphics2D graphics, String s, Font compositeFont, double x,
+                double y) {
             String fontFamily = compositeFont.getFamily();
             if (!isSupported() || (fontFamily != null && !fontFamilyComposite.get(fontFamily))) {
                 assert false;
-                return defaultDrawingFunction.drawString(s, fontConverter.apply(compositeFont), x, y);
+                return graphics
+                        .drawString(s, graphics.getCachedBaseFont(compositeFont), x, y);
             }
 
             try {
@@ -1905,14 +1903,16 @@ public class PdfGraphics2D extends Graphics2D {
                 for (int i = 0; i < stringParts.size(); i++) {
                     String strPart = stringParts.get(i);
                     Font correspondingFont = correspondingFontsForParts.get(i);
-                    BaseFont correspondingBaseFont = fontConverter.apply(correspondingFont);
-                    BaseFont baseFont = correspondingBaseFont == null ? fontConverter.apply(compositeFont) : correspondingBaseFont;
-                    width += defaultDrawingFunction.drawString(strPart, baseFont, x + width, y);
+                    BaseFont correspondingBaseFont = graphics.getCachedBaseFont(correspondingFont);
+                    BaseFont baseFont = correspondingBaseFont == null
+                            ? graphics.getCachedBaseFont(compositeFont)
+                            : correspondingBaseFont;
+                    width += graphics.drawString(strPart, baseFont, x + width, y);
                 }
                 return width;
             } catch (Exception e) {
-                BaseFont baseFont = fontConverter.apply(compositeFont);
-                return defaultDrawingFunction.drawString(s, baseFont, x, y);
+                BaseFont baseFont = graphics.getCachedBaseFont(compositeFont);
+                return graphics.drawString(s, baseFont, x, y);
             }
         }
 
@@ -1982,10 +1982,5 @@ public class PdfGraphics2D extends Graphics2D {
             sb.setLength(0);
         }
 
-        @FunctionalInterface
-        public interface DrawStringFunction
-        {
-            double drawString(String s, BaseFont basicFont, double x, double y);
-        }
     }
 }
