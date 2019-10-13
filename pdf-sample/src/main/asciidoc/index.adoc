@@ -1,0 +1,9 @@
+= OpenPDF Sample project
+:source-highlighter: highlight.js
+:nofooter:
+
+include::com/lowagies/examples/generating.adoc[leveloffset=1]
+
+== Samples
+
+include::com/lowagies/examples/directcontent/index.adoc[leveloffset=2]

@@ -38,10 +38,9 @@ public class Layers {
 
         System.out.println("DirectContent :: Layers");
 
+        // tag::generation[]
         // step 1: creation of a document-object
-        Document document = new Document();
-
-        try {
+        try (Document document = new Document()) {
 
             // step 2: creation of the writer
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/layers.pdf"));
@@ -75,9 +74,7 @@ public class Layers {
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-
-        // step 5: we close the document
-        document.close();
+        // end::generation[]
     }
 
 }

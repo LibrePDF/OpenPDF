@@ -1,0 +1,8 @@
+= Generating the samples
+
+In order to run the samples and get the PDF associated to them you need to run this command
+
+[source,bash]
+----
+mvn exec:java -Dexec.mainClass="com.lowagie.examples.RunAll" -Dexec.args="./output" -f pdf-sample/pom.xml
+----

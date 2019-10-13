@@ -36,4 +36,40 @@
             <version>1.0.24</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>1.5.6</version>
+                <executions>
+                    <execution>
+                        <id>output-html</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+<!--                            <requires>-->
+<!--                                <require>asciidoctor-diagram</require>-->
+<!--                            </requires>-->
+                            <preserveDirectories>true</preserveDirectories>
+                            <backend>html5</backend>
+                            <attributes>
+                                <toc>left</toc>
+                                <icons>font</icons>
+                                <sectanchors>true</sectanchors>
+                                <linkcss>true</linkcss>
+                                <idprefix/>
+                                <idseparator>-</idseparator>
+                                <project-version>${project.version}</project-version>
+                            </attributes>
+                            <doctype>book</doctype>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
