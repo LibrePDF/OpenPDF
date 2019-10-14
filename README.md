@@ -101,7 +101,7 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@lapo-luchini](https://github.com/lapo-luchini)  
   [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)  
   [@V-F](https://github.com/V-F)     
-  [@sixdouglas](https://github.com/sixdouglas)       
+  [@sixdouglas](https://github.com/sixdouglas) - Douglas Six
   [@razilein](https://github.com/razilein) - Sita Geßner  
   [@PalAditya](https://github.com/PalAditya) - Aditya Pal       
     
