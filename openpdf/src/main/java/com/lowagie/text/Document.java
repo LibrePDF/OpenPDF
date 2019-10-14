@@ -105,32 +105,30 @@ import java.util.Properties;
 public class Document implements AutoCloseable, DocListener {
     
     // membervariables
-    /**
-     * @since    2.1.6
-     */
+    private static final String VERSION_PROPERTIES = "com/lowagie/text/version.properties";
     private static final String OPENPDF = "OpenPDF";
-    /**
-     * @since    2.1.6
-     */
     private static final String RELEASE;
     private static final String OPENPDF_VERSION;
 
     static {
-        String releaseVersion = "";
-        try (InputStream input = Document.class.getClassLoader().getResourceAsStream("com/lowagie/text/version.properties")) {
-            Properties prop = new Properties();
-            // load a properties file
-            if (input != null) {
-                prop.load(input);
-                releaseVersion = prop.getProperty("bundleVersion", "");
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        RELEASE = releaseVersion;
+        RELEASE = getVersionNumber();
         OPENPDF_VERSION = OPENPDF + " " + RELEASE;
     }
-    
+    private static String getVersionNumber() {
+        String releaseVersion = "UNKNOWN";
+        try (InputStream input = Document.class.getClassLoader()
+                .getResourceAsStream(VERSION_PROPERTIES)) {
+            if (input != null) {
+                Properties prop = new Properties();
+                prop.load(input);
+                releaseVersion = prop.getProperty("bundleVersion", releaseVersion);
+            }
+        } catch (IOException ignored) {
+            // ignore this and leave the default
+        }
+        return releaseVersion;
+    }
+
     /**
      * Allows the pdf documents to be produced without compression for debugging
      * purposes.
