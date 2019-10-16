@@ -45,7 +45,7 @@
         <spotbugs.version>3.1.12</spotbugs.version>
         <hamcrest.version>2.1</hamcrest.version>
         <java-module-name>com.github.librepdf.openpdf.parent</java-module-name>
-        <jupiter.version>5.5.1</jupiter.version>
+        <jupiter.version>5.5.2</jupiter.version>
         <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
         <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
@@ -302,7 +302,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.12.1</version>
+            <version>3.12.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

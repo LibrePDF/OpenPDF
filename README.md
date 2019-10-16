@@ -83,7 +83,7 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.11, now retired from OpenPDF development.  
   [@daviddurand](https://github.com/daviddurand) -  David G. Durand  
   [@tlxtellef](https://github.com/tlxtellef) - Tellef  
-  [@asturio](https://github.com/asturio)  
+  [@asturio](https://github.com/asturio) - Claudio Clemens 
   [@ymasory](https://github.com/ymasory)  
   [@albfernandez](https://github.com/albfernandez) - Alberto Fernández  
   [@noavarice](https://github.com/noavarice)  
@@ -101,7 +101,7 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@lapo-luchini](https://github.com/lapo-luchini)  
   [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)  
   [@V-F](https://github.com/V-F)     
-  [@sixdouglas](https://github.com/sixdouglas)       
+  [@sixdouglas](https://github.com/sixdouglas) - Douglas Six
   [@razilein](https://github.com/razilein) - Sita Geßner  
   [@PalAditya](https://github.com/PalAditya) - Aditya Pal       
     

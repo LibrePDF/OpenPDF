@@ -49,6 +49,7 @@ package com.lowagie.text.pdf;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
@@ -392,9 +393,9 @@ public class AcroFields {
     }
     Item fd = fields.get(fieldName);
     String[] sing = null;
-    if (exportValues == null && displayValues != null) {
+    if (exportValues == null) {
       sing = displayValues;
-    } else if (exportValues != null && displayValues == null) {
+    } else if (displayValues == null) {
       sing = exportValues;
     }
     PdfArray opt = new PdfArray();
@@ -403,12 +404,12 @@ public class AcroFields {
         opt.add(new PdfString(s, PdfObject.TEXT_UNICODE));
       }
     } else {
-      for (int k = 0; k < exportValues.length; ++k) {
-        PdfArray a = new PdfArray();
-        a.add(new PdfString(exportValues[k], PdfObject.TEXT_UNICODE));
-        a.add(new PdfString(displayValues[k], PdfObject.TEXT_UNICODE));
-        opt.add(a);
-      }
+        for (int k = 0; k < exportValues.length; ++k) {
+          PdfArray a = new PdfArray();
+          a.add(new PdfString(exportValues[k], PdfObject.TEXT_UNICODE));
+          a.add(new PdfString(displayValues[k], PdfObject.TEXT_UNICODE));
+          opt.add(a);
+        }
     }
     fd.writeToAll(PdfName.OPT, opt, Item.WRITE_VALUE | Item.WRITE_MERGED);
     return true;
@@ -794,7 +795,7 @@ public class AcroFields {
       }
       if ((flags & PdfFormField.FF_COMBO) != 0) {
         for (int k = 0; k < choices.length; ++k) {
-          if (text.equals(choicesExp[k])) {
+          if (text != null && text.equals(choicesExp[k])) {
             text = choices[k];
             break;
           }
@@ -1089,7 +1090,11 @@ public class AcroFields {
               PdfAppearance cb = new PdfAppearance();
               if (dao[DA_FONT] != null) {
                 ByteBuffer buf = cb.getInternalBuffer();
-                buf.append(new PdfName((String) dao[DA_FONT]).getBytes()).append(' ').append((Float) value).append(" Tf ");
+                Float fontSize = (float) Font.DEFAULTSIZE;
+                if (value != null) {
+                  fontSize = (Float) value;
+                }
+                buf.append(new PdfName((String) dao[DA_FONT]).getBytes()).append(' ').append(fontSize).append(" Tf ");
                 if (dao[DA_COLOR] != null) {
                   cb.setColorFill((Color) dao[DA_COLOR]);
                 }

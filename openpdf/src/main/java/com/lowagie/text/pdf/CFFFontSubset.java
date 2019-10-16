@@ -642,14 +642,17 @@ public class CFFFontSubset extends CFFFont {
         NumOfHints = 0;
         // Goto beginning of the subr
         seek(begin);
-        while (getPosition() < end)
-        {
+        while (getPosition() < end) {
             // Read the next command
             ReadCommand();
             int pos = getPosition();
-            Object TopElement=null;
-            if (arg_count > 0)
-                TopElement = args[arg_count-1];
+            Object TopElement = null;
+            if (arg_count > 0) {
+                TopElement = args[arg_count - 1];
+            }
+            if (TopElement == null) {
+                TopElement = 0;
+            }
             int NumOfArgs = arg_count;
             // Check the modification needed on the Argument Stack according to key;
             HandelStack();
@@ -667,7 +670,9 @@ public class CFFFontSubset extends CFFFont {
                         hSubr.put(Subr,null);
                         lSubr.add(Subr);
                     }
-                    CalcHints(LSubrsOffsets[Subr],LSubrsOffsets[Subr+1],LBias,GBias,LSubrsOffsets);
+                    if (LSubrsOffsets != null) {
+                        CalcHints(LSubrsOffsets[Subr], LSubrsOffsets[Subr + 1], LBias, GBias, LSubrsOffsets);
+                    }
                     seek(pos);
                 }                
             }

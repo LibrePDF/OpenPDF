@@ -598,18 +598,21 @@ public class BarcodeEAN extends Barcode{
         if (font != null && baseline > 0 && guardBars) {
             gd = baseline / 2;
         }
-        if (barColor != null)
+        if (barColor != null) {
             cb.setColorFill(barColor);
-        for (int k = 0; k < bars.length; ++k) {
-            float w = bars[k] * x;
-            if (print) {
-                if (Arrays.binarySearch(guard, k) >= 0)
-                    cb.rectangle(barStartX, barStartY - gd, w - inkSpreading, barHeight + gd);
-                else
-                    cb.rectangle(barStartX, barStartY, w - inkSpreading, barHeight);
+        }
+        if (bars != null) {
+            for (int k = 0; k < bars.length; ++k) {
+                float w = bars[k] * x;
+                if (print) {
+                    if (Arrays.binarySearch(guard, k) >= 0)
+                        cb.rectangle(barStartX, barStartY - gd, w - inkSpreading, barHeight + gd);
+                    else
+                        cb.rectangle(barStartX, barStartY, w - inkSpreading, barHeight);
+                }
+                print = !print;
+                barStartX += w;
             }
-            print = !print;
-            barStartX += w;
         }
         cb.fill();
         if (font != null) {
