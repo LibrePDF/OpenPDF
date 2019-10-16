@@ -76,7 +76,6 @@ import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.draw.DrawInterface;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -1460,7 +1459,7 @@ public class PdfDocument extends Document {
                     if (chunk.isTab()) {
                         Object[] tab = (Object[])chunk.getAttribute(Chunk.TAB);
                         DrawInterface di = (DrawInterface)tab[0];
-                        tabPosition = (Float) tab[1] + (Float) tab[3];
+                        tabPosition = tab[1] + tab[3];
                         float fontSize = chunk.font().size();
                         float ascender = chunk.font().getFont().getFontDescriptor(BaseFont.ASCENT, fontSize);
                         float descender = chunk.font().getFont().getFontDescriptor(BaseFont.DESCENT, fontSize);

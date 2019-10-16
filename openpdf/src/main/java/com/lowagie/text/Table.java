@@ -55,16 +55,14 @@ package com.lowagie.text;
 import com.lowagie.text.alignment.HorizontalAlignment;
 import com.lowagie.text.alignment.VerticalAlignment;
 import com.lowagie.text.alignment.WithHorizontalAlignment;
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Optional;
-
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 
 
 /**
@@ -773,9 +771,11 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
         cell.setBorderWidth(defaultCell.getBorderWidth());
         cell.setBorderColor(defaultCell.getBorderColor());
         cell.setBackgroundColor(defaultCell.getBackgroundColor());
-        Optional<HorizontalAlignment> optionalHorizontalAlignment = HorizontalAlignment.of(defaultCell.getHorizontalAlignment());
+        Optional<HorizontalAlignment> optionalHorizontalAlignment = HorizontalAlignment
+                .of(defaultCell.getHorizontalAlignment());
         cell.setHorizontalAlignment(optionalHorizontalAlignment.orElse(HorizontalAlignment.UNDEFINED));
-        Optional<VerticalAlignment> optionalVerticalAlignment = VerticalAlignment.of(defaultCell.getVerticalAlignment());
+        Optional<VerticalAlignment> optionalVerticalAlignment = VerticalAlignment
+                .of(defaultCell.getVerticalAlignment());
         cell.setVerticalAlignment(optionalVerticalAlignment.orElse(VerticalAlignment.UNDEFINED));
         cell.setColspan(defaultCell.getColspan());
         cell.setRowspan(defaultCell.getRowspan());
@@ -1265,11 +1265,13 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
             aCell.setBackgroundColor(defaultCell.getBackgroundColor());
         }
         if (aCell.getHorizontalAlignment() == Element.ALIGN_UNDEFINED) {
-            final Optional<HorizontalAlignment> of = HorizontalAlignment.of(defaultCell.getHorizontalAlignment());
+            final Optional<HorizontalAlignment> of = HorizontalAlignment
+                    .of(defaultCell.getHorizontalAlignment());
             aCell.setHorizontalAlignment(of.orElse(HorizontalAlignment.UNDEFINED));
         }
         if (aCell.getVerticalAlignment() == Element.ALIGN_UNDEFINED) {
-            final Optional<VerticalAlignment> of = VerticalAlignment.of(defaultCell.getVerticalAlignment());
+            final Optional<VerticalAlignment> of = VerticalAlignment
+                    .of(defaultCell.getVerticalAlignment());
             aCell.setVerticalAlignment(of.orElse(VerticalAlignment.UNDEFINED));
         }
     }

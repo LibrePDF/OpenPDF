@@ -50,17 +50,15 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.bouncycastle.BouncyCastleHelper;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.exceptions.BadPasswordException;
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.exceptions.InvalidPdfException;
 import com.lowagie.text.exceptions.UnsupportedPdfException;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
