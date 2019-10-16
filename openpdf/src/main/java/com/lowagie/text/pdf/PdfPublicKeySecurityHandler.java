@@ -101,6 +101,7 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -131,7 +132,7 @@ public class PdfPublicKeySecurityHandler {
 
   static final int SEED_LENGTH = 20;
 
-  private ArrayList recipients = null;
+  private List<PdfPublicKeyRecipient> recipients = null;
 
   private byte[] seed = new byte[SEED_LENGTH];
 
@@ -148,7 +149,7 @@ public class PdfPublicKeySecurityHandler {
       seed = SecureRandom.getSeed(SEED_LENGTH);
     }
 
-    recipients = new ArrayList();
+    recipients = new ArrayList<>();
   }
 
   public void addRecipient(PdfPublicKeyRecipient recipient) {
@@ -171,7 +172,7 @@ public class PdfPublicKeySecurityHandler {
   public byte[] getEncodedRecipient(int index) throws IOException,
       GeneralSecurityException {
     // Certificate certificate = recipient.getX509();
-    PdfPublicKeyRecipient recipient = (PdfPublicKeyRecipient) recipients
+    PdfPublicKeyRecipient recipient = recipients
         .get(index);
     byte[] cms = recipient.getCms();
 
@@ -185,7 +186,7 @@ public class PdfPublicKeySecurityHandler {
                                                // PdfWriter.AllowAssembly;
     int revision = 3;
 
-    permission |= revision == 3 ? 0xfffff0c0 : 0xffffffc0;
+    permission |= 0xfffff0c0;
     permission &= 0xfffffffc;
     permission += 1;
 
@@ -221,17 +222,18 @@ public class PdfPublicKeySecurityHandler {
   }
 
   public PdfArray getEncodedRecipients() throws IOException {
-    PdfArray EncodedRecipients = new PdfArray();
+    PdfArray encodedRecipients = new PdfArray();
     byte[] cms = null;
-    for (int i = 0; i < recipients.size(); i++)
+    for (int i = 0; i < recipients.size(); i++) {
       try {
         cms = getEncodedRecipient(i);
-        EncodedRecipients.add(new PdfLiteral(PdfContentByte.escapeString(cms)));
+        encodedRecipients.add(new PdfLiteral(PdfContentByte.escapeString(cms)));
       } catch (GeneralSecurityException | IOException e) {
-        EncodedRecipients = null;
+        encodedRecipients = null;
+        break;
       }
-
-    return EncodedRecipients;
+    }
+    return encodedRecipients;
   }
 
   private ASN1Primitive createDERForRecipient(byte[] in, X509Certificate cert)

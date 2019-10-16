@@ -49,6 +49,7 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.xml.XmlDomWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -62,19 +63,16 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import com.lowagie.text.xml.XmlDomWriter;
 
 /**
  * Processes XFA forms.
@@ -149,7 +147,12 @@ public class XfaForm {
         DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
         fact.setNamespaceAware(true);
         DocumentBuilder db = fact.newDocumentBuilder();
-        db.setEntityResolver((publicId, systemId) -> new InputSource(new StringReader("")));
+        db.setEntityResolver(new EntityResolver() {
+            @Override
+            public InputSource resolveEntity(String publicId, String systemId) {
+                return new InputSource(new StringReader(""));
+            }
+        });
         domDocument = db.parse(new ByteArrayInputStream(bout.toByteArray()));   
         extractNodes();
     }
@@ -621,6 +624,7 @@ public class XfaForm {
          * @deprecated use {@link #addSomNameToSearchNodeChain(Map, Stack2, String)}
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public static void inverseSearchAdd(HashMap inverseSearch, Stack2 stack, String unstack) {
             addSomNameToSearchNodeChain(inverseSearch, stack, unstack);
         }
@@ -662,6 +666,7 @@ public class XfaForm {
          * @return the full name or <CODE>null</CODE> if not found
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public String inverseSearchGlobal(ArrayList parts) {
             return inverseSearch(parts);
         }
@@ -752,6 +757,7 @@ public class XfaForm {
          * @param order the order the names appear in the XML, depth first
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public void setOrder(ArrayList order) {
             this.order = order;
         }
@@ -788,6 +794,7 @@ public class XfaForm {
          * @param name2Node the mapping of full names to nodes
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public void setName2Node(HashMap name2Node) {
             this.name2Node = name2Node;
         }
@@ -985,6 +992,7 @@ public class XfaForm {
          * @param acroShort2LongName the mapping from short names to long names
          */
         @Deprecated
+        @SuppressWarnings("unchecked")
         public void setAcroShort2LongName(HashMap acroShort2LongName) {
             this.acroShort2LongName = acroShort2LongName;
         }
@@ -1222,8 +1230,13 @@ public class XfaForm {
     
     public void fillXfaForm(InputSource is) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder(); 
-        db.setEntityResolver((publicId, systemId) -> new InputSource(new StringReader("")));
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        db.setEntityResolver(new EntityResolver() {
+            @Override
+            public InputSource resolveEntity(String publicId, String systemId) {
+                return new InputSource(new StringReader(""));
+            }
+        });
         Document newdoc = db.parse(is);
         fillXfaForm(newdoc.getDocumentElement());
     }

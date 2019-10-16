@@ -57,6 +57,9 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
+import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.VerticalAlignment;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Anchor;
@@ -288,10 +291,26 @@ public class ElementFactory {
         Cell cell = new Cell();
         String value;
 
-        cell.setHorizontalAlignment(attributes
-                .getProperty(ElementTags.HORIZONTALALIGN));
-        cell.setVerticalAlignment(attributes
-                .getProperty(ElementTags.VERTICALALIGN));
+        try {
+            if (attributes.getProperty(ElementTags.HORIZONTALALIGN) != null) {
+                final HorizontalAlignment horizontalAlignment = HorizontalAlignment.valueOf(attributes.getProperty(ElementTags.HORIZONTALALIGN));
+                cell.setHorizontalAlignment(horizontalAlignment);
+            } else {
+                cell.setHorizontalAlignment(HorizontalAlignment.UNDEFINED);
+            }
+        } catch (IllegalArgumentException exc) {
+            cell.setHorizontalAlignment(HorizontalAlignment.UNDEFINED);
+        }
+        try {
+            if (attributes.getProperty(ElementTags.VERTICALALIGN) != null) {
+                final VerticalAlignment verticalAlignment = VerticalAlignment.valueOf(attributes.getProperty(ElementTags.VERTICALALIGN));
+                cell.setVerticalAlignment(verticalAlignment);
+            } else {
+                cell.setVerticalAlignment(VerticalAlignment.UNDEFINED);
+            }
+        } catch (IllegalArgumentException exc) {
+            cell.setVerticalAlignment(VerticalAlignment.UNDEFINED);
+        }
 
         value = attributes.getProperty(ElementTags.WIDTH);
         if (value != null) {
@@ -331,14 +350,14 @@ public class ElementFactory {
             value = attributes.getProperty(ElementTags.WIDTHS);
             if (value != null) {
                 StringTokenizer widthTokens = new StringTokenizer(value, ";");
-                ArrayList values = new ArrayList();
+                java.util.List<String> values = new ArrayList<>();
                 while (widthTokens.hasMoreTokens()) {
                     values.add(widthTokens.nextToken());
                 }
                 table = new Table(values.size());
                 float[] widths = new float[table.getColumns()];
                 for (int i = 0; i < values.size(); i++) {
-                    value = (String) values.get(i);
+                    value = values.get(i);
                     widths[i] = Float.parseFloat(value + "f");
                 }
                 table.setWidths(widths);
@@ -361,7 +380,12 @@ public class ElementFactory {
             }
             value = attributes.getProperty(ElementTags.ALIGN);
             if (value != null) {
-                table.setAlignment(value);
+                try {
+                    final HorizontalAlignment horizontalAlignment = HorizontalAlignment.valueOf(value);
+                    table.setHorizontalAlignment(horizontalAlignment);
+                } catch (IllegalArgumentException exc) {
+                    table.setHorizontalAlignment(HorizontalAlignment.UNDEFINED);
+                }
             }
             value = attributes.getProperty(ElementTags.CELLSPACING);
             if (value != null) {

@@ -6,7 +6,7 @@
     <groupId>com.github.librepdf</groupId>
     <artifactId>openpdf-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.18-SNAPSHOT</version>
+    <version>1.3.12-SNAPSHOT</version>
 
     <licenses>
         <license>
@@ -37,21 +37,22 @@
     </scm>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>1.7</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <bouncycastle.version>1.61</bouncycastle.version>
+        <bouncycastle.version>1.63</bouncycastle.version>
         <spotbugs.version>3.1.12</spotbugs.version>
         <hamcrest.version>2.1</hamcrest.version>
         <java-module-name>com.github.librepdf.openpdf.parent</java-module-name>
-        <jupiter.version>5.4.1</jupiter.version>
+        <jupiter.version>5.5.1</jupiter.version>
         <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
-        <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
         <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
-        <maven.jar.plugin.version>3.1.0</maven.jar.plugin.version>
+        <maven.jar.plugin.version>3.1.2</maven.jar.plugin.version>
         <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
-        <maven.plugin.bundle.version>3.2.0</maven.plugin.bundle.version>
+        <!-- last version for JDK7 -->
+        <maven.plugin.bundle.version>3.5.1</maven.plugin.bundle.version>
         <maven.plugin.repository.version>2.3.1</maven.plugin.repository.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.source.version>3.0.1</maven.source.version>

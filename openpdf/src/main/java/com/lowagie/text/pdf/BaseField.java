@@ -305,6 +305,7 @@ public abstract class BaseField {
     }
 
     @Deprecated
+    @SuppressWarnings("unchecked")
     protected static ArrayList breakLines(ArrayList breaks, BaseFont font, float fontSize, float width) {
         return (ArrayList) breakLines((List<String>) breaks, font, fontSize, width);
     }

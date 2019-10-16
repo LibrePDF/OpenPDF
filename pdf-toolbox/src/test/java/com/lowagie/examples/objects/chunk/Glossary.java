@@ -16,6 +16,7 @@ package com.lowagie.examples.objects.chunk;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.TreeMap;
 
 import com.lowagie.text.Chunk;
@@ -38,7 +39,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class Glossary extends PdfPageEventHelper {
     
     /** keeps a glossary of words and the pages they appear on */
-    public TreeMap glossary = new TreeMap();
+    private Map<String, Integer> glossary = new TreeMap<>();
     
     /**
      * All the text that is passed to this event, gets registered in the glossary.
@@ -115,7 +116,7 @@ public class Glossary extends PdfPageEventHelper {
             document.newPage();
             for (Object o : generic.glossary.keySet()) {
                 String key = (String) o;
-                int page = (Integer) generic.glossary.get(key);
+                int page = generic.glossary.get(key);
                 Paragraph g = new Paragraph(key);
                 g.add(" : page ");
                 g.add(String.valueOf(page));

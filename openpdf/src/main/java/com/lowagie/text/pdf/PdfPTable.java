@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf;
 
 import java.util.ArrayList;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocumentException;
@@ -94,7 +95,7 @@ public class PdfPTable implements LargeElement{
      */    
     public static final int TEXTCANVAS = 3;
     
-    protected ArrayList rows = new ArrayList();
+    protected ArrayList<PdfPRow> rows = new ArrayList<>();
     protected float totalHeight = 0;
     protected PdfPCell[] currentRow;
     protected int currentRowIdx = 0;
@@ -243,7 +244,7 @@ public class PdfPTable implements LargeElement{
             currentRow[k] = new PdfPCell(table.currentRow[k]);
         }
         for (int k = 0; k < table.rows.size(); ++k) {
-            PdfPRow row = (PdfPRow)(table.rows.get(k));
+            PdfPRow row = table.rows.get(k);
             if (row != null)
                 row = new PdfPRow(row);
             rows.add(row);
@@ -514,7 +515,7 @@ public class PdfPTable implements LargeElement{
     }
     
     PdfPCell obtainCell(final int row, final int col) {
-        PdfPCell[] cells = ((PdfPRow)rows.get(row)).getCells();
+        PdfPCell[] cells = rows.get(row).getCells();
         for (int i = 0; i < cells.length; i++) {
             if (cells[i] != null) {
                 if (col >= i && col < (i + cells[i].getColspan())) {
@@ -539,12 +540,12 @@ public class PdfPTable implements LargeElement{
             return false;
         
         int row = currRow - 1;
-        PdfPRow aboveRow = (PdfPRow)rows.get(row);
+        PdfPRow aboveRow = rows.get(row);
         if (aboveRow == null)
             return false;
         PdfPCell aboveCell = obtainCell(row,currCol);
         while ((aboveCell == null) && (row > 0)) {
-            aboveRow  = (PdfPRow)rows.get(--row);
+            aboveRow  = rows.get(--row);
             if (aboveRow == null)
                 return false;
             aboveCell = obtainCell(row,currCol);
@@ -562,7 +563,7 @@ public class PdfPTable implements LargeElement{
         
         if ((aboveCell.getRowspan() == 1) && (distance > 1)) {
             int col = currCol - 1;
-            aboveRow = (PdfPRow)rows.get(row + 1);
+            aboveRow = rows.get(row + 1);
             distance--;
             aboveCell = aboveRow.getCells()[col];
             while ((aboveCell == null) && (col > 0))
@@ -680,7 +681,7 @@ public class PdfPTable implements LargeElement{
         
         float yPosStart = yPos;
         for (int k = rowStart; k < rowEnd; ++k) {
-            PdfPRow row = (PdfPRow)rows.get(k);
+            PdfPRow row = rows.get(k);
             if (row != null) {
                 row.writeCells(colStart, colEnd, xPos, yPos, canvases);
                 yPos -= row.getMaxHeights();
@@ -691,7 +692,7 @@ public class PdfPTable implements LargeElement{
             float[] heights = new float[rowEnd - rowStart + 1];
             heights[0] = yPosStart;
             for (int k = rowStart; k < rowEnd; ++k) {
-                PdfPRow row = (PdfPRow)rows.get(k);
+                PdfPRow row = rows.get(k);
                 float hr = 0;
                 if (row != null)
                     hr = row.getMaxHeights();
@@ -856,7 +857,7 @@ public class PdfPTable implements LargeElement{
     public float getRowHeight(int idx, boolean firsttime) {
         if (totalWidth <= 0 || idx < 0 || idx >= rows.size())
             return 0;
-        PdfPRow row = (PdfPRow)rows.get(idx);
+        PdfPRow row = rows.get(idx);
         if (row == null)
             return 0;
         if (firsttime)
@@ -871,7 +872,7 @@ public class PdfPTable implements LargeElement{
             while (rowSpanAbove(idx - rs, i)) {
                 rs++;
             }
-            tmprow = (PdfPRow)rows.get(idx - rs);
+            tmprow = rows.get(idx - rs);
             cell = tmprow.getCells()[i];
             float tmp = 0;
             if (cell != null && cell.getRowspan() == rs + 1) {
@@ -890,7 +891,7 @@ public class PdfPTable implements LargeElement{
     
     /**
      * Gets the maximum height of a cell in a particular row (will only be different
-     * from getRowHeight is one of the cells in the row has a rowspan > 1).
+     * from getRowHeight is one of the cells in the row has a rowspan {@literal >} 1).
      * 
      * @param    rowIndex    the row index
      * @param    cellIndex    the cell index
@@ -900,7 +901,7 @@ public class PdfPTable implements LargeElement{
     public float getRowspanHeight(int rowIndex, int cellIndex) {
         if (totalWidth <= 0 || rowIndex < 0 || rowIndex >= rows.size())
             return 0;
-        PdfPRow row = (PdfPRow)rows.get(rowIndex);
+        PdfPRow row = rows.get(rowIndex);
         if (row == null || cellIndex >= row.getCells().length)
             return 0;
         PdfPCell cell = row.getCells()[cellIndex];
@@ -923,7 +924,7 @@ public class PdfPTable implements LargeElement{
         float total = 0;
         int size = Math.min(rows.size(), headerRows);
         for (int k = 0; k < size; ++k) {
-            PdfPRow row = (PdfPRow)rows.get(k);
+            PdfPRow row = rows.get(k);
             if (row != null)
                 total += row.getMaxHeights();
         }
@@ -942,7 +943,7 @@ public class PdfPTable implements LargeElement{
         int start = Math.max(0, headerRows - footerRows);
         int size = Math.min(rows.size(), headerRows);
         for (int k = start; k < size; ++k) {
-            PdfPRow row = (PdfPRow)rows.get(k);
+            PdfPRow row = rows.get(k);
             if (row != null)
                 total += row.getMaxHeights();
         }
@@ -959,7 +960,7 @@ public class PdfPTable implements LargeElement{
         if (rowNumber < 0 || rowNumber >= rows.size())
             return false;
         if (totalWidth > 0) {
-            PdfPRow row = (PdfPRow)rows.get(rowNumber);
+            PdfPRow row = rows.get(rowNumber);
             if (row != null)
                 totalHeight -= row.getMaxHeights();
         }
@@ -985,7 +986,7 @@ public class PdfPTable implements LargeElement{
      * Removes all of the rows except headers
      */
     public void deleteBodyRows() {
-        ArrayList rows2 = new ArrayList();
+        ArrayList<PdfPRow> rows2 = new ArrayList<>();
         for (int k = 0; k < headerRows; ++k)
             rows2.add(rows.get(k));
         rows = rows2;
@@ -1031,8 +1032,8 @@ public class PdfPTable implements LargeElement{
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
-        return new ArrayList();
+    public ArrayList<Element> getChunks() {
+        return new ArrayList<>();
     }
     
     /**
@@ -1122,7 +1123,7 @@ public class PdfPTable implements LargeElement{
      * @return the row at position idx
      */
     public PdfPRow getRow(int idx) {
-        return (PdfPRow)rows.get(idx);
+        return rows.get(idx);
     }
 
     /**
@@ -1130,7 +1131,7 @@ public class PdfPTable implements LargeElement{
      * 
      * @return an arraylist
      */
-    public ArrayList getRows() {
+    public ArrayList<PdfPRow> getRows() {
         return rows;
     }
     
@@ -1141,8 +1142,8 @@ public class PdfPTable implements LargeElement{
      * @return    a selection of rows
      * @since    2.1.6
      */
-    public ArrayList getRows(int start, int end) {
-        ArrayList list = new ArrayList();
+    public ArrayList<PdfPRow> getRows(int start, int end) {
+        ArrayList<PdfPRow> list = new ArrayList<>();
         if (start < 0 || end > size()) {
             return list;
         }
@@ -1253,7 +1254,7 @@ public class PdfPTable implements LargeElement{
             int n = 0;
             if (includeHeaders) {
                 for (int k = 0; k < headerRows; ++k) {
-                    PdfPRow row = (PdfPRow)rows.get(k);
+                    PdfPRow row = rows.get(k);
                     if (row == null)
                         ++n;
                     else
@@ -1261,7 +1262,7 @@ public class PdfPTable implements LargeElement{
                 }
             }
             for (; firstRow < lastRow; ++firstRow) {
-                    PdfPRow row = (PdfPRow)rows.get(firstRow);
+                    PdfPRow row = rows.get(firstRow);
                     if (row == null)
                         ++n;
                     else

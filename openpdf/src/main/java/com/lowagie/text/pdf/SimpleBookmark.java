@@ -47,6 +47,11 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.xml.XMLUtil;
+import com.lowagie.text.xml.simpleparser.IanaEncodings;
+import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
+import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,12 +66,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.xml.simpleparser.IanaEncodings;
-import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
-import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
-import com.lowagie.text.xml.XMLUtil;
 
 /**
  * Bookmark processing in a simple way. It has some limitations, mainly the only
@@ -368,6 +367,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @deprecated use {@link #shiftPageNumbersInRange(List, int, int[])}
      */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public static void shiftPageNumbers(List list, int pageShift, int[] pageRange) {
         shiftPageNumbersInRange(list, pageShift, pageRange);
     }
@@ -699,7 +699,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @throws IOException on error
      * @return the bookmarks
      */
-    public static List importFromXML(InputStream in) throws IOException {
+    public static List<Map<String, Object>> importFromXML(InputStream in) throws IOException {
         SimpleBookmark book = new SimpleBookmark();
         SimpleXMLParser.parse(book, in);
         return book.topList;
@@ -711,7 +711,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @throws IOException on error
      * @return the bookmarks
      */
-    public static List importFromXML(Reader in) throws IOException {
+    public static List<Map<String, Object>> importFromXML(Reader in) throws IOException {
         SimpleBookmark book = new SimpleBookmark();
         SimpleXMLParser.parse(book, in);
         return book.topList;
@@ -754,7 +754,11 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     public void startDocument() {
     }
 
+    /**
+     * @deprecated user {@link SimpleBookmark#startElement(String, Map)}
+     */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void startElement(String tag, HashMap h) {
         startElement(tag, (Map<String, String>) h);
     }
@@ -770,7 +774,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
         }
         if (!tag.equals("Title"))
             throw new RuntimeException(MessageLocalization.getComposedMessage("tag.1.not.allowed", tag));
-        Map<String, Object> attributes = new HashMap<>(h);
+        Map<String, Object> attributes = new HashMap<String, Object>(h);
         attributes.put("Title", "");
         attributes.remove("Kids");
         attr.push(attributes);

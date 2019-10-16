@@ -78,7 +78,7 @@ public class ConcatPdf {
         else {
             try {
                 int pageOffset = 0;
-                ArrayList master = new ArrayList();
+                List<Map<String, Object>> master = new ArrayList<>();
                 int f = 0;
                 String outFile = args[args.length-1];
                 Document document = null;

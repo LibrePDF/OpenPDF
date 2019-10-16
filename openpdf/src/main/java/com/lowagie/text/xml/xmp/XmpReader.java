@@ -46,26 +46,23 @@
  */
 package com.lowagie.text.xml.xmp;
 
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.xml.XmlDomWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import com.lowagie.text.ExceptionConverter;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-
-import com.lowagie.text.xml.XmlDomWriter;
 
 /**
  * Reads an XMP stream into an org.w3c.dom.Document objects.
@@ -89,14 +86,19 @@ public class XmpReader {
             DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
             fact.setNamespaceAware(true);
             DocumentBuilder db = fact.newDocumentBuilder();
-            db.setEntityResolver((publicId, systemId) -> new InputSource(new StringReader("")));
+            db.setEntityResolver(new EntityResolver() {
+                @Override
+                public InputSource resolveEntity(String publicId, String systemId) {
+                    return new InputSource(new StringReader(""));
+                }
+            });
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
             domDocument = db.parse(bais);
         } catch (ParserConfigurationException e) {
             throw new ExceptionConverter(e);
         }
     }
-    
+
     /**
      * Replaces the content of a tag.
      * @param    namespaceURI    the URI of the namespace

@@ -1,7 +1,6 @@
 package com.lowagie.text.alignment;
 
 import com.lowagie.text.Element;
-import java.util.Optional;
 
 /**
  * Represents a possible vertical alignment modes for document elements that can be aligned vertically.
@@ -38,16 +37,15 @@ public enum VerticalAlignment {
     * @see Element#ALIGN_MIDDLE
     * @see Element#ALIGN_BOTTOM
     * @see Element#ALIGN_BASELINE
-    * @return {@link Optional} containing alignment instance. If {@code id} is not recognized,
-    * {@link Optional#empty()} will be returned
+     * @return the alignment instance or null if {@code id} is not recognized,
     */
-    public static Optional<VerticalAlignment> of(final int id) {
+    public static VerticalAlignment of(final int id) {
         for (final VerticalAlignment alignment: values()) {
             if (alignment.id == id) {
-                return Optional.of(alignment);
+                return alignment;
             }
         }
 
-        return Optional.empty();
+        return UNDEFINED;
     }
 }

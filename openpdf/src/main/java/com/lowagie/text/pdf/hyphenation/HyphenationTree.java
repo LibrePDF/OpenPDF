@@ -21,13 +21,15 @@ package com.lowagie.text.pdf.hyphenation;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This tree structure stores the hyphenation patterns in an efficient
  * way for fast lookup. It provides the provides the method to
  * hyphenate a word.
  *
- * @author Carlos Villegas <cav@uniscope.co.jp>
+ * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
 public class HyphenationTree extends TernaryTree 
             implements PatternConsumer {
@@ -42,7 +44,7 @@ public class HyphenationTree extends TernaryTree
     /**
      * This map stores hyphenation exceptions
      */
-    protected HashMap stoplist;
+    protected Map<String, List> stoplist;
 
     /**
      * This map stores the character classes
@@ -55,7 +57,7 @@ public class HyphenationTree extends TernaryTree
     private transient TernaryTree ivalues;
 
     public HyphenationTree() {
-        stoplist = new HashMap(23);    // usually a small table
+        stoplist = new HashMap<>(23);    // usually a small table
         classmap = new TernaryTree();
         vspace = new ByteVector();
         vspace.alloc(1);    // this reserves index 0, which we don't use
@@ -171,12 +173,14 @@ public class HyphenationTree extends TernaryTree
      * <p>Search for all possible partial matches of word starting
      * at index an update interletter values. In other words, it
      * does something like:</p>
-     * <code>
-     * for(i=0; i<patterns.length; i++) {
-     * if ( word.substring(index).startsWidth(patterns[i]) )
-     * update_interletter_values(patterns[i]);
-     * }
-     * </code>
+     * <pre>
+     * {@code
+     *  for(i=0; i<patterns.length; i++) {
+     *      if ( word.substring(index).startsWidth(patterns[i]) ) {
+     *          update_interletter_values(patterns[i]);
+     *      }
+     *  }
+     * }</pre>
      * <p>But it is done in an efficient way since the patterns are
      * stored in a ternary tree. In fact, this is the whole purpose
      * of having the tree: doing this search without having to test

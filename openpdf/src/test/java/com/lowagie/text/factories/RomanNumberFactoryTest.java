@@ -1,17 +1,14 @@
 package com.lowagie.text.factories;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
 import static com.lowagie.text.factories.RomanNumberFactory.getString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class RomanNumberFactoryTest {
 
@@ -32,37 +29,36 @@ class RomanNumberFactoryTest {
         assertEquals("mmm", getString(3000));
     }
 
+    static Object[][] numeralTestProvider() {
+        return new Object[][]{
+                {0, ""},
+                {1, "i"},
+                {2, "ii"},
+                {3, "iii"},
+                {4, "iv"},
+                {5, "v"},
+                {6, "vi"},
+                {7, "vii"},
+                {8, "viii"},
+                {9, "ix"},
+                {10, "x"},
+                {20, "xx"},
+                {30, "xxx"},
+                {40, "xl"},
+                {50, "l"},
+                {90, "xc"},
+                {100, "c"},
+                {400, "cd"},
+                {500, "d"},
+                {900, "cm"},
+                {1000, "m"}
+        };
+    }
+
     @ParameterizedTest
     @MethodSource("numeralTestProvider")
     void shouldConvertRomanNumeralRepresentation(int input, String expected) {
-        assertAll(
-                () -> assertThat(getString(input), is(expected)),
-                () -> assertThat(getString(input, false), is(expected.toUpperCase())));
-    }
-
-    static Stream<Arguments> numeralTestProvider() {
-        return Stream.of(
-                arguments(0, ""),
-                arguments(1, "i"),
-                arguments(2, "ii"),
-                arguments(3, "iii"),
-                arguments(4, "iv"),
-                arguments(5, "v"),
-                arguments(6, "vi"),
-                arguments(7, "vii"),
-                arguments(8, "viii"),
-                arguments(9, "ix"),
-                arguments(10, "x"),
-                arguments(20, "xx"),
-                arguments(30, "xxx"),
-                arguments(40, "xl"),
-                arguments(50, "l"),
-                arguments(90, "xc"),
-                arguments(100, "c"),
-                arguments(400, "cd"),
-                arguments(500, "d"),
-                arguments(900, "cm"),
-                arguments(1000, "m")
-        );
+        assertThat(getString(input), is(expected));
+        assertThat(getString(input, false), is(expected.toUpperCase()));
     }
 }

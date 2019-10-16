@@ -48,15 +48,14 @@
  */
 package com.lowagie.text;
 
-import java.util.ArrayList;
-
+import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.VerticalAlignment;
 import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPCellEvent;
 import com.lowagie.text.pdf.PdfPTable;
+import java.util.ArrayList;
 
 
 /**
@@ -73,7 +72,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
     
     // member variables
     /** the content of the Cell. */
-    private ArrayList content = new ArrayList();
+    private java.util.List<Element> content = new ArrayList<>();
     /** the width of the Cell. */
     private float width = 0f;
     /** the widthpercentage of the Cell. */
@@ -174,8 +173,10 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         cell.cloneNonPositionParameters(rowAttributes);
         cell.softCloneNonPositionParameters(this);
         cell.setColspan(colspan);
-        cell.setHorizontalAlignment(horizontalAlignment);
-        cell.setVerticalAlignment(verticalAlignment);
+        HorizontalAlignment hAlignment = HorizontalAlignment.of(horizontalAlignment);
+        cell.setHorizontalAlignment(hAlignment);
+        VerticalAlignment vAlignment = VerticalAlignment.of(verticalAlignment);
+        cell.setVerticalAlignment(vAlignment);
         cell.setUseAscender(useAscender);
         cell.setUseBorderPadding(useBorderPadding);
         cell.setUseDescender(useDescender);
@@ -508,16 +509,16 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
     /**
      * @return Returns the content.
      */
-    ArrayList getContent() {
+    java.util.List<Element> getContent() {
         return content;
     }
 
     /**
-     * @see com.lowagie.text.TextElementArray#add(java.lang.Object)
+     * @see com.lowagie.text.TextElementArray#add(Element)
      */
-    public boolean add(Object o) {
+    public boolean add(Element o) {
         try {
-            addElement((Element)o);
+            addElement(o);
             return true;
         }
         catch(ClassCastException e) {

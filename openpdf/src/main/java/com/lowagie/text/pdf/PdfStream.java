@@ -120,9 +120,9 @@ public class PdfStream extends PdfDictionary {
     protected ByteArrayOutputStream streamBytes = null;
     protected InputStream inputStream;
     protected PdfIndirectReference ref;
-    protected int inputStreamLength = -1;
+    protected long inputStreamLength = -1;
     protected PdfWriter writer;
-    protected int rawLength;
+    protected long rawLength;
 
     static final byte[] STARTSTREAM = DocWriter.getISOBytes("stream\n");
     static final byte[] ENDSTREAM = DocWriter.getISOBytes("\nendstream");
@@ -197,7 +197,7 @@ public class PdfStream extends PdfDictionary {
      * Gets the raw length of the stream.
      * @return the raw length of the stream
      */
-    public int getRawLength() {
+    public long getRawLength() {
         return rawLength;
     }
     

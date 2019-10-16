@@ -78,7 +78,7 @@ public class TextField extends BaseField {
     private String[] choiceExports;
     
     /** Holds value of property choiceSelection. */
-    private ArrayList choiceSelections = new ArrayList();
+    private ArrayList<Integer> choiceSelections = new ArrayList<>();
     
     private int topFirst;
     
@@ -490,7 +490,7 @@ public class TextField extends BaseField {
             return 0;
         }
         
-        Integer firstValue = (Integer)choiceSelections.get(0);
+        Integer firstValue = choiceSelections.get(0);
         
         if (firstValue == null) {
             return 0;
@@ -687,7 +687,7 @@ public class TextField extends BaseField {
         return getTopChoice();
     }
     
-    public ArrayList gteChoiceSelections() {
+    public ArrayList<Integer> gteChoiceSelections() {
         return choiceSelections;
     }
 
@@ -696,13 +696,13 @@ public class TextField extends BaseField {
      * @param choiceSelection the zero based index of the selected item
      */
     public void setChoiceSelection(int choiceSelection) {
-        choiceSelections = new ArrayList();
+        choiceSelections = new ArrayList<>();
         choiceSelections.add(choiceSelection);
     }
     
     /**
      * adds another (or a first I suppose) selection to a MULTISELECT list.
-     * This doesn't do anything unless this.options & MUTLISELECT != 0 
+     * This doesn't do anything unless {@code this.options & MUTLISELECT != 0}
      * @param selection new selection
      */
     public void addChoiceSelection( int selection) {
@@ -718,6 +718,7 @@ public class TextField extends BaseField {
      * @deprecated use {@link #setChoiceSelections(List)}
      */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public void setChoiceSelections(@Nullable ArrayList selections ) {
         setChoiceSelections((List<Integer>) selections);
     }

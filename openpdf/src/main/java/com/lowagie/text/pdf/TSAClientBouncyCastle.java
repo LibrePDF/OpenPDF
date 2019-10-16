@@ -49,14 +49,13 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.error_messages.MessageLocalization;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Base64;
-
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.tsp.TimeStampRequest;
@@ -64,8 +63,7 @@ import org.bouncycastle.tsp.TimeStampRequestGenerator;
 import org.bouncycastle.tsp.TimeStampResponse;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.tsp.TimeStampTokenInfo;
-
-import com.lowagie.text.error_messages.MessageLocalization;
+import org.bouncycastle.util.encoders.Base64;
 
 /**
  * Time Stamp Authority Client interface implementation using Bouncy Castle
@@ -178,8 +176,7 @@ public class TSAClientBouncyCastle implements TSAClient {
       tsqGenerator.setCertReq(true);
       // tsqGenerator.setReqPolicy("1.3.6.1.4.1.601.10.3.1");
       BigInteger nonce = BigInteger.valueOf(System.currentTimeMillis());
-      TimeStampRequest request = tsqGenerator.generate(
-          X509ObjectIdentifiers.id_SHA1.getId(), imprint, nonce);
+      TimeStampRequest request = tsqGenerator.generate(X509ObjectIdentifiers.id_SHA1, imprint, nonce);
       byte[] requestBytes = request.getEncoded();
 
       // Call the communications layer
@@ -249,7 +246,7 @@ public class TSAClientBouncyCastle implements TSAClient {
     if ((tsaUsername != null) && !tsaUsername.equals("")) {
       String userPassword = tsaUsername + ":" + tsaPassword;
       tsaConnection.setRequestProperty("Authorization", "Basic "
-          + new String(Base64.getEncoder().encode(userPassword.getBytes())));
+              + new String(Base64.encode(userPassword.getBytes())));
     }
     OutputStream out = tsaConnection.getOutputStream();
     out.write(requestBytes);
@@ -267,7 +264,7 @@ public class TSAClientBouncyCastle implements TSAClient {
 
     String encoding = tsaConnection.getContentEncoding();
     if (encoding != null && encoding.equalsIgnoreCase("base64")) {
-      respBytes = Base64.getDecoder().decode(respBytes);
+      respBytes = Base64.decode(respBytes);
     }
     return respBytes;
   }

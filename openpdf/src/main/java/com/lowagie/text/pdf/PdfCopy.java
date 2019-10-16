@@ -48,17 +48,14 @@
  */
 package com.lowagie.text.pdf;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-
-import com.lowagie.text.Rectangle;
 import com.lowagie.text.ExceptionConverter;
-
+import com.lowagie.text.Rectangle;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -397,7 +394,8 @@ public class PdfCopy extends PdfWriter {
   public void addPage(Rectangle rect, int rotation) {
     PdfRectangle mediabox = new PdfRectangle(rect, rotation);
     PageResources resources = new PageResources();
-    PdfPage page = new PdfPage(mediabox, new HashMap<>(), resources.getResources(), 0);
+    PdfPage page = new PdfPage(mediabox, new HashMap<String, PdfObject>(),
+            resources.getResources(), 0);
     page.put(PdfName.TABS, getTabs());
     root.addPage(page);
     ++currentPageNumber;
@@ -700,7 +698,7 @@ public class PdfCopy extends PdfWriter {
       cstp.fieldArray.add(ref);
     }
 
-    private void expandFields(PdfFormField field, ArrayList allAnnots) {
+    private void expandFields(PdfFormField field, List<PdfAnnotation> allAnnots) {
       allAnnots.add(field);
       List<PdfFormField> kids = field.getKidFields();
       if (kids != null) {
@@ -712,7 +710,7 @@ public class PdfCopy extends PdfWriter {
 
     public void addAnnotation(PdfAnnotation annot) {
       try {
-        ArrayList<PdfAnnotation> allAnnots = new ArrayList<>();
+        List<PdfAnnotation> allAnnots = new ArrayList<>();
         if (annot.isForm()) {
           PdfFormField field = (PdfFormField) annot;
           if (field.getParent() != null) {

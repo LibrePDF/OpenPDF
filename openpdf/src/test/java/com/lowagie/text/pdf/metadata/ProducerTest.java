@@ -1,23 +1,26 @@
 package com.lowagie.text.pdf.metadata;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Map;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class ProducerTest {
 
     private static final String PRODUCER = "Producer";
 
     @Test
-    void changeProducerLineTest() throws IOException {
+    public void changeProducerLineTest() throws IOException {
         String expected = "New Producer.";
 
         Document document = new Document();
@@ -39,5 +42,19 @@ public class ProducerTest {
         Assertions.assertEquals(expected, actual);
 
         reader.close();
+    }
+
+    @Test
+    public void testMetadataProducerStamperIssue254 () throws IOException {
+        File origin = new File("src/test/resources/pdf_form_metadata_issue_254.pdf");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PdfReader reader = new PdfReader(origin.getAbsolutePath());
+        PdfStamper stamp = new PdfStamper(reader, baos);
+        stamp.close();
+        byte[] data = baos.toByteArray();
+        String sData = new String(data);
+        Assertions.assertTrue(sData.contains("(LibreOffice 6.0; modified using OpenPDF"));        
+        
+        
     }
 }

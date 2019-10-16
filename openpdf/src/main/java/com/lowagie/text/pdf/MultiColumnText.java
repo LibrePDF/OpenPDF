@@ -50,6 +50,8 @@
 package com.lowagie.text.pdf;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Chunk;
@@ -102,7 +104,7 @@ public class MultiColumnText implements Element {
     /**
      * Array of <CODE>ColumnDef</CODE> objects used to define the columns
      */
-    private ArrayList columnDefs;
+    private List<ColumnDef> columnDefs;
 
     /**
      * true if all columns are simple (rectangular)
@@ -132,7 +134,7 @@ public class MultiColumnText implements Element {
      * @param height
      */
     public MultiColumnText(float height) {
-        columnDefs = new ArrayList();
+        columnDefs = new ArrayList<>();
         desiredHeight = height;
         top = AUTOMATIC;
         // canvas will be set later
@@ -148,7 +150,7 @@ public class MultiColumnText implements Element {
      * @param top
      */
     public MultiColumnText(float top, float height) {
-        columnDefs = new ArrayList();
+        columnDefs = new ArrayList<>();
         desiredHeight = height;
         this.top = top;
         nextY = top;
@@ -295,7 +297,7 @@ public class MultiColumnText implements Element {
                 else if (nextY == AUTOMATIC) {
                     nextY = document.getVerticalPosition(true); // RS - 07/07/2005 - - Get current doc writing position for top of columns on new page.
                 }
-                ColumnDef currentDef = (ColumnDef) columnDefs.get(getCurrentColumn());
+                ColumnDef currentDef = columnDefs.get(getCurrentColumn());
                 columnText.setYLine(top);
 
                 float[] left = currentDef.resolvePositions(Rectangle.LEFT);
@@ -373,12 +375,16 @@ public class MultiColumnText implements Element {
         float max = Float.MIN_VALUE;
         float min = Float.MAX_VALUE;
         for (int i = 0; i < left.length; i += 2) {
-            min = Math.min(min, left[i + 1]);
-            max = Math.max(max, left[i + 1]);
+            if (left.length > i + 1) {
+                min = Math.min(min, left[i + 1]);
+                max = Math.max(max, left[i + 1]);
+            }
         }
         for (int i = 0; i < right.length; i += 2) {
-            min = Math.min(min, right[i + 1]);
-            max = Math.max(max, right[i + 1]);
+            if (right.length > i + 1) {
+                min = Math.min(min, right[i + 1]);
+                max = Math.max(max, right[i + 1]);
+            }
         }
         return max - min;
     }
@@ -415,7 +421,7 @@ public class MultiColumnText implements Element {
      * @return    null
      */
 
-    public ArrayList getChunks() {
+    public ArrayList<Element> getChunks() {
         return null;
     }
     

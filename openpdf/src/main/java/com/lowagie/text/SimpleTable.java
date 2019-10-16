@@ -48,14 +48,12 @@
  */
 package com.lowagie.text;
 
-import java.util.ArrayList;
-
+import com.lowagie.text.alignment.HorizontalAlignment;
 import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPTableEvent;
+import java.util.ArrayList;
 
 
 /**
@@ -65,7 +63,7 @@ import com.lowagie.text.pdf.PdfPTableEvent;
 public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElementArray {
 
     /** the content of a Table. */
-    private ArrayList content = new ArrayList();
+    private java.util.List<Element> content = new ArrayList<>();
     /** the width of the Table. */
     private float width = 0f;
     /** the widthpercentage of the Table. */
@@ -116,7 +114,8 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
         float[] widths = new float[columns];
         float[] widthpercentages = new float[columns];
         Table table = new Table(columns);
-        table.setAlignment(alignment);
+        final HorizontalAlignment alignment = HorizontalAlignment.of(this.alignment);
+        table.setHorizontalAlignment(alignment);
         table.setSpacing(cellspacing);
         table.setPadding(cellpadding);
         table.cloneNonPositionParameters(this);
@@ -340,9 +339,9 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
     }
 
     /**
-     * @see com.lowagie.text.TextElementArray#add(java.lang.Object)
+     * @see com.lowagie.text.TextElementArray#add(Element)
      */
-    public boolean add(Object o) {
+    public boolean add(Element o) {
         try {
             addElement((SimpleCell)o);
             return true;

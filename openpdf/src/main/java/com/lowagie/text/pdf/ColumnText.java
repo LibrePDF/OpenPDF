@@ -48,22 +48,23 @@
  */
 
 package com.lowagie.text.pdf;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Stack;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Image;
 import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.SimpleTable;
-import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.draw.DrawInterface;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * Formats text in a columnwise form. The text is bound
@@ -176,10 +177,10 @@ public class ColumnText {
     protected int alignment = Element.ALIGN_LEFT;
     
     /** The left column bound. */
-    protected ArrayList leftWall;
+    protected List<float[]> leftWall;
     
     /** The right column bound. */
-    protected ArrayList rightWall;
+    protected List<float[]> rightWall;
     
     /** The chunks that form the text. */
 //    protected ArrayList chunks = new ArrayList();
@@ -241,7 +242,7 @@ public class ColumnText {
     
     protected ColumnText compositeColumn;
     
-    protected LinkedList compositeElements;
+    protected LinkedList<Element> compositeElements;
     
     protected int listIdx = 0;
     
@@ -298,10 +299,10 @@ public class ColumnText {
         alignment = org.alignment;
         leftWall = null;
         if (org.leftWall != null)
-            leftWall = new ArrayList(org.leftWall);
+            leftWall = new ArrayList<>(org.leftWall);
         rightWall = null;
         if (org.rightWall != null)
-            rightWall = new ArrayList(org.rightWall);
+            rightWall = new ArrayList<>(org.rightWall);
         yLine = org.yLine;
         currentLeading = org.currentLeading;
         fixedLeading = org.fixedLeading;
@@ -324,7 +325,7 @@ public class ColumnText {
         composite = org.composite;
         splittedRow = org.splittedRow;
         if (org.composite) {
-            compositeElements = new LinkedList(org.compositeElements);
+            compositeElements = new LinkedList<>(org.compositeElements);
             if (splittedRow) {
                 PdfPTable table = (PdfPTable)compositeElements.getFirst();
                 compositeElements.set(0, new PdfPTable(table));
@@ -461,7 +462,7 @@ public class ColumnText {
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("element.not.allowed"));
         if (!composite) {
             composite = true;
-            compositeElements = new LinkedList();
+            compositeElements = new LinkedList<>();
             bidiLine = null;
             waitPhrase = null;
         }
@@ -478,11 +479,14 @@ public class ColumnText {
      * @param cLine the column array
      * @return the converted array
      */
-    protected ArrayList convertColumn(float[] cLine) {
+    protected List<float[]> convertColumn(float[] cLine) {
         if (cLine.length < 4)
             throw new RuntimeException(MessageLocalization.getComposedMessage("no.valid.column.line.found"));
-        ArrayList cc = new ArrayList();
+        List<float[]> cc = new ArrayList<>();
         for (int k = 0; k < cLine.length - 2; k += 2) {
+            if (cLine.length == k + 3){
+                break;
+            }
             float x1 = cLine[k];
             float y1 = cLine[k + 1];
             float x2 = cLine[k + 2];
@@ -513,7 +517,7 @@ public class ColumnText {
      * @param wall the column to intersect
      * @return the x coordinate of the intersection
      */
-    protected float findLimitsPoint(ArrayList wall) {
+    protected float findLimitsPoint(List<float[]> wall) {
         lineStatus = LINE_STATUS_OK;
         if (yLine < minY || yLine > maxY) {
             lineStatus = LINE_STATUS_OFFLIMITS;
@@ -812,8 +816,7 @@ public class ColumnText {
         float ratio = spaceCharRatio;
         Object[] currentValues = new Object[2];
         PdfFont currentFont = null;
-        Float lastBaseFactor = (float) 0;
-        currentValues[1] = lastBaseFactor;
+        currentValues[1] = 0.0F;
         PdfDocument pdf = null;
         PdfContentByte graphics = null;
         PdfContentByte text = null;
@@ -1154,7 +1157,7 @@ public class ColumnText {
         while (true) {
             if (compositeElements.isEmpty())
                 return NO_MORE_TEXT;
-            Element element = (Element)compositeElements.getFirst();
+            Element element = compositeElements.getFirst();
             if (element.type() == Element.PARAGRAPH) {
                 Paragraph para = (Paragraph)element;
                 int status = 0;
@@ -1216,11 +1219,11 @@ public class ColumnText {
             }
             else if (element.type() == Element.LIST) {
                 com.lowagie.text.List list = (com.lowagie.text.List)element;
-                ArrayList items = list.getItems();
+                java.util.List<Element> items = list.getItems();
                 ListItem item = null;
                 float listIndentation = list.getIndentationLeft();
                 int count = 0;
-                Stack stack = new Stack();
+                Stack<Object[]> stack = new Stack<>();
                 for (int k = 0; k < items.size(); ++k) {
                     Object obj = items.get(k);
                     if (obj instanceof ListItem) {
@@ -1240,7 +1243,7 @@ public class ColumnText {
                     }
                     if (k == items.size() - 1) {
                         if (!stack.isEmpty()) {
-                            Object[] objs = (Object[]) stack.pop();
+                            Object[] objs = stack.pop();
                             list = (com.lowagie.text.List)objs[0];
                             items = list.getItems();
                             k = (Integer) objs[1];
@@ -1393,7 +1396,7 @@ public class ColumnText {
                             splittedRow = true;
                             table = new PdfPTable(table);
                             compositeElements.set(0, table);
-                            ArrayList rows = table.getRows();
+                            List<PdfPRow> rows = table.getRows();
                             for (int i = headerRows; i < listIdx; ++i)
                                 rows.set(i, null);
                         }
@@ -1432,7 +1435,7 @@ public class ColumnText {
                     }
                     // copy the rows that fit on the page in a new table nt
                     PdfPTable nt = PdfPTable.shallowCopy(table);
-                    ArrayList sub = nt.getRows();
+                    List<PdfPRow> sub = nt.getRows();
                     
                     // first we add the real header rows (if necessary)
                     if (!skipHeader && realHeaderRows > 0) {
@@ -1459,7 +1462,7 @@ public class ColumnText {
                     float rowHeight = 0;
                     int index = sub.size() - 1;
                     if (showFooter) index -= footerRows;
-                    PdfPRow last = (PdfPRow)sub.get(index);
+                    PdfPRow last = sub.get(index);
                     if (table.isExtendLastRow(newPageFollows)) {
                         rowHeight = last.getMaxHeights();
                         last.setMaxHeights(yTemp - minY + rowHeight);
@@ -1488,7 +1491,7 @@ public class ColumnText {
                 }
                 else {
                     if (splittedRow) {
-                        ArrayList rows = table.getRows();
+                        List<PdfPRow> rows = table.getRows();
                         for (int i = listIdx; i < k; ++i)
                             rows.set(i, null);
                     }
@@ -1559,7 +1562,7 @@ public class ColumnText {
      * @since 2.1.2
      */
     public boolean zeroHeightElement() {
-        return composite && !compositeElements.isEmpty() && ((Element)compositeElements.getFirst()).type() == Element.YMARK;
+        return composite && !compositeElements.isEmpty() && compositeElements.getFirst().type() == Element.YMARK;
     }
     
     /**

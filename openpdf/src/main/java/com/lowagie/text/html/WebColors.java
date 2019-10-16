@@ -62,7 +62,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * 
  * @author blowagie
  */
-public class WebColors extends HashMap {
+public class WebColors extends HashMap<String, int[]> {
     
     private static final long serialVersionUID = 3542523100813372896L;
     /** HashMap containing all the names and corresponding color values. */
@@ -258,7 +258,7 @@ public class WebColors extends HashMap {
         if (!NAMES.containsKey(name))
             throw new IllegalArgumentException("Color '" + name
                     + "' not found.");
-        c = (int[]) NAMES.get(name);
+        c = NAMES.get(name);
         return new Color(c[0], c[1], c[2], c[3]);
     }
 }
