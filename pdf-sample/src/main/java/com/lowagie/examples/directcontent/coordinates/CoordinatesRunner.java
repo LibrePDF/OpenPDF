@@ -10,6 +10,6 @@ public class CoordinatesRunner extends AbstractRunner {
         Transformations.main(argsNew);
         TransformImage.main(argsNew);
         UpsideDown.main(argsNew);
-        XandYcoordinates.main(argsNew);
+        XandYCoordinates.main(argsNew);
     }
 }

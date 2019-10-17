@@ -15,6 +15,7 @@
 package com.lowagie.examples.forms;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -32,13 +33,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class FormCombo {
-    /**
-     * Generates an Acroform with a Combobox
-     *
-     * @param args no arguments needed here
-     */
+public class FormCombo   extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/combo";
+    }
+
     public static void main(String[] args) {
+        FormCombo templates = new FormCombo();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("Forms :: Combo");
 
@@ -48,7 +58,7 @@ public class FormCombo {
         try {
 
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/combo.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

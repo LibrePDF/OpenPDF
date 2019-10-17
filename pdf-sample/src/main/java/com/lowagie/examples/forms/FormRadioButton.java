@@ -15,6 +15,7 @@
 package com.lowagie.examples.forms;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -33,13 +34,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class FormRadioButton {
-    /**
-     * Generates an Acroform with a RadioButton
-     *
-     * @param args no arguments needed here
-     */
+public class FormRadioButton   extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/radio_button";
+    }
+
     public static void main(String[] args) {
+        FormRadioButton templates = new FormRadioButton();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("Forms :: RadioButton");
 
@@ -47,9 +57,8 @@ public class FormRadioButton {
         Document document = new Document(PageSize.A4);
 
         try {
-
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/radiobutton.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

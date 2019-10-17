@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.general.copystamp;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.pdf.PdfEncryptor;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
@@ -22,19 +23,27 @@ import java.io.FileOutputStream;
 /**
  * Encrypts an existing PDF file.
  */
-public class EncryptorExample {
+public class EncryptorExample extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/encrypted";
+    }
+
+    public static void main(String[] args) {
+        EncryptorExample templates = new EncryptorExample();
+        templates.run(args);
+    }
 
     /**
-     * Reads and encrypts an existing PDF file.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("General :: CopyStamp :: Encryptor example");
         try {
-            PdfReader reader = new PdfReader(args[0] + "/../../objects/bookmarks/ChapterSection.pdf");
+            PdfReader reader = new PdfReader(path + "/../../objects/bookmarks/chapter_section.pdf");
             PdfEncryptor.encrypt(reader,
-                    new FileOutputStream(args[0] + "/encrypted.pdf"),
+                    new FileOutputStream(path + getFileName() + ".pdf"),
                     "Hello".getBytes(),
                     "World".getBytes(),
                     PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY,

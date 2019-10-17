@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.graphics;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -24,26 +25,33 @@ import java.io.IOException;
 /**
  * Demonstrates how you can write PDF syntax directly to a document.
  */
-public class Literal {
+public class Literal  extends AbstractSample {
 
+    @Override
+    public String getFileName() {
+        return "/literal";
+    }
+
+    public static void main(String[] args) {
+        Literal templates = new Literal();
+        templates.run(args);
+    }
 
     /**
-     * @param args
+     * @param path
      */
-    public static void main(String[] args) {
-
+    public void render(String path) {
         System.out.println("DirectContent :: Graphics :: Literal PDF Syntax");
+
         Document.compress = false;
 
+        // tag::generation[]
         // step 1: creation of a document-object
-        Document document = new Document();
-
-        try {
-
+        try (Document document = new Document()) {
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/literal.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();
@@ -69,8 +77,6 @@ public class Literal {
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-
-        // step 5: we close the document
-        document.close();
+        // end::generation[]
     }
 }

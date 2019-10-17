@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.forms;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Rectangle;
@@ -30,47 +31,22 @@ import java.io.IOException;
 /**
  * General example using TableEvents and CellEvents.
  */
-public class SimpleRegistrationForm implements PdfPCellEvent {
+public class SimpleRegistrationForm  extends AbstractSample {
 
-    /**
-     * the writer with the acroform
-     */
-    private PdfWriter writer;
-
-    /**
-     * the current fieldname
-     */
-    private String fieldname = "NoName";
-
-    /**
-     * Construct an implementation of PdfPCellEvent.
-     *
-     * @param writer the writer with the Acroform that will have to hold the
-     *               fields.
-     */
-    public SimpleRegistrationForm(PdfWriter writer) {
-        this.writer = writer;
+    @Override
+    public String getFileName() {
+        return "/simple_registration_form";
     }
 
-    /**
-     * Construct an implementation of PdfPCellEvent.
-     *
-     * @param writer    the writer with the Acroform that will have to hold the
-     *                  fields.
-     * @param fieldname the name of the TextField
-     */
-    public SimpleRegistrationForm(PdfWriter writer, String fieldname) {
-        this.writer = writer;
-        this.fieldname = fieldname;
-    }
-
-    /**
-     * Example originally written by Wendy Smoak to generate a Table with
-     * 'floating boxes'. Adapted by Bruno Lowagie.
-     *
-     * @param args
-     */
     public static void main(String[] args) {
+        SimpleRegistrationForm templates = new SimpleRegistrationForm();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("Forms :: Simple Registration Form");
 
         // step 1
@@ -78,7 +54,7 @@ public class SimpleRegistrationForm implements PdfPCellEvent {
         try {
             // step 2
 
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/SimpleRegistrationForm.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             // step 3
             document.open();
             // step 4
@@ -88,22 +64,22 @@ public class SimpleRegistrationForm implements PdfPCellEvent {
 
             table.addCell("Your name:");
             cell = new PdfPCell();
-            cell.setCellEvent(new SimpleRegistrationForm(writer, "name"));
+            cell.setCellEvent(new SimpleRegistrationFormPdfCellEvent(writer, "name"));
             table.addCell(cell);
 
             table.addCell("Your home address:");
             cell = new PdfPCell();
-            cell.setCellEvent(new SimpleRegistrationForm(writer, "address"));
+            cell.setCellEvent(new SimpleRegistrationFormPdfCellEvent(writer, "address"));
             table.addCell(cell);
 
             table.addCell("Postal code:");
             cell = new PdfPCell();
-            cell.setCellEvent(new SimpleRegistrationForm(writer, "postal_code"));
+            cell.setCellEvent(new SimpleRegistrationFormPdfCellEvent(writer, "postal_code"));
             table.addCell(cell);
 
             table.addCell("Your email address:");
             cell = new PdfPCell();
-            cell.setCellEvent(new SimpleRegistrationForm(writer, "email"));
+            cell.setCellEvent(new SimpleRegistrationFormPdfCellEvent(writer, "email"));
             table.addCell(cell);
 
             document.add(table);
@@ -115,18 +91,36 @@ public class SimpleRegistrationForm implements PdfPCellEvent {
         document.close();
     }
 
-    /**
-     * @see PdfPCellEvent#cellLayout(PdfPCell,
-     * Rectangle, PdfContentByte[])
-     */
-    public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases) {
-        TextField tf = new TextField(writer, position, fieldname);
-        tf.setFontSize(12);
-        try {
-            PdfFormField field = tf.getTextField();
-            writer.addAnnotation(field);
-        } catch (IOException | DocumentException e) {
-            e.printStackTrace();
+    private static class SimpleRegistrationFormPdfCellEvent implements PdfPCellEvent {
+
+        /**
+         * the writer with the acroform
+         */
+        private final PdfWriter writer;
+
+        /**
+         * the current fieldname
+         */
+        private String fieldname = "NoName";
+
+        private SimpleRegistrationFormPdfCellEvent(PdfWriter writer, String fieldname) {
+            this.writer = writer;
+            this.fieldname = fieldname;
+        }
+
+        /**
+         * @see PdfPCellEvent#cellLayout(PdfPCell,
+         * Rectangle, PdfContentByte[])
+         */
+        public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases) {
+            TextField tf = new TextField(writer, position, fieldname);
+            tf.setFontSize(12);
+            try {
+                PdfFormField field = tf.getTextField();
+                writer.addAnnotation(field);
+            } catch (IOException | DocumentException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

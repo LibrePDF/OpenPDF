@@ -1,0 +1,53 @@
+= Graphics
+:sourcedir: ./../java/
+:imagedir: ./
+
+== Circles
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/graphics/Circles.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/graphics/circles-0.png[Circles]
+
+== GState
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/graphics/GState.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/graphics/gstate-0.png[GState]
+
+== Literal
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/graphics/Literal.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/graphics/literal-0.png[Literal]
+
+== Shapes
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/graphics/Shapes.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/graphics/shapes-0.png[Shapes]
+
+== State
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/graphics/State.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/graphics/state-0.png[State]

@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.fonts.styles;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.PageSize;
@@ -25,20 +26,29 @@ import java.io.FileOutputStream;
 /**
  * Changing the width of font glyphs.
  */
-public class FixedFontWidth {
+public class FixedFontWidth  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/fixed_font_width";
+    }
+
+    public static void main(String[] args) {
+        FixedFontWidth templates = new FixedFontWidth();
+        templates.run(args);
+    }
 
     /**
-     * Changing the width of font glyphs.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
+
         System.out.println("Fonts :: Styles :: Fixed Font Width");
         // step 1
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {
             // step 2
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/fixedfontwidth.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             // step 3
             document.open();
             // step 4

@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.fonts;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -26,14 +27,22 @@ import java.io.IOException;
 /**
  * Specifying an encoding.
  */
-public class FontEncoding {
+public class FontEncoding  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/font_encoding";
+    }
+
+    public static void main(String[] args) {
+        FontEncoding templates = new FontEncoding();
+        templates.run(args);
+    }
 
     /**
-     * Specifying an encoding.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("Fonts :: Encodings");
 
@@ -43,7 +52,7 @@ public class FontEncoding {
         try {
 
             // step 2: creation of the writer
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/fontencoding.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

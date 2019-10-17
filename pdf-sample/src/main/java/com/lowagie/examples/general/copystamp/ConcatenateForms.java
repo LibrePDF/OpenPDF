@@ -12,6 +12,7 @@
  */
 package com.lowagie.examples.general.copystamp;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.pdf.PdfCopyFields;
 import com.lowagie.text.pdf.PdfReader;
 
@@ -20,19 +21,32 @@ import java.io.FileOutputStream;
 /**
  * Concatenates 2 PDF files with forms. The resulting PDF has 1 merged AcroForm.
  */
-public class ConcatenateForms {
+public class ConcatenateForms extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 2;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/concatenated_forms";
+    }
+
+    public static void main(String[] args) {
+        ConcatenateForms templates = new ConcatenateForms();
+        templates.run(args);
+    }
 
     /**
-     * Concatenates 2 PDF files with forms. The resulting PDF has 1 merged AcroForm.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("General :: CopyStamp ::  Concatenate Forms");
         try {
-            PdfReader reader1 = new PdfReader(args[0] + "/../../forms/SimpleRegistrationForm.pdf");
-            PdfReader reader2 = new PdfReader(args[0] + "/../../forms/TextFields.pdf");
-            PdfCopyFields copy = new PdfCopyFields(new FileOutputStream(args[0] + "/concatenatedforms.pdf"));
+            PdfReader reader1 = new PdfReader(path + "/../../forms/simple_registration_form.pdf");
+            PdfReader reader2 = new PdfReader(path + "/../../forms/text_fields.pdf");
+            PdfCopyFields copy = new PdfCopyFields(new FileOutputStream(path + getFileName() + ".pdf"));
             copy.addDocument(reader1);
             copy.addDocument(reader2);
             copy.close();

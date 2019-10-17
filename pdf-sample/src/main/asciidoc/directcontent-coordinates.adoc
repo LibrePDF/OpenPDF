@@ -1,0 +1,53 @@
+= Coordinates
+:sourcedir: ./../java/
+:imagedir: ./
+
+== Affine Transformation
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/coordinates/AffineTransformation.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/coordinates/affine_transformation-0.png[AffineTransform]
+
+== Transformations
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/coordinates/Transformations.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/coordinates/transformations-0.png[Transformations]
+
+== Transform Image
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/coordinates/TransformImage.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/coordinates/transform_image-0.png[TranformImage]
+
+== Upside Down
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/coordinates/UpsideDown.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/coordinates/upside_down-0.png[UpsideDown]
+
+== X and Y Coordinates
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/coordinates/XandYCoordinates.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/coordinates/x_and_y-0.png[XandY]

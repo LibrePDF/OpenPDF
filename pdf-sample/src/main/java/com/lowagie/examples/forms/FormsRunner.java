@@ -15,9 +15,9 @@ public class FormsRunner extends AbstractRunner {
         FormRadioButton.main(argsNew);
         FormSignature.main(argsNew);
         FormTextField.main(argsNew);
+        TextFields.main(argsNew);
         ListFields.main(argsNew);
         SimpleRegistrationForm.main(argsNew);
-        TextFields.main(argsNew);
 
         CreateFormsRunner.main(argsNew);
         FillingFormsRunner.main(argsNew);

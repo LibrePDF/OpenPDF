@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.colors;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
@@ -25,20 +26,29 @@ import java.io.FileOutputStream;
 /**
  * Demonstrates transparency and images.
  */
-public class SoftMask {
+public class SoftMask  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/softmask";
+    }
+
+    public static void main(String[] args) {
+        SoftMask templates = new SoftMask();
+        templates.run(args);
+    }
 
     /**
-     * Demonstrates the Transparency functionality.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("DirectContent :: Colors :: SoftMask");
+
+        // tag::generation[]
         // step 1: creation of a document-object
-        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-        try {
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
             // step 2: creation of a writer 
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/softmask.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             // step 3: we open the document
             document.open();
             // step 4: content
@@ -66,7 +76,6 @@ public class SoftMask {
         } catch (Exception de) {
             de.printStackTrace();
         }
-        // step 5: we close the document
-        document.close();
+        // end::generation[]
     }
 }

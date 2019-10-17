@@ -14,6 +14,7 @@
 
 package com.lowagie.examples.fonts.styles;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -31,14 +32,22 @@ import java.io.IOException;
  * @author blowagie
  */
 
-public class FontStylePropagation {
+public class FontStylePropagation  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/font_style_propagation";
+    }
+
+    public static void main(String[] args) {
+        FontStylePropagation templates = new FontStylePropagation();
+        templates.run(args);
+    }
 
     /**
-     * Explains the mechanism of Font Style Propagation
-     *
-     * @param args no arguments needed here
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("Fonts :: Styles :: Font Style Propagation");
 
@@ -47,8 +56,7 @@ public class FontStylePropagation {
         try {
             // step 2:
             // we create a writer that listens to the document
-            PdfWriter.getInstance(document,
-                    new FileOutputStream(args[0] + "/FontStylePropagation.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

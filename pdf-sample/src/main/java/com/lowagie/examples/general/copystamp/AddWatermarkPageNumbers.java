@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.general.copystamp;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Element;
 import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
@@ -28,20 +29,29 @@ import java.util.Map;
 /**
  * Reads the pages of an existing PDF file, adds pagenumbers and a watermark.
  */
-public class AddWatermarkPageNumbers {
-    /**
-     * Reads the pages of an existing PDF file, adds pagenumbers and a watermark.
-     *
-     * @param args no arguments needed
-     */
+public class AddWatermarkPageNumbers extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/watermark_pagenumbers";
+    }
+
     public static void main(String[] args) {
+        Concatenate templates = new Concatenate();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("General :: CopyStamp :: Add watermarks and pagenumbers");
         try {
             // we create a reader for a certain document
-            PdfReader reader = new PdfReader(args[0] + "/../../objects/bookmarks/ChapterSection.pdf");
+            PdfReader reader = new PdfReader(path + "/../../objects/bookmarks/chapter_section.pdf");
             int n = reader.getNumberOfPages();
             // we create a stamper that will copy the document to a new file
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(args[0] + "/watermark_pagenumbers.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(path + getFileName() + ".pdf"));
             // adding some metadata
             Map<String, String> moreInfo = new HashMap<>();
             moreInfo.put("Author", "Bruno Lowagie");
@@ -76,7 +86,7 @@ public class AddWatermarkPageNumbers {
             over.showTextAligned(Element.ALIGN_LEFT, "DUPLICATE OF AN EXISTING PDF DOCUMENT", 30, 600, 0);
             over.endText();
             // adding a page from another document
-            PdfReader reader2 = new PdfReader(args[0] + "/../../objects/anchors/SimpleAnnotations1.pdf");
+            PdfReader reader2 = new PdfReader(path + "/../../objects/anchors/simple_annotations1.pdf");
             under = stamp.getUnderContent(1);
             under.addTemplate(stamp.getImportedPage(reader2, 3), 1, 0, 0, 1, 0, 0);
             // closing PdfStamper will generate the new PDF file

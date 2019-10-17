@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.colors;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
@@ -30,25 +31,36 @@ import java.io.FileOutputStream;
 /**
  * Painting patterns
  */
-public class Patterns {
-    /**
-     * Painting patterns.
-     *
-     * @param args no arguments needed
-     */
-    public static void main(String[] args) {
+public class Patterns  extends AbstractSample {
 
+    @Override
+    public int getExpectedPageCount() {
+        return 3;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/patterns";
+    }
+
+    public static void main(String[] args) {
+        Patterns templates = new Patterns();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("DirectContent :: Colors :: Painting Patterns");
 
+        // tag::generation[]
         // step 1: creation of a document-object
-        Document document = new Document();
-
-        try {
-
+        try (Document document = new Document()) {
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/patterns.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();
@@ -200,8 +212,6 @@ public class Patterns {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // finally, we close the document
-        document.close();
+        // end::generation[]
     }
 }

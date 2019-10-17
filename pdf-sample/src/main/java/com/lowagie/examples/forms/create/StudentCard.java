@@ -15,6 +15,7 @@
 package com.lowagie.examples.forms.create;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -38,13 +39,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class StudentCard {
-    /**
-     * Generates a StudentCard
-     *
-     * @param args no arguments needed here
-     */
+public class StudentCard extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/student_card";
+    }
+
     public static void main(String[] args) {
+        StudentCard templates = new StudentCard();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("Forms :: Create :: StudentCard");
 
@@ -54,9 +64,8 @@ public class StudentCard {
         Document document = new Document(rect, 10, 10, 10, 10);
 
         try {
-
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/studentcard.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

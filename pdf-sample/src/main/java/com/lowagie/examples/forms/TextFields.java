@@ -15,6 +15,7 @@
 package com.lowagie.examples.forms;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -34,13 +35,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class TextFields {
-    /**
-     * Creates a PDF document with a certain pagesize
-     *
-     * @param args no arguments needed here
-     */
+public class TextFields   extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/text_fields";
+    }
+
     public static void main(String[] args) {
+        TextFields templates = new TextFields();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("Forms :: Textfields");
 
         // step 1: creation of a document-object
@@ -49,7 +59,7 @@ public class TextFields {
         try {
 
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/TextFields.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

@@ -14,6 +14,7 @@
 
 package com.lowagie.examples.general;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
@@ -28,15 +29,22 @@ import java.io.IOException;
  * @author blowagie
  */
 
-public class HelloEncrypted {
+public class HelloEncrypted extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/hello_encrypted";
+    }
+
+    public static void main(String[] args) {
+        HelloEncrypted templates = new HelloEncrypted();
+        templates.run(args);
+    }
 
     /**
-     * Generates a PDF file with the text 'Hello World'
-     * that is protected with the password 'Hello'.
-     *
-     * @param args no arguments needed here
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("General :: Hello World Encrypted");
 
@@ -47,7 +55,7 @@ public class HelloEncrypted {
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
             PdfWriter writer = PdfWriter.getInstance(document,
-                    new FileOutputStream(args[0] + "/HelloEncrypted.pdf"));
+                    new FileOutputStream(path + getFileName() + ".pdf"));
             writer.setEncryption("Hello".getBytes(), "World".getBytes(), PdfWriter.ALLOW_COPY | PdfWriter.ALLOW_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128);
             // step 3: we open the document
             document.open();

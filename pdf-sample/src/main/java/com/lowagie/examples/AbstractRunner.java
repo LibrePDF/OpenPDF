@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 public abstract class AbstractRunner {
     protected static String[] getOutputDirectory(String[] args, String outputDirectory) {
-        String[] argsNew = new String[1];
+        String[] argsNew = args.clone();
         argsNew[0] = args[0] + "/" + outputDirectory;
 
         Path outputPath = Paths.get(args[0]).resolve(outputDirectory);
@@ -16,6 +16,7 @@ public abstract class AbstractRunner {
         } catch (IOException e) {
             argsNew[0] = "";
         }
+
         return argsNew;
     }
 

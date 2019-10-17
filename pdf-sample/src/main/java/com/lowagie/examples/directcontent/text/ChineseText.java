@@ -13,6 +13,8 @@
  */
 package com.lowagie.examples.directcontent.text;
 
+import com.lowagie.examples.AbstractSample;
+import com.lowagie.examples.directcontent.Templates;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
@@ -25,23 +27,31 @@ import java.io.IOException;
 /**
  * Adding text at an absolute position.
  */
-public class ChineseText {
-    /**
-     * Adding text at absolute positions.
-     *
-     * @param args no arguments needed
-     */
+public class ChineseText  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/chinese_text";
+    }
+
     public static void main(String[] args) {
+        Templates templates = new Templates();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("Text at absolute positions");
 
+        // tag::generation[]
         // step 1: creation of a document-object
-        Document document = new Document();
-
-        try {
+        try (Document document = new Document()) {
 
             // step 2: creation of the writer
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/chineseText.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();
@@ -65,8 +75,6 @@ public class ChineseText {
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-
-        // step 5: we close the document
-        document.close();
+        // end::generation[]
     }
 }

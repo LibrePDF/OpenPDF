@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.general.read;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 
@@ -22,18 +23,31 @@ import java.io.FileWriter;
 /**
  * Reading an encrypted PDF file (you need the owner password to do this).
  */
-public class ReadEncrypted {
+public class ReadEncrypted extends AbstractSample {
+
+    @Override
+    public boolean isPdfProducer() {
+        return false;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/info_encrypted";
+    }
+
+    public static void main(String[] args) {
+        ReadEncrypted templates = new ReadEncrypted();
+        templates.run(args);
+    }
 
     /**
-     * Reads an encrypted PDF document.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("General :: Read :: Read Encrypted PDF");
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(args[0] + "/info_encrypted.txt"));
-            PdfReader r = new PdfReader(args[0] + "/../HelloEncrypted.pdf", "Hello".getBytes());
+            BufferedWriter out = new BufferedWriter(new FileWriter(path + getFileName() + ".txt"));
+            PdfReader r = new PdfReader(path + "/../HelloEncrypted.pdf", "Hello".getBytes());
             out.write(r.getInfo().toString());
             out.write("\r\n");
             int permissions = r.getPermissions();

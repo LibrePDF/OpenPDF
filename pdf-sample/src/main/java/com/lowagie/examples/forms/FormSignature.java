@@ -15,6 +15,7 @@
 package com.lowagie.examples.forms;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -30,13 +31,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class FormSignature {
-    /**
-     * Generates an Acroform with a Signature
-     *
-     * @param args no arguments needed here
-     */
+public class FormSignature   extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/signature";
+    }
+
     public static void main(String[] args) {
+        FormSignature templates = new FormSignature();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("Forms :: Signature");
 
@@ -46,7 +56,7 @@ public class FormSignature {
         try {
 
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/signature.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

@@ -15,6 +15,7 @@
 package com.lowagie.examples.forms;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -33,13 +34,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class FormCheckbox {
-    /**
-     * Generates an Acroform with a Checkbox
-     *
-     * @param args no arguments needed here
-     */
+public class FormCheckbox extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/checkbox";
+    }
+
     public static void main(String[] args) {
+        FormCheckbox templates = new FormCheckbox();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("Forms :: Checkbox");
 
         // step 1: creation of a document-object
@@ -48,7 +58,7 @@ public class FormCheckbox {
         try {
 
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/checkbox.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

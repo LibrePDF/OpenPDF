@@ -183,4 +183,3 @@ buildNumber.properties
 *.pdf
 #Allow pdf as source resources for testing
 !openpdf/src/test/resources/*.pdf
-

@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.pageevents;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.PageSize;
@@ -27,52 +28,69 @@ import java.io.FileOutputStream;
 /**
  * Demonstrates the use of PageEvents.
  */
-public class EndPage extends PdfPageEventHelper {
+public class EndPage extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 4;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/end_page";
+    }
+
+    public static void main(String[] args) {
+        EndPage templates = new EndPage();
+        templates.run(args);
+    }
 
     /**
-     * Demonstrates the use of PageEvents.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("DirectContent :: PageEvents :: End of page");
 
-        Document document = new Document(PageSize.A4, 50, 50, 70, 70);
-        try {
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/endpage.pdf"));
-            writer.setPageEvent(new EndPage());
+        // tag::generation[]
+        try (Document document = new Document(PageSize.A4, 50, 50, 70, 70)) {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
+            writer.setPageEvent(new EndPagePageEvent());
             document.open();
             String text = "Lots of text. ";
             for (int k = 0; k < 10; ++k)
                 text += text;
             document.add(new Paragraph(text));
-            document.close();
         } catch (Exception de) {
             de.printStackTrace();
         }
+        // end::generation[]
     }
 
-    /**
-     * @see PdfPageEventHelper#onEndPage(PdfWriter, Document)
-     */
-    public void onEndPage(PdfWriter writer, Document document) {
-        try {
-            Rectangle page = document.getPageSize();
-            PdfPTable head = new PdfPTable(3);
-            for (int k = 1; k <= 6; ++k)
-                head.addCell("head " + k);
-            head.setTotalWidth(page.getWidth() - document.leftMargin() - document.rightMargin());
-            head.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - document.topMargin() + head.getTotalHeight(),
-                    writer.getDirectContent());
-            PdfPTable foot = new PdfPTable(3);
-            for (int k = 1; k <= 6; ++k)
-                foot.addCell("foot " + k);
-            foot.setTotalWidth(page.getWidth() - document.leftMargin() - document.rightMargin());
-            foot.writeSelectedRows(0, -1, document.leftMargin(), document.bottomMargin(),
-                    writer.getDirectContent());
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
+    // tag::pageEvent[]
+    static class EndPagePageEvent extends PdfPageEventHelper {
+
+        /**
+         * @see PdfPageEventHelper#onEndPage(PdfWriter, Document)
+         */
+        public void onEndPage(PdfWriter writer, Document document) {
+            try {
+                Rectangle page = document.getPageSize();
+                PdfPTable head = new PdfPTable(3);
+                for (int k = 1; k <= 6; ++k)
+                    head.addCell("head " + k);
+                head.setTotalWidth(page.getWidth() - document.leftMargin() - document.rightMargin());
+                head.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - document.topMargin() + head.getTotalHeight(),
+                        writer.getDirectContent());
+                PdfPTable foot = new PdfPTable(3);
+                for (int k = 1; k <= 6; ++k)
+                    foot.addCell("foot " + k);
+                foot.setTotalWidth(page.getWidth() - document.leftMargin() - document.rightMargin());
+                foot.writeSelectedRows(0, -1, document.leftMargin(), document.bottomMargin(),
+                        writer.getDirectContent());
+            } catch (Exception e) {
+                throw new ExceptionConverter(e);
+            }
         }
     }
-
+    // end::pageEvent[]
 }

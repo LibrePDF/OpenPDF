@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.optionalcontent;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
@@ -36,20 +37,29 @@ import java.io.FileOutputStream;
 /**
  * Demonstrates how to group optional content.
  */
-public class ContentGroups {
+public class ContentGroups  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/content_groups";
+    }
+
+    public static void main(String[] args) {
+        ContentGroups templates = new ContentGroups();
+        templates.run(args);
+    }
 
     /**
-     * Demonstrates how to group optional content.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("DirectContent :: OptionalContent :: Grouping optional content");
-        try {
-            // step 1
-            Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+
+        // tag::generation[]
+        // step 1
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
             // step 2
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/contentgroups.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             writer.setPdfVersion(PdfWriter.VERSION_1_5);
             writer.setViewerPreferences(PdfWriter.PageModeUseOC);
             // step 3
@@ -89,10 +99,9 @@ public class ContentGroups {
             PdfDictionary d = new PdfDictionary();
             d.put(PdfName.ORDER, order);
             p.put(PdfName.D, d);
-            // step 5
-            document.close();
         } catch (Exception de) {
             de.printStackTrace();
         }
+        // end::generation[]
     }
 }

@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.fonts.styles;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -28,13 +29,22 @@ import java.io.IOException;
 /**
  * Adding text at an absolute position.
  */
-public class ComplexText {
-    /**
-     * Adding text at absolute positions.
-     *
-     * @param args no arguments needed
-     */
+public class ComplexText  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/complex_text";
+    }
+
     public static void main(String[] args) {
+        ComplexText templates = new ComplexText();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("Fonts :: Styles :: Text at absolute positions");
 
@@ -44,7 +54,7 @@ public class ComplexText {
         try {
 
             // step 2: creation of the writer
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/complextext.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

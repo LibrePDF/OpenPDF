@@ -15,6 +15,7 @@
 package com.lowagie.examples.forms;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -32,13 +33,22 @@ import java.util.ArrayList;
  *
  * @author blowagie
  */
-public class FormList {
-    /**
-     * Generates an Acroform with a list
-     *
-     * @param args no arguments needed here
-     */
+public class FormList   extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/list_boxes";
+    }
+
     public static void main(String[] args) {
+        FormList templates = new FormList();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("Forms :: List");
 
@@ -48,7 +58,7 @@ public class FormList {
         try {
 
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/listboxes.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

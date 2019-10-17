@@ -15,6 +15,7 @@
 package com.lowagie.examples.general;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -29,13 +30,27 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class LandscapePortrait {
-    /**
-     * Creates a PDF document with pages in portrait/landscape.
-     *
-     * @param args no arguments needed here
-     */
+public class LandscapePortrait extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 2;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/landscape_portrait";
+    }
+
     public static void main(String[] args) {
+        LandscapePortrait templates = new LandscapePortrait();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("General :: Documents in Landscape and Portrait format");
         // step 1: creation of a document-object
@@ -47,7 +62,7 @@ public class LandscapePortrait {
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
 
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/LandscapePortrait.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

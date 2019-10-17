@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.fonts.styles;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -29,38 +30,28 @@ import java.io.FileOutputStream;
 /**
  * Writing Vertical Text.
  */
-public class Vertical {
+public class Vertical  extends AbstractSample {
 
-    static String[] texts = {
-            "Some very long text to check if it wraps (or not).",
-            " In blue.",
-            "And now in orange another very long text.",
-            "", "", ""};
+    @Override
+    public int getExpectedPageCount() {
+        return 2;
+    }
 
-    static String[] encs = {"UniJIS-UCS2-V", "Identity-V"};
+    @Override
+    public String getFileName() {
+        return "/vertical";
+    }
 
-    /**
-     * @param text
-     * @return converted text
-     */
-    public static String convertCid(String text) {
-        char[] cid = text.toCharArray();
-        for (int k = 0; k < cid.length; ++k) {
-            char c = cid[k];
-            if (c == '\n')
-                cid[k] = '\uff00';
-            else
-                cid[k] = (char) (c - ' ' + 8720);
-        }
-        return new String(cid);
+    public static void main(String[] args) {
+        Vertical templates = new Vertical();
+        templates.run(args);
     }
 
     /**
-     * Writing vertical text.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
+
         System.out.println("Fonts :: Styles :: Vertical Text");
 
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
@@ -68,7 +59,7 @@ public class Vertical {
             texts[3] = convertCid(texts[0]);
             texts[4] = convertCid(texts[1]);
             texts[5] = convertCid(texts[2]);
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/vertical.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             int idx = 0;
             document.open();
             PdfContentByte cb = writer.getDirectContent();
@@ -105,5 +96,27 @@ public class Vertical {
         }
     }
 
+    static String[] texts = {
+            "Some very long text to check if it wraps (or not).",
+            " In blue.",
+            "And now in orange another very long text.",
+            "", "", ""};
 
+    static String[] encs = {"UniJIS-UCS2-V", "Identity-V"};
+
+    /**
+     * @param text
+     * @return converted text
+     */
+    public static String convertCid(String text) {
+        char[] cid = text.toCharArray();
+        for (int k = 0; k < cid.length; ++k) {
+            char c = cid[k];
+            if (c == '\n')
+                cid[k] = '\uff00';
+            else
+                cid[k] = (char) (c - ' ' + 8720);
+        }
+        return new String(cid);
+    }
 }

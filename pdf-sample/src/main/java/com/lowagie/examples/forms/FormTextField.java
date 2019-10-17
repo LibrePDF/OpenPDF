@@ -15,6 +15,7 @@
 package com.lowagie.examples.forms;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -37,13 +38,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class FormTextField {
-    /**
-     * Generates an Acroform with a TextField
-     *
-     * @param args no arguments needed here
-     */
+public class FormTextField   extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/text_field";
+    }
+
     public static void main(String[] args) {
+        FormTextField templates = new FormTextField();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("Forms :: Textfield");
 
@@ -53,7 +63,7 @@ public class FormTextField {
         try {
 
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/textfield.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

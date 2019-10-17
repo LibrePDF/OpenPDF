@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.coordinates;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -26,22 +27,34 @@ import java.io.IOException;
 /**
  * Adding a template using different transformation matrices.
  */
-public class Transformations {
+public class Transformations  extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 2;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/transformations";
+    }
+
+    public static void main(String[] args) {
+        Transformations templates = new Transformations();
+        templates.run(args);
+    }
 
     /**
-     * Adding a template using different transformation matrices.
-     *
-     * @param args no arguments needed here
+     * @param path
      */
-    public static void main(String[] args) {
-
+    public void render(String path) {
         System.out.println("DirectContent :: Coordinates :: Transformations");
-        // step 1: creation of a document-object
-        Document document = new Document(PageSize.A4);
 
-        try {
+        // tag::generation[]
+        // step 1: creation of a document-object
+        try (Document document = new Document(PageSize.A4)){
             // step 2: creation of the writer
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/transformations.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();
@@ -78,8 +91,6 @@ public class Transformations {
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-
-        // step 5: we close the document
-        document.close();
+        // end::generation[]
     }
 }

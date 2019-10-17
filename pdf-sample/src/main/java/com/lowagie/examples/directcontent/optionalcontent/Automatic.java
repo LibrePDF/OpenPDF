@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.optionalcontent;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
@@ -29,20 +30,29 @@ import java.io.FileOutputStream;
 /**
  * Automatic layer grouping and nesting
  */
-public class Automatic {
+public class Automatic  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/automatic";
+    }
+
+    public static void main(String[] args) {
+        Automatic templates = new Automatic();
+        templates.run(args);
+    }
 
     /**
-     * Automatic grouping and nesting.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("DirectContent :: OptionalContent :: Automatic grouping and nesting");
-        try {
-            // step 1
-            Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+
+        // tag::generation[]
+        // step 1
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
             // step 2
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/automatic.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             writer.setPdfVersion(PdfWriter.VERSION_1_5);
             writer.setViewerPreferences(PdfWriter.PageModeUseOC);
             // step 3
@@ -78,13 +88,9 @@ public class Automatic {
             ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, p4, 50, 450, 0);
             cb.endLayer();
             cb.sanityCheck();
-
-            // step 5
-            document.close();
         } catch (Exception de) {
             de.printStackTrace();
         }
+        // end::generation[]
     }
-
-
 }

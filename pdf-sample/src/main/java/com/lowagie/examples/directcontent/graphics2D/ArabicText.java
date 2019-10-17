@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.graphics2D;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -24,20 +25,29 @@ import java.io.FileOutputStream;
 /**
  * Draws arabic text using java.awt.Graphics2D
  */
-public class ArabicText {
+public class ArabicText  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/arabic_text";
+    }
+
+    public static void main(String[] args) {
+        ArabicText templates = new ArabicText();
+        templates.run(args);
+    }
 
     /**
-     * Draws arabic text using java.awt.Graphics2D.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("DirectContent :: Graphics2D :: Arabic Text.");
+
+        // tag::generation[]
         // step 1
-        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-        try {
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
             // step 2
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/arabictext.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             // step 3
             document.open();
             // step 4
@@ -49,11 +59,9 @@ public class ArabicText {
             g2.drawString(text1, 100, 100);
             g2.dispose();
             cb.sanityCheck();
-            // step 5
-            document.close();
         } catch (Exception de) {
             de.printStackTrace();
         }
+        // end::generation[]
     }
-
 }

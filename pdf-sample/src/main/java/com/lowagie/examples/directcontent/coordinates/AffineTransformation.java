@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.coordinates;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -28,22 +29,29 @@ import java.io.IOException;
 /**
  * Uses the AffineTransform class to change the transformation matrix.
  */
-public class AffineTransformation {
+public class AffineTransformation  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/affine_transformation";
+    }
+
+    public static void main(String[] args) {
+        AffineTransformation templates = new AffineTransformation();
+        templates.run(args);
+    }
 
     /**
-     * Changes the transformation matrix with AffineTransform.
-     *
-     * @param args no arguments needed here
+     * @param path
      */
-    public static void main(String[] args) {
-
+    public void render(String path) {
         System.out.println("DirectContent :: Coordinates :: Affine Transformation");
-        // step 1: creation of a document-object
-        Document document = new Document(PageSize.A4);
 
-        try {
+        // tag::generation[]
+        // step 1: creation of a document-object
+        try (Document document = new Document(PageSize.A4)) {
             // step 2: creation of the writer
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/affinetransformation.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();
@@ -91,8 +99,6 @@ public class AffineTransformation {
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-
-        // step 5: we close the document
-        document.close();
+        // end::generation[]
     }
 }

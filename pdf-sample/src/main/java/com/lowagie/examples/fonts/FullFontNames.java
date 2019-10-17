@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.fonts;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.pdf.BaseFont;
 
 import java.io.BufferedWriter;
@@ -21,17 +22,31 @@ import java.io.FileWriter;
 /**
  * Retrieving the full font name
  */
-public class FullFontNames {
+public class FullFontNames  extends AbstractSample {
+
+    @Override
+    public boolean isPdfProducer() {
+        return false;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/full_fontname_arialbi";
+    }
+
+    public static void main(String[] args) {
+        FullFontNames templates = new FullFontNames();
+        templates.run(args);
+    }
 
     /**
-     * Retrieving the full font name
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
+
         System.out.println("Fonts :: Full Font names");
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(args[0] + "/fullfontname_arialbi.txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter(path + getFileName() + ".txt"));
             BaseFont bf = BaseFont.createFont("arialbi.ttf", "winansi", BaseFont.NOT_EMBEDDED);
             out.write("postscriptname: " + bf.getPostscriptFontName());
             out.write("\r\n\r\n");

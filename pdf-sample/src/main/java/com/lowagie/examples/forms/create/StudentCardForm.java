@@ -15,6 +15,7 @@
 package com.lowagie.examples.forms.create;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -39,28 +40,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class StudentCardForm implements PdfPCellEvent {
+public class StudentCardForm extends AbstractSample {
 
-    /**
-     * the writer with the acroform
-     */
-    private PdfFormField field;
+    @Override
+    public String getFileName() {
+        return "/student_card_form";
+    }
 
-    /**
-     * Construct an implementation of PdfPCellEvent.
-     *
-     * @param field a form field
-     */
-    public StudentCardForm(PdfFormField field) {
-        this.field = field;
+    public static void main(String[] args) {
+        StudentCardForm templates = new StudentCardForm();
+        templates.run(args);
     }
 
     /**
-     * Generates a StudentCard as a form
-     *
-     * @param args no arguments needed here
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("Forms :: Create :: StudentCard as a form");
 
@@ -70,9 +65,8 @@ public class StudentCardForm implements PdfPCellEvent {
         Document document = new Document(rect, 10, 10, 10, 10);
 
         try {
-
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/studentcardform.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();
@@ -99,7 +93,7 @@ public class StudentCardForm implements PdfPCellEvent {
             text.setOptions(TextField.MULTILINE);
             text.setFontSize(8);
             PdfFormField name = text.getTextField();
-            cell.setCellEvent(new StudentCardForm(name));
+            cell.setCellEvent(new StudentCarFomPdfCellEvent(name));
             innertable.addCell(cell);
             innertable.addCell(new Paragraph("date of birth:", f));
             cell = new PdfPCell();
@@ -107,7 +101,7 @@ public class StudentCardForm implements PdfPCellEvent {
             text.setOptions(TextField.MULTILINE);
             text.setFontSize(8);
             PdfFormField birthdate = text.getTextField();
-            cell.setCellEvent(new StudentCardForm(birthdate));
+            cell.setCellEvent(new StudentCarFomPdfCellEvent(birthdate));
             innertable.addCell(cell);
             innertable.addCell(new Paragraph("Study Program:", f));
             cell = new PdfPCell();
@@ -116,7 +110,7 @@ public class StudentCardForm implements PdfPCellEvent {
             text.setFontSize(8);
             PdfFormField studyprogram = text.getTextField();
             studyprogram.setFieldName("studyprogram");
-            cell.setCellEvent(new StudentCardForm(studyprogram));
+            cell.setCellEvent(new StudentCarFomPdfCellEvent(studyprogram));
             innertable.addCell(cell);
             innertable.addCell(new Paragraph("option:", f));
             cell = new PdfPCell();
@@ -125,20 +119,20 @@ public class StudentCardForm implements PdfPCellEvent {
             text.setFontSize(8);
             PdfFormField option = text.getTextField();
             option.setFieldName("option");
-            cell.setCellEvent(new StudentCardForm(option));
+            cell.setCellEvent(new StudentCarFomPdfCellEvent(option));
             innertable.addCell(cell);
             outertable.addCell(innertable);
             cell = new PdfPCell();
             cell.setBackgroundColor(new Color(0xFF, 0xDE, 0xAD));
             PdfFormField picture = PdfFormField.createPushButton(writer);
             picture.setFieldName("picture");
-            cell.setCellEvent(new StudentCardForm(picture));
+            cell.setCellEvent(new StudentCarFomPdfCellEvent(picture));
             outertable.addCell(cell);
             cell = new PdfPCell();
             cell.setBackgroundColor(Color.WHITE);
             PdfFormField barcode = PdfFormField.createPushButton(writer);
             barcode.setFieldName("barcode");
-            cell.setCellEvent(new StudentCardForm(barcode));
+            cell.setCellEvent(new StudentCarFomPdfCellEvent(barcode));
             outertable.addCell(cell);
             outertable.writeSelectedRows(0, -1, 20, 100, writer.getDirectContent());
             writer.addAnnotation(name);
@@ -155,12 +149,23 @@ public class StudentCardForm implements PdfPCellEvent {
         document.close();
     }
 
-    /**
-     * @see PdfPCellEvent#cellLayout(PdfPCell,
-     * Rectangle, PdfContentByte[])
-     */
-    public void cellLayout(PdfPCell cell, Rectangle position,
-                           PdfContentByte[] canvases) {
-        field.setWidget(position, null);
+    private static class StudentCarFomPdfCellEvent implements PdfPCellEvent {
+        /**
+         * the writer with the acroform
+         */
+        private final PdfFormField field;
+
+        private StudentCarFomPdfCellEvent(PdfFormField field) {
+            this.field = field;
+        }
+
+        /**
+         * @see PdfPCellEvent#cellLayout(PdfPCell,
+         * Rectangle, PdfContentByte[])
+         */
+        public void cellLayout(PdfPCell cell, Rectangle position,
+                               PdfContentByte[] canvases) {
+            field.setWidget(position, null);
+        }
     }
 }

@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.colors;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.CMYKColor;
@@ -26,17 +27,27 @@ import java.io.FileOutputStream;
 /**
  * Shading example
  */
-public class Shading {
-    /**
-     * Shading example.
-     *
-     * @param args no arguments needed
-     */
+public class Shading  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/shading";
+    }
+
     public static void main(String[] args) {
+        Shading templates = new Shading();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("DirectContent :: Colors :: Shading");
-        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-        try {
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/shading.pdf"));
+
+        // tag::generation[]
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             document.open();
 
             PdfFunction function1 = PdfFunction.type2(writer, new float[]{0, 1}, null,
@@ -62,10 +73,9 @@ public class Shading {
             cb.restoreState();
 
             cb.sanityCheck();
-
-            document.close();
         } catch (Exception de) {
             de.printStackTrace();
         }
+        // end::generation[]
     }
 }

@@ -13,6 +13,8 @@
  */
 package com.lowagie.examples.directcontent.graphics2D;
 
+import com.lowagie.examples.AbstractSample;
+import com.lowagie.examples.directcontent.Templates;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.FontFactory;
@@ -32,24 +34,29 @@ import java.io.IOException;
 /**
  * A simple Graphics2D example.
  */
-public class G2D {
+public class G2D  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/graphics_2d";
+    }
+
+    public static void main(String[] args) {
+        Templates templates = new Templates();
+        templates.run(args);
+    }
 
     /**
-     * A simple Graphics2D example
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
-
+    public void render(String path) {
         System.out.println("DirectContent :: Graphics2D :: Using the java.awt.Graphics2D-object");
 
+        // tag::generation[]
         // step 1: creation of a document-object
-        Document document = new Document();
-
-        try {
-
+        try (Document document = new Document()) {
             // step 2: creation of the writer
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/graphics2D.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();
@@ -132,9 +139,6 @@ public class G2D {
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
-
-        // step 5: we close the document
-        document.close();
+        // end::generation[]
     }
-
 }

@@ -13,6 +13,8 @@
  */
 package com.lowagie.examples.fonts;
 
+import com.lowagie.examples.AbstractSample;
+import com.lowagie.examples.directcontent.Templates;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -26,14 +28,22 @@ import java.io.IOException;
 /**
  * Embedding True Type fonts.
  */
-public class UnicodeExample {
+public class UnicodeExample  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/unicode";
+    }
+
+    public static void main(String[] args) {
+        Templates templates = new Templates();
+        templates.run(args);
+    }
 
     /**
-     * Embedding True Type Fonts.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("Fonts :: True Types (embedded)");
 
@@ -41,9 +51,8 @@ public class UnicodeExample {
         Document document = new Document();
 
         try {
-
             // step 2: creation of the writer-object
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/unicode.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

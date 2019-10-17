@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.colors;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.CMYKColor;
@@ -30,24 +31,32 @@ import java.io.FileOutputStream;
 /**
  * Painting Patterns.
  */
-public class Pattern {
-    /**
-     * Painting Patterns.
-     *
-     * @param args no arguments needed
-     */
-    public static void main(String[] args) {
+public class Pattern  extends AbstractSample {
 
+    @Override
+    public String getFileName() {
+        return "/pattern";
+    }
+
+    public static void main(String[] args) {
+        Pattern templates = new Pattern();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("DirectContent :: Colors :: Stencil");
 
+        // tag::generation[]
         // step 1: creation of a document-object
-        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-        try {
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
 
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/pattern.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();
@@ -101,7 +110,6 @@ public class Pattern {
         } catch (Exception de) {
             de.printStackTrace();
         }
-        // step 5: we close the document
-        document.close();
+        // end::generation[]
     }
 }

@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -27,14 +28,30 @@ import java.io.IOException;
 /**
  * Explains the concept concerning PdfContentByte layers.
  */
-public class Layers {
+public class Layers extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 1;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/layers";
+    }
+
+    public static void main(String[] args) {
+        Layers layers = new Layers();
+        layers.run(args);
+    }
 
     /**
      * Draws different things into different layers.
      *
-     * @param args no arguments needed
+     * @param path no arguments needed
      */
-    public static void main(String[] args) {
+    @Override
+    public void render(String path) {
 
         System.out.println("DirectContent :: Layers");
 
@@ -43,29 +60,30 @@ public class Layers {
         try (Document document = new Document()) {
 
             // step 2: creation of the writer
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/layers.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();
 
-            // step 4:
+            // step 4: add element to the PDF
 
             // high level
             Paragraph p = new Paragraph();
             for (int i = 0; i < 100; i++) p.add(new Chunk("Blah blah blah blah blah. "));
-            document.add(p);
+            document.add(p); // <1>
+
             Image img = Image.getInstance(Layers.class.getClassLoader().getResource("hitchcock.png"));
             img.setAbsolutePosition(100, 500);
-            document.add(img);
+            document.add(img); // <2>
 
             // low level
-            PdfContentByte cb = writer.getDirectContent();
-            PdfContentByte cbu = writer.getDirectContentUnder();
+            PdfContentByte cb = writer.getDirectContent(); // <3>
             cb.setRGBColorFill(0xFF, 0xFF, 0xFF);
             cb.circle(250.0f, 500.0f, 50.0f);
             cb.fill();
             cb.sanityCheck();
 
+            PdfContentByte cbu = writer.getDirectContentUnder(); // <4>
             cbu.setRGBColorFill(0xFF, 0x00, 0x00);
             cbu.circle(250.0f, 500.0f, 100.0f);
             cbu.fill();
@@ -76,5 +94,4 @@ public class Layers {
         }
         // end::generation[]
     }
-
 }

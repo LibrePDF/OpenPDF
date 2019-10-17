@@ -14,6 +14,7 @@
 
 package com.lowagie.examples.fonts.styles;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -34,14 +35,27 @@ import java.io.IOException;
  * @author blowagie
  */
 
-public class FontColor {
+public class FontColor  extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 2;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/font_color";
+    }
+
+    public static void main(String[] args) {
+        FontColor templates = new FontColor();
+        templates.run(args);
+    }
 
     /**
-     * Changing Font colors
-     *
-     * @param args no arguments needed here
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("Fonts :: Styles :: ChunkColor");
 
@@ -51,7 +65,7 @@ public class FontColor {
             // step 2:
             // we create a writer that listens to the document
             PdfWriter writer = PdfWriter.getInstance(document,
-                    new FileOutputStream(args[0] + "/FontColor.pdf"));
+                    new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

@@ -14,6 +14,7 @@
 
 package com.lowagie.examples.general;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
@@ -28,14 +29,26 @@ import java.io.IOException;
  * @author blowagie
  */
 
-public class HelloSystemOut {
+public class HelloSystemOut extends AbstractSample {
+    @Override
+    public boolean isPdfProducer() {
+        return false;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/hello_world";
+    }
+
+    public static void main(String[] args) {
+        HelloSystemOut templates = new HelloSystemOut();
+        templates.run(args);
+    }
 
     /**
-     * Generates a PDF file with the text 'Hello World'
-     *
-     * @param args no arguments needed here
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("General :: Hello World System Out");
 
@@ -48,7 +61,7 @@ public class HelloSystemOut {
             PdfWriter w = PdfWriter.getInstance(document, System.out);
             w.setCloseStream(false); // System.out should not be closed
             PdfWriter.getInstance(document,
-                    new FileOutputStream("HelloWorld.txt"));
+                    new FileOutputStream(path + getFileName() + ".txt"));
 
             // step 3: we open the document
             document.open();

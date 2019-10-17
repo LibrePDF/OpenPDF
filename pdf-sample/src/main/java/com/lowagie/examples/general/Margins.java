@@ -15,6 +15,7 @@
 package com.lowagie.examples.general;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -30,13 +31,27 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class Margins {
-    /**
-     * Creates a PDF document with different pages that have different margins.
-     *
-     * @param args no arguments needed here
-     */
+public class Margins extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 8;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/margins";
+    }
+
     public static void main(String[] args) {
+        Margins templates = new Margins();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("General :: Document margins");
         // step 1: creation of a document-object
@@ -48,7 +63,7 @@ public class Margins {
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
 
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/Margins.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

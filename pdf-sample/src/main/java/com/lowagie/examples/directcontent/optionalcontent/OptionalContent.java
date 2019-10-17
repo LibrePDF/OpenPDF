@@ -13,7 +13,7 @@
  */
 package com.lowagie.examples.directcontent.optionalcontent;
 
-import com.lowagie.examples.AbstractRunner;
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -41,19 +41,29 @@ import java.util.List;
 /**
  * Demonstrates the use of layers.
  */
-public class OptionalContent extends AbstractRunner {
-    /**
-     * Demonstrates the use of layers.
-     *
-     * @param args no arguments needed
-     */
+public class OptionalContent extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/optional_content";
+    }
+
     public static void main(String[] args) {
-        try {
-            System.out.println("DirectContent :: OptionalContent :: Optional content");
-            // step 1: creation of a document-object
-            Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+        OptionalContent templates = new OptionalContent();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
+        System.out.println("DirectContent :: OptionalContent :: Optional content");
+
+        // tag::generation[]
+        // step 1: creation of a document-object
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
             // step 2: creation of the writer
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/optionalcontent.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             writer.setPdfVersion(PdfWriter.VERSION_1_5);
             writer.setViewerPreferences(PdfWriter.PageModeUseOC);
             // step 3: opening the document
@@ -109,11 +119,9 @@ public class OptionalContent extends AbstractRunner {
             Chunk ck = new Chunk("Click here to toggle the layers", new Font(Font.HELVETICA, 18, Font.NORMAL, Color.yellow)).setBackground(Color.blue).setAction(action);
             ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, new Phrase(ck), 250, 400, 0);
             cb.sanityCheck();
-
-            // step 5: closing the document
-            document.close();
         } catch (Exception de) {
             de.printStackTrace();
         }
+        // end::generation[]
     }
 }

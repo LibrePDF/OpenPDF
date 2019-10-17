@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.fonts.getting;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -26,14 +27,23 @@ import java.io.IOException;
 /**
  * Changing the style of a FontFactory Font.
  */
-public class FontFactoryStyles {
+public class FontFactoryStyles  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/font_factory_styles";
+    }
+
+    public static void main(String[] args) {
+        FontFactoryStyles templates = new FontFactoryStyles();
+        templates.run(args);
+    }
 
     /**
-     * Changing the style of a FontFactory Font.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
+
         System.out.println("Fonts :: Getting :: Changing the style of a FontFactory font");
 
         // step 1: creation of a document-object
@@ -42,7 +52,7 @@ public class FontFactoryStyles {
         try {
 
             // step 2: creation of the writer
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/fontfactorystyles.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

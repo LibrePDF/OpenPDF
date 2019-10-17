@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.optionalcontent;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
@@ -33,20 +34,29 @@ import java.io.FileOutputStream;
 /**
  * Demonstrates the use of nested layers.
  */
-public class NestedLayers {
+public class NestedLayers  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/nested_layers";
+    }
+
+    public static void main(String[] args) {
+        NestedLayers templates = new NestedLayers();
+        templates.run(args);
+    }
 
     /**
-     * Demonstrates the use of nested layers
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("DirectContent :: OptionalContent :: Nested layers");
-        try {
-            // step 1
-            Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+
+        // tag::generation[]
+        // step 1
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
             // step 2
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/nestedlayers.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             writer.setPdfVersion(PdfWriter.VERSION_1_5);
             writer.setViewerPreferences(PdfWriter.PageModeUseOC);
             // step 3
@@ -86,12 +96,9 @@ public class NestedLayers {
             PdfDictionary d = new PdfDictionary();
             d.put(PdfName.ORDER, order);
             p.put(PdfName.D, d);
-            // step 5
-            document.close();
         } catch (Exception de) {
             de.printStackTrace();
         }
+        // end::generation[]
     }
-
-
 }

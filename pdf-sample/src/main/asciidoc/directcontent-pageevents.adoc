@@ -1,0 +1,63 @@
+= Page Events
+:sourcedir: ./../java/
+:imagedir: ./
+
+== Bookmarks
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/pageevents/Bookmarks.java[tag=generation,indent=0]
+----
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/pageevents/Bookmarks.java[tag=pageEvent,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/pageevents/bookmarks-0.png[Bookmarks]
+
+== End Page
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/pageevents/EndPage.java[tag=generation,indent=0]
+----
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/pageevents/EndPage.java[tag=pageEvent,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/pageevents/end_page-0.png[EndPage]
+
+== Events
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/pageevents/Events.java[tag=generation,indent=0]
+----
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/pageevents/Events.java[tag=pageEvent,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/pageevents/romeo_and_juliette-0.png[Events]
+
+== Page Number Watermark
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/pageevents/PageNumbersWatermark.java[tag=generation,indent=0]
+----
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/pageevents/PageNumbersWatermark.java[tag=pageEvent,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/pageevents/page_numbers_watermark-0.png[PageNumberAndWatermark]

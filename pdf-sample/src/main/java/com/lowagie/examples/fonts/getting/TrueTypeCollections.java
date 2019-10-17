@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.fonts.getting;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -28,21 +29,30 @@ import java.io.IOException;
 /**
  * Using True Type Collections.
  */
-public class TrueTypeCollections {
+public class TrueTypeCollections  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/truetype_collections";
+    }
+
+    public static void main(String[] args) {
+        TrueTypeCollections templates = new TrueTypeCollections();
+        templates.run(args);
+    }
 
     /**
-     * Using true type collections.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
+
         System.out.println("Fonts :: Getting :: True Type Collections");
 
         // step 1: creation of a document-object
         Document document = new Document();
 
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(args[0] + "/msgothic.txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter(path + "/msgothic.txt"));
             String[] names = BaseFont.enumerateTTCNames("msgothic.ttc");
             for (int i = 0; i < names.length; i++) {
                 out.write("font " + i + ": " + names[i]);
@@ -51,7 +61,7 @@ public class TrueTypeCollections {
             out.flush();
             out.close();
             // step 2: creation of the writer
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/truetypecollections.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

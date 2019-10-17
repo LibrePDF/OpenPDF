@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.colors;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.BaseFont;
@@ -27,17 +28,27 @@ import java.io.FileOutputStream;
 /**
  * Shading example
  */
-public class ShadingPattern {
-    /**
-     * Shading example.
-     *
-     * @param args no arguments needed
-     */
+public class ShadingPattern  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/shading_pattern";
+    }
+
     public static void main(String[] args) {
+        ShadingPattern templates = new ShadingPattern();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("DirectContent :: Colors :: Shading pattern");
-        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-        try {
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/shading_pattern.pdf"));
+
+        // tag::generation[]
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             document.open();
 
             PdfShading shading = PdfShading.simpleAxial(writer, 100, 100, 400, 100, Color.red, Color.cyan);
@@ -53,9 +64,9 @@ public class ShadingPattern {
             PdfShading shadingR = PdfShading.simpleRadial(writer, 200, 500, 50, 300, 500, 100, new Color(255, 247, 148), new Color(247, 138, 107), false, false);
             cb.paintShading(shadingR);
             cb.sanityCheck();
-            document.close();
         } catch (Exception de) {
             de.printStackTrace();
         }
+        // end::generation[]
     }
 }

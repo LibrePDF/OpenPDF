@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.colors;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
@@ -31,25 +32,37 @@ import java.io.FileOutputStream;
 /**
  * Demonstrates the use of spotcolors.
  */
-public class SpotColors {
+public class SpotColors  extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 2;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/spot_colors";
+    }
+
+    public static void main(String[] args) {
+        SpotColors templates = new SpotColors();
+        templates.run(args);
+    }
 
     /**
-     * Demonstrates the use of spotcolors.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
-
+    public void render(String path) {
         System.out.println("DirectContent :: Colors :: Pantone example : Spot Color");
 
+        // tag::generation[]
         // step 1: creation of a document-object
-        Document document = new Document();
-        try {
+        try (Document document = new Document()) {
 
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/spotcolor.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             BaseFont bf = BaseFont.createFont("Helvetica", "winansi", BaseFont.NOT_EMBEDDED);
 
             // step 3: we open the document
@@ -135,10 +148,6 @@ public class SpotColors {
         } catch (Exception de) {
             de.printStackTrace();
         }
-
-        // step 5: we close the document
-        document.close();
+        // end::generation[]
     }
-
-
 }

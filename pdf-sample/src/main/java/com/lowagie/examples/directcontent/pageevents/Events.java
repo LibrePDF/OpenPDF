@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.pageevents;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -44,26 +45,37 @@ import java.util.TreeSet;
  * extra's, such as an alternating header, a footer with page x of y, a page
  * with metadata,...
  */
-public class Events {
+public class Events extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 82;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/romeo_and_juliette";
+    }
+
+    public static void main(String[] args) {
+        Events templates = new Events();
+        templates.run(args);
+    }
 
     /**
-     * Converts a play in XML into PDF.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("DirectContent :: PageEvents :: Romeo and Juliet");
 
+        // tag::generation[]
         // step 1: creation of a document-object
-        Document document = new Document(PageSize.A4, 80, 50, 30, 65);
-
-        try {
+        try (Document document = new Document(PageSize.A4, 80, 50, 30, 65)) {
             // step 2:
             // we create a writer that listens to the document
             // and directs a XML-stream to a file
-            PdfWriter writer = PdfWriter.getInstance(document,
-                    new FileOutputStream(args[0] + "/RomeoJuliet.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // create add the event handler
             MyPageEvents events = new Events().getPageEvents();
@@ -79,15 +91,13 @@ public class Events {
             Speaker speaker;
             for (Object o : events.getSpeakers()) {
                 speaker = (Speaker) o;
-                document.add(new Paragraph(speaker.getName() + ": "
-                        + speaker.getOccurrence() + " speech blocks"));
+                document.add(new Paragraph(speaker.getName() + ": " + speaker.getOccurrence() + " speech blocks"));
             }
-            document.close();
-
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getMessage());
         }
+        // end::generation[]
     }
 
     /**
@@ -120,7 +130,8 @@ public class Events {
      * If you want to use a PageEvent, you may want to put the code in a separate class.
      */
 
-    class MyPageEvents extends PdfPageEventHelper {
+    // tag::pageEvent[]
+    static class MyPageEvents extends PdfPageEventHelper {
 
         /**
          * we will keep a list of speakers
@@ -240,13 +251,14 @@ public class Events {
             return speakers;
         }
     }
+    // end::pageEvent[]
 
     /**
      * Special implementation of the XML handler.
      * It adds a paragraph after each SPEAKER block and
      * avoids closing the document after the final closing tag.
      */
-    class MyHandler extends SAXmyHandler {
+    static class MyHandler extends SAXmyHandler {
 
         /**
          * We have to override the constructor
@@ -298,7 +310,7 @@ public class Events {
      * an XmlPeer object that overrides the properties of one of the tags.
      */
 
-    class RomeoJulietMap extends TagMap {
+    static class RomeoJulietMap extends TagMap {
 
         private static final long serialVersionUID = 1024517625414654121L;
 
@@ -320,7 +332,7 @@ public class Events {
      * This object contains a speaker and a number of occurrences in the play
      */
 
-    class Speaker implements Comparable {
+    static class Speaker implements Comparable {
 
         // name of the speaker
         private String name;
@@ -331,7 +343,7 @@ public class Events {
         /**
          * One of the speakers in the play.
          */
-        public Speaker(String name) {
+        Speaker(String name) {
             this.name = name;
         }
 

@@ -15,6 +15,7 @@
 package com.lowagie.examples.general;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -29,13 +30,27 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class DefaultPageSize {
-    /**
-     * Creates a PDF document with a certain pagesize
-     *
-     * @param args no arguments needed here
-     */
+public class DefaultPageSize extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 10;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/default_page_size";
+    }
+
     public static void main(String[] args) {
+        DefaultPageSize templates = new DefaultPageSize();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("General :: The default PageSize and some other standard sizes");
 
@@ -43,12 +58,11 @@ public class DefaultPageSize {
         Document document = new Document();
 
         try {
-
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
 
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/DefaultPageSize.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

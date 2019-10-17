@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.forms.fill;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
@@ -25,18 +26,27 @@ import java.io.InputStream;
 /**
  * How to merge an XFDF file with a PDF form.
  */
-public class XfdfExample {
-    /**
-     * Merges an XFDF file with a PDF form.
-     *
-     * @param args no arguments needed
-     */
+public class XfdfExample   extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/registered_xfdf";
+    }
+
     public static void main(String[] args) {
+        XfdfExample templates = new XfdfExample();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("Forms :: Fill :: XFDF Example");
         try {
             // merging the FDF file
-            PdfReader pdfreader = new PdfReader(args[0] + "/../SimpleRegistrationForm.pdf");
-            PdfStamper stamp = new PdfStamper(pdfreader, new FileOutputStream(args[0] + "/registered_xfdf.pdf"));
+            PdfReader pdfreader = new PdfReader(path + "/../simple_registration_form.pdf");
+            PdfStamper stamp = new PdfStamper(pdfreader, new FileOutputStream(path + getFileName() + ".pdf"));
             InputStream inputStream = XfdfExample.class.getClassLoader().getResource("register.xfdf").openStream();
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 

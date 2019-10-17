@@ -15,6 +15,7 @@
 package com.lowagie.examples.general.faq;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
@@ -29,13 +30,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class Measurements {
-    /**
-     * Creates a PDF document explaining the measurement system.
-     *
-     * @param args no arguments needed here
-     */
+public class Measurements extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/measurements";
+    }
+
     public static void main(String[] args) {
+        Measurements templates = new Measurements();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("General :: FAQ :: Measurements");
         // step 1: creation of a document-object
@@ -43,12 +53,11 @@ public class Measurements {
         Document document = new Document(pageSize, 36, 18, 72, 72);
 
         try {
-
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
 
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/Measurements.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

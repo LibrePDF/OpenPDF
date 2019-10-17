@@ -1,7 +1,0 @@
-= Using Direct Content
-:sourcedir: ../../../../../java
-
-[source,java,linenums]
-----
-include::{sourcedir}/com/lowagie/examples/directcontent/Layers.java[tag=generation,indent=0]
-----

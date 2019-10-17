@@ -1,0 +1,30 @@
+= Text
+:sourcedir: ./../java/
+:imagedir: ./
+
+== Chinese Text
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/text/ChineseText.java[tag=generation,indent=0]
+----
+
+== Logo
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/text/Logo.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/text/logo-0.png[Logo]
+
+== Text
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/text/Text.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/text/text-0.png[Text]

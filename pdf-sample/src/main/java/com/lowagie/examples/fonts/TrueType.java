@@ -13,6 +13,8 @@
  */
 package com.lowagie.examples.fonts;
 
+import com.lowagie.examples.AbstractSample;
+import com.lowagie.examples.directcontent.Templates;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -26,14 +28,22 @@ import java.io.IOException;
 /**
  * Using a True Type Font.
  */
-public class TrueType {
+public class TrueType  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/true_type";
+    }
+
+    public static void main(String[] args) {
+        Templates templates = new Templates();
+        templates.run(args);
+    }
 
     /**
-     * Using a True Type Font.
-     *
-     * @param args np arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("Fonts :: True Type fonts (not embedded)");
 
@@ -44,7 +54,7 @@ public class TrueType {
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/truetype.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

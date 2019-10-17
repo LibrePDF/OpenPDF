@@ -1,0 +1,63 @@
+= Optional Content
+:sourcedir: ./../java/
+:imagedir: ./
+
+== Automatic
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/optionalcontent/Automatic.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/optionalcontent/automatic-0.png[Automatic]
+
+== Content Groups
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/optionalcontent/ContentGroups.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/optionalcontent/content_groups-0.png[ContentGroup]
+
+== Layers
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/optionalcontent/Layers.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/optionalcontent/layers-0.png[Layers]
+
+== Nested Layers
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/optionalcontent/NestedLayers.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/optionalcontent/nested_layers-0.png[NestedLayers]
+
+== Optional Content
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/optionalcontent/OptionalContent.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/optionalcontent/optional_content-0.png[OptionalContent]
+
+== Ordered Layers
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/optionalcontent/OrderedLayers.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/optionalcontent/ordered_layers-0.png[OrderedLayers]

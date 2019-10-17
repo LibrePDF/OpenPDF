@@ -1,9 +1,11 @@
 = OpenPDF Sample project
 :source-highlighter: highlight.js
 :nofooter:
+:toclevels: 4
+:toc: left
 
-include::com/lowagies/examples/generating.adoc[leveloffset=1]
+include::generating.adoc[leveloffset=1]
 
 == Samples
 
-include::com/lowagies/examples/directcontent/index.adoc[leveloffset=2]
+include::directcontent.adoc[leveloffset=2]

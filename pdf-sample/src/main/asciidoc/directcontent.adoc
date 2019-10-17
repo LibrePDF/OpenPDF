@@ -1,0 +1,50 @@
+= Using Direct Content
+:sourcedir: ./../java
+
+== Layers
+
+In this example, one Paragraph filled with multiple Chunks, and 2 Circles are placed on the page.
+
+[source,java,linenums]
+----
+include::{sourcedir}/com/lowagie/examples/directcontent/Layers.java[tag=generation,indent=0]
+----
+<1> the Paragraph is added to the document
+<2> the Image is added
+<3> getting a reference of the DirectContent to add the white circle above everything
+<4> getting a reference of the DirectContentUnder to add the red circle under everything
+
+== Templates
+
+In this example, one Paragraph filled with multiple Chunks, and 2 Circles are placed on the page.
+
+[source,java,linenums]
+----
+include::{sourcedir}/com/lowagie/examples/directcontent/Templates.java[tag=generation,indent=0]
+----
+<1> create a template
+<2> draw a line in the template
+<3> draw a circle in the template
+<4> add text in the template
+<5> place the template multiple times on the page
+
+== Template Images
+
+In this example, one Paragraph filled with multiple Chunks, and 2 Circles are placed on the page.
+
+[source,java,linenums]
+----
+include::{sourcedir}/com/lowagie/examples/directcontent/TemplateImages.java[tag=generation,indent=0]
+----
+<1> the Paragraph is added to the document
+<2> the Image is added
+<3> getting a reference of the DirectContent to add the white circle above everything
+<4> getting a reference of the DirectContentUnder to add the red circle under everything
+
+include::./directcontent-colors.adoc[leveloffset=+1]
+include::./directcontent-coordinates.adoc[leveloffset=+1]
+include::./directcontent-graphics.adoc[leveloffset=+1]
+include::./directcontent-graphics2d.adoc[leveloffset=+1]
+include::./directcontent-optionalcontent.adoc[leveloffset=+1]
+include::./directcontent-pageevents.adoc[leveloffset=+1]
+include::./directcontent-text.adoc[leveloffset=+1]

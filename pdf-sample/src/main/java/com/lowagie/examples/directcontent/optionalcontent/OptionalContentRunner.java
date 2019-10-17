@@ -4,7 +4,7 @@ import com.lowagie.examples.AbstractRunner;
 
 public class OptionalContentRunner extends AbstractRunner {
     public static void main(String[] args) {
-        String[] argsNew = getOutputDirectory(args, "optionalcontent");
+        String[] argsNew = getOutputDirectory(args, "directcontent-optionalcontent.adoc");
 
         Automatic.main(argsNew);
         ContentGroups.main(argsNew);

@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.general.copystamp;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
@@ -27,18 +28,26 @@ import java.io.FileOutputStream;
  * Reads the pages of an existing PDF file and puts 2 pages from the existing doc
  * into one of the new doc.
  */
-public class TwoOnOne {
-    /**
-     * Reads the pages of an existing PDF file and puts 2 pages from the existing doc
-     * into one of the new doc.
-     *
-     * @param args no arguments needed
-     */
+public class TwoOnOne extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/2on1";
+    }
+
     public static void main(String[] args) {
+        TwoOnOne templates = new TwoOnOne();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("General :: CopyStamp :: Import pages as images");
         try {
             // we create a reader for a certain document
-            PdfReader reader = new PdfReader(args[0] + "/../../objects/bookmarks/ChapterSection.pdf");
+            PdfReader reader = new PdfReader(path + "/../../objects/bookmarks/chapter_section.pdf");
             // we retrieve the total number of pages
             int n = reader.getNumberOfPages();
             // we retrieve the size of the first page
@@ -49,7 +58,7 @@ public class TwoOnOne {
             // step 1: creation of a document-object
             Document document = new Document(new Rectangle(width, height));
             // step 2: we create a writer that listens to the document
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/2on1.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             // step 3: we open the document
             document.open();
             // step 4: we add content

@@ -15,6 +15,7 @@
 package com.lowagie.examples.general.faq;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
@@ -28,24 +29,32 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class PdfVersion {
-    /**
-     * Creates a PDF document and shows the PDF version.
-     *
-     * @param args no arguments needed here
-     */
+public class PdfVersion extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/pdf_version";
+    }
+
     public static void main(String[] args) {
+        PdfVersion templates = new PdfVersion();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("General :: FAQ :: PDF version");
         // step 1: creation of a document-object
         Document document = new Document();
 
         try {
-
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/pdfversion.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             writer.setPdfVersion(PdfWriter.VERSION_1_2);
             // step 3: we open the document
             document.open();

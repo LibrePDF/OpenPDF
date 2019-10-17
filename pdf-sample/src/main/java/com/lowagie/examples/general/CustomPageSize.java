@@ -15,6 +15,7 @@
 package com.lowagie.examples.general;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
@@ -29,13 +30,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class CustomPageSize {
-    /**
-     * Creates a PDF document with a certain pagesize
-     *
-     * @param args no arguments needed here
-     */
+public class CustomPageSize extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/custom_page_size";
+    }
+
     public static void main(String[] args) {
+        CustomPageSize templates = new CustomPageSize();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("General :: Custom PageSize and backgroundcolor");
 
@@ -50,7 +60,7 @@ public class CustomPageSize {
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
 
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/CustomPageSize.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

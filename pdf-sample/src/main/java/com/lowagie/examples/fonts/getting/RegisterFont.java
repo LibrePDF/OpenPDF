@@ -13,6 +13,8 @@
  */
 package com.lowagie.examples.fonts.getting;
 
+import com.lowagie.examples.AbstractSample;
+import com.lowagie.examples.directcontent.Templates;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -29,14 +31,22 @@ import java.io.IOException;
 /**
  * Registering Fonts with the FontFactory.
  */
-public class RegisterFont {
+public class RegisterFont  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/register_font";
+    }
+
+    public static void main(String[] args) {
+        Templates templates = new Templates();
+        templates.run(args);
+    }
 
     /**
-     * Registering fonts with the fontfactory.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("Fonts :: Getting :: Registering fonts with the FontFactory");
 
@@ -49,7 +59,7 @@ public class RegisterFont {
 
         try {
             // step 2: creation of the writer
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/registerfont.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();
@@ -67,7 +77,7 @@ public class RegisterFont {
             Font font3 = FontFactory.getFont("MS-PGothic", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 12);
             String text3 = "\u5951\u7d04\u8005\u4f4f\u6240\u30e9\u30a4\u30f3\uff11";
             document.add(new Paragraph(text3, font3));
-            BufferedWriter out = new BufferedWriter(new FileWriter(args[0] + "/registered.txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter(path + "/registered.txt"));
             out.write("These fonts were registered at the FontFactory:\r\n");
             for (Object o1 : FontFactory.getRegisteredFonts()) {
                 out.write((String) o1);

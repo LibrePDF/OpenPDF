@@ -1,0 +1,83 @@
+= Colors
+:sourcedir: ./../java/
+:imagedir: ./
+
+== Groups
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/colors/Groups.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/colors/groups-0.png[Groups]
+
+== Pattern
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/colors/Pattern.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/colors/pattern-0.png[Pattern]
+
+== Patterns
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/colors/Patterns.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/colors/patterns-0.png[Patterns]
+
+== Shading
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/colors/Shading.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/colors/shading-0.png[Shading]
+
+== Shading Pattern
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/colors/ShadingPattern.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/colors/shading_pattern-0.png[ShadingPattern]
+
+== Soft Mask
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/colors/SoftMask.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/colors/softmask-0.png[SoftMask]
+
+== Spot Colors
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/colors/SpotColors.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/colors/spot_colors-0.png[SpotColors]
+
+== Transparency
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/colors/Transparency.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/colors/transparency-0.png[Transparency]

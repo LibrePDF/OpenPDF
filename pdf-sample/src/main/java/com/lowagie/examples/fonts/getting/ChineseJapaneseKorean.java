@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.fonts.getting;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -27,14 +28,23 @@ import java.io.IOException;
 /**
  * Using CJK Fonts.
  */
-public class ChineseJapaneseKorean {
+public class ChineseJapaneseKorean  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/cjk";
+    }
+
+    public static void main(String[] args) {
+        ChineseJapaneseKorean templates = new ChineseJapaneseKorean();
+        templates.run(args);
+    }
 
     /**
-     * Using CJK fonts
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
+
         System.out.println("Fonts :: Getting :: CJK Fonts");
 
         // step 1: creation of a document-object
@@ -42,7 +52,7 @@ public class ChineseJapaneseKorean {
         try {
 
             // step 2: creation of the writer
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/cjk.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

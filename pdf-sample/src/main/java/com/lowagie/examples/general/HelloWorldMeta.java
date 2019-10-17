@@ -14,6 +14,7 @@
 
 package com.lowagie.examples.general;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
@@ -28,14 +29,22 @@ import java.io.IOException;
  * @author blowagie
  */
 
-public class HelloWorldMeta {
+public class HelloWorldMeta extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/hello_world_meta";
+    }
+
+    public static void main(String[] args) {
+        HelloWorldMeta templates = new HelloWorldMeta();
+        templates.run(args);
+    }
 
     /**
-     * Generates a PDF file with metadata
-     *
-     * @param args no arguments needed here
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("General :: Metadata");
 
@@ -46,7 +55,7 @@ public class HelloWorldMeta {
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
             PdfWriter.getInstance(document,
-                    new FileOutputStream(args[0] + "/HelloWorldMeta.pdf"));
+                    new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we add some metadata open the document
             document.addTitle("Hello World example");

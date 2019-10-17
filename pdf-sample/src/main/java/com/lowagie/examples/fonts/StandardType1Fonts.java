@@ -14,6 +14,7 @@
 
 package com.lowagie.examples.fonts;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -29,14 +30,22 @@ import java.io.IOException;
  * @author blowagie
  */
 
-public class StandardType1Fonts {
+public class StandardType1Fonts  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/standard_type1_fonts";
+    }
+
+    public static void main(String[] args) {
+        StandardType1Fonts templates = new StandardType1Fonts();
+        templates.run(args);
+    }
 
     /**
-     * Generates a PDF file with the 14 standard Type 1 Fonts
-     *
-     * @param args no arguments needed here
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("Fonts :: Standard Type 1 fonts");
 
@@ -45,8 +54,7 @@ public class StandardType1Fonts {
         try {
             // step 2:
             // we create a writer that listens to the document
-            PdfWriter.getInstance(document,
-                    new FileOutputStream(args[0] + "/StandardType1Fonts.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

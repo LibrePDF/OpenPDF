@@ -15,6 +15,7 @@
 package com.lowagie.examples.forms;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.pdf.PRAcroForm;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDictionary;
@@ -36,22 +37,36 @@ import java.util.Map;
  *
  * @author blowagie
  */
-public class ListFields {
-    /**
-     * Creates a PDF document with a certain pagesize
-     *
-     * @param args no arguments needed here
-     */
+public class ListFields extends AbstractSample {
+
+    @Override
+    public boolean isPdfProducer() {
+        return false;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/list_fields";
+    }
+
     public static void main(String[] args) {
+        ListFields templates = new ListFields();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("Forms :: Listfields");
-        try (PrintStream stream = new PrintStream(new FileOutputStream(args[0] + "/listfields.txt"))) {
+        try (PrintStream stream = new PrintStream(new FileOutputStream(path + getFileName() + ".txt"))) {
             stream.println("ListFields output file");
             stream.println("==================================================");
             stream.print("Filename: ");
-            stream.println(args[0] + "/textfield.pdf");
+            stream.println(path + "/text_fields.pdf");
             stream.println();
-            PdfReader reader = new PdfReader(args[0] + "/textfield.pdf");
+            PdfReader reader = new PdfReader(path + "/text_fields.pdf");
             PRAcroForm form = reader.getAcroForm();
             if (form == null) {
                 stream.println("This document has no fields.");

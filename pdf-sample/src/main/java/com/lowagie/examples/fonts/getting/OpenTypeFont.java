@@ -13,6 +13,8 @@
  */
 package com.lowagie.examples.fonts.getting;
 
+import com.lowagie.examples.AbstractSample;
+import com.lowagie.examples.directcontent.Templates;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.PageSize;
@@ -25,19 +27,29 @@ import java.io.FileOutputStream;
 /**
  * Using an Open Type Font (CFF only).
  */
-public class OpenTypeFont {
-    /**
-     * Using oth
-     *
-     * @param args no arguments needed
-     */
+public class OpenTypeFont  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/opentype_font";
+    }
+
     public static void main(String[] args) {
+        Templates templates = new Templates();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
+
         System.out.println("Fonts :: Getting :: Open Type Font");
         // step 1
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {
             // step 2
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/opentypefont.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             // step 3
             document.open();
             // step 4

@@ -15,6 +15,7 @@
 package com.lowagie.examples.general.faq;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -29,25 +30,38 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class NewPage {
-    /**
-     * Creates a PDF document with different pages.
-     *
-     * @param args no arguments needed here
-     */
+public class NewPage extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 8;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/new_page";
+    }
+
     public static void main(String[] args) {
+        NewPage templates = new NewPage();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("General :: FAQ :: Using newPage()");
         // step 1: creation of a document-object
         Document document = new Document();
 
         try {
-
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
 
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/NewPage.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

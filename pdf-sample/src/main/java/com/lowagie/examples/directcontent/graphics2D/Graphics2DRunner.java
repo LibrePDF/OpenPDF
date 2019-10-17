@@ -8,6 +8,8 @@ public class Graphics2DRunner extends AbstractRunner {
 
         ArabicText.main(argsNew);
         G2D.main(argsNew);
-        JFreeChartExample.main(argsNew);
+        JFreeChartExampleXY.main(argsNew);
+        JFreeChartExamplePie.main(argsNew);
+        JFreeChartExampleBar.main(argsNew);
     }
 }

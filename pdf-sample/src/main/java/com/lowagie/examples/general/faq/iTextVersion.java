@@ -15,6 +15,7 @@
 package com.lowagie.examples.general.faq;
 
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
@@ -28,13 +29,22 @@ import java.io.IOException;
  *
  * @author blowagie
  */
-public class iTextVersion {
-    /**
-     * Creates a PDF document and shows the iText version.
-     *
-     * @param args no arguments needed here
-     */
+public class iTextVersion extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/version";
+    }
+
     public static void main(String[] args) {
+        iTextVersion templates = new iTextVersion();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
 
         System.out.println("General :: FAG :: iText version " + Document.getVersion());
         // step 1: creation of a document-object
@@ -45,7 +55,7 @@ public class iTextVersion {
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/version.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

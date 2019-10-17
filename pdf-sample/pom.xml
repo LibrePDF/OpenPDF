@@ -35,6 +35,11 @@
             <artifactId>jcommon</artifactId>
             <version>1.0.24</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.douglassix.image-assert</groupId>
+            <artifactId>image-assert</artifactId>
+            <version>1.1.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -51,13 +56,21 @@
                             <goal>process-asciidoc</goal>
                         </goals>
                         <configuration>
-<!--                            <requires>-->
-<!--                                <require>asciidoctor-diagram</require>-->
-<!--                            </requires>-->
                             <preserveDirectories>true</preserveDirectories>
+                            <resources>
+                                <resource>
+                                    <!-- (Mandatory) Directory to copy from. Paths are relative to maven's ${baseDir} -->
+                                    <directory>src/main/resources</directory>
+                                    <!-- (Optional) Directory to copy to. By default uses the option `outputDirectory` -->
+                                    <targetPath>images</targetPath>
+                                    <includes>
+                                        <include>**/*.png</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                            <outputDirectory>output/doc</outputDirectory>
                             <backend>html5</backend>
                             <attributes>
-                                <toc>left</toc>
                                 <icons>font</icons>
                                 <sectanchors>true</sectanchors>
                                 <linkcss>true</linkcss>
@@ -65,11 +78,19 @@
                                 <idseparator>-</idseparator>
                                 <project-version>${project.version}</project-version>
                             </attributes>
-                            <doctype>book</doctype>
+                            <doctype>article</doctype>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>image-assert</id>
+            <name>douglassix-image-assert</name>
+            <url>https://maven.pkg.github.com/sixdouglas/image-assert</url>
+        </repository>
+    </repositories>
 </project>

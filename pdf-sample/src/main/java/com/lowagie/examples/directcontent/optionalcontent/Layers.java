@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.optionalcontent;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
@@ -31,20 +32,29 @@ import java.util.List;
 /**
  * Layer radio group and zoom.
  */
-public class Layers {
+public class Layers  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/layers";
+    }
+
+    public static void main(String[] args) {
+        Layers templates = new Layers();
+        templates.run(args);
+    }
 
     /**
-     * Layer radio group and zoom.
-     *
-     * @param args no arguments needed
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("DirectContent :: OptionalContent :: Layer radio group and zoom");
-        try {
-            // step 1
-            Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+
+        // tag::generation[]
+        // step 1
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
             // step 2
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/layers.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             writer.setPdfVersion(PdfWriter.VERSION_1_5);
             writer.setViewerPreferences(PdfWriter.PageModeUseOC);
             // step 3
@@ -88,10 +98,9 @@ public class Layers {
             ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, p4, 50, 450, 0);
             cb.endLayer();
             ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, new Phrase("<< Zoom here!", new Font(Font.COURIER, 12, Font.NORMAL, Color.blue)), 150, 450, 0);
-            // step 5
-            document.close();
         } catch (Exception de) {
             de.printStackTrace();
         }
+        // end::generation[]
     }
 }

@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.forms.fill;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
@@ -22,35 +23,34 @@ import java.io.FileOutputStream;
 /**
  * Fill in a simple registration form.
  */
-public class Register {
-    /**
-     * Reads a form and fills in the fields.
-     *
-     * @param args no arguments needed
-     */
+public class Register   extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/registered";
+    }
+
     public static void main(String[] args) {
+        Register templates = new Register();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("Forms :: Fill :: Filling in a form");
         try {
             // we create a reader for a certain document
-            PdfReader reader = new PdfReader(args[0] + "/../SimpleRegistrationForm.pdf");
+            PdfReader reader = new PdfReader(path + "/../simple_registration_form.pdf");
             // filling in the form
-            PdfStamper stamp1 = new PdfStamper(reader, new FileOutputStream(args[0] + "/registered.pdf"));
+            PdfStamper stamp1 = new PdfStamper(reader, new FileOutputStream(path + getFileName() + ".pdf"));
             AcroFields form1 = stamp1.getAcroFields();
             form1.setField("name", "Bruno Lowagie");
             form1.setField("address", "Baeyensstraat 121, Sint-Amandsberg");
             form1.setField("postal_code", "BE-9040");
             form1.setField("email", "bruno@lowagie.com");
             stamp1.close();
-            // filling in the form and flatten
-            reader = new PdfReader(args[0] + "/../SimpleRegistrationForm.pdf");
-            PdfStamper stamp2 = new PdfStamper(reader, new FileOutputStream(args[0] + "/registered_flat.pdf"));
-            AcroFields form2 = stamp2.getAcroFields();
-            form2.setField("name", "Bruno Lowagie");
-            form2.setField("address", "Baeyensstraat 121, Sint-Amandsberg");
-            form2.setField("postal_code", "BE-9040");
-            form2.setField("email", "bruno@lowagie.com");
-            stamp2.setFormFlattening(true);
-            stamp2.close();
         } catch (Exception de) {
             de.printStackTrace();
         }

@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent.colors;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -27,60 +28,29 @@ import java.io.FileOutputStream;
 /**
  * Demonstrates transparency and images.
  */
-public class Groups {
+public class Groups  extends AbstractSample {
 
-    /**
-     * Prints a square and fills half of it with a gray rectangle.
-     *
-     * @param x
-     * @param y
-     * @param cb
-     * @throws Exception
-     */
-    public static void pictureBackdrop(float x, float y, PdfContentByte cb) throws Exception {
-        cb.setColorStroke(Color.black);
-        cb.setColorFill(Color.red);
-        cb.rectangle(x, y, 100, 200);
-        cb.fill();
-        cb.setLineWidth(2);
-        cb.rectangle(x, y, 200, 200);
-        cb.stroke();
+    @Override
+    public String getFileName() {
+        return "/groups";
     }
 
-    /**
-     * Prints 3 circles in different colors that intersect with eachother.
-     *
-     * @param x
-     * @param y
-     * @param cb
-     * @throws Exception
-     */
-    public static void pictureCircles(float x, float y, PdfContentByte cb) throws Exception {
-        PdfGState gs = new PdfGState();
-        gs.setBlendMode(PdfGState.BM_SOFTLIGHT);
-        gs.setFillOpacity(0.7f);
-        cb.setGState(gs);
-        cb.setColorFill(Color.gray);
-        cb.circle(x + 70, y + 70, 50);
-        cb.fill();
-        cb.circle(x + 100, y + 130, 50);
-        cb.fill();
-        cb.circle(x + 130, y + 70, 50);
-        cb.fill();
-    }
-
-    /**
-     * Demonstrates the Transparency functionality.
-     *
-     * @param args no arguments needed
-     */
     public static void main(String[] args) {
+        Groups templates = new Groups();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
         System.out.println("DirectContent :: Colors :: Transparency Groups");
+
+        // tag::generation[]
         // step 1: creation of a document-object
-        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-        try {
-            // step 2: creation of a writer 
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/groups.pdf"));
+        try (Document document = new Document(PageSize.A4, 50, 50, 50, 50)) {
+            // step 2: creation of a writer
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             // step 3: we open the document
             document.open();
             // step 4: content
@@ -138,7 +108,46 @@ public class Groups {
         } catch (Exception de) {
             de.printStackTrace();
         }
-        // step 5: we close the document
-        document.close();
+        // end::generation[]
+    }
+
+        /**
+         * Prints a square and fills half of it with a gray rectangle.
+         *
+         * @param x
+         * @param y
+         * @param cb
+         * @throws Exception
+         */
+    public static void pictureBackdrop(float x, float y, PdfContentByte cb) throws Exception {
+        cb.setColorStroke(Color.black);
+        cb.setColorFill(Color.red);
+        cb.rectangle(x, y, 100, 200);
+        cb.fill();
+        cb.setLineWidth(2);
+        cb.rectangle(x, y, 200, 200);
+        cb.stroke();
+    }
+
+    /**
+     * Prints 3 circles in different colors that intersect with eachother.
+     *
+     * @param x
+     * @param y
+     * @param cb
+     * @throws Exception
+     */
+    public static void pictureCircles(float x, float y, PdfContentByte cb) throws Exception {
+        PdfGState gs = new PdfGState();
+        gs.setBlendMode(PdfGState.BM_SOFTLIGHT);
+        gs.setFillOpacity(0.7f);
+        cb.setGState(gs);
+        cb.setColorFill(Color.gray);
+        cb.circle(x + 70, y + 70, 50);
+        cb.fill();
+        cb.circle(x + 100, y + 130, 50);
+        cb.fill();
+        cb.circle(x + 130, y + 70, 50);
+        cb.fill();
     }
 }

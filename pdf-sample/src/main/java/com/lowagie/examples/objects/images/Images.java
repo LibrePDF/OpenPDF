@@ -63,10 +63,10 @@ public class Images {
             document.add(bmp);
             document.add(new Paragraph("iText.wmf"));
             Image wmf = Image.getInstance(Images.class.getClassLoader().getResource("iText.wmf"));
-            document.add(wmf);
-            document.add(new Paragraph("iText.tif"));
-            Image tif = Image.getInstance(Images.class.getClassLoader().getResource("iText.tif"));
-            document.add(tif);
+//            document.add(wmf);
+//            document.add(new Paragraph("iText.tif"));
+//            Image tif = Image.getInstance(Images.class.getClassLoader().getResource("iText.tif"));
+//            document.add(tif);
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }

@@ -1,0 +1,55 @@
+= 2D Graphics
+:sourcedir: ./../java/
+:imagedir: ./
+
+== Arabic Text
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/graphics2D/ArabicText.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/graphics2D/arabic_text-0.png[ArabicText]
+
+== G2D
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/graphics2D/G2D.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/graphics2D/graphics_2d-0.png[Graphics2d]
+
+== JFreeChart
+
+=== Bar Chart
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/graphics2D/JFreeChartExampleBar.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/graphics2d/jfreechart_bar-0.png[AffineTransform]
+
+=== Pie Chart
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/graphics2D/JFreeChartExamplePie.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/graphics2d/jfreechart_pie-0.png[AffineTransform]
+
+=== X and Y Chart
+
+[source,java,linenums]
+----
+include::{sourcedir}com/lowagie/examples/directcontent/graphics2D/JFreeChartExampleXY.java[tag=generation,indent=0]
+----
+
+[.thumb]
+image::{imagedir}examples/directcontent/graphics2d/jfreechart_xy-0.png[AffineTransform]

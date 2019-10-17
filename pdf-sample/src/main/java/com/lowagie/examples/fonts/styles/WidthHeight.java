@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.fonts.styles;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -26,13 +27,23 @@ import java.io.IOException;
 /**
  * Asking a font for the width and height of a textstring.
  */
-public class WidthHeight {
-    /**
-     * Width and height of a textstring
-     *
-     * @param args no arguments needed
-     */
+public class WidthHeight  extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/width_height";
+    }
+
     public static void main(String[] args) {
+        WidthHeight templates = new WidthHeight();
+        templates.run(args);
+    }
+
+    /**
+     * @param path
+     */
+    public void render(String path) {
+
         System.out.println("Fonts :: Styles :: Width and height of a textstring");
 
         // step 1: creation of a document-object
@@ -41,7 +52,7 @@ public class WidthHeight {
         try {
 
             // step 2: creation of the writer-object
-            PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/widthheight.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
 
             // step 3: we open the document
             document.open();

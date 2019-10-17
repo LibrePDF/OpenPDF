@@ -18,6 +18,7 @@
  */
 package com.lowagie.examples.general.copystamp;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PRAcroForm;
 import com.lowagie.text.pdf.PdfCopy;
@@ -33,25 +34,33 @@ import java.util.Map;
 /**
  * Tool that can be used to concatenate existing PDF files.
  */
-public class Concatenate {
+public class Concatenate extends AbstractSample {
+
+    @Override
+    public String getFileName() {
+        return "/concatenated";
+    }
+
+    public static void main(String[] args) {
+        Concatenate templates = new Concatenate();
+        templates.run(args);
+    }
 
     /**
-     * This class can be used to concatenate existing PDF files.
-     * (This was an example known as PdfCopy.java)
-     * @param args the command line arguments
+     * @param path
      */
-    public static void main(String[] args) {
+    public void render(String path) {
         System.out.println("General :: CopyStamp :: PdfCopy example");
         try {
             int pageOffset = 0;
             List<Map<String, Object>> master = new ArrayList<>();
             int f = 0;
-            String outFile = args[0] + "/concatenated.pdf";
+            String outFile = path + getFileName() + ".pdf";
             Document document = null;
             PdfCopy writer = null;
             String[] files = new String[2];
-            files[0] = args[0] + "/../../directcontent/coordinates/affinetransformation.pdf";
-            files[1] = args[0] + "/../faq/Measurements.pdf";
+            files[0] = path + "/../../directcontent/coordinates/affine_transformation.pdf";
+            files[1] = path + "/../faq/measurements.pdf";
             while (f < files.length) {
                 // we create a reader for a certain document
                 PdfReader reader = new PdfReader(files[f]);

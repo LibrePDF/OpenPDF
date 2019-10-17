@@ -13,6 +13,7 @@
  */
 package com.lowagie.examples.directcontent;
 
+import com.lowagie.examples.AbstractSample;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -32,27 +33,44 @@ import java.io.FileOutputStream;
 /**
  * Wrapping a PdfTemplate in an Image.
  */
-public class TemplateImages {
+public class TemplateImages extends AbstractSample {
+
+    @Override
+    public int getExpectedPageCount() {
+        return 1;
+    }
+
+    @Override
+    public String getFileName() {
+        return "/template_images";
+    }
+
+    public static void main(String[] args) {
+        TemplateImages templateImages = new TemplateImages();
+        templateImages.run(args);
+    }
     /**
      * PdfTemplates can be wrapped in an Image.
      *
-     * @param args no arguments needed
+     * @param path no arguments needed
      */
-    public static void main(String[] args) {
+    public void render(String path) {
 
         System.out.println("DirectContent :: PdfTemplate wrapped in an Image");
 
+        // tag::generation[]
         // step 1: creation of a document-object
         Rectangle rect = new Rectangle(PageSize.A4);
         rect.setBackgroundColor(new Color(238, 221, 88));
-        Document document = new Document(rect, 50, 50, 50, 50);
-        try {
+
+        try (Document document = new Document(rect, 50, 50, 50, 50)) {
             // step 2: we create a writer that listens to the document
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(args[0] + "/templateImages.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path + getFileName() + ".pdf"));
             // step 3: we open the document
             document.open();
             // step 4:
-            PdfTemplate template = writer.getDirectContent().createTemplate(20, 20);
+            PdfTemplate template = writer.getDirectContent().createTemplate(20, 20); // <1>
+
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
             String text = "Vertical";
             float size = 16;
@@ -61,14 +79,23 @@ public class TemplateImages {
             template.setRGBColorFillF(1, 1, 1);
             template.setFontAndSize(bf, size);
             template.setTextMatrix(0, 2);
-            template.showText(text);
+            template.showText(text); // <2>
             template.endText();
             template.setWidth(width);
             template.setHeight(size + 2);
             template.sanityCheck();
-            Image img = Image.getInstance(template);
+
+            Image img = Image.getInstance(template); // <3>
             img.setRotationDegrees(90);
-            Chunk ck = new Chunk(img, 0, 0);
+
+            Chunk ck = new Chunk(img, 0, 0); // <4>
+
+            Paragraph p1 = new Paragraph("This is a template ");
+            p1.add(ck);
+            p1.add(" just here.");
+            p1.setLeading(img.getScaledHeight() * 1.1f);
+            document.add(p1);
+
             PdfPTable table = new PdfPTable(3);
             table.setWidthPercentage(100);
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -86,13 +113,8 @@ public class TemplateImages {
             table.addCell("I see a template on my right");
             table.addCell(cell);
             table.addCell("I see a template on my left");
-
-            Paragraph p1 = new Paragraph("This is a template ");
-            p1.add(ck);
-            p1.add(" just here.");
-            p1.setLeading(img.getScaledHeight() * 1.1f);
-            document.add(p1);
             document.add(table);
+
             Paragraph p2 = new Paragraph("More templates ");
             p2.setLeading(img.getScaledHeight() * 1.1f);
             p2.setAlignment(Element.ALIGN_JUSTIFIED);
@@ -100,10 +122,9 @@ public class TemplateImages {
             for (int k = 0; k < 20; ++k)
                 p2.add(ck);
             document.add(p2);
-            // step 5: we close the document
-            document.close();
         } catch (Exception de) {
             System.err.println(de.getMessage());
         }
+        // end::generation[]
     }
 }
