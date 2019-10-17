@@ -218,7 +218,8 @@ public class MappedRandomAccessFile {
                 final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
                 theUnsafeField.setAccessible(true);
                 final Object theUnsafe = theUnsafeField.get(null);
-                final Method invokeCleanerMethod = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
+                final Method invokeCleanerMethod = unsafeClass
+                        .getMethod("invokeCleaner", ByteBuffer.class);
                 invokeCleanerMethod.invoke(theUnsafe, buffer);
                 success = Boolean.TRUE;
             } catch (Exception ignore) {
@@ -234,7 +235,8 @@ public class MappedRandomAccessFile {
         Boolean b = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
             Boolean success = Boolean.FALSE;
             try {
-                Method getCleanerMethod = buffer.getClass().getMethod("cleaner", (Class[])null);
+                Method getCleanerMethod = buffer.getClass()
+                        .getMethod("cleaner", (Class[]) null);
                 if (!getCleanerMethod.isAccessible()) {
                     getCleanerMethod.setAccessible(true);
                 }

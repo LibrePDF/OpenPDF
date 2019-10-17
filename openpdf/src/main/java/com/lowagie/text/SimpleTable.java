@@ -48,16 +48,13 @@
  */
 package com.lowagie.text;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import com.lowagie.text.alignment.HorizontalAlignment;
 import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPTableEvent;
+import java.util.ArrayList;
+import java.util.Optional;
 
 
 /**

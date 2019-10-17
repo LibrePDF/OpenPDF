@@ -51,13 +51,12 @@
 package com.lowagie.text.html.simpleparser;
 
 import com.lowagie.text.ElementTags;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ChainedProperties {
 

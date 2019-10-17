@@ -49,6 +49,7 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.pdf.internal.PolylineShape;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -66,11 +67,11 @@ import java.awt.Paint;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.RenderingHints.Key;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.Transparency;
-import java.awt.RenderingHints.Key;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
@@ -99,13 +100,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-
-import com.lowagie.text.pdf.internal.PolylineShape;
-import java.util.Locale;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -811,7 +810,7 @@ public class PdfGraphics2D extends Graphics2D {
      * @see Graphics#translate(int, int)
      */
     public void translate(int x, int y) {
-        translate((double)x, (double)y);
+        translate(x, y);
     }
     
     /**
@@ -1896,7 +1895,8 @@ public class PdfGraphics2D extends Graphics2D {
             String fontFamily = compositeFont.getFamily();
             if (!isSupported() || (fontFamily != null && !fontFamilyComposite.get(fontFamily))) {
                 assert false;
-                return defaultDrawingFunction.drawString(s, fontConverter.apply(compositeFont), x, y);
+                return defaultDrawingFunction
+                        .drawString(s, fontConverter.apply(compositeFont), x, y);
             }
 
             try {
@@ -1906,7 +1906,9 @@ public class PdfGraphics2D extends Graphics2D {
                     String strPart = stringParts.get(i);
                     Font correspondingFont = correspondingFontsForParts.get(i);
                     BaseFont correspondingBaseFont = fontConverter.apply(correspondingFont);
-                    BaseFont baseFont = correspondingBaseFont == null ? fontConverter.apply(compositeFont) : correspondingBaseFont;
+                    BaseFont baseFont = correspondingBaseFont == null
+                            ? fontConverter.apply(compositeFont)
+                            : correspondingBaseFont;
                     width += defaultDrawingFunction.drawString(strPart, baseFont, x + width, y);
                 }
                 return width;

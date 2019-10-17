@@ -50,6 +50,8 @@
 
 package com.lowagie.text.html.simpleparser;
 
+import static com.lowagie.text.html.Markup.parseLength;
+
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
@@ -72,8 +74,6 @@ import com.lowagie.text.pdf.draw.LineSeparator;
 import com.lowagie.text.utils.NumberUtilities;
 import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
 import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
-
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -83,8 +83,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
-
-import static com.lowagie.text.html.Markup.parseLength;
+import javax.annotation.Nullable;
 
 public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
