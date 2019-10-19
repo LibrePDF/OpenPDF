@@ -1483,7 +1483,7 @@ public class PdfDocument extends Document {
                         float descender = chunk.font().getFont().getFontDescriptor(BaseFont.DESCENT, fontSize);
                         Object[] bgr = (Object[]) chunk.getAttribute(Chunk.BACKGROUND);
 
-                        graphics.setColorFill((ExtendedColor) bgr[0]);
+                        graphics.setColorFill((Color) bgr[0]);
 
                         float[] extra = (float[]) bgr[1];
                         graphics.rectangle(xMarker - extra[0],
