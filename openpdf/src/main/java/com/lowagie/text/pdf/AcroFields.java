@@ -182,6 +182,11 @@ public class AcroFields {
         String name = "";
         PdfDictionary value = null;
         PdfObject lastV = null;
+        int lastIDRNumber = -1;
+        PdfIndirectReference indirectObject = annots.getAsIndirectObject(j);
+        if (indirectObject != null) {
+        	lastIDRNumber = indirectObject.getNumber();
+        }
         while (annot != null) {
           dic.mergeDifferent(annot);
           PdfString t = annot.getAsString(PdfName.T);
@@ -197,7 +202,17 @@ public class AcroFields {
               value.put(PdfName.V, lastV);
             }
           }
-          annot = annot.getAsDict(PdfName.PARENT);
+          int parentIDRNumber = -1;
+          PdfIndirectReference asIndirectObject = annot.getAsIndirectObject(PdfName.PARENT);
+          if (asIndirectObject != null) {
+        	  parentIDRNumber = asIndirectObject.getNumber();
+          }
+          if (parentIDRNumber != -1 && lastIDRNumber != parentIDRNumber) {
+              annot = annot.getAsDict(PdfName.PARENT);
+              lastIDRNumber = parentIDRNumber;
+          } else {
+        	  annot = null;
+          }
         }
         if (name.length() > 0) {
           name = name.substring(0, name.length() - 1);
