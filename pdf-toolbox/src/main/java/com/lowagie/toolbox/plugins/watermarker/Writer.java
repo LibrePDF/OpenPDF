@@ -25,7 +25,8 @@ class Writer {
     private String text;
     private int fontsize;
     private float opacity;
-    private Color color ;
+    private Color color;
+    private BaseFont font;
 
     Writer(PdfReader reader, PdfStamper stamp, String text, int fontsize, float opacity, Color color) {
         this.reader = reader;
@@ -36,6 +37,11 @@ class Writer {
         this.color = color;
     }
 
+    Writer withFont(final BaseFont font) {
+        this.font = font;
+        return this;
+    }
+
     /**
      * Does the magic, with all parameters already set and valid. At the end, the PDF file configured through
      * the stamp parameter will be written.
@@ -44,7 +50,7 @@ class Writer {
      * @throws IOException if the default "Helvetica" font cannot be created
      */
     void write() throws IOException, DocumentException {
-        BaseFont bf = createFont("Helvetica", WINANSI,false);
+        final BaseFont bf = (font != null) ? font : createFont("Helvetica", WINANSI,false);
         int pagecount = reader.getNumberOfPages();
         PdfGState gs1 = new PdfGState();
         gs1.setFillOpacity(opacity);
