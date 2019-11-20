@@ -1,5 +1,8 @@
 package com.lowagie.text.pdf;
 
+import static java.time.Duration.ofMillis;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.Security;
@@ -41,6 +44,17 @@ public class AcroFieldsTest {
             // Assertions.assertTrue(pdfPkcs7.verify());
         }
 
+    }
+    
+    @Test
+    public void infiniteLoopTest() throws Exception {
+    	try (InputStream is = AcroFieldsTest.class.getResourceAsStream("/pades_infinite_loop.pdf");
+    			PdfReader reader = new PdfReader(is)) {
+    		assertTimeoutPreemptively(ofMillis(500), () -> {
+	    		reader.getAcroFields();
+    		});
+    	}
+    	
     }
 
 }
