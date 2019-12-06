@@ -2345,7 +2345,7 @@ public class PdfWriter extends DocWriter implements
 
 // [F10] extended graphics state (for instance for transparency)
 
-    protected HashMap<PdfDictionary, PdfObject[]> documentExtGState = new HashMap<>();
+    protected HashMap<PdfDictionary, PdfObject[]> documentExtGState = new LinkedHashMap<>();
 
     PdfObject[] addSimpleExtGState(PdfDictionary gstate) {
         if (!documentExtGState.containsKey(gstate)) {
@@ -2358,6 +2358,7 @@ public class PdfWriter extends DocWriter implements
 //  [F11] adding properties (OCG, marked content)
 
     protected HashMap<Object, PdfObject[]> documentProperties = new HashMap<>();
+
     PdfObject[] addSimpleProperty(Object prop, PdfIndirectReference refi) {
         if (!documentProperties.containsKey(prop)) {
             if (prop instanceof PdfOCG)
