@@ -100,7 +100,7 @@ class EnumerateTTC extends TrueTypeFont{
                 throw new DocumentException(MessageLocalization.getComposedMessage("1.is.not.a.valid.ttc.file", fileName));
             }
             int majorVersion = rf.readShort();
-            rf.readShort();
+            rf.skipBytes(2);
 
             int dirCount = rf.readInt();
             names = new String[dirCount];
