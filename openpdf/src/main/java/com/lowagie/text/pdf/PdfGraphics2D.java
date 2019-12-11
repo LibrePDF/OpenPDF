@@ -810,7 +810,7 @@ public class PdfGraphics2D extends Graphics2D {
      * @see Graphics#translate(int, int)
      */
     public void translate(int x, int y) {
-        translate(x, y);
+        translate((double)x, (double)y);
     }
     
     /**
