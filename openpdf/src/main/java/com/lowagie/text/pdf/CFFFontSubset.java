@@ -429,7 +429,7 @@ public class CFFFontSubset extends CFFFont {
     }
     
     /**
-     * Function builds the new local & global subsrs indices. IF CID then All of 
+     * Function builds the new local and global subsrs indices. IF CID then All of
      * the FD Array lsubrs will be subsetted. 
      * @param Font the font
      * @throws IOException
@@ -519,8 +519,8 @@ public class CFFFontSubset extends CFFFont {
     }
 
     /**
-     * Function uses ReadAsubr on the glyph used to build the LSubr & Gsubr HashMap.
-     * The HashMap (of the lsubr only) is then scanned recursively for Lsubr & Gsubrs
+     * Function uses ReadAsubr on the glyph used to build the LSubr and Gsubr HashMap.
+     * The HashMap (of the lsubr only) is then scanned recursively for Lsubr and Gsubrs
      * calls.  
      * @param Font the font
      * @param FD FD array processed. 0 indicates function was called by non CID font
@@ -574,7 +574,7 @@ public class CFFFontSubset extends CFFFont {
     
     /**
      * Function scans the Glsubr used ArrayList to find recursive calls 
-     * to Gsubrs and adds to Hashmap & ArrayList
+     * to Gsubrs and adds to Hashmap and ArrayList
      * @param Font the font
      */
     protected void BuildGSubrsUsed(int Font)
@@ -642,14 +642,17 @@ public class CFFFontSubset extends CFFFont {
         NumOfHints = 0;
         // Goto beginning of the subr
         seek(begin);
-        while (getPosition() < end)
-        {
+        while (getPosition() < end) {
             // Read the next command
             ReadCommand();
             int pos = getPosition();
-            Object TopElement=null;
-            if (arg_count > 0)
-                TopElement = args[arg_count-1];
+            Object TopElement = null;
+            if (arg_count > 0) {
+                TopElement = args[arg_count - 1];
+            }
+            if (TopElement == null) {
+                TopElement = 0;
+            }
             int NumOfArgs = arg_count;
             // Check the modification needed on the Argument Stack according to key;
             HandelStack();
@@ -667,7 +670,9 @@ public class CFFFontSubset extends CFFFont {
                         hSubr.put(Subr,null);
                         lSubr.add(Subr);
                     }
-                    CalcHints(LSubrsOffsets[Subr],LSubrsOffsets[Subr+1],LBias,GBias,LSubrsOffsets);
+                    if (LSubrsOffsets != null) {
+                        CalcHints(LSubrsOffsets[Subr], LSubrsOffsets[Subr + 1], LBias, GBias, LSubrsOffsets);
+                    }
                     seek(pos);
                 }                
             }
@@ -737,7 +742,7 @@ public class CFFFontSubset extends CFFFont {
     
     /**
      * Function checks the key and return the change to the stack after the operator
-     * @return The change in the stack. 2-> flush the stack
+     * @return The change in the stack. {@literal 2->} flush the stack
      */
     protected int StackOpp()
     {
@@ -840,7 +845,7 @@ public class CFFFontSubset extends CFFFont {
                 arg_count++;
                 continue;
             }
-            if (b0<=31 && b0 != 28) // An operator was found.. Set Key.
+            if (b0 <= 31) // An operator was found.. Set Key.
             {
                 gotKey=true;
                 // 12 is an escape command therefore the next byte is a part
@@ -854,7 +859,6 @@ public class CFFFontSubset extends CFFFont {
                 }
                 else
                     key = SubrsFunctions[b0];
-                continue;
             }
         }        
     }
@@ -945,7 +949,9 @@ public class CFFFontSubset extends CFFFont {
             // If the object in the offset is also present in the used
             // HashMap then increment the offset var by its size
             if (Used.containsKey(i)) {
-                Offset += Offsets[i+1] - Offsets[i];
+                if (Offsets.length > i + 1) {
+                    Offset += Offsets[i + 1] - Offsets[i];
+                }
             } else {
                 // Else the same offset is kept in i+1.
                 unusedCount++;

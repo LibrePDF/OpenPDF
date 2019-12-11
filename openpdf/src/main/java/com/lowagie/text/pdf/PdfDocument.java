@@ -76,7 +76,6 @@ import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.draw.DrawInterface;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -528,13 +527,9 @@ public class PdfDocument extends Document {
                     // if a paragraph has to be kept together, we wrap it in a table object
                     if (paragraph.getKeepTogether()) {
                         carriageReturn();
-                        PdfPTable table = new PdfPTable(1);
-                        table.setWidthPercentage(100f);
-                        PdfPCell cell = new PdfPCell();
-                        cell.addElement(paragraph);
-                        cell.setBorder(Table.NO_BORDER);
-                        cell.setPadding(0);
-                        table.addCell(cell);
+                        // fixes bug with nested tables not shown
+                        // Paragraph#getChunks() doesn't contain the nested table element
+                        PdfPTable table = createInOneCell(paragraph.iterator());
                         indentation.indentLeft -= paragraph.getIndentationLeft();
                         indentation.indentRight -= paragraph.getIndentationRight();
                         this.add(table);
@@ -774,6 +769,20 @@ public class PdfDocument extends Document {
         catch(Exception e) {
             throw new DocumentException(e);
         }
+    }
+
+    static PdfPTable createInOneCell(Iterator<Element> elements) {
+        PdfPTable table = new PdfPTable(1);
+        table.setWidthPercentage(100f);
+
+        PdfPCell cell = new PdfPCell();
+        cell.setBorder(Table.NO_BORDER);
+        cell.setPadding(0);
+        while (elements.hasNext()) {
+            cell.addElement(elements.next());
+        }
+        table.addCell(cell);
+        return table;
     }
 
 //    [L1] DocListener interface
@@ -1314,8 +1323,7 @@ public class PdfDocument extends Document {
         PdfFont currentFont = null;
         float displacement = 0;
         PdfLine l;
-        Float lastBaseFactor = (float) 0;
-        currentValues[1] = lastBaseFactor;
+        currentValues[1] = 0.0F;
         // looping over all the lines
         for (PdfLine line1 : lines) {
 
@@ -1463,6 +1471,8 @@ public class PdfDocument extends Document {
                         tabPosition = tmp;
                     }
                     if (chunk.isAttribute(Chunk.BACKGROUND)) {
+                        graphics.saveState();
+
                         float subtract = lastBaseFactor;
                         if (nextChunk != null && nextChunk.isAttribute(Chunk.BACKGROUND))
                             subtract = 0;
@@ -1472,7 +1482,9 @@ public class PdfDocument extends Document {
                         float ascender = chunk.font().getFont().getFontDescriptor(BaseFont.ASCENT, fontSize);
                         float descender = chunk.font().getFont().getFontDescriptor(BaseFont.DESCENT, fontSize);
                         Object[] bgr = (Object[]) chunk.getAttribute(Chunk.BACKGROUND);
-                        graphics.setColorFill((Color)bgr[0]);
+
+                        graphics.setColorFill((Color) bgr[0]);
+
                         float[] extra = (float[]) bgr[1];
                         graphics.rectangle(xMarker - extra[0],
                             yMarker + descender - extra[1] + chunk.getTextRise(),
@@ -1480,6 +1492,8 @@ public class PdfDocument extends Document {
                             ascender - descender + extra[1] + extra[3]);
                         graphics.fill();
                         graphics.setGrayFill(0);
+
+                        graphics.restoreState();
                     }
                     if (chunk.isAttribute(Chunk.UNDERLINE)) {
                         float subtract = lastBaseFactor;
@@ -2790,8 +2804,8 @@ public class PdfDocument extends Document {
                         }
                         lines = cell.getLines(indentTop(), indentBottom());
                         float cellTop = cell.getTop(indentTop());
-                        text.moveText(0, cellTop-heightCorrection);
-                        float cellDisplacement = flushLines() - cellTop+heightCorrection;
+                        text.moveText(0, cellTop - heightCorrection);
+                        float cellDisplacement = flushLines() - cellTop + heightCorrection;
                         text.moveText(0, cellDisplacement);
                     }
 

@@ -7,32 +7,31 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfPKCS7;
 import com.lowagie.text.pdf.PdfReader;
+import org.junit.jupiter.api.Test;
 
-public class ExtractCertificatesTest {
+class ExtractCertificatesTest {
 
-    public ExtractCertificatesTest() {
+    ExtractCertificatesTest() {
         super();
     }
 
 
     @Test
-    public void testSha1() throws Exception {
+    void testSha1() throws Exception {
         extract("src/test/resources/sample_signed-sha1.pdf");
     }
 
     @Test
-    public void testSha512() throws Exception {
+    void testSha512() throws Exception {
         extract("src/test/resources/sample_signed-sha512.pdf");
     }
 
     private void extract(String pdf) throws Exception {
 
-        List<X509Certificate> certificates = new ArrayList<X509Certificate>();
+        List<X509Certificate> certificates = new ArrayList<>();
         System.out.println("pdf name: " + pdf);
 
         KeyStore kall = PdfPKCS7.loadCacertsKeyStore();
@@ -40,7 +39,7 @@ public class ExtractCertificatesTest {
         try (PdfReader reader = new PdfReader(pdf)) {
             AcroFields fields = reader.getAcroFields();
 
-            ArrayList<String> signatures = fields.getSignatureNames();
+            List<String> signatures = fields.getSignedFieldNames();
             System.out.println("Signs: " + signatures.size());
             for (String signature : signatures) {
 

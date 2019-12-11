@@ -46,28 +46,28 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.DocWriter;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Image;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.pdf.collection.PdfCollection;
+import com.lowagie.text.pdf.interfaces.PdfEncryptionSettings;
+import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
+import com.lowagie.text.xml.xmp.XmpWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SignatureException;
+import java.security.cert.Certificate;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.DocWriter;
-import com.lowagie.text.DocumentException;
-
-import com.lowagie.text.Image;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.pdf.collection.PdfCollection;
-import com.lowagie.text.pdf.interfaces.PdfEncryptionSettings;
-import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
-import java.security.cert.Certificate;
 
 /** Applies extra content to the pages of a PDF document.
  * This extra content can be all the objects allowed in PdfContentByte
@@ -87,6 +87,7 @@ public class PdfStamper
     private Map<String, String> moreInfo;
     private boolean hasSignature;
     private PdfSignatureAppearance sigApp;
+    private boolean cleanMetadata = false;
 
     /** Starts the process of adding extra content to an existing PDF
      * document.
@@ -164,7 +165,6 @@ public class PdfStamper
     /**
      * An option to make this stamper to clean metadata in the generated file. You must call this method before closing the stamper.
      */
-    
     public void cleanMetadata() {
       Map<String, String> meta = new HashMap<>();
       meta.put("Title", null);
@@ -176,6 +176,7 @@ public class PdfStamper
       meta.put("CreationDate", null);
       meta.put("ModDate",null);
       setInfoDictionary(meta);
+      this.cleanMetadata = true;
     }
 
     /** An optional <CODE>String</CODE> map to add or change values in
@@ -231,6 +232,17 @@ public class PdfStamper
      */
     public void close() throws DocumentException, IOException {
         if (!hasSignature) {
+            if (cleanMetadata && stamper.xmpMetadata == null) {
+              ByteArrayOutputStream baos = new ByteArrayOutputStream();
+              try {
+                XmpWriter writer = new XmpWriter(baos, moreInfo);
+                writer.close();
+                stamper.setXmpMetadata(baos.toByteArray());
+              }
+              catch (IOException ignore) {
+                // ignore exception
+              }
+            }
             stamper.close(moreInfo);
             return;
         }

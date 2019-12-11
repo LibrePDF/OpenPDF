@@ -50,6 +50,8 @@
 
 package com.lowagie.text.html.simpleparser;
 
+import static com.lowagie.text.html.Markup.parseLength;
+
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Element;
 import com.lowagie.text.ElementTags;
@@ -64,15 +66,12 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.HyphenationAuto;
 import com.lowagie.text.pdf.HyphenationEvent;
 import com.lowagie.text.utils.NumberUtilities;
-
-import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
-import static com.lowagie.text.html.Markup.parseLength;
+import javax.annotation.Nullable;
 
 /**
  * @author psoares
@@ -231,7 +230,7 @@ public class FactoryProperties {
      * @param h a HashMap that should have at least a key named
      *          style. After this method is invoked, more keys could be added.
      *
-     * @deprecated use {@link FactoryProperties#insertStyle(Map<String, String>)} instead. (since 1.2.22)
+     * @deprecated use {@link FactoryProperties#insertStyle(Map)} instead. (since 1.2.22)
      */
     @SuppressWarnings("unchecked")
     @Deprecated

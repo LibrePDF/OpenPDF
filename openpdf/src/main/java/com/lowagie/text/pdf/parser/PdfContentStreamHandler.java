@@ -58,20 +58,17 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author dgd
@@ -337,8 +334,7 @@ public class PdfContentStreamHandler {
         @Override
         public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
             PdfArray array = (PdfArray) operands.get(0);
-            for (Iterator<?> i = array.listIterator(); i.hasNext(); ) {
-                Object entryObj = i.next();
+            for (PdfObject entryObj : array.getElements()) {
                 if (entryObj instanceof PdfString) {
                     handler.displayPdfString((PdfString) entryObj);
                 } else {
@@ -1011,9 +1007,7 @@ public class PdfContentStreamHandler {
                     return PdfReader.getStreamBytes((PRStream) PdfReader.getPdfObject(object));
                 case PdfObject.ARRAY:
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ListIterator<PdfObject> iter = ((PdfArray) object).listIterator();
-                    while (iter.hasNext()) {
-                        PdfObject element = iter.next();
+                    for (PdfObject element : ((PdfArray) object).getElements()) {
                         baos.write(getContentBytesFromPdfObject(element));
                     }
                     return baos.toByteArray();

@@ -2,6 +2,7 @@ package com.lowagie.toolbox.plugins.watermarker;
 
 import static java.awt.Color.BLACK;
 
+import com.lowagie.text.pdf.BaseFont;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class Watermarker {
     private final int fontsize;
     private final float opacity;
     private Color color = BLACK;
+    private BaseFont font = null;
 
     /**
      *  The main constructor with all mandatory arguments. By default, the color stays black.
@@ -54,6 +56,11 @@ public class Watermarker {
         return this;
     }
 
+    public Watermarker withFont(final BaseFont font) {
+        this.font = font;
+        return this;
+    }
+
     /**
      * Write the watermark to the pdf given in entry.
      *
@@ -63,6 +70,10 @@ public class Watermarker {
      */
     public byte[] write() throws IOException, DocumentException {
         Writer writer = new Writer(reader, stamp, text, fontsize, opacity, color);
+        if (font != null) {
+            writer.withFont(font);
+        }
+
         writer.write();
         return outputStream.toByteArray();
     }

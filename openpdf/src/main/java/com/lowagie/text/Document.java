@@ -51,10 +51,13 @@ package com.lowagie.text;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 
 /**
@@ -102,16 +105,30 @@ import java.util.List;
 public class Document implements AutoCloseable, DocListener {
     
     // membervariables
-    /**
-     * @since    2.1.6
-     */
+    private static final String VERSION_PROPERTIES = "com/lowagie/text/version.properties";
     private static final String OPENPDF = "OpenPDF";
-    /**
-     * @since    2.1.6
-     */
-    private static final String RELEASE = VersionBean.VERSION.getImplementationVersion();
-    private static final String OPENPDF_VERSION = OPENPDF + " " + RELEASE;
-    
+    private static final String RELEASE;
+    private static final String OPENPDF_VERSION;
+
+    static {
+        RELEASE = getVersionNumber();
+        OPENPDF_VERSION = OPENPDF + " " + RELEASE;
+    }
+    private static String getVersionNumber() {
+        String releaseVersion = "UNKNOWN";
+        try (InputStream input = Document.class.getClassLoader()
+                .getResourceAsStream(VERSION_PROPERTIES)) {
+            if (input != null) {
+                Properties prop = new Properties();
+                prop.load(input);
+                releaseVersion = prop.getProperty("bundleVersion", releaseVersion);
+            }
+        } catch (IOException ignored) {
+            // ignore this and leave the default
+        }
+        return releaseVersion;
+    }
+
     /**
      * Allows the pdf documents to be produced without compression for debugging
      * purposes.

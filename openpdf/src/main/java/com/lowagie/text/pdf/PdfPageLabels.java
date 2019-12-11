@@ -206,7 +206,7 @@ public class PdfPageLabels {
 
         String[] labelstrings = new String[n];
 
-        Map<PdfObject, PdfObject> numberTree = PdfNumberTree.readTree(labels);
+        Map<Integer, PdfObject> numberTree = PdfNumberTree.readTree(labels);
 
         int pagecount = 1;
         Integer current;
@@ -227,8 +227,7 @@ public class PdfPageLabels {
                     prefix = "";
                 }
                 if (d.contains(PdfName.S)) {
-                    type = d.get(PdfName.S).toString()
-                                                        .charAt(1);
+                    type = d.get(PdfName.S).toString().charAt(1);
                 }
             }
             switch (type) {
@@ -267,7 +266,7 @@ public class PdfPageLabels {
         if (labels == null) {
             return null;
         }
-        Map<PdfObject, PdfObject> numberTree = PdfNumberTree.readTree(labels);
+        Map<Integer, PdfObject> numberTree = PdfNumberTree.readTree(labels);
         Integer[] numbers = new Integer[numberTree.size()];
         numbers = numberTree.keySet().toArray(numbers);
         Arrays.sort(numbers);
@@ -345,6 +344,16 @@ public class PdfPageLabels {
             this.numberStyle = numberStyle;
             this.prefix = prefix;
             this.logicalPage = logicalPage;
+        }
+
+        @Override
+        public String toString() {
+            return "PdfPageLabelFormat{" +
+                    "physicalPage=" + physicalPage +
+                    ", numberStyle=" + numberStyle +
+                    ", prefix='" + prefix + '\'' +
+                    ", logicalPage=" + logicalPage +
+                    '}';
         }
     }
 }

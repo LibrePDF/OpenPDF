@@ -73,11 +73,9 @@ import com.lowagie.text.pdf.interfaces.PdfXConformance;
 import com.lowagie.text.pdf.internal.PdfVersionImp;
 import com.lowagie.text.pdf.internal.PdfXConformanceImp;
 import com.lowagie.text.xml.xmp.XmpWriter;
-
 import java.awt.Color;
 import java.awt.color.ICC_Profile;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.cert.Certificate;
@@ -93,6 +91,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * A <CODE>DocWriter</CODE> class for PDF.
@@ -103,7 +102,6 @@ import java.util.TreeSet;
  */
 
 public class PdfWriter extends DocWriter implements
-    Closeable,
     PdfViewerPreferences,
     PdfEncryptionSettings,
     PdfVersion,
@@ -532,7 +530,6 @@ public class PdfWriter extends DocWriter implements
          * Constructs a PDF-Trailer.
          *
          * @param        size        the number of entries in the <CODE>PdfCrossReferenceTable</CODE>
-         * @param        offset        offset of the <CODE>PdfCrossReferenceTable</CODE>
          * @param        root        an indirect reference to the root of the PDF document
          * @param        info        an indirect reference to the info object of the PDF document
          * @param encryption
@@ -1157,6 +1154,7 @@ public class PdfWriter extends DocWriter implements
     @Override
     public void close() {
         if (open) {
+
             if ((currentPageNumber - 1) != pageReferences.size())
                 // 2019-04-26: If you get this error, it could be that you are using OpenPDF or
                 // another library such as flying-saucer's ITextRenderer in a non-threadsafe way.
@@ -1165,7 +1163,7 @@ public class PdfWriter extends DocWriter implements
                 // See: https://github.com/LibrePDF/OpenPDF/issues/164
                 throw new RuntimeException("The page " + pageReferences.size() +
                 " was requested but the document has only " + (currentPageNumber - 1) + " pages.");
-            pdf.close();
+
             try {
                 addSharedObjectsToBody();
                 // add the root to the body
@@ -2253,7 +2251,7 @@ public class PdfWriter extends DocWriter implements
      * @return the approximate size without fonts or templates
      */
     public long getCurrentDocumentSize() {
-        return body.offset() + body.size() * 20 + 0x48;
+        return body.offset() + (long)body.size() * 20L + 0x48;
     }
 
     protected PdfReaderInstance currentPdfReaderInstance;
@@ -2440,7 +2438,7 @@ public class PdfWriter extends DocWriter implements
      * ON, all others must be turned OFF.
      * @param group the radio group
      */
-    public void addOCGRadioGroup(ArrayList<PdfLayer> group) {
+    public void addOCGRadioGroup(List<PdfLayer> group) {
         PdfArray ar = new PdfArray();
         for (PdfLayer layer : group) {
             if (layer.getTitle() == null)
@@ -2524,12 +2522,11 @@ public class PdfWriter extends DocWriter implements
         }
         if (OCProperties.get(PdfName.D) != null)
             return;
-        List<PdfOCG> docOrder = new ArrayList<>(documentOCGorder);
-        for (Iterator<PdfOCG> it = docOrder.iterator(); it.hasNext();) {
-            PdfLayer layer = (PdfLayer)it.next();
-            if (layer.getParent() != null)
-                it.remove();
-        }
+
+        List<PdfOCG> docOrder = documentOCGorder.stream()
+                .filter(pdfOCG -> ((PdfLayer)pdfOCG).getParent() == null)
+                .collect(Collectors.toList());
+
         PdfArray order = new PdfArray();
         for (PdfOCG o1 : docOrder) {
             PdfLayer layer = (PdfLayer) o1;

@@ -46,6 +46,13 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,20 +60,9 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.ExceptionConverter;
 import org.w3c.dom.Node;
-
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-
-import com.lowagie.text.Image;
-import com.lowagie.text.Rectangle;
 
 /**
  * Query and change fields in existing documents either by method calls or by FDF merging.
@@ -186,6 +182,11 @@ public class AcroFields {
         String name = "";
         PdfDictionary value = null;
         PdfObject lastV = null;
+        int lastIDRNumber = -1;
+        PdfIndirectReference indirectObject = annots.getAsIndirectObject(j);
+        if (indirectObject != null) {
+        	lastIDRNumber = indirectObject.getNumber();
+        }
         while (annot != null) {
           dic.mergeDifferent(annot);
           PdfString t = annot.getAsString(PdfName.T);
@@ -201,7 +202,17 @@ public class AcroFields {
               value.put(PdfName.V, lastV);
             }
           }
-          annot = annot.getAsDict(PdfName.PARENT);
+          int parentIDRNumber = -1;
+          PdfIndirectReference asIndirectObject = annot.getAsIndirectObject(PdfName.PARENT);
+          if (asIndirectObject != null) {
+        	  parentIDRNumber = asIndirectObject.getNumber();
+          }
+          if (parentIDRNumber != -1 && lastIDRNumber != parentIDRNumber) {
+              annot = annot.getAsDict(PdfName.PARENT);
+              lastIDRNumber = parentIDRNumber;
+          } else {
+        	  annot = null;
+          }
         }
         if (name.length() > 0) {
           name = name.substring(0, name.length() - 1);
@@ -396,9 +407,9 @@ public class AcroFields {
     }
     Item fd = fields.get(fieldName);
     String[] sing = null;
-    if (exportValues == null && displayValues != null) {
+    if (exportValues == null) {
       sing = displayValues;
-    } else if (exportValues != null && displayValues == null) {
+    } else if (displayValues == null) {
       sing = exportValues;
     }
     PdfArray opt = new PdfArray();
@@ -407,12 +418,12 @@ public class AcroFields {
         opt.add(new PdfString(s, PdfObject.TEXT_UNICODE));
       }
     } else {
-      for (int k = 0; k < exportValues.length; ++k) {
-        PdfArray a = new PdfArray();
-        a.add(new PdfString(exportValues[k], PdfObject.TEXT_UNICODE));
-        a.add(new PdfString(displayValues[k], PdfObject.TEXT_UNICODE));
-        opt.add(a);
-      }
+        for (int k = 0; k < exportValues.length; ++k) {
+          PdfArray a = new PdfArray();
+          a.add(new PdfString(exportValues[k], PdfObject.TEXT_UNICODE));
+          a.add(new PdfString(displayValues[k], PdfObject.TEXT_UNICODE));
+          opt.add(a);
+        }
     }
     fd.writeToAll(PdfName.OPT, opt, Item.WRITE_VALUE | Item.WRITE_MERGED);
     return true;
@@ -798,7 +809,7 @@ public class AcroFields {
       }
       if ((flags & PdfFormField.FF_COMBO) != 0) {
         for (int k = 0; k < choices.length; ++k) {
-          if (text.equals(choicesExp[k])) {
+          if (text != null && text.equals(choicesExp[k])) {
             text = choices[k];
             break;
           }
@@ -957,8 +968,8 @@ public class AcroFields {
     String[] options = getListOptionExport(name);
     PdfNumber n;
     int idx = 0;
-    for (Iterator i = values.listIterator(); i.hasNext(); ) {
-      n = (PdfNumber) i.next();
+    for (PdfObject pdfObject : values.getElements()) {
+      n = (PdfNumber) pdfObject;
       ret[idx++] = options[n.intValue()];
     }
     return ret;
@@ -1093,7 +1104,11 @@ public class AcroFields {
               PdfAppearance cb = new PdfAppearance();
               if (dao[DA_FONT] != null) {
                 ByteBuffer buf = cb.getInternalBuffer();
-                buf.append(new PdfName((String) dao[DA_FONT]).getBytes()).append(' ').append((Float) value).append(" Tf ");
+                Float fontSize = (float) Font.DEFAULTSIZE;
+                if (value != null) {
+                  fontSize = (Float) value;
+                }
+                buf.append(new PdfName((String) dao[DA_FONT]).getBytes()).append(' ').append(fontSize).append(" Tf ");
                 if (dao[DA_COLOR] != null) {
                   cb.setColorFill((Color) dao[DA_COLOR]);
                 }
@@ -2109,8 +2124,9 @@ public class AcroFields {
    * @return the field names that have signatures and are signed
    */
   @Deprecated
-  public ArrayList getSignatureNames() {
-    return (ArrayList) getSignedFieldNames();
+  @SuppressWarnings("unchecked")
+  public ArrayList<String> getSignatureNames() {
+      return (ArrayList<String>) getSignedFieldNames();
   }
 
   /**

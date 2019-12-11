@@ -50,17 +50,15 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.bouncycastle.BouncyCastleHelper;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.exceptions.BadPasswordException;
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.exceptions.InvalidPdfException;
 import com.lowagie.text.exceptions.UnsupportedPdfException;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -1186,8 +1184,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
     for (int k = 2; k < xref.length; k += 2) {
       int pos = xref[k];
-      if (pos <= 0 || xref[k + 1] > 0)
+      if (pos <= 0 || ((xref.length > k + 1) && (xref[k + 1] > 0))) {
         continue;
+      }
       tokens.seek(pos);
       tokens.nextValidToken();
       if (tokens.getTokenType() != PRTokeniser.TK_NUMBER)
@@ -1844,10 +1843,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         break;
       case 3: // PNG_FILTER_AVERAGE
         for (int i = 0; i < bytesPerPixel; i++) {
-          curr[i] += prior[i] / 2;
+          curr[i] += prior[i] / (byte) 2;
         }
         for (int i = bytesPerPixel; i < bytesPerRow; i++) {
-          curr[i] += ((curr[i - bytesPerPixel] & 0xff) + (prior[i] & 0xff)) / 2;
+          curr[i] += ((curr[i - bytesPerPixel] & 0xff) + (prior[i] & 0xff)) / (byte) 2;
         }
         break;
       case 4: // PNG_FILTER_PAETH
@@ -3104,9 +3103,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
     case PdfObject.ARRAY: {
       PdfArray arr = new PdfArray();
-      for (Iterator it = ((PdfArray) original).listIterator(); it.hasNext();) {
-        arr.add(duplicatePdfObject((PdfObject) it.next(), newReader));
-      }
+      ((PdfArray) original).getElements().forEach(pdfObject -> arr.add(duplicatePdfObject(pdfObject, newReader)));
       return arr;
     }
     case PdfObject.INDIRECT: {
@@ -3719,10 +3716,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           if (obj != null)
             acc.put(pageInhCandidate, obj);
         }
-        PdfArray kids = (PdfArray) PdfReader.getPdfObjectRelease(top
-            .get(PdfName.KIDS));
-        for (Iterator it = kids.listIterator(); it.hasNext();) {
-          PRIndirectReference ref = (PRIndirectReference) it.next();
+        PdfArray kids = (PdfArray) PdfReader.getPdfObjectRelease(top.get(PdfName.KIDS));
+        for (PdfObject pdfObject : kids.getElements()) {
+          PRIndirectReference ref = (PRIndirectReference) pdfObject;
           PdfDictionary dic = (PdfDictionary) getPdfObject(ref);
           int last = reader.lastXrefPartial;
           PdfObject count = getPdfObjectRelease(dic.get(PdfName.COUNT));

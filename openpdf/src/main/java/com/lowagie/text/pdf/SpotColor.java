@@ -49,6 +49,8 @@
 
 package com.lowagie.text.pdf;
 
+import java.awt.Color;
+
 /**
  *
  * @author  psoares
@@ -60,14 +62,20 @@ public class SpotColor extends ExtendedColor {
     float tint;
 
     public SpotColor(PdfSpotColor spot, float tint) {
-        super(TYPE_SEPARATION,
-            (spot.getAlternativeCS().getRed() / 255f - 1f) * tint + 1,
-            (spot.getAlternativeCS().getGreen() / 255f - 1f) * tint + 1,
-            (spot.getAlternativeCS().getBlue() / 255f - 1f) * tint + 1);
+        this((spot.getAlternativeCS().getRed() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
+            (spot.getAlternativeCS().getGreen() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
+            (spot.getAlternativeCS().getBlue() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
+            (spot.getAlternativeCS().getAlpha() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
+                tint);
         this.spot = spot;
+    }
+
+    public SpotColor(float red, float green, float blue, float alpha, float tint) {
+        super(TYPE_SEPARATION, red, green, blue, alpha);
+        this.spot = new PdfSpotColor("Color rgba(" + red + ", " + green + ", " + blue+ ", " + alpha + ")", new Color(red, green, blue, alpha));
         this.tint = tint;
     }
-    
+
     public PdfSpotColor getPdfSpotColor() {
         return spot;
     }

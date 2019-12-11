@@ -55,6 +55,10 @@ import org.junit.jupiter.api.TestFactory;
  */
 class PdfCrossReferenceTest {
 
+  private static final Predicate<String> CROSS_REFERENCE_FORMAT = Pattern
+          .compile("^\\d{10} \\d{5} [fn] \n$")
+          .asPredicate();
+
   /**
    * Tests comparison between different {@link PdfCrossReference cross-reference entries},
    * because such entries are ordered through according PDF object numbers.
@@ -103,10 +107,6 @@ class PdfCrossReferenceTest {
         })
     );
   }
-
-  private static final Predicate<String> CROSS_REFERENCE_FORMAT = Pattern
-      .compile("^\\d{10} \\d{5} [fn] \n$")
-      .asPredicate();
 
   /**
    * Each cross-reference entry shall always be exactly 20 bytes (according to PDF specification

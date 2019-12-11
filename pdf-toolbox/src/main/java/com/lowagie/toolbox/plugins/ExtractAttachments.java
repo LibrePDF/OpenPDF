@@ -39,7 +39,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.swing.JInternalFrame;
 
@@ -124,9 +123,8 @@ public class ExtractAttachments extends AbstractTool {
                 PdfArray annots = reader.getPageN(k).getAsArray(PdfName.ANNOTS);
                 if (annots == null)
                     continue;
-                for (Iterator<PdfObject> i = annots.listIterator(); i.hasNext();) {
-                    PdfDictionary annot = (PdfDictionary) PdfReader
-                            .getPdfObject(i.next());
+                for (PdfObject pdfObject : annots.getElements()) {
+                    PdfDictionary annot = (PdfDictionary) PdfReader.getPdfObject(pdfObject);
                     PdfName subType = annot.getAsName(PdfName.SUBTYPE);
                     if (!PdfName.FILEATTACHMENT.equals(subType))
                         continue;

@@ -1165,11 +1165,11 @@ public class PdfSignatureAppearance {
    * general sequence is: preClose(), getDocumentBytes() and close().
    * <p>
    * <CODE>update</CODE> is a <CODE>PdfDictionary</CODE> that must have exactly
-   * the same keys as the ones provided in {@link #preClose(HashMap)}.
+   * the same keys as the ones provided in {@link PdfSignatureAppearance#preClose(Map)}.
    * 
    * @param update
    *          a <CODE>PdfDictionary</CODE> with the key/value that will fill the
-   *          holes defined in {@link #preClose(HashMap)}
+   *          holes defined in {@link PdfSignatureAppearance#preClose(Map)}
    * @throws DocumentException
    *           on error
    * @throws IOException
@@ -1581,14 +1581,18 @@ public class PdfSignatureAppearance {
       }
       for (int k = 0; k < range.length; k += 2) {
         long start = range[k];
-        long end = start + range[k + 1];
-        if (rangePosition < start)
+        long end = start;
+        if (range.length > k + 1) {
+          end = start + range[k + 1];
+        }
+        if (rangePosition < start) {
           rangePosition = start;
-        if (rangePosition >= start && rangePosition < end) {
+        }
+        if (rangePosition < end) {
           int lenf = (int) Math.min(len, end - rangePosition);
-          if (raf == null)
+          if (raf == null) {
             System.arraycopy(bout, (int) rangePosition, b, off, lenf);
-          else {
+          }else {
             raf.seek(rangePosition);
             raf.readFully(b, off, lenf);
           }

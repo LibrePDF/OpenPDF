@@ -84,11 +84,11 @@ public class DefaultSplitCharacter implements SplitCharacter {
         }
         if (c < 0x2002)
             return false;
-        return ((c >= 0x2002 && c <= 0x200b)
-        || (c >= 0x2e80 && c < 0xd7a0)
-        || (c >= 0xf900 && c < 0xfb00)
-        || (c >= 0xfe30 && c < 0xfe50)
-        || (c >= 0xff61 && c < 0xffa0));
+        return c <= 0x200b
+                || c >= 0x2e80 && c < 0xd7a0
+                || c >= 0xf900 && c < 0xfb00
+                || c >= 0xfe30 && c < 0xfe50
+                || c >= 0xff61 && c < 0xffa0;
     }
 
     /**

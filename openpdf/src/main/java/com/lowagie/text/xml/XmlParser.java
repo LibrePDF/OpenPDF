@@ -49,18 +49,18 @@
 
 package com.lowagie.text.xml;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Map;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import com.lowagie.text.DocListener;
 import com.lowagie.text.ExceptionConverter;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.HashMap;
 
 /**
  * This class can be used to parse an XML file.
@@ -94,7 +94,7 @@ public class XmlParser {
 
     public void go(DocListener document, InputSource is) {
         try {
-            parser.parse(is, new SAXiTextHandler(document));
+            parser.parse(is, new SAXiTextHandler<>(document));
         } catch (SAXException | IOException se) {
             throw new ExceptionConverter(se);
         }
@@ -140,7 +140,7 @@ public class XmlParser {
      * @param tagmap   a user defined tagmap
      */
 
-    public void go(DocListener document, InputSource is, HashMap tagmap) {
+    public void go(DocListener document, InputSource is, Map<String, XmlPeer> tagmap) {
         try {
             parser.parse(is, new SAXmyHandler(document, tagmap));
         } catch (SAXException | IOException se) {
@@ -157,7 +157,7 @@ public class XmlParser {
 
     public void go(DocListener document, String file) {
         try {
-            parser.parse(file, new SAXiTextHandler(document));
+            parser.parse(file, new SAXiTextHandler<>(document));
         } catch (SAXException | IOException se) {
             throw new ExceptionConverter(se);
         }
@@ -187,7 +187,7 @@ public class XmlParser {
      * @param tagmap   a user defined tagmap
      */
 
-    public void go(DocListener document, String file, HashMap tagmap) {
+    public void go(DocListener document, String file, Map<String, XmlPeer> tagmap) {
         try {
             parser.parse(file, new SAXmyHandler(document, tagmap));
         } catch (SAXException | IOException se) {
@@ -228,7 +228,7 @@ public class XmlParser {
      * @param tagmap   a user defined tagmap
      */
 
-    public static void parse(DocListener document, InputSource is, HashMap tagmap) {
+    public static void parse(DocListener document, InputSource is, Map<String, XmlPeer> tagmap) {
         XmlParser xmlParser = new XmlParser();
         xmlParser.go(document, is, tagmap);
     }
@@ -266,7 +266,7 @@ public class XmlParser {
      * @param tagmap   A user defined tagmap
      */
 
-    public static void parse(DocListener document, String file, HashMap tagmap) {
+    public static void parse(DocListener document, String file, Map<String, XmlPeer> tagmap) {
         XmlParser xmlParser = new XmlParser();
         xmlParser.go(document, file, tagmap);
     }
@@ -304,7 +304,7 @@ public class XmlParser {
      * @param tagmap   A user defined tagmap
      */
 
-    public static void parse(DocListener document, InputStream is, HashMap tagmap) {
+    public static void parse(DocListener document, InputStream is, Map<String, XmlPeer> tagmap) {
         XmlParser xmlParser = new XmlParser();
         xmlParser.go(document, new InputSource(is), tagmap);
     }
@@ -342,7 +342,7 @@ public class XmlParser {
      * @param tagmap   A user defined tagmap
      */
 
-    public static void parse(DocListener document, Reader is, HashMap tagmap) {
+    public static void parse(DocListener document, Reader is, Map<String, XmlPeer> tagmap) {
         XmlParser xmlParser = new XmlParser();
         xmlParser.go(document, new InputSource(is), tagmap);
     }

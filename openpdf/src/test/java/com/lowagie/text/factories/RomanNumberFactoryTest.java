@@ -1,17 +1,18 @@
 package com.lowagie.text.factories;
 
+import static com.lowagie.text.factories.RomanNumberFactory.getString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static com.lowagie.text.factories.RomanNumberFactory.getString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class RomanNumberFactoryTest {
 
@@ -30,14 +31,6 @@ class RomanNumberFactoryTest {
         assertEquals("lvi", getString(56));
         assertEquals("mmcmxcix", getString(2999));
         assertEquals("mmm", getString(3000));
-    }
-
-    @ParameterizedTest
-    @MethodSource("numeralTestProvider")
-    void shouldConvertRomanNumeralRepresentation(int input, String expected) {
-        assertAll(
-                () -> assertThat(getString(input), is(expected)),
-                () -> assertThat(getString(input, false), is(expected.toUpperCase())));
     }
 
     static Stream<Arguments> numeralTestProvider() {
@@ -64,5 +57,13 @@ class RomanNumberFactoryTest {
                 arguments(900, "cm"),
                 arguments(1000, "m")
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource("numeralTestProvider")
+    void shouldConvertRomanNumeralRepresentation(int input, String expected) {
+        assertAll(
+                () -> assertThat(getString(input), is(expected)),
+                () -> assertThat(getString(input, false), is(expected.toUpperCase())));
     }
 }

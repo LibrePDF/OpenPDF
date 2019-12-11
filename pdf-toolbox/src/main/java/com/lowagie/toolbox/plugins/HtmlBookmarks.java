@@ -50,11 +50,9 @@ package com.lowagie.toolbox.plugins;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
@@ -134,12 +132,12 @@ public class HtmlBookmarks extends AbstractTool {
                 document.addTitle("Index for " + src.getName());
             else
                 document.addKeywords("Index for '" + title + "'");
-            Object keywords = reader.getInfo().get("Keywords");
+            String keywords = reader.getInfo().get("Keywords");
             if (keywords != null)
-                document.addKeywords((String)keywords);
-            Object description = reader.getInfo().get("Subject");
+                document.addKeywords(keywords);
+            String description = reader.getInfo().get("Subject");
             if (keywords != null)
-                document.addSubject((String)description);
+                document.addSubject(description);
             document.open();
             Paragraph t;
             if (title == null)
@@ -148,20 +146,22 @@ public class HtmlBookmarks extends AbstractTool {
                 t = new Paragraph("Index for '" + title + "'");
             document.add(t);
             if (description != null) {
-                Paragraph d = new Paragraph((String) description);
+                Paragraph d = new Paragraph(description);
                 document.add(d);
             }
-            List<Map<String, Object>> list = SimpleBookmark.getBookmarkList(reader);
-            if (list == null) {
+            List<Map<String, Object>> mapList = SimpleBookmark.getBookmarkList(reader);
+            if (mapList == null) {
                 document.add(new Paragraph("This document has no bookmarks."));
             }
             else {
-                for (Map<String, Object> c: list) {
-                    Chapter chapter = (Chapter)createBookmark(src.getName(), null, c);
-                    List<HashMap<String, Object>> kids = (List<HashMap<String, Object>>) c.get("Kids");
+                for (Map<String, Object> map : mapList) {
+                    Chapter chapter = (Chapter) createBookmark(src.getName(), null, map);
+                    // As long as the Definition of mapList and kids is recursive, we have to work with unchecked casts
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> kids = (List<Map<String, Object>>) map.get("Kids");
                     if (kids != null) {
-                        for (HashMap<String, Object> m: kids) {
-                            addBookmark(src.getName(), chapter, m);
+                        for (Map<String, Object> kid : kids) {
+                            addBookmark(src.getName(), chapter, kid);
                         }
                     }
                     document.add(chapter);
@@ -184,14 +184,16 @@ public class HtmlBookmarks extends AbstractTool {
      * Recursive method to write Bookmark titles to the System.out.
      * @param pdf the path to the PDF file
      * @param section the section to which the bookmarks should be added
-     * @param bookmark a HashMap containing a Bookmark (and possible kids)
+     * @param bookmark a Map containing a Bookmark (and possible kids)
      */
-    private static void addBookmark(String pdf, Section section, HashMap<String, Object> bookmark) {
+    private static void addBookmark(String pdf, Section section, Map<String, Object> bookmark) {
         Section s = createBookmark(pdf, section, bookmark);
-        List<HashMap<String, Object>> kids = (List<HashMap<String, Object>>) bookmark.get("Kids");
+        // As long as the Definition of mapList and kids is recursive, we have to work with unchecked casts
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> kids = (List<Map<String, Object>>) bookmark.get("Kids");
         if (kids == null) return;
-        for (HashMap<String, Object> m: kids) {
-            addBookmark(pdf, s, m);
+        for (Map<String, Object> kid : kids) {
+            addBookmark(pdf, s, kid);
         }
     }
 

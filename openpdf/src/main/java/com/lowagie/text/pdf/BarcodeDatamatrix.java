@@ -327,10 +327,13 @@ public class BarcodeDatamatrix {
             if (ptrOut >= dataLength)
                 break;
             if (c < 40) {
-                if (ptrIn == 0 || (ptrIn > 0 && x[ptrIn - 1] > 40))
+                if (ptrIn == 0 || x[ptrIn - 1] > 40)
                     data[dataOffset + ptrOut++] = (byte)238;
                 if (ptrOut + 2 > dataLength)
                     break;
+                if(x.length -1 < ptrIn + 2) {
+                    break;
+                }
                 n = 1600 * x[ptrIn] + 40 * x[ptrIn + 1] + x[ptrIn + 2] + 1;
                 data[dataOffset + ptrOut++] = (byte)(n / 256);
                 data[dataOffset + ptrOut++] = (byte)n;
@@ -350,8 +353,7 @@ public class BarcodeDatamatrix {
             }
         }
         c = 100;
-        if (textLength > 0)
-            c = x[textLength - 1];
+        c = x[textLength - 1];
         if (ptrIn != textLength || (c < 40 && ptrOut >= dataLength))
             return -1;
         if (c < 40)
@@ -636,7 +638,7 @@ public class BarcodeDatamatrix {
                     return -1;
                 ptrIn += 2;
                 fi = getNumber(text, textOffset + ptrIn, 5);
-                if (fi < 0 || fn >= 64516)
+                if (fi < 0)
                     return -1;
                 ptrIn += 5;
                 data[ptrOut++] = (byte)(233);

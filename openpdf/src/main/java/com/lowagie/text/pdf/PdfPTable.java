@@ -891,7 +891,7 @@ public class PdfPTable implements LargeElement{
     
     /**
      * Gets the maximum height of a cell in a particular row (will only be different
-     * from getRowHeight is one of the cells in the row has a rowspan > 1).
+     * from getRowHeight is one of the cells in the row has a rowspan {@literal >} 1).
      * 
      * @param    rowIndex    the row index
      * @param    cellIndex    the cell index
@@ -1032,7 +1032,7 @@ public class PdfPTable implements LargeElement{
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public ArrayList getChunks() {
+    public ArrayList<Element> getChunks() {
         return new ArrayList<>();
     }
     

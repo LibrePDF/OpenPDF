@@ -37,7 +37,6 @@ package com.lowagie.toolbox.arguments;
 
 import java.awt.event.ActionEvent;
 import java.util.TreeMap;
-
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
@@ -186,7 +185,7 @@ public class OptionArgument extends AbstractArgument {
     public void actionPerformed(ActionEvent evt) {
         Object[] message = new Object[2];
         message[0] = "Choose one of the following options:";
-        JComboBox cb = new JComboBox();
+        JComboBox<Entry> cb = new JComboBox<>();
         for (Entry entry: options.values()) {
             cb.addItem(entry);
         }

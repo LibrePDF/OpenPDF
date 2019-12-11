@@ -47,6 +47,11 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.xml.XMLUtil;
+import com.lowagie.text.xml.simpleparser.IanaEncodings;
+import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
+import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,12 +66,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.xml.simpleparser.IanaEncodings;
-import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
-import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
-import com.lowagie.text.xml.XMLUtil;
 
 /**
  * Bookmark processing in a simple way. It has some limitations, mainly the only
@@ -712,7 +711,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @throws IOException on error
      * @return the bookmarks
      */
-    public static List importFromXML(Reader in) throws IOException {
+    public static List<Map<String, Object>> importFromXML(Reader in) throws IOException {
         SimpleBookmark book = new SimpleBookmark();
         SimpleXMLParser.parse(book, in);
         return book.topList;
@@ -756,7 +755,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     }
 
     /**
-     * @deprecated user {@link SimpleBookmark#startElement(String, Map<String, String>)}
+     * @deprecated user {@link SimpleBookmark#startElement(String, Map)}
      */
     @Deprecated
     @SuppressWarnings("unchecked")

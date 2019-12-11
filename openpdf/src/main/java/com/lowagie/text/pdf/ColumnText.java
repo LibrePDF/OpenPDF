@@ -484,6 +484,9 @@ public class ColumnText {
             throw new RuntimeException(MessageLocalization.getComposedMessage("no.valid.column.line.found"));
         List<float[]> cc = new ArrayList<>();
         for (int k = 0; k < cLine.length - 2; k += 2) {
+            if (cLine.length == k + 3){
+                break;
+            }
             float x1 = cLine[k];
             float y1 = cLine[k + 1];
             float x2 = cLine[k + 2];
@@ -813,8 +816,7 @@ public class ColumnText {
         float ratio = spaceCharRatio;
         Object[] currentValues = new Object[2];
         PdfFont currentFont = null;
-        Float lastBaseFactor = (float) 0;
-        currentValues[1] = lastBaseFactor;
+        currentValues[1] = 0.0F;
         PdfDocument pdf = null;
         PdfContentByte graphics = null;
         PdfContentByte text = null;
@@ -920,7 +922,9 @@ public class ColumnText {
             }
         if (dirty) {
             text.endText();
-            canvas.add(text);
+            if (canvas != null) {
+                canvas.add(text);
+            }
         }
         return status;
     }
@@ -1153,8 +1157,9 @@ public class ColumnText {
         
         main_loop:
         while (true) {
-            if (compositeElements.isEmpty())
+            if (compositeElements.isEmpty()) {
                 return NO_MORE_TEXT;
+            }
             Element element = compositeElements.getFirst();
             if (element.type() == Element.PARAGRAPH) {
                 Paragraph para = (Paragraph)element;
@@ -1203,9 +1208,11 @@ public class ColumnText {
                     }
                 }
                 firstPass = false;
-                yLine = compositeColumn.yLine;
-                linesWritten += compositeColumn.linesWritten;
-                descender = compositeColumn.descender;
+                if (compositeColumn != null) {
+                    yLine = compositeColumn.yLine;
+                    linesWritten += compositeColumn.linesWritten;
+                    descender = compositeColumn.descender;
+                }
                 if ((status & NO_MORE_TEXT) != 0) {
                     compositeColumn = null;
                     compositeElements.removeFirst();
@@ -1283,7 +1290,7 @@ public class ColumnText {
                     compositeColumn.rectangularMode = rectangularMode;
                     compositeColumn.minY = minY;
                     compositeColumn.maxY = maxY;
-                    boolean keepCandidate = (item.getKeepTogether() && createHere && !firstPass);
+                    boolean keepCandidate = (item != null && item.getKeepTogether() && createHere && !firstPass);
                     status = compositeColumn.go(simulate || (keepCandidate && keep == 0));
                     updateFilledWidth(compositeColumn.filledWidth);
                     if ((status & NO_MORE_TEXT) == 0 && keepCandidate) {
@@ -1303,14 +1310,17 @@ public class ColumnText {
                 linesWritten += compositeColumn.linesWritten;
                 descender = compositeColumn.descender;
                 if (!Float.isNaN(compositeColumn.firstLineY) && !compositeColumn.firstLineYDone) {
-                    if (!simulate)
+                    if (!simulate && item != null) {
                         showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(item.getListSymbol()), compositeColumn.leftX + listIndentation, compositeColumn.firstLineY, 0);
+                    }
                     compositeColumn.firstLineYDone = true;
                 }
                 if ((status & NO_MORE_TEXT) != 0) {
                     compositeColumn = null;
                     ++listIdx;
-                    yLine -= item.getSpacingAfter();
+                    if (item != null) {
+                        yLine -= item.getSpacingAfter();
+                    }
                 }
                 if ((status & NO_MORE_COLUMN) != 0)
                     return NO_MORE_COLUMN;

@@ -46,19 +46,6 @@
  */
 package com.lowagie.text.pdf;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.xml.sax.SAXException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
@@ -71,6 +58,16 @@ import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
 import com.lowagie.text.xml.xmp.XmpReader;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.xml.sax.SAXException;
 
 class PdfStamperImp extends PdfWriter {
     HashMap<PdfReader, IntHashtable> readers2intrefs = new HashMap<>();
@@ -179,11 +176,9 @@ class PdfStamperImp extends PdfWriter {
                     acroFields.getXfa().setXfa(this);
             }
             if (sigFlags != 0) {
-                if (acroForm != null) {
-                    acroForm.put(PdfName.SIGFLAGS, new PdfNumber(sigFlags));
-                    markUsed(acroForm);
-                    markUsed(catalog);
-                }
+                acroForm.put(PdfName.SIGFLAGS, new PdfNumber(sigFlags));
+                markUsed(acroForm);
+                markUsed(catalog);
             }
         }
         closed = true;
@@ -226,16 +221,21 @@ class PdfStamperImp extends PdfWriter {
           skipInfo = iInfo.getNumber();
         }
         if (oldInfo != null && oldInfo.get(PdfName.PRODUCER) != null) {
-          producer = oldInfo.getAsString(PdfName.PRODUCER).toString();
+          producer = oldInfo.getAsString(PdfName.PRODUCER).toUnicodeString();
         }
         if (producer == null) {
           producer = Document.getVersion();
         }
         else if (!producer.contains(Document.getProduct())) {
-          StringBuffer buf = new StringBuffer(producer);
+          StringBuilder buf = new StringBuilder(producer);
           buf.append("; modified using ");
           buf.append(Document.getVersion());
           producer = buf.toString();
+        }
+        
+        // if we explicitly set Producer key
+        if (moreInfo != null && moreInfo.containsKey("Producer")) {
+          producer = moreInfo.get("Producer");
         }
           
         // XMP
@@ -251,20 +251,25 @@ class PdfStamperImp extends PdfWriter {
         PdfDate date = null;
         if (modificationDate == null) {
           date = new PdfDate();
-        }
-        else {
-          date = new PdfDate(modificationDate);
+        } else {
+            date = new PdfDate(modificationDate);
         }
 
         // if there is XMP data to add: add it
-        
         if (altMetadata != null) {
             PdfStream xmp = null;
             try {
               XmpReader xmpr = new XmpReader(altMetadata);
-              if (!xmpr.replace("http://ns.adobe.com/pdf/1.3/", "Producer", producer)) {
-                xmpr.add("rdf:Description", "http://ns.adobe.com/pdf/1.3/", "pdf:Producer", producer);
+              String producerXMP = producer;
+              if (producerXMP == null) {
+                producerXMP = "";
+              }              
+              if (!xmpr.replace("http://ns.adobe.com/pdf/1.3/", "Producer", producerXMP)) {
+                if (!"".equals(producerXMP)) {
+                  xmpr.add("rdf:Description", "http://ns.adobe.com/pdf/1.3/", "pdf:Producer", producerXMP);
+                }
               }
+              
               if (!xmpr.replace("http://ns.adobe.com/xap/1.0/", "ModifyDate", date.getW3CDate())) {
                 xmpr.add("rdf:Description", "http://ns.adobe.com/xap/1.0/", "xmp:ModifyDate", date.getW3CDate());
               }
@@ -357,7 +362,9 @@ class PdfStamperImp extends PdfWriter {
         }
         
         newInfo.put(PdfName.MODDATE, date);
-        newInfo.put(PdfName.PRODUCER, new PdfString(producer));
+        if (producer != null) {
+          newInfo.put(PdfName.PRODUCER, new PdfString(producer));
+        }
         
         if (moreInfo != null) {
             for (Map.Entry<String, String> entry : moreInfo.entrySet()) {
@@ -1567,8 +1574,8 @@ class PdfStamperImp extends PdfWriter {
         PdfIndirectReference ref;
         PdfLayer layer;
         Map<String, PdfLayer> ocgmap = new HashMap<>();
-        for (Iterator i = ocgs.listIterator(); i.hasNext(); ) {
-            ref = (PdfIndirectReference)i.next();
+        for (PdfObject pdfObject : ocgs.getElements()) {
+            ref = (PdfIndirectReference)pdfObject;
             layer = new PdfLayer(null);
             layer.setRef(ref);
             layer.setOnPanel(false);
@@ -1578,8 +1585,8 @@ class PdfStamperImp extends PdfWriter {
         PdfDictionary d = dict.getAsDict(PdfName.D);
         PdfArray off = d.getAsArray(PdfName.OFF);
         if (off != null) {
-            for (Iterator i = off.listIterator(); i.hasNext(); ) {
-                ref = (PdfIndirectReference)i.next();
+            for (PdfObject pdfObject : off.getElements() ) {
+                ref = (PdfIndirectReference)pdfObject;
                 layer = ocgmap.get(ref.toString());
                 layer.setOn(false);
             }
@@ -1631,9 +1638,7 @@ class PdfStamperImp extends PdfWriter {
                         parent.addChild(layer);
                     }
                     PdfArray array = new PdfArray();
-                    for (Iterator j = sub.listIterator(); j.hasNext(); ) {
-                        array.add((PdfObject)j.next());
-                    }
+                    sub.getElements().forEach(array::add);
                     addOrder(layer, array, ocgmap);
                 }
                 else {

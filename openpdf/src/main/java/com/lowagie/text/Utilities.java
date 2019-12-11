@@ -48,6 +48,7 @@
  */
 package com.lowagie.text;
 
+import com.lowagie.text.pdf.PRTokeniser;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -55,11 +56,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
-import com.lowagie.text.pdf.PRTokeniser;
 
 /**
  * A collection of convenience methods that were present in many different iText
@@ -75,8 +74,8 @@ public class Utilities {
      *            a Hashtable
      * @return the keyset of a Hashtable (or an empty set if table is null)
      */
-    public static Set getKeySet(Hashtable table) {
-        return (table == null) ? Collections.EMPTY_SET : table.keySet();
+    public static Set<String> getKeySet(Map<String, ?> table) {
+        return (table == null) ? Collections.emptySet() : table.keySet();
     }
 
     /**

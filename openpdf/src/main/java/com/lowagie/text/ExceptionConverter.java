@@ -170,7 +170,7 @@ public class ExceptionConverter extends RuntimeException {
      * is called by the constructor of Throwable 
      * @return a Throwable
      */
-    public Throwable fillInStackTrace() {
+    public synchronized Throwable fillInStackTrace() {
         return this;
     }
 }

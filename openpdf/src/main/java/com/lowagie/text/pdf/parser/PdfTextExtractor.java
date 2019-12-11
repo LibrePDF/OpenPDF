@@ -67,7 +67,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Extracts text from a PDF file.
@@ -163,10 +162,8 @@ public class PdfTextExtractor {
                 // processContent() resets state.
                 ByteArrayOutputStream allBytes = new ByteArrayOutputStream();
                 PdfArray contentArray = (PdfArray) contentObject;
-                ListIterator<PdfObject> iter = contentArray.listIterator();
-                while (iter.hasNext()) {
-                    PdfObject element = iter.next();
-                    allBytes.write(getContentBytesFromContentObject(element));
+                for (PdfObject pdfObject : contentArray.getElements()) {
+                    allBytes.write(getContentBytesFromContentObject(pdfObject));
                 }
                 result = allBytes.toByteArray();
                 break;
