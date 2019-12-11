@@ -97,7 +97,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -120,6 +123,10 @@ public class PdfGraphics2D extends Graphics2D {
     private BasicStroke strokeOne = new BasicStroke(1);
     
     private static final AffineTransform IDENTITY = new AffineTransform();
+    
+    private static final Set<String>	 LOGICAL_FONT_NAMES                = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Dialog", "DialogInput", "Monospaced", "Serif", "SansSerif")));
+    private static final String			 BOLD_FONT_FACE_NAME_SUFFIX        = ".bold";
+    private static final String			 BOLD_ITALIC_FONT_FACE_NAME_SUFFIX = ".bolditalic";
     
     private Font font;
     private BaseFont baseFont;
@@ -463,8 +470,14 @@ public class PdfGraphics2D extends Graphics2D {
                     weight = (font.isBold()) ? TextAttribute.WEIGHT_BOLD
                                              : TextAttribute.WEIGHT_REGULAR;
                 }
+                String fontFaceName = font.getFontName();
+                String fontLogicalName = font.getName();
                 if ((font.isBold() || (weight >= TextAttribute.WEIGHT_SEMIBOLD))
-                    && (font.getFontName().equals(font.getName()))) {
+                    && (fontFaceName.equals(fontLogicalName) ||
+                    		// bold logical font face name has suffix ".bold" / ".bolditalic"
+                    		(LOGICAL_FONT_NAMES.contains(fontLogicalName) &&
+                    				(fontFaceName.equals(fontLogicalName + BOLD_FONT_FACE_NAME_SUFFIX) ||
+                    				 fontFaceName.equals(fontLogicalName + BOLD_ITALIC_FONT_FACE_NAME_SUFFIX))))) {
                     // Simulate a bold font.
                     float strokeWidth = font.getSize2D() * (weight - TextAttribute.WEIGHT_REGULAR) / 30f;
                     if (strokeWidth != 1) {
