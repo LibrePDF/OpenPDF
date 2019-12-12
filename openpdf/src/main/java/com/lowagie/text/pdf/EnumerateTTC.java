@@ -74,8 +74,6 @@ class EnumerateTTC extends TrueTypeFont{
 	 */
 	private static final int TRUE_TYPE_SFNT_VERSION            = 0x00010000;
 	private static final int CFF_DATA_SFNT_VERSION             = 0x4F54544F; //'OTTO'
-	private static final int APPLE_TRUE_TYPE_TRUE_SFNT_VERSION = 0x74727565; //'true'
-	private static final int APPLE_TRUE_TYPE_TYP1_SFNT_VERSION = 0x74797031; //'typ1'
 
     protected String[] names;
 
@@ -115,9 +113,7 @@ class EnumerateTTC extends TrueTypeFont{
                 boolean trueTypeFont = sfntVersion == TRUE_TYPE_SFNT_VERSION;
                 boolean cffDataFont = sfntVersion == CFF_DATA_SFNT_VERSION &&
                 		(majorVersion == 1 || majorVersion == 2);
-                boolean appleSpecifiedTrueTypeFont = sfntVersion == APPLE_TRUE_TYPE_TRUE_SFNT_VERSION |
-                		sfntVersion == APPLE_TRUE_TYPE_TYP1_SFNT_VERSION;
-                if (!trueTypeFont && !cffDataFont && !appleSpecifiedTrueTypeFont) {
+                if (!trueTypeFont && !cffDataFont) {
                     throw new DocumentException(MessageLocalization.getComposedMessage("1.is.not.a.valid.ttf.file", fileName));
                 }
                 int num_tables = rf.readUnsignedShort();
