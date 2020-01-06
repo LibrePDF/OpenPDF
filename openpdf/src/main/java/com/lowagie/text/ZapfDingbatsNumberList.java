@@ -105,12 +105,13 @@ public class ZapfDingbatsNumberList extends List {
     }
 
     /**
-     * Adds an <CODE>Object</CODE> to the <CODE>List</CODE>.
+     * Adds an <CODE>Element</CODE> to the <CODE>List</CODE>.
      *
-     * @param    o    the object to add.
-     * @return true if adding the object succeeded
+     * @param    o    the element to add.
+     * @return true if adding the element succeeded
      */
-    public boolean add(Object o) {
+    @Override
+    public boolean add(Element o) {
         if (o instanceof ListItem) {
             ListItem item = (ListItem) o;
             Chunk chunk = new Chunk(preSymbol, symbol.getFont());
@@ -137,9 +138,18 @@ public class ZapfDingbatsNumberList extends List {
             nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
             first--;
             return list.add(nested);
-        } else if (o instanceof String) {
-            return this.add(new ListItem((String) o));
         }
         return false;
+    }
+
+    /**
+     * Adds a <CODE>String</CODE> to the <CODE>List</CODE>.
+     *
+     * @param    s    the string to add.
+     * @return true if adding the string succeeded
+     */
+    @Override
+    public boolean add(String s) {
+        return this.add(new ListItem(s));
     }
 }

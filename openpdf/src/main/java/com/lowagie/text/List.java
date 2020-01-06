@@ -261,10 +261,10 @@ public class List implements TextElementArray {
     // methods to set the membervariables
     
     /**
-     * Adds an <CODE>Object</CODE> to the <CODE>List</CODE>.
+     * Adds an <CODE>Element</CODE> to the <CODE>List</CODE>.
      *
-     * @param    o        the object to add.
-     * @return true if adding the object succeeded
+     * @param    o        the element to add.
+     * @return true if adding the element succeeded
      */
     public boolean add(Element o) {
         if (o instanceof ListItem) {
@@ -289,17 +289,29 @@ public class List implements TextElementArray {
         return false;
     }
 
+    /**
+     * Adds a nested <CODE>List</CODE> to the <CODE>List</CODE>.
+     *
+     * @param    nested        the nested list to add.
+     * @return true if adding the nested list succeeded
+     */
     public boolean add(List nested) {
         nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
         first--;
         return list.add(nested);
     }
 
-    public boolean add(String o) {
-        return this.add(new ListItem(o));
+    /**
+     * Adds a <CODE>String</CODE> to the <CODE>List</CODE>.
+     *
+     * @param    s        the string to add.
+     * @return true if adding the string succeeded
+     */
+    public boolean add(String s) {
+        return this.add(new ListItem(s));
     }
 
-        // extra methods
+    // extra methods
     
     /** Makes sure all the items in the list have the same indentation. */
     public void normalizeIndentation() {
