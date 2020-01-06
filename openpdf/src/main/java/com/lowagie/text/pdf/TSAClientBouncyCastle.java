@@ -56,6 +56,8 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
 import java.util.Base64;
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
@@ -143,6 +145,18 @@ public class TSAClientBouncyCastle implements TSAClient {
   @Override
   public int getTokenSizeEstimate() {
     return tokSzEstimate;
+  }
+
+  /**
+   * Get the MessageDigest.
+   * Default algorithm `SHA-1` used as per algorithm used without tsaClient
+   * @see com.lowagie.text.pdf.PdfPKCS7#getEncodedPKCS7(byte[], java.util.Calendar, TSAClient, byte[]) (upto 1.3.11)
+   * or check status of https://github.com/LibrePDF/OpenPDF/issues/320
+   * @return SHA-1 MessageDigest
+   */
+  @Override
+  public MessageDigest getMessageDigest() throws GeneralSecurityException {
+    return MessageDigest.getInstance("SHA-1");
   }
 
   /**
