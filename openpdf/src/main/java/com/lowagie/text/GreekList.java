@@ -57,7 +57,7 @@ import com.lowagie.text.factories.GreekAlphabetFactory;
 
 public class GreekList extends List {
 
-// constructors
+    // constructors
     
     /**
      * Initialization
@@ -66,6 +66,7 @@ public class GreekList extends List {
         super(true);
         setGreekFont();
     }
+
     /**
      * Initialization
      * 
@@ -87,7 +88,7 @@ public class GreekList extends List {
         setGreekFont();
     }
 
-// helper method
+    // helper method
     
     /**
      * change the font to SYMBOL
@@ -97,15 +98,16 @@ public class GreekList extends List {
         symbol.setFont(FontFactory.getFont(FontFactory.SYMBOL, fontsize, Font.NORMAL));
     }
 
-// overridden method
+    // overridden methods
     
     /**
-     * Adds an <CODE>Object</CODE> to the <CODE>List</CODE>.
+     * Adds an <CODE>Element</CODE> to the <CODE>List</CODE>.
      *
-     * @param    o    the object to add.
-     * @return true if adding the object succeeded
+     * @param    o    the element to add.
+     * @return true if adding the element succeeded
      */
-    public boolean add(Object o) {
+    @Override
+    public boolean add(Element o) {
         if (o instanceof ListItem) {
             ListItem item = (ListItem) o;
             Chunk chunk = new Chunk(preSymbol, symbol.getFont());
@@ -120,10 +122,19 @@ public class GreekList extends List {
             nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
             first--;
             return list.add(nested);
-        } else if (o instanceof String) {
-            return this.add(new ListItem((String) o));
         }
         return false;
+    }
+
+    /**
+     * Adds a <CODE>String</CODE> to the <CODE>List</CODE>.
+     *
+     * @param    s    the string to add.
+     * @return true if adding the string succeeded
+     */
+    @Override
+    public boolean add(String s) {
+        return this.add(new ListItem(s));
     }
 
 }
