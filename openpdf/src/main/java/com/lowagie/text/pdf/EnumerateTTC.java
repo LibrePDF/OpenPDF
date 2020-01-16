@@ -60,6 +60,20 @@ import com.lowagie.text.DocumentException;
  * @author  Paulo Soares (psoares@consiste.pt)
  */
 class EnumerateTTC extends TrueTypeFont{
+	/**
+	 * OpenType fonts that contain TrueType outlines should use the value of
+	 * 0x00010000 for the sfntVersion. OpenType fonts containing CFF data (version 1
+	 * or 2) should use 0x4F54544F ('OTTO', when re-interpreted as a Tag) for
+	 * sfntVersion.
+	 * 
+	 * Note: The Apple specification for TrueType fonts allows for 'true' and 'typ1'
+	 * for sfnt version. These version tags should not be used for fonts which
+	 * contain OpenType tables.
+	 * See more at:
+	 * https://docs.microsoft.com/de-de/typography/opentype/spec/otff#organization-of-an-opentype-font
+	 */
+	private static final int TRUE_TYPE_SFNT_VERSION            = 0x00010000;
+	private static final int CFF_DATA_SFNT_VERSION             = 0x4F54544F; //'OTTO'
 
     protected String[] names;
 
@@ -80,9 +94,12 @@ class EnumerateTTC extends TrueTypeFont{
         
         try {
             String mainTag = readStandardString(4);
-            if (!mainTag.equals("ttcf"))
+            if (!mainTag.equals("ttcf")) {
                 throw new DocumentException(MessageLocalization.getComposedMessage("1.is.not.a.valid.ttc.file", fileName));
-            rf.skipBytes(4);
+            }
+            int majorVersion = rf.readShort();
+            rf.skipBytes(2);
+
             int dirCount = rf.readInt();
             names = new String[dirCount];
             int dirPos = rf.getFilePointer();
@@ -92,8 +109,13 @@ class EnumerateTTC extends TrueTypeFont{
                 rf.skipBytes(dirIdx * 4);
                 directoryOffset = rf.readInt();
                 rf.seek(directoryOffset);
-                if (rf.readInt() != 0x00010000)
+                int sfntVersion = rf.readInt();
+                boolean trueTypeFont = sfntVersion == TRUE_TYPE_SFNT_VERSION;
+                boolean cffDataFont = sfntVersion == CFF_DATA_SFNT_VERSION &&
+                		(majorVersion == 1 || majorVersion == 2);
+                if (!trueTypeFont && !cffDataFont) {
                     throw new DocumentException(MessageLocalization.getComposedMessage("1.is.not.a.valid.ttf.file", fileName));
+                }
                 int num_tables = rf.readUnsignedShort();
                 rf.skipBytes(6);
                 for (int k = 0; k < num_tables; ++k) {
@@ -108,8 +130,9 @@ class EnumerateTTC extends TrueTypeFont{
             }
         }
         finally {
-            if (rf != null)
+            if (rf != null) {
                 rf.close();
+            }
         }
     }
     
