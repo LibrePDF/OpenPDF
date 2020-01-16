@@ -182,6 +182,7 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
                 int fs = getFontStyle(f);
                 if ((s & Font.BOLDITALIC) == fs) {
                     fontname = f;
+		    lowerCaseFontname = fontname.toLowerCase(Locale.ROOT);
                     // If a styled font already exists, we don't want to use the separate style-Attribut.
                     // For example: Helvetica-Bold should have a normal style, because it's already bold.
                     style = s == fs ? Font.NORMAL : s;
