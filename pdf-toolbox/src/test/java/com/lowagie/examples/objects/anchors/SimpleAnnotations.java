@@ -68,7 +68,7 @@ public class SimpleAnnotations {
                     250f, 700f, 350f, 800f);
             document1.add(a1);
             Annotation a2 = new Annotation(250f, 550f, 350f, 650f,
-                    new URL("http://www.lowagie.com/iText/"));
+                    new URL("https://github.com/LibrePDF/OpenPDF"));
             document1.add(a2);
             Annotation a3 = new Annotation(250f, 400f, 350f, 500f,
                     "http://www.lowagie.com/iText");

@@ -8,7 +8,7 @@
  *
  * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
- * http://www.lowagie.com/iText/tutorial/
+ * https://github.com/LibrePDF/OpenPDFtutorial/
  *
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of

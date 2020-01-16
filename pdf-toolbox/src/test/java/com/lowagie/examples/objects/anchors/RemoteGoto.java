@@ -59,7 +59,7 @@ public class RemoteGoto {
             
             // a paragraph with a link to an external url
             Paragraph p1 = new Paragraph("You can turn a Chunk into an ", FontFactory.getFont(FontFactory.HELVETICA, 12));
-            p1.add(new Chunk("anchor", FontFactory.getFont(FontFactory.HELVETICA, 12, Font.UNDERLINE, new Color(0, 0, 255))).setAnchor(new URL("http://www.lowagie.com/iText/")));
+            p1.add(new Chunk("anchor", FontFactory.getFont(FontFactory.HELVETICA, 12, Font.UNDERLINE, new Color(0, 0, 255))).setAnchor(new URL("https://github.com/LibrePDF/OpenPDF")));
             p1.add(", for instance to the iText site.");
             
             // some paragraph

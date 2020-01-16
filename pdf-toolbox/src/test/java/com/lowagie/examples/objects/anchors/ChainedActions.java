@@ -52,7 +52,7 @@ public class ChainedActions {
             document.open();
             // step 4: we add some content
             PdfAction action = PdfAction.javaScript("app.alert('Welcome at my site');\r", writer);
-            action.next(new PdfAction("http://www.lowagie.com/iText/"));
+            action.next(new PdfAction("https://github.com/LibrePDF/OpenPDF"));
             Paragraph p = new Paragraph(new Chunk("Click to go to Bruno's site")
                     .setAction(action));
             document.add(p);

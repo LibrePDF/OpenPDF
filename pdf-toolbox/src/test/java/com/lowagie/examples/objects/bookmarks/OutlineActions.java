@@ -63,7 +63,7 @@ public class OutlineActions {
             // we add the outline
             PdfContentByte cb = writer.getDirectContent();
             PdfOutline root = cb.getRootOutline();
-            PdfOutline links = new PdfOutline(root, new PdfAction("http://www.lowagie.com/iText/links.html"), "Useful links");
+            PdfOutline links = new PdfOutline(root, new PdfAction("https://github.com/LibrePDF/OpenPDFlinks.html"), "Useful links");
             links.setColor(new Color(0x00, 0x80, 0x80));
             links.setStyle(Font.BOLD);
             new PdfOutline(links, new PdfAction("http://www.lowagie.com/iText"), "Bruno's iText site");
