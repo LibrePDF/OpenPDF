@@ -551,10 +551,16 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     stack.push(obj);
                     return;
                 }
-                if (stack.empty())
+                if (stack.empty()) {
                     document.add((Element) obj);
-                else
-                    ((TextElementArray) stack.peek()).add((Element) obj);
+                } else {
+                    Object peek = stack.peek();
+                    if (peek instanceof com.lowagie.text.List) {
+                        ((com.lowagie.text.List) peek).add((com.lowagie.text.List) obj);
+                    } else {
+                        ((TextElementArray) peek).add((Element) obj);
+                    }
+                }
                 return;
             }
             if (tag.equals(HtmlTags.LISTITEM)) {
