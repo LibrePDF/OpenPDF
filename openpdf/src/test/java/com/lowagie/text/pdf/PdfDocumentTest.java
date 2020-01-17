@@ -1,16 +1,14 @@
 package com.lowagie.text.pdf;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
+import static org.hamcrest.Matchers.equalTo;
 
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
+import java.util.Arrays;
+import java.util.List;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 class PdfDocumentTest {
 

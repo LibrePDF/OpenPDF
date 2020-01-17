@@ -42,10 +42,17 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,14 +62,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.error_messages.MessageLocalization;
 import org.w3c.dom.Node;
 
 /**
@@ -183,6 +182,11 @@ public class AcroFields {
         String name = "";
         PdfDictionary value = null;
         PdfObject lastV = null;
+        int lastIDRNumber = -1;
+        PdfIndirectReference indirectObject = annots.getAsIndirectObject(j);
+        if (indirectObject != null) {
+        	lastIDRNumber = indirectObject.getNumber();
+        }
         while (annot != null) {
           dic.mergeDifferent(annot);
           PdfString t = annot.getAsString(PdfName.T);
@@ -198,7 +202,17 @@ public class AcroFields {
               value.put(PdfName.V, lastV);
             }
           }
-          annot = annot.getAsDict(PdfName.PARENT);
+          int parentIDRNumber = -1;
+          PdfIndirectReference asIndirectObject = annot.getAsIndirectObject(PdfName.PARENT);
+          if (asIndirectObject != null) {
+        	  parentIDRNumber = asIndirectObject.getNumber();
+          }
+          if (parentIDRNumber != -1 && lastIDRNumber != parentIDRNumber) {
+              annot = annot.getAsDict(PdfName.PARENT);
+              lastIDRNumber = parentIDRNumber;
+          } else {
+        	  annot = null;
+          }
         }
         if (name.length() > 0) {
           name = name.substring(0, name.length() - 1);

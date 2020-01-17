@@ -1,13 +1,5 @@
 package com.lowagie.text.pdf.metadata;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -17,6 +9,12 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.xml.xmp.XmpWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CleanMetaDataTest {
   
@@ -108,7 +106,7 @@ public class CleanMetaDataTest {
 	
 	@Test
 	public void testStamperExtraMetadata() throws Exception {
-		HashMap<String, String> moreInfo = new HashMap<String, String>();
+		HashMap<String, String> moreInfo = createCleanerMoreInfo();
 		moreInfo.put("Producer", Document.getVersion());
 		moreInfo.put("Author", "Author1");
 		moreInfo.put("Title", "Title2");
@@ -180,7 +178,6 @@ public class CleanMetaDataTest {
     stamp.close();
     return baos.toByteArray();
 	}
-	
 
 	private byte[] addWatermark(File origin, boolean encrypt, HashMap<String, String> moreInfo) throws Exception {
 		int text_angle = 45;

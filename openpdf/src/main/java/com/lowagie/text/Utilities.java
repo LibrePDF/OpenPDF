@@ -44,10 +44,11 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 package com.lowagie.text;
 
+import com.lowagie.text.pdf.PRTokeniser;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -58,8 +59,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
-import com.lowagie.text.pdf.PRTokeniser;
 
 /**
  * A collection of convenience methods that were present in many different iText

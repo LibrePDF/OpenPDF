@@ -44,7 +44,7 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 
 package com.lowagie.text.pdf;
@@ -69,7 +69,19 @@ public class CMYKColor extends ExtendedColor {
      * @param intBlack
      */
     public CMYKColor(int intCyan, int intMagenta, int intYellow, int intBlack) {
-        this(intCyan / 255f, intMagenta / 255f, intYellow / 255f, intBlack / 255f);
+        this(normalize(intCyan) / MAX_INT_COLOR_VALUE, normalize(intMagenta) / MAX_INT_COLOR_VALUE, normalize(intYellow) / MAX_INT_COLOR_VALUE, normalize(intBlack) / MAX_INT_COLOR_VALUE);
+    }
+
+    /**
+     * Constructs a CMYK Color based on 4 color values (values are integers from 0 to 255).
+     * @param intCyan
+     * @param intMagenta
+     * @param intYellow
+     * @param intBlack
+     * @param intAlpha
+     */
+    public CMYKColor(int intCyan, int intMagenta, int intYellow, int intBlack, int intAlpha) {
+        this(normalize(intCyan) / MAX_INT_COLOR_VALUE, normalize(intMagenta) / MAX_INT_COLOR_VALUE, normalize(intYellow) / MAX_INT_COLOR_VALUE, normalize(intBlack) / MAX_INT_COLOR_VALUE, normalize(intAlpha) / MAX_INT_COLOR_VALUE);
     }
 
     /**
@@ -80,13 +92,25 @@ public class CMYKColor extends ExtendedColor {
      * @param floatBlack
      */
     public CMYKColor(float floatCyan, float floatMagenta, float floatYellow, float floatBlack) {
-        super(TYPE_CMYK, 1f - floatCyan - floatBlack, 1f - floatMagenta - floatBlack, 1f - floatYellow - floatBlack);
+        this(floatCyan, floatMagenta, floatYellow, floatBlack, MAX_FLOAT_COLOR_VALUE);
+    }
+
+    /**
+     * Construct a CMYK Color.
+     * @param floatCyan
+     * @param floatMagenta
+     * @param floatYellow
+     * @param floatBlack
+     * @param floatAlpha
+     */
+    public CMYKColor(float floatCyan, float floatMagenta, float floatYellow, float floatBlack, float floatAlpha) {
+        super(TYPE_CMYK, MAX_FLOAT_COLOR_VALUE - normalize(floatCyan) - normalize(floatBlack), MAX_FLOAT_COLOR_VALUE - normalize(floatMagenta) - normalize(floatBlack), MAX_FLOAT_COLOR_VALUE - normalize(floatYellow) - normalize(floatBlack), normalize(floatAlpha));
         cyan = normalize(floatCyan);
         magenta = normalize(floatMagenta);
         yellow = normalize(floatYellow);
         black = normalize(floatBlack);
     }
-    
+
     /**
      * @return the cyan value
      */
@@ -119,11 +143,16 @@ public class CMYKColor extends ExtendedColor {
         if (!(obj instanceof CMYKColor))
             return false;
         CMYKColor c2 = (CMYKColor)obj;
-        return (cyan == c2.cyan && magenta == c2.magenta && yellow == c2.yellow && black == c2.black);
+        return (cyan == c2.cyan && magenta == c2.magenta && yellow == c2.yellow && black == c2.black && getAlpha() == c2.getAlpha());
     }
     
     public int hashCode() {
-        return Float.floatToIntBits(cyan) ^ Float.floatToIntBits(magenta) ^ Float.floatToIntBits(yellow) ^ Float.floatToIntBits(black); 
+        return Float.floatToIntBits(cyan)
+                ^ Float.floatToIntBits(magenta)
+                ^ Float.floatToIntBits(yellow)
+                ^ Float.floatToIntBits(black)
+                ^ Float.floatToIntBits(getAlpha())
+                ;
     }
     
 }

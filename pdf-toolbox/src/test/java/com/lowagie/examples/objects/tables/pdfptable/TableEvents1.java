@@ -67,7 +67,7 @@ public class TableEvents1 implements PdfPTableEvent {
             // loop over the columns
             for (int col = 0; col < widths.length - 1; ++col) {
                 if (line == 0 && col == 0)
-                    cb.setAction(new PdfAction("http://www.lowagie.com/iText/"),
+                    cb.setAction(new PdfAction("https://github.com/LibrePDF/OpenPDF"),
                         widths[col], heights[line + 1], widths[col + 1], heights[line]);
                 cb.setRGBColorStrokeF((float)Math.random(), (float)Math.random(), (float)Math.random());
                 // horizontal borderline

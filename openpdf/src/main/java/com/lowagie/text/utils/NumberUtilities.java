@@ -1,7 +1,7 @@
 package com.lowagie.text.utils;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
+import javax.annotation.Nonnull;
 
 public final class NumberUtilities {
 

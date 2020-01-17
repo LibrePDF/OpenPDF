@@ -45,10 +45,12 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 
 package com.lowagie.text.html.simpleparser;
+
+import static com.lowagie.text.html.Markup.parseLength;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Element;
@@ -64,15 +66,12 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.HyphenationAuto;
 import com.lowagie.text.pdf.HyphenationEvent;
 import com.lowagie.text.utils.NumberUtilities;
-
-import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
-import static com.lowagie.text.html.Markup.parseLength;
+import javax.annotation.Nullable;
 
 /**
  * @author psoares

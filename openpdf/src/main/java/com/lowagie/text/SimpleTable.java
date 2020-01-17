@@ -44,20 +44,17 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 package com.lowagie.text;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import com.lowagie.text.alignment.HorizontalAlignment;
 import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPTableEvent;
+import java.util.ArrayList;
+import java.util.Optional;
 
 
 /**

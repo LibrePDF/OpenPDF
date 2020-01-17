@@ -42,7 +42,7 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 package com.lowagie.text;
 
@@ -57,7 +57,7 @@ import com.lowagie.text.factories.RomanNumberFactory;
 
 public class RomanList extends List {
 
-// constructors
+    // constructors
     
     /**
      * Initialization
@@ -85,15 +85,16 @@ public class RomanList extends List {
         this.lowercase = lowercase;
     }
 
-// overridden method
+    // overridden methods
     
     /**
-     * Adds an <CODE>Object</CODE> to the <CODE>List</CODE>.
+     * Adds an <CODE>Element</CODE> to the <CODE>List</CODE>.
      *
-     * @param    o    the object to add.
-     * @return true if adding the object succeeded
+     * @param    o    the element to add.
+     * @return true if adding the element succeeded
      */
-    public boolean add(Object o) {
+    @Override
+    public boolean add(Element o) {
         if (o instanceof ListItem) {
             ListItem item = (ListItem) o;
             Chunk chunk;
@@ -109,10 +110,19 @@ public class RomanList extends List {
             nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
             first--;
             return list.add(nested);
-        } else if (o instanceof String) {
-            return this.add(new ListItem((String) o));
         }
         return false;
+    }
+
+    /**
+     * Adds a <CODE>String</CODE> to the <CODE>List</CODE>.
+     *
+     * @param    s    the string to add.
+     * @return true if adding the string succeeded
+     */
+    @Override
+    public boolean add(String s) {
+        return this.add(new ListItem(s));
     }
 
 }

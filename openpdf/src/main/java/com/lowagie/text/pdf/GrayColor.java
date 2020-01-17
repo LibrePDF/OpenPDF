@@ -44,7 +44,7 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 
 package com.lowagie.text.pdf;
@@ -59,18 +59,26 @@ public class GrayColor extends ExtendedColor {
 
     private float gray;
     
-    public static final GrayColor GRAYBLACK = new GrayColor(0f);
-    public static final GrayColor GRAYWHITE = new GrayColor(1f);
+    public static final GrayColor GRAYBLACK = new GrayColor(0);
+    public static final GrayColor GRAYWHITE = new GrayColor(MAX_FLOAT_COLOR_VALUE);
 
     public GrayColor(int intGray) {
-        this(intGray / 255f);
+        this(normalize(intGray) / MAX_INT_COLOR_VALUE);
     }
 
     public GrayColor(float floatGray) {
-        super(TYPE_GRAY, floatGray, floatGray, floatGray);
+        this(floatGray, MAX_FLOAT_COLOR_VALUE);
+    }
+
+    public GrayColor(int intGray, int alpha) {
+        this(normalize(intGray) / MAX_INT_COLOR_VALUE, normalize(alpha) / MAX_INT_COLOR_VALUE);
+    }
+
+    public GrayColor(float floatGray, float alpha) {
+        super(TYPE_GRAY, normalize(floatGray), normalize(floatGray), normalize(floatGray), normalize(alpha));
         gray = normalize(floatGray);
     }
-    
+
     public float getGray() {
         return gray;
     }

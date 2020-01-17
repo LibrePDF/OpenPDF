@@ -58,9 +58,6 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,6 +67,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author dgd

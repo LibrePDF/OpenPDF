@@ -44,7 +44,7 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 
 package com.lowagie.text.pdf;
@@ -71,6 +71,10 @@ import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.exceptions.IllegalPdfSyntaxException;
 import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
 import com.lowagie.text.pdf.internal.PdfXConformanceImp;
+
+import static com.lowagie.text.pdf.ExtendedColor.MAX_COLOR_VALUE;
+import static com.lowagie.text.pdf.ExtendedColor.MAX_FLOAT_COLOR_VALUE;
+import static com.lowagie.text.pdf.ExtendedColor.MAX_INT_COLOR_VALUE;
 
 /**
  * <CODE>PdfContentByte</CODE> is an object containing the user positioned
@@ -112,10 +116,20 @@ public class PdfContentByte {
         /** The current word spacing */
         protected float wordSpace = 0;
 
+        protected ExtendedColor colorFill = GrayColor.GRAYBLACK;
+
+        protected ExtendedColor colorStroke = GrayColor.GRAYBLACK;
+
+        protected PdfObject extGState = null;
+
         GraphicState() {
         }
 
         GraphicState(GraphicState cp) {
+            copyParameters(cp);
+        }
+
+        void copyParameters(final GraphicState cp) {
             fontDetails = cp.fontDetails;
             colorDetails = cp.colorDetails;
             size = cp.size;
@@ -125,6 +139,13 @@ public class PdfContentByte {
             scale = cp.scale;
             charSpace = cp.charSpace;
             wordSpace = cp.wordSpace;
+            colorFill = cp.colorFill;
+            colorStroke = cp.colorStroke;
+            extGState = cp.extGState;
+        }
+
+        void restore(final GraphicState restore) {
+            copyParameters(restore);
         }
     }
 
@@ -500,6 +521,11 @@ public class PdfContentByte {
      */
 
     public void setGrayFill(float gray) {
+        setGrayFill(gray, MAX_FLOAT_COLOR_VALUE);
+    }
+
+    public void setGrayFill(float gray, float alpha) {
+        saveColorFill(new GrayColor(gray, alpha));
         content.append(gray).append(" g").append_i(separator);
     }
 
@@ -508,6 +534,7 @@ public class PdfContentByte {
      */
 
     public void resetGrayFill() {
+        saveColorFill(GrayColor.GRAYBLACK);
         content.append("0 g").append_i(separator);
     }
 
@@ -521,6 +548,10 @@ public class PdfContentByte {
      */
 
     public void setGrayStroke(float gray) {
+        setGrayStroke(gray, MAX_FLOAT_COLOR_VALUE);
+    }
+    public void setGrayStroke(float gray, float alpha) {
+        saveColorStroke(new GrayColor(gray, alpha));
         content.append(gray).append(" G").append_i(separator);
     }
 
@@ -529,7 +560,18 @@ public class PdfContentByte {
      */
 
     public void resetGrayStroke() {
+        saveColorStroke(GrayColor.GRAYBLACK);
         content.append("0 G").append_i(separator);
+    }
+
+    /**
+     * Helper to validate and write the RGB color components
+     * @param   red     the intensity of red. A value between 0 and 255
+     * @param   green   the intensity of green. A value between 0 and 255
+     * @param   blue    the intensity of blue. A value between 0 and 255
+     */
+    private void HelperRGB(int red, int green, int blue) {
+        HelperRGB((float)(red & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE, (float)(green & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE, (float)(blue & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE);
     }
 
     /**
@@ -540,18 +582,18 @@ public class PdfContentByte {
      */
     private void HelperRGB(float red, float green, float blue) {
         PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_RGB, null);
-        if (red < 0)
+        if (red < 0.0f)
             red = 0.0f;
-        else if (red > 1.0f)
-            red = 1.0f;
-        if (green < 0)
+        else if (red > MAX_FLOAT_COLOR_VALUE)
+            red = MAX_FLOAT_COLOR_VALUE;
+        if (green < 0.0f)
             green = 0.0f;
-        else if (green > 1.0f)
-            green = 1.0f;
-        if (blue < 0)
+        else if (green > MAX_FLOAT_COLOR_VALUE)
+            green = MAX_FLOAT_COLOR_VALUE;
+        if (blue < 0.0f)
             blue = 0.0f;
-        else if (blue > 1.0f)
-            blue = 1.0f;
+        else if (blue > MAX_FLOAT_COLOR_VALUE)
+            blue = MAX_FLOAT_COLOR_VALUE;
         content.append(red).append(' ').append(green).append(' ').append(blue);
     }
 
@@ -570,16 +612,21 @@ public class PdfContentByte {
      */
 
     public void setRGBColorFillF(float red, float green, float blue) {
+        setRGBColorFillF(red, green, blue, MAX_FLOAT_COLOR_VALUE);
+    }
+    public void setRGBColorFillF(float red, float green, float blue, float alpha) {
+        saveColorFill(new RGBColor(red, green, blue, alpha));
         HelperRGB(red, green, blue);
         content.append(" rg").append_i(separator);
     }
 
     /**
      * Changes the current color for filling paths to black.
+     * Resetting using gray color to keep the backward compatibility.
      */
 
     public void resetRGBColorFill() {
-        content.append("0 g").append_i(separator);
+        resetGrayFill();
     }
 
     /**
@@ -597,17 +644,30 @@ public class PdfContentByte {
      */
 
     public void setRGBColorStrokeF(float red, float green, float blue) {
+        saveColorStroke(new RGBColor(red, green, blue));
         HelperRGB(red, green, blue);
         content.append(" RG").append_i(separator);
     }
 
     /**
      * Changes the current color for stroking paths to black.
-     *
+     * Resetting using gray color to keep the backward compatibility.
      */
 
     public void resetRGBColorStroke() {
-        content.append("0 G").append_i(separator);
+        resetGrayStroke();
+    }
+
+    /**
+     * Helper to validate and write the CMYK color components.
+     *
+     * @param   cyan    the intensity of cyan. A value between 0 and 255
+     * @param   magenta the intensity of magenta. A value between 0 and 255
+     * @param   yellow  the intensity of yellow. A value between 0 and 255
+     * @param   black   the intensity of black. A value between 0 and 255
+     */
+    private void HelperCMYK(int cyan, int magenta, int yellow, int black) {
+        HelperCMYK((float)(cyan & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE, (float)(magenta & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE, (float)(yellow & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE, (float)(black & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE);
     }
 
     /**
@@ -619,22 +679,22 @@ public class PdfContentByte {
      * @param   black   the intensity of black. A value between 0 and 1
      */
     private void HelperCMYK(float cyan, float magenta, float yellow, float black) {
-        if (cyan < 0)
+        if (cyan < 0.0f)
             cyan = 0.0f;
-        else if (cyan > 1.0f)
-            cyan = 1.0f;
-        if (magenta < 0)
+        else if (cyan > MAX_FLOAT_COLOR_VALUE)
+            cyan = MAX_FLOAT_COLOR_VALUE;
+        if (magenta < 0.0f)
             magenta = 0.0f;
-        else if (magenta > 1.0f)
-            magenta = 1.0f;
-        if (yellow < 0)
+        else if (magenta > MAX_FLOAT_COLOR_VALUE)
+            magenta = MAX_FLOAT_COLOR_VALUE;
+        if (yellow < 0.0f)
             yellow = 0.0f;
-        else if (yellow > 1.0f)
-            yellow = 1.0f;
-        if (black < 0)
+        else if (yellow > MAX_FLOAT_COLOR_VALUE)
+            yellow = MAX_FLOAT_COLOR_VALUE;
+        if (black < 0.0f)
             black = 0.0f;
-        else if (black > 1.0f)
-            black = 1.0f;
+        else if (black > MAX_FLOAT_COLOR_VALUE)
+            black = MAX_FLOAT_COLOR_VALUE;
         content.append(cyan).append(' ').append(magenta).append(' ').append(yellow).append(' ').append(black);
     }
 
@@ -654,6 +714,11 @@ public class PdfContentByte {
      */
 
     public void setCMYKColorFillF(float cyan, float magenta, float yellow, float black) {
+        setCMYKColorFillF(cyan, magenta, yellow, black, MAX_FLOAT_COLOR_VALUE);
+    }
+
+    public void setCMYKColorFillF(float cyan, float magenta, float yellow, float black, float alpha) {
+        saveColorFill(new CMYKColor(cyan, magenta, yellow, black, alpha));
         HelperCMYK(cyan, magenta, yellow, black);
         content.append(" k").append_i(separator);
     }
@@ -664,7 +729,9 @@ public class PdfContentByte {
      */
 
     public void resetCMYKColorFill() {
-        content.append("0 0 0 1 k").append_i(separator);
+        saveColorFill(new CMYKColor(0.0f, 0.0f, 0.0f, MAX_FLOAT_COLOR_VALUE));
+        HelperCMYK(0.0f, 0.0f, 0.0f, MAX_FLOAT_COLOR_VALUE);
+        content.append(" k").append_i(separator);
     }
 
     /**
@@ -683,6 +750,10 @@ public class PdfContentByte {
      */
 
     public void setCMYKColorStrokeF(float cyan, float magenta, float yellow, float black) {
+        setCMYKColorStrokeF(cyan, magenta, yellow, black, MAX_FLOAT_COLOR_VALUE);
+    }
+    public void setCMYKColorStrokeF(float cyan, float magenta, float yellow, float black, float alpha) {
+        saveColorStroke(new CMYKColor(cyan, magenta, yellow, black, alpha));
         HelperCMYK(cyan, magenta, yellow, black);
         content.append(" K").append_i(separator);
     }
@@ -693,7 +764,9 @@ public class PdfContentByte {
      */
 
     public void resetCMYKColorStroke() {
-        content.append("0 0 0 1 K").append_i(separator);
+        saveColorStroke(new CMYKColor(0.0f, 0.0f, 0.0f, MAX_FLOAT_COLOR_VALUE));
+        HelperCMYK(0.0f, 0.0f, 0.0f, MAX_FLOAT_COLOR_VALUE);
+        content.append(" K").append_i(separator);
     }
 
     /**
@@ -1319,7 +1392,8 @@ public class PdfContentByte {
      */
     public void saveState() {
         content.append("q").append_i(separator);
-        stateList.add(new GraphicState(state));
+        GraphicState gstate = new GraphicState(state);
+        stateList.add(gstate);
     }
 
     /**
@@ -1332,6 +1406,7 @@ public class PdfContentByte {
         if (idx < 0)
             throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
         state = stateList.get(idx);
+        state.restore(state);
         stateList.remove(idx);
     }
 
@@ -2109,13 +2184,7 @@ public class PdfContentByte {
      */
 
     public void setCMYKColorFill(int cyan, int magenta, int yellow, int black) {
-        content.append((float)(cyan & 0xFF) / 0xFF);
-        content.append(' ');
-        content.append((float)(magenta & 0xFF) / 0xFF);
-        content.append(' ');
-        content.append((float)(yellow & 0xFF) / 0xFF);
-        content.append(' ');
-        content.append((float)(black & 0xFF) / 0xFF);
+        HelperCMYK(cyan, magenta, yellow, black);
         content.append(" k").append_i(separator);
     }
     /**
@@ -2136,13 +2205,7 @@ public class PdfContentByte {
      */
 
     public void setCMYKColorStroke(int cyan, int magenta, int yellow, int black) {
-        content.append((float)(cyan & 0xFF) / 0xFF);
-        content.append(' ');
-        content.append((float)(magenta & 0xFF) / 0xFF);
-        content.append(' ');
-        content.append((float)(yellow & 0xFF) / 0xFF);
-        content.append(' ');
-        content.append((float)(black & 0xFF) / 0xFF);
+        HelperCMYK(cyan, magenta, yellow, black);
         content.append(" K").append_i(separator);
     }
 
@@ -2164,7 +2227,11 @@ public class PdfContentByte {
      */
 
     public void setRGBColorFill(int red, int green, int blue) {
-        HelperRGB((float)(red & 0xFF) / 0xFF, (float)(green & 0xFF) / 0xFF, (float)(blue & 0xFF) / 0xFF);
+        setRGBColorFill(red, green, blue, MAX_COLOR_VALUE);
+    }
+    public void setRGBColorFill(int red, int green, int blue, int alpha) {
+        saveColorFill(new RGBColor(red, green, blue, alpha));
+        HelperRGB(red, green, blue);
         content.append(" rg").append_i(separator);
     }
 
@@ -2185,7 +2252,11 @@ public class PdfContentByte {
      */
 
     public void setRGBColorStroke(int red, int green, int blue) {
-        HelperRGB((float)(red & 0xFF) / 0xFF, (float)(green & 0xFF) / 0xFF, (float)(blue & 0xFF) / 0xFF);
+        setRGBColorStroke(red, green, blue, MAX_COLOR_VALUE);
+    }
+    public void setRGBColorStroke(int red, int green, int blue, int alpha) {
+        saveColorStroke(new RGBColor(red, green, blue, alpha));
+        HelperRGB(red, green, blue);
         content.append(" RG").append_i(separator);
     }
 
@@ -2198,12 +2269,13 @@ public class PdfContentByte {
         int type = ExtendedColor.getType(color);
         switch (type) {
             case ExtendedColor.TYPE_GRAY: {
-                setGrayStroke(((GrayColor)color).getGray());
+                final GrayColor grayColor = (GrayColor) color;
+                setGrayStroke(grayColor.getGray(), grayColor.getAlpha());
                 break;
             }
             case ExtendedColor.TYPE_CMYK: {
                 CMYKColor cmyk = (CMYKColor)color;
-                setCMYKColorStrokeF(cmyk.getCyan(), cmyk.getMagenta(), cmyk.getYellow(), cmyk.getBlack());
+                setCMYKColorStrokeF(cmyk.getCyan(), cmyk.getMagenta(), cmyk.getYellow(), cmyk.getBlack(), cmyk.getAlpha());
                 break;
             }
             case ExtendedColor.TYPE_SEPARATION: {
@@ -2222,8 +2294,16 @@ public class PdfContentByte {
                 break;
             }
             default:
-                setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
+                setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
         }
+    }
+
+    private void saveColorStroke(ExtendedColor extendedColor) {
+        PdfGState gState = new PdfGState();
+        gState.setStrokeOpacity(extendedColor.getAlpha() / MAX_INT_COLOR_VALUE);
+        setGState(gState);
+
+        state.colorStroke = extendedColor;
     }
 
     /** Sets the fill color. <CODE>color</CODE> can be an
@@ -2235,16 +2315,17 @@ public class PdfContentByte {
         int type = ExtendedColor.getType(color);
         switch (type) {
             case ExtendedColor.TYPE_GRAY: {
-                setGrayFill(((GrayColor)color).getGray());
+                GrayColor grayColor = (GrayColor) color;
+                setGrayFill(grayColor.getGray(), color.getAlpha() / MAX_INT_COLOR_VALUE);
                 break;
             }
             case ExtendedColor.TYPE_CMYK: {
-                CMYKColor cmyk = (CMYKColor)color;
-                setCMYKColorFillF(cmyk.getCyan(), cmyk.getMagenta(), cmyk.getYellow(), cmyk.getBlack());
+                CMYKColor cmyk = (CMYKColor) color;
+                setCMYKColorFillF(cmyk.getCyan(), cmyk.getMagenta(), cmyk.getYellow(), cmyk.getBlack(), cmyk.getAlpha() / MAX_INT_COLOR_VALUE);
                 break;
             }
             case ExtendedColor.TYPE_SEPARATION: {
-                SpotColor spot = (SpotColor)color;
+                SpotColor spot = (SpotColor) color;
                 setColorFill(spot.getPdfSpotColor(), spot.getTint());
                 break;
             }
@@ -2259,8 +2340,16 @@ public class PdfContentByte {
                 break;
             }
             default:
-                setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
+                setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
         }
+    }
+
+    private void saveColorFill(ExtendedColor extendedColor) {
+        PdfGState gState = new PdfGState();
+        gState.setFillOpacity(extendedColor.getAlpha() / MAX_INT_COLOR_VALUE);
+        setGState(gState);
+
+        state.colorFill = extendedColor;
     }
 
     /** Sets the fill color to a spot color.
@@ -2270,6 +2359,7 @@ public class PdfContentByte {
      */
     public void setColorFill(PdfSpotColor sp, float tint) {
         checkWriter();
+        saveColorFill(new SpotColor(sp,tint));
         state.colorDetails = writer.addSimple(sp);
         PageResources prs = getPageResources();
         PdfName name = state.colorDetails.getColorName();
@@ -2284,6 +2374,7 @@ public class PdfContentByte {
      */
     public void setColorStroke(PdfSpotColor sp, float tint) {
         checkWriter();
+        saveColorStroke(new SpotColor(sp,tint));
         state.colorDetails = writer.addSimple(sp);
         PageResources prs = getPageResources();
         PdfName name = state.colorDetails.getColorName();
@@ -2301,6 +2392,7 @@ public class PdfContentByte {
             return;
         }
         checkWriter();
+        saveColorFill(new PatternColor(p));
         PageResources prs = getPageResources();
         PdfName name = writer.addSimplePattern(p);
         name = prs.addPattern(name, p.getIndirectReference());
@@ -2316,11 +2408,11 @@ public class PdfContentByte {
         int type = ExtendedColor.getType(color);
         switch (type) {
             case ExtendedColor.TYPE_RGB:
-                content.append((float)(color.getRed()) / 0xFF);
+                content.append((float)(color.getRed()) / MAX_INT_COLOR_VALUE);
                 content.append(' ');
-                content.append((float)(color.getGreen()) / 0xFF);
+                content.append((float)(color.getGreen()) / MAX_INT_COLOR_VALUE);
                 content.append(' ');
-                content.append((float)(color.getBlue()) / 0xFF);
+                content.append((float)(color.getBlue()) / MAX_INT_COLOR_VALUE);
                 break;
             case ExtendedColor.TYPE_GRAY:
                 content.append(((GrayColor)color).getGray());
@@ -2357,8 +2449,10 @@ public class PdfContentByte {
      */
     public void setPatternFill(PdfPatternPainter p, Color color, float tint) {
         checkWriter();
-        if (!p.isStencil())
+        if (!p.isStencil()) {
             throw new RuntimeException(MessageLocalization.getComposedMessage("an.uncolored.pattern.was.expected"));
+        }
+        saveColorFill(new RGBColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()));
         PageResources prs = getPageResources();
         PdfName name = writer.addSimplePattern(p);
         name = prs.addPattern(name, p.getIndirectReference());
@@ -2389,6 +2483,7 @@ public class PdfContentByte {
         checkWriter();
         if (!p.isStencil())
             throw new RuntimeException(MessageLocalization.getComposedMessage("an.uncolored.pattern.was.expected"));
+        saveColorStroke(new PatternColor(p));
         PageResources prs = getPageResources();
         PdfName name = writer.addSimplePattern(p);
         name = prs.addPattern(name, p.getIndirectReference());
@@ -2409,6 +2504,7 @@ public class PdfContentByte {
             return;
         }
         checkWriter();
+        saveColorStroke(new PatternColor(p));
         PageResources prs = getPageResources();
         PdfName name = writer.addSimplePattern(p);
         name = prs.addPattern(name, p.getIndirectReference());
@@ -2442,6 +2538,8 @@ public class PdfContentByte {
      * @param shading the shading pattern
      */
     public void setShadingFill(PdfShadingPattern shading) {
+        checkWriter();
+        saveColorFill(new ShadingColor(shading));
         writer.addSimpleShadingPattern(shading);
         PageResources prs = getPageResources();
         PdfName name = prs.addPattern(shading.getPatternName(), shading.getPatternReference());
@@ -2456,6 +2554,8 @@ public class PdfContentByte {
      * @param shading the shading pattern
      */
     public void setShadingStroke(PdfShadingPattern shading) {
+        checkWriter();
+        saveColorStroke(new ShadingColor(shading));
         writer.addSimpleShadingPattern(shading);
         PageResources prs = getPageResources();
         PdfName name = prs.addPattern(shading.getPatternName(), shading.getPatternReference());
@@ -2659,6 +2759,7 @@ public class PdfContentByte {
         if (llx > urx) { float x = llx; llx = urx; urx = x; }
         if (lly > ury) { float y = lly; lly = ury; ury = y; }
         // silver circle
+        saveState();
         setLineWidth(1);
         setLineCap(1);
         setColorStroke(new Color(0xC0, 0xC0, 0xC0));
@@ -2684,6 +2785,7 @@ public class PdfContentByte {
             arc(llx + 4f, lly + 4f, urx - 4f, ury - 4f, 0, 360);
             fill();
         }
+        restoreState();
     }
 
     /**
@@ -2697,6 +2799,7 @@ public class PdfContentByte {
         if (llx > urx) { float x = llx; llx = urx; urx = x; }
         if (lly > ury) { float y = lly; lly = ury; ury = y; }
         // silver rectangle not filled
+        saveState();
         setColorStroke(new Color(0xC0, 0xC0, 0xC0));
         setLineWidth(1);
         setLineCap(0);
@@ -2705,7 +2808,7 @@ public class PdfContentByte {
         // white rectangle filled
         setLineWidth(1);
         setLineCap(0);
-        setColorFill(new Color(0xFF, 0xFF, 0xFF));
+        setColorFill(new Color(MAX_COLOR_VALUE, MAX_COLOR_VALUE, MAX_COLOR_VALUE));
         rectangle(llx + 0.5f, lly + 0.5f, urx - llx - 1f, ury -lly - 1f);
         fill();
         // silver lines
@@ -2732,6 +2835,7 @@ public class PdfContentByte {
         lineTo(llx + 2f, ury - 2f);
         lineTo(urx - 2f, ury - 2f);
         stroke();
+        restoreState();
     }
 
     /**
@@ -2748,6 +2852,7 @@ public class PdfContentByte {
         if (llx > urx) { float x = llx; llx = urx; urx = x; }
         if (lly > ury) { float y = lly; lly = ury; ury = y; }
         // black rectangle not filled
+        saveState();
         setColorStroke(new Color(0x00, 0x00, 0x00));
         setLineWidth(1);
         setLineCap(0);
@@ -2760,7 +2865,7 @@ public class PdfContentByte {
         rectangle(llx + 0.5f, lly + 0.5f, urx - llx - 1f, ury -lly - 1f);
         fill();
         // white lines
-        setColorStroke(new Color(0xFF, 0xFF, 0xFF));
+        setColorStroke(new Color(MAX_COLOR_VALUE, MAX_COLOR_VALUE, MAX_COLOR_VALUE));
         setLineWidth(1);
         setLineCap(0);
         moveTo(llx + 1f, lly + 1f);
@@ -2781,6 +2886,7 @@ public class PdfContentByte {
         setFontAndSize(bf, size);
         showTextAligned(PdfContentByte.ALIGN_CENTER, text, llx + (urx - llx) / 2, lly + (ury - lly - size) / 2, 0);
         endText();
+        restoreState();
     }
 
     /** Gets a <CODE>Graphics2D</CODE> to write on. The graphics
@@ -2936,6 +3042,7 @@ public class PdfContentByte {
         PdfObject[] obj = writer.addSimpleExtGState(gstate);
         PageResources prs = getPageResources();
         PdfName name = prs.addExtGState((PdfName)obj[0], (PdfIndirectReference)obj[1]);
+        state.extGState = gstate;
         content.append(name.getBytes()).append(" gs").append_i(separator);
     }
 
