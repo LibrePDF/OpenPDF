@@ -51,7 +51,7 @@ package com.lowagie.text.pdf;
 
 import java.awt.font.GlyphVector;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.HashMap;
 
 import com.lowagie.text.Utilities;
 import com.lowagie.text.ExceptionConverter;
