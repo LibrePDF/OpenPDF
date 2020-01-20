@@ -22,6 +22,7 @@ public class TTFCache {
     private static Map<String,TTFFile> ttfFileMap =new ConcurrentHashMap<>();
 
     public static TTFFile getTTFFile(String fileName) {
+        
         if (ttfFileMap.containsKey(fileName)){
             return ttfFileMap.get(fileName);
         }
@@ -37,6 +38,7 @@ public class TTFCache {
     }
 
     private static TTFFile loadTTF(TTFReader app, String fileName) throws IOException{
+        
         try {
             return app.loadTTF(fileName, null, true, true);
         } catch (IOException e) {
