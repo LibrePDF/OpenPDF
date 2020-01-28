@@ -217,7 +217,8 @@ class FontDetails {
                     }
                     else {
                         String fileName = ((TrueTypeFontUnicode)getBaseFont()).fileName;
-                        if (fileName!=null && fileName.length()>0 &&( fileName.contains(".ttf") || fileName.contains(".TTF"))){
+                        if (FopGlyphProcessor.isFopSupported() && (fileName!=null && fileName.length()>0 
+                                                                   &&( fileName.contains(".ttf") || fileName.contains(".TTF")))){
                             return FopGlyphProcessor.convertToBytesWithGlyphs(ttu,text,fileName,longTag);
                         }else {
                             return convertToBytesWithGlyphs(text);
