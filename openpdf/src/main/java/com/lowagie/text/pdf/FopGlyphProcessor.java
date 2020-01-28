@@ -15,6 +15,21 @@ import org.apache.fop.fonts.truetype.TTFFile;
  */
 public class FopGlyphProcessor {
 
+    private static boolean isFopSupported = false;
+
+    static {
+        try {
+            Class.forName("org.apache.fop.complexscripts.util.GlyphSequence");
+            isFopSupported = true;
+        } catch (ClassNotFoundException e) {
+            isFopSupported = false;            
+        }
+    }
+
+    public static boolean isFopSupported(){
+        return isFopSupported;
+    }
+    
     public static byte[] convertToBytesWithGlyphs(TrueTypeFontUnicode ttu, String text, String fileName,
             Map<Integer, int[]> longTag) throws UnsupportedEncodingException {
         IntBuffer charBuffer = IntBuffer.allocate(text.length());
