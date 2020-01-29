@@ -22,16 +22,17 @@ public class FopGlyphProcessor {
             Class.forName("org.apache.fop.complexscripts.util.GlyphSequence");
             isFopSupported = true;
         } catch (ClassNotFoundException e) {
-            isFopSupported = false;            
+            isFopSupported = false;
         }
     }
 
     public static boolean isFopSupported(){
         return isFopSupported;
     }
-    
-    public static byte[] convertToBytesWithGlyphs(TrueTypeFontUnicode ttu, String text, String fileName,
-            Map<Integer, int[]> longTag) throws UnsupportedEncodingException {
+
+    public static byte[] convertToBytesWithGlyphs(BaseFont font, String text, String fileName,
+                                                  Map<Integer, int[]> longTag) throws UnsupportedEncodingException {
+        TrueTypeFontUnicode ttu = (TrueTypeFontUnicode)font;
         IntBuffer charBuffer = IntBuffer.allocate(text.length());
         IntBuffer ghyphBuffer = IntBuffer.allocate(text.length());
         for (char c : text.toCharArray()) {
