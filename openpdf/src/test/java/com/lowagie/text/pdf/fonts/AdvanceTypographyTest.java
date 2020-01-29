@@ -23,7 +23,7 @@ public class AdvanceTypographyTest {
     public void testTypographySubstitution() throws Exception{
         char[] expectedOutput = {660,666,911,656,1130};
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-                BaseFont.createFont("Jaldi/Fonts/Jaldi-Regular.ttf", BaseFont.IDENTITY_H, false)
+                BaseFont.createFont("fonts/jaldi/Jaldi-Regular.ttf", BaseFont.IDENTITY_H, false)
                 , "नमस्ते", "Jaldi/Fonts/Jaldi-Regular.ttf", new HashMap<>());
         String str = new String(processedContent, "UnicodeBigUnmarked");
 
