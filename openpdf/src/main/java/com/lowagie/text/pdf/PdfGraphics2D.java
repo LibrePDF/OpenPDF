@@ -1850,8 +1850,8 @@ public class PdfGraphics2D extends Graphics2D {
                 if (isOpenMethod == null) {
                     return;
                 }
-                Object isOpend = isOpenMethod.invoke(targetModule, packageName, callerModule);
-                if (isOpend instanceof Boolean && ((Boolean) isOpend)) {
+                Object isOpened = isOpenMethod.invoke(targetModule, packageName, callerModule);
+                if (isOpened instanceof Boolean && ((Boolean) isOpened)) {
                     Method addOpensMethod = getMethod(moduleClass, ADD_OPENS_METHOD_NAME, String.class, moduleClass);
                     if (callerModule != null) {
                         addOpensMethod.invoke(targetModule, packageName, callerModule);
