@@ -57,6 +57,9 @@ public class Images {
             document.add(new Paragraph("pngnow.png"));
             Image png = Image.getInstance("pngnow.png");
             document.add(png);
+            document.add(new Paragraph("grayscaled.png"));
+            Image grayscaledPng = Image.getInstance("grayscaled.png");
+            document.add(grayscaledPng);
             document.add(new Paragraph("iText.bmp"));
             Image bmp = Image.getInstance("iText.bmp");
             document.add(bmp);

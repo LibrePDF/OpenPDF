@@ -44,7 +44,7 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 
 package com.lowagie.text;
@@ -575,7 +575,7 @@ public abstract class Image extends Rectangle {
 
         if(image instanceof BufferedImage){
             BufferedImage bi = (BufferedImage) image;
-            if(bi.getType()==BufferedImage.TYPE_BYTE_BINARY) {
+            if(bi.getType() == BufferedImage.TYPE_BYTE_BINARY && bi.getColorModel().getNumColorComponents() <= 2) {
                 forceBW=true;
             }
         }

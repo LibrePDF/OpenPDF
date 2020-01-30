@@ -46,13 +46,15 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 
 package com.lowagie.text.pdf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class captures an AcroForm on input. Basically, it extends Dictionary
@@ -158,7 +160,15 @@ public class PRAcroForm extends PdfDictionary {
             PdfArray kids = (PdfArray)dict.get(PdfName.KIDS);
             if (kids != null) {
                 pushAttrib(dict);
-                iterateFields(kids, myFieldDict, myTitle);
+                List<PdfObject> elements = kids.getElements();
+                Iterator<PdfObject> kidIter = elements.iterator();
+                while (kidIter.hasNext()) {
+                    PdfIndirectReference kidRef = (PdfIndirectReference) kidIter.next();
+                    if (ref.getNumber() == kidRef.getNumber()) {
+                        kidIter.remove();
+                    }
+                }
+                iterateFields(new PdfArray(elements), myFieldDict, myTitle);
                 stack.remove(stack.size() - 1);   // pop
             }
             else {          // leaf node

@@ -44,7 +44,7 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 
 package com.lowagie.text.pdf;
@@ -97,7 +97,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -120,6 +123,10 @@ public class PdfGraphics2D extends Graphics2D {
     private BasicStroke strokeOne = new BasicStroke(1);
     
     private static final AffineTransform IDENTITY = new AffineTransform();
+    
+    private static final Set<String>	 LOGICAL_FONT_NAMES                = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Dialog", "DialogInput", "Monospaced", "Serif", "SansSerif")));
+    private static final String			 BOLD_FONT_FACE_NAME_SUFFIX        = ".bold";
+    private static final String			 BOLD_ITALIC_FONT_FACE_NAME_SUFFIX = ".bolditalic";
     
     private Font font;
     private BaseFont baseFont;
@@ -463,8 +470,14 @@ public class PdfGraphics2D extends Graphics2D {
                     weight = (font.isBold()) ? TextAttribute.WEIGHT_BOLD
                                              : TextAttribute.WEIGHT_REGULAR;
                 }
+                String fontFaceName = font.getFontName();
+                String fontLogicalName = font.getName();
                 if ((font.isBold() || (weight >= TextAttribute.WEIGHT_SEMIBOLD))
-                    && (font.getFontName().equals(font.getName()))) {
+                    && (fontFaceName.equals(fontLogicalName) ||
+                    		// bold logical font face name has suffix ".bold" / ".bolditalic"
+                    		(LOGICAL_FONT_NAMES.contains(fontLogicalName) &&
+                    				(fontFaceName.equals(fontLogicalName + BOLD_FONT_FACE_NAME_SUFFIX) ||
+                    				 fontFaceName.equals(fontLogicalName + BOLD_ITALIC_FONT_FACE_NAME_SUFFIX))))) {
                     // Simulate a bold font.
                     float strokeWidth = font.getSize2D() * (weight - TextAttribute.WEIGHT_REGULAR) / 30f;
                     if (strokeWidth != 1) {
@@ -810,7 +823,7 @@ public class PdfGraphics2D extends Graphics2D {
      * @see Graphics#translate(int, int)
      */
     public void translate(int x, int y) {
-        translate(x, y);
+        translate((double)x, (double)y);
     }
     
     /**
@@ -1742,8 +1755,8 @@ public class PdfGraphics2D extends Graphics2D {
      * of sun.font.Font2D) that will display current text. For some symbols that cannot be displayed
      * with the font from the first slot of the composite font all other font will be checked.</br>
      * </br>
-     * This processing is necessary only for Windows OS (On Mac isn't used "sun.font.CompositeFont",
-     * but "sun.font.CFont").</br>
+     * This processing is not necessary only for Mac OS - there isn't used "sun.font.CompositeFont",
+     * but "sun.font.CFont".</br>
      * </br>
      * Since the <code>sun.*</code> packages are not part of the supported, public interface the
      * reflection will be used.
@@ -1778,8 +1791,8 @@ public class PdfGraphics2D extends Graphics2D {
 
         static {
             String osName = System.getProperty("os.name", "unknownOS");
-            boolean windowsOS = osName.startsWith("Windows");
-            if (windowsOS) {
+            boolean macOS = osName.startsWith("Mac");
+            if (!macOS) {
                 FONT_UTILITIES_CLASS = getClassForName(FONT_UTILITIES_CLASS_NAME);
                 GET_FONT2D_METHOD = getMethod(FONT_UTILITIES_CLASS, GET_FONT2D_METHOD_NAME, Font.class);
                 COMPOSITE_FONT_CLASS = getClassForName(COMPOSITE_FONT_CLASS_NAME);
@@ -1832,9 +1845,9 @@ public class PdfGraphics2D extends Graphics2D {
          */
         private final transient List<String>            stringParts                        = new ArrayList<>();
         /**
-         * Fonts that corresponds to the splitted part of the string
+         * {@link BaseFont Base fonts} that corresponds to the splitted part of the string
          */
-        private final transient List<Font>              correspondingFontsForParts         = new ArrayList<>();
+        private final transient List<BaseFont>          correspondingBaseFontsForParts     = new ArrayList<>();
 
         private final transient Map<String, Boolean>    fontFamilyComposite                = new HashMap<>();
 
@@ -1900,12 +1913,11 @@ public class PdfGraphics2D extends Graphics2D {
             }
 
             try {
-                splitStringIntoDisplayableParts(s, compositeFont);
+                splitStringIntoDisplayableParts(s, compositeFont, fontConverter);
                 double width = 0;
                 for (int i = 0; i < stringParts.size(); i++) {
                     String strPart = stringParts.get(i);
-                    Font correspondingFont = correspondingFontsForParts.get(i);
-                    BaseFont correspondingBaseFont = fontConverter.apply(correspondingFont);
+                    BaseFont correspondingBaseFont = correspondingBaseFontsForParts.get(i);
                     BaseFont baseFont = correspondingBaseFont == null
                             ? fontConverter.apply(compositeFont)
                             : correspondingBaseFont;
@@ -1918,27 +1930,30 @@ public class PdfGraphics2D extends Graphics2D {
             }
         }
 
-        /**
-         * Split string into visible and not visible parts.</br>
-         * This method split string into substring parts. For each splitted part correspond found
-         * font from the slots of the composite font witch can display all characters of the part of
-         * string. If no font found the own composite font will be used.
-         *
-         * @param s
-         * @param compositeFont
-         * @throws IllegalAccessException
-         * @throws IllegalArgumentException
-         * @throws InvocationTargetException
-         */
-        private void splitStringIntoDisplayableParts(String s, Font compositeFont) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		/**
+		 * Split string into visible and not visible parts.</br>
+		 * This method split string into substring parts. For each splitted part
+		 * correspond found {@link BaseFont base font} from the slots of the composite
+		 * font witch can display all characters of the part of string. If no font found
+		 * the {@link BaseFont base font} from the own composite font will be used.
+		 *
+		 * @param s
+		 * @param compositeFont
+		 * @param fontConverter
+		 * @throws IllegalAccessException
+		 * @throws IllegalArgumentException
+		 * @throws InvocationTargetException
+		 */
+        private void splitStringIntoDisplayableParts(String s, Font compositeFont, Function<Font, BaseFont> fontConverter) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             Object result = GET_FONT2D_METHOD.invoke(null, compositeFont);
             if (result.getClass() != COMPOSITE_FONT_CLASS) {
                 throw new IllegalArgumentException("Given font isn't a composite font.");
             }
             sb.setLength(0);
             stringParts.clear();
-            correspondingFontsForParts.clear();
-            Object lastPhysicalFont = null;
+            correspondingBaseFontsForParts.clear();
+            BaseFont baseFontFromCompositeFont = fontConverter.apply(compositeFont);
+            BaseFont lastBaseFont = null;
             Object numSlotsResult = GET_NUM_SLOTS_METHOD.invoke(result);
             int numSlots = (Integer) numSlotsResult;
             for (int charIndex = 0; charIndex < s.length(); charIndex++) {
@@ -1949,33 +1964,36 @@ public class PdfGraphics2D extends Graphics2D {
                     if (phFont == null) {
                         continue;
                     }
-                    Boolean canDysplayResult = (Boolean) CAN_DYSPLAY_METHOD.invoke(phFont, c);
-                    if (canDysplayResult) {
-                        if (sb.length() == 0) {
-                            Object fontNameResult = GET_FONT_NAME_METHOD.invoke(phFont, (Locale) null);
-                            correspondingFontsForParts.add(new Font((String) fontNameResult, compositeFont.getStyle(), compositeFont.getSize()));
-                            lastPhysicalFont = phFont;
-                        } else if (!Objects.equals(lastPhysicalFont, phFont)) {
-                            stringParts.add(sb.toString());
-                            sb.setLength(0);
-                            Object fontNameResult = GET_FONT_NAME_METHOD.invoke(phFont, (Locale) null);
-                            correspondingFontsForParts.add(new Font((String) fontNameResult, compositeFont.getStyle(), compositeFont.getSize()));
-                            lastPhysicalFont = phFont;
-                        }
-                        sb.append(c);
-                        found = true;
-                        break;
+                    Boolean canBeDysplayedByPhysicalFont = (Boolean) CAN_DYSPLAY_METHOD.invoke(phFont, c);
+                    if (canBeDysplayedByPhysicalFont) {
+                    	Object fontNameResult = GET_FONT_NAME_METHOD.invoke(phFont, (Locale) null);
+                    	Font font = new Font((String) fontNameResult, compositeFont.getStyle(), compositeFont.getSize());
+                    	BaseFont correspondingBaseFont = fontConverter.apply(font);
+                    	if (correspondingBaseFont != null && correspondingBaseFont.charExists(c)) {
+                    		if (sb.length() == 0) {
+                            	correspondingBaseFontsForParts.add(correspondingBaseFont);
+                            	lastBaseFont = correspondingBaseFont;
+                            } else if (!Objects.equals(lastBaseFont, correspondingBaseFont)) {
+                                stringParts.add(sb.toString());
+                                sb.setLength(0);
+                                correspondingBaseFontsForParts.add(correspondingBaseFont);
+                                lastBaseFont = correspondingBaseFont;
+                            }
+                            sb.append(c);
+                            found = true;
+                            break;
+                    	}
                     }
                 }
                 if (!found) {
                     if (sb.length() == 0) {
-                        correspondingFontsForParts.add(compositeFont);
-                        lastPhysicalFont = null;
-                    } else if (lastPhysicalFont != null) {
+                    	correspondingBaseFontsForParts.add(baseFontFromCompositeFont);
+                    	lastBaseFont = null;
+                    } else if (lastBaseFont != null) {
                         stringParts.add(sb.toString());
                         sb.setLength(0);
-                        correspondingFontsForParts.add(compositeFont);
-                        lastPhysicalFont = null;
+                        correspondingBaseFontsForParts.add(baseFontFromCompositeFont);
+                        lastBaseFont = null;
                     }
                     sb.append(c);
                 }

@@ -58,7 +58,7 @@ public class AHref {
             // step 4:
             Paragraph paragraph = new Paragraph("Please visit my ");
             Anchor anchor1 = new Anchor("website (external reference)", FontFactory.getFont(FontFactory.HELVETICA, 12, Font.UNDERLINE, new Color(0, 0, 255)));
-            anchor1.setReference("http://www.lowagie.com/iText/");
+            anchor1.setReference("https://github.com/LibrePDF/OpenPDF");
             anchor1.setName("top");
             paragraph.add(anchor1);
             paragraph.add(new Chunk(".\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"));

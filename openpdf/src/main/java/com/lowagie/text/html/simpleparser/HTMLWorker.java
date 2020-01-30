@@ -45,7 +45,7 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 
 package com.lowagie.text.html.simpleparser;
@@ -551,10 +551,16 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     stack.push(obj);
                     return;
                 }
-                if (stack.empty())
+                if (stack.empty()) {
                     document.add((Element) obj);
-                else
-                    ((TextElementArray) stack.peek()).add((Element) obj);
+                } else {
+                    Object peek = stack.peek();
+                    if (peek instanceof com.lowagie.text.List) {
+                        ((com.lowagie.text.List) peek).add((com.lowagie.text.List) obj);
+                    } else {
+                        ((TextElementArray) peek).add((Element) obj);
+                    }
+                }
                 return;
             }
             if (tag.equals(HtmlTags.LISTITEM)) {

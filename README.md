@@ -4,8 +4,8 @@ OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL
 
  [![Build Status](https://travis-ci.org/LibrePDF/OpenPDF.svg?branch=master)](https://travis-ci.org/LibrePDF/OpenPDF) [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf) [![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%203.0-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-3.0) [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
 
-## OpenPDF version 1.3.11 released 2019-09-19 ##
-Get version 1.3.11 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.11
+## OpenPDF version 1.3.12 released 2020-01-16 ##
+Get version 1.3.12 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.12
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
@@ -16,7 +16,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
-            <version>1.3.11</version>
+            <version>1.3.12</version>
         </dependency>
 
 ## License ##
@@ -59,7 +59,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 
 ## Dependencies ##
 ### Required Dependencies: ###
- - Java 8 or later is required to use OpenPDF. All versions Java 8 to Java 12 have been tested to work.
+ - Java 8 or later is required to use OpenPDF. All versions Java 8 to Java OpenJDK 13 have been tested to work.
  - [Juniversalchardet](https://github.com/albfernandez/juniversalchardet)
 
 ### Optional: ###
@@ -83,7 +83,7 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.11, now retired from OpenPDF development.  
   [@daviddurand](https://github.com/daviddurand) -  David G. Durand  
   [@tlxtellef](https://github.com/tlxtellef) - Tellef  
-  [@asturio](https://github.com/asturio) - Claudio Clemens 
+  [@asturio](https://github.com/asturio) - Claudio Clemens     
   [@ymasory](https://github.com/ymasory)  
   [@albfernandez](https://github.com/albfernandez) - Alberto Fernández  
   [@noavarice](https://github.com/noavarice)  
@@ -101,9 +101,9 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@lapo-luchini](https://github.com/lapo-luchini)  
   [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)  
   [@V-F](https://github.com/V-F)     
-  [@sixdouglas](https://github.com/sixdouglas) - Douglas Six
+  [@sixdouglas](https://github.com/sixdouglas) - Douglas Six  
   [@razilein](https://github.com/razilein) - Sita Geßner  
   [@PalAditya](https://github.com/PalAditya) - Aditya Pal       
-    
+  [@rammetzger](https://github.com/rammetzger)     
 
 Also, a very special thanks to the iText developers ;)

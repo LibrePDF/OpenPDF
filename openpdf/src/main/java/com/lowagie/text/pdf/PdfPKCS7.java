@@ -42,7 +42,7 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 package com.lowagie.text.pdf;
 
@@ -120,6 +120,7 @@ import org.bouncycastle.jce.provider.X509CRLParser;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.tsp.TimeStampTokenInfo;
 
 /**
  * This class does all the processing related to signing and verifying a PKCS#7
@@ -520,16 +521,14 @@ public class PdfPKCS7 {
             digestEncryptionAlgorithm = ((ASN1ObjectIdentifier) ((ASN1Sequence) signerInfo
                     .getObjectAt(next++)).getObjectAt(0)).getId();
             digest = ((DEROctetString) signerInfo.getObjectAt(next++)).getOctets();
-            if (next < signerInfo.size() && (signerInfo.getObjectAt(next) instanceof DERTaggedObject)) {
+            if (next < signerInfo.size() && (signerInfo.getObjectAt(next) instanceof ASN1TaggedObject)) {
             	ASN1TaggedObject taggedObject = (ASN1TaggedObject) signerInfo.getObjectAt(next);
                 ASN1Set unat = ASN1Set.getInstance(taggedObject, false);
                 AttributeTable attble = new AttributeTable(unat);
-                Attribute ts = attble
-                        .get(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken);
+                Attribute ts = attble.get(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken);
                 if (ts != null && ts.getAttrValues().size() > 0) {
                     ASN1Set attributeValues = ts.getAttrValues();
-                    ASN1Sequence tokenSequence = ASN1Sequence.getInstance(attributeValues
-                            .getObjectAt(0));
+                    ASN1Sequence tokenSequence = ASN1Sequence.getInstance(attributeValues.getObjectAt(0));
                     ContentInfo contentInfo = ContentInfo.getInstance(tokenSequence);
                     this.timeStampToken = new TimeStampToken(contentInfo);
                 }
@@ -682,7 +681,9 @@ public class PdfPKCS7 {
             return false;
         MessageImprint imprint = timeStampToken.getTimeStampInfo().toASN1Structure()
                 .getMessageImprint();
-        byte[] md = MessageDigest.getInstance("SHA-1").digest(digest);
+        TimeStampTokenInfo info = timeStampToken.getTimeStampInfo();
+        String algOID = info.getMessageImprintAlgOID().getId();
+        byte[] md =  MessageDigest.getInstance(getStandardJavaName(getDigest(algOID))).digest(digest);
         byte[] imphashed = imprint.getHashedMessage();
         return Arrays.equals(md, imphashed);
     }
@@ -1307,10 +1308,8 @@ public class PdfPKCS7 {
             signerinfo.add(new DEROctetString(digest));
 
             // When requested, go get and add the timestamp. May throw an exception.
-            // Added by Martin Brunecky, 07/12/2007 folowing Aiken Sam, 2006-11-15
-            // Sam found Adobe expects time-stamped SHA1-1 of the encrypted digest
             if (tsaClient != null) {
-                byte[] tsImprint = MessageDigest.getInstance("SHA-1").digest(digest);
+                byte[] tsImprint = tsaClient.getMessageDigest().digest(digest);
                 byte[] tsToken = tsaClient.getTimeStampToken(this, tsImprint);
                 if (tsToken != null) {
                     ASN1EncodableVector unauthAttributes = buildUnauthenticatedAttributes(tsToken);

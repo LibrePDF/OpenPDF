@@ -44,10 +44,13 @@
  *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
- * http://www.lowagie.com/iText/
+ * https://github.com/LibrePDF/OpenPDF
  */
 
 package com.lowagie.text.pdf;
+
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
 
 /**
  * Time Stamp Authority client (caller) interface.
@@ -65,6 +68,12 @@ public interface TSAClient {
      * @return    an estimate of the token size
      */
     int getTokenSizeEstimate();
+
+    /**
+     * Gets the MessageDigest to digest the data imprint
+     * @return the digest algorithm name
+     */
+    public MessageDigest getMessageDigest() throws GeneralSecurityException;
     
     /**
      * Get RFC 3161 timeStampToken.
