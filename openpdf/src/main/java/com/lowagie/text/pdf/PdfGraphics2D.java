@@ -1768,6 +1768,10 @@ public class PdfGraphics2D extends Graphics2D {
             return SUPPORTED;
         }
 
+        private static final String    GET_MODULE_METHOD_NAME       = "getModule";
+        private static final String    IS_OPEN_METHOD_NAME          = "isOpen";
+        private static final String    ADD_OPENS_METHOD_NAME        = "addOpens";
+
         private static final String    COMPOSITE_FONT_CLASS_NAME    = "sun.font.CompositeFont";
         private static final Class<?>  COMPOSITE_FONT_CLASS;
         private static final String    GET_NUM_SLOTS_METHOD_NAME    = "getNumSlots";
@@ -1794,6 +1798,7 @@ public class PdfGraphics2D extends Graphics2D {
             boolean macOS = osName.startsWith("Mac");
             if (!macOS) {
                 FONT_UTILITIES_CLASS = getClassForName(FONT_UTILITIES_CLASS_NAME);
+                updateModuleToOpenPackage(FONT_UTILITIES_CLASS, "sun.font");
                 GET_FONT2D_METHOD = getMethod(FONT_UTILITIES_CLASS, GET_FONT2D_METHOD_NAME, Font.class);
                 COMPOSITE_FONT_CLASS = getClassForName(COMPOSITE_FONT_CLASS_NAME);
                 GET_NUM_SLOTS_METHOD = getMethod(COMPOSITE_FONT_CLASS, GET_NUM_SLOTS_METHOD_NAME);
@@ -1817,6 +1822,46 @@ public class PdfGraphics2D extends Graphics2D {
                     GET_SLOT_FONT_METHOD != null && CAN_DYSPLAY_METHOD != null && GET_FONT_NAME_METHOD != null;
         }
 
+        /**
+         * Update module of the given class to open the given
+         * package to the target module if the target module
+         * is opened for the current module.<br/>
+         * This helps to avoid warnings for the <code>--illegal-access=permit<code/>.
+         * Actually (java 9-13) "permit" is default mode, but in the future java
+         * releases the default mode will be "deny". It's also important to
+         * add <code>--add-opens<code/> for the given package if it's need.
+         */
+        private static void updateModuleToOpenPackage(Class<?> classInModule, String packageName) {
+            if (classInModule == null || packageName == null) {
+                return;
+            }
+            Method getModuleMethod = getMethod(Class.class, GET_MODULE_METHOD_NAME);
+            if (getModuleMethod == null) {
+                return;
+            }
+            try {
+                Object targetModule = getModuleMethod.invoke(classInModule);
+                if (targetModule == null) {
+                    return;
+                }
+                Class<?> moduleClass = targetModule.getClass();
+                Object callerModule = getModuleMethod.invoke(CompositeFontDrawer.class);
+                Method isOpenMethod = getMethod(moduleClass, IS_OPEN_METHOD_NAME, String.class, moduleClass);
+                if (isOpenMethod == null) {
+                    return;
+                }
+                Object isOpened = isOpenMethod.invoke(targetModule, packageName, callerModule);
+                if (isOpened instanceof Boolean && ((Boolean) isOpened)) {
+                    Method addOpensMethod = getMethod(moduleClass, ADD_OPENS_METHOD_NAME, String.class, moduleClass);
+                    if (callerModule != null) {
+                        addOpensMethod.invoke(targetModule, packageName, callerModule);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         private static Class<?> getClassForName(String className) {
             try {
                 return Class.forName(className);
@@ -1832,7 +1877,9 @@ public class PdfGraphics2D extends Graphics2D {
             Method method;
             try {
                 method = clazz.getDeclaredMethod(methodName, parameterTypes);
-                method.setAccessible(true);
+                if (!method.isAccessible()) {
+                    method.setAccessible(true);
+                }
             } catch (Exception e) {
                 method = null;
             }
