@@ -211,29 +211,19 @@ class FontDetails {
                             longTag.put(metrics[0], new int[]{metrics[0], metrics[1], ttu.getUnicodeDifferences(b[k] & 0xff)});
                             glyph[i++] = (char)metrics[0];
                         }
+                        String s = new String(glyph, 0, i);
+                        b = s.getBytes(CJKFont.CJK_ENCODING);
+
                     }
                     else {
-                        for (int k = 0; k < len; ++k) {
-                            int val;
-                            if (Utilities.isSurrogatePair(text, k)) {
-                                val = Utilities.convertToUtf32(text, k);
-                                k++;
-                            }
-                            else {
-                                val = text.charAt(k);
-                            }
-                            metrics = ttu.getMetricsTT(val);
-                            if (metrics == null)
-                                continue;
-                            int m0 = metrics[0];
-                            Integer gl = m0;
-                            if (!longTag.containsKey(gl))
-                                longTag.put(gl, new int[]{m0, metrics[1], val});
-                            glyph[i++] = (char)m0;
+                        String fileName = ((TrueTypeFontUnicode)getBaseFont()).fileName;
+                        if (FopGlyphProcessor.isFopSupported() && (fileName!=null && fileName.length()>0 
+                                                                   &&( fileName.contains(".ttf") || fileName.contains(".TTF")))){
+                            return FopGlyphProcessor.convertToBytesWithGlyphs(ttu,text,fileName,longTag);
+                        }else {
+                            return convertToBytesWithGlyphs(text);
                         }
                     }
-                    String s = new String(glyph, 0, i);
-                    b = s.getBytes(CJKFont.CJK_ENCODING);
                 }
                 catch (UnsupportedEncodingException e) {
                     throw new ExceptionConverter(e);
@@ -243,7 +233,34 @@ class FontDetails {
         }
         return b;
     }
-    
+
+    private byte[] convertToBytesWithGlyphs(String text) throws UnsupportedEncodingException {
+        int len = text.length();
+        int[] metrics = null;
+        char[] glyph = new char[len];
+        int i = 0;
+        for (int k = 0; k < len; ++k) {
+            int val;
+            if (Utilities.isSurrogatePair(text, k)) {
+                val = Utilities.convertToUtf32(text, k);
+                k++;
+            }
+            else {
+                val = text.charAt(k);
+            }
+            metrics = ttu.getMetricsTT(val);
+            if (metrics == null)
+                continue;
+            int m0 = metrics[0];
+            Integer gl = m0;
+            if (!longTag.containsKey(gl))
+                longTag.put(gl, new int[]{m0, metrics[1], val});
+            glyph[i++] = (char)m0;
+        }
+        String s = new String(glyph, 0, i);
+        return s.getBytes(CJKFont.CJK_ENCODING);
+    }
+
     byte[] convertToBytes(GlyphVector glyphVector) {
         if (fontType != BaseFont.FONT_TYPE_TTUNI || symbolic) {
             throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
