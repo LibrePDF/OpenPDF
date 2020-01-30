@@ -1798,7 +1798,7 @@ public class PdfGraphics2D extends Graphics2D {
             boolean macOS = osName.startsWith("Mac");
             if (!macOS) {
                 FONT_UTILITIES_CLASS = getClassForName(FONT_UTILITIES_CLASS_NAME);
-                openPackageInModule(FONT_UTILITIES_CLASS, "sun.font");
+                updateModuleToOpenPackage(FONT_UTILITIES_CLASS, "sun.font");
                 GET_FONT2D_METHOD = getMethod(FONT_UTILITIES_CLASS, GET_FONT2D_METHOD_NAME, Font.class);
                 COMPOSITE_FONT_CLASS = getClassForName(COMPOSITE_FONT_CLASS_NAME);
                 GET_NUM_SLOTS_METHOD = getMethod(COMPOSITE_FONT_CLASS, GET_NUM_SLOTS_METHOD_NAME);
@@ -1823,15 +1823,15 @@ public class PdfGraphics2D extends Graphics2D {
         }
 
         /**
-         * Open the given package in the module of the given class
-         * for reflectively access if the
-         * target module is opened for the current module.<br/>
+         * Update module of the given class to open the given
+         * package to the target module if the target module
+         * is opened for the current module.<br/>
          * This helps to avoid warnings for the <code>--illegal-access=permit<code/>.
          * Actually (java 9-13) "permit" is default mode, but in the future java
          * releases the default mode will be "deny". It's also important to
          * add <code>--add-opens<code/> for the given package if it's need.
          */
-        private static void openPackageInModule(Class<?> classInModule, String packageName) {
+        private static void updateModuleToOpenPackage(Class<?> classInModule, String packageName) {
             if (classInModule == null || packageName == null) {
                 return;
             }
