@@ -104,6 +104,10 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@sixdouglas](https://github.com/sixdouglas) - Douglas Six  
   [@razilein](https://github.com/razilein) - Sita Geßner  
   [@PalAditya](https://github.com/PalAditya) - Aditya Pal       
-  [@rammetzger](https://github.com/rammetzger)     
+  [@rammetzger](https://github.com/rammetzger)   
+  [@codecracker2014](https://github.com/codecracker2014)   
+  [@mluppi](https://github.com/mluppi)   
+  [@vic0075](https://github.com/vic0075)   
+ 
 
 Also, a very special thanks to the iText developers ;)
