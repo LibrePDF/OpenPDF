@@ -218,7 +218,7 @@ public class Anchor extends Phrase {
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public ArrayList<Element> getChunks() {
+    public ArrayList getChunks() {
         ArrayList<Element> tmp = new ArrayList<>();
         Chunk chunk;
         Iterator<Element> i = iterator();

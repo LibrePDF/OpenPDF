@@ -236,7 +236,7 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
      *
      * @return    an <CODE>ArrayList</CODE>
      */
-    public ArrayList<Element> getChunks() {
+    public ArrayList getChunks() {
         ArrayList<Element> tmp = new ArrayList<>();
         for (Element element : this) {
             tmp.addAll(element.getChunks());

@@ -133,7 +133,7 @@ public class Section extends ArrayList<Element> implements TextElementArray, Lar
     protected int subsections = 0;
     
     /** This is the complete list of sectionnumbers of this section and the parents of this section. */
-    protected java.util.List<Integer> numbers = null;
+    protected java.util.ArrayList<Integer> numbers = null;
     
     /**
      * Indicates if the Section will be complete once added to the document.
