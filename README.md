@@ -74,7 +74,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
    - JCommon
    - Servlet
  - DOM4j is required for the pdf-swing submodule.
-
+ - Apache FOP
 
 
 ## Credits ##
