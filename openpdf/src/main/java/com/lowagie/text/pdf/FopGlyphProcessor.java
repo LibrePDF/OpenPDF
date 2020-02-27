@@ -15,6 +15,11 @@ import org.apache.fop.fonts.truetype.TTFFile;
  */
 public class FopGlyphProcessor {
 
+    /**
+     * This character will be used if some unicode character used for which glyph index not defined in font.
+     */
+    private static final char CHAR_TO_USE_IF_GLYPH_NOT_FOUND = '#';
+
     private static boolean isFopSupported = false;
 
     static {
@@ -36,8 +41,13 @@ public class FopGlyphProcessor {
         IntBuffer charBuffer = IntBuffer.allocate(text.length());
         IntBuffer ghyphBuffer = IntBuffer.allocate(text.length());
         for (char c : text.toCharArray()) {
-            charBuffer.put(c);
             int[] metrics = ttu.getMetricsTT(c);
+            // metrics will be null in case glyph not defined in TTF font, so default character should be used.
+            if (metrics == null){
+                c = CHAR_TO_USE_IF_GLYPH_NOT_FOUND;
+                metrics = ttu.getMetricsTT(c);
+            }
+            charBuffer.put(c);
             ghyphBuffer.put(metrics[0]);
         }
 
