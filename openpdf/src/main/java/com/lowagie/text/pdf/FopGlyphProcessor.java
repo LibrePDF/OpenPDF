@@ -62,10 +62,11 @@ public class FopGlyphProcessor {
             }
             glyphSequence = gsubTable.substitute(glyphSequence, script, language);
         }
+        int limit  = glyphSequence.getGlyphs().limit();
         int[] processedChars = glyphSequence.getGlyphs().array();
-        char[] charEncodedGlyphCodes = new char[processedChars.length];
+        char[] charEncodedGlyphCodes = new char[limit];
 
-        for (int i = 0; i < processedChars.length; i++) {
+        for (int i = 0; i < limit; i++) {
             charEncodedGlyphCodes[i] = (char) processedChars[i];
             Integer glyphCode = processedChars[i];
             if (!longTag.containsKey(glyphCode)) {
