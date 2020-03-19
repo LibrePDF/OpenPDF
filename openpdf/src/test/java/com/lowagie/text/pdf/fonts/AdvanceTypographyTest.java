@@ -30,4 +30,19 @@ public class AdvanceTypographyTest {
         assertArrayEquals(expectedOutput,str.toCharArray());
     }
 
+    /**
+     * In some fonts combination of two characters can be represented by single glyph
+     * This method tests above case.
+     * @throws Exception
+     */
+    @Test
+    public void testSubstitutionWithMerge() throws Exception{
+        char[] expectedOutput = {254,278,390,314,331,376,254,285,278};
+        byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
+                BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false)
+                , "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>());
+        String str = new String(processedContent, "UnicodeBigUnmarked");
+        assertArrayEquals(expectedOutput,str.toCharArray());
+    }
+
 }
