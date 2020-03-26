@@ -1,25 +1,28 @@
 package com.lowagie.text.pdf.fonts;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.RectangleReadOnly;
+import com.lowagie.text.pdf.DefaultFontMapper;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfLiteral;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfWriter;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import com.lowagie.text.RectangleReadOnly;
-import com.lowagie.text.pdf.DefaultFontMapper;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * {@link Font Font}-related test cases.
@@ -97,9 +100,11 @@ class FontTest {
      */
     @Test
     void testBoldSimulationAndStrokeWidth() throws Exception {
-        FileOutputStream outputStream = new FileOutputStream("target/StandardFonts.pdf");
+        FileOutputStream outputStream = new FileOutputStream("target/resultSimulatedBold.pdf");
         Document document = new Document();
         PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+        // set hardcoded documentID to be able to compare the resulting document with the reference
+        writer.getInfo().put(PdfName.FILEID, new PdfLiteral("[<1><2>]"));
         document.open();
         document.setPageSize(new RectangleReadOnly(200,70));
         document.newPage();
@@ -124,6 +129,10 @@ class FontTest {
         graphics2D.dispose();
         document.close();
         outputStream.close();
+
+        File original = new File(getClass().getClassLoader().getResource("SimulatedBoldAndStrokeWidth.pdf").getFile());
+        File current = new File("target/resultSimulatedBold.pdf");
+        assertTrue(FileUtils.contentEquals(original, current));
     }
 
 }
