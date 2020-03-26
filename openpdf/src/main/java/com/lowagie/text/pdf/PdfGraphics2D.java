@@ -483,6 +483,7 @@ public class PdfGraphics2D extends Graphics2D {
                     if (strokeWidth != 1) {
                         if(realPaint instanceof Color){
                             cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE);
+                            oldStroke = new BasicStroke(strokeWidth);
                             cb.setLineWidth(strokeWidth);
                             Color color = (Color)realPaint;
                             int alpha = color.getAlpha();
