@@ -24,7 +24,7 @@ public class AdvanceTypographyTest {
         char[] expectedOutput = {660,666,911,656,1130};
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
                 BaseFont.createFont("fonts/jaldi/Jaldi-Regular.ttf", BaseFont.IDENTITY_H, false)
-                , "नमस्ते", "fonts/jaldi/Jaldi-Regular.ttf", new HashMap<>());
+                , "नमस्ते", "fonts/jaldi/Jaldi-Regular.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
 
         assertArrayEquals(expectedOutput,str.toCharArray());
@@ -40,7 +40,7 @@ public class AdvanceTypographyTest {
         char[] expectedOutput = {254,278,390,314,331,376,254,285,278};
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
                 BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false)
-                , "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>());
+                , "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
         assertArrayEquals(expectedOutput,str.toCharArray());
     }

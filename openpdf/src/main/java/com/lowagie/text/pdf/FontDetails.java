@@ -172,7 +172,7 @@ class FontDetails {
      * @param text the text to convert
      * @return the conversion
      */    
-    byte[] convertToBytes(String text) {
+    byte[] convertToBytes(String text, String language) {
         byte[] b = null;
         switch (fontType) {
             case BaseFont.FONT_TYPE_T3:
@@ -219,7 +219,7 @@ class FontDetails {
                         String fileName = ((TrueTypeFontUnicode)getBaseFont()).fileName;
                         if (FopGlyphProcessor.isFopSupported() && (fileName!=null && fileName.length()>0 
                                                                    &&( fileName.contains(".ttf") || fileName.contains(".TTF")))){
-                            return FopGlyphProcessor.convertToBytesWithGlyphs(ttu,text,fileName,longTag);
+                            return FopGlyphProcessor.convertToBytesWithGlyphs(ttu,text,fileName,longTag,language);
                         }else {
                             return convertToBytesWithGlyphs(text);
                         }
