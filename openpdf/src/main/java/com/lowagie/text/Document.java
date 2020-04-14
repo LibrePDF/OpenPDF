@@ -50,6 +50,7 @@
 package com.lowagie.text;
 
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.pdf.FopGlyphProcessor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -201,7 +202,15 @@ public class Document implements AutoCloseable, DocListener {
     
     /** This is a chapter number in case ChapterAutoNumber is used. */
     protected int chapternumber = 0;
-    
+
+    /**
+     * The default language of the document. Can be set to values like "en_US".
+     * This language is used in {@link FopGlyphProcessor} to determine which glyphs are to be substituted.
+     * The default "dflt" means that all glyphs which can be replaced will be substituted.
+     * @since 3.1.15
+     */
+    String documentLanguage = "dflt";
+
     // constructor
 
     /**
@@ -890,5 +899,13 @@ public class Document implements AutoCloseable, DocListener {
      */    
     public boolean isMarginMirroring() {
         return marginMirroring;
+    }
+
+    public void setDocumentLanguage(String documentLanguage) {
+        this.documentLanguage = documentLanguage;
+    }
+
+    public String getDocumentLanguage() {
+        return documentLanguage;
     }
 }

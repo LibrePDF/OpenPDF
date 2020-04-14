@@ -1501,7 +1501,7 @@ public class PdfContentByte {
     private void showText2(String text) {
         if (state.fontDetails == null)
             throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
-        byte[] b = state.fontDetails.convertToBytes(text);
+        byte[] b = state.fontDetails.convertToBytes(text, getPdfDocument().getDocumentLanguage());
         escapeString(b, content);
     }
 
