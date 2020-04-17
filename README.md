@@ -80,7 +80,7 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 ## Credits ##
 Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs/contributors) on GitHub:
 
-  [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.11, now retired from OpenPDF development.  
+  [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.  
   [@daviddurand](https://github.com/daviddurand) -  David G. Durand  
   [@tlxtellef](https://github.com/tlxtellef) - Tellef  
   [@asturio](https://github.com/asturio) - Claudio Clemens     
