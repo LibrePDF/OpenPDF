@@ -1016,7 +1016,7 @@ public class AcroFields {
             PdfDictionary dr = merged.getAsDict(PdfName.DR);
             if (da != null && dr != null) {
               Object[] dao = splitDAelements(da.toUnicodeString());
-              PdfAppearance cb = new PdfAppearance();
+              PdfAppearance cb = new PdfAppearance(this.writer);
               if (dao[DA_FONT] != null) {
                 BaseFont bf = (BaseFont) value;
                 PdfName psn = PdfAppearance.stdFieldFontNames.get(bf.getPostscriptFontName());
@@ -1080,7 +1080,7 @@ public class AcroFields {
             da = merged.getAsString(PdfName.DA);
             if (da != null) {
               Object[] dao = splitDAelements(da.toUnicodeString());
-              PdfAppearance cb = new PdfAppearance();
+              PdfAppearance cb = new PdfAppearance(this.writer);
               if (dao[DA_FONT] != null) {
                 ByteBuffer buf = cb.getInternalBuffer();
                 buf.append(new PdfName((String) dao[DA_FONT]).getBytes()).append(' ').append((Float) dao[DA_SIZE])
@@ -1101,7 +1101,7 @@ public class AcroFields {
             da = merged.getAsString(PdfName.DA);
             if (da != null) {
               Object[] dao = splitDAelements(da.toUnicodeString());
-              PdfAppearance cb = new PdfAppearance();
+              PdfAppearance cb = new PdfAppearance(this.writer);
               if (dao[DA_FONT] != null) {
                 ByteBuffer buf = cb.getInternalBuffer();
                 Float fontSize = (float) Font.DEFAULTSIZE;
