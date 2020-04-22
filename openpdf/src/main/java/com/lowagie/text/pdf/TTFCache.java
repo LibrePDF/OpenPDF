@@ -5,6 +5,7 @@ import org.apache.fop.fonts.apps.TTFReader;
 import org.apache.fop.fonts.truetype.FontFileReader;
 import org.apache.fop.fonts.truetype.TTFFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class TTFCache {
 
     private static Map<String,TTFFile> ttfFileMap =new ConcurrentHashMap<>();
 
-    public static TTFFile getTTFFile(String fileName) {
+    public static TTFFile getTTFFile(String fileName, TrueTypeFontUnicode ttu) {
 
         if (ttfFileMap.containsKey(fileName)){
             return ttfFileMap.get(fileName);
@@ -27,7 +28,7 @@ public class TTFCache {
         TTFReader app = new TTFReader();
         TTFFile ttf = null;
         try {
-            ttf = loadTTF(app,fileName);
+            ttf = loadTTF(app, fileName, ttu);
             ttfFileMap.put(fileName,ttf);
             return ttf;
         } catch (IOException e) {
@@ -35,7 +36,7 @@ public class TTFCache {
         }
     }
 
-    private static TTFFile loadTTF(TTFReader app, String fileName) throws IOException{
+    private static TTFFile loadTTF(TTFReader app, String fileName, TrueTypeFontUnicode ttu) throws IOException{
 
         try {
             return app.loadTTF(fileName, null, true, true);
@@ -43,11 +44,16 @@ public class TTFCache {
             TTFFile ttfFile = new TTFFile(true, true);
             InputStream stream = BaseFont.getResourceStream(fileName, null);
             try {
+                if (stream == null){
+                    stream = getStreamFromFont(ttu);
+                }
                 FontFileReader reader = new FontFileReader(stream);
                 String fontName = null;
                 ttfFile.readFont(reader, fontName);
             } finally {
-                stream.close();
+                if (stream!=null){
+                    stream.close();
+                }
             }
             if (ttfFile.isCFF()) {
                 throw new UnsupportedOperationException(
@@ -56,4 +62,9 @@ public class TTFCache {
             return ttfFile;
         }
     }
+
+    private static InputStream getStreamFromFont(TrueTypeFontUnicode ttu) throws IOException {
+        return new ByteArrayInputStream(ttu.getFullFont());
+    }
+
 }

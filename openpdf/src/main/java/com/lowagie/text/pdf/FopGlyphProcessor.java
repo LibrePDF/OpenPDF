@@ -52,7 +52,7 @@ public class FopGlyphProcessor {
         }
 
         GlyphSequence glyphSequence = new GlyphSequence(charBuffer, ghyphBuffer, null);
-        TTFFile ttf = TTFCache.getTTFFile(fileName);
+        TTFFile ttf = TTFCache.getTTFFile(fileName, ttu);
         GlyphSubstitutionTable gsubTable = ttf.getGSUB();
         if (gsubTable != null) {
             String script = CharScript.scriptTagFromCode(CharScript.dominantScript(text));
