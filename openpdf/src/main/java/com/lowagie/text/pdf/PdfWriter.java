@@ -604,6 +604,7 @@ public class PdfWriter extends DocWriter implements
     public static PdfWriter getInstance(Document document, OutputStream os)
     throws DocumentException {
         PdfDocument pdf = new PdfDocument();
+        pdf.setDocumentLanguage(document.getDocumentLanguage());
         document.addDocListener(pdf);
         PdfWriter writer = new PdfWriter(pdf, os);
         pdf.addWriter(writer);
@@ -623,6 +624,7 @@ public class PdfWriter extends DocWriter implements
     public static PdfWriter getInstance(Document document, OutputStream os, DocListener listener)
     throws DocumentException {
         PdfDocument pdf = new PdfDocument();
+        pdf.setDocumentLanguage(document.getDocumentLanguage());
         pdf.addDocListener(listener);
         document.addDocListener(pdf);
         PdfWriter writer = new PdfWriter(pdf, os);
