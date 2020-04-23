@@ -15,12 +15,7 @@ import org.apache.fop.fonts.truetype.TTFFile;
  */
 public class FopGlyphProcessor {
 
-    /**
-     * This character will be used if some unicode character used for which glyph index not defined in font.
-     */
-    private static final char CHAR_TO_USE_IF_GLYPH_NOT_FOUND = '#';
-
-    private static boolean isFopSupported = false;
+    private static boolean isFopSupported;
 
     static {
         try {
@@ -36,36 +31,39 @@ public class FopGlyphProcessor {
     }
 
     public static byte[] convertToBytesWithGlyphs(BaseFont font, String text, String fileName,
-                                                  Map<Integer, int[]> longTag) throws UnsupportedEncodingException {
+                                                  Map<Integer, int[]> longTag, String language) throws UnsupportedEncodingException {
         TrueTypeFontUnicode ttu = (TrueTypeFontUnicode)font;
         IntBuffer charBuffer = IntBuffer.allocate(text.length());
-        IntBuffer ghyphBuffer = IntBuffer.allocate(text.length());
+        IntBuffer glyphBuffer = IntBuffer.allocate(text.length());
+        int textLength = text.length();
         for (char c : text.toCharArray()) {
             int[] metrics = ttu.getMetricsTT(c);
-            // metrics will be null in case glyph not defined in TTF font, so default character should be used.
+            // metrics will be null in case glyph not defined in TTF font, skip these characters.
             if (metrics == null){
-                c = CHAR_TO_USE_IF_GLYPH_NOT_FOUND;
-                metrics = ttu.getMetricsTT(c);
+                textLength--;
+                continue;
             }
             charBuffer.put(c);
-            ghyphBuffer.put(metrics[0]);
+            glyphBuffer.put(metrics[0]);
         }
+        charBuffer.limit(textLength);
+        glyphBuffer.limit(textLength);
 
-        GlyphSequence glyphSequence = new GlyphSequence(charBuffer, ghyphBuffer, null);
-        TTFFile ttf = TTFCache.getTTFFile(fileName);
+        GlyphSequence glyphSequence = new GlyphSequence(charBuffer, glyphBuffer, null);
+        TTFFile ttf = TTFCache.getTTFFile(fileName, ttu);
         GlyphSubstitutionTable gsubTable = ttf.getGSUB();
         if (gsubTable != null) {
             String script = CharScript.scriptTagFromCode(CharScript.dominantScript(text));
-            String language = "dflt";
             if ("zyyy".equals(script) || "auto".equals(script)) {
                 script = "*";
             }
             glyphSequence = gsubTable.substitute(glyphSequence, script, language);
         }
+        int limit  = glyphSequence.getGlyphs().limit();
         int[] processedChars = glyphSequence.getGlyphs().array();
-        char[] charEncodedGlyphCodes = new char[processedChars.length];
+        char[] charEncodedGlyphCodes = new char[limit];
 
-        for (int i = 0; i < processedChars.length; i++) {
+        for (int i = 0; i < limit; i++) {
             charEncodedGlyphCodes[i] = (char) processedChars[i];
             Integer glyphCode = processedChars[i];
             if (!longTag.containsKey(glyphCode)) {
