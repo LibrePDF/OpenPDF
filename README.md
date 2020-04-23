@@ -111,6 +111,7 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@armin-weber](https://github.com/armin-weber)   
   [@dandybudach](https://github.com/dandybudach) Dandy Budach  
   [@salsolatragus](https://github.com/salsolatragus) Sven Amann  
+  [@suiaing](https://github.com/suiaing)   
  
 
 Also, a very special thanks to the iText developers ;)
