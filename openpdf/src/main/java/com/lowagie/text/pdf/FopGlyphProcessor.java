@@ -52,7 +52,7 @@ public class FopGlyphProcessor {
         }
 
         GlyphSequence glyphSequence = new GlyphSequence(charBuffer, ghyphBuffer, null);
-        TTFFile ttf = TTFCache.getTTFFile(fileName, ttu);
+        TTFFile ttf = TTFCache.getTTFFile(fileName);
         GlyphSubstitutionTable gsubTable = ttf.getGSUB();
         if (gsubTable != null) {
             String script = CharScript.scriptTagFromCode(CharScript.dominantScript(text));
@@ -62,11 +62,10 @@ public class FopGlyphProcessor {
             }
             glyphSequence = gsubTable.substitute(glyphSequence, script, language);
         }
-        int limit  = glyphSequence.getGlyphs().limit();
         int[] processedChars = glyphSequence.getGlyphs().array();
-        char[] charEncodedGlyphCodes = new char[limit];
+        char[] charEncodedGlyphCodes = new char[processedChars.length];
 
-        for (int i = 0; i < limit; i++) {
+        for (int i = 0; i < processedChars.length; i++) {
             charEncodedGlyphCodes[i] = (char) processedChars[i];
             Integer glyphCode = processedChars[i];
             if (!longTag.containsKey(glyphCode)) {

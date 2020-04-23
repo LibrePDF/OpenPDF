@@ -2,11 +2,8 @@ package com.lowagie.text.pdf.fonts;
 
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.FopGlyphProcessor;
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -32,43 +29,5 @@ public class AdvanceTypographyTest {
 
         assertArrayEquals(expectedOutput,str.toCharArray());
     }
-
-    /**
-     * In some fonts combination of two characters can be represented by single glyph
-     * This method tests above case.
-     * @throws Exception
-     */
-    @Test
-    public void testSubstitutionWithMerge() throws Exception{
-        char[] expectedOutput = {254,278,390,314,331,376,254,285,278};
-        byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-                BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false)
-                , "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>());
-        String str = new String(processedContent, "UnicodeBigUnmarked");
-        assertArrayEquals(expectedOutput,str.toCharArray());
-    }
-
-    /**
-     * Test fonts loaded externally and passed as byte array to BaseFont, Fop should be able to
-     * resolve these fonts
-     * @throws Exception
-     */
-    @Test
-    public void testInMemoryFonts() throws Exception{
-        char[] expectedOutput = {254,278,390,314,331,376,254,285,278};
-        BaseFont font = BaseFont.createFont("ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H,
-                BaseFont.EMBEDDED,true,
-                getFontByte("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf"), null, false,false);
-        byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-                font, "instruction", "Viaoda Libre", new HashMap<>());
-        String str = new String(processedContent, "UnicodeBigUnmarked");
-        assertArrayEquals(expectedOutput,str.toCharArray());
-    }
-
-    private byte[] getFontByte(String fileName) throws IOException {
-        InputStream stream = BaseFont.getResourceStream(fileName, null);
-        return IOUtils.toByteArray(stream);
-    }
-
 
 }
