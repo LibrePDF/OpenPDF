@@ -99,16 +99,16 @@ public interface Element {
     /** This is a possible type of <CODE>Element</CODE>. */
     int KEYWORDS = 3;
 
-    /** This is a possible type of <CODE>Element </CIDE>. */
+    /** This is a possible type of <CODE>Element </CODE>. */
     int AUTHOR = 4;
 
-    /** This is a possible type of <CODE>Element </CIDE>. */
+    /** This is a possible type of <CODE>Element </CODE>. */
     int PRODUCER = 5;
 
-    /** This is a possible type of <CODE>Element </CIDE>. */
+    /** This is a possible type of <CODE>Element </CODE>. */
     int CREATIONDATE = 6;
 
-    /** This is a possible type of <CODE>Element </CIDE>. */
+    /** This is a possible type of <CODE>Element </CODE>. */
     int CREATOR = 7;
 
     // static membervariables (content)
