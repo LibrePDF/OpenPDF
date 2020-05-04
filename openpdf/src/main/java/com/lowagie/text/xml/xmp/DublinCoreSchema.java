@@ -102,7 +102,7 @@ public class DublinCoreSchema extends XmpSchema {
     
     /**
      * Adds a title.
-     * @param title
+     * @param title title
      */
     public void addTitle(String title) {
         XmpArray array = new XmpArray(XmpArray.ALTERNATIVE);
@@ -112,7 +112,7 @@ public class DublinCoreSchema extends XmpSchema {
 
     /**
      * Adds a description.
-     * @param desc
+     * @param desc description
      */
     public void addDescription(String desc) {
         XmpArray array = new XmpArray(XmpArray.ALTERNATIVE);
@@ -122,7 +122,7 @@ public class DublinCoreSchema extends XmpSchema {
 
     /**
      * Adds a subject.
-     * @param subject
+     * @param subject subject
      */
     public void addSubject(String subject) {
         XmpArray array = new XmpArray(XmpArray.UNORDERED);
@@ -143,7 +143,7 @@ public class DublinCoreSchema extends XmpSchema {
     
     /**
      * Adds a single author.
-     * @param author
+     * @param author author name
      */
     public void addAuthor(String author) {
         XmpArray array = new XmpArray(XmpArray.ORDERED);
@@ -153,7 +153,7 @@ public class DublinCoreSchema extends XmpSchema {
 
     /**
      * Adds an array of authors.
-     * @param author
+     * @param author author names arrays
      */
     public void addAuthor(String[] author) {
         XmpArray array = new XmpArray(XmpArray.ORDERED);
@@ -163,7 +163,7 @@ public class DublinCoreSchema extends XmpSchema {
 
     /**
      * Adds a single publisher.
-     * @param publisher
+     * @param publisher publisher name
      */
     public void addPublisher(String publisher) {
         XmpArray array = new XmpArray(XmpArray.ORDERED);
@@ -173,7 +173,7 @@ public class DublinCoreSchema extends XmpSchema {
 
     /**
      * Adds an array of publishers.
-     * @param publisher
+     * @param publisher publishers array
      */
     public void addPublisher(String[] publisher) {
         XmpArray array = new XmpArray(XmpArray.ORDERED);

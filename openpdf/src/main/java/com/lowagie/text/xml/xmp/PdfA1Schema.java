@@ -72,7 +72,7 @@ public class PdfA1Schema extends XmpSchema {
     
     /**
      * Adds part.
-     * @param part
+     * @param part part
      */
     public void addPart(String part) {
         setProperty(PART, part);
@@ -80,7 +80,7 @@ public class PdfA1Schema extends XmpSchema {
     
     /**
      * Adds the conformance.
-     * @param conformance
+     * @param conformance conformance
      */
     public void addConformance(String conformance) {
         setProperty(CONFORMANCE, conformance);

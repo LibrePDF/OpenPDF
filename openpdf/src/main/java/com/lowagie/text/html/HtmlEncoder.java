@@ -72,11 +72,14 @@ import java.awt.Color;
  * (with xxx = the value of the character)
  * </UL>
  * <p>
- * Example:
- * <P><BLOCKQUOTE><PRE>
+ *     Example:
+ * </p>
+ * <BLOCKQUOTE><PRE>
  * String htmlPresentation = HtmlEncoder.encode("Marie-Th&#233;r&#232;se S&#248;rensen");
- * </PRE></BLOCKQUOTE><P>
- * for more info: see O'Reilly; "HTML: The Definitive Guide" (page 164)
+ * </PRE></BLOCKQUOTE>
+ * <p>
+ *      for more info: see O'Reilly; "HTML: The Definitive Guide" (page 164)
+ * </p>
  *
  * @author mario.maccarini@ugent.be
  */
@@ -159,7 +162,7 @@ public final class HtmlEncoder {
      * Converts a <CODE>Color</CODE> into a HTML representation of this <CODE>Color</CODE>.
      *
      * @param color the <CODE>Color</CODE> that has to be converted.
-     * @return the HTML representation of this <COLOR>Color</COLOR>
+     * @return the HTML representation of this <CODE>Color</CODE>
      */
 
     public static String encode(Color color) {

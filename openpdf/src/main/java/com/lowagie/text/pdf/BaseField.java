@@ -262,6 +262,8 @@ public abstract class BaseField {
     }
 
     /**
+     * @param text text
+     * @return an {@link ArrayList} of {@link String}
      * @deprecated use {@link BaseField#getAllHardBreaks(String)}
      */
     @Deprecated

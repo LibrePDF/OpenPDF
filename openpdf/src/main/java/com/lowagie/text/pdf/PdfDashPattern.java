@@ -82,19 +82,22 @@ public class PdfDashPattern extends PdfArray {
         super();
     }
     
-/**
- * Constructs a new <CODE>PdfDashPattern</CODE>.
- */
-    
+    /**
+     * Constructs a new <CODE>PdfDashPattern</CODE>.
+     *
+     * @param dash {@link PdfDashPattern#dash}
+     */
     public PdfDashPattern(float dash) {
         super(new PdfNumber(dash));
         this.dash = dash;
     }
     
-/**
- * Constructs a new <CODE>PdfDashPattern</CODE>.
- */
-    
+    /**
+     * Constructs a new <CODE>PdfDashPattern</CODE>.
+     *
+     * @param dash {@link PdfDashPattern#dash}
+     * @param gap {@link PdfDashPattern#gap}
+     */
     public PdfDashPattern(float dash, float gap) {
         super(new PdfNumber(dash));
         add(new PdfNumber(gap));
@@ -102,10 +105,13 @@ public class PdfDashPattern extends PdfArray {
         this.gap = gap;
     }
     
-/**
- * Constructs a new <CODE>PdfDashPattern</CODE>.
- */
-    
+    /**
+     * Constructs a new <CODE>PdfDashPattern</CODE>.
+     *
+     * @param dash {@link PdfDashPattern#dash}
+     * @param gap {@link PdfDashPattern#gap}
+     * @param phase {@link PdfDashPattern#phase}
+     */
     public PdfDashPattern(float dash, float gap, float phase) {
         super(new PdfNumber(dash));
         add(new PdfNumber(gap));

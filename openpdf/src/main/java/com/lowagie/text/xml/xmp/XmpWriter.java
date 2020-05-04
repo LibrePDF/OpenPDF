@@ -112,10 +112,10 @@ public class XmpWriter {
     
     /**
      * Creates an XmpWriter. 
-     * @param os
-     * @param utfEncoding
-     * @param extraSpace
-     * @throws IOException
+     * @param os output stream
+     * @param utfEncoding utf encoding to be used
+     * @param extraSpace extra space
+     * @throws IOException on error
      */
     public XmpWriter(OutputStream os, String utfEncoding, int extraSpace) throws IOException {
         this.extraSpace = extraSpace;
@@ -128,8 +128,8 @@ public class XmpWriter {
     
     /**
      * Creates an XmpWriter.
-     * @param os
-     * @throws IOException
+     * @param os output stream
+     * @throws IOException on error
      */
     public XmpWriter(OutputStream os) throws IOException {
         this(os, UTF8, 20);
@@ -137,9 +137,11 @@ public class XmpWriter {
 
 
     /**
-     * @param os
-     * @param info
-     * @throws IOException
+     * @param os output stream
+     * @param info {@link PdfDictionary}
+     * @param PdfXConformance pdf conformance
+     *                        eg. values {@link PdfWriter#PDFA1A}, {@link PdfWriter#PDFA1B}
+     * @throws IOException on error
      */
     public XmpWriter(OutputStream os, PdfDictionary info, int PdfXConformance) throws IOException {
         this(os);
@@ -195,9 +197,9 @@ public class XmpWriter {
     }
 
     /**
-     * @param os
-     * @param info
-     * @throws IOException
+     * @param os output stream
+     * @param info map of info
+     * @throws IOException on error
      */
     public XmpWriter(OutputStream os, Map info) throws IOException {
         this(os);
@@ -259,9 +261,9 @@ public class XmpWriter {
     
     /**
      * Adds an rdf:Description.
-     * @param xmlns
-     * @param content
-     * @throws IOException
+     * @param xmlns xml namespace
+     * @param content content
+     * @throws IOException on error
      */
     public void addRdfDescription(String xmlns, String content) throws IOException {
         writer.write("<rdf:Description rdf:about=\"");
@@ -275,8 +277,8 @@ public class XmpWriter {
     
     /**
      * Adds an rdf:Description.
-     * @param s
-     * @throws IOException
+     * @param s xmp schema
+     * @throws IOException on error
      */
     public void addRdfDescription(XmpSchema s) throws IOException {
         writer.write("<rdf:Description rdf:about=\"");
@@ -290,7 +292,7 @@ public class XmpWriter {
     
     /**
      * Flushes and closes the XmpWriter.
-     * @throws IOException
+     * @throws IOException on error
      */
     public void close() throws IOException {
         writer.write("</rdf:RDF>");

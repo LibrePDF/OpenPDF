@@ -63,7 +63,7 @@ public interface SplitCharacter {
      * is free to look ahead or look behind characters to make a decision.
      * <p>
      * The default implementation is:
-     * <p>
+     * </p>
      * <pre>{@code
      * public boolean isSplitCharacter(int start, int current, int end, char[] cc, PdfChunk[] ck) {
      *    char c;

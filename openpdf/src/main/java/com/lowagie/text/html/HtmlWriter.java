@@ -114,7 +114,7 @@ import static com.lowagie.text.error_messages.MessageLocalization.getComposedMes
  * System.err.println(de.getMessage());
  * }
  * // this will close the document and all the OutputStreams listening to it
- * <STRONG>document.close();</CODE>
+ * <STRONG>document.close();</STRONG>
  * </PRE></BLOCKQUOTE>
  */
 
@@ -389,7 +389,7 @@ public class HtmlWriter extends DocWriter {
     // some protected methods
 
     /**
-     * Adds the header to the top of the </CODE>Document</CODE>
+     * Adds the header to the top of the <CODE>Document</CODE>
      */
     protected void initHeader() {
         if (header != null) {
@@ -402,7 +402,7 @@ public class HtmlWriter extends DocWriter {
     }
 
     /**
-     * Adds the header to the top of the </CODE>Document</CODE>
+     * Adds the header to the top of the <CODE>Document</CODE>
      */
     protected void initFooter() {
         if (footer != null) {
@@ -421,7 +421,7 @@ public class HtmlWriter extends DocWriter {
      * Writes a Metatag in the header.
      *
      * @param meta the element that has to be written
-     * @throws IOException
+     * @throws IOException on error
      */
     protected void writeHeader(Meta meta) throws IOException {
         addTabs(2);
@@ -448,7 +448,7 @@ public class HtmlWriter extends DocWriter {
      * Writes a link in the header.
      *
      * @param header the element that has to be written
-     * @throws IOException
+     * @throws IOException on error
      */
     protected void writeLink(Header header) throws IOException {
         addTabs(2);
@@ -463,7 +463,7 @@ public class HtmlWriter extends DocWriter {
      * Writes a JavaScript section or, if the markup attribute HtmlTags.URL is set, a JavaScript reference in the header.
      *
      * @param header the element that has to be written
-     * @throws IOException
+     * @throws IOException on error
      */
     protected void writeJavaScript(Header header) throws IOException {
         addTabs(2);
@@ -504,7 +504,7 @@ public class HtmlWriter extends DocWriter {
      * This method writes some comment.
      *
      * @param comment the comment that has to be written
-     * @throws IOException
+     * @throws IOException on error
      */
     protected void writeComment(String comment) throws IOException {
         addTabs(2);

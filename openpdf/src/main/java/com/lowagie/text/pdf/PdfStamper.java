@@ -552,6 +552,7 @@ public class PdfStamper
     /** Adds a file attachment at the document level. Existing attachments will be kept.
      * @param description the file description
      * @param fs the file specification
+     * @throws IOException on error
      */    
     public void addFileAttachment(String description, PdfFileSpecification fs) throws IOException {
         stamper.addFileAttachment(description, fs);
@@ -605,7 +606,7 @@ public class PdfStamper
 
     /**
      * Sets the XMP metadata.
-     * @param xmp
+     * @param xmp bytes for xmp metadata
      * @see PdfWriter#setXmpMetadata(byte[])
      */
     public void setXmpMetadata(byte[] xmp) {
@@ -666,7 +667,7 @@ public class PdfStamper
      * can be used normally as the signature is only applied when closing.
      * <p>
      * A possible use for adding a signature without invalidating an existing one is:
-     * <p>
+     * </p>
      * <pre>
      * KeyStore ks = KeyStore.getInstance("pkcs12");
      * ks.load(new FileInputStream("my_private_key.pfx"), "my_password".toCharArray());
@@ -734,7 +735,7 @@ public class PdfStamper
      * Note that the pdf is created in memory.
      * <p>
      * A possible use is:
-     * <p>
+     * </p>
      * <pre>
      * KeyStore ks = KeyStore.getInstance("pkcs12");
      * ks.load(new FileInputStream("my_private_key.pfx"), "my_password".toCharArray());
@@ -769,7 +770,7 @@ public class PdfStamper
      * can be used normally as the signature is only applied when closing.
      * <p>
      * A possible use is:
-     * <p>
+     * </p>
      * <pre>
      * KeyStore ks = KeyStore.getInstance("pkcs12");
      * ks.load(new FileInputStream("my_private_key.pfx"), "my_password".toCharArray());
@@ -803,12 +804,13 @@ public class PdfStamper
     {
         return createSignature(reader, os, pdfVersion, tempFile, false);
     }
-    
+
     /**
      * Gets the PdfLayer objects in an existing document as a Map
      * with the names/titles of the layers as keys.
-     * @return    a Map with all the PdfLayers in the document (and the name/title of the layer as key)
-     * @since    2.1.2
+     *
+     * @return a Map with all the PdfLayers in the document (and the name/title of the layer as key)
+     * @since 2.1.2
      */
     public Map getPdfLayers() {
         return stamper.getPdfLayers();
@@ -817,11 +819,10 @@ public class PdfStamper
     /**
      * Specifies if the file ID property should be included in the PDF file header when creating and stamping the PDF file.
      *
-     * @since OpenPDF 1.2.1
-     * @date 25. aug 2018
-     * @see PdfName#ID
+     * @param includeFileID if file id should be included in the PDF file
      *
-     * @param includeFileID
+     * @since OpenPDF 1.2.1
+     * @see PdfName#ID
      */
     public void setIncludeFileID(boolean includeFileID) {
         this.stamper.setIncludeFileID(includeFileID);
@@ -830,11 +831,9 @@ public class PdfStamper
     /**
      * Returns if the file ID property should be included in the PDF file header when creating and signing the PDF file.
      *
-     * @since OpenPDF 1.2.1
-     * @date 25. aug 2018
-     * @see PdfName#ID
-     *
      * @return boolean
+     * @see PdfName#ID
+     * @since OpenPDF 1.2.1
      */
     public boolean isIncludeFileID() {
         return stamper.isIncludeFileID();
@@ -843,9 +842,9 @@ public class PdfStamper
     /**
      * Specifies the enforced PDF file ID, used to specifically override the PDF file ID when creating and signing the PDF file.
      *
-     * @param overrideFileId
+     * @param overrideFileId PDF file id to be enforced
+     *
      * @since OpenPDF 1.2.1
-     * @date 25. aug 2018
      * @see PdfName#ID
      */
     public void setOverrideFileId(PdfObject overrideFileId) {
@@ -855,10 +854,9 @@ public class PdfStamper
     /**
      * Returns the enforced PDF file ID, used to specifically override the created PDF file ID when creating and signing the PDF file.
      *
-     * @date 25. aug 2018
-     * @since OpenPDF 1.2.1
-     * @see PdfName#ID
      * @return PdfObject
+     * @see PdfName#ID
+     * @since OpenPDF 1.2.1
      */
     public PdfObject getOverrideFileId() {
         return stamper.getOverrideFileId();
@@ -867,10 +865,9 @@ public class PdfStamper
     /**
      * Returns the enforced modification date, used to specifically override the PDF modification date (ModDate) property when creating and signing the PDF file.
      *
-     * @since OpenPDF 1.2.1
-     * @date 25. aug 2018
-     * @see PdfName#MODDATE
      * @return Calendar
+     * @see PdfName#MODDATE
+     * @since OpenPDF 1.2.1
      */
     public Calendar getEnforcedModificationDate() {
         return stamper.getModificationDate();
@@ -879,10 +876,9 @@ public class PdfStamper
     /**
      * Specifies the enforced modification date, used to specifically override the PDF modification date (ModDate) property when creating and signing the PDF file.
      *
-     * @date 25. aug 2018
-     * @since OpenPDF 1.2.1
-     * @see PdfName#MODDATE
      * @param modificationDate enforced modification date.
+     * @see PdfName#MODDATE
+     * @since OpenPDF 1.2.1
      */
     public void setEnforcedModificationDate(Calendar modificationDate) {
         this.stamper.setModificationDate(modificationDate);

@@ -112,40 +112,38 @@ public class Jpeg extends Image {
     /**
      * Constructs a <CODE>Jpeg</CODE>-object, using an <VAR>url</VAR>.
      *
-     * @param        url            the <CODE>URL</CODE> where the image can be found
-     * @throws BadElementException
-     * @throws IOException
+     * @param url the <CODE>URL</CODE> where the image can be found
+     * @throws BadElementException on error
+     * @throws IOException on error
      */
     public Jpeg(URL url) throws BadElementException, IOException {
         super(url);
         processParameters();
     }
-    
+
     /**
      * Constructs a <CODE>Jpeg</CODE>-object from memory.
      *
-     * @param        img        the memory image
-     * @throws BadElementException
-     * @throws IOException
+     * @param img the memory image
+     * @throws BadElementException on error
+     * @throws IOException on error
      */
-    
     public Jpeg(byte[] img) throws BadElementException, IOException {
-        super((URL)null);
+        super((URL) null);
         rawData = img;
         originalData = img;
         processParameters();
     }
-    
+
     /**
      * Constructs a <CODE>Jpeg</CODE>-object from memory.
      *
-     * @param        img            the memory image.
-     * @param        width        the width you want the image to have
-     * @param        height        the height you want the image to have
-     * @throws BadElementException
-     * @throws IOException
+     * @param img    the memory image.
+     * @param width  the width you want the image to have
+     * @param height the height you want the image to have
+     * @throws BadElementException on error
+     * @throws IOException on error
      */
-    
     public Jpeg(byte[] img, float width, float height) throws BadElementException, IOException {
         this(img);
         scaledWidth = width;
@@ -153,23 +151,23 @@ public class Jpeg extends Image {
     }
     
     // private static methods
-    
+
     /**
      * Reads a short from the <CODE>InputStream</CODE>.
      *
-     * @param    is        the <CODE>InputStream</CODE>
-     * @return    an int
-     * @throws IOException
+     * @param is the <CODE>InputStream</CODE>
+     * @return an int
+     * @throws IOException on error
      */
     private static int getShort(InputStream is) throws IOException {
         return (is.read() << 8) + is.read();
     }
-    
+
     /**
      * Returns a type of marker.
      *
-     * @param    marker      an int
-     * @return    a type: <VAR>VALID_MARKER</CODE>, <VAR>UNSUPPORTED_MARKER</VAR> or <VAR>NOPARAM_MARKER</VAR>
+     * @param marker an int
+     * @return a type: <VAR>VALID_MARKER</CODE>, <VAR>UNSUPPORTED_MARKER</VAR> or <VAR>NOPARAM_MARKER</VAR>
      */
     private static int marker(int marker) {
         for (int validMarker : VALID_MARKERS) {

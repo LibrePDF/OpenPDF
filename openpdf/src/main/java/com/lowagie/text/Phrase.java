@@ -111,6 +111,8 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
 
     /**
      * Copy constructor for <CODE>Phrase</CODE>.
+     *
+     * @param phrase an object of {@link Phrase}, that you want to create a new object from
      */
     public Phrase(Phrase phrase) {
         super();
@@ -469,7 +471,10 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
 
     /**
      * Returns the content as a String object.
-     * This method differs from toString because toString will return an ArrayList with the toString value of the Chunks in this Phrase.
+     * This method differs from toString because toString will return an ArrayList
+     * with the toString value of the Chunks in this Phrase.
+     *
+     * @return an <code>String</code>
      */
     public String getContent() {
         StringBuilder buf = new StringBuilder();
@@ -527,7 +532,7 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
 
     /**
      * Gets a special kind of Phrase that changes some characters into corresponding symbols.
-     * @param string
+     * @param string input
      * @return a newly constructed Phrase
      */
     public static final Phrase getInstance(String string) {
@@ -536,8 +541,8 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
 
     /**
      * Gets a special kind of Phrase that changes some characters into corresponding symbols.
-     * @param leading
-     * @param string
+     * @param leading leading spaces
+     * @param string input
      * @return a newly constructed Phrase
      */
     public static final Phrase getInstance(int leading, String string) {
@@ -546,9 +551,9 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
 
     /**
      * Gets a special kind of Phrase that changes some characters into corresponding symbols.
-     * @param leading
-     * @param string
-     * @param font
+     * @param leading leading spaces
+     * @param string input
+     * @param font font to be used
      * @return a newly constructed Phrase
      */
     public static final Phrase getInstance(int leading, String string, Font font) {

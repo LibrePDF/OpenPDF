@@ -85,11 +85,13 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
         setBorder(BOX);
         setBorderWidth(2f);
     }
-    
+
     /**
      * Adds content to this object.
-     * @param element
-     * @throws BadElementException
+     *
+     * @param element an object of type {@link SimpleCell}
+     *                that will be added in the table
+     * @throws BadElementException on error
      */
     public void addElement(SimpleCell element) throws BadElementException {
         if(!element.isCellgroup()) {
@@ -97,11 +99,12 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
         }
         content.add(element);
     }
-    
+
     /**
      * Creates a Table object based on this TableAttributes object.
-     * @return a com.lowagie.text.Table object
-     * @throws BadElementException
+     *
+     * @return a {@link Table} object
+     * @throws BadElementException on error
      */
     public Table createTable() throws BadElementException {
         if (content.isEmpty()) throw new BadElementException(MessageLocalization.getComposedMessage("trying.to.create.a.table.without.rows"));
@@ -168,11 +171,12 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
         }
         return table;
     }
-    
+
     /**
-     * Creates a PdfPTable object based on this TableAttributes object.
-     * @return a com.lowagie.text.pdf.PdfPTable object
-     * @throws DocumentException
+     * Creates a {@link com.lowagie.text.pdf.PdfTable} object based on this TableAttributes object.
+     *
+     * @return a {@link com.lowagie.text.pdf.PdfTable} object
+     * @throws DocumentException on error
      */
     public PdfPTable createPdfPTable() throws DocumentException {
         if (content.isEmpty()) throw new BadElementException(MessageLocalization.getComposedMessage("trying.to.create.a.table.without.rows"));

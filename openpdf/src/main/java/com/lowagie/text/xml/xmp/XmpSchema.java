@@ -62,8 +62,10 @@ public abstract class XmpSchema extends Properties {
     /** the namesspace */
     protected String xmlns;
     
-    /** Constructs an XMP schema. 
-     * @param xmlns
+    /**
+     * Constructs an XMP schema.
+     *
+     * @param xmlns xml namespace name
      */
     public XmpSchema(String xmlns) {
         super();
@@ -83,8 +85,8 @@ public abstract class XmpSchema extends Properties {
     }
     /**
      * Processes a property
-     * @param buf
-     * @param p
+     * @param buf buffer
+     * @param p object
      */
     protected void process(StringBuffer buf, Object p) {
         buf.append('<');
@@ -103,8 +105,8 @@ public abstract class XmpSchema extends Properties {
     }    
     
     /**
-     * @param key
-     * @param value
+     * @param key property key
+     * @param value value
      * @return the previous property (null if there wasn't one)
      */
     public Object addProperty(String key, String value) {
@@ -142,7 +144,7 @@ public abstract class XmpSchema extends Properties {
      }
     
     /**
-     * @param content
+     * @param content content
      * @return an escaped string
      */
     public static String escape(String content) {

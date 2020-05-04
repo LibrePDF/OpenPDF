@@ -180,6 +180,9 @@ public class Annotation implements Element {
 
     /**
      * Copy constructor.
+     *
+     * @param an an object of type {@link Annotation}
+     *           that will be copied
      */
     public Annotation(Annotation an) {
         annotationtype = an.annotationtype;
@@ -297,10 +300,10 @@ public class Annotation implements Element {
     /**
      * Creates a Screen annotation to embed media clips
      * 
-     * @param llx
-     * @param lly
-     * @param urx
-     * @param ury
+     * @param llx {@link Annotation#llx}
+     * @param lly {@link Annotation#lly}
+     * @param urx {@link Annotation#urx}
+     * @param ury {@link Annotation#ury}
      * @param moviePath
      *            path to the media clip file
      * @param mimeType

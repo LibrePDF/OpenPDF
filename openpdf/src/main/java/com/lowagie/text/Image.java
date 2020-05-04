@@ -238,12 +238,11 @@ public abstract class Image extends Rectangle {
     /**
      * Gets an instance of an Image.
      *
-     * @param url
-     *            an URL
+     * @param url an URL
      * @return an Image
-     * @throws BadElementException
-     * @throws MalformedURLException
-     * @throws IOException
+     * @throws BadElementException   if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws MalformedURLException if bad url
+     * @throws IOException           if image is not recognized
      */
     public static Image getInstance(URL url) throws BadElementException,
             IOException {
@@ -318,13 +317,11 @@ public abstract class Image extends Rectangle {
     /**
      * Gets an instance of an Image.
      *
-     * @param filename
-     *            a filename
+     * @param filename a filename
      * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
      *         <CODE>Png</CODE>
-     * @throws BadElementException
-     * @throws MalformedURLException
-     * @throws IOException
+     * @throws BadElementException   if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws IOException           if image is not recognized
      */
     public static Image getInstance(String filename)
             throws BadElementException, IOException {
@@ -334,12 +331,10 @@ public abstract class Image extends Rectangle {
     /**
      * gets an instance of an Image
      *
-     * @param imgb
-     *            raw image date
+     * @param imgb raw image date
      * @return an Image object
-     * @throws BadElementException
-     * @throws MalformedURLException
-     * @throws IOException
+     * @throws BadElementException   if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws IOException           if image is not recognized
      */
     public static Image getInstance(byte[] imgb) throws BadElementException,
             IOException {
@@ -422,11 +417,13 @@ public abstract class Image extends Rectangle {
 
     /**
      * Creates a JBIG2 Image.
-     * @param    width    the width of the image
-     * @param    height    the height of the image
-     * @param    data    the raw image data
-     * @param    globals    JBIG2 globals
-     * @since    2.1.5
+     *
+     * @param width   the width of the image
+     * @param height  the height of the image
+     * @param data    the raw image data
+     * @param globals JBIG2 globals
+     * @return an <code>Image</code> Object
+     * @since 2.1.5
      */
     public static Image getInstance(int width, int height, byte[] data, byte[] globals) {
         Image img = new ImgJBIG2(width, height, data, globals);
@@ -542,10 +539,9 @@ public abstract class Image extends Rectangle {
     /**
      * gets an instance of an Image
      *
-     * @param template
-     *            a PdfTemplate that has to be wrapped in an Image object
+     * @param template a PdfTemplate that has to be wrapped in an <code>Image</code> object
      * @return an Image object
-     * @throws BadElementException
+     * @throws BadElementException on error
      */
     public static Image getInstance(PdfTemplate template)
             throws BadElementException {
@@ -755,16 +751,12 @@ public abstract class Image extends Rectangle {
      * Gets an instance of a Image from a java.awt.Image.
      * The image is added as a JPEG with a user defined quality.
      *
-     * @param writer
-     *            the <CODE>PdfWriter</CODE> object to which the image will be added
-     * @param awtImage
-     *            the <CODE>java.awt.Image</CODE> to convert
-     * @param quality
-     *            a float value between 0 and 1
+     * @param writer   the <CODE>PdfWriter</CODE> object to which the image will be added
+     * @param awtImage the <CODE>java.awt.Image</CODE> to convert
+     * @param quality  a float value between <code>0</code> and <code>1</code>
      * @return an object of type <CODE>PdfTemplate</CODE>
-     * @throws BadElementException
-     *             on error
-     * @throws IOException
+     * @throws BadElementException on error
+     * @throws IOException         on error
      */
     public static Image getInstance(PdfWriter writer, java.awt.Image awtImage, float quality) throws BadElementException, IOException {
         return getInstance(new PdfContentByte(writer), awtImage, quality);
@@ -774,16 +766,12 @@ public abstract class Image extends Rectangle {
      * Gets an instance of a Image from a java.awt.Image.
      * The image is added as a JPEG with a user defined quality.
      *
-     * @param cb
-     *            the <CODE>PdfContentByte</CODE> object to which the image will be added
-     * @param awtImage
-     *            the <CODE>java.awt.Image</CODE> to convert
-     * @param quality
-     *            a float value between 0 and 1
+     * @param cb       the <CODE>PdfContentByte</CODE> object to which the image will be added
+     * @param awtImage the <CODE>java.awt.Image</CODE> to convert
+     * @param quality  a float value between <code>0</code> and <code>1</code>
      * @return an object of type <CODE>PdfTemplate</CODE>
-     * @throws BadElementException
-     *             on error
-     * @throws IOException
+     * @throws BadElementException on error
+     * @throws IOException         on error
      */
     public static Image getInstance(PdfContentByte cb, java.awt.Image awtImage, float quality) throws BadElementException, IOException {
         java.awt.image.PixelGrabber pg = new java.awt.image.PixelGrabber(awtImage,
@@ -1101,8 +1089,8 @@ public abstract class Image extends Rectangle {
     /**
      * Sets the absolute position of the <CODE>Image</CODE>.
      *
-     * @param absoluteX
-     * @param absoluteY
+     * @param absoluteX absolute x position
+     * @param absoluteY absolute y position
      */
 
     public void setAbsolutePosition(float absoluteX, float absoluteY) {
@@ -1316,7 +1304,11 @@ public abstract class Image extends Rectangle {
     /** a static that is used for attributing a unique id to each image. */
     static long serialId = 0;
 
-    /** Creates a new serial id. */
+    /**
+     * Creates a new serial id.
+     *
+     * @return a new serial id
+     */
     static protected synchronized Long getSerialId() {
         ++serialId;
         return serialId;
@@ -1425,7 +1417,7 @@ public abstract class Image extends Rectangle {
     /**
      * Sets the left indentation.
      *
-     * @param f
+     * @param f left indentation
      */
     public void setIndentationLeft(float f) {
         indentationLeft = f;
@@ -1443,7 +1435,7 @@ public abstract class Image extends Rectangle {
     /**
      * Sets the right indentation.
      *
-     * @param f
+     * @param f right indentation
      */
     public void setIndentationRight(float f) {
         indentationRight = f;

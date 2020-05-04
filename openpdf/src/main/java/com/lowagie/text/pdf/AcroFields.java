@@ -381,7 +381,7 @@ public class AcroFields {
    * <CODE>setField()</CODE> is required.
    * <p>
    * An example:
-   * <p>
+   * </p>
    * <PRE>
    * PdfReader pdf = new PdfReader("input.pdf"); PdfStamper stp = new PdfStamper(pdf, new FileOutputStream("output.pdf")); AcroFields af =
    * stp.getAcroFields(); af.setListOption("ComboBox", new String[]{"a", "b", "c"}, new String[]{"first", "second", "third"});
@@ -978,7 +978,7 @@ public class AcroFields {
 
   /**
    * Sets a field property. Valid property names are:
-   * <p>
+   *
    * <ul>
    * <li>textfont - sets the text font. The value for this entry is a <CODE>BaseFont</CODE>.<br>
    * <li>textcolor - sets the text color. The value for this entry is a <CODE>java.awt.Color</CODE>.<br>
@@ -1155,7 +1155,7 @@ public class AcroFields {
 
   /**
    * Sets a field property. Valid property names are:
-   * <p>
+   *
    * <ul>
    * <li>flags - a set of flags specifying various characteristics of the field's widget annotation.
    * The value of this entry replaces that of the F entry in the form's corresponding annotation dictionary.<br>
@@ -1510,6 +1510,8 @@ public class AcroFields {
    * @param  name  the name of the field
    * @param  value  an array with values that need to be selected
    * @return true only if the field value was changed
+   * @throws IOException on error
+   * @throws DocumentException on error
    * @since 2.1.4
    */
   public boolean setListSelection(String name, String[] value) throws IOException, DocumentException {
@@ -1884,6 +1886,7 @@ public class AcroFields {
      * Mark all the item dictionaries used matching the given flags
      *
      * @param writeFlags WRITE_MERGED is ignored
+     * @param parentFields parent fields
      * @since 2.1.5
      */
     public void markUsed(AcroFields parentFields, int writeFlags) {
@@ -2049,6 +2052,7 @@ public class AcroFields {
     /**
      * Retrieve the page number of the given instance
      *
+     * @param idx index
      * @return remember, pages are "1-indexed", not "0-indexed" like field instances.
      * @since 2.1.5
      */
@@ -2077,6 +2081,7 @@ public class AcroFields {
     /**
      * Gets the tabOrder.
      *
+     * @param idx index
      * @return tab index of the given field instance
      * @since 2.1.5
      */
@@ -2087,6 +2092,7 @@ public class AcroFields {
     /**
      * Adds a tab order value to this Item.
      *
+     * @param order order for the tab
      * @since 2.1.5
      */
     void addTabOrder(int order) {
@@ -2262,7 +2268,7 @@ public class AcroFields {
 
   /**
    * Verifies a signature. An example usage is:
-   * <p>
+   *
    * <pre>
    * KeyStore kall = PdfPKCS7.loadCacertsKeyStore();
    * PdfReader reader = new PdfReader("my_signed_doc.pdf");
@@ -2294,7 +2300,7 @@ public class AcroFields {
 
   /**
    * Verifies a signature. An example usage is:
-   * <p>
+   *
    * <pre>
    * KeyStore kall = PdfPKCS7.loadCacertsKeyStore();
    * PdfReader reader = new PdfReader("my_signed_doc.pdf");
@@ -2467,7 +2473,7 @@ public class AcroFields {
   /**
    * Sets a cache for field appearances. Parsing the existing PDF to create a new TextField is time expensive. For those tasks that
    * repeatedly fill the same PDF with different field values the use of the cache has dramatic speed advantages. An example usage:
-   * <p>
+   *
    * <pre>
    * String pdfFile = ...;// the pdf file used as template
    * ArrayList xfdfFiles = ...;// the xfdf file names
@@ -2499,7 +2505,7 @@ public class AcroFields {
   /**
    * Sets a cache for field appearances. Parsing the existing PDF to create a new TextField is time expensive. For those tasks that
    * repeatedly fill the same PDF with different field values the use of the cache has dramatic speed advantages. An example usage:
-   * <p>
+   *
    * <pre>
    * String pdfFile = ...;// the pdf file used as template
    * ArrayList xfdfFiles = ...;// the xfdf file names

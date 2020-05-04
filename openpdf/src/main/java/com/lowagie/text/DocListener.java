@@ -59,16 +59,16 @@ package com.lowagie.text;
  */
 
 public interface DocListener extends ElementListener {
-    
+
     // methods
-    
+
     /**
      * Signals that the <CODE>Document</CODE> has been opened and that
      * <CODE>Elements</CODE> can be added.
      */
 
     void open(); // [L1]
-    
+
     /**
      * Signals that the <CODE>Document</CODE> was closed and that no other
      * <CODE>Elements</CODE> will be added.
@@ -77,7 +77,7 @@ public interface DocListener extends ElementListener {
      */
 
     void close(); // [L2]
-    
+
     /**
      * Signals that an new page has to be started.
      *
@@ -85,7 +85,7 @@ public interface DocListener extends ElementListener {
      */
 
     boolean newPage(); // [L3]
-    
+
     /**
      * Sets the pagesize.
      *
@@ -94,7 +94,7 @@ public interface DocListener extends ElementListener {
      */
 
     boolean setPageSize(Rectangle pageSize); // [L4]
-        
+
     /**
      * Sets the margins.
      *
@@ -106,22 +106,24 @@ public interface DocListener extends ElementListener {
      */
 
     boolean setMargins(float marginLeft, float marginRight, float marginTop, float marginBottom);  // [L5]
-        
+
     /**
-     * Parameter that allows you to do left/right  margin mirroring (odd/even pages)
-     * @param marginMirroring
+     * Allows you to do left/right margin mirroring (odd/even pages)
+     *
+     * @param marginMirroring left/right margin mirroring (odd/even pages)
      * @return true if successful
      */
     boolean setMarginMirroring(boolean marginMirroring); // [L6]
-    
+
     /**
      * Parameter that allows you to do top/bottom margin mirroring (odd/even pages)
-     * @param marginMirroringTopBottom
+     *
+     * @param marginMirroringTopBottom top/bottom margin mirroring (odd/even pages)
      * @return true if successful
-     * @since    2.1.6
+     * @since 2.1.6
      */
     boolean setMarginMirroringTopBottom(boolean marginMirroringTopBottom); // [L6]
-        
+
     /**
      * Sets the page number.
      *
@@ -129,7 +131,7 @@ public interface DocListener extends ElementListener {
      */
 
     void setPageCount(int pageN); // [L7]
-    
+
     /**
      * Sets the page number to 0.
      */
@@ -143,13 +145,13 @@ public interface DocListener extends ElementListener {
      */
 
     void setHeader(HeaderFooter header); // [L9]
-    
+
     /**
      * Resets the header of this document.
      */
 
     void resetHeader(); // [L10]
-    
+
     /**
      * Changes the footer of this document.
      *
@@ -157,7 +159,7 @@ public interface DocListener extends ElementListener {
      */
 
     void setFooter(HeaderFooter footer); // [L11]
-    
+
     /**
      * Resets the footer of this document.
      */

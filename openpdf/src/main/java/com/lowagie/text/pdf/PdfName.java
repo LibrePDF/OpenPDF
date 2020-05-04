@@ -67,7 +67,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * in a name is 127.<BR>
  * This object is described in the 'Portable Document Format Reference Manual
  * version 1.7' section 3.2.4 (page 56-58).
- * <P>
+ * </P>
  *
  * @see        PdfObject
  * @see        PdfDictionary

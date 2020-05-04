@@ -53,8 +53,7 @@ import java.util.HashMap;
 /**
  * A <CODE>Footnote</CODE> is a little note that can be added at the bottom of a
  * page.
- * <p>
- * 
+ *
  * @see Element
  * @see Anchor
  */

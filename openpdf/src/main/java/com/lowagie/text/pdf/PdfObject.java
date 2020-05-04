@@ -167,10 +167,10 @@ public abstract class PdfObject {
     /**
      * Writes the PDF representation of this <CODE>PdfObject</CODE> as an
      * array of <CODE>byte</CODE>s to the writer.
-     * 
+     *
      * @param writer for backwards compatibility
      * @param os     The <CODE>OutputStream</CODE> to write the bytes to.
-     * @throws IOException
+     * @throws IOException on error
      */
     public void toPdf(PdfWriter writer, OutputStream os) throws IOException {
         if (bytes != null)

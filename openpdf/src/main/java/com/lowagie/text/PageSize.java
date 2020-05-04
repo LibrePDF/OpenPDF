@@ -218,11 +218,28 @@ public class PageSize {
     
     /** This is the Penguin large paperback format. */
     public static final Rectangle PENGUIN_LARGE_PAPERBACK = new RectangleReadOnly(365,561);
-      
+
     /**
      * This method returns a Rectangle based on a String.
      * Possible values are the the names of a constant in this class
      * (for instance "A4", "LETTER",...) or a value like "595 842"
+     *
+     * @param name name of the page size, possible values <code>LETTER</code> <code>NOTE</code>
+     *             <code>LEGAL</code> <code>TABLOID</code> <code>EXECUTIVE</code> <code>POSTCARD</code>
+     *             <code>A0</code> <code>A1</code> <code>A2</code> <code>A3</code> <code>A4</code>
+     *             <code>A5</code> <code>A6</code> <code>A7</code> <code>A8</code> <code>A9</code>
+     *             <code>A10</code> <code>B1</code> <code>B2</code> <code>B3</code> <code>B4</code>
+     *             <code>B5</code> <code>B6</code> <code>B7</code> <code>B8</code> <code>B9</code>
+     *             <code>B10</code> <code>ARCH_A</code> <code>ARCH_B</code> <code>ARCH_C</code>
+     *             <code>ARCH_D</code> <code>ARCH_E</code> <code>FLSA</code> <code>FLSE</code>
+     *             <code>HALFLETTER</code> <code>_11X17</code> <code>_11X17</code> <code>ID_1</code>
+     *             <code>ID_2</code> <code>ID_3</code> <code>LEDGER</code> <code>CROWN_QUARTO</code>
+     *             <code>LARGE_CROWN_QUARTO</code> <code>DEMY_QUARTO</code> <code>ROYAL_QUARTO</code>
+     *             <code>CROWN_OCTAVO</code> <code>LARGE_CROWN_OCTAVO</code> <code>DEMY_OCTAVO</code>
+     *             <code>ROYAL_OCTAVO</code> <code>SMALL_PAPERBACK</code> <code>PENGUIN_SMALL_PAPERBACK</code>
+     *             <code>PENGUIN_LARGE_PAPERBACK</code>
+     *
+     * @return an object of type {@link Rectangle}
      */
     public static Rectangle getRectangle(String name)  {
         name = name.trim().toUpperCase();

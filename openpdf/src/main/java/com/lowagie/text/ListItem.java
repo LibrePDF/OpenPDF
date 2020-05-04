@@ -225,11 +225,13 @@ public class ListItem extends Paragraph {
             }
         }
     }
-    
+
     /**
      * Sets the indentation of this paragraph on the left side.
      *
-     * @param    indentation        the new indentation
+     * @param indentation the new indentation
+     * @param autoindent if auto indentation, if set as <code>true</code>
+     *                   <code>indentation</code> will not be used
      */
     public void setIndentationLeft(float indentation, boolean autoindent) {
         if (autoindent) {

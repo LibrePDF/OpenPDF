@@ -143,7 +143,7 @@ public abstract class DocWriter implements DocListener {
 /**
  * Signals that an <CODE>Element</CODE> was added to the <CODE>Document</CODE>.
  * <P>
- * This method should be overridden in the specific <CODE>DocWriter<CODE> classes
+ * This method should be overridden in the specific <CODE>DocWriter</CODE> classes
  * derived from this abstract class.
  * 
  * @param element A high level object to add
@@ -206,7 +206,7 @@ public abstract class DocWriter implements DocListener {
 /**
  * Changes the header of this document.
  * <P>
- * This method should be overridden in the specific <CODE>DocWriter<CODE> classes
+ * This method should be overridden in the specific <CODE>DocWriter</CODE> classes
  * derived from this abstract class if they actually support the use of
  * headers.
  *
@@ -219,7 +219,7 @@ public abstract class DocWriter implements DocListener {
 /**
  * Resets the header of this document.
  * <P>
- * This method should be overridden in the specific <CODE>DocWriter<CODE> classes
+ * This method should be overridden in the specific <CODE>DocWriter</CODE> classes
  * derived from this abstract class if they actually support the use of
  * headers.
  */
@@ -230,7 +230,7 @@ public abstract class DocWriter implements DocListener {
 /**
  * Changes the footer of this document.
  * <P>
- * This method should be overridden in the specific <CODE>DocWriter<CODE> classes
+ * This method should be overridden in the specific <CODE>DocWriter</CODE> classes
  * derived from this abstract class if they actually support the use of
  * footers.
  *
@@ -243,7 +243,7 @@ public abstract class DocWriter implements DocListener {
 /**
  * Resets the footer of this document.
  * <P>
- * This method should be overridden in the specific <CODE>DocWriter<CODE> classes
+ * This method should be overridden in the specific <CODE>DocWriter</CODE> classes
  * derived from this abstract class if they actually support the use of
  * footers.
  */
@@ -254,7 +254,7 @@ public abstract class DocWriter implements DocListener {
 /**
  * Sets the page number to 0.
  * <P>
- * This method should be overridden in the specific <CODE>DocWriter<CODE> classes
+ * This method should be overridden in the specific <CODE>DocWriter</CODE> classes
  * derived from this abstract class if they actually support the use of
  * pagenumbers.
  */
@@ -265,7 +265,7 @@ public abstract class DocWriter implements DocListener {
 /**
  * Sets the page number.
  * <P>
- * This method should be overridden in the specific <CODE>DocWriter<CODE> classes
+ * This method should be overridden in the specific <CODE>DocWriter</CODE> classes
  * derived from this abstract class if they actually support the use of
  * pagenumbers.
  *
@@ -357,7 +357,7 @@ public abstract class DocWriter implements DocListener {
  * Writes a <CODE>String</CODE> to the <CODE>OutputStream</CODE>.
  *
  * @param string    the <CODE>String</CODE> to write
- * @throws IOException
+ * @throws IOException if there is any error
  */
 
     protected void write(String string) throws IOException {
@@ -368,7 +368,7 @@ public abstract class DocWriter implements DocListener {
  * Writes a number of tabs.
  *
  * @param   indent  the number of tabs to add
- * @throws IOException
+ * @throws IOException if there is any error
  */
 
     protected void addTabs(int indent) throws IOException {
@@ -383,7 +383,7 @@ public abstract class DocWriter implements DocListener {
  *
  * @param   key     the name of an attribute
  * @param   value   the value of an attribute
- * @throws IOException
+ * @throws IOException if there is any error
  */
 
     protected void write(String key, String value)
@@ -400,7 +400,7 @@ public abstract class DocWriter implements DocListener {
  * Writes a starttag to the outputstream.
  *
  * @param   tag     the name of the tag
- * @throws IOException
+ * @throws IOException if there is any error
  */
 
     protected void writeStart(String tag)
@@ -413,7 +413,7 @@ public abstract class DocWriter implements DocListener {
  * Writes an endtag to the outputstream.
  *
  * @param   tag     the name of the tag
- * @throws IOException
+ * @throws IOException if there is any error
  */
 
     protected void writeEnd(String tag)
@@ -426,7 +426,7 @@ public abstract class DocWriter implements DocListener {
 
 /**
  * Writes an endtag to the outputstream.
- * @throws IOException
+ * @throws IOException if there is any error
  */
 
     protected void writeEnd()
@@ -441,7 +441,7 @@ public abstract class DocWriter implements DocListener {
  * object to the <CODE>OutputStream</CODE>.
  * @param markup   a <CODE>Properties</CODE> collection to write.
  * @return true, if writing the markup attributes succeeded
- * @throws IOException
+ * @throws IOException if there is any error
  */
     protected boolean writeMarkupAttributes(Properties markup)
     throws IOException {

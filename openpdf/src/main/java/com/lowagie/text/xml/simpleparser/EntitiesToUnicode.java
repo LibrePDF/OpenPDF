@@ -403,6 +403,9 @@ public class EntitiesToUnicode {
     /**
      * Translates a String with entities {@literal (&...;)} to a String without entities,
      * replacing the entity with the right (unicode) character.
+     *
+     * @param s string to be decoded
+     * @return a ddecoded string
      */
     public static String decodeString(String s) {
         int pos_amp = s.indexOf('&');

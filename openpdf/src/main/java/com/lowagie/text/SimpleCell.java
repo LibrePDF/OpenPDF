@@ -129,8 +129,9 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
     
     /**
      * Adds content to this object.
-     * @param element
-     * @throws BadElementException
+     * @param element an object of type {@link Element}
+     *                that you want to add to the cell
+     * @throws BadElementException on error
      */
     public void addElement(Element element) throws BadElementException {
         if (cellgroup) {
@@ -162,12 +163,14 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
             throw new BadElementException(MessageLocalization.getComposedMessage("you.can.t.add.an.element.of.type.1.to.a.simplecell", element.getClass().getName()));
         }
     }
-    
+
     /**
      * Creates a Cell with these attributes.
-     * @param rowAttributes
+     *
+     * @param rowAttributes an object of type {@link SimpleCell}
+     *                      whose attributes are to be used to create new cell
      * @return a cell based on these attributes.
-     * @throws BadElementException
+     * @throws BadElementException on error
      */
     public Cell createCell(SimpleCell rowAttributes) throws BadElementException {
         Cell cell = new Cell();
@@ -188,10 +191,12 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         }
         return cell;
     }
-    
+
     /**
      * Creates a PdfPCell with these attributes.
-     * @param rowAttributes
+     *
+     * @param rowAttributes an object of type {@link SimpleCell}
+     *                      whose attributes are to be used to create new cell
      * @return a PdfPCell based on these attributes.
      */
     public PdfPCell createPdfPCell(SimpleCell rowAttributes) {
@@ -270,7 +275,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
     }
     
     /** Sets the padding parameters if they are undefined. 
-     * @param padding
+     * @param padding padding that will be set
      */
     public void setPadding(float padding) {
         if (Float.isNaN(padding_right)) {

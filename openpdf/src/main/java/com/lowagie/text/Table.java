@@ -109,7 +109,7 @@ import java.util.Optional;
  * <STRONG>table.addCell("cell test2");</STRONG>
  * </PRE></BLOCKQUOTE>
  * The result of this code is a table:
- *      <TABLE ALIGN="Center" BORDER="1" BORDERCOLOR="#0000ff" CELLPADDING="5" CELLSPACING="5">
+ *      <TABLE ALIGN="Center" BORDER="1" BORDERCOLOR="#0000ff" CELLPADDING="5" CELLSPACING="5" SUMMARY="">
  *              <TR ALIGN="Left" VALIGN="Left">
  *                      <TH ALIGN="Left" COLSPAN="3" VALIGN="Left">
  *                              header
@@ -274,6 +274,9 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
     
     /**
      * Copy constructor (shallow copy).
+     *
+     * @param t ab object of {@link Table}
+     *          new table will created from a shallow copy of this
      */
     public Table(Table t) {
         super(0, 0, 0, 0);
@@ -553,14 +556,14 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
     public float[] getProportionalWidths() {
         return widths;
     }
-    
+
     /**
      * Sets the widths of the different columns (percentages).
-     * <P>
+     * <p>
      * You can give up relative values of borderwidths.
      * The sum of these values will be considered 100%.
      * The values will be recalculated as percentages of this sum.
-     * <P>
+     * <p>
      * example:
      * <BLOCKQUOTE><PRE>
      * float[] widths = {2, 1, 1};
@@ -569,8 +572,8 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
      * The widths will be: a width of 50% for the first column,
      * 25% for the second and third column.
      *
-     * @param       widths  an array with values
-     * @throws BadElementException
+     * @param widths an array with values
+     * @throws BadElementException on error
      */
     public void setWidths(float[] widths) throws BadElementException {
         if (widths.length != columns) {
@@ -592,16 +595,16 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
             this.widths[columns - 1] -= width;
         }
     }
-    
+
     /**
      * Sets the widths of the different columns (percentages).
-     * <P>
+     * <p>
      * You can give up relative values of borderwidths.
      * The sum of these values will be considered 100%.
      * The values will be recalculated as percentages of this sum.
      *
-     * @param       widths  an array with values
-     * @throws DocumentException
+     * @param widths an array with values
+     * @throws DocumentException on error
      */
     public void setWidths(int[] widths) throws DocumentException {
         float[] tb = new float[widths.length];
@@ -609,16 +612,16 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
             tb[k] = widths[k];
         setWidths(tb);
     }
-    
+
     /**
      * Checks if this <CODE>Table</CODE> has to fit a page.
      *
-     * @return  true if the table may not be split
+     * @return <code>true</code> if the table may not be split
      */
     public boolean isTableFitsPage() {
         return tableFitsPage;
     }
-    
+
     /**
      * Allows you to control when a page break occurs.
      * <P>
@@ -635,7 +638,7 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
     /**
      * Checks if the cells of this <CODE>Table</CODE> have to fit a page.
      *
-     * @return  true if the cells may not be split
+     * @return  <code>true</code> if the cells may not be split
      */
     public boolean isCellsFitPage() {
         return cellsFitPage;
@@ -692,25 +695,25 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
     }
     
     // methods to add content to the table
-    
+
     /**
      * Adds a <CODE>Cell</CODE> to the <CODE>Table</CODE> at a certain row and column.
      *
-     * @param       aCell    The <CODE>Cell</CODE> to add
-     * @param       row     The row where the <CODE>Cell</CODE> will be added
-     * @param       column  The column where the <CODE>Cell</CODE> will be added
-     * @throws BadElementException
+     * @param aCell  The <CODE>Cell</CODE> to add
+     * @param row    The row where the <CODE>Cell</CODE> will be added
+     * @param column The column where the <CODE>Cell</CODE> will be added
+     * @throws BadElementException on error
      */
     public void addCell(Cell aCell, int row, int column) throws BadElementException {
         addCell(aCell, new Point(row,column));
     }
-    
+
     /**
      * Adds a <CODE>Cell</CODE> to the <CODE>Table</CODE> at a certain location.
      *
-     * @param       aCell        The <CODE>Cell</CODE> to add
-     * @param       aLocation    The location where the <CODE>Cell</CODE> will be added
-     * @throws BadElementException
+     * @param aCell     The <CODE>Cell</CODE> to add
+     * @param aLocation The location where the <CODE>Cell</CODE> will be added
+     * @throws BadElementException on error
      */
     public void addCell(Cell aCell, Point aLocation) throws BadElementException {
         if (aCell == null) throw new NullPointerException(MessageLocalization.getComposedMessage("addcell.cell.has.null.value"));
@@ -900,7 +903,7 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
      * Deletes a column in this table.
      *
      * @param       column  the number of the column that has to be deleted
-     * @throws BadElementException
+     * @throws BadElementException on error
      */
     public void deleteColumn(int column) throws BadElementException {
         float[] newWidths = new float[--columns];
@@ -970,15 +973,15 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
     }
     
     // private helper classes
-    
+
     /**
      * returns the element at the position row, column
-     *          (Cast to Cell or Table)
-     * 
-     * @param row
-     * @param column
-     * @return  dimension
-     * @since  2.1.0 (was made private in 2.0.3)
+     * (Cast to Cell or Table)
+     *
+     * @param row    row number
+     * @param column column number
+     * @return dimension
+     * @since 2.1.0 (was made private in 2.0.3)
      */
     public TableRectangle getElement(int row, int column) {
         return rows.get(row).getCell(column);
@@ -1389,8 +1392,9 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
 
     /**
      * Create a PdfPTable based on this Table object.
+     *
      * @return a PdfPTable object
-     * @throws BadElementException
+     * @throws BadElementException on error
      */
     public PdfPTable createPdfPTable() throws BadElementException {
         if (!convert2pdfptable) {
@@ -1461,7 +1465,7 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
      * Sets the indication if the section was already added to
      * the document.
      * @since    iText2.0.8
-     * @param notAddedYet
+     * @param notAddedYet {@link Table#notAddedYet}
      */
     public void setNotAddedYet(boolean notAddedYet) {
         this.notAddedYet = notAddedYet;

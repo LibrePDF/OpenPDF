@@ -102,8 +102,8 @@ public class Utilities {
 
     /**
      * Checks for a true/false value of a key in a Properties object.
-     * @param attributes
-     * @param key
+     * @param attributes properties
+     * @param key key
      * @return a true/false value of a key in a Properties object
      */
     public static boolean checkTrueOrFalse(Properties attributes, String key) {
@@ -149,7 +149,7 @@ public class Utilities {
      * @param filename
      *            a given filename
      * @return a valid URL
-     * @throws MalformedURLException
+     * @throws MalformedURLException if url is not valid
      */
     public static URL toURL(String filename) throws MalformedURLException {
         try {
@@ -164,12 +164,10 @@ public class Utilities {
      * This method is an alternative for the <CODE>InputStream.skip()</CODE>
      * -method that doesn't seem to work properly for big values of <CODE>size
      * </CODE>.
-     * 
-     * @param is
-     *            the <CODE>InputStream</CODE>
-     * @param size
-     *            the number of bytes to skip
-     * @throws IOException
+     *
+     * @param is   the <CODE>InputStream</CODE>
+     * @param size the number of bytes to skip
+     * @throws IOException on error
      */
     static public void skip(InputStream is, int size) throws IOException {
         long n;
@@ -347,9 +345,9 @@ public class Utilities {
      *
      * By evernat on Github.
      *
-     * @param is
+     * @param is input stream
      * @return byte[]
-     * @throws IOException
+     * @throws IOException on error
      */
     public static byte[] toByteArray(InputStream is) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();

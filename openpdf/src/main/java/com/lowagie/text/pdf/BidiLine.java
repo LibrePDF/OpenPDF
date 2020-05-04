@@ -207,7 +207,8 @@ public class BidiLine {
     }
 
     /**
-     * Deprecated use {@link BidiLine#addChunks(List)}, since 1.2.22
+     * @param chunks an {@link ArrayList} of {@link PdfChunk}
+     * @deprecated  use {@link BidiLine#addChunks(List)}, since 1.2.22
      */
     @Deprecated
     @SuppressWarnings("unchecked")

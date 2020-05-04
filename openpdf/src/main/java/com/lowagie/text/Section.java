@@ -379,6 +379,8 @@ public class Section extends ArrayList<Element> implements TextElementArray, Lar
     
     /**
      * Adds a marked section. For use in class MarkedSection only!
+     *
+     * @return an object of {@link MarkedSection}
      */
     public MarkedSection addMarkedSection() {
         MarkedSection section = new MarkedSection(new Section(null, numberDepth + 1));
@@ -517,16 +519,19 @@ public class Section extends ArrayList<Element> implements TextElementArray, Lar
      * Sets the style for numbering sections.
      * Possible values are NUMBERSTYLE_DOTTED: 1.2.3. (the default)
      * or NUMBERSTYLE_DOTTED_WITHOUT_FINAL_DOT: 1.2.3
-     * @since    iText 2.0.8
+     *
+     * @param numberStyle {@link Section#numberStyle}
+     * @since iText 2.0.8
      */
     public void setNumberStyle(int numberStyle) {
         this.numberStyle = numberStyle;
     }
-    
+
     /**
      * Gets the style used for numbering sections.
-     * @since    iText 2.0.8
-     * @return    a value corresponding with a numbering style
+     *
+     * @return a value corresponding with a numbering style
+     * @since iText 2.0.8
      */
     public int getNumberStyle() {
         return numberStyle;
@@ -640,6 +645,8 @@ public class Section extends ArrayList<Element> implements TextElementArray, Lar
     
     /**
      * Changes the Chapter number.
+     *
+     * @param number new chapter number
      */
     public void setChapterNumber(int number) {
         numbers.set(numbers.size() - 1, number);
@@ -688,13 +695,15 @@ public class Section extends ArrayList<Element> implements TextElementArray, Lar
      * Sets the indication if the section was already added to
      * the document.
      * @since    iText2.0.8
-     * @param notAddedYet
+     * @param notAddedYet {@link Section#notAddedYet}
      */
     public void setNotAddedYet(boolean notAddedYet) {
         this.notAddedYet = notAddedYet;
     }
     
     /**
+     *
+     * @return boolean, <code>true</code> if section is added completely, else <code>false</code>
      * @since    iText 2.0.8
      */
     protected boolean isAddedCompletely() {
@@ -702,6 +711,8 @@ public class Section extends ArrayList<Element> implements TextElementArray, Lar
     }
     
     /**
+     *
+     * @param addedCompletely {@link Section#addedCompletely}
      * @since    iText 2.0.8
      */
     protected void setAddedCompletely(boolean addedCompletely) {

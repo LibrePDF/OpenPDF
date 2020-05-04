@@ -2749,11 +2749,11 @@ public class PdfContentByte {
 
     /**
      * Draws a TextField.
-     * @param llx
-     * @param lly
-     * @param urx
-     * @param ury
-     * @param on
+     * @param llx lower-left-x
+     * @param lly lower-left-y
+     * @param urx upper-right-x
+     * @param ury upper-right-y
+     * @param on if radio is selected or not
      */
     public void drawRadioField(float llx, float lly, float urx, float ury, boolean on) {
         if (llx > urx) { float x = llx; llx = urx; urx = x; }
@@ -2790,10 +2790,10 @@ public class PdfContentByte {
 
     /**
      * Draws a TextField.
-     * @param llx
-     * @param lly
-     * @param urx
-     * @param ury
+     * @param llx lower-left-x
+     * @param lly lower-left-y
+     * @param urx upper-right-x
+     * @param ury upper-right-y
      */
     public void drawTextField(float llx, float lly, float urx, float ury) {
         if (llx > urx) { float x = llx; llx = urx; urx = x; }
@@ -2840,13 +2840,13 @@ public class PdfContentByte {
 
     /**
      * Draws a button.
-     * @param llx
-     * @param lly
-     * @param urx
-     * @param ury
-     * @param text
-     * @param bf
-     * @param size
+     * @param llx lower-left-x
+     * @param lly lower-left-y
+     * @param urx upper-right-x
+     * @param ury upper-right-y
+     * @param text text
+     * @param bf {@link BaseFont}
+     * @param size size
      */
     public void drawButton(float llx, float lly, float urx, float ury, String text, BaseFont bf, float size) {
         if (llx > urx) { float x = llx; llx = urx; urx = x; }
@@ -2922,9 +2922,9 @@ public class PdfContentByte {
 
     /** Gets a <CODE>Graphics2D</CODE> to print on. The graphics
      * are translated to PDF commands.
-     * @param width the width of the panel
-     * @param height the height of the panel
-     * @param printerJob
+     * @param width width of the panel
+     * @param height height of the panel
+     * @param printerJob {@link PrinterJob}
      * @return a <CODE>Graphics2D</CODE>
      */
     public java.awt.Graphics2D createPrinterGraphics(float width, float height, PrinterJob printerJob) {
@@ -2933,10 +2933,10 @@ public class PdfContentByte {
 
     /** Gets a <CODE>Graphics2D</CODE> to write on. The graphics
      * are translated to PDF commands.
-     * @param width the width of the panel
-     * @param height the height of the panel
-     * @param convertImagesToJPEG
-     * @param quality
+     * @param width width of the panel
+     * @param height height of the panel
+     * @param convertImagesToJPEG if convert images to JPEG
+     * @param quality quality fo the print
      * @return a <CODE>Graphics2D</CODE>
      */
     public java.awt.Graphics2D createGraphics(float width, float height, boolean convertImagesToJPEG, float quality) {
@@ -2945,11 +2945,11 @@ public class PdfContentByte {
 
     /** Gets a <CODE>Graphics2D</CODE> to print on. The graphics
      * are translated to PDF commands.
-     * @param width the width of the panel
-     * @param height the height of the panel
-     * @param convertImagesToJPEG
-     * @param quality
-     * @param printerJob
+     * @param width width of the panel
+     * @param height height of the panel
+     * @param convertImagesToJPEG if convert images to JPEG
+     * @param quality quality fo the print
+     * @param printerJob {@link PrinterJob}
      * @return a <CODE>Graphics2D</CODE>
      */
     public java.awt.Graphics2D createPrinterGraphics(float width, float height, boolean convertImagesToJPEG, float quality, PrinterJob printerJob) {
@@ -2958,10 +2958,10 @@ public class PdfContentByte {
 
     /** Gets a <CODE>Graphics2D</CODE> to print on. The graphics
      * are translated to PDF commands.
-     * @param width
-     * @param height
-     * @param convertImagesToJPEG
-     * @param quality
+     * @param width width of the panel
+     * @param height height of the panel
+     * @param convertImagesToJPEG if convert images to JPEG
+     * @param quality quality fo the print
      * @return A Graphics2D object
      */
     public java.awt.Graphics2D createGraphicsShapes(float width, float height, boolean convertImagesToJPEG, float quality) {
@@ -2970,11 +2970,11 @@ public class PdfContentByte {
 
     /** Gets a <CODE>Graphics2D</CODE> to print on. The graphics
      * are translated to PDF commands.
-     * @param width
-     * @param height
-     * @param convertImagesToJPEG
-     * @param quality
-     * @param printerJob
+     * @param width width of the panel
+     * @param height height of the panel
+     * @param convertImagesToJPEG if convert images to JPEG
+     * @param quality quality fo the print
+     * @param printerJob {@link PrinterJob}
      * @return a Graphics2D object
      */
     public java.awt.Graphics2D createPrinterGraphicsShapes(float width, float height, boolean convertImagesToJPEG, float quality, PrinterJob printerJob) {

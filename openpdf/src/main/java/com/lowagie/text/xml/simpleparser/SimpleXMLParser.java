@@ -61,7 +61,7 @@ import java.util.Stack;
  * an event based parser, but with much less functionality.
  * <p>
  * The parser can:
- * <p>
+ * </p>
  * <ul>
  * <li>It recognizes the encoding used
  * <li>It recognizes all the elements' start tags and end tags
@@ -70,7 +70,6 @@ import java.util.Stack;
  * <li>It recognizes the standard entities: &amp;amp;, &amp;lt;, &amp;gt;, &amp;quot;, and &amp;apos;, as well as numeric entities
  * <li>It maps lines ending in <code>\r\n</code> and <code>\r</code> to <code>\n</code> on input, in accordance with the XML Specification, Section 2.11
  * </ul>
- * <p>
  */
 public final class SimpleXMLParser {
     /** possible states */
@@ -542,7 +541,9 @@ public final class SimpleXMLParser {
     /**
      * Parses the XML document firing the events to the handler.
      * @param doc the document handler
+     * @param comment {@link SimpleXMLParser#comment}
      * @param r the document. The encoding is already resolved. The reader is not closed
+     * @param html {@link SimpleXMLParser#html}
      * @throws IOException on error
      */
     public static void parse(SimpleXMLDocHandler doc, SimpleXMLDocHandlerComment comment, Reader r, boolean html) throws IOException {

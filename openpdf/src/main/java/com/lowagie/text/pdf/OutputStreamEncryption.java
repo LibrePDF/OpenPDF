@@ -65,7 +65,15 @@ public class OutputStreamEncryption extends OutputStream {
     private boolean aes;
     private boolean finished;
     
-    /** Creates a new instance of OutputStreamCounter */
+    /**
+     * Creates a new instance of OutputStreamCounter
+     *
+     * @param key bytes for key
+     * @param len length
+     * @param off offset
+     * @param out output stream
+     * @param revision revision number
+     */
     public OutputStreamEncryption(OutputStream out, byte[] key, int off, int len, int revision) {
         try {
             this.out = out;
