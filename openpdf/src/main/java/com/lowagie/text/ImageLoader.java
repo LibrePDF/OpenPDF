@@ -65,11 +65,10 @@ import java.net.URL;
 public class ImageLoader {
 
     /**
-     *     Creates an Image from a PNG image file in an URL.
+     * Creates an Image from a PNG image file in an URL.
      *
-     *
-     * @param url
-     * @return
+     * @param url url of the image
+     * @return an object of type <code>Image</code>
      */
     public static Image getPngImage(URL url) {
         try (InputStream is = url.openStream()) {
@@ -111,8 +110,8 @@ public class ImageLoader {
     /**
      * Creates an Image from a JPEG image file in an URL.
      *
-     * @param url
-     * @return
+     * @param url url of the image
+     * @return an object of type <code>Image</code>
      */
     public static Image getJpegImage(URL url) {
         try (InputStream is = url.openStream()) {
@@ -175,8 +174,8 @@ public class ImageLoader {
      * Creates an Image from a JPEG image file in a byte array.
      *
      *
-     * @param imageData
-     * @return
+     * @param imageData bytes of the image
+     * @return an object of type <code>Image</code>
      */
     public static Image getJpegImage(byte[] imageData) {
         try {

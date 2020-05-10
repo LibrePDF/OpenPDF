@@ -373,7 +373,7 @@ public final class FontFactory {
     /**
      * Register all the fonts in a directory and possibly its subdirectories.
      * @param dir the directory
-     * @param scanSubdirectories recursively scan subdirectories if <code>true</true>
+     * @param scanSubdirectories recursively scan subdirectories if <code>true</code>
      * @return the number of fonts registered
      * @since 2.1.2
      */

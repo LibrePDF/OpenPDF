@@ -224,8 +224,15 @@ public class PdfAnnotation extends PdfDictionary {
 
   /**
    * Constructs a new <CODE>PdfAnnotation</CODE> of subtype text.
+   *
+   * @param writer pdf writer
+   * @param llx lower-left-x
+   * @param lly lower-left-y
+   * @param urx upper-right-x
+   * @param ury upper-right-y
+   * @param title title
+   * @param content content
    */
-
   public PdfAnnotation(PdfWriter writer, float llx, float lly, float urx, float ury, PdfString title, PdfString content) {
     this.writer = writer;
     put(PdfName.SUBTYPE, PdfName.TEXT);
@@ -236,6 +243,13 @@ public class PdfAnnotation extends PdfDictionary {
 
   /**
    * Constructs a new <CODE>PdfAnnotation</CODE> of subtype link (Action).
+   *
+   * @param writer pdf writer
+   * @param llx lower-left-x
+   * @param lly lower-left-y
+   * @param urx upper-right-x
+   * @param ury upper-right-y
+   * @param action {@link PdfAction}
    */
 
   public PdfAnnotation(PdfWriter writer, float llx, float lly, float urx, float ury, PdfAction action) {
@@ -250,6 +264,13 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Creates a screen PdfAnnotation
    *
+   * @param writer {@link PdfWriter}
+   * @param rect dimensions {@link Rectangle}
+   * @param clipTitle clip title
+   * @param fs {@link PdfFileSpecification}
+   * @param mimeType mime type of the file
+   * @param playOnDisplay play on display
+   * @throws IOException on error
    * @return a screen PdfAnnotation
    */
   public static PdfAnnotation createScreen(PdfWriter writer, Rectangle rect, String clipTitle, PdfFileSpecification fs,
@@ -285,6 +306,12 @@ public class PdfAnnotation extends PdfDictionary {
   }
 
   /**
+   * @param writer {@link PdfWriter}
+   * @param rect dimensions {@link Rectangle}
+   * @param title title for the link
+   * @param contents content
+   * @param open open
+   * @param icon icon
    * @return a PdfAnnotation
    */
   public static PdfAnnotation createText(PdfWriter writer, Rectangle rect, String title, String contents, boolean open, String icon) {
@@ -322,6 +349,10 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Creates an Annotation with an Action.
    *
+   * @param writer {@link PdfWriter}
+   * @param rect dimensions {@link Rectangle}
+   * @param highlight title for the link
+   * @param action action for annotation
    * @return A PdfAnnotation
    */
   public static PdfAnnotation createLink(PdfWriter writer, Rectangle rect, PdfName highlight, PdfAction action) {
@@ -333,6 +364,10 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Creates an Annotation with an local destination.
    *
+   * @param writer {@link PdfWriter}
+   * @param rect dimensions {@link Rectangle}
+   * @param highlight title for the link
+   * @param namedDestination destination for pdf annotation
    * @return A PdfAnnotation
    */
   public static PdfAnnotation createLink(PdfWriter writer, Rectangle rect, PdfName highlight, String namedDestination) {
@@ -344,6 +379,11 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Creates an Annotation with a PdfDestination.
    *
+   * @param writer {@link PdfWriter}
+   * @param rect dimensions {@link Rectangle}
+   * @param highlight title for the link
+   * @param page page
+   * @param dest destination for pdf annotation
    * @return A PdfAnnotation
    */
   public static PdfAnnotation createLink(PdfWriter writer, Rectangle rect, PdfName highlight, int page, PdfDestination dest) {
@@ -357,6 +397,10 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Add some free text to the document.
    *
+   * @param writer pdf writer
+   * @param rect dimension
+   * @param contents content of free text
+   * @param defaultAppearance  default appearance
    * @return A PdfAnnotation
    */
   public static PdfAnnotation createFreeText(PdfWriter writer, Rectangle rect, String contents, PdfContentByte defaultAppearance) {
@@ -370,6 +414,13 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Adds a line to the document. Move over the line and a tooltip is shown.
    *
+   * @param writer {@link PdfWriter}
+   * @param rect dimensions {@link Rectangle}
+   * @param contents content for the file
+   * @param x1 x-coordinate
+   * @param y1 y-coordinate
+   * @param x2 x-coordinate
+   * @param y2 y-coordinate
    * @return A PdfAnnotation
    */
   public static PdfAnnotation createLine(PdfWriter writer, Rectangle rect, String contents, float x1, float y1, float x2, float y2) {
@@ -387,6 +438,8 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Adds a circle or a square that shows a tooltip when you pass over it.
    *
+   * @param writer pdf writer
+   * @param rect dimension of the tooltip
    * @param contents The tooltip
    * @param square true if you want a square, false if you want a circle
    * @return A PdfAnnotation
@@ -429,6 +482,10 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Adds a Stamp to your document. Move over the stamp and a tooltip is shown
    *
+   * @param writer {@link PdfWriter}
+   * @param rect dimensions {@link Rectangle}
+   * @param contents content for the file
+   * @param name name of the annotation
    * @return A PdfAnnotation
    */
   public static PdfAnnotation createStamp(PdfWriter writer, Rectangle rect, String contents, String name) {
@@ -464,7 +521,7 @@ public class PdfAnnotation extends PdfDictionary {
    * @param contents the file description
    * @param fileStore an array with the file. If it's <CODE>null</CODE> the file will be read from the disk
    * @param file the path to the file. It will only be used if
-   * <CODE>fileStore</CODE> is not <CODE>null</CODE>
+   *             <CODE>fileStore</CODE> is not <CODE>null</CODE>
    * @param fileDisplay the actual file name stored in the pdf
    * @return the annotation
    * @throws IOException on error
@@ -477,6 +534,11 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Creates a file attachment annotation
    *
+   * @param writer {@link PdfWriter}
+   * @param rect dimensions {@link Rectangle}
+   * @param contents content for the file
+   * @param fs {@link PdfFileSpecification}
+   * @throws IOException on error
    * @return the annotation
    */
   public static PdfAnnotation createFileAttachment(PdfWriter writer, Rectangle rect, String contents, PdfFileSpecification fs)
@@ -493,6 +555,10 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Adds a popup to your document.
    *
+   * @param writer {@link PdfWriter}
+   * @param rect dimensions {@link Rectangle}
+   * @param contents content for the file
+   * @param open if popup is open
    * @return A PdfAnnotation
    */
   public static PdfAnnotation createPopup(PdfWriter writer, Rectangle rect, String contents, boolean open) {
@@ -817,6 +883,8 @@ public class PdfAnnotation extends PdfDictionary {
   /**
    * Sets the name of the annotation. With this name the annotation can be identified among all the annotations on a page (it has to be
    * unique).
+   *
+   * @param name name to be set for annotation
    */
   public void setName(String name) {
     put(PdfName.NM, new PdfString(name));

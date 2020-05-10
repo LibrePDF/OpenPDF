@@ -615,7 +615,7 @@ public class XfaForm {
          * @param inverseSearch the start point
          * @param stack the stack with the separated SOM parts
          * @param unstack the full name
-         * @deprecated use {@link #addSomNameToSearchNodeChain(Map, Stack2, String)}
+         * @deprecated use {@link #addSomNameToSearchNodeChain}
          */
         @Deprecated
         @SuppressWarnings("unchecked")
@@ -1232,6 +1232,8 @@ public class XfaForm {
     
     /**
      * Replaces the data under datasets/data.
+     *
+     * @param node node to fill data under
      * @since    iText 5.0.0
      */
     public void fillXfaForm(Node node) {

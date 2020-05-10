@@ -227,8 +227,9 @@ public class CMapAwareDocumentFont extends DocumentFont {
      * Decodes a string of bytes (encoded in the font's encoding) into a unicode string. This will
      * use the ToUnicode map of the font, if available, otherwise it uses the font's encoding
      *
-     * @param cidbytes
-     *            the bytes that need to be decoded
+     * @param cidbytes the bytes that need to be decoded
+     * @param len length
+     * @param offset offset
      * @return the unicode String that results from decoding
      * @since 2.1.7
      */

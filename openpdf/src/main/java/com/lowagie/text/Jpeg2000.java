@@ -58,10 +58,9 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * An <CODE>Jpeg2000</CODE> is the representation of a graphic element (JPEG)
  * that has to be inserted into the document
  *
- * @see        Element
- * @see        Image
+ * @see Element
+ * @see Image
  */
-
 public class Jpeg2000 extends Image {
     
     // public static final membervariables
@@ -92,40 +91,38 @@ public class Jpeg2000 extends Image {
     /**
      * Constructs a <CODE>Jpeg2000</CODE>-object, using an <VAR>url</VAR>.
      *
-     * @param        url            the <CODE>URL</CODE> where the image can be found
-     * @throws BadElementException
-     * @throws IOException
+     * @param url the <CODE>URL</CODE> where the image can be found
+     * @throws BadElementException on error
+     * @throws IOException on error
      */
     public Jpeg2000(URL url) throws BadElementException, IOException {
         super(url);
         processParameters();
     }
-    
+
     /**
      * Constructs a <CODE>Jpeg2000</CODE>-object from memory.
      *
-     * @param        img        the memory image
-     * @throws BadElementException
-     * @throws IOException
+     * @param img the memory image
+     * @throws BadElementException on error
+     * @throws IOException         on error
      */
-    
     public Jpeg2000(byte[] img) throws BadElementException, IOException {
         super((URL)null);
         rawData = img;
         originalData = img;
         processParameters();
     }
-    
+
     /**
      * Constructs a <CODE>Jpeg2000</CODE>-object from memory.
      *
-     * @param        img            the memory image.
-     * @param        width        the width you want the image to have
-     * @param        height        the height you want the image to have
-     * @throws BadElementException
-     * @throws IOException
+     * @param img    the memory image.
+     * @param width  the width you want the image to have
+     * @param height the height you want the image to have
+     * @throws BadElementException  on error
+     * @throws IOException on error
      */
-    
     public Jpeg2000(byte[] img, float width, float height) throws BadElementException, IOException {
         this(img);
         scaledWidth = width;
@@ -158,7 +155,7 @@ public class Jpeg2000 extends Image {
     
     /**
      * This method checks if the image is a valid JPEG and processes some parameters.
-     * @throws IOException
+     * @throws IOException on error
      */
     private void processParameters() throws IOException {
         type = JPEG2000;

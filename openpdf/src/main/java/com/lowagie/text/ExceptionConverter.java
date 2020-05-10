@@ -142,25 +142,25 @@ public class ExceptionConverter extends RuntimeException {
     }
 
     /**
-     * here we prefix, with s.print(), not s.println(), the stack
+     * here we prefix, with printStream.print(), not printStream.println(), the stack
      * trace with "ExceptionConverter:" 
-     * @param s
+     * @param printStream printStream
      */
-    public void printStackTrace(java.io.PrintStream s) {
-        synchronized (s) {
-            s.print(prefix);
-            ex.printStackTrace(s);
+    public void printStackTrace(java.io.PrintStream printStream) {
+        synchronized (printStream) {
+            printStream.print(prefix);
+            ex.printStackTrace(printStream);
         }
     }
 
     /**
      * Again, we prefix the stack trace with "ExceptionConverter:" 
-     * @param s
+     * @param printWriter printWriter
      */
-    public void printStackTrace(java.io.PrintWriter s) {
-        synchronized (s) {
-            s.print(prefix);
-            ex.printStackTrace(s);
+    public void printStackTrace(java.io.PrintWriter printWriter) {
+        synchronized (printWriter) {
+            printWriter.print(prefix);
+            ex.printStackTrace(printWriter);
         }
     }
 

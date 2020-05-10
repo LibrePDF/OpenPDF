@@ -345,7 +345,10 @@ public class Markup {
 
     /**
      * New method contributed by: Lubos Strapko
-     * 
+     *
+     * @param string a length in the form of an optional + or - followed by a number and a unit
+     * @param actualFontSize font-size
+     * @return a <code>float</code> number
      * @since 2.1.3
      */
     public static float parseLength(@Nullable String string, float actualFontSize) {
@@ -411,12 +414,10 @@ public class Markup {
     }
 
     /**
-     * Converts a <CODE>Color</CODE> into a HTML representation of this <CODE>
-     * Color</CODE>.
-     * 
-     * @param color
-     *            the <CODE>Color</CODE> that has to be converted.
-     * @return the HTML representation of this <COLOR>Color </COLOR>
+     * Converts a <CODE>Color</CODE> into a HTML representation of this <CODE>Color</CODE>.
+     *
+     * @param color the <CODE>Color</CODE> that has to be converted.
+     * @return the HTML representation of this <CODE>Color</CODE>
      */
     @Nullable
     public static Color decodeColor(@Nullable String color) {

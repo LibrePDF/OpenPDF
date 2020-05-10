@@ -355,6 +355,11 @@ public class PdfEncryption {
     }
 
     /**
+     *
+     * @param documentID byte array of document id
+     * @param userPassword byte array of user password
+     * @param ownerKey byte array of owner key
+     * @param permissions permissions
      */
     public void setupByUserPassword(byte[] documentID, byte[] userPassword,
                                     byte[] ownerKey, int permissions) {
@@ -371,6 +376,12 @@ public class PdfEncryption {
     }
 
     /**
+     *
+     * @param documentID byte array of document id
+     * @param ownerPassword byte array of owner password
+     * @param userKey byte array of user key
+     * @param ownerKey byte array of owner key
+     * @param permissions permissions
      */
     public void setupByOwnerPassword(byte[] documentID, byte[] ownerPassword,
                                      byte[] userKey, byte[] ownerKey, int permissions) {

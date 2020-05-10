@@ -89,7 +89,7 @@ public class XmpBasicSchema extends XmpSchema {
     
     /**
      * Adds the creatortool.
-     * @param creator
+     * @param creator creator tool
      */
     public void addCreatorTool(String creator) {
         setProperty(CREATORTOOL, creator);
@@ -97,7 +97,7 @@ public class XmpBasicSchema extends XmpSchema {
     
     /**
      * Adds the creation date.
-     * @param date
+     * @param date creation date
      */
     public void addCreateDate(String date) {
         setProperty(CREATEDATE, date);
@@ -105,7 +105,7 @@ public class XmpBasicSchema extends XmpSchema {
     
     /**
      * Adds the modification date.
-     * @param date
+     * @param date modification date
      */
     public void addModDate(String date) {
         setProperty(MODIFYDATE, date);
@@ -113,14 +113,14 @@ public class XmpBasicSchema extends XmpSchema {
 
     /**
      * Adds the meta data date.
-     * @param date
+     * @param date metadata date
      */
     public void addMetaDataDate(String date) {
         setProperty(METADATADATE, date);
     }
 
     /** Adds the identifier.
-     * @param id
+     * @param id identifier
      */
     public void addIdentifiers(String[] id) {
         XmpArray array = new XmpArray(XmpArray.UNORDERED);
@@ -129,7 +129,7 @@ public class XmpBasicSchema extends XmpSchema {
     }
 
     /** Adds the nickname.
-     * @param name
+     * @param name nick name
      */
     public void addNickname(String name) {
         setProperty(NICKNAME, name);

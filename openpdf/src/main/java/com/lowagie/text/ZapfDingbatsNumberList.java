@@ -89,7 +89,7 @@ public class ZapfDingbatsNumberList extends List {
     /**
      * set the type 
      * 
-     * @param type
+     * @param type {@link ZapfDingbatsNumberList#type}
      */
     public void setType(int type) {
         this.type = type;

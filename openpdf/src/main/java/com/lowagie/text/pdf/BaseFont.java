@@ -1286,6 +1286,8 @@ public abstract class BaseFont {
      * if there is no font program available (standard Type 1 fonts).
      * 
      * @return a PdfStream with the font program
+     * @throws IOException on error
+     * @throws DocumentException on error
      * @since 2.1.3
      */
     abstract PdfStream getFullFontStream() throws IOException,
@@ -1714,12 +1716,11 @@ public abstract class BaseFont {
     }
 
     /**
-     * Gets the Unicode equivalent to a CID. The (inexistent) CID <FF00> is
+     * Gets the Unicode equivalent to a CID. The (nonexistent) CID <code>FF00</code> is
      * translated as '\n'. It has only meaning with CJK fonts with Identity
      * encoding.
-     * 
-     * @param c
-     *            the CID code
+     *
+     * @param c the CID code
      * @return the Unicode equivalent
      */
     public int getUnicodeEquivalent(int c) {

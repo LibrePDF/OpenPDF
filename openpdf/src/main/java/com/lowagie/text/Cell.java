@@ -735,7 +735,7 @@ public class Cell extends TableRectangle implements TextElementArray, WithHorizo
     /**
      * Creates a PdfPCell based on this Cell object.
      * @return a PdfPCell
-     * @throws BadElementException
+     * @throws BadElementException on error
      */
     public PdfPCell createPdfPCell() throws BadElementException {
         if (rowspan > 1) throw new BadElementException(MessageLocalization.getComposedMessage("pdfpcells.can.t.have.a.rowspan.gt.1"));
@@ -797,7 +797,7 @@ public class Cell extends TableRectangle implements TextElementArray, WithHorizo
 
     /**
      * This method throws an <CODE>UnsupportedOperationException</CODE>.
-     * @param margin
+     * @param margin NA
      * @return NA
      */
     public float top(int margin) {
@@ -806,7 +806,7 @@ public class Cell extends TableRectangle implements TextElementArray, WithHorizo
 
     /**
      * This method throws an <CODE>UnsupportedOperationException</CODE>.
-     * @param margin
+     * @param margin NA
      * @return NA
      */
     public float bottom(int margin) {
@@ -815,7 +815,7 @@ public class Cell extends TableRectangle implements TextElementArray, WithHorizo
 
     /**
      * This method throws an <CODE>UnsupportedOperationException</CODE>.
-     * @param margin
+     * @param margin NA
      * @return NA
      */
     public float left(int margin) {

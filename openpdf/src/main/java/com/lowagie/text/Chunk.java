@@ -888,6 +888,8 @@ public class Chunk implements Element {
 
     /**
      * Returns the hyphenation (if present).
+     *
+     * @return an object of {@link HyphenationEvent}
      * @since    2.1.2
      */
     public HyphenationEvent getHyphenation() {

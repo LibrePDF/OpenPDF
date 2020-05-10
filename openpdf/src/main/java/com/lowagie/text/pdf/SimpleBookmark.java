@@ -105,6 +105,8 @@ import java.util.StringTokenizer;
  * <ul>
  * <li>"File" - "the_file_to_open_or_execute"
  * </ul>
+ * </ul>
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public final class SimpleBookmark implements SimpleXMLDocHandler {
@@ -646,7 +648,6 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
 
     /**
      * Exports the bookmarks to XML. The DTD for this XML is:
-     * <p>
      * <pre>
      * &lt;?xml version='1.0' encoding='UTF-8'?&gt;
      * &lt;!ELEMENT Title (#PCDATA|Title)*&gt;

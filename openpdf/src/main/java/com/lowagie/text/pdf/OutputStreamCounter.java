@@ -57,7 +57,11 @@ public class OutputStreamCounter extends OutputStream {
     protected OutputStream out;
     protected long counter = 0;
     
-    /** Creates a new instance of OutputStreamCounter */
+    /**
+     * Creates a new instance of OutputStreamCounter
+     *
+     * @param out output stream
+     */
     public OutputStreamCounter(OutputStream out) {
         this.out = out;
     }

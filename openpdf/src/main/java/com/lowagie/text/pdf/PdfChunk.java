@@ -265,10 +265,12 @@ public class PdfChunk {
     }
     
     // methods
-    
-    /** Gets the Unicode equivalent to a CID.
-     * The (inexistent) CID <FF00> is translated as '\n'. 
+
+    /**
+     * Gets the Unicode equivalent to a CID.
+     * The (nonexistent) CID <code>FF00</code> is translated as '\n'.
      * It has only meaning with CJK fonts with Identity encoding.
+     *
      * @param c the CID code
      * @return the Unicode equivalent
      */    

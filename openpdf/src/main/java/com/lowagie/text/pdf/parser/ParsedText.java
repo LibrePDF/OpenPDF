@@ -453,7 +453,8 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @return
+     * @return a boolean value
+     *
      * @see com.lowagie.text.pdf.parser.ParsedTextImpl#breakBefore()
      */
     @Override

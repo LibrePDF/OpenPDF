@@ -72,13 +72,14 @@ import org.xml.sax.SAXException;
 public class XmpReader {
 
     private Document domDocument;
-    
+
     /**
      * Constructs an XMP reader
-     * @param    bytes    the XMP content
-     * @throws ExceptionConverter 
-     * @throws IOException 
-     * @throws SAXException 
+     *
+     * @param bytes the XMP content
+     * @throws ExceptionConverter on error
+     * @throws IOException        on error
+     * @throws SAXException       on error
      */
     public XmpReader(byte[] bytes) throws SAXException, IOException {
         try {
@@ -92,14 +93,15 @@ public class XmpReader {
             throw new ExceptionConverter(e);
         }
     }
-    
+
     /**
      * Replaces the content of a tag.
-     * @param    namespaceURI    the URI of the namespace
-     * @param    localName        the tag name
-     * @param    value            the new content for the tag
-     * @return    true if the content was successfully replaced
-     * @since    2.1.6 the return type has changed from void to boolean
+     *
+     * @param namespaceURI the URI of the namespace
+     * @param localName    the tag name
+     * @param value        the new content for the tag
+     * @return true if the content was successfully replaced
+     * @since 2.1.6 the return type has changed from void to boolean
      */
     public boolean replace(String namespaceURI, String localName, String value) {
         NodeList nodes = domDocument.getElementsByTagNameNS(namespaceURI, localName);
@@ -150,6 +152,7 @@ public class XmpReader {
      * @param domDocument the <CODE>Document</CODE> that contains the node
      * @param n the <CODE>Node</CODE> to add the text to
      * @param value the text to add
+     * @return <code>true</code> if added successfully, else <code>false</code>
      */
     public boolean setNodeText(Document domDocument, Node n, String value) {
         if (n == null)
@@ -164,6 +167,9 @@ public class XmpReader {
     
     /**
      * Writes the document to a byte array.
+     *
+     * @return byte array of serialized doc
+     * @throws IOException on error
      */
     public byte[] serializeDoc() throws IOException {
         XmlDomWriter xw = new XmlDomWriter();

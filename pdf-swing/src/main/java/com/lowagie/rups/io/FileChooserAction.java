@@ -59,6 +59,8 @@ public class FileChooserAction extends AbstractAction {
     
     /**
      * Getter for the file.
+     *
+     * @return a file
      */
     public File getFile() {
         return file;

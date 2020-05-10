@@ -80,7 +80,7 @@ public abstract class ExtendedColor extends Color{
 
     /**
      * Constructs an extended color of a certain type.
-     * @param type
+     * @param type {@link ExtendedColor#type}
      */
     public ExtendedColor(int type) {
         super(0, 0, 0);
@@ -89,10 +89,10 @@ public abstract class ExtendedColor extends Color{
     
     /**
      * Constructs an extended color of a certain type and a certain color.
-     * @param type
-     * @param red
-     * @param green
-     * @param blue
+     * @param type {@link ExtendedColor#type}
+     * @param red red quotient
+     * @param green green quotient
+     * @param blue blue quotient
      */
     public ExtendedColor(int type, float red, float green, float blue) {
         this(type, normalize(red), normalize(green), normalize(blue), MAX_FLOAT_COLOR_VALUE);
@@ -100,10 +100,11 @@ public abstract class ExtendedColor extends Color{
 
     /**
      * Constructs an extended color of a certain type and a certain color.
-     * @param type
-     * @param red
-     * @param green
-     * @param blue
+     * @param type {@link ExtendedColor#type}
+     * @param red red quotient
+     * @param green green quotient
+     * @param blue blue quotient
+     * @param alpha alpha quotient
      */
     public ExtendedColor(int type, float red, float green, float blue, float alpha) {
         super(normalize(red), normalize(green), normalize(blue), normalize(alpha));
@@ -120,7 +121,7 @@ public abstract class ExtendedColor extends Color{
     
     /**
      * Gets the type of a given color.
-     * @param color
+     * @param color an object of {@link Color}
      * @return one of the types (see constants)
      */
     public static int getType(Color color) {

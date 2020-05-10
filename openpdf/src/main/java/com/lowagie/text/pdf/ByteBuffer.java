@@ -123,7 +123,7 @@ public class ByteBuffer extends OutputStream {
     /**
      * You can fill the cache in advance if you want to.
      *
-     * @param   decimals
+     * @param   decimals decimals
      */
     
     public static void fillCache(int decimals) {

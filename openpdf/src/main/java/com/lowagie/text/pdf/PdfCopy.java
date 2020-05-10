@@ -149,6 +149,7 @@ public class PdfCopy extends PdfWriter {
    * Constructor
    *
    * @param os outputstream
+   * @param document document
    */
   public PdfCopy(Document document, OutputStream os) throws DocumentException {
     super(new PdfDocument(), os);
@@ -359,7 +360,8 @@ public class PdfCopy extends PdfWriter {
    * Add an imported page to our output
    *
    * @param iPage an imported page
-   * @throws IOException, BadPdfFormatException
+   * @throws IOException on error
+   * @throws BadPdfFormatException on error
    */
   public void addPage(PdfImportedPage iPage) throws IOException, BadPdfFormatException {
     int pageNum = setFromIPage(iPage);
@@ -406,7 +408,8 @@ public class PdfCopy extends PdfWriter {
    * Copy the acroform for an input document. Note that you can only have one, we make no effort to merge them.
    *
    * @param reader The reader of the input file that is being copied
-   * @throws IOException, BadPdfFormatException
+   * @throws IOException on error
+   * @throws BadPdfFormatException on error
    */
   public void copyAcroForm(PdfReader reader) throws IOException, BadPdfFormatException {
     setFromReader(reader);
@@ -549,8 +552,8 @@ public class PdfCopy extends PdfWriter {
 
   /**
    * Create a page stamp. New content and annotations, including new fields, are allowed. The fields added cannot have parents in another
-   * pages. This method modifies the PdfReader instance.<p> The general usage to stamp something in a page is:
-   * <p>
+   * pages. This method modifies the PdfReader instance.
+   * <p> The general usage to stamp something in a page is: </p>
    * <pre>
    * PdfImportedPage page = copy.getImportedPage(reader, 1);
    * PdfCopy.PageStamp ps = copy.createPageStamp(page);

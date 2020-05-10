@@ -77,6 +77,8 @@ public class MarkedObject implements Element {
     
     /**
      * Creates a MarkedObject.
+     *
+     * @param element an object of type {@link Element}
      */
     public MarkedObject(Element element) {
         this.element = element;
@@ -142,6 +144,9 @@ public class MarkedObject implements Element {
     
     /**
      * Adds one markup attribute.
+     *
+     * @param key attribute's key
+     * @param value attribute's value
      */
     public void setMarkupAttribute(String key, String value) {
         markupAttributes.setProperty(key, value);

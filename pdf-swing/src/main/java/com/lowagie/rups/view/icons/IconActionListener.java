@@ -28,6 +28,10 @@ import javax.swing.Icon;
  * Special ActionListener to be implemented by Buttons that need an Icon.
  */
 public interface IconActionListener extends ActionListener {
-    /** Returns an Icon. */
+    /**
+     * Returns an Icon.
+     *
+     * @return an object of type {@link Icon}
+     */
     Icon getIcon();
 }

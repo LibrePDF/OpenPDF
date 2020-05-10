@@ -71,7 +71,6 @@ import java.util.Set;
  * sequence of key-value pairs, followed by two right angle brackets ({@literal >>}).<BR>
  * This object is described in the 'Portable Document Format Reference Manual
  * version 1.7' section 3.2.6 (page 59-60).
- * <P>
  *
  * @see        PdfObject
  * @see        PdfName
@@ -133,7 +132,7 @@ public class PdfDictionary extends PdfObject {
      *
      * @param writer for backwards compatibility
      * @param os the <CODE>OutputStream</CODE> to write the bytes to.
-     * @throws IOException
+     * @throws IOException on error
      */
     public void toPdf(PdfWriter writer, OutputStream os) throws IOException {
         os.write('<');
@@ -235,7 +234,7 @@ public class PdfDictionary extends PdfObject {
      * <VAR>key</VAR>.
      *
      * @param key a <CODE>PdfName</CODE>
-     * @return the </CODE>PdfObject</CODE> previously associated to the
+     * @return the <CODE>PdfObject</CODE> previously associated to the
      *   <VAR>key</VAR>
      */
     public PdfObject get(PdfName key) {
@@ -281,6 +280,7 @@ public class PdfDictionary extends PdfObject {
      * Returns <CODE>true</CODE> if this <CODE>PdfDictionary</CODE> contains a
      * mapping for the specified <VAR>key</VAR>.
      *
+     * @param key key
      * @return <CODE>true</CODE> if the key is set, otherwise <CODE>false</CODE>.
      */
     public boolean contains(PdfName key) {

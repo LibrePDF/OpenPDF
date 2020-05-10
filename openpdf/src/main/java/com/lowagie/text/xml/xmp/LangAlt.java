@@ -60,7 +60,11 @@ public class LangAlt extends Properties {
     /** Key for the default language. */
     public static final String DEFAULT = "x-default";
 
-    /** Creates a Properties object that stores languages for use in an XmpSchema */
+    /**
+     * Creates a Properties object that stores languages for use in an XmpSchema
+     *
+     * @param defaultValue  default value
+     */
     public LangAlt(String defaultValue) {
         super();
         addLanguage(DEFAULT, defaultValue);
@@ -73,6 +77,9 @@ public class LangAlt extends Properties {
 
     /**
      * Add a language.
+     *
+     * @param language language
+     * @param value value
      */
     public void addLanguage(String language, String value) {
         setProperty(language, XmpSchema.escape(value));
@@ -80,6 +87,9 @@ public class LangAlt extends Properties {
 
     /**
      * Process a property.
+     *
+     * @param buf buffer
+     * @param lang object
      */
     protected void process(StringBuffer buf, Object lang) {
         buf.append("<rdf:li xml:lang=\"");

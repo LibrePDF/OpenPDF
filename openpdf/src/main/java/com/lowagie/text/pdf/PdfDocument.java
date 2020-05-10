@@ -201,6 +201,8 @@ public class PdfDocument extends Document {
 
         /**
          * Adds the name of the producer to the document.
+         *
+         * @param producer name of the producer
          */
         void addProducer(final String producer) {
             put(PdfName.PRODUCER, new PdfString(producer));
@@ -812,9 +814,10 @@ public class PdfDocument extends Document {
 
     /**
      * Closes the document.
-     * <B>
+     * <p>
      * Once all the content has been written in the body, you have to close
      * the body. After that nothing can be written to the body anymore.
+     * </p>
      */
     public void close() {
         if (close) {
@@ -1803,6 +1806,10 @@ public class PdfDocument extends Document {
     /**
      * Adds extra space.
      * This method should probably be rewritten.
+     *
+     * @param extraspace extra space
+     * @param oldleading old leading
+     * @param f font
      */
     protected void addSpacing(float extraspace, float oldleading, Font f) {
         if (extraspace == 0) return;
@@ -1831,7 +1838,7 @@ public class PdfDocument extends Document {
     /**
      * Gets the <CODE>PdfInfo</CODE>-object.
      *
-     * @return    <CODE>PdfInfo</COPE>
+     * @return    <CODE>PdfInfo</CODE>
      */
 
     protected PdfInfo getInfo() {
@@ -2301,7 +2308,9 @@ public class PdfDocument extends Document {
 
     /**
      * Gives the size of a trim, art, crop or bleed box, or null if not defined.
+     *
      * @param boxName crop, trim, art or bleed
+     * @return Rectangle
      */
     Rectangle getBoxSize(String boxName) {
         PdfRectangle r = thisBoxSize.get(boxName);
@@ -2579,7 +2588,7 @@ public class PdfDocument extends Document {
 
         /**
          * Consumes the rowspan
-         * @param c
+         * @param c pdf cell
          * @return a rowspan.
          */
         public int consumeRowspan(PdfCell c) {
@@ -2603,7 +2612,7 @@ public class PdfDocument extends Document {
 
         /**
          * Looks at the current rowspan.
-         * @param c
+         * @param c cell
          * @return the current rowspan
          */
         public int currentRowspan(PdfCell c) {

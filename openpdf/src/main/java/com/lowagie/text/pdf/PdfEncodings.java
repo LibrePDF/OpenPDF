@@ -144,7 +144,7 @@ public class PdfEncodings {
     }
 
     /**
-     * Converts a <CODE>String</CODE> to a </CODE>byte</CODE> array according to
+     * Converts a <CODE>String</CODE> to a <CODE>byte</CODE> array according to
      * the font's encoding.
      * 
      * @return an array of <CODE>byte</CODE> representing the conversion
@@ -224,7 +224,7 @@ public class PdfEncodings {
     }
 
     /**
-     * Converts a <CODE>String</CODE> to a </CODE>byte</CODE> array according to
+     * Converts a <CODE>String</CODE> to a <CODE>byte</CODE> array according to
      * the font's encoding.
      * 
      * @return an array of <CODE>byte</CODE> representing the conversion
@@ -281,7 +281,7 @@ public class PdfEncodings {
     }
 
     /**
-     * Converts a </CODE>byte</CODE> array to a <CODE>String</CODE> according to
+     * Converts a <CODE>byte</CODE> array to a <CODE>String</CODE> according to
      * the some encoding.
      * 
      * @param bytes
@@ -405,7 +405,7 @@ public class PdfEncodings {
     /**
      * Converts a <CODE>byte</CODE> array encoded as <CODE>name</CODE> to a CID
      * string. This is needed to reach some CJK characters that don't exist in
-     * 16 bit Unicode.</p> The font to use this result must use the encoding
+     * 16 bit Unicode.<p> The font to use this result must use the encoding
      * "Identity-H" or "Identity-V".</p> See
      * ftp://ftp.oreilly.com/pub/examples/nutshell/cjkv/adobe/.
      * 
@@ -422,7 +422,7 @@ public class PdfEncodings {
     /**
      * Converts a <CODE>byte</CODE> array encoded as <CODE>name</CODE> to a CID
      * string. This is needed to reach some CJK characters that don't exist in
-     * 16 bit Unicode.</p> The font to use this result must use the encoding
+     * 16 bit Unicode.<p> The font to use this result must use the encoding
      * "Identity-H" or "Identity-V".</p> See
      * ftp://ftp.oreilly.com/pub/examples/nutshell/cjkv/adobe/.
      * 

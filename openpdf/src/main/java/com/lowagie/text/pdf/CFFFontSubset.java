@@ -340,7 +340,7 @@ public class CFFFontSubset extends CFFFont {
 
     /**
      * Read the FDArray count, offsize and Offset array
-     * @param Font
+     * @param Font font offset
      */
     protected void ReadFDArray(int Font)
     {
@@ -360,7 +360,7 @@ public class CFFFontSubset extends CFFFont {
      * subset version of the original.
      * @param fontName - The name of the font to be taken out of the CFF
      * @return The new font stream
-     * @throws IOException
+     * @throws IOException on error
      */
     public byte[] Process(String fontName)throws IOException{
         try
@@ -421,7 +421,7 @@ public class CFFFontSubset extends CFFFont {
     /**
      *Function uses BuildNewIndex to create the new index of the subset charstrings
      * @param FontIndex the font
-     * @throws IOException
+     * @throws IOException on error
      */
     protected void BuildNewCharString(int FontIndex) throws IOException 
     {
@@ -432,7 +432,7 @@ public class CFFFontSubset extends CFFFont {
      * Function builds the new local and global subsrs indices. IF CID then All of
      * the FD Array lsubrs will be subsetted. 
      * @param Font the font
-     * @throws IOException
+     * @throws IOException on error
      */
     @SuppressWarnings("unchecked")
     protected void BuildNewLGSubrs(int Font)throws IOException
@@ -634,6 +634,7 @@ public class CFFFontSubset extends CFFFont {
      * @param LBias the bias of the Local Subrs
      * @param hSubr the HashMap for the lSubrs
      * @param lSubr the ArrayList for the lSubrs
+     * @param LSubrsOffsets The Offsets array of the subroutines
      */
     protected void ReadASubr(int begin,int end,int GBias,int LBias, Map<Integer, int[]> hSubr, List<Integer> lSubr, int[] LSubrsOffsets)
     {
@@ -935,7 +936,7 @@ public class CFFFontSubset extends CFFFont {
      * @param Used the hashmap of the used objects
      * @param OperatorForUnusedEntries the operator inserted into the data stream for unused entries
      * @return the new index subset version 
-     * @throws IOException
+     * @throws IOException on error
      */
     protected byte[] BuildNewIndex(int[] Offsets, Map<Integer, int[]> Used,byte OperatorForUnusedEntries) throws IOException
     {

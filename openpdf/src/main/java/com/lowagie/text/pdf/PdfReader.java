@@ -890,7 +890,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     encryptionError = false;
   }
 
-    /**
+  /**
+   * @param obj an object of {@link PdfObject}
    * @return a PdfObject
    */
   public static PdfObject getPdfObjectRelease(PdfObject obj) {
@@ -944,9 +945,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * Reads a <CODE>PdfObject</CODE> resolving an indirect reference if needed.
    * If the reader was opened in partial mode the object will be released to
    * save memory.
-   * 
-   * @param obj
-   *          the <CODE>PdfObject</CODE> to read
+   *
+   * @param obj the <CODE>PdfObject</CODE> to read
+   * @param parent parent object
    * @return a PdfObject
    */
   public static PdfObject getPdfObjectRelease(PdfObject obj, PdfObject parent) {
@@ -956,6 +957,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * @param obj the <CODE>PdfObject</CODE> to read
+   * @param parent parent object
    * @return a PdfObject
    */
   public static PdfObject getPdfObject(PdfObject obj, PdfObject parent) {
@@ -984,6 +987,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * @param idx index
    * @return a PdfObject
    */
   public PdfObject getPdfObjectRelease(int idx) {
@@ -993,6 +997,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * @param idx index
    * @return aPdfObject
    */
   public PdfObject getPdfObject(int idx) {
@@ -1033,6 +1038,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * @param obj an object of {@link PdfObject}
    */
   public static void releaseLastXrefPartial(PdfObject obj) {
     if (obj == null)
@@ -1058,6 +1064,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * @param obj an object of {@link PdfObject}
    * @return an indirect reference
    */
   public PRIndirectReference addPdfObject(PdfObject obj) {
@@ -1782,6 +1789,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * @param in the input data
+   * @param dicPar an object of {@link PdfObject}
    * @return a byte array
    */
   public static byte[] decodePredictor(byte[] in, PdfObject dicPar) {
@@ -2064,6 +2073,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * @param pageNum page number
    * @return a Dictionary object
    */
   public PdfDictionary getPageNRelease(int pageNum) {
@@ -2073,6 +2083,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * @param pageNum page number
    */
   public void releasePage(int pageNum) {
     pageRefs.releasePage(pageNum);
@@ -2202,11 +2213,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Sets the contents of the page.
-   * 
-   * @param content
-   *          the new page content
-   * @param pageNum
-   *          the page number. 1 is the first
+   *
+   * @param content the new page content
+   * @param pageNum the page number. 1 is the first
+   * @param compressionLevel compression level
    * @since 2.1.3 (the method already existed without param compressionLevel)
    */
   public void setPageContent(int pageNum, byte[] content, int compressionLevel) {

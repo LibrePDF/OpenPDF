@@ -59,7 +59,7 @@ import java.util.SimpleTimeZone;
  * PDF defines a standard date format. The PDF date format closely follows the format
  * defined by the international standard ASN.1 (Abstract Syntax Notation One, defined
  * in CCITT X.208 or ISO/IEC 8824). A date is a <CODE>PdfString</CODE> of the form:
- * <P><BLOCKQUOTE>
+ * <BLOCKQUOTE>
  * (D:YYYYMMDDHHmmSSOHH'mm')
  * </BLOCKQUOTE><P>
  * This object is described in the 'Portable Document Format Reference Manual version 1.3'

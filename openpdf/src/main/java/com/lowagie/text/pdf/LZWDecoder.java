@@ -156,6 +156,8 @@ public class LZWDecoder {
     
     /**
      * Write out the string just uncompressed.
+     *
+     * @param string bytes
      */
     public void writeString(byte[] string) {
         try {
@@ -168,6 +170,9 @@ public class LZWDecoder {
     
     /**
      * Add a new string to the string table.
+     *
+     * @param newString new string bytes
+     * @param oldString old string bytes
      */
     public void addStringToTable(byte[] oldString, byte newString) {
         int length = oldString.length;
@@ -189,6 +194,8 @@ public class LZWDecoder {
     
     /**
      * Add a new string to the string table.
+     *
+     * @param string bytes
      */
     public void addStringToTable(byte[] string) {
         
@@ -206,6 +213,10 @@ public class LZWDecoder {
     
     /**
      * Append <code>newString</code> to the end of <code>oldString</code>.
+     *
+     * @param oldString old string bytes
+     * @param newString new string bytes
+     * @return byes
      */
     public byte[] composeString(byte[] oldString, byte newString) {
         int length = oldString.length;

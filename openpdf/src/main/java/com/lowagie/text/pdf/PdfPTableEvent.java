@@ -58,7 +58,7 @@ public interface PdfPTableEvent {
     /** This method is called at the end of the table rendering. The text or graphics are added to
      * one of the 4 <CODE>PdfContentByte</CODE> contained in
      * <CODE>canvases</CODE>.<br>
-     * The indexes to <CODE>canvases</CODE> are:<p>
+     * The indexes to <CODE>canvases</CODE> are:
      * <ul>
      * <li><CODE>PdfPTable.BASECANVAS</CODE> - the original <CODE>PdfContentByte</CODE>. Anything placed here
      * will be under the table.
