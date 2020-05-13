@@ -42,7 +42,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <bouncycastle.version>1.65</bouncycastle.version>
-        <spotbugs.version>4.0.1</spotbugs.version>
+        <spotbugs.version>4.0.3</spotbugs.version>
         <hamcrest.version>2.2</hamcrest.version>
         <java-module-name>com.github.librepdf.openpdf.parent</java-module-name>
         <jupiter.version>5.5.2</jupiter.version>
@@ -289,11 +289,6 @@
                 <artifactId>bcpkix-jdk15on</artifactId>
                 <version>${bouncycastle.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs</artifactId>
-                <version>${spotbugs.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -339,6 +334,13 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
             <version>${hamcrest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs</artifactId>
+            <version>${spotbugs.version}</version>
+            <optional>true</optional>
             <scope>test</scope>
         </dependency>
     </dependencies>
