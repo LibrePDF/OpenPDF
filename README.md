@@ -29,7 +29,7 @@ We want OpenPDF to consist of source code which is consistently licensed with th
 
 ## Documentation ##
 - [Examples](pdf-toolbox/src/test/java/com/lowagie/examples/)
-- [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-3-3/?)
+- [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-3-17/)
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 
 
