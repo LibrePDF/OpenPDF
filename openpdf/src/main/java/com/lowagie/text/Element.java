@@ -54,17 +54,8 @@ import java.util.ArrayList;
 /**
  * Interface for a text element.
  * <P>
- * Remark: I looked at the interface javax.swing.text.Element, but I decided to
- * write my own text-classes for two reasons:
- * <OL>
- * <LI>The javax.swing.text-classes may be very generic, I think they are
- * overkill: they are to heavy for what they have to do.
- * <LI>A lot of people using iText (formerly known as rugPdf), still use
- * JDK1.1.x. I try to keep the Java2 requirements limited to the Collection
- * classes (I think they're really great). However, if I use the
- * javax.swing.text classes, it will become very difficult to downgrade rugPdf.
- * </OL>
- * 
+ * Remark: I looked at the interface javax.swing.text.Element, but I decided to write my own text-classes.
+ *
  * @see Anchor
  * @see Cell
  * @see Chapter
