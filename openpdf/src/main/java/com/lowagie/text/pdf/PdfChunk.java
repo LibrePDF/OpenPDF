@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -201,8 +202,26 @@ public class PdfChunk {
             style = Font.NORMAL;
         }
         if (baseFont == null) {
-            // translation of the font-family to a PDF font-family
-            baseFont = f.getCalculatedBaseFont(false);
+            /*
+            Change baseFont set behaviour for non text PdfChunk content to be compliant with PDF/A.
+            Use case : Convert docx file with non text content (non printable content or draw object).
+            This type of content has no font, the chunk is set with default Helvetica basefont.
+            Helvetica BaseFont cannot be embedded, the result won't never be compliant.
+            Proposal: Use Liberation Sans instead of Helvetica
+             */
+
+            // Check if the chunk content is text
+            if (chunk.getContent().chars().allMatch(c -> (c >= 0x20 && c <= 0xFF))) {
+                // translation of the font-family to a PDF font-family
+                baseFont = f.getCalculatedBaseFont(false);
+            } else {
+                // translation to the embeddable free font
+                try {
+                    baseFont = BaseFont.createFont("com/lowagie/text/pdf/fonts/liberation/LiberationSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
         else {
             // bold simulation
