@@ -812,7 +812,7 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
         }
 
         // ... if it is a Phrase, we have to wrap the Image in a new Chunk
-        if (current instanceof Phrase){
+        else if (current instanceof Phrase){
             ((TextElementArray)current).add(new Chunk(img,0,0));
             stack.push(current);
         }
