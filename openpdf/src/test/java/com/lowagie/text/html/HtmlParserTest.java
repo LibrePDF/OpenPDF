@@ -34,4 +34,17 @@ class HtmlParserTest {
         assertNotNull(doc1);
     }
 
+    /**
+     * Bug fix scenario (Issue 376): a img within two spans
+     */
+    @Test
+    void testParse_imgInTwoSpans() throws Exception {
+        Document doc1 = new Document();
+        doc1.open();
+        HtmlParser.parse(doc1, new StringReader("<span><span><img src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/200px-PDF_file_icon.svg.png\"/></span></span>")); // was throwing an EmptyStackException
+        doc1.close();
+        assertNotNull(doc1);
+
+    }
+
 }

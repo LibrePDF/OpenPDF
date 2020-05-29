@@ -75,6 +75,7 @@ import com.lowagie.text.ListItem;
 import com.lowagie.text.Meta;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.Section;
 import com.lowagie.text.Table;
@@ -809,6 +810,14 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
             ((TextElementArray) current).add(img);
             stack.push(current);
         }
+
+        // ... if it is a Phrase, we have to wrap the Image in a new Chunk
+        if (current instanceof Phrase){
+            ((TextElementArray)current).add(new Chunk(img,0,0));
+            stack.push(current);
+        }
+
+
         // ...if not, we need to to a lot of stuff
         else {
             Stack<Element> newStack = new Stack<>();
