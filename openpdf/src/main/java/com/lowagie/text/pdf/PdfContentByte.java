@@ -1392,8 +1392,10 @@ public class PdfContentByte {
      */
     public void saveState() {
         content.append("q").append_i(separator);
-        GraphicState gstate = new GraphicState(state);
-        stateList.add(gstate);
+        if (state != null) {
+            GraphicState gstate = new GraphicState(state);
+            stateList.add(gstate);
+        }
     }
 
     /**
@@ -1405,8 +1407,9 @@ public class PdfContentByte {
         int idx = stateList.size() - 1;
         if (idx < 0)
             throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
+
         state = stateList.get(idx);
-        state.restore(state);
+        if (state != null) state.restore(state);
         stateList.remove(idx);
     }
 
@@ -1416,7 +1419,7 @@ public class PdfContentByte {
      * @param       charSpace           a parameter
      */
     public void setCharacterSpacing(float charSpace) {
-        state.charSpace = charSpace;
+        if (state != null) state.charSpace = charSpace;
         content.append(charSpace).append(" Tc").append_i(separator);
     }
 
@@ -1426,7 +1429,7 @@ public class PdfContentByte {
      * @param       wordSpace           a parameter
      */
     public void setWordSpacing(float wordSpace) {
-        state.wordSpace = wordSpace;
+        if (state != null) state.wordSpace = wordSpace;
         content.append(wordSpace).append(" Tw").append_i(separator);
     }
 
@@ -1436,7 +1439,7 @@ public class PdfContentByte {
      * @param       scale               a parameter
      */
     public void setHorizontalScaling(float scale) {
-        state.scale = scale;
+        if (state != null) state.scale = scale;
         content.append(scale).append(" Tz").append_i(separator);
     }
 
@@ -1449,7 +1452,7 @@ public class PdfContentByte {
      * @param       leading         the new leading
      */
     public void setLeading(float leading) {
-        state.leading = leading;
+        if (state != null) state.leading = leading;
         content.append(leading).append(" TL").append_i(separator);
     }
 
@@ -1659,7 +1662,7 @@ public class PdfContentByte {
      * Moves to the start of the next line.
      */
     public void newlineText() {
-        state.yTLM -= state.leading;
+        if (state != null) state.yTLM -= state.leading;
         content.append("T*").append_i(separator);
     }
 
@@ -2303,7 +2306,7 @@ public class PdfContentByte {
         gState.setStrokeOpacity(extendedColor.getAlpha() / MAX_INT_COLOR_VALUE);
         setGState(gState);
 
-        state.colorStroke = extendedColor;
+        if (state != null) state.colorStroke = extendedColor;
     }
 
     /** Sets the fill color. <CODE>color</CODE> can be an
@@ -2349,7 +2352,7 @@ public class PdfContentByte {
         gState.setFillOpacity(extendedColor.getAlpha() / MAX_INT_COLOR_VALUE);
         setGState(gState);
 
-        state.colorFill = extendedColor;
+        if (state != null) state.colorFill = extendedColor;
     }
 
     /** Sets the fill color to a spot color.
@@ -3042,7 +3045,7 @@ public class PdfContentByte {
         PdfObject[] obj = writer.addSimpleExtGState(gstate);
         PageResources prs = getPageResources();
         PdfName name = prs.addExtGState((PdfName)obj[0], (PdfIndirectReference)obj[1]);
-        state.extGState = gstate;
+        if (state != null) state.extGState = gstate;
         content.append(name.getBytes()).append(" gs").append_i(separator);
     }
 
