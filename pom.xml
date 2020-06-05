@@ -61,6 +61,7 @@
         <maven.test.failure.ignore>false</maven.test.failure.ignore>
         <mockito.version>2.25.1</mockito.version>
         <fop.version>2.5</fop.version>
+        <xmlgraphics-commons.version>2.4</xmlgraphics-commons.version>
     </properties>
 
 

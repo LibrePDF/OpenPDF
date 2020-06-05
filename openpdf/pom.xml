@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>xmlgraphics-commons</artifactId>
-            <version>${fop.version}</version>
+            <version>${xmlgraphics-commons.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
