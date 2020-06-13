@@ -60,6 +60,9 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * corresponding Color as value. (Source: Wikipedia
  * http://en.wikipedia.org/wiki/Web_colors )
  * 
+ * CSS4 Implementation based on:
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
+ * 
  * @author blowagie
  */
 public class WebColors extends HashMap<String, int[]> {
@@ -104,11 +107,13 @@ public class WebColors extends HashMap<String, int[]> {
         NAMES.put("darkseagreen", new int[] { 0x8f, 0xbc, 0x8f, 0xff });
         NAMES.put("darkslateblue", new int[] { 0x48, 0x3d, 0x8b, 0xff });
         NAMES.put("darkslategray", new int[] { 0x2f, 0x4f, 0x4f, 0xff });
+        NAMES.put("darkslategrey", new int[] { 0x2f, 0x4f, 0x4f, 0xff });
         NAMES.put("darkturquoise", new int[] { 0x00, 0xce, 0xd1, 0xff });
         NAMES.put("darkviolet", new int[] { 0x94, 0x00, 0xd3, 0xff });
         NAMES.put("deeppink", new int[] { 0xff, 0x14, 0x93, 0xff });
         NAMES.put("deepskyblue", new int[] { 0x00, 0xbf, 0xff, 0xff });
         NAMES.put("dimgray", new int[] { 0x69, 0x69, 0x69, 0xff });
+        NAMES.put("dimgrey", new int[] { 0x69, 0x69, 0x69, 0xff });
         NAMES.put("dodgerblue", new int[] { 0x1e, 0x90, 0xff, 0xff });
         NAMES.put("firebrick", new int[] { 0xb2, 0x22, 0x22, 0xff });
         NAMES.put("floralwhite", new int[] { 0xff, 0xfa, 0xf0, 0xff });
@@ -135,6 +140,7 @@ public class WebColors extends HashMap<String, int[]> {
         NAMES.put("lightcoral", new int[] { 0xf0, 0x80, 0x80, 0xff });
         NAMES.put("lightcyan", new int[] { 0xe0, 0xff, 0xff, 0xff });
         NAMES.put("lightgoldenrodyellow", new int[] { 0xfa, 0xfa, 0xd2, 0xff });
+        NAMES.put("lightgray", new int[] { 0xd3, 0xd3, 0xd3, 0xff });
         NAMES.put("lightgreen", new int[] { 0x90, 0xee, 0x90, 0xff });
         NAMES.put("lightgrey", new int[] { 0xd3, 0xd3, 0xd3, 0xff });
         NAMES.put("lightpink", new int[] { 0xff, 0xb6, 0xc1, 0xff });
@@ -142,6 +148,7 @@ public class WebColors extends HashMap<String, int[]> {
         NAMES.put("lightseagreen", new int[] { 0x20, 0xb2, 0xaa, 0xff });
         NAMES.put("lightskyblue", new int[] { 0x87, 0xce, 0xfa, 0xff });
         NAMES.put("lightslategray", new int[] { 0x77, 0x88, 0x99, 0xff });
+        NAMES.put("lightslategrey", new int[] { 0x77, 0x88, 0x99, 0xff });
         NAMES.put("lightsteelblue", new int[] { 0xb0, 0xc4, 0xde, 0xff });
         NAMES.put("lightyellow", new int[] { 0xff, 0xff, 0xe0, 0xff });
         NAMES.put("lime", new int[] { 0x00, 0xff, 0x00, 0xff });
@@ -181,6 +188,7 @@ public class WebColors extends HashMap<String, int[]> {
         NAMES.put("plum", new int[] { 0xdd, 0xa0, 0xdd, 0xff });
         NAMES.put("powderblue", new int[] { 0xb0, 0xe0, 0xe6, 0xff });
         NAMES.put("purple", new int[] { 0x80, 0x00, 0x80, 0xff });
+        NAMES.put("rebeccapurple", new int[] {0x66, 0x33, 0x99, 0xff });
         NAMES.put("red", new int[] { 0xff, 0x00, 0x00, 0xff });
         NAMES.put("rosybrown", new int[] { 0xbc, 0x8f, 0x8f, 0xff });
         NAMES.put("royalblue", new int[] { 0x41, 0x69, 0xe1, 0xff });
@@ -194,6 +202,7 @@ public class WebColors extends HashMap<String, int[]> {
         NAMES.put("skyblue", new int[] { 0x87, 0xce, 0xeb, 0xff });
         NAMES.put("slateblue", new int[] { 0x6a, 0x5a, 0xcd, 0xff });
         NAMES.put("slategray", new int[] { 0x70, 0x80, 0x90, 0xff });
+        NAMES.put("slategrey", new int[] { 0x70, 0x80, 0x90, 0xff });
         NAMES.put("snow", new int[] { 0xff, 0xfa, 0xfa, 0xff });
         NAMES.put("springgreen", new int[] { 0x00, 0xff, 0x7f, 0xff });
         NAMES.put("steelblue", new int[] { 0x46, 0x82, 0xb4, 0xff });
@@ -214,51 +223,245 @@ public class WebColors extends HashMap<String, int[]> {
     /**
      * Gives you a Color based on a name.
      * 
-     * @param name
-     *            a name such as black, violet, cornflowerblue or #RGB or #RRGGBB
-     *            or rgb(R,G,B)
+     * @param name the css color name to convert. 
+     *      You can use CSS4 color values
+     *          <ul>
+     *              <li>a name such as black, violet, cornflowerblue</li>
+     *              <li>#RGB, #RRGGBB, #RGBA or #RRGGBBAA</li>
+     *              <li>rgb(R, G, B) rgb(R,G,B,A) or rgba(R,G,B) or rgba(R,G,B,A)</li>
+     *              <li>hsl(H, S, L) hsl(H,S,L,A) or hslq(H,S,L) or hsla(H,S,L,A)</li>
+     *          </ul>
+     *          
      * @return the corresponding Color object
      * @throws IllegalArgumentException
      *             if the String isn't a know representation of a color.
      */
-    public static Color getRGBColor(String name)
-            throws IllegalArgumentException {
-        int[] c = { 0, 0, 0, 0xff };
-        if (name.startsWith("#")) {
-            if (name.length() == 4) {
-                c[0] = Integer.parseInt(name.substring(1, 2), 16) * 16;
-                c[1] = Integer.parseInt(name.substring(2, 3), 16) * 16;
-                c[2] = Integer.parseInt(name.substring(3), 16) * 16;
-                return new Color(c[0], c[1], c[2], c[3]);
-            }
-            if (name.length() == 7) {
-                c[0] = Integer.parseInt(name.substring(1, 3), 16);
-                c[1] = Integer.parseInt(name.substring(3, 5), 16);
-                c[2] = Integer.parseInt(name.substring(5), 16);
-                return new Color(c[0], c[1], c[2], c[3]);
-            }
+    public static Color getRGBColor(String name) throws IllegalArgumentException {
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
+        String colorName = name.trim().toLowerCase(Locale.ROOT);
+        if ("".equals(colorName)) {
+            throw new IllegalArgumentException("name must not be empty");
+        }
+        
+        
+        if (colorName.startsWith("#")) {
+            return getRGBFromHex(colorName);
+        }        
+        else if (name.startsWith("rgb")) {
+            return getRGBFromRGB(colorName);
+        }
+        else if (name.startsWith("hsl")) {
+            return getRGBFromHSL(colorName);
+        }
+        else {
+            return getRGBFromName(colorName);
+        }
+    }
+
+    private static Color getRGBFromHex(String colorName) {
+        
+        int length = colorName.length();
+        if (!colorName.matches("^#[a-f0-9]{3,8}$") || !(length == 4 || length == 5 || length == 7 || length == 9)) {
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("unknown.color.format.must.be.rgb.or.rrggbb"));
         }
-        else if (name.startsWith("rgb(")) {
-            StringTokenizer tok = new StringTokenizer(name, "rgb(), \t\r\n\f");
-            for (int k = 0; k < 3; ++k) {
-                String v = tok.nextToken();
-                if (v.endsWith("%"))
-                    c[k] = Integer.parseInt(v.substring(0, v.length() - 1)) * 255 / 100;
-                else
-                    c[k] = Integer.parseInt(v);
-                if (c[k] < 0)
-                    c[k] = 0;
-                else if (c[k] > 255)
-                    c[k] = 255;
+        String rgb = colorName.substring(1);
+        if (length == 4 || length == 5) {
+            StringBuilder sb = new StringBuilder();
+            for (char c : rgb.toCharArray()) {
+                sb.append(c).append(c);
             }
-            return new Color(c[0], c[1], c[2], c[3]);
+            rgb = sb.toString();
         }
-        name = name.toLowerCase(Locale.ROOT);
-        if (!NAMES.containsKey(name))
-            throw new IllegalArgumentException("Color '" + name
-                    + "' not found.");
-        c = NAMES.get(name);
+        
+        int[] c = { 0, 0, 0, 0xff };
+        c[0] = Integer.parseInt(rgb.substring(0, 2), 16);
+        c[1] = Integer.parseInt(rgb.substring(2, 4), 16);
+        c[2] = Integer.parseInt(rgb.substring(4, 6), 16);
+        if (rgb.length() > 6) {
+            // alpha component
+            c[3] = Integer.parseInt(rgb.substring(6, 8), 16);
+        }
         return new Color(c[0], c[1], c[2], c[3]);
+    }
+    
+    private static Color getRGBFromRGB(String colorName) {
+        int[] c = { 0, 0, 0, 0xff };
+        
+        String rgb = "";
+        if (colorName.startsWith("rgba")) {
+            rgb = colorName.substring(4);
+        }
+        else {
+            rgb = colorName.substring(3);
+        }
+        
+        StringTokenizer tok = new StringTokenizer(rgb, "()/, \t\r\n\f");
+        
+        for (int k = 0; k < 3; k++) {
+            String v = tok.nextToken();
+            if (v.endsWith("%")) {
+                c[k] = getFromPercent(v, 255);
+            }
+            else {
+                c[k] = (int) Double.parseDouble(v);
+            }
+            if (c[k] < 0) {
+                c[k] = 0;
+            }
+            else if (c[k] > 255) {
+                c[k] = 255;
+            }
+        }
+        if (tok.hasMoreElements()) {
+            // alpha
+            String v = tok.nextToken();
+            if (v.endsWith("%")) {
+                c[3] = getFromPercent(v, 255);
+            }
+            else {
+                c[3] = (int) (Double.parseDouble(v) * 255 );
+            }
+        }
+        return new Color(c[0], c[1], c[2], c[3]);
+    }
+    
+    private static int getFromPercent(String v, int max) {
+        double percent = Double.parseDouble(v.substring(0, v.length() - 1));
+        double result = percent * max / 100;
+        return Double.valueOf(result).intValue();
+    }
+
+
+    private static Color getRGBFromName(String colorName) {
+        if (!NAMES.containsKey(colorName)) {
+            throw new IllegalArgumentException("Color '" + colorName + "' not found.");
+        }
+        int[] c = NAMES.get(colorName);
+        return new Color(c[0], c[1], c[2], c[3]);
+    }
+
+
+    private static Color getRGBFromHSL(String colorName) {
+        String hsl = "";
+        if (colorName.startsWith("hsla")) {
+            hsl = colorName.substring(4);
+        }
+        else {
+            hsl = colorName.substring(3);
+        }
+        StringTokenizer tok = new StringTokenizer(hsl, "()/, \t\r\n\f");
+        String hue = "";
+        String saturation = "";
+        String lightness = "";
+        String alpha = "1";
+        if (tok.hasMoreElements()) {
+            hue = tok.nextToken();
+        }
+        if (tok.hasMoreElements()) {
+            saturation = tok.nextToken();
+        }
+        if (tok.hasMoreElements()) {
+            lightness = tok.nextToken();
+        }
+        if (tok.hasMoreElements()) {
+            alpha = tok.nextToken();
+        }
+        if (hue.isEmpty() || saturation.isEmpty() || lightness.isEmpty() || !saturation.endsWith("%") || !lightness.endsWith("%")) {
+            throw new IllegalArgumentException("Not a valid hsl color:" + colorName);
+        }
+        float hueDegrees = Double.valueOf(toDegrees(hue)).floatValue();
+        float sat = Float.parseFloat(saturation.substring(0, saturation.length() - 1));
+        float light = Float.parseFloat(lightness.substring(0, lightness.length() - 1));
+        int alp = 255;
+        if (alpha.endsWith("%")) {
+            alp = getFromPercent(alpha, 255);
+        }
+        else {
+            alp = (int) (Double.parseDouble(alpha) * 255 );
+        }
+        int[] rgb = hsl2rgb(hueDegrees, sat / 100.0f, light / 100.0f);
+        
+        return new Color(rgb[0], rgb[1], rgb[2], alp);
+        
+        
+    }
+    
+    // H (hue) is an <angle> of the color circle given in degs, rads, grads, or turns 
+    private static double toDegrees(String hueString) {
+        if (hueString.endsWith("deg")) {
+            double degrees = Double.parseDouble(hueString.substring(0, hueString.length() - 3));
+            return degrees % 360;
+        }
+        if (hueString.endsWith("rad")) {
+            double radians = Double.parseDouble(hueString.substring(0, hueString.length() - 3));
+            double degrees = Math.toDegrees(radians);
+            return degrees % 360;
+            
+        }
+        if (hueString.endsWith("grad")) {
+            double gradians = Double.parseDouble(hueString.substring(0, hueString.length() - 4));
+            double degrees = gradians * 360 / 400;
+            return degrees % 360;
+        }
+        if (hueString.endsWith("turn")) {
+            double turns = Double.parseDouble(hueString.substring(0, hueString.length() - 4));
+            double degrees = turns * 360;
+            return degrees % 360;
+        }
+        double degrees = Double.parseDouble(hueString);
+        return degrees % 360;
+    }
+
+
+    /**
+     * Convert from hsl to rgb
+     * @param hue Hue angle in degrees
+     * @param saturation saturation (0 to 1)
+     * @param lightness lightness (0 to 1)
+     * @return
+     */
+    private static int[] hsl2rgb(float hue, float saturation, float lightness) {
+        int[] rgb = new int[3];
+        float r = 0, g = 0, b = 0;
+
+        if (saturation == 0) {
+            // gray values
+            r = g = b = (lightness * 255);
+        } else {
+            float h = (float) hue / 360;
+
+            float q = (lightness < 0.5) ? (lightness * (1 + saturation)) : ((lightness + saturation) - (lightness * saturation));
+            float p = 2 * lightness - q;
+
+            r = (256 * hue2rgb(p, q, h + (1.0f / 3)));
+            g = (256 * hue2rgb(p, q, h));
+            b = (256 * hue2rgb(p, q, h - (1.0f / 3)));
+        }
+        rgb[0] = Math.min(255, (int) r);
+        rgb[1] = Math.min(255, (int) g);
+        rgb[2] = Math.min(255, (int) b);
+
+        return rgb;
+    }
+
+    private static float hue2rgb(float p, float q, float t) {
+        if (t < 0f) {
+            t += 1f;
+        }
+        if (t > 1f) {
+            t -= 1;
+        }
+        if (t < 1f/6f) {
+            return (p + (q - p) * 6f * t);
+        }
+        if (t < 1f/2f) {
+            return q;
+        }
+        if (t < 2f/3f) {
+            return (p + (q - p) * ((2.0f / 3f) - t) * 6);
+        }
+        return p;
     }
 }

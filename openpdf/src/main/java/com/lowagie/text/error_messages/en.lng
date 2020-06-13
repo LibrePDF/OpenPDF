@@ -368,7 +368,7 @@ unexpected.end.of.file=Unexpected end of file.
 unexpected.eof=Unexpected EOF
 unexpected.gt.gt=Unexpected '>>'
 unexpected.close.bracket=Unexpected ']'
-unknown.color.format.must.be.rgb.or.rrggbb=Unknown color format. Must be #RGB or #RRGGBB
+unknown.color.format.must.be.rgb.or.rrggbb=Unknown color format. Must be #RGB, #RRGGBB, #RGBA or #RRGGBBAA
 unknown.encryption.type.r.eq.1=Unknown encryption type R = {1}
 unknown.encryption.type.v.eq.1=Unknown encryption type V = {1}
 unknown.filter.1=Unknown filter: {1}
