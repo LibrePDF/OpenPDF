@@ -67,7 +67,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * 
  * @author blowagie
  */
-public class WebColors {
+public final class WebColors {
     
     
     /** HashMap containing all the names and corresponding color values. */
