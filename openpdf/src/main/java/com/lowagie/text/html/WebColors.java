@@ -52,7 +52,9 @@ package com.lowagie.text.html;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.StringTokenizer;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
@@ -65,11 +67,11 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * 
  * @author blowagie
  */
-public class WebColors extends HashMap<String, int[]> {
+public class WebColors {
     
-    private static final long serialVersionUID = 3542523100813372896L;
+    
     /** HashMap containing all the names and corresponding color values. */
-    public static final WebColors NAMES = new WebColors();
+    private static final Map<String, int[]> NAMES = new HashMap<>();
     static {
         NAMES.put("aliceblue", new int[] { 0xf0, 0xf8, 0xff, 0xff });
         NAMES.put("antiquewhite", new int[] { 0xfa, 0xeb, 0xd7, 0xff });
