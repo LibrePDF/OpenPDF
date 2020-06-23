@@ -271,9 +271,18 @@ public class ByteBuffer extends OutputStream {
      * @return a reference to this <CODE>ByteBuffer</CODE> object
      */
     public ByteBuffer append(int i) {
-        return append((double)i);
+        return append(String.valueOf(i));
     }
-    
+
+    /**
+     * Appends the string representation of a <CODE>long</CODE>.
+     * @param l the <CODE>long</CODE> to be appended
+     * @return a reference to this <CODE>ByteBuffer</CODE> object
+     */
+    public ByteBuffer append(long l) {
+        return append(String.valueOf(l));
+    }
+
     public ByteBuffer append(byte b) {
         return append_i(b);
     }
