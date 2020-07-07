@@ -63,22 +63,22 @@ import com.lowagie.text.ExceptionConverter;
  * @author  Paulo Soares (psoares@consiste.pt)
  */
 class FontDetails {
-    
+
     /**
      * The indirect reference to this font
-     */    
+     */
     PdfIndirectReference indirectReference;
     /**
      * The font name that appears in the document body stream
-     */    
+     */
     PdfName fontName;
     /**
      * The font
-     */    
+     */
     BaseFont baseFont;
     /**
      * The font if it's an instance of <CODE>TrueTypeFontUnicode</CODE>
-     */    
+     */
     TrueTypeFontUnicode ttu;
     /**
      * The font if it's an instance of <CODE>CJKFont</CODE>
@@ -91,7 +91,7 @@ class FontDetails {
     /**
      * The map used with double byte encodings. The key is Integer(glyph) and
      * the value is int[]{glyph, width, Unicode code}
-     */    
+     */
     HashMap<Integer, int[]> longTag;
     /**
      * IntHashtable with CIDs of CJK glyphs that are used in the text.
@@ -99,18 +99,18 @@ class FontDetails {
     IntHashtable cjkTag;
     /**
      * The font type
-     */    
+     */
     int fontType;
     /**
      * <CODE>true</CODE> if the font is symbolic
-     */    
+     */
     boolean symbolic;
     /**
      * Indicates if only a subset of the glyphs and widths for that particular
      * encoding should be included in the document.
      */
     protected boolean subset = true;
-    
+
     /**
      * Each font used in a document has an instance of this class.
      * This class stores the characters used in the document and other
@@ -140,38 +140,38 @@ class FontDetails {
                 break;
         }
     }
-    
+
     /**
      * Gets the indirect reference to this font.
      * @return the indirect reference to this font
-     */    
+     */
     PdfIndirectReference getIndirectReference() {
         return indirectReference;
     }
-    
+
     /**
      * Gets the font name as it appears in the document body.
      * @return the font name
-     */    
+     */
     PdfName getFontName() {
         return fontName;
     }
-    
+
     /**
      * Gets the <CODE>BaseFont</CODE> of this font.
      * @return the <CODE>BaseFont</CODE> of this font
-     */    
+     */
     BaseFont getBaseFont() {
         return baseFont;
     }
-    
+
     /**
      * Converts the text into bytes to be placed in the document.
      * The conversion is done according to the font and the encoding and the characters
      * used are stored.
      * @param text the text to convert
      * @return the conversion
-     */    
+     */
     byte[] convertToBytes(String text, String language) {
         byte[] b = null;
         switch (fontType) {
@@ -214,10 +214,50 @@ class FontDetails {
                         String s = new String(glyph, 0, i);
                         b = s.getBytes(CJKFont.CJK_ENCODING);
 
-                    }
-                    else {
+                    } else {
+                        //ivs font handler,Simply judge whether it is IVS font or not
+                        if(text != null && text.contains("\udb40")){
+                            for(int k = 0; k < len; ++k) {
+                                int[] charResult = this.getFormat14Uint(text, k);
+                                if (charResult != null) {
+                                    int[] format14Metrics = this.ttu.getFormat14MetricsTT(charResult[1], charResult[2]);
+                                    if (format14Metrics != null) {
+                                        int gl = format14Metrics[0];
+                                        if (!this.longTag.containsKey(gl)) {
+                                            this.longTag.put(gl, new int[]{gl, format14Metrics[1], charResult[1], charResult[2]});
+                                        }
+
+                                        glyph[i++] = (char)gl;
+                                        k += charResult[0] - 1;
+                                        continue;
+                                    }
+                                }
+
+                                int val;
+                                if (Utilities.isSurrogatePair(text, k)) {
+                                    val = Utilities.convertToUtf32(text, k);
+                                    ++k;
+                                } else {
+                                    val = text.charAt(k);
+                                }
+
+                                metrics = this.ttu.getMetricsTT(val);
+                                if (metrics != null) {
+                                    int m0 = metrics[0];
+                                    Integer gl = m0;
+                                    if (!this.longTag.containsKey(gl)) {
+                                        this.longTag.put(gl, new int[]{m0, metrics[1], val});
+                                    }
+
+                                    glyph[i++] = (char)m0;
+                                }
+                            }
+                            glyph = copyOfRange(glyph, 0, i);
+                            b = convertCharsToBytes(glyph);
+                            break;
+                        }
                         String fileName = ((TrueTypeFontUnicode)getBaseFont()).fileName;
-                        if (FopGlyphProcessor.isFopSupported() && (fileName!=null && fileName.length()>0 
+                        if (FopGlyphProcessor.isFopSupported() && (fileName!=null && fileName.length()>0
                                                                    &&( fileName.contains(".ttf") || fileName.contains(".TTF")))){
                             return FopGlyphProcessor.convertToBytesWithGlyphs(ttu,text,fileName,longTag,language);
                         }else {
@@ -233,6 +273,76 @@ class FontDetails {
         }
         return b;
     }
+
+    private char[] copyOfRange(char[] original, int from, int to) {
+        int newLength = to - from;
+        if (newLength < 0) {
+            throw new IllegalArgumentException(from + " > " + to);
+        } else {
+            char[] copy = new char[newLength];
+            System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
+            return copy;
+        }
+    }
+
+    private byte[] convertCharsToBytes(char[] chars) {
+        byte[] result = new byte[chars.length * 2];
+
+        for(int i = 0; i < chars.length; ++i) {
+            result[2 * i] = (byte)(chars[i] / 256);
+            result[2 * i + 1] = (byte)(chars[i] % 256);
+        }
+
+        return result;
+    }
+
+    private int[] getFormat14Uint(String text, int startOffset) {
+        int[] charResult = new int[3];
+        boolean isSurrogatePair = Utilities.isSurrogatePair(text, startOffset);
+        int[] charResult1;
+        if (isSurrogatePair) {
+            int char1 = Utilities.convertToUtf32(text, startOffset);
+            charResult1 = this.getFormat14Uint1(text, startOffset + 2);
+            if (charResult1 == null) {
+                return null;
+            }
+
+            charResult[0] = 2 + charResult1[0];
+            charResult[1] = char1;
+            charResult[2] = charResult1[1];
+        } else {
+            int char1 = text.charAt(startOffset);
+            charResult1 = this.getFormat14Uint1(text, startOffset + 1);
+            if (charResult1 == null) {
+                return null;
+            }
+
+            charResult[0] = 1 + charResult1[0];
+            charResult[1] = char1;
+            charResult[2] = charResult1[1];
+        }
+
+        return charResult;
+    }
+
+    private int[] getFormat14Uint1(String text, int startOffset) {
+        int[] charResult = new int[2];
+        boolean isSurrogatePair = Utilities.isSurrogatePair(text, startOffset);
+        if (isSurrogatePair) {
+            charResult[0] = 2;
+            charResult[1] = Utilities.convertToUtf32(text, startOffset);
+        } else {
+            if (startOffset >= text.length()) {
+                return null;
+            }
+
+            charResult[0] = 1;
+            charResult[1] = text.charAt(startOffset);
+        }
+
+        return charResult;
+    }
+
 
     private byte[] convertToBytesWithGlyphs(String text) throws UnsupportedEncodingException {
         int len = text.length();
@@ -295,12 +405,12 @@ class FontDetails {
             throw new ExceptionConverter(e);
         }
     }
-    
-    
+
+
     /**
      * Writes the font definition to the document.
      * @param writer the <CODE>PdfWriter</CODE> of this document
-     */    
+     */
     void writeFont(PdfWriter writer) {
         try {
             switch (fontType) {
@@ -338,7 +448,7 @@ class FontDetails {
             throw new ExceptionConverter(e);
         }
     }
-    
+
     /**
      * Indicates if all the glyphs and widths for that particular
      * encoding should be included in the document.
@@ -347,7 +457,7 @@ class FontDetails {
     public boolean isSubset() {
         return subset;
     }
-    
+
     /**
      * Indicates if all the glyphs and widths for that particular
      * encoding should be included in the document. Set to <CODE>false</CODE>
