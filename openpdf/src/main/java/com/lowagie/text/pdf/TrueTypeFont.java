@@ -55,6 +55,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
+
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
@@ -199,6 +201,8 @@ class TrueTypeFont extends BaseFont {
     protected HashMap<Integer, int[]> cmap31;
 
     protected HashMap<Integer, int[]> cmapExt;
+
+    protected HashMap<String, int[]> cmap05;
 
     /** The map containing the kerning information. It represents the content of
      * table 'kern'. The key is an <CODE>Integer</CODE> where the top 16 bits
@@ -809,7 +813,9 @@ class TrueTypeFont extends BaseFont {
         int map31 = 0;
         int map30 = 0;
         int mapExt = 0;
-        for (int k = 0; k < num_tables; ++k) {
+        int map05 = 0;
+        int k;
+        for ( k = 0; k < num_tables; ++k) {
             int platId = rf.readUnsignedShort();
             int platSpecId = rf.readUnsignedShort();
             int offset = rf.readInt();
@@ -822,6 +828,8 @@ class TrueTypeFont extends BaseFont {
             }
             else if (platId == 3 && platSpecId == 10) {
                 mapExt = offset;
+            } else if (platId == 0 && platSpecId == 5) {
+                map05 = offset;
             }
             if (platId == 1 && platSpecId == 0) {
                 map10 = offset;
@@ -874,6 +882,94 @@ class TrueTypeFont extends BaseFont {
                     break;
             }
         }
+        if (map05 > 0) {
+            int format14Location = table_location[0] + map05;
+            this.rf.seek((long)format14Location);
+            int format = this.rf.readUnsignedShort();
+            if (format == 14) {
+                this.cmap05 = this.readFormat14(format14Location);
+            }
+        }
+    }
+
+	/**
+	 * Get ivs font mapping
+	 * @param format14Location
+	 * @return
+	 * @throws IOException
+	 */
+    HashMap<String, int[]> readFormat14(int format14Location) throws IOException {
+        HashMap<String, int[]> result = new HashMap();
+        int numVarSelectorRecords = this.rf.readInt();
+        Map<Integer, Integer> nonDefaultOffsetMap = new HashMap();
+
+        int nonDefaultUVSOffset;
+        int mappingNums;
+        for(int i = 0; i < numVarSelectorRecords; ++i) {
+            byte[] input = new byte[3];
+            this.rf.read(input);
+            int selectorUnicodeValue = this.byte2int(input, 3);
+            nonDefaultUVSOffset = this.rf.readInt();
+            mappingNums = this.rf.readInt();
+            nonDefaultOffsetMap.put(selectorUnicodeValue, mappingNums);
+        }
+
+        Iterator it = nonDefaultOffsetMap.entrySet().iterator();
+
+        while(it.hasNext()) {
+            Map.Entry<Integer, Integer> entry = (Map.Entry)it.next();
+            Integer selectorUnicodeValue = entry.getKey();
+            nonDefaultUVSOffset = entry.getValue();
+            this.rf.seek((long)(format14Location + nonDefaultUVSOffset));
+            mappingNums = this.rf.readInt();
+
+            for(int i = 0; i < mappingNums; ++i) {
+                byte[] input = new byte[3];
+                this.rf.read(input);
+                int unicodeValue = this.byte2int(input, 3);
+                int glyphId = this.rf.readUnsignedShort();
+                result.put(unicodeValue + "_" + selectorUnicodeValue, new int[]{glyphId, this.getGlyphWidth(glyphId)});
+            }
+        }
+        return result;
+    }
+
+	/**
+	 * byte转int
+	 * @param data
+	 * @param n
+	 * @return
+	 */
+    private int byte2int(byte[] data, int n) {
+        switch(n) {
+            case 1:
+                return data[0];
+            case 2:
+                return data[0] << 8 & '\uff00' | data[1] & 255;
+            case 3:
+                return data[0] << 16 & 16711680 | data[1] << 8 & '\uff00' | data[2] & 255;
+            case 4:
+                return data[0] << 24 & -16777216 | data[1] << 16 & 16711680 | data[2] << 8 & '\uff00' | data[3] & 255;
+            default:
+                return 0;
+        }
+    }
+
+	/**
+	 *
+	 * ivs character to int array
+	 * @param char1
+	 * @param char2
+	 * @return
+	 */
+    public int[] getFormat14MetricsTT(int char1, int char2) {
+        if (this.cmap05 != null) {
+            int[] metricsTT = this.cmap05.get(char1 + "_" + char2);
+            if (metricsTT != null) {
+                return metricsTT;
+            }
+        }
+        return null;
     }
 
     HashMap<Integer, int[]> readFormat12() throws IOException {
@@ -1405,6 +1501,8 @@ class TrueTypeFont extends BaseFont {
      * @return an <CODE>int</CODE> array with {glyph index, width}
      */    
     public int[] getMetricsTT(int c) {
+		if (cmap05 != null)
+			return cmap05.get(c);
         if (cmapExt != null)
             return cmapExt.get(c);
         if (!fontSpecific && cmap31 != null) 

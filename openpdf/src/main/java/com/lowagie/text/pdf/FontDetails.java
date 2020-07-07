@@ -214,10 +214,50 @@ class FontDetails {
                         String s = new String(glyph, 0, i);
                         b = s.getBytes(CJKFont.CJK_ENCODING);
 
-                    }
-                    else {
+                    } else {
+                        //ivs font handler,Simply judge whether it is IVS font or not
+                        if(text != null && text.contains("\udb40")){
+                            for(int k = 0; k < len; ++k) {
+                                int[] charResult = this.getFormat14Uint(text, k);
+                                if (charResult != null) {
+                                    int[] format14Metrics = this.ttu.getFormat14MetricsTT(charResult[1], charResult[2]);
+                                    if (format14Metrics != null) {
+                                        int gl = format14Metrics[0];
+                                        if (!this.longTag.containsKey(gl)) {
+                                            this.longTag.put(gl, new int[]{gl, format14Metrics[1], charResult[1], charResult[2]});
+                                        }
+
+                                        glyph[i++] = (char)gl;
+                                        k += charResult[0] - 1;
+                                        continue;
+                                    }
+                                }
+
+                                int val;
+                                if (Utilities.isSurrogatePair(text, k)) {
+                                    val = Utilities.convertToUtf32(text, k);
+                                    ++k;
+                                } else {
+                                    val = text.charAt(k);
+                                }
+
+                                metrics = this.ttu.getMetricsTT(val);
+                                if (metrics != null) {
+                                    int m0 = metrics[0];
+                                    Integer gl = m0;
+                                    if (!this.longTag.containsKey(gl)) {
+                                        this.longTag.put(gl, new int[]{m0, metrics[1], val});
+                                    }
+
+                                    glyph[i++] = (char)m0;
+                                }
+                            }
+                            glyph = copyOfRange(glyph, 0, i);
+                            b = convertCharsToBytes(glyph);
+                            break;
+                        }
                         String fileName = ((TrueTypeFontUnicode)getBaseFont()).fileName;
-                        if (FopGlyphProcessor.isFopSupported() && (fileName!=null && fileName.length()>0 
+                        if (FopGlyphProcessor.isFopSupported() && (fileName!=null && fileName.length()>0
                                                                    &&( fileName.contains(".ttf") || fileName.contains(".TTF")))){
                             return FopGlyphProcessor.convertToBytesWithGlyphs(ttu,text,fileName,longTag,language);
                         }else {
@@ -233,6 +273,98 @@ class FontDetails {
         }
         return b;
     }
+
+	/**
+	 * Character array copy
+	 * @param original
+	 * @param from
+	 * @param to
+	 * @return
+	 */
+    private char[] copyOfRange(char[] original, int from, int to) {
+        int newLength = to - from;
+        if (newLength < 0) {
+            throw new IllegalArgumentException(from + " > " + to);
+        } else {
+            char[] copy = new char[newLength];
+            System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
+            return copy;
+        }
+    }
+
+	/**
+	 * Character to byte array
+	 * @param chars
+	 * @return
+	 */
+	private byte[] convertCharsToBytes(char[] chars) {
+        byte[] result = new byte[chars.length * 2];
+
+        for(int i = 0; i < chars.length; ++i) {
+            result[2 * i] = (byte)(chars[i] / 256);
+            result[2 * i + 1] = (byte)(chars[i] % 256);
+        }
+
+        return result;
+    }
+
+	/**
+	 * ivs font array offset
+	 * @param text
+	 * @param startOffset
+	 * @return
+	 */
+    private int[] getFormat14Uint(String text, int startOffset) {
+        int[] charResult = new int[3];
+        boolean isSurrogatePair = Utilities.isSurrogatePair(text, startOffset);
+        int[] charResult1;
+        if (isSurrogatePair) {
+            int char1 = Utilities.convertToUtf32(text, startOffset);
+            charResult1 = this.getFormat14Uint1(text, startOffset + 2);
+            if (charResult1 == null) {
+                return null;
+            }
+
+            charResult[0] = 2 + charResult1[0];
+            charResult[1] = char1;
+            charResult[2] = charResult1[1];
+        } else {
+            int char1 = text.charAt(startOffset);
+            charResult1 = this.getFormat14Uint1(text, startOffset + 1);
+            if (charResult1 == null) {
+                return null;
+            }
+            charResult[0] = 1 + charResult1[0];
+            charResult[1] = char1;
+            charResult[2] = charResult1[1];
+        }
+        return charResult;
+    }
+
+	/**
+	 * ivs font array offset
+	 * @param text
+	 * @param startOffset
+	 * @return
+	 */
+    private int[] getFormat14Uint1(String text, int startOffset) {
+        int[] charResult = new int[2];
+        boolean isSurrogatePair = Utilities.isSurrogatePair(text, startOffset);
+        if (isSurrogatePair) {
+            charResult[0] = 2;
+            charResult[1] = Utilities.convertToUtf32(text, startOffset);
+        } else {
+            if (startOffset >= text.length()) {
+                return null;
+            }
+
+            charResult[0] = 1;
+            charResult[1] = text.charAt(startOffset);
+        }
+
+        return charResult;
+    }
+
 
     private byte[] convertToBytesWithGlyphs(String text) throws UnsupportedEncodingException {
         int len = text.length();

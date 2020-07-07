@@ -233,7 +233,13 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
             --size;
             int[] metric = metrics[k];
             String fromTo = toHex(metric[0]);
-            buf.append(fromTo).append(fromTo).append(toHex(metric[2])).append('\n');
+            String hexString;
+            if (metric.length == 4) {
+                hexString = toHex(metric[2], metric[3]);
+            } else {
+                hexString = toHex(metric[2]);
+            }
+            buf.append(fromTo).append(fromTo).append(hexString).append('\n');
         }
         buf.append(
         "endbfrange\n" +
@@ -540,5 +546,36 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         if (m == null)
             return null;
         return bboxes[m[0]];
+    }
+
+	/**
+	 *
+	 * ivs character to hexadecimal
+	 * @param char1
+	 * @param char2
+	 * @return
+	 */
+    private String toHex(int char1, int char2) {
+        String hex1;
+        int high;
+        int low;
+        if (char1 < 65536) {
+            hex1 = toHex4(char1);
+        } else {
+            char1 -= 65536;
+            high = char1 / 1024 + '\ud800';
+            low = char1 % 1024 + '\udc00';
+            hex1 = toHex4(high) + toHex4(low);
+        }
+        String hex2;
+        if (char2 < 65536) {
+            hex2 = toHex4(char2);
+        } else {
+            char2 -= 65536;
+            high = char2 / 1024 + '\ud800';
+            low = char2 % 1024 + '\udc00';
+            hex2 = toHex4(high) + toHex4(low);
+        }
+        return "[<" + hex1 + hex2 + ">]";
     }
 }
