@@ -51,7 +51,11 @@ package com.lowagie.text.pdf;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Iterator;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 
@@ -896,7 +900,6 @@ class TrueTypeFont extends BaseFont {
 	 */
     HashMap<String, int[]> readFormat14(int format14Location) throws IOException {
         HashMap<String, int[]> result = new HashMap();
-        int byteLenght = this.rf.readInt();
         int numVarSelectorRecords = this.rf.readInt();
         Map<Integer, Integer> nonDefaultOffsetMap = new HashMap();
 
@@ -911,10 +914,10 @@ class TrueTypeFont extends BaseFont {
             nonDefaultOffsetMap.put(selectorUnicodeValue, mappingNums);
         }
 
-        Iterator var15 = nonDefaultOffsetMap.entrySet().iterator();
+        Iterator it = nonDefaultOffsetMap.entrySet().iterator();
 
-        while(var15.hasNext()) {
-            Map.Entry<Integer, Integer> entry = (Map.Entry)var15.next();
+        while(it.hasNext()) {
+            Map.Entry<Integer, Integer> entry = (Map.Entry)it.next();
             Integer selectorUnicodeValue = entry.getKey();
             nonDefaultUVSOffset = entry.getValue();
             this.rf.seek((long)(format14Location + nonDefaultUVSOffset));
