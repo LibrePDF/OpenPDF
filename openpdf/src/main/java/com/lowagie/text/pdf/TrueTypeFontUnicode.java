@@ -548,6 +548,13 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         return bboxes[m[0]];
     }
 
+	/**
+	 *
+	 * ivs character to hexadecimal
+	 * @param char1
+	 * @param char2
+	 * @return
+	 */
     private String toHex(int char1, int char2) {
         String hex1;
         int high;

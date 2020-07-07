@@ -888,6 +888,12 @@ class TrueTypeFont extends BaseFont {
         }
     }
 
+	/**
+	 * Get ivs font mapping
+	 * @param format14Location
+	 * @return
+	 * @throws IOException
+	 */
     HashMap<String, int[]> readFormat14(int format14Location) throws IOException {
         HashMap<String, int[]> result = new HashMap();
         int byteLenght = this.rf.readInt();
@@ -909,8 +915,8 @@ class TrueTypeFont extends BaseFont {
 
         while(var15.hasNext()) {
             Map.Entry<Integer, Integer> entry = (Map.Entry)var15.next();
-            Integer selectorUnicodeValue = (Integer)entry.getKey();
-            nonDefaultUVSOffset = (Integer)entry.getValue();
+            Integer selectorUnicodeValue = entry.getKey();
+            nonDefaultUVSOffset = entry.getValue();
             this.rf.seek((long)(format14Location + nonDefaultUVSOffset));
             mappingNums = this.rf.readInt();
 
@@ -925,7 +931,13 @@ class TrueTypeFont extends BaseFont {
         return result;
     }
 
-    public int byte2int(byte[] data, int n) {
+	/**
+	 * byte转int
+	 * @param data
+	 * @param n
+	 * @return
+	 */
+    private int byte2int(byte[] data, int n) {
         switch(n) {
             case 1:
                 return data[0];
@@ -940,9 +952,16 @@ class TrueTypeFont extends BaseFont {
         }
     }
 
+	/**
+	 *
+	 * ivs character to int array
+	 * @param char1
+	 * @param char2
+	 * @return
+	 */
     public int[] getFormat14MetricsTT(int char1, int char2) {
         if (this.cmap05 != null) {
-            int[] metricsTT = (int[])this.cmap05.get(char1 + "_" + char2);
+            int[] metricsTT = this.cmap05.get(char1 + "_" + char2);
             if (metricsTT != null) {
                 return metricsTT;
             }

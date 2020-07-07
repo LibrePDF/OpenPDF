@@ -274,6 +274,13 @@ class FontDetails {
         return b;
     }
 
+	/**
+	 * Character array copy
+	 * @param original
+	 * @param from
+	 * @param to
+	 * @return
+	 */
     private char[] copyOfRange(char[] original, int from, int to) {
         int newLength = to - from;
         if (newLength < 0) {
@@ -285,7 +292,12 @@ class FontDetails {
         }
     }
 
-    private byte[] convertCharsToBytes(char[] chars) {
+	/**
+	 * Character to byte array
+	 * @param chars
+	 * @return
+	 */
+	private byte[] convertCharsToBytes(char[] chars) {
         byte[] result = new byte[chars.length * 2];
 
         for(int i = 0; i < chars.length; ++i) {
@@ -296,6 +308,12 @@ class FontDetails {
         return result;
     }
 
+	/**
+	 * ivs font array offset
+	 * @param text
+	 * @param startOffset
+	 * @return
+	 */
     private int[] getFormat14Uint(String text, int startOffset) {
         int[] charResult = new int[3];
         boolean isSurrogatePair = Utilities.isSurrogatePair(text, startOffset);
@@ -316,15 +334,19 @@ class FontDetails {
             if (charResult1 == null) {
                 return null;
             }
-
             charResult[0] = 1 + charResult1[0];
             charResult[1] = char1;
             charResult[2] = charResult1[1];
         }
-
         return charResult;
     }
 
+	/**
+	 * ivs font array offset
+	 * @param text
+	 * @param startOffset
+	 * @return
+	 */
     private int[] getFormat14Uint1(String text, int startOffset) {
         int[] charResult = new int[2];
         boolean isSurrogatePair = Utilities.isSurrogatePair(text, startOffset);
