@@ -32,7 +32,6 @@ We want OpenPDF to consist of source code which is consistently licensed with th
 - [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-3-17/)
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 
-
 ## Background ##
 
 OpenPDF is open source software with a LGPL and MPL license. It is a fork of iText version 4, more specifically iText svn tag 4.2.0, which was hosted publicly on sourceforge with LGPL and MPL license headers in the source code, and lgpl and mpl license documents in the svn repository.
@@ -60,6 +59,18 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 ## Dependencies ##
 ### Required Dependencies: ###
  - Java 8 or later is required to use OpenPDF. All versions Java 8 to Java OpenJDK 13 have been tested to work.
+ 
+### UTF-8 Fonts: ###
+
+As of 1.3.21 the UTF-8 Liberation fonts moved to its own module, to reduce the size of the OpenPDF
+jar. If you want to use the bundled UTF-8 fonts, please add the following dependency to your project
+and use the class `org.librepdf.openpdf.fonts.Liberation`.
+
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf-fonts-extra</artifactId>
+            <version>${openpdf.version}</version>
+        </dependency>
 
 ### Optional: ###
 
@@ -74,7 +85,6 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
    - Servlet
  - DOM4j is required for the pdf-swing submodule.
  - Apache FOP
-
 
 ## Credits ##
 Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs/contributors) on GitHub:

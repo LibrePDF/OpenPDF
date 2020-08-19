@@ -1,10 +1,8 @@
-package com.lowagie.text.pdf;
-
-import java.io.IOException;
+package org.librepdf.openpdf.fonts;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.StandardFonts;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 class UnicodePdfTest {
@@ -16,10 +14,10 @@ class UnicodePdfTest {
         // Probably a good idea to write the document to a byte array, so you can read the result and make some checks.
         // ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         // create document
-        Document document = PdfTestBase.createPdf("target/unicode.pdf");
+        Document document = FontsTestUtil.createPdf("target/unicode.pdf");
         // new page with a rectangle
         document.open();
-        document.add(new Paragraph(INPUT, StandardFonts.LIBERATION_SANS.create()));
+        document.add(new Paragraph(INPUT, Liberation.SANS.create()));
         document.close();
     }
 }

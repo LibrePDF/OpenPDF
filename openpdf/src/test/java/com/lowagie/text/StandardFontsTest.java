@@ -1,10 +1,30 @@
 package com.lowagie.text;
 
-import com.lowagie.text.pdf.PdfWriter;
-import org.junit.jupiter.api.Test;
+import static com.lowagie.text.StandardFonts.COURIER;
+import static com.lowagie.text.StandardFonts.COURIER_BOLD;
+import static com.lowagie.text.StandardFonts.COURIER_BOLDITALIC;
+import static com.lowagie.text.StandardFonts.COURIER_ITALIC;
+import static com.lowagie.text.StandardFonts.HELVETICA;
+import static com.lowagie.text.StandardFonts.HELVETICA_BOLD;
+import static com.lowagie.text.StandardFonts.HELVETICA_BOLDITALIC;
+import static com.lowagie.text.StandardFonts.HELVETICA_ITALIC;
+import static com.lowagie.text.StandardFonts.SYMBOL;
+import static com.lowagie.text.StandardFonts.TIMES;
+import static com.lowagie.text.StandardFonts.TIMES_BOLD;
+import static com.lowagie.text.StandardFonts.TIMES_BOLDITALIC;
+import static com.lowagie.text.StandardFonts.TIMES_ITALIC;
+import static com.lowagie.text.StandardFonts.ZAPFDINGBATS;
+import static com.lowagie.text.StandardFonts.values;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import com.lowagie.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
 
 class StandardFontsTest {
 
@@ -20,10 +40,13 @@ class StandardFontsTest {
             /* step 4:*/
             // the 14 standard fonts in PDF: do not use this Font constructor!
             // this is for demonstration purposes only, use FontFactory!
-            for (StandardFonts standardFont : StandardFonts.values()) {
+            final List<StandardFonts> standardFonts = Arrays.stream(values())
+                    .filter(f -> !f.isDeprecated()).collect(Collectors.toList());
+            for (StandardFonts standardFont : standardFonts) {
                 // add the content
                 Font font = standardFont.create();
-                document.add(new Paragraph("quick brown fox jumps over the lazy dog. <= " + standardFont, font));
+                document.add(new Paragraph(
+                        "quick brown fox jumps over the lazy dog. <= " + standardFont, font));
             }
         } catch (DocumentException | IOException de) {
             de.printStackTrace();
@@ -31,18 +54,46 @@ class StandardFontsTest {
     }
 
     @Test
-    void createDocumentAllFontsUnicode() {
-        try (FileOutputStream outputStream = new FileOutputStream("target/StandardFontsUnicode.pdf");
-             Document document = new Document()) {
-            PdfWriter.getInstance(document, outputStream);
-            document.open();
-            for (StandardFonts standardFont : StandardFonts.values()) {
-                Font font = standardFont.create();
-                document.add(new Paragraph(" => äöüÄÖÜß€µł¶ŧ←↓→øþæſðđŋħ»«¢„“”µ·…–\u25b2 <= "
-                        + standardFont, font));
-            }
-        } catch (DocumentException | IOException de) {
-            de.printStackTrace();
+    void testNonDeprecatedFonts() {
+        // given
+        final List<StandardFonts> standardFonts = Arrays.stream(values())
+                .filter(f -> !f.isDeprecated()).collect(Collectors.toList());
+        // then
+        assertThat(standardFonts).containsExactlyInAnyOrder(
+                COURIER, COURIER_BOLD, COURIER_BOLDITALIC, COURIER_ITALIC,
+                HELVETICA, HELVETICA_BOLD, HELVETICA_BOLDITALIC, HELVETICA_ITALIC,
+                SYMBOL,
+                TIMES, TIMES_BOLD, TIMES_BOLDITALIC, TIMES_ITALIC,
+                ZAPFDINGBATS
+        );
+    }
+
+    @Test
+    void testCreateStandardFonts() throws IOException {
+        // given
+        final List<StandardFonts> standardFonts = Arrays.stream(values())
+                .filter(f -> !f.isDeprecated()).collect(Collectors.toList());
+        for (StandardFonts standardFont : standardFonts) {
+            // when
+            final Font font = standardFont.create();
+            // then
+            assertThat(font).isNotNull();
         }
+    }
+
+    @Test
+    void testCreateStandardDeprecatedFonts() {
+        // given
+        SoftAssertions softly = new SoftAssertions();
+        final List<StandardFonts> deprecatedFonts = Arrays.stream(values())
+                .filter(StandardFonts::isDeprecated).collect(Collectors.toList());
+        // when
+        for (StandardFonts deprecatedFont : deprecatedFonts) {
+            // then
+            softly.assertThatThrownBy(deprecatedFont::create)
+                    .isInstanceOf(IOException.class)
+                    .hasMessageContaining(deprecatedFont.name());
+        }
+        softly.assertAll();
     }
 }

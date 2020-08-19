@@ -49,16 +49,15 @@
 
 package com.lowagie.text.pdf;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.SplitCharacter;
 import com.lowagie.text.Utilities;
+import java.awt.Color;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A <CODE>PdfChunk</CODE> is the PDF translation of a <CODE>Chunk</CODE>.
@@ -217,7 +216,8 @@ public class PdfChunk {
             } else {
                 // translation to the embeddable free font
                 try {
-                    baseFont = BaseFont.createFont("com/lowagie/text/pdf/fonts/liberation/LiberationSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                    baseFont = BaseFont.createFont("font-fallback/LiberationSans-Regular.ttf",
+                            BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
