@@ -25,6 +25,7 @@
         <module>openpdf</module>
         <module>pdf-swing</module>
         <module>pdf-toolbox</module>
+        <module>openpdf-fonts-extra</module>
     </modules>
 
     <name>OpenPDF - Free and Open PDF</name>
