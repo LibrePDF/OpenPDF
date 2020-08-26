@@ -13,16 +13,10 @@
 
     <properties>
         <java-module-name>com.github.librepdf.openpdf</java-module-name>
-        <juniversalchardet.version>2.3.2</juniversalchardet.version>
         <imageio-tiff.version>3.5</imageio-tiff.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.github.albfernandez</groupId>
-            <artifactId>juniversalchardet</artifactId>
-            <version>${juniversalchardet.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
