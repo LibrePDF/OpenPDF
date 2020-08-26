@@ -576,16 +576,6 @@ public final class SimpleXMLParser {
             }
             decl = sb.toString();
         }
-        else if (encoding.equals("CP037")) {
-            ByteArrayOutputStream bi = new ByteArrayOutputStream();
-            int c;
-            while ((c = in.read()) != -1) {
-                if (c == 0x6e) // that's '>' in ebcdic
-                    break;
-                bi.write(c);
-            }
-            decl = new String(bi.toByteArray(), "CP037");
-        }
         if (decl != null) {
             decl = getDeclaredEncoding(decl);
             if (decl != null)
