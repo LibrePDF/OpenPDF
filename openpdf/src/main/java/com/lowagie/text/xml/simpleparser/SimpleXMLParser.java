@@ -46,7 +46,6 @@ package com.lowagie.text.xml.simpleparser;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
