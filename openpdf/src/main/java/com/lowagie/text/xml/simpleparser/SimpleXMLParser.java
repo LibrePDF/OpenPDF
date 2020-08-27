@@ -50,8 +50,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Stack;
 
 /**
@@ -550,7 +554,7 @@ public final class SimpleXMLParser {
     }
 
     /** Detect charset from BOM, as per <a href="https://unicode.org/faq/utf_bom.html#bom4">Unicode FAQ</a>. */
-    private static String detectCharsetFromBOM(byte[] bom) {
+    private static Optional<Charset> detectCharsetFromBOM(byte[] bom) {
         // 00 00 FE FF  UTF-32BE
         // EF BB BF ..  UTF-8
         // FE FF .. ..  UTF-16BE
@@ -559,26 +563,26 @@ public final class SimpleXMLParser {
         switch (bom[0]) {
             case (byte) 0x00:
                 if (bom[1] == (byte) 0x00 && bom[2] == (byte) 0xFE && bom[3] == (byte) 0xFF)
-                    return "UTF-32BE";
+                    return Optional.of(Charset.forName("UTF-32BE"));
                 break;
             case (byte) 0xEF:
                 if (bom[1] == (byte) 0xBB && bom[2] == (byte) 0xBF)
-                    return "UTF-8";
+                    return Optional.of(StandardCharsets.UTF_8);
                 break;
             case (byte) 0xFE:
                 if (bom[1] == (byte) 0xFF)
-                    return "UTF-16BE";
+                    return Optional.of(StandardCharsets.UTF_16BE);
                 break;
             case (byte) 0xFF:
                 if (bom[1] == (byte) 0xFE) {
                     if (bom[2] == (byte) 0x00 && bom[3] == (byte) 0x00)
-                        return "UTF-32LE";
+                        return Optional.of(Charset.forName("UTF-32LE"));
                     else
-                        return "UTF-16LE";
+                        return Optional.of(StandardCharsets.UTF_16LE);
                 }
                 break;
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -592,11 +596,8 @@ public final class SimpleXMLParser {
         int count = in.read(b4);
         if (count != 4)
             throw new IOException(MessageLocalization.getComposedMessage("insufficient.length"));
-        String encoding = detectCharsetFromBOM(b4);
-        if (encoding == null) encoding = "UTF-8"; //UTF-8 is default.
-
-        String decl = null;
-        if (encoding.equals("UTF-8")) {
+        Charset encoding = detectCharsetFromBOM(b4).orElse(null);
+        if (encoding == null) {
             StringBuilder sb = new StringBuilder();
             int c;
             while ((c = in.read()) != -1) {
@@ -604,14 +605,17 @@ public final class SimpleXMLParser {
                     break;
                 sb.append((char)c);
             }
-            decl = sb.toString();
+            String decl = getDeclaredEncoding(sb.toString());
+            if (decl == null)
+                encoding = StandardCharsets.UTF_8;
+            else
+                try {
+                    encoding = Charset.forName(decl);
+                } catch (UnsupportedCharsetException e) {
+                    encoding = Charset.forName(IanaEncodings.getJavaEncoding(decl));
+                }
         }
-        if (decl != null) {
-            decl = getDeclaredEncoding(decl);
-            if (decl != null)
-                encoding = decl;
-        }
-        parse(doc, new InputStreamReader(in, IanaEncodings.getJavaEncoding(encoding)));
+        parse(doc, new InputStreamReader(in, encoding));
     }
     
     private static String getDeclaredEncoding(String decl) {
