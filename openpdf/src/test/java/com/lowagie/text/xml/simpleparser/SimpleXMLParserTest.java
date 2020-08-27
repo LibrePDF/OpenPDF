@@ -13,18 +13,31 @@ import org.junit.jupiter.api.Test;
 public class SimpleXMLParserTest {
 
     static final String bom = "\uFEFF";
-    static final String content = "\u79C1";
-    static final String xmlRaw = "<?xml version='1.0'?><a>" + content + "</a>";
+    static final String euro = "\u20AC";
+    static final String xmlRaw = "<?xml version='1.0'?><a>" + euro + "</a>";
     static final String xmlBOM = bom + xmlRaw;
+    static final String xmlI15 = "<?xml version='1.0' encoding='ISO-8859-15'?><a>" + euro + "</a>";
 
     @Test
-    void testParse() throws IOException {
+    void testDetectUnicode() throws IOException {
         testCharset(xmlRaw, StandardCharsets.UTF_8);
         testCharset(xmlBOM, StandardCharsets.UTF_8);
         testCharset(xmlBOM, StandardCharsets.UTF_16BE);
         testCharset(xmlBOM, StandardCharsets.UTF_16LE);
         testCharset(xmlBOM, Charset.forName("UTF-32BE"));
         testCharset(xmlBOM, Charset.forName("UTF-32LE"));
+        testCharset(xmlI15, Charset.forName("ISO-8859-15"));
+    }
+
+    @Test
+    void testDetectedOverDeclared() throws IOException {
+        String xml = bom + xmlI15;
+        testCharset(xml, StandardCharsets.UTF_8);
+        testCharset(xml, StandardCharsets.UTF_16BE);
+        testCharset(xml, StandardCharsets.UTF_16LE);
+        testCharset(xml, Charset.forName("UTF-32BE"));
+        testCharset(xml, Charset.forName("UTF-32LE"));
+        testCharset(xml, Charset.forName("ISO-8859-15"));
     }
 
     static void testCharset(String xml, Charset charset) throws IOException {
@@ -62,7 +75,7 @@ public class SimpleXMLParserTest {
 
         @Override
         public void text(String str) {
-            Assertions.assertEquals(content, str, "text content in " + charset);
+            Assertions.assertEquals(euro, str, "text content in " + charset);
             called = true;
         }
 
