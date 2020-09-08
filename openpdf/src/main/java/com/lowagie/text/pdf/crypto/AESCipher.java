@@ -78,8 +78,6 @@ public class AESCipher {
     byte[] outp = null;
     if (neededLen > 0)
       outp = new byte[neededLen];
-    else
-      neededLen = 0;
     bp.processBytes(inp, inpOff, inpLen, outp, 0);
     return outp;
   }
@@ -87,7 +85,7 @@ public class AESCipher {
   public byte[] doFinal() {
     int neededLen = bp.getOutputSize(0);
     byte[] outp = new byte[neededLen];
-    int n = 0;
+    int n;
     try {
       n = bp.doFinal(outp, 0);
     } catch (Exception ex) {

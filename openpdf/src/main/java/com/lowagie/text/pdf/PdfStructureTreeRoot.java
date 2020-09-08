@@ -55,18 +55,19 @@ import java.util.Map;
 
 /**
  * The structure tree root corresponds to the highest hierarchy level in a tagged PDF.
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfStructureTreeRoot extends PdfDictionary {
-    
-    private Map<Integer,PdfArray> parentTree = new HashMap<>();
-    private PdfIndirectReference reference;
+
+    private final Map<Integer, PdfArray> parentTree = new HashMap<>();
+    private final PdfIndirectReference reference;
 
     /**
      * Holds value of property writer.
      */
-    private PdfWriter writer;
-    
+    private final PdfWriter writer;
+
     /** Creates a new instance of PdfStructureTreeRoot */
     PdfStructureTreeRoot(PdfWriter writer) {
         super(PdfName.STRUCTTREEROOT);
@@ -105,30 +106,32 @@ public class PdfStructureTreeRoot extends PdfDictionary {
     public PdfIndirectReference getReference() {
         return this.reference;
     }
-    
-    void setPageMark(int page, PdfIndirectReference struc) {
+
+    void setPageMark(int page, PdfIndirectReference reference) {
         Integer i = page;
         PdfArray ar = parentTree.get(i);
         if (ar == null) {
             ar = new PdfArray();
             parentTree.put(i, ar);
         }
-        ar.add(struc);
+        ar.add(reference);
     }
-    
-    private void nodeProcess(PdfDictionary struc, PdfIndirectReference reference) throws IOException {
-        PdfObject obj = struc.get(PdfName.K);
-        if (obj != null && obj.isArray() && !((PdfArray)obj).getElements().get(0).isNumber()) {
-            PdfArray ar = (PdfArray)obj;
+
+    private void nodeProcess(PdfDictionary dictionary, PdfIndirectReference reference)
+            throws IOException {
+        PdfObject obj = dictionary.get(PdfName.K);
+        if (obj != null && obj.isArray() && !((PdfArray) obj).getElements().get(0).isNumber()) {
+            PdfArray ar = (PdfArray) obj;
             List<PdfObject> a = ar.getElements();
             for (int k = 0; k < a.size(); ++k) {
-                PdfStructureElement e = (PdfStructureElement)a.get(k);
+                PdfStructureElement e = (PdfStructureElement) a.get(k);
                 a.set(k, e.getReference());
                 nodeProcess(e, e.getReference());
             }
         }
-        if (reference != null)
-            writer.addToBody(struc, reference);
+        if (reference != null) {
+            writer.addToBody(dictionary, reference);
+        }
     }
     
     void buildTree() throws IOException {

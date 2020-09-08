@@ -13,18 +13,19 @@
  */
 package com.lowagie.examples.objects.images;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import java.awt.Color;
+import java.awt.Toolkit;
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
+import org.junit.jupiter.api.Test;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.Image;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
-import org.junit.jupiter.api.Test;
-
-import java.awt.Color;
-import java.awt.Toolkit;
-import java.io.ByteArrayOutputStream;
-
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * Using the java.awt.Image object.
@@ -46,16 +47,19 @@ class AwtImage {
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
             PdfWriter writer = PdfWriter.getInstance(document, baos);
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4: we add content to the document
             for (int i = 0; i < 300; i++) {
                 document.add(new Phrase("Who is this? "));
             }
             PdfContentByte cb = writer.getDirectContent();
-            java.awt.Image awtImage = Toolkit.getDefaultToolkit().createImage(ClassLoader.getSystemResource("H.gif").getPath());
+            final URL systemResource = ClassLoader.getSystemResource("H.gif");
+            final String path = systemResource.getPath();
+            java.awt.Image awtImage = Toolkit.getDefaultToolkit().createImage(
+                    path);
             Image image = Image.getInstance(awtImage, null);
             image.setAbsolutePosition(100, 500);
             cb.addImage(image);
