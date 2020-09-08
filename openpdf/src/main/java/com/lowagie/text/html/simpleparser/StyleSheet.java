@@ -42,7 +42,7 @@
  *
  * Contributions by:
  * Lubos Strapko
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * https://github.com/LibrePDF/OpenPDF
@@ -50,16 +50,22 @@
 
 package com.lowagie.text.html.simpleparser;
 
-import com.lowagie.text.html.Markup;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.lowagie.text.html.Markup;
+
 public class StyleSheet {
 
-    private Map<String, Map<String, String>> classMap = new HashMap<>();
-    private Map<String, Map<String, String>> tagMap = new HashMap<>();
+    private final Map<String, Map<String, String>> classMap = new HashMap<>();
+    private final Map<String, Map<String, String>> tagMap = new HashMap<>();
 
+    /**
+     * @deprecated please use #applyStyle(String tag, Map<String, String> props) this method will be
+     * removed in 2.0
+     */
     @Deprecated
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void applyStyle(String tag, HashMap props) {
         applyStyle(tag, (Map<String, String>) props);
     }

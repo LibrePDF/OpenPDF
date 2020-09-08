@@ -49,14 +49,13 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-
-import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.ExceptionConverter;
-
 import java.io.IOException;
 import java.util.ArrayList;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * <CODE>PdfPages</CODE> is the PDF Pages-object.
@@ -70,18 +69,18 @@ import java.util.ArrayList;
  */
 
 public class PdfPages {
-    
-    private ArrayList<PdfIndirectReference> pages = new ArrayList<>();
-    private ArrayList<PdfIndirectReference> parents = new ArrayList<>();
+
+    private final ArrayList<PdfIndirectReference> pages = new ArrayList<>();
+    private final ArrayList<PdfIndirectReference> parents = new ArrayList<>();
     private int leafSize = 10;
-    private PdfWriter writer;
+    private final PdfWriter writer;
     private PdfIndirectReference topParent;
-    
+
     // constructors
-    
-/**
- * Constructs a <CODE>PdfPages</CODE>-object.
- */
+
+    /**
+     * Constructs a <CODE>PdfPages</CODE>-object.
+     */
     
     PdfPages(PdfWriter writer) {
         this.writer = writer;
@@ -162,11 +161,7 @@ public class PdfPages {
             nextParents = new ArrayList<>();
         }
     }
-    
-    PdfIndirectReference getTopParent() {
-        return topParent;
-    }
-    
+
     void setLinearMode(PdfIndirectReference topParent) {
         if (parents.size() > 1)
             throw new RuntimeException(MessageLocalization.getComposedMessage("linear.page.mode.can.only.be.called.with.a.single.parent"));
@@ -176,10 +171,6 @@ public class PdfPages {
             parents.add(topParent);
         }
         leafSize = 10000000;
-    }
-
-    void addPage(PdfIndirectReference page) {
-        pages.add(page);
     }
 
     int reorderPages(int[] order) throws DocumentException {
