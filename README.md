@@ -60,7 +60,6 @@ Make sure that your contributions can be released with a dual LGPL and MPL licen
 ## Dependencies ##
 ### Required Dependencies: ###
  - Java 8 or later is required to use OpenPDF. All versions Java 8 to Java OpenJDK 13 have been tested to work.
- - [Juniversalchardet](https://github.com/albfernandez/juniversalchardet)
 
 ### Optional: ###
 
@@ -94,11 +93,10 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@ubermichael](https://github.com/ubermichael) - Michael Joyce  
   [@weiyeh](https://github.com/weiyeh)  
   [@SuperPat45](https://github.com/SuperPat45)  
-  [@lapo-luchini](https://github.com/lapo-luchini)  
+  [@lapo-luchini](https://github.com/lapo-luchini)  - Lapo Luchini
   [@MartinKocour](https://github.com/MartinKocour)  - Martin Kocour  
   [@jokimaki](https://github.com/jokimaki)  
   [@sullis](https://github.com/sullis)  
-  [@lapo-luchini](https://github.com/lapo-luchini)  
   [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)  
   [@V-F](https://github.com/V-F)     
   [@sixdouglas](https://github.com/sixdouglas) - Douglas Six  
