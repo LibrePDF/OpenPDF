@@ -103,7 +103,7 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
   [@ubermichael](https://github.com/ubermichael) - Michael Joyce  
   [@weiyeh](https://github.com/weiyeh)  
   [@SuperPat45](https://github.com/SuperPat45)  
-  [@lapo-luchini](https://github.com/lapo-luchini)  - Lapo Luchini
+  [@lapo-luchini](https://github.com/lapo-luchini)  - Lapo Luchini  
   [@MartinKocour](https://github.com/MartinKocour)  - Martin Kocour  
   [@jokimaki](https://github.com/jokimaki)  
   [@sullis](https://github.com/sullis)  
