@@ -293,6 +293,9 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <version>${maven.compiler.plugin.version}</version>
+                        <configuration>
+                            <release>8</release>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>compile-java-9</id>
