@@ -21,7 +21,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 
 ## License ##
 
-GNU General Lesser Public License (LGPL) version 3.0 - http://www.gnu.org/licenses/lgpl.html
+GNU General Lesser Public License (LGPL) version 2.1 - https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 
 Mozilla Public License Version 2.0 - http://www.mozilla.org/MPL/2.0/
 
