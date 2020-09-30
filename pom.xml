@@ -259,7 +259,7 @@
                     <dependency>
                         <groupId>org.pitest</groupId>
                         <artifactId>pitest-junit5-plugin</artifactId>
-                        <version>0.7</version>
+                        <version>0.12</version>
                     </dependency>
                     <!--Need this because dep is optional and pitest can't find classes-->
                     <dependency>
