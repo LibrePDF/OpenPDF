@@ -89,38 +89,38 @@ and use the class `org.librepdf.openpdf.fonts.Liberation`.
 ## Credits ##
 Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs/contributors) on GitHub:
 
-  [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.
-  [@daviddurand](https://github.com/daviddurand) -  David G. Durand
-  [@tlxtellef](https://github.com/tlxtellef) - Tellef
-  [@asturio](https://github.com/asturio) - Claudio Clemens
-  [@ymasory](https://github.com/ymasory)
-  [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
-  [@noavarice](https://github.com/noavarice)
-  [@bengolder](https://github.com/bengolder)  - Benjamin Golder
-  [@glarfs](https://github.com/glarfs)
-  [@Kindrat](https://github.com/Kindrat)
-  [@syakovyn](https://github.com/syakovyn)
-  [@ubermichael](https://github.com/ubermichael) - Michael Joyce
-  [@weiyeh](https://github.com/weiyeh)
-  [@SuperPat45](https://github.com/SuperPat45)
-  [@lapo-luchini](https://github.com/lapo-luchini)  - Lapo Luchini
-  [@MartinKocour](https://github.com/MartinKocour)  - Martin Kocour
-  [@jokimaki](https://github.com/jokimaki)
-  [@sullis](https://github.com/sullis)
-  [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)
-  [@V-F](https://github.com/V-F)
-  [@sixdouglas](https://github.com/sixdouglas) - Douglas Six
-  [@razilein](https://github.com/razilein) - Sita Geßner
-  [@PalAditya](https://github.com/PalAditya) - Aditya Pal
-  [@rammetzger](https://github.com/rammetzger)
-  [@codecracker2014](https://github.com/codecracker2014)
-  [@mluppi](https://github.com/mluppi)
-  [@vic0075](https://github.com/vic0075)
-  [@armin-weber](https://github.com/armin-weber)
-  [@dandybudach](https://github.com/dandybudach) Dandy Budach
-  [@salsolatragus](https://github.com/salsolatragus) Sven Amann
-  [@suiaing](https://github.com/suiaing)
-  [@prashantbhat](https://github.com/prashantbhat) Prashant Bhat
+  [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.  
+  [@daviddurand](https://github.com/daviddurand) - David G. Durand  
+  [@tlxtellef](https://github.com/tlxtellef) - Tellef  
+  [@asturio](https://github.com/asturio) - Claudio Clemens  
+  [@ymasory](https://github.com/ymasory)  
+  [@albfernandez](https://github.com/albfernandez) - Alberto Fernández  
+  [@noavarice](https://github.com/noavarice)  
+  [@bengolder](https://github.com/bengolder) - Benjamin Golder  
+  [@glarfs](https://github.com/glarfs)  
+  [@Kindrat](https://github.com/Kindrat)  
+  [@syakovyn](https://github.com/syakovyn)  
+  [@ubermichael](https://github.com/ubermichael) - Michael Joyce  
+  [@weiyeh](https://github.com/weiyeh)  
+  [@SuperPat45](https://github.com/SuperPat45)  
+  [@lapo-luchini](https://github.com/lapo-luchini) - Lapo Luchini  
+  [@MartinKocour](https://github.com/MartinKocour) - Martin Kocour  
+  [@jokimaki](https://github.com/jokimaki)  
+  [@sullis](https://github.com/sullis)  
+  [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)  
+  [@V-F](https://github.com/V-F)  
+  [@sixdouglas](https://github.com/sixdouglas) - Douglas Six  
+  [@razilein](https://github.com/razilein) - Sita Geßner  
+  [@PalAditya](https://github.com/PalAditya) - Aditya Pal  
+  [@rammetzger](https://github.com/rammetzger)  
+  [@codecracker2014](https://github.com/codecracker2014)  
+  [@mluppi](https://github.com/mluppi) - M. Luppi  
+  [@vic0075](https://github.com/vic0075)  
+  [@armin-weber](https://github.com/armin-weber)  
+  [@dandybudach](https://github.com/dandybudach) - Dandy Budach  
+  [@salsolatragus](https://github.com/salsolatragus) - Sven Amann  
+  [@suiaing](https://github.com/suiaing)  
+  [@prashantbhat](https://github.com/prashantbhat) - Prashant Bhat  
 
 
 Also, a very special thanks to the iText developers ;)
