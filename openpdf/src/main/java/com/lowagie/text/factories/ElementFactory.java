@@ -90,7 +90,7 @@ public class ElementFactory {
 
     /**
      * Creates a Chunk object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the parameters on
      * @return a Chunk
      */
     public static Chunk getChunk(Properties attributes) {
@@ -147,7 +147,7 @@ public class ElementFactory {
 
     /**
      * Creates a Phrase object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the parameters on
      * @return a Phrase
      */
     public static Phrase getPhrase(Properties attributes) {
@@ -176,7 +176,7 @@ public class ElementFactory {
 
     /**
      * Creates an Anchor object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the parameters on
      * @return an Anchor
      */
     public static Anchor getAnchor(Properties attributes) {
@@ -195,7 +195,7 @@ public class ElementFactory {
 
     /**
      * Creates a Paragraph object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the parameters on
      * @return a Paragraph
      */
     public static Paragraph getParagraph(Properties attributes) {
@@ -218,7 +218,7 @@ public class ElementFactory {
 
     /**
      * Creates a ListItem object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the parameters on
      * @return a ListItem
      */
     public static ListItem getListItem(Properties attributes) {
@@ -228,7 +228,7 @@ public class ElementFactory {
 
     /**
      * Creates a List object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the parameters on
      * @return the List
      */
     public static List getList(Properties attributes) {
@@ -284,7 +284,7 @@ public class ElementFactory {
 
     /**
      * Creates a Cell object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the parameters on
      * @return a Cell
      */
     public static Cell getCell(Properties attributes) {
@@ -339,7 +339,7 @@ public class ElementFactory {
 
     /**
      * Creates an Table object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the parameters on
      * @return a Table
      */
     public static Table getTable(Properties attributes) {
@@ -426,6 +426,8 @@ public class ElementFactory {
 
     /**
      * Sets some Rectangle properties (for a Cell, Table,...).
+     * @param rect          The Rectangle to set the properties to
+     * @param attributes    The properties to base the parameters on
      */
     private static void setRectangleProperties(Rectangle rect,
             Properties attributes) {
@@ -494,7 +496,7 @@ public class ElementFactory {
 
     /**
      * Creates a ChapterAutoNumber object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the parameters on
      * @return a Chapter
      */
     public static ChapterAutoNumber getChapter(Properties attributes) {
@@ -505,7 +507,8 @@ public class ElementFactory {
 
     /**
      * Creates a Section object based on a list of properties.
-     * @param attributes
+     * @param attributes    The attributes to base the parameters on
+     * @param parent        The parent Section to add a Section to
      * @return a Section
      */
     public static Section getSection(Section parent, Properties attributes) {
@@ -516,7 +519,8 @@ public class ElementFactory {
 
     /**
      * Helper method to create a Chapter/Section object.
-     * @param attributes
+     * @param attributes    The attributes to base the parameters on
+     * @param section       The part of the document to set the parameters to
      */
     private static void setSectionParameters(Section section,
             Properties attributes) {
@@ -541,8 +545,10 @@ public class ElementFactory {
 
     /**
      * Creates an Image object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the Image on
      * @return an Image
+     * @throws IOException          thrown if an I/O problem occurs
+     * @throws BadElementException  the exception thrown when the Element doesn't have the right form
      */
     public static Image getImage(Properties attributes)
             throws BadElementException, IOException {
@@ -599,7 +605,7 @@ public class ElementFactory {
 
     /**
      * Creates an Annotation object based on a list of properties.
-     * @param attributes
+     * @param attributes    The properties to base the Annotation on
      * @return an Annotation
      */
     public static Annotation getAnnotation(Properties attributes) {

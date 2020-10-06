@@ -109,41 +109,42 @@ import java.util.Optional;
  * <STRONG>table.addCell("cell test2");</STRONG>
  * </PRE></BLOCKQUOTE>
  * The result of this code is a table:
- *      <TABLE ALIGN="Center" BORDER="1" BORDERCOLOR="#0000ff" CELLPADDING="5" CELLSPACING="5" SUMMARY="">
- *              <TR ALIGN="Left" VALIGN="Left">
- *                      <TH ALIGN="Left" COLSPAN="3" VALIGN="Left">
+ *      <TABLE BORDER="1">
+ *          <CAPTION></CAPTION>
+ *              <TR VALIGN="Left">
+ *                      <TH COLSPAN="3" VALIGN="Left">
  *                              header
  *                      </TH>
  *              </TR>
- *              <TR ALIGN="Left" VALIGN="Left">
- *                      <TD ALIGN="Left" BORDERCOLOR="#ff0000" ROWSPAN="2" VALIGN="Left">
+ *              <TR VALIGN="Left">
+ *                      <TD ROWSPAN="2" VALIGN="Left">
  *                              example cell with colspan 1 and rowspan 2
  *                      </TD>
- *                      <TD ALIGN="Left" VALIGN="Left">
+ *                      <TD VALIGN="Left">
  *                              1.1
  *                      </TD>
- *                      <TD ALIGN="Left" VALIGN="Left">
+ *                      <TD VALIGN="Left">
  *                              2.1
  *                      </TD>
  *              </TR>
- *              <TR ALIGN="Left" VALIGN="Left">
- *                      <TD ALIGN="Left" VALIGN="Left">
+ *              <TR VALIGN="Left">
+ *                      <TD VALIGN="Left">
  *                              1.2
  *                      </TD>
- *                      <TD ALIGN="Left" VALIGN="Left">
+ *                      <TD VALIGN="Left">
  *                              2.2
  *                      </TD>
  *              </TR>
- *              <TR ALIGN="Left" VALIGN="Left">
- *                      <TD ALIGN="Left" VALIGN="Left">
+ *              <TR VALIGN="Left">
+ *                      <TD VALIGN="Left">
  *                              cell test1
  *                      </TD>
- *                      <TD ALIGN="Left" COLSPAN="2" ROWSPAN="2" VALIGN="Left">
+ *                      <TD COLSPAN="2" ROWSPAN="2" VALIGN="Left">
  *                              big cell
  *                      </TD>
  *              </TR>
- *              <TR ALIGN="Left" VALIGN="Left">
- *                      <TD ALIGN="Left" VALIGN="Left">
+ *              <TR VALIGN="Left">
+ *                      <TD VALIGN="Left">
  *                              cell test2
  *                      </TD>
  *              </TR>

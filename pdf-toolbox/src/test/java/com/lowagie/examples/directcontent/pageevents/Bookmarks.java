@@ -39,9 +39,9 @@ public class Bookmarks extends PdfPageEventHelper {
     
     /**
      * Adds an outline for every new Paragraph
-     * @param writer
-     * @param document
-     * @param position
+     * @param writer        The PdfWrite to write to the Document
+     * @param document      The Document to write to
+     * @param position      An int that specifies the y / x coordinate of the top / left edge of the window
      */
     public void onParagraph(PdfWriter writer, Document document, float position) {
         n++;

@@ -135,6 +135,11 @@ public class HyphenationTree extends TernaryTree
     /**
      * String compare, returns 0 if equal or
      * t is a substring of s
+     * @param s     The first String to compare
+     * @param si    The index to start at on String s
+     * @param t     The second String to compare
+     * @param ti    The index to start at on String t
+     * @return 0 if equal or
      */
     protected int hstrcmp(char[] s, int si, char[] t, int ti) {
         for (; s[si] == t[ti]; si++, ti++) {

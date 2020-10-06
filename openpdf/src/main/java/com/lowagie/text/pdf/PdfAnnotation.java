@@ -334,7 +334,9 @@ public class PdfAnnotation extends PdfDictionary {
 
   /**
    * Creates a link.
-   *
+   * @param writer {@link PdfWriter}
+   * @param rect dimensions {@link Rectangle}
+   * @param highlight the highlight property
    * @return A PdfAnnotation
    */
   protected static PdfAnnotation createLink(PdfWriter writer, Rectangle rect, PdfName highlight) {

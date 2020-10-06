@@ -63,7 +63,10 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
 public class AESCipher {
   private final PaddedBufferedBlockCipher bp;
 
-  /** Creates a new instance of AESCipher */
+  /** Creates a new instance of AESCipher
+   * @param forEncryption If it is for encryption
+   * @param iv            An initialization vector
+   * @param key           Bytes for key*/
   public AESCipher(boolean forEncryption, byte[] key, byte[] iv) {
     BlockCipher aes = new AESEngine();
     BlockCipher cbc = new CBCBlockCipher(aes);

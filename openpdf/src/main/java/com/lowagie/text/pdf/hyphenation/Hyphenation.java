@@ -49,6 +49,7 @@ public class Hyphenation {
     }
 
     /**
+     * @param index The index of the hyphen character
      * @return the pre-break text, not including the hyphen character
      */
     public String getPreHyphenText(int index) {
@@ -56,6 +57,7 @@ public class Hyphenation {
     }
 
     /**
+     * @param index The index of the hyphen character in the word
      * @return the post-break text
      */
     public String getPostHyphenText(int index) {

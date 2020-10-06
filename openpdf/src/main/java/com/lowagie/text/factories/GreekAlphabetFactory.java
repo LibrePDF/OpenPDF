@@ -91,6 +91,7 @@ public class GreekAlphabetFactory {
     /**
      * Changes an int into a Greek letter combination.
      * @param index the original number
+     * @param lowercase true for lowercase, false for uppercase
      * @return the letter combination
      */
     public static final String getString(int index, boolean lowercase) {

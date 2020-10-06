@@ -70,7 +70,11 @@ public class PolylineShape implements Shape {
     /** The total number of points. */
     protected int np;
 
-    /** Creates a PolylineShape. */
+    /** Creates a PolylineShape.
+     * @param nPoints   The total number of points
+     * @param x         An int array containing all the X-values of the coordinates in the polyline
+     * @param y         An int array containing all the Y-values of the coordinates in the polyline
+     * */
     public PolylineShape(int[] x, int[] y, int nPoints) {
         // Should copy array (as done in Polygon)
         this.np = nPoints;

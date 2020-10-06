@@ -28,7 +28,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class Templates {
     
     /**
-     * @param args
+     * @param args - the arguments passed by the command line
      */
     public static void main(String[] args) {
         

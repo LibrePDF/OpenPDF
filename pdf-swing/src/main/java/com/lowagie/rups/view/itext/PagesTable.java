@@ -57,6 +57,7 @@ public class PagesTable extends JTable implements JTableAutoModelInterface, Obse
     /**
      * Constructs a PagesTable.
      * @param    listener    the page navigation listener.
+     * @param controller     The renderer that will render an object when selected in the table.
      */
     public PagesTable(PdfReaderController controller, PageSelectionListener listener) {
         this.controller = controller;

@@ -121,6 +121,7 @@ public class Permissions {
     }
     /**
      * Tells you if modifying the contents is allowed.
+     * @param decrypted     Not used, boolean that specifies is the file is decrypted
      * @return true if modifying contents is allowed
      */
     public boolean isAllowModifyContents(boolean decrypted) {
@@ -130,6 +131,7 @@ public class Permissions {
     }
     /**
      * Tells you if copying is allowed.
+     * @param decrypted     Not used, boolean that specifies is the file is decrypted
      * @return true if copying is allowed
      */
     public boolean isAllowCopy(boolean decrypted) {

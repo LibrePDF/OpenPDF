@@ -62,6 +62,7 @@ public class FormTree extends JTree implements TreeSelectionListener, Observer {
     
     /**
      * Creates a new FormTree.
+     * @param controller    The renderer that will render an object when selected in the table.
      */
     public FormTree(PdfReaderController controller) {
         super();

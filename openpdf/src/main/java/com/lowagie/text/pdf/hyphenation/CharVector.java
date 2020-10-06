@@ -91,7 +91,7 @@ public class CharVector implements Cloneable, Serializable {
     }
 
     /**
-     * return number of items in array
+     * @return the number of items in array
      */
     public int length() {
         return n;
@@ -99,6 +99,7 @@ public class CharVector implements Cloneable, Serializable {
 
     /**
      * returns current capacity of array
+     * @return the current capacity of array
      */
     public int capacity() {
         return array.length;
