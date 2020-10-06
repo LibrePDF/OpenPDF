@@ -134,6 +134,8 @@ public class TernaryTree implements Cloneable, Serializable {
      * another key with same prefix
      * is inserted. This saves a lot of space,
      * specially for long keys.
+     * @param key The key to insert
+     * @param val The char to insert
      */
     public void insert(String key, char val) {
         // make sure we have enough room in the arrays
@@ -231,6 +233,11 @@ public class TernaryTree implements Cloneable, Serializable {
 
     /**
      * Compares 2 null terminated char arrays
+     * @param a         The first char array to compare - must end by null
+     * @param startA    The index to start comparing for a
+     * @param b         The second char array to compare - must end by null
+     * @param startB    The index to start comparing for b
+     * @return 0 if equals, otherwise the difference of the first different characters
      */
     public static int strcmp(char[] a, int startA, char[] b, int startB) {
         for (; a[startA] == b[startB]; startA++, startB++) {
@@ -243,6 +250,10 @@ public class TernaryTree implements Cloneable, Serializable {
 
     /**
      * Compares a string with null terminated char array
+     * @param a     The char array to compare - last index has null
+     * @param start The index to start comparing from
+     * @param str   The String to compare
+     * @return 0 if equals, otherwise the difference of the first different characters
      */
     public static int strcmp(String str, char[] a, int start) {
         int i, d, len = str.length();
@@ -259,7 +270,6 @@ public class TernaryTree implements Cloneable, Serializable {
             return -a[start + i];
         }
         return 0;
-
     }
 
     public static void strcpy(char[] dst, int di, char[] src, int si) {
@@ -365,6 +375,10 @@ public class TernaryTree implements Cloneable, Serializable {
      * lower and upper halves, and so on in order to get a balanced
      * tree. The array of keys is assumed to be sorted in ascending
      * order.
+     * @param k         The array of keya - assumed to be sorted in ascending order
+     * @param n         n
+     * @param offset    The offset
+     * @param v         The character to insert first
      */
     protected void insertBalanced(String[] k, char[] v, int offset, int n) {
         int m;

@@ -43,8 +43,8 @@ public class XfaFile implements OutputStreamResource {
      * Constructs an XFA file from an OutputStreamResource.
      * This resource can be an XML file or a node in a RUPS application.
      * @param    resource    the XFA resource
-     * @throws IOException 
-     * @throws DocumentException 
+     * @throws IOException  thrown when an I/O operation goes wrong
+     * @throws DocumentException    thrown when something goes wrong with a Document
      */
     public XfaFile(OutputStreamResource resource) throws IOException, DocumentException {
         // Is there a way to avoid loading everything in memory?

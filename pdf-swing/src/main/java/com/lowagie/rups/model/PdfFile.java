@@ -55,8 +55,8 @@ public class PdfFile {
     /**
      * Constructs a PdfFile object.
      * @param    file    the File to read
-     * @throws IOException 
-     * @throws DocumentException 
+     * @throws IOException  thrown when an I/O operation fails
+     * @throws DocumentException    thrown when an error occurs with the Document
      */
     public PdfFile(File file) throws IOException, DocumentException {
         if (file == null)
@@ -70,8 +70,8 @@ public class PdfFile {
     /**
      * Constructs a PdfFile object.
      * @param    file    the byte[] to read
-     * @throws IOException 
-     * @throws DocumentException 
+     * @throws IOException  thrown when an I/O operation fails
+     * @throws DocumentException    thrown when an error occurs with the Document
      */
     public PdfFile(byte[] file) throws IOException, DocumentException {
         RandomAccessFileOrArray pdf = new RandomAccessFileOrArray(file);
@@ -81,8 +81,8 @@ public class PdfFile {
     /**
      * Does the actual reading of the file into PdfReader and PDFFile.
      * @param pdf    a Random Access File or Array
-     * @throws IOException
-     * @throws DocumentException
+     * @throws IOException  thrown when an I/O operation goes wrong
+     * @throws DocumentException    thrown when something goes wrong with a Document
      */
     protected void readFile(RandomAccessFileOrArray pdf) throws IOException, DocumentException {
         // reading the file into PdfReader

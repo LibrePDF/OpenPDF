@@ -337,7 +337,7 @@ public class IndexEvents extends PdfPageEventHelper {
         /**
          * Add a pagenumber.
          * @param number    The page number.
-         * @param tag
+         * @param tag       The tag.
          */
         public void addPageNumberAndTag(final int number, final String tag) {
             pagenumbers.add(number);

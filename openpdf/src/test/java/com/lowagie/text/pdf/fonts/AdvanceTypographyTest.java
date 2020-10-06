@@ -20,7 +20,7 @@ public class AdvanceTypographyTest {
     /**
      * Without ghyph substitution out will be {660,666,676,1143,656,1130}, which is no correct
      * FopGlyphProcessor performs ghyph substitution to correct the output
-     * @throws Exception
+     * @throws Exception - DocumentException or IOException thrown by the processedContent() method
      */
     @Test
     public void testTypographySubstitution() throws Exception{
@@ -36,7 +36,7 @@ public class AdvanceTypographyTest {
     /**
      * In some fonts combination of two characters can be represented by single glyph
      * This method tests above case.
-     * @throws Exception
+     * @throws Exception - UnsupportedEncodingException by the convertToBytesWithGlyphs method
      */
     @Test
     public void testSubstitutionWithMerge() throws Exception{

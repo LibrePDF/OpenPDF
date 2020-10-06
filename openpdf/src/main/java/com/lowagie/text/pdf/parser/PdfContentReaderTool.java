@@ -133,7 +133,7 @@ public class PdfContentReaderTool {
      *            the page number to read
      * @param out
      *            the output stream to send the content to
-     * @throws IOException
+     * @throws IOException  thrown when an I/O operation goes wrong
      */
     public static void listContentStreamForPage(PdfReader reader, int pageNum, PrintWriter out)
             throws IOException {
@@ -176,7 +176,7 @@ public class PdfContentReaderTool {
      *            a File instance referring to a PDF file
      * @param out
      *            the output stream to send the content to
-     * @throws IOException
+     * @throws IOException  thrown when an I/O operation goes wrong
      */
     public static void listContentStream(File pdfFile, PrintWriter out)
             throws IOException {
@@ -201,7 +201,7 @@ public class PdfContentReaderTool {
      *            the page number to read
      * @param out
      *            the output stream to send the content to
-     * @throws IOException
+     * @throws IOException  thrown when an I/O operation goes wrong
      */
     public static void listContentStream(File pdfFile, int pageNum,
             PrintWriter out) throws IOException {

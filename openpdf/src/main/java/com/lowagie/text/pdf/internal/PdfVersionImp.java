@@ -120,6 +120,7 @@ public class PdfVersionImp implements PdfVersion {
     
     /**
      * Sets the append mode.
+     * @param appendmode    Boolean that indicates if we are working in append mode.
      */
     public void setAppendmode(boolean appendmode) {
         this.appendmode = appendmode;
@@ -127,7 +128,7 @@ public class PdfVersionImp implements PdfVersion {
     
     /**
      * Writes the header to the OutputStreamCounter.
-     * @throws IOException 
+     * @throws IOException thrown when an I/O operation goes wrong
      */
     public void writeHeader(OutputStreamCounter os) throws IOException {
         if (appendmode) {
@@ -144,6 +145,7 @@ public class PdfVersionImp implements PdfVersion {
     /**
      * Returns the PDF version as a name.
      * @param version    the version character.
+     * @return a PdfName that contains the version
      */
     public PdfName getVersionAsName(char version) {
         switch(version) {
@@ -167,12 +169,14 @@ public class PdfVersionImp implements PdfVersion {
     /**
      * Returns the version as a byte[].
      * @param version the version character
+     * @return a byte array containing the version according to the ISO-8859-1 codepage.
      */
     public byte[] getVersionAsByteArray(char version) {
         return DocWriter.getISOBytes(getVersionAsName(version).toString().substring(1));
     }
 
-    /** Adds the version to the Catalog dictionary. */
+    /** Adds the version to the Catalog dictionary.
+     * @param catalog   The PdfDictionary to add the version to*/
     public void addToCatalog(PdfDictionary catalog) {
         if(catalog_version != null) {
             catalog.put(PdfName.VERSION, catalog_version);

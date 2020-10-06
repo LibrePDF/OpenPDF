@@ -99,26 +99,34 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
     
     /**
      * Add a PdfFormField that has to be tied to a generic Chunk.
+     * @param field The PdfFormField
+     * @param text  The text
      */
     public void addField(String text, PdfFormField field) {
         genericChunkFields.put(text, field);
     }
-    
-    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. */
+
+    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event.
+     * @param writer    The PdfWriter
+     * @param field     The field to label the Event*/
     public FieldPositioningEvents(PdfWriter writer, PdfFormField field) {
         this.cellField = field;
         this.fieldWriter = writer;
     }  
     
-    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. */
+    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event.
+     * @param parent    The parent of the Event
+     * @param field     The field to label the Event*/
     public FieldPositioningEvents(PdfFormField parent, PdfFormField field) {
         this.cellField = field;
         this.parent = parent;
     }
     
-    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. 
-     * @throws DocumentException
-     * @throws IOException*/
+    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event.
+     * @param writer    The PdfWriter
+     * @param text      The text to label the TextField
+     * @throws DocumentException    thrown when an error occurs in a Document
+     * @throws IOException          throw when an I/O operation fails*/
     public FieldPositioningEvents(PdfWriter writer, String text) throws IOException, DocumentException {
         this.fieldWriter = writer;
         TextField tf = new TextField(writer, new Rectangle(0, 0), text);
@@ -126,9 +134,12 @@ public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCe
         cellField = tf.getTextField();
     }   
     
-    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event. 
-     * @throws DocumentException
-     * @throws IOException*/
+    /** Creates a new event. This constructor will be used if you need to position fields with a Cell Event.
+     * @param text      The label of the event
+     * @param parent    The parent of the new event
+     * @param writer    The PdfWriter
+     * @throws DocumentException    thrown when an error occurs in a Document
+     * @throws IOException          throw when an I/O operation fails*/
     public FieldPositioningEvents(PdfWriter writer, PdfFormField parent, String text) throws IOException, DocumentException {
         this.parent = parent;
         TextField tf = new TextField(writer, new Rectangle(0, 0), text);

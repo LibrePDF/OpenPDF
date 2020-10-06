@@ -95,7 +95,8 @@ public class BarcodeEANSUPP extends Barcode{
      * barcode is always placed at coordinates (0, 0). Use the
      * translation matrix to move it elsewhere.
      * <p> The bars and text are written in the following colors:</p>
-     * <TABLE BORDER=1 SUMMARY="">
+     * <TABLE BORDER=1>
+     *     <CAPTION></CAPTION>
      * <TR>
      *   <TH><P><CODE>barColor</CODE></TH>
      *   <TH><P><CODE>textColor</CODE></TH>

@@ -128,6 +128,7 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
 
     /**
      * Returns the page layout and page mode value.
+     * @return an int that hold the viewer preferences for the page layout and page mode.
      */
     public int getPageLayoutAndMode() {
         return pageLayoutAndMode;
@@ -135,6 +136,7 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
 
     /**
      * Returns the viewer preferences.
+     * @return a PdfDictionary containing the viewer's preferences.
      */
     public PdfDictionary getViewerPreferences() {
         return viewerPreferences;
@@ -277,7 +279,7 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
      * Adds the viewer preferences defined in the preferences parameter to a
      * PdfDictionary (more specifically the root or catalog of a PDF file).
      * 
-     * @param catalog
+     * @param catalog   The PdfDictionary to add the viewer preferences to
      */
     public void addToCatalog(PdfDictionary catalog) {
         // Page Layout

@@ -61,7 +61,7 @@ public class StyleSheet {
     private final Map<String, Map<String, String>> tagMap = new HashMap<>();
 
     /**
-     * @deprecated please use #applyStyle(String tag, Map<String, String> props) this method will be
+     * @deprecated please use #applyStyle(String tag, Map&lt;String, String&gt; props) this method will be
      * removed in 2.0
      */
     @Deprecated

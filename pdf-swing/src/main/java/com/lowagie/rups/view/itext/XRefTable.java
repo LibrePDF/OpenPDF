@@ -45,7 +45,8 @@ public class XRefTable extends JTable implements JTableAutoModelInterface, Obser
     /** The renderer that will render an object when selected in the table. */
     protected PdfReaderController controller;
     
-    /** Creates a JTable visualizing xref table. */
+    /** Creates a JTable visualizing xref table.
+     * @param controller The renderer that will render an object when selected in the table.*/
     public XRefTable(PdfReaderController controller) {
         super();
         this.controller = controller;

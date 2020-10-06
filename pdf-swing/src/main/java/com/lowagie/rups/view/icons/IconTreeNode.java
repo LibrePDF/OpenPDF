@@ -50,7 +50,8 @@ public class IconTreeNode extends DefaultMutableTreeNode {
         this.icon = IconFetcher.getIcon(icon);
     }
     
-    /** Getter for the icon. */
+    /** Getter for the icon.
+     * @return  the icon*/
     public Icon getIcon() {
         return icon;
     }

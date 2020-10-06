@@ -101,6 +101,8 @@ public class ByteVector implements Serializable {
 
     /**
      * This is to implement memory allocation in the array. Like malloc().
+     * @param size  The size to add
+     * @return  The index of the size of the old array
      */
     public int alloc(int size) {
         int index = n;

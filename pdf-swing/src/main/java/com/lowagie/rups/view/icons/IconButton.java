@@ -30,6 +30,7 @@ public class IconButton extends JButton {
     /**
      * Creates a button with an Icon that performs an
      * action when you push it.
+     * @param listener  The listener to add to the Icon
      */
     public IconButton(IconActionListener listener) {
         super(listener.getIcon());

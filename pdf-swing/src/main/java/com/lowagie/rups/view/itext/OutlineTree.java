@@ -46,7 +46,8 @@ public class OutlineTree extends JTree implements TreeSelectionListener, Observe
     /** Nodes in the FormTree correspond with nodes in the main PdfTree. */
     protected PdfReaderController controller;
     
-    /** Creates a new outline tree. */
+    /** Creates a new outline tree.
+     *  @param controller   The renderer that will render an object when selected in the table.*/
     public OutlineTree(PdfReaderController controller) {
         super();
         this.controller = controller;

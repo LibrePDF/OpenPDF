@@ -44,10 +44,10 @@ public class Hyphenator {
     private static String hyphenDir = "";    
 
     /**
-     * @param lang
-     * @param country
-     * @param leftMin
-     * @param rightMin
+     * @param lang      The language
+     * @param country   the Country
+     * @param leftMin   The minimum letters on the left
+     * @param rightMin  The minimum letters on the right
      */
     public Hyphenator(String lang, String country, int leftMin,
                       int rightMin) {
@@ -57,8 +57,8 @@ public class Hyphenator {
     }
 
     /**
-     * @param lang
-     * @param country
+     * @param lang      The language
+     * @param country   The country
      * @return the hyphenation tree
      */
     public static HyphenationTree getHyphenationTree(String lang,
@@ -87,7 +87,7 @@ public class Hyphenator {
     }
 
     /**
-     * @param key
+     * @param key   A String of the key of the hyphenation tree
      * @return a hyphenation tree
      */
     public static HyphenationTree getResourceHyphenationTree(String key) {
@@ -107,7 +107,7 @@ public class Hyphenator {
     }
 
     /**
-     * @param key
+     * @param key   The language to get the tree from
      * @return a hyphenation tree
      */
     public static HyphenationTree getFileHyphenationTree(String key) {
@@ -135,11 +135,11 @@ public class Hyphenator {
     }
 
     /**
-     * @param lang
-     * @param country
-     * @param word
-     * @param leftMin
-     * @param rightMin
+     * @param lang      The language
+     * @param country   The country
+     * @param word      char array containing the word
+     * @param leftMin   Minimum number of characters allowed before the hyphenation point
+     * @param rightMin  Minimum number of characters allowed after the hyphenation point
      * @return a hyphenation object
      */
     public static Hyphenation hyphenate(String lang, String country,
@@ -155,13 +155,13 @@ public class Hyphenator {
     }
 
     /**
-     * @param lang
-     * @param country
-     * @param word
-     * @param offset
-     * @param len
-     * @param leftMin
-     * @param rightMin
+     * @param lang      The language
+     * @param country   The country
+     * @param word      char array that contains the word to hyphenate
+     * @param offset    Offset to the first character in word
+     * @param len       The length of the word
+     * @param leftMin   Minimum number of characters allowed before the hyphenation point
+     * @param rightMin  Minimum number of characters allowed after the hyphenation point
      * @return a hyphenation object
      */
     public static Hyphenation hyphenate(String lang, String country,
@@ -177,31 +177,31 @@ public class Hyphenator {
     }
 
     /**
-     * @param min
+     * @param min   Minimum number of characters allowed before the hyphenation point
      */
     public void setMinRemainCharCount(int min) {
         remainCharCount = min;
     }
 
     /**
-     * @param min
+     * @param min   Minimum number of characters allowed after the hyphenation point
      */
     public void setMinPushCharCount(int min) {
         pushCharCount = min;
     }
 
     /**
-     * @param lang
-     * @param country
+     * @param lang      The language
+     * @param country   The country
      */
     public void setLanguage(String lang, String country) {
         hyphenTree = getHyphenationTree(lang, country);
     }
 
     /**
-     * @param word
-     * @param offset
-     * @param len
+     * @param word      Char array that contains the word
+     * @param offset    Offset to the first character in word
+     * @param len       Length of the word
      * @return a hyphenation object
      */
     public Hyphenation hyphenate(char[] word, int offset, int len) {
@@ -213,7 +213,7 @@ public class Hyphenator {
     }
 
     /**
-     * @param word
+     * @param word  The word to hyphenate
      * @return a hyphenation object
      */
     public Hyphenation hyphenate(String word) {

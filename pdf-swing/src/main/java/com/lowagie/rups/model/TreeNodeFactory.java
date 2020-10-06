@@ -111,7 +111,8 @@ public class TreeNodeFactory {
     /**
      * Finds a specific child of dictionary node.
      * @param    node    the node with a dictionary among its children
-     * @param    key        the key of the item corresponding with the node we need
+     * @param    key     the key of the item corresponding with the node we need
+     * @return the PdfObjectTreeNode that is the child of the dictionary node
      */
     public PdfObjectTreeNode getChildNode(PdfObjectTreeNode node, PdfName key) {
         Enumeration children = node.breadthFirstEnumeration();
