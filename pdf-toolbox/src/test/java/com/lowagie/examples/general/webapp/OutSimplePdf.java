@@ -14,12 +14,11 @@
 
 package com.lowagie.examples.general.webapp;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -32,17 +31,12 @@ import com.lowagie.text.pdf.PdfWriter;
 public class OutSimplePdf extends HttpServlet {
     private static final long serialVersionUID = 2788260006560387781L;
 
-    /**
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
-     *      javax.servlet.http.HttpServletResponse)
-     */
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         makePdf(request, response, "GET");
     }
-    
-    /**
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
             makePdf(request, response, "POST");
     }
@@ -87,11 +81,5 @@ public class OutSimplePdf extends HttpServlet {
         } catch (Exception e2) {
             System.out.println("Error in " + getClass().getName() + "\n" + e2);
         }
-    }
-
-    /**
-     * @see javax.servlet.GenericServlet#destroy()
-     */
-    public void destroy() {
     }
 }

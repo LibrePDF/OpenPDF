@@ -14,15 +14,14 @@
 
 package com.lowagie.examples.general.webapp;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -40,18 +39,17 @@ public class ProgressServlet extends HttpServlet {
 
     /**
      * This class will keep a Pdf file
+     *
      * @author blowagie
      */
-    public class MyPdf implements Runnable {
+    public static class MyPdf implements Runnable {
 
         /** the ByteArrayOutputStream that holds the PDF data. */
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         /** the percentage of the PDF file that is finished */
         int p = 0;
-        
-        /**
-         * @see java.lang.Runnable#run()
-         */
+
+        @Override
         public void run() {
             // step 1
             Document doc = new Document();
@@ -94,13 +92,8 @@ public class ProgressServlet extends HttpServlet {
             return p;
         }
     }
-    
-    /**
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     * @param request
-     * @param response
-     * @throws IOException
-     */
+
+    @Override
     public void doGet (HttpServletRequest request, HttpServletResponse response)
     throws IOException {
         // We get a Session object
@@ -126,17 +119,12 @@ public class ProgressServlet extends HttpServlet {
                 return;
             default:
                 isBusy(pdf, response.getOutputStream());
-                return;
         }
     }
-    /**
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     * @param request
-     * @param response
-     * @throws IOException
-     */
-    public void doPost (HttpServletRequest request, HttpServletResponse response)
-    throws IOException {
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
         // We get a Session object
         HttpSession session = request.getSession(false);
         try {
@@ -165,7 +153,6 @@ public class ProgressServlet extends HttpServlet {
      * Sends an HTML page to the browser saying how many percent of the document is finished.
      * @param pdf         the class that holds the PDF
      * @param stream    the outputstream of the servlet
-     * @throws IOException
      */
     private void isBusy(MyPdf pdf, ServletOutputStream stream) throws IOException {
         stream.print("<html>\n\t<head>\n\t\t<title>Please wait...</title>\n\t\t<meta http-equiv=\"Refresh\" content=\"5\">\n\t</head>\n\t<body>");
@@ -176,7 +163,6 @@ public class ProgressServlet extends HttpServlet {
     /**
      * Sends an HTML form to the browser to get the PDF
      * @param stream    the outputstream of the servlet
-     * @throws IOException
      */
     private void isFinished(ServletOutputStream stream) throws IOException {
         stream.print("<html>\n\t<head>\n\t\t<title>Finished!</title>\n\t</head>\n\t<body>");
@@ -186,7 +172,6 @@ public class ProgressServlet extends HttpServlet {
     /**
      * Sends an error message in HTML to the browser
      * @param stream    the outputstream of the servlet
-     * @throws IOException
      */
     private void isError(ServletOutputStream stream) throws IOException {
         stream.print("<html>\n\t<head>\n\t\t<title>Error</title>\n\t</head>\n\t<body>");
