@@ -33,11 +33,10 @@
         </dependency>
 
         <!-- Test Dependencies -->
-
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>5.0.0-M2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

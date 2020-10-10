@@ -14,12 +14,11 @@
 
 package com.lowagie.examples.general.webapp;
 
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -39,8 +38,8 @@ public class HelloWorldServlet extends HttpServlet {
     /**
      * Returns a PDF, RTF or HTML document.
      * 
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public void doGet (HttpServletRequest request, HttpServletResponse response)
     throws IOException {
         

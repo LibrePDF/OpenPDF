@@ -14,13 +14,12 @@
 
 package com.lowagie.examples.general.webapp;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -40,17 +39,13 @@ public class SilentPrintServlet extends HttpServlet {
     /** a possible status */
     public static final int ACT_REPORT_1 = 1;
 
-    /**
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+    @Override
     public void doGet(HttpServletRequest requ, HttpServletResponse resp)
             throws IOException {
         doWork(requ, resp);
     }
 
-    /**
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+    @Override
     public void doPost(HttpServletRequest requ, HttpServletResponse resp)
             throws IOException {
         doWork(requ, resp);
@@ -61,7 +56,6 @@ public class SilentPrintServlet extends HttpServlet {
      * 
      * @param requ    the request object
      * @param resp    the response object
-     * @throws IOException
      */
     public void doWork(HttpServletRequest requ, HttpServletResponse resp)
             throws IOException {
@@ -73,13 +67,13 @@ public class SilentPrintServlet extends HttpServlet {
         try {
             action = Integer.parseInt(requ.getParameter("action"));
             sub = Integer.parseInt(requ.getParameter("sub"));
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         switch (action) {
         case ACT_INIT: {
-            htmlHeader(out, requ, resp);
-            formular(out, requ, resp, sub);
+            htmlHeader(out, resp);
+            formular(out, requ, sub);
             break;
         }
 
@@ -107,7 +101,7 @@ public class SilentPrintServlet extends HttpServlet {
         }
     }
 
-    private void htmlHeader(ServletOutputStream out, HttpServletRequest requ,
+    private void htmlHeader(ServletOutputStream out,
             HttpServletResponse resp) throws IOException {
 
         resp.setContentType("text/html; charset=ISO-8859-1");
@@ -124,7 +118,7 @@ public class SilentPrintServlet extends HttpServlet {
     }
 
     private void formular(ServletOutputStream out, HttpServletRequest requ,
-            HttpServletResponse resp, int sub) throws IOException {
+            int sub) throws IOException {
         out.print("<form method='post' action='");
         out.print(requ.getRequestURI());
         out.print("?action=");
@@ -133,8 +127,9 @@ public class SilentPrintServlet extends HttpServlet {
         out.print(ACT_REPORT_1);
         out.println("'>");
         out.print("<input type='checkbox' name='preview' value='Y'");
-        if (requ.getParameter("preview") != null)
+        if (requ.getParameter("preview") != null) {
             out.print(" checked ");
+        }
         out.println(">preview<br>");
 
         out.println("<input type=submit value='Report 1'>");
