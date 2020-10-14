@@ -156,6 +156,7 @@ public class PdfPageLabels {
 
     /**
      * Adds or replaces a page label.
+     * @param format the PdfPageLabelFormat to add
      */
     public void addPageLabel(PdfPageLabelFormat format) {
         addPageLabel(format.physicalPage, format.numberStyle, format.prefix, format.logicalPage);

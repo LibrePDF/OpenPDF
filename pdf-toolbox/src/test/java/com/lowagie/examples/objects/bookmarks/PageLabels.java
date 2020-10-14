@@ -38,6 +38,7 @@ public class PageLabels {
      * Demonstrates some PageLabel functionality.
      * 
      * @param args no arguments needed here
+     * @throws IOException thrown when a I/O operation fails
      */
     public static void main(String[] args) throws IOException {
 

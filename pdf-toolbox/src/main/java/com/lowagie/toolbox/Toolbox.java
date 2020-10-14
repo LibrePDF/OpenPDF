@@ -277,10 +277,10 @@ public class Toolbox extends JFrame implements ActionListener {
      * Creates an Internal Frame.
      *
      * @param name the name of the application
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws ClassNotFoundException
-     * @throws PropertyVetoException
+     * @throws InstantiationException on error
+     * @throws IllegalAccessException on error with the access rights
+     * @throws ClassNotFoundException on error
+     * @throws PropertyVetoException on error of property rights
      * @return AbstractTool
      */
     public AbstractTool createFrame(String name) throws InstantiationException,
@@ -415,7 +415,7 @@ public class Toolbox extends JFrame implements ActionListener {
 
         /**
          * Creates a new Console object.
-         * @throws IOException
+         * @throws IOException on error
          */
         public Console() throws IOException {
             // Set up System.out

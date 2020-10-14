@@ -99,11 +99,16 @@ public class PdfFormField extends PdfAnnotation {
     protected PdfFormField parent;
     
     protected List<PdfFormField> kids;
-    
-/**
- * Constructs a new <CODE>PdfAnnotation</CODE> of subtype link (Action).
- */
-    
+
+    /**
+     * Constructs a new <CODE>PdfAnnotation</CODE> of subtype link (Action).
+     * @param writer    the PdfWriter
+     * @param llx       lower-left x-coordinated
+     * @param lly       lower-left y-coordinate
+     * @param urx       upper-right x-coordinate
+     * @param ury       upper-right y-coordinate
+     * @param action    the PdfAction
+     */
     public PdfFormField(PdfWriter writer, float llx, float lly, float urx, float ury, PdfAction action) {
         super(writer, llx, lly, urx, ury, action);
         put(PdfName.TYPE, PdfName.ANNOT);
@@ -111,7 +116,8 @@ public class PdfFormField extends PdfAnnotation {
         annotation = true;
     }
 
-    /** Creates new PdfFormField */
+    /** Creates new PdfFormField
+     * @param writer the PdfWriter to associated to the PdfFormField */
     protected PdfFormField(PdfWriter writer) {
         super(writer, null);
         form = true;
@@ -233,6 +239,7 @@ public class PdfFormField extends PdfAnnotation {
 
     /**
      * @deprecated use {@link #getKidFields()}
+     * @return an ArrayList of the kids
      */
     @Deprecated
     public ArrayList getKids() {

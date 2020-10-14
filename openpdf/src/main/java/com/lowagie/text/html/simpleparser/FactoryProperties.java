@@ -307,8 +307,8 @@ public class FactoryProperties {
     /**
      * New method contributed by Lubos Strapko
      *
-     * @param h
-     * @param cprops
+     * @param h a Map
+     * @param cprops the ChainedProperties
      * @since 2.1.3
      */
     public static void insertStyle(Map<String, String> h, ChainedProperties cprops) {

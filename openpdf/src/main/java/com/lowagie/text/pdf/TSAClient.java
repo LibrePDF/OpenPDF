@@ -72,6 +72,7 @@ public interface TSAClient {
     /**
      * Gets the MessageDigest to digest the data imprint
      * @return the digest algorithm name
+     * @throws GeneralSecurityException a security problem
      */
     public MessageDigest getMessageDigest() throws GeneralSecurityException;
     

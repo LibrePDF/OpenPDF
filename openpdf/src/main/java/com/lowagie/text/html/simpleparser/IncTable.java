@@ -64,7 +64,9 @@ public class IncTable {
     private Map<String, String> props = new HashMap<>();
     private List<List<PdfPCell>> rows = new ArrayList<>();
     private List<PdfPCell> cols;
-    /** Creates a new instance of IncTable */
+    /** Creates a new instance of IncTable
+     * @param props a HashMap of the properties
+     */
 
     @Deprecated
     @SuppressWarnings("unchecked")
@@ -108,6 +110,7 @@ public class IncTable {
 
     /**
      * @deprecated use {@link #getTableRows()}
+     * @return an ArrayList of the Rows
      */
     @Deprecated
     public ArrayList getRows() {

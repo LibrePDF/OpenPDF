@@ -67,6 +67,8 @@ public class IncCell implements TextElementArray {
 
     /**
      * Creates a new instance of IncCell
+     * @param tag the tag
+     * @param props the ChainedProperties
      */
     public IncCell(String tag, ChainedProperties props) {
         cell = new PdfPCell((Phrase) null);

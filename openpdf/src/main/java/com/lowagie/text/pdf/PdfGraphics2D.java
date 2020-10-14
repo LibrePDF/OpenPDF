@@ -196,18 +196,26 @@ public class PdfGraphics2D extends Graphics2D {
         setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         setRenderingHint(HyperLinkKey.KEY_INSTANCE, HyperLinkKey.VALUE_HYPERLINKKEY_OFF);
     }
-    
+
     /**
      * Shortcut constructor for PDFGraphics2D.
-     *
+     * @param cb the PdfContentByte
+     * @param width the width
+     * @param height the height
      */
     public PdfGraphics2D(PdfContentByte cb, float width, float height) {
         this(cb, width, height, null, false, false, 0);
     }
-    
+
     /**
      * Constructor for PDFGraphics2D.
-     *
+     * @param cb                    The PdfContentByte
+     * @param width                 The width
+     * @param height                The height
+     * @param fontMapper            The fonts to put in the BaseFont Map
+     * @param onlyShapes            True if there are only shapes, false otherwise
+     * @param convertImagesToJPEG   True to convert to JPEG, false otherwise
+     * @param quality               The JPEG quality
      */
     public PdfGraphics2D(PdfContentByte cb, float width, float height, FontMapper fontMapper, boolean onlyShapes, boolean convertImagesToJPEG, float quality) {
         super();
@@ -317,7 +325,7 @@ public class PdfGraphics2D extends Graphics2D {
     /**
      * This routine goes through the attributes and sets the font
      * before calling the actual string drawing routine
-     * @param iter
+     * @param iter  the AttributedCharacterIterator
      */
     @SuppressWarnings("unchecked")
     protected void doAttributes(AttributedCharacterIterator iter) {
@@ -772,8 +780,8 @@ public class PdfGraphics2D extends Graphics2D {
     
     /**
      * Sets a rendering hint
-     * @param arg0
-     * @param arg1
+     * @param arg0 the Key
+     * @param arg1 the Object to associate to it
      */
     public void setRenderingHint(Key arg0, Object arg1) {
          if (arg1 != null) {

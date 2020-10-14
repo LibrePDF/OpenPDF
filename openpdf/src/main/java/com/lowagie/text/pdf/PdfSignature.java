@@ -53,7 +53,9 @@ package com.lowagie.text.pdf;
  */
 public class PdfSignature extends PdfDictionary {
 
-    /** Creates new PdfSignature */
+    /** Creates new PdfSignature
+     * @param filter the filter
+     * @param subFilter the sub filter */
     public PdfSignature(PdfName filter, PdfName subFilter) {
         super(PdfName.SIG);
         put(PdfName.FILTER, filter);

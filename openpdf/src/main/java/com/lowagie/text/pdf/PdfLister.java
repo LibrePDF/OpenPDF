@@ -65,7 +65,7 @@ public class PdfLister {
 
     /**
      * Create a new lister object.
-     * @param out
+     * @param out the PrintStream to write the output to
      */
     public PdfLister(PrintStream out) {
         this.out = out;
@@ -123,8 +123,8 @@ public class PdfLister {
     }
     /**
      * Visualizes a Stream.
-     * @param stream
-     * @param reader
+     * @param stream the stream to read from
+     * @param reader not used currently
      */
     public void listStream(PRStream stream, PdfReaderInstance reader)
     {
@@ -156,10 +156,9 @@ public class PdfLister {
     }
     /**
      * Visualizes an imported page
-     * @param iPage
+     * @param iPage the imported page
      */
-    public void listPage(PdfImportedPage iPage)
-    {
+    public void listPage(PdfImportedPage iPage) {
         int pageNum = iPage.getPageNumber();
         PdfReaderInstance readerInst = iPage.getPdfReaderInstance();
         PdfReader reader = readerInst.getReader();

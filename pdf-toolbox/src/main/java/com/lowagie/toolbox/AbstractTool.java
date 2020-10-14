@@ -130,7 +130,7 @@ public abstract class AbstractTool implements ActionListener {
      *
      * @param name the name of the argument
      * @return the value of an argument as an Object.
-     * @throws InstantiationException
+     * @throws InstantiationException on error
      */
     public Object getValue(String name) throws InstantiationException {
         for (AbstractArgument argument: arguments) {
@@ -317,7 +317,7 @@ public abstract class AbstractTool implements ActionListener {
     /**
      * Gets the PDF file that should be generated (or null if the output isn't a PDF file).
      * @return the PDF file that should be generated
-     * @throws InstantiationException
+     * @throws InstantiationException on error
      */
     protected abstract File getDestPathPDF() throws InstantiationException;
 

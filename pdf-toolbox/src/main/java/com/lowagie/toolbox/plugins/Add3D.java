@@ -264,7 +264,7 @@ public class Add3D extends AbstractTool {
      * PDF file).
      *
      * @return the PDF file that should be generated
-     * @throws InstantiationException
+     * @throws InstantiationException on error
      */
     protected File getDestPathPDF() throws InstantiationException {
         return (File) getValue("destfile");

@@ -205,7 +205,7 @@ public class BarcodeInter25 extends Barcode{
      * translation matrix to move it elsewhere.
      * <p> The bars and text are written in the following colors:</p>
      * <TABLE BORDER=1>
-     *     <CAPTION></CAPTION>
+     *     <CAPTION>table of the colors of the bars and text</CAPTION>
      * <TR>
      *    <TH><P><CODE>barColor</CODE></TH>
      *    <TH><P><CODE>textColor</CODE></TH>

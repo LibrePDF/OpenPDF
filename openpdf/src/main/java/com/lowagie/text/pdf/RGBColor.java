@@ -24,9 +24,9 @@ public class RGBColor extends ExtendedColor {
 
     /**
      * Constructs a RGB Color based on 3 color values (values are integers from 0 to 255).
-     * @param intRed
-     * @param intGreen
-     * @param intBlue
+     * @param intRed the red
+     * @param intGreen the green
+     * @param intBlue the blue
      */
     public RGBColor(int intRed, int intGreen, int intBlue) {
         this(normalize(intRed) / MAX_INT_COLOR_VALUE, normalize(intGreen) / MAX_INT_COLOR_VALUE, normalize(intBlue) / MAX_INT_COLOR_VALUE, MAX_FLOAT_COLOR_VALUE);
@@ -34,10 +34,10 @@ public class RGBColor extends ExtendedColor {
 
     /**
      * Constructs a RGB Color based on 3 color values (values are integers from 0 to 255).
-     * @param intRed
-     * @param intGreen
-     * @param intBlue
-     * @param intAlpha
+     * @param intRed the red
+     * @param intGreen the green
+     * @param intBlue the blue
+     * @param intAlpha the alpha
      */
     public RGBColor(int intRed, int intGreen, int intBlue, int intAlpha) {
         this(normalize(intRed) / MAX_INT_COLOR_VALUE, normalize(intGreen) / MAX_INT_COLOR_VALUE, normalize(intBlue) / MAX_INT_COLOR_VALUE, normalize(intAlpha) / MAX_INT_COLOR_VALUE);
@@ -45,9 +45,9 @@ public class RGBColor extends ExtendedColor {
 
     /**
      * Construct a RGB Color (values are floats from 0 to 1).
-     * @param floatRed
-     * @param floatGreen
-     * @param floatBlue
+     * @param floatRed the red
+     * @param floatGreen the green
+     * @param floatBlue the blue
      */
     public RGBColor(float floatRed, float floatGreen, float floatBlue) {
         this(floatRed, floatGreen, floatBlue, MAX_FLOAT_COLOR_VALUE);
@@ -55,10 +55,10 @@ public class RGBColor extends ExtendedColor {
 
     /**
      * Construct a RGB Color (values are floats from 0 to 1).
-     * @param floatRed
-     * @param floatGreen
-     * @param floatBlue
-     * @param floatAlpha
+     * @param floatRed the red
+     * @param floatGreen the green
+     * @param floatBlue the blue
+     * @param floatAlpha the alpha
      */
     public RGBColor(float floatRed, float floatGreen, float floatBlue, float floatAlpha) {
         super(TYPE_RGB, normalize(floatRed), normalize(floatGreen), normalize(floatBlue), normalize(floatAlpha));

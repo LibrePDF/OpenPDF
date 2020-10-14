@@ -84,7 +84,7 @@ public class SimpleRegistrationForm implements PdfPCellEvent {
      * Example originally written by Wendy Smoak to generate a Table with
      * 'floating boxes'. Adapted by Bruno Lowagie.
      * 
-     * @param args
+     * @param args the command line arguments
      */
     public static void main(String[] args) {
         // step 1

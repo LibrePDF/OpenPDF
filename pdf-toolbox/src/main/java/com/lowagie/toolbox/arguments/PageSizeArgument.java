@@ -95,7 +95,7 @@ public class PageSizeArgument extends OptionArgument {
     /**
      * Gets the argument as an object.
      * @return an object
-     * @throws InstantiationException
+     * @throws InstantiationException if the key can't be compared with the other ones in the map
      */
     public Object getArgument() throws InstantiationException {
         if (value == null) {

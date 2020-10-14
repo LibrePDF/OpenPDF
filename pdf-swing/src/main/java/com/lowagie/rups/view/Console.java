@@ -100,6 +100,7 @@ public class Console implements Observer {
 
     /**
      * Console is a Singleton class: you can only get one Console.
+     * @return the Console
      */
     public static synchronized Console getInstance() {
         if (console == null) {
@@ -141,6 +142,7 @@ public class Console implements Observer {
 
     /**
      * Get the custom PrintStream of the console.
+     * @return the PrintStream
      */
     public PrintStream getPrintStream() {
         return printStream;
@@ -148,6 +150,7 @@ public class Console implements Observer {
 
     /**
      * Get the JTextArea to which everything is written.
+     * @return the JTextArea
      */
     public JTextPane getTextArea() {
         return textArea;

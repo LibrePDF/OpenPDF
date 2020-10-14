@@ -40,7 +40,7 @@ public class Vertical {
     static String[] encs = {"UniJIS-UCS2-V", "Identity-V"};
     
     /**
-     * @param text
+     * @param text the text to convert
      * @return converted text
      */
     public static String convertCid(String text) {

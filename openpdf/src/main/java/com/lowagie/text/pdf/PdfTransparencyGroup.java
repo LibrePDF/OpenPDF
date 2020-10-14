@@ -62,7 +62,7 @@ public class PdfTransparencyGroup extends PdfDictionary {
  
     /**
      * Determining the initial backdrop against which its stack is composited.
-     * @param isolated
+     * @param isolated true to set, false to remove
      */
     public void setIsolated(boolean isolated) {
         if (isolated)
@@ -73,7 +73,7 @@ public class PdfTransparencyGroup extends PdfDictionary {
     
     /**
      * Determining whether the objects within the stack are composited with one another or only with the group's backdrop.
-     * @param knockout
+     * @param knockout boolean value to set
      */
     public void setKnockout(boolean knockout) {
         if (knockout)

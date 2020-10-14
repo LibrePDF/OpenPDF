@@ -20,6 +20,7 @@ public class AcroFieldsTest {
     /**
      * This test fails, because signatureCoversWholeDocument does only check the
      * last signed block.
+     * @throws Exception a ClassCastException
      */
     @Test
     public void testGetSignatures() throws Exception {

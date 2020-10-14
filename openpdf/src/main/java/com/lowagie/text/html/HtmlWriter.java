@@ -604,7 +604,7 @@ public class HtmlWriter extends DocWriter {
      *
      * @param element the element
      * @param indent  the indentation
-     * @throws IOException
+     * @throws IOException thrown when an I/O operation fails
      */
     protected void write(Element element, int indent) throws IOException {
         Properties styleAttributes;
@@ -983,7 +983,7 @@ public class HtmlWriter extends DocWriter {
      *
      * @param section the section to write
      * @param indent  the indentation
-     * @throws IOException
+     * @throws IOException thrown when an I/O operation fails
      */
     protected void writeSection(Section section, int indent) throws IOException {
         if (section.getTitle() != null) {
@@ -1024,7 +1024,7 @@ public class HtmlWriter extends DocWriter {
      *
      * @param font            a <CODE>Font</CODE>
      * @param styleAttributes the style of the font
-     * @throws IOException
+     * @throws IOException thrown when an I/O operation fails
      */
     protected void write(@Nullable Font font, @Nullable Properties styleAttributes) throws IOException {
         if (font == null || !isOtherFont(font)) {
@@ -1097,7 +1097,7 @@ public class HtmlWriter extends DocWriter {
      *
      * @param prop  a CSS property
      * @param value the value of the CSS property
-     * @throws IOException
+     * @throws IOException thrown when an I/O operation fails
      */
     protected void writeCssProperty(String prop, String value) throws IOException {
         write(prop + ": " + value + "; ");

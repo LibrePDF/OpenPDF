@@ -64,7 +64,8 @@ public class PdfShadingPattern extends PdfDictionary {
 
     protected PdfIndirectReference patternReference;
 
-    /** Creates new PdfShadingPattern */
+    /** Creates new PdfShadingPattern
+     * @param shading the shading */
     public PdfShadingPattern(PdfShading shading) {
         writer = shading.getWriter();
         put(PdfName.PATTERNTYPE, new PdfNumber(2));

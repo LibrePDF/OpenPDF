@@ -61,7 +61,13 @@ public class StandardDecryption {
     private byte[] iv = new byte[16];
     private int ivptr;
 
-    /** Creates a new instance of StandardDecryption */
+    /**
+     * Creates a new instance of StandardDecryption
+     * @param key a byte array containing the key
+     * @param off the begining of the key in the array
+     * @param len the length
+     * @param revision the aes revision
+     */
     public StandardDecryption(byte[] key, int off, int len, int revision) {
         aes = revision == AES_128;
         if (aes) {

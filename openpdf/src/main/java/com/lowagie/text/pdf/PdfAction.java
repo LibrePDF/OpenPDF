@@ -129,8 +129,8 @@ public class PdfAction extends PdfDictionary {
     
     /**
      * Construct a new <CODE>PdfAction</CODE> of Subtype URI that accepts the x and y coordinate of the position that was clicked.
-     * @param url
-     * @param isMap
+     * @param url the URL
+     * @param isMap true if it is a map, false otherwise
      */
     public PdfAction(URL url, boolean isMap) {
         this(url.toExternalForm(), isMap);
@@ -148,10 +148,9 @@ public class PdfAction extends PdfDictionary {
     
     /**
      * Construct a new <CODE>PdfAction</CODE> of Subtype URI that accepts the x and y coordinate of the position that was clicked.
-     * @param url
-     * @param isMap
+     * @param url the URL
+     * @param isMap true if it is a map, false otherwise
      */
-    
     public PdfAction(String url, boolean isMap) {
         put(PdfName.S, PdfName.URI);
         put(PdfName.URI, new PdfString(url));
@@ -264,12 +263,12 @@ public class PdfAction extends PdfDictionary {
     }
     
      /**Creates a Rendition action
-     * @param file
-     * @param fs
-     * @param mimeType
-     * @param ref
+     * @param file the name of the file
+     * @param fs the PdfSpecification
+     * @param mimeType the mime type
+     * @param ref the PdfIndirectReference
      * @return a Media Clip action
-     * @throws IOException
+     * @throws IOException thrown when an I/O operation fails
      */
     public static PdfAction rendition(String file, PdfFileSpecification fs, String mimeType, PdfIndirectReference ref) throws IOException {
         PdfAction js = new PdfAction();
@@ -341,8 +340,8 @@ public class PdfAction extends PdfDictionary {
     
     /**
      * A Hide action hides or shows an annotation.
-     * @param annot
-     * @param hide
+     * @param annot the annotation to hide or show
+     * @param hide true is hide, false is show
      * @return A Hide Action
      */
     public static PdfAction createHide(PdfAnnotation annot, boolean hide) {
@@ -351,8 +350,8 @@ public class PdfAction extends PdfDictionary {
     
     /**
      * A Hide action hides or shows an annotation.
-     * @param name
-     * @param hide
+     * @param name the name of the object to hide or show
+     * @param hide true is hide, false is show
      * @return A Hide Action
      */
     public static PdfAction createHide(String name, boolean hide) {
@@ -374,8 +373,8 @@ public class PdfAction extends PdfDictionary {
     
     /**
      * A Hide action hides or shows objects.
-     * @param names
-     * @param hide
+     * @param names Object array containing the Objects to hide or show
+     * @param hide  true is hide, false is show
      * @return A Hide Action
      */
     public static PdfAction createHide(Object[] names, boolean hide) {
@@ -419,7 +418,7 @@ public class PdfAction extends PdfDictionary {
     
     /**
      * Creates an Import field.
-     * @param file
+     * @param file the name of the file
      * @return A PdfAction
      */
     public static PdfAction createImportData(String file) {
@@ -503,6 +502,8 @@ public class PdfAction extends PdfDictionary {
      * @param filename    the root document of the target (null if the target is in the same document)
      * @param dest the named destination
      * @param isName if true sets the destination as a name, if false sets it as a String
+     * @param newWindow if true, the doc should be opened in a new window
+     * @param target a path to the target document of this action
      * @return a GoToE action
      */
     public static PdfAction gotoEmbedded(String filename, PdfTargetDictionary target, String dest, boolean isName, boolean newWindow) {

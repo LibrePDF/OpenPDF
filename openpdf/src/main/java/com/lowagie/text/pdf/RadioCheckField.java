@@ -55,9 +55,7 @@ import com.lowagie.text.ExceptionConverter;
 
 /**
  * Creates a radio or a check field.
- * <p>
  * Example usage:
- * <p>
  * <PRE>
  * Document document = new Document(PageSize.A4, 50, 50, 50, 50);
  * PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("output.pdf"));

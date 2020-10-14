@@ -81,9 +81,7 @@ public class Type3Font extends BaseFont {
     /**
      * Creates a Type3 font. This implementation assumes that the /FontMatrix is
      * [0.001 0 0 0.001 0 0] or a 1000-unit glyph coordinate system.
-     * <p>
      * An example:
-     * <p>
      * <pre>
      * Document document = new Document(PageSize.A4);
      * PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("type3.pdf"));

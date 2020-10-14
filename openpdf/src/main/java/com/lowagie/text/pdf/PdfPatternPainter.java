@@ -138,12 +138,12 @@ public final class PdfPatternPainter extends PdfTemplate {
     
     /**
      * Sets the transformation matrix for the pattern.
-     * @param a
-     * @param b
-     * @param c
-     * @param d
-     * @param e
-     * @param f
+     * @param a an element of the transformation matrix
+     * @param b an element of the transformation matrix
+     * @param c an element of the transformation matrix
+     * @param d an element of the transformation matrix
+     * @param e an element of the transformation matrix
+     * @param f an element of the transformation matrix
      */
     public void setPatternMatrix(float a, float b, float c, float d, float e, float f) {
         setMatrix(a, b, c, d, e, f);

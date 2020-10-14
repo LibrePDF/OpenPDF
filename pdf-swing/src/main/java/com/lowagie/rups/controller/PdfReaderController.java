@@ -137,6 +137,7 @@ public class PdfReaderController extends Observable implements Observer {
     /**
      * Getter for the tabs with the editor windows
      * (to which the Console window will be added).
+     * @return the tabs with the editor windows
      */
     public JTabbedPane getEditorTabs() {
         return editorTabs;
@@ -203,6 +204,7 @@ public class PdfReaderController extends Observable implements Observer {
      * Renders the syntax of a PdfObject in the objectPanel.
      * If the object is a PDF Stream, then the stream is shown
      * in the streamArea too.
+     * @param object the object to render
      */
     public void render(PdfObject object) {
         objectPanel.render(object);

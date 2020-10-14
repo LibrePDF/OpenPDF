@@ -181,6 +181,9 @@ public class TSAClientBouncyCastle implements TSAClient {
 
   /**
    * Get timestamp token - Bouncy Castle request encoding / decoding layer
+   * @param imprint a byte array containing the imprint
+   * @return the timestamp token
+   * @throws Exception on error
    */
   protected byte[] getTimeStampToken(byte[] imprint) throws Exception {
     byte[] respBytes = null;
@@ -239,8 +242,9 @@ public class TSAClientBouncyCastle implements TSAClient {
 
   /**
    * Get timestamp token - communications layer
-   * 
+   * @param requestBytes the request bytes
    * @return - byte[] - TSA response, raw bytes (RFC 3161 encoded)
+   * @throws Exception on error
    */
   protected byte[] getTSAResponse(byte[] requestBytes) throws Exception {
     // Setup the TSA connection

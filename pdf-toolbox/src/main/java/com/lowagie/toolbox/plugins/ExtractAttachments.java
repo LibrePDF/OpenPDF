@@ -169,7 +169,7 @@ public class ExtractAttachments extends AbstractTool {
     /**
      *
      * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException
+     * @throws InstantiationException on error
      * @return File
      */
     protected File getDestPathPDF() throws InstantiationException {
@@ -185,7 +185,7 @@ public class ExtractAttachments extends AbstractTool {
      *            The dictionary containing the file specifications
      * @param outPath
      *            The path where the attachment has to be written
-     * @throws IOException
+     * @throws IOException on error
      */
     public static void unpackFile(PdfReader reader, PdfDictionary filespec,
             String outPath) throws IOException {

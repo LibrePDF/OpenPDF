@@ -132,7 +132,7 @@ public class TextField extends BaseField {
     /**
      * Removes CRLF from a <code>String</code>.
      * 
-     * @param text
+     * @param text the String to remove the CRLF from
      * @return String
      * @since    2.1.5
      */
@@ -161,7 +161,7 @@ public class TextField extends BaseField {
      * Obfuscates a password <code>String</code>.
      * Every character is replaced by an asterisk (*).
      * 
-     * @param text 
+     * @param text  the text to obfuscate
      * @return String
      * @since    2.1.5
      */

@@ -184,6 +184,7 @@ public class PdfObjectTreeNode extends IconTreeNode {
     /**
      * Checks if this node is a dictionary item with a specific key.
      * @param    key    the key of the node we're looking for
+     * @return true if the node is a dictionary item with the specified key, false otherwise
      */
     public boolean isDictionaryNode(PdfName key) {
         if (key == null) return false;

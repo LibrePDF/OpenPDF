@@ -69,6 +69,9 @@ public class PdfBorderDictionary extends PdfDictionary {
     
 /**
  * Constructs a <CODE>PdfBorderDictionary</CODE>.
+ * @param borderStyle the border style
+ * @param borderWidth the width of the border
+ * @param dashes the pattern of the border
  */
     
     public PdfBorderDictionary(float borderWidth, int borderStyle, PdfDashPattern dashes) {
