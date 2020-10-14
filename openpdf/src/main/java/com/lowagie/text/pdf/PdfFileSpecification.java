@@ -302,6 +302,7 @@ public class PdfFileSpecification extends PdfDictionary {
     
     /**
      * Adds the Collection item dictionary.
+     * @param ci the PdfCollectionItem to add
      */
     public void addCollectionItem(PdfCollectionItem ci) {
         put(PdfName.CI, ci);

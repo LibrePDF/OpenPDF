@@ -127,10 +127,10 @@ public class Executable {
     
     /**
      * Opens a PDF document.
-     * @param fileName
-     * @param waitForTermination
+     * @param fileName the name of the file to open
+     * @param waitForTermination true to wait for termination, false otherwise
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process openDocument(String fileName,
                                        boolean waitForTermination) throws IOException {
@@ -139,10 +139,10 @@ public class Executable {
 
     /**
      * Opens a PDF document.
-     * @param file
-     * @param waitForTermination
+     * @param file the file to open
+     * @param waitForTermination true to wait for termination, false otherwise
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process openDocument(File file,
                                        boolean waitForTermination) throws IOException {
@@ -151,9 +151,9 @@ public class Executable {
 
     /**
      * Opens a PDF document.
-     * @param fileName
+     * @param fileName the name of the file to open
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process openDocument(String fileName) throws IOException {
         return openDocument(fileName, false);
@@ -161,9 +161,9 @@ public class Executable {
 
     /**
      * Opens a PDF document.
-     * @param file
+     * @param file the file to open
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process openDocument(File file) throws IOException {
         return openDocument(file, false);
@@ -171,10 +171,10 @@ public class Executable {
     
     /**
      * Prints a PDF document.
-     * @param fileName
-     * @param waitForTermination
+     * @param fileName the name of the file to print
+     * @param waitForTermination true to wait for termination, false otherwise
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process printDocument(String fileName,
                                         boolean waitForTermination) throws IOException {
@@ -183,10 +183,10 @@ public class Executable {
 
     /**
      * Prints a PDF document.
-     * @param file
-     * @param waitForTermination
+     * @param file the File to print
+     * @param waitForTermination true to wait for termination, false otherwise
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process printDocument(File file,
                                         boolean waitForTermination) throws IOException {
@@ -195,9 +195,9 @@ public class Executable {
 
     /**
      * Prints a PDF document.
-     * @param fileName
+     * @param fileName the name of the file to print
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process printDocument(String fileName) throws IOException {
         return printDocument(fileName, false);
@@ -205,9 +205,9 @@ public class Executable {
 
     /**
      * Prints a PDF document.
-     * @param file
+     * @param file the File to print
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process printDocument(File file) throws IOException {
         return printDocument(file, false);
@@ -215,10 +215,10 @@ public class Executable {
     
     /**
      * Prints a PDF document without opening a Dialog box.
-     * @param fileName
-     * @param waitForTermination
+     * @param fileName the name of the file to print
+     * @param waitForTermination true to wait for termination, false otherwise
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process printDocumentSilent(String fileName,
                                               boolean waitForTermination) throws IOException {
@@ -227,10 +227,10 @@ public class Executable {
 
     /**
      * Prints a PDF document without opening a Dialog box.
-     * @param file
-     * @param waitForTermination
+     * @param file the File to print
+     * @param waitForTermination true to wait for termination, false otherwise
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process printDocumentSilent(File file,
                                               boolean waitForTermination) throws IOException {
@@ -239,9 +239,9 @@ public class Executable {
 
     /**
      * Prints a PDF document without opening a Dialog box.
-     * @param fileName
+     * @param fileName the name of the file to print
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process printDocumentSilent(String fileName) throws IOException {
         return printDocumentSilent(fileName, false);
@@ -249,9 +249,9 @@ public class Executable {
 
     /**
      * Prints a PDF document without opening a Dialog box.
-     * @param file
+     * @param file the File to print
      * @return a process
-     * @throws IOException
+     * @throws IOException on error
      */
     public static Process printDocumentSilent(File file) throws IOException {
         return printDocumentSilent(file, false);
@@ -261,7 +261,7 @@ public class Executable {
      * Launches a browser opening an URL.
      *
      * @param url the URL you want to open in the browser
-     * @throws IOException
+     * @throws IOException on error
      */
     public static void launchBrowser(String url) throws IOException {
         try {

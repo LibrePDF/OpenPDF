@@ -71,6 +71,7 @@ public class RupsController extends Observable
     // constructor
     /**
      * Constructs the GUI components of the RUPS application.
+     * @param dimension the Dimension of the GUi components
      */
     public RupsController(Dimension dimension) {
         // creating components and controllers
@@ -109,12 +110,14 @@ public class RupsController extends Observable
         
     }
 
-    /** Getter for the menubar. */
+    /** Getter for the menubar.
+     * @return the menubar */
     public RupsMenuBar getMenuBar() {
         return menuBar;
     }
     
-    /** Getter for the master component. */
+    /** Getter for the master component.
+     * @return the master component */
     public Component getMasterComponent() {
         return masterComponent;
     }

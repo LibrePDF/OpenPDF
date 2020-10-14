@@ -75,7 +75,8 @@ public class PdfShading {
     /** Holds value of property antiAlias. */
     protected boolean antiAlias = false;
     
-    /** Creates new PdfShading */
+    /** Creates new PdfShading
+     * @param writer  the PdfWriter */
     protected PdfShading(PdfWriter writer) {
         this.writer = writer;
     }

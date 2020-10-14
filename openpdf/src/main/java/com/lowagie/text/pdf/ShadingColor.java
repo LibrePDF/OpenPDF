@@ -58,7 +58,7 @@ public class ShadingColor extends ExtendedColor {
 
     /**
      * Creates a shading color.
-     * @param shadingPattern
+     * @param shadingPattern the shading pattern
      */
     public ShadingColor(PdfShadingPattern shadingPattern) {
         super(TYPE_SHADING, .5f, .5f, .5f);

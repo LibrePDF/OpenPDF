@@ -110,7 +110,7 @@ import java.util.Optional;
  * </PRE></BLOCKQUOTE>
  * The result of this code is a table:
  *      <TABLE BORDER="1">
- *          <CAPTION></CAPTION>
+ *          <CAPTION>the result of the code above</CAPTION>
  *              <TR VALIGN="Left">
  *                      <TH COLSPAN="3" VALIGN="Left">
  *                              header

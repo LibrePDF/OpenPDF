@@ -295,6 +295,10 @@ public class PdfSignatureAppearance {
 
   /**
    * Sets the cryptographic parameters.
+   * @param privKey the private key
+   * @param certChain the certification chain
+   * @param crlList the crl list
+   * @param filter the PdfName
    */
   public void setCrypto(PrivateKey privKey, Certificate[] certChain, CRL[] crlList, PdfName filter) {
       this.privKey = privKey;

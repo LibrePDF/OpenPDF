@@ -55,9 +55,7 @@ import com.lowagie.text.Rectangle;
 /**
  * Creates a pushbutton field. It supports all the text and icon alignments.
  * The icon may be an image or a template.
- * <p>
  * Example usage:
- * <p>
  * <PRE>
  * Document document = new Document(PageSize.A4, 50, 50, 50, 50);
  * PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("output.pdf"));

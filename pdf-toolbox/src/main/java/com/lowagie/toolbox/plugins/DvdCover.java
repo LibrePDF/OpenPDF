@@ -187,7 +187,7 @@ public class DvdCover extends AbstractTool {
     /**
      *
      * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException
+     * @throws InstantiationException on error
      * @return File
      */
     protected File getDestPathPDF() throws InstantiationException {

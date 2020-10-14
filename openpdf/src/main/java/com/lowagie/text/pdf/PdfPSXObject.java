@@ -58,7 +58,7 @@ public class PdfPSXObject extends PdfTemplate {
     
     /**
      * Constructs a PSXObject
-     * @param wr
+     * @param wr the PdfWriter
      */
     public PdfPSXObject(PdfWriter wr) {
         super(wr);

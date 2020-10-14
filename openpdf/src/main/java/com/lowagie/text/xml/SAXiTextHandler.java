@@ -148,7 +148,7 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
     private BaseFont bf = null;
 
     /**
-     * @param document
+     * @param document the DocListener
      */
     public SAXiTextHandler(DocListener document) {
         this.document = document;
@@ -156,9 +156,9 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
     }
 
     /**
-     * @param document
-     * @param myTags
-     * @param bf
+     * @param document the DocListener
+     * @param myTags a Map of the tags
+     * @param bf the base class for the supported fonts
      */
     public SAXiTextHandler(DocListener document, Map<String, T> myTags, BaseFont bf) {
         this(document, myTags);
@@ -166,8 +166,8 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
     }
 
     /**
-     * @param document
-     * @param myTags
+     * @param document the DocListener
+     * @param myTags a Map of the tags
      */
     public SAXiTextHandler(DocListener document, Map<String, T> myTags) {
         this(document);
@@ -570,7 +570,7 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
     /**
      * Sets the font that has to be used.
      *
-     * @param bf
+     * @param bf the base class for the supported fonts
      */
     public void setBaseFont(BaseFont bf) {
         this.bf = bf;

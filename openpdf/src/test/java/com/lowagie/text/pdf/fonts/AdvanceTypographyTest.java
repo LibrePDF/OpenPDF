@@ -51,7 +51,7 @@ public class AdvanceTypographyTest {
     /**
      * Test fonts loaded externally and passed as byte array to BaseFont, Fop should be able to
      * resolve these fonts
-     * @throws Exception
+     * @throws Exception a DocumentException or an IOException thrown by BaseFont.createFont
      */
     @Test
     public void testInMemoryFonts() throws Exception{

@@ -146,7 +146,7 @@ public class OptionArgument extends AbstractArgument {
     /**
      * Gets the argument as an object.
      * @return an object
-     * @throws InstantiationException
+     * @throws InstantiationException if the specified key cannot be compared with the keys currently in the map
      */
     public Object getArgument() throws InstantiationException {
         if (value == null) {

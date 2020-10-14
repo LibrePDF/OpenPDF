@@ -31,12 +31,11 @@ public class Groups {
     
     /**
      * Prints a square and fills half of it with a gray rectangle.
-     * @param x
-     * @param y
-     * @param cb
-     * @throws Exception
+     * @param x the x-coordinate of the rectangle
+     * @param y the y-coordinate of the rectangle
+     * @param cb the PdfContentByte
      */
-    public static void pictureBackdrop(float x, float y, PdfContentByte cb) throws Exception {
+    public static void pictureBackdrop(float x, float y, PdfContentByte cb) {
         cb.setColorStroke(Color.black);
         cb.setColorFill(Color.red);
         cb.rectangle(x, y, 100, 200);
@@ -48,12 +47,11 @@ public class Groups {
 
     /**
      * Prints 3 circles in different colors that intersect with eachother.
-     * @param x
-     * @param y
-     * @param cb
-     * @throws Exception
+     * @param x the x-coordinate of the intersection
+     * @param y the y-coordinate of the intersection
+     * @param cb the PdfContentByte
      */
-    public static void pictureCircles(float x, float y, PdfContentByte cb) throws Exception {
+    public static void pictureCircles(float x, float y, PdfContentByte cb) {
         PdfGState gs = new PdfGState();
         gs.setBlendMode(PdfGState.BM_SOFTLIGHT);
         gs.setFillOpacity(0.7f);

@@ -152,7 +152,7 @@ public class WatermarkerTool extends AbstractTool {
      * PDF file).
      * 
      * @return the PDF file that should be generated
-     * @throws InstantiationException
+     * @throws InstantiationException on error
      */
     @Override
     protected File getDestPathPDF() throws InstantiationException {

@@ -128,6 +128,7 @@ public class PdfVersionImp implements PdfVersion {
     
     /**
      * Writes the header to the OutputStreamCounter.
+     * @param os the OutputStreamCounter
      * @throws IOException thrown when an I/O operation goes wrong
      */
     public void writeHeader(OutputStreamCounter os) throws IOException {

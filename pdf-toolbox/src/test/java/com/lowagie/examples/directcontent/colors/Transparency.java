@@ -34,12 +34,11 @@ public class Transparency {
     
     /**
      * Prints a square and fills half of it with a gray rectangle.
-     * @param x
-     * @param y
-     * @param cb
-     * @throws Exception
+     * @param x the x-coordinate of the rectangle
+     * @param y the y-coordinate of the rectangle
+     * @param cb the PdfContentByte
      */
-    public static void pictureBackdrop(float x, float y, PdfContentByte cb) throws Exception {
+    public static void pictureBackdrop(float x, float y, PdfContentByte cb) {
         cb.setColorStroke(Color.black);
         cb.setColorFill(Color.gray);
         cb.rectangle(x, y, 100, 200);
@@ -51,12 +50,11 @@ public class Transparency {
 
     /**
      * Prints 3 circles in different colors that intersect with eachother.
-     * @param x
-     * @param y
-     * @param cb
-     * @throws Exception
+     * @param x the x-coordinate of the intersection
+     * @param y the y-coordinate of the intersection
+     * @param cb the PdfContentByte
      */
-    public static void pictureCircles(float x, float y, PdfContentByte cb) throws Exception {
+    public static void pictureCircles(float x, float y, PdfContentByte cb) {
         cb.setColorFill(Color.red);
         cb.circle(x + 70, y + 70, 50);
         cb.fill();

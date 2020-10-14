@@ -90,6 +90,7 @@ public class PdfCopyFields
      * Concatenates a PDF document.
      * @param reader the PDF document
      * @throws DocumentException on error
+     * @throws IOException on error
      */    
     public void addDocument(PdfReader reader) throws DocumentException, IOException {
         fc.addDocument(reader);
@@ -102,6 +103,7 @@ public class PdfCopyFields
      * @param reader the PDF document
      * @param pagesToKeep the pages to keep
      * @throws DocumentException on error
+     * @throws IOException on error
      */    
     public void addDocument(PdfReader reader, List<Integer> pagesToKeep) throws DocumentException, IOException {
         fc.addDocument(reader, pagesToKeep);
@@ -114,6 +116,7 @@ public class PdfCopyFields
      * @param reader the PDF document
      * @param ranges the comma separated ranges as described in {@link SequenceList}
      * @throws DocumentException on error
+     * @throws IOException on error
      */    
     public void addDocument(PdfReader reader, String ranges) throws DocumentException, IOException {
         fc.addDocument(reader, SequenceList.expand(ranges, reader.getNumberOfPages()));

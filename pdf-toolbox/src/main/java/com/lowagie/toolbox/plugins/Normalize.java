@@ -307,7 +307,7 @@ public void execute() {
     /**
      *
      * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException
+     * @throws InstantiationException on error
      * @return File
      */
     protected File getDestPathPDF() throws InstantiationException {

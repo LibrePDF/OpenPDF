@@ -63,7 +63,8 @@ public class PdfFunction {
     
     protected PdfDictionary dictionary;
     
-    /** Creates new PdfFunction */
+    /** Creates new PdfFunction
+     * @param writer the PdfWriter to associate to the PdfFunction */
     protected PdfFunction(PdfWriter writer) {
         this.writer = writer;
     }

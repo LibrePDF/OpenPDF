@@ -30,7 +30,7 @@ public interface PageSelectionListener {
 
     /**
      * Goes to a specific page number in a document.
-     * @param    pageNumber
+     * @param    pageNumber the page number to go to
      * @return    the resulting page number.
      *         Can be different from pageNumber if pageNumber doesn't exist.
      */

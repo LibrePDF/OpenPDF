@@ -636,6 +636,8 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
 
     /**
      * @since 2.0.8
+     * @throws IOException on error
+     * @return a ByteBuffer
      */
     public java.nio.ByteBuffer getNioByteBuffer() throws IOException {
         if (filename != null) {

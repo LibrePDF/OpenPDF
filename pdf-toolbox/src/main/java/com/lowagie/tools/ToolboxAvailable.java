@@ -60,6 +60,7 @@ public class ToolboxAvailable {
      * Checks if the toolbox if available.
      * If it is, the toolbox is started.
      * If it isn't, an error message is shown.
+     * @param args the command-line args
      */
     public static void main(String[] args) {
         if (GraphicsEnvironment.isHeadless()) {

@@ -63,6 +63,8 @@ public class StyleSheet {
     /**
      * @deprecated please use #applyStyle(String tag, Map&lt;String, String&gt; props) this method will be
      * removed in 2.0
+     * @param props a HashMap
+     * @param tag the tag
      */
     @Deprecated
     @SuppressWarnings({"unchecked", "rawtypes"})

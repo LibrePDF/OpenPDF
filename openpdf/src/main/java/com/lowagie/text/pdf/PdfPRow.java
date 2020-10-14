@@ -94,7 +94,7 @@ public class PdfPRow {
      * Constructs a new PdfPRow with the cells in the array that was passed
      * as a parameter.
      * 
-     * @param cells
+     * @param cells an array of PdfCell to put into the PdfRow
      */
     public PdfPRow(PdfPCell[] cells) {
         this.cells = cells;
@@ -105,7 +105,7 @@ public class PdfPRow {
     /**
      * Makes a copy of an existing row.
      * 
-     * @param row
+     * @param row the PdfRow to copy
      */
     public PdfPRow(PdfPRow row) {
         maxHeight = row.maxHeight;
@@ -123,7 +123,7 @@ public class PdfPRow {
     /**
      * Sets the widths of the columns in the row.
      * 
-     * @param widths
+     * @param widths    The width of the columns
      * @return true if everything went right
      */
     public boolean setWidths(float[] widths) {
@@ -201,8 +201,8 @@ public class PdfPRow {
      * @param xPos The x-coordinate where the table starts on the canvas
      * @param yPos The y-coordinate where the table starts on the canvas
      * @param currentMaxHeight The height of the cell to be drawn.
-     * @param cell
-     * @param canvases
+     * @param cell  The cell to change
+     * @param canvases  The canvases
      * @since    2.1.6    extra parameter currentMaxHeight
      */
     public void writeBorderAndBackground(float xPos, float yPos, float currentMaxHeight, PdfPCell cell, PdfContentByte[] canvases) {
@@ -234,6 +234,13 @@ public class PdfPRow {
 
     /**
      * @since    2.1.6 private is now protected
+     * @param canvases The canvases to save and rotate
+     * @param a an element of the transformation matrix
+     * @param b an element of the transformation matrix
+     * @param c an element of the transformation matrix
+     * @param d an element of the transformation matrix
+     * @param e an element of the transformation matrix
+     * @param f an element of the transformation matrix
      */
     protected void saveAndRotateCanvases(PdfContentByte[] canvases, float a, float b, float c, float d, float e, float f) {
         int last = PdfPTable.TEXTCANVAS + 1;
@@ -250,6 +257,7 @@ public class PdfPRow {
 
     /**
      * @since    2.1.6 private is now protected
+     * @param canvases a array of PdfContentByte
      */
     protected void restoreCanvases(PdfContentByte[] canvases) {
         int last = PdfPTable.TEXTCANVAS + 1;
@@ -264,6 +272,12 @@ public class PdfPRow {
 
     /**
      * @since    3.0.0 protected is now public static
+     * @param ct    the ColumnText
+     * @param left  the left position
+     * @param bottom the bottom position
+     * @param right the right position
+     * @param top the top position
+     * @return a float of the top position
      */
     public static float setColumn(ColumnText ct, float left, float bottom, float right, float top) {
         if (left > right)
@@ -284,6 +298,7 @@ public class PdfPRow {
      * If -1, all the columns to the end are written.
      * @param    xPos The x-coordinate where the table starts on the canvas
      * @param    yPos The y-coordinate where the table starts on the canvas
+     * @param canvases a PdfContentByte array of the canvases
      */
     public void writeCells(int colStart, int colEnd, float xPos, float yPos, PdfContentByte[] canvases) {
         if (!calculated)
@@ -563,7 +578,9 @@ public class PdfPRow {
      * Splits a row to newHeight.
      * The returned row is the remainder. It will return null if the newHeight
      * was so small that only an empty row would result.
-     * 
+     *
+     * @param rowIndex the row index
+     * @param table the PdfTable to get the row from
      * @param new_height    the new height
      * @return the remainder row or null if the newHeight was so small that only
      * an empty row would result

@@ -103,7 +103,6 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
 
     /**
      * Exports the destinations to XML. The DTD for this XML is:
-     * <p>
      * <pre>
      * &lt;?xml version='1.0' encoding='UTF-8'?&gt;
      * &lt;!ELEMENT Name (#PCDATA)&gt;

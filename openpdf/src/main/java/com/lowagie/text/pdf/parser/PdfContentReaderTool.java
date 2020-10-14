@@ -214,7 +214,7 @@ public class PdfContentReaderTool {
      * Writes information about each page in a PDF file to the specified file,
      * or System.out.
      * 
-     * @param args
+     * @param args the arguments passed to the command line
      */
     public static void main(String[] args) {
         try {

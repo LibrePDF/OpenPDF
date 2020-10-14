@@ -77,7 +77,7 @@ public class PdfSchema extends XmpSchema {
     
     /**
      * Adds keywords.
-     * @param keywords
+     * @param keywords the keywords
      */
     public void addKeywords(String keywords) {
         setProperty(KEYWORDS, keywords);
@@ -85,7 +85,7 @@ public class PdfSchema extends XmpSchema {
     
     /**
      * Adds the producer.
-     * @param producer
+     * @param producer the producer
      */
     public void addProducer(String producer) {
         setProperty(PRODUCER, producer);
@@ -93,7 +93,7 @@ public class PdfSchema extends XmpSchema {
 
     /**
      * Adds the version.
-     * @param version
+     * @param version the version
      */
     public void addVersion(String version) {
         setProperty(VERSION, version);

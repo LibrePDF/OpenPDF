@@ -254,7 +254,7 @@ public class PdfPTable implements LargeElement{
     /**
      * Makes a shallow copy of a table (format without content).
      * 
-     * @param table
+     * @param table the PdfTable to copy
      * @return a shallow copy of the table
      */
     public static PdfPTable shallowCopy(PdfPTable table) {
@@ -266,7 +266,7 @@ public class PdfPTable implements LargeElement{
     /**
      * Copies the format of the sourceTable without copying the content.
      *  
-     * @param sourceTable
+     * @param sourceTable the PdfTable to copy the format of
      * @since    2.1.6 private is now protected
      */
     protected void copyFormat(PdfPTable sourceTable) {
@@ -379,7 +379,7 @@ public class PdfPTable implements LargeElement{
      * 
      * @param columnWidth the absolute width of each column
      * @param pageSize the page size
-     * @throws DocumentException
+     * @throws DocumentException on error
      */    
     public void setWidthPercentage(float[] columnWidth, Rectangle pageSize) throws DocumentException {
         if (columnWidth.length != getNumberOfColumns())
@@ -776,7 +776,7 @@ public class PdfPTable implements LargeElement{
     
     /**
      * Gets and initializes the 4 layers where the table is written to. The text or graphics are added to
-     * one of the 4 <CODE>PdfContentByte</CODE> returned with the following order:<p>
+     * one of the 4 <CODE>PdfContentByte</CODE> returned with the following order:
      * <ul>
      * <li><CODE>PdfPtable.BASECANVAS</CODE> - the original <CODE>PdfContentByte</CODE>. Anything placed here
      * will be under the table.
@@ -1119,7 +1119,7 @@ public class PdfPTable implements LargeElement{
      * Gets a row with a given index
      * (added by Jin-Hsia Yang).
      * 
-     * @param idx
+     * @param idx the position of the row to get
      * @return the row at position idx
      */
     public PdfPRow getRow(int idx) {
@@ -1188,6 +1188,7 @@ public class PdfPTable implements LargeElement{
      * @param    start    the index of the start row (the one to adjust)
      * @param    end        the index of the end row on the page
      * @since    2.1.6
+     * @return a PdfRow
      */
     protected PdfPRow adjustCellsInRow(int start, int end) {
         PdfPRow row = new PdfPRow(getRow(start));
@@ -1467,7 +1468,8 @@ public class PdfPTable implements LargeElement{
     /**
      * Gets the value of the last row extension, taking into account
      * if the final row is reached or not.
-     * 
+     *
+     * @param newPageFollows true if a new page follows, false otherwise
      * @return true if the last row will extend; false otherwise
      * @since iText 5.0.0
      */

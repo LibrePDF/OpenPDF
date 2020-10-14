@@ -107,7 +107,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
      * triggered by the parser to actions on the <CODE>Document</CODE>-object.
      *
      * @param document this is the document on which events must be triggered
-     * @param bf
+     * @param bf the base class for the supported fonts
      */
     public SAXmyHtmlHandler(DocListener document, BaseFont bf) {
         this(document, new HtmlTagMap(), bf);

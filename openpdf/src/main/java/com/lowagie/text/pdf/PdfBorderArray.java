@@ -61,6 +61,9 @@ public class PdfBorderArray extends PdfArray {
     
 /**
  * Constructs a new <CODE>PdfBorderArray</CODE>.
+ * @param width the width
+ * @param vRadius the vertical radius
+ * @param hRadius the horizontal radius
  */
     
     public PdfBorderArray(float hRadius, float vRadius, float width) {
@@ -69,6 +72,10 @@ public class PdfBorderArray extends PdfArray {
     
 /**
  * Constructs a new <CODE>PdfBorderArray</CODE>.
+ * @param dash the dash pattern of the border
+ * @param hRadius the horizontal radius
+ * @param vRadius the vertical radius
+ * @param width the width
  */
     
     public PdfBorderArray(float hRadius, float vRadius, float width, PdfDashPattern dash) {

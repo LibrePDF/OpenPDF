@@ -147,7 +147,6 @@ public class PdfStream extends PdfDictionary {
     /**
      * Creates an efficient stream. No temporary array is ever created. The <CODE>InputStream</CODE>
      * is totally consumed but is not closed. The general usage is:
-     * <p>
      * <pre>
      * InputStream in = ...;
      * PdfStream stream = new PdfStream(in, writer);

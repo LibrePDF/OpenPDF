@@ -76,7 +76,10 @@ public class PdfSmartCopy extends PdfCopy {
     /** the cache with the streams and references. */
     private Map<ByteStore, PdfIndirectReference> streamMap = null;
 
-    /** Creates a PdfSmartCopy instance. */
+    /** Creates a PdfSmartCopy instance.
+     * @param os the OutputStream
+     * @param document the document
+     * @throws DocumentException on error */
     public PdfSmartCopy(Document document, OutputStream os) throws DocumentException {
         super(document, os);
         this.streamMap = new HashMap<>();

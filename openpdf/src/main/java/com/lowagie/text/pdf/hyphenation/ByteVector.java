@@ -78,14 +78,14 @@ public class ByteVector implements Serializable {
     }
 
     /**
-     * return number of items in array
+     * @return number of items in array
      */
     public int length() {
         return n;
     }
 
     /**
-     * returns current capacity of array
+     * @return current capacity of array
      */
     public int capacity() {
         return array.length;

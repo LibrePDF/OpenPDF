@@ -408,8 +408,8 @@ public class PdfOutline extends PdfDictionary {
      * Returns the PDF representation of this <CODE>PdfOutline</CODE>.
      *
      * @param writer the encryption information
-     * @param os
-     * @throws IOException
+     * @param os the OutputStream o write the bytes to
+     * @throws IOException on error of super.toPdf()
      */
     
     public void toPdf(PdfWriter writer, OutputStream os) throws IOException {
@@ -439,7 +439,7 @@ public class PdfOutline extends PdfDictionary {
     
     /**
      * Adds a kid to the outline
-     * @param outline
+     * @param outline the PdfOutline to add a kid to
      */
     public void addKid(PdfOutline outline) {
         kids.add(outline);
@@ -455,7 +455,7 @@ public class PdfOutline extends PdfDictionary {
     
     /**
      * Sets the kids of this outline
-     * @param kids
+     * @param kids the kids of the outline
      */
     public void setKids(List<PdfOutline> kids) {
         this.kids = kids;
@@ -486,7 +486,7 @@ public class PdfOutline extends PdfDictionary {
     
     /**
      * Sets the title of this outline
-     * @param title
+     * @param title the title of the outline
      */
     public void setTitle(String title) {
         put(PdfName.TITLE, new PdfString(title, PdfObject.TEXT_UNICODE));

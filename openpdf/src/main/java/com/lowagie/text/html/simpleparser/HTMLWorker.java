@@ -128,6 +128,11 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
     /**
      * @deprecated use {@link HTMLWorker#parseToList(Reader, StyleSheet, Map)} since 1.2.22
+     * @param reader  the Reader
+     * @param style the StyleSheet
+     * @param interfaceProps the interface properties
+     * @return an ArrayList
+     * @throws IOException on error
      */
     @Deprecated
     @SuppressWarnings("unchecked")
@@ -164,6 +169,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
     /**
      *
      * @deprecated use {@link HTMLWorker#setInterfaceProps(Map)} since 1.2.22
+     * @param interfaceProps the properties of the interface
      */
     @SuppressWarnings("unchecked")
     @Deprecated

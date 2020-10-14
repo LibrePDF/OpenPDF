@@ -56,6 +56,7 @@ public class SilentPrintServlet extends HttpServlet {
      * 
      * @param requ    the request object
      * @param resp    the response object
+     * @throws IOException on error
      */
     public void doWork(HttpServletRequest requ, HttpServletResponse resp)
             throws IOException {

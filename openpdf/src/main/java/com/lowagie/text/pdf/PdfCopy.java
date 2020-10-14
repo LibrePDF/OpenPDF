@@ -207,6 +207,10 @@ public class PdfCopy extends PdfWriter {
    * to the output file. NB: PRIndirectReferences (and PRIndirectObjects) really need to know what file they came from, because each file
    * has its own namespace. The translation we do from their namespace to ours is *at best* heuristic, and guaranteed to fail under some
    * circumstances.
+   * @param in the PRIndirectReference to translate
+   * @return the translated PRIndirectReference
+   * @throws IOException on error
+   * @throws BadPdfFormatException on error with the Pdf format
    */
   protected PdfIndirectReference copyIndirect(PRIndirectReference in) throws IOException, BadPdfFormatException {
     PdfIndirectReference theRef;
@@ -237,6 +241,10 @@ public class PdfCopy extends PdfWriter {
 
   /**
    * Translate a PRDictionary to a PdfDictionary. Also translate all of the objects contained in it.
+   * @param in the PRDictionary to translate
+   * @return  the translated PRDictionary
+   * @throws IOException on error
+   * @throws BadPdfFormatException on error with the Pdf format
    */
   protected PdfDictionary copyDictionary(PdfDictionary in)
       throws IOException, BadPdfFormatException {
@@ -259,6 +267,10 @@ public class PdfCopy extends PdfWriter {
 
   /**
    * Translate a PRStream to a PdfStream. The data part copies itself.
+   * @param in the PRStream to translate
+   * @return the translated PRStream
+   * @throws IOException on error
+   * @throws BadPdfFormatException on error with the Pdf format
    */
   protected PdfStream copyStream(PRStream in) throws IOException, BadPdfFormatException {
     PRStream out = new PRStream(in, null);
@@ -274,6 +286,9 @@ public class PdfCopy extends PdfWriter {
 
   /**
    * Translate a PRArray to a PdfArray. Also translate all of the objects contained in it
+   * @param in the PdfArray to copy
+   * @return the newly generate PdfArray
+   * @throws IOException on error
    */
   protected PdfArray copyArray(PdfArray in) throws IOException, BadPdfFormatException {
     PdfArray out = new PdfArray();
@@ -286,6 +301,10 @@ public class PdfCopy extends PdfWriter {
 
   /**
    * Translate a PR-object to a Pdf-object
+   * @param in the PdfObject to translate
+   * @throws IOException on error
+   * @throws BadPdfFormatException on error with the Pdf format
+   * @return the PdfObject
    */
   protected PdfObject copyObject(PdfObject in) throws IOException, BadPdfFormatException {
     if (in == null) {
@@ -324,6 +343,8 @@ public class PdfCopy extends PdfWriter {
 
   /**
    * convenience method. Given an imported page, set our "globals"
+   * @param iPage  the imported page
+   * @return the page number
    */
   protected int setFromIPage(PdfImportedPage iPage) {
     int pageNum = iPage.getPageNumber();
@@ -335,6 +356,7 @@ public class PdfCopy extends PdfWriter {
 
   /**
    * convenience method. Given a reader, set our "globals"
+   * @param reader  the PdfReader
    */
   protected void setFromReader(PdfReader reader) {
     this.reader = reader;

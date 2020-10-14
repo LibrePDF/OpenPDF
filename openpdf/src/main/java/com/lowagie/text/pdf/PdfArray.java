@@ -238,6 +238,7 @@ public class PdfArray extends PdfObject {
      * @throws IndexOutOfBoundsException
      *             the specified position doesn't exist
      * @since 2.1.5
+     * @return the PdfObject that was removed
      */
     public PdfObject remove(int idx) {
         return arrayList.remove(idx);

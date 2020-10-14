@@ -1225,6 +1225,7 @@ public class PdfPKCS7 {
      * @param secondDigest the digest in the authenticatedAttributes
      * @param signingTime  the signing time in the authenticatedAttributes
      * @param tsaClient    TSAClient - null or an optional time stamp authority client
+     * @param ocsp a byte array
      * @return byte[] the bytes for the PKCS7SignedData object
      * @since 2.1.6
      */
@@ -1387,9 +1388,7 @@ public class PdfPKCS7 {
      * is done over the DER encoded authenticatedAttributes. This method provides
      * that encoding and the parameters must be exactly the same as in
      * {@link #getEncodedPKCS7(byte[], Calendar)}.
-     * <p>
      * A simple example:
-     * <p>
      *
      * <pre>
      * Calendar cal = Calendar.getInstance();
@@ -1409,6 +1408,7 @@ public class PdfPKCS7 {
      *
      * @param secondDigest the content digest
      * @param signingTime  the signing time
+     * @param ocsp a byte array
      * @return the byte array representation of the authenticatedAttributes ready
      * to be signed
      */
@@ -1762,7 +1762,7 @@ public class PdfPKCS7 {
         /**
          * gets a field array from the values Hashmap
          *
-         * @param name
+         * @param name the name of the field to get
          * @deprecated use {@link #getFieldsByName(String)}
          * @return an ArrayList
          */
@@ -1774,7 +1774,7 @@ public class PdfPKCS7 {
         /**
          * gets a field array from the values Hashmap
          *
-         * @param name
+         * @param name  the name of the field array to get
          * @return an ArrayList
          */
         public List<String> getFieldsByName(String name) {

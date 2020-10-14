@@ -17,6 +17,7 @@ public class PdfCollectionItem extends PdfDictionary {
     
     /**
      * Constructs a Collection Item that can be added to a PdfFileSpecification.
+     * @param schema the PdfCollectionSchema
      */
     public PdfCollectionItem(PdfCollectionSchema schema) {
         super(PdfName.COLLECTIONITEM);
@@ -25,7 +26,8 @@ public class PdfCollectionItem extends PdfDictionary {
     
     /**
      * Sets the value of the collection item.
-     * @param value
+     * @param value the value (a String)
+     * @param key the key
      */
     public void addItem(String key, String value) {
         PdfName fieldname = new PdfName(key);
@@ -35,7 +37,8 @@ public class PdfCollectionItem extends PdfDictionary {
     
     /**
      * Sets the value of the collection item.
-     * @param value
+     * @param value the value (a PdfString)
+     * @param key the key
      */
     public void addItem(String key, PdfString value) {
         PdfName fieldname = new PdfName(key);
@@ -47,7 +50,8 @@ public class PdfCollectionItem extends PdfDictionary {
     
     /**
      * Sets the value of the collection item.
-     * @param d
+     * @param d the value (a PdfDate)
+     * @param key the key
      */
     public void addItem(String key, PdfDate d) {
         PdfName fieldname = new PdfName(key);
@@ -59,7 +63,8 @@ public class PdfCollectionItem extends PdfDictionary {
     
     /**
      * Sets the value of the collection item.
-     * @param n
+     * @param n the value (a PdfNumber)
+     * @param key the key
      */
     public void addItem(String key, PdfNumber n) {
         PdfName fieldname = new PdfName(key);
@@ -71,7 +76,8 @@ public class PdfCollectionItem extends PdfDictionary {
     
     /**
      * Sets the value of the collection item.
-     * @param c
+     * @param c the value (a Calendar)
+     * @param key the key
      */
     public void addItem(String key, Calendar c) {
         addItem(key, new PdfDate(c));
@@ -79,7 +85,8 @@ public class PdfCollectionItem extends PdfDictionary {
     
     /**
      * Sets the value of the collection item.
-     * @param i
+     * @param i the value
+     * @param key the key
      */
     public void addItem(String key, int i) {
         addItem(key, new PdfNumber(i));
@@ -87,7 +94,8 @@ public class PdfCollectionItem extends PdfDictionary {
     
     /**
      * Sets the value of the collection item.
-     * @param f
+     * @param f the value
+     * @param key the key
      */
     public void addItem(String key, float f) {
         addItem(key, new PdfNumber(f));
@@ -95,7 +103,8 @@ public class PdfCollectionItem extends PdfDictionary {
     
     /**
      * Sets the value of the collection item.
-     * @param d
+     * @param d the value
+     * @param key the key
      */
     public void addItem(String key, double d) {
         addItem(key, new PdfNumber(d));
@@ -105,6 +114,7 @@ public class PdfCollectionItem extends PdfDictionary {
      * Adds a prefix for the Collection item.
      * You can only use this method after you have set the value of the item.
      * @param prefix    a prefix
+     * @param key       the key
      */
     public void setPrefix(String key, String prefix) {
         PdfName fieldname = new PdfName(key);

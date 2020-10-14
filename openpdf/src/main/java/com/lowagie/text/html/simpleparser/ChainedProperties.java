@@ -123,6 +123,8 @@ public class ChainedProperties {
 
     /**
      * @deprecated use {@link ChainedProperties#addToChain(String, HashMap)}
+     * @param key the key
+     * @param prop the properties
      */
     @Deprecated
     @SuppressWarnings("unchecked")
