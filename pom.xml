@@ -45,7 +45,7 @@
         <bouncycastle.bcpkix.version>1.66</bouncycastle.bcpkix.version>
         <bouncycastle.bcprov.version>1.66</bouncycastle.bcprov.version>
 
-        <spotbugs.version>4.1.3</spotbugs.version>
+        <spotbugs.version>4.1.4</spotbugs.version>
         <hamcrest.version>2.2</hamcrest.version>
         <java-module-name>com.github.librepdf.openpdf.parent</java-module-name>
         <jupiter.version>5.7.0</jupiter.version>
