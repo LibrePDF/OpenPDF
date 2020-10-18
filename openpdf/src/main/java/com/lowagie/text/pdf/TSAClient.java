@@ -73,7 +73,7 @@ public interface TSAClient {
      * Gets the MessageDigest to digest the data imprint
      * @return the digest algorithm name
      */
-    public MessageDigest getMessageDigest() throws GeneralSecurityException;
+    MessageDigest getMessageDigest() throws GeneralSecurityException;
     
     /**
      * Get RFC 3161 timeStampToken.
