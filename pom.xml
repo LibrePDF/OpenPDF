@@ -60,7 +60,7 @@
         <maven.source.version>3.2.1</maven.source.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <maven.test.failure.ignore>false</maven.test.failure.ignore>
-        <mockito.version>3.5.13</mockito.version>
+        <mockito.version>3.5.15</mockito.version>
         <fop.version>2.5</fop.version>
         <xmlgraphics-commons.version>2.4</xmlgraphics-commons.version>
     </properties>
