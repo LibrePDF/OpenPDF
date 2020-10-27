@@ -41,6 +41,18 @@
  */
 package com.lowagie.text.pdf.parser;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Stack;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.CMapAwareDocumentFont;
@@ -58,17 +70,6 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author dgd
@@ -91,13 +92,13 @@ public class PdfContentStreamHandler {
      * Text line matrix.
      */
     private Matrix textLineMatrix;
-    private Stack<List<TextAssemblyBuffer>> textFragmentStreams = new Stack<>();
-    private Stack<String> contextNames = new Stack<>();
+    private final Stack<List<TextAssemblyBuffer>> textFragmentStreams = new Stack<>();
+    private final Stack<String> contextNames = new Stack<>();
     private List<TextAssemblyBuffer> textFragments = new ArrayList<>();
     /**
      * detail parser for text within a marked section. used by TextAssembler
      */
-    private TextAssembler renderListener;
+    private final TextAssembler renderListener;
 
 
     public PdfContentStreamHandler(TextAssembler renderListener) {
@@ -315,7 +316,7 @@ public class PdfContentStreamHandler {
         for (TextAssemblyBuffer fragment : textFragments) {
             res.append(fragment.getText());
         }
-        return res.toString();
+        return res.toString().trim();
     }
 
     /**
