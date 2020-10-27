@@ -43,10 +43,10 @@
  */
 package com.lowagie.text.pdf.parser;
 
+import javax.annotation.Nullable;
+
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfReader;
-
-import javax.annotation.Nullable;
 
 /**
  * @author dgd
@@ -57,12 +57,12 @@ public class Word extends ParsedTextImpl {
      * Is this an indivisible fragment, because it contained a space or was split from a space-
      * containing string. Non-splittable words can be merged (into new non-splittable words).
      */
-    private boolean shouldNotSplit;
+    private final boolean shouldNotSplit;
     /**
      * If this word or fragment was preceded by a space, or a line break, it should never be merged
      * into a preceding word.
      */
-    private boolean breakBefore;
+    private final boolean breakBefore;
 
     /**
      * @param text text content
@@ -188,10 +188,13 @@ public class Word extends ParsedTextImpl {
     @Override
     public FinalText getFinalText(PdfReader reader, int page,
             TextAssembler assembler, boolean useMarkup) {
+        final String text = getText() == null ? "" : getText();
         if (useMarkup) {
-            return new FinalText(wordMarkup(getText(), reader, page, assembler));
-        } else { 
-            return new FinalText(getText() + " ");
+            return new FinalText(wordMarkup(text, reader, page, assembler));
+        } else {
+            final boolean hasSpaceAlready = text.startsWith(" ") || text.endsWith(" ");
+            String prefixSpace = hasSpaceAlready ? "" : " ";
+            return new FinalText(prefixSpace + text);
         }
     }
 
