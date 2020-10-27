@@ -5,6 +5,7 @@ module com.github.librepdf.openpdf {
     requires static imageio.tiff;
     requires static fop;
     requires static xmlgraphics.commons;
+    requires static java.desktop;
 
     exports com.lowagie.bouncycastle;
     exports com.lowagie.text;
