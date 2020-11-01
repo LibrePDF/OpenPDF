@@ -1,6 +1,6 @@
 module com.github.librepdf.pdfToolbox {
     requires com.github.librepdf.openpdf;
-    requires jfreechart;
+    requires org.jfree.jfreechart;
     requires jcommon;
 
     exports com.lowagie.toolbox;
