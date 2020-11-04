@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <bouncycastle.bcpkix.version>1.66</bouncycastle.bcpkix.version>
+        <bouncycastle.bcpkix.version>1.67</bouncycastle.bcpkix.version>
         <bouncycastle.bcprov.version>1.67</bouncycastle.bcprov.version>
 
         <spotbugs.version>4.1.4</spotbugs.version>
