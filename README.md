@@ -127,6 +127,10 @@ Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs
 * [@salsolatragus](https://github.com/salsolatragus) - Sven Amann
 * [@suiaing](https://github.com/suiaing)
 * [@prashantbhat](https://github.com/prashantbhat) - Prashant Bhat
+* [@laurerunser](https://github.com/laurerunser) - Laure Runser
+* [@abdullahcevik](https://github.com/abdullahcevik) - Abdullah Çevik
+* [@chrismaster](https://github.com/chrismaster) - Chris Master
+* [@sa-sh](https://github.com/sa-sh)
 
 
 Also, a very special thanks to the iText developers ;)
