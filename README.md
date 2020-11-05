@@ -93,44 +93,50 @@ and use the class `org.librepdf.openpdf.fonts.Liberation`.
  - Apache FOP
 
 ## Credits ##
-Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs/contributors) on GitHub:
+Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs/contributors) on GitHub.
 
-* [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.
-* [@daviddurand](https://github.com/daviddurand) - David G. Durand
-* [@tlxtellef](https://github.com/tlxtellef) - Tellef
+In GitHub User alphabetical order.
+
+### Maintainers and Members ###
 * [@asturio](https://github.com/asturio) - Claudio Clemens
-* [@ymasory](https://github.com/ymasory)
-* [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
-* [@noavarice](https://github.com/noavarice)
 * [@bengolder](https://github.com/bengolder) - Benjamin Golder
+* [@daviddurand](https://github.com/daviddurand) - David G. Durand
+* [@kulatamicuda](https://github.com/kulatamicuda)
+* [@rtfarte](https://github.com/rtfarte) - Art Krahenbuhl
+* [@tlxtellef](https://github.com/tlxtellef) - Tellef
+
+### Contributors ###
+* [@abdullahcevik](https://github.com/abdullahcevik) - Abdullah Çevik
+* [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
+* [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.
+* [@armin-weber](https://github.com/armin-weber)
+* [@chrismaster](https://github.com/chrismaster) - Chris Master
+* [@codecracker2014](https://github.com/codecracker2014)
+* [@dandybudach](https://github.com/dandybudach) - Dandy Budach
 * [@glarfs](https://github.com/glarfs)
+* [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)
+* [@jokimaki](https://github.com/jokimaki)
 * [@Kindrat](https://github.com/Kindrat)
+* [@lapo-luchini](https://github.com/lapo-luchini) - Lapo Luchini
+* [@laurerunser](https://github.com/laurerunser) - Laure Runser
+* [@MartinKocour](https://github.com/MartinKocour) - Martin Kocour
+* [@mluppi](https://github.com/mluppi) - M. Luppi
+* [@noavarice](https://github.com/noavarice)
+* [@PalAditya](https://github.com/PalAditya) - Aditya Pal
+* [@prashantbhat](https://github.com/prashantbhat) - Prashant Bhat
+* [@rammetzger](https://github.com/rammetzger)
+* [@razilein](https://github.com/razilein) - Sita Geßner
+* [@salsolatragus](https://github.com/salsolatragus) - Sven Amann
+* [@sa-sh](https://github.com/sa-sh)
+* [@sixdouglas](https://github.com/sixdouglas) - Douglas Six
+* [@suiaing](https://github.com/suiaing)
+* [@sullis](https://github.com/sullis)
+* [@SuperPat45](https://github.com/SuperPat45)
 * [@syakovyn](https://github.com/syakovyn)
 * [@ubermichael](https://github.com/ubermichael) - Michael Joyce
-* [@weiyeh](https://github.com/weiyeh)
-* [@SuperPat45](https://github.com/SuperPat45)
-* [@lapo-luchini](https://github.com/lapo-luchini) - Lapo Luchini
-* [@MartinKocour](https://github.com/MartinKocour) - Martin Kocour
-* [@jokimaki](https://github.com/jokimaki)
-* [@sullis](https://github.com/sullis)
-* [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)
 * [@V-F](https://github.com/V-F)
-* [@sixdouglas](https://github.com/sixdouglas) - Douglas Six
-* [@razilein](https://github.com/razilein) - Sita Geßner
-* [@PalAditya](https://github.com/PalAditya) - Aditya Pal
-* [@rammetzger](https://github.com/rammetzger)
-* [@codecracker2014](https://github.com/codecracker2014)
-* [@mluppi](https://github.com/mluppi) - M. Luppi
 * [@vic0075](https://github.com/vic0075)
-* [@armin-weber](https://github.com/armin-weber)
-* [@dandybudach](https://github.com/dandybudach) - Dandy Budach
-* [@salsolatragus](https://github.com/salsolatragus) - Sven Amann
-* [@suiaing](https://github.com/suiaing)
-* [@prashantbhat](https://github.com/prashantbhat) - Prashant Bhat
-* [@laurerunser](https://github.com/laurerunser) - Laure Runser
-* [@abdullahcevik](https://github.com/abdullahcevik) - Abdullah Çevik
-* [@chrismaster](https://github.com/chrismaster) - Chris Master
-* [@sa-sh](https://github.com/sa-sh)
-
+* [@weiyeh](https://github.com/weiyeh)
+* [@ymasory](https://github.com/ymasory)
 
 Also, a very special thanks to the iText developers ;)
