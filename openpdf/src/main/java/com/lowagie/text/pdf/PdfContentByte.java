@@ -2347,11 +2347,14 @@ public class PdfContentByte {
         }
     }
 
+    private int lastAlpha = 1;
     private void saveColorFill(ExtendedColor extendedColor) {
-        PdfGState gState = new PdfGState();
-        gState.setFillOpacity(extendedColor.getAlpha() / MAX_INT_COLOR_VALUE);
-        setGState(gState);
-
+        if (lastAlpha != extendedColor.getAlpha()) {
+            PdfGState gState = new PdfGState();
+            gState.setFillOpacity(extendedColor.getAlpha() / MAX_INT_COLOR_VALUE);
+            setGState(gState);
+            lastAlpha = extendedColor.getAlpha();
+        }
         if (state != null) state.colorFill = extendedColor;
     }
 
