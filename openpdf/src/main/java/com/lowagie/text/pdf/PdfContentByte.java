@@ -219,6 +219,9 @@ public class PdfContentByte {
     /** The list were we save/restore the layer depth */
     protected List<Integer> layerDepth;
 
+    private int lastFillAlpha = 1;
+    private int lastStrokeAlpha = 1;
+
     static {
         abrev.put(PdfName.BITSPERCOMPONENT, "/BPC ");
         abrev.put(PdfName.COLORSPACE, "/CS ");
@@ -1393,8 +1396,7 @@ public class PdfContentByte {
     public void saveState() {
         content.append("q").append_i(separator);
         if (state != null) {
-            GraphicState gstate = new GraphicState(state);
-            stateList.add(gstate);
+            stateList.add(new GraphicState(state));
         }
     }
 
@@ -2302,10 +2304,12 @@ public class PdfContentByte {
     }
 
     private void saveColorStroke(ExtendedColor extendedColor) {
-        PdfGState gState = new PdfGState();
-        gState.setStrokeOpacity(extendedColor.getAlpha() / MAX_INT_COLOR_VALUE);
-        setGState(gState);
-
+        if (lastStrokeAlpha != extendedColor.getAlpha()) {
+            PdfGState gState = new PdfGState();
+            gState.setStrokeOpacity(extendedColor.getAlpha() / MAX_INT_COLOR_VALUE);
+            setGState(gState);
+            lastStrokeAlpha = extendedColor.getAlpha();
+        }
         if (state != null) state.colorStroke = extendedColor;
     }
 
@@ -2347,13 +2351,12 @@ public class PdfContentByte {
         }
     }
 
-    private int lastAlpha = 1;
     private void saveColorFill(ExtendedColor extendedColor) {
-        if (lastAlpha != extendedColor.getAlpha()) {
+        if (lastFillAlpha != extendedColor.getAlpha()) {
             PdfGState gState = new PdfGState();
             gState.setFillOpacity(extendedColor.getAlpha() / MAX_INT_COLOR_VALUE);
             setGState(gState);
-            lastAlpha = extendedColor.getAlpha();
+            lastFillAlpha = extendedColor.getAlpha();
         }
         if (state != null) state.colorFill = extendedColor;
     }
