@@ -842,6 +842,7 @@ public abstract class BaseFont {
             if (encoding.equals(IDENTITY_H) || encoding.equals(IDENTITY_V)) {
                 fontBuilt = new TrueTypeFontUnicode(name, encoding, embedded,
                         ttfAfm, forceRead);
+                LayoutProcessor.loadFont(fontBuilt, name);
             } else {
                 fontBuilt = new TrueTypeFont(name, encoding, embedded, ttfAfm,
                         false, forceRead);
