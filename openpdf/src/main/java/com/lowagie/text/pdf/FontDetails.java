@@ -262,13 +262,17 @@ class FontDetails {
     }
 
     byte[] convertToBytes(GlyphVector glyphVector) {
+        return convertToBytes(glyphVector, 0, glyphVector.getNumGlyphs());
+    }
+    
+    byte[] convertToBytes(GlyphVector glyphVector, int beginIndex, int endIndex) {
         if (fontType != BaseFont.FONT_TYPE_TTUNI || symbolic) {
             throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
         }
 
-        char[] glyphs = new char[glyphVector.getNumGlyphs()];
+        char[] glyphs = new char[endIndex-beginIndex];
         int glyphCount = 0;
-        for (int i = 0; i < glyphs.length; i++) {
+        for (int i = beginIndex; i < endIndex; i++) {
             int code = glyphVector.getGlyphCode(i);
             if (code == 0xFFFE || code == 0xFFFF) {// considered non-glyphs by
                                                     // AWT

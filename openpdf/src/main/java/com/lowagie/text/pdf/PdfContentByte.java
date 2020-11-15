@@ -1513,16 +1513,51 @@ public class PdfContentByte {
 
     /**
      * Shows the <CODE>text</CODE>.
+     * If applicable, the LayoutProcessor is used
      *
      * @param text the text to write
      */
-    public void showText(String text) {
+	public void showText(String text) {
+		BaseFont baseFont = state.fontDetails.getBaseFont();
+		if (LayoutProcessor.supportsFont(baseFont)) {
+			LayoutProcessor.showText(this, baseFont, state.size, text);
+		} else {
+			showTextBasic(text);
+		}
+	}
+    
+    /**
+     * Shows the <CODE>text</CODE>.
+     * LayoutProcessor is not used.
+     *
+     * @param text the text to write
+     */
+    public void showTextBasic(String text) {
         showText2(text);
         content.append("Tj").append_i(separator);
     }
     
+    
+    /**
+     *  Shows the glyphs in <CODE>glyphVector</CODE>.
+     *  Layout info in <CODE>glyphVector</CODE> is ignored
+     *
+     * @param glyphVector containing the glyphs to write
+     */
     public void showText(GlyphVector glyphVector) {
-        byte[] b = state.fontDetails.convertToBytes(glyphVector);
+        showText(glyphVector, 0, glyphVector.getNumGlyphs());
+    }
+
+    /**
+     *  Shows the <CODE>glyphVector</CODE>.
+     *  Layout info in <CODE>glyphVector</CODE> is ignored
+     *  
+     * @param glyphVector containing the glyphs to write
+     * @param beginIndex index of first glyph
+     * @param endIndex index of last glyph+1
+     */
+    public void showText(GlyphVector glyphVector, int beginIndex, int endIndex) {
+        byte[] b = state.fontDetails.convertToBytes(glyphVector, beginIndex, endIndex);
         escapeString(b, content);
         content.append("Tj").append_i(separator);
     }
