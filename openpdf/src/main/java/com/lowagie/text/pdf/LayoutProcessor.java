@@ -109,9 +109,7 @@ public class LayoutProcessor {
      * Loads the AWT font needed for layout
      * 
      * @param baseFont  OpenPdf base font
-     * @param fontFileName Name of the font file
-     * 
-     * @return false if font is not loaded
+     * @param filename of the font file
      * 
      * @throws RuntimeException is font can not be loaded
      */
