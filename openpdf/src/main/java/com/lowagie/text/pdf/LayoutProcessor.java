@@ -169,8 +169,7 @@ public class LayoutProcessor {
      * 
      * @param baseFont  OpenPdf base font
      * @param text input text
-     * @return glyph vector containing reordered text, width and positioning info or null, if no advanced
-     *         positioning is needed
+     * @return glyph vector containing reordered text, width and positioning info
      */
     public static GlyphVector computeGlyphVector(BaseFont baseFont, float fontSize, String text) {
         char[] chars = text.toCharArray();
@@ -186,7 +185,7 @@ public class LayoutProcessor {
         java.awt.Font awtFont = LayoutProcessor.awtFontMap.get(baseFont).deriveFont(fontSize);
         GlyphVector glyphVector = awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, localFlags);
 
-        return hasAdjustments(glyphVector) ? glyphVector : null;
+        return glyphVector;
     }
 
    /**
@@ -229,8 +228,8 @@ public class LayoutProcessor {
      */
     public static void showText(PdfContentByte cb, BaseFont baseFont, float fontSize, String text) {
         GlyphVector glyphVector = computeGlyphVector(baseFont, fontSize, text);
-        if (glyphVector == null) {
-            cb.showTextBasic(text);
+        if (!hasAdjustments(glyphVector)) {
+            cb.showText(glyphVector);
             return;
         }
         float lastX = 0f;
