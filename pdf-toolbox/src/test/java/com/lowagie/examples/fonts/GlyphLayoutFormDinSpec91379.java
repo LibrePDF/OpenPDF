@@ -1,5 +1,5 @@
 /*
- * GlyphLayoutDinSpec91379
+ * GlyphLayoutFormDinSpec91379
  * 
  * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -26,7 +26,11 @@ import com.lowagie.text.pdf.LayoutProcessor;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
-public class GlyphLayoutDinSpec91379 {
+/**
+ * Prints characters and sequences of DIN SPEC 91379
+ * with correct glyph layout
+ */
+public class GlyphLayoutFormDinSpec91379 {
 
     public static String LATIN_CHARS_DIN_SPEC_91379 = 
             "Test of   formatting for Sequences defined in:\n"
@@ -70,7 +74,7 @@ public class GlyphLayoutDinSpec91379 {
      */
     public static void main(String[] args) {
         try {
-            test("GlyphLayoutDinSpec91379.pdf", "com/lowagie/examples/fonts/PdfFormDinSpec91379.pdf", LATIN_CHARS_DIN_SPEC_91379);
+            test("GlyphLayoutFormDinSpec91379.pdf", "com/lowagie/examples/fonts/PdfFormDinSpec91379.pdf", LATIN_CHARS_DIN_SPEC_91379);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,7 +93,7 @@ public class GlyphLayoutDinSpec91379 {
         LayoutProcessor.enable();
         //LayoutProcessor.enable(java.awt.Font.LAYOUT_LEFT_TO_RIGHT);
         
-        try (  InputStream acroFormInputStream = GlyphLayoutDinSpec91379.class.getClassLoader().getResourceAsStream(formPath);
+        try (  InputStream acroFormInputStream = GlyphLayoutFormDinSpec91379.class.getClassLoader().getResourceAsStream(formPath);
                 FileOutputStream outputStream = new FileOutputStream(fileName);
                 PdfReader reader = new PdfReader(acroFormInputStream);
             ) {

@@ -52,6 +52,7 @@ package com.lowagie.text.pdf;
 import java.awt.Color;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -221,6 +222,9 @@ public class PdfContentByte {
 
     private int lastFillAlpha = 1;
     private int lastStrokeAlpha = 1;
+
+    // Correction to apply to next moveText after calling LayoutProcessor.showText
+    private Point2D layoutPositionCorrection = null;
 
     static {
         abrev.put(PdfName.BITSPERCOMPONENT, "/BPC ");
@@ -1375,6 +1379,7 @@ public class PdfContentByte {
         inText = true;
         state.xTLM = 0;
         state.yTLM = 0;
+        layoutPositionCorrection = null;
         content.append("BT").append_i(separator);
     }
 
@@ -1519,7 +1524,12 @@ public class PdfContentByte {
 	public void showText(String text) {
 		BaseFont baseFont = state.fontDetails.getBaseFont();
 		if (LayoutProcessor.supportsFont(baseFont)) {
-			LayoutProcessor.showText(this, baseFont, state.size, text);
+			Point2D corr = LayoutProcessor.showText(this, baseFont, state.size, text);
+			if (layoutPositionCorrection==null) {
+			    layoutPositionCorrection = corr;
+			} else {
+			    layoutPositionCorrection.setLocation(layoutPositionCorrection.getX()+corr.getX(), layoutPositionCorrection.getY()+corr.getY());
+			}
 		} else {
 			showTextBasic(text);
 		}
@@ -1675,6 +1685,21 @@ public class PdfContentByte {
      * @param       y           y-coordinate of the new current point
      */
     public void moveText(float x, float y) {
+        if(layoutPositionCorrection != null) {
+            x += layoutPositionCorrection.getX();
+            y += layoutPositionCorrection.getY();
+            layoutPositionCorrection = null;
+        }
+        moveTextBasic(x, y);
+    }
+
+    /**
+     * Moves to the start of the next line, offset from the start of the current line.
+     *
+     * @param       x           x-coordinate of the new current point
+     * @param       y           y-coordinate of the new current point
+     */
+     void moveTextBasic(float x, float y) {
         state.xTLM += x;
         state.yTLM += y;
         content.append(x).append(' ').append(y).append(" Td").append_i(separator);
@@ -1689,6 +1714,11 @@ public class PdfContentByte {
      * @param       y           y-coordinate of the new current point
      */
     public void moveTextWithLeading(float x, float y) {
+        if(layoutPositionCorrection != null) {
+            x += layoutPositionCorrection.getX();
+            y += layoutPositionCorrection.getY();
+            layoutPositionCorrection = null;
+        }
         state.xTLM += x;
         state.yTLM += y;
         state.leading = -y;
