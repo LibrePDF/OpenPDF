@@ -70,7 +70,8 @@ public class LayoutProcessor {
     // Static variables can be set only once
     private static boolean enabled = false;
     private static int flags = DEFAULT_FLAGS;
-
+    private static final Point2D POINT2D_ZERO_ZERO = new Point2D.Double();
+    
     private LayoutProcessor() {
         throw new UnsupportedOperationException("static class");
     }
@@ -223,12 +224,13 @@ public class LayoutProcessor {
      * @param baseFont base font to use 
      * @param fontSize font size to apply
      * @param text     text to show
+     * @return layout position correction to correct the start of the next line
      */
-    public static void showText(PdfContentByte cb, BaseFont baseFont, float fontSize, String text) {
+    public static Point2D showText(PdfContentByte cb, BaseFont baseFont, float fontSize, String text) {
         GlyphVector glyphVector = computeGlyphVector(baseFont, fontSize, text);
         if (!hasAdjustments(glyphVector)) {
             cb.showText(glyphVector);
-            return;
+            return POINT2D_ZERO_ZERO;
         }
         float lastX = 0f;
         float lastY = 0f;
@@ -239,7 +241,7 @@ public class LayoutProcessor {
             float dx = (float) p.getX() - lastX;
             float dy = (float) p.getY() - lastY;
 
-            cb.moveText(dx, -dy);
+            cb.moveTextBasic(dx, -dy);
 
             cb.showText(glyphVector, i, i + 1);
 
@@ -249,6 +251,7 @@ public class LayoutProcessor {
         Point2D p = glyphVector.getGlyphPosition(glyphVector.getNumGlyphs());
         float dx = (float) p.getX() - lastX;
         float dy = (float) p.getY() - lastY;
-        cb.moveText(dx, -dy);
+        cb.moveTextBasic(dx, -dy);
+        return new Point2D.Double(-p.getX(), p.getY());
     }
 }
