@@ -106,7 +106,7 @@ public class GlyphLayoutDocumentDinSpec91379 {
         Document document = new Document();
         try {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(fileName));
-            writer.setInitialLeading(12.0f);
+            writer.setInitialLeading(16.0f);
             document.open();
 
             document.add(new Chunk(LATIN_CHARS_DIN_SPEC_91379, font));
