@@ -67,7 +67,7 @@ public class LayoutProcessor {
     private static final int DEFAULT_FLAGS = -1;
     private static final Map<BaseFont, java.awt.Font> awtFontMap = new ConcurrentHashMap<BaseFont, java.awt.Font>();
 
-    // Static variables can be set only once
+    // Static variables can only be set once
     private static boolean enabled = false;
     private static int flags = DEFAULT_FLAGS;
     private static final Point2D POINT2D_ZERO_ZERO = new Point2D.Double();
@@ -85,7 +85,7 @@ public class LayoutProcessor {
 
     /**
      * Enables the processor providing flags
-     * This method can only called once.
+     * This method can only be called once.
      * 
      * @param flags see java.awt.Font.layoutGlyphVector
      */
@@ -112,7 +112,7 @@ public class LayoutProcessor {
      * @param baseFont  OpenPdf base font
      * @param filename of the font file
      * 
-     * @throws RuntimeException is font can not be loaded
+     * @throws RuntimeException if font can not be loaded
      */
     public static void loadFont(BaseFont baseFont, String filename) {
         if (!enabled) {
