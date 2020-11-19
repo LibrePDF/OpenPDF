@@ -219,8 +219,8 @@ public class PdfContentByte {
     /** The list were we save/restore the layer depth */
     protected List<Integer> layerDepth;
 
-    private int lastFillAlpha = 1;
-    private int lastStrokeAlpha = 1;
+    private int lastFillAlpha = MAX_COLOR_VALUE;
+    private int lastStrokeAlpha = MAX_COLOR_VALUE;
 
     static {
         abrev.put(PdfName.BITSPERCOMPONENT, "/BPC ");
@@ -1410,8 +1410,9 @@ public class PdfContentByte {
         if (idx < 0)
             throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
 
-        state = stateList.get(idx);
-        if (state != null) state.restore(state);
+        if (stateList.get(idx) != null) {
+            state.restore(stateList.get(idx));
+        }
         stateList.remove(idx);
     }
 
