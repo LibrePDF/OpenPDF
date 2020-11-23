@@ -1510,8 +1510,9 @@ public class PdfContentByte {
      * @param text the text to write
      */
     private void showText2(String text) {
-        if (state.fontDetails == null)
+        if (state.fontDetails == null) {
             throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
+        }
         byte[] b = state.fontDetails.convertToBytes(text, getPdfDocument().getDocumentLanguage());
         escapeString(b, content);
     }
@@ -1523,8 +1524,9 @@ public class PdfContentByte {
      * @param text the text to write
      */
 	public void showText(String text) {
-        if (state.fontDetails == null)
+        if (state.fontDetails == null) {
             throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
+        }
 		BaseFont baseFont = state.fontDetails.getBaseFont();
 		if (LayoutProcessor.supportsFont(baseFont)) {
 			Point2D corr = LayoutProcessor.showText(this, baseFont, state.size, text);
@@ -1569,6 +1571,9 @@ public class PdfContentByte {
      * @param endIndex index of last glyph+1
      */
     public void showText(GlyphVector glyphVector, int beginIndex, int endIndex) {
+        if (state.fontDetails == null) {
+            throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
+        }    
         byte[] b = state.fontDetails.convertToBytes(glyphVector, beginIndex, endIndex);
         escapeString(b, content);
         content.append("Tj").append_i(separator);
