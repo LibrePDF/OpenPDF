@@ -13,7 +13,7 @@
 
     <properties>
         <java-module-name>com.github.librepdf.openpdf</java-module-name>
-        <imageio-tiff.version>3.6</imageio-tiff.version>
+        <imageio-tiff.version>3.6.1</imageio-tiff.version>
     </properties>
 
     <dependencies>
