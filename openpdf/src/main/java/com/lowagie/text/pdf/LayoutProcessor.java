@@ -172,7 +172,8 @@ public class LayoutProcessor {
     public static GlyphVector computeGlyphVector(BaseFont baseFont, float fontSize, String text) {
         char[] chars = text.toCharArray();
 
-        FontRenderContext fontRenderContext = new FontRenderContext(new AffineTransform(), false, false);
+        FontRenderContext fontRenderContext = new FontRenderContext(new AffineTransform(), false, true);
+        // specify fractional metrics to compute accurate positions
 
         int localFlags = LayoutProcessor.flags;
         if (localFlags == DEFAULT_FLAGS) {
