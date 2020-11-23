@@ -70,7 +70,6 @@ public class LayoutProcessor {
     // Static variables can only be set once
     private static boolean enabled = false;
     private static int flags = DEFAULT_FLAGS;
-    private static final Point2D POINT2D_ZERO_ZERO = new Point2D.Double();
     
     private LayoutProcessor() {
         throw new UnsupportedOperationException("static class");
@@ -230,7 +229,11 @@ public class LayoutProcessor {
         GlyphVector glyphVector = computeGlyphVector(baseFont, fontSize, text);
         if (!hasAdjustments(glyphVector)) {
             cb.showText(glyphVector);
-            return POINT2D_ZERO_ZERO;
+            Point2D p = glyphVector.getGlyphPosition(glyphVector.getNumGlyphs());
+            float dx = (float) p.getX();
+            float dy = (float) p.getY();
+            cb.moveTextBasic(dx, -dy);
+            return new Point2D.Double(-dx, dy);
         }
         float lastX = 0f;
         float lastY = 0f;
