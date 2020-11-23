@@ -189,7 +189,7 @@ public class PdfContentByte {
     public static final int TEXT_RENDER_MODE_FILL_STROKE_CLIP = 6;
     /** A possible text rendering value */
     public static final int TEXT_RENDER_MODE_CLIP = 7;
-
+    
     static final float MIN_FONT_SIZE = 0.0001f;
 
     private static final float[] unitRect = {0, 0, 0, 1, 1, 0, 1, 1};
@@ -214,7 +214,7 @@ public class PdfContentByte {
     /** The separator between commands.
      */
     protected int separator = '\n';
-
+    
     private int mcDepth = 0;
     private boolean inText = false;
     /** The list were we save/restore the layer depth */
@@ -1064,7 +1064,7 @@ public class PdfContentByte {
 
             // if the box is a rectangle, it is added as a rectangle
             if (rectangle.hasBorder(Rectangle.BOX)) {
-                rectangle(x1, y1, x2 - x1, y2 - y1);
+               rectangle(x1, y1, x2 - x1, y2 - y1);
             }
             // if the border isn't a rectangle, the different sides are added apart
             else {
@@ -1276,7 +1276,7 @@ public class PdfContentByte {
                                     && ar.getPdfObject(1).isName()
                                     && ar.getPdfObject(2).isNumber()
                                     && ar.getPdfObject(3).isString()
-                                    ) {
+                            ) {
                                 check = false;
                             }
 
@@ -1578,7 +1578,7 @@ public class PdfContentByte {
         escapeString(b, content);
         content.append("Tj").append_i(separator);
     }
-
+    
     /**
      * Constructs a kern array for a text in a certain font
      * @param text the text
@@ -1707,7 +1707,7 @@ public class PdfContentByte {
      * @param       x           x-coordinate of the new current point
      * @param       y           y-coordinate of the new current point
      */
-    void moveTextBasic(float x, float y) {
+     void moveTextBasic(float x, float y) {
         state.xTLM += x;
         state.yTLM += y;
         content.append(x).append(' ').append(y).append(" Td").append_i(separator);
@@ -1772,28 +1772,28 @@ public class PdfContentByte {
         content.append_i('(');
         for (byte c : b) {
             switch (c) {
-            case '\r':
-                content.append("\\r");
-                break;
-            case '\n':
-                content.append("\\n");
-                break;
-            case '\t':
-                content.append("\\t");
-                break;
-            case '\b':
-                content.append("\\b");
-                break;
-            case '\f':
-                content.append("\\f");
-                break;
-            case '(':
-            case ')':
-            case '\\':
-                content.append_i('\\').append_i(c);
-                break;
-            default:
-                content.append_i(c);
+                case '\r':
+                    content.append("\\r");
+                    break;
+                case '\n':
+                    content.append("\\n");
+                    break;
+                case '\t':
+                    content.append("\\t");
+                    break;
+                case '\b':
+                    content.append("\\b");
+                    break;
+                case '\f':
+                    content.append("\\f");
+                    break;
+                case '(':
+                case ')':
+                case '\\':
+                    content.append_i('\\').append_i(c);
+                    break;
+                default:
+                    content.append_i(c);
             }
         }
         content.append(")");
@@ -1874,12 +1874,12 @@ public class PdfContentByte {
             throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         if (rotation == 0) {
             switch (alignment) {
-            case ALIGN_CENTER:
-                x -= getEffectiveStringWidth(text, kerned) / 2;
-                break;
-            case ALIGN_RIGHT:
-                x -= getEffectiveStringWidth(text, kerned);
-                break;
+                case ALIGN_CENTER:
+                    x -= getEffectiveStringWidth(text, kerned) / 2;
+                    break;
+                case ALIGN_RIGHT:
+                    x -= getEffectiveStringWidth(text, kerned);
+                    break;
             }
             setTextMatrix(x, y);
             if (kerned)
@@ -1893,16 +1893,16 @@ public class PdfContentByte {
             float sin = (float)Math.sin(alpha);
             float len;
             switch (alignment) {
-            case ALIGN_CENTER:
-                len = getEffectiveStringWidth(text, kerned) / 2;
-                x -=  len * cos;
-                y -=  len * sin;
-                break;
-            case ALIGN_RIGHT:
-                len = getEffectiveStringWidth(text, kerned);
-                x -=  len * cos;
-                y -=  len * sin;
-                break;
+                case ALIGN_CENTER:
+                    len = getEffectiveStringWidth(text, kerned) / 2;
+                    x -=  len * cos;
+                    y -=  len * sin;
+                    break;
+                case ALIGN_RIGHT:
+                    len = getEffectiveStringWidth(text, kerned);
+                    x -=  len * cos;
+                    y -=  len * sin;
+                    break;
             }
             setTextMatrix(cos, sin, -sin, cos, x, y);
             if (kerned)
@@ -2346,33 +2346,33 @@ public class PdfContentByte {
         PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_COLOR, color);
         int type = ExtendedColor.getType(color);
         switch (type) {
-        case ExtendedColor.TYPE_GRAY: {
-            final GrayColor grayColor = (GrayColor) color;
-            setGrayStroke(grayColor.getGray(), grayColor.getAlpha());
-            break;
-        }
-        case ExtendedColor.TYPE_CMYK: {
-            CMYKColor cmyk = (CMYKColor)color;
-            setCMYKColorStrokeF(cmyk.getCyan(), cmyk.getMagenta(), cmyk.getYellow(), cmyk.getBlack(), cmyk.getAlpha());
-            break;
-        }
-        case ExtendedColor.TYPE_SEPARATION: {
-            SpotColor spot = (SpotColor)color;
-            setColorStroke(spot.getPdfSpotColor(), spot.getTint());
-            break;
-        }
-        case ExtendedColor.TYPE_PATTERN: {
-            PatternColor pat = (PatternColor) color;
-            setPatternStroke(pat.getPainter());
-            break;
-        }
-        case ExtendedColor.TYPE_SHADING: {
-            ShadingColor shading = (ShadingColor) color;
-            setShadingStroke(shading.getPdfShadingPattern());
-            break;
-        }
-        default:
-            setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+            case ExtendedColor.TYPE_GRAY: {
+                final GrayColor grayColor = (GrayColor) color;
+                setGrayStroke(grayColor.getGray(), grayColor.getAlpha());
+                break;
+            }
+            case ExtendedColor.TYPE_CMYK: {
+                CMYKColor cmyk = (CMYKColor)color;
+                setCMYKColorStrokeF(cmyk.getCyan(), cmyk.getMagenta(), cmyk.getYellow(), cmyk.getBlack(), cmyk.getAlpha());
+                break;
+            }
+            case ExtendedColor.TYPE_SEPARATION: {
+                SpotColor spot = (SpotColor)color;
+                setColorStroke(spot.getPdfSpotColor(), spot.getTint());
+                break;
+            }
+            case ExtendedColor.TYPE_PATTERN: {
+                PatternColor pat = (PatternColor) color;
+                setPatternStroke(pat.getPainter());
+                break;
+            }
+            case ExtendedColor.TYPE_SHADING: {
+                ShadingColor shading = (ShadingColor) color;
+                setShadingStroke(shading.getPdfShadingPattern());
+                break;
+            }
+            default:
+                setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
         }
     }
 
@@ -2394,33 +2394,33 @@ public class PdfContentByte {
         PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_COLOR, color);
         int type = ExtendedColor.getType(color);
         switch (type) {
-        case ExtendedColor.TYPE_GRAY: {
-            GrayColor grayColor = (GrayColor) color;
-            setGrayFill(grayColor.getGray(), color.getAlpha() / MAX_INT_COLOR_VALUE);
-            break;
-        }
-        case ExtendedColor.TYPE_CMYK: {
-            CMYKColor cmyk = (CMYKColor) color;
-            setCMYKColorFillF(cmyk.getCyan(), cmyk.getMagenta(), cmyk.getYellow(), cmyk.getBlack(), cmyk.getAlpha() / MAX_INT_COLOR_VALUE);
-            break;
-        }
-        case ExtendedColor.TYPE_SEPARATION: {
-            SpotColor spot = (SpotColor) color;
-            setColorFill(spot.getPdfSpotColor(), spot.getTint());
-            break;
-        }
-        case ExtendedColor.TYPE_PATTERN: {
-            PatternColor pat = (PatternColor) color;
-            setPatternFill(pat.getPainter());
-            break;
-        }
-        case ExtendedColor.TYPE_SHADING: {
-            ShadingColor shading = (ShadingColor) color;
-            setShadingFill(shading.getPdfShadingPattern());
-            break;
-        }
-        default:
-            setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+            case ExtendedColor.TYPE_GRAY: {
+                GrayColor grayColor = (GrayColor) color;
+                setGrayFill(grayColor.getGray(), color.getAlpha() / MAX_INT_COLOR_VALUE);
+                break;
+            }
+            case ExtendedColor.TYPE_CMYK: {
+                CMYKColor cmyk = (CMYKColor) color;
+                setCMYKColorFillF(cmyk.getCyan(), cmyk.getMagenta(), cmyk.getYellow(), cmyk.getBlack(), cmyk.getAlpha() / MAX_INT_COLOR_VALUE);
+                break;
+            }
+            case ExtendedColor.TYPE_SEPARATION: {
+                SpotColor spot = (SpotColor) color;
+                setColorFill(spot.getPdfSpotColor(), spot.getTint());
+                break;
+            }
+            case ExtendedColor.TYPE_PATTERN: {
+                PatternColor pat = (PatternColor) color;
+                setPatternFill(pat.getPainter());
+                break;
+            }
+            case ExtendedColor.TYPE_SHADING: {
+                ShadingColor shading = (ShadingColor) color;
+                setShadingFill(shading.getPdfShadingPattern());
+                break;
+            }
+            default:
+                setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
         }
     }
 
@@ -2489,27 +2489,27 @@ public class PdfContentByte {
         PdfXConformanceImp.checkPDFXConformance(writer, PdfXConformanceImp.PDFXKEY_COLOR, color);
         int type = ExtendedColor.getType(color);
         switch (type) {
-        case ExtendedColor.TYPE_RGB:
-            content.append((float)(color.getRed()) / MAX_INT_COLOR_VALUE);
-            content.append(' ');
-            content.append((float)(color.getGreen()) / MAX_INT_COLOR_VALUE);
-            content.append(' ');
-            content.append((float)(color.getBlue()) / MAX_INT_COLOR_VALUE);
-            break;
-        case ExtendedColor.TYPE_GRAY:
-            content.append(((GrayColor)color).getGray());
-            break;
-        case ExtendedColor.TYPE_CMYK: {
-            CMYKColor cmyk = (CMYKColor)color;
-            content.append(cmyk.getCyan()).append(' ').append(cmyk.getMagenta());
-            content.append(' ').append(cmyk.getYellow()).append(' ').append(cmyk.getBlack());
-            break;
-        }
-        case ExtendedColor.TYPE_SEPARATION:
-            content.append(tint);
-            break;
-        default:
-            throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.color.type"));
+            case ExtendedColor.TYPE_RGB:
+                content.append((float)(color.getRed()) / MAX_INT_COLOR_VALUE);
+                content.append(' ');
+                content.append((float)(color.getGreen()) / MAX_INT_COLOR_VALUE);
+                content.append(' ');
+                content.append((float)(color.getBlue()) / MAX_INT_COLOR_VALUE);
+                break;
+            case ExtendedColor.TYPE_GRAY:
+                content.append(((GrayColor)color).getGray());
+                break;
+            case ExtendedColor.TYPE_CMYK: {
+                CMYKColor cmyk = (CMYKColor)color;
+                content.append(cmyk.getCyan()).append(' ').append(cmyk.getMagenta());
+                content.append(' ').append(cmyk.getYellow()).append(' ').append(cmyk.getBlack());
+                break;
+            }
+            case ExtendedColor.TYPE_SEPARATION:
+                content.append(tint);
+                break;
+            default:
+                throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.color.type"));
         }
     }
 
@@ -3217,7 +3217,7 @@ public class PdfContentByte {
         PdfDictionary dict = new PdfDictionary();
         beginMarkedContentSequence(struc, dict);
     }
-
+    
     public void beginMarkedContentSequence(PdfStructureElement struc, PdfDictionary dict) {
         PdfObject obj = struc.get(PdfName.K);
         int mark = pdf.getMarkPoint();
@@ -3287,9 +3287,9 @@ public class PdfContentByte {
             try {
                 property.toPdf(writer, content);
             }
-        catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
+            catch (Exception e) {
+                throw new ExceptionConverter(e);
+            }
         else {
             PdfObject[] objs;
             if (writer.propertyExists(property))
@@ -3312,7 +3312,7 @@ public class PdfContentByte {
     public void beginMarkedContentSequence(PdfName tag) {
         beginMarkedContentSequence(tag, null, false);
     }
-
+    
     /**
      * Checks for any dangling state: Mismatched save/restore state, begin/end text,
      * begin/end layer, or begin/end marked content sequence.
