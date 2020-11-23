@@ -1523,6 +1523,8 @@ public class PdfContentByte {
      * @param text the text to write
      */
 	public void showText(String text) {
+        if (state.fontDetails == null)
+            throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
 		BaseFont baseFont = state.fontDetails.getBaseFont();
 		if (LayoutProcessor.supportsFont(baseFont)) {
 			Point2D corr = LayoutProcessor.showText(this, baseFont, state.size, text);
