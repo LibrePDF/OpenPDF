@@ -98,7 +98,9 @@ public class GlyphLayoutFormDinSpec91379 {
                 PdfReader reader = new PdfReader(acroFormInputStream);
             ) {
 
-            PdfStamper stamper = new PdfStamper(reader, outputStream);
+            // The OpenType or TrueType fonts loaded with FontFactory.register() are
+            // available for glyph layout
+            // Only these fonts can be used.
             String fontFileName = "com/lowagie/examples/fonts/NotoSans-Regular.ttf";
             FontFactory.register(fontFileName, "sans");
             Font font = FontFactory.getFont("sans", BaseFont.IDENTITY_H);
@@ -108,6 +110,7 @@ public class GlyphLayoutFormDinSpec91379 {
             Font fontMath = FontFactory.getFont("sans-math", BaseFont.IDENTITY_H);
             BaseFont baseFontMath = fontMath.getBaseFont();
 
+            PdfStamper stamper = new PdfStamper(reader, outputStream);
             final AcroFields fields = stamper.getAcroFields();
             fields.addSubstitutionFont(baseFontMath);
 
