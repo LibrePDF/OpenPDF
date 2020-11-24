@@ -75,7 +75,7 @@ public class GlyphLayoutDocumentDinSpec91379 {
      */
     public static void main(String[] args) {
         try {
-            test("GlyphLayoutDocumentDinSpec91379.pdf", LATIN_CHARS_DIN_SPEC_91379, LATIN_CHARS_DIN_SPEC_91379_MATH);
+            test("GlyphLayoutDocumentDinSpec91379.pdf", LATIN_CHARS_DIN_SPEC_91379, LATIN_CHARS_DIN_SPEC_91379_MATH, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,9 +87,10 @@ public class GlyphLayoutDocumentDinSpec91379 {
      * @param fileName Name of output file
      * @param text     Text to show
      * @param textMath Text in mathematical font to show
+     * @param testChunks if true some chunks are added to test positioning
      * @throws Exception
      */
-    public static void test(String fileName, String text, String textMath) throws Exception {
+    public static void test(String fileName, String text, String textMath, boolean testChunks) throws Exception {
 
         // Enable the LayoutProcessor with optional flags
         LayoutProcessor.enable();
@@ -112,23 +113,31 @@ public class GlyphLayoutDocumentDinSpec91379 {
             writer.setInitialLeading(16.0f);
             document.open();
 
-            document.add(new Chunk(LATIN_CHARS_DIN_SPEC_91379, font));
-            document.add(new Chunk(LATIN_CHARS_DIN_SPEC_91379_MATH, fontMath));
-            document.add(new Chunk("\n"));
-            document.add(new Chunk("Test of several Chunks on one line: A", font));
-            document.add(new Chunk("A̋C̀C̄C̆C̈", font));
-            document.add(new Chunk("C̈C̕C̣C̦C̨̆", font));
-            document.add(new Chunk(".\n", font));
-            document.add(new Chunk("Another line: S", font));
-            document.add(new Chunk("Ṣ̄ṣ̄Ṭ̄ṭ̄Ạ̈ạ̈Ọ̈ọ̈Ụ̄Ụ̈ụ̄ụ̈", font));
-            document.add(new Chunk(".\n", font));
+            document.add(new Chunk(text, font));
+            document.add(new Chunk(textMath, fontMath));
 
-            
+            if(testChunks) {
+                addChunks(document, font);
+            }
         } catch (DocumentException de) {
             System.err.println(de.getMessage());
         } catch (IOException ioe) {
             System.err.println(ioe.getMessage());
         }
         document.close();
+    }
+    
+    /*
+     * Add several chunks to test positioning
+     */
+    private static void addChunks(Document document, Font font) {
+        document.add(new Chunk("\n"));
+        document.add(new Chunk("Test of several Chunks on one line: A", font));
+        document.add(new Chunk("A̋C̀C̄C̆C̈", font));
+        document.add(new Chunk("C̈C̕C̣C̦C̨̆", font));
+        document.add(new Chunk(".\n", font));
+        document.add(new Chunk("Another line: S", font));
+        document.add(new Chunk("Ṣ̄ṣ̄Ṭ̄ṭ̄Ạ̈ạ̈Ọ̈ọ̈Ụ̄Ụ̈ụ̄ụ̈", font));
+        document.add(new Chunk(".\n", font));
     }
 }
