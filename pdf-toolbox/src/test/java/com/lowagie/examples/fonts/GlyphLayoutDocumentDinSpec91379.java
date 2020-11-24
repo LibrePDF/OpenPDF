@@ -97,6 +97,9 @@ public class GlyphLayoutDocumentDinSpec91379 {
 
         float fontSize = 10.0f;
 
+        // The  OpenType or TrueType fonts loaded with FontFactory.register() are
+        // available for glyph layout
+        // Only these fonts can be used.
         String fontFileName = "com/lowagie/examples/fonts/NotoSans-Regular.ttf";
         FontFactory.register(fontFileName, "sans");
         Font font = FontFactory.getFont("sans", BaseFont.IDENTITY_H, fontSize);
@@ -111,6 +114,16 @@ public class GlyphLayoutDocumentDinSpec91379 {
 
             document.add(new Chunk(LATIN_CHARS_DIN_SPEC_91379, font));
             document.add(new Chunk(LATIN_CHARS_DIN_SPEC_91379_MATH, fontMath));
+            document.add(new Chunk("\n"));
+            document.add(new Chunk("Test of several Chunks on one line: A", font));
+            document.add(new Chunk("A̋C̀C̄C̆C̈", font));
+            document.add(new Chunk("C̈C̕C̣C̦C̨̆", font));
+            document.add(new Chunk(".\n", font));
+            document.add(new Chunk("Another line: S", font));
+            document.add(new Chunk("Ṣ̄ṣ̄Ṭ̄ṭ̄Ạ̈ạ̈Ọ̈ọ̈Ụ̄Ụ̈ụ̄ụ̈", font));
+            document.add(new Chunk(".\n", font));
+
+            
         } catch (DocumentException de) {
             System.err.println(de.getMessage());
         } catch (IOException ioe) {
