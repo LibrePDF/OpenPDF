@@ -1,22 +1,26 @@
 # OpenPDF is an open source Java library for PDF files #
 
-OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source license. OpenPDF is the LGPL/MPL open source successor of iText, and is based on a fork, of a fork, of iText 4 svn tag. We welcome contributions from other developers. Please feel free to submit pull-requests and bugreports to this GitHub repository.
+OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source
+license. OpenPDF is the LGPL/MPL open source successor of iText, and is based on some forks of iText
+4 svn tag. We welcome contributions from other developers. Please feel free to submit pull-requests
+and bugreports to this GitHub repository.
 
- [![Build Status](https://travis-ci.org/LibrePDF/OpenPDF.svg?branch=master)](https://travis-ci.org/LibrePDF/OpenPDF) 
- [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf) 
- [![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%203.0-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-3.0) 
- [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
- 
- [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF) 
- [![Join the chat at https://gitter.im/LibrePDF/code_of_conduct](https://badges.gitter.im/LibrePDF/code_of_conduct.svg)](https://gitter.im/LibrePDF/code_of_conduct)
+[![Build Status](https://travis-ci.org/LibrePDF/OpenPDF.svg?branch=master)](https://travis-ci.org/LibrePDF/OpenPDF)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf)
+[![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%203.0-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-3.0)
+[![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
+
+[![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
+[![Join the chat at https://gitter.im/LibrePDF/code_of_conduct](https://badges.gitter.im/LibrePDF/code_of_conduct.svg)](https://gitter.im/LibrePDF/code_of_conduct)
 
 ## OpenPDF version 1.3.23 released 2020-11-05 ##
+
 Get version 1.3.23 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.23
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
-
 ## Use OpenPDF as Maven dependency
+
 Add this to your pom.xml file to use the latest version of OpenPDF:
 
         <dependency>
@@ -26,45 +30,71 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
         </dependency>
 
 ## License ##
-
 GNU General Lesser Public License (LGPL) version 2.1 - https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 
 Mozilla Public License Version 2.0 - http://www.mozilla.org/MPL/2.0/
 
-We want OpenPDF to consist of source code which is consistently licensed with the LGPL and MPL licences only. This also means that any new contributions to the project must have a dual LGPL and MPL license only.
+We want OpenPDF to consist of source code which is consistently licensed with the LGPL and MPL
+licences only. This also means that any new contributions to the project must have a dual LGPL and
+MPL license only.
 
 ## Documentation ##
+
 - [Examples](pdf-toolbox/src/test/java/com/lowagie/examples/)
 - [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-3-17/)
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 
 ## Background ##
 
-OpenPDF is open source software with a LGPL and MPL license. It is a fork of iText version 4, more specifically iText svn tag 4.2.0, which was hosted publicly on sourceforge with LGPL and MPL license headers in the source code, and lgpl and mpl license documents in the svn repository.
-Beginning with version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell commercial licenses.
+OpenPDF is open source software with a LGPL and MPL license. It is a fork of iText version 4, more
+specifically iText svn tag 4.2.0, which was hosted publicly on sourceforge with LGPL and MPL license
+headers in the source code, and LGPL and MPL license documents in the svn repository. Beginning with
+version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell
+commercial licenses.
+
+OpenPDF ancestors in GitHub (in fork order):
+
+1. [@rtfarte](https://github.com/rtfarte) / [OpenPDF](https://github.com/rtfarte/OpenPDF) - parent
+   of LibrePDF/OpenPDF
+2. [@kulatamicuda](https://github.com/kulatamicuda)
+   / [iText-4.2.0](https://github.com/kulatamicuda/iText-4.2.0)
+3. [@daviddurand](https://github.com/daviddurand)
+   / [iText-4.2.0](https://github.com/daviddurand/iText-4.2.0)
+4. [@ymasory](https://github.com/ymasory) / [iText-4.2.0](https://github.com/ymasory/iText-4.2.0) -
+   original parent on GitHub
 
 ## Projects using OpenPDF ##
+
 - Spring Framework https://github.com/spring-projects/spring-framework
 - flyingsaucer https://github.com/flyingsaucerproject/flyingsaucer
 - Confluence PDF Export
 - Digital Signature Service - https://github.com/esig/dss
-- OpenCMS, Nuxeo Web Framework, QR Invoice Library and many closed source commercial applications as well.
+- OpenCMS, Nuxeo Web Framework, QR Invoice Library and many closed source commercial applications as
+  well.
 - Full list here: https://mvnrepository.com/artifact/com.github.librepdf/openpdf/usages
 
 ## Android support ##
-OpenPDF now has Android support, more info here: [Android-support](https://github.com/LibrePDF/OpenPDF/wiki/Android-support)
+
+OpenPDF now has Android support, more info
+here: [Android-support](https://github.com/LibrePDF/OpenPDF/wiki/Android-support)
 
 ## Contributing ##
-Release the hounds!  Please send all pull requests.
-Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
+
+Release the hounds!  Please send all pull requests. Make sure that your contributions can be
+released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must
+only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
 
 ### Coding Style ###
+
 - Code indentation style is 4 spaces.
 - Generally try to preserve the coding style in the file you are modifying.
 
 ## Dependencies ##
+
 ### Required Dependencies: ###
- - Java 8 or later is required to use OpenPDF. All versions Java 8 to Java OpenJDK 13 have been tested to work.
+
+- Java 8 or later is required to use OpenPDF. All versions Java 8 to Java OpenJDK 13 have been
+  tested to work.
 
 ### UTF-8 Fonts: ###
 
