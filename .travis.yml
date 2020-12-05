@@ -1,7 +1,0 @@
-language: java
-jdk:
-  - openjdk14 # Latest available
-  - openjdk11 # LTS
-  - openjdk8  # LTS
-
-install: mvn install -Dgpg.skip
