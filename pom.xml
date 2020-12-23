@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <bouncycastle.bcpkix.version>1.67</bouncycastle.bcpkix.version>
-        <bouncycastle.bcprov.version>1.67</bouncycastle.bcprov.version>
+        <bouncycastle.bcprov.version>1.68</bouncycastle.bcprov.version>
 
         <spotbugs.version>4.2.0</spotbugs.version>
         <hamcrest.version>2.2</hamcrest.version>
