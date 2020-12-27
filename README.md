@@ -167,6 +167,7 @@ In GitHub User alphabetical order.
 * [@ubermichael](https://github.com/ubermichael) - Michael Joyce
 * [@V-F](https://github.com/V-F)
 * [@vic0075](https://github.com/vic0075)
+* [@vk-github18](https://github.com/vk-github18)
 * [@weiyeh](https://github.com/weiyeh)
 * [@ymasory](https://github.com/ymasory)
 
