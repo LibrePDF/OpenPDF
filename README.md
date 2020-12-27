@@ -23,11 +23,14 @@ Get version 1.3.24 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.2
 
 Add this to your pom.xml file to use the latest version of OpenPDF:
 
-        <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>openpdf</artifactId>
-            <version>1.3.24</version>
-        </dependency>
+```xml
+
+<dependency>
+  <groupId>com.github.librepdf</groupId>
+  <artifactId>openpdf</artifactId>
+  <version>1.3.24</version>
+</dependency>
+```
 
 ## License ##
 
@@ -41,7 +44,7 @@ MPL license only.
 
 ## Documentation ##
 
-- [Examples](pdf-toolbox/src/test/java/com/lowagie/examples/)
+- [Examples](pdf-toolbox/src/test/java/com/lowagie/examples)
 - [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-3-17/)
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 
@@ -94,7 +97,7 @@ only contain code that you have written yourself. GPL or AGPL licensed code will
 
 ### Required Dependencies: ###
 
-- Java 8 or later is required to use OpenPDF. All versions Java 8 to Java OpenJDK 13 have been
+- Java 8 or later is required to use OpenPDF. All versions Java 8 to Java OpenJDK 15 have been
   tested to work.
 
 ### UTF-8 Fonts: ###
@@ -103,25 +106,24 @@ As of 1.3.21 the UTF-8 Liberation fonts moved to its own module, to reduce the s
 jar. If you want to use the bundled UTF-8 fonts, please add the following dependency to your project
 and use the class `org.librepdf.openpdf.fonts.Liberation`.
 
-        <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>openpdf-fonts-extra</artifactId>
-            <version>${openpdf.version}</version>
-        </dependency>
+```xml
+
+<dependency>
+  <groupId>com.github.librepdf</groupId>
+  <artifactId>openpdf-fonts-extra</artifactId>
+  <version>${openpdf.version}</version>
+</dependency>
+```
 
 ### Optional: ###
 
-  - [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended dependency)
-    - Provider
-    - PKIX/CMS
- - [TwelveMonkeys imageio-tiff](https://github.com/haraldk/TwelveMonkeys/) - optional by default, but required if TIFF image support is needed.
- - JUnit 5 - for unit testing
- - JFreeChart - for testing graphical examples
-   - JFreeChart
-   - JCommon
-   - Servlet
- - DOM4j is required for the pdf-swing submodule.
- - Apache FOP
+- [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a
+  recommended dependency)
+    - Provider (`org.bouncycastle:bcprov-jdk15on` or `org.bouncycastle:bcprov-ext-jdk15on` depending
+      on which algorithm you are using)
+    - PKIX/CMS (`org.bouncycastle:bcpkix-jdk15on`)
+- Apache FOP (`org.apache.xmlgraphics:fop`)
+- Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
 ## Credits ##
 Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs/contributors) on GitHub.
