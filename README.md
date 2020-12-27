@@ -13,9 +13,9 @@ and bugreports to this GitHub repository.
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 [![Join the chat at https://gitter.im/LibrePDF/code_of_conduct](https://badges.gitter.im/LibrePDF/code_of_conduct.svg)](https://gitter.im/LibrePDF/code_of_conduct)
 
-## OpenPDF version 1.3.23 released 2020-11-05 ##
+## OpenPDF version 1.3.24 released 2020-12-27 ##
 
-Get version 1.3.23 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.23
+Get version 1.3.24 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.24
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
@@ -26,7 +26,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
-            <version>1.3.23</version>
+            <version>1.3.24</version>
         </dependency>
 
 ## License ##
