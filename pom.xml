@@ -81,7 +81,7 @@
         <fop.version>2.5</fop.version>
         <jakarta.servlet-api.version>5.0.0</jakarta.servlet-api.version>
         <jcommon.version>1.0.24</jcommon.version>
-        <jfreechart.version>1.5.1</jfreechart.version>
+        <jfreechart.version>1.5.2</jfreechart.version>
         <jsr305.version>3.0.2</jsr305.version>
         <pdf-renderer.version>1.0.5</pdf-renderer.version>
 
