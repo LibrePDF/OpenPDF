@@ -328,7 +328,7 @@ public class EntitiesToUnicode {
         map.put("hearts", '\u2665'); // black heart suit = valentine, U+2665 ISOpub
         map.put("diams", '\u2666'); // black diamond suit, U+2666 ISOpub
         // C0 Controls and Basic Latin
-        map.put("quot", '\u0022'); // quotation mark = APL quote, U+0022 ISOnum
+        map.put("quot", '"'); // quotation mark = APL quote, U+0022 ISOnum
         map.put("amp", '\u0026'); // ampersand, U+0026 ISOnum
         map.put("apos", '\'');
         map.put("lt", '\u003c'); // less-than sign, U+003C ISOnum

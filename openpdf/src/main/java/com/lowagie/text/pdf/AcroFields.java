@@ -81,7 +81,7 @@ public class AcroFields {
   public static final int DA_SIZE = 1;
   public static final int DA_COLOR = 2;
   private final Map<Integer, BaseFont> extensionFonts = new HashMap<>();
-  private XfaForm xfa;
+  private final XfaForm xfa;
 
   /**
    * A field type invalid or not found.
@@ -130,7 +130,7 @@ public class AcroFields {
    */
   private boolean generateAppearances = true;
 
-  private Map<String, BaseFont> localFonts = new HashMap<>();
+  private final Map<String, BaseFont> localFonts = new HashMap<>();
 
   private float extraMarginLeft;
   private float extraMarginTop;
@@ -435,8 +435,8 @@ public class AcroFields {
    * <CODE>FIELD_TYPE_CHECKBOX</CODE>, <CODE>FIELD_TYPE_RADIOBUTTON</CODE>,
    * <CODE>FIELD_TYPE_TEXT</CODE>, <CODE>FIELD_TYPE_LIST</CODE>,
    * <CODE>FIELD_TYPE_COMBO</CODE> or <CODE>FIELD_TYPE_SIGNATURE</CODE>.
-   * <p>
-   * If the field does not exist or is invalid it returns
+   *
+   * <p>If the field does not exist or is invalid it returns
    * <CODE>FIELD_TYPE_NONE</CODE>.
    *
    * @param fieldName the field name
@@ -509,7 +509,7 @@ public class AcroFields {
    * @param oldName the old field name
    * @param newName the new field name
    * @return <CODE>true</CODE> if the renaming was successful, <CODE>false</CODE>
-   * otherwise
+   *     otherwise
    */
   public boolean renameField(String oldName, String newName) {
     int idx1 = oldName.lastIndexOf('.') + 1;
@@ -2593,9 +2593,9 @@ public class AcroFields {
 
   private static class RevisionStream extends InputStream {
 
-    private byte[] b = new byte[1];
-    private RandomAccessFileOrArray raf;
-    private int length;
+    private final byte[] b = new byte[1];
+    private final RandomAccessFileOrArray raf;
+    private final int length;
     private int rangePosition = 0;
     private boolean closed;
 

@@ -46,12 +46,11 @@
  */
 package com.lowagie.text.pdf;
 
-import java.io.IOException;
-import com.lowagie.text.error_messages.MessageLocalization;
-
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
+import java.io.IOException;
 /**
  * Creates a pushbutton field. It supports all the text and icon alignments.
  * The icon may be an image or a template.
@@ -357,6 +356,7 @@ public class PushbuttonField extends BaseField {
                         textX = (box.getWidth() - ufont.getWidthPoint(text, fsize)) / 2;
                         textY = (box.getHeight() - ufont.getFontDescriptor(BaseFont.ASCENT, fsize)) / 2;
                     }
+                    // fallthrough
                 case LAYOUT_ICON_ONLY:
                     if (nlayout == LAYOUT_LABEL_OVER_ICON || nlayout == LAYOUT_ICON_ONLY)
                         iconBox = new Rectangle(box.getLeft() + adj, box.getBottom() + adj, box.getRight() - adj, box.getTop() - adj);

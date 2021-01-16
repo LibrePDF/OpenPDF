@@ -44,7 +44,6 @@
 package com.lowagie.text.xml.simpleparser;
 
 import com.lowagie.text.error_messages.MessageLocalization;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -378,19 +377,18 @@ public final class SimpleXMLParser {
                     state = TAG_EXAMINED;
                 }
                 else if (html && quoteCharacter == ' ') {
-                    text.append((char)character);
-                }
-                else if(character == quoteCharacter) {
+                    text.append((char) character);
+                } else if (character == quoteCharacter) {
                     flush();
                     state = TAG_EXAMINED;
-                } else if(" \r\n\u0009".indexOf(character)>=0) {
+                } else if (" \r\n\t".indexOf(character) >= 0) {
                     text.append(' ');
-                } else if(character == '&') {
+                } else if (character == '&') {
                     saveState(state);
                     state = ENTITY;
                     entity.setLength(0);
                 } else {
-                    text.append((char)character);
+                    text.append((char) character);
                 }
                 break;
                 

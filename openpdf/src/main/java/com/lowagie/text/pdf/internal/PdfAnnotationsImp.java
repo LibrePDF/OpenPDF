@@ -49,16 +49,9 @@
 
 package com.lowagie.text.pdf.internal;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.lowagie.text.Annotation;
-
-import com.lowagie.text.Rectangle;
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfAcroForm;
 import com.lowagie.text.pdf.PdfAction;
 import com.lowagie.text.pdf.PdfAnnotation;
@@ -71,6 +64,11 @@ import com.lowagie.text.pdf.PdfRectangle;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class PdfAnnotationsImp {
 
@@ -225,26 +223,39 @@ public class PdfAnnotationsImp {
            case Annotation.URL_AS_STRING:
                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(), new PdfAction((String) annot.getAttributes().get(Annotation.FILE)));
            case Annotation.FILE_DEST:
-               return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(), new PdfAction((String) annot.getAttributes().get(Annotation.FILE), (String) annot.getAttributes().get(Annotation.DESTINATION)));
-           case Annotation.SCREEN:
-               boolean[] sparams = (boolean[]) annot.getAttributes().get(Annotation.PARAMETERS);
-               String fname = (String) annot.getAttributes().get(Annotation.FILE);
-               String mimetype = (String) annot.getAttributes().get(Annotation.MIMETYPE);
-               PdfFileSpecification fs;
-               if (sparams[0])
-                   fs = PdfFileSpecification.fileEmbedded(writer, fname, fname, null);
-               else
-                   fs = PdfFileSpecification.fileExtern(writer, fname);
-               return PdfAnnotation.createScreen(writer, new Rectangle(annot.llx(), annot.lly(), annot.urx(), annot.ury()),
-                       fname, fs, mimetype, sparams[1]);
-           case Annotation.FILE_PAGE:
-               return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(), new PdfAction((String) annot.getAttributes().get(Annotation.FILE), (Integer) annot.getAttributes().get(Annotation.PAGE)));
-           case Annotation.NAMED_DEST:
-               return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(), new PdfAction((Integer) annot.getAttributes().get(Annotation.NAMED)));
-           case Annotation.LAUNCH:
-               return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(), new PdfAction((String) annot.getAttributes().get(Annotation.APPLICATION),(String) annot.getAttributes().get(Annotation.PARAMETERS),(String) annot.getAttributes().get(Annotation.OPERATION),(String) annot.getAttributes().get(Annotation.DEFAULTDIR)));
-           default:
-               return new PdfAnnotation(writer, defaultRect.getLeft(), defaultRect.getBottom(), defaultRect.getRight(), defaultRect.getTop(), new PdfString(annot.title(), PdfObject.TEXT_UNICODE), new PdfString(annot.content(), PdfObject.TEXT_UNICODE));
-       }
+               return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
+                       new PdfAction((String) annot.getAttributes().get(Annotation.FILE),
+                               (String) annot.getAttributes().get(Annotation.DESTINATION)));
+            case Annotation.SCREEN:
+                boolean[] sparams = (boolean[]) annot.getAttributes().get(Annotation.PARAMETERS);
+                String fname = (String) annot.getAttributes().get(Annotation.FILE);
+                String mimetype = (String) annot.getAttributes().get(Annotation.MIMETYPE);
+                PdfFileSpecification fs;
+                if (sparams[0]) {
+                    fs = PdfFileSpecification.fileEmbedded(writer, fname, fname, null);
+                } else {
+                    fs = PdfFileSpecification.fileExtern(writer, fname);
+                }
+                return PdfAnnotation
+                        .createScreen(writer, new Rectangle(annot.llx(), annot.lly(), annot.urx(), annot.ury()),
+                                fname, fs, mimetype, sparams[1]);
+            case Annotation.FILE_PAGE:
+                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
+                        new PdfAction((String) annot.getAttributes().get(Annotation.FILE),
+                                (Integer) annot.getAttributes().get(Annotation.PAGE)));
+            case Annotation.NAMED_DEST:
+                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
+                        new PdfAction((Integer) annot.getAttributes().get(Annotation.NAMED)));
+            case Annotation.LAUNCH:
+                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
+                        new PdfAction((String) annot.getAttributes().get(Annotation.APPLICATION),
+                                (String) annot.getAttributes().get(Annotation.PARAMETERS),
+                                (String) annot.getAttributes().get(Annotation.OPERATION),
+                                (String) annot.getAttributes().get(Annotation.DEFAULTDIR)));
+            default:
+                return new PdfAnnotation(writer, defaultRect.getLeft(), defaultRect.getBottom(), defaultRect.getRight(),
+                        defaultRect.getTop(), new PdfString(annot.title(), PdfObject.TEXT_UNICODE),
+                        new PdfString(annot.content(), PdfObject.TEXT_UNICODE));
+        }
    }
 }

@@ -102,19 +102,19 @@ public class ArabicLigaturizer {
                     l = m + 1;
                 }
             }
-        }
-        else if (s == ZWJ) {
+        } else if (s == ZWJ) {
             return 4;
         }
         return 1;
     }
-    
-    static int ligature(char newchar, charstruct oldchar) {
-    /* 0 == no ligature possible; 1 == vowel; 2 == two chars; 3 == Lam+Alef */
+
+    static int ligature(char newchar, CharStruct oldchar) {
+        /* 0 == no ligature possible; 1 == vowel; 2 == two chars; 3 == Lam+Alef */
         int retval = 0;
-        
-        if (oldchar.basechar == 0)
+
+        if (oldchar.basechar == 0) {
             return 0;
+        }
         if (isVowel(newchar)) {
             retval = 1;
             if ((oldchar.vowel != 0) && (newchar != SHADDA)) {
@@ -223,20 +223,20 @@ public class ArabicLigaturizer {
         }
         return retval;
     }
-    
-    static void copycstostring(StringBuffer string, charstruct s, int level) {
-    /* s is a shaped charstruct; i is the index into the string */
-        if (s.basechar == 0)
+
+    static void copycstostring(StringBuffer string, CharStruct s, int level) {
+        /* s is a shaped charstruct; i is the index into the string */
+        if (s.basechar == 0) {
             return;
-        
+        }
+
         string.append(s.basechar);
         s.lignum--;
         if (s.mark1 != 0) {
             if ((level & ar_novowel) == 0) {
                 string.append(s.mark1);
                 s.lignum--;
-            }
-            else {
+            } else {
                 s.lignum--;
             }
         }
@@ -428,7 +428,7 @@ public class ArabicLigaturizer {
         string.setLength(len);
     }
 
-    static boolean connects_to_left(charstruct a) {
+    static boolean connects_to_left(CharStruct a) {
         return a.numshapes > 2;
     }
     
@@ -443,14 +443,14 @@ public class ArabicLigaturizer {
         int join;
         int which;
         char nextletter;
-        
+
         int p = 0;                     /* initialize for output */
-        charstruct oldchar = new charstruct();
-        charstruct curchar = new charstruct();
+        CharStruct oldchar = new CharStruct();
+        CharStruct curchar = new CharStruct();
         while (p < text.length) {
             nextletter = text[p++];
             //nextletter = unshape (nextletter);
-            
+
             join = ligature(nextletter, curchar);
             if (join == 0) {                       /* shape curchar */
                 int nc = shapecount(nextletter);
@@ -473,13 +473,11 @@ public class ArabicLigaturizer {
                 oldchar = curchar;    /* new values in oldchar */
                 
                 /* init new curchar */
-                curchar = new charstruct();
+                curchar = new CharStruct();
                 curchar.basechar = nextletter;
                 curchar.numshapes = nc;
                 curchar.lignum++;
                 //          (*len) += unligature (&curchar, level);
-            }
-            else if (join == 1) {
             }
             //      else
             //        {
@@ -779,24 +777,25 @@ public class ArabicLigaturizer {
          * Digit type option: Use Arabic-Indic digits (U+0660...U+0669).
          */
         public static final int DIGIT_TYPE_AN = 0;
-        
-        /**
-         * Digit type option: Use Eastern (Extended) Arabic-Indic digits (U+06f0...U+06f9).
-         */
-        public static final int DIGIT_TYPE_AN_EXTENDED = 0x100;
 
-        /**
-         * Bit mask for digit type options.
-         */
-        public static final int DIGIT_TYPE_MASK = 0x0100; // 0x3f00?
+    /**
+     * Digit type option: Use Eastern (Extended) Arabic-Indic digits (U+06f0...U+06f9).
+     */
+    public static final int DIGIT_TYPE_AN_EXTENDED = 0x100;
 
-        static class charstruct {
-            char basechar;
-            char mark1;               /* has to be initialized to zero */
-            char vowel;
-            int lignum;           /* is a ligature with lignum aditional characters */
-            int numshapes = 1;
-        }
+    /**
+     * Bit mask for digit type options.
+     */
+    public static final int DIGIT_TYPE_MASK = 0x0100; // 0x3f00?
+
+    static class CharStruct {
+
+        char basechar;
+        char mark1;               /* has to be initialized to zero */
+        char vowel;
+        int lignum;           /* is a ligature with lignum aditional characters */
+        int numshapes = 1;
+    }
 
 
 }

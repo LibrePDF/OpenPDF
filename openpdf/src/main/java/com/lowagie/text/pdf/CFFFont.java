@@ -69,7 +69,6 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.text.ExceptionConverter;
-
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -418,7 +417,7 @@ public class CFFFont {
     
     protected static final class RangeItem extends Item {
         public int offset, length;
-        private RandomAccessFileOrArray buf;
+        private final RandomAccessFileOrArray buf;
         public RangeItem(RandomAccessFileOrArray buf, int offset, int length) {
             this.offset = offset;
             this.length = length;
@@ -463,14 +462,17 @@ public class CFFFont {
                 case 4:
                     buffer[myOffset+i] = (byte) ((value >>> 24) & 0xff);
                     i++;
+                    // fallthrough
                 case 3:
                     buffer[myOffset+i] = (byte) ((value >>> 16) & 0xff);
                     i++;
+                    // fallthrough
                 case 2:
                     buffer[myOffset+i] = (byte) ((value >>>  8) & 0xff);
                     i++;
+                    // fallthrough
                 case 1:
-                    buffer[myOffset+i] = (byte) ((value >>>  0) & 0xff);
+                    buffer[myOffset + i] = (byte) ((value) & 0xff);
                     i++;
             }
             /*
@@ -486,33 +488,40 @@ public class CFFFont {
     static protected final class IndexBaseItem extends Item {
         public IndexBaseItem() {}
     }
-    
+
     static protected final class IndexMarkerItem extends Item {
-        private OffsetItem offItem;
-        private IndexBaseItem indexBase;
+
+        private final OffsetItem offItem;
+        private final IndexBaseItem indexBase;
+
         public IndexMarkerItem(OffsetItem offItem, IndexBaseItem indexBase) {
-            this.offItem   = offItem;
+            this.offItem = offItem;
             this.indexBase = indexBase;
         }
+
         public void xref() {
             //System.err.println("index marker item, base="+indexBase.myOffset+" my="+this.myOffset);
-            offItem.set(this.myOffset-indexBase.myOffset+1);
+            offItem.set(this.myOffset - indexBase.myOffset + 1);
         }
     }
+
     /**
-     * TODO To change the template for this generated type comment go to
-     * Window - Preferences - Java - Code Generation - Code and Comments
+     * TODO To change the template for this generated type comment go to Window - Preferences - Java - Code Generation -
+     * Code and Comments
      */
     static protected final class SubrMarkerItem extends Item {
-        private OffsetItem offItem;
-        private IndexBaseItem indexBase;
+
+        private final OffsetItem offItem;
+        private final IndexBaseItem indexBase;
+
         public SubrMarkerItem(OffsetItem offItem, IndexBaseItem indexBase) {
-            this.offItem   = offItem;
+            this.offItem = offItem;
             this.indexBase = indexBase;
         }
+
         public void xref() {
             //System.err.println("index marker item, base="+indexBase.myOffset+" my="+this.myOffset);
-            offItem.set(this.myOffset-indexBase.myOffset);
+            offItem.set(this.myOffset - indexBase.myOffset);
         }
     }
     
@@ -980,11 +989,12 @@ public class CFFFont {
             names[i] = fonts[i].name;
         return names;
     }
+
     /**
      * A random Access File or an array
      */
     protected RandomAccessFileOrArray buf;
-    private int offSize;
+    private final int offSize;
     
     protected int nameIndexOffset;
     protected int topdictIndexOffset;
