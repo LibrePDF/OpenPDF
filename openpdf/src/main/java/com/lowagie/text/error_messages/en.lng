@@ -91,7 +91,6 @@ count.of.referred.to.segments.had.bad.value.in.header.for.segment.1.starting.at.
 defaultcryptfilter.not.found.encryption=/DefaultCryptFilter not found (encryption)
 destination.end.tag.out.of.place=Destination end tag out of place.
 dictionary.key.is.not.a.name=Dictionary key is not a name.
-dictionary.key.is.not.a.name=Dictionary key is not a name.
 dimensions.of.a.cell.are.attributed.automagically.see.the.faq=Dimensions of a Cell are attributed automagically. See the FAQ.
 dimensions.of.a.cell.can.t.be.calculated.see.the.faq=Dimensions of a Cell can't be calculated. See the FAQ.
 dimensions.of.a.table.can.t.be.calculated.see.the.faq=Dimensions of a Table can't be calculated. See the FAQ.
@@ -162,7 +161,6 @@ insufficient.data=Insufficient data.
 insufficient.length=Insufficient length.
 internal.inconsistence=Internal inconsistence.
 inthashtableiterator=IntHashtableIterator
-invalid.additional.action.type.1=Invalid additional action type: {1}
 invalid.additional.action.type.1=Invalid additional action type: {1}
 invalid.ai.length.1=Invalid AI length: ({1})
 invalid.border.style=Invalid border style.

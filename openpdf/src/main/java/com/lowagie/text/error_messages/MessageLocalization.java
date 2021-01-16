@@ -48,15 +48,17 @@
  */
 package com.lowagie.text.error_messages;
 
-import com.lowagie.text.pdf.BaseFont;
 import java.io.BufferedReader;
-import java.io.Reader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import com.lowagie.text.pdf.BaseFont;
 
 /**
  * Localizes error messages. The messages are located in the package
@@ -172,16 +174,16 @@ public final class MessageLocalization {
     public static String getComposedMessage(String key, Object p1, Object p2, Object p3, Object p4) {
         String msg = getMessage(key);
         if (p1 != null) {
-            msg = msg.replaceAll("\\{1}", p1.toString());
+            msg = msg.replace("{1}", p1.toString());
         }
         if (p2 != null) {
-            msg = msg.replaceAll("\\{2}", p2.toString());
+            msg = msg.replace("{2}", p2.toString());
         }
         if (p3 != null) {
-            msg = msg.replaceAll("\\{3}", p3.toString());
+            msg = msg.replace("{3}", p3.toString());
         }
         if (p4 != null) {
-            msg = msg.replaceAll("\\{4}", p4.toString());
+            msg = msg.replace("{4}", p4.toString());
         }
         return msg;
     }
@@ -255,13 +257,20 @@ public final class MessageLocalization {
         String line;
         while ((line = br.readLine()) != null) {
             int idxeq = line.indexOf('=');
-            if (idxeq < 0)
+            if (idxeq < 0) {
                 continue;
+            }
             String key = line.substring(0, idxeq).trim();
-            if (key.startsWith("#"))
+            if (key.startsWith("#")) {
                 continue;
+            }
             lang.put(key, line.substring(idxeq + 1));
         }
         return lang;
+    }
+
+    // For tests only
+    public static Set<String> getAllKeys() {
+        return defaultLanguage.keySet();
     }
 }
