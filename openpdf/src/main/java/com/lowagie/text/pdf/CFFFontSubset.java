@@ -1022,13 +1022,13 @@ public class CFFFontSubset extends CFFFont {
             // Write in bytes according to the offsize
             switch (Offsize) {
                 case 4:
-                    NewIndex[Place++] = (byte) ((Num >>> 24) & 0xff);
+                    NewIndex[Place++] = (byte) ((Num >>> 24) & 0xff); // fallthrough
                 case 3:
-                    NewIndex[Place++] = (byte) ((Num >>> 16) & 0xff);
+                    NewIndex[Place++] = (byte) ((Num >>> 16) & 0xff); // fallthrough
                 case 2:
-                    NewIndex[Place++] = (byte) ((Num >>> 8) & 0xff);
+                    NewIndex[Place++] = (byte) ((Num >>> 8) & 0xff); // fallthrough
                 case 1:
-                    NewIndex[Place++] = (byte) ((Num >>> 0) & 0xff);
+                    NewIndex[Place++] = (byte) ((Num) & 0xff);
             }
         }
         // Write the new object array one by one
@@ -1095,17 +1095,16 @@ public class CFFFontSubset extends CFFFont {
             getDictItem();
             int p2 = getPosition();
             // The encoding key is disregarded since CID has no encoding
-            if (Objects.equals(key, "Encoding")
-            // These keys will be added manually by the process.
-            || Objects.equals(key, "Private")
-            || Objects.equals(key, "FDSelect")
-            || Objects.equals(key, "FDArray")
-            || Objects.equals(key, "charset")
-            || Objects.equals(key, "CharStrings")
-            ) {
-            }else {
-            //OtherWise copy key "as is" to the output list
-                OutputList.add(new RangeItem(buf,p1,p2-p1));
+            final boolean isEncodingKey = Objects.equals(key, "Encoding")
+                    // These keys will be added manually by the process.
+                    || Objects.equals(key, "Private")
+                    || Objects.equals(key, "FDSelect")
+                    || Objects.equals(key, "FDArray")
+                    || Objects.equals(key, "charset")
+                    || Objects.equals(key, "CharStrings");
+            if (!isEncodingKey) {
+                // copy key "as is" to the output list
+                OutputList.add(new RangeItem(buf, p1, p2 - p1));
             }
         }
         // Create the FDArray, FDSelect, Charset and CharStrings Keys

@@ -49,6 +49,21 @@
 
 package com.lowagie.text.pdf;
 
+import static com.lowagie.text.pdf.ExtendedColor.MAX_COLOR_VALUE;
+import static com.lowagie.text.pdf.ExtendedColor.MAX_FLOAT_COLOR_VALUE;
+import static com.lowagie.text.pdf.ExtendedColor.MAX_INT_COLOR_VALUE;
+
+import com.lowagie.text.Annotation;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Image;
+import com.lowagie.text.ImgJBIG2;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.exceptions.IllegalPdfSyntaxException;
+import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
+import com.lowagie.text.pdf.internal.PdfXConformanceImp;
 import java.awt.Color;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
@@ -59,23 +74,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.lowagie.text.Annotation;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-
-import com.lowagie.text.Image;
-import com.lowagie.text.ImgJBIG2;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.exceptions.IllegalPdfSyntaxException;
-import com.lowagie.text.pdf.internal.PdfAnnotationsImp;
-import com.lowagie.text.pdf.internal.PdfXConformanceImp;
-
-import static com.lowagie.text.pdf.ExtendedColor.MAX_COLOR_VALUE;
-import static com.lowagie.text.pdf.ExtendedColor.MAX_FLOAT_COLOR_VALUE;
-import static com.lowagie.text.pdf.ExtendedColor.MAX_INT_COLOR_VALUE;
 
 /**
  * <CODE>PdfContentByte</CODE> is an object containing the user positioned
@@ -198,26 +196,37 @@ public class PdfContentByte {
     /** This is the actual content */
     protected ByteBuffer content = new ByteBuffer();
 
-    /** This is the writer */
+    /**
+     * This is the writer
+     */
     protected PdfWriter writer;
 
-    /** This is the PdfDocument */
+    /**
+     * This is the PdfDocument
+     */
     protected PdfDocument pdf;
 
-    /** This is the GraphicState in use */
+    /**
+     * This is the GraphicState in use
+     */
     protected GraphicState state = new GraphicState();
 
-    private static Map<PdfName, String> abrev = new HashMap<>();
-    /** The list were we save/restore the state */
+    private static final Map<PdfName, String> abrev = new HashMap<>();
+    /**
+     * The list were we save/restore the state
+     */
     protected List<GraphicState> stateList = new ArrayList<>();
 
-    /** The separator between commands.
+    /**
+     * The separator between commands.
      */
     protected int separator = '\n';
-    
+
     private int mcDepth = 0;
     private boolean inText = false;
-    /** The list were we save/restore the layer depth */
+    /**
+     * The list were we save/restore the layer depth
+     */
     protected List<Integer> layerDepth;
 
     private int lastFillAlpha = MAX_COLOR_VALUE;
@@ -674,7 +683,10 @@ public class PdfContentByte {
      * @param   black   the intensity of black. A value between 0 and 255
      */
     private void HelperCMYK(int cyan, int magenta, int yellow, int black) {
-        HelperCMYK((float)(cyan & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE, (float)(magenta & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE, (float)(yellow & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE, (float)(black & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE);
+        HelperCMYK((float) (cyan & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE,
+                (float) (magenta & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE,
+                (float) (yellow & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE,
+                (float) (black & MAX_COLOR_VALUE) / MAX_INT_COLOR_VALUE);
     }
 
     /**

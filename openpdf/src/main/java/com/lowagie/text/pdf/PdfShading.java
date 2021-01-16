@@ -46,9 +46,9 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.error_messages.MessageLocalization;
 import java.awt.Color;
 import java.io.IOException;
-import com.lowagie.text.error_messages.MessageLocalization;
 /** Implements the shading dictionary (or stream).
  *
  * @author Paulo Soares (psoares@consiste.pt)
@@ -101,9 +101,9 @@ public class PdfShading {
                 break;
             }
             case ExtendedColor.TYPE_PATTERN:
-            case ExtendedColor.TYPE_SHADING: {
+            case ExtendedColor.TYPE_SHADING:
                 throwColorSpaceError();
-            }
+                break;
             default:
                 colorSpace = PdfName.DEVICERGB;
                 break;

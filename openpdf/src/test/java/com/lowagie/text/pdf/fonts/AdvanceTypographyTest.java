@@ -1,15 +1,14 @@
 package com.lowagie.text.pdf.fonts;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.FopGlyphProcessor;
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -24,10 +23,10 @@ public class AdvanceTypographyTest {
      */
     @Test
     public void testTypographySubstitution() throws Exception{
-        char[] expectedOutput = {660,666,911,656,1130};
+        char[] expectedOutput = {660, 666, 911, 656, 1130};
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-                BaseFont.createFont("fonts/jaldi/Jaldi-Regular.ttf", BaseFont.IDENTITY_H, false)
-                , "नमस्ते", "fonts/jaldi/Jaldi-Regular.ttf", new HashMap<>(), "dflt");
+                BaseFont.createFont("fonts/jaldi/Jaldi-Regular.ttf", BaseFont.IDENTITY_H, false),
+                "नमस्ते", "fonts/jaldi/Jaldi-Regular.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
 
         assertArrayEquals(expectedOutput,str.toCharArray());
@@ -40,10 +39,10 @@ public class AdvanceTypographyTest {
      */
     @Test
     public void testSubstitutionWithMerge() throws Exception{
-        char[] expectedOutput = {254,278,390,314,331,376,254,285,278};
+        char[] expectedOutput = {254, 278, 390, 314, 331, 376, 254, 285, 278};
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-                BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false)
-                , "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
+                BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false),
+                "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
         assertArrayEquals(expectedOutput,str.toCharArray());
     }

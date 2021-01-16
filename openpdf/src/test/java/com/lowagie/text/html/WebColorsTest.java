@@ -1,8 +1,6 @@
 package com.lowagie.text.html;
 
 import java.awt.Color;
-
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -131,7 +129,7 @@ public class WebColorsTest {
     }
     
     @Test
-    public void testHSL () {
+    public void testHSL() {
         Color expected = new Color(0xb3, 0x85, 0xe1, 0xff);
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsl(270,60%,70%)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsl(270, 60%, 70%)"));
@@ -140,29 +138,29 @@ public class WebColorsTest {
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsl(4.71239rad, 60%, 70%)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsl(.75turn, 60%, 70%)"));
     }
-    
+
     @Test
-    public void testHSLA () {
-        Color expected = new Color(0xb3, 0x85, 0xe1, (int) (255*0.15));
-        
+    public void testHSLA() {
+        Color expected = new Color(0xb3, 0x85, 0xe1, (int) (255 * 0.15));
+
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsl(270, 60%, 70%, .15)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsl(270, 60%, 70%, 15%)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsl(270 60% 70% / .15)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsl(270 60% 70% / 15%)"));
 
-                
+
     }
-    
+
     @Test
-    public void testHSLAAlias () {
-        Color expected = new Color(0xb3, 0x85, 0xe1, (int) (255*0.15));
-        
+    public void testHSLAAlias() {
+        Color expected = new Color(0xb3, 0x85, 0xe1, (int) (255 * 0.15));
+
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsla(270, 60%, 70%, .15)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsla(270, 60%, 70%, 15%)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsla(270 60% 70% / .15)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("hsla(270 60% 70% / 15%)"));
 
-                
+
     }
     
         

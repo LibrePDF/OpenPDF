@@ -20,7 +20,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -324,13 +323,12 @@ public class XmlDomWriter {
                 fOut.print("&#xD;");
                 break;
             }
-            case '\n': {
+            case '\n':
                 if (fCanonical) {
                     fOut.print("&#xA;");
                     break;
                 }
-                // else, default print char
-            }
+                // fallthrough
             default: {
                 // In XML 1.1, control chars in the ranges [#x1-#x1F, #x7F-#x9F] must be escaped.
                 //

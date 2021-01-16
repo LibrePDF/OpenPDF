@@ -104,7 +104,9 @@ public class CMYKColor extends ExtendedColor {
      * @param floatAlpha alpha value
      */
     public CMYKColor(float floatCyan, float floatMagenta, float floatYellow, float floatBlack, float floatAlpha) {
-        super(TYPE_CMYK, MAX_FLOAT_COLOR_VALUE - normalize(floatCyan) - normalize(floatBlack), MAX_FLOAT_COLOR_VALUE - normalize(floatMagenta) - normalize(floatBlack), MAX_FLOAT_COLOR_VALUE - normalize(floatYellow) - normalize(floatBlack), normalize(floatAlpha));
+        super(TYPE_CMYK, MAX_FLOAT_COLOR_VALUE - normalize(floatCyan) - normalize(floatBlack),
+                MAX_FLOAT_COLOR_VALUE - normalize(floatMagenta) - normalize(floatBlack),
+                MAX_FLOAT_COLOR_VALUE - normalize(floatYellow) - normalize(floatBlack), normalize(floatAlpha));
         cyan = normalize(floatCyan);
         magenta = normalize(floatMagenta);
         yellow = normalize(floatYellow);
