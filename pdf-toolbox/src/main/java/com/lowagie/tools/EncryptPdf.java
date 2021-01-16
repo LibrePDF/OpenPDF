@@ -48,21 +48,21 @@
  */
 package com.lowagie.tools;
 
+import com.lowagie.text.pdf.PdfEncryptor;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.lowagie.text.pdf.PdfEncryptor;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
-
 /**
  * Encrypts a PDF document. It needs iText (http://www.lowagie.com/iText).
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  * @since 2.1.1 (renamed to follow Java naming conventions)
  */
 public class EncryptPdf {
-    
+
     private final static int INPUT_FILE = 0;
     private final static int OUTPUT_FILE = 1;
     private final static int USER_PASSWORD = 2;
@@ -81,7 +81,8 @@ public class EncryptPdf {
             PdfWriter.ALLOW_DEGRADED_PRINTING};
 
     private static void usage() {
-        System.out.println("usage: input_file output_file user_password owner_password permissions 128|40 [new info string pairs]");
+        System.out.println(
+                "usage: input_file output_file user_password owner_password permissions 128|40 [new info string pairs]");
         System.out.println("permissions is 8 digit long 0 or 1. Each digit has a particular security function:");
         System.out.println();
         System.out.println("AllowPrinting");
@@ -94,13 +95,13 @@ public class EncryptPdf {
         System.out.println("AllowDegradedPrinting (128 bit only)");
         System.out.println("Example permissions to copy and print would be: 10100000");
     }
-    
+
     /**
      * Encrypts a PDF document.
-     * 
+     *
      * @param args input_file output_file user_password owner_password permissions 128|40 [new info string pairs]
      */
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         System.out.println("PDF document encryptor");
         if (args.length <= STRENGTH || args[PERMISSIONS].length() != 8) {
             usage();
@@ -116,13 +117,14 @@ public class EncryptPdf {
             PdfReader reader = new PdfReader(args[INPUT_FILE]);
             System.out.println("Writing " + args[OUTPUT_FILE]);
             Map<String, String> moreInfo = new HashMap<>();
-            for (int k = MOREINFO; k < args.length - 1; k += 2)
+            for (int k = MOREINFO; k < args.length - 1; k += 2) {
                 moreInfo.put(args[k], args[k + 1]);
+            }
             PdfEncryptor.encrypt(reader, new FileOutputStream(args[OUTPUT_FILE]),
-                args[USER_PASSWORD].getBytes(), args[OWNER_PASSWORD].getBytes(), permissions, args[STRENGTH].equals("128"), moreInfo);
+                    args[USER_PASSWORD].getBytes(), args[OWNER_PASSWORD].getBytes(), permissions,
+                    args[STRENGTH].equals("128"), moreInfo);
             System.out.println("Done.");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

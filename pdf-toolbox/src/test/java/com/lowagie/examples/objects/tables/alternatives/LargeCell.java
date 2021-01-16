@@ -13,14 +13,13 @@
  */
 package com.lowagie.examples.objects.tables.alternatives;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Using CellsFitPage for a Cell that doesn't fit the page.
@@ -42,7 +41,15 @@ public class LargeCell {
             // step 4: we create a table and add it to the document
             Table table = new Table(3);
             table.setCellsFitPage(true);
-            String text = "long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long text";
+            String text = "long long long long long long long long long long long long long long long long long long "
+                    + "long long long long long long long long long long long long long long long long long long long "
+                    + "long long long long long long long long long long long long long long long long long long long "
+                    + "long long long long long long long long long long long long long long long long long long long "
+                    + "long long long long long long long long long long long long long long long long long long long "
+                    + "long long long long long long long long long long long long long long long long long long long "
+                    + "long long long long long long long long long long long long long long long long long long long "
+                    + "long long long long long long long long long long long long long long long long long long long "
+                    + "long long long long long long long long long long long text";
             table.addCell("text");
             table.addCell("text");
             table.addCell("text");

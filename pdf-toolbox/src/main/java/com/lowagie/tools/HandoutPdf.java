@@ -50,62 +50,63 @@
 
 package com.lowagie.tools;
 
-import java.io.FileOutputStream;
-import com.lowagie.text.error_messages.MessageLocalization;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Takes an existing PDF file and makes handouts.
+ *
  * @since 2.1.1 (renamed to follow Java naming conventions)
  */
-public class HandoutPdf extends java.lang.Object {
-    
+public class HandoutPdf {
+
     /**
      * Makes handouts based on an existing PDF file.
+     *
      * @param args the command line arguments
      */
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         if (args.length != 3) {
             System.err.println("arguments: srcfile destfile pages");
-        }
-        else {
+        } else {
             try {
                 int pages = Integer.parseInt(args[2]);
                 if (pages < 2 || pages > 8) {
-                    throw new DocumentException(MessageLocalization.getComposedMessage("you.can.t.have.1.pages.on.one.page.minimum.2.maximum.8", pages));
+                    throw new DocumentException(MessageLocalization
+                            .getComposedMessage("you.can.t.have.1.pages.on.one.page.minimum.2.maximum.8", pages));
                 }
-                
+
                 float x1 = 30f;
                 float x2 = 280f;
                 float x3 = 320f;
                 float x4 = 565f;
-                
+
                 float[] y1 = new float[pages];
                 float[] y2 = new float[pages];
-                
+
                 float height = (778f - (20f * (pages - 1))) / pages;
                 y1[0] = 812f;
                 y2[0] = 812f - height;
-                
+
                 for (int i = 1; i < pages; i++) {
                     y1[i] = y2[i - 1] - 20f;
                     y2[i] = y1[i] - height;
                 }
-                
+
                 // we create a reader for a certain document
                 PdfReader reader = new PdfReader(args[0]);
                 // we retrieve the total number of pages
                 int n = reader.getNumberOfPages();
                 System.out.println("There are " + n + " pages in the original file.");
-                
+
                 // step 1: creation of a document-object
                 Document document = new Document(PageSize.A4);
                 // step 2: we create a writer that listens to the document
@@ -130,8 +131,7 @@ public class HandoutPdf extends java.lang.Object {
                     rotation = reader.getPageRotation(i);
                     if (rotation == 90 || rotation == 270) {
                         cb.addTemplate(page, 0, -factor, factor, 0, x1 + dx, y2[p] + dy + rect.getHeight() * factor);
-                    }
-                    else {
+                    } else {
                         cb.addTemplate(page, factor, 0, 0, factor, x1 + dx, y2[p] + dy);
                     }
                     cb.setRGBColorStroke(0xC0, 0xC0, 0xC0);
@@ -151,8 +151,7 @@ public class HandoutPdf extends java.lang.Object {
                 }
                 // step 5: we close the document
                 document.close();
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
         }

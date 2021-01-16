@@ -9,13 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.bookmarks;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Chapter;
 import com.lowagie.text.Chunk;
@@ -27,10 +24,13 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Section;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import org.librepdf.openpdf.examples.content.Constants;
 
 /**
  * Creates a document with outlines (bookmarks) using the Chapter and Section object.
- * 
+ *
  * @author blowagie
  */
 
@@ -38,19 +38,18 @@ public class ChapterSection {
 
     /**
      * Creates a document with outlines.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
-        
+
         System.out.println("Chapters and Sections");
-        
+
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {
             // step 2: we create a writer that listens to the document
-            PdfWriter writer=PdfWriter.getInstance(document, new FileOutputStream("ChapterSection.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("ChapterSection.pdf"));
             // step 3: we open the document
             writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
             document.open();
@@ -60,8 +59,8 @@ public class ChapterSection {
             Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA, 20, Font.NORMAL, new Color(0, 0, 255));
             Font subsectionFont = FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLD, new Color(0, 64, 64));
             // we create some paragraphs
-            Paragraph blahblah = new Paragraph("blah blah blah blah blah blah blaah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah");
-            Paragraph blahblahblah = new Paragraph("blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blaah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah");
+            Paragraph blahblah = new Paragraph(Constants.BLAH_BLAH);
+            Paragraph blahblahblah = new Paragraph(Constants.BLAH_BLAH + Constants.BLAH_BLAH);
             // this loop will create 7 chapters
             for (int i = 1; i < 8; i++) {
                 Paragraph cTitle = new Paragraph("This is chapter " + i, chapterFont);
@@ -88,7 +87,9 @@ public class ChapterSection {
                     Paragraph sTitle = new Paragraph("This is section " + j + " in chapter " + i, sectionFont);
                     Section section = chapter.addSection(sTitle, 1);
                     // for chapters > 2, the outine isn't open by default
-                    if (i > 2) section.setBookmarkOpen(false);
+                    if (i > 2) {
+                        section.setBookmarkOpen(false);
+                    }
                     // in all chapters except the 1st one, some extra text is added to section 3
                     if (j == 3 && i > 1) {
                         section.setIndentationLeft(72);
@@ -97,7 +98,8 @@ public class ChapterSection {
                     }
                     // in every section 3 subsections are added
                     for (int k = 1; k < 4; k++) {
-                        Paragraph subTitle = new Paragraph("This is subsection " + k + " of section " + j, subsectionFont);
+                        Paragraph subTitle = new Paragraph("This is subsection " + k + " of section " + j,
+                                subsectionFont);
                         Section subsection = section.addSection(subTitle, 3);
                         // in the first subsection of section 3, extra text is added
                         if (k == 1 && j == 3) {
@@ -116,8 +118,7 @@ public class ChapterSection {
                 }
                 document.add(chapter);
             }
-        }
-        catch(Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
         // step 5: we close the document

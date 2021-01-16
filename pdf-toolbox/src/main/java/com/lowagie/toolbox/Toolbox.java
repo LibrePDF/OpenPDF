@@ -35,6 +35,7 @@
 
 package com.lowagie.toolbox;
 
+import com.lowagie.tools.Executable;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -54,7 +55,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.Vector;
-
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
@@ -74,35 +74,48 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-import com.lowagie.tools.Executable;
-
 /**
  * This is a utility that allows you to use a number of iText tools.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class Toolbox extends JFrame implements ActionListener {
-    /** A serial version ID */
+
+    /**
+     * A serial version ID
+     */
     private static final long serialVersionUID = -3766198389452935073L;
-    /** The DesktopPane of the toolbox. */
-    private JDesktopPane desktop;
-    /** The ConsolePane of the toolbox. */
+    /**
+     * The DesktopPane of the toolbox.
+     */
+    private final JDesktopPane desktop;
+    /**
+     * The ConsolePane of the toolbox.
+     */
     private JScrollPane console;
 
-    /** The list of tools in the toolbox. */
+    /**
+     * The list of tools in the toolbox.
+     */
     private Properties toolmap = new Properties();
 
-    /** x-coordinate of the location of a new internal frame. */
+    /**
+     * x-coordinate of the location of a new internal frame.
+     */
     private int locationX = 0;
 
-    /** y-coordinate of the location of a new internal frame. */
+    /**
+     * y-coordinate of the location of a new internal frame.
+     */
     private int locationY = 0;
     /**
      * toolarray
      */
-    private ArrayList<AbstractTool> toolarray = new ArrayList<>();
+    private final ArrayList<AbstractTool> toolarray = new ArrayList<>();
 
-    private Vector<String> menulist= new Vector<>();
-    private Vector<String> menuitemlist= new Vector<>();
+    private final Vector<String> menulist = new Vector<>();
+    private final Vector<String> menuitemlist = new Vector<>();
+
     /**
      * Constructs the Toolbox object.
      */
@@ -128,8 +141,8 @@ public class Toolbox extends JFrame implements ActionListener {
             e.printStackTrace();
         }
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                                              desktop,
-                                              console);
+                desktop,
+                console);
         splitPane.setContinuousLayout(true);
         splitPane.setOneTouchExpandable(true);
         splitPane.setDividerLocation(300);
@@ -140,27 +153,25 @@ public class Toolbox extends JFrame implements ActionListener {
 
     /**
      * Starts the Toolbox utility.
-     *
-     * use as first argument the name of the plugin,
-     * then the arguments of the plugin used.
-     *
+     * <p>
+     * use as first argument the name of the plugin, then the arguments of the plugin used.
+     * <p>
      * e.g.
-     *
+     * <p>
      * java -jar itext.jar Burst inputfile.pdf
-     *
+     * <p>
      * That way you can call plugins by name directly.
      *
-     * @param args
-     *            no arguments needed
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
         try {
             Class.forName("com.lowagie.text.Document");
         } catch (ClassNotFoundException e) {
             JOptionPane.showMessageDialog(null,
-                                          "You need the iText.jar in your CLASSPATH!",
-                                          e.getClass().getName(),
-                                          JOptionPane.ERROR_MESSAGE);
+                    "You need the iText.jar in your CLASSPATH!",
+                    e.getClass().getName(),
+                    JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
         Toolbox toolbox = new Toolbox();
@@ -187,8 +198,8 @@ public class Toolbox extends JFrame implements ActionListener {
             p.load(Toolbox.class.getClassLoader().getResourceAsStream(
                     "tools.txt"));
             String usertoolstxt = System.getProperty("user.home") +
-                                  System.getProperty("file.separator") +
-                                  "tools.txt";
+                    System.getProperty("file.separator") +
+                    "tools.txt";
             File uttf = new File(usertoolstxt);
             if (uttf.isFile() && uttf.exists()) {
                 p.load(new FileInputStream(usertoolstxt));
@@ -240,7 +251,7 @@ public class Toolbox extends JFrame implements ActionListener {
     /**
      * BuildPluginMenuItems
      *
-     * @param tmp Map
+     * @param tmp   Map
      * @param tools JMenu
      */
     private void buildPluginMenuItems(Map<Object, Object> tmp, JMenu tools) {
@@ -248,7 +259,7 @@ public class Toolbox extends JFrame implements ActionListener {
         JMenu current = null;
         JMenuItem item;
 
-        for (Map.Entry<Object, Object> entry: tmp.entrySet()) {
+        for (Map.Entry<Object, Object> entry : tmp.entrySet()) {
             name = (String) entry.getKey();
             if (current == null || !name.startsWith(current.getText())) {
                 String menu = name.substring(0, name.indexOf('.'));
@@ -268,7 +279,7 @@ public class Toolbox extends JFrame implements ActionListener {
                 }
             } catch (ClassNotFoundException e) {
                 System.err.println("Plugin " + name
-                                   + " was not found in your CLASSPATH.");
+                        + " was not found in your CLASSPATH.");
             }
         }
     }
@@ -277,11 +288,11 @@ public class Toolbox extends JFrame implements ActionListener {
      * Creates an Internal Frame.
      *
      * @param name the name of the application
+     * @return AbstractTool
      * @throws InstantiationException on error
      * @throws IllegalAccessException on error with the access rights
      * @throws ClassNotFoundException on error
-     * @throws PropertyVetoException on error of property rights
-     * @return AbstractTool
+     * @throws PropertyVetoException  on error of property rights
      */
     public AbstractTool createFrame(String name) throws InstantiationException,
             IllegalAccessException, ClassNotFoundException,
@@ -321,13 +332,12 @@ public class Toolbox extends JFrame implements ActionListener {
             frameSize.width = screenSize.width;
         }
         f.setLocation((screenSize.width - frameSize.width) / 2,
-                      (screenSize.height - frameSize.height) / 2);
+                (screenSize.height - frameSize.height) / 2);
     }
 
     /**
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      * @param evt ActionEvent
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent evt) {
         if (ToolMenuItems.CLOSE.equals(evt.getActionCommand())) {
@@ -335,7 +345,8 @@ public class Toolbox extends JFrame implements ActionListener {
             System.exit(0);
         } else if (ToolMenuItems.ABOUT.equals(evt.getActionCommand())) {
             System.out
-                    .println("The iText Toolbox is part of iText, a Free Java-PDF Library.\nVisit http://itexttoolbox.sourceforge.net/ for more info.");
+                    .println(
+                            "The iText Toolbox is part of iText, a Free Java-PDF Library.\nVisit http://itexttoolbox.sourceforge.net/ for more info.");
             try {
                 Executable
                         .launchBrowser("http://itexttoolbox.sourceforge.net/");
@@ -352,8 +363,7 @@ public class Toolbox extends JFrame implements ActionListener {
                 if (!jInternalFrame.isIcon()) {
                     try {
                         int frameDistance = jInternalFrame.getHeight() -
-                                jInternalFrame.getContentPane().
-                                        getHeight();
+                                jInternalFrame.getContentPane().getHeight();
                         jInternalFrame.setMaximum(false);
                         int fwidth = jInternalFrame.getWidth();
                         int fheight = jInternalFrame.getHeight();
@@ -387,7 +397,9 @@ public class Toolbox extends JFrame implements ActionListener {
      * A Class that redirects output to System.out and System.err.
      */
     public class Console {
+
         class ErrorContext extends StyleContext {
+
             private static final long serialVersionUID = 7766294638325167438L;
             public static final String STDERROR = "Error";
             public static final String STDOUT = "StdOut";
@@ -415,6 +427,7 @@ public class Toolbox extends JFrame implements ActionListener {
 
         /**
          * Creates a new Console object.
+         *
          * @throws IOException on error
          */
         public Console() throws IOException {
@@ -439,6 +452,7 @@ public class Toolbox extends JFrame implements ActionListener {
         }
 
         class ReaderThread extends Thread {
+
             PipedInputStream pi;
             String type;
 
@@ -463,10 +477,9 @@ public class Toolbox extends JFrame implements ActionListener {
                         AttributeSet attset = errorcontext.getStyle(type);
                         String snippet = new String(buf, 0, len);
                         doc.insertString(doc.getLength(),
-                                         snippet, attset);
+                                snippet, attset);
                         oriout.print(snippet);
-                        textArea.setCaretPosition(textArea.getDocument().
-                                                  getLength());
+                        textArea.setCaretPosition(textArea.getDocument().getLength());
                     } catch (BadLocationException | IOException ex) {
                     }
                 }
