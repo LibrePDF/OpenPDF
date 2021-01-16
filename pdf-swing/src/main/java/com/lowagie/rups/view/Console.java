@@ -27,7 +27,6 @@ import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.util.Observable;
 import java.util.Observer;
-
 import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -190,8 +189,7 @@ public class Console implements Observer {
                     doc.insertString(doc.getLength(),
                                      snippet, attset);
                     printStream.print(snippet);
-                    textArea.setCaretPosition(textArea.getDocument().
-                                              getLength());
+                    textArea.setCaretPosition(textArea.getDocument().getLength());
                 } catch (BadLocationException | IOException ignored) {
                     // ignored
                 }
