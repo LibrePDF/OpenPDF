@@ -9,17 +9,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
-package com.lowagie.examples.directcontent.graphics2D;
-
-import java.awt.Font;
-import java.io.FileOutputStream;
+package com.lowagie.examples.directcontent.graphics2d;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Font;
+import java.io.FileOutputStream;
 
 /**
  * Draws arabic text using java.awt.Graphics2D
@@ -28,6 +27,7 @@ public class ArabicText {
 
     /**
      * Draws arabic text using java.awt.Graphics2D.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -50,8 +50,7 @@ public class ArabicText {
             cb.sanityCheck();
             // step 5
             document.close();
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

@@ -15,31 +15,33 @@
 package com.lowagie.examples.general.faq;
 
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates the use of getVersion.
+ *
  * @author blowagie
  */
-public class iTextVersion {
+public class OpenPdfVersion {
+
     /**
      * Creates a PDF document and shows the iText version.
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
-        
-        System.out.println("iText version " + Document.getVersion());        
+
+        System.out.println("OpenPDF version " + Document.getVersion());
         // step 1: creation of a document-object
         Document document = new Document();
-        
+
         try {
-            
+
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file

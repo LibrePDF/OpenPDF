@@ -13,9 +13,6 @@
  */
 package com.lowagie.examples.objects.tables.alternatives;
 
-import java.awt.Color;
-import java.io.FileOutputStream;
-
 import com.lowagie.text.Cell;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -27,6 +24,8 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
 import com.lowagie.text.alignment.HorizontalAlignment;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Shows how a table is split if it doesn't fit the page.
@@ -90,9 +89,11 @@ public class RepeatingTable {
             for (int i = 1; i < 30; i++) {
 
                 datatable.getDefaultCell().setHorizontalAlignment(HorizontalAlignment.LEFT);
-                
+
                 datatable.addCell("myUserId");
-                datatable.addCell("Somebody with a very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very long long name");
+                datatable.addCell("Somebody with a very, very, very, very, very, very, very, very, very, very, "
+                        + "very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, "
+                        + "very, very, very, very, very, very long long name");
                 datatable.addCell("No Name Company");
                 datatable.addCell("D" + i);
 

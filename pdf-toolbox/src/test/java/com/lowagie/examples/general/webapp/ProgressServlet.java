@@ -9,11 +9,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.general.webapp;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,18 +27,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
-
 /**
  * If you want to avoid that your Servlet times out, you should use this ProgressServlet.
- * 
+ *
  * @author blowagie
  */
 public class ProgressServlet extends HttpServlet {
-    
+
     private static final long serialVersionUID = 6272312661092621179L;
 
     /**
@@ -44,9 +43,13 @@ public class ProgressServlet extends HttpServlet {
      */
     public static class MyPdf implements Runnable {
 
-        /** the ByteArrayOutputStream that holds the PDF data. */
+        /**
+         * the ByteArrayOutputStream that holds the PDF data.
+         */
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        /** the percentage of the PDF file that is finished */
+        /**
+         * the percentage of the PDF file that is finished
+         */
         int p = 0;
 
         @Override
@@ -73,8 +76,10 @@ public class ProgressServlet extends HttpServlet {
             doc.close();
             p = 100;
         }
+
         /**
          * Gets the complete PDF data
+         *
          * @return the PDF as an array of bytes
          * @throws DocumentException when the document isn't ready yet
          */
@@ -84,8 +89,10 @@ public class ProgressServlet extends HttpServlet {
             }
             return baos;
         }
+
         /**
          * Gets the current percentage of the file that is done.
+         *
          * @return a percentage or -1 if something went wrong.
          */
         public int getPercentage() {
@@ -94,8 +101,8 @@ public class ProgressServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet (HttpServletRequest request, HttpServletResponse response)
-    throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
         // We get a Session object
         HttpSession session = request.getSession(true);
         Object o = session.getAttribute("myPdf");
@@ -105,9 +112,8 @@ public class ProgressServlet extends HttpServlet {
             session.setAttribute("myPdf", pdf);
             Thread t = new Thread(pdf);
             t.start();
-        }
-        else {
-            pdf = (MyPdf)o;
+        } else {
+            pdf = (MyPdf) o;
         }
         response.setContentType("text/html");
         switch (pdf.getPercentage()) {
@@ -143,35 +149,40 @@ public class ProgressServlet extends HttpServlet {
             ServletOutputStream out = response.getOutputStream();
             baos.writeTo(out);
             out.flush();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             isError(response.getOutputStream());
         }
     }
 
     /**
      * Sends an HTML page to the browser saying how many percent of the document is finished.
-     * @param pdf         the class that holds the PDF
-     * @param stream    the outputstream of the servlet
+     *
+     * @param pdf    the class that holds the PDF
+     * @param stream the outputstream of the servlet
      */
     private void isBusy(MyPdf pdf, ServletOutputStream stream) throws IOException {
-        stream.print("<html>\n\t<head>\n\t\t<title>Please wait...</title>\n\t\t<meta http-equiv=\"Refresh\" content=\"5\">\n\t</head>\n\t<body>");
+        stream.print(
+                "<html>\n\t<head>\n\t\t<title>Please wait...</title>\n\t\t<meta http-equiv=\"Refresh\" content=\"5\">\n\t</head>\n\t<body>");
         stream.print(String.valueOf(pdf.getPercentage()));
-        stream.print("% of the document is done.<br>\nPlease Wait while this page refreshes automatically (every 5 seconds)\n\t</body>\n</html>");
+        stream.print(
+                "% of the document is done.<br>\nPlease Wait while this page refreshes automatically (every 5 seconds)\n\t</body>\n</html>");
     }
 
     /**
      * Sends an HTML form to the browser to get the PDF
-     * @param stream    the outputstream of the servlet
+     *
+     * @param stream the outputstream of the servlet
      */
     private void isFinished(ServletOutputStream stream) throws IOException {
         stream.print("<html>\n\t<head>\n\t\t<title>Finished!</title>\n\t</head>\n\t<body>");
-        stream.print("The document is finished:<form method=\"POST\"><input type=\"Submit\" value=\"Get PDF\"></form>\n\t</body>\n</html>");
+        stream.print(
+                "The document is finished:<form method=\"POST\"><input type=\"Submit\" value=\"Get PDF\"></form>\n\t</body>\n</html>");
     }
 
     /**
      * Sends an error message in HTML to the browser
-     * @param stream    the outputstream of the servlet
+     *
+     * @param stream the outputstream of the servlet
      */
     private void isError(ServletOutputStream stream) throws IOException {
         stream.print("<html>\n\t<head>\n\t\t<title>Error</title>\n\t</head>\n\t<body>");

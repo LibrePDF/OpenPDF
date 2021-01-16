@@ -14,9 +14,6 @@
 
 package com.lowagie.examples.objects;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.GreekList;
@@ -25,18 +22,24 @@ import com.lowagie.text.RomanList;
 import com.lowagie.text.ZapfDingbatsList;
 import com.lowagie.text.ZapfDingbatsNumberList;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates some List functionality.
- * 
+ *
  * @author blowagie
  */
 
 public class FancyLists {
 
+    public static final String BLAH_BLAH = "second item blah blah blah blah blah blah blah blah blah blah blah blah "
+            + "blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah "
+            + "blah blah blah blah blah blah blah blah blah blah blah blah blah";
+
     /**
      * Demonstrates some List functionality.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -58,7 +61,7 @@ public class FancyLists {
             RomanList roman = new RomanList(35);
             roman.setLowercase(true);
             roman.add(new ListItem("first item"));
-            roman.add(new ListItem("second item blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah"));
+            roman.add(new ListItem(BLAH_BLAH));
             for (int i = 3; i < 151; i++) {
                 roman.add(i + "th item");
             }
