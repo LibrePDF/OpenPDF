@@ -847,6 +847,8 @@ class PdfStamperImp extends PdfWriter {
                 if (ff != null)
                     flags = ff.intValue();
                 int page = item.getPage(k);
+                if (page == -1)
+                	continue;
                 PdfDictionary appDic = merged.getAsDict(PdfName.AP);
                 if (appDic != null && (flags & PdfFormField.FLAGS_PRINT) != 0 && (flags & PdfFormField.FLAGS_HIDDEN) == 0) {
                     PdfObject obj = appDic.get(PdfName.N);
