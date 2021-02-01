@@ -1,5 +1,5 @@
 
-name: OpenPDF Checkstyle
+name: OpenPDF checkstyle
 on:
   push:
     branches: [ '*' ]
