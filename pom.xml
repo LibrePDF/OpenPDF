@@ -91,7 +91,7 @@
         <hamcrest.version>2.2</hamcrest.version>
         <junit.version>5.7.0</junit.version>
         <mockito.version>3.7.7</mockito.version>
-<!--        <checkstyle.version>8.40</checkstyle.version>-->
+        <checkstyle.version>8.40</checkstyle.version>
         <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
     </properties>
 
@@ -182,6 +182,23 @@
     </dependencyManagement>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven-checkstyle-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${checkstyle.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <!-- Create sources for better debugging and context assist -->
             <plugin>
@@ -198,37 +215,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <configuration>
-                    <configLocation>checkstyle.xml</configLocation>
-                    <consoleOutput>true</consoleOutput>
-                    <failsOnError>true</failsOnError>
-                    <failOnViolation>true</failOnViolation>
-                    <enableRulesSummary>true</enableRulesSummary>
-                    <logViolationsToConsole>true</logViolationsToConsole>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${checkstyle.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            -->
             <!-- Create javadoc for help -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -411,7 +397,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
                 <reportSets>
                     <reportSet>
                         <reports>
