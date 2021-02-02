@@ -49,6 +49,8 @@
 
 package com.lowagie.text;
 
+import com.lowagie.text.html.Markup;
+import com.lowagie.text.pdf.BaseFont;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -62,40 +64,46 @@ import java.util.Properties;
 import java.util.Set;
 import javax.annotation.Nullable;
 
-import com.lowagie.text.html.Markup;
-import com.lowagie.text.pdf.BaseFont;
-
 
 /**
- * If you are using True Type fonts, you can declare the paths of the different ttf- and ttc-files
- * to this class first and then create fonts in your code using one of the getFont method
- * without having to enter a path as parameter.
+ * If you are using True Type fonts, you can declare the paths of the different ttf- and ttc-files to this class first
+ * and then create fonts in your code using one of the getFont method without having to enter a path as parameter.
  *
- * @author  Bruno Lowagie
+ * @author Bruno Lowagie
  */
 
 public class FontFactoryImp implements FontProvider {
-        
-/** This is a map of postscriptfontnames of True Type fonts and the path of their ttf- or ttc-file. */
-private Map<String, String> trueTypeFonts = new HashMap<>();
-    
-    private static String[] TTFamilyOrder = {
-        "3", "1", "1033",
-        "3", "0", "1033",
-        "1", "0", "0",
-        "0", "3", "0"
+
+    /**
+     * This is a map of postscriptfontnames of True Type fonts and the path of their ttf- or ttc-file.
+     */
+    private final Map<String, String> trueTypeFonts = new HashMap<>();
+
+    private static final String[] TTFamilyOrder = {
+            "3", "1", "1033",
+            "3", "0", "1033",
+            "1", "0", "0",
+            "0", "3", "0"
     };
 
-/** This is a map of fontfamilies. */
-private Map<String, List<String>> fontFamilies = new HashMap<>();
-    
-/** This is the default encoding to use. */
+    /**
+     * This is a map of fontfamilies.
+     */
+    private final Map<String, List<String>> fontFamilies = new HashMap<>();
+
+    /**
+     * This is the default encoding to use.
+     */
     public String defaultEncoding = BaseFont.WINANSI;
-    
-/** This is the default value of the <VAR>embedded</VAR> variable. */
+
+    /**
+     * This is the default value of the <VAR>embedded</VAR> variable.
+     */
     public boolean defaultEmbedding = BaseFont.NOT_EMBEDDED;
-    
-/** Creates new FontFactory */
+
+    /**
+     * Creates new FontFactory
+     */
     public FontFactoryImp() {
         trueTypeFonts.put(FontFactory.COURIER.toLowerCase(Locale.ROOT), FontFactory.COURIER);
         trueTypeFonts.put(FontFactory.COURIER_BOLD.toLowerCase(Locale.ROOT), FontFactory.COURIER_BOLD);
@@ -104,7 +112,8 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
         trueTypeFonts.put(FontFactory.HELVETICA.toLowerCase(Locale.ROOT), FontFactory.HELVETICA);
         trueTypeFonts.put(FontFactory.HELVETICA_BOLD.toLowerCase(Locale.ROOT), FontFactory.HELVETICA_BOLD);
         trueTypeFonts.put(FontFactory.HELVETICA_OBLIQUE.toLowerCase(Locale.ROOT), FontFactory.HELVETICA_OBLIQUE);
-        trueTypeFonts.put(FontFactory.HELVETICA_BOLDOBLIQUE.toLowerCase(Locale.ROOT), FontFactory.HELVETICA_BOLDOBLIQUE);
+        trueTypeFonts
+                .put(FontFactory.HELVETICA_BOLDOBLIQUE.toLowerCase(Locale.ROOT), FontFactory.HELVETICA_BOLDOBLIQUE);
         trueTypeFonts.put(FontFactory.SYMBOL.toLowerCase(Locale.ROOT), FontFactory.SYMBOL);
         trueTypeFonts.put(FontFactory.TIMES_ROMAN.toLowerCase(Locale.ROOT), FontFactory.TIMES_ROMAN);
         trueTypeFonts.put(FontFactory.TIMES_BOLD.toLowerCase(Locale.ROOT), FontFactory.TIMES_BOLD);
@@ -169,23 +178,25 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
      *                 the cache if new, false if the font is always created new
      * @return the Font constructed based on the parameters
      */
-    public Font getFont(@Nullable String fontname, String encoding, boolean embedded, float size, int style, @Nullable Color color, boolean cached) {
+    public Font getFont(@Nullable String fontname, String encoding, boolean embedded, float size, int style,
+            @Nullable Color color, boolean cached) {
         if (fontname == null) {
             return new Font(Font.UNDEFINED, size, style, color);
         }
         String lowerCaseFontname = fontname.toLowerCase(Locale.ROOT);
-        List<String> tmp = fontFamilies.get(lowerCaseFontname);
-        if (tmp != null) {
+        List<String> fontFamilie = fontFamilies.get(lowerCaseFontname);
+        if (fontFamilie != null) {
             // some bugs were fixed here by Daniel Marczisovszky
             int s = style == Font.UNDEFINED ? Font.NORMAL : style;
-            for (String f : tmp) {
-                int fs = getFontStyle(f);
-                if ((s & Font.BOLDITALIC) == fs) {
-                    fontname = f;
-		    lowerCaseFontname = fontname.toLowerCase(Locale.ROOT);
-                    // If a styled font already exists, we don't want to use the separate style-Attribut.
+            for (String font : fontFamilie) {
+                int fontStyle = Font.getFontStyleFromName(font);
+                if ((s & Font.BOLDITALIC) == fontStyle) {
+                    fontname = font;
+                    lowerCaseFontname = fontname.toLowerCase(Locale.ROOT);
+                    // If a styled font already exists, we don't want to use the separate style-Attribute.
                     // For example: Helvetica-Bold should have a normal style, because it's already bold.
-                    style = s == fs ? Font.NORMAL : s;
+                    // Remove all styles already present in the BaseFont
+                    style = s ^ fontStyle;
                     break;
                 }
             }
@@ -216,30 +227,6 @@ private Map<String, List<String>> fontFamilies = new HashMap<>();
         }
 
         return new Font(basefont, size, style, color);
-    }
-
-    /**
-     * Returns the fontstyle, if the font is already styled. <br>
-     * <pre>
-     * For example:
-     * font: Helvetica - style: normal
-     * font: Helvetica-Bold - style: bold
-     * </pre>
-     * 
-     * @param fontname
-     * @return
-     */
-    private int getFontStyle(final String fontname) {
-        String lcf = fontname.toLowerCase(Locale.ROOT);
-
-        int fontStyle = Font.NORMAL;
-        if (lcf.contains("bold")) {
-            fontStyle |= Font.BOLD;
-        }
-        if (lcf.contains("italic") || lcf.contains("oblique")) {
-            fontStyle |= Font.ITALIC;
-        }
-        return fontStyle;
     }
 
 /**
