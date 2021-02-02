@@ -14,15 +14,14 @@
 
 package com.lowagie.examples.fonts;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Generates a PDF with the 14 Standard Type 1 Fonts (using FontFactory).
@@ -54,7 +53,7 @@ public class FontFactoryType1Fonts {
             // step 4:
             
             // the 14 standard fonts in PDF
-            Font[] fonts = new Font[14];
+            Font[] fonts = new Font[15];
             fonts[0] = FontFactory.getFont(FontFactory.COURIER, Font.DEFAULTSIZE, Font.NORMAL);
             fonts[1] = FontFactory.getFont(FontFactory.COURIER, Font.DEFAULTSIZE, Font.ITALIC);
             fonts[2] = FontFactory.getFont(FontFactory.COURIER, Font.DEFAULTSIZE, Font.BOLD);
@@ -69,8 +68,9 @@ public class FontFactoryType1Fonts {
             fonts[11] = FontFactory.getFont(FontFactory.TIMES_ROMAN, Font.DEFAULTSIZE, Font.BOLDITALIC);
             fonts[12] = FontFactory.getFont(FontFactory.SYMBOL, Font.DEFAULTSIZE, Font.NORMAL);
             fonts[13] = FontFactory.getFont(FontFactory.ZAPFDINGBATS, Font.DEFAULTSIZE, Font.NORMAL);
+            fonts[14] = FontFactory.getFont(FontFactory.COURIER, Font.DEFAULTSIZE, Font.BOLD | Font.UNDERLINE);
             // add the content
-            for (int i = 0; i < 14; i++) {
+            for (int i = 0; i < fonts.length; i++) {
                     document.add(new Paragraph("quick brown fox jumps over the lazy dog", fonts[i]));
             }
         } catch (DocumentException | IOException de) {
