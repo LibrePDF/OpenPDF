@@ -13,9 +13,9 @@ and bugreports to this GitHub repository.
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 [![Join the chat at https://gitter.im/LibrePDF/code_of_conduct](https://badges.gitter.im/LibrePDF/code_of_conduct.svg)](https://gitter.im/LibrePDF/code_of_conduct)
 
-## OpenPDF version 1.3.24 released 2020-12-27 ##
+## OpenPDF version 1.3.25 released 2021-02-15 ##
 
-Get version 1.3.24 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.24
+Get version 1.3.25 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.25
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
@@ -28,7 +28,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>1.3.24</version>
+  <version>1.3.25</version>
 </dependency>
 ```
 
@@ -143,12 +143,14 @@ In GitHub User alphabetical order.
 * [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
 * [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.
 * [@armin-weber](https://github.com/armin-weber)
+* [@bsmelo](https://github.com/bsmelo) - Bruno Melo
 * [@chrismaster](https://github.com/chrismaster) - Chris Master
 * [@codecracker2014](https://github.com/codecracker2014)
 * [@dandybudach](https://github.com/dandybudach) - Dandy Budach
 * [@glarfs](https://github.com/glarfs)
 * [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)
 * [@jokimaki](https://github.com/jokimaki)
+* [karolbe](https://github.com/karolbe) - Karol Bryd
 * [@Kindrat](https://github.com/Kindrat)
 * [@lapo-luchini](https://github.com/lapo-luchini) - Lapo Luchini
 * [@laurerunser](https://github.com/laurerunser) - Laure Runser
