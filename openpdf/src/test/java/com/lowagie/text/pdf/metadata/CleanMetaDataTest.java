@@ -36,6 +36,8 @@ public class CleanMetaDataTest {
 
 	@Test
 	public void testProducer() throws Exception {
+		String PRODUCER = "OpenPDF 1.3.26-SNAPSHOT";
+
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Document document = new Document();
 
@@ -45,7 +47,7 @@ public class CleanMetaDataTest {
 		document.close();
 
 		try (PdfReader r = new PdfReader(baos.toByteArray())) {
-			Assertions.assertNull(r.getInfo().get("Producer"));
+			Assertions.assertEquals(PRODUCER, r.getInfo().get("Producer"));
 		}
 		
 	}
