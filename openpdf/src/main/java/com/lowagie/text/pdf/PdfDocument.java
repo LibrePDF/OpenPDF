@@ -330,6 +330,8 @@ public class PdfDocument extends Document {
      */
     public PdfDocument() {
         super();
+        addProducer();
+        addCreationDate();
     }
 
     /** The <CODE>PdfWriter</CODE>. */
