@@ -216,11 +216,15 @@ public class PRTokeniser {
     }
 
     public int getStartxref() throws IOException {
-        int size = Math.min(1024, file.length());
-        int pos = file.length() - size;
-        file.seek(pos);
-        String str = readString(1024);
-        int idx = str.lastIndexOf("startxref");
+        int step = 1024;
+        int pos = file.length();
+        int idx;
+        do {
+            pos = Math.max(0, pos - step);
+            file.seek(pos);
+            String str = readString(step);
+            idx = str.lastIndexOf("startxref");
+        } while (pos > 0 && idx < 0);
         if (idx < 0)
             throw new InvalidPdfException(MessageLocalization.getComposedMessage("pdf.startxref.not.found"));
         return pos + idx;
