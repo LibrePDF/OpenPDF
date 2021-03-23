@@ -216,13 +216,14 @@ public class PRTokeniser {
     }
 
     public int getStartxref() throws IOException {
-        int step = 1024;
-        int pos = file.length();
+        int step = 1024; // packet size to read the file from the end
+        int delta = 8; // delta to provide packets overlapping in case 'startxref' appears split between two packets
+        int pos = file.length() - delta;
         int idx;
         do {
             pos = Math.max(0, pos - step);
             file.seek(pos);
-            String str = readString(step);
+            String str = readString(step + delta);
             idx = str.lastIndexOf("startxref");
         } while (pos > 0 && idx < 0);
         if (idx < 0)
