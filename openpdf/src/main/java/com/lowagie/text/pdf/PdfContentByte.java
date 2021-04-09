@@ -859,7 +859,7 @@ public class PdfContentByte {
      * @param r radius of circle
      */
     public void circle(float x, float y, float r) {
-        float b = 0.5523f;
+        float b = 0.551915024494f;
         moveTo(x + r, y);
         curveTo(x + r, y + r * b, x + r * b, y + r, x, y + r);
         curveTo(x - r * b, y + r, x - r, y + r * b, x - r, y);
