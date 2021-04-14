@@ -218,8 +218,10 @@ class PdfCopyFieldsImp extends PdfWriter {
                     if (ob != null && ob.isIndirect()) {
                         PRIndirectReference ind = (PRIndirectReference) ob;
                         if (!isVisited(ind) && !isPage(ind)) {
-                            PdfIndirectReference ref = getNewReference(ind);
-                            propagate(PdfReader.getPdfObjectRelease(ind), restricted);
+                            if (((PRIndirectReference) ob).getReader().getPdfObject(ind.getNumber()) != null) {
+                                PdfIndirectReference ref = getNewReference(ind);
+                                propagate(PdfReader.getPdfObjectRelease(ind), restricted);
+                            }
                         }
                     } else {
                         propagate(ob, restricted);
