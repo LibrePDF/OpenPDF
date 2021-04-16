@@ -29,5 +29,36 @@ public class PdfTestBaseTest {
         String header = new String(bytes, 0, 5);
         Assertions.assertEquals(header, "%PDF-", "This is no PDF.");
     }
+    
+    @Test
+    void nullpointerExceptionTest() {
+        //given when
+        Assertions.assertDoesNotThrow(this::pdfCopyTest);
+    }
+
+    private void pdfCopyTest() throws IOException {
+        InputStream stream = getClass().getResourceAsStream("/openpdf_bug_test.pdf");
+
+        PdfReader reader = new PdfReader(stream);
+
+        byte[] bytes;
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+            PdfCopyFields pdfCopyFields = new PdfCopyFields(baos);
+
+            pdfCopyFields.addDocument(reader, "1"); // <-- just the table of contents
+
+            pdfCopyFields.close(); // <-- bang
+
+            baos.flush();
+
+            bytes = baos.toByteArray();
+        }
+
+        try (OutputStream os = new FileOutputStream(new File("output.pdf"))) {
+            os.write(bytes);
+        }
+    }
 
 }
