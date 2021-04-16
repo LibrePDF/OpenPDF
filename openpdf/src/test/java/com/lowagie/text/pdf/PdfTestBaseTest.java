@@ -1,6 +1,6 @@
 package com.lowagie.text.pdf;
 
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
