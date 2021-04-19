@@ -29,5 +29,5 @@ public class PdfTestBaseTest {
         String header = new String(bytes, 0, 5);
         Assertions.assertEquals(header, "%PDF-", "This is no PDF.");
     }
-    
+   
 }
