@@ -165,7 +165,7 @@ class PageResources {
        PdfResources resources = new PdfResources();
         if (originalResources != null)
             resources.putAll(originalResources);
-        resources.put(PdfName.PROCSET, new PdfLiteral("[/PDF /Text /ImageB /ImageC /ImageI]"));
+        //resources.put(PdfName.PROCSET, new PdfLiteral("[/PDF /Text /ImageB /ImageC /ImageI]"));
         resources.add(PdfName.FONT, fontDictionary);
         resources.add(PdfName.XOBJECT, xObjectDictionary);
         resources.add(PdfName.COLORSPACE, colorDictionary);
