@@ -210,7 +210,7 @@ public class PdfChunk {
              */
 
             // Check if the chunk content is text
-            if (chunk.getContent().chars().allMatch(c -> (c >= 0x20 && c <= 0xFF))) {
+            if (chunk.getContent().chars().allMatch(c -> ((c >= 0x20 && c <= 0xFF) || c == 0x09))) {
                 // translation of the font-family to a PDF font-family
                 baseFont = f.getCalculatedBaseFont(false);
             } else {
