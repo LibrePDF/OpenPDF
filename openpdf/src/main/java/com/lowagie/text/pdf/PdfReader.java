@@ -3212,7 +3212,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           PdfObject v = dic.get(key);
           if (v.isIndirect()) {
             int num = ((PRIndirectReference) v).getNumber();
-            if (num >= xrefObj.size() || (!partial && xrefObj.get(num) == null)) {
+            if (num < 0 || num >= xrefObj.size() || (!partial && xrefObj.get(num) == null)) {
               dic.put(key, PdfNull.PDFNULL);
               continue;
             }
