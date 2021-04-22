@@ -2,24 +2,32 @@ package com.lowagie.text.pdf;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
+import com.lowagie.text.pdf.parser.PdfTextExtractor;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class TabTest {
-    public static void main(String[] args) throws FileNotFoundException, DocumentException {
+    @Test
+    public void TabTest1() throws IOException {
         Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);
         Document.compress = false;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
             PdfWriter.getInstance(document,
-                    new FileOutputStream("TabsTable.pdf"));
+                    stream);
             document.open();
-            document.add(new Chunk("data\ttable"));
+            Chunk a = new Chunk("data\ttable");
+            document.add(a);
         } catch (Exception de) {
             de.printStackTrace();
         }
         document.close();
+        PdfReader rd = new PdfReader(stream.toByteArray());
+        PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(rd);
+        Assertions.assertEquals(pdfTextExtractor.getTextFromPage(1), "data\ttable ");
     }
 }
