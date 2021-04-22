@@ -1,4 +1,4 @@
-package com.lowagie.text.pdf;
+package com.lowagie.text.pdf.table;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
