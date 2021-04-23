@@ -252,12 +252,14 @@ public class PdfString extends PdfObject {
             for (int i = 0; i<bytes.length; i++)
                 chars[i] = (char) (bytes[i]&0xff);
         } else if(encoding.equals("IDENTITY_H2")){
+            //change it to char array according to two byte mapping.
             byte [] bytes = value.getBytes(StandardCharsets.ISO_8859_1);
             chars = new char[bytes.length/2];
             for (int i = 0; i<bytes.length/2; i++)
                 chars[i] = (char) (((bytes[2 * i]&255)<<8) + (bytes[2 * i + 1]&255));
         } else if(encoding.equals("IDENTITY_H1")){
-            byte [] bytes = value.getBytes();
+            //change it to char array according to one byte mapping.
+            byte [] bytes = value.getBytes(StandardCharsets.ISO_8859_1);
             chars = new char[bytes.length];
             for (int i = 0; i<bytes.length; i++)
                 chars[i] = (char) (bytes[i]&0xff);
