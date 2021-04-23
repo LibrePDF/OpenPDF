@@ -28,6 +28,6 @@ public class TabTest {
         document.close();
         PdfReader rd = new PdfReader(stream.toByteArray());
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(rd);
-        Assertions.assertEquals(pdfTextExtractor.getTextFromPage(1), "data\ttable ");
+        Assertions.assertEquals(pdfTextExtractor.getTextFromPage(1), "data\ttable");
     }
 }
