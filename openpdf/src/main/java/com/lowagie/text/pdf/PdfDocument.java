@@ -533,7 +533,7 @@ public class PdfDocument extends Document {
                         carriageReturn();
                         // fixes bug with nested tables not shown
                         // Paragraph#getChunks() doesn't contain the nested table element
-                        PdfPTable table = createInOneCell(paragraph.iterator());
+                        PdfPTable table = createInOneCell(paragraph);
                         indentation.indentLeft -= paragraph.getIndentationLeft();
                         indentation.indentRight -= paragraph.getIndentationRight();
                         this.add(table);
@@ -775,16 +775,37 @@ public class PdfDocument extends Document {
         }
     }
 
-    static PdfPTable createInOneCell(Iterator<Element> elements) {
+    static PdfPTable createInOneCell(Paragraph paragraph) {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(100f);
 
         PdfPCell cell = new PdfPCell();
         cell.setBorder(Table.NO_BORDER);
         cell.setPadding(0);
-        while (elements.hasNext()) {
-            cell.addElement(elements.next());
+
+        for (int i=0; i<paragraph.size(); ++i) {
+            if (paragraph.get(i) instanceof Chunk) {
+                Paragraph subParagraph = new Paragraph();
+                boolean hasNewLine = false;
+                do {
+                    Chunk chunk = (Chunk)paragraph.get(i);
+                    ++i;
+                    if (chunk.getContent().equals("\n")) {
+                        hasNewLine = true;
+                        break;
+                    }
+                    else
+                        subParagraph.add(chunk);
+                } while (i<paragraph.size() && paragraph.get(i) instanceof Chunk);
+                --i;
+                cell.addElement(subParagraph);
+                if (hasNewLine)
+                    cell.addElement(new Chunk("\n"));
+            }
+            else
+                cell.addElement(paragraph.get(i));
         }
+
         table.addCell(cell);
         return table;
     }
