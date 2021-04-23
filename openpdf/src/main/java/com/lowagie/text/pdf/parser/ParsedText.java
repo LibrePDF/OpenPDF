@@ -118,7 +118,13 @@ public class ParsedText extends ParsedTextImpl {
                 convertHeightToUser(graphicsState.getFontDescentDescriptor(), textMatrix),
                 convertWidthToUser(unscaledWidth, textMatrix));
         if (BaseFont.IDENTITY_H.equals(graphicsState.getFont().getEncoding())) {
-            pdfText = new PdfString(new String(text.getBytes(), StandardCharsets.UTF_16));
+            if(graphicsState.getFont().hasUnicodeCMAP()) {
+                if(graphicsState.getFont().hasTwoByteUnicodeCMAP())
+                    pdfText = new PdfString(text.toString(), "IDENTITY_H2");
+                else
+                    pdfText = new PdfString(text.toString(), "IDENTITY_H1");
+            } else
+                pdfText = new PdfString(new String(text.getBytes(), StandardCharsets.UTF_16));
         } else {
             pdfText = text;
         }
