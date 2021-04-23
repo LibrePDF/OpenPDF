@@ -32,7 +32,7 @@ class PdfDocumentTest {
         mainParagraph.add(table);
         mainParagraph.add(paragraph2);
 
-        PdfPTable result = PdfDocument.createInOneCell(mainParagraph.iterator());
+        PdfPTable result = PdfDocument.createInOneCell(mainParagraph);
         return Arrays.asList(
                 DynamicTest.dynamicTest("row size should be 1", () -> assertThat(result.getRows().size(), equalTo(1))),
                 DynamicTest.dynamicTest("cell size should be 1", () -> {
