@@ -764,12 +764,15 @@ public class PdfEncodings {
         private static final IntHashtable t1 = new IntHashtable();
         private static final IntHashtable t2 = new IntHashtable();
         private IntHashtable translation;
+        private char[] revTranslation;
 
         SymbolConversion(boolean symbol) {
             if (symbol) {
                 translation = t1;
+                revTranslation = table1;
             } else {
                 translation = t2;
+                revTranslation = table2;
             }
         }
 
@@ -805,7 +808,16 @@ public class PdfEncodings {
 
         @Override
         public String byteToChar(byte[] b, String encoding) {
-            return null;
+            int len = b.length;
+            char[] chars = new char[len];
+            for(int i = 0; i < len; i++) {
+                int pos = b[i]&0xff;
+                if(pos < 32)
+                    chars[i] = 0;
+                else
+                    chars[i] = revTranslation[pos - 32];
+            }
+            return new String(chars);
         }
 
         private final static char[] table1 = {' ', '!', '\u2200', '#',
