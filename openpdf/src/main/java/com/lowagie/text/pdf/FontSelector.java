@@ -64,13 +64,13 @@ import com.lowagie.text.Utilities;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class FontSelector {
-    
+
     protected ArrayList<Font> fonts = new ArrayList<>();
 
     /**
      * Adds a <CODE>Font</CODE> to be searched for valid characters.
      * @param font the <CODE>Font</CODE>
-     */    
+     */
     public void addFont(Font font) {
         if (font.getBaseFont() != null) {
             fonts.add(font);
@@ -80,13 +80,13 @@ public class FontSelector {
         Font f2 = new Font(bf, font.getSize(), font.getCalculatedStyle(), font.getColor());
         fonts.add(f2);
     }
-    
+
     /**
      * Process the text so that it will render with a combination of fonts
      * if needed.
      * @param text the text
      * @return a <CODE>Phrase</CODE> with one or more chunks
-     */    
+     */
     public Phrase process(String text) {
         int fsize = fonts.size();
         if (fsize == 0)
@@ -105,6 +105,7 @@ public class FontSelector {
             }
             if (Utilities.isSurrogatePair(cc, k)) {
                 int u = Utilities.convertToUtf32(cc, k);
+                boolean hasValidFontInList = false;
                 for (int f = 0; f < fsize; ++f) {
                     font = fonts.get(f);
                     if (font.getBaseFont().charExists(u)) {
@@ -120,11 +121,24 @@ public class FontSelector {
                         if (cc.length > k + 1) {
                             sb.append(cc[++k]);
                         }
+                        hasValidFontInList = true;
                         break;
                     }
                 }
-            }
-            else {
+                if (!hasValidFontInList) {
+                    if (sb.length() > 0 && lastidx != -1) {
+                        Chunk ck = new Chunk(sb.toString());
+                        ret.add(ck);
+                        sb.setLength(0);
+                        lastidx = -1;
+                    }
+                    sb.append(c);
+                    if (cc.length > k + 1) {
+                        sb.append(cc[++k]);
+                    }
+                }
+            } else {
+                boolean hasValidFontInList = false;
                 for (int f = 0; f < fsize; ++f) {
                     font = fonts.get(f);
                     if (font.getBaseFont().charExists(c)) {
@@ -137,13 +151,28 @@ public class FontSelector {
                             lastidx = f;
                         }
                         sb.append(c);
+                        hasValidFontInList = true;
                         break;
                     }
+                }
+                if (!hasValidFontInList) {
+                    if (sb.length() > 0 && lastidx != -1) {
+                        Chunk ck = new Chunk(sb.toString());
+                        ret.add(ck);
+                        sb.setLength(0);
+                        lastidx = -1;
+                    }
+                    sb.append(c);
                 }
             }
         }
         if (sb.length() > 0) {
-            Chunk ck = new Chunk(sb.toString(), fonts.get(lastidx == -1 ? 0 : lastidx));
+            Chunk ck;
+            if (lastidx == -1) {
+                ck = new Chunk(sb.toString());
+            } else {
+                ck = new Chunk(sb.toString(), fonts.get(lastidx));
+            }
             ret.add(ck);
         }
         return ret;
