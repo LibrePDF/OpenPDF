@@ -49,6 +49,21 @@ class PdfTextExtractorTest {
     }
 
     @Test
+    void testZapfDingbatsFont() throws Exception {
+        Document document = new Document();
+        Document.compress = false;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, byteArrayOutputStream);
+        document.open();
+
+        //There has some problem to write Greek with Font.ZAPFDINGBATS, but show in html it is "✧❒❅❅❋"
+        document.add(new Chunk("Greek", new Font(Font.ZAPFDINGBATS)));
+        document.close();
+        PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
+        Assertions.assertEquals("✧❒❅❅❋", pdfTextExtractor.getTextFromPage(1));
+    }
+
+    @Test
     void testSymbolFont() throws Exception {
         Document document = new Document();
         Document.compress = false;
