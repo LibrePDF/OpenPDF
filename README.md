@@ -47,6 +47,7 @@ MPL license only.
 - [Examples](pdf-toolbox/src/test/java/com/lowagie/examples)
 - [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-3-17/)
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
+- [Migration from iText, TIFF support](https://github.com/LibrePDF/OpenPDF/wiki/Migrating-from-iText-2-and-4)
 
 ## Background ##
 
@@ -77,9 +78,9 @@ OpenPDF ancestors in GitHub (in fork order):
   well.
 - Full list here: https://mvnrepository.com/artifact/com.github.librepdf/openpdf/usages
 
-## Android support ##
+## Android ##
 
-OpenPDF now has Android support, more info
+OpenPDF can be used with Android, more info
 here: [Android-support](https://github.com/LibrePDF/OpenPDF/wiki/Android-support)
 
 ## Contributing ##
