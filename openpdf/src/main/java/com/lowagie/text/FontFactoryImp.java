@@ -62,6 +62,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.annotation.Nullable;
 
 
@@ -90,6 +92,11 @@ public class FontFactoryImp implements FontProvider {
      * This is a map of fontfamilies.
      */
     private final Map<String, List<String>> fontFamilies = new HashMap<>();
+
+    /**
+     * This is a lock for protecting fontFamilies from race condition.
+     */
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
      * This is the default encoding to use.
@@ -184,23 +191,30 @@ public class FontFactoryImp implements FontProvider {
             return new Font(Font.UNDEFINED, size, style, color);
         }
         String lowerCaseFontname = fontname.toLowerCase(Locale.ROOT);
-        List<String> fontFamilie = fontFamilies.get(lowerCaseFontname);
-        if (fontFamilie != null) {
-            // some bugs were fixed here by Daniel Marczisovszky
-            int s = style == Font.UNDEFINED ? Font.NORMAL : style;
-            for (String font : fontFamilie) {
-                int fontStyle = Font.getFontStyleFromName(font);
-                if ((s & Font.BOLDITALIC) == fontStyle) {
-                    fontname = font;
-                    lowerCaseFontname = fontname.toLowerCase(Locale.ROOT);
-                    // If a styled font already exists, we don't want to use the separate style-Attribute.
-                    // For example: Helvetica-Bold should have a normal style, because it's already bold.
-                    // Remove all styles already present in the BaseFont
-                    style = s ^ fontStyle;
-                    break;
+
+        lock.readLock().lock();
+        try {
+            List<String> fontFamilie = fontFamilies.get(lowerCaseFontname);
+            if (fontFamilie != null) {
+                // some bugs were fixed here by Daniel Marczisovszky
+                int s = style == Font.UNDEFINED ? Font.NORMAL : style;
+                for (String font : fontFamilie) {
+                    int fontStyle = Font.getFontStyleFromName(font);
+                    if ((s & Font.BOLDITALIC) == fontStyle) {
+                        fontname = font;
+                        lowerCaseFontname = fontname.toLowerCase(Locale.ROOT);
+                        // If a styled font already exists, we don't want to use the separate style-Attribute.
+                        // For example: Helvetica-Bold should have a normal style, because it's already bold.
+                        // Remove all styles already present in the BaseFont
+                        style = s ^ fontStyle;
+                        break;
+                    }
                 }
             }
+        } finally {
+            lock.readLock().unlock();
         }
+
         BaseFont basefont = null;
         try {
             try {
@@ -491,24 +505,29 @@ public class FontFactoryImp implements FontProvider {
     public void registerFamily(String familyName, String fullName, String path) {
         if (path != null)
             trueTypeFonts.put(fullName, path);
-        List<String> tmp = fontFamilies.get(familyName);
-        if (tmp == null) {
-            tmp = new ArrayList<>();
-            tmp.add(fullName);
-            fontFamilies.put(familyName, tmp);
-        }
-        else {
-            int fullNameLength = fullName.length();
-            boolean inserted = false;
-            for (int j = 0; j < tmp.size(); ++j) {
-                if (tmp.get(j).length() >= fullNameLength) {
-                    tmp.add(j, fullName);
-                    inserted = true;
-                    break;
-                }
-            }
-            if (!inserted)
+
+        lock.writeLock().lock();
+        try {
+            List<String> tmp = fontFamilies.get(familyName);
+            if (tmp == null) {
+                tmp = new ArrayList<>();
                 tmp.add(fullName);
+                fontFamilies.put(familyName, tmp);
+            } else {
+                int fullNameLength = fullName.length();
+                boolean inserted = false;
+                for (int j = 0; j < tmp.size(); ++j) {
+                    if (tmp.get(j).length() >= fullNameLength) {
+                        tmp.add(j, fullName);
+                        inserted = true;
+                        break;
+                    }
+                }
+                if (!inserted)
+                    tmp.add(fullName);
+            }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
     
