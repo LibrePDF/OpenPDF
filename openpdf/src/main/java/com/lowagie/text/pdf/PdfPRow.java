@@ -624,9 +624,22 @@ public class PdfPRow {
                 float y;
                 ColumnText ct = ColumnText.duplicate(cell.getColumn());
                 float left = cell.getLeft() + cell.getEffectivePaddingLeft();
+                float right = cell.getRight() - cell.getEffectivePaddingRight();
+                /*
+                    ────────────┬───────────────────────────────┐cell.getTop()
+                          ▲     │      effectivePaddingTop      │
+                          │     │                               │
+                          │     │      ┌─────────────────┬──────►float top
+                     newHeight  │      │                 │      │
+                          │     │      │       CELL      │      │
+                          │     │      │                 │      │
+                          │     │      └─────────────────┴──────►float bottom
+                          │     │                               │
+                          ▼     │      effectivePaddingBottom   │
+                    ────────────┴───────────────────────────────┘
+                 */
                 float top = cell.getTop() - cell.getEffectivePaddingTop();
                 float bottom = cell.getTop() - newHeight + cell.getEffectivePaddingBottom();
-                float right = cell.getRight() - cell.getEffectivePaddingRight();
                 switch (cell.getRotation()) {
                     case 90:
                     case 270:
