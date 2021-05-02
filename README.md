@@ -143,18 +143,23 @@ In GitHub User alphabetical order.
 * [@abdullahcevik](https://github.com/abdullahcevik) - Abdullah Çevik
 * [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
 * [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.
+* [@applikationsprogramvara](https://github.com/applikationsprogramvara)
 * [@armin-weber](https://github.com/armin-weber)
 * [@bsmelo](https://github.com/bsmelo) - Bruno Melo
 * [@chrismaster](https://github.com/chrismaster) - Chris Master
 * [@codecracker2014](https://github.com/codecracker2014)
 * [@dandybudach](https://github.com/dandybudach) - Dandy Budach
 * [@glarfs](https://github.com/glarfs)
+* [@harrati](https://github.com/harrati)
 * [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)
+* [@jherkel](https://github.com/jherkel)
 * [@jokimaki](https://github.com/jokimaki)
 * [karolbe](https://github.com/karolbe) - Karol Bryd
 * [@Kindrat](https://github.com/Kindrat)
 * [@lapo-luchini](https://github.com/lapo-luchini) - Lapo Luchini
 * [@laurerunser](https://github.com/laurerunser) - Laure Runser
+* [@macromogic](https://github.com/macromogic)
+* [@mahdilamb](https://github.com/mahdilamb)
 * [@MartinKocour](https://github.com/MartinKocour) - Martin Kocour
 * [@mluppi](https://github.com/mluppi) - M. Luppi
 * [@noavarice](https://github.com/noavarice)
@@ -169,11 +174,14 @@ In GitHub User alphabetical order.
 * [@sullis](https://github.com/sullis)
 * [@SuperPat45](https://github.com/SuperPat45)
 * [@syakovyn](https://github.com/syakovyn)
+* [@tia-99](https://github.com/tia-99)
 * [@ubermichael](https://github.com/ubermichael) - Michael Joyce
+* [@VedranSlankovic](https://github.com/VedranSlankovic)
 * [@V-F](https://github.com/V-F)
 * [@vic0075](https://github.com/vic0075)
 * [@vk-github18](https://github.com/vk-github18)
 * [@weiyeh](https://github.com/weiyeh)
+* [@Wugengxian](https://github.com/Wugengxian)
 * [@ymasory](https://github.com/ymasory)
 
 Also, a very special thanks to the iText developers ;)
