@@ -2532,14 +2532,13 @@ public class PdfDocument extends Document {
         }
         // add dummy paragraph if we aren't at the top of a page, so that
         // spacingBefore will be taken into account by ColumnText
-        if (currentHeight > 0) {
+        if (currentHeight > 0 || ptable.isSkipFirstHeader()) {
             Paragraph p = new Paragraph();
             p.setLeading(0);
             ct.addElement(p);
         }
         ct.addElement(ptable);
         boolean he = ptable.isHeadersInEvent();
-        ptable.setHeadersInEvent(true);
         int loop = 0;
         while (true) {
             ct.setSimpleColumn(indentLeft(), indentBottom(), indentRight(), indentTop() - currentHeight);
