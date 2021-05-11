@@ -2539,6 +2539,7 @@ public class PdfDocument extends Document {
         }
         ct.addElement(ptable);
         boolean he = ptable.isHeadersInEvent();
+        ptable.setHeadersInEvent(true);
         int loop = 0;
         while (true) {
             ct.setSimpleColumn(indentLeft(), indentBottom(), indentRight(), indentTop() - currentHeight);
