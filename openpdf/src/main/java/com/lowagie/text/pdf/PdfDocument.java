@@ -49,6 +49,8 @@
 
 package com.lowagie.text.pdf;
 
+import static java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
+
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
 import com.lowagie.text.BadElementException;
@@ -1415,7 +1417,7 @@ public class PdfDocument extends Document {
         }
         else if (isJustified) {
             if (line.isNewlineSplit() && line.widthLeft() >= (lastBaseFactor * (ratio * numberOfSpaces + lineLen - 1))) {
-                if (line.isRTL()||(LayoutProcessor.isEnabled()&&LayoutProcessor.getFlags() == java.awt.Font.LAYOUT_RIGHT_TO_LEFT)) {
+                if (line.isRTL() || (LayoutProcessor.isEnabled() && LayoutProcessor.isSet(LAYOUT_RIGHT_TO_LEFT))) {
                     text.moveText(line.widthLeft() - lastBaseFactor * (ratio * numberOfSpaces + lineLen - 1), 0);
                 }
                 baseWordSpacing = ratio * lastBaseFactor;
@@ -1701,8 +1703,9 @@ public class PdfDocument extends Document {
                 else {
                     float spaceCorrection = - baseWordSpacing * 1000f / chunk.font.size() / hScale;
                     PdfTextArray textArray = new PdfTextArray();
-                    if (LayoutProcessor.isEnabled()&&LayoutProcessor.getFlags() == java.awt.Font.LAYOUT_RIGHT_TO_LEFT)
+                    if (LayoutProcessor.isEnabled() && LayoutProcessor.isSet(LAYOUT_RIGHT_TO_LEFT)) {
                         textArray.setRTL(true);
+                    }
                     textArray.add(s.substring(0, idx));
                     int lastIdx = idx;
                     while ((idx = s.indexOf(' ', lastIdx + 1)) >= 0) {
