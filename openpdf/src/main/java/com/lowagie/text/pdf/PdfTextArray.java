@@ -49,7 +49,7 @@
 
 package com.lowagie.text.pdf;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -63,7 +63,7 @@ import java.util.List;
  */
 
 public class PdfTextArray{
-    private List<Object> arrayList = new ArrayList<>();
+    private List<Object> arrayList = new LinkedList<>();
     
     // To emit a more efficient array, we consolidate
     // repeated numbers or strings into single array entries.
@@ -72,6 +72,7 @@ public class PdfTextArray{
     // --Mark Storer, May 12, 2008
     private String lastStr;
     private Float lastNum;
+    private boolean isRTL = false;
     
     // constructors
     public PdfTextArray(String str) {
@@ -97,11 +98,14 @@ public class PdfTextArray{
                 if (lastNum != 0) {
                     replaceLast(lastNum);
                 } else {
-                    arrayList.remove(arrayList.size() - 1);
+                    arrayList.remove(isRTL ? 0 : arrayList.size() - 1);
                 }
             } else {
                 lastNum = number;
-                arrayList.add(lastNum);
+                if (isRTL)
+                    arrayList.add(0, lastNum);
+                else
+                    arrayList.add(lastNum);
             }
             
             lastStr = null;
@@ -110,13 +114,22 @@ public class PdfTextArray{
     }
     
     public void add(String str) {
+        if (isRTL)
+            str = new StringBuffer(str).reverse().toString();
         if (str.length() > 0) {
             if (lastStr != null) {
-                lastStr = lastStr + str;
+                if (isRTL)
+                    lastStr = str + lastStr;
+                else
+                    lastStr = lastStr + str;
                 replaceLast(lastStr);
             } else {
                 lastStr = str;
-                arrayList.add(lastStr);
+                if (isRTL) {
+                    arrayList.add(0, lastStr);
+                }else {
+                    arrayList.add(lastStr);
+                }
             }
             lastNum = null;
         }
@@ -129,6 +142,17 @@ public class PdfTextArray{
     
     private void replaceLast(Object obj) {
         // deliberately throw the IndexOutOfBoundsException if we screw up.
-        arrayList.set(arrayList.size() - 1, obj);
+        if (isRTL)
+            arrayList.set(0, obj);
+        else
+            arrayList.set(arrayList.size() - 1, obj);
+    }
+
+    public void setRTL(boolean isRTL){
+        this.isRTL = isRTL;
+    }
+
+    public boolean getRTL(){
+        return this.isRTL;
     }
 }

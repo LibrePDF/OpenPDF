@@ -1700,7 +1700,10 @@ public class PdfDocument extends Document {
                     text.showText(s);
                 else {
                     float spaceCorrection = - baseWordSpacing * 1000f / chunk.font.size() / hScale;
-                    PdfTextArray textArray = new PdfTextArray(s.substring(0, idx));
+                    PdfTextArray textArray = new PdfTextArray();
+                    if (LayoutProcessor.isEnabled()&&LayoutProcessor.getFlags() == java.awt.Font.LAYOUT_RIGHT_TO_LEFT)
+                        textArray.setRTL(true);
+                    textArray.add(s.substring(0, idx));
                     int lastIdx = idx;
                     while ((idx = s.indexOf(' ', lastIdx + 1)) >= 0) {
                         textArray.add(spaceCorrection);

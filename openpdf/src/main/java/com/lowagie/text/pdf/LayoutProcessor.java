@@ -100,6 +100,10 @@ public class LayoutProcessor {
         return enabled;
     }
 
+    public static int getFlags() {
+        return flags;
+    }
+
     public static boolean supportsFont(BaseFont baseFont) {
         boolean supports = enabled && (awtFontMap.get(baseFont) != null);
         return supports;
