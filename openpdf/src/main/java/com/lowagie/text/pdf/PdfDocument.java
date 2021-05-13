@@ -1415,7 +1415,7 @@ public class PdfDocument extends Document {
         }
         else if (isJustified) {
             if (line.isNewlineSplit() && line.widthLeft() >= (lastBaseFactor * (ratio * numberOfSpaces + lineLen - 1))) {
-                if (line.isRTL()) {
+                if (line.isRTL()||) {
                     text.moveText(line.widthLeft() - lastBaseFactor * (ratio * numberOfSpaces + lineLen - 1), 0);
                 }
                 baseWordSpacing = ratio * lastBaseFactor;
