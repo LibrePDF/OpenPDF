@@ -171,7 +171,7 @@ public class PdfFileSpecification extends PdfDictionary {
         PdfFileSpecification fs = new PdfFileSpecification();
         fs.writer = writer;
         fs.put(PdfName.F, new PdfString(fileDisplay));
-        fs.setUnicodeFileName(fileDisplay, false);
+        fs.setUnicodeFileName(fileDisplay, !PdfEncodings.isPdfDocEncoding(fileDisplay));
         PdfEFStream stream;
         InputStream in = null;
         PdfIndirectReference ref;
@@ -243,7 +243,7 @@ public class PdfFileSpecification extends PdfDictionary {
         PdfFileSpecification fs = new PdfFileSpecification();
         fs.writer = writer;
         fs.put(PdfName.F, new PdfString(filePath));
-        fs.setUnicodeFileName(filePath, false);
+        fs.setUnicodeFileName(filePath, !PdfEncodings.isPdfDocEncoding(filePath));
         return fs;
     }
     
