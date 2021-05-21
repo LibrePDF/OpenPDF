@@ -71,10 +71,18 @@ public class FontSelector {
         fonts.add(font);
     }
 
+    /**
+     * change the color of default font in <CODE>FontSelector</CODE>.
+     * @param color the <CODE>Color</CODE> of default font
+     */
     public void setDefaultColor(Color color){
         fonts.get(fonts.size()-1).setColor(color);
     }
 
+    /**
+     * change the size of default font in <CODE>FontSelector</CODE>.
+     * @param size the size of default font
+     */
     public void setDefaultSize(float size){
         fonts.get(fonts.size()-1).setSize(size);
     }
