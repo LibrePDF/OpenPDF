@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class FontSelectorTest {
     @Test
-    public void TestDefaultFont() throws IOException {
+    public void testDefaultFont() throws IOException {
         Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, stream);
