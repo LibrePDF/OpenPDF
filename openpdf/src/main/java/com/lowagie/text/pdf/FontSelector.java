@@ -46,11 +46,14 @@
  */
 package com.lowagie.text.pdf;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 
-import com.lowagie.text.*;
 import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Utilities;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /** Selects the appropriate fonts that contain the glyphs needed to
