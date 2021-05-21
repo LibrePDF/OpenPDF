@@ -862,7 +862,8 @@ public class BarcodePDF417 {
         pad = tot - lenErr - lenCodewords;
         if ((options & PDF417_USE_MACRO) != 0) {
             // the padding comes before the control block
-            System.arraycopy(codewords, macroIndex, codewords, macroIndex + pad, pad);
+            int lenCodewordsAdjusted = lenCodewords = macroIndex;
+            System.arraycopy(codewords, macroIndex, codewords, macroIndex + pad, lenCodewordsAdjusted);
             cwPtr = lenCodewords + pad;
             while (pad-- != 0)
                 codewords[macroIndex++] = TEXT_MODE;
