@@ -651,22 +651,36 @@ public class PdfDocument extends Document {
                     leading = listItem.getTotalLeading();
                     carriageReturn();
 
-                    // we prepare the current line to be able to show us the listsymbol
-                    line.setListItem(listItem);
-                    // we process the item
-                    element.process(this);
+                    // if a listitem has to be kept together, we wrap it in a table object
+                    if (listItem.getKeepTogether()) {
+                        carriageReturn();
+                        PdfPTable table = createInOneCell(listItem);
+                        indentation.indentLeft += listItem.getIndentationLeft();
+                        indentation.indentRight += listItem.getIndentationRight();
 
-                    addSpacing(listItem.getSpacingAfter(), listItem.getTotalLeading(), listItem.getFont());
+                        this.add(table);
 
-                    // if the last line is justified, it should be aligned to the left
-                    if (line.hasToBeJustified()) {
-                        line.resetAlignment();
+                        indentation.indentLeft += listItem.getIndentationLeft();
+                        indentation.indentRight += listItem.getIndentationRight();
                     }
-                    // some parameters are set back to normal again
-                    carriageReturn();
-                    indentation.listIndentLeft -= listItem.getIndentationLeft();
-                    indentation.indentRight -= listItem.getIndentationRight();
-                    leadingCount--;
+                    else {
+                        // we prepare the current line to be able to show us the listsymbol
+                        line.setListItem(listItem);
+                        // we process the item
+                        element.process(this);
+
+                        addSpacing(listItem.getSpacingAfter(), listItem.getTotalLeading(), listItem.getFont());
+
+                        // if the last line is justified, it should be aligned to the left
+                        if (line.hasToBeJustified()) {
+                            line.resetAlignment();
+                        }
+                        // some parameters are set back to normal again
+                        carriageReturn();
+                        indentation.listIndentLeft -= listItem.getIndentationLeft();
+                        indentation.indentRight -= listItem.getIndentationRight();
+                        leadingCount--;
+                    }
                     break;
                 }
                 case Element.RECTANGLE: {
