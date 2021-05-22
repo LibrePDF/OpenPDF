@@ -684,6 +684,19 @@ public class PdfChunk {
         }
         return false;
     }
+
+    /**
+     * Checks if this <CODE>PdfChunk</CODE> is a vertical Separator Chunk.
+     * @return    true if this chunk is a vertical separator.
+     * @since    OpenPDF
+     */
+    boolean isVerticalSeparator() {
+        if (isAttribute(Chunk.SEPARATOR)) {
+            Object[] o = (Object[])getAttribute(Chunk.SEPARATOR);
+            return (Boolean) o[1];
+        }
+        return false;
+    }
     
     /**
      * Checks if this <CODE>PdfChunk</CODE> is a tab Chunk.
