@@ -111,9 +111,6 @@ public class FontSelector {
      * @return a <CODE>Phrase</CODE> with one or more chunks
      */
     public Phrase process(String text) {
-        int fsize = fonts.size();
-        if (fsize == 0)
-            throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("no.font.is.defined"));
         char[] cc = text.toCharArray();
         int len = cc.length;
         StringBuilder sb = new StringBuilder();
