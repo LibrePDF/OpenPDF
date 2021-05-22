@@ -68,7 +68,7 @@ public class FopGlyphProcessor {
             Integer glyphCode = processedChars[i];
             if (!longTag.containsKey(glyphCode)) {
                 longTag.put(glyphCode,
-                        new int[] { processedChars[i], ttu.getGlyphWidth(processedChars[i]), processedChars[i] });
+                        new int[] { processedChars[i], ttu.getGlyphWidth(processedChars[i]), charBuffer.get(i) });
             }
         }
         return new String(charEncodedGlyphCodes).getBytes(CJKFont.CJK_ENCODING);

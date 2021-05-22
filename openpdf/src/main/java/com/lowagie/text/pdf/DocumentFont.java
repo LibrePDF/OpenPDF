@@ -286,7 +286,11 @@ public class DocumentFont extends BaseFont {
   private void doType1TT() {
     PdfObject enc = PdfReader.getPdfObject(font.get(PdfName.ENCODING));
     if (enc == null) {
-      fillEncoding(null);
+      PdfName baseFont = this.font.getAsName(PdfName.BASEFONT);
+      if(PdfName.SYMBOL.equals(baseFont)||PdfName.ZAPFDINGBATS.equals(baseFont))
+        fillEncoding(baseFont);
+      else
+        fillEncoding(null);
     } else {
       if (enc.isName()) {
         fillEncoding((PdfName) enc);
@@ -400,7 +404,8 @@ public class DocumentFont extends BaseFont {
   }
 
   private void fillEncoding(PdfName encoding) {
-    if (PdfName.MAC_ROMAN_ENCODING.equals(encoding) || PdfName.WIN_ANSI_ENCODING.equals(encoding)) {
+    if (PdfName.MAC_ROMAN_ENCODING.equals(encoding) || PdfName.WIN_ANSI_ENCODING.equals(encoding)
+            ||PdfName.SYMBOL.equals(encoding)||PdfName.ZAPFDINGBATS.equals(encoding)) {
       byte[] b = new byte[256];
       for (int k = 0; k < 256; ++k) {
         b[k] = (byte) k;
@@ -408,6 +413,10 @@ public class DocumentFont extends BaseFont {
       String enc = WINANSI;
       if (PdfName.MAC_ROMAN_ENCODING.equals(encoding)) {
         enc = MACROMAN;
+      }else if (PdfName.SYMBOL.equals(encoding)){
+        enc = SYMBOL;
+      }else if (PdfName.ZAPFDINGBATS.equals(encoding)){
+        enc = ZAPFDINGBATS;
       }
       String cv = PdfEncodings.convertToString(b, enc);
       char[] arr = cv.toCharArray();

@@ -42,6 +42,8 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.error_messages.MessageLocalization;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
@@ -56,12 +58,8 @@ import java.text.Bidi;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.error_messages.MessageLocalization;
-
 /**
- *  Provides glyph layout e.g. for accented Latin letters. 
- *
+ * Provides glyph layout e.g. for accented Latin letters.
  */
 public class LayoutProcessor {
     private static final int DEFAULT_FLAGS = -1;
@@ -70,7 +68,7 @@ public class LayoutProcessor {
     // Static variables can only be set once
     private static boolean enabled = false;
     private static int flags = DEFAULT_FLAGS;
-    
+
     private LayoutProcessor() {
         throw new UnsupportedOperationException("static class");
     }
@@ -85,7 +83,7 @@ public class LayoutProcessor {
     /**
      * Enables the processor providing flags
      * This method can only be called once.
-     * 
+     *
      * @param flags see java.awt.Font.layoutGlyphVector
      */
     public static void enable(int flags) {
@@ -100,6 +98,14 @@ public class LayoutProcessor {
         return enabled;
     }
 
+    public static int getFlags() {
+        return flags;
+    }
+
+    public static boolean isSet(int queryFlags) {
+        return (flags & queryFlags) == queryFlags;
+    }
+
     public static boolean supportsFont(BaseFont baseFont) {
         boolean supports = enabled && (awtFontMap.get(baseFont) != null);
         return supports;
@@ -107,10 +113,10 @@ public class LayoutProcessor {
 
     /**
      * Loads the AWT font needed for layout
-     * 
+     *
      * @param baseFont  OpenPdf base font
      * @param filename of the font file
-     * 
+     *
      * @throws RuntimeException if font can not be loaded
      */
     public static void loadFont(BaseFont baseFont, String filename) {
@@ -164,7 +170,7 @@ public class LayoutProcessor {
 
     /**
      * Computes glyph positioning
-     * 
+     *
      * @param baseFont  OpenPdf base font
      * @param text input text
      * @return glyph vector containing reordered text, width and positioning info
@@ -190,7 +196,7 @@ public class LayoutProcessor {
    /**
     * Checks if the glyphVector contains adjustments
     * that make advanced layout necessary
-    * 
+    *
     * @param glyphVector glyph vector containing the positions
     * @return true, if the glyphVector contains adjustments
     */
@@ -198,7 +204,7 @@ public class LayoutProcessor {
         boolean retVal = false;
         float lastX = 0f;
         float lastY = 0f;
-        
+
         for (int i = 0; i < glyphVector.getNumGlyphs(); i++) {
             Point2D p = glyphVector.getGlyphPosition(i);
             float dx = (float) p.getX() - lastX;
@@ -219,9 +225,9 @@ public class LayoutProcessor {
 
     /**
      * Shows a text using glyph positioning (if needed)
-     * 
+     *
      * @param cb       object containing the content of the page
-     * @param baseFont base font to use 
+     * @param baseFont base font to use
      * @param fontSize font size to apply
      * @param text     text to show
      * @return layout position correction to correct the start of the next line
@@ -238,7 +244,7 @@ public class LayoutProcessor {
         }
         float lastX = 0f;
         float lastY = 0f;
-        
+
         for (int i = 0; i < glyphVector.getNumGlyphs(); i++) {
             Point2D p = glyphVector.getGlyphPosition(i);
 

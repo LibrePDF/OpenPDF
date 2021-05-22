@@ -15,8 +15,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import com.lowagie.text.pdf.FontSelector;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.lowagie.text.Font;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -43,6 +46,37 @@ class PdfTextExtractorTest {
     @Test
     void testInvalidPageNumber() throws Exception {
         assertThat(getString("HelloWorldMeta.pdf", 0), is(emptyString()));
+    }
+
+    @Test
+    void testZapfDingbatsFont() throws Exception {
+        Document document = new Document();
+        Document.compress = false;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, byteArrayOutputStream);
+        document.open();
+
+        //There has some problem to write Greek with Font.ZAPFDINGBATS, but show in html it is "✧❒❅❅❋"
+        document.add(new Chunk("Greek", new Font(Font.ZAPFDINGBATS)));
+        document.close();
+        PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
+        Assertions.assertEquals("✧❒❅❅❋", pdfTextExtractor.getTextFromPage(1));
+    }
+
+    @Test
+    void testSymbolFont() throws Exception {
+        Document document = new Document();
+        Document.compress = false;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, byteArrayOutputStream);
+        document.open();
+
+        FontSelector selector = new FontSelector();
+        selector.addFont(new Font(Font.SYMBOL));
+        document.add(selector.process("ετε"));
+        document.close();
+        PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
+        Assertions.assertEquals("ετε", pdfTextExtractor.getTextFromPage(1));
     }
 
     @Test

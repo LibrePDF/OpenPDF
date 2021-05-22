@@ -49,6 +49,8 @@
 
 package com.lowagie.text.pdf;
 
+import static java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
+
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
 import com.lowagie.text.BadElementException;
@@ -533,7 +535,7 @@ public class PdfDocument extends Document {
                         carriageReturn();
                         // fixes bug with nested tables not shown
                         // Paragraph#getChunks() doesn't contain the nested table element
-                        PdfPTable table = createInOneCell(paragraph.iterator());
+                        PdfPTable table = createInOneCell(paragraph);
                         indentation.indentLeft -= paragraph.getIndentationLeft();
                         indentation.indentRight -= paragraph.getIndentationRight();
                         this.add(table);
@@ -775,16 +777,37 @@ public class PdfDocument extends Document {
         }
     }
 
-    static PdfPTable createInOneCell(Iterator<Element> elements) {
+    static PdfPTable createInOneCell(Paragraph paragraph) {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(100f);
 
         PdfPCell cell = new PdfPCell();
         cell.setBorder(Table.NO_BORDER);
         cell.setPadding(0);
-        while (elements.hasNext()) {
-            cell.addElement(elements.next());
+
+        for (int i=0; i<paragraph.size(); ++i) {
+            if (paragraph.get(i) instanceof Chunk) {
+                Paragraph subParagraph = new Paragraph();
+                boolean hasNewLine = false;
+                do {
+                    Chunk chunk = (Chunk)paragraph.get(i);
+                    ++i;
+                    if (chunk.getContent().equals("\n")) {
+                        hasNewLine = true;
+                        break;
+                    }
+                    else
+                        subParagraph.add(chunk);
+                } while (i<paragraph.size() && paragraph.get(i) instanceof Chunk);
+                --i;
+                cell.addElement(subParagraph);
+                if (hasNewLine)
+                    cell.addElement(new Chunk("\n"));
+            }
+            else
+                cell.addElement(paragraph.get(i));
         }
+
         table.addCell(cell);
         return table;
     }
@@ -1394,7 +1417,7 @@ public class PdfDocument extends Document {
         }
         else if (isJustified) {
             if (line.isNewlineSplit() && line.widthLeft() >= (lastBaseFactor * (ratio * numberOfSpaces + lineLen - 1))) {
-                if (line.isRTL()) {
+                if (line.isRTL() || (LayoutProcessor.isEnabled() && LayoutProcessor.isSet(LAYOUT_RIGHT_TO_LEFT))) {
                     text.moveText(line.widthLeft() - lastBaseFactor * (ratio * numberOfSpaces + lineLen - 1), 0);
                 }
                 baseWordSpacing = ratio * lastBaseFactor;
@@ -1679,7 +1702,11 @@ public class PdfDocument extends Document {
                     text.showText(s);
                 else {
                     float spaceCorrection = - baseWordSpacing * 1000f / chunk.font.size() / hScale;
-                    PdfTextArray textArray = new PdfTextArray(s.substring(0, idx));
+                    PdfTextArray textArray = new PdfTextArray();
+                    if (LayoutProcessor.isEnabled() && LayoutProcessor.isSet(LAYOUT_RIGHT_TO_LEFT)) {
+                        textArray.setRTL(true);
+                    }
+                    textArray.add(s.substring(0, idx));
                     int lastIdx = idx;
                     while ((idx = s.indexOf(' ', lastIdx + 1)) >= 0) {
                         textArray.add(spaceCorrection);
@@ -2511,7 +2538,7 @@ public class PdfDocument extends Document {
         }
         // add dummy paragraph if we aren't at the top of a page, so that
         // spacingBefore will be taken into account by ColumnText
-        if (currentHeight > 0) {
+        if (currentHeight > 0 || ptable.isSkipFirstHeader()) {
             Paragraph p = new Paragraph();
             p.setLeading(0);
             ct.addElement(p);

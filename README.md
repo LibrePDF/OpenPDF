@@ -13,9 +13,9 @@ and bugreports to this GitHub repository.
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 [![Join the chat at https://gitter.im/LibrePDF/code_of_conduct](https://badges.gitter.im/LibrePDF/code_of_conduct.svg)](https://gitter.im/LibrePDF/code_of_conduct)
 
-## OpenPDF version 1.3.25 released 2021-02-15 ##
+## OpenPDF version 1.3.26 released 2021-05-02 ##
 
-Get version 1.3.25 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.25
+Get version 1.3.26 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.26
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
@@ -28,7 +28,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>1.3.25</version>
+  <version>1.3.26</version>
 </dependency>
 ```
 
@@ -47,6 +47,7 @@ MPL license only.
 - [Examples](pdf-toolbox/src/test/java/com/lowagie/examples)
 - [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-3-17/)
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
+- [Migration from iText, TIFF support](https://github.com/LibrePDF/OpenPDF/wiki/Migrating-from-iText-2-and-4)
 
 ## Background ##
 
@@ -77,9 +78,9 @@ OpenPDF ancestors in GitHub (in fork order):
   well.
 - Full list here: https://mvnrepository.com/artifact/com.github.librepdf/openpdf/usages
 
-## Android support ##
+## Android ##
 
-OpenPDF now has Android support, more info
+OpenPDF can be used with Android, more info
 here: [Android-support](https://github.com/LibrePDF/OpenPDF/wiki/Android-support)
 
 ## Contributing ##
@@ -142,18 +143,23 @@ In GitHub User alphabetical order.
 * [@abdullahcevik](https://github.com/abdullahcevik) - Abdullah Çevik
 * [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
 * [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.
+* [@applikationsprogramvara](https://github.com/applikationsprogramvara)
 * [@armin-weber](https://github.com/armin-weber)
 * [@bsmelo](https://github.com/bsmelo) - Bruno Melo
 * [@chrismaster](https://github.com/chrismaster) - Chris Master
 * [@codecracker2014](https://github.com/codecracker2014)
 * [@dandybudach](https://github.com/dandybudach) - Dandy Budach
 * [@glarfs](https://github.com/glarfs)
+* [@harrati](https://github.com/harrati)
 * [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)
+* [@jherkel](https://github.com/jherkel)
 * [@jokimaki](https://github.com/jokimaki)
 * [karolbe](https://github.com/karolbe) - Karol Bryd
 * [@Kindrat](https://github.com/Kindrat)
 * [@lapo-luchini](https://github.com/lapo-luchini) - Lapo Luchini
 * [@laurerunser](https://github.com/laurerunser) - Laure Runser
+* [@macromogic](https://github.com/macromogic)
+* [@mahdilamb](https://github.com/mahdilamb)
 * [@MartinKocour](https://github.com/MartinKocour) - Martin Kocour
 * [@mluppi](https://github.com/mluppi) - M. Luppi
 * [@noavarice](https://github.com/noavarice)
@@ -168,11 +174,14 @@ In GitHub User alphabetical order.
 * [@sullis](https://github.com/sullis)
 * [@SuperPat45](https://github.com/SuperPat45)
 * [@syakovyn](https://github.com/syakovyn)
+* [@tia-99](https://github.com/tia-99)
 * [@ubermichael](https://github.com/ubermichael) - Michael Joyce
+* [@VedranSlankovic](https://github.com/VedranSlankovic)
 * [@V-F](https://github.com/V-F)
 * [@vic0075](https://github.com/vic0075)
 * [@vk-github18](https://github.com/vk-github18)
 * [@weiyeh](https://github.com/weiyeh)
+* [@Wugengxian](https://github.com/Wugengxian)
 * [@ymasory](https://github.com/ymasory)
 
 Also, a very special thanks to the iText developers ;)

@@ -51,6 +51,7 @@ package com.lowagie.text.pdf;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A <CODE>PdfString</CODE>-class is the PDF-equivalent of a
@@ -247,6 +248,18 @@ public class PdfString extends PdfObject {
         char[] chars;
         if (encoding == null || encoding.length() == 0) {
             byte [] bytes = getOriginalBytes();
+            chars = new char[bytes.length];
+            for (int i = 0; i<bytes.length; i++)
+                chars[i] = (char) (bytes[i]&0xff);
+        } else if(encoding.equals("IDENTITY_H2")){
+            //change it to char array according to two byte mapping.
+            byte [] bytes = value.getBytes(StandardCharsets.ISO_8859_1);
+            chars = new char[bytes.length/2];
+            for (int i = 0; i<bytes.length/2; i++)
+                chars[i] = (char) (((bytes[2 * i]&255)<<8) + (bytes[2 * i + 1]&255));
+        } else if(encoding.equals("IDENTITY_H1")){
+            //change it to char array according to one byte mapping.
+            byte [] bytes = value.getBytes(StandardCharsets.ISO_8859_1);
             chars = new char[bytes.length];
             for (int i = 0; i<bytes.length; i++)
                 chars[i] = (char) (bytes[i]&0xff);

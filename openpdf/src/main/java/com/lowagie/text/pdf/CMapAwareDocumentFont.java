@@ -224,6 +224,13 @@ public class CMapAwareDocumentFont extends DocumentFont {
     }
 
     /**
+     * @return true if this font has unicode information available and if it is two bytes.
+     */
+    public boolean hasTwoByteUnicodeCMAP() {
+        return toUnicodeCmap != null && toUnicodeCmap.hasTwoByteMappings();
+    }
+
+    /**
      * Decodes a string of bytes (encoded in the font's encoding) into a unicode string. This will
      * use the ToUnicode map of the font, if available, otherwise it uses the font's encoding
      *
