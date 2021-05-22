@@ -54,7 +54,6 @@ import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Utilities;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 /** Selects the appropriate fonts that contain the glyphs needed to
  * render text correctly. The fonts are checked in order until the
