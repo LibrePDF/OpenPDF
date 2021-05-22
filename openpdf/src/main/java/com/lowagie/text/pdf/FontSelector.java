@@ -46,17 +46,18 @@
  */
 package com.lowagie.text.pdf;
 
+import java.awt.Color;
 import java.util.ArrayList;
-
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Utilities;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /** Selects the appropriate fonts that contain the glyphs needed to
- * render text correctly. The fonts are checked in order until the 
+ * render text correctly. The fonts are checked in order until the
  * character is found.
  * <p>
  * The built in fonts "Symbol" and "ZapfDingbats", if used, have a special encoding
@@ -67,18 +68,40 @@ public class FontSelector {
 
     protected ArrayList<Font> fonts = new ArrayList<>();
 
+    public FontSelector() {
+        FontFactory.register("font-fallback/LiberationSans-Regular.ttf", "sans");
+        Font font = FontFactory.getFont("sans", BaseFont.IDENTITY_H);
+        fonts.add(font);
+    }
+
+    /**
+     * change the color of default font in <CODE>FontSelector</CODE>.
+     * @param color the <CODE>Color</CODE> of default font
+     */
+    public void setDefaultColor(Color color) {
+        fonts.get(fonts.size() - 1).setColor(color);
+    }
+
+    /**
+     * change the size of default font in <CODE>FontSelector</CODE>.
+     * @param size the size of default font
+     */
+    public void setDefaultSize(float size) {
+        fonts.get(fonts.size() - 1).setSize(size);
+    }
+
     /**
      * Adds a <CODE>Font</CODE> to be searched for valid characters.
      * @param font the <CODE>Font</CODE>
      */
     public void addFont(Font font) {
         if (font.getBaseFont() != null) {
-            fonts.add(font);
+            fonts.add(fonts.size() - 1, font);
             return;
         }
         BaseFont bf = font.getCalculatedBaseFont(true);
         Font f2 = new Font(bf, font.getSize(), font.getCalculatedStyle(), font.getColor());
-        fonts.add(f2);
+        fonts.add(fonts.size() - 1, f2);
     }
 
     /**
@@ -105,7 +128,6 @@ public class FontSelector {
             }
             if (Utilities.isSurrogatePair(cc, k)) {
                 int u = Utilities.convertToUtf32(cc, k);
-                boolean hasValidFontInList = false;
                 for (int f = 0; f < fsize; ++f) {
                     font = fonts.get(f);
                     if (font.getBaseFont().charExists(u)) {
@@ -121,24 +143,10 @@ public class FontSelector {
                         if (cc.length > k + 1) {
                             sb.append(cc[++k]);
                         }
-                        hasValidFontInList = true;
                         break;
                     }
                 }
-                if (!hasValidFontInList) {
-                    if (sb.length() > 0 && lastidx != -1) {
-                        Chunk ck = new Chunk(sb.toString());
-                        ret.add(ck);
-                        sb.setLength(0);
-                        lastidx = -1;
-                    }
-                    sb.append(c);
-                    if (cc.length > k + 1) {
-                        sb.append(cc[++k]);
-                    }
-                }
             } else {
-                boolean hasValidFontInList = false;
                 for (int f = 0; f < fsize; ++f) {
                     font = fonts.get(f);
                     if (font.getBaseFont().charExists(c)) {
@@ -151,18 +159,8 @@ public class FontSelector {
                             lastidx = f;
                         }
                         sb.append(c);
-                        hasValidFontInList = true;
                         break;
                     }
-                }
-                if (!hasValidFontInList) {
-                    if (sb.length() > 0 && lastidx != -1) {
-                        Chunk ck = new Chunk(sb.toString());
-                        ret.add(ck);
-                        sb.setLength(0);
-                        lastidx = -1;
-                    }
-                    sb.append(c);
                 }
             }
         }
