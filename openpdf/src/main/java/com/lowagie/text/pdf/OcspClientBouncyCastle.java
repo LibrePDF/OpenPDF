@@ -105,6 +105,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.security.Provider;
 import java.security.Security;
@@ -144,6 +145,8 @@ public class OcspClientBouncyCastle implements OcspClient {
   private final X509Certificate checkCert;
   /** OCSP URL */
   private final String url;
+  /** HTTP proxy used to access the OCSP URL */
+  private Proxy proxy;
 
   /**
    * Creates an instance of an OcspClient that will be using BouncyCastle.
@@ -233,7 +236,8 @@ public class OcspClientBouncyCastle implements OcspClient {
           checkCert.getSerialNumber());
       byte[] array = request.getEncoded();
       URL urlt = new URL(url);
-      HttpURLConnection con = (HttpURLConnection) urlt.openConnection();
+      Proxy tmpProxy = proxy == null ? Proxy.NO_PROXY : proxy;
+      HttpURLConnection con = (HttpURLConnection) urlt.openConnection(tmpProxy);
       con.setRequestProperty("Content-Type", "application/ocsp-request");
       con.setRequestProperty("Accept", "application/ocsp-response");
       con.setDoOutput(true);
@@ -278,5 +282,21 @@ public class OcspClientBouncyCastle implements OcspClient {
       throw new ExceptionConverter(ex);
     }
     return null;
+  }
+
+  /**
+   * Sets Proxy which will be used for URL connection.
+   * @param aProxy Proxy to set
+   */
+  public void setProxy(final Proxy aProxy) {
+    this.proxy = aProxy;
+  }
+
+  /**
+   * Returns Proxy object used for URL connections.
+   * @return configured proxy
+   */
+  public Proxy getProxy() {
+    return proxy;
   }
 }
