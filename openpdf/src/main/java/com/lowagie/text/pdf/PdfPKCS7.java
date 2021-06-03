@@ -273,6 +273,16 @@ public class PdfPKCS7 {
     }
 
     /**
+     * Gets the oid for given digest name.
+     *
+     * @param digestName digest name (for instance "SHA-256")
+     * @return a digest OID (for instance "2.16.840.1.101.3.4.2.1") or {@code null} if the oid for provided name is not found
+     */
+    public static String getDigestOid(String digestName) {
+        return digestName != null ? allowedDigests.get(digestName) : null;
+    }
+
+    /**
      * Gets the timestamp token if there is one.
      *
      * @return the timestamp token or null

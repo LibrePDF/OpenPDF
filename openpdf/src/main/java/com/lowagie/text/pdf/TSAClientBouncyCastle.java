@@ -54,11 +54,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.util.Base64;
+
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.tsp.TimeStampRequest;
@@ -86,6 +89,10 @@ public class TSAClientBouncyCastle implements TSAClient {
   protected String tsaPassword;
   /** Estimate of the received time stamp token */
   protected int tokSzEstimate;
+
+  private Proxy proxy;
+  private String policy;
+  private String digestName;
 
   /**
    * Creates an instance of a TSAClient that will use BouncyCastle.
@@ -156,7 +163,7 @@ public class TSAClientBouncyCastle implements TSAClient {
    */
   @Override
   public MessageDigest getMessageDigest() throws GeneralSecurityException {
-    return MessageDigest.getInstance("SHA-1");
+    return MessageDigest.getInstance(isNotEmpty(digestName) ? digestName : "SHA-1");
   }
 
   /**
@@ -191,9 +198,15 @@ public class TSAClientBouncyCastle implements TSAClient {
       // Setup the time stamp request
       TimeStampRequestGenerator tsqGenerator = new TimeStampRequestGenerator();
       tsqGenerator.setCertReq(true);
-      // tsqGenerator.setReqPolicy("1.3.6.1.4.1.601.10.3.1");
+      if (isNotEmpty(policy)) {
+        tsqGenerator.setReqPolicy(new ASN1ObjectIdentifier(policy));
+      }
       BigInteger nonce = BigInteger.valueOf(System.currentTimeMillis());
-      TimeStampRequest request = tsqGenerator.generate(X509ObjectIdentifiers.id_SHA1, imprint, nonce);
+      ASN1ObjectIdentifier digestOid = X509ObjectIdentifiers.id_SHA1;
+      if (isNotEmpty(digestName)) {
+          digestOid = new ASN1ObjectIdentifier(PdfPKCS7.getDigestOid(digestName));
+      }
+      TimeStampRequest request = tsqGenerator.generate(digestOid, imprint, nonce);
       byte[] requestBytes = request.getEncoded();
 
       // Call the communications layer
@@ -250,7 +263,8 @@ public class TSAClientBouncyCastle implements TSAClient {
     // Setup the TSA connection
     URL url = new URL(tsaURL);
     URLConnection tsaConnection;
-    tsaConnection = url.openConnection();
+    Proxy tmpProxy = proxy == null ? Proxy.NO_PROXY : proxy;
+    tsaConnection = url.openConnection(tmpProxy);
 
     tsaConnection.setDoInput(true);
     tsaConnection.setDoOutput(true);
@@ -261,7 +275,7 @@ public class TSAClientBouncyCastle implements TSAClient {
     // "base64");
     tsaConnection.setRequestProperty("Content-Transfer-Encoding", "binary");
 
-    if ((tsaUsername != null) && !tsaUsername.equals("")) {
+    if (isNotEmpty(tsaUsername)) {
       String userPassword = tsaUsername + ":" + tsaPassword;
       tsaConnection.setRequestProperty("Authorization", "Basic "
           + new String(Base64.getEncoder().encode(userPassword.getBytes())));
@@ -285,5 +299,65 @@ public class TSAClientBouncyCastle implements TSAClient {
       respBytes = Base64.getDecoder().decode(respBytes);
     }
     return respBytes;
+  }
+
+  /**
+   * Sets Proxy which will be used for URL connection.
+   * @param aProxy Proxy to set
+   */
+  public void setProxy(final Proxy aProxy) {
+      this.proxy = aProxy;
+  }
+
+  /**
+   * Returns Proxy object used for URL connections.
+   * @return
+   */
+  public Proxy getProxy() {
+      return proxy;
+  }
+
+  /**
+   * Gets Policy OID of TSA request.
+   * @param policy
+   */
+  public String getPolicy() {
+      return policy;
+  }
+
+  /**
+   * Sets Policy OID of TSA request.
+   * @param policy
+   */
+  public void setPolicy(String policy) {
+      this.policy = policy;
+  }
+
+  public String getTsaURL() {
+      return tsaURL;
+  }
+
+  public String getTsaUsername() {
+      return tsaUsername;
+  }
+
+  public String getTsaPassword() {
+      return tsaPassword;
+  }
+
+  public int getTokSzEstimate() {
+      return tokSzEstimate;
+  }
+
+  public String getDigestName() {
+      return digestName;
+  }
+
+  public void setDigestName(String hashAlgorithm) {
+      this.digestName = hashAlgorithm;
+  }
+
+  private static boolean isNotEmpty(String arg) {
+      return arg != null && !arg.isEmpty();
   }
 }
