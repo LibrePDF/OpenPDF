@@ -56,8 +56,15 @@ import com.lowagie.text.error_messages.MessageLocalization;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
+import java.util.Arrays;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 
 
@@ -73,6 +80,8 @@ public class PdfEncryption {
     public static final int STANDARD_ENCRYPTION_128 = 3;
 
     public static final int AES_128 = 4;
+
+    public static final int AES_256_V3 = 6;
 
     private static final byte[] pad = { (byte) 0x28, (byte) 0xBF, (byte) 0x4E,
             (byte) 0x5E, (byte) 0x4E, (byte) 0x75, (byte) 0x8A, (byte) 0x41,
@@ -192,6 +201,11 @@ public class PdfEncryption {
         case PdfWriter.ENCRYPTION_AES_128:
             keyLength = 128;
             revision = AES_128;
+            break;
+        case PdfWriter.ENCRYPTION_AES_256_V3:
+            keyLength = 256;
+            keySize = 32;
+            revision = AES_256_V3;
             break;
         default:
             throw new IllegalArgumentException(MessageLocalization.getComposedMessage("no.valid.encryption.mode"));
@@ -405,6 +419,9 @@ public class PdfEncryption {
     }
 
     public void setHashKey(int number, int generation) {
+        if (revision >= AES_256_V3)
+            return;
+
         md5.reset(); // added by ujihara
         extra[0] = (byte) number;
         extra[1] = (byte) (number >> 8);
@@ -621,5 +638,112 @@ public class PdfEncryption {
             return userPassword;
         }
         return userPad;
+    }
+
+    //
+    // AESv3 (AES256 according to ISO 32000-2) support
+    //
+    /**
+     * implements step d of Algorithm 2.A: Retrieving the file encryption key from an encrypted document in order to decrypt it (revision 6 and later) - ISO 32000-2 section 7.6.4.3.3
+     */
+    public void setupByOwnerPassword(byte[] documentID, byte[] ownerPassword,
+            byte[] uValue, byte[] ueValue, byte[] oValue, byte[] oeValue, int permissions) throws GeneralSecurityException {
+        final Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+
+        byte[] hashAlg2B = hashAlg2B(ownerPassword, Arrays.copyOfRange(oValue, 40, 48), uValue);
+        cipher.init(Cipher.DECRYPT_MODE,
+                new SecretKeySpec(hashAlg2B, "AES"),
+                new IvParameterSpec(new byte[16]));
+        key = cipher.update(oeValue, 0, oeValue.length);
+
+        this.ownerKey = oValue;
+        this.userKey = uValue;
+        this.documentID = documentID;
+        this.permissions = permissions;
+    }
+
+    /**
+     * implements step e of Algorithm 2.A: Retrieving the file encryption key from an encrypted document in order to decrypt it (revision 6 and later) - ISO 32000-2 section 7.6.4.3.3
+     */
+    public void setupByUserPassword(byte[] documentID, byte[] userPassword,
+            byte[] uValue, byte[] ueValue, byte[] oValue, byte[] oeValue, int permissions) throws GeneralSecurityException {
+        final Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+
+        byte[] hashAlg2B = hashAlg2B(userPassword, Arrays.copyOfRange(uValue, 40, 48), null);
+        cipher.init(Cipher.DECRYPT_MODE,
+                new SecretKeySpec(hashAlg2B, "AES"),
+                new IvParameterSpec(new byte[16]));
+        key = cipher.update(ueValue, 0, ueValue.length);
+
+        this.ownerKey = oValue;
+        this.userKey = uValue;
+        this.documentID = documentID;
+        this.permissions = permissions;
+    }
+
+    /**
+     * implements step f of Algorithm 2.A: Retrieving the file encryption key from an encrypted document in order to decrypt it (revision 6 and later) - ISO 32000-2 section 7.6.4.3.3
+     */
+    public boolean decryptAndCheckPerms(byte[] permsValue) throws GeneralSecurityException {
+        final Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+
+        cipher.init(Cipher.DECRYPT_MODE,
+                new SecretKeySpec(key, "AES"),
+                new IvParameterSpec(new byte[16]));
+        byte[] decPerms = cipher.update(permsValue, 0, permsValue.length);
+
+        permissions = (decPerms[0] & 0xff) | ((decPerms[1] & 0xff) << 8)
+                | ((decPerms[2] & 0xff) << 16) | ((decPerms[2] & 0xff) << 24);
+        encryptMetadata = decPerms[8] == (byte)'T';
+
+        return decPerms[9] == (byte)'a' && decPerms[10] == (byte)'d' && decPerms[11] == (byte)'b';
+    }
+
+    /**
+     * implements Algorithm 2.B: Computing a hash (revision 6 and later) - ISO 32000-2 section 7.6.4.3.4
+     */
+    byte[] hashAlg2B(byte[] input, byte[] salt, byte[] userKey) throws GeneralSecurityException {
+        final MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+        final MessageDigest sha384 = MessageDigest.getInstance("SHA-384");
+        final MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
+        final Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+
+        if (userKey == null)
+            userKey = new byte[0];
+
+        sha256.update(input);
+        sha256.update(salt);
+        sha256.update(userKey);
+        byte[] k = sha256.digest();
+
+        for (int round = 0, lastEByte = 0; round < 64 || lastEByte > round-32; round++) {
+            int singleSequenceSize = input.length + k.length + userKey.length;
+            byte[] k1 = new byte[singleSequenceSize * 64];
+            System.arraycopy(input, 0, k1, 0, input.length);
+            System.arraycopy(k, 0, k1, input.length, k.length);
+            System.arraycopy(userKey, 0, k1, input.length + k.length, userKey.length);
+            for (int i = 1; i < 64; i++)
+                System.arraycopy(k1, 0, k1, singleSequenceSize * i, singleSequenceSize);
+
+            cipher.init(Cipher.ENCRYPT_MODE,
+                    new SecretKeySpec(Arrays.copyOf(k, 16), "AES"),
+                    new IvParameterSpec(Arrays.copyOfRange(k, 16, 32)));
+            byte[] e = cipher.update(k1, 0, k1.length);
+            lastEByte = e[e.length - 1] & 0xFF;
+
+            switch (new BigInteger(1, Arrays.copyOf(e, 16)).remainder(BigInteger.valueOf(3)).intValue()) {
+            case 0:
+                k = sha256.digest(e);
+                break;
+            case 1:
+                k = sha384.digest(e);
+                break;
+            case 2:
+                k = sha512.digest(e);
+                break;
+            }
+        }
+
+        return Arrays.copyOf(k, 32);
     }
 }
