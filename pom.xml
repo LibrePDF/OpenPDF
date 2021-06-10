@@ -76,7 +76,7 @@
         <pitmp-maven-plugin.version>1.3.7</pitmp-maven-plugin.version>
 
         <!-- dependencies -->
-        <bouncycastle.version>1.68</bouncycastle.version>
+        <bouncycastle.version>1.69</bouncycastle.version>
         <commons-io.version>2.9.0</commons-io.version>
         <dom4j.version>2.1.3</dom4j.version>
         <fop.version>2.6</fop.version>
