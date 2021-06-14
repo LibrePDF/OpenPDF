@@ -732,6 +732,9 @@ class CJKFont extends BaseFont {
      */
     @Override
     public boolean charExists(int c) {
+        if (c >= translationMap.length) {
+            return false;
+        }
         return translationMap[c] != 0;
     }
 
