@@ -183,4 +183,5 @@ buildNumber.properties
 *.pdf
 #Allow pdf as source resources for testing
 !openpdf/src/test/resources/*.pdf
+!openpdf/src/test/resources/issue375/*.pdf
 !pdf-toolbox/src/test/resources/com/lowagie/examples/html/parseHelloWorld.html
