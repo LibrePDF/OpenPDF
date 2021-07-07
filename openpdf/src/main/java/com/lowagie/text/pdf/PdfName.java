@@ -129,6 +129,8 @@ public class PdfName extends PdfObject implements Comparable{
     /** A name */
     public static final PdfName AESV2 = new PdfName("AESV2");
     /** A name */
+    public static final PdfName AESV3 = new PdfName("AESV3");
+    /** A name */
     public static final PdfName AIS = new PdfName("AIS");
     /** A name */
     public static final PdfName ALLPAGES = new PdfName("AllPages");
