@@ -27,12 +27,12 @@ import java.io.FileOutputStream;
 import org.librepdf.openpdf.examples.content.Constants;
 
 /**
- * Creates a document with outlines (bookmarks).
+ * Creates a document with outlines (bookmarks) for each paragraph.
  *
  * @author blowagie
  */
 
-public class Bookmarks extends PdfPageEventHelper {
+public class ParagraphBookmarks extends PdfPageEventHelper {
 
     /**
      * Keeps the number of the current paragraph.
@@ -54,25 +54,25 @@ public class Bookmarks extends PdfPageEventHelper {
     }
 
     /**
-     * Creates a document with outlines.
+     * Creates a document with outlines for each paragraph.
      *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
 
-        System.out.println("Bookmarks");
+        System.out.println("Bookmarks for Paragraphs");
 
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A6);
         try {
 
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("Bookmarks.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("ParagraphBookmarks.pdf"));
             // step 3:
             writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
             document.open();
             // step 4: we grab the ContentByte and do some stuff with it
-            writer.setPageEvent(new Bookmarks());
+            writer.setPageEvent(new ParagraphBookmarks());
 
             document.add(new Paragraph(Constants.GALLIA_EST, new Font(Font.HELVETICA, 12)));
             document.add(new Paragraph(Constants.EORUM_UNA, new Font(Font.HELVETICA, 12)));
