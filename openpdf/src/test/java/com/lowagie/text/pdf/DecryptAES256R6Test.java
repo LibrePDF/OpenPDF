@@ -64,6 +64,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * copied-positive-P.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadCopiedPositiveP() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/copied-positive-P.pdf")  ) {
@@ -75,6 +85,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * c-r6-in-pw=owner4.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadCR6InPwOwner4() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/c-r6-in-pw=owner4.pdf")  ) {
@@ -86,6 +106,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * encrypted_hello_world_r6-pw=hôtel.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadEncryptedHelloWorldR6PwHôtel() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/encrypted_hello_world_r6-pw=hôtel.pdf")  ) {
@@ -97,6 +127,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * encrypted-positive-P.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadEncryptedPositiveP() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/encrypted-positive-P.pdf")  ) {
@@ -108,6 +148,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * enc-XI-long-password=qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadEncXiLongPassword() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/enc-XI-long-password=qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv.pdf")  ) {
@@ -119,6 +169,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * enc-XI-R6,V5,O=master.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadEncXiR6V5OMaster() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/enc-XI-R6,V5,O=master.pdf")  ) {
@@ -130,6 +190,20 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * enc-XI-R6,V5,U=attachment,encrypted-attachments.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     * <p>
+     * TODO: OpenPdf currently only supports all-or-nothing encryption
+     * (except Metadata and signatures) but in this test file only the
+     * embedded file is encrypted.
+     */
     @Test
     public void testReadEncXiR6V5UAttachmentEncryptedAttachments() throws IOException {
         Assertions.assertThrows(InvalidPdfException.class, () -> {
@@ -143,6 +217,16 @@ class DecryptAES256R6Test {
         });
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * enc-XI-R6,V5,U=view,attachments,cleartext-metadata.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadEncXiR6V5UViewAttachmentsCleartextMetadata() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/enc-XI-R6,V5,U=view,attachments,cleartext-metadata.pdf")  ) {
@@ -154,6 +238,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * enc-XI-R6,V5,U=view,O=master.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadEncXiR6V5UViewOMaster() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/enc-XI-R6,V5,U=view,O=master.pdf")  ) {
@@ -165,6 +259,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * enc-XI-R6,V5,U=wwwww,O=wwwww.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadEncXiR6V5UWwwwwOWwwww() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/enc-XI-R6,V5,U=wwwww,O=wwwww.pdf")  ) {
@@ -176,6 +280,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * graph-encrypted-pw=user.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadGraphEncryptedPwUser() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/graph-encrypted-pw=user.pdf")  ) {
@@ -187,6 +301,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * issue6010_1-pw=owner.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadIssue60101PwOwner() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/issue6010_1-pw=owner.pdf")  ) {
@@ -198,6 +322,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * issue6010_2-pw=æøå.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadIssue60102Pwæøå() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/issue6010_2-pw=æøå.pdf")  ) {
@@ -212,6 +346,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * MuPDF-AES256-R6-u=user-o=owner.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadMuPDFAes256R6UUserOOwner() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/MuPDF-AES256-R6-u=user-o=owner.pdf")  ) {
@@ -223,6 +367,20 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * nontrivial-crypt-filter.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     * <p>
+     * TODO: OpenPdf currently only supports all-or-nothing encryption
+     * (except Metadata and signatures) but in this test file only the
+     * embedded file is encrypted.
+     */
     @Test
     public void testReadNonTrivialCryptFilter() throws IOException {
         Assertions.assertThrows(BadPasswordException.class, () -> {
@@ -236,6 +394,16 @@ class DecryptAES256R6Test {
         });
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * pr6531_1-pw=asdfasdf.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadPr65311PwAsdfasdf() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/pr6531_1-pw=asdfasdf.pdf")  ) {
@@ -247,6 +415,16 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * pr6531_2-pw=asdfasdf.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
     @Test
     public void testReadPr65312PwAsdfasdf() throws IOException {
         try (   InputStream resource = getClass().getResourceAsStream("/issue375/pr6531_2-pw=asdfasdf.pdf")  ) {
@@ -258,6 +436,20 @@ class DecryptAES256R6Test {
         }
     }
 
+    /**
+     * <a href="https://github.com/LibrePDF/OpenPDF/issues/375">
+     * "Unknown encryption type R = 6" support AES256
+     * </a>
+     * <br>
+     * unfilterable-with-crypt.pdf provided by TvT
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     * <p>
+     * TODO: OpenPdf currently only supports all-or-nothing encryption
+     * (except Metadata and signatures) but in this test file only
+     * certain streams with Crypt filters are encrypted.
+     */
     @Test
     public void testReadUnfilterableWithCrypt() throws IOException {
         Assertions.assertThrows(BadPasswordException.class, () -> {
