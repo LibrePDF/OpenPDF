@@ -127,7 +127,7 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
         while (outline != null) {
             Map<String, Object> map = new HashMap<>();
             PdfString title = (PdfString) PdfReader.getPdfObjectRelease(outline.get(PdfName.TITLE));
-            map.put("Title", title.toUnicodeString());
+            map.put("Title", ((title != null) ? title.toUnicodeString() : ""));
             PdfArray color = (PdfArray) PdfReader.getPdfObjectRelease(outline.get(PdfName.C));
             if (color != null && color.size() == 3) {
                 ByteBuffer out = new ByteBuffer();
