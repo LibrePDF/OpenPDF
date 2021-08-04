@@ -116,6 +116,11 @@ and use the class `org.librepdf.openpdf.fonts.Liberation`.
 </dependency>
 ```
 
+### Supporting complex glyph substitution/ Ligature substitution: ###
+OpenPDF supports glyph substitution which is required for correct rendering of fonts ligature substitution requirements. 
+FOP dependency is required to enable this feature.  
+Refer following wiki for details: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Multi-byte-character-language-support-with-TTF-fonts)
+
 ### Optional: ###
 
 - [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a
