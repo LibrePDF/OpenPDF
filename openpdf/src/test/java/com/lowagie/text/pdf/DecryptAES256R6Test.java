@@ -462,4 +462,27 @@ class DecryptAES256R6Test {
             }
         });
     }
+
+    /**
+     * <a href="https://stackoverflow.com/questions/68760143/how-to-remove-password-in-password-protected-pdf-using-itext-7">
+     * How to remove password in password-protected pdf using iText 7
+     * </a>
+     * <br>
+     * <a href="https://drive.google.com/drive/folders/16yWf46KquogkRH_mHf9atTLSHc6z5ITn?usp=sharing">
+     * THISISATEST_PWP.pdf
+     * </a>
+     * <p>
+     * This test method checks whether OpenPdf can correctly decrypt
+     * a file which is AES256 encrypted according to ISO 32000-2.
+     */
+    @Test
+    void testReadTHISISATEST_PWP() throws IOException {
+        try (   InputStream resource = getClass().getResourceAsStream("/issue375/THISISATEST_PWP.pdf")  ) {
+            PdfReader pdfReader = new PdfReader(resource, "password".getBytes());
+            Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
+            Assertions.assertEquals(2, pdfReader.getNumberOfPages(), "PdfReader fails to report the correct number of pages");
+            Assertions.assertTrue(new PdfTextExtractor(pdfReader).getTextFromPage(1).startsWith("THIS IS A TEST"), "Wrong text extracted from page 1");
+            pdfReader.close();
+        }
+    }
 }
