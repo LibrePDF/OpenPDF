@@ -50,6 +50,8 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.text.pdf.internal.PolylineShape;
+import com.lowagie.text.utils.SystemPropertyUtil;
+
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -191,6 +193,9 @@ public class PdfGraphics2D extends Graphics2D {
     
     private final CompositeFontDrawer compositeFontDrawer = new CompositeFontDrawer();
 
+    // make use of compositeFontDrawer configurable ... note: must be explicitly set to false otherwise always true (backwards compatibility).
+    private final boolean isCompositeFontDrawerEnabled = SystemPropertyUtil.getBoolean("com.github.librepdf.openpdf.compositeFontDrawerEnabled", true);
+    
     private PdfGraphics2D() {
         dg2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -388,7 +393,7 @@ public class PdfGraphics2D extends Graphics2D {
                 return;
             }
             double width = 0;
-            if (CompositeFontDrawer.isSupported() && compositeFontDrawer.isCompositeFont(font)) {
+            if (isCompositeFontDrawerEnabled && CompositeFontDrawer.isSupported() && compositeFontDrawer.isCompositeFont(font)) {
                 width = compositeFontDrawer.drawString(s, font, x, y, this::getCachedBaseFont, this::drawString);
             } else {
                 // Splitting string to the parts depending on they visibility preserves
