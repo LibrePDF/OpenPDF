@@ -64,6 +64,21 @@ public class AdvanceTypographyTest {
         assertArrayEquals(expectedOutput,str.toCharArray());
     }
 
+    @Test
+    public void testSurrogatePair() throws Exception{
+
+        BaseFont baseFont = BaseFont.createFont("fonts/jp/GenShinGothic-Normal.ttf", BaseFont.IDENTITY_H, false);
+
+        char[] expectedOutput = {17369};
+        // http://en.glyphwiki.org/wiki/u20bb7
+        String text = "\uD842\uDFB7";
+        byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
+                baseFont, text, "fonts/jp/GenShinGothic-Normal.ttf", new HashMap<>(), "dflt");
+        String str = new String(processedContent, "UnicodeBigUnmarked");
+        char[] actual = str.toCharArray();
+        assertArrayEquals(expectedOutput, actual);
+    }
+
     private byte[] getFontByte(String fileName) throws IOException {
         InputStream stream = BaseFont.getResourceStream(fileName, null);
         return IOUtils.toByteArray(stream);
