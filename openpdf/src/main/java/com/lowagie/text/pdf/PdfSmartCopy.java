@@ -100,6 +100,9 @@ public class PdfSmartCopy extends PdfCopy {
         PdfObject srcObj = PdfReader.getPdfObjectRelease(in);
         ByteStore streamKey = null;
         boolean validStream = false;
+        if (srcObj == null) {
+            return null;
+        }
         if (srcObj.isStream()) {
             streamKey = new ByteStore((PRStream)srcObj);
             validStream = true;
