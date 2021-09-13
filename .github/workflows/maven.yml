@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ 8, 11, 15 ]
+        java: [ 8, 11, 16 ]
     name: Java ${{matrix.java}}
     steps:
       - uses: actions/checkout@v2
@@ -22,4 +22,4 @@ jobs:
         with:
           java-version: ${{matrix.java}}
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B verify --file pom.xml -Dgpg.skip
