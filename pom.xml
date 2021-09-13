@@ -89,7 +89,7 @@
         <!-- test-dependencies -->
         <assertj.version>3.20.2</assertj.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <junit.version>5.7.2</junit.version>
+        <junit.version>5.8.0</junit.version>
         <mockito.version>3.12.4</mockito.version>
         <checkstyle.version>9.0</checkstyle.version>
         <maven-jxr-plugin.version>3.1.1</maven-jxr-plugin.version>
