@@ -72,7 +72,7 @@
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <maven.test.failure.ignore>false</maven.test.failure.ignore>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-        <pitest-junit5-plugin.version>0.14</pitest-junit5-plugin.version>
+        <pitest-junit5-plugin.version>0.15</pitest-junit5-plugin.version>
         <pitmp-maven-plugin.version>1.3.7</pitmp-maven-plugin.version>
 
         <!-- dependencies -->
