@@ -121,9 +121,9 @@ OpenPDF supports glyph substitution which is required for correct rendering of f
 FOP dependency is required to enable this feature.  
 Refer following wiki for details: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Multi-byte-character-language-support-with-TTF-fonts)
 
-### Supporting glyph layout, reordering and substitution: ###
-OpenPDF supports OpenType glyph layout, reordering and substitution which is required for correct positioning
-of accents, and the rendering of non-Latin and right-to-left scripts. OpenPDF supports DIN 91379.
+### Supporting OpenType layout, glyph positioning, reordering and substitution: ###
+OpenPDF supports OpenType layout, glyph positioning, reordering and substitution which is e.g. required for correct positioning
+of accents, the rendering of non-Latin and right-to-left scripts. OpenPDF supports DIN 91379.
 See: [wiki](https://github.com/vk-github18/OpenPDF/wiki/Accents,-DIN-SPEC-91379,-non-Latin-scripts)
 
 ### Optional: ###
