@@ -105,7 +105,7 @@ public class HeaderFooter extends Rectangle {
  * Constructs a <CODE>Header</CODE>-object with a pagenumber at the end.
  *
  * @param    before        the <CODE>Phrase</CODE> before the pagenumber
- * @param    numbered    <CODE>true</CODE> if the page has to be numbered
+ * @param    numbered      page will be numbered if <CODE>true</CODE>
  */
     
     public HeaderFooter(Phrase before, boolean numbered) {
@@ -116,7 +116,34 @@ public class HeaderFooter extends Rectangle {
         this.numbered = numbered;
         this.before = before;
     }
-    
+
+/**
+ * Constructs a <CODE>Header</CODE>-object with a pagenumber at the beginning.
+ *
+ * @param numbered      page will be numbered if <CODE>true</CODE>
+ * @param after         the <CODE>Phrase</CODE> after the pagenumber
+ */
+
+    public HeaderFooter(boolean numbered, Phrase after) {
+        super(0, 0, 0, 0);
+        setBorder(TOP + BOTTOM);
+        setBorderWidth(1);
+
+        this.numbered = numbered;
+        this.after = after;
+    }
+
+/**
+ * Constructs a <CODE>Header</CODE>-object with only a pagenumber.
+ *
+ * @param numbered <CODE>true</CODE> if the page has to be numbered
+ */
+
+    public HeaderFooter(boolean numbered) {
+        this(null, true);
+        this.numbered = numbered;
+    }
+
     // methods
     
 /**
@@ -178,16 +205,38 @@ public class HeaderFooter extends Rectangle {
  */
     
     public Paragraph paragraph() {
-        Paragraph paragraph = new Paragraph(before.getLeading());
-        paragraph.add(before);
+        Paragraph paragraph;
+        if (before != null) {
+            paragraph = new Paragraph(before.getLeading());
+            paragraph.add(before);
+        } else {
+            paragraph = new Paragraph();
+        }
+
         if (numbered) {
-            paragraph.addSpecial(new Chunk(String.valueOf(pageN), before.getFont()));
+            Font font = getFont();
+            if (font != null) {
+                paragraph.addSpecial(new Chunk(String.valueOf(pageN), font));
+            } else {
+                paragraph.addSpecial(new Chunk(String.valueOf(pageN)));
+            }
         }
         if (after != null) {
             paragraph.addSpecial(after);
         }
         paragraph.setAlignment(alignment);
         return paragraph;
+    }
+
+    private Font getFont() {
+        if (before != null) {
+            return before.getFont();
+        }
+        if (after != null) {
+            return after.getFont();
+        }
+
+        return null;
     }
 
     /**
