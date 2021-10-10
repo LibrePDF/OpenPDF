@@ -124,7 +124,7 @@ Refer following wiki for details: [wiki](https://github.com/LibrePDF/OpenPDF/wik
 ### Supporting OpenType layout, glyph positioning, reordering and substitution: ###
 OpenPDF supports OpenType layout, glyph positioning, reordering and substitution which is e.g. required for correct positioning
 of accents, the rendering of non-Latin and right-to-left scripts. OpenPDF supports DIN 91379.
-See: [wiki](https://github.com/vk-github18/OpenPDF/wiki/Accents,-DIN-SPEC-91379,-non-Latin-scripts)
+See: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Latin-scripts)
 
 ### Optional: ###
 
