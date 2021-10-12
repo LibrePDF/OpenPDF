@@ -74,31 +74,44 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * @see        BadPdfFormatException
  */
 
-public class PdfName extends PdfObject implements Comparable{
+public class PdfName extends PdfObject implements Comparable<PdfName> {
 
     // CLASS CONSTANTS (a variety of standard names used in PDF))
     /**
      * A name.
+     *
      * @since 2.1.6
      */
     public static final PdfName _3D = new PdfName("3D");
-    /** A name */
+    /**
+     * A name
+     */
     public static final PdfName A = new PdfName("A");
-    /** A name */
+    /**
+     * A name
+     */
     public static final PdfName AA = new PdfName("AA");
     /**
      * A name
+     *
      * @since 2.1.5 renamed from ABSOLUTECALORIMETRIC
      */
     public static final PdfName ABSOLUTECOLORIMETRIC = new PdfName("AbsoluteColorimetric");
-    /** A name */
+    /**
+     * A name
+     */
     public static final PdfName AC = new PdfName("AC");
-    /** A name */
+    /**
+     * A name
+     */
     public static final PdfName ACROFORM = new PdfName("AcroForm");
-    /** A name */
+    /**
+     * A name
+     */
     public static final PdfName ACTION = new PdfName("Action");
     /**
      * A name.
+     *
      * @since 2.1.6
      */
     public static final PdfName ACTIVATION = new PdfName("Activation");
@@ -757,6 +770,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName HIGHLIGHT = new PdfName("Highlight");
     /**
      * A name.
+     *
      * @since 2.1.6
      */
     public static final PdfName HOFFSET = new PdfName("HOffset");
@@ -792,6 +806,7 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName INKLIST = new PdfName("InkList");
     /**
      * A name.
+     *
      * @since 2.1.6
      */
     public static final PdfName INSTANCES = new PdfName("Instances");
@@ -805,20 +820,23 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName ISMAP = new PdfName("IsMap");
     /** A name */
     public static final PdfName IRT = new PdfName("IRT");
-    /** A name */
-    public static final PdfName ITALICANGLE = new PdfName("ItalicAngle");
     /**
      * A name
-     * @since    2.1.6
      */
-    public static final PdfName ITXT = new PdfName("ITXT");
-    /** A name */
+    public static final PdfName ITALICANGLE = new PdfName("ItalicAngle");
+
+    /**
+     * A name
+     */
     public static final PdfName IX = new PdfName("IX");
-    /** A name */
+    /**
+     * A name
+     */
     public static final PdfName JAVASCRIPT = new PdfName("JavaScript");
     /**
      * A name
-     * @since    2.1.5
+     *
+     * @since 2.1.5
      */
     public static final PdfName JBIG2DECODE = new PdfName("JBIG2Decode");
     /**
@@ -1064,7 +1082,7 @@ public class PdfName extends PdfObject implements Comparable{
      * @since 2.1.6
      */
     public static final PdfName OSCILLATING = new PdfName("Oscillating");
-    
+
     /** A name */
     public static final PdfName OUTLINES = new PdfName("Outlines");
     /** A name */
@@ -1509,12 +1527,17 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName TIMES_BOLDITALIC = new PdfName("Times-BoldItalic");
     /** A name */
     public static final PdfName TITLE = new PdfName("Title");
-    /** A name */
-    public static final PdfName TK = new PdfName("TK");
-    /** A name */
-    public static final PdfName TM = new PdfName("TM"); 
     /**
      * A name
+     */
+    public static final PdfName TK = new PdfName("TK");
+    /**
+     * A name
+     */
+    public static final PdfName TM = new PdfName("TM");
+    /**
+     * A name
+     *
      * @since 2.1.6
      */
     public static final PdfName TOC = new PdfName("TOC");
@@ -1732,14 +1755,13 @@ public class PdfName extends PdfObject implements Comparable{
      */
     public static Map<String, PdfName> staticNames;
 
-    /**
+    /*
      * Use reflection to cache all the static public final names so
      * future <code>PdfName</code> additions don't have to be "added twice".
      * A bit less efficient (around 50ms spent here on a 2.2ghz machine),
      *  but Much Less error prone.
      * @since 2.1.6
      */
-
     static {
         Field[] fields = PdfName.class.getDeclaredFields();
         staticNames = new HashMap<>(fields.length);
@@ -1802,18 +1824,17 @@ public class PdfName extends PdfObject implements Comparable{
      * Returns a negative integer, zero, or a positive integer as this object
      * is less than, equal to, or greater than the specified object.<p>
      *
-     * @param object the Object to be compared.
+     * @param name the Object to be compared.
      * @return a negative integer, zero, or a positive integer as this object
      * is less than, equal to, or greater than the specified object.
      * @throws ClassCastException if the specified object's type prevents it
-     * from being compared to this Object.
+     *                            from being compared to this Object.
      */
-    public int compareTo(Object object) {
-        PdfName name = (PdfName) object;
+    public int compareTo(PdfName name) {
         byte[] myBytes = bytes;
         byte[] objBytes = name.bytes;
         int len = Math.min(myBytes.length, objBytes.length);
-        for(int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++) {
             if (myBytes[i] > objBytes[i])
                 return 1;
             if (myBytes[i] < objBytes[i])
@@ -1833,7 +1854,7 @@ public class PdfName extends PdfObject implements Comparable{
         if (this == obj)
             return true;
         if (obj instanceof PdfName)
-            return compareTo(obj) == 0;
+            return compareTo((PdfName) obj) == 0;
         return false;
     }
 
