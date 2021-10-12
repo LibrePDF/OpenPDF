@@ -14,13 +14,13 @@
     <url>https://github.com/LibrePDF/OpenPDF</url>
     <licenses>
         <license>
-            <name>GNU General Lesser Public License (LGPL) version 3.0</name>
-            <url>http://www.gnu.org/licenses/lgpl.html</url>
+            <name>GNU Lesser General Public License (LGPL), Version 2.1</name>
+            <url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
             <distribution>repo</distribution>
         </license>
         <license>
             <name>Mozilla Public License Version 2.0</name>
-            <url>http://www.mozilla.org/MPL/2.0/</url>
+            <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
