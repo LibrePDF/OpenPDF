@@ -816,14 +816,25 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName INTENT = new PdfName("Intent");
     /** A name */
     public static final PdfName INTERPOLATE = new PdfName("Interpolate");
-    /** A name */
+    /**
+     * A name
+     */
     public static final PdfName ISMAP = new PdfName("IsMap");
-    /** A name */
+    /**
+     * A name
+     */
     public static final PdfName IRT = new PdfName("IRT");
     /**
      * A name
      */
     public static final PdfName ITALICANGLE = new PdfName("ItalicAngle");
+
+    /**
+     * @deprecated ITXT is a registered prefix of Bruno Lowagie (iText), and will be removed from OpenPDF. Will be
+     * deleted after 2022-04-30.
+     */
+    @Deprecated
+    public static final PdfName ITXT = new PdfName("ITXT");
 
     /**
      * A name
