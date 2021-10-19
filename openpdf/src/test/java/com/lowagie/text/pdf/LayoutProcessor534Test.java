@@ -21,7 +21,6 @@ class LayoutProcessor534Test {
         PdfWriter.getInstance(document, pdfOut);
         document.open();
         // when
-        LayoutProcessor.enable(java.awt.Font.LAYOUT_RIGHT_TO_LEFT);
         String text = "one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen "
             + "sixteen seventeen eighteen nineteen twenty twentyεOne twentyTwo twentyThree twentyFour twentyFive "
             + "twentySix twentySeven twentyEight twentyNine thirty ";
