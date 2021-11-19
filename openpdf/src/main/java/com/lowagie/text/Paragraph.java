@@ -161,6 +161,28 @@ public class Paragraph extends Phrase {
     public Paragraph(String string, Font font) {
         super(string, font);
     }
+    /**
+     * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE>
+     * and a certain leading.
+     *
+     * @param    strings       a list <CODE>String</CODE>
+     * @param    fonts        a list <CODE>Fonts</CODE>
+     *  By going through each string in the strings array,  match the font for
+     *  the string. If there are less fonts than strings,  do the mod for the font where
+     *  the currentIndex mod font size, will give the correct font in a loop
+     */
+    public Paragraph(java.util.List<String> strings, java.util.List<Font> fonts) {
+        super();
+        int currentIndex = 0;
+
+        for (String string: strings) {
+            //for every string in strings, get the font in the index( mod the index in case there are more strings than fonts
+            this.add(new Chunk(string, fonts.get(Math.floorMod(currentIndex, fonts.size()))));
+
+            currentIndex += 1;
+        }
+
+    }
     
     /**
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE>
