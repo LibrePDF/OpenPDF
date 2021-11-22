@@ -9,7 +9,7 @@ public class IssueTest613 {
 
     public static void main(String[] args) {
 
-        // Register the font which we want to supports Hindi
+        // Register the font which we want to supports nirmalaui
         FontFactory.register("C:\\Windows\\Fonts\\NIRMALA.TTF");
         Document document = new Document();
         try {
