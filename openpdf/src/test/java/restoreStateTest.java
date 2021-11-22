@@ -1,3 +1,12 @@
+/**
+ * The restoreStateTest program implements an application that
+ * reproduce the issue that make the red color to wanted blue color of box
+ *
+ * @author  Jiachun
+ * @version 1.0
+ * @since   2021-11-21
+ */
+
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfContentByte;
