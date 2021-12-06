@@ -385,6 +385,7 @@ while.removing.wmf.placeable.header=tijdens het verwijderen van een wmf position
 writelength.can.only.be.called.after.output.of.the.stream.body=writeLength() kan alleen opgeroepen worden na output van de stream body.
 writelength.can.only.be.called.in.a.contructed.pdfstream.inputstream.pdfwriter=writeLength() kan alleen opgeroepen worden in een aldus aangemaakte stream: PdfStream(InputStream,PdfWriter).
 wrong.number.of.columns=Verkeerd aantal kolommen.
+xref.infinite.loop=Er is een eindeloos lus gedetecteerd in de xref-tabel.
 xref.subsection.not.found=xref subsectie niet gevonden
 xstep.or.ystep.can.not.be.zero=XStep of YStep kan niet nul zijn.
 you.can.only.add.a.writer.to.a.pdfdocument.once=Je kan een writer slecht een enkele keer toevoegen aan een PdfDocument.

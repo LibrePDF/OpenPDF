@@ -385,6 +385,7 @@ while.removing.wmf.placeable.header=while removing wmf placeable header
 writelength.can.only.be.called.after.output.of.the.stream.body=writeLength() can only be called after output of the stream body.
 writelength.can.only.be.called.in.a.contructed.pdfstream.inputstream.pdfwriter=writeLength() can only be called in a contructed PdfStream(InputStream,PdfWriter).
 wrong.number.of.columns=Wrong number of columns.
+xref.infinite.loop=An infinite loop was detected in the xref table.
 xref.subsection.not.found=xref subsection not found
 xstep.or.ystep.can.not.be.zero=XStep or YStep can not be ZERO.
 you.can.only.add.a.writer.to.a.pdfdocument.once=You can only add a writer to a PdfDocument once.

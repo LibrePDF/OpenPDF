@@ -1421,6 +1421,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       PdfNumber prev = (PdfNumber) trailer2.get(PdfName.PREV);
       if (prev == null)
         break;
+      if (prev.intValue() == startxref)
+        throw new InvalidPdfException(
+            MessageLocalization
+                .getComposedMessage("xref.infinite.loop"));
       tokens.seek(prev.intValue());
       trailer2 = readXrefSection();
     }
