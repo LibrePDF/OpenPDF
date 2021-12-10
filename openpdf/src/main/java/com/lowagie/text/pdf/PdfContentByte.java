@@ -81,7 +81,7 @@ import java.util.Map;
  * font encoding.
  */
 
-public class PdfContentByte {
+public class    PdfContentByte {
 
     /**
      * This class keeps the graphic state of the current page

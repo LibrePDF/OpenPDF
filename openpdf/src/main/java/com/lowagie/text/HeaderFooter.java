@@ -50,6 +50,9 @@
 package com.lowagie.text;
 
 
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfTable;
+
 /**
  * A <CODE>HeaderFooter</CODE>-object is a <CODE>Rectangle</CODe> with text
  * that can be put above and/or below every page.
@@ -72,7 +75,10 @@ public class HeaderFooter extends Rectangle {
     
 /** This is the <CODE>Phrase</CODE> that comes before the pagenumber. */
     private Phrase before = null;
-    
+
+    /** This is the <CODE>PDFTable</CODE> */ //line written by Cesia Bulnes
+    private PdfPTable beforeP = null;
+
 /** This is number of the page. */
     private int pageN;
     
@@ -100,22 +106,40 @@ public class HeaderFooter extends Rectangle {
         this.before = before;
         this.after = after;
     }
-    
-/**
- * Constructs a <CODE>Header</CODE>-object with a pagenumber at the end.
- *
- * @param    before        the <CODE>Phrase</CODE> before the pagenumber
- * @param    numbered      page will be numbered if <CODE>true</CODE>
- */
-    
+
+    /**
+     * Constructs a <CODE>Footer</CODE></CODE>-object for adding a PdfPTable
+     *
+     * @param    beforePDF        the <CODE>Table</CODE>
+     *
+     */
+    //written by Cesia Bulnes
+    public HeaderFooter(PdfPTable beforePDF) {
+        super(0, 0, 0, 0);
+        setBorder(TOP + BOTTOM);
+        setBorderWidth(1);
+        //this.numbered = numbered;
+        this.beforeP = beforePDF;
+    }
+
+
+    /**
+     * Constructs a <CODE>Footer</CODE>-object with a pagenumber at the end.
+     *
+     * @param    before        the <CODE>Phrase</CODE> before the pagenumber
+     * @param    numbered      page will be numbered if <CODE>true</CODE>
+     */
+
     public HeaderFooter(Phrase before, boolean numbered) {
         super(0, 0, 0, 0);
         setBorder(TOP + BOTTOM);
         setBorderWidth(1);
-        
+
         this.numbered = numbered;
         this.before = before;
     }
+
+
 
 /**
  * Constructs a <CODE>Header</CODE>-object with a pagenumber at the beginning.
@@ -144,6 +168,8 @@ public class HeaderFooter extends Rectangle {
         this.numbered = numbered;
     }
 
+
+
     // methods
     
 /**
@@ -165,8 +191,19 @@ public class HeaderFooter extends Rectangle {
     public Phrase getBefore() {
         return before;
     }
-    
-/**
+
+
+    /**
+            * Gets the pdfptable
+            *
+            * @return  a pdfptable
+ */
+
+    public PdfPTable getBeforeP() {
+        return beforeP;
+    }
+
+    /**
  * Gets the part that comes after the pageNumber.
  *
  * @return  a Phrase

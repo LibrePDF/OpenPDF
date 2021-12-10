@@ -44,6 +44,7 @@ class FontTest {
         put(Font.STRIKETHRU, Font::isStrikethru);
         put(Font.BOLDITALIC, f -> f.isBold() && f.isItalic());
         put(Font.UNDERLINE | Font.BOLD, f -> f.isUnderlined() && f.isBold());
+
     }};
 
     private static final String FONT_NAME_WITHOUT_STYLES = "non-existing-font";
@@ -162,5 +163,6 @@ class FontTest {
         File current = new File("target/resultSimulatedBold.pdf");
         assertTrue(FileUtils.contentEquals(original, current));
     }
+
 
 }

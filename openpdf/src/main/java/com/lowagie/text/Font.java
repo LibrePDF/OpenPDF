@@ -331,7 +331,7 @@ public class Font implements Comparable {
             return 4;
         } catch (ClassCastException cce) {
             return -3;
-            
+
         }
     }
 

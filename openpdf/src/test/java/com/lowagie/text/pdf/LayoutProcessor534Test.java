@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 class LayoutProcessor534Test {
 
+
     @Test
     public void whenLayoutRightToLeftLatin_thenRevertCharOrder() throws IOException {
         // given

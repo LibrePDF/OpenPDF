@@ -1,9 +1,9 @@
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Phrase;
+import com.lowagie.text.*;
 import org.junit.jupiter.api.Test;
+
+import java.io.FileOutputStream;
 
 public class TablePdfTest {
 
@@ -125,5 +125,42 @@ public class TablePdfTest {
 
         return table;
     }
+
+
+    @Test
+    void testTableFooter() throws Exception{
+    try {
+        Document document = new Document(PageSize.A4);
+
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("fail.pdf"));
+
+        PdfPTable table = new PdfPTable(2);
+        table.setWidthPercentage(100);
+        table.addCell(new PdfPCell(new Paragraph("CONTENT")));
+        table.addCell(new PdfPCell(new Paragraph("CONTENT")));
+
+
+        //HeaderFooter footer2 = new HeaderFooter(new Phrase("This is page "), new Phrase("."));
+        //Phrase footerParagraph = new Phrase();
+
+        Phrase footerParagraph = new Phrase();
+        footerParagraph.add(table);
+
+        //HeaderFooter footer = new HeaderFooter(new PdfPTable(table));
+        HeaderFooter footer = new HeaderFooter(new Phrase(table),true);
+        footer.setAlignment(Element.ALIGN_CENTER);
+        //footer2.setAlignment(Element.ALIGN_CENTER);
+        System.out.print(table);
+        document.setFooter(footer);
+        //document.setFooter(footer2);
+        document.open();
+        //document.add(footer);
+
+
+        document.add(new Paragraph("Hello World"));
+        document.close();
+    } catch (Exception ex) {
+        System.out.println(ex);
+    }}
 
 }

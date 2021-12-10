@@ -55,6 +55,7 @@ import java.util.Collection;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.HyphenationEvent;
+import com.lowagie.text.pdf.PdfPTable;
 
 /**
  * A <CODE>Phrase</CODE> is a series of <CODE>Chunk</CODE>s.
@@ -91,7 +92,8 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
     // membervariables
     /** This is the leading of this phrase. */
     protected float leading = Float.NaN;
-
+    /** This is the table in this phrase. */
+    protected PdfPTable table;
     /** This is the font of this phrase. */
     protected Font font;
 
@@ -130,6 +132,18 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
     public Phrase(float leading) {
         this.leading = leading;
         font = new Font();
+    }
+
+    /**
+     * Constructs a <CODE>Phrase</CODE> with a certain table.
+     *
+     * @param    table        the table
+     */
+    public Phrase(PdfPTable table) {
+        this.table = table;
+        super.add(table);
+        //this.add(table);
+
     }
 
     /**
@@ -290,6 +304,7 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
             element.type() == Element.ANNOTATION ||
             element.type() == Element.TABLE || // line added by David Freels
             element.type() == Element.YMARK ||
+            element.type() == Element.PTABLE ||      //line added by Cesia bulnes
             element.type() == Element.MARKED) {
                 super.add(index, element);
             }
