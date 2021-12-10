@@ -136,6 +136,7 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
 
     /**
      * Constructs a <CODE>Phrase</CODE> with a certain table.
+     * Written by Cesia Bulnes CS 427 https://github.com/LibrePDF/OpenPDF/compare/master...cesiabulnes:cesiab2_branch?expand=1
      *
      * @param    table        the table
      */

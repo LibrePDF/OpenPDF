@@ -25,6 +25,7 @@ public class DifferentiatingWords571Test {
      * Using the paragraph constructor created for this issue, use both fontArrayList and textArrayList
      * parameters.This will return the matching font for the string.
      * From there a user may choose to align using column text, and finish by adding the paragraph into the doc.
+     * Implemented by Cesia Bulnes for CS 427 https://github.com/LibrePDF/OpenPDF/compare/master...cesiabulnes:cesiab_branch?expand=1
      */
     @Test
     void testFontsInDiffWords() throws IOException {

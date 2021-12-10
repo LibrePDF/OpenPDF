@@ -162,6 +162,7 @@ public class Paragraph extends Phrase {
         super(string, font);
     }
     /**
+     * Implemented by Cesia Bulnes for CS 472: https://github.com/LibrePDF/OpenPDF/compare/master...cesiabulnes:cesiab_branch?expand=1
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE>
      * and a certain leading.
      *

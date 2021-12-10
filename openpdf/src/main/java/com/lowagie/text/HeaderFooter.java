@@ -109,7 +109,7 @@ public class HeaderFooter extends Rectangle {
 
     /**
      * Constructs a <CODE>Footer</CODE></CODE>-object for adding a PdfPTable
-     *
+     *Written by Cesia Bulnes for CS 427 https://github.com/LibrePDF/OpenPDF/compare/master...cesiabulnes:cesiab2_branch?expand=1
      * @param    beforePDF        the <CODE>Table</CODE>
      *
      */
