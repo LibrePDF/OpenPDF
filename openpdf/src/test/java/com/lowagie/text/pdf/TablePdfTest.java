@@ -126,6 +126,11 @@ public class TablePdfTest {
         return table;
     }
 
+    /**
+     * Junit test for the footer
+     *Written by Cesia Bulnes CS 427 https://github.com/LibrePDF/OpenPDF/compare/master...cesiabulnes:cesiab2_branch?expand=1
+     **/
+
 
     @Test
     void testTableFooter() throws Exception{
