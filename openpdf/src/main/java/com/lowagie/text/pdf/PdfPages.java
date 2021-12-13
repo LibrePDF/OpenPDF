@@ -52,7 +52,6 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.error_messages.MessageLocalization;
@@ -81,11 +80,11 @@ public class PdfPages {
     /**
      * Constructs a <CODE>PdfPages</CODE>-object.
      */
-    
+
     PdfPages(PdfWriter writer) {
         this.writer = writer;
     }
-    
+
     void addPage(PdfDictionary page) {
         try {
             if ((pages.size() % leafSize) == 0)
@@ -100,7 +99,7 @@ public class PdfPages {
             throw new ExceptionConverter(e);
         }
     }
-    
+
     PdfIndirectReference addPageRef(PdfIndirectReference pageRef) {
         try {
             if ((pages.size() % leafSize) == 0)
@@ -112,7 +111,7 @@ public class PdfPages {
             throw new ExceptionConverter(e);
         }
     }
-    
+
     // returns the top parent to include in the catalog
     PdfIndirectReference writePageTree() throws IOException {
         if (pages.isEmpty())
@@ -146,9 +145,6 @@ public class PdfPages {
                     if ((p % leafSize) == 0)
                         nextParents.add(writer.getPdfIndirectReference());
                     top.put(PdfName.PARENT, nextParents.get(p / leafSize));
-                }
-                else {
-                    top.put(PdfName.ITXT, new PdfString(Document.getRelease()));
                 }
                 writer.addToBody(top, tParents.get(p));
             }

@@ -315,7 +315,11 @@ public class PdfCopy extends PdfWriter {
         //            System.out.println("Dictionary: " + in.toString());
         return copyDictionary((PdfDictionary) in);
       case PdfObject.INDIRECT:
-        return copyIndirect((PRIndirectReference) in);
+        PdfObject obj =  copyIndirect((PRIndirectReference) in);
+        if (obj == null) {
+            return PdfNull.PDFNULL;
+        }
+        return obj;
       case PdfObject.ARRAY:
         return copyArray((PdfArray) in);
       case PdfObject.NUMBER:
