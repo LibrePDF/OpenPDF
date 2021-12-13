@@ -898,6 +898,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         else if (password.length > 127)
           password = Arrays.copyOf(password, 127);
 
+        // According to ISO 32000-2 the uValue is expected to be 48 bytes in length.
+        // Actual documents from the wild tend to have the uValue filled with zeroes
+        // to a 127 bytes length. As input to computeHash for owner password related
+        // operations, though, we must only use the 48 bytes.
+        if (uValue != null && uValue.length > 48)
+            uValue = Arrays.copyOf(uValue, 48);
+
         try {
           // step c of Algorithm 2.A
           byte[] hashAlg2B = decrypt.hashAlg2B(password, Arrays.copyOfRange(oValue, 32, 40), uValue);
