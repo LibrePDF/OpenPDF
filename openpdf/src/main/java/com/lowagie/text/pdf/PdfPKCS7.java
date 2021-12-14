@@ -48,8 +48,6 @@ package com.lowagie.text.pdf;
 
 import static org.bouncycastle.asn1.x509.Extension.authorityInfoAccess;
 
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.error_messages.MessageLocalization;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -122,6 +120,9 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.tsp.TimeStampTokenInfo;
 
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
+
 /**
  * This class does all the processing related to signing and verifying a PKCS#7
  * signature.
@@ -134,8 +135,9 @@ public class PdfPKCS7 {
     private byte[] digestAttr;
     private int version, signerversion;
     private Set<String> digestalgos;
-    private List<Certificate> certs, signCerts;
-    private List<CRL> crls;
+    private final List<Certificate> certs;
+    private List<Certificate> signCerts;
+    private final List<CRL> crls;
     private X509Certificate signCert;
     private byte[] digest;
     private MessageDigest messageDigest;
@@ -147,7 +149,7 @@ public class PdfPKCS7 {
     private boolean verifyResult;
     private byte[] externalDigest;
     private byte[] externalRSAdata;
-    private String provider;
+    private final String provider;
 
     private static final String ID_PKCS7_DATA = "1.2.840.113549.1.7.1";
     private static final String ID_PKCS7_SIGNED_DATA = "1.2.840.113549.1.7.2";
@@ -459,7 +461,7 @@ public class PdfPKCS7 {
             int next = 3;
             while (content.getObjectAt(next) instanceof ASN1TaggedObject)
             	++next;
-            
+
             // the signerInfos
             ASN1Set signerInfos = (ASN1Set) content.getObjectAt(next);
             if (signerInfos.size() != 1)
@@ -1169,7 +1171,7 @@ public class PdfPKCS7 {
                 digest = sig.sign();
             ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 
-            ASN1OutputStream dout = new ASN1OutputStream(bOut);
+            ASN1OutputStream dout = ASN1OutputStream.create(bOut);
             dout.writeObject(new DEROctetString(digest));
             dout.close();
 
@@ -1350,7 +1352,7 @@ public class PdfPKCS7 {
 
             ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 
-            ASN1OutputStream dout = new ASN1OutputStream(bOut);
+            ASN1OutputStream dout = ASN1OutputStream.create(bOut);
             dout.writeObject(new DERSequence(whole));
             dout.close();
 
@@ -1555,7 +1557,7 @@ public class PdfPKCS7 {
         this.signName = signName;
     }
 
-    
+
     private static String getStandardJavaName(String algName) {
     	if ("SHA1".equals(algName)) {
     		return "SHA-1";
@@ -1575,7 +1577,7 @@ public class PdfPKCS7 {
     	return algName;
 
     }
-    
+
     /**
      * a class that holds an X509 name
      */
