@@ -152,7 +152,7 @@ public class AcroFields {
 
   void fill() {
     fields = new HashMap<>();
-    PdfDictionary top = (PdfDictionary) PdfReader.getPdfObjectRelease(reader.getCatalog().get(PdfName.ACROFORM));
+    PdfDictionary top = (PdfDictionary) PdfReader.getPdfObjectReleaseNullConverting(reader.getCatalog().get(PdfName.ACROFORM));
     if (top == null) {
       return;
     }
