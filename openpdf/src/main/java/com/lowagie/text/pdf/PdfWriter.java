@@ -206,8 +206,7 @@ public class PdfWriter extends DocWriter implements
             public void toPdf(OutputStream os) throws IOException {
               // TODO: are generation number and 'In use' keyword bound that way?
               final char inUse = generation == GENERATION_MAX ? 'f' : 'n';
-              String entry = String.format(CROSS_REFERENCE_ENTRY_FORMAT, offset, generation, inUse);
-              os.write(PdfEncodings.convertToBytes(entry, null));
+              os.write(getISOBytes(String.format(CROSS_REFERENCE_ENTRY_FORMAT, offset, generation, inUse)));
             }
 
             /**
