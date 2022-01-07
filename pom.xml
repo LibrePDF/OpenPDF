@@ -59,7 +59,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Maven Plugins versions -->
-        <maven-bundle-plugin.version>5.1.3</maven-bundle-plugin.version>
+        <maven-bundle-plugin.version>5.1.4</maven-bundle-plugin.version>
         <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
