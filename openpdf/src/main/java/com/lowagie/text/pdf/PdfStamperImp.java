@@ -1099,13 +1099,13 @@ class PdfStamperImp extends PdfWriter {
 
     void addDocumentField(PdfIndirectReference ref) {
         PdfDictionary catalog = reader.getCatalog();
-        PdfDictionary acroForm = (PdfDictionary)PdfReader.getPdfObject(catalog.get(PdfName.ACROFORM), catalog);
+        PdfDictionary acroForm = (PdfDictionary)PdfReader.getPdfObjectNullConverting(catalog.get(PdfName.ACROFORM), catalog);
         if (acroForm == null) {
             acroForm = new PdfDictionary();
             catalog.put(PdfName.ACROFORM, acroForm);
             markUsed(catalog);
         }
-        PdfArray fields = (PdfArray)PdfReader.getPdfObject(acroForm.get(PdfName.FIELDS), acroForm);
+        PdfArray fields = (PdfArray)PdfReader.getPdfObjectNullConverting(acroForm.get(PdfName.FIELDS), acroForm);
         if (fields == null) {
             fields = new PdfArray();
             acroForm.put(PdfName.FIELDS, fields);

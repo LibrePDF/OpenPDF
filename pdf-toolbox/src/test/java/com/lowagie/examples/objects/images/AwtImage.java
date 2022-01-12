@@ -9,7 +9,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
  */
 package com.lowagie.examples.objects.images;
 
@@ -37,16 +36,13 @@ class AwtImage {
      */
     @Test
     void testAwtImage() throws Exception {
-
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             // step 1: creation of a document-object
             Document document = new Document();
 
-            // step 2:
-            // we create a writer that listens to the document
-            // and directs a PDF-stream to a file
-            PdfWriter writer = PdfWriter.getInstance(document, baos);
+            // step 2: we create a writer that listens to the document
+            // and directs a PDF-stream to a byte array
+            PdfWriter writer = PdfWriter.getInstance(document, outputStream);
 
             // step 3: we open the document
             document.open();
@@ -58,8 +54,7 @@ class AwtImage {
             PdfContentByte cb = writer.getDirectContent();
             final URL systemResource = ClassLoader.getSystemResource("H.gif");
             final String path = systemResource.getPath();
-            java.awt.Image awtImage = Toolkit.getDefaultToolkit().createImage(
-                    path);
+            java.awt.Image awtImage = Toolkit.getDefaultToolkit().createImage(path);
             Image image = Image.getInstance(awtImage, null);
             image.setAbsolutePosition(100, 500);
             cb.addImage(image);
@@ -76,7 +71,8 @@ class AwtImage {
             // step 5: we close the document
             document.close();
 
-            assertNotEquals(0, baos.size());
+            // Files.write(Paths.get("AwtImage.pdf"), outputStream.toByteArray()); // Use to write the PDF to file
+            assertNotEquals(0, outputStream.size());
         }
     }
 }

@@ -104,7 +104,7 @@ public class XfaForm {
      * @since    2.1.3
      */
     public static PdfObject getXfaObject(PdfReader reader) {
-        PdfDictionary af = (PdfDictionary)PdfReader.getPdfObjectRelease(reader.getCatalog().get(PdfName.ACROFORM));
+        PdfDictionary af = (PdfDictionary)PdfReader.getPdfObjectReleaseNullConverting(reader.getCatalog().get(PdfName.ACROFORM));
         if (af == null) {
             return null;
         }
