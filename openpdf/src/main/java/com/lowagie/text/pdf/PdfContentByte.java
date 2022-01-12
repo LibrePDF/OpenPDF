@@ -3292,28 +3292,27 @@ public class PdfContentByte {
     public void beginMarkedContentSequence(PdfName tag, PdfDictionary property, boolean inline) {
         if (property == null) {
             content.append(tag.getBytes()).append(" BMC").append_i(separator);
-            return;
-        }
-        content.append(tag.getBytes()).append(' ');
-        if (inline)
-            try {
-                property.toPdf(writer, content);
+        } else {
+            content.append(tag.getBytes()).append(' ');
+            if (inline) {
+                try {
+                    property.toPdf(writer, content);
+                } catch (Exception e) {
+                    throw new ExceptionConverter(e);
+                }
+            } else {
+                PdfObject[] objs;
+                if (writer.propertyExists(property))
+                    objs = writer.addSimpleProperty(property, null);
+                else
+                    objs = writer.addSimpleProperty(property, writer.getPdfIndirectReference());
+                PdfName name = (PdfName) objs[0];
+                PageResources prs = getPageResources();
+                name = prs.addProperty(name, (PdfIndirectReference) objs[1]);
+                content.append(name.getBytes());
             }
-            catch (Exception e) {
-                throw new ExceptionConverter(e);
-            }
-        else {
-            PdfObject[] objs;
-            if (writer.propertyExists(property))
-                objs = writer.addSimpleProperty(property, null);
-            else
-                objs = writer.addSimpleProperty(property, writer.getPdfIndirectReference());
-            PdfName name = (PdfName)objs[0];
-            PageResources prs = getPageResources();
-            name = prs.addProperty(name, (PdfIndirectReference)objs[1]);
-            content.append(name.getBytes());
+            content.append(" BDC").append_i(separator);
         }
-        content.append(" BDC").append_i(separator);
         ++mcDepth;
     }
 
