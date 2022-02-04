@@ -17,9 +17,9 @@ import com.lowagie.text.Paragraph;
 
 @SuppressWarnings("nls")
 public class CrossReferenceTableEncodingTest {
-    
+
     private static final String FILE_ENCODING = "file.encoding";
-    
+
     @Test
     public void testCrossReferenceTableEncoding() throws Exception {
         final String oldEncoding = System.getProperty(FILE_ENCODING);
@@ -27,12 +27,12 @@ public class CrossReferenceTableEncodingTest {
             // Change Encoding to IBM-273
             System.setProperty(FILE_ENCODING, "IBM273");
             resetDefaultCharset();
-            
-            String actualPDF = generateSimplePdf();
-            String expectedPDF = readExpectedFile("/encodingTest.pdf");
+
+            final String actualPDF = this.generateSimplePdf();
+            final String expectedPDF = this.readExpectedFile("/encodingTest.pdf");
             assertEquals(filterPdf(expectedPDF), filterPdf(actualPDF));
         } finally {
-            
+
             // Finally reset original charset
             if (oldEncoding == null) {
                 System.clearProperty(FILE_ENCODING);
@@ -47,23 +47,24 @@ public class CrossReferenceTableEncodingTest {
      * Resets the defaultCharset within Charset class, so that the Systemproperty file.encoding will be evaluated.
      */
     private static void resetDefaultCharset() throws NoSuchFieldException, IllegalAccessException {
-        Field charset = Charset.class.getDeclaredField("defaultCharset");
+        final Field charset = Charset.class.getDeclaredField("defaultCharset");
         charset.setAccessible(true);
         charset.set(null, null);
     }
-    
-    private static String filterPdf(String pdf) {
+
+    private static String filterPdf(final String pdf) {
         return pdf.replaceAll("<<\\/ModDate.*?>>", "<</ModDate XXXXX>>")
-        .replaceAll("<</Info .*?>>", "<<\\/Info XXXXX>>");
+                  .replaceAll("<</Info .*?>>", "<<\\/Info XXXXX>>")
+                  .replaceAll("startxref\\n(\\d+)\\n%%EOF", "startxref\\n(XXXXX)\\n%%EOF");
     }
-    
-    private String readExpectedFile(String resourceName) throws IOException {
-        try (final InputStream expected  = getClass().getResourceAsStream(resourceName)) {
+
+    private String readExpectedFile(final String resourceName) throws IOException {
+        try (final InputStream expected  = this.getClass().getResourceAsStream(resourceName)) {
             assertNotNull(expected);
             return IOUtils.toString(expected, "ISO-8859-1");
         }
     }
-    
+
     private String generateSimplePdf() throws IOException {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             try (Document document = PdfTestBase.createPdf(out)) {
@@ -71,7 +72,7 @@ public class CrossReferenceTableEncodingTest {
                 document.newPage();
                 document.add(new Paragraph("Hello World!"));
             }
-            byte[] actualBytes = out.toByteArray();
+            final byte[] actualBytes = out.toByteArray();
             return new String(actualBytes, "ISO-8859-1");
         }
     }
