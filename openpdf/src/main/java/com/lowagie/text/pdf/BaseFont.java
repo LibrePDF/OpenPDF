@@ -54,6 +54,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -335,6 +336,11 @@ public abstract class BaseFont {
      * byte code.
      */
     protected IntHashtable specialMap;
+
+    /**
+     * Used to build a randomized prefix for a subset name
+     */
+    protected SecureRandom secureRandom;
 
     static {
         BuiltinFonts14.put(COURIER, PdfName.COURIER);
@@ -1353,12 +1359,35 @@ public abstract class BaseFont {
      * 
      * @return the subset prefix
      */
-    public static String createSubsetPrefix() {
+    protected String createSubsetPrefix() {
         String s = "";
+        SecureRandom secureRandom = getSecureRandom();
         for (int k = 0; k < 6; ++k) {
-            s += (char) (Math.random() * 26 + 'A');
+            s += (char) (secureRandom.nextDouble() * 26 + 'A');
         }
         return s + "+";
+    }
+
+    /**
+     * Returns a defined SecureRandom implementation.
+     * If nothing is set, returns a new
+     *
+     * @return {@link SecureRandom}
+     */
+    protected SecureRandom getSecureRandom() {
+        if (secureRandom != null) {
+            return secureRandom;
+        }
+        return new SecureRandom();
+    }
+
+    /**
+     * Sets the SecureRandom instance to be used for a subset's prefix generation
+     *
+     * @param secureRandom {@link SecureRandom}
+     */
+    public void setSecureRandom(SecureRandom secureRandom) {
+        this.secureRandom = secureRandom;
     }
 
     /**

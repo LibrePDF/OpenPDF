@@ -962,6 +962,26 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * If given object is instance of {@link PdfNull}, then {@code null} is returned. The provided object otherwise.
+   *
+   * @param obj object to convert
+   * @return provided object or null
+   */
+  public static PdfObject convertPdfNull(PdfObject obj) {
+      if (obj == null || obj instanceof PdfNull) {
+          return null;
+      }
+      return obj;
+  }
+
+  /**
+   * Returns {@link #getPdfObjectRelease(PdfObject)} with applied {@link #convertPdfNull(PdfObject)}.
+   */
+  public static PdfObject getPdfObjectReleaseNullConverting(PdfObject obj) {
+      return convertPdfNull(getPdfObjectRelease(obj));
+  }
+
+  /**
    * Reads a <CODE>PdfObject</CODE> resolving an indirect reference if needed.
    * 
    * @param obj
@@ -1045,6 +1065,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       return obj;
     }
     return getPdfObject(obj);
+  }
+
+  /**
+   * Returns {@link #getPdfObject(PdfObject, PdfObject)} with applied {@link #convertPdfNull(PdfObject)}.
+   */
+  public static PdfObject getPdfObjectNullConverting(PdfObject obj, PdfObject parent) {
+      return convertPdfNull(getPdfObject(obj, parent));
   }
 
   /**
@@ -2711,7 +2738,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         String s = getSubsetPrefix(dic);
         if (s == null)
           continue;
-        String ns = BaseFont.createSubsetPrefix() + s.substring(7);
+        String ns = createRandomSubsetPrefix() + s.substring(7);
         PdfName newName = new PdfName(ns);
         dic.put(PdfName.BASEFONT, newName);
         setXrefPartialObject(k, dic);
@@ -2731,7 +2758,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         String sde = getSubsetPrefix(desc);
         if (sde == null)
           continue;
-        String ns = BaseFont.createSubsetPrefix();
+        String ns = createRandomSubsetPrefix();
         if (s != null)
           dic.put(PdfName.BASEFONT, new PdfName(ns + s.substring(7)));
         setXrefPartialObject(k, dic);
@@ -2745,6 +2772,20 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       }
     }
     return total;
+  }
+
+  /**
+   * Creates a unique subset prefix to be added to the font name when the font
+   * is embedded and subset.
+   *
+   * @return the subset prefix
+   */
+  private String createRandomSubsetPrefix() {
+    String s = "";
+    for (int k = 0; k < 6; ++k) {
+      s += (char) (Math.random() * 26 + 'A');
+    }
+    return s + "+";
   }
 
   /**
@@ -2770,7 +2811,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         s = getFontName(dic);
         if (s == null)
           continue;
-        String ns = BaseFont.createSubsetPrefix() + s;
+        String ns = createRandomSubsetPrefix() + s;
         PdfDictionary fd = (PdfDictionary) getPdfObjectRelease(dic
             .get(PdfName.FONTDESCRIPTOR));
         if (fd == null)
