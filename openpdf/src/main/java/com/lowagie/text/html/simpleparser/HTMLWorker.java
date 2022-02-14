@@ -83,7 +83,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
-import javax.annotation.Nullable;
 
 public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
@@ -136,12 +135,12 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
      */
     @Deprecated
     @SuppressWarnings("unchecked")
-    public static ArrayList<Element> parseToList(Reader reader, @Nullable StyleSheet style, HashMap interfaceProps)
+    public static ArrayList<Element> parseToList(Reader reader, StyleSheet style, HashMap interfaceProps)
             throws IOException {
         return parseToList(reader, style, (Map<String, Object>) interfaceProps);
     }
 
-    public static ArrayList<Element> parseToList(Reader reader, @Nullable StyleSheet style, Map<String, Object> interfaceProps)
+    public static ArrayList<Element> parseToList(Reader reader, StyleSheet style, Map<String, Object> interfaceProps)
             throws IOException {
         HTMLWorker worker = new HTMLWorker(null);
         if (style != null) {

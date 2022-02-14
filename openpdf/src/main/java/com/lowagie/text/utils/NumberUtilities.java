@@ -1,7 +1,6 @@
 package com.lowagie.text.utils;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
 
 public final class NumberUtilities {
 
@@ -14,7 +13,6 @@ public final class NumberUtilities {
      * @param value string value
      * @return {@link Optional} containing parsed value or empty
      */
-    @Nonnull
     public static Optional<Float> parseFloat(String value) {
         try {
             return Optional.of(Float.parseFloat(value));
@@ -29,7 +27,6 @@ public final class NumberUtilities {
      * @param value string value
      * @return {@link Optional} containing parsed value or empty
      */
-    @Nonnull
     public static Optional<Integer> parseInt(String value) {
         try {
             return Optional.of(Integer.parseInt(value));

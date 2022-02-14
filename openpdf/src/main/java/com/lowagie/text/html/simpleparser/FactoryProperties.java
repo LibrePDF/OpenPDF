@@ -71,7 +71,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import javax.annotation.Nullable;
 
 /**
  * @author psoares
@@ -97,7 +96,7 @@ public class FactoryProperties {
      */
     private FontProvider fontImp = FontFactory.getFontImp();
 
-    private static void setParagraphLeading(Paragraph paragraph, @Nullable String leading) {
+    private static void setParagraphLeading(Paragraph paragraph, String leading) {
         if (leading == null) {
             paragraph.setLeading(0, 1.5f);
             return;
@@ -189,8 +188,7 @@ public class FactoryProperties {
      * @return a HyphenationEvent
      * @since 2.1.2
      */
-    @Nullable
-    public static HyphenationEvent getHyphenation(@Nullable String s) {
+    public static HyphenationEvent getHyphenation(String s) {
         if (s == null || s.length() == 0) {
             return null;
         }

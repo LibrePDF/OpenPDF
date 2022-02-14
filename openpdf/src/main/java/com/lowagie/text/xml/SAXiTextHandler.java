@@ -56,7 +56,6 @@ import java.util.EmptyStackException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
-import javax.annotation.Nullable;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
@@ -201,7 +200,7 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
      * @param attributes the list of attributes
      */
 
-    public void startElement(String uri, String localName, String name, @Nullable Attributes attributes) {
+    public void startElement(String uri, String localName, String name, Attributes attributes) {
 
         Properties properties = new Properties();
         if (attributes != null) {

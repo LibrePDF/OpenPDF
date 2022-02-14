@@ -55,8 +55,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class ChainedProperties {
 
@@ -74,7 +72,6 @@ public class ChainedProperties {
     public ChainedProperties() {
     }
 
-    @Nullable
     public String getProperty(String key) {
         return findProperty(key).orElse(null);
     }
@@ -86,7 +83,6 @@ public class ChainedProperties {
      * @return {@link Optional} containing the value or {@link Optional#empty()} if there is no value or
      * it equals {@code null}
      */
-    @Nonnull
     public Optional<String> findProperty(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
             Object[] obj = (Object[]) chain.get(k);
@@ -106,7 +102,6 @@ public class ChainedProperties {
      * @param defaultValue default property value
      * @return property or default value if it's null
      */
-    @Nonnull
     public String getOrDefault(String key, String defaultValue) {
         return findProperty(key).orElse(defaultValue);
     }

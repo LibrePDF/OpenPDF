@@ -80,8 +80,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -300,7 +298,6 @@ public class PdfPKCS7 {
      * @return a date
      * @since 2.1.6
      */
-    @Nullable
     public Calendar getTimeStampDate() {
         if (timeStampToken == null)
             return null;
@@ -1076,7 +1073,6 @@ public class PdfPKCS7 {
         return false;
     }
 
-    @Nullable
     private static ASN1Primitive getExtensionValue(X509Certificate cert,
                                                    String oid) throws IOException {
         byte[] bytes = cert.getExtensionValue(oid);
@@ -1089,7 +1085,6 @@ public class PdfPKCS7 {
         return aIn.readObject();
     }
 
-    @Nonnull
     private static String getStringFromGeneralName(ASN1Primitive names) {
        	ASN1TaggedObject taggedObject = (ASN1TaggedObject) names ;
         return new String(ASN1OctetString.getInstance(taggedObject, false)
@@ -1765,7 +1760,6 @@ public class PdfPKCS7 {
 
         }
 
-        @Nullable
         public String getField(String name) {
             List<String> vs = valuesMap.get(name);
             return vs == null ? null : vs.get(0);

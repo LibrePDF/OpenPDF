@@ -52,8 +52,6 @@
 
 package com.lowagie.text.html;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.Locale;
 import java.util.Properties;
@@ -351,7 +349,7 @@ public class Markup {
      * @return a <code>float</code> number
      * @since 2.1.3
      */
-    public static float parseLength(@Nullable String string, float actualFontSize) {
+    public static float parseLength(String string, float actualFontSize) {
         if (string == null)
             return 0f;
         int pos = 0;
@@ -419,8 +417,7 @@ public class Markup {
      * @param color the <CODE>Color</CODE> that has to be converted.
      * @return the HTML representation of this <CODE>Color</CODE>
      */
-    @Nullable
-    public static Color decodeColor(@Nullable String color) {
+    public static Color decodeColor(String color) {
         if (color == null) {
             return null;
         }
@@ -442,8 +439,7 @@ public class Markup {
      *            keyN="valueN" '
      * @return a Properties object
      */
-    @Nonnull
-    public static Properties parseAttributes(@Nullable String string) {
+    public static Properties parseAttributes(String string) {
         Properties result = new Properties();
         if (string == null) {
             return result;

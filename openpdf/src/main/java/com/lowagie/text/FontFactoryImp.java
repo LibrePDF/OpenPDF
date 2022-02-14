@@ -64,7 +64,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import javax.annotation.Nullable;
 
 
 /**
@@ -166,7 +165,7 @@ public class FontFactoryImp implements FontProvider {
      * @param    color        the <CODE>Color</CODE> of this font.
      * @return the Font constructed based on the parameters
      */
-    public Font getFont(@Nullable String fontName, String encoding, boolean embedded, float size, int style, @Nullable Color color) {
+    public Font getFont(String fontName, String encoding, boolean embedded, float size, int style, Color color) {
         return getFont(fontName, encoding, embedded, size, style, color, true);
     }
     
@@ -185,8 +184,8 @@ public class FontFactoryImp implements FontProvider {
      *                 the cache if new, false if the font is always created new
      * @return the Font constructed based on the parameters
      */
-    public Font getFont(@Nullable String fontname, String encoding, boolean embedded, float size, int style,
-            @Nullable Color color, boolean cached) {
+    public Font getFont(String fontname, String encoding, boolean embedded, float size, int style,
+            Color color, boolean cached) {
         if (fontname == null) {
             return new Font(Font.UNDEFINED, size, style, color);
         }

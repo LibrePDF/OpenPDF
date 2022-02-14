@@ -62,8 +62,6 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.events.PdfPCellEventForwarder;
 
-import javax.annotation.Nullable;
-
 /**
  * A cell in a PdfPTable.
  */
@@ -146,7 +144,7 @@ public class PdfPCell extends Rectangle{
      * 
      * @param phrase the text
      */
-    public PdfPCell(@Nullable Phrase phrase) {
+    public PdfPCell(Phrase phrase) {
         super(0, 0, 0, 0);
         borderWidth = 0.5f;
         border = BOX;
