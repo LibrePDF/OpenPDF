@@ -50,8 +50,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.error_messages.MessageLocalization;
@@ -107,7 +105,6 @@ public class PdfContentStreamHandler {
         reset();
     }
 
-    @Nonnull
     private static Matrix getMatrix(List<PdfObject> operands) {
         float a = ((PdfNumber) operands.get(0)).floatValue();
         float b = ((PdfNumber) operands.get(1)).floatValue();
@@ -192,7 +189,6 @@ public class PdfContentStreamHandler {
      * @param operatorName name of the operator that we might need to call
      * @return the operator or null if none present
      */
-    @Nonnull
     public Optional<ContentOperator> lookupOperator(String operatorName) {
         return Optional.ofNullable(operators.get(operatorName));
     }
@@ -227,7 +223,7 @@ public class PdfContentStreamHandler {
         textFragments = newBuffer;
     }
 
-    void pushContext(@Nullable String newContextName) {
+    void pushContext(String newContextName) {
         contextNames.push(newContextName);
         textFragmentStreams.push(textFragments);
         textFragments = new ArrayList<>();
@@ -238,7 +234,6 @@ public class PdfContentStreamHandler {
      *
      * @return the graphics state
      */
-    @Nonnull
     GraphicsState graphicsState() {
         return gsStack.peek();
     }
@@ -307,7 +302,6 @@ public class PdfContentStreamHandler {
     /**
      * @return result text
      */
-    @Nonnull
     public String getResultantText() {
         if (contextNames.size() > 0) {
             throw new RuntimeException("can't get text with unprocessed stack items");
@@ -326,7 +320,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "TJ";
@@ -354,7 +347,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "BT";
@@ -374,7 +366,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "ET";
@@ -394,7 +385,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "cm";
@@ -425,7 +415,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "'";
@@ -458,7 +447,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "\"";
@@ -491,7 +479,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Q";
@@ -510,7 +497,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "gs";
@@ -553,7 +539,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "q";
@@ -574,7 +559,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Tc";
@@ -594,7 +578,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Tf";
@@ -621,7 +604,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Tm";
@@ -652,7 +634,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "TD";
@@ -676,7 +657,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Tj";
@@ -702,7 +682,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "T*";
@@ -724,7 +703,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Td";
@@ -748,7 +726,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Tr";
@@ -768,7 +745,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Ts";
@@ -788,7 +764,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "TL";
@@ -808,7 +783,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Tz";
@@ -828,7 +802,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Tw";
@@ -848,7 +821,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "BMC";
@@ -874,7 +846,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "BDC";
@@ -937,7 +908,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "EMC";
@@ -953,7 +923,6 @@ public class PdfContentStreamHandler {
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
-        @Nonnull
         @Override
         public String getOperatorName() {
             return "Do";

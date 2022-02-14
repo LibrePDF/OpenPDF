@@ -63,7 +63,6 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -305,7 +304,7 @@ public class XfaForm {
      * @param name the complete or partial name
      * @return the <CODE>Node</CODE> or <CODE>null</CODE> if not found
      */
-    public Node findDatasetsNode(@Nullable String name) {
+    public Node findDatasetsNode(String name) {
         if (name == null)
             return null;
         name = findDatasetsName(name);
@@ -319,7 +318,7 @@ public class XfaForm {
      * @param n the <CODE>Node</CODE>
      * @return the text found or "" if no text was found
      */
-    public static String getNodeText(@Nullable Node n) {
+    public static String getNodeText(Node n) {
         if (n == null)
             return "";
         return getNodeText(n, "");
@@ -346,7 +345,7 @@ public class XfaForm {
      * @param n the <CODE>Node</CODE> to add the text to
      * @param text the text to add
      */
-    public void setNodeText(@Nullable Node n, String text) {
+    public void setNodeText(Node n, String text) {
         if (n == null)
             return;
         Node nc;
@@ -1061,7 +1060,7 @@ public class XfaForm {
             return null;
         }
 
-        private void processTemplate(Node n, @Nullable Map<String, Integer> ff) {
+        private void processTemplate(Node n, Map<String, Integer> ff) {
             if (ff == null)
                 ff = new HashMap<>();
             Map<String, Integer> ss = new HashMap<>();

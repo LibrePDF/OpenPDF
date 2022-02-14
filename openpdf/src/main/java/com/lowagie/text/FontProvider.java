@@ -47,7 +47,6 @@
 
 package com.lowagie.text;
 
-import javax.annotation.Nullable;
 import java.awt.Color;
 
 /**
@@ -76,5 +75,5 @@ public interface FontProvider {
      * @param color    the <CODE>Color</CODE> of this font.
      * @return the Font constructed based on the parameters
      */
-    Font getFont(@Nullable String fontName, String encoding, boolean embedded, float size, int style, @Nullable Color color);
+    Font getFont(String fontName, String encoding, boolean embedded, float size, int style, Color color);
 }

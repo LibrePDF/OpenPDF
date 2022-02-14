@@ -43,8 +43,6 @@
  */
 package com.lowagie.text.pdf.parser;
 
-import javax.annotation.Nullable;
-
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfReader;
 
@@ -126,7 +124,7 @@ public class Word extends ParsedTextImpl {
      *            page.
      * @return markup to represent this one word.
      */
-    private String wordMarkup(@Nullable String text, PdfReader reader, int page, TextAssembler assembler) {
+    private String wordMarkup(String text, PdfReader reader, int page, TextAssembler assembler) {
         if (text == null) {
             return "";
         }

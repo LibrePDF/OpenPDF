@@ -77,7 +77,6 @@ import com.lowagie.text.SimpleTable;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.BaseFont;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
@@ -530,7 +529,7 @@ public class HtmlWriter extends DocWriter {
      * @param font the font of an object
      * @return true if the font differs
      */
-    public boolean isOtherFont(@Nullable Font font) {
+    public boolean isOtherFont(Font font) {
         try {
             Font cFont = currentfont.peek();
             return cFont.compareTo(font) != 0;
@@ -1026,7 +1025,7 @@ public class HtmlWriter extends DocWriter {
      * @param styleAttributes the style of the font
      * @throws IOException thrown when an I/O operation fails
      */
-    protected void write(@Nullable Font font, @Nullable Properties styleAttributes) throws IOException {
+    protected void write(Font font, Properties styleAttributes) throws IOException {
         if (font == null || !isOtherFont(font)) {
             return;
         }

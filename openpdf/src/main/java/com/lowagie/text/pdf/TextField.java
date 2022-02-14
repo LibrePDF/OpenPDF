@@ -59,8 +59,6 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 
-import javax.annotation.Nullable;
-
 /**
  * Supports text, combo and list fields generating the correct appearances.
  * All the option in the Acrobat GUI are supported in an easy to use API.
@@ -719,7 +717,7 @@ public class TextField extends BaseField {
      */
     @Deprecated
     @SuppressWarnings("unchecked")
-    public void setChoiceSelections(@Nullable ArrayList selections ) {
+    public void setChoiceSelections(ArrayList selections ) {
         setChoiceSelections((List<Integer>) selections);
     }
     
@@ -728,7 +726,7 @@ public class TextField extends BaseField {
      * list, all but the first element will be removed.
      * @param selections new selections.  If null, it clear()s the underlying ArrayList.
      */
-    public void setChoiceSelections(@Nullable List<Integer> selections ) {
+    public void setChoiceSelections(List<Integer> selections ) {
         if (selections != null) {
             choiceSelections = new ArrayList<>( selections );
             if (choiceSelections.size() > 1 && (options & BaseField.MULTISELECT) == 0 ) {
