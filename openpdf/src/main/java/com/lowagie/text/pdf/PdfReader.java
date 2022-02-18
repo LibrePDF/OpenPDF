@@ -1606,7 +1606,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       }
     }
     thisStream *= 2;
-    if (thisStream < xref.length)
+    if (thisStream + 1 < xref.length && xref[thisStream + 1] == 0 && xref[thisStream] == 0)
       xref[thisStream] = -1;
 
     if (prev == -1)
