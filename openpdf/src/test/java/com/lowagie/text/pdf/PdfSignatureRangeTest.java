@@ -23,6 +23,14 @@ public class PdfSignatureRangeTest {
         checkSignature(enlarge(pdf, 16777217)); // must be odd, as only the last bit is lost
     }
 
+    @Test
+    void objectXrefDocumentSignature() throws DocumentException, IOException {
+        byte[] pdf = Utilities.toByteArray(getClass().getResourceAsStream("/objectXref.pdf"));
+        checkSignature(pdf);
+        checkSignature(enlarge(pdf, 100001));
+        checkSignature(enlarge(pdf, 16777217)); // must be odd, as only the last bit is lost
+    }
+
     private static void checkSignature(byte[] pdf) throws IOException {
         byte[] produced = fakeSignature(pdf);
         try (PdfReader r = new PdfReader(produced)) {
