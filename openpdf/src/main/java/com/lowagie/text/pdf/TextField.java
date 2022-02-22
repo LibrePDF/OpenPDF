@@ -229,6 +229,23 @@ public class TextField extends BaseField {
     }
     
     /**
+     * Flip text alignment for RTL texts Not sure why but this is needed
+     */
+    private int getTextAlignment(int runDirection) {
+        if (runDirection == PdfWriter.RUN_DIRECTION_RTL) {
+            if (alignment == Element.ALIGN_LEFT) {
+                return Element.ALIGN_RIGHT;
+            } else if (alignment == Element.ALIGN_RIGHT) {
+                return Element.ALIGN_LEFT;
+            } else {
+                return alignment;
+            }
+        } else {
+            return alignment;
+        }
+    }
+
+    /**
      * Get the <code>PdfAppearance</code> of a text or combo field
      * @throws IOException on error
      * @throws DocumentException on error
@@ -278,7 +295,7 @@ public class TextField extends BaseField {
                         usize = 12;
                     float step = Math.max((usize - 4) / 10, 0.2f);
                     ct.setSimpleColumn(0, -h, width, 0);
-                    ct.setAlignment(alignment);
+                    ct.setAlignment(getTextAlignment(rtl));
                     ct.setRunDirection(rtl);
                     for (; usize > 4; usize -= step) {
                         ct.setYLine(0);
@@ -299,7 +316,7 @@ public class TextField extends BaseField {
             float offsetY = offsetX + h - ufont.getFontDescriptor(BaseFont.BBOXURY, usize);
             ct.setSimpleColumn(extraMarginLeft + 2 * offsetX, -20000, box.getWidth() - 2 * offsetX, offsetY + leading);
             ct.setLeading(leading);
-            ct.setAlignment(alignment);
+            ct.setAlignment(getTextAlignment(rtl));
             ct.setRunDirection(rtl);
             ct.setText(phrase);
             ct.go();
