@@ -3558,7 +3558,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       refsp = null;
       refsn = new ArrayList<>();
       pageInh = new ArrayList<>();
-      iteratePages((PRIndirectReference) reader.catalog.get(PdfName.PAGES));
+      PdfObject obj = reader.catalog.get(PdfName.PAGES);
+      if (obj instanceof PRIndirectReference)
+        iteratePages((PRIndirectReference) obj);
+      else if (obj instanceof PdfDictionary)
+        iteratePages((PdfDictionary) obj);
       pageInh = null;
       reader.rootPages.put(PdfName.COUNT, new PdfNumber(refsn.size()));
     }
@@ -3739,7 +3743,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         }
         if (page.get(PdfName.MEDIABOX) == null) {
           PdfArray arr = new PdfArray(new float[] { 0, 0,
-              PageSize.LETTER.getRight(), PageSize.LETTER.getTop() });
+                  PageSize.LETTER.getRight(), PageSize.LETTER.getTop() });
           page.put(PdfName.MEDIABOX, arr);
         }
         refsn.add(rpage);
@@ -3755,7 +3759,32 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
               kidsPR.remove(k);
             break;
           }
-          iteratePages((PRIndirectReference) obj);
+          if (obj instanceof PRIndirectReference)
+            iteratePages((PRIndirectReference) obj);
+          else if (obj instanceof PdfDictionary)
+            iteratePages((PdfDictionary) obj);
+        }
+        popPageAttributes();
+      }
+    }
+
+    private void iteratePages(PdfDictionary page) {
+      PdfArray kidsPR = page.getAsArray(PdfName.KIDS);
+      // reference to a leaf
+      if (kidsPR != null) {
+        page.put(PdfName.TYPE, PdfName.PAGES);
+        pushPageAttributes(page);
+        for (int k = 0; k < kidsPR.size(); ++k) {
+          PdfObject obj = kidsPR.getPdfObject(k);
+          if (!obj.isIndirect()) {
+            while (k < kidsPR.size())
+              kidsPR.remove(k);
+            break;
+          }
+          if (obj instanceof PRIndirectReference)
+            iteratePages((PRIndirectReference) obj);
+          else if (obj instanceof PdfDictionary)
+            iteratePages((PdfDictionary) obj);
         }
         popPageAttributes();
       }
