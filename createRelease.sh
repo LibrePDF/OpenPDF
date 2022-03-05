@@ -13,7 +13,7 @@ then
     exit
 fi
 
-VERSION=$(grep "<version>" pom.xml | head -1 | sed "s/.*<version>\([0-9.]*\)-SNAPSHOT<\/version>.*/\1/")
+VERSION=$(grep "<version>" pom.xml | head -1 | sed "s/.*<version>\([0-9.]*\)\(-SNAPSHOT\)\{0,1\}<\/version>.*/\1/")
 NEW_VERSION=${1}-SNAPSHOT
 
 cat << EOD
@@ -28,40 +28,44 @@ Press ENTER to continue. Ctrl-C to stop.
 EOD
 read ignored
 
-echo "1. Setting release version: ${VERSION}"
-mvn versions:set -DnewVersion="${VERSION}"
+# echo "#1. Setting release version: ${VERSION}"
+# mvn versions:set -DnewVersion="${VERSION}"
 
-echo "2. Test build"
+echo "#2. Test build"
 mvn clean install
-[ $? -eq 0 ] || echo "Errors. Exiting." && exit
+RC=$?
+if [ ${RC} -ne 0 ]
+then
+    echo "Errors. Exiting."
+    exit
+fi
 
-echo "3. Commit changes and tag"
+echo "#3. Commit changes and tag"
 git commit -a -m "Set version to ${VERSION}" && git tag "${VERSION}"
 
-echo "4. Make a staging release"
+echo "#4. Make a staging release"
 mvn clean deploy
 RC=$?
-
 if [ $RC -eq 0 ]
 then
     cat << EOD
         Staging Release seems to be created. Please review it at https://oss.sonatype.org/#stagingRepositories
         if everything seems fine, hit ENTER. Else break this script with Ctrl-C.
 EOD
+    read pause
 else
     echo "Something went wrong. Please switch to manual deploy."
     echo "(look at https://github.com/LibrePDF/OpenPDF/wiki/Release-Process)"
     exit
 fi
 
-echo "5. Deploy release."
+echo "#5. Deploy release."
 mvn nexus-staging:release
 
-echo "6. Finishing."
+echo "#6. Finishing."
 echo " - set next SNAPSHOT to $NEW_VERSION"
 mvn versions:set -DnewVersion="$NEW_VERSION"
 echo " - commit changes"
 git commit -a -m "Set new Snapshot to $NEW_VERSION"
 echo " - push all to github"
 git push "${LIBREPDF_ORIGIN}" --tags
-
