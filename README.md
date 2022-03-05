@@ -13,7 +13,7 @@ and bugreports to this GitHub repository.
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 [![Join the chat at https://gitter.im/LibrePDF/code_of_conduct](https://badges.gitter.im/LibrePDF/code_of_conduct.svg)](https://gitter.im/LibrePDF/code_of_conduct)
 
-## OpenPDF version 1.3.27 released 2022-02-22 ##
+## OpenPDF version 1.3.27 released 2022-03-05 ##
 
 Get version 1.3.27 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.27
 
