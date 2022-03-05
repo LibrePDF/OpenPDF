@@ -13,9 +13,9 @@ and bugreports to this GitHub repository.
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 [![Join the chat at https://gitter.im/LibrePDF/code_of_conduct](https://badges.gitter.im/LibrePDF/code_of_conduct.svg)](https://gitter.im/LibrePDF/code_of_conduct)
 
-## OpenPDF version 1.3.26 released 2021-05-02 ##
+## OpenPDF version 1.3.27 released 2022-02-22 ##
 
-Get version 1.3.26 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.26
+Get version 1.3.27 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.27
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
@@ -28,7 +28,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>1.3.26</version>
+  <version>1.3.27</version>
 </dependency>
 ```
 
@@ -108,7 +108,6 @@ jar. If you want to use the bundled UTF-8 fonts, please add the following depend
 and use the class `org.librepdf.openpdf.fonts.Liberation`.
 
 ```xml
-
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf-fonts-extra</artifactId>
@@ -117,19 +116,21 @@ and use the class `org.librepdf.openpdf.fonts.Liberation`.
 ```
 
 ### Supporting complex glyph substitution/ Ligature substitution: ###
-OpenPDF supports glyph substitution which is required for correct rendering of fonts ligature substitution requirements. 
-FOP dependency is required to enable this feature.  
-Refer following wiki for details: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Multi-byte-character-language-support-with-TTF-fonts)
+
+OpenPDF supports glyph substitution which is required for correct rendering of fonts ligature substitution requirements.
+FOP dependency is required to enable this feature. Refer following wiki for
+details: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Multi-byte-character-language-support-with-TTF-fonts)
 
 ### Supporting OpenType layout, glyph positioning, reordering and substitution: ###
-OpenPDF supports OpenType layout, glyph positioning, reordering and substitution which is e.g. required for correct positioning
-of accents, the rendering of non-Latin and right-to-left scripts. OpenPDF supports DIN 91379.
+
+OpenPDF supports OpenType layout, glyph positioning, reordering and substitution which is e.g. required for correct
+positioning of accents, the rendering of non-Latin and right-to-left scripts. OpenPDF supports DIN 91379.
 See: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Latin-scripts)
 
 ### Optional: ###
 
-- [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a
-  recommended dependency)
+- [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
+  dependency)
     - Provider (`org.bouncycastle:bcprov-jdk15on` or `org.bouncycastle:bcprov-ext-jdk15on` depending
       on which algorithm you are using)
     - PKIX/CMS (`org.bouncycastle:bcpkix-jdk15on`)
@@ -150,32 +151,42 @@ In GitHub User alphabetical order.
 * [@tlxtellef](https://github.com/tlxtellef) - Tellef
 
 ### Contributors ###
+
 * [@abdullahcevik](https://github.com/abdullahcevik) - Abdullah Çevik
 * [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
-* [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.
+* [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now
+  retired from OpenPDF development.
 * [@applikationsprogramvara](https://github.com/applikationsprogramvara)
 * [@armin-weber](https://github.com/armin-weber)
+* [@bradh](https://github.com/bradh) - Brad Hards
+* [@bsanchezb](https://github.com/bsanchezb) - Aleksandr Beliakov
 * [@bsmelo](https://github.com/bsmelo) - Bruno Melo
 * [@chrismaster](https://github.com/chrismaster) - Chris Master
-* [@codecracker2014](https://github.com/codecracker2014)
+* [@codecracker2014](https://github.com/codecracker2014) - Gajendra Kumar
 * [@dandybudach](https://github.com/dandybudach) - Dandy Budach
+* [@entrix](https://github.com/entrix)
 * [@glarfs](https://github.com/glarfs)
-* [@harrati](https://github.com/harrati)
+* [@harrati](https://github.com/harrati) - Youssef Harrati
 * [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)
-* [@jherkel](https://github.com/jherkel)
-* [@jokimaki](https://github.com/jokimaki)
-* [karolbe](https://github.com/karolbe) - Karol Bryd
-* [@Kindrat](https://github.com/Kindrat)
+* [@jherkel](https://github.com/jherkel) - Jakub Herkel
+* [@jokimaki](https://github.com/jokimaki) - Juha Jokimäki
+* [@karolbe](https://github.com/karolbe) - Karol Bryd
+* [@Kindrat](https://github.com/Kindrat) - Oleksii
+* [@kwart](https://github.com/kwart) - Josef Cacek
 * [@lapo-luchini](https://github.com/lapo-luchini) - Lapo Luchini
 * [@laurerunser](https://github.com/laurerunser) - Laure Runser
 * [@macromogic](https://github.com/macromogic)
-* [@mahdilamb](https://github.com/mahdilamb)
+* [@mahdilamb](https://github.com/mahdilamb) - Mahdi Lamb
 * [@MartinKocour](https://github.com/MartinKocour) - Martin Kocour
-* [@mluppi](https://github.com/mluppi) - M. Luppi
+* [@mluppi](https://github.com/mluppi) - Matthias Luppi
+* [@mppperez](https://github.com/mppperez) - Marco Postigo Perez
+* [@MrSkip](https://github.com/MrSkip) - Dmytro Mula
+* [@nfmueller](https://github.com/nfmueller)
 * [@noavarice](https://github.com/noavarice)
 * [@PalAditya](https://github.com/PalAditya) - Aditya Pal
 * [@prashantbhat](https://github.com/prashantbhat) - Prashant Bhat
 * [@rammetzger](https://github.com/rammetzger)
+* [@RangerMak](https://github.com/RangerMak)
 * [@razilein](https://github.com/razilein) - Sita Geßner
 * [@salsolatragus](https://github.com/salsolatragus) - Sven Amann
 * [@sa-sh](https://github.com/sa-sh)
@@ -183,14 +194,16 @@ In GitHub User alphabetical order.
 * [@suiaing](https://github.com/suiaing)
 * [@sullis](https://github.com/sullis)
 * [@SuperPat45](https://github.com/SuperPat45)
-* [@syakovyn](https://github.com/syakovyn)
+* [@syakovyn](https://github.com/syakovyn) - Serhiy Yakovyn
 * [@tia-99](https://github.com/tia-99)
+* [@Tonny-Gu](https://github.com/Tonny-Gu) - NekoDaemon
+* [@Transzendental](https://github.com/Transzendental)
 * [@ubermichael](https://github.com/ubermichael) - Michael Joyce
 * [@VedranSlankovic](https://github.com/VedranSlankovic)
 * [@V-F](https://github.com/V-F)
-* [@vic0075](https://github.com/vic0075)
-* [@vk-github18](https://github.com/vk-github18)
-* [@weiyeh](https://github.com/weiyeh)
+* [@vic0075](https://github.com/vic0075) - Vikash Tiwari
+* [@vk-github18](https://github.com/vk-github18) - Volker Kunert
+* [@weiyeh](https://github.com/weiyeh) - Wei-Yeh Lee
 * [@Wugengxian](https://github.com/Wugengxian)
 * [@ymasory](https://github.com/ymasory)
 
