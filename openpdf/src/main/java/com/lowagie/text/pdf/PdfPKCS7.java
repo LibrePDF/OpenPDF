@@ -153,6 +153,7 @@ public class PdfPKCS7 {
     private static final String ID_PKCS7_SIGNED_DATA = "1.2.840.113549.1.7.2";
     private static final String ID_RSA = "1.2.840.113549.1.1.1";
     private static final String ID_DSA = "1.2.840.10040.4.1";
+    private static final String ID_ECDSA = "1.2.840.10045.2.1";
     private static final String ID_CONTENT_TYPE = "1.2.840.113549.1.9.3";
     private static final String ID_MESSAGE_DIGEST = "1.2.840.113549.1.9.4";
     private static final String ID_SIGNING_TIME = "1.2.840.113549.1.9.5";
@@ -225,6 +226,7 @@ public class PdfPKCS7 {
         algorithmNames.put("1.3.36.3.3.1.3", "RSA");
         algorithmNames.put("1.3.36.3.3.1.2", "RSA");
         algorithmNames.put("1.3.36.3.3.1.4", "RSA");
+        algorithmNames.put(ID_ECDSA, "ECDSA");
 
         allowedDigests.put("MD5", "1.2.840.113549.2.5");
         allowedDigests.put("MD2", "1.2.840.113549.2.2");
@@ -611,6 +613,8 @@ public class PdfPKCS7 {
                 digestEncryptionAlgorithm = ID_RSA;
             } else if (digestEncryptionAlgorithm.equals("DSA")) {
                 digestEncryptionAlgorithm = ID_DSA;
+            } else if (digestEncryptionAlgorithm.equals("EC")) {
+                digestEncryptionAlgorithm = ID_ECDSA;
             } else {
                 throw new NoSuchAlgorithmException(
                         MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
@@ -1195,6 +1199,8 @@ public class PdfPKCS7 {
                 this.digestEncryptionAlgorithm = ID_RSA;
             } else if (digestEncryptionAlgorithm.equals("DSA")) {
                 this.digestEncryptionAlgorithm = ID_DSA;
+            } else if (digestEncryptionAlgorithm.equals("EC")) {
+                digestEncryptionAlgorithm = ID_ECDSA;
             } else
                 throw new ExceptionConverter(new NoSuchAlgorithmException(
                         MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
