@@ -740,9 +740,13 @@ public class PdfDocument extends Document {
                     break;
                 }
                 case Element.JPEG:
+                    carriageReturn();
                 case Element.JPEG2000:
+                    carriageReturn();
                 case Element.JBIG2:
+                    carriageReturn();
                 case Element.IMGRAW:
+                    carriageReturn();
                 case Element.IMGTEMPLATE: {
                     //carriageReturn(); suggestion by Marc Campforts
                     add((Image) element);
