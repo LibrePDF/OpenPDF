@@ -3213,7 +3213,7 @@ public class PdfDocument extends Document {
         text.moveText(left(), indentBottom());
         flushLines();
         text.moveText(-left(), -bottom());
-        footer.setTop(bottom(currentHeight));
+        footer.setTop(bottom(Math.max(footer.getPadding(), currentHeight)));
         footer.setBottom(bottom() - (0.75f * leading));
         footer.setLeft(left());
         footer.setRight(right());
