@@ -10,6 +10,24 @@ import java.io.IOException;
 
 public class FooterImageTest {
     @Test
+    public void testText() throws IOException {
+        Document document = new Document(PageSize.A4);
+        Image jpg = Image.getInstance("src/test/resources/GitHub-Mark-32px.png");
+
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("testText.pdf"));
+
+        Paragraph footerParagraph = new Paragraph();
+        String test = "This is a test line.";
+        String footerstr = "footer";
+        footerParagraph.add(footerstr);
+        HeaderFooter footer = new HeaderFooter(footerParagraph, false);
+        document.setFooter(footer);
+
+        document.open();
+        document.add(new Paragraph(test));
+        document.close();
+    }
+    @Test
     public void testSimple() throws IOException {
         Document document = new Document(PageSize.A4);
         Image jpg = Image.getInstance("src/test/resources/GitHub-Mark-32px.png");
