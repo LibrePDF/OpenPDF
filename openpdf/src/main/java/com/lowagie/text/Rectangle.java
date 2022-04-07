@@ -106,6 +106,8 @@ public class Rectangle implements Element {
   /** the upper right y-coordinate. */
   protected float ury;
 
+  protected float ruy;
+
   /** The rotation of the Rectangle */
   protected int rotation = 0;
 
@@ -406,6 +408,13 @@ public class Rectangle implements Element {
     return ury - margin;
   }
 
+  public float getRelativeTop(){
+    return ruy;
+  }
+
+  public void setRelativeTop(float ruy){
+    this.ruy = ruy;
+  }
   /**
    * Sets the lower left y-coordinate.
    * 
