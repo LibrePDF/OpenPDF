@@ -50,6 +50,8 @@
 package com.lowagie.text;
 
 
+import java.util.ArrayList;
+
 /**
  * A <CODE>HeaderFooter</CODE>-object is a <CODE>Rectangle</CODe> with text
  * that can be put above and/or below every page.
@@ -81,7 +83,34 @@ public class HeaderFooter extends Rectangle {
     
 /** This is alignment of the header/footer. */
     private int alignment;
-    
+
+    /** store image and non-text element. */
+    private ArrayList<Element> specialcontent = null;
+
+    /**  */
+    private float padding;
+
+    public float getPadding(){
+        return padding;
+    }
+    public void setPadding(float padding){
+        this.padding = padding;
+    }
+    public void addPadding(float augment){
+        padding += augment;
+    }
+    public void addSpecialContent(Element element){
+        if(specialcontent == null){
+            specialcontent = new ArrayList<>();
+        }
+        specialcontent.add(element);
+    }
+    public ArrayList<Element> getSpecialcontent(){
+        return specialcontent;
+    }
+    public void clearSpecialContent(){
+        specialcontent.clear();
+    }
     // constructors
     
 /**

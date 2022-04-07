@@ -745,7 +745,12 @@ public class PdfDocument extends Document {
                 case Element.IMGRAW:
                 case Element.IMGTEMPLATE: {
                     //carriageReturn(); suggestion by Marc Campforts
-                    add((Image) element);
+                    if(dofootering){
+                        addDelay((Image) element);
+                    }else{
+                        add((Image) element);
+                    }
+
                     break;
                 }
                 case Element.YMARK: {
@@ -2526,6 +2531,83 @@ public class PdfDocument extends Document {
         }
     }
 
+    protected void flushSpecial() {
+        for (Element element : footer.getSpecialcontent()) {
+            switch (element.type()) {
+                case Element.JPEG:
+                case Element.JPEG2000:
+                case Element.JBIG2:
+                case Element.IMGRAW:
+                case Element.IMGTEMPLATE: {
+                    Image image = (Image) element;
+                    boolean textwrap = (image.getAlignment() & Image.TEXTWRAP) == Image.TEXTWRAP
+                            && !((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE);
+                    float diff = leading / 2;
+                    if (textwrap) {
+                        diff += leading;
+                    }
+                    float lowerleft = footer.getTop() - image.getRelativeTop() - image.getScaledHeight() - diff;
+
+                    float[] mt = image.matrix();
+                    float startPosition = indentLeft() - mt[4];
+                    if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT)
+                        startPosition = indentRight() - image.getScaledWidth() - mt[4];
+                    if ((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE)
+                        startPosition = indentLeft() + ((indentRight() - indentLeft() - image.getScaledWidth()) / 2) - mt[4];
+                    if (image.hasAbsoluteX()) startPosition = image.getAbsoluteX();
+
+                    if (!textwrap) {
+                        if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT)
+                            startPosition -= image.getIndentationRight();
+                        else if ((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE)
+                            startPosition += image.getIndentationLeft() - image.getIndentationRight();
+                        else startPosition += image.getIndentationLeft();
+                    }
+                    graphics.addImage(image, mt[0], mt[1], mt[2], mt[3], startPosition, lowerleft - mt[5]);
+                    break;
+                }
+            }
+        }
+    }
+
+    protected void addDelay(Image image) {
+        if (image.hasAbsoluteY()) {
+            System.out.println("Warning: absoluteY of image is invalid in footer");
+        }
+
+        image.setRelativeTop(currentHeight); // set the offset relative to the top
+        image.setAlignment(image.getAlignment() | footer.alignment());
+        footer.addSpecialContent(image);
+
+        // add indentation for text
+        boolean textwrap = (image.getAlignment() & Image.TEXTWRAP) == Image.TEXTWRAP
+                && !((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE);
+        boolean underlying = (image.getAlignment() & Image.UNDERLYING) == Image.UNDERLYING;
+        float diff = leading / 2;
+        if (textwrap) {
+            if (imageEnd < 0 || imageEnd < currentHeight + image.getScaledHeight() + diff) {
+                imageEnd = currentHeight + image.getScaledHeight() + diff;
+            }
+            if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT) {
+                // indentation suggested by Pelikan Stephan
+                indentation.imageIndentRight += image.getScaledWidth() + image.getIndentationLeft();
+                indentation.imageIndentRight += image.getScaledWidth() + image.getIndentationLeft();
+            } else {
+                // indentation suggested by Pelikan Stephan
+                indentation.imageIndentLeft += image.getScaledWidth() + image.getIndentationRight();
+            }
+        }
+        // move text
+        if (!(textwrap || underlying)) {
+            currentHeight += image.getScaledHeight() + diff;
+            flushLines();
+            text.moveText(0, -(image.getScaledHeight() + diff));
+            newLine();
+        } else {
+            footer.addPadding(image.getScaledHeight() + diff);
+        }
+    }
+
 //    [M4] Adding a PdfPTable
 
     /** Adds a <CODE>PdfPTable</CODE> to the document.
@@ -3102,8 +3184,10 @@ public class PdfDocument extends Document {
     }
 
 //    [M5] header/footer
+    private boolean dofootering = false;
     protected void doFooter() throws DocumentException {
         if (footer == null) return;
+        dofootering = true;
         // Begin added by Edgar Leonardo Prieto Perilla
         // Avoid footer indentation
         float tmpIndentLeft = indentation.indentLeft;
@@ -3134,6 +3218,7 @@ public class PdfDocument extends Document {
         footer.setLeft(left());
         footer.setRight(right());
         graphics.rectangle(footer);
+        flushSpecial();
         indentation.indentBottom = currentHeight + leading * 2;
         currentHeight = 0;
         // Begin added by Edgar Leonardo Prieto Perilla
@@ -3145,6 +3230,7 @@ public class PdfDocument extends Document {
         indentation.imageIndentRight = tmpImageIndentRight;
         // End added: Bonf (Marc Schneider) 2003-07-29
         // End added by Edgar Leonardo Prieto Perilla
+        dofootering = false;
     }
 
     protected void doHeader() throws DocumentException {
