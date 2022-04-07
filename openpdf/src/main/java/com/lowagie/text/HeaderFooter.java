@@ -238,6 +238,7 @@ public class HeaderFooter extends Rectangle {
         if (before != null) {
             paragraph = new Paragraph(before.getLeading());
             paragraph.add(before);
+            paragraph.remove(paragraph.size()-1);
         } else {
             paragraph = new Paragraph();
         }
