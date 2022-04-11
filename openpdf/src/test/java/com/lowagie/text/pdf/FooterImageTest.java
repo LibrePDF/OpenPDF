@@ -66,5 +66,26 @@ public class FooterImageTest {
         document.close();
     }
 
+    @Test
+    public void testTwoPage() throws IOException {
+        Document document = new Document(PageSize.A4);
+        Image jpg = Image.getInstance("src/test/resources/GitHub-Mark-32px.png");
+
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("testTwoPage.pdf"));
+
+        Paragraph footerParagraph = new Paragraph();
+        String test = "This is a test line.";
+        footerParagraph.add(jpg);
+        HeaderFooter footer = new HeaderFooter(footerParagraph, false);
+        footer.setAlignment(Element.ALIGN_CENTER);
+        document.setFooter(footer);
+
+        document.open();
+        for(int i=0;i<100;i++){
+            document.add(new Paragraph(test));
+        }
+        document.close();
+    }
+
 
 }
