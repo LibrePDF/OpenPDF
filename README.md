@@ -135,6 +135,9 @@ See: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Lat
       on which algorithm you are using)
     - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
 - Apache FOP (`org.apache.xmlgraphics:fop`)
+- Tiff support: Java versions prior to 9 require an additional library in the classpath to handle tiff images. Options are:
+    - https://github.com/haraldk/TwelveMonkeys
+    - https://github.com/jai-imageio/jai-imageio-core
 - Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
 ## Credits ##
