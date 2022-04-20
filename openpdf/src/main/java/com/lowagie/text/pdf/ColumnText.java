@@ -1176,7 +1176,7 @@ public class ColumnText {
                         compositeColumn.setFollowingIndent(para.getIndentationLeft());
                         compositeColumn.setRightIndent(para.getIndentationRight());
                         compositeColumn.setLeading(para.getLeading(), para.getMultipliedLeading());
-                        compositeColumn.setRunDirection(runDirection);
+                        compositeColumn.setRunDirection(para.getRunDirection() == PdfWriter.RUN_DIRECTION_DEFAULT ? runDirection : para.getRunDirection());
                         compositeColumn.setArabicOptions(arabicOptions);
                         compositeColumn.setSpaceCharRatio(spaceCharRatio);
                         compositeColumn.addText(para);
