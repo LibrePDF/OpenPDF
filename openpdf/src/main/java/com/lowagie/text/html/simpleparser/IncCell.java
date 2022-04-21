@@ -78,6 +78,10 @@ public class IncCell implements TextElementArray {
                 .flatMap(NumberUtilities::parseInt)
                 .ifPresent(cell::setColspan);
 
+        props.findProperty("rowspan").
+                flatMap(NumberUtilities::parseInt)
+                .ifPresent(cell::setRowspan);
+
         if (tag.equals("th")) {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         }
