@@ -226,21 +226,21 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
         }
 
         // maybe there is some meaningful data that wasn't between tags
-        if (currentChunk != null && isNotBlank(currentChunk.getContent())) {
-            TextElementArray current;
-            try {
-                current = (TextElementArray) stack.pop();
-            } catch (EmptyStackException ese) {
-                if (bf == null) {
-                    current = new Paragraph("", new Font());
-                } else {
-                    current = new Paragraph("", new Font(this.bf));
-                }
-            }
-            current.add(currentChunk);
-            stack.push(current);
-            currentChunk = null;
-        }
+//        if (currentChunk != null && isNotBlank(currentChunk.getContent())) {
+//            TextElementArray current;
+//            try {
+//                current = (TextElementArray) stack.pop();
+//            } catch (EmptyStackException ese) {
+//                if (bf == null) {
+//                    current = new Paragraph("", new Font());
+//                } else {
+//                    current = new Paragraph("", new Font(this.bf));
+//                }
+//            }
+//            current.add(currentChunk);
+//            stack.push(current);
+//            currentChunk = null;
+//        }
 
         // chunks
         if (ElementTags.CHUNK.equals(name)) {
