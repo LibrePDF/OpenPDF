@@ -89,7 +89,6 @@ public class PdfPRow {
     protected boolean calculated = false;
     
     private int[] canvasesPos;
-    
     /**
      * Constructs a new PdfPRow with the cells in the array that was passed
      * as a parameter.
@@ -689,4 +688,5 @@ public class PdfPRow {
     public PdfPCell[] getCells() {
         return cells;
     }
+
 }

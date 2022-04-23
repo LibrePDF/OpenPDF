@@ -782,37 +782,46 @@ public class PdfDocument extends Document {
         }
     }
 
+
+    /**
+     * Integrate a paragraph into a table, so it can be a whole.
+     * <p>Note: This is not a table with square, it's just like the paragraph, but
+     * it cannot be separated.
+     * @param paragraph the {@code Paragraph} incoming paragraphs to be consolidated
+     * @return {@code PdfPTable} the whole which will be used later
+     */
     static PdfPTable createInOneCell(Paragraph paragraph) {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(100f);
-
         PdfPCell cell = new PdfPCell();
         cell.setBorder(Table.NO_BORDER);
         cell.setPadding(0);
-
-        for (int i=0; i<paragraph.size(); ++i) {
-            if (paragraph.get(i) instanceof Chunk) {
-                Paragraph subParagraph = new Paragraph();
-                boolean hasNewLine = false;
-                do {
-                    Chunk chunk = (Chunk)paragraph.get(i);
-                    ++i;
-                    if (chunk.getContent().equals("\n")) {
-                        hasNewLine = true;
-                        break;
-                    }
-                    else
-                        subParagraph.add(chunk);
-                } while (i<paragraph.size() && paragraph.get(i) instanceof Chunk);
-                --i;
-                cell.addElement(subParagraph);
-                if (hasNewLine)
-                    cell.addElement(new Chunk("\n"));
-            }
-            else
+        for (int i = 0; i < paragraph.size(); i++) {
+            Paragraph subParagraph = new Paragraph();
+            boolean hasNewLine = false;
+            if(!(paragraph.get(i) instanceof Chunk)) {
                 cell.addElement(paragraph.get(i));
+                continue;
+            }
+            do {
+                Chunk chunk = (Chunk)paragraph.get(i);
+                i++;
+                if (chunk.getContent().equals("\n")) {
+                    hasNewLine = true;
+                    break;
+                }
+                else {
+                    subParagraph.add(chunk);
+                }
+            } while (i<paragraph.size() && paragraph.get(i) instanceof Chunk);
+            i--;
+            // It's important to set the leading here.
+            subParagraph.setLeading(paragraph.getLeading());
+            cell.addElement(subParagraph);
+            if (hasNewLine) {
+                cell.addElement(new Chunk("\n"));
+            }
         }
-
         table.addCell(cell);
         return table;
     }
