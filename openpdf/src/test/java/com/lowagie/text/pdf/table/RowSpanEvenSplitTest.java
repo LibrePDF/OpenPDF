@@ -1,0 +1,66 @@
+package com.lowagie.text.pdf.table;
+
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPRow;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import javax.print.Doc;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+public class RowSpanEvenSplitTest {
+    @Test
+    public void threeRowSpanTest() {
+        Document document = new Document(PageSize.A4);
+        ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, pdfOut);
+        PdfPTable table = new PdfPTable(2);
+        PdfPCell cell = new PdfPCell();
+        cell.setRowspan(3);
+        cell.addElement(new Chunk("rowspan\nrowspan\nrowspan"));
+        table.addCell(cell);
+
+        table.addCell("row1");
+        table.addCell("row2");
+        table.addCell("row3");
+        document.open();
+        document.add(table);
+        float heightRow1 = table.getRows().get(0).getMaxHeights();
+        float heightRow2 = table.getRows().get(1).getMaxHeights();
+        float heightRow3 = table.getRows().get(2).getMaxHeights();
+        document.close();
+        Assertions.assertEquals(0, heightRow1 - heightRow2);
+        Assertions.assertEquals(0, heightRow3 - heightRow2);
+    }
+
+    @Test
+    public void threeWithOneUnevenTest() {
+        Document document = new Document(PageSize.A4);
+        ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, pdfOut);
+        PdfPTable table = new PdfPTable(2);
+        PdfPCell cell = new PdfPCell();
+        cell.setRowspan(3);
+        cell.addElement(new Chunk("rowspan\nrowspan\nrowspan"));
+        table.addCell(cell);
+
+        table.addCell("row1\nrow1");
+        table.addCell("row2");
+        table.addCell("row3");
+        document.open();
+        document.add(table);
+        float heightRow1 = table.getRows().get(0).getMaxHeights();
+        float heightRow2 = table.getRows().get(1).getMaxHeights();
+        float heightRow3 = table.getRows().get(2).getMaxHeights();
+        document.close();
+        Assertions.assertEquals(0, heightRow2 - heightRow3);
+        Assertions.assertNotEquals(0, heightRow1 - heightRow2);
+    }
+}
