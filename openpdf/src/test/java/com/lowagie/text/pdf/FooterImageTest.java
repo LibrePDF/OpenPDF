@@ -5,16 +5,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 public class FooterImageTest {
     @Test
-    public void testText() throws IOException {
+    public void onlyTextFooterUpperBoundTest() throws IOException {
         Document document = new Document(PageSize.A4);
-        Image jpg = Image.getInstance("src/test/resources/GitHub-Mark-32px.png");
-
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("testText.pdf"));
+        PdfWriter.getInstance(document, new ByteArrayOutputStream());
 
         Paragraph footerParagraph = new Paragraph();
         String test = "This is a test line.";
@@ -26,13 +24,14 @@ public class FooterImageTest {
         document.open();
         document.add(new Paragraph(test));
         document.close();
+        Assertions.assertEquals(52.0, footer.getTop());
     }
-    @Test
-    public void testSimple() throws IOException {
-        Document document = new Document(PageSize.A4);
-        Image jpg = Image.getInstance("src/test/resources/GitHub-Mark-32px.png");
 
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("testSimple.pdf"));
+    @Test
+    public void imageRightAlignmentPositionTest() throws IOException {
+        Document document = new Document(PageSize.A4);
+        Image jpg = Image.getInstance(Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
+        PdfWriter.getInstance(document, new ByteArrayOutputStream());
 
         Paragraph footerParagraph = new Paragraph();
         String test = "This is a test line.";
@@ -43,16 +42,24 @@ public class FooterImageTest {
         document.setFooter(footer);
 
         document.open();
+        float footerTop = footer.getTop();
+        float imageBottom = footerTop - jpg.getRelativeTop() - jpg.getScaledHeight();
+        float imageIndentLeft = document.left() - jpg.matrix()[4];
         document.add(new Paragraph(test));
         document.close();
+
+        Assertions.assertEquals(92.0, footerTop);
+        Assertions.assertEquals(60.0, imageBottom);
+        Assertions.assertEquals(36.0, imageIndentLeft);
     }
+
     @Test
-    public void testCenterUnderlyingPosition() throws IOException {
+    public void centerUnderlyingPositionTest() throws IOException {
         Document document = new Document(PageSize.A4);
-        Image jpg = Image.getInstance("src/test/resources/GitHub-Mark-32px.png");
+        Image jpg = Image.getInstance(Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
         jpg.setAlignment(Image.UNDERLYING);
 
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("testCenterPosition.pdf"));
+        PdfWriter.getInstance(document, new ByteArrayOutputStream());
 
         Paragraph footerParagraph = new Paragraph();
         String test = "This is a test line.";
@@ -62,30 +69,16 @@ public class FooterImageTest {
         document.setFooter(footer);
 
         document.open();
+        float footerTop = footer.getTop();
+        float imageBottom = footerTop - jpg.getRelativeTop() - jpg.getScaledHeight();
+        float imageIndentLeft = document.left() + (document.right() - document.left() - jpg.getScaledWidth()) / 2;
+        imageIndentLeft -= jpg.getIndentationRight() + jpg.matrix()[4];
         document.add(new Paragraph(test));
         document.close();
+
+        Assertions.assertEquals(76.0, footerTop);
+        Assertions.assertEquals(44.0, imageBottom);
+        Assertions.assertEquals(281.5, imageIndentLeft);
     }
-
-    @Test
-    public void testTwoPage() throws IOException {
-        Document document = new Document(PageSize.A4);
-        Image jpg = Image.getInstance("src/test/resources/GitHub-Mark-32px.png");
-
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("testTwoPage.pdf"));
-
-        Paragraph footerParagraph = new Paragraph();
-        String test = "This is a test line.";
-        footerParagraph.add(jpg);
-        HeaderFooter footer = new HeaderFooter(footerParagraph, false);
-        footer.setAlignment(Element.ALIGN_CENTER);
-        document.setFooter(footer);
-
-        document.open();
-        for(int i=0;i<100;i++){
-            document.add(new Paragraph(test));
-        }
-        document.close();
-    }
-
 
 }

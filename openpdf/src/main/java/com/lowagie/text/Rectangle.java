@@ -106,7 +106,8 @@ public class Rectangle implements Element {
   /** the upper right y-coordinate. */
   protected float ury;
 
-  protected float ruy;
+  /** the offset relative to a certain top. */
+  protected float offsetToTop;
 
   /** The rotation of the Rectangle */
   protected int rotation = 0;
@@ -408,12 +409,22 @@ public class Rectangle implements Element {
     return ury - margin;
   }
 
+  /**
+   * Gets offset relative to top.
+   *
+   * @return offset relative to top
+   */
   public float getRelativeTop(){
-    return ruy;
+    return offsetToTop;
   }
 
-  public void setRelativeTop(float ruy){
-    this.ruy = ruy;
+  /**
+   * Sets offset relative to top.
+   *
+   * @param offsetToTop the new offset
+   */
+  public void setRelativeTop(float offsetToTop){
+    this.offsetToTop = offsetToTop;
   }
   /**
    * Sets the lower left y-coordinate.

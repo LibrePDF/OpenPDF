@@ -84,33 +84,12 @@ public class HeaderFooter extends Rectangle {
 /** This is alignment of the header/footer. */
     private int alignment;
 
-    /** store image and non-text element. */
+/** This is the <CODE>ArrayList</CODE> containing non-text <CODE>Element</CODE>. */
     private ArrayList<Element> specialcontent = null;
 
-    /**  */
+/**  This is the padding of height of header/footer. */
     private float padding;
 
-    public float getPadding(){
-        return padding;
-    }
-    public void setPadding(float padding){
-        this.padding = padding;
-    }
-    public void addPadding(float augment){
-        padding += augment;
-    }
-    public void addSpecialContent(Element element){
-        if(specialcontent == null){
-            specialcontent = new ArrayList<>();
-        }
-        specialcontent.add(element);
-    }
-    public ArrayList<Element> getSpecialcontent(){
-        return specialcontent;
-    }
-    public void clearSpecialContent(){
-        specialcontent.clear();
-    }
     // constructors
     
 /**
@@ -223,6 +202,59 @@ public class HeaderFooter extends Rectangle {
     
     public void setAlignment(int alignment) {
         this.alignment = alignment;
+    }
+
+/**
+ * Gets padding of height of header/footer.
+ *
+ * @return the padding of height
+ */
+
+    public float getPadding(){
+        return padding;
+    }
+
+/**
+ * Sets padding of height of header/footer.
+ *
+ * @param padding the new padding of height
+ */
+
+    public void setPadding(float padding){
+        this.padding = padding;
+    }
+
+/**
+ * Increases current padding by adding new value into it
+ *
+ * @param augment the new value
+ */
+
+    public void addPadding(float augment){
+        padding += augment;
+    }
+
+/**
+ * Adds non-text <CODE>Element</CODE> into <CODE>specialcontent</CODE>
+ *
+ * @param element the new non-text <CODE>Element</CODE>
+ */
+
+    public void addSpecialContent(Element element){
+        if(specialcontent == null){
+            specialcontent = new ArrayList<>();
+        }
+        specialcontent.add(element);
+    }
+
+/**
+ * Gets <CODE>specialcontent</CODE>
+ *
+ * @return <CODE>specialcontent</CODE>
+ */
+
+    public ArrayList<Element> getSpecialcontent(){
+        return specialcontent;
     }
 
     // methods to retrieve the membervariables
