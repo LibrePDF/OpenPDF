@@ -745,7 +745,7 @@ public class PdfDocument extends Document {
                 case Element.IMGRAW:
                 case Element.IMGTEMPLATE: {
                     //carriageReturn(); suggestion by Marc Campforts
-                    if(dofootering){
+                    if(isDoFooter){
                         addDelay((Image) element);
                     }else{
                         add((Image) element);
@@ -2531,6 +2531,10 @@ public class PdfDocument extends Document {
         }
     }
 
+    /**
+     * write non-text <CODE>Element</CODE> into document
+     */
+
     protected void flushSpecial() {
         if(footer.getSpecialcontent() == null){
             return;
@@ -2572,6 +2576,12 @@ public class PdfDocument extends Document {
             }
         }
     }
+
+    /**
+     * Occupies space for <CODE>Image</CODE> that will be added later instead of now
+     *
+     * @param image the new <CODE>Image</CODE>
+     */
 
     protected void addDelay(Image image) {
         if (image.hasAbsoluteY()) {
@@ -3187,10 +3197,12 @@ public class PdfDocument extends Document {
     }
 
 //    [M5] header/footer
-    private boolean dofootering = false;
+    /** This is the flag meaning whether document is creating footer. */
+    private boolean isDoFooter = false;
+
     protected void doFooter() throws DocumentException {
         if (footer == null) return;
-        dofootering = true;
+        isDoFooter = true;
         // Begin added by Edgar Leonardo Prieto Perilla
         // Avoid footer indentation
         float tmpIndentLeft = indentation.indentLeft;
@@ -3233,7 +3245,7 @@ public class PdfDocument extends Document {
         indentation.imageIndentRight = tmpImageIndentRight;
         // End added: Bonf (Marc Schneider) 2003-07-29
         // End added by Edgar Leonardo Prieto Perilla
-        dofootering = false;
+        isDoFooter = false;
     }
 
     protected void doHeader() throws DocumentException {
