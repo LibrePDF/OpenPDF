@@ -2575,6 +2575,7 @@ public class PdfDocument extends Document {
                 }
             }
         }
+        footer.setPadding(0);
     }
 
     /**
