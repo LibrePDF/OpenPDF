@@ -8,7 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * General Images example.
+ * @author SE_SUSTech, group: Lanrand
+ * test issue #130
+ * <p> General Images example. </p>
  */
 public class ImageHeicTest {
 
