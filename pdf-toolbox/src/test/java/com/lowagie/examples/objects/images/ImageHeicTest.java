@@ -9,12 +9,13 @@ import java.io.IOException;
 
 /**
  * General Images example.
- * ImageHeicTest1: Just test the .HEIC image
- * ImageHeicTest2: Test export PDF of multiple images
  */
 public class ImageHeicTest {
 
     @Test
+    /**
+     * ImageHeicTest1: Just test the .HEIC image
+     */
     public void ImageHeicTest1() {
 
         // step 1: creation of a document-object
@@ -42,6 +43,9 @@ public class ImageHeicTest {
         document.close();
     }
     @Test
+    /**
+     * ImageHeicTest2: Test export PDF of multiple images
+     */
     public void ImageHeicTest2(final String[] args) {
 
         // step 1: creation of a document-object
