@@ -45,9 +45,16 @@
 
 package com.lowagie.text;
 
+import net.coobird.thumbnailator.Thumbnails;
+import org.im4java.core.ConvertCmd;
+import org.im4java.core.IM4JavaException;
+import org.im4java.core.IMOperation;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -191,6 +198,34 @@ public class ImageLoader {
             return new Jpeg2000(imageData);
 
         } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    public static String urlString = null;
+    public static Thumbnails.Builder<File> of = null;
+    /**
+     * First, HEIC images are converted into PNG images and then imported into PDF.
+     * 
+     * @param url
+     * @return
+     */
+    public static Image getHeicImage(final URL url) {
+        final ConvertCmd cmd = new ConvertCmd();
+        final IMOperation operation = new IMOperation();
+        urlString = url.toString();
+        operation.addImage(urlString.substring(5));
+        final int length = urlString.length()-5;
+        final String path = urlString.substring(5,length)+".png";
+        operation.addImage(path);
+        try {
+            cmd.run(operation);
+            of = Thumbnails.of(path);
+            of.scale(0.05f);
+            of.outputQuality(0.05f);
+            of.toFile(path);
+            return ImageLoader.getPngImage(Utilities.toURL(path));
+        } catch ( IOException | InterruptedException | IM4JavaException e ) {
             throw new ExceptionConverter(e);
         }
     }

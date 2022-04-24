@@ -259,6 +259,11 @@ public abstract class Image extends Rectangle {
             int c6 = is.read();
             int c7 = is.read();
             int c8 = is.read();
+            //heic
+            int heic1 = is.read();
+            int heic2 = is.read();
+            int heic3 = is.read();
+            int heic4 = is.read();
             is.close();
 
             is = null;
@@ -300,6 +305,12 @@ public abstract class Image extends Rectangle {
                     c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n' ) {
                 throw new IOException(url.toString()
                         + " is not a recognized imageformat. JBIG2 support has been removed.");
+            }
+            //            104-h-0x68  101-e-0x65  105-i-0x69  99-c-0x63
+//            if (c9 == 0x68 && c10 == 0x65 && c11 == 0x69 && c12 == 0x63 ) {
+            if (heic1 == 'h' && heic2 == 'e' && heic3 == 'i' && heic4 == 'c') {
+                img = ImageLoader.getHeicImage(url);
+                return img;
             }
             throw new IOException(url.toString()
                     + " is not a recognized imageformat.");
