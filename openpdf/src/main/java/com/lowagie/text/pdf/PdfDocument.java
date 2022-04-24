@@ -409,7 +409,7 @@ public class PdfDocument extends Document {
 
     /**
      * Signals that an <CODE>Element</CODE> was added to the <CODE>Document</CODE>.
-     *
+     * Add a carriage return to the add picture situation.
      * @param element the element to add
      * @return <CODE>true</CODE> if the element was added, <CODE>false</CODE> if not.
      * @throws DocumentException when a document isn't open yet, or has been closed
