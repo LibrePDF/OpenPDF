@@ -28,7 +28,7 @@ public class FooterImageTest {
     }
 
     @Test
-    public void imageRightAlignmentPositionTest() throws IOException {
+    public void imageLeftAlignmentPositionTest() throws IOException {
         Document document = new Document(PageSize.A4);
         Image jpg = Image.getInstance(Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
         PdfWriter.getInstance(document, new ByteArrayOutputStream());
@@ -51,6 +51,32 @@ public class FooterImageTest {
         Assertions.assertEquals(92.0, footerTop);
         Assertions.assertEquals(60.0, imageBottom);
         Assertions.assertEquals(36.0, imageIndentLeft);
+    }
+
+    @Test
+    public void imageRightAlignmentPositionTest() throws IOException {
+        Document document = new Document(PageSize.A4);
+        Image jpg = Image.getInstance(Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
+        PdfWriter.getInstance(document, new ByteArrayOutputStream());
+        jpg.setAlignment(Element.ALIGN_RIGHT);
+
+        Paragraph footerParagraph = new Paragraph();
+        String test = "This is a test line.";
+        footerParagraph.add(jpg);
+        HeaderFooter footer = new HeaderFooter(footerParagraph, false);
+        document.setFooter(footer);
+
+        document.open();
+        document.add(new Paragraph(test));
+        document.close();
+
+        float footerTop = footer.getTop();
+        float imageBottom = footerTop - jpg.getRelativeTop() - jpg.getScaledHeight();
+        float imageIndentRight = document.right() - jpg.getScaledWidth() - jpg.matrix()[4];
+        imageIndentRight -= jpg.getIndentationRight();
+        Assertions.assertEquals(76.0, footerTop);
+        Assertions.assertEquals(44.0, imageBottom);
+        Assertions.assertEquals(527.0, imageIndentRight);
     }
 
     @Test
