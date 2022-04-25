@@ -91,7 +91,7 @@
         <hamcrest.version>2.2</hamcrest.version>
         <junit.version>5.8.2</junit.version>
         <mockito.version>4.4.0</mockito.version>
-        <checkstyle.version>10.1</checkstyle.version>
+        <checkstyle.version>10.2</checkstyle.version>
         <maven-jxr-plugin.version>3.2.0</maven-jxr-plugin.version>
     </properties>
 
