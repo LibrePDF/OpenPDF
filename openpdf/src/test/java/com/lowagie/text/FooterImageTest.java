@@ -1,6 +1,7 @@
-package com.lowagie.text.pdf;
+package com.lowagie.text;
 
 import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfWriter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
