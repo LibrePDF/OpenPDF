@@ -3730,6 +3730,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     private void iteratePages(PRIndirectReference rpage) {
       PdfDictionary page = (PdfDictionary) getPdfObject(rpage);
+      if (page == null)
+        return;
       PdfArray kidsPR = page.getAsArray(PdfName.KIDS);
       // reference to a leaf
       if (kidsPR == null) {
