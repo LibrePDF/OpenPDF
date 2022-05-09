@@ -131,9 +131,9 @@ See: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Lat
 
 - [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
   dependency)
-    - Provider (`org.bouncycastle:bcprov-jdk15on` or `org.bouncycastle:bcprov-ext-jdk15on` depending
+    - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
       on which algorithm you are using)
-    - PKIX/CMS (`org.bouncycastle:bcpkix-jdk15on`)
+    - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
 - Apache FOP (`org.apache.xmlgraphics:fop`)
 - Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
