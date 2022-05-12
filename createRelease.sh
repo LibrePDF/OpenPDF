@@ -28,8 +28,8 @@ Press ENTER to continue. Ctrl-C to stop.
 EOD
 read ignored
 
-# echo "#1. Setting release version: ${VERSION}"
-# mvn versions:set -DnewVersion="${VERSION}"
+echo "#1. Setting release version: ${VERSION}"
+mvn versions:set -DnewVersion="${VERSION}"
 
 echo "#2. Test build"
 mvn clean install
