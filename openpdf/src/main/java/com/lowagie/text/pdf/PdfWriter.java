@@ -2550,9 +2550,9 @@ public class PdfWriter extends DocWriter implements
         }
         if (gr.size() > 0)
             d.put(PdfName.OFF, gr);
-        if (OCGRadioGroup.size() > 0)
+        if (OCGRadioGroup != null && OCGRadioGroup.size() > 0)
             d.put(PdfName.RBGROUPS, OCGRadioGroup);
-        if (OCGLocked.size() > 0)
+        if (OCGLocked != null && OCGLocked.size() > 0)
             d.put(PdfName.LOCKED, OCGLocked);
         addASEvent(PdfName.VIEW, PdfName.ZOOM);
         addASEvent(PdfName.VIEW, PdfName.VIEW);
