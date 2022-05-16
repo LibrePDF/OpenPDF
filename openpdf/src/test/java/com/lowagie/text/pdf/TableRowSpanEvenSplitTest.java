@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 
-public class RowSpanEvenSplitTest {
+public class TableRowSpanEvenSplitTest {
     @Test
     public void threeRowSpanTest() {
         Document document = new Document(PageSize.A4);
