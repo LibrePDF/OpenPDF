@@ -3,17 +3,9 @@ package com.lowagie.text.pdf;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPRow;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import javax.print.Doc;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 
 public class RowSpanEvenSplitTest {
     @Test
