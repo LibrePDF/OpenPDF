@@ -1420,9 +1420,7 @@ public class ColumnText {
                         }
                     }
                     else if (!table.isSplitRows() && k == listIdx && firstPass) {
-                        compositeElements.removeFirst();
-                        splittedRow = false;
-                        continue;
+                        return NO_MORE_COLUMN;
                     }
                     else if (k == listIdx && !firstPass && (!table.isSplitRows() || table.isSplitLate()) && (table.getFooterRows() == 0 || table.isComplete()))
                         return NO_MORE_COLUMN;
