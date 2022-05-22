@@ -1602,4 +1602,50 @@ public class PdfPTable implements LargeElement{
     public void setComplete(boolean complete) {
         this.complete = complete;
     }
+
+    /**
+     * Defines where the table may be broken (if necessary).
+     *
+     * @param breakPoints int[]
+     * @throws java.lang.IndexOutOfBoundsException if a row index is passed that
+     * is out of bounds
+     */
+    public void setBreakPoints(int... breakPoints) {
+        keepRowsTogether(0, rows.size()); // sets all rows as unbreakable
+
+        for (int i = 0; i < breakPoints.length; i++) {
+            getRow(breakPoints[i]).setMayNotBreak(false);
+        }
+    }
+
+    /**
+     * Defines which rows should not allow a page break (if possible).
+     *
+     * @param rows int[]
+     * @throws java.lang.IndexOutOfBoundsException if a row index is passed that
+     * is out of bounds
+     */
+    public void keepRowsTogether(int[] rows) {
+        for (int i = 0; i < rows.length; i++) {
+            getRow(rows[i]).setMayNotBreak(true);
+        }
+    }
+
+    /**
+     * Defines a range of rows that should not allow a page break (if possible).
+     *
+     * @param start int
+     * @param end int
+     * @throws java.lang.IndexOutOfBoundsException if a row index is passed that
+     * is out of bounds
+     */
+    public void keepRowsTogether(int start, int end) {
+        if (start < end) {
+            while (start < end) {
+                getRow(start).setMayNotBreak(true);
+                start++;
+            }
+        }
+    }
+
 }

@@ -109,8 +109,6 @@ public class Chunk implements Element {
     /** Contains some of the attributes for this Chunk. */
     protected Map<String, Object> attributes = null;
 
-    /** This is the MCID of this chunk of text. */
-    protected PdfName MCID = null;
 
 
     // constructors
@@ -928,13 +926,5 @@ public class Chunk implements Element {
             return (Float) attributes.get(CHAR_SPACING);
         }
         return 0.0f;
-    }
-
-    public PdfName getMCID() {
-        return MCID;
-    }
-
-    public void setMCID(PdfName MCID) {
-        this.MCID = MCID;
     }
 }
