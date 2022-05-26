@@ -3237,7 +3237,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           PdfObject v = ar.get(k);
           if (v.isIndirect()) {
             int num = ((PRIndirectReference) v).getNumber();
-            if (num >= xrefObj.size() || (!partial && xrefObj.get(num) == null)) {
+            if (num < 0 || num >= xrefObj.size() || (!partial && xrefObj.get(num) == null)) {
               ar.set(k, PdfNull.PDFNULL);
               continue;
             }
@@ -3730,6 +3730,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     private void iteratePages(PRIndirectReference rpage) {
       PdfDictionary page = (PdfDictionary) getPdfObject(rpage);
+      if (page == null)
+        return;
       PdfArray kidsPR = page.getAsArray(PdfName.KIDS);
       // reference to a leaf
       if (kidsPR == null) {
