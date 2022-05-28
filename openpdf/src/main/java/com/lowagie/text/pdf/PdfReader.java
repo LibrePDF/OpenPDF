@@ -622,7 +622,6 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         lastXref = -1;
         readDocObj();
       }
-
       strings.clear();
       readPages();
       eliminateSharedStreams();

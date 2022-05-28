@@ -198,7 +198,7 @@ public class PdfTextExtractor {
             return "";
         }
         PdfDictionary resources = pageDict.getAsDict(PdfName.RESOURCES);
-
+        System.out.println(resources.getKeys().toString());
         renderListener.reset();
         renderListener.setPage(page);
         PdfContentStreamHandler handler = new PdfContentStreamHandler(renderListener);
