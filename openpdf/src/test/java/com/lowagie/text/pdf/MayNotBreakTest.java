@@ -17,7 +17,7 @@ public class MayNotBreakTest {//NOPMD
      * It will test when we set it True
      */
     @Test
-    public static void shouldReturnWhetherBreak1(){
+    public void shouldReturnWhetherBreak1(){
         final PdfPCell[] cells = new PdfPCell[2];
         final PdfPRow row = new PdfPRow(cells);
         row.setMayNotBreak(true);
@@ -29,7 +29,7 @@ public class MayNotBreakTest {//NOPMD
      * It will test when we set it False
      */
     @Test
-    public static void shouldReturnWhetherBreak2() {
+    public void shouldReturnWhetherBreak2() {
         final PdfPCell[] cells = new PdfPCell[3];
         final PdfPRow row = new PdfPRow(cells);
         row.setMayNotBreak(false);
