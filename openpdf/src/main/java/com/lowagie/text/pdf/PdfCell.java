@@ -84,7 +84,7 @@ import com.lowagie.text.Rectangle;
 public class PdfCell extends Rectangle {
 
     // membervariables
-    
+
     /**
      * These are the PdfLines in the Cell.
      */
@@ -158,7 +158,7 @@ public class PdfCell extends Rectangle {
     private PdfLine lastLine;
 
     // constructors
-    
+
     /**
      * Constructs a <CODE>PdfCell</CODE>-object.
      *
@@ -426,7 +426,7 @@ public class PdfCell extends Rectangle {
     public float getBottom() {
         return super.getBottom(cellspacing);
     }
-    
+
     // methods
 
     private void addLine(PdfLine line) {
@@ -572,7 +572,7 @@ public class PdfCell extends Rectangle {
         if (getTop() < bottom) {
             return result;
         }
-        
+
         // we loop over the lines
         int size = lines.size();
         boolean aboveBottom = true;
@@ -716,9 +716,9 @@ public class PdfCell extends Rectangle {
         }
         return remainingLinesHeight() + cellspacing + 2 * cellpadding + result;
     }
-    
+
     // methods to retrieve membervariables
-    
+
     /**
      * Gets the leading of a cell.
      *
