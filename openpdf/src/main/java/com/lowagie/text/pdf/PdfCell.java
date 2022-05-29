@@ -384,6 +384,7 @@ public class PdfCell extends Rectangle {
         extraHeight += getBorderWidthInside(TOP);
         if (firstLine != null) {
             firstLine.height = firstLineRealHeight + extraHeight;
+            contentHeight += extraHeight;
         }
     }
 
