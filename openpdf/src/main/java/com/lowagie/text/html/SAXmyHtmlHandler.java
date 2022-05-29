@@ -233,6 +233,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
         if (HtmlTagMap.isTitle(lowerCaseName)) {
             if (currentChunk != null) {
                 bodyAttributes.put(ElementTags.TITLE, currentChunk.getContent());
+                currentChunk = null;
             }
             return;
         }

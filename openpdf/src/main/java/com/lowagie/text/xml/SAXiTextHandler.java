@@ -525,7 +525,7 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
         }
 
         String content = new String(ch, start, length);
-        if (content.trim().isEmpty() && content.indexOf(' ') < 0) {
+        if (content.trim().isEmpty()) {
             return;
         }
 
