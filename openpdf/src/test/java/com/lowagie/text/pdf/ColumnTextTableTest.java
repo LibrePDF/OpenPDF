@@ -3,14 +3,13 @@ package com.lowagie.text.pdf;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
 import com.lowagie.text.Element;
+import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test class contains a series of smoke tests. The goal of these tests is not to validate the generated document,
@@ -33,9 +32,8 @@ public class ColumnTextTableTest {
      */
     @Test
     public void testGenerateTableByColumnText() throws Exception{
-        String filePath = System.getProperty("user.dir") + "/src/test/resources";
 
-        File outputPDF = new File(filePath +"/columnTextTableTest.pdf");
+        File outputPDF = new File("target/columnTextTableTest.pdf");
 
         Document document = new Document(PageSize.A4);
         document.setMargins(A4_MARGIN_LEFT, A4_MARGIN_RIGHT, A4_MARGIN_TOP, A4_MARGIN_BOTTOM);
@@ -72,9 +70,8 @@ public class ColumnTextTableTest {
      */
     @Test
     public void testGenerateMultiTablesByColumnText() throws Exception{
-        String filePath = System.getProperty("user.dir") + "/src/test/resources";
 
-        File outputPDF = new File(filePath +"/columnTextMultiTableTest.pdf");
+        File outputPDF = new File("target/columnTextMultiTableTest.pdf");
 
         Document document = new Document(PageSize.A4);
         document.setMargins(A4_MARGIN_LEFT, A4_MARGIN_RIGHT, A4_MARGIN_TOP, A4_MARGIN_BOTTOM);

@@ -3,18 +3,17 @@ package com.lowagie.examples.objects.columns;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
 import com.lowagie.text.Element;
+import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Scenario description: Generate a pdf file with a table by the ColumnText class, and this
@@ -34,9 +33,8 @@ public class ColumnTextTable {
     public static void main(String[] args) throws IOException {
 
         ColumnTextTable columnTextTable = new ColumnTextTable();
-        String filePath = System.getProperty("user.dir") + "/pdf-toolbox/src/test/resources";
 
-        File outputPDF = new File(filePath +"/columnTextTable.pdf");
+        File outputPDF = new File("columnTextTable.pdf");
 
         Document document = new Document(PageSize.A4);
         document.setMargins(A4_MARGIN_LEFT, A4_MARGIN_RIGHT, A4_MARGIN_TOP, A4_MARGIN_BOTTOM);
