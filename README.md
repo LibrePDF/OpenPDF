@@ -11,7 +11,6 @@ and bugreports to this GitHub repository.
 [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
-[![Join the chat at https://gitter.im/LibrePDF/code_of_conduct](https://badges.gitter.im/LibrePDF/code_of_conduct.svg)](https://gitter.im/LibrePDF/code_of_conduct)
 
 ## OpenPDF version 1.3.28 released 2022-05-12 ##
 
@@ -36,7 +35,13 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 
 [GNU Lesser General Public License (LGPL), Version 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1)
 
+For a short explanation see https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License
+
 [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
+
+For a short explanation see https://en.wikipedia.org/wiki/Mozilla_Public_License
+
+You can find also a nice explanation of these licenses under https://itsfoss.com/open-source-licenses-explained/
 
 We want OpenPDF to consist of source code which is consistently licensed with the LGPL and MPL
 licences only. This also means that any new contributions to the project must have a dual LGPL and
