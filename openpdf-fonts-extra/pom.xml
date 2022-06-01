@@ -17,14 +17,25 @@
   <dependencies>
     <dependency>
       <groupId>com.github.librepdf</groupId>
-      <artifactId>openpdf</artifactId>
-      <version>${project.version}</version>
+        <artifactId>openpdf</artifactId>
+        <version>${project.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter-api</artifactId>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>../src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
 </project>
