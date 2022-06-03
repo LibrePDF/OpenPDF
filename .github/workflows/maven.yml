@@ -15,8 +15,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        java: [ 8, 11, 16 ]
+        matrix:
+            # The last 3 LTS releases
+            # Java 8 is supported until May 2026
+            java: [ 8, 11, 17 ]
     name: Java ${{matrix.java}}
     steps:
       - uses: actions/checkout@v2
