@@ -31,8 +31,8 @@ public class PdfDocument620Test {
 
     @Test
     public void test1() throws IOException {
-        File file1 = new File("E://t1output1.pdf");
-        File file2 = new File("E://t1output2.pdf");
+        File file1 = new File("C://t1output1.pdf");
+        File file2 = new File("C://t1output2.pdf");
         FileOutputStream stream1 = new FileOutputStream(file1);
         FileOutputStream stream2 = new FileOutputStream(file2);
         Document document1 = new Document();
@@ -76,8 +76,8 @@ public class PdfDocument620Test {
 
     @Test
     public void test2() throws IOException {
-        File file1 = new File("E://t2output1.pdf");
-        File file2 = new File("E://t2output2.pdf");
+        File file1 = new File("C://t2output1.pdf");
+        File file2 = new File("C://t2output2.pdf");
         FileOutputStream stream1 = new FileOutputStream(file1);
         FileOutputStream stream2 = new FileOutputStream(file2);
         Document document1 = new Document();
