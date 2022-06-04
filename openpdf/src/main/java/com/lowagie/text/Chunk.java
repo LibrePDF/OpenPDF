@@ -57,7 +57,10 @@ import java.util.Map;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.HyphenationEvent;
+import com.lowagie.text.pdf.PdfAction;
+import com.lowagie.text.pdf.PdfAnnotation;
+import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.draw.DrawInterface;
 
 /**
