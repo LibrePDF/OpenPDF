@@ -89,12 +89,6 @@ public class PdfPRow {
     protected boolean calculated = false;
     
     private int[] canvasesPos;
-
-    /**
-     * True if the table may not break after this row.
-     */
-    public boolean mayNotBreak = false;
-    
     /**
      * Constructs a new PdfPRow with the cells in the array that was passed
      * as a parameter.
@@ -695,17 +689,4 @@ public class PdfPRow {
         return cells;
     }
 
-    /**
-     * Setter for the mayNotBreak variable.
-     */
-    public void setMayNotBreak(boolean mayNotBreak) {
-        this.mayNotBreak = mayNotBreak;
-    }
-
-    /**
-     * Getter for the mayNotbreak variable.
-     */
-    public boolean isMayNotBreak() {
-        return mayNotBreak;
-    }
 }
