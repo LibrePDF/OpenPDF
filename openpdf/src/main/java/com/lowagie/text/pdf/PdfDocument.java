@@ -2536,10 +2536,10 @@ public class PdfDocument extends Document {
      */
 
     protected void flushSpecial() {
-        if(footer.getSpecialcontent() == null){
+        if(footer.getSpecialContent() == null){
             return;
         }
-        for (Element element : footer.getSpecialcontent()) {
+        for (Element element : footer.getSpecialContent()) {
             switch (element.type()) {
                 case Element.JPEG:
                 case Element.JPEG2000:

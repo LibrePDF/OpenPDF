@@ -51,6 +51,7 @@ package com.lowagie.text;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A <CODE>HeaderFooter</CODE>-object is a <CODE>Rectangle</CODe> with text
@@ -84,8 +85,8 @@ public class HeaderFooter extends Rectangle {
 /** This is alignment of the header/footer. */
     private int alignment;
 
-/** This is the <CODE>ArrayList</CODE> containing non-text <CODE>Element</CODE>. */
-    private ArrayList<Element> specialcontent = null;
+/** This is the <CODE>List</CODE> containing non-text <CODE>Element</CODE>. */
+    private java.util.List<Element> specialContent = null;
 
 /**  This is the padding of height of header/footer. */
     private float padding;
@@ -235,26 +236,26 @@ public class HeaderFooter extends Rectangle {
     }
 
 /**
- * Adds non-text <CODE>Element</CODE> into <CODE>specialcontent</CODE>
+ * Adds non-text <CODE>Element</CODE> into <CODE>specialContent</CODE>
  *
  * @param element the new non-text <CODE>Element</CODE>
  */
 
     public void addSpecialContent(Element element){
-        if(specialcontent == null){
-            specialcontent = new ArrayList<>();
+        if(specialContent == null){
+            specialContent = new ArrayList<>();
         }
-        specialcontent.add(element);
+        specialContent.add(element);
     }
 
 /**
- * Gets <CODE>specialcontent</CODE>
+ * Gets <CODE>specialContent</CODE>
  *
- * @return <CODE>specialcontent</CODE>
+ * @return <CODE>specialContent</CODE>
  */
 
-    public ArrayList<Element> getSpecialcontent(){
-        return specialcontent;
+    public List<Element> getSpecialContent(){
+        return specialContent;
     }
 
     // methods to retrieve the membervariables
