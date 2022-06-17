@@ -46,15 +46,17 @@ import com.lowagie.text.FontFactory;
 import com.lowagie.text.error_messages.MessageLocalization;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.text.AttributedString;
 import java.text.Bidi;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -66,6 +68,8 @@ public class LayoutProcessor {
     private static final int DEFAULT_FLAGS = -1;
     private static final Map<BaseFont, java.awt.Font> awtFontMap = new ConcurrentHashMap<>();
 
+    private static final Map<TextAttribute, Object> globalTextAttributes = new ConcurrentHashMap<>();
+
     // Static variables can only be set once
     private static boolean enabled = false;
     private static int flags = DEFAULT_FLAGS;
@@ -75,14 +79,19 @@ public class LayoutProcessor {
     }
 
     /**
-     * Enables the processor
+     * Enables the processor.
+     * Kerning and ligatures are switched off.
+     *
+     * This method can only be called once.
      */
     public static void enable() {
         enabled = true;
     }
 
     /**
-     * Enables the processor providing flags
+     * Enables the processor with the provided flags.
+     * Kerning and ligatures are switched off.
+     *
      * This method can only be called once.
      *
      * @param flags see java.awt.Font.layoutGlyphVector
@@ -95,8 +104,93 @@ public class LayoutProcessor {
         LayoutProcessor.flags = flags;
     }
 
+    /**
+     * Enables the processor.
+     * Kerning and ligatures are switched on.
+     *
+     * This method can only be called once.
+     */
+    public static void enableKernLiga() {
+        enableKernLiga(DEFAULT_FLAGS);
+    }
+
+    /**
+     * Enables the processor with the provided flags.
+     * Kerning and ligatures are switched on.
+     *
+     * This method can only be called once.
+     *
+     * @param flags see java.awt.Font.layoutGlyphVector
+     */
+    public static void enableKernLiga(int flags) {
+        if (enabled) {
+            throw new UnsupportedOperationException("LayoutProcessor is already enabled");
+        }
+        addKerning();
+        addLigatures();
+        enabled = true;
+        LayoutProcessor.flags = flags;
+    }
+
     public static boolean isEnabled() {
         return enabled;
+    }
+
+    /**
+     * Add kerning
+     * @see
+     * <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
+     *     Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>
+     */
+    public static void addKerning() {
+        LayoutProcessor.globalTextAttributes.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+    }
+    /**
+     * Add kerning for one font
+     * @param font The font for which kerning is to be turned on
+     * @see
+     * <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
+     *     Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>
+     */
+    public static void addKerning(com.lowagie.text.Font  font) {
+        Map<TextAttribute, Object> textAttributes = new HashMap<>();
+        textAttributes.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+        addTextAttributes(font, textAttributes);
+    }
+    /**
+     * Add ligatures
+     */
+    public static void addLigatures() {
+        LayoutProcessor.globalTextAttributes.put(TextAttribute.LIGATURES, TextAttribute.LIGATURES_ON);
+    }
+    /**
+     * Add ligatures for one font
+     * @param font The font for which ligatures are to be turned on
+     *
+     */
+    public static void addLigatures(com.lowagie.text.Font  font) {
+        Map<TextAttribute, Object> textAttributes = new HashMap<>();
+        textAttributes.put(TextAttribute.LIGATURES, TextAttribute.LIGATURES_ON);
+        addTextAttributes(font, textAttributes);
+        textAttributes.put(TextAttribute.LIGATURES, TextAttribute.LIGATURES_ON);
+    }
+    /**
+     * Add text attributes to font
+     * The attributes are used only for glyph layout,
+     * and don't change the visual appearance of the font
+     * @param font The font for which kerning is to be turned on
+     * @param textAttributes Map of text attributes to be set
+     * @see
+     * <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
+     *     Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>*
+     */
+    public static void addTextAttributes(com.lowagie.text.Font  font, Map<TextAttribute, Object> textAttributes) {
+        BaseFont baseFont = font.getBaseFont();
+        java.awt.Font awtFont = awtFontMap.get(baseFont);
+        if (awtFont!=null) {
+            awtFont = awtFont.deriveFont(textAttributes);
+            awtFontMap.put(baseFont, awtFont);
+        }
     }
 
     public static int getFlags() {
@@ -136,7 +230,7 @@ public class LayoutProcessor {
                     file = new File(filename);
                 }
                 if (file.canRead()) {
-                    inputStream = new FileInputStream(file);
+                    inputStream = Files.newInputStream(file.toPath());
                 } else if (filename.startsWith("file:/") || filename.startsWith("http://")
                         || filename.startsWith("https://") || filename.startsWith("jar:")
                         || filename.startsWith("wsjar:")) {
@@ -152,6 +246,9 @@ public class LayoutProcessor {
                 }
                 awtFont = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, inputStream);
                 if (awtFont != null) {
+                    if (globalTextAttributes.size()>0) {
+                        awtFont = awtFont.deriveFont(LayoutProcessor.globalTextAttributes);
+                    }
                     awtFontMap.put(baseFont, awtFont);
                 }
             }
