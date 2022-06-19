@@ -48,10 +48,9 @@
  */
 package com.lowagie.text;
 
+import com.lowagie.text.pdf.GrayColor;
 import java.awt.Color;
 import java.util.ArrayList;
-
-import com.lowagie.text.pdf.GrayColor;
 
 /**
  * A <CODE>Rectangle</CODE> is the representation of a geometric figure.

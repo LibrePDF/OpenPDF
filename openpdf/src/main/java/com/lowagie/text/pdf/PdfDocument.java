@@ -1406,7 +1406,7 @@ public class PdfDocument extends Document {
         int lineLen;
         boolean isJustified;
         float hangingCorrection = 0;
-        float hScale = 1;
+        float hScale;
         float lastHScale = Float.NaN;
         float baseWordSpacing = 0;
         float baseCharacterSpacing = 0;
@@ -1535,7 +1535,7 @@ public class PdfDocument extends Document {
                         if (nextChunk == null)
                             subtract += hangingCorrection;
                         Object[][] unders = (Object[][]) chunk.getAttribute(Chunk.UNDERLINE);
-                        Color scolor = null;
+                        Color scolor;
                         for (Object[] obj : unders) {
                             scolor = (Color) obj[0];
                             float[] ps = (float[]) obj[1];

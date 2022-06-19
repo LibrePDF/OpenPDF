@@ -1,17 +1,15 @@
 package com.lowagie.text;
 
-import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Objects;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class FooterImageTest {
     @Test
-    public void onlyTextFooterUpperBoundTest() throws IOException {
+    public void onlyTextFooterUpperBoundTest() {
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, new ByteArrayOutputStream());
 
