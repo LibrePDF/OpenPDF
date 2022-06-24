@@ -112,8 +112,6 @@ public class Chunk implements Element {
     /** Contains some of the attributes for this Chunk. */
     protected Map<String, Object> attributes = null;
 
-
-
     // constructors
 
     /**

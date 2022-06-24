@@ -797,29 +797,28 @@ public class PdfDocument extends Document {
         cell.setBorder(Table.NO_BORDER);
         cell.setPadding(0);
         for (int i = 0; i < paragraph.size(); i++) {
-            Paragraph subParagraph = new Paragraph();
-            boolean hasNewLine = false;
-            if(!(paragraph.get(i) instanceof Chunk)) {
+            if (paragraph.get(i) instanceof Chunk) {
+                Paragraph subParagraph = new Paragraph();
+                boolean hasNewLine = false;
+                do {
+                    Chunk chunk = (Chunk) paragraph.get(i);
+                    i++;
+                    if (chunk.getContent().equals("\n")) {
+                        hasNewLine = true;
+                        break;
+                    } else {
+                        subParagraph.add(chunk);
+                    }
+                } while (i < paragraph.size() && paragraph.get(i) instanceof Chunk);
+                i--;
+                // It's important to set the leading here.
+                 subParagraph.setLeading(paragraph.getLeading());
+                cell.addElement(subParagraph);
+                if (hasNewLine) {
+                    cell.addElement(new Chunk("\n"));
+                }
+            } else {
                 cell.addElement(paragraph.get(i));
-                continue;
-            }
-            do {
-                Chunk chunk = (Chunk)paragraph.get(i);
-                i++;
-                if (chunk.getContent().equals("\n")) {
-                    hasNewLine = true;
-                    break;
-                }
-                else {
-                    subParagraph.add(chunk);
-                }
-            } while (i<paragraph.size() && paragraph.get(i) instanceof Chunk);
-            i--;
-            // It's important to set the leading here.
-            subParagraph.setLeading(paragraph.getLeading());
-            cell.addElement(subParagraph);
-            if (hasNewLine) {
-                cell.addElement(new Chunk("\n"));
             }
         }
         table.addCell(cell);
