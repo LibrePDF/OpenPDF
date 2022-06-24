@@ -45,8 +45,7 @@ public class PdfDocument620Test {
     private void createPdf(String baseFileName, String lineToTest, boolean keepTogether) throws IOException {
         String pathname = baseFileName + "KeepTogether" + Boolean.toString(keepTogether).toUpperCase() + ".pdf";
         OutputStream outputStream = Files.newOutputStream(Paths.get("target", pathname));
-        Document document = new Document();
-        try (document) {
+        try (Document document = new Document()) {
             PdfWriter.getInstance(document, outputStream);
             document.open();
             document.add(new Paragraph("Paragraph 1", FontFactory.getFont(BaseFont.COURIER, 10)));
