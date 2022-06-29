@@ -207,6 +207,7 @@ public class Paragraph extends Phrase {
             setSpacingAfter(p.spacingAfter());
             setSpacingBefore(p.spacingBefore());
             setExtraParagraphSpace(p.getExtraParagraphSpace());
+			setRunDirection(p.getRunDirection());
         }
     }
     
