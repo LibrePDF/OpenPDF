@@ -1,7 +1,7 @@
 /*
  * LayoutProcessor.java
  *
- * Copyright 2020 by Volker Kunert.
+ * Copyright 2020-2022 Volker Kunert.
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -126,8 +126,8 @@ public class LayoutProcessor {
         if (enabled) {
             throw new UnsupportedOperationException("LayoutProcessor is already enabled");
         }
-        addKerning();
-        addLigatures();
+        setKerning();
+        setLigatures();
         enabled = true;
         LayoutProcessor.flags = flags;
     }
@@ -137,45 +137,71 @@ public class LayoutProcessor {
     }
 
     /**
-     * Add kerning
+     * Set kerning
      * @see
      * <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
      *     Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>
      */
-    public static void addKerning() {
+    public static void setKerning() {
         LayoutProcessor.globalTextAttributes.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
     }
     /**
-     * Add kerning for one font
+     * Set kerning for one font
      * @param font The font for which kerning is to be turned on
      * @see
      * <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
      *     Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>
      */
-    public static void addKerning(com.lowagie.text.Font  font) {
+    public static void setKerning(com.lowagie.text.Font  font) {
         Map<TextAttribute, Object> textAttributes = new HashMap<>();
         textAttributes.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
-        addTextAttributes(font, textAttributes);
+        setTextAttributes(font, textAttributes);
     }
     /**
      * Add ligatures
      */
-    public static void addLigatures() {
+    public static void setLigatures() {
         LayoutProcessor.globalTextAttributes.put(TextAttribute.LIGATURES, TextAttribute.LIGATURES_ON);
     }
     /**
-     * Add ligatures for one font
+     * Set ligatures for one font
      * @param font The font for which ligatures are to be turned on
      *
      */
-    public static void addLigatures(com.lowagie.text.Font  font) {
+    public static void setLigatures(com.lowagie.text.Font  font) {
         Map<TextAttribute, Object> textAttributes = new HashMap<>();
         textAttributes.put(TextAttribute.LIGATURES, TextAttribute.LIGATURES_ON);
-        addTextAttributes(font, textAttributes);
+        setTextAttributes(font, textAttributes);
         textAttributes.put(TextAttribute.LIGATURES, TextAttribute.LIGATURES_ON);
     }
     /**
-     * Add text attributes to font
+     * Set run direction for one font to RTL
+     * @param font The font for which the run direction is set
+     *
+     */
+    public static void setRunDirectionRtl(com.lowagie.text.Font  font) {
+        setRunDirection(font, TextAttribute.RUN_DIRECTION_RTL);
+    }
+    /**
+     * Set run direction for one font to LTR
+     * @param font The font for which the run direction is set
+     *
+     */
+    public static void setRunDirectionLtr(com.lowagie.text.Font  font) {
+        setRunDirection(font, TextAttribute.RUN_DIRECTION_LTR);
+    }
+    /**
+     * Set run direction for one font
+     * @param font The font for which the run direction is set
+     *
+     */
+    private static void setRunDirection(com.lowagie.text.Font  font, Boolean runDirection) {
+        Map<TextAttribute, Object> textAttributes = new HashMap<>();
+        textAttributes.put(TextAttribute.RUN_DIRECTION, runDirection);
+        setTextAttributes(font, textAttributes);
+    }
+    /**
+     * Set text attributes to font
      * The attributes are used only for glyph layout,
      * and don't change the visual appearance of the font
      * @param font The font for which kerning is to be turned on
@@ -184,7 +210,7 @@ public class LayoutProcessor {
      * <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
      *     Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>*
      */
-    public static void addTextAttributes(com.lowagie.text.Font  font, Map<TextAttribute, Object> textAttributes) {
+    private static void setTextAttributes(com.lowagie.text.Font  font, Map<TextAttribute, Object> textAttributes) {
         BaseFont baseFont = font.getBaseFont();
         java.awt.Font awtFont = awtFontMap.get(baseFont);
         if (awtFont!=null) {
@@ -285,7 +311,14 @@ public class LayoutProcessor {
             localFlags = bidi.isLeftToRight() ? java.awt.Font.LAYOUT_LEFT_TO_RIGHT : java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
         }
         java.awt.Font awtFont = LayoutProcessor.awtFontMap.get(baseFont).deriveFont(fontSize);
-
+        Map<TextAttribute, ?> textAttributes = awtFont.getAttributes();
+        if (textAttributes!=null) {
+            Object runDirection = textAttributes.get(TextAttribute.RUN_DIRECTION);
+            if (runDirection!=null) {
+                localFlags = runDirection==TextAttribute.RUN_DIRECTION_LTR ? java.awt.Font.LAYOUT_LEFT_TO_RIGHT :
+                        java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
+            }
+        }
         return awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, localFlags);
     }
 

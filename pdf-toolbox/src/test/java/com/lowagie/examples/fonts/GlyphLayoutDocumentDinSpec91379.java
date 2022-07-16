@@ -41,7 +41,7 @@ public class GlyphLayoutDocumentDinSpec91379 {
             + "    Noto Sans Regular, Noto Sans Math Regular, Noto Serif Regular\n"
             + "    see https://github.com/googlefonts/noto-fonts/tree/main/hinted/ttf\n"
             + "\n"
-            + "Formatting with Java builtin routines\n\n";
+            + "Using LayoutProcessor for glyph layout with Java builtin routines.\n\n";
 
     public static String LATIN_CHARS_DIN_SPEC_91379 =
             "bll Latin Letters (normative)\n"
@@ -106,11 +106,11 @@ public class GlyphLayoutDocumentDinSpec91379 {
 
     public static String TEST_KERNING =
             "Kerning\n"
-            +"AVATAR Vector TeX.\n\n";
+            +"AVATAR Vector TeX\n\n";
 
     public static String TEST_LIGATURES =
             "Ligatures\n"
-            + "ff ffi ffl fi fl.\n\n";
+            + "ff ffi ffl fi fl\n\n";
 
     /**
      * Main method
@@ -149,11 +149,10 @@ public class GlyphLayoutDocumentDinSpec91379 {
 
         // Enable the LayoutProcessor with kerning and ligatures
         LayoutProcessor.enableKernLiga();
-        // For RTL-scripts: LayoutProcessor.enableKernLiga(java.awt.Font.LAYOUT_LEFT_TO_RIGHT);
 
         float fontSize = 12.0f;
 
-        // The  OpenType or TrueType fonts loaded with FontFactory.register() are
+        // The  OpenType fonts loaded with FontFactory.register() are
         // available for glyph layout.
         // Only these fonts can be used.
         String fontDir = "com/lowagie/examples/fonts/";
@@ -161,10 +160,11 @@ public class GlyphLayoutDocumentDinSpec91379 {
         String sansFontName = sansFont.getBaseFont().getPostscriptFontName();
         Font mathFont = getFont(fontDir+"noto/NotoSansMath-Regular.ttf", "math", fontSize);
         String mathFontName = mathFont.getBaseFont().getPostscriptFontName();
+        Font serifFont = getFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif", fontSize);
+        String serifFontName = serifFont.getBaseFont().getPostscriptFontName();
 
 
-        Document document = new Document();
-        try {
+        try (Document document = new Document()) {
             PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(fileName)));
             writer.setInitialLeading(16.0f);
             document.open();
@@ -175,7 +175,7 @@ public class GlyphLayoutDocumentDinSpec91379 {
             document.add(new Chunk(mathFontName + "\n" + LATIN_CHARS_DIN_SPEC_91379_MATH, mathFont));
             document.add(new Chunk(sansFontName + "\n" + LATIN_CHARS_ADDITIONAL, sansFont));
             document.add(new Chunk(sansFontName + "\n" + TEST_KERNING, sansFont));
-            document.add(new Chunk(sansFontName + "\n" + TEST_LIGATURES, sansFont));
+            document.add(new Chunk(serifFontName + "\n" + TEST_LIGATURES, serifFont));
 
             if(testChunks) {
                 addChunks(document, sansFont);
@@ -183,7 +183,6 @@ public class GlyphLayoutDocumentDinSpec91379 {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        document.close();
     }
     
     /*

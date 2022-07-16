@@ -25,17 +25,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * Prints text with correct glyph layout, kerning and ligatures globally enabled
+ * Prints bidirectional text with correct glyph layout, kerning and ligatures globally enabled
  */
-public class GlyphLayoutDocumentKernLiga {
+public class GlyphLayoutDocumentBidi {
     
     public static String INTRO_TEXT =
-            "Test of text attributes for kerning and ligatures\n"
-          + "Using LayoutProcessor for glyph layout with Java builtin routines.\n\n";
-
-
-    public static String TEST_TEXT =
-            "AVATAR Vector TeX ff ffi ffl fi fl.\n\n";
+            "Test of bidirectional text\n"+
+            "Using LayoutProcessor for glyph layout with Java builtin routines.\n\n";
 
     /**
      * Main method
@@ -44,14 +40,14 @@ public class GlyphLayoutDocumentKernLiga {
      */
     public static void main(String[] args) {
         try {
-            test("GlyphLayoutDocumentKernLiga.pdf");
+            test("GlyphLayoutDocumentBidi.pdf");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Run the test: Show kerning and ligatures
+     * Run the test: Show bidirectional text
      * 
      * @param fileName Name of output file
      * @throws Exception if an error occurs
@@ -67,15 +63,20 @@ public class GlyphLayoutDocumentKernLiga {
         // available for glyph layout.
         String fontDir = "com/lowagie/examples/fonts/";
 
-        FontFactory.register(fontDir+"noto/NotoSerif-Regular.ttf", "notoSerif");
-        Font notoSerif = FontFactory.getFont("notoSerif", BaseFont.IDENTITY_H, true, fontSize);
+        FontFactory.register(fontDir+"noto/NotoSans-Regular.ttf", "notoSans");
+        Font notoSans = FontFactory.getFont("notoSans", BaseFont.IDENTITY_H, true, fontSize);
+        FontFactory.register(fontDir+"noto/NotoSansArabic-Regular.ttf", "notoSansArabic");
+        Font notoSansArabic = FontFactory.getFont("notoSansArabic", BaseFont.IDENTITY_H, true, fontSize);
 
         try (Document document = new Document()) {
             PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(fileName)));
             writer.setInitialLeading(16.0f);
             document.open();
-            document.add(new Chunk(INTRO_TEXT +"Font: Noto Serif Regular\n\n", notoSerif));
-            document.add(new Chunk(TEST_TEXT , notoSerif));
+            document.add(new Chunk(INTRO_TEXT +"Fonts: Noto Sans, Noto Sans Arabic\n\n", notoSans));
+
+            document.add(new Chunk("Guten Tag ", notoSans));
+            document.add(new Chunk("السلام عليكم", notoSansArabic));
+            document.add(new Chunk(" Good afternoon", notoSans));
         } catch (Exception e) {
             e.printStackTrace();
         }
