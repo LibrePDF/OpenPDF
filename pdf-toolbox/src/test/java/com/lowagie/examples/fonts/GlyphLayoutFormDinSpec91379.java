@@ -41,7 +41,7 @@ public class GlyphLayoutFormDinSpec91379 {
                     + "Fonts used: Noto Sans Regular, Noto Sans Math Regular\n"
                     + "    see https://fonts.google.com/noto/specimen/Noto+Sans"
                     + "    and https://github.com/googlefonts/noto-fonts/tree/main/hinted/ttf\n"
-                    + "Using LayoutProcessor for glyph layout with Java builtin routines.\n\n";
+                    + "Using LayoutProcessor for glyph layout with Java built-in routines.\n\n";
 
     public static String LATIN_CHARS_DIN_SPEC_91379 =
             "bll Latin Letters (normative)\n"
