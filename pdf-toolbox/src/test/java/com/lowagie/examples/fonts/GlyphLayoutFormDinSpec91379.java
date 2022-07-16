@@ -41,7 +41,7 @@ public class GlyphLayoutFormDinSpec91379 {
                     + "Fonts used: Noto Sans Regular, Noto Sans Math Regular\n"
                     + "    see https://fonts.google.com/noto/specimen/Noto+Sans"
                     + "    and https://github.com/googlefonts/noto-fonts/tree/main/hinted/ttf\n"
-                    + "Formatting with Java builtin routines\n\n";
+                    + "Using LayoutProcessor for glyph layout with Java builtin routines.\n\n";
 
     public static String LATIN_CHARS_DIN_SPEC_91379 =
             "bll Latin Letters (normative)\n"
@@ -123,14 +123,13 @@ public class GlyphLayoutFormDinSpec91379 {
 
         // Enable the LayoutProcessor with kerning and ligatures
         LayoutProcessor.enableKernLiga();
-        // For RTL-scripts: LayoutProcessor.enableKernLiga(java.awt.Font.LAYOUT_LEFT_TO_RIGHT);
 
         try (  InputStream acroFormInputStream = GlyphLayoutFormDinSpec91379.class.getClassLoader().getResourceAsStream(formPath);
                 FileOutputStream outputStream = new FileOutputStream(fileName);
                 PdfReader reader = new PdfReader(acroFormInputStream)
             ) {
 
-            // The OpenType or TrueType fonts loaded with FontFactory.register() are
+            // The OpenType fonts loaded with FontFactory.register() are
             // available for glyph layout
             String fontFileName = "com/lowagie/examples/fonts/noto/NotoSans-Regular.ttf";
             FontFactory.register(fontFileName, "sans");

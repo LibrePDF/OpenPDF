@@ -25,17 +25,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * Test kerning and ligatures per font
+ * Prints bidirectional text with correct glyph layout, kerning and ligatures globally enabled
  */
-public class GlyphLayoutDocumentKernLigaPerFont {
+public class GlyphLayoutDocumentBidiPerFont {
     
-    public static String TEXT_INTRO =
-            "Test of kerning and ligatures per font\n"
-          + "Using LayoutProcessor for glyph layout with Java builtin routines.\n\n";
-
-
-    public static String TEST_TEXT =
-            "AVATAR Vector TeX ff ffi ffl fi fl.";
+    public static String INTRO_TEXT =
+            "Test of bidirectional text\n"+
+            "Using LayoutProcessor for glyph layout with Java builtin routines.\n\n";
 
     /**
      * Main method
@@ -44,7 +40,7 @@ public class GlyphLayoutDocumentKernLigaPerFont {
      */
     public static void main(String[] args) {
         try {
-            test("GlyphLayoutDocumentKernLigaPerFont.pdf");
+            test("GlyphLayoutDocumentBidiPerFont.pdf");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,48 +60,34 @@ public class GlyphLayoutDocumentKernLigaPerFont {
     }
 
     /**
-     * Run the test: Show kerning and ligatures
+     * Run the test: Show bidirectional text
      * 
      * @param fileName Name of output file
      * @throws Exception if an error occurs
      */
     public static void test(String fileName) throws Exception {
 
-        // Enable the LayoutProcessor
-        LayoutProcessor.enable();
+        // Enable the LayoutProcessor with kerning and ligatures
+        LayoutProcessor.enableKernLiga();
 
         float fontSize = 12.0f;
 
         // The  OpenType fonts loaded with FontFactory.register() are
         // available for glyph layout.
         String fontDir = "com/lowagie/examples/fonts/";
-        Font serifFont = getFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif", fontSize);
 
-        Font serifKernLiga1 = getFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif_kern_liga", fontSize);
-        // Switch ligatures and kerning on for one font
-        LayoutProcessor.setLigatures(serifKernLiga1);
-        LayoutProcessor.setKerning(serifKernLiga1);
-
-        Font serifKern1 = getFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif_kern1", fontSize);
-        // Switch on kerning for one font
-        LayoutProcessor.setKerning(serifKern1);
-
-        Font serifLiga1 = getFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif_liga1", fontSize);
-        // Switch on ligatures for one font
-        LayoutProcessor.setLigatures(serifLiga1);
+        Font notoSans = getFont(fontDir+"noto/NotoSans-Regular.ttf", "notoSans", fontSize);
+        LayoutProcessor.setRunDirectionLtr(notoSans);
+        Font notoSansArabic = getFont(fontDir+"noto/NotoSansArabic-Regular.ttf", "notoSansArabic", fontSize);
+        LayoutProcessor.setRunDirectionRtl(notoSansArabic);
 
         try (Document document = new Document()) {
             PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(fileName)));
             writer.setInitialLeading(16.0f);
             document.open();
-            document.add(new Chunk(TEXT_INTRO, serifFont));
-
-            document.add(new Chunk(TEST_TEXT+" no kerning, no ligatures\n", serifFont));
-            document.add(new Chunk(TEST_TEXT+" kerning, ligatures\n", serifKernLiga1));
-            document.add(new Chunk(TEST_TEXT+" kerning, no ligatures\n", serifKern1));
-            document.add(new Chunk(TEST_TEXT+" no kerning, ligatures\n", serifLiga1));
-            document.add(new Chunk(TEST_TEXT+" no kerning, no ligatures\n\n", serifFont));
-
+            document.add(new Chunk(INTRO_TEXT +"Fonts: Noto Sans, Noto Sans Arabic\n\n", notoSans));
+            document.add(new Chunk("Guten Tag ", notoSans));
+            document.add(new Chunk("السلام عليكم", notoSansArabic));
         } catch (Exception e) {
             e.printStackTrace();
         }
