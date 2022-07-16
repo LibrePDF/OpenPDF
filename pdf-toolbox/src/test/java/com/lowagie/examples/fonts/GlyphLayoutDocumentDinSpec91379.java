@@ -22,8 +22,6 @@ import com.lowagie.text.pdf.LayoutProcessor;
 import com.lowagie.text.pdf.PdfWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Prints characters and sequences of DIN SPEC 91379
