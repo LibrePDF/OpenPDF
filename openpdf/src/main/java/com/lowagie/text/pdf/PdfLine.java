@@ -292,6 +292,8 @@ public class PdfLine {
     void setExtraIndent(float extra) {
         left += extra;
         width -= extra;
+        if (extra < 0.0f)
+            originalWidth -= extra;
     }
     
     /**
