@@ -1,13 +1,17 @@
 package com.lowagie.text.pdf.table;
 
-import com.lowagie.text.*;
+import com.lowagie.text.Cell;
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Table;
 import com.lowagie.text.alignment.VerticalAlignment;
 import com.lowagie.text.pdf.PdfWriter;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileOutputStream;
 
-import static java.time.Duration.*;
+import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 public class TableEndlessTest {

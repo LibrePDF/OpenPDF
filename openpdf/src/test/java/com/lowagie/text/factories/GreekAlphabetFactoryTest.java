@@ -1,9 +1,9 @@
 package com.lowagie.text.factories;
 
-import static com.lowagie.text.factories.GreekAlphabetFactory.getString;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
+
+import static com.lowagie.text.factories.GreekAlphabetFactory.getString;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class GreekAlphabetFactoryTest {
 

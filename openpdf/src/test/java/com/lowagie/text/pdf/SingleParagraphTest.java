@@ -8,9 +8,7 @@ import com.lowagie.text.pdf.parser.PdfTextExtractor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.print.Doc;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class SingleParagraphTest {
