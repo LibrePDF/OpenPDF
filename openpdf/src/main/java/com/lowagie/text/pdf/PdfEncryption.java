@@ -471,16 +471,23 @@ public class PdfEncryption {
     }
 
     public static PdfObject createInfoId(byte[] id) {
-        ByteBuffer buf = new ByteBuffer(90);
-        buf.append('[').append('<');
-        for (int k = 0; k < 16; ++k)
-            buf.appendHex(id[k]);
-        buf.append('>').append('<');
-        id = createDocumentId();
-        for (int k = 0; k < 16; ++k)
-            buf.appendHex(id[k]);
-        buf.append('>').append(']');
-        return new PdfLiteral(buf.toByteArray());
+        return createInfoId(id, createDocumentId());
+    }
+
+    public static PdfObject createInfoId(byte[] idPartOne, byte[] idPartTwo) {
+        try (ByteBuffer buf = new ByteBuffer(90)) {
+            buf.append('[').append('<');
+            for (int k = 0; k < 16 && k < idPartOne.length; ++k)
+                buf.appendHex(idPartOne[k]);
+            buf.append('>').append('<');
+            for (int k = 0; k < 16 && k < idPartTwo.length; ++k)
+                buf.appendHex(idPartTwo[k]);
+            buf.append('>').append(']');
+            return new PdfLiteral(buf.toByteArray());
+
+        } catch (IOException e) {
+            throw new ExceptionConverter(e);
+        }
     }
 
     public PdfDictionary getEncryptionDictionary() {

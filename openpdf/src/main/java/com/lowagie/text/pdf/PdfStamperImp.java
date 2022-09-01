@@ -46,17 +46,6 @@
  */
 package com.lowagie.text.pdf;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.xml.sax.SAXException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
@@ -69,6 +58,17 @@ import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
 import com.lowagie.text.xml.xmp.XmpReader;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 class PdfStamperImp extends PdfWriter {
     HashMap<PdfReader, IntHashtable> readers2intrefs = new HashMap<>();
@@ -337,7 +337,16 @@ class PdfStamperImp extends PdfWriter {
                 PdfIndirectObject encryptionObject = addToBody(crypto.getEncryptionDictionary(), false);
                 encryption = encryptionObject.getIndirectReference();
             }
-            if (includeFileID) fileID = crypto.getFileID();
+            if (includeFileID) {
+                byte[] fileIDPartOne = crypto.documentID;
+                byte[] fileIDPartTwo;
+                if (overrideFileId != null) {
+                    fileIDPartTwo = overrideFileId.getBytes();
+                } else {
+                    fileIDPartTwo = PdfEncryption.createDocumentId();
+                }
+                fileID = PdfEncryption.createInfoId(fileIDPartOne, fileIDPartTwo);
+            }
         }
         else if (includeFileID) {
             if (overrideFileId != null) {
