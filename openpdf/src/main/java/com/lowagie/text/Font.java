@@ -53,7 +53,6 @@ import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
 import java.awt.Color;
 import java.util.Locale;
-import javax.annotation.Nullable;
 
 
 /**
@@ -195,7 +194,7 @@ public class Font implements Comparable {
      * @param color  the <CODE>Color</CODE> of this font.
      */
 
-    public Font(int family, float size, int style, @Nullable Color color) {
+    public Font(int family, float size, int style, Color color) {
         this.family = family;
         this.size = size;
         this.style = style;

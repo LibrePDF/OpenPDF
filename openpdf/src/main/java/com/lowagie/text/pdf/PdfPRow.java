@@ -89,7 +89,7 @@ public class PdfPRow {
     protected boolean calculated = false;
     
     private int[] canvasesPos;
-    
+
     /**
      * Constructs a new PdfPRow with the cells in the array that was passed
      * as a parameter.
@@ -625,7 +625,7 @@ public class PdfPRow {
                 ColumnText ct = ColumnText.duplicate(cell.getColumn());
                 float left = cell.getLeft() + cell.getEffectivePaddingLeft();
                 float top = cell.getTop() - cell.getEffectivePaddingTop();
-                float bottom = top + cell.getEffectivePaddingBottom() - newHeight;
+                float bottom = cell.getTop() + cell.getEffectivePaddingBottom() - newHeight;
                 float right = cell.getRight() - cell.getEffectivePaddingRight();
                 switch (cell.getRotation()) {
                     case 90:

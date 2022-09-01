@@ -312,9 +312,11 @@ public class Document implements AutoCloseable, DocListener {
     /**
      * Opens the document.
      * <P>
-     * Once the document is opened, you can't write any Header- or
-     * Meta-information anymore. You have to open the document before you can
-     * begin to add content to the body of the document.
+     * Once the document is opened, you can't write any meta-information anymore.
+     * If you change the header/footer after opening the document, the change will be effective
+     * starting from the second page.
+     * You have to open the document before you can begin to add content to the body of the
+     * document.
      */
     public void open() {
         if (!close) {
@@ -384,36 +386,42 @@ public class Document implements AutoCloseable, DocListener {
         }
         return true;
     }
-    
+
     /**
- * Changes the header of this document.
- *
-     * @param header
-     *            the new header
- */
+     * Changes the header of this document.
+     * <p>
+     * This change will be effective starting from the next page. If you want to have a header on
+     * the first page, you need to set it before opening the document.
+     *
+     * @param header the new header
+     */
     public void setHeader(HeaderFooter header) {
         this.header = header;
         for (DocListener listener : listeners) {
             listener.setHeader(header);
         }
     }
-    
+
     /**
- * Resets the header of this document.
- */
+     * Resets the header of this document.
+     * <p>
+     * This change will be effective starting from the next page.
+     */
     public void resetHeader() {
         this.header = null;
         for (DocListener listener : listeners) {
             listener.resetHeader();
         }
     }
-    
+
     /**
- * Changes the footer of this document.
- *
-     * @param footer
-     *            the new footer
- */
+     * Changes the footer of this document.
+     * <p>
+     * This change will be effective starting from the next page. If you want to have a footer on
+     * the first page, you need to set it before opening the document.
+     *
+     * @param footer the new footer
+     */
     public void setFooter(HeaderFooter footer) {
         this.footer = footer;
         for (DocListener listener : listeners) {
@@ -423,6 +431,8 @@ public class Document implements AutoCloseable, DocListener {
 
     /**
      * Resets the footer of this document.
+     * <p>
+     * This change will be effective starting from the next page.
      */
     public void resetFooter() {
         this.footer = null;

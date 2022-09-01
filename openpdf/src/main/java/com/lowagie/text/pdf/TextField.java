@@ -52,14 +52,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ibm.icu.text.Bidi;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
-
-import javax.annotation.Nullable;
 
 /**
  * Supports text, combo and list fields generating the correct appearances.
@@ -95,7 +94,7 @@ public class TextField extends BaseField {
     public TextField(PdfWriter writer, Rectangle box, String fieldName) {
         super(writer, box, fieldName);
     }
-    
+
     private static boolean checkRTL(String text) {
         if (text == null || text.length() == 0)
             return false;
@@ -105,6 +104,63 @@ public class TextField extends BaseField {
                 return true;
         }
         return false;
+    }
+    
+    private static int textRunDirectionDefault(String ptext) {
+        return checkRTL(ptext) ? PdfWriter.RUN_DIRECTION_LTR : PdfWriter.RUN_DIRECTION_NO_BIDI;
+    }
+
+    /**
+     * Chose the run direction of a text field by it's content
+     * 
+     * @param ptext
+     * @return
+     */
+    private static int textRunDirectionByContent(String ptext) {
+        if (ptext == null || ptext.length() == 0) {
+            return PdfWriter.RUN_DIRECTION_NO_BIDI;
+        }
+
+        Bidi bidi = new Bidi();
+        bidi.setPara(ptext, Bidi.LTR, null);
+
+        byte direction = bidi.getDirection();
+
+        if (direction == Bidi.LTR) {
+            // This is what OpenPDF uses for LTR
+            // https://github.com/LibrePDF/OpenPDF/blob/1.3.26/openpdf/src/main/java/com/lowagie/text/pdf/TextField.java#L211
+            return PdfWriter.RUN_DIRECTION_NO_BIDI;
+        } else if (direction == Bidi.RTL) {
+            // We can't have RUN_DIRECTION_NO_BIDI for RTL
+            // In RTL texts ending in punctuation this will place the punctuation in the
+            // start of the file.
+            return PdfWriter.RUN_DIRECTION_RTL;
+        }
+
+        // Bidi.MIXED => Choose LTR/RTL based on which is more prominent
+        int ltrCount = 0;
+        byte[] levels = bidi.getLevels();
+
+        for (int i = 0; i < levels.length; i++) {
+            if (levels[i] % 2 == 0) {
+                ltrCount++;
+            }
+        }
+
+        if (ltrCount / levels.length >= 0.5) {
+            return PdfWriter.RUN_DIRECTION_LTR;
+        } else {
+            return PdfWriter.RUN_DIRECTION_RTL;
+        }
+    }
+
+    private static int textRunDirection(String ptext) {
+        try {
+            Class.forName("com.ibm.icu.text.Bidi");
+            return textRunDirectionByContent(ptext);
+        } catch (Exception e) {
+            return textRunDirectionDefault(ptext);
+        }
     }
     
     private static void changeFontSize(Phrase p, float size) {
@@ -173,6 +229,23 @@ public class TextField extends BaseField {
     }
     
     /**
+     * Flip text alignment for RTL texts Not sure why but this is needed
+     */
+    private int getTextAlignment(int runDirection) {
+        if (runDirection == PdfWriter.RUN_DIRECTION_RTL) {
+            if (alignment == Element.ALIGN_LEFT) {
+                return Element.ALIGN_RIGHT;
+            } else if (alignment == Element.ALIGN_RIGHT) {
+                return Element.ALIGN_LEFT;
+            } else {
+                return alignment;
+            }
+        } else {
+            return alignment;
+        }
+    }
+
+    /**
      * Get the <code>PdfAppearance</code> of a text or combo field
      * @throws IOException on error
      * @throws DocumentException on error
@@ -208,7 +281,7 @@ public class TextField extends BaseField {
             ptext = text; //fixed by Kazuya Ujihara (ujihara.jp)
         BaseFont ufont = getRealFont();
         Color fcolor = (textColor == null) ? GrayColor.GRAYBLACK : textColor;
-        int rtl = checkRTL(ptext) ? PdfWriter.RUN_DIRECTION_LTR : PdfWriter.RUN_DIRECTION_NO_BIDI;
+        int rtl = textRunDirection(ptext);
         float usize = fontSize;
         Phrase phrase = composePhrase(ptext, ufont, fcolor, usize);
         if ((options & MULTILINE) != 0) {
@@ -222,7 +295,7 @@ public class TextField extends BaseField {
                         usize = 12;
                     float step = Math.max((usize - 4) / 10, 0.2f);
                     ct.setSimpleColumn(0, -h, width, 0);
-                    ct.setAlignment(alignment);
+                    ct.setAlignment(getTextAlignment(rtl));
                     ct.setRunDirection(rtl);
                     for (; usize > 4; usize -= step) {
                         ct.setYLine(0);
@@ -243,7 +316,7 @@ public class TextField extends BaseField {
             float offsetY = offsetX + h - ufont.getFontDescriptor(BaseFont.BBOXURY, usize);
             ct.setSimpleColumn(extraMarginLeft + 2 * offsetX, -20000, box.getWidth() - 2 * offsetX, offsetY + leading);
             ct.setLeading(leading);
-            ct.setAlignment(alignment);
+            ct.setAlignment(getTextAlignment(rtl));
             ct.setRunDirection(rtl);
             ct.setText(phrase);
             ct.go();
@@ -377,7 +450,7 @@ public class TextField extends BaseField {
         float yp = offsetX + h - ufont.getFontDescriptor(BaseFont.BBOXURY, usize);
         for (int idx = first; idx < last; ++idx, yp -= leading) {
             String ptext = choices[idx];
-            int rtl = checkRTL(ptext) ? PdfWriter.RUN_DIRECTION_LTR : PdfWriter.RUN_DIRECTION_NO_BIDI;
+            int rtl = textRunDirection(ptext);
             ptext = removeCRLF(ptext);
             // highlight selected values against their (presumably) darker background
             Color textCol = (choiceSelections.contains(idx)) ? GrayColor.GRAYWHITE : fcolor;
@@ -719,7 +792,7 @@ public class TextField extends BaseField {
      */
     @Deprecated
     @SuppressWarnings("unchecked")
-    public void setChoiceSelections(@Nullable ArrayList selections ) {
+    public void setChoiceSelections(ArrayList selections ) {
         setChoiceSelections((List<Integer>) selections);
     }
     
@@ -728,7 +801,7 @@ public class TextField extends BaseField {
      * list, all but the first element will be removed.
      * @param selections new selections.  If null, it clear()s the underlying ArrayList.
      */
-    public void setChoiceSelections(@Nullable List<Integer> selections ) {
+    public void setChoiceSelections(List<Integer> selections ) {
         if (selections != null) {
             choiceSelections = new ArrayList<>( selections );
             if (choiceSelections.size() > 1 && (options & BaseField.MULTISELECT) == 0 ) {

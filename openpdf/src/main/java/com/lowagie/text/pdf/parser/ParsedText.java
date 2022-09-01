@@ -52,8 +52,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author dgd
@@ -413,7 +411,6 @@ public class ParsedText extends ParsedTextImpl {
      *
      * @see com.lowagie.text.pdf.parser.ParsedTextImpl#getText()
      */
-    @Nullable
     @Override
     public String getText() {
         String text = super.getText();
@@ -426,7 +423,6 @@ public class ParsedText extends ParsedTextImpl {
     /**
      * @return a string whose characters represent code points in a possibly two-byte font
      */
-    @Nonnull
     public String getFontCodes() {
         return Optional.ofNullable(pdfText)
                 .map(PdfString::toString)

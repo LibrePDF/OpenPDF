@@ -62,7 +62,6 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;
 
-import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -180,7 +179,6 @@ public class PdfTextExtractor {
      * @return a String with the content as plain text (without PDF syntax)
      * @throws IOException on error
      */
-    @Nonnull
     public String getTextFromPage(int page) throws IOException {
         return getTextFromPage(page, false);
     }
@@ -194,7 +192,6 @@ public class PdfTextExtractor {
      * @return result of extracting the text, with tags as requested.
      * @throws IOException on error
      */
-    @Nonnull
     public String getTextFromPage(int page, boolean useContainerMarkup) throws IOException {
         PdfDictionary pageDict = reader.getPageN(page);
         if (pageDict == null) {

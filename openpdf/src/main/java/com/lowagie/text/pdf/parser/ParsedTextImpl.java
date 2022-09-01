@@ -41,7 +41,6 @@
  */
 package com.lowagie.text.pdf.parser;
 
-import javax.annotation.Nullable;
 
 /**
  * @author dgd
@@ -76,7 +75,7 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
      * @param spaceWidth
      *            What is the width of the space in this font....
      */
-    ParsedTextImpl(@Nullable String text,
+    ParsedTextImpl(String text,
                    Vector startPoint,
                    Vector endPoint,
                    Vector baseline,
@@ -96,7 +95,6 @@ public abstract class ParsedTextImpl implements TextAssemblyBuffer {
      * {@inheritDoc}
      * @see com.lowagie.text.pdf.parser.ParsedText#getText()
      */
-    @Nullable
     @Override
     public String getText() {
         return text;

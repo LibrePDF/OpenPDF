@@ -49,7 +49,6 @@ package com.lowagie.text.pdf.parser;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfObject;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -71,6 +70,5 @@ public interface ContentOperator {
      * @return the name of the operator as it will be recognized in the pdf
      * stream
      */
-    @Nonnull
     String getOperatorName();
 }

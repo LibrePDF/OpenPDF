@@ -50,7 +50,6 @@
 package com.lowagie.text.html;
 
 import java.util.Properties;
-import javax.annotation.Nullable;
 
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
@@ -123,7 +122,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
      * @param attrs     the list of attributes
      */
     @Override
-    public void startElement(String uri, String localName, String name, @Nullable Attributes attrs) {
+    public void startElement(String uri, String localName, String name, Attributes attrs) {
         // super.handleStartingTags is replaced with handleStartingTags
         // suggestion by Vu Ngoc Tan/Hop
         String lowerCaseName = name.toLowerCase();
@@ -234,6 +233,7 @@ public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
         if (HtmlTagMap.isTitle(lowerCaseName)) {
             if (currentChunk != null) {
                 bodyAttributes.put(ElementTags.TITLE, currentChunk.getContent());
+                currentChunk = null;
             }
             return;
         }

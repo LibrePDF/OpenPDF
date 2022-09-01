@@ -3,10 +3,11 @@ package com.lowagie.text.pdf;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import org.junit.jupiter.api.Test;
+
 import com.lowagie.text.Annotation;
 import com.lowagie.text.Document;
 import com.lowagie.text.Rectangle;
-import org.junit.jupiter.api.Test;
 
 public class SimplePdfTest {
 

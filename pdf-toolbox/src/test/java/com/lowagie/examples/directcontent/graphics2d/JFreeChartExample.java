@@ -108,7 +108,7 @@ public class JFreeChartExample {
      * @return a piechart
      */
     public static JFreeChart getPieChart() {
-        DefaultPieDataset dataset = new DefaultPieDataset();
+        DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
         dataset.setValue("iText", 60);
         dataset.setValue("cinema.lowagie.com", 10);
         dataset.setValue("tutorial", 30);

@@ -62,8 +62,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * Provides glyph layout e.g. for accented Latin letters.
  */
 public class LayoutProcessor {
+
     private static final int DEFAULT_FLAGS = -1;
-    private static final Map<BaseFont, java.awt.Font> awtFontMap = new ConcurrentHashMap<BaseFont, java.awt.Font>();
+    private static final Map<BaseFont, java.awt.Font> awtFontMap = new ConcurrentHashMap<>();
 
     // Static variables can only be set once
     private static boolean enabled = false;
@@ -103,12 +104,11 @@ public class LayoutProcessor {
     }
 
     public static boolean isSet(int queryFlags) {
-        return (flags & queryFlags) == queryFlags;
+        return flags != DEFAULT_FLAGS && (flags & queryFlags) == queryFlags;
     }
 
     public static boolean supportsFont(BaseFont baseFont) {
-        boolean supports = enabled && (awtFontMap.get(baseFont) != null);
-        return supports;
+        return enabled && (awtFontMap.get(baseFont) != null);
     }
 
     /**
@@ -124,7 +124,7 @@ public class LayoutProcessor {
             return;
         }
 
-        java.awt.Font awtFont = null;
+        java.awt.Font awtFont;
         InputStream inputStream = null;
         try {
             awtFont = awtFontMap.get(baseFont);
@@ -188,9 +188,8 @@ public class LayoutProcessor {
             localFlags = bidi.isLeftToRight() ? java.awt.Font.LAYOUT_LEFT_TO_RIGHT : java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
         }
         java.awt.Font awtFont = LayoutProcessor.awtFontMap.get(baseFont).deriveFont(fontSize);
-        GlyphVector glyphVector = awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, localFlags);
 
-        return glyphVector;
+        return awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, localFlags);
     }
 
    /**

@@ -43,7 +43,6 @@ package com.lowagie.text.pdf.parser;
 
 import com.lowagie.text.pdf.PdfReader;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +61,6 @@ public class MarkedUpTextAssembler implements TextAssembler {
      */
     List<FinalText> result = new ArrayList<>();
     private PdfReader reader;
-    @Nullable
     private ParsedTextImpl inProgress = null;
     private int page;
     private int wordIdCounter = 1;
@@ -135,7 +133,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
         }
     }
 
-    private FinalText concatenateResult(@Nullable String containingElementName) {
+    private FinalText concatenateResult(String containingElementName) {
         // null element means that this is a formatting artifact, not content.
         if (containingElementName == null) {
             // at some point, we may want to extract alternate text for some
@@ -167,7 +165,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
      * @see com.lowagie.text.pdf.parser.TextAssembler#endParsingContext(String)
      */
     @Override
-    public FinalText endParsingContext(@Nullable String containingElementName) {
+    public FinalText endParsingContext(String containingElementName) {
         clearAccumulator();
         return concatenateResult(containingElementName);
     }

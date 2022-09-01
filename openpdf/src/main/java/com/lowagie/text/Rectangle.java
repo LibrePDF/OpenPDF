@@ -48,10 +48,9 @@
  */
 package com.lowagie.text;
 
+import com.lowagie.text.pdf.GrayColor;
 import java.awt.Color;
 import java.util.ArrayList;
-
-import com.lowagie.text.pdf.GrayColor;
 
 /**
  * A <CODE>Rectangle</CODE> is the representation of a geometric figure.
@@ -105,6 +104,9 @@ public class Rectangle implements Element {
 
   /** the upper right y-coordinate. */
   protected float ury;
+
+  /** the offset relative to a certain top. */
+  protected float offsetToTop;
 
   /** The rotation of the Rectangle */
   protected int rotation = 0;
@@ -406,6 +408,23 @@ public class Rectangle implements Element {
     return ury - margin;
   }
 
+  /**
+   * Gets offset relative to top.
+   *
+   * @return offset relative to top
+   */
+  public float getRelativeTop(){
+    return offsetToTop;
+  }
+
+  /**
+   * Sets offset relative to top.
+   *
+   * @param offsetToTop the new offset
+   */
+  public void setRelativeTop(float offsetToTop){
+    this.offsetToTop = offsetToTop;
+  }
   /**
    * Sets the lower left y-coordinate.
    * 

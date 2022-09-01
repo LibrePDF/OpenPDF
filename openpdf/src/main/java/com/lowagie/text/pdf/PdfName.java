@@ -174,6 +174,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     /** A name */
     public static final PdfName ARTBOX = new PdfName("ArtBox");
     /** A name */
+    public static final PdfName ARTIFACT = new PdfName("Artifact");
+    /** A name */
     public static final PdfName ASCENT = new PdfName("Ascent");
     /** A name */
     public static final PdfName AS = new PdfName("AS");

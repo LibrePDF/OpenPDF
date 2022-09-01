@@ -5,3 +5,4 @@ fdf.header.not.found=Início de FDF não encontrado.
 greaterthan.not.expected='>' inesperado
 pdf.header.not.found=Início de PDF não encontrado.
 pdf.startxref.not.found=startxref de PDF não encontrado.
+xref.infinite.loop=Um loop infinito foi detectado na tabela xref.

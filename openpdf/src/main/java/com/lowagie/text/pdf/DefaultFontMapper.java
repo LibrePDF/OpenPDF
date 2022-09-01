@@ -127,10 +127,9 @@ public class DefaultFontMapper implements FontMapper {
         return BaseFont.createFont(p.fontName, p.encoding, p.embedded, p.cached, p.ttfAfm, p.pfb);
       }
       final String fontKey;
-      final String logicalName = font.getName();
+      final String logicalName = font.getName().toLowerCase();
 
-      if (logicalName.equalsIgnoreCase("DialogInput") || logicalName.equalsIgnoreCase("Monospaced") || logicalName
-          .equalsIgnoreCase("Courier")) {
+      if (logicalName.equals("dialoginput") || logicalName.contains("mono") || logicalName.startsWith("courier")) {
 
         if (font.isItalic()) {
           if (font.isBold()) {
@@ -149,7 +148,7 @@ public class DefaultFontMapper implements FontMapper {
           }
         }
 
-      } else if (logicalName.equalsIgnoreCase("Serif") || logicalName.equalsIgnoreCase("TimesRoman")) {
+      } else if (logicalName.equals("serif") || logicalName.equals("timesroman")) {
 
         if (font.isItalic()) {
           if (font.isBold()) {

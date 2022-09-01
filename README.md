@@ -11,11 +11,10 @@ and bugreports to this GitHub repository.
 [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
-[![Join the chat at https://gitter.im/LibrePDF/code_of_conduct](https://badges.gitter.im/LibrePDF/code_of_conduct.svg)](https://gitter.im/LibrePDF/code_of_conduct)
 
-## OpenPDF version 1.3.26 released 2021-05-02 ##
+## OpenPDF version 1.3.29 released 2022-07-09 ##
 
-Get version 1.3.26 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.26
+Get version 1.3.29 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.29
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
@@ -28,7 +27,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>1.3.26</version>
+  <version>1.3.29</version>
 </dependency>
 ```
 
@@ -36,7 +35,13 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 
 [GNU Lesser General Public License (LGPL), Version 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1)
 
+For a short explanation see https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License
+
 [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
+
+For a short explanation see https://en.wikipedia.org/wiki/Mozilla_Public_License
+
+You can find also a nice explanation of these licenses under https://itsfoss.com/open-source-licenses-explained/
 
 We want OpenPDF to consist of source code which is consistently licensed with the LGPL and MPL
 licences only. This also means that any new contributions to the project must have a dual LGPL and
@@ -108,7 +113,6 @@ jar. If you want to use the bundled UTF-8 fonts, please add the following depend
 and use the class `org.librepdf.openpdf.fonts.Liberation`.
 
 ```xml
-
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf-fonts-extra</artifactId>
@@ -117,81 +121,29 @@ and use the class `org.librepdf.openpdf.fonts.Liberation`.
 ```
 
 ### Supporting complex glyph substitution/ Ligature substitution: ###
-OpenPDF supports glyph substitution which is required for correct rendering of fonts ligature substitution requirements. 
-FOP dependency is required to enable this feature.  
-Refer following wiki for details: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Multi-byte-character-language-support-with-TTF-fonts)
+
+OpenPDF supports glyph substitution which is required for correct rendering of fonts ligature substitution requirements.
+FOP dependency is required to enable this feature. Refer following wiki for
+details: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Multi-byte-character-language-support-with-TTF-fonts)
 
 ### Supporting OpenType layout, glyph positioning, reordering and substitution: ###
-OpenPDF supports OpenType layout, glyph positioning, reordering and substitution which is e.g. required for correct positioning
-of accents, the rendering of non-Latin and right-to-left scripts. OpenPDF supports DIN 91379.
+
+OpenPDF supports OpenType layout, glyph positioning, reordering and substitution which is e.g. required for correct
+positioning of accents, the rendering of non-Latin and right-to-left scripts. OpenPDF supports DIN 91379.
 See: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Latin-scripts)
 
 ### Optional: ###
 
-- [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a
-  recommended dependency)
-    - Provider (`org.bouncycastle:bcprov-jdk15on` or `org.bouncycastle:bcprov-ext-jdk15on` depending
+- [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
+  dependency)
+    - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
       on which algorithm you are using)
-    - PKIX/CMS (`org.bouncycastle:bcpkix-jdk15on`)
+    - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
 - Apache FOP (`org.apache.xmlgraphics:fop`)
+- Tiff support: Java versions prior to 9 require an additional library in the classpath to handle tiff images. Options are:
+    - https://github.com/haraldk/TwelveMonkeys
+    - https://github.com/jai-imageio/jai-imageio-core
 - Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
 ## Credits ##
-Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs/contributors) on GitHub.
-
-In GitHub User alphabetical order.
-
-### Maintainers and Members ###
-* [@asturio](https://github.com/asturio) - Claudio Clemens
-* [@bengolder](https://github.com/bengolder) - Benjamin Golder
-* [@daviddurand](https://github.com/daviddurand) - David G. Durand
-* [@kulatamicuda](https://github.com/kulatamicuda)
-* [@rtfarte](https://github.com/rtfarte) - Art Krahenbuhl
-* [@tlxtellef](https://github.com/tlxtellef) - Tellef
-
-### Contributors ###
-* [@abdullahcevik](https://github.com/abdullahcevik) - Abdullah Çevik
-* [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
-* [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.
-* [@applikationsprogramvara](https://github.com/applikationsprogramvara)
-* [@armin-weber](https://github.com/armin-weber)
-* [@bsmelo](https://github.com/bsmelo) - Bruno Melo
-* [@chrismaster](https://github.com/chrismaster) - Chris Master
-* [@codecracker2014](https://github.com/codecracker2014)
-* [@dandybudach](https://github.com/dandybudach) - Dandy Budach
-* [@glarfs](https://github.com/glarfs)
-* [@harrati](https://github.com/harrati)
-* [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)
-* [@jherkel](https://github.com/jherkel)
-* [@jokimaki](https://github.com/jokimaki)
-* [karolbe](https://github.com/karolbe) - Karol Bryd
-* [@Kindrat](https://github.com/Kindrat)
-* [@lapo-luchini](https://github.com/lapo-luchini) - Lapo Luchini
-* [@laurerunser](https://github.com/laurerunser) - Laure Runser
-* [@macromogic](https://github.com/macromogic)
-* [@mahdilamb](https://github.com/mahdilamb)
-* [@MartinKocour](https://github.com/MartinKocour) - Martin Kocour
-* [@mluppi](https://github.com/mluppi) - M. Luppi
-* [@noavarice](https://github.com/noavarice)
-* [@PalAditya](https://github.com/PalAditya) - Aditya Pal
-* [@prashantbhat](https://github.com/prashantbhat) - Prashant Bhat
-* [@rammetzger](https://github.com/rammetzger)
-* [@razilein](https://github.com/razilein) - Sita Geßner
-* [@salsolatragus](https://github.com/salsolatragus) - Sven Amann
-* [@sa-sh](https://github.com/sa-sh)
-* [@sixdouglas](https://github.com/sixdouglas) - Douglas Six
-* [@suiaing](https://github.com/suiaing)
-* [@sullis](https://github.com/sullis)
-* [@SuperPat45](https://github.com/SuperPat45)
-* [@syakovyn](https://github.com/syakovyn)
-* [@tia-99](https://github.com/tia-99)
-* [@ubermichael](https://github.com/ubermichael) - Michael Joyce
-* [@VedranSlankovic](https://github.com/VedranSlankovic)
-* [@V-F](https://github.com/V-F)
-* [@vic0075](https://github.com/vic0075)
-* [@vk-github18](https://github.com/vk-github18)
-* [@weiyeh](https://github.com/weiyeh)
-* [@Wugengxian](https://github.com/Wugengxian)
-* [@ymasory](https://github.com/ymasory)
-
-Also, a very special thanks to the iText developers ;)
+Please see [Contributors.md](Contributors.md).

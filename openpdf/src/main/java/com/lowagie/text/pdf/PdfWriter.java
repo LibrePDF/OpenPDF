@@ -206,7 +206,7 @@ public class PdfWriter extends DocWriter implements
             public void toPdf(OutputStream os) throws IOException {
               // TODO: are generation number and 'In use' keyword bound that way?
               final char inUse = generation == GENERATION_MAX ? 'f' : 'n';
-              os.write(String.format(CROSS_REFERENCE_ENTRY_FORMAT, offset, generation, inUse).getBytes());
+              os.write(getISOBytes(String.format(CROSS_REFERENCE_ENTRY_FORMAT, offset, generation, inUse)));
             }
 
             /**
@@ -2493,7 +2493,7 @@ public class PdfWriter extends DocWriter implements
         PdfArray arr = new PdfArray();
         for (PdfOCG o : documentOCG) {
             PdfLayer layer = (PdfLayer) o;
-            PdfDictionary usage = (PdfDictionary) layer.get(PdfName.USAGE);
+            PdfDictionary usage = layer.getAsDict(PdfName.USAGE);
             if (usage != null && usage.get(category) != null)
                 arr.add(layer.getRef());
         }
@@ -2554,9 +2554,9 @@ public class PdfWriter extends DocWriter implements
         }
         if (gr.size() > 0)
             d.put(PdfName.OFF, gr);
-        if (OCGRadioGroup.size() > 0)
+        if (OCGRadioGroup != null && OCGRadioGroup.size() > 0)
             d.put(PdfName.RBGROUPS, OCGRadioGroup);
-        if (OCGLocked.size() > 0)
+        if (OCGLocked != null && OCGLocked.size() > 0)
             d.put(PdfName.LOCKED, OCGLocked);
         addASEvent(PdfName.VIEW, PdfName.ZOOM);
         addASEvent(PdfName.VIEW, PdfName.VIEW);

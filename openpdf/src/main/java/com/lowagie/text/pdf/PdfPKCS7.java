@@ -80,8 +80,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -155,6 +153,7 @@ public class PdfPKCS7 {
     private static final String ID_PKCS7_SIGNED_DATA = "1.2.840.113549.1.7.2";
     private static final String ID_RSA = "1.2.840.113549.1.1.1";
     private static final String ID_DSA = "1.2.840.10040.4.1";
+    private static final String ID_ECDSA = "1.2.840.10045.2.1";
     private static final String ID_CONTENT_TYPE = "1.2.840.113549.1.9.3";
     private static final String ID_MESSAGE_DIGEST = "1.2.840.113549.1.9.4";
     private static final String ID_SIGNING_TIME = "1.2.840.113549.1.9.5";
@@ -227,6 +226,7 @@ public class PdfPKCS7 {
         algorithmNames.put("1.3.36.3.3.1.3", "RSA");
         algorithmNames.put("1.3.36.3.3.1.2", "RSA");
         algorithmNames.put("1.3.36.3.3.1.4", "RSA");
+        algorithmNames.put(ID_ECDSA, "ECDSA");
 
         allowedDigests.put("MD5", "1.2.840.113549.2.5");
         allowedDigests.put("MD2", "1.2.840.113549.2.2");
@@ -300,7 +300,6 @@ public class PdfPKCS7 {
      * @return a date
      * @since 2.1.6
      */
-    @Nullable
     public Calendar getTimeStampDate() {
         if (timeStampToken == null)
             return null;
@@ -614,6 +613,8 @@ public class PdfPKCS7 {
                 digestEncryptionAlgorithm = ID_RSA;
             } else if (digestEncryptionAlgorithm.equals("DSA")) {
                 digestEncryptionAlgorithm = ID_DSA;
+            } else if (digestEncryptionAlgorithm.equals("EC")) {
+                digestEncryptionAlgorithm = ID_ECDSA;
             } else {
                 throw new NoSuchAlgorithmException(
                         MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
@@ -1076,7 +1077,6 @@ public class PdfPKCS7 {
         return false;
     }
 
-    @Nullable
     private static ASN1Primitive getExtensionValue(X509Certificate cert,
                                                    String oid) throws IOException {
         byte[] bytes = cert.getExtensionValue(oid);
@@ -1089,7 +1089,6 @@ public class PdfPKCS7 {
         return aIn.readObject();
     }
 
-    @Nonnull
     private static String getStringFromGeneralName(ASN1Primitive names) {
        	ASN1TaggedObject taggedObject = (ASN1TaggedObject) names ;
         return new String(ASN1OctetString.getInstance(taggedObject, false)
@@ -1200,6 +1199,8 @@ public class PdfPKCS7 {
                 this.digestEncryptionAlgorithm = ID_RSA;
             } else if (digestEncryptionAlgorithm.equals("DSA")) {
                 this.digestEncryptionAlgorithm = ID_DSA;
+            } else if (digestEncryptionAlgorithm.equals("EC")) {
+                digestEncryptionAlgorithm = ID_ECDSA;
             } else
                 throw new ExceptionConverter(new NoSuchAlgorithmException(
                         MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
@@ -1765,7 +1766,6 @@ public class PdfPKCS7 {
 
         }
 
-        @Nullable
         public String getField(String name) {
             List<String> vs = valuesMap.get(name);
             return vs == null ? null : vs.get(0);
