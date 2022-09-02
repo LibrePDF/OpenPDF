@@ -2575,6 +2575,15 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   /**
+   * Returns <CODE>true</CODE> if the owner password has been used to open the document.
+   *
+   * @return <CODE>true</CODE> if the owner password has been used to open the document.
+   */
+  public boolean isOwnerPasswordUsed() {
+    return ownerPasswordUsed;
+  }
+
+  /**
    * Gets the encryption permissions. It can be used directly in
    * <CODE>PdfWriter.setEncryption()</CODE>.
    * 
