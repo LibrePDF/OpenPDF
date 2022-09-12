@@ -60,7 +60,6 @@ import java.net.URLConnection;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.util.Base64;
-
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
@@ -77,7 +76,7 @@ import org.bouncycastle.tsp.TimeStampTokenInfo;
  * Created by Aiken Sam, 2006-11-15, refactored by Martin Brunecky, 07/15/2007
  * for ease of subclassing.
  * </p>
- * 
+ *
  * @since 2.1.6
  */
 public class TSAClientBouncyCastle implements TSAClient {
@@ -96,7 +95,7 @@ public class TSAClientBouncyCastle implements TSAClient {
 
   /**
    * Creates an instance of a TSAClient that will use BouncyCastle.
-   * 
+   *
    * @param url
    *          String - Time Stamp Authority URL (i.e.
    *          "http://tsatest1.digistamp.com/TSA")
@@ -107,7 +106,7 @@ public class TSAClientBouncyCastle implements TSAClient {
 
   /**
    * Creates an instance of a TSAClient that will use BouncyCastle.
-   * 
+   *
    * @param url
    *          String - Time Stamp Authority URL (i.e.
    *          "http://tsatest1.digistamp.com/TSA")
@@ -124,7 +123,7 @@ public class TSAClientBouncyCastle implements TSAClient {
    * Constructor. Note the token size estimate is updated by each call, as the
    * token size is not likely to change (as long as we call the same TSA using
    * the same imprint length).
-   * 
+   *
    * @param url
    *          String - Time Stamp Authority URL (i.e.
    *          "http://tsatest1.digistamp.com/TSA")
@@ -146,7 +145,7 @@ public class TSAClientBouncyCastle implements TSAClient {
   /**
    * Get the token size estimate. Returned value reflects the result of the last
    * succesfull call, padded
-   * 
+   *
    * @return an estimate of the token size
    */
   @Override
@@ -169,7 +168,7 @@ public class TSAClientBouncyCastle implements TSAClient {
   /**
    * Get RFC 3161 timeStampToken. Method may return null indicating that
    * timestamp should be skipped.
-   * 
+   *
    * @param caller
    *          PdfPKCS7 - calling PdfPKCS7 instance (in case caller needs it)
    * @param imprint
@@ -319,7 +318,6 @@ public class TSAClientBouncyCastle implements TSAClient {
 
   /**
    * Gets Policy OID of TSA request.
-   * @param policy
    */
   public String getPolicy() {
       return policy;
