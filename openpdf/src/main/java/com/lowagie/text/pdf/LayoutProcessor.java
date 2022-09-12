@@ -42,6 +42,7 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.error_messages.MessageLocalization;
 import java.awt.font.FontRenderContext;
@@ -172,7 +173,6 @@ public class LayoutProcessor {
         Map<TextAttribute, Object> textAttributes = new HashMap<>();
         textAttributes.put(TextAttribute.LIGATURES, TextAttribute.LIGATURES_ON);
         setTextAttributes(font, textAttributes);
-        textAttributes.put(TextAttribute.LIGATURES, TextAttribute.LIGATURES_ON);
     }
     /**
      * Set run direction for one font to RTL
