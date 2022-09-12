@@ -192,8 +192,7 @@
                     <version>${maven-checkstyle-plugin.version}</version>
                     <configuration>
                         <configLocation>checkstyle.xml</configLocation>
-                        <failOnViolation>false</failOnViolation>
-                        <failsOnError>false</failsOnError>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     </configuration>
                     <dependencies>
                         <dependency>
