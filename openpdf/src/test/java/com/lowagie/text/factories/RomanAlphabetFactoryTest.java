@@ -1,7 +1,7 @@
 package com.lowagie.text.factories;
 
 import static com.lowagie.text.factories.RomanAlphabetFactory.getString;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
