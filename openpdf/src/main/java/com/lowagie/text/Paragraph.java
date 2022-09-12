@@ -49,6 +49,8 @@
 
 package com.lowagie.text;
 
+import com.lowagie.text.pdf.PdfWriter;
+
 /**
  * A <CODE>Paragraph</CODE> is a series of <CODE>Chunk</CODE>s and/or <CODE>Phrases</CODE>.
  * <P>
@@ -79,6 +81,9 @@ public class Paragraph extends Phrase {
     
     /** The alignment of the text. */
     protected int alignment = Element.ALIGN_UNDEFINED;
+
+    /** The base run direction of paragraph */
+    protected int runDirection = PdfWriter.RUN_DIRECTION_DEFAULT;
     
     /** The text leading that is multiplied by the biggest font size in the line. */
     protected float multipliedLeading = 0;
@@ -499,4 +504,11 @@ public class Paragraph extends Phrase {
         return spacingAfter;
     }
 
+    public int getRunDirection() {
+        return runDirection;
+    }
+
+    public void setRunDirection(int runDirection) {
+        this.runDirection = runDirection;
+    }
 }

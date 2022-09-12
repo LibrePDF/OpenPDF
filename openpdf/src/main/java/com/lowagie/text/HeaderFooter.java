@@ -50,6 +50,9 @@
 package com.lowagie.text;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A <CODE>HeaderFooter</CODE>-object is a <CODE>Rectangle</CODe> with text
  * that can be put above and/or below every page.
@@ -81,7 +84,13 @@ public class HeaderFooter extends Rectangle {
     
 /** This is alignment of the header/footer. */
     private int alignment;
-    
+
+/** This is the <CODE>List</CODE> containing non-text <CODE>Element</CODE>. */
+    private java.util.List<Element> specialContent = null;
+
+/**  This is the padding of height of header/footer. */
+    private float padding;
+
     // constructors
     
 /**
@@ -196,6 +205,59 @@ public class HeaderFooter extends Rectangle {
         this.alignment = alignment;
     }
 
+/**
+ * Gets padding of height of header/footer.
+ *
+ * @return the padding of height
+ */
+
+    public float getPadding(){
+        return padding;
+    }
+
+/**
+ * Sets padding of height of header/footer.
+ *
+ * @param padding the new padding of height
+ */
+
+    public void setPadding(float padding){
+        this.padding = padding;
+    }
+
+/**
+ * Increases current padding by adding new value into it
+ *
+ * @param augment the new value
+ */
+
+    public void addPadding(float augment){
+        padding += augment;
+    }
+
+/**
+ * Adds non-text <CODE>Element</CODE> into <CODE>specialContent</CODE>
+ *
+ * @param element the new non-text <CODE>Element</CODE>
+ */
+
+    public void addSpecialContent(Element element){
+        if(specialContent == null){
+            specialContent = new ArrayList<>();
+        }
+        specialContent.add(element);
+    }
+
+/**
+ * Gets <CODE>specialContent</CODE>
+ *
+ * @return <CODE>specialContent</CODE>
+ */
+
+    public List<Element> getSpecialContent(){
+        return specialContent;
+    }
+
     // methods to retrieve the membervariables
     
 /**
@@ -209,6 +271,7 @@ public class HeaderFooter extends Rectangle {
         if (before != null) {
             paragraph = new Paragraph(before.getLeading());
             paragraph.add(before);
+            paragraph.remove(paragraph.size()-1);
         } else {
             paragraph = new Paragraph();
         }

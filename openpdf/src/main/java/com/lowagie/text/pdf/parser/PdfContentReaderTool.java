@@ -153,7 +153,7 @@ public class PdfContentReaderTool {
             out.print((char) ch);
         }
 
-        out.println("- - - - - Text Extraction - - - - - -");
+        out.println("\n- - - - - Text Extraction - - - - - -");
         PdfTextExtractor extractor = new PdfTextExtractor(reader,
                 new MarkedUpTextAssembler(reader));
         String extractedText = extractor.getTextFromPage(pageNum);

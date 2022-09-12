@@ -1176,7 +1176,7 @@ public class ColumnText {
                         compositeColumn.setFollowingIndent(para.getIndentationLeft());
                         compositeColumn.setRightIndent(para.getIndentationRight());
                         compositeColumn.setLeading(para.getLeading(), para.getMultipliedLeading());
-                        compositeColumn.setRunDirection(runDirection);
+                        compositeColumn.setRunDirection(para.getRunDirection() == PdfWriter.RUN_DIRECTION_DEFAULT ? runDirection : para.getRunDirection());
                         compositeColumn.setArabicOptions(arabicOptions);
                         compositeColumn.setSpaceCharRatio(spaceCharRatio);
                         compositeColumn.addText(para);
@@ -1420,9 +1420,7 @@ public class ColumnText {
                         }
                     }
                     else if (!table.isSplitRows() && k == listIdx && firstPass) {
-                        compositeElements.removeFirst();
-                        splittedRow = false;
-                        continue;
+                        return NO_MORE_COLUMN;
                     }
                     else if (k == listIdx && !firstPass && (!table.isSplitRows() || table.isSplitLate()) && (table.getFooterRows() == 0 || table.isComplete()))
                         return NO_MORE_COLUMN;
