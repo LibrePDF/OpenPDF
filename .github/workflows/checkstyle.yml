@@ -14,7 +14,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Run check style
-      uses: nikitasavinov/checkstyle-action@0.6.0
+      uses: dbelyaev/action-checkstyle@v0.6.1
       with:
         checkstyle_config: 'checkstyle.xml'
         reporter: 'github-pr-check'

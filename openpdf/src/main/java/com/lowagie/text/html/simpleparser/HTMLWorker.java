@@ -78,6 +78,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -331,11 +332,16 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     }
                 }
                 if (img == null) {
-                    if (!src.startsWith("http")) {
-                        String path = cprops.getOrDefault("image_path", "");
-                        src = new File(path, src).getPath();
+                     if (src.startsWith("data:image/")) { // base64 embedded image
+                         int pos = src.indexOf("base64,");
+                         img = Image.getInstance(Base64.getDecoder().decode(src.substring(pos + 7)));
+                     } else {
+                         if (!src.startsWith("http")) {
+                             String path = cprops.getOrDefault("image_path", "");
+                             src = new File(path, src).getPath();
+                         }
+                         img = Image.getInstance(src);
                     }
-                    img = Image.getInstance(src);
                 }
                 String align = style.get("align");
                 String width = style.get("width");

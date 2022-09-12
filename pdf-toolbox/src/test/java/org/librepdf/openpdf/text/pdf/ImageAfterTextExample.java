@@ -9,7 +9,6 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
