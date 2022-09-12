@@ -57,7 +57,7 @@ public class GlyphLayoutDocumentKernLigaPerFont {
      * @param   fontSize the size of this font
      * @return the Font constructed based on the parameters
      */
-    public static Font getFont(String path, String alias, float fontSize) {
+    public static Font loadFont(String path, String alias, float fontSize) {
         FontFactory.register(path, alias);
         return FontFactory.getFont(alias, BaseFont.IDENTITY_H, true, fontSize, Font.UNDEFINED, null, false);
         // cached has to be set to false, to allow different attributes for instances of one font
@@ -79,18 +79,18 @@ public class GlyphLayoutDocumentKernLigaPerFont {
         // The  OpenType fonts loaded with FontFactory.register() are
         // available for glyph layout.
         String fontDir = "com/lowagie/examples/fonts/";
-        Font serifFont = getFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif", fontSize);
+        Font serifFont = loadFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif", fontSize);
 
-        Font serifKernLiga1 = getFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif_kern_liga", fontSize);
+        Font serifKernLiga1 = loadFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif_kern_liga", fontSize);
         // Switch ligatures and kerning on for one font
         LayoutProcessor.setLigatures(serifKernLiga1);
         LayoutProcessor.setKerning(serifKernLiga1);
 
-        Font serifKern1 = getFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif_kern1", fontSize);
+        Font serifKern1 = loadFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif_kern1", fontSize);
         // Switch on kerning for one font
         LayoutProcessor.setKerning(serifKern1);
 
-        Font serifLiga1 = getFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif_liga1", fontSize);
+        Font serifLiga1 = loadFont(fontDir+"noto/NotoSerif-Regular.ttf", "serif_liga1", fontSize);
         // Switch on ligatures for one font
         LayoutProcessor.setLigatures(serifLiga1);
 
