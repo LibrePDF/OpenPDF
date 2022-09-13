@@ -83,7 +83,8 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(), "PdfReader fails to report the correct number of pages");
-            Assertions.assertEquals("Demo   Name   Signature   Date  Elizabeth Schultz (Apr 24, 2018) Elizabeth Schultz Apr 24, 2018 Elizabeth Schultz Sue Northrop (Apr 24, 2018) Apr 24, 2018 Sue Northrop", new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
+            Assertions.assertEquals("Demo   Name   Signature   Date  Elizabeth Schultz (Apr 24, 2018) Elizabeth Schultz Apr 24, 2018 Elizabeth Schultz Sue Northrop (Apr 24, 2018) Apr 24, 2018 Sue Northrop",
+                    new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -198,7 +199,9 @@ class DecryptAES256R6Test {
      */
     @Test
     public void testReadEncXiLongPassword() throws IOException {
-        try (   InputStream resource = getClass().getResourceAsStream("/issue375/enc-XI-long-password=qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv.pdf")  ) {
+        try (
+            InputStream resource = getClass().getResourceAsStream("/issue375/enc-XI-long-password=qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv.pdf")
+        ) {
             PdfReader pdfReader = new PdfReader(resource,"qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv".getBytes());
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
