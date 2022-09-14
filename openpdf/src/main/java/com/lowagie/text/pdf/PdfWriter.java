@@ -1881,6 +1881,10 @@ public class PdfWriter extends DocWriter implements
     public static final int STANDARD_ENCRYPTION_128 = 1;
     /** Type of encryption */
     public static final int ENCRYPTION_AES_128 = 2;
+    // ENCRYPTION_* = 3 reserved for implementation of the
+    // meanwhile deprecated proprietary AES256 variant by Adobe
+    /** Type of encryption */
+    public static final int ENCRYPTION_AES_256_V3 = 4;
     /** Mask to separate the encryption type from the encryption mode. */
     static final int ENCRYPTION_MASK = 7;
     /** Add this to the mode to keep the metadata in clear text */

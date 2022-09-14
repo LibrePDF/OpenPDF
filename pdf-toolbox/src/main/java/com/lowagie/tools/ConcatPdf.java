@@ -49,7 +49,11 @@
 
 package com.lowagie.tools;
 
-import java.io.FileOutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +62,8 @@ import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStream;
+import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.SimpleBookmark;
 
 /**
@@ -77,54 +83,63 @@ public class ConcatPdf {
         }
         else {
             try {
-                int pageOffset = 0;
-                List<Map<String, Object>> master = new ArrayList<>();
-                int f = 0;
-                String outFile = args[args.length-1];
-                Document document = null;
-                PdfCopy  writer = null;
-                while (f < args.length-1) {
-                    // we create a reader for a certain document
-                    PdfReader reader = new PdfReader(args[f]);
-                    reader.consolidateNamedDestinations();
-                    // we retrieve the total number of pages
-                    int n = reader.getNumberOfPages();
-                    List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmarkList(reader);
-                    if (bookmarks != null) {
-                        if (pageOffset != 0)
-                            SimpleBookmark.shiftPageNumbersInRange(bookmarks, pageOffset, null);
-                        master.addAll(bookmarks);
-                    }
-                    pageOffset += n;
-                    System.out.println("There are " + n + " pages in " + args[f]);
-                    
-                    if (f == 0) {
-                        // step 1: creation of a document-object
-                        document = new Document(reader.getPageSizeWithRotation(1));
-                        // step 2: we create a writer that listens to the document
-                        writer = new PdfCopy(document, new FileOutputStream(outFile));
-                        // step 3: we open the document
-                        document.open();
-                    }
-                    // step 4: we add content
-                    PdfImportedPage page;
-                    for (int i = 0; i < n; ) {
-                        ++i;
-                        page = writer.getImportedPage(reader, i);
-                        writer.addPage(page);
-                        System.out.println("Processed page " + i);
-                    }
-                    writer.freeReader(reader);
-                    f++;
+                File outFile = new File(args[args.length-1]);
+                List<File> sources = new ArrayList<>();
+                for (int i = 0; i < args.length -1; i++) {
+                    sources.add(new File(args[i]));
                 }
-                if (!master.isEmpty())
-                    writer.setOutlines(master);
-                // step 5: we close the document
-                document.close();
+                concat(sources, outFile);     
             }
-            catch(Exception e) {
+            catch(IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+    
+    public static void concat(List<File> sources, File target) throws IOException {
+        
+        for (File source: sources) {
+            if (!source.isFile() || !source.canRead()) {
+                throw new IOException("cannot read:" + source.getAbsolutePath());
+            }
+        }
+        
+        int pageOffset = 0;
+        List<Map<String, Object>> master = new ArrayList<>();
+        
+        Document document = new Document();
+        PdfCopy  writer = new PdfCopy(document, new BufferedOutputStream(Files.newOutputStream(target.toPath())));
+        writer.setPdfVersion(PdfWriter.VERSION_1_7);
+        writer.setFullCompression();
+        writer.setCompressionLevel(PdfStream.BEST_COMPRESSION);
+        document.open();
+        for (File source: sources) {
+            // we create a reader for a certain document
+            PdfReader reader = new PdfReader(new BufferedInputStream(Files.newInputStream(source.toPath())));
+            reader.consolidateNamedDestinations();
+            // we retrieve the total number of pages
+            int numberOfPages = reader.getNumberOfPages();
+            List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmarkList(reader);
+            if (bookmarks != null) {
+                if (pageOffset != 0) {
+                    SimpleBookmark.shiftPageNumbersInRange(bookmarks, pageOffset, null);
+                }
+                master.addAll(bookmarks);
+            }
+            pageOffset += numberOfPages;
+
+            // we add content
+            PdfImportedPage page;
+            for (int i = 1; i <= numberOfPages; i++) {
+                page = writer.getImportedPage(reader, i);
+                writer.addPage(page);
+            }
+            writer.freeReader(reader);
+        }
+        if (!master.isEmpty()) {
+            writer.setOutlines(master);
+        }
+        // we close the document
+        document.close();
     }
 }

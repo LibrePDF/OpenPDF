@@ -55,6 +55,7 @@ import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.utils.NumberUtilities;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -63,7 +64,7 @@ import java.util.ArrayList;
 public class IncCell implements TextElementArray {
 
     private final PdfPCell cell;
-    private ArrayList<Element> chunks = new ArrayList<>();
+    private final List<Element> chunks = new ArrayList<>();
 
     /**
      * Creates a new instance of IncCell
@@ -77,6 +78,10 @@ public class IncCell implements TextElementArray {
         props.findProperty("colspan")
                 .flatMap(NumberUtilities::parseInt)
                 .ifPresent(cell::setColspan);
+
+        props.findProperty("rowspan")
+                .flatMap(NumberUtilities::parseInt)
+                .ifPresent(cell::setRowspan);
 
         if (tag.equals("th")) {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -124,7 +129,7 @@ public class IncCell implements TextElementArray {
 
     @Override
     public ArrayList<Element> getChunks() {
-        return chunks;
+        return (ArrayList<Element>) chunks;
     }
 
     @Override

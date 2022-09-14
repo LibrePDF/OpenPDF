@@ -12,9 +12,12 @@ jobs:
     name: Checkstyle job
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Run check style
-      uses: nikitasavinov/checkstyle-action@master
+      uses: dbelyaev/action-checkstyle@v0.6.1
       with:
         checkstyle_config: 'checkstyle.xml'
         reporter: 'github-pr-check'
+        filter_mode: nofilter
+        level: error
+        fail_on_error: true

@@ -1,5 +1,15 @@
 package com.lowagie.text;
 
+import com.lowagie.text.pdf.PdfWriter;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.lowagie.text.StandardFonts.COURIER;
 import static com.lowagie.text.StandardFonts.COURIER_BOLD;
 import static com.lowagie.text.StandardFonts.COURIER_BOLDITALIC;
@@ -16,15 +26,7 @@ import static com.lowagie.text.StandardFonts.TIMES_ITALIC;
 import static com.lowagie.text.StandardFonts.ZAPFDINGBATS;
 import static com.lowagie.text.StandardFonts.values;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import com.lowagie.text.pdf.PdfWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class StandardFontsTest {
 
@@ -77,7 +79,7 @@ class StandardFontsTest {
             // when
             final Font font = standardFont.create();
             // then
-            assertThat(font).isNotNull();
+            assertNotNull(font);
         }
     }
 

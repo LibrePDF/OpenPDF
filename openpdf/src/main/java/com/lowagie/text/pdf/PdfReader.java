@@ -768,6 +768,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (em != null && em.toString().equals("false"))
           cryptoMode |= PdfWriter.DO_NOT_ENCRYPT_METADATA;
         break;
+      case 6:
+        cryptoMode = PdfWriter.ENCRYPTION_AES_256_V3;
+        em = enc.get(PdfName.ENCRYPTMETADATA);
+        if (em != null && em.toString().equals("false"))
+          cryptoMode |= PdfWriter.DO_NOT_ENCRYPT_METADATA;
+        break;
       default:
         throw new UnsupportedPdfException(
             MessageLocalization.getComposedMessage(
@@ -859,20 +865,75 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     decrypt.setCryptoMode(cryptoMode, lengthValue);
 
     if (filter.equals(PdfName.STANDARD)) {
-      // check by owner password
-      decrypt
-          .setupByOwnerPassword(documentID, password, uValue, oValue, pValue);
-      if (!equalsArray(uValue, decrypt.userKey,
-          (rValue == 3 || rValue == 4) ? 16 : 32)) {
-        // check by user password
-        decrypt.setupByUserPassword(documentID, password, oValue, pValue);
+      if (rValue < 6) {
+        // check by owner password
+        decrypt.setupByOwnerPassword(documentID, password, uValue, oValue, pValue);
         if (!equalsArray(uValue, decrypt.userKey,
             (rValue == 3 || rValue == 4) ? 16 : 32)) {
-          throw new BadPasswordException(
-              MessageLocalization.getComposedMessage("bad.user.password"));
+          // check by user password
+          decrypt.setupByUserPassword(documentID, password, oValue, pValue);
+          if (!equalsArray(uValue, decrypt.userKey,
+              (rValue == 3 || rValue == 4) ? 16 : 32)) {
+            throw new BadPasswordException(
+                MessageLocalization.getComposedMessage("bad.user.password"));
+          }
+        } else
+          ownerPasswordUsed = true;
+      } else {
+        // implements Algorithm 2.A: Retrieving the file encryption key from an encrypted document in order to decrypt it (revision 6 and later) - ISO 32000-2 section 7.6.4.3.3
+        s = enc.get(PdfName.UE).toString();
+        strings.remove(enc.get(PdfName.UE));
+        byte[] ueValue = com.lowagie.text.DocWriter.getISOBytes(s);
+        s = enc.get(PdfName.OE).toString();
+        strings.remove(enc.get(PdfName.OE));
+        byte[] oeValue = com.lowagie.text.DocWriter.getISOBytes(s);
+        s = enc.get(PdfName.PERMS).toString();
+        strings.remove(enc.get(PdfName.PERMS));
+        byte[] permsValue = com.lowagie.text.DocWriter.getISOBytes(s);
+
+        // step b of Algorithm 2.A
+        byte[] password = this.password;
+        if (password == null)
+          password = new byte[0];
+        else if (password.length > 127)
+          password = Arrays.copyOf(password, 127);
+
+        // According to ISO 32000-2 the uValue is expected to be 48 bytes in length.
+        // Actual documents from the wild tend to have the uValue filled with zeroes
+        // to a 127 bytes length. As input to computeHash for owner password related
+        // operations, though, we must only use the 48 bytes.
+        if (uValue != null && uValue.length > 48)
+            uValue = Arrays.copyOf(uValue, 48);
+
+        try {
+          // step c of Algorithm 2.A
+          byte[] hashAlg2B = decrypt.hashAlg2B(password, Arrays.copyOfRange(oValue, 32, 40), uValue);
+          if (equalsArray(hashAlg2B, oValue, 32)) {
+            // step d of Algorithm 2.A
+            decrypt.setupByOwnerPassword(documentID, password, uValue, ueValue, oValue, oeValue, pValue);
+            // step f of Algorithm 2.A
+            if (decrypt.decryptAndCheckPerms(permsValue))
+              ownerPasswordUsed = true;
+          }
+
+          if (!ownerPasswordUsed) {
+            // analog of step c of Algorithm 2.A for user password
+            hashAlg2B = decrypt.hashAlg2B(password, Arrays.copyOfRange(uValue, 32, 40), null);
+            if (!equalsArray(hashAlg2B, uValue, 32)) 
+              throw new BadPasswordException(MessageLocalization.getComposedMessage("bad.user.password"));
+            // step e of Algorithm 2.A
+            decrypt.setupByUserPassword(documentID, password, uValue, ueValue, oValue, oeValue, pValue);
+            // step f of Algorithm 2.A
+            if (!decrypt.decryptAndCheckPerms(permsValue))
+              throw new BadPasswordException(MessageLocalization.getComposedMessage("bad.user.password"));
+          }
+          pValue = decrypt.permissions;
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOException(e);
         }
-      } else
-        ownerPasswordUsed = true;
+      }
     } else if (filter.equals(PdfName.PUBSEC)) {
       decrypt.setupByEncryptionKey(encryptionKey, lengthValue);
       ownerPasswordUsed = true;
@@ -2572,6 +2633,15 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    */
   public boolean isEncrypted() {
     return encrypted;
+  }
+
+  /**
+   * Returns <CODE>true</CODE> if the owner password has been used to open the document.
+   *
+   * @return <CODE>true</CODE> if the owner password has been used to open the document.
+   */
+  public boolean isOwnerPasswordUsed() {
+    return ownerPasswordUsed;
   }
 
   /**

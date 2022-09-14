@@ -104,11 +104,16 @@ public class PdfSmartCopy extends PdfCopy {
             return null;
         }
         if (srcObj.isStream()) {
-            streamKey = new ByteStore((PRStream)srcObj);
-            validStream = true;
-            PdfIndirectReference streamRef = streamMap.get(streamKey);
-            if (streamRef != null) {
-                return streamRef;
+            try {
+                streamKey = new ByteStore((PRStream)srcObj);
+                validStream = true;
+                PdfIndirectReference streamRef = streamMap.get(streamKey);
+                if (streamRef != null) {
+                    return streamRef;
+                }
+            }
+            catch (IOException ioe) {
+                //
             }
         }
 
@@ -146,10 +151,27 @@ public class PdfSmartCopy extends PdfCopy {
         private byte[] b;
         private int hash;
         private MessageDigest md5;
+        
+        private final int MAX_LEVELS = 100;
+        
+        ByteStore(PRStream str) throws IOException {
+            try {
+                md5 = MessageDigest.getInstance("MD5");
+            }
+            catch (Exception e) {
+                throw new ExceptionConverter(e);
+            }
+            ByteBuffer bb = new ByteBuffer();
+            int level = MAX_LEVELS;
+            serObject(str, level, bb);
+            this.b = bb.toByteArray();
+            md5 = null;
+        }
 
         private void serObject(PdfObject obj, int level, ByteBuffer bb) throws IOException {
-            if (level <= 0)
-                return;
+            if (level <= 0) {
+                throw new IOException("Max level reached");
+            }
             if (obj == null) {
                 bb.append("$Lnull");
                 return;
@@ -179,8 +201,9 @@ public class PdfSmartCopy extends PdfCopy {
         
         private void serDic(PdfDictionary dic, int level, ByteBuffer bb) throws IOException {
             bb.append("$D");
-            if (level <= 0)
-                return;
+            if (level <= 0) {
+                throw new IOException("Max level reached");
+            }
             Object[] keys = dic.getKeys().toArray();
             Arrays.sort(keys);
             for (Object key : keys) {
@@ -191,38 +214,28 @@ public class PdfSmartCopy extends PdfCopy {
         
         private void serArray(PdfArray array, int level, ByteBuffer bb) throws IOException {
             bb.append("$A");
-            if (level <= 0)
-                return;
+            if (level <= 0) {
+                throw new IOException("Max level reached");
+            }
             for (int k = 0; k < array.size(); ++k) {
                 serObject(array.getPdfObject(k), level, bb);
             }
         }
         
-        ByteStore(PRStream str) throws IOException {
-            try {
-                md5 = MessageDigest.getInstance("MD5");
-            }
-            catch (Exception e) {
-                throw new ExceptionConverter(e);
-            }
-            ByteBuffer bb = new ByteBuffer();
-            int level = 100;
-            serObject(str, level, bb);
-            this.b = bb.toByteArray();
-            md5 = null;
-        }
+
 
         public boolean equals(Object obj) {
-            if (!(obj instanceof ByteStore))
+            if (!(obj instanceof ByteStore)) {
                 return false;
-            if (hashCode() != obj.hashCode())
+            }
+            if (hashCode() != obj.hashCode()) {
                 return false;
+            }
             return Arrays.equals(b, ((ByteStore)obj).b);
         }
 
         public int hashCode() {
             if (hash == 0) {
-                int len = b.length;
                 for (byte b1 : b) {
                     hash = hash * 31 + (b1 & 0xff);
                 }

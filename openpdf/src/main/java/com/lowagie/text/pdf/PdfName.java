@@ -142,6 +142,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     /** A name */
     public static final PdfName AESV2 = new PdfName("AESV2");
     /** A name */
+    public static final PdfName AESV3 = new PdfName("AESV3");
+    /** A name */
     public static final PdfName AIS = new PdfName("AIS");
     /** A name */
     public static final PdfName ALLPAGES = new PdfName("AllPages");
@@ -1067,6 +1069,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     /** A name */
     public static final PdfName OCPROPERTIES = new PdfName("OCProperties");
     /** A name */
+    public static final PdfName OE = new PdfName("OE");
+    /** A name */
     public static final PdfName Off = new PdfName("Off");
     /** A name */
     public static final PdfName OFF = new PdfName("OFF");
@@ -1616,6 +1620,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName TYPE3 = new PdfName("Type3");
     /** A name of an attribute. */
     public static final PdfName U = new PdfName("U");
+    /** A name of an attribute. */
+    public static final PdfName UE = new PdfName("UE");
     /** A name of an attribute. */
     public static final PdfName UF = new PdfName("UF");
     /** A name of an attribute. */

@@ -745,7 +745,12 @@ public class PdfDocument extends Document {
                 case Element.IMGRAW:
                 case Element.IMGTEMPLATE: {
                     //carriageReturn(); suggestion by Marc Campforts
-                    add((Image) element);
+                    if(isDoFooter){
+                        addDelay((Image) element);
+                    }else{
+                        add((Image) element);
+                    }
+
                     break;
                 }
                 case Element.YMARK: {
@@ -777,37 +782,45 @@ public class PdfDocument extends Document {
         }
     }
 
+
+    /**
+     * Integrate a paragraph into a table, so it can be a whole.
+     * <p>Note: This is not a table with square, it's just like the paragraph, but
+     * it cannot be separated.
+     * @param paragraph the {@code Paragraph} incoming paragraphs to be consolidated
+     * @return {@code PdfPTable} the whole which will be used later
+     */
     static PdfPTable createInOneCell(Paragraph paragraph) {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(100f);
-
         PdfPCell cell = new PdfPCell();
         cell.setBorder(Table.NO_BORDER);
         cell.setPadding(0);
-
-        for (int i=0; i<paragraph.size(); ++i) {
+        for (int i = 0; i < paragraph.size(); i++) {
             if (paragraph.get(i) instanceof Chunk) {
                 Paragraph subParagraph = new Paragraph();
                 boolean hasNewLine = false;
                 do {
-                    Chunk chunk = (Chunk)paragraph.get(i);
-                    ++i;
+                    Chunk chunk = (Chunk) paragraph.get(i);
+                    i++;
                     if (chunk.getContent().equals("\n")) {
                         hasNewLine = true;
                         break;
-                    }
-                    else
+                    } else {
                         subParagraph.add(chunk);
-                } while (i<paragraph.size() && paragraph.get(i) instanceof Chunk);
-                --i;
+                    }
+                } while (i < paragraph.size() && paragraph.get(i) instanceof Chunk);
+                i--;
+                // It's important to set the leading here.
+                 subParagraph.setLeading(paragraph.getLeading());
                 cell.addElement(subParagraph);
-                if (hasNewLine)
+                if (hasNewLine) {
                     cell.addElement(new Chunk("\n"));
-            }
-            else
+                }
+            } else {
                 cell.addElement(paragraph.get(i));
+            }
         }
-
         table.addCell(cell);
         return table;
     }
@@ -1401,7 +1414,7 @@ public class PdfDocument extends Document {
         int lineLen;
         boolean isJustified;
         float hangingCorrection = 0;
-        float hScale = 1;
+        float hScale;
         float lastHScale = Float.NaN;
         float baseWordSpacing = 0;
         float baseCharacterSpacing = 0;
@@ -1530,7 +1543,7 @@ public class PdfDocument extends Document {
                         if (nextChunk == null)
                             subtract += hangingCorrection;
                         Object[][] unders = (Object[][]) chunk.getAttribute(Chunk.UNDERLINE);
-                        Color scolor = null;
+                        Color scolor;
                         for (Object[] obj : unders) {
                             scolor = (Color) obj[0];
                             float[] ps = (float[]) obj[1];
@@ -2526,6 +2539,97 @@ public class PdfDocument extends Document {
         }
     }
 
+    /**
+     * write non-text <CODE>Element</CODE> into document
+     */
+
+    protected void flushSpecial() {
+        if(footer.getSpecialContent() == null){
+            return;
+        }
+        for (Element element : footer.getSpecialContent()) {
+            switch (element.type()) {
+                case Element.JPEG:
+                case Element.JPEG2000:
+                case Element.JBIG2:
+                case Element.IMGRAW:
+                case Element.IMGTEMPLATE: {
+                    Image image = (Image) element;
+                    boolean textwrap = (image.getAlignment() & Image.TEXTWRAP) == Image.TEXTWRAP
+                            && !((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE);
+                    float diff = leading / 2;
+                    if (textwrap) {
+                        diff += leading;
+                    }
+                    float lowerleft = footer.getTop() - image.getRelativeTop() - image.getScaledHeight() - diff;
+
+                    float[] mt = image.matrix();
+                    float startPosition = indentLeft() - mt[4];
+                    if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT)
+                        startPosition = indentRight() - image.getScaledWidth() - mt[4];
+                    if ((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE)
+                        startPosition = indentLeft() + ((indentRight() - indentLeft() - image.getScaledWidth()) / 2) - mt[4];
+                    if (image.hasAbsoluteX()) startPosition = image.getAbsoluteX();
+
+                    if (!textwrap) {
+                        if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT)
+                            startPosition -= image.getIndentationRight();
+                        else if ((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE)
+                            startPosition += image.getIndentationLeft() - image.getIndentationRight();
+                        else startPosition += image.getIndentationLeft();
+                    }
+                    graphics.addImage(image, mt[0], mt[1], mt[2], mt[3], startPosition, lowerleft - mt[5]);
+                    break;
+                }
+            }
+        }
+        footer.setPadding(0);
+    }
+
+    /**
+     * Occupies space for <CODE>Image</CODE> that will be added later instead of now
+     *
+     * @param image the new <CODE>Image</CODE>
+     */
+
+    protected void addDelay(Image image) {
+        if (image.hasAbsoluteY()) {
+            System.out.println("Warning: absoluteY of image is invalid in footer");
+        }
+
+        image.setRelativeTop(currentHeight); // set the offset relative to the top
+        image.setAlignment(image.getAlignment() | footer.alignment());
+        footer.addSpecialContent(image);
+
+        // add indentation for text
+        boolean textwrap = (image.getAlignment() & Image.TEXTWRAP) == Image.TEXTWRAP
+                && !((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE);
+        boolean underlying = (image.getAlignment() & Image.UNDERLYING) == Image.UNDERLYING;
+        float diff = leading / 2;
+        if (textwrap) {
+            if (imageEnd < 0 || imageEnd < currentHeight + image.getScaledHeight() + diff) {
+                imageEnd = currentHeight + image.getScaledHeight() + diff;
+            }
+            if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT) {
+                // indentation suggested by Pelikan Stephan
+                indentation.imageIndentRight += image.getScaledWidth() + image.getIndentationLeft();
+                indentation.imageIndentRight += image.getScaledWidth() + image.getIndentationLeft();
+            } else {
+                // indentation suggested by Pelikan Stephan
+                indentation.imageIndentLeft += image.getScaledWidth() + image.getIndentationRight();
+            }
+        }
+        // move text
+        if (!(textwrap || underlying)) {
+            currentHeight += image.getScaledHeight() + diff;
+            flushLines();
+            text.moveText(0, -(image.getScaledHeight() + diff));
+            newLine();
+        } else {
+            footer.addPadding(image.getScaledHeight() + diff);
+        }
+    }
+
 //    [M4] Adding a PdfPTable
 
     /** Adds a <CODE>PdfPTable</CODE> to the document.
@@ -3102,8 +3206,12 @@ public class PdfDocument extends Document {
     }
 
 //    [M5] header/footer
+    /** This is the flag meaning whether document is creating footer. */
+    private boolean isDoFooter = false;
+
     protected void doFooter() throws DocumentException {
         if (footer == null) return;
+        isDoFooter = true;
         // Begin added by Edgar Leonardo Prieto Perilla
         // Avoid footer indentation
         float tmpIndentLeft = indentation.indentLeft;
@@ -3129,11 +3237,12 @@ public class PdfDocument extends Document {
         text.moveText(left(), indentBottom());
         flushLines();
         text.moveText(-left(), -bottom());
-        footer.setTop(bottom(currentHeight));
+        footer.setTop(bottom(Math.max(footer.getPadding(), currentHeight)));
         footer.setBottom(bottom() - (0.75f * leading));
         footer.setLeft(left());
         footer.setRight(right());
         graphics.rectangle(footer);
+        flushSpecial();
         indentation.indentBottom = currentHeight + leading * 2;
         currentHeight = 0;
         // Begin added by Edgar Leonardo Prieto Perilla
@@ -3145,6 +3254,7 @@ public class PdfDocument extends Document {
         indentation.imageIndentRight = tmpImageIndentRight;
         // End added: Bonf (Marc Schneider) 2003-07-29
         // End added by Edgar Leonardo Prieto Perilla
+        isDoFooter = false;
     }
 
     protected void doHeader() throws DocumentException {

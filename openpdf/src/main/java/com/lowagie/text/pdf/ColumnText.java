@@ -1274,7 +1274,7 @@ public class ColumnText {
                         compositeColumn.setFollowingIndent(compositeColumn.getIndent());
                         compositeColumn.setRightIndent(item.getIndentationRight() + list.getIndentationRight());
                         compositeColumn.setLeading(item.getLeading(), item.getMultipliedLeading());
-                        compositeColumn.setRunDirection(runDirection);
+                        compositeColumn.setRunDirection(item.getRunDirection() == PdfWriter.RUN_DIRECTION_DEFAULT ? runDirection : item.getRunDirection());
                         compositeColumn.setArabicOptions(arabicOptions);
                         compositeColumn.setSpaceCharRatio(spaceCharRatio);
                         compositeColumn.addText(item);
@@ -1311,7 +1311,14 @@ public class ColumnText {
                 descender = compositeColumn.descender;
                 if (!Float.isNaN(compositeColumn.firstLineY) && !compositeColumn.firstLineYDone) {
                     if (!simulate && item != null) {
-                        showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(item.getListSymbol()), compositeColumn.leftX + listIndentation, compositeColumn.firstLineY, 0);
+                        int elementRunDirection;
+                        if(item.getRunDirection() == PdfWriter.RUN_DIRECTION_NO_BIDI || item.getRunDirection() == PdfWriter.RUN_DIRECTION_DEFAULT){
+                            elementRunDirection = PdfWriter.RUN_DIRECTION_NO_BIDI;
+                        }
+                        else{
+                            elementRunDirection = item.getRunDirection();
+                        }
+                        showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(item.getListSymbol()), compositeColumn.leftX + listIndentation, compositeColumn.firstLineY, 0, elementRunDirection, 0);
                     }
                     compositeColumn.firstLineYDone = true;
                 }
