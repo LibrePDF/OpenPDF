@@ -54,85 +54,105 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A <CODE>HeaderFooter</CODE>-object is a <CODE>Rectangle</CODe> with text
- * that can be put above and/or below every page.
- * <P>
- * Example:
- * <BLOCKQUOTE><PRE>
+ * A <CODE>HeaderFooter</CODE>-object is a <CODE>Rectangle</CODe> with text that can be put above and/or below every
+ * page.
+ * <p>
+ * Example: <BLOCKQUOTE>
+ * 
+ * <PRE>
  * <STRONG>HeaderFooter header = new HeaderFooter(new Phrase("This is a header."), false);</STRONG>
  * <STRONG>HeaderFooter footer = new HeaderFooter(new Phrase("This is page "), new Phrase("."));</STRONG>
  * document.setHeader(header);
  * document.setFooter(footer);
- * </PRE></BLOCKQUOTE>
+ * </PRE>
+ * 
+ * </BLOCKQUOTE>
  */
 
 public class HeaderFooter extends Rectangle {
-    
+
     // membervariables
-    
-/** Does the page contain a pagenumber? */
+
+	/**
+	 * Does the page contain a pagenumber?
+	 */
     private boolean numbered;
-    
-/** This is the <CODE>Phrase</CODE> that comes before the pagenumber. */
+
+	/**
+	 * This is the <CODE>Phrase</CODE> that comes before the pagenumber.
+	 */
     private Phrase before = null;
-    
-/** This is number of the page. */
+
+	/**
+	 * This is number of the page.
+	 */
     private int pageN;
-    
-/** This is the <CODE>Phrase</CODE> that comes after the pagenumber. */
+
+	/**
+	 * This is the <CODE>Phrase</CODE> that comes after the pagenumber.
+	 */
     private Phrase after = null;
-    
-/** This is alignment of the header/footer. */
+
+	/**
+	 * This is alignment of the header/footer.
+	 */
     private int alignment;
 
-/** This is the <CODE>List</CODE> containing non-text <CODE>Element</CODE>. */
+	/**
+	 * This is the <CODE>List</CODE> containing non-text <CODE>Element</CODE>.
+	 */
     private java.util.List<Element> specialContent = null;
 
-/**  This is the padding of height of header/footer. */
+	/**
+	 * This is the padding of height of header/footer.
+	 */
     private float padding;
 
     // constructors
-    
-/**
- * Constructs a <CODE>HeaderFooter</CODE>-object.
- *
- * @param    before        the <CODE>Phrase</CODE> before the pagenumber
- * @param    after        the <CODE>Phrase</CODE> before the pagenumber
- */
-    
+
+	/**
+	 * Constructs a <CODE>HeaderFooter</CODE>-object.
+	 *
+	 * @param before
+	 *            the <CODE>Phrase</CODE> before the pagenumber
+	 * @param after
+	 *            the <CODE>Phrase</CODE> before the pagenumber
+	 */
     public HeaderFooter(Phrase before, Phrase after) {
         super(0, 0, 0, 0);
         setBorder(TOP + BOTTOM);
         setBorderWidth(1);
-        
+
         numbered = true;
         this.before = before;
         this.after = after;
     }
-    
-/**
- * Constructs a <CODE>Header</CODE>-object with a pagenumber at the end.
- *
- * @param    before        the <CODE>Phrase</CODE> before the pagenumber
- * @param    numbered      page will be numbered if <CODE>true</CODE>
- */
-    
+
+	/**
+	 * Constructs a <CODE>Header</CODE>-object with a pagenumber at the end.
+	 *
+	 * @param before
+	 *            the <CODE>Phrase</CODE> before the pagenumber
+	 * @param numbered
+	 *            page will be numbered if <CODE>true</CODE>
+	 */
     public HeaderFooter(Phrase before, boolean numbered) {
         super(0, 0, 0, 0);
         setBorder(TOP + BOTTOM);
         setBorderWidth(1);
-        
+
         this.numbered = numbered;
         this.before = before;
     }
 
-/**
- * Constructs a <CODE>Header</CODE>-object with a pagenumber at the beginning.
- *
- * @param numbered      page will be numbered if <CODE>true</CODE>
- * @param after         the <CODE>Phrase</CODE> after the pagenumber
- */
-
+	/**
+	 * Constructs a <CODE>Header</CODE>-object with a pagenumber at the beginning.
+	 *
+	 * @param numbered
+	 *            page will be numbered if <CODE>true</CODE>
+	 * @param after
+	 *            the <CODE>Phrase</CODE> after the pagenumber
+	 */
     public HeaderFooter(boolean numbered, Phrase after) {
         super(0, 0, 0, 0);
         setBorder(TOP + BOTTOM);
@@ -142,136 +162,139 @@ public class HeaderFooter extends Rectangle {
         this.after = after;
     }
 
-/**
- * Constructs a <CODE>Header</CODE>-object with only a pagenumber.
- *
- * @param numbered <CODE>true</CODE> if the page has to be numbered
- */
-
+	/**
+	 * Constructs a <CODE>Header</CODE>-object with only a pagenumber.
+	 *
+	 * @param numbered
+	 *            <CODE>true</CODE> if the page has to be numbered
+	 */
     public HeaderFooter(boolean numbered) {
         this(null, true);
         this.numbered = numbered;
     }
 
     // methods
-    
-/**
- * Checks if the HeaderFooter contains a page number.
- *
- * @return  true if the page has to be numbered
- */
-    
+
+	/**
+	 * Checks if the HeaderFooter contains a page number.
+	 *
+	 * @return true if the page has to be numbered
+	 */
     public boolean isNumbered() {
         return numbered;
     }
-    
-/**
- * Gets the part that comes before the pageNumber.
- *
- * @return  a Phrase
- */
-    
+
+	/**
+	 * Gets the part that comes before the pageNumber.
+	 *
+	 * @return a Phrase
+	 */
     public Phrase getBefore() {
         return before;
     }
-    
-/**
- * Gets the part that comes after the pageNumber.
- *
- * @return  a Phrase
- */
-    
+
+	/**
+	 * Gets the part that comes after the pageNumber.
+	 *
+	 * @return a Phrase
+	 */
     public Phrase getAfter() {
         return after;
     }
-    
-/**
- * Sets the page number.
- *
- * @param        pageN        the new page number
- */
-    
+
+	/**
+	 * Sets the page number.
+	 *
+	 * @param pageN
+	 *            the new page number
+	 */
     public void setPageNumber(int pageN) {
         this.pageN = pageN;
     }
-    
-/**
- * Sets the alignment.
- *
- * @param        alignment    the new alignment
- */
-    
+
+	/**
+	 * Sets the alignment.
+	 *
+	 * @param alignment
+	 *            the new alignment
+	 */
     public void setAlignment(int alignment) {
         this.alignment = alignment;
     }
 
-/**
- * Gets padding of height of header/footer.
- *
- * @return the padding of height
- */
-
-    public float getPadding(){
+	/**
+	 * Gets padding of height of header/footer.
+	 *
+	 * @return the padding of height
+	 */
+	public float getPadding() {
         return padding;
     }
 
-/**
- * Sets padding of height of header/footer.
- *
- * @param padding the new padding of height
- */
-
-    public void setPadding(float padding){
+	/**
+	 * Sets padding of height of header/footer.
+	 *
+	 * @param padding
+	 *            the new padding of height
+	 */
+	public void setPadding(float padding) {
         this.padding = padding;
     }
 
-/**
- * Increases current padding by adding new value into it
- *
- * @param augment the new value
- */
-
-    public void addPadding(float augment){
+	/**
+	 * Increases current padding by adding new value into it
+	 *
+	 * @param augment
+	 *            the new value
+	 */
+	public void addPadding(float augment) {
         padding += augment;
     }
 
-/**
- * Adds non-text <CODE>Element</CODE> into <CODE>specialContent</CODE>
- *
- * @param element the new non-text <CODE>Element</CODE>
- */
-
-    public void addSpecialContent(Element element){
-        if(specialContent == null){
+	/**
+	 * Adds non-text <CODE>Element</CODE> into <CODE>specialContent</CODE>
+	 *
+	 * @param element
+	 *            the new non-text <CODE>Element</CODE>
+	 */
+	public void addSpecialContent(Element element) {
+		if (specialContent == null) {
             specialContent = new ArrayList<>();
         }
         specialContent.add(element);
     }
 
-/**
- * Gets <CODE>specialContent</CODE>
- *
- * @return <CODE>specialContent</CODE>
- */
-
-    public List<Element> getSpecialContent(){
+	/**
+	 * Gets <CODE>specialContent</CODE>
+	 *
+	 * @return <CODE>specialContent</CODE>
+	 */
+	public List<Element> getSpecialContent() {
         return specialContent;
     }
 
     // methods to retrieve the membervariables
-    
-/**
- * Gets the <CODE>Paragraph</CODE> that can be used as header or footer.
- *
- * @return        a <CODE>Paragraph</CODE>
- */
-    
+
+	/**
+	 * Gets the <CODE>Paragraph</CODE> that can be used as header or footer.
+	 *
+	 * @return a <CODE>Paragraph</CODE>
+	 */
     public Paragraph paragraph() {
         Paragraph paragraph;
+
         if (before != null) {
             paragraph = new Paragraph(before.getLeading());
             paragraph.add(before);
-            paragraph.remove(paragraph.size()-1);
+
+			// Adding a Paragraph to another Paraghraph adds a newline that needs to be removed in headers and footers
+			if (before instanceof Paragraph
+					&&
+					paragraph.size() >= 2
+					&&
+					"\n".equals(paragraph.get(paragraph.size() - 1).toString())) {
+				paragraph.remove(paragraph.size() - 1);
+			}
         } else {
             paragraph = new Paragraph();
         }
@@ -284,10 +307,13 @@ public class HeaderFooter extends Rectangle {
                 paragraph.addSpecial(new Chunk(String.valueOf(pageN)));
             }
         }
+
         if (after != null) {
             paragraph.addSpecial(after);
         }
+
         paragraph.setAlignment(alignment);
+
         return paragraph;
     }
 
@@ -295,6 +321,7 @@ public class HeaderFooter extends Rectangle {
         if (before != null) {
             return before.getFont();
         }
+
         if (after != null) {
             return after.getFont();
         }
@@ -303,13 +330,11 @@ public class HeaderFooter extends Rectangle {
     }
 
     /**
-     * Gets the alignment of this HeaderFooter.
-     *
-     * @return    alignment
-     */
-
-        public int alignment() {
-            return alignment;
-        }
-
+	 * Gets the alignment of this HeaderFooter.
+	 *
+	 * @return alignment
+	 */
+	public int alignment() {
+		return alignment;
+	}
 }
