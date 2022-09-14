@@ -42,7 +42,6 @@
 
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.error_messages.MessageLocalization;
 import java.awt.font.FontRenderContext;
