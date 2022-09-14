@@ -85,7 +85,7 @@ public class ConcatPdf {
             try {
                 File outFile = new File(args[args.length-1]);
                 List<File> sources = new ArrayList<>();
-                for (int i = 0; i < args.length -2; i++) {
+                for (int i = 0; i < args.length -1; i++) {
                     sources.add(new File(args[i]));
                 }
                 concat(sources, outFile);     
