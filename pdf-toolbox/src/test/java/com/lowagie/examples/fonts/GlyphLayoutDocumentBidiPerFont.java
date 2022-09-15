@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 
 /**
  * Prints bidirectional text with correct glyph layout, kerning and ligatures globally enabled
+ * Direction can be chosen per font
  */
 public class GlyphLayoutDocumentBidiPerFont {
     
