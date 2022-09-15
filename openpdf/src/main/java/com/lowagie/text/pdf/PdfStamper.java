@@ -884,4 +884,44 @@ public class PdfStamper
         this.stamper.setModificationDate(modificationDate);
     }
 
+    /**
+     * Returns whether the /Metadata dictionary should be updated in the new sequential PDF revision update
+     *
+     * @return if the /Metadata should be updated
+     */
+    public boolean isUpdateMetadata() {
+        return this.stamper.isUpdateMetadata();
+    }
+
+    /**
+     * Sets whether the /Metadata dictionary should be updated in a new sequential PDF revision update.
+     * The condition is applied only when a new revision is being appended (e.g. on a new signature addition).
+     * Default : TRUE (/Metadata dictionary is updated in a sequential revision update)
+     *
+     * @param updateMetadata if the /Metadata should be updated
+     */
+    public void setUpdateMetadata(boolean updateMetadata) {
+        this.stamper.setUpdateMetadata(updateMetadata);
+    }
+
+    /**
+     * Returns whether the document /Info dictionary should be updated in a sequential PDF revision update
+     *
+     * @return if the document /Info should be updated
+     */
+    public boolean isUpdateDocInfo() {
+        return this.stamper.isUpdateDocInfo();
+    }
+
+    /**
+     * Sets whether the document /Info dictionary should be updated in a sequential PDF revision update.
+     * The condition is applied only when a new revision is being appended (e.g. on a new signature addition).
+     * Default : TRUE (/Info dictionary is updated in a sequential revision update)
+     *
+     * @param updateDocInfo if the document /Info should be updated
+     */
+    public void setUpdateDocInfo(boolean updateDocInfo) {
+        this.stamper.setUpdateDocInfo(updateDocInfo);
+    }
+
 }

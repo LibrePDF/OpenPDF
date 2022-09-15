@@ -9,12 +9,13 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.xml.xmp.XmpWriter;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class CleanMetaDataTest {
   
@@ -132,6 +133,80 @@ public class CleanMetaDataTest {
     r.close();
     String dataString = new String(data);
     Assertions.assertFalse(dataString.contains("This example explains how to add metadata."));
+	}
+
+	@Test
+	public void skipMetaDataUpdateTest() throws Exception {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PdfReader reader = new PdfReader(new File("src/test/resources/HelloWorldMeta.pdf").getAbsolutePath());
+		PdfStamper stamp = new PdfStamper(reader, baos, '\0', true);
+		stamp.setUpdateMetadata(false);
+		stamp.cleanMetadata();
+		stamp.close();
+
+		String dataString = baos.toString();
+		Assertions.assertTrue(dataString.contains("This example explains how to add metadata."));
+	}
+
+	@Test
+	public void skipMetaDataUpdateFirstRevisionTest() throws Exception {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PdfReader reader = new PdfReader(new File("src/test/resources/HelloWorldMeta.pdf").getAbsolutePath());
+		PdfStamper stamp = new PdfStamper(reader, baos, '\0', false);
+		stamp.setUpdateMetadata(false);
+		stamp.cleanMetadata();
+		stamp.close();
+
+		String dataString = baos.toString();
+		Assertions.assertFalse(dataString.contains("This example explains how to add metadata."));
+	}
+
+	@Test
+	public void skipInfoUpdateTest() throws Exception {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PdfReader reader = new PdfReader(new File("src/test/resources/HelloWorldMeta.pdf").getAbsolutePath());
+		PdfStamper stamp = new PdfStamper(reader, baos, '\0', true);
+
+		HashMap<String, String> moreInfo = createCleanerMoreInfo();
+		moreInfo.put("Producer", Document.getVersion());
+		moreInfo.put("Author", "Author1");
+		moreInfo.put("Title", "Title2");
+		moreInfo.put("Subject", "Subject3");
+		stamp.setInfoDictionary(moreInfo);
+
+		stamp.setUpdateDocInfo(false);
+		stamp.close();
+
+		PdfReader r = new PdfReader(baos.toByteArray());
+		Assertions.assertNull(r.getInfo().get("Producer"));
+		Assertions.assertNull(r.getInfo().get("Author"));
+		Assertions.assertNull(r.getInfo().get("Title"));
+		Assertions.assertNull(r.getInfo().get("Subject"));
+		r.close();
+	}
+
+	@Test
+	public void skipInfoUpdateFirstRevisionTest() throws Exception {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PdfReader reader = new PdfReader(new File("src/test/resources/HelloWorldMeta.pdf").getAbsolutePath());
+		PdfStamper stamp = new PdfStamper(reader, baos, '\0', false);
+
+		HashMap<String, String> moreInfo = createCleanerMoreInfo();
+		moreInfo.put("Producer", Document.getVersion());
+		moreInfo.put("Author", "Author1");
+		moreInfo.put("Title", "Title2");
+		moreInfo.put("Subject", "Subject3");
+		stamp.setInfoDictionary(moreInfo);
+
+		stamp.setUpdateDocInfo(false);
+		stamp.close();
+
+		PdfReader r = new PdfReader(baos.toByteArray());
+		Assertions.assertNotNull(r.getInfo().get("Producer"));
+		Assertions.assertNotNull(r.getInfo().get("Author"));
+		Assertions.assertNotNull(r.getInfo().get("Title"));
+		Assertions.assertNotNull(r.getInfo().get("Subject"));
+		r.close();
 	}
 	
 	@Test

@@ -98,6 +98,8 @@ class PdfStamperImp extends PdfWriter {
     private boolean includeFileID = true;
     private PdfObject overrideFileId = null;
     private Calendar modificationDate = null;
+    private boolean updateMetadata = true;
+    private boolean updateDocInfo = true;
 
     /** Creates new PdfStamperImp.
      * @param reader the read PDF
@@ -253,7 +255,7 @@ class PdfStamperImp extends PdfWriter {
         }
 
         // if there is XMP data to add: add it
-        if (altMetadata != null) {
+        if (altMetadata != null && (!append || updateMetadata)) {
             PdfStream xmp;
             try {
               XmpReader xmpr = new XmpReader(altMetadata);
@@ -356,20 +358,44 @@ class PdfStamperImp extends PdfWriter {
             }
 
         }
-        PRIndirectReference iRoot = (PRIndirectReference)reader.trailer.get(PdfName.ROOT);
+        PRIndirectReference iRoot = (PRIndirectReference) reader.trailer.get(PdfName.ROOT);
         PdfIndirectReference root = new PdfIndirectReference(0, getNewObjectNumber(reader, iRoot.getNumber(), 0));
-        PdfIndirectReference info;
+
+        PdfDictionary info = getInfoDictionary(oldInfo, date, producer, moreInfo);
+        PdfIndirectReference infoRef = null;
+        if (append) {
+            if (updateDocInfo) {
+                if (iInfo == null)
+                    infoRef = addToBody(info, false).getIndirectReference();
+                else
+                    infoRef = addToBody(info, iInfo.getNumber(), false).getIndirectReference();
+            }
+        } else {
+            infoRef = addToBody(info, false).getIndirectReference();
+        }
+        // write the cross-reference table of the body
+        body.writeCrossReferenceTable(os, root, infoRef, encryption, fileID, prevxref);
+        os.write(getISOBytes("startxref\n"));
+        os.write(getISOBytes(String.valueOf(body.offset())));
+        os.write(getISOBytes("\n%%EOF\n"));
+        os.flush();
+        if (isCloseStream())
+            os.close();
+        reader.close();
+    }
+
+    PdfDictionary getInfoDictionary(PdfDictionary oldInfo, PdfDate modificationDate, String producer, Map<String, String> moreInfo) {
         PdfDictionary newInfo = new PdfDictionary();
         if (oldInfo != null) {
-          for (PdfName key : oldInfo.getKeys()) {
-            PdfObject value = PdfReader.getPdfObject(oldInfo.get(key));
-            newInfo.put(key, value);
-          }
+            for (PdfName key : oldInfo.getKeys()) {
+                PdfObject value = PdfReader.getPdfObject(oldInfo.get(key));
+                newInfo.put(key, value);
+            }
         }
 
-        newInfo.put(PdfName.MODDATE, date);
+        newInfo.put(PdfName.MODDATE, modificationDate);
         if (producer != null) {
-          newInfo.put(PdfName.PRODUCER, new PdfString(producer));
+            newInfo.put(PdfName.PRODUCER, new PdfString(producer));
         }
 
         if (moreInfo != null) {
@@ -385,26 +411,7 @@ class PdfStamperImp extends PdfWriter {
                 }
             }
         }
-
-
-        if (append) {
-            if (iInfo == null)
-                info = addToBody(newInfo, false).getIndirectReference();
-            else
-                info = addToBody(newInfo, iInfo.getNumber(), false).getIndirectReference();
-        }
-        else {
-            info = addToBody(newInfo, false).getIndirectReference();
-        }
-        // write the cross-reference table of the body
-        body.writeCrossReferenceTable(os, root, info, encryption, fileID, prevxref);
-        os.write(getISOBytes("startxref\n"));
-        os.write(getISOBytes(String.valueOf(body.offset())));
-        os.write(getISOBytes("\n%%EOF\n"));
-        os.flush();
-        if (isCloseStream())
-            os.close();
-        reader.close();
+        return newInfo;
     }
 
     void applyRotation(PdfDictionary pageN, ByteBuffer out) {
@@ -1726,7 +1733,6 @@ class PdfStamperImp extends PdfWriter {
         this.overrideFileId = overrideFileId;
     }
 
-
     public Calendar getModificationDate() {
         return modificationDate;
     }
@@ -1735,5 +1741,20 @@ class PdfStamperImp extends PdfWriter {
         this.modificationDate = modificationDate;
     }
 
+    public boolean isUpdateMetadata() {
+        return updateMetadata;
+    }
+
+    public void setUpdateMetadata(boolean updateMetadata) {
+        this.updateMetadata = updateMetadata;
+    }
+
+    public boolean isUpdateDocInfo() {
+        return updateDocInfo;
+    }
+
+    public void setUpdateDocInfo(boolean updateDocInfo) {
+        this.updateDocInfo = updateDocInfo;
+    }
 
 }
