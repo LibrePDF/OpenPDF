@@ -79,7 +79,7 @@ public class GlyphLayoutDocumentDin91379 {
                     + "bnlnot; Non-Letters N4 (normative)\n"
                     + "-omitted-\n"
                     + "dc; Combining diacritics (normative)\n"
-                    + "̀ ́ ̂ ̄ ̆ ̇ ̈ ̋ ̌ ̍ ̐ ̕ ̛ ̣ ̥ ̦ ̧ ̨ ̱ ͟ \n"
+                    + "̀-omitted-\n"
                     + "gl; Greek Letters (extended)\n"
                     + "Ά Έ Ή Ί Ό Ύ Ώ ΐ Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ \n"
                     + "Τ Υ Φ Χ Ψ Ω Ϊ Ϋ ά έ ή ί ΰ α β γ δ ε ζ η θ ι κ λ μ ν \n"
