@@ -88,6 +88,7 @@ public class GlyphLayoutDocumentBidiPerFont {
             document.add(new Chunk(INTRO_TEXT +"Fonts: Noto Sans, Noto Sans Arabic\n\n", notoSans));
             document.add(new Chunk("Guten Tag ", notoSans));
             document.add(new Chunk("السلام عليكم", notoSansArabic));
+            document.add(new Chunk(" Good afternoon", notoSans));
         } catch (Exception e) {
             e.printStackTrace();
         }
