@@ -49,6 +49,10 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Utilities;
+import com.lowagie.text.error_messages.MessageLocalization;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,10 +60,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Utilities;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 /** Represents a True Type font with Unicode encoding. All the character
  * in the font can be used directly by using the encoding Identity-H or
@@ -396,7 +396,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         PdfObject pobj = null;
         PdfIndirectObject obj = null;
         PdfIndirectReference cidset = null;
-        if (writer.getPDFXConformance() == PdfWriter.PDFA1A || writer.getPDFXConformance() == PdfWriter.PDFA1B) {
+        if (subset || writer.getPDFXConformance() == PdfWriter.PDFA1A || writer.getPDFXConformance() == PdfWriter.PDFA1B) {
             PdfStream stream;
             if (metrics.length == 0) {
                 stream = new PdfStream(new byte[]{(byte)0x80});
