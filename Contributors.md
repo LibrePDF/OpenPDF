@@ -19,6 +19,7 @@ In GitHub User alphabetical order.
 * [@applikationsprogramvara](https://github.com/applikationsprogramvara)
 * [@armin-weber](https://github.com/armin-weber)
 * [@bradh](https://github.com/bradh) - Brad Hards
+* [@Brooklyn-0](https://github.com/Brooklyn-0)
 * [@bsanchezb](https://github.com/bsanchezb) - Aleksandr Beliakov
 * [@bsmelo](https://github.com/bsmelo) - Bruno Melo
 * [@chappyer](https://github.com/chappyer) - Shuwei CAO
@@ -33,6 +34,7 @@ In GitHub User alphabetical order.
 * [@jherkel](https://github.com/jherkel) - Jakub Herkel
 * [@jknight](https://github.com/jknight) - Jeffrey Knight
 * [@jokimaki](https://github.com/jokimaki) - Juha Jokimäki
+* [@jukkaharkki](https://github.com/jukkaharkki)
 * [@karolbe](https://github.com/karolbe) - Karol Bryd
 * [@kaufmann1](https://github.com/kaufmann1) - Till Kaufmann
 * [@Kindrat](https://github.com/Kindrat) - Oleksii
@@ -45,6 +47,7 @@ In GitHub User alphabetical order.
 * [@mahdilamb](https://github.com/mahdilamb) - Mahdi Lamb
 * [@MartinKocour](https://github.com/MartinKocour) - Martin Kocour
 * [@MichaelBiesmann](https://github.com/MichaelBiesmann) - Michael Biesmann
+* [@mkl-public](https://github.com/mkl-public)
 * [@mluppi](https://github.com/mluppi) - Matthias Luppi
 * [@moritzfl](https://github.com/moritzfl) - Moritz
 * [@mppperez](https://github.com/mppperez) - Marco Postigo Perez
@@ -60,6 +63,7 @@ In GitHub User alphabetical order.
 * [@rammetzger](https://github.com/rammetzger)
 * [@RangerMak](https://github.com/RangerMak)
 * [@razilein](https://github.com/razilein) - Sita Geßner
+* [@renoth](https://github.com/renoth) - Johannes Renoth
 * [@salsolatragus](https://github.com/salsolatragus) - Sven Amann
 * [@sa-sh](https://github.com/sa-sh)
 * [@sixdouglas](https://github.com/sixdouglas) - Douglas Six
