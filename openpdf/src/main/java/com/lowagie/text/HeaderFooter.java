@@ -52,6 +52,8 @@ package com.lowagie.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lowagie.text.pdf.PdfPTable;
+
 /**
  * A <CODE>HeaderFooter</CODE>-object is a <CODE>Rectangle</CODe> with text that can be put above and/or below every
  * page.
