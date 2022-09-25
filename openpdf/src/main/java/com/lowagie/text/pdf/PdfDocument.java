@@ -676,17 +676,22 @@ public class PdfDocument extends Document {
                     break;
                 }
                 case Element.PTABLE: {
-                    PdfPTable ptable = (PdfPTable)element;
+                    PdfPTable ptable = (PdfPTable) element;
                     if (ptable.size() <= ptable.getHeaderRows())
                         break; //nothing to do
 
-                    // before every table, we add a new line and flush all lines
-                    ensureNewLine();
-                    flushLines();
+                    if(isDoFooter) {
+                        delayTableAddition(ptable);
+                    } else {
+                        // before every table, we add a new line and flush all lines
+                        ensureNewLine();
+                        flushLines();
 
-                    addPTable(ptable);
-                    pageEmpty = false;
-                    newLine();
+                        addPTable(ptable);
+                        pageEmpty = false;
+                        newLine();
+                    }
+
                     break;
                 }
                 case Element.MULTI_COLUMN_TEXT: {
@@ -2581,6 +2586,16 @@ public class PdfDocument extends Document {
                     graphics.addImage(image, mt[0], mt[1], mt[2], mt[3], startPosition, lowerleft - mt[5]);
                     break;
                 }
+                case Element.PTABLE:
+                    PdfPTable ptable = (PdfPTable) element;
+
+                    ColumnText ct = new ColumnText(writer.getDirectContent());
+                    ct.addElement(ptable);
+
+                    ct.setSimpleColumn(indentLeft(), footer.getBottom(), indentRight(), footer.getTop());
+                    ct.go();
+
+                    break;
             }
         }
         footer.setPadding(0);
@@ -2613,7 +2628,6 @@ public class PdfDocument extends Document {
             if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT) {
                 // indentation suggested by Pelikan Stephan
                 indentation.imageIndentRight += image.getScaledWidth() + image.getIndentationLeft();
-                indentation.imageIndentRight += image.getScaledWidth() + image.getIndentationLeft();
             } else {
                 // indentation suggested by Pelikan Stephan
                 indentation.imageIndentLeft += image.getScaledWidth() + image.getIndentationRight();
@@ -2630,7 +2644,20 @@ public class PdfDocument extends Document {
         }
     }
 
-//    [M4] Adding a PdfPTable
+    /**
+     * Occupies space for <CODE>PdfPTable</CODE> that will be added later instead of now
+     *
+     * @param table the new <CODE>PdfPTable</CODE>
+     */
+    protected void delayTableAddition(PdfPTable table) {
+        setTableWidth(table);
+        final float footerPadding = table.getTotalHeight() - (0.75f * leading);
+
+        footer.addSpecialContent(table);
+        footer.addPadding(footerPadding);
+    }
+
+    //    [M4] Adding a PdfPTable
 
     /** Adds a <CODE>PdfPTable</CODE> to the document.
      * @param ptable the <CODE>PdfPTable</CODE> to be added to the document.
@@ -2684,14 +2711,18 @@ public class PdfDocument extends Document {
      */
 
     boolean fitsPage(PdfPTable table, float margin) {
-        if (!table.isLockedWidth()) {
-            float totalWidth = (indentRight() - indentLeft()) * table.getWidthPercentage() / 100;
-            table.setTotalWidth(totalWidth);
-        }
+        setTableWidth(table);
         // ensuring that a new line has been started.
         ensureNewLine();
         return table.getTotalHeight() + ((currentHeight > 0) ? table.spacingBefore() : 0f)
             <= indentTop() - currentHeight - indentBottom() - margin;
+    }
+
+    private void setTableWidth(final PdfPTable table) {
+        if (!table.isLockedWidth()) {
+            float totalWidth = (indentRight() - indentLeft()) * table.getWidthPercentage() / 100;
+            table.setTotalWidth(totalWidth);
+        }
     }
 
 //    [M4'] Adding a Table
