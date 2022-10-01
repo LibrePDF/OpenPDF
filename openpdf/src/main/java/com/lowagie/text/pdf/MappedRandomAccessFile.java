@@ -66,7 +66,7 @@ import java.security.PrivilegedAction;
  * @author Joakim Sandstroem
  * Created on 6.9.2006
  */
-public class MappedRandomAccessFile {
+public class MappedRandomAccessFile implements AutoCloseable {
     
     private MappedByteBuffer mappedByteBuffer = null;
     private FileChannel channel = null;

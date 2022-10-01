@@ -79,7 +79,7 @@ import java.util.Map;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfStamper
-    implements PdfViewerPreferences, PdfEncryptionSettings {
+    implements PdfViewerPreferences, PdfEncryptionSettings, AutoCloseable {
     /**
      * The writer
      */    

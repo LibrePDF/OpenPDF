@@ -103,7 +103,7 @@ import java.util.Properties;
  * </BLOCKQUOTE>
  */
 
-public class Document implements AutoCloseable, DocListener {
+public class Document implements DocListener {
     
     // membervariables
     private static final String VERSION_PROPERTIES = "com/lowagie/text/version.properties";
