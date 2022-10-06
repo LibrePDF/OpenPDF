@@ -1179,11 +1179,39 @@ public class AcroFields {
    * to process all
    * @return <CODE>true</CODE> if the property exists, <CODE>false</CODE> otherwise
    */
-  public boolean setFieldProperty(String field, String name, int value, int[] inst) {
+  public boolean setFieldProperty(String field, String name, int value, int inst[]) {
+    return this.setFieldProperty(this.fields.get(field), name, value, inst);
+  }
+
+  /**
+   * Sets a field property. Valid property names are:
+   *
+   * <ul>
+   * <li>flags - a set of flags specifying various characteristics of the field's widget annotation.
+   * The value of this entry replaces that of the F entry in the form's corresponding annotation dictionary.<br>
+   * <li>setflags - a set of flags to be set (turned on) in the F entry of the form's corresponding
+   * widget annotation dictionary. Bits equal to 1 cause the corresponding bits in F to be set to 1.<br>
+   * <li>clrflags - a set of flags to be cleared (turned off) in the F entry of the form's corresponding
+   * widget annotation dictionary. Bits equal to 1 cause the corresponding bits in F to be set to 0.<br>
+   * <li>fflags - a set of flags specifying various characteristics of the field. The value
+   * of this entry replaces that of the Ff entry in the form's corresponding field dictionary.<br>
+   * <li>setfflags - a set of flags to be set (turned on) in the Ff entry of the form's corresponding
+   * field dictionary. Bits equal to 1 cause the corresponding bits in Ff to be set to 1.<br>
+   * <li>clrfflags - a set of flags to be cleared (turned off) in the Ff entry of the form's corresponding
+   * field dictionary. Bits equal to 1 cause the corresponding bits in Ff to be set to 0.<br>
+   * </ul>
+   *
+   * @param item of the field
+   * @param name the property name
+   * @param value the property value
+   * @param inst an array of <CODE>int</CODE> indexing into <CODE>AcroField.Item.merged</CODE> elements to process. Set to <CODE>null</CODE>
+   * to process all
+   * @return <CODE>true</CODE> if the property exists, <CODE>false</CODE> otherwise
+   */
+  public boolean setFieldProperty(Item item, String name, int value, int inst[]) {
     if (writer == null) {
       throw new RuntimeException(MessageLocalization.getComposedMessage("this.acrofields.instance.is.read.only"));
     }
-    Item item = fields.get(field);
     if (item == null) {
       return false;
     }
@@ -2449,6 +2477,13 @@ public class AcroFields {
     raf.reOpen();
     raf.seek(0);
     return new RevisionStream(raf, length);
+  }
+  
+  /**
+   * @return whether everything is done in the append mode
+   */
+  public boolean isAppend() {
+    return this.append;
   }
 
   /**
