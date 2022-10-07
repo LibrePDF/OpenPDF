@@ -135,9 +135,11 @@ public class PdfAppearance extends PdfTemplate {
      * Creates a new appearance to be used with existing form fields.
      * (Create an empty signature appearance with an existing reference).
      * 
-     * @param writer
-     * @param width
-     * @param height
+     * @param writer the PdfWriter to use
+     * @param width the bounding box width
+     * @param height the bounding box height
+     * @param ref to be overwritten
+     * 
      * @return the created appearance 
      */
     public static PdfAppearance createAppearance(PdfWriter writer, float width, float height, PdfIndirectReference ref) {
