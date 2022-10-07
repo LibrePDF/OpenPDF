@@ -245,7 +245,9 @@ public class RadioCheckField extends BaseField {
      * 
      * @return the appearance
      */    
-    public static PdfAppearance getAppearance(boolean on, PdfWriter writer, int checkType, int rotation, int borderStyle, Rectangle box, float borderWidth, float fontSize, String text,Color textColor, Color backgroundColor, Color borderColor, BaseFont ufont) {
+    public static PdfAppearance getAppearance(boolean on, PdfWriter writer, int checkType, int rotation,
+                    int borderStyle, Rectangle box, float borderWidth, float fontSize, String text, Color textColor,
+                    Color backgroundColor, Color borderColor, BaseFont ufont) {
         if (checkType == TYPE_CIRCLE)
             return getAppearanceRadioCircle(on, writer,box, rotation, backgroundColor, borderWidth, borderColor, textColor);
         else if (checkType == TYPE_CROSS)

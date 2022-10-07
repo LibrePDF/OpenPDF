@@ -1270,12 +1270,16 @@ class PdfStamperImp extends PdfWriter {
             if (annot.isForm()) {
                 fieldsAdded = true;
                 getAcroFields();
+                //@sonatype-lift ignore since before 'isForm' is called 
                 PdfFormField field = (PdfFormField)annot;
-                if (field.getParent() != null)
+                if (field.getParent() != null) {
                     return;
+                }
                 expandFields(field, allAnnots);
             }
-            else allAnnots.add(annot);
+            else {
+                allAnnots.add(annot);
+            }
             
             PdfDictionary pageN = null;
             
@@ -1289,6 +1293,7 @@ class PdfStamperImp extends PdfWriter {
                         if (templates != null)
                             fieldTemplates.putAll(templates);
                     }
+                    //@sonatype-lift ignore since before 'isForm' is called 
                     PdfFormField field = (PdfFormField)annot;
                     if (field.getParent() == null)
                         addDocumentField(field.getIndirectReference());
