@@ -553,8 +553,12 @@ public class RadioCheckField extends BaseField {
         if (rotation != 0)
             field.setMKRotation(rotation);
         field.setBorderStyle(new PdfBorderDictionary(borderWidth, borderStyle, new PdfDashPattern(3)));
-        PdfAppearance tpon = getAppearance(true,super.writer,this.checkType,super.rotation,super.borderStyle,super.box,super.borderWidth,super.fontSize,super.text,super.textColor,super.backgroundColor,super.borderColor,super.getRealFont());
-        PdfAppearance tpoff = getAppearance(false,super.writer,this.checkType,super.rotation,super.borderStyle,super.box,super.borderWidth,super.fontSize,super.text,super.textColor,super.backgroundColor,super.borderColor,super.getRealFont());
+        PdfAppearance tpon = getAppearance(true, super.writer, this.checkType, super.rotation, super.borderStyle,
+                        super.box, super.borderWidth, super.fontSize, super.text, super.textColor,
+                        super.backgroundColor, super.borderColor, super.getRealFont());
+        PdfAppearance tpoff = getAppearance(false, super.writer, this.checkType, super.rotation, super.borderStyle,
+                        super.box, super.borderWidth, super.fontSize, super.text, super.textColor,
+                        super.backgroundColor, super.borderColor, super.getRealFont());
         field.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, onValue, tpon);
         field.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, "Off", tpoff);
         field.setAppearanceState(checked ? onValue : "Off");

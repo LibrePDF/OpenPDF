@@ -2058,12 +2058,12 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     /**
      * List of names used for widget annotations
      */
-    private static ArrayList <PdfName> widgetNames;
+    private static ArrayList<PdfName> widgetNames;
 
     /**
      * List of names used in form field dictionaries
      */
-    private static ArrayList <PdfName> formfieldNames;
+    private static ArrayList<PdfName> formfieldNames;
 
     private static void initLists() {
         //All possible values for an annotation dictionary

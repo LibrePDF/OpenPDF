@@ -27,7 +27,8 @@ public class CrossReferenceTableEncodingTest {
     }
 
     private static String filterPdf(final String pdf) {
-        return pdf.replaceAll("<</ModDate.*?>>", "<</ModDate XXXXX>>")
+        return pdf.replaceAll("<</ModDate.*?>>", "")
+            .replaceAll("<</CreationDate.*?>>", "")
             .replaceAll("<</Info .*?>>", "<</Info XXXXX>>")
             .replaceAll("startxref\\n(\\d+)\\n%%EOF", "startxref\nXXXXX\n%%EOF");
     }

@@ -53,7 +53,6 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.pdf.AcroFields.Item;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -1394,7 +1393,7 @@ public class AcroFields {
    * to process all
    * @return <CODE>true</CODE> if the property exists, <CODE>false</CODE> otherwise
    */
-  public boolean setFieldProperty(String field, String name, int value, int inst[]) {
+  public boolean setFieldProperty(String field, String name, int value, int[] inst) {
     return this.setFieldProperty(this.fields.get(field), name, value, inst);
   }
 
@@ -1423,7 +1422,7 @@ public class AcroFields {
    * to process all
    * @return <CODE>true</CODE> if the property exists, <CODE>false</CODE> otherwise
    */
-  public boolean setFieldProperty(Item item, String name, int value, int inst[]) {
+  public boolean setFieldProperty(Item item, String name, int value, int[] inst) {
     if (writer == null) {
       throw new RuntimeException(MessageLocalization.getComposedMessage("this.acrofields.instance.is.read.only"));
     }
