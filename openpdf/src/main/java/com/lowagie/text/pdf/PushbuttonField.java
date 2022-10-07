@@ -318,7 +318,7 @@ public class PushbuttonField extends BaseField {
      * @return the button appearance
      */    
     public PdfAppearance getAppearance() throws IOException, DocumentException {
-        PdfAppearance app = getBorderAppearance();
+        PdfAppearance app = getBorderAppearance(super.writer,super.box,super.rotation,super.backgroundColor,super.borderStyle,super.borderWidth,super.borderColor,super.options,super.maxCharacterLength);
         Rectangle box = new Rectangle(app.getBoundingBox());
         if ((text == null || text.length() == 0) && (layout == LAYOUT_LABEL_ONLY || (image == null && template == null && iconReference == null))) {
             return app;

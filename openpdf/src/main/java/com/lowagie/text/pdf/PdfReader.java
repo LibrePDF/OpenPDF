@@ -460,6 +460,26 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
     return rect;
   }
+  
+  /** Gets the page size, taking rotation into account. This
+   * is a <CODE>Rectangle</CODE> with the value of a an arbitrary box and the /Rotate key.
+   * @param index the page number. The first page is 1
+   * @param boxName of the rotated box. Allowed names are: "crop", "trim", "art", "bleed" and "media".
+   * @return a <CODE>Rectangle</CODE> or null if the box does not exist
+   */
+  public Rectangle getPageSizeWithRotation(int index, String boxName) {
+      
+      Rectangle rect = getBoxSize(index,boxName);
+      PdfDictionary page = this.pageRefs.getPageNRelease(index);
+      
+      int rotation = getPageRotation(page);
+      //except for the mediabox all other boxes can be null
+      while (rotation > 0 && rect!=null) {
+          rect = rect.rotate();
+          rotation -= 90;
+      }
+      return rect;
+  }
 
   /**
    * Gets the page size without taking rotation into account. This is the value

@@ -54,6 +54,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 /**
  * <CODE>PdfDictionary</CODE> is the Pdf dictionary object.
@@ -228,6 +229,13 @@ public class PdfDictionary extends PdfObject {
     public void remove(PdfName key) {
         hashMap.remove(key);
     }
+    
+    /**
+     * Clears all values of a PdfDictionary.
+     */
+    public void clear() {
+        this.hashMap.clear();
+    }
 
     /**
      * Returns the <CODE>PdfObject</CODE> associated to the specified
@@ -263,6 +271,14 @@ public class PdfDictionary extends PdfObject {
      */
     public Set<PdfName> getKeys() {
         return hashMap.keySet();
+    }
+    
+    /**
+     * Get all keys and values as Map.Entry
+     * @return Set<Entry<PdfName, PdfObject>>
+     */
+    public Set<Entry<PdfName, PdfObject>> getKeysAndValues() {
+        return this.hashMap.entrySet();
     }
 
     /**

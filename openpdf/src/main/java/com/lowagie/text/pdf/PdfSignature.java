@@ -95,4 +95,17 @@ public class PdfSignature extends PdfDictionary {
     public void setContact(String name) {
         put(PdfName.CONTACTINFO, new PdfString(name, PdfObject.TEXT_UNICODE));
     }
+    
+    /**
+     * 
+     * @return the build properties dictionary 
+     */
+    public PdfSignatureBuildProperties getPdfSignatureBuildProperties() {
+        PdfSignatureBuildProperties buildPropDic = (PdfSignatureBuildProperties) getAsDict(PdfName.PROP_BUILD);
+        if (buildPropDic == null) {
+            buildPropDic = new PdfSignatureBuildProperties();
+            put(PdfName.PROP_BUILD, buildPropDic);
+        }
+        return buildPropDic;
+    }
 }

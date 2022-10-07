@@ -217,6 +217,20 @@ public class PdfDocument extends Document {
         void addCreationDate() {
             PdfString date = new PdfDate();
             put(PdfName.CREATIONDATE, date);
+        }
+        
+        /**
+         * Adds the modification date (=current date and time) to the document.
+         */
+        void addModificationDate() {
+            PdfString date = new PdfDate();
+            put(PdfName.MODDATE, date);
+        }
+
+        /**
+         * Adds the modification date to the document.
+         */
+        void addModificationDate(PdfDate date) {
             put(PdfName.MODDATE, date);
         }
 
@@ -445,6 +459,10 @@ public class PdfDocument extends Document {
                 case Element.CREATIONDATE:
                     // you can not set the creation date, only reset it
                     info.addCreationDate();
+                    break;
+                case Element.MODIFICATIONDATE:
+                    PdfDate date = new PdfDate(((Meta)element).getContent());
+                    info.addModificationDate(date);
                     break;
 
                 // content (text)

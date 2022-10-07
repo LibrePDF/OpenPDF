@@ -95,6 +95,11 @@ public class PdfSignatureAppearance {
    * The rendering mode is an image and the description
    */
   public static final int SignatureRenderGraphicAndDescription = 2;
+  
+  /**
+   * The rendering mode is an image and the description
+   */
+  public static final int SignatureRenderGraphic = 3;
 
   /**
    * The self signed filter.
@@ -109,7 +114,8 @@ public class PdfSignatureAppearance {
    */
   public static final PdfName WINCER_SIGNED = PdfName.ADOBE_PPKMS;
 
-  public static final int NOT_CERTIFIED = 0;
+  public static final int NOT_CERTIFIED = -1;
+  public static final int CERTIFIED_ALL_CHANGES_ALLOWED = 0;
   public static final int CERTIFIED_NO_CHANGES_ALLOWED = 1;
   public static final int CERTIFIED_FORM_FILLING = 2;
   public static final int CERTIFIED_FORM_FILLING_AND_ANNOTATIONS = 3;
@@ -537,7 +543,18 @@ public class PdfSignatureAppearance {
           dataRect = new Rectangle(MARGIN, MARGIN, rect.getWidth() - MARGIN,
               rect.getHeight() / 2 - MARGIN);
         }
-      } else {
+      } 
+      else if (this.render == SignatureRenderGraphic) {
+          if (this.signatureGraphic == null) {
+              throw new IllegalArgumentException("Missing signature image for renderingmode: "+this.render);
+          }
+          signatureRect = new Rectangle(
+                  MARGIN,
+                  MARGIN,
+                  rect.getWidth() - MARGIN,
+                  rect.getHeight() - MARGIN);
+      } 
+      else {
         dataRect = new Rectangle(MARGIN, MARGIN, rect.getWidth() - MARGIN,
             rect.getHeight() * (1 - TOP_SECTION) - MARGIN);
       }
@@ -582,17 +599,35 @@ public class PdfSignatureAppearance {
         ct2.addElement(p);
         ct2.go();
       }
+      else if (this.render == SignatureRenderGraphic) {
+          ColumnText ct2 = new ColumnText(t);
+          ct2.setRunDirection(this.runDirection);
+          ct2.setSimpleColumn(signatureRect.getLeft(), signatureRect.getBottom(), signatureRect.getRight(), signatureRect.getTop(), 0, Element.ALIGN_RIGHT);
 
-      if (size <= 0) {
-        Rectangle sr = new Rectangle(dataRect.getWidth(), dataRect.getHeight());
-        size = fitText(font, text, sr, 12, runDirection);
+          Image im = Image.getInstance(this.signatureGraphic);
+          im.scaleToFit(signatureRect.getWidth(), signatureRect.getHeight());
+
+          Paragraph p = new Paragraph(signatureRect.getHeight());
+          // must calculate the point to draw from, to make image appear in the middle of the column
+          float x = (signatureRect.getWidth() - im.getScaledWidth()) / 2f;
+          float y = (signatureRect.getHeight() - im.getScaledHeight()) / 2f;
+          
+          p.add(new Chunk(im, x, y, false));
+          
+          ct2.addElement(p);
+          ct2.go();
       }
-      ColumnText ct = new ColumnText(t);
-      ct.setRunDirection(runDirection);
-      ct.setSimpleColumn(new Phrase(text, font), dataRect.getLeft(),
-          dataRect.getBottom(), dataRect.getRight(), dataRect.getTop(), size,
-          Element.ALIGN_LEFT);
-      ct.go();
+      
+      if(this.render!=SignatureRenderGraphic) {
+          if (size <= 0) {
+              Rectangle sr = new Rectangle(dataRect.getWidth(), dataRect.getHeight());
+              size = fitText(font, text, sr, 12, runDirection);
+          }
+          ColumnText ct = new ColumnText(t);
+          ct.setRunDirection(runDirection);
+          ct.setSimpleColumn(new Phrase(text, font), dataRect.getLeft(), dataRect.getBottom(), dataRect.getRight(), dataRect.getTop(), size, Element.ALIGN_LEFT);
+          ct.go();
+      }
     }
     if (app[3] == null && !acro6Layers) {
       PdfTemplate t = app[3] = new PdfTemplate(writer);
@@ -861,6 +896,14 @@ public class PdfSignatureAppearance {
   public java.lang.String getFieldName() {
     return fieldName;
   }
+  
+  /**
+   * Sets the field name for a new invisible signature field 
+   * @param fieldname
+   */    
+  public void setFieldNameForInvisibleSignatures(String fieldname) {
+      this.fieldName=fieldname;
+  }
 
   /**
    * Gets the rectangle that represent the position and dimension of the
@@ -1000,10 +1043,14 @@ public class PdfSignatureAppearance {
     PdfIndirectReference refSig = writer.getPdfIndirectReference();
     writer.setSigFlags(3);
     if (fieldExists) {
+      //Patch by Lonzak: the signature dictionary must be added to the formfield and no the widget! (testdoc: SignatureWidgetFormfield-Separate.pdf)
+      PdfDictionary data = af.getFieldItem(name).getValue(0);
+      writer.markUsed(data);
+      data.put(PdfName.V, refSig);
+      //for widget attributes
       PdfDictionary widget = af.getFieldItem(name).getWidget(0);
       writer.markUsed(widget);
       widget.put(PdfName.P, writer.getPageReference(getPage()));
-      widget.put(PdfName.V, refSig);
       PdfObject obj = PdfReader.getPdfObjectRelease(widget.get(PdfName.F));
       int flags = 0;
       if (obj != null && obj.isNumber())
@@ -1083,13 +1130,29 @@ public class PdfSignatureAppearance {
       lit = new PdfLiteral(80);
       exclusionLocations.put(PdfName.BYTERANGE, lit);
       sigStandard.put(PdfName.BYTERANGE, lit);
-      if (certificationLevel > 0) {
+      if (this.certificationLevel >= 0) {
         addDocMDP(sigStandard);
       }
       if (signatureEvent != null)
         signatureEvent.getSignatureDictionary(sigStandard);
       writer.addToBody(sigStandard, refSig, false);
     } else {
+        //following block added by Lonzak since otherwise this information would be missing
+        //The idea might be if there is an external crypto dictionary then everything is added manually however
+        //the method description of all the method in the signature appearance do not state this - so this would be highly error prone
+        if (getReason() != null) {
+            this.cryptoDictionary.put(PdfName.REASON, new PdfString(this.getReason(), PdfObject.TEXT_UNICODE));
+        }
+        if (getLocation() != null) {
+            this.cryptoDictionary.put(PdfName.LOCATION, new PdfString(this.getLocation(), PdfObject.TEXT_UNICODE));
+        }
+        if (getContact() != null) {
+            this.cryptoDictionary.put(PdfName.CONTACTINFO, new PdfString(this.getContact(), PdfObject.TEXT_UNICODE));
+        }
+        if (this.getSignDate() != null) {
+            this.cryptoDictionary.put(PdfName.M, new PdfDate(getSignDate()));
+        }
+            
       PdfLiteral lit = new PdfLiteral(80);
       exclusionLocations.put(PdfName.BYTERANGE, lit);
       cryptoDictionary.put(PdfName.BYTERANGE, lit);
@@ -1101,13 +1164,13 @@ public class PdfSignatureAppearance {
             exclusionLocations.put(key, lit);
             cryptoDictionary.put(key, lit);
         }
-      if (certificationLevel > 0)
+      if (certificationLevel >= 0)
         addDocMDP(cryptoDictionary);
       if (signatureEvent != null)
         signatureEvent.getSignatureDictionary(cryptoDictionary);
       writer.addToBody(cryptoDictionary, refSig, false);
     }
-    if (certificationLevel > 0) {
+    if (certificationLevel >= 0) {
       // add DocMDP entry to root
       PdfDictionary docmdp = new PdfDictionary();
       docmdp.put(new PdfName("DocMDP"), refSig);

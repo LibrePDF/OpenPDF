@@ -46,6 +46,7 @@
  */
 package com.lowagie.text.pdf;
 
+import java.awt.Color;
 import java.io.IOException;
 
 import com.lowagie.text.DocumentException;
@@ -140,6 +141,18 @@ public class RadioCheckField extends BaseField {
     }
     
     /**
+     * Creates a new instance of parent RadioCheckField with the default appearance of type 'cross'
+     * @param writer the document <CODE>PdfWriter</CODE>
+     * @param fieldName the field name. It must not be <CODE>null</CODE>
+     * @param onValue the value when the field is checked
+     */
+    public RadioCheckField(PdfWriter writer, String fieldName, String onValue) {
+        super(writer, null, fieldName);
+        setOnValue(onValue);
+        setCheckType(TYPE_CROSS);
+    }
+    
+    /**
      * Getter for property checkType.
      * @return Value of property checkType.
      */
@@ -162,6 +175,27 @@ public class RadioCheckField extends BaseField {
             checkType = TYPE_CHECK;
         this.checkType = checkType;
         setText(typeChars[checkType - 1]);
+        try {
+            setFont(BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.WINANSI, false));
+        }
+        catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+    
+    /**
+     * This is the reverse method to {@link #setCheckType(int)}
+     * @param typeChar
+     */
+    void setCheckType(String typeChar) {
+        
+        for (int i = 0; i < typeChars.length; i++) {
+            if(typeChars[i].equals(typeChar)) {
+                this.checkType = i+1;
+                setText(typeChars[i]);
+                break;
+            }
+        }
         try {
             setFont(BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.WINANSI, false));
         }
@@ -205,21 +239,22 @@ public class RadioCheckField extends BaseField {
     
     /**
      * Gets the field appearance.
-     * @param isRadio <CODE>true</CODE> for a radio field and <CODE>false</CODE>
-     * for a check field
-     * @param on <CODE>true</CODE> for the checked state, <CODE>false</CODE>
-     * otherwise
-     * @throws IOException on error
-     * @throws DocumentException on error
+     * 
+     * For Circle and Cross own appearances are drawn.
+     * For all other styles the ZapfDingbats font it used.
+     * 
      * @return the appearance
      */    
-    public PdfAppearance getAppearance(boolean isRadio, boolean on) throws IOException, DocumentException {
-        if (isRadio && checkType == TYPE_CIRCLE)
-            return getAppearanceRadioCircle(on);
-        PdfAppearance app = getBorderAppearance();
+    public static PdfAppearance getAppearance(boolean on, PdfWriter writer, int checkType, int rotation, int borderStyle, Rectangle box, float borderWidth, float fontSize, String text,Color textColor, Color backgroundColor, Color borderColor, BaseFont ufont) {
+        if (checkType == TYPE_CIRCLE)
+            return getAppearanceRadioCircle(on, writer,box, rotation, backgroundColor, borderWidth, borderColor, textColor);
+        else if (checkType == TYPE_CROSS)
+            return getAppearanceRadioCross(on, writer, box, rotation, backgroundColor, borderWidth, borderColor, textColor);
+        
+        //setting last two parameters (options and maxlength) to 0 since those are only valid for textfields
+        PdfAppearance app = getBorderAppearance(writer,box,rotation,backgroundColor, borderStyle,borderWidth,borderColor,0,0);
         if (!on)
             return app;
-        BaseFont ufont = getRealFont();
         boolean borderExtra = borderStyle == PdfBorderDictionary.STYLE_BEVELED || borderStyle == PdfBorderDictionary.STYLE_INSET;
         float h = box.getHeight() - borderWidth * 2;
         float bw2 = borderWidth;
@@ -262,11 +297,11 @@ public class RadioCheckField extends BaseField {
 
     /**
      * Gets the special field appearance for the radio circle.
-     * @param on <CODE>true</CODE> for the checked state, <CODE>false</CODE>
-     * otherwise
+     * @param on <CODE>true</CODE> for the checked state otherwise, <CODE>false</CODE>
+     * 
      * @return the appearance
      */    
-    public PdfAppearance getAppearanceRadioCircle(boolean on) {
+    public static PdfAppearance getAppearanceRadioCircle(boolean on, PdfWriter writer, Rectangle box, int rotation, Color backgroundColor, float borderWidth, Color borderColor, Color textColor) {
         PdfAppearance app = PdfAppearance.createAppearance(writer, box.getWidth(), box.getHeight());
         switch (rotation) {
             case 90:
@@ -278,11 +313,13 @@ public class RadioCheckField extends BaseField {
             case 270:
                 app.setMatrix(0, -1, 1, 0, 0, box.getWidth());
                 break;
+            case 0:
+            default: break;
         }
-        Rectangle box = new Rectangle(app.getBoundingBox());
-        float cx = box.getWidth() / 2;
-        float cy = box.getHeight() / 2;
-        float r = (Math.min(box.getWidth(), box.getHeight()) - borderWidth) / 2;
+        Rectangle boundingBox = new Rectangle(app.getBoundingBox());
+        float cx = boundingBox.getWidth() / 2;
+        float cy = boundingBox.getHeight() / 2;
+        float r = (Math.min(boundingBox.getWidth(), boundingBox.getHeight()) - borderWidth) / 2;
         if (r <= 0)
             return app;
         if (backgroundColor != null) {
@@ -308,6 +345,85 @@ public class RadioCheckField extends BaseField {
     }
     
     /**
+     * Gets the special field appearance for the radio circle.
+     * @param on <CODE>true</CODE> for the checked state, <CODE>false</CODE>
+     * otherwise
+     * @return the appearance
+     */    
+    public static PdfAppearance getAppearanceRadioCross(boolean on, PdfWriter writer, Rectangle box, int rotation, Color backgroundColor, float borderWidth, Color borderColor, Color textColor) {
+        
+        PdfAppearance app = PdfAppearance.createAppearance(writer, box.getWidth(), box.getHeight());
+        switch (rotation) {
+            case 90:
+                app.setMatrix(0, 1, -1, 0, box.getHeight(), 0);
+                break;
+            case 180:
+                app.setMatrix(-1, 0, 0, -1, box.getWidth(), box.getHeight());
+                break;
+            case 270:
+                app.setMatrix(0, -1, 1, 0, 0, box.getWidth());
+                break;
+        }
+        
+        //"q"
+        app.saveState();
+        
+        if (backgroundColor != null) {
+            app.setColorFill(backgroundColor);
+        }
+        else {
+            //"0 0 0 rg"
+            app.setRGBColorFillF(0, 0, 0);
+        }
+        
+        if (borderWidth > 0 && borderColor != null) {
+            app.setLineWidth(borderWidth);
+            app.setColorStroke(borderColor);
+            //draw surrounding rectangle
+            //"1 1 "+(width-2)+" "+(height-2)+" re"
+            app.rectangle(1,1,box.getWidth()-2,box.getHeight()-2);
+            
+            //"W"
+            app.clip();
+        }
+        
+        if(on) {
+            //"n"
+            app.newPath();
+            
+            //draw lines of the cross:
+            //upper left corner
+            //"2 "+(height-2)+" m"
+            app.moveTo(2, box.getHeight()-2);
+            
+            if (textColor != null) {
+                app.setColorFill(textColor);
+            }
+            //lower right corner
+            //(width-2)+" 2"+ " l"
+            app.lineTo(box.getWidth()-2, 2);
+            
+            //upper right corner
+            //(width-2)+" "+(height-2)+" m"
+            app.moveTo(box.getWidth()-2, box.getHeight()-2);
+            
+            //lower left corner
+            //"2 2 l"
+            app.lineTo(2, 2);
+            
+            //"s"
+            app.closePathStroke();
+        }
+        else {
+            //draw nothing since it is the Off appearance
+        }
+        //"Q"
+        app.restoreState();
+
+        return app;
+    }
+    
+    /**
      * Gets a radio group. It's composed of the field specific keys, without the widget
      * ones. This field is to be used as a field aggregator with {@link PdfFormField#addKid(PdfFormField) addKid()}.
      * @param noToggleToOff if <CODE>true</CODE>, exactly one radio button must be selected at all
@@ -325,7 +441,8 @@ public class RadioCheckField extends BaseField {
         if (radiosInUnison)
             field.setFieldFlags(PdfFormField.FF_RADIOSINUNISON);
         field.setFieldName(fieldName);
-        if ((options & READ_ONLY) != 0)
+        field.setUserName(super.alternateFieldName);
+        field.setMappingName(super.mappingName);        if ((options & READ_ONLY) != 0)
             field.setFieldFlags(PdfFormField.FF_READ_ONLY);
         if ((options & REQUIRED) != 0)
             field.setFieldFlags(PdfFormField.FF_REQUIRED);
@@ -339,6 +456,8 @@ public class RadioCheckField extends BaseField {
      * @return the radio field
      * @throws IOException on error
      * @throws DocumentException on error
+     * 
+     * @deprecated use {@link #getKidField()} instead
      */    
     public PdfFormField getRadioField() throws IOException, DocumentException {
         return getField(true);
@@ -349,41 +468,93 @@ public class RadioCheckField extends BaseField {
      * @return the check field
      * @throws IOException on error
      * @throws DocumentException on error
+     * 
+     * @deprecated use {@link #getFullField()} instead
      */    
     public PdfFormField getCheckField() throws IOException, DocumentException {
         return getField(false);
     }
     
     /**
+     * Gets a parent of a checkbox autofill parent. 
+     * It is composed of the field specific keys, without the widget ones. 
+     * This field is to be used as a field aggregator with {@link PdfFormField#addKid(PdfFormField) addKid()}.
+     * 
+     * @return the radio group
+     */    
+    public PdfFormField getCheckboxParent() {
+        PdfFormField field = PdfFormField.createCheckBox(super.writer);
+        
+        field.setFieldName(super.fieldName);
+        field.setUserName(super.alternateFieldName);
+        field.setMappingName(super.mappingName);
+        
+        if ((super.options & READ_ONLY) != 0)
+            field.setFieldFlags(PdfFormField.FF_READ_ONLY);
+        if ((super.options & REQUIRED) != 0)
+            field.setFieldFlags(PdfFormField.FF_REQUIRED);
+        
+        field.setValueAsName(this.checked ? this.onValue : "Off");
+        return field;
+    }
+    
+    /**
+     * Gets the child field. It's only composed of the widget keys and is valid for all autofill fields and radiobuttons. 
+     * Has to be used with {@link #getRadioGroup(boolean,boolean)} or {@link #getCheckboxParent()}.
+     * 
+     * @return the radio field
+     * @throws IOException on error
+     * @throws DocumentException on error
+     */    
+    public PdfFormField getKidField() throws IOException, DocumentException {
+        return getField(true);
+    }
+    
+    /**
+     * Gets the full parent field (There are no kids)
+     * This is the case for non-autofill fields and non-radiobutton fields
+     * 
+     * @return the check field
+     * @throws IOException on error
+     * @throws DocumentException on error
+     */    
+    public PdfFormField getFullField() throws IOException, DocumentException {
+        return getField(false);
+    }
+    
+    /**
      * Gets a radio or check field.
-     * @param isRadio <CODE>true</CODE> to get a radio field, <CODE>false</CODE> to get
-     * a check field
+     * @param isKid <CODE>true</CODE> to get a child field, <CODE>false</CODE> to get full parent field
      * @throws IOException on error
      * @throws DocumentException on error
      * @return the field
      */    
-    protected PdfFormField getField(boolean isRadio) throws IOException, DocumentException {
+    protected PdfFormField getField(boolean isKid) throws IOException, DocumentException {
         PdfFormField field = null;
-        if (isRadio)
+        if (isKid)
             field = PdfFormField.createEmpty(writer);
         else
             field = PdfFormField.createCheckBox(writer);
         field.setWidget(box, PdfAnnotation.HIGHLIGHT_INVERT);
-        if (!isRadio) {
+        if (!isKid) {
             field.setFieldName(fieldName);
-            if ((options & READ_ONLY) != 0)
-                field.setFieldFlags(PdfFormField.FF_READ_ONLY);
-            if ((options & REQUIRED) != 0)
-                field.setFieldFlags(PdfFormField.FF_REQUIRED);
+            field.setUserName(super.alternateFieldName);
+            field.setMappingName(super.mappingName);
+            
+            if ((options & READ_ONLY) != 0) field.setFieldFlags(PdfFormField.FF_READ_ONLY);
+            if ((options & REQUIRED) != 0)  field.setFieldFlags(PdfFormField.FF_REQUIRED);
+            
             field.setValueAsName(checked ? onValue : "Off");            
+            //bugfixed as setting the type wasn't working (also mentioned on the mailinglist on 5th may 2011)
+            setCheckType(checkType);
         }
         if (text != null)
             field.setMKNormalCaption(text);
         if (rotation != 0)
             field.setMKRotation(rotation);
         field.setBorderStyle(new PdfBorderDictionary(borderWidth, borderStyle, new PdfDashPattern(3)));
-        PdfAppearance tpon = getAppearance(isRadio, true);
-        PdfAppearance tpoff = getAppearance(isRadio, false);
+        PdfAppearance tpon = getAppearance(true,super.writer,this.checkType,super.rotation,super.borderStyle,super.box,super.borderWidth,super.fontSize,super.text,super.textColor,super.backgroundColor,super.borderColor,super.getRealFont());
+        PdfAppearance tpoff = getAppearance(false,super.writer,this.checkType,super.rotation,super.borderStyle,super.box,super.borderWidth,super.fontSize,super.text,super.textColor,super.backgroundColor,super.borderColor,super.getRealFont());
         field.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, onValue, tpon);
         field.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, "Off", tpoff);
         field.setAppearanceState(checked ? onValue : "Off");
@@ -411,6 +582,13 @@ public class RadioCheckField extends BaseField {
                 field.setFlags(PdfAnnotation.FLAGS_PRINT);
                 break;
         }
+        
+        if ((visibility & INVISIBLE) != 0) field.addFlags(PdfAnnotation.FLAGS_INVISIBLE);
+        //if ((visibility & HIDDEN) != 0) field.addFlags(PdfAnnotation.FLAGS_HIDDEN);
+        if ((visibility & PRINT) != 0) field.addFlags(PdfAnnotation.FLAGS_PRINT);
+        if ((visibility & NOVIEW) != 0) field.addFlags(PdfAnnotation.FLAGS_NOVIEW);
+        if ((visibility & LOCKED) != 0) field.addFlags(PdfAnnotation.FLAGS_LOCKED);
+        
         return field;
     }
 }

@@ -310,8 +310,7 @@ public class TSAClientBouncyCastle implements TSAClient {
   }
 
   /**
-   * Returns Proxy object used for URL connections.
-   * @return
+   * @return Proxy object used for URL connections.
    */
   public Proxy getProxy() {
       return proxy;

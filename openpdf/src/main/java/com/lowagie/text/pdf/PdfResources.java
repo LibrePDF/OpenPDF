@@ -64,7 +64,7 @@ package com.lowagie.text.pdf;
  * @see        PdfPage
  */
 
-class PdfResources extends PdfDictionary {
+public class PdfResources extends PdfDictionary {
     
     // constructor
     
@@ -72,7 +72,7 @@ class PdfResources extends PdfDictionary {
  * Constructs a PDF ResourcesDictionary.
  */
     
-    PdfResources() {
+    public PdfResources() {
         super();
     }
     

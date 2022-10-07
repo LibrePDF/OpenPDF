@@ -53,6 +53,8 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.pdf.AcroFields.Item;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +62,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.w3c.dom.Node;
@@ -76,12 +80,13 @@ public class AcroFields {
   private Map<String, Item> fields;
   private int topFirst;
   private Map<String, int[]> sigNames;
+  private HashMap<String, SignatureType> sigTypes;
   private boolean append;
   public static final int DA_FONT = 0;
   public static final int DA_SIZE = 1;
   public static final int DA_COLOR = 2;
   private final Map<Integer, BaseFont> extensionFonts = new HashMap<>();
-  private final XfaForm xfa;
+  private XfaForm xfa;
 
   /**
    * A field type invalid or not found.
@@ -188,6 +193,8 @@ public class AcroFields {
         if (indirectObject != null) {
         	lastIDRNumber = indirectObject.getNumber();
         }
+        PdfIndirectReference parentRef=null;
+        
         while (annot != null) {
           dic.mergeDifferent(annot);
           PdfString t = annot.getAsString(PdfName.T);
@@ -207,6 +214,7 @@ public class AcroFields {
           PdfIndirectReference asIndirectObject = annot.getAsIndirectObject(PdfName.PARENT);
           if (asIndirectObject != null) {
         	  parentIDRNumber = asIndirectObject.getNumber();
+        	  parentRef=asIndirectObject;
           }
           if (parentIDRNumber != -1 && lastIDRNumber != parentIDRNumber) {
               annot = annot.getAsDict(PdfName.PARENT);
@@ -220,7 +228,11 @@ public class AcroFields {
         }
         Item item = fields.get(name);
         if (item == null) {
-          item = new Item();
+            if(parentRef==null) {
+                //when there is no /Parent ref the item reference will be used 
+                parentRef = indirectObject;
+            }
+            item = new Item(parentRef);
           fields.put(name, item);
         }
         if (value == null) {
@@ -244,8 +256,9 @@ public class AcroFields {
     }
     for (int j = 0; j < arrfds.size(); ++j) {
       PdfDictionary annot = arrfds.getAsDict(j);
+      PdfIndirectReference annotRef = arrfds.getAsIndirectObject(j);
       if (annot == null) {
-        PdfReader.releaseLastXrefPartial(arrfds.getAsIndirectObject(j));
+        PdfReader.releaseLastXrefPartial(annotRef);
         continue;
       }
       if (!PdfName.WIDGET.equals(annot.getAsName(PdfName.SUBTYPE))) {
@@ -266,7 +279,7 @@ public class AcroFields {
       if (fields.containsKey(name)) {
         continue;
       }
-      Item item = new Item();
+      Item item = new Item(annotRef);
       fields.put(name, item);
       item.addValue(dic);
       item.addWidget(dic);
@@ -322,6 +335,36 @@ public class AcroFields {
     }
     String[] out = new String[names.size()];
     return names.keySet().toArray(out);
+  }
+  
+  /**
+   * Returns the names of the N-appearance dictionaries
+   * @param fieldName
+   * @param idx
+   * @return String[] of appearance names or null if the field can not be found
+   */
+  public String[] getAppearanceNames(String fieldName, int idx) {
+      Item fd = (Item)this.fields.get(fieldName);
+      if (fd == null) return null;
+      ArrayList<String> names = new ArrayList<String>();
+
+
+      PdfDictionary dic = fd.getWidget( idx );
+      dic = dic.getAsDict(PdfName.AP);
+      if (dic != null) {
+          dic = dic.getAsDict(PdfName.N);
+          if (dic != null) {
+
+              Iterator it = dic.getKeys().iterator();
+              while(it.hasNext()) {
+                  String name = PdfName.decodeName(((PdfName)it.next()).toString());
+                  if(!names.contains(name)){
+                      names.add(name);
+                  }
+              }
+          }
+      }
+      return names.toArray(new String[names.size()]);
   }
 
   private String[] getListOption(String fieldName, int idx) {
@@ -887,6 +930,9 @@ public class AcroFields {
     // the fix was made against an old iText version. Bruno adapted it.
     PdfObject v = PdfReader.getPdfObject(mergedDict.get(PdfName.V));
     if (v == null) {
+        	if(this.getFieldType(name) == AcroFields.FIELD_TYPE_CHECKBOX){
+        		return "Off";
+        	}
       return "";
     }
     if (v instanceof PRStream) {
@@ -933,8 +979,12 @@ public class AcroFields {
       return ((PdfString) v).toUnicodeString();
     } else if (v instanceof PdfName) {
       return PdfName.decodeName(v.toString());
-    } else {
-      return "";
+    }
+    else if (v instanceof PdfArray) {
+        return ((PdfArray)v).toString();
+    }
+    else {
+        return "";
     }
   }
 
@@ -1153,6 +1203,171 @@ public class AcroFields {
       throw new ExceptionConverter(e);
     }
   }
+ 
+  /**
+   * Gets a field property. Valid property names are:
+   * <p>
+   * <ul>
+   * <li>textfont - gets the text font. The return value for this entry is a <CODE>String</CODE>.<br>
+   * <li>textcolor - gets the text color. The return value for this entry is a <CODE>java.awt.Color</CODE>.<br>
+   * <li>textsize - gets the text size. The return value for this entry is a <CODE>Float</CODE>.
+   * <li>textfontsall - gets all available fonts used in the PDF. The return value for this entry is a
+   * <CODE>Set&lt;String&gt;</CODE> with font names.
+   * <li>bgcolor - gets the background color. The return value for this entry is a <CODE>java.awt.Color</CODE>.
+   * <li>bordercolor - gets the border color. The return value for this entry is a <CODE>java.awt.Color</CODE>.
+   * </ul>
+   *
+   * If the property does not exist null is returned.
+   *
+   * @param field - the field name
+   * @param name - the property name
+   * @param idx - the index of the widget
+   * @return the above described object or null if the property is not set
+   */
+  public Object getFieldProperty(String field, String name, int idx) {
+      if (this.reader == null)
+          throw new RuntimeException("No reader has been supplied to this AcroFields instance!");
+      try {
+          Item item = (Item) this.fields.get(field);
+          if (item == null)
+              return false;
+
+          PdfDictionary merged;
+          PdfString da;
+          if (name.startsWith("text") && item.size() > idx) {
+              merged = item.getMerged(idx);
+              da = merged.getAsString(PdfName.DA);
+              if (da != null) {
+                  Object[] dao = splitDAelements(da.toUnicodeString());
+                  if ("textfont".equalsIgnoreCase(name)) {
+                      String fontResourceName = (String) dao[DA_FONT];
+
+                      if (fontResourceName == null) {
+                          return fontResourceName;
+                      }
+
+                      // check the resource dict to get the real font name
+                      PdfDictionary dr = merged.getAsDict(PdfName.DR);
+                      // might have to look globally instead?
+                      if (dr == null)
+                          return fontResourceName;
+
+                      PdfDictionary fonts = dr.getAsDict(PdfName.FONT);
+                      if (fonts == null)
+                          return fontResourceName;
+
+                      PdfName fontResourceId = new PdfName(fontResourceName);
+                      PdfDictionary fontDict = fonts.getAsDict(fontResourceId);
+
+                      if (fontDict == null) {
+                          // this is strange normally a font should have been found!
+                          return fontResourceName;
+                      }
+
+                      // Do not use "PdfName.Name" since it is deprecated (according to the PDF spec)
+                      PdfName fontName = fontDict.getAsName(PdfName.BASEFONT);
+                      // theoretically we could check the fontdescriptor and get the /FontName but
+                      // BASEFONT is required so it should always be there...
+                      if (fontName == null) {
+                          // this would be strange since BASEFONT is required according to the pdf spec)
+                          return fontResourceName;
+                      }
+                      return PdfName.decodeName(fontName.toString());
+                  } else if ("textcolor".equalsIgnoreCase(name)) {
+                      return dao[DA_COLOR];
+                  } else if ("textsize".equalsIgnoreCase(name)) {
+                      return dao[DA_SIZE];
+                  } else if ("textfontsall".equalsIgnoreCase(name)) {
+
+                      HashSet<String> fonts = new HashSet<>();
+
+                      // fetch all fonts
+                      PdfDictionary root = this.reader.getCatalog();
+                      PdfDictionary acrofields = root.getAsDict(PdfName.ACROFORM);
+
+                      PdfDictionary allFieldsDR = acrofields.getAsDict(PdfName.DR);
+                      if (allFieldsDR == null)
+                          return fonts;
+
+                      PdfDictionary acroFieldsFonts = allFieldsDR.getAsDict(PdfName.FONT);
+                      if (acroFieldsFonts == null)
+                          return fonts;
+
+                      for (PdfName key : acroFieldsFonts.getKeys()) {
+                          PdfDictionary pdfFont = acroFieldsFonts.getAsDict(key);
+
+                          PdfName fontName = pdfFont.getAsName(PdfName.BASEFONT);
+                          if (fontName != null) {
+                              fonts.add(PdfName.decodeName(fontName.toString()));
+                          } else {
+                              // Basefont was not found (which is unlikely since required by pdf spec. (so its a
+                              // fallback)
+                              PdfDictionary fontDescriptor = pdfFont.getAsDict(PdfName.FONTDESCRIPTOR);
+
+                              if (fontDescriptor != null) {
+                                  // the BASEFONT was not set so extract the /FontName key
+                                  PdfString fontname = fontDescriptor.getAsString(PdfName.FONTNAME);
+                                  if (fontname != null) {
+                                      fonts.add(PdfName.decodeName(fontname.toString()));
+                                  }
+                              }
+                          }
+                      }
+                      return fonts;
+                  }
+                  throw new RuntimeException("Unknown property: " + name);
+              }
+              return null;
+          } else if ("bgcolor".equalsIgnoreCase(name) || "bordercolor".equalsIgnoreCase(name)) {
+              PdfName dname = ("bgcolor".equalsIgnoreCase(name) ? PdfName.BG : PdfName.BC);
+              merged = item.getMerged(idx);
+              PdfDictionary mk = merged.getAsDict(PdfName.MK);
+              if (mk == null) {
+                  return null;
+              } else {
+                  PdfArray color = mk.getAsArray(dname);
+                  return parseColor(color);
+              }
+          } else {
+              throw new RuntimeException("Unknown property: " + name);
+          }
+      } catch (Exception e) {
+          throw new ExceptionConverter(e);
+      }
+  }
+  /**
+   * Parses and converts colors
+   * @param pdfColor
+   * @return Color
+   */
+  public static Color parseColor(PdfArray pdfColor){
+
+      //Check for no color -> thus transparent
+      if(pdfColor!=null && !pdfColor.isEmpty()){
+          if(pdfColor.size()==1){
+              return new GrayColor(pdfColor.getAsNumber(0).floatValue());
+          }
+          else if(pdfColor.size()==3){
+              float red = pdfColor.getAsNumber(0).floatValue();
+              float green = pdfColor.getAsNumber(1).floatValue();
+              float blue = pdfColor.getAsNumber(2).floatValue();
+
+              return new Color(red, green, blue);
+          }
+          else if(pdfColor.size()==4){
+              float c = pdfColor.getAsNumber(0).floatValue();
+              float m = pdfColor.getAsNumber(1).floatValue();
+              float y = pdfColor.getAsNumber(2).floatValue();
+              float k = pdfColor.getAsNumber(3).floatValue();
+
+              return new CMYKColor(c, m, y, k);
+          }
+          else{
+              throw new RuntimeException("Error extracting color: "+pdfColor+" since the color array is too long: "+pdfColor.length());
+          }
+      }
+      return null;
+  }
 
   /**
    * Sets a field property. Valid property names are:
@@ -1297,8 +1512,8 @@ public class AcroFields {
       return false;
     }
     return true;
-  }
-
+  }  
+  
   /**
    * Merges an XML data structure into this form.
    *
@@ -1878,6 +2093,10 @@ public class AcroFields {
      * @since 2.1.5
      */
     public static final int WRITE_VALUE = 4;
+    
+    public Item(PdfIndirectReference ref) {
+        this.fieldReference=ref;
+    }
 
     /**
      * This function writes the given key/value pair to all the instances of merged, widget, and/or value, depending on the
@@ -1971,6 +2190,11 @@ public class AcroFields {
      * @deprecated (will remove ' public ' in the future)
      */
     public ArrayList<Integer> tabOrder = new ArrayList<>();
+    
+    /**
+     * The indirect reference of the item itself
+     */
+    private PdfIndirectReference fieldReference; 
 
     /**
      * Preferred method of determining the number of instances of a given field.
@@ -1987,7 +2211,7 @@ public class AcroFields {
      *
      * @since 2.1.5
      */
-    void remove(int killIdx) {
+    public void remove(int killIdx) {
       values.remove(killIdx);
       widgets.remove(killIdx);
       widgetRefs.remove(killIdx);
@@ -2127,6 +2351,14 @@ public class AcroFields {
     void addTabOrder(int order) {
       tabOrder.add(order);
     }
+    
+    /**
+     * Returns the indirect reference of the field itself
+     * @return PdfIndirectReferenceof the field
+     */
+    public PdfIndirectReference getFieldReference() {
+        return this.fieldReference;
+    }
   }
 
   private static class InstHit {
@@ -2226,6 +2458,101 @@ public class AcroFields {
       }
     }
     return new ArrayList<>(sigNames.keySet());
+  }
+  
+  /**
+   * Method to differentiate the signed signatures types contained in a document.
+   * Currently approval and certification signatures are supported. If a signature is not signed the type 'UNSIGNED' is used.
+   * 
+   * @return HashMap<String, SignatureType> a list of signature names with its types.
+   */
+  public HashMap<String, SignatureType> getSignatureTypes(){
+      if (this.sigTypes != null)
+          return this.sigTypes;
+      this.sigTypes = new HashMap<>();
+      
+      for (Iterator<Map.Entry<String, Item>> it = this.fields.entrySet().iterator(); it.hasNext();) {
+          Map.Entry<String,Item> entry = it.next();
+          Item item = entry.getValue();
+          PdfDictionary merged = item.getMerged(0);
+          if (!PdfName.SIG.equals(merged.get(PdfName.FT)))
+              continue;
+          PdfDictionary v = merged.getAsDict(PdfName.V);
+          if (v == null) {
+              this.sigTypes.put(entry.getKey(), SignatureType.UNSIGNED);
+              continue;
+          }
+          PdfString contents = v.getAsString(PdfName.CONTENTS);
+          if (contents == null) {
+              this.sigTypes.put(entry.getKey(), SignatureType.INCOMPLETE);
+              continue;
+          }
+          PdfArray ro = v.getAsArray(PdfName.BYTERANGE);
+          if (ro == null || ro.size() < 2) {
+              this.sigTypes.put(entry.getKey(), SignatureType.INCOMPLETE);
+              continue;
+          }
+
+          PdfArray ref = v.getAsArray(PdfName.REFERENCE);
+          if(ref==null || ref.size()==0) {
+              this.sigTypes.put(entry.getKey(), SignatureType.APPROVAL);
+          }
+          else {
+              
+              for(int i=0;i<ref.size();i++) {
+                  PdfDictionary sigRefDict = ref.getAsDict(i);
+                  
+                  if(sigRefDict==null) {
+                      //not PDF compliant since the content of the array must be a dictionary!
+                      throw new IllegalStateException("The array of signature reference dictionaries does not contain the correct type (PdfDictionary) but a "+ref.getPdfObject(i).getClass().getName());
+                  }
+                  
+                  PdfName name = sigRefDict.getAsName(PdfName.TRANSFORMMETHOD);
+                  
+                  if(name==null) {
+                      //not PDF compliant since it is a required attribute
+                      throw new IllegalStateException("The TRANSFORMMETHOD is missing which violates the PDF spec.");
+                  }
+                  
+                  if(name.equals(PdfName.DOCMDP)) {
+                      PdfDictionary params = sigRefDict.getAsDict(PdfName.TRANSFORMPARAMS);
+                      
+                      if(params==null) {
+                          this.sigTypes.put(entry.getKey(), SignatureType.CERTIFICATION_ALL_CHANGES);
+                      }
+                      else{
+                          PdfNumber permissions = params.getAsNumber(PdfName.P);
+                          if(permissions==null || permissions.intValue()==0) {
+                              this.sigTypes.put(entry.getKey(), SignatureType.CERTIFICATION_ALL_CHANGES);
+                          }
+                          else if (permissions.intValue()==1) {
+                              this.sigTypes.put(entry.getKey(), SignatureType.CERTIFICATION_NO_CHANGES);
+                          }
+                          else if (permissions.intValue()==2) {
+                              this.sigTypes.put(entry.getKey(), SignatureType.CERTIFICATION_FILLINGFORMS_SIGNING);
+                          }
+                          else if (permissions.intValue()==3) {
+                              this.sigTypes.put(entry.getKey(), SignatureType.CERTIFICATION_FILLINGFORMS_SIGNING_ANNOTATIONS);
+                          }
+                          else {
+                              //default according to adobe is 2
+                              this.sigTypes.put(entry.getKey(), SignatureType.CERTIFICATION_FILLINGFORMS_SIGNING);
+                          }
+                      }
+                  }
+                  else if(name.equals(PdfName.UR)) {
+                      this.sigTypes.put(entry.getKey(), SignatureType.USAGE_RIGHTS);
+                  }
+                  else if(name.equals(PdfName.UR3)) {
+                      this.sigTypes.put(entry.getKey(), SignatureType.USAGE_RIGHTS);
+                  }
+                  else {
+                      this.sigTypes.put(entry.getKey(), SignatureType.APPROVAL);
+                  }
+              }
+          }
+      }
+      return this.sigTypes;
   }
 
   /**
@@ -2427,7 +2754,13 @@ public class AcroFields {
     }
   }
 
-  private void markUsed(PdfObject obj) {
+  /**
+   * Indicate that a PDF object has just been added. If it is not in append mode the object will just be changed.
+   * In append mode a new object (with the same id) will be appended (cp. PDF incremental update).
+   *
+   * @param obj
+   */
+  public void markUsed(PdfObject obj) {
     if (!append) {
       return;
     }
@@ -2735,6 +3068,21 @@ public class AcroFields {
    */
   public XfaForm getXfa() {
     return xfa;
+  }
+  
+  /**
+   * Removes the XFA stream from the document
+   */
+  public void removeXfa() {
+      PdfDictionary root = this.reader.getCatalog();
+      PdfDictionary acroform = root.getAsDict(PdfName.ACROFORM);
+      acroform.remove(PdfName.XFA);
+      try {
+          this.xfa = new XfaForm(this.reader);
+      }
+      catch(Exception e) {
+          throw new ExceptionConverter(e);
+      }
   }
 
   private static final PdfName[] buttonRemove = {PdfName.MK, PdfName.F, PdfName.FF, PdfName.Q, PdfName.BS, PdfName.BORDER};

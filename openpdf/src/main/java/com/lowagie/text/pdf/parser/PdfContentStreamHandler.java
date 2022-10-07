@@ -884,7 +884,7 @@ public class PdfContentStreamHandler {
         /**
          * @param operands
          * @param resources
-         * @return
+         * @return PdfDictionary
          */
         private PdfDictionary getBDCDictionary(List<PdfObject> operands, PdfDictionary resources) {
             PdfObject pdfObject = operands.get(1);

@@ -51,6 +51,7 @@ package com.lowagie.text.pdf;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -134,9 +135,21 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName ADOBE_PPKLITE = new PdfName("Adobe.PPKLite");
     /** A name */
     public static final PdfName ADOBE_PPKMS = new PdfName("Adobe.PPKMS");
-    /** (PDF 1.6; deprecated) The application shall ask the security handler for the file encryption key and shall implicitly decrypt data with 7.6.3.1, "Algorithm 1: Encryption of data using the RC4or AES algorithms", using the AES algorithm in Cipher BlockChaining (CBC) mode with a 16-byte block size and an initialization vector that shall be randomly generated and placed as the first 16 bytes in the stream or string. The key size(Length) shall be 128 bits. */
+    /**
+     * (PDF 1.6; deprecated) The application shall ask the security handler for the file encryption key and shall
+     * implicitly decrypt data with 7.6.3.1, "Algorithm 1: Encryption of data using the RC4or AES algorithms", using the
+     * AES algorithm in Cipher BlockChaining (CBC) mode with a 16-byte block size and an initialization vector that
+     * shall be randomly generated and placed as the first 16 bytes in the stream or string. The key size(Length) shall
+     * be 128 bits.
+     */
     public static final PdfName AESV2 = new PdfName("AESV2");
-    /** (PDF 2.0) The application shall ask the security handler for the file encryption key and shall implicitly decrypt data with 7.6.3.2, "Algorithm 1.A: Encryption of data using the AES algorithms", using the AES-256 algorithm in Cipher Block Chaining (CBC)with padding mode with a 16-byte block size and an initialization vector that is randomly generated and placed as the first 16 bytes in the stream or string. The key size (Length)shall be 256 bits.*/
+    /**
+     * (PDF 2.0) The application shall ask the security handler for the file encryption key and shall implicitly decrypt
+     * data with 7.6.3.2, "Algorithm 1.A: Encryption of data using the AES algorithms", using the AES-256 algorithm in
+     * Cipher Block Chaining (CBC)with padding mode with a 16-byte block size and an initialization vector that is
+     * randomly generated and placed as the first 16 bytes in the stream or string. The key size (Length)shall be 256
+     * bits.
+     */
     public static final PdfName AESV3 = new PdfName("AESV3");
     /**(Optional; PDF 2.0) An array of one or more file specification dictionaries which denote the associated files for this annotation.*/
     public static final PdfName AF = new PdfName("AF");
@@ -347,7 +360,6 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * An array of indirect reference to streams, each containing one DER-encoded X.509 certificate (see RFC 5280). 
      * This array contains certificates that maybe used in the validation of any signatures in the document.
      * 
-     * @since 2.1.7_p42
      */
     public static final PdfName CERTS = new PdfName("Certs");
     
@@ -1161,8 +1173,10 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName NONE = new PdfName("None");
     
     /**
-     * If there is a Legal dictionary in the catalog of the PDF file, and the NonEmbeddedFonts attribute (which specifies the number of fonts not embedded) in that dictionary has a non-zero value, and the viewing application has a preference set to suppress the display of the warning about fonts not being embedded, then the value of this attribute will be set to true (meaning that no warning need be displayed)
-     * @since 2.1.7_p41
+     * If there is a Legal dictionary in the catalog of the PDF file, and the NonEmbeddedFonts attribute (which
+     * specifies the number of fonts not embedded) in that dictionary has a non-zero value, and the viewing application
+     * has a preference set to suppress the display of the warning about fonts not being embedded, then the value of
+     * this attribute will be set to true (meaning that no warning need be displayed)
      */
     public static final PdfName NONEFONTNOWARN = new PdfName("NonEFontNoWarn");
     
@@ -1214,8 +1228,6 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     /**
      * An array of indirect references to streams, each containing a DER-encoded Online Certificate Status Protocol (OCSP) response 
      * (see RFC 6960). This array contains OCSPs that may be used in the validation of the signatures in the document.
-     * 
-     * @since 2.1.7_p42 
      */
     public static final PdfName OCSPS = new PdfName("OCSPs");
     
@@ -1252,7 +1264,6 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     /**
      * Parts of the Build Data Dictionary. Indicates the operating system, such as Win10. 
      * Currently there is no specific string format defined for the value of this attribute.
-     * @since 2.1.7_p41
      * 
      */
     public static final PdfName OS = new PdfName("OS");
@@ -1346,7 +1357,11 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * @since 2.1.6
      */
     public static final PdfName PLAYCOUNT = new PdfName("PlayCount");
-    /** (Required; barcode fields only; ExtensionLevel 3) The PaperMetaData generation parameters dictionary. The entries of this dictionary are instructions to the barcode encoding software on how to generate the barcode image. (Part of *dobe Supplement to the ISO 32000)*/
+    /**
+     * (Required; barcode fields only; ExtensionLevel 3) The PaperMetaData generation parameters dictionary. The entries
+     * of this dictionary are instructions to the barcode encoding software on how to generate the barcode image. (Part
+     * of *dobe Supplement to the ISO 32000)
+     */
     public static final PdfName PMD = new PdfName("PMD");
     /**
      * A name.
@@ -1366,7 +1381,6 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName PREFERRED = new PdfName("Preferred");
     /**
      * Parts of the Build Data Dictionary. A flag that can be used by the signature handler or software module to indicate that this signature was created with unreleased software.
-     * @since 2.1.7_p41
      */
     public static final PdfName PRERELEASE = new PdfName("PreRelease");
     
@@ -1410,7 +1424,6 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * create the signature. The software modules involved in the signing process will vary depending on the viewing application.
      *  All signing implementations should include at least a Filter entry in the build properties dictionary.
      *  
-     *  @since 2.1.7_p40
      */
     public static final PdfName PROP_BUILD = new PdfName("Prop_Build");
     
@@ -1479,7 +1492,6 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * Part of the Build Data Dictionary when used as the App dictionary.
      * A text string indicating the version of the application implementation, as described by the Name attribute in this dictionary. When set by Adobe Acrobat, this entry is  in the format: major.minor.micro (for example 7.0.7).
      * 
-     * @since 2.1.7_p41
      */
     public static final PdfName REX = new PdfName("REx");
     
@@ -1812,8 +1824,10 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName TRUETYPE = new PdfName("TrueType");
     
     /**
-     * Parts of the Build Data Dictionary
-     * If the value is true, the application was in trusted mode when signing took place. The default value is false. A viewing application is in trusted mode when only reviewed code is executing, where reviewed code is code that does not affect the rendering of PDF files in ways that are not covered by the PDF Reference.
+     * Parts of the Build Data Dictionary If the value is true, the application was in trusted mode when signing took
+     * place. The default value is false. A viewing application is in trusted mode when only reviewed code is executing,
+     * where reviewed code is code that does not affect the rendering of PDF files in ways that are not covered by the
+     * PDF Reference.
      */
     public static final PdfName TRUSTEDMODE = new PdfName("TrustedMode");
     
@@ -1912,7 +1926,11 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     /** (Optional; inheritable) The field value, whose format varies depending on the field type. See the descriptions of individual 
      * field types for further information. */
     public static final PdfName V = new PdfName("V");
-    /** (Deprecated) The application shall ask the security handler for the file encryption key and shall implicitly decrypt data with7.6.3.1, "Algorithm 1: Encryption of data using the RC4 or AESalgorithms", using the RC4 algorithm. */
+    /**
+     * (Deprecated) The application shall ask the security handler for the file encryption key and shall implicitly
+     * decrypt data with7.6.3.1, "Algorithm 1: Encryption of data using the RC4 or AESalgorithms", using the RC4
+     * algorithm.
+     */
     public static final PdfName V2 = new PdfName("V2");
     /**
      * A name.
@@ -2036,6 +2054,77 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * @since 2.1.6
      */
     public static Map<String, PdfName> staticNames;
+    
+    /**
+     * List of names used for widget annotations
+     */
+    private static ArrayList <PdfName> widgetNames;
+
+    /**
+     * List of names used in form field dictionaries
+     */
+    private static ArrayList <PdfName> formfieldNames;
+
+    private static void initLists() {
+        //All possible values for an annotation dictionary
+        widgetNames.add(PdfName.TYPE);
+        widgetNames.add(PdfName.SUBTYPE);
+        widgetNames.add(PdfName.RECT);
+        widgetNames.add(PdfName.CONTENTS);
+        widgetNames.add(PdfName.P);
+        widgetNames.add(PdfName.NM);
+        widgetNames.add(PdfName.M);
+        widgetNames.add(PdfName.F);
+        widgetNames.add(PdfName.AP);
+        widgetNames.add(PdfName.AS);
+        widgetNames.add(PdfName.BORDER);
+        widgetNames.add(PdfName.C);
+        widgetNames.add(PdfName.STRUCTPARENT);
+        widgetNames.add(PdfName.OC);
+        widgetNames.add(PdfName.AF);
+        widgetNames.add(PdfName.ca);
+        widgetNames.add(PdfName.CA);
+        widgetNames.add(PdfName.BM);
+        widgetNames.add(PdfName.LANG);
+        //Additional entries specific to a widget annotation
+        widgetNames.add(PdfName.H);
+        widgetNames.add(PdfName.MK);
+        widgetNames.add(PdfName.A);
+        //does exist in both and should have the identical meaning => so either or suffice
+        //widgetNames.add(PdfName.AA);
+        widgetNames.add(PdfName.BS);
+        //When separating a merged dictionary the Parent stays in the field thus it is disabled here
+        //widgetNames.add(PdfName.PARENT);
+        
+        //All possible values for an form field dictionary
+        formfieldNames.add(PdfName.FT);
+        formfieldNames.add(PdfName.PARENT);
+        formfieldNames.add(PdfName.KIDS);
+        formfieldNames.add(PdfName.T);
+        formfieldNames.add(PdfName.TU);
+        formfieldNames.add(PdfName.TM);
+        formfieldNames.add(PdfName.FF);
+        formfieldNames.add(PdfName.V);
+        formfieldNames.add(PdfName.DV);
+        formfieldNames.add(PdfName.AA);
+        //Additional entries common to all fields containing variable text
+        formfieldNames.add(PdfName.DA);
+        formfieldNames.add(PdfName.Q);
+        formfieldNames.add(PdfName.DS);
+        formfieldNames.add(PdfName.RV);
+        //Additional entry specific to check box and radio button fields
+        formfieldNames.add(PdfName.OPT);
+        //Additional entry specific to a text field
+        formfieldNames.add(PdfName.MAXLEN);
+        //Additional entries specific to a choice field
+        formfieldNames.add(PdfName.TI);
+        formfieldNames.add(PdfName.I);
+        //Additional entries specific to a signature field
+        formfieldNames.add(PdfName.LOCK);
+        formfieldNames.add(PdfName.SV);
+        //Additional entries common to all fields containing variable text
+
+    }
 
     /*
      * Use reflection to cache all the static public final names so
@@ -2059,7 +2148,20 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        widgetNames = new ArrayList<>();
+        formfieldNames = new ArrayList<>();
+        initLists();
     }
+    
+    public static ArrayList<PdfName> getWidgetNames() {
+        return widgetNames;
+    }
+
+    public static ArrayList<PdfName> getFormfieldNames() {
+        return formfieldNames;
+    }
+    
     // CLASS VARIABLES
 
     private int hash = 0;

@@ -51,6 +51,7 @@ package com.lowagie.text;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.FopGlyphProcessor;
+import com.lowagie.text.pdf.PdfDate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -622,6 +623,47 @@ public class Document implements AutoCloseable, DocListener {
                     "EEE MMM dd HH:mm:ss zzz yyyy");
             return add(new Meta(Element.CREATIONDATE, sdf.format(new Date())));
         } catch (DocumentException de) {
+            throw new ExceptionConverter(de);
+        }
+    }
+
+    /**
+     * Adds the current date and time to a Document.
+     *
+     * @return  <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
+    public boolean addCreationDate(PdfDate date) {
+        try {
+            return add(new Meta(Element.CREATIONDATE, date.toString()));
+        } 
+        catch (DocumentException de) {
+            throw new ExceptionConverter(de);
+        }
+    }
+    
+    /**
+     * Adds the current date and time to a Document.
+     *
+     * @return  <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
+    public boolean addModificationDate() {
+        try {
+            return add(new Meta(Element.MODIFICATIONDATE, new PdfDate().toString()));
+        } catch (DocumentException de) {
+            throw new ExceptionConverter(de);
+        }
+    }
+    
+    /**
+     * Adds the current date and time to a Document.
+     *
+     * @return  <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
+    public boolean addModificationDate(PdfDate date) {
+        try {
+            return add(new Meta(Element.MODIFICATIONDATE, date.toString()));
+        } 
+        catch (DocumentException de) {
             throw new ExceptionConverter(de);
         }
     }
