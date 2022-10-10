@@ -184,27 +184,6 @@ public class RadioCheckField extends BaseField {
     }
     
     /**
-     * This is the reverse method to {@link #setCheckType(int)}
-     * @param typeChar
-     */
-    void setCheckType(String typeChar) {
-        
-        for (int i = 0; i < typeChars.length; i++) {
-            if(typeChars[i].equals(typeChar)) {
-                this.checkType = i+1;
-                setText(typeChars[i]);
-                break;
-            }
-        }
-        try {
-            setFont(BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.WINANSI, false));
-        }
-        catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
-    }
-    
-    /**
      * Getter for property onValue.
      * @return Value of property onValue.
      */

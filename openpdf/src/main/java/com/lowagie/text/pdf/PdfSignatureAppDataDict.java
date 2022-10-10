@@ -22,6 +22,8 @@ public class PdfSignatureAppDataDict extends PdfDictionary{
     }
 
     /**
+     * The name of the software used to create the signature.
+     * 
      * @param name sets the name of the software module used to create the signature.
      */
     public void setName(String name) {

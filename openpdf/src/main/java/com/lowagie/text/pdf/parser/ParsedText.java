@@ -151,8 +151,8 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param xOffset
-     * @param yOffset
+     * @param xOffset offset in x direction
+     * @param yOffset offset in y direction
      * @param textToUserSpaceTransformMatrix
      * @return the cross product of the offset and the textToUserSpaceTransformMatrix
      */
@@ -201,7 +201,7 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param width
+     * @param width which should be converted to user space
      * @param textToUserSpaceTransformMatrix
      * @return distance between start and end position
      */
@@ -214,8 +214,8 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param startPos
-     * @param endPos
+     * @param startPos of the vector
+     * @param endPos of the vector
      * @return (endPos-startPos).length 
      */
     private static float distance(Vector startPos, Vector endPos) {
@@ -223,8 +223,8 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param height
-     * @param textToUserSpaceTransformMatrix
+     * @param height which should be converted to user space
+     * @param textToUserSpaceTransformMatrix transformation matrix
      * @return distance between start and end position
      */
     private static float convertHeightToUser(float height,

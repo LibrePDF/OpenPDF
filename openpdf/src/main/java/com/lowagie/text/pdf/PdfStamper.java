@@ -663,7 +663,7 @@ public class PdfStamper
 	
     /**
      * To indicate that an object has been changed.
-     * @param obj
+     * @param obj to be marked as used (=dirty)
      */
     public void markUsed(PdfObject obj) {
        this.stamper.markUsed(obj);

@@ -275,7 +275,7 @@ public class PdfDictionary extends PdfObject {
     
     /**
      * Get all keys and values as Map.Entry
-     * @return a Set of keys and values
+     * @return a {@code Set<Entry<PdfName, PdfObject>>} of keys and values
      */
     public Set<Entry<PdfName, PdfObject>> getKeysAndValues() {
         return this.hashMap.entrySet();

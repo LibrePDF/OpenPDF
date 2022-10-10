@@ -176,8 +176,8 @@ public class PdfFormField extends PdfAnnotation {
     /**
      * Allows creation of a simple textfield.
      * 
-     * @param writer
-     * @return PdfFormField textfield
+     * @param writer pdf writer object
+     * @return PdfFormField the created textfield 
      */
     public static PdfFormField createTextField(PdfWriter writer) {
         PdfFormField field = new PdfFormField(writer);

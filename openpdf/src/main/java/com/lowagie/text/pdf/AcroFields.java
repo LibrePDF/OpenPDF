@@ -338,8 +338,8 @@ public class AcroFields {
   
   /**
    * Returns the names of the N-appearance dictionaries
-   * @param fieldName
-   * @param idx
+   * @param fieldName name of the form field
+   * @param idx widget index
    * @return String[] of appearance names or null if the field can not be found
    */
   public String[] getAppearanceNames(String fieldName, int idx) {
@@ -1335,31 +1335,38 @@ public class AcroFields {
       }
   }
   /**
-   * Parses and converts colors
-   * @param pdfColor
-   * @return Color
+   * Parses and converts colors from PDF to standard AWT Colors.
+   * @param pdfColor an array of colors
+   * @return AWT-Color
    */
   public static Color parseColor(PdfArray pdfColor){
 
       //Check for no color -> thus transparent
       if(pdfColor!=null && !pdfColor.isEmpty()){
           if(pdfColor.size()==1){
-              return new GrayColor(pdfColor.getAsNumber(0).floatValue());
+              PdfNumber grey = pdfColor.getAsNumber(0);
+              if(grey!=null) {
+                  return new GrayColor(grey.floatValue());
+              }
           }
           else if(pdfColor.size()==3){
-              float red = pdfColor.getAsNumber(0).floatValue();
-              float green = pdfColor.getAsNumber(1).floatValue();
-              float blue = pdfColor.getAsNumber(2).floatValue();
+              PdfNumber red = pdfColor.getAsNumber(0);
+              PdfNumber green = pdfColor.getAsNumber(1);
+              PdfNumber blue = pdfColor.getAsNumber(2);
 
-              return new Color(red, green, blue);
+              if(red!=null && green!=null && blue!=null) {
+                  return new Color(red.floatValue(), green.floatValue(), blue.floatValue());
+              }
           }
           else if(pdfColor.size()==4){
-              float c = pdfColor.getAsNumber(0).floatValue();
-              float m = pdfColor.getAsNumber(1).floatValue();
-              float y = pdfColor.getAsNumber(2).floatValue();
-              float k = pdfColor.getAsNumber(3).floatValue();
-
-              return new CMYKColor(c, m, y, k);
+              PdfNumber c = pdfColor.getAsNumber(0);
+              PdfNumber m = pdfColor.getAsNumber(1);
+              PdfNumber y = pdfColor.getAsNumber(2);
+              PdfNumber k = pdfColor.getAsNumber(3);
+              
+              if(c!=null && m!=null && y!=null && k!=null) {
+                  return new CMYKColor(c.floatValue(), m.floatValue(), y.floatValue(), k.floatValue());
+              }
           }
           else{
               throw new RuntimeException("Error extracting color: "+pdfColor+" since the color array is too long: "+pdfColor.length());
@@ -2463,7 +2470,7 @@ public class AcroFields {
    * Method to differentiate the signed signatures types contained in a document.
    * Currently approval and certification signatures are supported. If a signature is not signed the type 'UNSIGNED' is used.
    * 
-   * @return HashMap<String, SignatureType> a list of signature names with its types.
+   * @return {@code HashMap<String, SignatureType>} a list of signature names with its types.
    */
   public HashMap<String, SignatureType> getSignatureTypes(){
       if (this.sigTypes != null)
@@ -2757,7 +2764,7 @@ public class AcroFields {
    * Indicate that a PDF object has just been added. If it is not in append mode the object will just be changed.
    * In append mode a new object (with the same id) will be appended (cp. PDF incremental update).
    *
-   * @param obj
+   * @param obj which should be marked as 'used' (=dirty)
    */
   public void markUsed(PdfObject obj) {
     if (!append) {
@@ -2812,7 +2819,9 @@ public class AcroFields {
   }
   
   /**
-   * @return whether everything is done in the append mode
+   * Indicates whether the stamper is in append mode or not
+   * 
+   * @return true when everything is done in the append mode otherwise false
    */
   public boolean isAppend() {
     return this.append;

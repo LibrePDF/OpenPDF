@@ -1262,11 +1262,11 @@ class PdfStamperImp extends PdfWriter {
      * Allows to add e.g. a Radiogroup without specifying a page for the data field parent.
      * The parent (data) form field isn't located on a page thus it doesn't make sense to specify one.
      * 
-     * @param annot
+     * @param annot annotation to be added
      */
     private void addAnnotationToDocument(PdfAnnotation annot) {
         try {
-            ArrayList allAnnots = new ArrayList();
+            ArrayList<PdfAnnotation> allAnnots = new ArrayList<>();
             if (annot.isForm()) {
                 fieldsAdded = true;
                 getAcroFields();
