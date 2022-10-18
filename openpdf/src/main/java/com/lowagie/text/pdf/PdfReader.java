@@ -1722,6 +1722,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         }
       }
     }
+    if (trailer == null)
+      throw new InvalidPdfException(MessageLocalization.getComposedMessage("trailer.not.found"));
     xref = new int[top * 2];
     for (int k = 0; k < top; ++k) {
       int[] obj = xr[k];
