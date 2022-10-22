@@ -214,14 +214,14 @@ public class Document implements AutoCloseable, DocListener {
     // constructor
 
     /**
-     * Constructs a new <CODE>Document</CODE> -object.
+     * Constructs a new <CODE>Document</CODE> -object with the default page size as <CODE>PageSize.A4</CODE> .
      */
     public Document() {
         this(PageSize.A4);
     }
 
     /**
-     * Constructs a new <CODE>Document</CODE> -object.
+     * Constructs a new <CODE>Document</CODE> -object using the given rectangle as page size and default margin of 36.
      *
      * @param pageSize
      *            the pageSize
@@ -329,14 +329,17 @@ public class Document implements AutoCloseable, DocListener {
             listener.open();
         }
     }
-    
+
     /**
- * Sets the pagesize.
- *
+     * Sets the pagesize.
+     * <p>
+     * This change will be effective starting from the next page. If you want to change the page size of
+     * the first page, you need to set it before opening the document.
+     *
      * @param pageSize
      *            the new pagesize
- * @return    a <CODE>boolean</CODE>
- */
+     * @return a <CODE>boolean</CODE>
+     */
     public boolean setPageSize(Rectangle pageSize) {
         this.pageSize = pageSize;
         for (DocListener listener : listeners) {
@@ -344,20 +347,19 @@ public class Document implements AutoCloseable, DocListener {
         }
         return true;
     }
-    
+
     /**
- * Sets the margins.
- *
-     * @param marginLeft
-     *            the margin on the left
-     * @param marginRight
-     *            the margin on the right
-     * @param marginTop
-     *            the margin on the top
-     * @param marginBottom
-     *            the margin on the bottom
- * @return    a <CODE>boolean</CODE>
- */
+     * Sets the margins.
+     * <p>
+     * This change will be effective starting from the next page. If you want to change margins on
+     * the first page, you need to set it before opening the document.
+     *
+     * @param marginLeft   the margin on the left
+     * @param marginRight  the margin on the right
+     * @param marginTop    the margin on the top
+     * @param marginBottom the margin on the bottom
+     * @return a <CODE>boolean</CODE>
+     */
     public boolean setMargins(float marginLeft, float marginRight,
             float marginTop, float marginBottom) {
         this.marginLeft = marginLeft;
@@ -372,11 +374,12 @@ public class Document implements AutoCloseable, DocListener {
     }
     
     /**
- * Signals that an new page has to be started.
- *
+     * Signals to all listeners, that a new page has to be started.
+     * New pages can only be added on already opened and not yet closed documents.
+     *
      * @return <CODE>true</CODE> if the page was added, <CODE>false</CODE>
      *         if not.
- */
+     */
     public boolean newPage() {
         if (!open || close) {
             return false;
@@ -443,6 +446,8 @@ public class Document implements AutoCloseable, DocListener {
 
     /**
      * Sets the page number to 0.
+     * <p>
+     * This change will be effective starting from the next page.
      */
     public void resetPageCount() {
         pageN = 0;
@@ -453,6 +458,10 @@ public class Document implements AutoCloseable, DocListener {
 
     /**
      * Sets the page number.
+     * <p>
+     * This change will be effective starting from the next page.
+     * <p>
+     * <STRONG>The page number of the next new page will be: <CODE>pageN + 1</CODE></STRONG>
      *
      * @param pageN the new page number
      */
@@ -490,17 +499,16 @@ public class Document implements AutoCloseable, DocListener {
     }
 
     // methods concerning the header or some meta information
-    
+
     /**
- * Adds a user defined header to the document.
- *
-     * @param name
-     *            the name of the header
-     * @param content
-     *            the content of the header
- * @return    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
- */
-    
+     * Adds a user defined header to the document.
+     * <P/>
+     * Shortcut method to call: <CODE>add(new Header(name, content))</CODE>
+     *
+     * @param name    the name of the header
+     * @param content the content of the header
+     * @return <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
     public boolean addHeader(String name, String content) {
         try {
             return add(new Header(name, content));
@@ -508,15 +516,20 @@ public class Document implements AutoCloseable, DocListener {
             throw new ExceptionConverter(de);
         }
     }
-    
+
     /**
- * Adds the title to a Document.
- *
-     * @param title
-     *            the title
- * @return    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
- */
-    
+     * Adds the title to a Document.
+     * <P/>
+     * In case of a PDF this will be visible in the document properties panel.
+     * <P/>
+     * In case of a HTML file this will be visible as the <CODE>title</CODE> <CODE>meta</CODE> tag in the
+     * <CODE>HEAD</CODE> part of the file.
+     * <P/>
+     * Shortcut method to call: <CODE>add(new Meta(Element.TITLE, title))</CODE>
+     *
+     * @param title the title
+     * @return <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
     public boolean addTitle(String title) {
         try {
             return add(new Meta(Element.TITLE, title));
@@ -524,15 +537,18 @@ public class Document implements AutoCloseable, DocListener {
             throw new ExceptionConverter(de);
         }
     }
-    
+
     /**
- * Adds the subject to a Document.
- *
-     * @param subject
-     *            the subject
- * @return    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
- */
-    
+     * Adds the subject to a Document.
+     * <P/>
+     * In case of a PDF this will be visible in the document properties panel.
+     * <P/>
+     * In case of a HTML file this will be visible as the <CODE>subject</CODE> <CODE>meta</CODE> tag in the
+     * <CODE>HEAD</CODE> part of the file.
+     *
+     * @param subject the subject
+     * @return <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
     public boolean addSubject(String subject) {
         try {
             return add(new Meta(Element.SUBJECT, subject));
@@ -540,15 +556,18 @@ public class Document implements AutoCloseable, DocListener {
             throw new ExceptionConverter(de);
         }
     }
-    
+
     /**
- * Adds the keywords to a Document.
- *
-     * @param keywords
-     *            adds the keywords to the document
- * @return <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
- */
-    
+     * Adds the keywords to a Document.
+     * <P/>
+     * In case of a PDF this will be visible in the document properties panel.
+     * <P/>
+     * In case of a HTML file this will be visible as the <CODE>keywords</CODE> <CODE>meta</CODE> tag in the
+     * <CODE>HEAD</CODE> part of the file.
+     *
+     * @param keywords adds the keywords to the document
+     * @return <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
     public boolean addKeywords(String keywords) {
         try {
             return add(new Meta(Element.KEYWORDS, keywords));
@@ -556,15 +575,18 @@ public class Document implements AutoCloseable, DocListener {
             throw new ExceptionConverter(de);
         }
     }
-    
+
     /**
- * Adds the author to a Document.
- *
-     * @param author
-     *            the name of the author
- * @return    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
- */
-    
+     * Adds the author to a Document.
+     * <P/>
+     * In case of a PDF this will be visible in the document properties panel.
+     * <P/>
+     * In case of a HTML file this will be visible as the <CODE>author</CODE> <CODE>meta</CODE> tag in the
+     * <CODE>HEAD</CODE> part of the file.
+     *
+     * @param author the name of the author
+     * @return <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
     public boolean addAuthor(String author) {
         try {
             return add(new Meta(Element.AUTHOR, author));
@@ -574,13 +596,16 @@ public class Document implements AutoCloseable, DocListener {
     }
     
     /**
- * Adds the creator to a Document.
- *
+     * Adds the creator to a Document.
+     * <P/>
+     * In case of a PDF this will be visible in the document properties panel.
+     * <P/>
+     * In case of a HTML file this will be visible as comment in the <CODE>HEAD</CODE> part of the file.
+     *
      * @param creator
      *            the name of the creator
- * @return    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
- */
-    
+     * @return    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
     public boolean addCreator(String creator) {
         try {
             return add(new Meta(Element.CREATOR, creator));
@@ -590,17 +615,27 @@ public class Document implements AutoCloseable, DocListener {
     }
     
     /**
- * Adds the producer to a Document.
- *
- * @return    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
- */
-    
+     * Adds the producer to a Document.
+     * <P/>
+     * In case of a PDF this will be visible in the document properties panel.
+     * <P/>
+     * In case of a HTML file this will be visible as comment in the <CODE>HEAD</CODE> part of the file.
+     *
+     * @return    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
     public boolean addProducer() {
         return this.addProducer(getVersion());
     }
 
     /**
      * Adds the provided value as the producer to a Document.
+     * <P/>
+     * The default producer is <CODE>OpenPDF XX.YY.ZZ</CODE> where <CODE>XX.YY.ZZ</CODE> is the version of the OpenPDF
+     * library used to produce the document
+     * <P/>
+     * In case of a PDF this will be visible in the document properties panel.
+     * <P/>
+     * In case of a HTML file this will be visible as comment in the <CODE>HEAD</CODE> part of the file.
      *
      * @param producer new producer line value
      * @return <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
@@ -608,13 +643,16 @@ public class Document implements AutoCloseable, DocListener {
     public boolean addProducer(final String producer) {
         return add(new Meta(Element.PRODUCER, producer));
     }
-    
+
     /**
- * Adds the current date and time to a Document.
- *
- * @return    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
- */
-    
+     * Adds the current date and time to a Document.
+     * <P/>
+     * In case of a PDF this will be visible in the document properties panel.
+     * <P/>
+     * In case of a HTML file this will be visible as comment in the <CODE>HEAD</CODE> part of the file.
+     *
+     * @return <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
     public boolean addCreationDate() {
         try {
             /* bugfix by 'taqua' (Thomas) */
@@ -911,10 +949,26 @@ public class Document implements AutoCloseable, DocListener {
         return marginMirroring;
     }
 
+    /**
+     * The new document language.
+     * This language is used in FopGlyphProcessor to determine which glyphs are to be substituted.
+     * <P/>
+     * The default "dflt" means that all glyphs which can be replaced will be substituted.
+     *
+     * @param documentLanguage the wanted language
+     */
     public void setDocumentLanguage(String documentLanguage) {
         this.documentLanguage = documentLanguage;
     }
 
+    /**
+     * The default language of the document. Can be set to values like "en_US". This language is used in
+     * FopGlyphProcessor to determine which glyphs are to be substituted.
+     * <P/>
+     * The default "dflt" means that all glyphs which can be replaced will be substituted.
+     *
+     * @return the current document language
+     */
     public String getDocumentLanguage() {
         return documentLanguage;
     }
