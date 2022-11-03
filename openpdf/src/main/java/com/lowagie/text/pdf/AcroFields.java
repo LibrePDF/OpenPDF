@@ -614,7 +614,8 @@ public class AcroFields {
             PdfObject po = font.get(new PdfName((String) dab[DA_FONT]));
             if (po != null && po.type() == PdfObject.INDIRECT) {
               PRIndirectReference por = (PRIndirectReference) po;
-              BaseFont bp = new DocumentFont((PRIndirectReference) po);
+              adjustFontEncoding(font, por);
+              BaseFont bp = new DocumentFont(por);
               tx.setFont(bp);
               Integer porkey = por.getNumber();
               BaseFont porf = extensionFonts.get(porkey);
@@ -834,6 +835,17 @@ public class AcroFields {
     PdfAppearance app = tx.getListAppearance();
     topFirst = tx.getTopFirst();
     return app;
+  }
+
+  /** Set font encoding from DR-structure if font doesn't have this info itself */
+  private void adjustFontEncoding(PdfDictionary dr, PRIndirectReference por) {
+    PdfDictionary drEncoding = dr.getAsDict(PdfName.ENCODING);
+    PdfDictionary fontDict = (PdfDictionary) PdfReader.getPdfObject(por);
+    if (fontDict.get(PdfName.ENCODING) == null && drEncoding != null) {
+      for (PdfName key: drEncoding.getKeys()) {
+        fontDict.put(PdfName.ENCODING, drEncoding.get(key));
+      }
+    }
   }
 
   PdfAppearance getAppearance(PdfDictionary merged, String text, String fieldName) throws IOException, DocumentException {
