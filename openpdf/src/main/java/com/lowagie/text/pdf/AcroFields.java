@@ -840,10 +840,12 @@ public class AcroFields {
   /** Set font encoding from DR-structure if font doesn't have this info itself */
   private void adjustFontEncoding(PdfDictionary dr, PRIndirectReference por) {
     PdfDictionary drEncoding = dr.getAsDict(PdfName.ENCODING);
-    PdfDictionary fontDict = (PdfDictionary) PdfReader.getPdfObject(por);
-    if (fontDict.get(PdfName.ENCODING) == null && drEncoding != null) {
-      for (PdfName key: drEncoding.getKeys()) {
-        fontDict.put(PdfName.ENCODING, drEncoding.get(key));
+    if (drEncoding != null) {
+      PdfDictionary fontDict = (PdfDictionary) PdfReader.getPdfObject(por);
+      if (fontDict != null && fontDict.get(PdfName.ENCODING) == null) {
+        for (PdfName key: drEncoding.getKeys()) {
+          fontDict.put(PdfName.ENCODING, drEncoding.get(key));
+        }
       }
     }
   }
