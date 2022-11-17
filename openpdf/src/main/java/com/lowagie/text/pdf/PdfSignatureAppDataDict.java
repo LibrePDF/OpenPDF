@@ -122,8 +122,8 @@ public class PdfSignatureAppDataDict extends PdfDictionary{
      */
     public void setOs(String os) {
         if(os!=null && !os.trim().isEmpty()) {
-            ArrayList<PdfObject> operatingSystem = new ArrayList<>();
-            operatingSystem.add(new PdfName(os));
+            ArrayList<PdfString> operatingSystem = new ArrayList<>();
+            operatingSystem.add(new PdfString(os));
             super.put(PdfName.OS, new PdfArray(operatingSystem));
         }
     }
