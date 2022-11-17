@@ -422,6 +422,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   }
 
   static int getPageRotation(PdfDictionary page) {
+    if(page==null) {
+        throw new NullPointerException("To get the rotation the page must not be null!");
+    }
     PdfNumber rotate = page.getAsNumber(PdfName.ROTATE);
     if (rotate == null)
       return 0;
@@ -447,25 +450,28 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the rotated page from a page dictionary.
    * 
-   * @param page
-   *          the page dictionary
-   * @return the rotated page
+   * @param page the page dictionary
+   * @return the rotated page or null when the page does not exists
    */
   public Rectangle getPageSizeWithRotation(PdfDictionary page) {
-    Rectangle rect = getPageSize(page);
-    int rotation = getPageRotation(page);
-    while (rotation > 0) {
-      rect = rect.rotate();
-      rotation -= 90;
-    }
-    return rect;
+      
+      if(page!=null) {
+          Rectangle rect = getPageSize(page);
+          int rotation = getPageRotation(page);
+          while (rotation > 0) {
+              rect = rect.rotate();
+              rotation -= 90;
+          }
+          return rect;
+      }
+      return null;
   }
   
   /** Gets the page size, taking rotation into account. This
    * is a <CODE>Rectangle</CODE> with the value of a an arbitrary box and the /Rotate key.
    * @param index the page number. The first page is 1
    * @param boxName of the rotated box. Allowed names are: "crop", "trim", "art", "bleed" and "media".
-   * @return a <CODE>Rectangle</CODE> or null if the box does not exist
+   * @return a <CODE>Rectangle</CODE> or null if the page does not exist
    */
   public Rectangle getPageSizeWithRotation(int index, String boxName) {
       
@@ -3679,7 +3685,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     /**
      * @param pageNum
-     * @return a dictionary object
+     * @return a dictionary object or null when the page does not exist
      */
     public PdfDictionary getPageNRelease(int pageNum) {
       PdfDictionary page = getPageN(pageNum);
