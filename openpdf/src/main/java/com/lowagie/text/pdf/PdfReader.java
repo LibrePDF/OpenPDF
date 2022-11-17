@@ -418,10 +418,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @return the page rotation
    */
   public int getPageRotation(int index) {
-    return getPageRotation(pageRefs.getPageNRelease(index));
+     return getPageRotation(pageRefs.getPageNRelease(index));
   }
 
-  int getPageRotation(PdfDictionary page) {
+  static int getPageRotation(PdfDictionary page) {
     PdfNumber rotate = page.getAsNumber(PdfName.ROTATE);
     if (rotate == null)
       return 0;
@@ -472,9 +472,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       Rectangle rect = getBoxSize(index,boxName);
       PdfDictionary page = this.pageRefs.getPageNRelease(index);
       
+      if(rect==null || page ==null) {
+          return null;
+      }
+      
       int rotation = getPageRotation(page);
       //except for the mediabox all other boxes can be null
-      while (rotation > 0 && rect!=null) {
+      while (rotation > 0) {
           rect = rect.rotate();
           rotation -= 90;
       }
@@ -2171,9 +2175,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the dictionary that represents a page.
    * 
-   * @param pageNum
-   *          the page number. 1 is the first
-   * @return the page dictionary
+   * @param pageNum the page number. 1 is the first
+   * @return the page dictionary or null when the page does not exist
    */
   public PdfDictionary getPageN(int pageNum) {
     PdfDictionary dic = pageRefs.getPageN(pageNum);
@@ -3699,7 +3702,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      * 
      * @param pageNum
      *          the page number. 1 is the first
-     * @return the page reference
+     * @return the page reference or null if the page does not exist
      */
     public PRIndirectReference getPageOrigRef(int pageNum) {
       try {

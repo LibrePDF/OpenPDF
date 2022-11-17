@@ -153,7 +153,7 @@ public class ParsedText extends ParsedTextImpl {
     /**
      * @param xOffset offset in x direction
      * @param yOffset offset in y direction
-     * @param textToUserSpaceTransformMatrix
+     * @param textToUserSpaceTransformMatrix transform from text space to graphics (drawing space)
      * @return the cross product of the offset and the textToUserSpaceTransformMatrix
      */
     private static Vector pointToUserSpace(float xOffset, float yOffset,
@@ -202,7 +202,7 @@ public class ParsedText extends ParsedTextImpl {
 
     /**
      * @param width which should be converted to user space
-     * @param textToUserSpaceTransformMatrix
+     * @param textToUserSpaceTransformMatrix transform from text space to graphics (drawing space)
      * @return distance between start and end position
      */
     private static float convertWidthToUser(float width,
@@ -224,7 +224,7 @@ public class ParsedText extends ParsedTextImpl {
 
     /**
      * @param height which should be converted to user space
-     * @param textToUserSpaceTransformMatrix transformation matrix
+     * @param textToUserSpaceTransformMatrix transform from text space to graphics (drawing space)
      * @return distance between start and end position
      */
     private static float convertHeightToUser(float height,

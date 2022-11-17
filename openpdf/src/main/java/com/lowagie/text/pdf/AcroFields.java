@@ -3084,12 +3084,15 @@ public class AcroFields {
   public void removeXfa() {
       PdfDictionary root = this.reader.getCatalog();
       PdfDictionary acroform = root.getAsDict(PdfName.ACROFORM);
-      acroform.remove(PdfName.XFA);
-      try {
-          this.xfa = new XfaForm(this.reader);
-      }
-      catch(Exception e) {
-          throw new ExceptionConverter(e);
+      
+      if(acroform!=null) {
+          acroform.remove(PdfName.XFA);
+          try {
+              this.xfa = new XfaForm(this.reader);
+          }
+          catch(Exception e) {
+              throw new ExceptionConverter(e);
+          }
       }
   }
 

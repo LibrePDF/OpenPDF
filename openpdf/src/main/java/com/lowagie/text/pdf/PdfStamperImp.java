@@ -1289,7 +1289,7 @@ class PdfStamperImp extends PdfWriter {
                     pageN = reader.getPageN(annot.getPlaceInPage());
                 if (annot.isForm()) {
                     if (!annot.isUsed()) {
-                        HashMap templates = annot.getTemplates();
+                        HashMap<PdfTemplate, Object> templates = annot.getTemplates();
                         if (templates != null)
                             fieldTemplates.putAll(templates);
                     }
