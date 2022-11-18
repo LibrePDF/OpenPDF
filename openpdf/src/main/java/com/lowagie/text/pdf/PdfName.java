@@ -2146,7 +2146,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+           throw new IllegalStateException ("The pdfname map could not be initialized!",e);
         }
         
         widgetNames = new ArrayList<>();
