@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 
 /**
  * This will create a file which is ~14GB, then attempt to read it.
@@ -20,7 +21,7 @@ public class LargePdfTest {
     @Disabled
     @Test
     void writeLargePdf() throws Exception {
-        File largeFile = File.createTempFile("largePDFFile", ".pdf");
+        File largeFile = Files.createTempFile("largePDFFile", ".pdf").toFile();
         Document document = PdfTestBase.createPdf(
                 new FileOutputStream(largeFile));
 
