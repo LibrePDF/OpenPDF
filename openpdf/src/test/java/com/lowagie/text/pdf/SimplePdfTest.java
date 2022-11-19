@@ -2,6 +2,7 @@ package com.lowagie.text.pdf;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,7 @@ public class SimplePdfTest {
     @Test
     void testTryWithResources_with_os_before_doc() throws Exception {
         try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
-            FileOutputStream os = new FileOutputStream(File.createTempFile("temp-file-name", ".pdf"));
+            FileOutputStream os = new FileOutputStream(Files.createTempFile("temp-file-name", ".pdf").toFile());
              Document document = new Document()
         ) {
             PdfWriter writer = PdfWriter.getInstance(document, os);

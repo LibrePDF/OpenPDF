@@ -62,6 +62,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.security.SignatureException;
 import java.security.cert.Certificate;
 import java.util.Calendar;
@@ -710,7 +711,7 @@ public class PdfStamper
         }
         else {
             if (tempFile.isDirectory())
-                tempFile = File.createTempFile("pdf", null, tempFile);
+                tempFile = Files.createTempFile(tempFile.toPath(), "pdf", null).toFile();
             FileOutputStream fout = new FileOutputStream(tempFile);
             stp = new PdfStamper(reader, fout, pdfVersion, append);
             stp.sigApp = new PdfSignatureAppearance(stp.stamper);
