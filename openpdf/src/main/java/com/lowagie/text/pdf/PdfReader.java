@@ -3672,7 +3672,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     /**
-     * Gets the dictionary that represents a page.
+     * Gets the page dictionary of the specified page
      * 
      * @param pageNum the page number. 1 is the first
      * @return the page dictionary
@@ -3683,6 +3683,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     /**
+     * Gets the page reference to this page.
+     * 
      * @param pageNum the page number.
      * @return a dictionary object or null when the page does not exist
      */
@@ -3693,6 +3695,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     /**
+     * Releases the page reference to this page.
+     * 
      * @param pageNum the page number.
      * @return an indirect reference
      */
