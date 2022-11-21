@@ -3674,8 +3674,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     /**
      * Gets the dictionary that represents a page.
      * 
-     * @param pageNum
-     *          the page number. 1 is the first
+     * @param pageNum the page number. 1 is the first
      * @return the page dictionary
      */
     public PdfDictionary getPageN(int pageNum) {
@@ -3684,7 +3683,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     /**
-     * @param pageNum
+     * @param pageNum the page number.
      * @return a dictionary object or null when the page does not exist
      */
     public PdfDictionary getPageNRelease(int pageNum) {
@@ -3694,7 +3693,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     /**
-     * @param pageNum
+     * @param pageNum the page number.
      * @return an indirect reference
      */
     public PRIndirectReference getPageOrigRefRelease(int pageNum) {
@@ -3706,8 +3705,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     /**
      * Gets the page reference to this page.
      * 
-     * @param pageNum
-     *          the page number. 1 is the first
+     * @param pageNum the page number. 1 is the first
      * @return the page reference or null if the page does not exist
      */
     public PRIndirectReference getPageOrigRef(int pageNum) {
