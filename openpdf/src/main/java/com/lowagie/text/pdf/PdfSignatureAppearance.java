@@ -899,10 +899,10 @@ public class PdfSignatureAppearance {
   
   /**
    * Sets the field name for a new invisible signature field 
-   * @param fieldname
+   * @param fieldName for the new invisible signature field
    */    
-  public void setFieldNameForInvisibleSignatures(String fieldname) {
-      this.fieldName=fieldname;
+  public void setFieldNameForInvisibleSignatures(String fieldName) {
+      this.fieldName=fieldName;
   }
 
   /**
