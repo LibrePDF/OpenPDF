@@ -604,7 +604,16 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName DV = new PdfName("DV");
     /** A name */
     public static final PdfName DW = new PdfName("DW");
-    /** A name */
+    /** 
+     * Entry in a structure element dictionary: The expanded form of an abbreviation or an acronym. 
+     * <p>OR<p>
+     * Entry in an annotation’s additional-actions dictionary: An action that shall be performed when 
+     * the cursor enters theannotation’s active area.
+     * <p>OR<p>
+     * Entry in a collection field dictionary: A flag indicating whether the interactive PDF processor 
+     * should provide support for editing the field value.
+     * <p>OR more...
+     * */
     public static final PdfName E = new PdfName("E");
     /** A name */
     public static final PdfName EARLYCHANGE = new PdfName("EarlyChange");
