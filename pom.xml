@@ -92,7 +92,7 @@
         <assertj.version>3.23.1</assertj.version>
         <hamcrest.version>2.2</hamcrest.version>
         <junit.version>5.9.1</junit.version>
-        <mockito.version>4.8.0</mockito.version>
+        <mockito.version>4.11.0</mockito.version>
         <checkstyle.version>10.3.4</checkstyle.version>
         <maven-jxr-plugin.version>3.3.0</maven-jxr-plugin.version>
     </properties>
