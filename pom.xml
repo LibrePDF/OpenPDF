@@ -85,7 +85,6 @@
         <jakarta.servlet-api.version>5.0.0</jakarta.servlet-api.version>
         <jcommon.version>1.0.24</jcommon.version>
         <jfreechart.version>1.5.3</jfreechart.version>
-        <jsr305.version>3.0.2</jsr305.version>
         <pdf-renderer.version>1.0.5</pdf-renderer.version>
 
         <!-- test-dependencies -->
@@ -108,11 +107,6 @@
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcpkix-jdk18on</artifactId>
                 <version>${bouncycastle.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>${jsr305.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
