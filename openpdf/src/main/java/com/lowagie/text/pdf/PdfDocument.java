@@ -1579,7 +1579,9 @@ public class PdfDocument extends Document {
                             subtract = 0;
                         if (nextChunk == null)
                             subtract += hangingCorrection;
-                        text.addAnnotation(new PdfAnnotation(writer, xMarker, yMarker, xMarker + width - subtract, yMarker + chunk.font().size(), (PdfAction)chunk.getAttribute(Chunk.ACTION)));
+                        PdfAnnotation annotation = new PdfAnnotation(writer, xMarker, yMarker, xMarker + width - subtract, yMarker + chunk.font().size(), (PdfAction)chunk.getAttribute(Chunk.ACTION));
+                        annotation.setFlags(PdfAnnotation.FLAGS_PRINT);
+                        text.addAnnotation(annotation);
                     }
                     if (chunk.isAttribute(Chunk.REMOTEGOTO)) {
                         float subtract = lastBaseFactor;
