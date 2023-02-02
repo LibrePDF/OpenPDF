@@ -1213,7 +1213,9 @@ public class PdfWriter extends DocWriter implements
                 } else if (getInfo().contains(PdfName.FILEID)) {
                     fileID = getInfo().get(PdfName.FILEID);
                 } else {
-                    fileID = PdfEncryption.createInfoId(PdfEncryption.createDocumentId());
+                    // the same documentId shall be provided to the first version
+                    byte[] documentId = PdfEncryption.createDocumentId();
+                    fileID = PdfEncryption.createInfoId(documentId, documentId);
                 }
 
                 // write the cross-reference table of the body

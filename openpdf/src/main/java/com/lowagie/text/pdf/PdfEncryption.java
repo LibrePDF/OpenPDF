@@ -50,22 +50,21 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.crypto.ARCFOUREncryption;
 import com.lowagie.text.pdf.crypto.IVGenerator;
-import com.lowagie.text.error_messages.MessageLocalization;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Arrays;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 
 
@@ -484,6 +483,73 @@ public class PdfEncryption {
                 buf.appendHex(idPartTwo[k]);
             buf.append('>').append(']');
             return new PdfLiteral(buf.toByteArray());
+
+        } catch (IOException e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    /**
+     * This method returns a changing part of the {@code fileId} when can be identified.
+     * Returns a complete {@code fileId} of the changing part is not found.
+     *
+     * @param fileId {@link PdfObject}
+     * @return byte array representing the changing part of the document identifier
+     */
+    public static byte[] getFileIdChangingPart(PdfObject fileId) {
+        byte[] bytes = fileId.getBytes();
+        boolean firstPartFound = false;
+        int start = 0;
+        int end = bytes.length;
+        for (int i = 0; i < bytes.length; i++) {
+            if (bytes[i] == '<') {
+                if (firstPartFound) {
+                    start = i + 1;
+                }
+                firstPartFound = true;
+            }
+            else if (start > 0 && bytes[i] == '>') {
+                end = i;
+                break;
+            }
+        }
+        if (firstPartFound && start > 0) {
+            byte[] secondPartValue = new byte[end - start];
+            System.arraycopy(bytes, start, secondPartValue, 0, end - start);
+            if (isHexEncoded(secondPartValue)) {
+                return decodeHex(secondPartValue);
+            }
+            else {
+                return secondPartValue;
+            }
+
+        }
+        else {
+            // otherwise return provided value
+            return bytes;
+        }
+    }
+
+    private static boolean isHexEncoded(byte[] str) {
+        if (str.length == 0 || str.length % 2 != 0) {
+            return false;
+        }
+        for (int c : str) {
+            if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static byte[] decodeHex(byte[] hexEncoded) {
+        try (ByteBuffer byteBuffer = new ByteBuffer(hexEncoded.length / 2)) {
+            for (int i = 0; i < hexEncoded.length; i += 2) {
+                int firstDigit = Character.digit(hexEncoded[i], 16);
+                int secondDigit = Character.digit(hexEncoded[i + 1], 16);
+                byteBuffer.append((byte) ((firstDigit << 4) + secondDigit));
+            }
+            return byteBuffer.toByteArray();
 
         } catch (IOException e) {
             throw new ExceptionConverter(e);
