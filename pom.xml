@@ -92,7 +92,8 @@
         <assertj.version>3.23.1</assertj.version>
         <hamcrest.version>2.2</hamcrest.version>
         <junit.version>5.9.1</junit.version>
-        <mockito.version>4.8.0</mockito.version>
+        <mockito4.version>4.11.0</mockito4.version>
+        <mockito5.version>5.2.0</mockito5.version>
         <checkstyle.version>10.6.0</checkstyle.version>
         <maven-jxr-plugin.version>3.3.0</maven-jxr-plugin.version>
     </properties>
@@ -166,12 +167,6 @@
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
                 <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -421,10 +416,34 @@
 
     <profiles>
         <profile>
-            <id>jdk9</id>
+            <id>jdk8</id>
+            <activation>
+                <jdk>(,8]</jdk>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.mockito</groupId>
+                        <artifactId>mockito-core</artifactId>
+                        <version>${mockito4.version}</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+        <profile>
+            <id>jdk9-plus</id>
             <activation>
                 <jdk>[9,)</jdk>
             </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.mockito</groupId>
+                        <artifactId>mockito-core</artifactId>
+                        <version>${mockito5.version}</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
             <build>
                 <plugins>
                     <plugin>
