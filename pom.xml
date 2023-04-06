@@ -69,7 +69,7 @@
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <maven.test.failure.ignore>false</maven.test.failure.ignore>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
         <pitest-junit5-plugin.version>1.1.2</pitest-junit5-plugin.version>
