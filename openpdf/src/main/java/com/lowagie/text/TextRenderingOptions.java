@@ -36,7 +36,7 @@ public class TextRenderingOptions {
 	 * Creates a text rendering options instance.
 	 * 
      * @param documentLanguage the wanted language
-	 * @param glyphSubstitutionEnabled
+	 * @param glyphSubstitutionEnabled whether glyph substitution is enabled
 	 */
 	public TextRenderingOptions(String documentLanguage, boolean glyphSubstitutionEnabled) {
 		this.documentLanguage = documentLanguage;
