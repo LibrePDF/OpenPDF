@@ -49,6 +49,7 @@
 
 package com.lowagie.text.pdf;
 
+import static com.lowagie.text.pdf.PdfAnnotation.FLAGS_PRINT;
 import static java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
 
 import com.lowagie.text.Anchor;
@@ -2090,7 +2091,9 @@ public class PdfDocument extends Document {
      */
     void localGoto(String name, float llx, float lly, float urx, float ury) {
         PdfAction action = getLocalGotoAction(name);
-        annotationsImp.addPlainAnnotation(new PdfAnnotation(writer, llx, lly, urx, ury, action));
+        PdfAnnotation pdfAnnotation = new PdfAnnotation(writer, llx, lly, urx, ury, action);
+        pdfAnnotation.setFlags(FLAGS_PRINT);
+        annotationsImp.addPlainAnnotation(pdfAnnotation);
     }
 
     /**
