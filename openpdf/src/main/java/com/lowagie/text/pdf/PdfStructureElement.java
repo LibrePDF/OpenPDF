@@ -79,6 +79,7 @@ public class PdfStructureElement extends PdfDictionary {
         init(parent, structureType);
         this.parent = parent;
         put(PdfName.P, parent.reference);
+        put(PdfName.TYPE,new PdfName("StructElem"));
     }
     
     /**
@@ -90,6 +91,7 @@ public class PdfStructureElement extends PdfDictionary {
         top = parent;
         init(parent, structureType);
         put(PdfName.P, parent.getReference());
+        put(PdfName.TYPE,new PdfName("StructElem"));
     }
     
     private void init(PdfDictionary parent, PdfName structureType) {
