@@ -1,6 +1,6 @@
 module com.github.librepdf.pdfSwing {
     requires com.github.librepdf.openpdf;
-    requires dom4j;
+    requires org.dom4j;
     requires pdf.renderer;
 
     exports com.lowagie.rups;
