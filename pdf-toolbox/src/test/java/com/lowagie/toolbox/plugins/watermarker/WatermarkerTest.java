@@ -4,13 +4,11 @@ import static java.awt.Color.RED;
 import static java.nio.file.Files.readAllBytes;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
+import com.lowagie.text.DocumentException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import com.lowagie.text.DocumentException;
 import org.junit.jupiter.api.Test;
 
 class WatermarkerTest {
@@ -18,7 +16,7 @@ class WatermarkerTest {
     @Test
     void shouldWriteWatermarkWithIOStreams() throws IOException, DocumentException {
         // GIVEN
-        Path path = Paths.get("src/test/resources/MyFile.pdf");
+        Path path = Paths.get("src/test/resources/layers.pdf");
         byte[] input = readAllBytes(path);
         String text = "Specimen";
         int fontsize = 100;
@@ -38,7 +36,8 @@ class WatermarkerTest {
 
     @SuppressWarnings("unused")
     private void writeOnDisk(byte[] result) throws IOException {
-        try(FileOutputStream fileOutputStream = new FileOutputStream(new File("src/test/resources/Result.pdf"))) {
+        try (FileOutputStream fileOutputStream =
+                new FileOutputStream("src/test/resources/layers-marked.pdf")) {
             fileOutputStream.write(result);
         }
     }

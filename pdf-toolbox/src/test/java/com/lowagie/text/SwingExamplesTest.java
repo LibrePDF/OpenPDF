@@ -3,10 +3,8 @@ package com.lowagie.text;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.lowagie.examples.objects.tables.alternatives.JTable2Pdf;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled  //ignored until we can fix headless GUI on Travis CI.
 class SwingExamplesTest {
 
     static void main(String[] args) {
