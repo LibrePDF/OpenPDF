@@ -15,8 +15,6 @@ public class CrossReferenceTableEncodingTest {
 
     public static final String TEST_PDF = "/encodingTest.pdf";
 
-    // This test was once red, even it was not easy to accomplish this. The test must be run with
-    // -Dfile.encoding=IBM273 from the IDE. Maven won't accept this property.
     @Test
     public void testCrossReferenceTableEncoding() throws Exception {
         final String actualPDF = generateSimplePdf();
@@ -28,8 +26,8 @@ public class CrossReferenceTableEncodingTest {
 
     private static String filterPdf(final String pdf) {
         return pdf.replaceAll("<</ModDate.*?>>", "<</ModDate XXXXX>>")
-            .replaceAll("<</Info .*?>>", "<</Info XXXXX>>")
-            .replaceAll("startxref\\n(\\d+)\\n%%EOF", "startxref\nXXXXX\n%%EOF");
+                .replaceAll("<</Info .*?>>", "<</Info XXXXX>>")
+                .replaceAll("startxref\\n(\\d+)\\n%%EOF", "startxref\nXXXXX\n%%EOF");
     }
 
     private String readExpectedFile() throws IOException {
@@ -40,13 +38,12 @@ public class CrossReferenceTableEncodingTest {
     }
 
     private String generateSimplePdf() throws IOException {
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            try (Document document = PdfTestBase.createPdf(out)) {
-                document.open();
-                document.newPage();
-                document.add(new Paragraph("Hello World!"));
-            }
-            return out.toString("ISO-8859-1");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (Document document = PdfTestBase.createPdf(out)) {
+            document.open();
+            document.newPage();
+            document.add(new Paragraph("Hello World!"));
         }
+        return out.toString("ISO-8859-1");
     }
 }

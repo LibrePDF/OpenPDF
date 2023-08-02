@@ -43,6 +43,7 @@ public class PdfDocument536Test {
             .doesNotContain("HEADER 1", "HEADER 2", "HEADER 3");
         assertThat(extractor.getTextFromPage(2)).as("SecondPage")
             .contains("HEADER 1", "HEADER 2", "HEADER 3");
+        Document.compress = true;
     }
 
     private void addCell(PdfPTable table, String cellText) {

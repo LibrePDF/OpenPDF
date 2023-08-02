@@ -13,10 +13,6 @@
  */
 package com.lowagie.examples.objects.images;
 
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -26,6 +22,11 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 /**
  * Wrapping Images in a Chunk.
  */
@@ -43,7 +44,7 @@ public class ImageChunks {
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter.getInstance(document, new FileOutputStream("imageChunks.pdf"));
+            PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("imageChunks.pdf")));
             // step 3: we open the document
             document.open();
             // step 4: we create a table and add it to the document
@@ -82,5 +83,6 @@ public class ImageChunks {
         }
         // step 5: we close the document
         document.close();
+        Document.compress = true;
     }
 }

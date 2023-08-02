@@ -15,10 +15,6 @@
 package com.lowagie.examples.forms;
 
 
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -28,6 +24,10 @@ import com.lowagie.text.pdf.PdfAppearance;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfFormField;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Generates an Acroform with a PushButton
@@ -48,7 +48,7 @@ public class FormPushButton {
         try {
             
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("pushbutton.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("pushbutton.pdf")));
             
             // step 3: we open the document
             document.open();
@@ -83,5 +83,6 @@ public class FormPushButton {
 
         // step 5: we close the document
         document.close();
+        Document.compress = true;
     }
 }

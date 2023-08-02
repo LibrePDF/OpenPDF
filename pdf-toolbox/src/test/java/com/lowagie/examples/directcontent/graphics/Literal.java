@@ -13,13 +13,13 @@
  */
 package com.lowagie.examples.directcontent.graphics;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Demonstrates how you can write PDF syntax directly to a document.
@@ -43,7 +43,7 @@ public class Literal {
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("literal.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("literal.pdf")));
             
             // step 3: we open the document
             document.open();
@@ -73,5 +73,6 @@ public class Literal {
 
         // step 5: we close the document
         document.close();
+        Document.compress = true;
     }
 }

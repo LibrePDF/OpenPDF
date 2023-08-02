@@ -13,15 +13,15 @@
  */
 package com.lowagie.examples.directcontent.coordinates;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Add an image using different transformation matrices.
@@ -34,13 +34,13 @@ public class TransformImage {
      */
     public static void main(String[] args) {
         Document.compress = false;
-        System.out.println("Transformating an Image");        
+        System.out.println("Transforming an Image");
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4);
         
         try {
             // step 2: creation of the writer
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("transformimage.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("transformImage.pdf")));
             
             // step 3: we open the document
             document.open();
@@ -58,5 +58,6 @@ public class TransformImage {
 
         // step 5: we close the document
         document.close();
+        Document.compress = true;
     }
 }

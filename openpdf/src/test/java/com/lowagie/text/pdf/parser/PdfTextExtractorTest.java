@@ -9,26 +9,25 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import com.lowagie.text.pdf.FontSelector;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import com.lowagie.text.Font;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
+import com.lowagie.text.Font;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.FontSelector;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 class PdfTextExtractorTest {
@@ -61,6 +60,7 @@ class PdfTextExtractorTest {
         document.close();
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
         Assertions.assertEquals("✧❒❅❅❋", pdfTextExtractor.getTextFromPage(1));
+        Document.compress = true;
     }
 
     @Test
@@ -77,6 +77,7 @@ class PdfTextExtractorTest {
         document.close();
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
         Assertions.assertEquals("ετε", pdfTextExtractor.getTextFromPage(1));
+        Document.compress = true;
     }
 
     @Test
@@ -177,7 +178,7 @@ class PdfTextExtractorTest {
 
     protected static byte[] readDocument(final File file) throws IOException {
         try (ByteArrayOutputStream fileBytes = new ByteArrayOutputStream();
-                InputStream inputStream = new FileInputStream(file)) {
+                InputStream inputStream = Files.newInputStream(file.toPath())) {
             final byte[] buffer = new byte[8192];
             while (true) {
                 final int bytesRead = inputStream.read(buffer);
