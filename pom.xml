@@ -66,6 +66,7 @@
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
+        <maven-jxr-plugin.version>3.3.2</maven-jxr-plugin.version>
         <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
         <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
@@ -87,14 +88,12 @@
 
         <!-- test-dependencies -->
         <assertj.version>3.25.3</assertj.version>
+        <checkstyle.version>10.14.0</checkstyle.version>
         <hamcrest.version>2.2</hamcrest.version>
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
         <junit.version>5.10.2</junit.version>
         <mockito4.version>4.11.0</mockito4.version>
         <mockito5.version>5.9.0</mockito5.version>
-
-        <checkstyle.version>10.14.0</checkstyle.version>
-        <maven-jxr-plugin.version>3.3.2</maven-jxr-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -179,10 +178,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${maven-checkstyle-plugin.version}</version>
-                    <configuration>
-                        <configLocation>checkstyle.xml</configLocation>
-                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
@@ -413,6 +408,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>

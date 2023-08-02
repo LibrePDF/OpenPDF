@@ -42,14 +42,13 @@ public class CrossReferenceTableEncodingTest {
         }
     }
 
-    private String generateSimplePdf() throws IOException {
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            try (Document document = PdfTestBase.createPdf(out)) {
-                document.open();
-                document.newPage();
-                document.add(new Paragraph("Hello World!"));
-            }
-            return out.toString("ISO-8859-1");
+    private String generateSimplePdf() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (Document document = PdfTestBase.createPdf(out)) {
+            document.open();
+            document.newPage();
+            document.add(new Paragraph("Hello World!"));
         }
+        return out.toString(ISO_8859_1);
     }
 }

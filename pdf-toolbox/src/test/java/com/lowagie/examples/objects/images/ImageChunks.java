@@ -9,13 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.images;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -26,12 +22,19 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 /**
  * Wrapping Images in a Chunk.
  */
 public class ImageChunks {
+
     /**
      * Images wrapped in a Chunk.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -43,7 +46,7 @@ public class ImageChunks {
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            PdfWriter.getInstance(document, new FileOutputStream("imageChunks.pdf"));
+            PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("imageChunks.pdf")));
             // step 3: we open the document
             document.open();
             // step 4: we create a table and add it to the document
@@ -64,7 +67,7 @@ public class ImageChunks {
             table.addCell("I see an image\non my right");
             table.addCell(cell);
             table.addCell("I see an image\non my left");
-            
+
             Phrase p1 = new Phrase("This is an image ");
             p1.add(ck);
             p1.add(" just here.");
@@ -76,11 +79,11 @@ public class ImageChunks {
             document.add(p1);
             document.add(p1);
             document.add(table);
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
         // step 5: we close the document
         document.close();
+        Document.compress = true;
     }
 }

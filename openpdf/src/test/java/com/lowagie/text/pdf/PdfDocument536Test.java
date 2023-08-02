@@ -11,9 +11,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
-public class PdfDocument536Test {
+class PdfDocument536Test {
+
     @Test
-    public void whenSkipFirstHeader_thenHeaderIsNotPresentOnFirstPage() throws IOException {
+    void whenSkipFirstHeader_thenHeaderIsNotPresentOnFirstPage() throws IOException {
         // given
         Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);
         Document.compress = false;
@@ -43,6 +44,7 @@ public class PdfDocument536Test {
             .doesNotContain("HEADER 1", "HEADER 2", "HEADER 3");
         assertThat(extractor.getTextFromPage(2)).as("SecondPage")
             .contains("HEADER 1", "HEADER 2", "HEADER 3");
+        Document.compress = true;
     }
 
     private void addCell(PdfPTable table, String cellText) {

@@ -9,34 +9,33 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import com.lowagie.text.pdf.FontSelector;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import com.lowagie.text.Font;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
+import com.lowagie.text.Font;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.FontSelector;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 class PdfTextExtractorTest {
 
     private static final String LOREM_IPSUM =
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
-                    + "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed "
-                    + "diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.";
+        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
+            + "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed "
+            + "diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.";
 
     @Test
     void testPageExceeded() throws Exception {
@@ -61,6 +60,7 @@ class PdfTextExtractorTest {
         document.close();
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
         Assertions.assertEquals("✧❒❅❅❋", pdfTextExtractor.getTextFromPage(1));
+        Document.compress = true;
     }
 
     @Test
@@ -77,6 +77,7 @@ class PdfTextExtractorTest {
         document.close();
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
         Assertions.assertEquals("ετε", pdfTextExtractor.getTextFromPage(1));
+        Document.compress = true;
     }
 
     @Test
@@ -94,8 +95,8 @@ class PdfTextExtractorTest {
     void whenTrunkedWordsInChunks_expectsFullWordAsExtraction() throws IOException {
         // given
         byte[] pdfBytes = createSimpleDocumentWithElements(
-                new Chunk("trun"),
-                new Chunk("ked"));
+            new Chunk("trun"),
+            new Chunk("ked"));
         // when
         final String extracted = new PdfTextExtractor(new PdfReader(pdfBytes)).getTextFromPage(1);
         // then
@@ -106,8 +107,8 @@ class PdfTextExtractorTest {
     void getTextFromPageWithPhrases_expectsNoAddedSpace() throws IOException {
         // given
         byte[] pdfBytes = createSimpleDocumentWithElements(
-                new Phrase("Phrase begin. "),
-                new Phrase("Phrase End.")
+            new Phrase("Phrase begin. "),
+            new Phrase("Phrase End.")
         );
         // when
         final String extracted = new PdfTextExtractor(new PdfReader(pdfBytes)).getTextFromPage(1);
@@ -122,9 +123,9 @@ class PdfTextExtractorTest {
         final Paragraph loremIpsumParagraph = new Paragraph(LOREM_IPSUM);
         loremIpsumParagraph.setAlignment(Element.ALIGN_JUSTIFIED);
         byte[] pdfBytes = createSimpleDocumentWithElements(
-                loremIpsumParagraph,
-                Chunk.NEWLINE,
-                loremIpsumParagraph
+            loremIpsumParagraph,
+            Chunk.NEWLINE,
+            loremIpsumParagraph
         );
         final String expected = LOREM_IPSUM + " " + LOREM_IPSUM;
         // when
@@ -136,7 +137,7 @@ class PdfTextExtractorTest {
 
     @Test
     void getTextFromPageInTablesWithSingleWords_expectsWordsAreSeparatedBySpaces()
-            throws IOException {
+        throws IOException {
         // given
         PdfPTable table = new PdfPTable(3);
         table.addCell("One");
@@ -177,7 +178,7 @@ class PdfTextExtractorTest {
 
     protected static byte[] readDocument(final File file) throws IOException {
         try (ByteArrayOutputStream fileBytes = new ByteArrayOutputStream();
-                InputStream inputStream = new FileInputStream(file)) {
+            InputStream inputStream = Files.newInputStream(file.toPath())) {
             final byte[] buffer = new byte[8192];
             while (true) {
                 final int bytesRead = inputStream.read(buffer);
