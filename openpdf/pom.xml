@@ -18,12 +18,8 @@
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
-            <version>73.1</version>
+            <version>73.2</version>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
