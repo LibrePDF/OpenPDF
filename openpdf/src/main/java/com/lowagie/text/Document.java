@@ -958,7 +958,7 @@ public class Document implements AutoCloseable, DocListener {
      * @param documentLanguage the wanted language
      */
     public void setDocumentLanguage(String documentLanguage) {
-    	textRenderingOptions = textRenderingOptions.withDocumentLanguage(documentLanguage);
+    	textRenderingOptions.setDocumentLanguage(documentLanguage);
     }
 
     /**
@@ -981,7 +981,7 @@ public class Document implements AutoCloseable, DocListener {
      * @see #setDocumentLanguage(String)
      */
 	public void setGlyphSubstitutionEnabled(boolean glyphSubstitutionEnabled) {
-		textRenderingOptions = textRenderingOptions.withGlyphSubstitutionsEnabled(glyphSubstitutionEnabled);
+		textRenderingOptions.setGlyphSubstitutionEnabled(glyphSubstitutionEnabled);
 	}
 
 	/**

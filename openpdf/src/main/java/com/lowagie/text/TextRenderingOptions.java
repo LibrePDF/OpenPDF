@@ -20,9 +20,9 @@ public class TextRenderingOptions {
      * The default "dflt" means that all glyphs which can be replaced will be substituted.
      * 
      */
-	private final String documentLanguage;
+	private String documentLanguage;
 	
-	private final boolean glyphSubstitutionEnabled;
+	private boolean glyphSubstitutionEnabled;
 
 	/**
 	 * Creates a text rendering options instance with the default options: glyph substitution enabled 
@@ -43,6 +43,16 @@ public class TextRenderingOptions {
 		this.glyphSubstitutionEnabled = glyphSubstitutionEnabled;
 	}
 
+	/**
+	 * Sets the default language of the document.
+	 * 
+	 * @param documentLanguage the document language
+	 * @see #getDocumentLanguage()
+	 */
+	public void setDocumentLanguage(String documentLanguage) {
+		this.documentLanguage = documentLanguage;
+	}
+
     /**
      * The default language of the document. Can be set to values like "en_US". This language is used in
      * FopGlyphProcessor to determine which glyphs are to be substituted.
@@ -56,6 +66,15 @@ public class TextRenderingOptions {
 	}
 
 	/**
+	 * Sets the font glyph substitution enabled flag.
+	 * 
+	 * @param glyphSubstitutionEnabled whether glyph substitution is enabled
+	 */
+	public void setGlyphSubstitutionEnabled(boolean glyphSubstitutionEnabled) {
+		this.glyphSubstitutionEnabled = glyphSubstitutionEnabled;
+	}
+
+	/**
 	 * Returns the glyph substitution enabled flag.
 	 * 
 	 * @return the glyph substitution enabled flag
@@ -63,25 +82,5 @@ public class TextRenderingOptions {
 	 */
 	public boolean isGlyphSubstitutionEnabled() {
 		return glyphSubstitutionEnabled;
-	}
-	
-	/**
-	 * Returns a new instance with the specified document language.
-	 * 
-	 * @param documentLanguage the document language
-	 * @return a new instance with the document language
-	 */
-	public TextRenderingOptions withDocumentLanguage(String documentLanguage) {
-		return new TextRenderingOptions(documentLanguage, glyphSubstitutionEnabled);
-	}
-	
-	/**
-	 * Returns a new instance with the specified glyph substitution enabled flag.
-	 * 
-	 * @param glyphSubstitutionEnabled whether glyph substitution is enabled
-	 * @return a new instance with the glyph substitution enabled flag
-	 */
-	public TextRenderingOptions withGlyphSubstitutionsEnabled(boolean glyphSubstitutionEnabled) {
-		return new TextRenderingOptions(documentLanguage, glyphSubstitutionEnabled);
 	}
 }
