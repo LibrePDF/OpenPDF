@@ -61,6 +61,8 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.lang.Byte.toUnsignedInt;
+
 /**
  * Creates a CJK font compatible with the fonts in the Adobe Asian font Pack.
  * 
@@ -490,19 +492,28 @@ class CJKFont extends BaseFont {
     }
 
     static char[] readCMap(String name) {
+
+        name = name + ".cmap";
+        int size = 0x10000;
+        char[] c = new char[size];
         try {
-            name = name + ".cmap";
-            InputStream is = getResourceStream(RESOURCE_PATH + name);
-            char[] c = new char[0x10000];
-            for (int k = 0; k < 0x10000; ++k) {
-                c[k] = (char) ((is.read() << 8) + is.read());
+            byte[] bytes = getResourceAsBytes(RESOURCE_PATH + name, size*2);
+            for (int k = 0; k < size; ++k) {
+                c[k] = (char) (((toUnsignedInt(bytes[2 * k])) << 8) + (toUnsignedInt(bytes[2 * k + 1])));
             }
-            is.close();
             return c;
         } catch (Exception e) {
             // empty on purpose
         }
         return null;
+    }
+
+    static byte[] getResourceAsBytes(String key, int size) throws IOException {
+        try(InputStream is = getResourceStream(key)) {
+            byte[] b = new byte[size];
+            is.read(b);
+            return b;
+        }
     }
 
     static IntHashtable createMetric(String s) {
