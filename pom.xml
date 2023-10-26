@@ -77,7 +77,7 @@
 
         <!-- dependencies -->
         <bouncycastle.version>1.76</bouncycastle.version>
-        <commons-io.version>2.13.0</commons-io.version>
+        <commons-io.version>2.15.0</commons-io.version>
         <dom4j.version>2.1.4</dom4j.version>
         <fop.version>2.9</fop.version>
         <!-- jakarta.servlet-api.version is only used in Tests.
