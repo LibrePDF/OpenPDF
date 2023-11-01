@@ -1,5 +1,6 @@
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.DocWriter;
 import com.lowagie.text.Utilities;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -27,11 +29,16 @@ public class PdfProtectedDocumentTest {
         byte[] expectedDigestPreClose = null;
         byte[] expectedDigestClose = null;
 
+        byte[] originalDocId = null;
+        byte[] changingId = null;
+
         // Sign and compare the generated range
         for (int i = 0; i < 10; i++) {
             try (InputStream is = getClass().getResourceAsStream("/open_protected.pdf");
                  ByteArrayOutputStream baos = new ByteArrayOutputStream();
                  PdfReader reader = new PdfReader(is, new byte[]{' '})) {
+                originalDocId = reader.getDocumentId();
+
                 PdfStamper stp = PdfStamper.createSignature(reader, baos, '\0', null, true);
                 stp.setEnforcedModificationDate(signDate);
 
@@ -79,6 +86,20 @@ public class PdfProtectedDocumentTest {
             try (InputStream is = new ByteArrayInputStream(documentBytes);
                  PdfReader reader = new PdfReader(is, new byte[]{' '})) {
                 assertNotNull(reader);
+
+                byte[] documentId = reader.getDocumentId();
+                assertNotNull(documentId);
+                assertArrayEquals(originalDocId, documentId);
+
+                PdfArray idArray = reader.getTrailer().getAsArray(PdfName.ID);
+                assertEquals(2, idArray.size());
+                assertArrayEquals(documentId, com.lowagie.text.DocWriter.getISOBytes(idArray.getPdfObject(0).toString()));
+
+                byte[] currentChangingId = DocWriter.getISOBytes(idArray.getPdfObject(1).toString());
+                if (changingId != null) {
+                    assertFalse(Arrays.equals(changingId, currentChangingId));
+                }
+                changingId = currentChangingId;
             }
         }
 
@@ -89,6 +110,7 @@ public class PdfProtectedDocumentTest {
         Calendar signDate = Calendar.getInstance();
 
         // override with custom FileID to ensure deterministic behaviour
+        byte[] originalDocId = null;
         PdfObject overrideFileId = new PdfLiteral("<123><123>".getBytes());
 
         byte[] documentBytes;
@@ -100,6 +122,8 @@ public class PdfProtectedDocumentTest {
             try (InputStream is = getClass().getResourceAsStream("/open_protected.pdf");
                  ByteArrayOutputStream baos = new ByteArrayOutputStream();
                  PdfReader reader = new PdfReader(is, new byte[]{' '})) {
+                originalDocId = reader.getDocumentId();
+
                 PdfStamper stp = PdfStamper.createSignature(reader, baos, '\0', null, true);
                 stp.setEnforcedModificationDate(signDate);
                 stp.setOverrideFileId(overrideFileId);
@@ -148,6 +172,15 @@ public class PdfProtectedDocumentTest {
             try (InputStream is = new ByteArrayInputStream(documentBytes);
                  PdfReader reader = new PdfReader(is, new byte[]{' '})) {
                 assertNotNull(reader);
+
+                byte[] documentId = reader.getDocumentId();
+                assertNotNull(documentId);
+                assertArrayEquals(originalDocId, documentId);
+
+                PdfArray idArray = reader.getTrailer().getAsArray(PdfName.ID);
+                assertEquals(2, idArray.size());
+                assertArrayEquals(documentId, com.lowagie.text.DocWriter.getISOBytes(idArray.getPdfObject(0).toString()));
+                assertEquals("123", idArray.getPdfObject(1).toString());
             }
         }
 

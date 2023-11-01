@@ -329,6 +329,7 @@ class PdfStamperImp extends PdfWriter {
                 // empty on purpose
             }
         }
+
         PdfIndirectReference encryption = null;
         PdfObject fileID = null;
         if (crypto != null) {
@@ -340,24 +341,30 @@ class PdfStamperImp extends PdfWriter {
                 encryption = encryptionObject.getIndirectReference();
             }
             if (includeFileID) {
-                byte[] fileIDPartOne = crypto.documentID;
-                byte[] fileIDPartTwo;
-                if (overrideFileId != null) {
-                    fileIDPartTwo = overrideFileId.getBytes();
-                } else {
-                    fileIDPartTwo = PdfEncryption.createDocumentId();
-                }
-                fileID = PdfEncryption.createInfoId(fileIDPartOne, fileIDPartTwo);
+                byte[] fileIDPartTwo = overrideFileId != null ?
+                        PdfEncryption.getFileIdChangingPart(overrideFileId) : PdfEncryption.createDocumentId();
+                fileID = PdfEncryption.createInfoId(crypto.documentID, fileIDPartTwo);
             }
         }
         else if (includeFileID) {
+            byte[] documentId = reader.getDocumentId();
             if (overrideFileId != null) {
-                fileID = overrideFileId;
-            } else {
-                fileID = PdfEncryption.createInfoId(PdfEncryption.createDocumentId());
+                if (documentId != null) {
+                    fileID = PdfEncryption.createInfoId(documentId, PdfEncryption.getFileIdChangingPart(overrideFileId));
+                }
+                else {
+                    fileID = overrideFileId;
+                }
             }
-
+            else if (documentId != null) {
+                fileID = PdfEncryption.createInfoId(documentId);
+            }
+            else {
+                byte[] fileIDPart = PdfEncryption.createDocumentId();
+                fileID = PdfEncryption.createInfoId(fileIDPart, fileIDPart);
+            }
         }
+
         PRIndirectReference iRoot = (PRIndirectReference) reader.trailer.get(PdfName.ROOT);
         PdfIndirectReference root = new PdfIndirectReference(0, getNewObjectNumber(reader, iRoot.getNumber(), 0));
 

@@ -4094,4 +4094,22 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       return null;
     return decrypt.computeUserPassword(password);
   }
+
+  /**
+   * Returns a permanent document identifier extracted from trailer /ID entry, when present
+   *
+   * @return byte array representing the document permanent identifier
+   */
+  public byte[] getDocumentId() {
+    if (trailer == null) {
+      return null;
+    }
+    PdfArray documentIDs = trailer.getAsArray(PdfName.ID);
+    if (documentIDs == null || documentIDs.size() == 0) {
+      return null;
+    }
+    PdfObject o = documentIDs.getPdfObject(0);
+    return com.lowagie.text.DocWriter.getISOBytes(o.toString());
+  }
+
 }
