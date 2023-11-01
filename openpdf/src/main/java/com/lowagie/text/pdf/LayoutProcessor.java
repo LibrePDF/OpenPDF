@@ -1,7 +1,7 @@
 /*
  * LayoutProcessor.java
  *
- * Copyright 2020 by Volker Kunert.
+ * Copyright 2020-2022 Volker Kunert.
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -46,15 +46,17 @@ import com.lowagie.text.FontFactory;
 import com.lowagie.text.error_messages.MessageLocalization;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.text.AttributedString;
 import java.text.Bidi;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -66,6 +68,8 @@ public class LayoutProcessor {
     private static final int DEFAULT_FLAGS = -1;
     private static final Map<BaseFont, java.awt.Font> awtFontMap = new ConcurrentHashMap<>();
 
+    private static final Map<TextAttribute, Object> globalTextAttributes = new ConcurrentHashMap<>();
+
     // Static variables can only be set once
     private static boolean enabled = false;
     private static int flags = DEFAULT_FLAGS;
@@ -75,14 +79,19 @@ public class LayoutProcessor {
     }
 
     /**
-     * Enables the processor
+     * Enables the processor.
+     * Kerning and ligatures are switched off.
+     *
+     * This method can only be called once.
      */
     public static void enable() {
         enabled = true;
     }
 
     /**
-     * Enables the processor providing flags
+     * Enables the processor with the provided flags.
+     * Kerning and ligatures are switched off.
+     *
      * This method can only be called once.
      *
      * @param flags see java.awt.Font.layoutGlyphVector
@@ -95,8 +104,118 @@ public class LayoutProcessor {
         LayoutProcessor.flags = flags;
     }
 
+    /**
+     * Enables the processor.
+     * Kerning and ligatures are switched on.
+     *
+     * This method can only be called once.
+     */
+    public static void enableKernLiga() {
+        enableKernLiga(DEFAULT_FLAGS);
+    }
+
+    /**
+     * Enables the processor with the provided flags.
+     * Kerning and ligatures are switched on.
+     *
+     * This method can only be called once.
+     *
+     * @param flags see java.awt.Font.layoutGlyphVector
+     */
+    public static void enableKernLiga(int flags) {
+        if (enabled) {
+            throw new UnsupportedOperationException("LayoutProcessor is already enabled");
+        }
+        setKerning();
+        setLigatures();
+        enabled = true;
+        LayoutProcessor.flags = flags;
+    }
+
     public static boolean isEnabled() {
         return enabled;
+    }
+
+    /**
+     * Set kerning
+     * @see
+     * <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
+     *     Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>
+     */
+    public static void setKerning() {
+        LayoutProcessor.globalTextAttributes.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+    }
+    /**
+     * Set kerning for one font
+     * @param font The font for which kerning is to be turned on
+     * @see
+     * <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
+     *     Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>
+     */
+    public static void setKerning(com.lowagie.text.Font  font) {
+        Map<TextAttribute, Object> textAttributes = new HashMap<>();
+        textAttributes.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+        setTextAttributes(font, textAttributes);
+    }
+    /**
+     * Add ligatures
+     */
+    public static void setLigatures() {
+        LayoutProcessor.globalTextAttributes.put(TextAttribute.LIGATURES, TextAttribute.LIGATURES_ON);
+    }
+    /**
+     * Set ligatures for one font
+     * @param font The font for which ligatures are to be turned on
+     *
+     */
+    public static void setLigatures(com.lowagie.text.Font  font) {
+        Map<TextAttribute, Object> textAttributes = new HashMap<>();
+        textAttributes.put(TextAttribute.LIGATURES, TextAttribute.LIGATURES_ON);
+        setTextAttributes(font, textAttributes);
+    }
+    /**
+     * Set run direction for one font to RTL
+     * @param font The font for which the run direction is set
+     *
+     */
+    public static void setRunDirectionRtl(com.lowagie.text.Font  font) {
+        setRunDirection(font, TextAttribute.RUN_DIRECTION_RTL);
+    }
+    /**
+     * Set run direction for one font to LTR
+     * @param font The font for which the run direction is set
+     *
+     */
+    public static void setRunDirectionLtr(com.lowagie.text.Font  font) {
+        setRunDirection(font, TextAttribute.RUN_DIRECTION_LTR);
+    }
+    /**
+     * Set run direction for one font
+     * @param font The font for which the run direction is set
+     *
+     */
+    private static void setRunDirection(com.lowagie.text.Font  font, Boolean runDirection) {
+        Map<TextAttribute, Object> textAttributes = new HashMap<>();
+        textAttributes.put(TextAttribute.RUN_DIRECTION, runDirection);
+        setTextAttributes(font, textAttributes);
+    }
+    /**
+     * Set text attributes to font
+     * The attributes are used only for glyph layout,
+     * and don't change the visual appearance of the font
+     * @param font The font for which kerning is to be turned on
+     * @param textAttributes Map of text attributes to be set
+     * @see
+     * <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
+     *     Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>*
+     */
+    private static void setTextAttributes(com.lowagie.text.Font  font, Map<TextAttribute, Object> textAttributes) {
+        BaseFont baseFont = font.getBaseFont();
+        java.awt.Font awtFont = awtFontMap.get(baseFont);
+        if (awtFont!=null) {
+            awtFont = awtFont.deriveFont(textAttributes);
+            awtFontMap.put(baseFont, awtFont);
+        }
     }
 
     public static int getFlags() {
@@ -136,7 +255,7 @@ public class LayoutProcessor {
                     file = new File(filename);
                 }
                 if (file.canRead()) {
-                    inputStream = new FileInputStream(file);
+                    inputStream = Files.newInputStream(file.toPath());
                 } else if (filename.startsWith("file:/") || filename.startsWith("http://")
                         || filename.startsWith("https://") || filename.startsWith("jar:")
                         || filename.startsWith("wsjar:")) {
@@ -152,6 +271,9 @@ public class LayoutProcessor {
                 }
                 awtFont = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, inputStream);
                 if (awtFont != null) {
+                    if (globalTextAttributes.size()>0) {
+                        awtFont = awtFont.deriveFont(LayoutProcessor.globalTextAttributes);
+                    }
                     awtFontMap.put(baseFont, awtFont);
                 }
             }
@@ -188,7 +310,14 @@ public class LayoutProcessor {
             localFlags = bidi.isLeftToRight() ? java.awt.Font.LAYOUT_LEFT_TO_RIGHT : java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
         }
         java.awt.Font awtFont = LayoutProcessor.awtFontMap.get(baseFont).deriveFont(fontSize);
-
+        Map<TextAttribute, ?> textAttributes = awtFont.getAttributes();
+        if (textAttributes!=null) {
+            Object runDirection = textAttributes.get(TextAttribute.RUN_DIRECTION);
+            if (runDirection!=null) {
+                localFlags = runDirection==TextAttribute.RUN_DIRECTION_LTR ? java.awt.Font.LAYOUT_LEFT_TO_RIGHT :
+                        java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
+            }
+        }
         return awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, localFlags);
     }
 

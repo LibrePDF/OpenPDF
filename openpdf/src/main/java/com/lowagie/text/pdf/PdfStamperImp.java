@@ -1113,13 +1113,6 @@ class PdfStamperImp extends PdfWriter {
         return ref;
     }
 
-    /**
-     * @see com.lowagie.text.pdf.PdfWriter#addAnnotation(com.lowagie.text.pdf.PdfAnnotation)
-     */
-    public void addAnnotation(PdfAnnotation annot) {
-        throw new RuntimeException(MessageLocalization.getComposedMessage("unsupported.in.this.context.use.pdfstamper.addannotation"));
-    }
-
     void addDocumentField(PdfIndirectReference ref) {
         PdfDictionary catalog = reader.getCatalog();
         PdfDictionary acroForm = (PdfDictionary)PdfReader.getPdfObjectNullConverting(catalog.get(PdfName.ACROFORM), catalog);
@@ -1278,10 +1271,119 @@ class PdfStamperImp extends PdfWriter {
             throw new ExceptionConverter(e);
         }
     }
+    
+    /**
+     * Allows to add e.g. a Radiogroup without specifying a page for the data field parent.
+     * The parent (data) form field isn't located on a page thus it doesn't make sense to specify one.
+     * 
+     * @param annot annotation to be added
+     */
+    private void addAnnotationToDocument(PdfAnnotation annot) {
+        try {
+            ArrayList<PdfAnnotation> allAnnots = new ArrayList<>();
+            if (annot.isForm()) {
+                fieldsAdded = true;
+                getAcroFields();
+                //@sonatype-lift ignore since before 'isForm' is called 
+                PdfFormField field = (PdfFormField)annot;
+                if (field.getParent() != null) {
+                    return;
+                }
+                expandFields(field, allAnnots);
+            }
+            else {
+                allAnnots.add(annot);
+            }
+            
+            PdfDictionary pageN = null;
+            
+            for (int k = 0; k < allAnnots.size(); ++k) {
+                annot = (PdfAnnotation)allAnnots.get(k);
+                if (annot.getPlaceInPage() > 0)
+                    pageN = reader.getPageN(annot.getPlaceInPage());
+                if (annot.isForm()) {
+                    if (!annot.isUsed()) {
+                        HashMap<PdfTemplate, Object> templates = annot.getTemplates();
+                        if (templates != null)
+                            fieldTemplates.putAll(templates);
+                    }
+                    //@sonatype-lift ignore since before 'isForm' is called 
+                    PdfFormField field = (PdfFormField)annot;
+                    if (field.getParent() == null)
+                        addDocumentField(field.getIndirectReference());
+                }
+                if (annot.isAnnotation()) {
+                    //ensure that a page has been set for the annotations (=kids of the parent)
+                    if(annot.isForm() && pageN!=null) {
+                        PdfObject pdfobj = PdfReader.getPdfObject(pageN.get(PdfName.ANNOTS), pageN);
+                        PdfArray annots = null;
+                        if (pdfobj == null || !pdfobj.isArray()) {
+                            annots = new PdfArray();
+                            pageN.put(PdfName.ANNOTS, annots);
+                            markUsed(pageN);
+                        }
+                        else
+                           annots = (PdfArray)pdfobj;
+                        annots.add(annot.getIndirectReference());
+                        markUsed(annots);
+                        if (!annot.isUsed()) {
+                            PdfRectangle rect = (PdfRectangle)annot.get(PdfName.RECT);
+                            if (rect != null && (rect.left() != 0 || rect.right() != 0 || rect.top() != 0 || rect.bottom() != 0)) {
+                                int rotation = reader.getPageRotation(pageN);
+                                Rectangle pageSize = reader.getPageSizeWithRotation(pageN);
+                                switch (rotation) {
+                                    case 90:
+                                        annot.put(PdfName.RECT, new PdfRectangle(
+                                        pageSize.getTop() - rect.top(),
+                                        rect.right(),
+                                        pageSize.getTop() - rect.bottom(),
+                                        rect.left()));
+                                        break;
+                                    case 180:
+                                        annot.put(PdfName.RECT, new PdfRectangle(
+                                        pageSize.getRight() - rect.left(),
+                                        pageSize.getTop() - rect.bottom(),
+                                        pageSize.getRight() - rect.right(),
+                                        pageSize.getTop() - rect.top()));
+                                        break;
+                                    case 270:
+                                        annot.put(PdfName.RECT, new PdfRectangle(
+                                        rect.bottom(),
+                                        pageSize.getRight() - rect.left(),
+                                        rect.top(),
+                                        pageSize.getRight() - rect.right()));
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        throw new IllegalStateException("The radiobutton widget doesn't have a page: "+annot.toString());
+                    }
+                }
+                
+                if (!annot.isUsed()) {
+                    annot.setUsed();
+                    addToBody(annot, annot.getIndirectReference());
+                }
+            }
+        }
+        catch (IOException e) {
+            throw new ExceptionConverter(e);
+        }
+    }
 
     void addAnnotation(PdfAnnotation annot, int page) {
         annot.setPage(page);
         addAnnotation(annot, reader.getPageN(page));
+    }
+    
+    /**
+     * @see com.lowagie.text.pdf.PdfWriter#addAnnotation(com.lowagie.text.pdf.PdfAnnotation)
+     */
+    @Override
+    public void addAnnotation(PdfAnnotation annot) {
+        addAnnotationToDocument(annot);
     }
 
     private void outlineTravel(PRIndirectReference outline) {

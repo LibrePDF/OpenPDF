@@ -593,6 +593,24 @@ public class PdfAnnotation extends PdfDictionary {
       put(PdfName.F, new PdfNumber(flags));
     }
   }
+  
+  /**
+   * Adds one or more flag(s) to the existing annotation flags
+   * 
+   * @param flags value to be added
+   * @return int the new flag value
+   */
+  public int addFlags(int flags) {
+      PdfNumber obj = (PdfNumber)get(PdfName.F);
+      int old;
+      if (obj == null)
+          old = 0;
+      else
+          old = obj.intValue();
+      int v = old | flags;
+      put(PdfName.F, new PdfNumber(v));
+      return old;
+  }
 
   public void setBorder(PdfBorderArray border) {
     put(PdfName.BORDER, border);

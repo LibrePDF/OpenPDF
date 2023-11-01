@@ -49,6 +49,7 @@
 
 package com.lowagie.text.pdf;
 
+import static com.lowagie.text.pdf.PdfAnnotation.FLAGS_PRINT;
 import static java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
 
 import com.lowagie.text.Anchor;
@@ -217,6 +218,20 @@ public class PdfDocument extends Document {
         void addCreationDate() {
             PdfString date = new PdfDate();
             put(PdfName.CREATIONDATE, date);
+        }
+        
+        /**
+         * Adds the modification date (=current date and time) to the document.
+         */
+        void addModificationDate() {
+            PdfString date = new PdfDate();
+            put(PdfName.MODDATE, date);
+        }
+
+        /**
+         * Adds the modification date to the document.
+         */
+        void addModificationDate(PdfDate date) {
             put(PdfName.MODDATE, date);
         }
 
@@ -445,6 +460,10 @@ public class PdfDocument extends Document {
                 case Element.CREATIONDATE:
                     // you can not set the creation date, only reset it
                     info.addCreationDate();
+                    break;
+                case Element.MODIFICATIONDATE:
+                    PdfDate date = new PdfDate(((Meta)element).getContent());
+                    info.addModificationDate(date);
                     break;
 
                 // content (text)
@@ -1578,7 +1597,9 @@ public class PdfDocument extends Document {
                             subtract = 0;
                         if (nextChunk == null)
                             subtract += hangingCorrection;
-                        text.addAnnotation(new PdfAnnotation(writer, xMarker, yMarker, xMarker + width - subtract, yMarker + chunk.font().size(), (PdfAction)chunk.getAttribute(Chunk.ACTION)));
+                        PdfAnnotation annotation = new PdfAnnotation(writer, xMarker, yMarker, xMarker + width - subtract, yMarker + chunk.font().size(), (PdfAction)chunk.getAttribute(Chunk.ACTION));
+                        annotation.setFlags(PdfAnnotation.FLAGS_PRINT);
+                        text.addAnnotation(annotation);
                     }
                     if (chunk.isAttribute(Chunk.REMOTEGOTO)) {
                         float subtract = lastBaseFactor;
@@ -2090,7 +2111,9 @@ public class PdfDocument extends Document {
      */
     void localGoto(String name, float llx, float lly, float urx, float ury) {
         PdfAction action = getLocalGotoAction(name);
-        annotationsImp.addPlainAnnotation(new PdfAnnotation(writer, llx, lly, urx, ury, action));
+        PdfAnnotation pdfAnnotation = new PdfAnnotation(writer, llx, lly, urx, ury, action);
+        pdfAnnotation.setFlags(FLAGS_PRINT);
+        annotationsImp.addPlainAnnotation(pdfAnnotation);
     }
 
     /**

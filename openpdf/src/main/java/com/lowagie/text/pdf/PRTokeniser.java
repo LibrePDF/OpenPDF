@@ -56,7 +56,7 @@ import com.lowagie.text.error_messages.MessageLocalization;
  *
  * @author  Paulo Soares (psoares@consiste.pt)
  */
-public class PRTokeniser {
+public class PRTokeniser implements AutoCloseable {
     
     public static final int TK_NUMBER = 1;
     public static final int TK_STRING = 2;

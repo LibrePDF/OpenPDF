@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 
@@ -846,6 +847,52 @@ public class PdfPTable implements LargeElement{
     public float getRowHeight(int idx) {
         return getRowHeight(idx, false);
     }
+
+    private void redistributeRowspanHeight() {
+        float delta = 0.001f;
+        for (PdfPRow pdfPRow : rows) {
+            pdfPRow.calculateHeights();
+        }
+        for (int rowIdx = 0; rowIdx < rows.size(); rowIdx++) {
+            PdfPRow row = rows.get(rowIdx);
+            PdfPCell[] cells = row.getCells();
+            for (PdfPCell cell : cells) {
+                if (cell != null && cell.getRowspan() > 1) {
+                    float existingHeights = 0;
+                    for (int r = rowIdx; r < rows.size() && r < rowIdx + cell.getRowspan(); r++) {
+                        existingHeights += rows.get(r).getMaxHeights();
+                    }
+                    float heightToDistribute = cell.getMaxHeight() - existingHeights;
+                    if (heightToDistribute > delta) {
+                        ArrayList<Integer> rowsByHeight = new ArrayList<>(cell.getRowspan());
+                        for (int r = rowIdx; r < rows.size() && r < rowIdx + cell.getRowspan(); r++) {
+                            rowsByHeight.add(r);
+                        }
+                        rowsByHeight.sort(Comparator.comparing(r -> rows.get(r).getMaxHeights()));
+                        for (int i = 0; i < rowsByHeight.size(); i++) {
+                            if (heightToDistribute < delta) break;
+                            float additionalHeightPerRow = heightToDistribute / (i + 1);
+                            if (i + 1 < rowsByHeight.size()) {
+                                float currentRowHeight = rows.get(rowsByHeight.get(i)).getMaxHeights();
+                                float nextRowHeight = rows.get(rowsByHeight.get(i + 1)).getMaxHeights();
+                                if (Math.abs(currentRowHeight - nextRowHeight) < delta) {
+                                    continue;
+                                } else {
+                                    additionalHeightPerRow = Math.min(additionalHeightPerRow, nextRowHeight - currentRowHeight);
+                                }
+                            }
+                            for (int j = 0; j <= i; j++) {
+                                int r = rowsByHeight.get(j);
+                                rows.get(r).setMaxHeights(rows.get(r).getMaxHeights() + additionalHeightPerRow);
+                                heightToDistribute -= additionalHeightPerRow;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Gets the height of a particular row.
      * 
@@ -860,40 +907,11 @@ public class PdfPTable implements LargeElement{
         PdfPRow row = rows.get(idx);
         if (row == null)
             return 0;
-        if (firsttime)
+        if (firsttime) {
             row.setWidths(absoluteWidths);
-        float height = row.getMaxHeights();
-        PdfPCell cell;
-        PdfPRow tmprow;
-        for (int i = 0; i < relativeWidths.length; i++) {
-            if(!rowSpanAbove(idx, i))
-                continue;
-            int rs = 1;
-            while (rowSpanAbove(idx - rs, i)) {
-                rs++;
-            }
-            tmprow = rows.get(idx - rs);
-            cell = tmprow.getCells()[i];
-            float tmp = 0;
-            if (cell != null && cell.getRowspan() == rs + 1) {
-                tmp = cell.getMaxHeight();
-                float avgheight = tmp / (rs + 1);
-                PdfPRow iterrow;
-                for (int rowidx = idx - rs; rowidx < idx; rowidx++) {
-                    iterrow = rows.get(rowidx);
-                    if (avgheight > iterrow.getMaxHeights()) {
-                        iterrow.setMaxHeights(height);
-                        tmp -= avgheight;
-                    }else{
-                        tmp -= iterrow.getMaxHeights();
-                    }
-                }
-            }
-            if (tmp > height)
-                height = tmp;
+            this.redistributeRowspanHeight();
         }
-        row.setMaxHeights(height);
-        return height;
+        return row.getMaxHeights();
     }
     
     /**

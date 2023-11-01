@@ -16,8 +16,11 @@ In GitHub User alphabetical order.
 * [@abdullahcevik](https://github.com/abdullahcevik) - Abdullah Çevik
 * [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
 * [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, now retired from OpenPDF development.
+* [@AnthonyStevens](https://github.com/AnthonyStevens) - Anthony Stevens
 * [@applikationsprogramvara](https://github.com/applikationsprogramvara)
+* [@arational](https://github.com/arational) - Ivan Stefanischin
 * [@armin-weber](https://github.com/armin-weber)
+* [@bcersows](https://github.com/bcersows) - Björn Cersowsky
 * [@bradh](https://github.com/bradh) - Brad Hards
 * [@Brooklyn-0](https://github.com/Brooklyn-0)
 * [@bsanchezb](https://github.com/bsanchezb) - Aleksandr Beliakov
@@ -25,14 +28,18 @@ In GitHub User alphabetical order.
 * [@chappyer](https://github.com/chappyer) - Shuwei CAO
 * [@chrismaster](https://github.com/chrismaster) - Chris Master
 * [@codecracker2014](https://github.com/codecracker2014) - Gajendra Kumar
+* [@dadza](https://github.com/dadza) - Lucian Chiriță
 * [@dandybudach](https://github.com/dandybudach) - Dandy Budach
+* [@DManstrator](https://github.com/DManstrator)
 * [@draccagni](https://github.com/draccagni) - Davide Raccagni
 * [@entrix](https://github.com/entrix)
 * [@glarfs](https://github.com/glarfs)
 * [@harrati](https://github.com/harrati) - Youssef Harrati
+* [@JAndrassy](https://github.com/JAndrassy) - Juraj Andrássy
 * [@jeffrey-easyesi](https://github.com/jeffrey-easyesi)
 * [@jherkel](https://github.com/jherkel) - Jakub Herkel
 * [@jknight](https://github.com/jknight) - Jeffrey Knight
+* [@JLLeitschuh](https://github.com/JLLeitschuh) - Jonathan Leitschuh
 * [@jokimaki](https://github.com/jokimaki) - Juha Jokimäki
 * [@jukkaharkki](https://github.com/jukkaharkki)
 * [@karolbe](https://github.com/karolbe) - Karol Bryd
@@ -62,6 +69,7 @@ In GitHub User alphabetical order.
 * [@prashantbhat](https://github.com/prashantbhat) - Prashant Bhat
 * [@rammetzger](https://github.com/rammetzger)
 * [@RangerMak](https://github.com/RangerMak)
+* [@raodienne](https://github.com/raodienne) - Raphaël Odienne
 * [@razilein](https://github.com/razilein) - Sita Geßner
 * [@renoth](https://github.com/renoth) - Johannes Renoth
 * [@salsolatragus](https://github.com/salsolatragus) - Sven Amann
@@ -77,6 +85,7 @@ In GitHub User alphabetical order.
 * [@tomyam1](https://github.com/tomyam1) - Tom Yam
 * [@Tonny-Gu](https://github.com/Tonny-Gu) - NekoDaemon
 * [@Transzendental](https://github.com/Transzendental)
+* [@tstevens](https://github.com/tstevens) - Trevor Stevens
 * [@ubermichael](https://github.com/ubermichael) - Michael Joyce
 * [@VedranSlankovic](https://github.com/VedranSlankovic)
 * [@V-F](https://github.com/V-F)

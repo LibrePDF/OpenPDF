@@ -62,6 +62,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.security.SignatureException;
 import java.security.cert.Certificate;
 import java.util.Calendar;
@@ -79,7 +80,7 @@ import java.util.Map;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfStamper
-    implements PdfViewerPreferences, PdfEncryptionSettings {
+    implements PdfViewerPreferences, PdfEncryptionSettings, AutoCloseable {
     /**
      * The writer
      */    
@@ -660,6 +661,14 @@ public class PdfStamper
     public void setTransition(PdfTransition transition, int page) {
         stamper.setTransition(transition, page);
     }
+	
+    /**
+     * To indicate that an object has been changed.
+     * @param obj to be marked as used (=dirty)
+     */
+    public void markUsed(PdfObject obj) {
+       this.stamper.markUsed(obj);
+    }
 
     /**
      * Applies a digital signature to a document, possibly as a new revision, making
@@ -710,7 +719,7 @@ public class PdfStamper
         }
         else {
             if (tempFile.isDirectory())
-                tempFile = File.createTempFile("pdf", null, tempFile);
+                tempFile = Files.createTempFile(tempFile.toPath(), "pdf", null).toFile();
             FileOutputStream fout = new FileOutputStream(tempFile);
             stp = new PdfStamper(reader, fout, pdfVersion, append);
             stp.sigApp = new PdfSignatureAppearance(stp.stamper);

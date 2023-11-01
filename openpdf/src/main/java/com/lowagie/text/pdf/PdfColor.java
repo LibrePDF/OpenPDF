@@ -55,7 +55,7 @@ import java.awt.Color;
  * @see        PdfDictionary
  */
 
-class PdfColor extends PdfArray {
+public class PdfColor extends PdfArray {
     
     // constructors
     
@@ -73,7 +73,7 @@ class PdfColor extends PdfArray {
         add(new PdfNumber((double)(blue & 0xFF) / 0xFF));
     }
     
-    PdfColor(Color color) {
+    public PdfColor(Color color) {
         this(color.getRed(), color.getGreen(), color.getBlue());
     }
 }

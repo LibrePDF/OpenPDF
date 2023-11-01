@@ -227,7 +227,12 @@ public class PdfPKCS7 {
         algorithmNames.put("1.3.36.3.3.1.2", "RSA");
         algorithmNames.put("1.3.36.3.3.1.4", "RSA");
         algorithmNames.put(ID_ECDSA, "ECDSA");
-
+        algorithmNames.put("1.2.840.10045.4.1", "ECDSA"); 
+        algorithmNames.put("1.2.840.10045.4.3", "ECDSA"); 
+        algorithmNames.put("1.2.840.10045.4.3.2", "ECDSA");
+        algorithmNames.put("1.2.840.10045.4.3.3", "ECDSA");
+        algorithmNames.put("1.2.840.10045.4.3.4", "ECDSA");
+        algorithmNames.put("1.2.840.113549.1.1.10", "RSAandMGF1");
         allowedDigests.put("MD5", "1.2.840.113549.2.5");
         allowedDigests.put("MD2", "1.2.840.113549.2.2");
         allowedDigests.put("SHA1", "1.3.14.3.2.26");
@@ -366,8 +371,8 @@ public class PdfPKCS7 {
                 }
                 if (seq.getObjectAt(k) instanceof ASN1TaggedObject) {
                     ASN1TaggedObject tag = (ASN1TaggedObject) seq.getObjectAt(k);
-                    if (tag.getObject() instanceof ASN1Sequence) {
-                        seq = (ASN1Sequence) tag.getObject();
+                    if (tag.getBaseObject() instanceof ASN1Sequence) {
+                        seq = (ASN1Sequence) tag.getBaseObject();
                         ret = false;
                         break;
                     } else
@@ -422,7 +427,7 @@ public class PdfPKCS7 {
                 throw new IllegalArgumentException(
                         MessageLocalization
                                 .getComposedMessage("not.a.valid.pkcs.7.object.not.signed.data"));
-            ASN1Sequence content = (ASN1Sequence)((ASN1TaggedObject)signedData.getObjectAt(1)).getObject();            // the positions that we care are:
+            ASN1Sequence content = (ASN1Sequence)((ASN1TaggedObject)signedData.getObjectAt(1)).getBaseObject();            // the positions that we care are:
             // the positions that we care are:
             // 0 - version
             // 1 - digestAlgorithms
@@ -453,7 +458,7 @@ public class PdfPKCS7 {
             // the possible ID_PKCS7_DATA
             ASN1Sequence rsaData = (ASN1Sequence) content.getObjectAt(2);
             if (rsaData.size() > 1) {
-                ASN1OctetString rsaDataContent = (ASN1OctetString)((ASN1TaggedObject)rsaData.getObjectAt(1)).getObject();
+                ASN1OctetString rsaDataContent = (ASN1OctetString)((ASN1TaggedObject)rsaData.getObjectAt(1)).getBaseObject();
                 RSAdata = rsaDataContent.getOctets();
             }
 
@@ -518,7 +523,7 @@ public class PdfPKCS7 {
                             ASN1TaggedObject tg = (ASN1TaggedObject) seqout.getObjectAt(j);
                             if (tg.getTagNo() != 1)
                                 continue;
-                            ASN1Sequence seqin = (ASN1Sequence) tg.getObject();
+                            ASN1Sequence seqin = (ASN1Sequence) tg.getBaseObject();
                             findOcsp(seqin);
                         }
                     }
@@ -613,7 +618,7 @@ public class PdfPKCS7 {
                 digestEncryptionAlgorithm = ID_RSA;
             } else if (digestEncryptionAlgorithm.equals("DSA")) {
                 digestEncryptionAlgorithm = ID_DSA;
-            } else if (digestEncryptionAlgorithm.equals("EC")) {
+            } else if (digestEncryptionAlgorithm.equals("EC") || digestEncryptionAlgorithm.equals("ECDSA")) {
                 digestEncryptionAlgorithm = ID_ECDSA;
             } else {
                 throw new NoSuchAlgorithmException(

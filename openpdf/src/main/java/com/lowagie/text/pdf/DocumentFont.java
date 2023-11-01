@@ -711,4 +711,69 @@ public class DocumentFont extends BaseFont {
   IntHashtable getUni2Byte() {
     return uni2byte;
   }
+  
+  public PdfDictionary getFontDescriptor() {
+      return this.font.getAsDict(PdfName.FONTDESCRIPTOR);
+  }
+
+  @Override
+  public String toString() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("DocumentFont [");
+      if (metrics != null) {
+          builder.append("metrics=");
+          builder.append(metrics);
+          builder.append(", ");
+      }
+      if (fontName != null) {
+          builder.append("fontName=");
+          builder.append(fontName);
+          builder.append(", ");
+      }
+      if (refFont != null) {
+          builder.append("refFont=");
+          builder.append(refFont);
+          builder.append(", ");
+      }
+      if (font != null) {
+          builder.append("font=");
+          builder.append(font);
+          builder.append(", ");
+      }
+      if (uni2byte != null) {
+          builder.append("uni2byte size=");
+          builder.append(uni2byte.size());
+          builder.append(", ");
+      }
+      if (diffmap != null) {
+          builder.append("diffmap=");
+          builder.append(diffmap);
+          builder.append(", ");
+      }
+      builder.append("Ascender=");
+      builder.append(Ascender);
+      builder.append(", CapHeight=");
+      builder.append(CapHeight);
+      builder.append(", Descender=");
+      builder.append(Descender);
+      builder.append(", ItalicAngle=");
+      builder.append(ItalicAngle);
+      builder.append(", llx=");
+      builder.append(llx);
+      builder.append(", lly=");
+      builder.append(lly);
+      builder.append(", urx=");
+      builder.append(urx);
+      builder.append(", ury=");
+      builder.append(ury);
+      builder.append(", isType0=");
+      builder.append(isType0);
+      builder.append(", ");
+      if (cjkMirror != null) {
+          builder.append("cjkMirror=");
+          builder.append(cjkMirror);
+      }
+      builder.append("]");
+      return builder.toString();
+  }
 }

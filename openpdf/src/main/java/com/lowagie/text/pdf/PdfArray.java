@@ -243,6 +243,18 @@ public class PdfArray extends PdfObject {
     public PdfObject remove(int idx) {
         return arrayList.remove(idx);
     }
+    
+    /**
+     * Removes the element from the list.
+     * 
+     * Shifts any subsequent elements to the left (subtracts one from their
+     * indices).
+     * 
+     * @param object to be removed.
+     */
+    public boolean remove(PdfObject object) {
+        return this.arrayList.remove(object);
+    }    
 
     /**
      * Get a copy the internal list for this PdfArray.

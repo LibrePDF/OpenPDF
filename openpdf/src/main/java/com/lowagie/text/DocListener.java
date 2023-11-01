@@ -58,7 +58,7 @@ package com.lowagie.text;
  * @see        DocWriter
  */
 
-public interface DocListener extends ElementListener {
+public interface DocListener extends ElementListener, AutoCloseable {
 
     // methods
 

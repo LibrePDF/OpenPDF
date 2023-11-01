@@ -52,6 +52,7 @@ package com.lowagie.text.pdf;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.error_messages.MessageLocalization;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
@@ -1723,7 +1724,7 @@ public abstract class BaseFont {
         if (loader != null) {
             is = loader.getResourceAsStream(key);
             if (is != null) {
-                return is;
+                return new BufferedInputStream(is);
             }
         }
         // Try to use Context Class Loader to load the properties file.
@@ -1742,7 +1743,7 @@ public abstract class BaseFont {
         if (is == null) {
             is = ClassLoader.getSystemResourceAsStream(key);
         }
-        return is;
+         return is == null ? null : new BufferedInputStream(is);
     }
 
     /**

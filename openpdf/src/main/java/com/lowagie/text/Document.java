@@ -51,6 +51,7 @@ package com.lowagie.text;
 
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.FopGlyphProcessor;
+import com.lowagie.text.pdf.PdfDate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,7 +104,7 @@ import java.util.Properties;
  * </BLOCKQUOTE>
  */
 
-public class Document implements AutoCloseable, DocListener {
+public class Document implements DocListener {
     
     // membervariables
     private static final String VERSION_PROPERTIES = "com/lowagie/text/version.properties";
@@ -204,12 +205,12 @@ public class Document implements AutoCloseable, DocListener {
     protected int chapternumber = 0;
 
     /**
-     * The default language of the document. Can be set to values like "en_US".
-     * This language is used in {@link FopGlyphProcessor} to determine which glyphs are to be substituted.
-     * The default "dflt" means that all glyphs which can be replaced will be substituted.
+     * Text rendering options, including the default language of the document and a flag
+     * to enable font glyph substitution (if FOP is available)
+     * 
      * @since 3.1.15
      */
-    String documentLanguage = "dflt";
+    TextRenderingOptions textRenderingOptions = new TextRenderingOptions();
 
     // constructor
 
@@ -663,6 +664,47 @@ public class Document implements AutoCloseable, DocListener {
             throw new ExceptionConverter(de);
         }
     }
+
+    /**
+     * Adds the current date and time to a Document.
+     *
+     * @return  <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
+    public boolean addCreationDate(PdfDate date) {
+        try {
+            return add(new Meta(Element.CREATIONDATE, date.toString()));
+        } 
+        catch (DocumentException de) {
+            throw new ExceptionConverter(de);
+        }
+    }
+    
+    /**
+     * Adds the current date and time to a Document.
+     *
+     * @return  <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
+    public boolean addModificationDate() {
+        try {
+            return add(new Meta(Element.MODIFICATIONDATE, new PdfDate().toString()));
+        } catch (DocumentException de) {
+            throw new ExceptionConverter(de);
+        }
+    }
+    
+    /**
+     * Adds the current date and time to a Document.
+     *
+     * @return  <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise
+     */
+    public boolean addModificationDate(PdfDate date) {
+        try {
+            return add(new Meta(Element.MODIFICATIONDATE, date.toString()));
+        } 
+        catch (DocumentException de) {
+            throw new ExceptionConverter(de);
+        }
+    }
     
     // methods to get the layout of the document.
     
@@ -958,7 +1000,7 @@ public class Document implements AutoCloseable, DocListener {
      * @param documentLanguage the wanted language
      */
     public void setDocumentLanguage(String documentLanguage) {
-        this.documentLanguage = documentLanguage;
+    	textRenderingOptions.setDocumentLanguage(documentLanguage);
     }
 
     /**
@@ -970,6 +1012,49 @@ public class Document implements AutoCloseable, DocListener {
      * @return the current document language
      */
     public String getDocumentLanguage() {
-        return documentLanguage;
+        return textRenderingOptions.getDocumentLanguage();
+    }
+
+    /**
+     * Set a flag that determine whether glyph substion is enabled when FOP is available.
+     * 
+     * @param glyphSubstitutionEnabled the glyph substitution enabled flag
+     * @see FopGlyphProcessor
+     * @see #setDocumentLanguage(String)
+     */
+	public void setGlyphSubstitutionEnabled(boolean glyphSubstitutionEnabled) {
+		textRenderingOptions.setGlyphSubstitutionEnabled(glyphSubstitutionEnabled);
+	}
+
+	/**
+	 * Returns the glyph substitution enabled flag.
+	 * 
+	 * @return the glyph substitution enabled flag
+	 * @see #setGlyphSubstitutionEnabled(boolean)
+	 */
+	public boolean isGlyphSubstitutionEnabled() {
+		return textRenderingOptions.isGlyphSubstitutionEnabled();
+	}
+    
+	/**
+	 * Sets the text rendering options.
+	 * 
+	 * @param textRenderingOptions the text rendering options
+	 * @see #setDocumentLanguage(String)
+	 * @see Document#setGlyphSubstitutionsEnabled(boolean)
+	 */
+    public void setTextRenderingOptions(TextRenderingOptions textRenderingOptions) {
+    	this.textRenderingOptions = textRenderingOptions == null ? new TextRenderingOptions() : textRenderingOptions;
+    }
+    
+    /**
+     * Gets the text rendering options.
+     * 
+     * @return the text rendering options
+     * @see #getDocumentLanguage()
+     * @see #isGlyphSubstitutionEnabled()
+     */
+    public TextRenderingOptions getTextRenderingOptions() {
+    	return textRenderingOptions;
     }
 }

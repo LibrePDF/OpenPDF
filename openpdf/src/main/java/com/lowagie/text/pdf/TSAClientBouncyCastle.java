@@ -310,8 +310,8 @@ public class TSAClientBouncyCastle implements TSAClient {
   }
 
   /**
-   * Returns Proxy object used for URL connections.
-   * @return
+   * Proxy object used for URL connections.
+   * @return Proxy object
    */
   public Proxy getProxy() {
       return proxy;
@@ -326,7 +326,7 @@ public class TSAClientBouncyCastle implements TSAClient {
 
   /**
    * Sets Policy OID of TSA request.
-   * @param policy
+   * @param policy oid
    */
   public void setPolicy(String policy) {
       this.policy = policy;

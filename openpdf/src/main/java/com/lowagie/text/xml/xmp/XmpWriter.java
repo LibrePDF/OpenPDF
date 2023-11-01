@@ -66,7 +66,7 @@ import java.util.Map;
  * Metadata to a PDF Dictionary. Remark that this class doesn't cover the
  * complete XMP specification. 
  */
-public class XmpWriter {
+public class XmpWriter implements AutoCloseable {
 
     /** A possible charset for the XMP. */
     public static final String UTF8 = "UTF-8";

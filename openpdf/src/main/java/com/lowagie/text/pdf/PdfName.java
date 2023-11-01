@@ -51,6 +51,7 @@ package com.lowagie.text.pdf;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,13 +84,10 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * @since 2.1.6
      */
     public static final PdfName _3D = new PdfName("3D");
-    /**
-     * A name
-     */
+    /** (Optional) An action that shall be performed when the annotation is activated. */
     public static final PdfName A = new PdfName("A");
-    /**
-     * A name
-     */
+    /** (Optional) An additional-actions dictionary defining the field's / annotations's behaviour in response to various trigger events. 
+     * This entry has exactly the same meaning as the AA entry in an annotation dictionary. */
     public static final PdfName AA = new PdfName("AA");
     /**
      * A name
@@ -105,9 +103,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * A name
      */
     public static final PdfName ACROFORM = new PdfName("AcroForm");
-    /**
-     * A name
-     */
+    /** (Required) A name which, in conjunction with Fields, indicates the set of fields that should be locked. The value shall be one of the following: All, include or exclude. */
     public static final PdfName ACTION = new PdfName("Action");
     /**
      * A name.
@@ -139,12 +135,30 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName ADOBE_PPKLITE = new PdfName("Adobe.PPKLite");
     /** A name */
     public static final PdfName ADOBE_PPKMS = new PdfName("Adobe.PPKMS");
-    /** A name */
+    /**
+     * (PDF 1.6; deprecated) The application shall ask the security handler for the file encryption key and shall
+     * implicitly decrypt data with 7.6.3.1, "Algorithm 1: Encryption of data using the RC4or AES algorithms", using the
+     * AES algorithm in Cipher BlockChaining (CBC) mode with a 16-byte block size and an initialization vector that
+     * shall be randomly generated and placed as the first 16 bytes in the stream or string. The key size(Length) shall
+     * be 128 bits.
+     */
     public static final PdfName AESV2 = new PdfName("AESV2");
-    /** A name */
+    /**
+     * (PDF 2.0) The application shall ask the security handler for the file encryption key and shall implicitly decrypt
+     * data with 7.6.3.2, "Algorithm 1.A: Encryption of data using the AES algorithms", using the AES-256 algorithm in
+     * Cipher Block Chaining (CBC)with padding mode with a 16-byte block size and an initialization vector that is
+     * randomly generated and placed as the first 16 bytes in the stream or string. The key size (Length)shall be 256
+     * bits.
+     */
     public static final PdfName AESV3 = new PdfName("AESV3");
+    /**(Optional; PDF 2.0) An array of one or more file specification dictionaries which denote the associated files for this annotation.*/
+    public static final PdfName AF = new PdfName("AF");
     /** A name */
     public static final PdfName AIS = new PdfName("AIS");
+    
+    /** Stands for "Lock all fields in the document" which is one possible value of the Action attribute in a signature field lock dictionary */
+    public static final PdfName ALL = new PdfName("All");
+    
     /** A name */
     public static final PdfName ALLPAGES = new PdfName("AllPages");
     /** A name */
@@ -162,8 +176,24 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName ANNOTS = new PdfName("Annots");
     /** A name */
     public static final PdfName ANTIALIAS = new PdfName("AntiAlias");
-    /** A name */
+    /** (Optional) An appearance dictionary specifying how the annotation shall be presented visually on the page. A PDF writer shall 
+     * include an appearance dictionary when writing or updating an annotation dictionary except for the two cases listed below.
+     * Every annotation (including those whose Subtype value is Widget, as used for form fields), except for the two cases listed below, 
+     * shall have at least one appearance dictionary. 
+     * Exclusions:
+     * <ul>
+     * <li>Annotations where the value of the Rect key consists of an array where the value at index 1 is equal to the value at index 3 or the value at index 2 is equal to the value at index 4</li>
+     * <li>Annotations whose Subtype value is Popup, Projection or Link.</li>
+     * </ul>
+     * 
+     * */
     public static final PdfName AP = new PdfName("AP");
+    
+    /**
+     * A build data dictionary for a description of the signature APP. 
+     */
+    public static final PdfName APP = new PdfName("App");
+    
     /** A name */
     public static final PdfName APPDEFAULT = new PdfName("AppDefault");
     /**
@@ -174,10 +204,9 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     /** A name */
     public static final PdfName ARTBOX = new PdfName("ArtBox");
     /** A name */
-    public static final PdfName ARTIFACT = new PdfName("Artifact");
-    /** A name */
     public static final PdfName ASCENT = new PdfName("Ascent");
-    /** A name */
+    /** (Required if the appearance dictionary AP contains one or more subdictionaries) The annotation's appearance state, which 
+     * selects the applicable appearance stream from an appearance subdictionary. */
     public static final PdfName AS = new PdfName("AS");
     /** A name */
     public static final PdfName ASCII85DECODE = new PdfName("ASCII85Decode");
@@ -255,9 +284,13 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName BLEEDBOX = new PdfName("BleedBox");
     /** A name */
     public static final PdfName BLINDS = new PdfName("Blinds");
-    /** A name */
+    /** (Optional; PDF 2.0) The blend mode that shall be used when painting the annotation onto the page. If this key is not present, 
+     * blending shall take place using the Normal blend mode. The value shall be a name object, designating one of the standard blend 
+     * modes. */
     public static final PdfName BM = new PdfName("BM");
-    /** A name */
+    /** 
+     * Optional) An array specifying the characteristics of the annotation's border, which shall be drawn as a rounded rectangle. 
+     */
     public static final PdfName BORDER = new PdfName("Border");
     /** A name */
     public static final PdfName BOUNDS = new PdfName("Bounds");
@@ -267,17 +300,34 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName BS = new PdfName("BS");
     /** A name */
     public static final PdfName BTN = new PdfName("Btn");
-    /** A name */
+    /** An array of pairs of integers (starting byte offset, length in bytes) describing the exact
+		byte range for the digest calculation. (Required)*/
     public static final PdfName BYTERANGE = new PdfName("ByteRange");
-    /** A name */
+    /**(Optional) An array of numbers in the range 0.0 to 1.0, representing a colour used for the following purposes: 
+     * <ul><li>The background of the annotation's icon when closed </li>
+     * <li>The title bar of the annotation's popup window </li>
+     * <li>The border of a link annotation </li>
+     * </ul>
+     * 
+     * The number of array elements determines the colour space in which the colour shall be defined: 
+     * 0=No colour; transparent 1=DeviceGray 3=DeviceRGB 4=DeviceCMYK*/
     public static final PdfName C = new PdfName("C");
     /** A name */
     public static final PdfName C0 = new PdfName("C0");
     /** A name */
     public static final PdfName C1 = new PdfName("C1");
-    /** A name */
+    /** (Optional; PDF 2.0) When regenerating the annotation's appearance stream, this is the opacity value that shall be used for 
+     * stroking all visiblea elements of the annotation in its closed state, including its background and border, but not the popup 
+     * window that appears when the annotation is opened. If a ca entry is not present in this dictionary, then the value of this CA 
+     * entry shall also be used for nonstroking operations as well.<p> 
+     * Default Value: 1.0 <p>The specified value shall not be used if the annotation has an appearance stream; in that case, the 
+     * appearance stream shall specify any transparency.*/
     public static final PdfName CA = new PdfName("CA");
-    /** A name */
+    /** (Optional; PDF 2.0) When regenerating the annotation's appearance stream, this is the opacity value that shall be used for all 
+     * nonstroking operations on all visible elements of the annotation in its closed state (including its background and border) 
+     * but not the popup window that appears when the annotation is opened. Default value: 1.0 
+     * The specified value shall not be used if the annotation has an appearance stream in that case, the appearance stream shall specify 
+     * any transparency.*/
     public static final PdfName ca = new PdfName("ca");
     /** A name */
     public static final PdfName CALGRAY = new PdfName("CalGray");
@@ -305,6 +355,14 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName CENTERWINDOW = new PdfName("CenterWindow");
     /** A name */
     public static final PdfName CERT = new PdfName("Cert");
+    
+    /**
+     * An array of indirect reference to streams, each containing one DER-encoded X.509 certificate (see RFC 5280). 
+     * This array contains certificates that maybe used in the validation of any signatures in the document.
+     * 
+     */
+    public static final PdfName CERTS = new PdfName("Certs");
+    
     /** A name */
     public static final PdfName CF = new PdfName("CF");
     /** A name */
@@ -381,7 +439,16 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName CONTACTINFO = new PdfName("ContactInfo");
     /** A name */
     public static final PdfName CONTENT = new PdfName("Content");
-    /** A name */
+    /** 
+     * Used in several places:
+     * <ul><li>
+     * 1) Annotations: (Optional) Text that shall be displayed for the annotation or, if this type of annotation does not display text, 
+     * an alternative description of the annotation's contents in human-readable form. In either case, this text is useful when extracting 
+     * the document's contents in support of accessibility to users with disabilities or for other purposes. Might be different for each 
+     * annotation type.</li>
+     * <li>
+     * 2) Part of the signature dictionary. The signature value. The value is a hexadecimal string representing the
+		value of the byte range digest. (Required) </li></ul>*/
     public static final PdfName CONTENTS = new PdfName("Contents");
     /** A name */
     public static final PdfName COORDS = new PdfName("Coords");
@@ -401,6 +468,14 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName CREATOR = new PdfName("Creator");
     /** A name */
     public static final PdfName CREATORINFO = new PdfName("CreatorInfo");
+    
+    /**
+     * An array of indirect references to streams, each containing a DER-encoded Certificate Revocation List (CRL) (see RFC 5280). 
+     * This array contains CRLs that may be used in the validation of the signatures in the document.
+     * 
+     */
+    public static final PdfName CRLS = new PdfName("CRLs");
+    
     /** A name */
     public static final PdfName CROPBOX = new PdfName("CropBox");
     /** A name */
@@ -419,10 +494,17 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName CUEPOINTS = new PdfName("CuePoints");
     /** A name */
     public static final PdfName D = new PdfName("D");
-    /** A name */
+    /** (Required; inheritable) The default appearance string containing a sequence of valid page-content graphics or text state operators 
+     * that define such properties as the field's text size and colour. */
     public static final PdfName DA = new PdfName("DA");
     /** A name */
     public static final PdfName DATA = new PdfName("Data");
+    
+    /**
+     * Part of the Build Data Dictionary. The software module build date.
+     */
+    public static final PdfName DATE = new PdfName("Date");
+    
     /** A name */
     public static final PdfName DC = new PdfName("DC");
     /** A name */
@@ -501,8 +583,14 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName DP = new PdfName("DP");
     /** A name */
     public static final PdfName DR = new PdfName("DR");
-    /** A name */
+    /** (Optional) A default style string; described in the PDF Annex M. */
     public static final PdfName DS = new PdfName("DS");
+    
+    /**
+     * A DSS dictionary containing document-wide security information. See PDF 2.0 specification ch. 12.8.4.3 for further details.
+     */
+    public static final PdfName DSS = new PdfName("DSS");
+    
     /** A name */
     public static final PdfName DUR = new PdfName("Dur");
     /** A name */
@@ -511,11 +599,21 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName DUPLEXFLIPSHORTEDGE = new PdfName("DuplexFlipShortEdge");
     /** A name */
     public static final PdfName DUPLEXFLIPLONGEDGE = new PdfName("DuplexFlipLongEdge");
-    /** A name */
+    /** (Optional; inheritable) The default value to which the field reverts when a reset-form action is executed. The format of this 
+     * value is the same as that of V. */
     public static final PdfName DV = new PdfName("DV");
     /** A name */
     public static final PdfName DW = new PdfName("DW");
-    /** A name */
+    /** 
+     * Entry in a structure element dictionary: The expanded form of an abbreviation or an acronym. 
+     * <p>OR<p>
+     * Entry in an annotation’s additional-actions dictionary: An action that shall be performed when 
+     * the cursor enters theannotation’s active area.
+     * <p>OR<p>
+     * Entry in a collection field dictionary: A flag indicating whether the interactive PDF processor 
+     * should provide support for editing the field value.
+     * <p>OR more...
+     * */
     public static final PdfName E = new PdfName("E");
     /** A name */
     public static final PdfName EARLYCHANGE = new PdfName("EarlyChange");
@@ -554,6 +652,15 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName ENDOFBLOCK = new PdfName("EndOfBlock");
     /** A name */
     public static final PdfName ENDOFLINE = new PdfName("EndOfLine");
+    
+    /**
+     * Extension supplied by ETSI TS 102 778-4 V1.1.2 (2009-12)
+     */
+    public static final PdfName ESIC = new PdfName("ESIC");
+    
+    /** Stands for "Exclude all fields except those specified in Fields array" which is one possible value of the Action attribute in a signature field lock dictionary */
+    public static final PdfName EXCLUDE = new PdfName("Exclude");
+    
     /** A name */
     public static final PdfName EXTEND = new PdfName("Extend");
     /**
@@ -574,7 +681,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName EXPORTSTATE = new PdfName("ExportState");
     /** A name */
     public static final PdfName EVENT = new PdfName("Event");
-    /** A name */
+    /** (Optional) A set of flags specifying various characteristics of the annotation Default value: 0. */
     public static final PdfName F = new PdfName("F");
     /**
      * A name.
@@ -587,10 +694,17 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName FDECODEPARMS = new PdfName("FDecodeParms");
     /** A name */
     public static final PdfName FDF = new PdfName("FDF");
-    /** A name */
+    /** (Optional; inheritable) A set of flags specifying various characteristics of the field. Default value: 0. */
     public static final PdfName FF = new PdfName("Ff");
     /** A name */
     public static final PdfName FFILTER = new PdfName("FFilter");
+    
+    /**
+     * The FieldMDP transform method shall be used to detect changes to the values of a list of form fields. 
+     * The entries in its transform parameters dictionary are Type, Actions, Field and V.
+     */
+    public static final PdfName FIELDMDP = new PdfName("FieldMDP");
+    
     /** A name */
     public static final PdfName FIELDS = new PdfName("Fields");
     /**
@@ -650,6 +764,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName FONTBBOX = new PdfName("FontBBox");
     /** A name */
     public static final PdfName FONTDESCRIPTOR = new PdfName("FontDescriptor");
+    /** A byte string specifying the preferred font family name. E.g. for the font Times Bold Italic, the FontFamily is Times. */
+    public static final PdfName FONTFAMILY = new PdfName("FontFamily");
     /** A name */
     public static final PdfName FONTFILE = new PdfName("FontFile");
     /** A name */
@@ -658,8 +774,16 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName FONTFILE3 = new PdfName("FontFile3");
     /** A name */
     public static final PdfName FONTMATRIX = new PdfName("FontMatrix");
-    /** A name */
+    /** (Required) The PostScript name of the font. This name shall be the same as the value of BaseFont in the font or CIDFont dictionary that refers to this font descriptor. */
     public static final PdfName FONTNAME = new PdfName("FontName");
+    
+    /** (Optional); PDF 1.5; The weight (thickness) component of the fully-qualified font name or font specifier. 
+     * The possible values shall be 100, 200, 300, 400, 500, 600, 700, 800, or 900, where each number indicates a weight 
+     * that is at least as dark as its predecessor. A value of 400 shall indicate a normal weight; 700 shall indicate bold.
+     * The specific interpretation of these values varies from font to font. E.g. 300 in one font may appear most similar 
+     * to 500 in another.
+     */
+    public static final PdfName FONTWEIGHT = new PdfName("FontWeight"); 
     /**
      * A name
      * @since    2.1.6
@@ -680,7 +804,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName FRM = new PdfName("FRM");
     /** A name */
     public static final PdfName FS = new PdfName("FS");
-    /** A name */
+    /** The type of field that this dictionary describes: Btn Button, Tx Text, Ch Choice, Sig Signature
+     * (Required; inheritable)*/
     public static final PdfName FT = new PdfName("FT");
     /** A name */
     public static final PdfName FULLSCREEN = new PdfName("FullScreen");
@@ -710,7 +835,15 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName GTS_PDFX = new PdfName("GTS_PDFX");
     /** A name of an attribute. */
     public static final PdfName GTS_PDFXVERSION = new PdfName("GTS_PDFXVersion");
-    /** A name of an attribute. */
+    /** Optional) The annotation's highlighting mode, the visual effect that shall be used when the mouse button is pressed or held 
+     * down inside its active area:<ul>
+     * <li>N (None) No highlighting. 
+     * <li>I (Invert) Invert the colours used to display the contents of the annotation rectangle. 
+     * <li>O (Outline) Stroke the colours used to display the annotation border.  
+     * <li>P (Push) Display the annotation's down appearance, if any. If no down appearance is defined, the contents of the annotation rectangle shall be offset to appear as if it were beingpushed below the surface of the page. 
+     * <li>T (Toggle) Same as P (which is preferred). 
+     * </ul>
+     * A highlighting mode other than P shall override any down appearance defined for the annotation. Default value: I. */
     public static final PdfName H = new PdfName("H");
     /**
      * A name
@@ -778,7 +911,11 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * @since 2.1.6
      */
     public static final PdfName HOFFSET = new PdfName("HOffset");
-    /** A name */
+    /**(Sometimes required, otherwise optional) For choice fields that allow multiple selection (MultiSelect flag set), 
+     * an array of integers, sorted in ascending order, representing the zero-based indices in the Opt array of the currently
+     * selected option items. This entry shall be used when two or more elements in the Opt array have different names but the
+     * same export value or when the value of the choice field is an array. If the items identified by this entry differ from 
+     * those in the V entry of the field dictionary (see discussion following this Table), the V entry shall be used. */
     public static final PdfName I = new PdfName("I");
     /** A name */
     public static final PdfName ICCBASED = new PdfName("ICCBased");
@@ -798,6 +935,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName IMAGEI = new PdfName("ImageI");
     /** A name */
     public static final PdfName IMAGEMASK = new PdfName("ImageMask");
+    /** Stands for "Include all fields specified in Fields array" which is one possible value of the Action attribute in a signature field lock dictionary */
+    public static final PdfName INCLUDE = new PdfName("Include");
     /** A name */
     public static final PdfName INDEX = new PdfName("Index");
     /** A name */
@@ -867,13 +1006,18 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName K = new PdfName("K");
     /** A name */
     public static final PdfName KEYWORDS = new PdfName("Keywords");
-    /** A name */
+    /** (Sometimes required, as described) An array of indirect references to the immediate children of this field. 
+     * In a non-terminal field, the Kids array shall refer to field dictionaries that are immediate descendants of this field. 
+     * In a terminal field, the Kids array ordinarily shall refer to one or more separate widget annotations that are associated 
+     * with this field. However, if there is only one associated widget annotation, and its contents have been merged into the 
+     * field dictionary, Kids shall be omitted. */
     public static final PdfName KIDS = new PdfName("Kids");
     /** A name */
     public static final PdfName L = new PdfName("L");
     /** A name */
     public static final PdfName L2R = new PdfName("L2R");
-    /** A name */
+    /** (Optional; PDF 2.0) A language identifier overriding the document's language identifier to specify the natural language for all 
+     * text in the annotation except where overridden by other explicit language specifications.*/
     public static final PdfName LANG = new PdfName("Lang");
     /** A name */
     public static final PdfName LANGUAGE = new PdfName("Language");
@@ -919,7 +1063,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName LISTMODE = new PdfName("ListMode");
     /** A name */
     public static final PdfName LOCATION = new PdfName("Location");
-    /** A name */
+    /** (Optional; shall be an indirect reference) A signature field lock dictionary that specifies a set of form fields that shall be 
+     * locked when this signature field is signed.*/
     public static final PdfName LOCK = new PdfName("Lock");
     /**
      * A name
@@ -928,7 +1073,9 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName LOCKED = new PdfName("Locked");
     /** A name */
     public static final PdfName LZWDECODE = new PdfName("LZWDecode");
-    /** A name */
+    /** (Optional) The date and time when the annotation was most recently modified. The format should be a date string (a text string 
+     * containing no whitespace, of the form (D:YYYYMMDDHHmmSSOHH'mm)) but interactive PDF processors shall accept and display a string 
+     * in any format. */
     public static final PdfName M = new PdfName("M");
     /**
      * A name
@@ -957,7 +1104,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * @since    2.1.6
      */
     public static final PdfName MAX_CAMEL_CASE = new PdfName("Max");
-    /** A name */
+    /** (Optional; inheritable) The maximum length of the field's text, in characters */
     public static final PdfName MAXLEN = new PdfName("MaxLen");
     /** A name */
     public static final PdfName MEDIABOX = new PdfName("MediaBox");
@@ -977,7 +1124,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * @since    2.1.6
      */
     public static final PdfName MIN_CAMEL_CASE = new PdfName("Min");
-    /** A name */
+    /** (Optional) An appearance characteristics dictionary that shall be used in constructing a dynamic appearance stream 
+     * specifying the annotation's visual presentation on the page.*/
     public static final PdfName MK = new PdfName("MK");
     /** A name */
     public static final PdfName MMTYPE1 = new PdfName("MMType1");
@@ -995,7 +1143,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName N3 = new PdfName("n3");
     /** A name */
     public static final PdfName N4 = new PdfName("n4");
-    /** A name */
+    /** (optional) The name of the person or authority signing the document. This value should be used only when 
+     * it is not possible to extract the name from the signature. */
     public static final PdfName NAME = new PdfName("Name");
     /** A name */
     public static final PdfName NAMED = new PdfName("Named");
@@ -1024,10 +1173,22 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName NEXT = new PdfName("Next");
     /** A name */
     public static final PdfName NEXTPAGE = new PdfName("NextPage");
-    /** A name */
+    
+    /**
+     *The annotation name, a text string uniquely identifying it among all the annotations on its page.
+     */
     public static final PdfName NM = new PdfName("NM");
     /** A name */
     public static final PdfName NONE = new PdfName("None");
+    
+    /**
+     * If there is a Legal dictionary in the catalog of the PDF file, and the NonEmbeddedFonts attribute (which
+     * specifies the number of fonts not embedded) in that dictionary has a non-zero value, and the viewing application
+     * has a preference set to suppress the display of the warning about fonts not being embedded, then the value of
+     * this attribute will be set to true (meaning that no warning need be displayed)
+     */
+    public static final PdfName NONEFONTNOWARN = new PdfName("NonEFontNoWarn");
+    
     /** A name */
     public static final PdfName NONFULLSCREENPAGEMODE = new PdfName("NonFullScreenPageMode");
     /**
@@ -1058,7 +1219,9 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName OBJR = new PdfName("OBJR");
     /** A name */
     public static final PdfName OBJSTM = new PdfName("ObjStm");
-    /** A name */
+    /** (Optional) An optional content group or optional content membership dictionary specifying the optional content properties for the 
+     * annotation. Before the annotation is drawn, its visibility shall be determined based on this entry as well as the annotation flags 
+     * specified in the F entry. If it is determined to be invisible, the annotation shall not be drawn.*/
     public static final PdfName OC = new PdfName("OC");
     /** A name */
     public static final PdfName OCG = new PdfName("OCG");
@@ -1068,7 +1231,16 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName OCMD = new PdfName("OCMD");
     /** A name */
     public static final PdfName OCPROPERTIES = new PdfName("OCProperties");
-    /** A name */
+    /** (Optional) The checked value for the Checkbox form field. The recommended name for the on state is Yes, but this is not required.*/
+    public static final PdfName YES = new PdfName("Yes");
+    
+    /**
+     * An array of indirect references to streams, each containing a DER-encoded Online Certificate Status Protocol (OCSP) response 
+     * (see RFC 6960). This array contains OCSPs that may be used in the validation of the signatures in the document.
+     */
+    public static final PdfName OCSPS = new PdfName("OCSPs");
+    
+    /** (Required if R is 6 (PDF 2.0)) A 32-byte string, based on the owner and userpassword, that shall be used in computing the file encryption key.*/
     public static final PdfName OE = new PdfName("OE");
     /** A name */
     public static final PdfName Off = new PdfName("Off");
@@ -1088,12 +1260,23 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName op = new PdfName("op");
     /** A name */
     public static final PdfName OPM = new PdfName("OPM");
-    /** A name */
+    /** (Optional; inheritable) An array containing one entry for each widget annotation in the Kids array of the radio button or check 
+     * box field. Each entry shall be a text string representing the on state of the corresponding widget annotation. 
+     * When this entry is present, the names used to represent the on state in the AP dictionary of each annotation may use numerical 
+     * position (starting with 0) of the annotation in the Kids array, encoded as a name object (for example: /0, /1).
+     * This allows distinguishing between the annotations even if two or more of them have the same value in the Opt array. */
     public static final PdfName OPT = new PdfName("Opt");
     /** A name */
     public static final PdfName ORDER = new PdfName("Order");
     /** A name */
     public static final PdfName ORDERING = new PdfName("Ordering");
+    /**
+     * Parts of the Build Data Dictionary. Indicates the operating system, such as Win10. 
+     * Currently there is no specific string format defined for the value of this attribute.
+     * 
+     */
+    public static final PdfName OS = new PdfName("OS");
+    
     /**
      * A name.
      * @since 2.1.6
@@ -1110,7 +1293,10 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName OUTPUTINTENT = new PdfName("OutputIntent");
     /** A name */
     public static final PdfName OUTPUTINTENTS = new PdfName("OutputIntents");
-    /** A name */
+    /** (Optional) An indirect reference to the page object with which this annotation is associated. This entry shall be present in 
+     * screen annotations associated with rendition actions. OR
+     * (Optional; PDF 2.0) The access permissions granted for this document. Valid values shall be 1,2,3
+     *  */
     public static final PdfName P = new PdfName("P");
     /** A name */
     public static final PdfName PAGE = new PdfName("Page");
@@ -1128,7 +1314,9 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName PANOSE = new PdfName("Panose");
     /** A name */
     public static final PdfName PARAMS = new PdfName("Params");
-    /** A name */
+    /**(Required if this field is the child of another in the field hierarchy; absent otherwise) The field that is the immediate 
+     * parent of this one (the field, if any, whose Kids array includes this field). A field can have at most one parent; that is,
+     * it can be included in the Kids array of at most one other field. */
     public static final PdfName PARENT = new PdfName("Parent");
     /** A name */
     public static final PdfName PARENTTREE = new PdfName("ParentTree");
@@ -1179,6 +1367,12 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      */
     public static final PdfName PLAYCOUNT = new PdfName("PlayCount");
     /**
+     * (Required; barcode fields only; ExtensionLevel 3) The PaperMetaData generation parameters dictionary. The entries
+     * of this dictionary are instructions to the barcode encoding software on how to generate the barcode image. (Part
+     * of *dobe Supplement to the ISO 32000)
+     */
+    public static final PdfName PMD = new PdfName("PMD");
+    /**
      * A name.
      * @since 2.1.6
      */
@@ -1194,6 +1388,11 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName PREDICTOR = new PdfName("Predictor");
     /** A name */
     public static final PdfName PREFERRED = new PdfName("Preferred");
+    /**
+     * Parts of the Build Data Dictionary. A flag that can be used by the signature handler or software module to indicate that this signature was created with unreleased software.
+     */
+    public static final PdfName PRERELEASE = new PdfName("PreRelease");
+    
     /**
      * A name.
      * @since 2.1.6
@@ -1226,6 +1425,17 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName PROCSET = new PdfName("ProcSet");
     /** A name */
     public static final PdfName PRODUCER = new PdfName("Producer");
+    
+    /**
+     * The build properties dictionary and all of its contents are required to be direct objects. 
+     * The use of a build properties dictionary is optional but highly recommended.
+     * The build properties dictionary may contain a build data dictionary entry for each unique software module used to 
+     * create the signature. The software modules involved in the signing process will vary depending on the viewing application.
+     *  All signing implementations should include at least a Filter entry in the build properties dictionary.
+     *  
+     */
+    public static final PdfName PROP_BUILD = new PdfName("Prop_Build");
+    
     /** A name */
     public static final PdfName PROPERTIES = new PdfName("Properties");
     /** A name */
@@ -1237,7 +1447,13 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * @since 2.1.6
      */
     public static final PdfName PV = new PdfName("PV");
-    /** A name */
+    /** (Optional; inheritable) A code specifying the form of quadding (justification) that shall be used in displaying the text: 
+     * <ul>
+     * <li>0 Left-justified (default) </li> 
+     * <li>1 Centered </li>
+     * <li>2 Right-justified </li> 
+     * </ul>
+     *  */
     public static final PdfName Q = new PdfName("Q");
     /** A name */
     public static final PdfName QUADPOINTS = new PdfName("QuadPoints");
@@ -1246,7 +1462,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * @since 2.1.6
      */
     public static final PdfName QUOTE = new PdfName("Quote");
-    /** A name */
+    /** Part of the Build Data Dictionary. The software module revision number */
     public static final PdfName R = new PdfName("R");
     /** A name */
     public static final PdfName R2L = new PdfName("R2L");
@@ -1260,7 +1476,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName REASON = new PdfName("Reason");
     /** A name */
     public static final PdfName RECIPIENTS = new PdfName("Recipients");
-    /** A name */
+    /** (Required) The annotation rectangle, defining the location of the annotation on the page in default user space units. */
     public static final PdfName RECT = new PdfName("Rect");
     /** A name */
     public static final PdfName REFERENCE = new PdfName("Reference");
@@ -1281,6 +1497,13 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName RESOURCES = new PdfName("Resources");
     /** A name */
     public static final PdfName RI = new PdfName("RI");
+    /**
+     * Part of the Build Data Dictionary when used as the App dictionary.
+     * A text string indicating the version of the application implementation, as described by the Name attribute in this dictionary. When set by Adobe Acrobat, this entry is  in the format: major.minor.micro (for example 7.0.7).
+     * 
+     */
+    public static final PdfName REX = new PdfName("REx");
+    
     /**
      * A name.
      * @since 2.1.6
@@ -1366,7 +1589,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName RUBY = new PdfName( "Ruby" );
     /** A name */
     public static final PdfName RUNLENGTHDECODE = new PdfName("RunLengthDecode");
-    /** A name */
+    /** (Optional) A rich text string; described in the PDF Specification Annex M*/
     public static final PdfName RV = new PdfName("RV");
     /** A name */
     public static final PdfName S = new PdfName("S");
@@ -1400,6 +1623,10 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName SHIFT_JIS = new PdfName("Shift-JIS");
     /** A name */
     public static final PdfName SIG = new PdfName("Sig");
+    
+    /**The type name of a signature field lock dictionary */
+    public static final PdfName SIGFIELDLOCK = new PdfName("SigFieldLock");
+    
     /** A name */
     public static final PdfName SIGFLAGS = new PdfName("SigFlags");
     /** A name */
@@ -1441,8 +1668,11 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName STAMP = new PdfName("Stamp");
     /** A name */
     public static final PdfName STANDARD = new PdfName("Standard");
-    /** A name */
+    /** (Optional; PDF 1.5) The state to which the original annotation should be set. Default: "Unmarked" if StateModel is "Marked"; 
+     * "None" if StateModel is "Review". (Additional entries specific to a text annotation)*/
     public static final PdfName STATE = new PdfName("State");
+    /** (Required if State is present, otherwise optional; PDF 1.5) The state model corresponding to State; see "Annotation States" above. (Additional entries specific to a text annotation)*/
+    public static final PdfName STATEMODEL = new PdfName("StateModel");
     /** A name */
     public static final PdfName STDCF = new PdfName("StdCF");
     /** A name */
@@ -1453,7 +1683,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName STRF = new PdfName("StrF");
     /** A name */
     public static final PdfName STRIKEOUT = new PdfName("StrikeOut");
-    /** A name */
+    /** (Required if the annotation is a structural content item) The integer key of the annotation's entry in the structural parent tree.*/
     public static final PdfName STRUCTPARENT = new PdfName("StructParent");
     /** A name */
     public static final PdfName STRUCTPARENTS = new PdfName("StructParents");
@@ -1463,21 +1693,26 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName STYLE = new PdfName("Style");
     /** A name */
     public static final PdfName SUBFILTER = new PdfName("SubFilter");
+    /** (Optional; PDF 1.5) Text representing a short description of the subject being addressed by the annotation. (Additional entry specific to markup annotations)*/
+    public static final PdfName SUBJ = new PdfName("Subj");
     /** A name */
     public static final PdfName SUBJECT = new PdfName("Subject");
     /** A name */
     public static final PdfName SUBMITFORM = new PdfName("SubmitForm");
-    /** A name */
+    /** (Required) The type of annotation that this dictionary describes.*/
     public static final PdfName SUBTYPE = new PdfName("Subtype");
     /** A name */
     public static final PdfName SUPPLEMENT = new PdfName("Supplement");
-    /** A name */
+    /** (Optional; shall be an indirect reference) A seed value dictionary containing information that constrains the properties of a 
+     * signature that is applied to this field. */
     public static final PdfName SV = new PdfName("SV");
     /** A name */
     public static final PdfName SW = new PdfName("SW");
     /** A name of a base 14 type 1 font */
     public static final PdfName SYMBOL = new PdfName("Symbol");
-    /** A name */
+    /** (Required; ExtensionLevel 3) Specifies which barcode or glyph technology is to be used on this annotation. Supported values are PDF417, QRCode, and DataMatrix. (Entries in a PaperMetaData generation parameters dictionary)*/
+    public static final PdfName SYMBOLOGY = new PdfName("Symbology");
+    /** (Required) The partial field name. */
     public static final PdfName T = new PdfName("T");
     /**
      * A name
@@ -1525,7 +1760,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName THUMB = new PdfName("Thumb");
     /** A name */
     public static final PdfName THREADS = new PdfName("Threads");
-    /** A name */
+    /** (Optional) For scrollable list boxes, the top index (the index in the Opt array of the first option visible in the list). Default value: 0. */
     public static final PdfName TI = new PdfName("TI");
     /**
      * A name
@@ -1548,9 +1783,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * A name
      */
     public static final PdfName TK = new PdfName("TK");
-    /**
-     * A name
-     */
+    /** Optional) The mapping name that shall be used when exporting interactive form field data from the document.*/
     public static final PdfName TM = new PdfName("TM");
     /**
      * A name
@@ -1598,7 +1831,18 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName TRIMBOX = new PdfName("TrimBox");
     /** A name */
     public static final PdfName TRUETYPE = new PdfName("TrueType");
-    /** A name */
+    
+    /**
+     * Parts of the Build Data Dictionary If the value is true, the application was in trusted mode when signing took
+     * place. The default value is false. A viewing application is in trusted mode when only reviewed code is executing,
+     * where reviewed code is code that does not affect the rendering of PDF files in ways that are not covered by the
+     * PDF Reference.
+     */
+    public static final PdfName TRUSTEDMODE = new PdfName("TrustedMode");
+    
+    /** (Optional) An alternative field name that shall be used in place of the actual field name wherever the field shall be identified
+     *  in the user interface (such as in error or status messages referring to the field). This text is also useful when extracting 
+     *  the document's contents in support of accessibility to users with disabilities or for other purposes. */
     public static final PdfName TU = new PdfName("TU");
     /** A name */
     public static final PdfName TWOCOLUMNLEFT = new PdfName("TwoColumnLeft");
@@ -1610,7 +1854,41 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName TWOPAGERIGHT = new PdfName("TwoPageRight");
     /** A name */
     public static final PdfName TX = new PdfName("Tx");
-    /** A name */
+    /** There are lots of Type s in the PDF specification. The following dictionaries use Type:
+     * 
+     * <ul>
+     *  <li>Crypt filters</li>
+     *  <li>object stream dictionary</li>
+     *  <li>cross-reference stream dictionary</li>
+     *  <li>encrypted payload dictionary</li>
+     *  <li>catalog dictionary</li>
+     *  <li>page tree node</li>
+     *  <li>page object</li>
+     *  <li>file specification dictionary</li>
+     *  <li>embedded file stream dictionary</li>
+     *  <li>collection item dictionary</li>
+     *  <li>collection subitem dictionary</li>
+     *  <li>extensions dictionary</li>
+     *  <li>developer extensions dictionary</li>
+     *  <li>graphics state parameter dictionary</li>
+     *  <li>Type 1 pattern dictionary</li>
+     *  <li>DSS dictionary</li>
+     *  <li>Type 2 pattern dictionary</li>
+     *  <li>image dictionary</li>
+     *  <li>Type 1 form dictionary</li>
+     *  <li>group attributes dictionary</li>
+     *  <li>content group dictionary</>
+     *  <li>content membership dictionary</li>
+     *  <li>Type 1 font dictionary</li>
+     *  <li>Type 3 font dictionary</li>
+     *  <li>encoding dictionary</li>
+     *  <li>outline dictionary</li>
+     *  <li>annotation dictionaries</li>
+     *  <li>field lock dictionary</li>
+     *  <li>...</li>
+     *  
+     *  </ul>
+     *  */
     public static final PdfName TYPE = new PdfName("Type");
     /** A name */
     public static final PdfName TYPE0 = new PdfName("Type0");
@@ -1620,7 +1898,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName TYPE3 = new PdfName("Type3");
     /** A name of an attribute. */
     public static final PdfName U = new PdfName("U");
-    /** A name of an attribute. */
+    /** (Required if R=6 (PDF 2.0)) A 32-byte string, based on the user password, that shall be used in computing the file encryption key.*/
     public static final PdfName UE = new PdfName("UE");
     /** A name of an attribute. */
     public static final PdfName UF = new PdfName("UF");
@@ -1654,9 +1932,14 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName USERUNIT = new PdfName("UserUnit");
     /** A name */
     public static final PdfName USETHUMBS = new PdfName("UseThumbs");
-    /** A name */
+    /** (Optional; inheritable) The field value, whose format varies depending on the field type. See the descriptions of individual 
+     * field types for further information. */
     public static final PdfName V = new PdfName("V");
-    /** A name */
+    /**
+     * (Deprecated) The application shall ask the security handler for the file encryption key and shall implicitly
+     * decrypt data with7.6.3.1, "Algorithm 1: Encryption of data using the RC4 or AESalgorithms", using the RC4
+     * algorithm.
+     */
     public static final PdfName V2 = new PdfName("V2");
     /**
      * A name.
@@ -1694,6 +1977,13 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * @since 2.1.6
      */
     public static final PdfName VOFFSET = new PdfName("VOffset");
+    /**
+     * This dictionary contains Signature VRI dictionaries (see PDF 2.0 ch. 12.8.4.4,"Validation-related information (VRI)"). 
+     * The key of each entry in this dictionary is the base-16-encoded (uppercase) SHA1 digest of the signature to which it applies 
+     * a and the value is the Signature VRI dictionary which contains the validation-related information for that signature.
+     */
+    public static final PdfName VRI = new PdfName("VRI");
+    
     /** A name of an attribute. */
     public static final PdfName W = new PdfName("W");
     /** A name of an attribute. */
@@ -1773,6 +2063,77 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * @since 2.1.6
      */
     public static Map<String, PdfName> staticNames;
+    
+    /**
+     * List of names used for widget annotations
+     */
+    private static ArrayList<PdfName> widgetNames;
+
+    /**
+     * List of names used in form field dictionaries
+     */
+    private static ArrayList<PdfName> formfieldNames;
+
+    private static void initLists() {
+        //All possible values for an annotation dictionary
+        widgetNames.add(PdfName.TYPE);
+        widgetNames.add(PdfName.SUBTYPE);
+        widgetNames.add(PdfName.RECT);
+        widgetNames.add(PdfName.CONTENTS);
+        widgetNames.add(PdfName.P);
+        widgetNames.add(PdfName.NM);
+        widgetNames.add(PdfName.M);
+        widgetNames.add(PdfName.F);
+        widgetNames.add(PdfName.AP);
+        widgetNames.add(PdfName.AS);
+        widgetNames.add(PdfName.BORDER);
+        widgetNames.add(PdfName.C);
+        widgetNames.add(PdfName.STRUCTPARENT);
+        widgetNames.add(PdfName.OC);
+        widgetNames.add(PdfName.AF);
+        widgetNames.add(PdfName.ca);
+        widgetNames.add(PdfName.CA);
+        widgetNames.add(PdfName.BM);
+        widgetNames.add(PdfName.LANG);
+        //Additional entries specific to a widget annotation
+        widgetNames.add(PdfName.H);
+        widgetNames.add(PdfName.MK);
+        widgetNames.add(PdfName.A);
+        //does exist in both and should have the identical meaning => so either or suffice
+        //widgetNames.add(PdfName.AA);
+        widgetNames.add(PdfName.BS);
+        //When separating a merged dictionary the Parent stays in the field thus it is disabled here
+        //widgetNames.add(PdfName.PARENT);
+        
+        //All possible values for an form field dictionary
+        formfieldNames.add(PdfName.FT);
+        formfieldNames.add(PdfName.PARENT);
+        formfieldNames.add(PdfName.KIDS);
+        formfieldNames.add(PdfName.T);
+        formfieldNames.add(PdfName.TU);
+        formfieldNames.add(PdfName.TM);
+        formfieldNames.add(PdfName.FF);
+        formfieldNames.add(PdfName.V);
+        formfieldNames.add(PdfName.DV);
+        formfieldNames.add(PdfName.AA);
+        //Additional entries common to all fields containing variable text
+        formfieldNames.add(PdfName.DA);
+        formfieldNames.add(PdfName.Q);
+        formfieldNames.add(PdfName.DS);
+        formfieldNames.add(PdfName.RV);
+        //Additional entry specific to check box and radio button fields
+        formfieldNames.add(PdfName.OPT);
+        //Additional entry specific to a text field
+        formfieldNames.add(PdfName.MAXLEN);
+        //Additional entries specific to a choice field
+        formfieldNames.add(PdfName.TI);
+        formfieldNames.add(PdfName.I);
+        //Additional entries specific to a signature field
+        formfieldNames.add(PdfName.LOCK);
+        formfieldNames.add(PdfName.SV);
+        //Additional entries common to all fields containing variable text
+
+    }
 
     /*
      * Use reflection to cache all the static public final names so
@@ -1794,9 +2155,22 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+           throw new IllegalStateException("The pdfname map could not be initialized!",e);
         }
+        
+        widgetNames = new ArrayList<>();
+        formfieldNames = new ArrayList<>();
+        initLists();
     }
+    
+    public static ArrayList<PdfName> getWidgetNames() {
+        return widgetNames;
+    }
+
+    public static ArrayList<PdfName> getFormfieldNames() {
+        return formfieldNames;
+    }
+    
     // CLASS VARIABLES
 
     private int hash = 0;

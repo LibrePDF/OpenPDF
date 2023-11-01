@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.librepdf</groupId>
         <artifactId>openpdf-parent</artifactId>
-        <version>1.3.31-SNAPSHOT</version>
+        <version>1.3.32-SNAPSHOT</version>
     </parent>
 
     <artifactId>openpdf</artifactId>
@@ -18,12 +18,8 @@
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
-            <version>72.1</version>
+            <version>73.2</version>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>

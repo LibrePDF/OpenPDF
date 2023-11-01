@@ -55,6 +55,7 @@ import java.util.HashMap;
 
 import com.lowagie.text.Utilities;
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.TextRenderingOptions;
 
 /**
  * Each font in the document will have an instance of this class
@@ -172,7 +173,7 @@ class FontDetails {
      * @param text the text to convert
      * @return the conversion
      */    
-    byte[] convertToBytes(String text, String language) {
+    byte[] convertToBytes(String text, TextRenderingOptions options) {
         byte[] b = null;
         switch (fontType) {
             case BaseFont.FONT_TYPE_T3:
@@ -217,9 +218,10 @@ class FontDetails {
                     }
                     else {
                         String fileName = ((TrueTypeFontUnicode)getBaseFont()).fileName;
-                        if (FopGlyphProcessor.isFopSupported() && (fileName!=null && fileName.length()>0 
+                        if (options.isGlyphSubstitutionEnabled() && FopGlyphProcessor.isFopSupported() 
+                        		&& (fileName!=null && fileName.length()>0 
                                                                    &&( fileName.contains(".ttf") || fileName.contains(".TTF")))){
-                            return FopGlyphProcessor.convertToBytesWithGlyphs(ttu,text,fileName,longTag,language);
+                            return FopGlyphProcessor.convertToBytesWithGlyphs(ttu,text,fileName,longTag, options.getDocumentLanguage());
                         }else {
                             return convertToBytesWithGlyphs(text);
                         }

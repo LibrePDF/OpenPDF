@@ -420,7 +420,7 @@ public class WebColors extends HashMap<String, int[]> {
      * @param hue Hue angle in degrees
      * @param saturation saturation (0 to 1)
      * @param lightness lightness (0 to 1)
-     * @return
+     * @return int[] rgb
      */
     private static int[] hsl2rgb(float hue, float saturation, float lightness) {
         int[] rgb = new int[3];
