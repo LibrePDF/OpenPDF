@@ -120,7 +120,7 @@ public class PdfAppearance extends PdfTemplate {
      * @return the appearance created
      */
     public static PdfAppearance createAppearance(PdfWriter writer, float width, float height) {
-        return createAppearance(writer, width, height, null);
+        return createAppearance(writer, width, height, (PdfName)null);
     }
 
     private static PdfAppearance createAppearance(PdfWriter writer, float width, float height, PdfName forcedName) {
@@ -128,6 +128,25 @@ public class PdfAppearance extends PdfTemplate {
         template.setWidth(width);
         template.setHeight(height);
         writer.addDirectTemplateSimple(template, forcedName);
+        return template;
+    }
+    
+    /**
+     * Creates a new appearance to be used with existing form fields.
+     * (Create an empty signature appearance with an existing reference).
+     * 
+     * @param writer the PdfWriter to use
+     * @param width the bounding box width
+     * @param height the bounding box height
+     * @param ref to be overwritten
+     * 
+     * @return the created appearance 
+     */
+    public static PdfAppearance createAppearance(PdfWriter writer, float width, float height, PdfIndirectReference ref) {
+        PdfAppearance template = new PdfAppearance(ref);
+        template.setWidth(width);
+        template.setHeight(height);
+        writer.addDirectTemplateSimple(template, null);
         return template;
     }
 

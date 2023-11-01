@@ -882,11 +882,12 @@ public class PdfContentStreamHandler {
         }
 
         /**
-         * @param operands
-         * @param resources
-         * @return
+         * The BDC marked-content operator which brackets a marked-content sequence of objects within the content stream. 
+         * @param operands list of operands
+         * @param resources dictionary
+         * @return PdfDictionary of type BDC marked-content
          */
-        private PdfDictionary getBDCDictionary(List<PdfObject> operands, PdfDictionary resources) {
+        private static PdfDictionary getBDCDictionary(List<PdfObject> operands, PdfDictionary resources) {
             PdfObject pdfObject = operands.get(1);
             if (pdfObject.isName()) {
                 PdfDictionary properties = resources.getAsDict(PdfName.PROPERTIES);

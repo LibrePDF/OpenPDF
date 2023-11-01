@@ -113,8 +113,8 @@ public class TextField extends BaseField {
     /**
      * Chose the run direction of a text field by it's content
      * 
-     * @param ptext
-     * @return
+     * @param ptext text field content
+     * @return int run direction (PdfWriter.RUN_DIRECTION_LTR or PdfWriter.RUN_DIRECTION_RTL or PdfWriter.RUN_DIRECTION_NO_BIDI)
      */
     private static int textRunDirectionByContent(String ptext) {
         if (ptext == null || ptext.length() == 0) {
@@ -252,7 +252,7 @@ public class TextField extends BaseField {
      * @return A <code>PdfAppearance</code>
      */
     public PdfAppearance getAppearance() throws IOException, DocumentException {
-        PdfAppearance app = getBorderAppearance();
+        PdfAppearance app = getBorderAppearance(super.writer,super.box,super.rotation,super.backgroundColor,super.borderStyle,super.borderWidth,super.borderColor,super.options,super.maxCharacterLength);
         app.beginVariableText();
         if (text == null || text.length() == 0) {
             app.endVariableText();
@@ -398,7 +398,7 @@ public class TextField extends BaseField {
      * @return A <code>PdfAppearance</code>
      */
     PdfAppearance getListAppearance() throws IOException, DocumentException {
-        PdfAppearance app = getBorderAppearance();
+        PdfAppearance app = getBorderAppearance(super.writer,super.box,super.rotation,super.backgroundColor,super.borderStyle,super.borderWidth,super.borderColor,super.options,super.maxCharacterLength);
         if (choices == null || choices.length == 0) {
             return app;
         }

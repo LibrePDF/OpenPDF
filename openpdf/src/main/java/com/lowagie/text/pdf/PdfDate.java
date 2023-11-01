@@ -110,10 +110,19 @@ public class PdfDate extends PdfString {
         value = date.toString();
     }
     
-/**
- * Constructs a <CODE>PdfDate</CODE>-object, representing the current day and time.
- */
+    /**
+     * Constructs a <CODE>PdfDate</CODE>-object.
+     *
+     * @param d the date in the PDF ASN.1 date format ((D:YYYYMMDDHHmmSSOHH'mm')
+     */
+    public PdfDate(String d) {
+        super();
+        value = d;
+    }
     
+    /**
+     * Constructs a <CODE>PdfDate</CODE>-object, representing the current day and time.
+     */
     public PdfDate() {
         this(new GregorianCalendar());
     }

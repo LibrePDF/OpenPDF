@@ -80,6 +80,19 @@ public abstract class BaseField {
     public static final int VISIBLE_BUT_DOES_NOT_PRINT = 2;
     /** The field is hidden but is printable. */
     public static final int HIDDEN_BUT_PRINTABLE = 3;
+    
+    /** The annotation flag: Invisible. */    
+    public static final int INVISIBLE = PdfAnnotation.FLAGS_INVISIBLE;
+    /** The annotation flag Hidden. */    
+    //public static final int HIDDEN = PdfAnnotation.FLAGS_HIDDEN;
+    /** The annotation flag Hidden. */    
+    public static final int PRINT = PdfAnnotation.FLAGS_PRINT;
+    /** The annotation flag Hidden. */    
+    public static final int NOVIEW = PdfAnnotation.FLAGS_NOVIEW;
+    /** The annotation flag Hidden. */    
+    public static final int LOCKED = PdfAnnotation.FLAGS_LOCKED;
+    
+    
     /** The user may not change the value of the field. */
     public static final int READ_ONLY = PdfFormField.FF_READ_ONLY;
     /** The field must have a value at the time it is exported by a submit-form
@@ -145,6 +158,12 @@ public abstract class BaseField {
 
     /** Holds value of property fieldName. */
     protected String fieldName;
+    
+    /** Holds the value of the alternate field name. (PDF attribute 'TU') */
+    protected String alternateFieldName;
+    
+    /** Holds the value of the mapping field name. (PDF attribute 'TM') */
+    protected String mappingName;
 
     /** Holds value of property options. */
     protected int options;
@@ -177,7 +196,7 @@ public abstract class BaseField {
             return font;
     }
 
-    protected PdfAppearance getBorderAppearance() {
+    protected static PdfAppearance getBorderAppearance(PdfWriter writer, Rectangle box, int rotation, Color backgroundColor,int borderStyle,float borderWidth, Color borderColor, int options,int maxCharacterLength) {
         PdfAppearance app = PdfAppearance.createAppearance(writer, box.getWidth(), box.getHeight());
         switch (rotation) {
             case 90:
@@ -219,9 +238,9 @@ public abstract class BaseField {
             if (actual == null)
                 actual = Color.white;
             app.setGrayFill(1);
-            drawTopFrame(app);
+            drawTopFrame(app,borderWidth,box);
             app.setColorFill(actual.darker());
-            drawBottomFrame(app);
+            drawBottomFrame(app,borderWidth,box);
         }
         else if (borderStyle == PdfBorderDictionary.STYLE_INSET) {
             if (borderWidth != 0 && borderColor != null) {
@@ -232,9 +251,9 @@ public abstract class BaseField {
             }
             // inset
             app.setGrayFill(0.5f);
-            drawTopFrame(app);
+            drawTopFrame(app,borderWidth,box);
             app.setGrayFill(0.75f);
-            drawBottomFrame(app);
+            drawBottomFrame(app,borderWidth,box);
         }
         else {
             if (borderWidth != 0 && borderColor != null) {
@@ -244,6 +263,7 @@ public abstract class BaseField {
                 app.setLineWidth(borderWidth);
                 app.rectangle(borderWidth / 2, borderWidth / 2, box.getWidth() - borderWidth, box.getHeight() - borderWidth);
                 app.stroke();
+                //comb formfield flag is set and maxchar must be set (for textfield only!)
                 if ((options & COMB) != 0 && maxCharacterLength > 1) {
                     float step = box.getWidth() / maxCharacterLength;
                     float yb = borderWidth / 2;
@@ -393,7 +413,7 @@ public abstract class BaseField {
         return lines;
     }
 
-    private void drawTopFrame(PdfAppearance app) {
+    private static void drawTopFrame(PdfAppearance app, float borderWidth, Rectangle box) {
         app.moveTo(borderWidth, borderWidth);
         app.lineTo(borderWidth, box.getHeight() - borderWidth);
         app.lineTo(box.getWidth() - borderWidth, box.getHeight() - borderWidth);
@@ -403,8 +423,8 @@ public abstract class BaseField {
         app.lineTo(borderWidth, borderWidth);
         app.fill();
     }
-
-    private void drawBottomFrame(PdfAppearance app) {
+    
+    private static void drawBottomFrame(PdfAppearance app, float borderWidth, Rectangle box) {
         app.moveTo(borderWidth, borderWidth);
         app.lineTo(box.getWidth() - borderWidth, borderWidth);
         app.lineTo(box.getWidth() - borderWidth, box.getHeight() - borderWidth);
@@ -627,6 +647,36 @@ public abstract class BaseField {
      */
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
+    }
+    
+    /** Gets the alternate field name. (PDF attribute TU)
+     * @return the alternate field name
+     */
+    public String getAlternateFieldName() {
+        return this.alternateFieldName;
+    }
+      
+    /** 
+     * Sets the alternateFieldName field name.
+     * @param alternateFieldName the alternate field name.
+     */
+    public void setAlternateFieldName(String alternateFieldName) {
+        this.alternateFieldName = alternateFieldName;
+    }
+    
+    /** Gets the mapping name. (PDF attribute TM)
+     * @return the mapping field name
+     */
+    public String getMappingName() {
+        return this.mappingName;
+    }
+
+    /** 
+     * Sets the mapping name. (PDF TM)
+     * @param mappingName the mapping name.
+     */
+    public void setMappingName(String mappingName) {
+        this.mappingName = mappingName;
     }
 
     /** Gets the option flags.

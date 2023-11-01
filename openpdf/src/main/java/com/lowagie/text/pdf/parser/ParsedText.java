@@ -151,10 +151,10 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param xOffset
-     * @param yOffset
-     * @param textToUserSpaceTransformMatrix
-     * @return
+     * @param xOffset offset in x direction
+     * @param yOffset offset in y direction
+     * @param textToUserSpaceTransformMatrix transform from text space to graphics (drawing space)
+     * @return the cross product of the offset and the textToUserSpaceTransformMatrix
      */
     private static Vector pointToUserSpace(float xOffset, float yOffset,
                                            Matrix textToUserSpaceTransformMatrix) {
@@ -201,9 +201,9 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param width
-     * @param textToUserSpaceTransformMatrix
-     * @return
+     * @param width which should be converted to user space
+     * @param textToUserSpaceTransformMatrix transform from text space to graphics (drawing space)
+     * @return distance between start and end position
      */
     private static float convertWidthToUser(float width,
                                             Matrix textToUserSpaceTransformMatrix) {
@@ -214,18 +214,18 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param startPos
-     * @param endPos
-     * @return
+     * @param startPos of the vector
+     * @param endPos of the vector
+     * @return (endPos-startPos).length 
      */
     private static float distance(Vector startPos, Vector endPos) {
         return endPos.subtract(startPos).length();
     }
 
     /**
-     * @param height
-     * @param textToUserSpaceTransformMatrix
-     * @return
+     * @param height which should be converted to user space
+     * @param textToUserSpaceTransformMatrix transform from text space to graphics (drawing space)
+     * @return distance between start and end position
      */
     private static float convertHeightToUser(float height,
                                              Matrix textToUserSpaceTransformMatrix) {

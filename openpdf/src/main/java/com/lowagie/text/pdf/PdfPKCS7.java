@@ -227,7 +227,12 @@ public class PdfPKCS7 {
         algorithmNames.put("1.3.36.3.3.1.2", "RSA");
         algorithmNames.put("1.3.36.3.3.1.4", "RSA");
         algorithmNames.put(ID_ECDSA, "ECDSA");
-
+        algorithmNames.put("1.2.840.10045.4.1", "ECDSA"); 
+        algorithmNames.put("1.2.840.10045.4.3", "ECDSA"); 
+        algorithmNames.put("1.2.840.10045.4.3.2", "ECDSA");
+        algorithmNames.put("1.2.840.10045.4.3.3", "ECDSA");
+        algorithmNames.put("1.2.840.10045.4.3.4", "ECDSA");
+        algorithmNames.put("1.2.840.113549.1.1.10", "RSAandMGF1");
         allowedDigests.put("MD5", "1.2.840.113549.2.5");
         allowedDigests.put("MD2", "1.2.840.113549.2.2");
         allowedDigests.put("SHA1", "1.3.14.3.2.26");
@@ -613,7 +618,7 @@ public class PdfPKCS7 {
                 digestEncryptionAlgorithm = ID_RSA;
             } else if (digestEncryptionAlgorithm.equals("DSA")) {
                 digestEncryptionAlgorithm = ID_DSA;
-            } else if (digestEncryptionAlgorithm.equals("EC")) {
+            } else if (digestEncryptionAlgorithm.equals("EC") || digestEncryptionAlgorithm.equals("ECDSA")) {
                 digestEncryptionAlgorithm = ID_ECDSA;
             } else {
                 throw new NoSuchAlgorithmException(
