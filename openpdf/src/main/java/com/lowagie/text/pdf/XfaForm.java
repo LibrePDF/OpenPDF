@@ -1068,7 +1068,7 @@ public class XfaForm {
             while (n2 != null) {
                 if (n2.getNodeType() == Node.ELEMENT_NODE) {
                     String s = n2.getLocalName();
-                    if (s.equals("subform")) {
+                    if ("subform".equals(s)) {
                         Node name = n2.getAttributes().getNamedItem("name");
                         String nn = "#subform";
                         boolean annon = true;
@@ -1098,7 +1098,7 @@ public class XfaForm {
                         --templateLevel;
                         stack.pop();
                     }
-                    else if (s.equals("field") || s.equals("exclGroup")) {
+                    else if ("field".equals(s) || "exclGroup".equals(s)) {
                         Node name = n2.getAttributes().getNamedItem("name");
                         if (name != null) {
                             String nn = escapeSom(name.getNodeValue());
@@ -1116,7 +1116,7 @@ public class XfaForm {
                             stack.pop();
                         }
                     }
-                    else if (!dynamicForm && templateLevel > 0 && s.equals("occur")) {
+                    else if (!dynamicForm && templateLevel > 0 && "occur".equals(s)) {
                         int initial = 1;
                         int min = 1;
                         int max = 1;
