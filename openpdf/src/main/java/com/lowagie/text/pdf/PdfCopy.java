@@ -153,7 +153,7 @@ public class PdfCopy extends PdfWriter {
    */
   public PdfCopy(Document document, OutputStream os) throws DocumentException {
     super(new PdfDocument(), os);
-    this.document.setDocumentLanguage(document.getDocumentLanguage());
+    this.document.setTextRenderingOptions(document.getTextRenderingOptions());
     document.addDocListener(pdf);
     pdf.addWriter(this);
     indirectMap = new HashMap<>();
