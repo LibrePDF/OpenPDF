@@ -66,7 +66,7 @@ import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
  * @since 2.1.5
  */
 public class PdfCopyForms
-    implements PdfViewerPreferences, PdfEncryptionSettings {
+    implements PdfViewerPreferences, PdfEncryptionSettings, AutoCloseable {
     
     /** The class with the actual implementations. */
     private PdfCopyFormsImp fc;

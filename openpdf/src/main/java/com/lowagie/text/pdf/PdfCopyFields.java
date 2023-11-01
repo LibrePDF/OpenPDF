@@ -63,7 +63,7 @@ import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
  * @author  Paulo Soares (psoares@consiste.pt)
  */
 public class PdfCopyFields
-    implements PdfViewerPreferences, PdfEncryptionSettings {
+    implements PdfViewerPreferences, PdfEncryptionSettings, AutoCloseable {
     
     private PdfCopyFieldsImp fc;
     
