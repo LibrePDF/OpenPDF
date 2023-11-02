@@ -13,6 +13,8 @@ local.properties
 .recommenders
 .project
 .classpath
+# If you use jenv
+.java-version
 
 # External tool builders
 .externalToolBuilders/
