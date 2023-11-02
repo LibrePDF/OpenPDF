@@ -476,6 +476,7 @@ public class PdfDocument extends Document {
                     // we cast the element to a chunk
                     PdfChunk chunk = new PdfChunk((Chunk) element, anchorAction);
                     // we try to add the chunk to the line, until we succeed
+                    if (!chunk.isTab())
                     {
                         PdfChunk overflow;
                         while ((overflow = line.add(chunk)) != null) {
@@ -484,6 +485,8 @@ public class PdfDocument extends Document {
                             chunk.trimFirstSpace();
                         }
                     }
+                    else
+                        line.add(chunk);
                     pageEmpty = false;
                     if (chunk.isAttribute(Chunk.NEWPAGE)) {
                         newPage();
@@ -3213,7 +3216,7 @@ public class PdfDocument extends Document {
                 // if there is still text to render we render it
                 if (lines != null && !lines.isEmpty()) {
                     // we write the text
-                    float cellTop = cell.getTop(ctx.pagetop - ctx.oldHeight);
+                    float cellTop = cell.getTop(ctx.pagetop - ctx.oldHeight - 5f/*adjust for decent size*/);
                     text.moveText(0, cellTop);
                     float cellDisplacement = flushLines() - cellTop;
 
