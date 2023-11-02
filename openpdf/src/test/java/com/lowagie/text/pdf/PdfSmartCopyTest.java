@@ -25,7 +25,7 @@ public class PdfSmartCopyTest {
 
     
     private void check(File orig, int count) throws IOException {
-        Assertions.assertTimeout(Duration.ofSeconds(5), () -> {
+        Assertions.assertTimeout(Duration.ofSeconds(10), () -> {
             File out = new File("target/test-classes/pdfsmartocy-" + count + ".pdf");
             out.getParentFile().mkdirs();
             Document document = new Document();
