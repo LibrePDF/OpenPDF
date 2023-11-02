@@ -160,7 +160,6 @@ public class PdfSignatureAppearance {
 
   PdfSignatureAppearance(PdfStamperImp writer) {
     this.writer = writer;
-    signDate = new GregorianCalendar();
     fieldName = getNewSigName();
   }
 
@@ -493,7 +492,7 @@ public class PdfSignatureAppearance {
             .append(PdfPKCS7.getSubjectFields((X509Certificate) certChain[0]).getField("CN"))
             .append('\n');
         SimpleDateFormat sd = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z");
-        buf.append("Date: ").append(sd.format(signDate.getTime()));
+        buf.append("Date: ").append(sd.format(getSignDateNullSafe().getTime()));
         if (reason != null)
           buf.append('\n').append("Reason: ").append(reason);
         if (location != null)
@@ -784,7 +783,7 @@ public class PdfSignatureAppearance {
   }
 
   /**
-   * Gets the signing reason.
+   * Gets the signing reason or null if not set.
    * 
    * @return the signing reason
    */
@@ -803,7 +802,7 @@ public class PdfSignatureAppearance {
   }
 
   /**
-   * Gets the signing location.
+   * Gets the signing location or null if not set.
    * 
    * @return the signing location
    */
@@ -823,6 +822,7 @@ public class PdfSignatureAppearance {
 
   /**
    * Returns the Cryptographic Service Provider that will sign the document.
+   * This method might return null if the provider was not set.
    * 
    * @return provider the name of the provider, for example "SUN", or
    *         <code>null</code> to use the default provider.
@@ -933,6 +933,17 @@ public class PdfSignatureAppearance {
    */
   public void setSignDate(java.util.Calendar signDate) {
     this.signDate = signDate;
+  }
+  
+  /**
+   * Gets the signature date. If the date is not set the current Date is returned.
+   * @return the signature date
+   */    
+  public java.util.Calendar getSignDateNullSafe() {
+      if(this.signDate==null) {
+          return new GregorianCalendar();
+      }
+      return this.signDate;
   }
 
   com.lowagie.text.pdf.ByteBuffer getSigout() {
@@ -1118,7 +1129,7 @@ public class PdfSignatureAppearance {
         sigStandard.setLocation(getLocation());
       if (getContact() != null)
         sigStandard.setContact(getContact());
-      sigStandard.put(PdfName.M, new PdfDate(getSignDate()));
+      sigStandard.put(PdfName.M, new PdfDate(getSignDateNullSafe()));
       sigStandard.setSignInfo(getPrivKey(), certChain, crlList);
       // ******************************************************************************
       PdfString contents = (PdfString) sigStandard.get(PdfName.CONTENTS);
@@ -1137,9 +1148,9 @@ public class PdfSignatureAppearance {
         signatureEvent.getSignatureDictionary(sigStandard);
       writer.addToBody(sigStandard, refSig, false);
     } else {
-        //following block added by Lonzak since otherwise this information would be missing
-        //The idea might be if there is an external crypto dictionary then everything is added manually however
-        //the method description of all the method in the signature appearance do not state this - so this would be highly error prone
+        //the following block was added since otherwise this information would be lost.
+        //The original idea might have been that if there is an external crypto dictionary then everything is added manually however
+        //the method description of all the methods in the PdfSignatureAppearance class do not state this - so this would be highly error prone
         if (getReason() != null) {
             this.cryptoDictionary.put(PdfName.REASON, new PdfString(this.getReason(), PdfObject.TEXT_UNICODE));
         }
