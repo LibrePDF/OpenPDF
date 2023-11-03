@@ -53,6 +53,10 @@ import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.crypto.ARCFOUREncryption;
 import com.lowagie.text.pdf.crypto.IVGenerator;
+import org.bouncycastle.crypto.Digest;
+import org.bouncycastle.crypto.digests.SHA256Digest;
+import org.bouncycastle.crypto.macs.HMac;
+import org.bouncycastle.crypto.params.KeyParameter;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -387,16 +391,20 @@ public class PdfEncryption {
     }
 
     public static byte[] createDocumentId() {
-        MessageDigest md5;
-        try {
-            md5 = MessageDigest.getInstance("MD5");
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
+        byte[] key = new byte[32];
         long time = System.currentTimeMillis();
         long mem = Runtime.getRuntime().freeMemory();
         String s = time + "+" + mem + "+" + (seq++);
-        return md5.digest(s.getBytes());
+
+        byte[] data = s.getBytes();
+        Digest sha256 = new SHA256Digest();
+        HMac hmac = new HMac(sha256);
+        hmac.init(new KeyParameter(key));
+        hmac.update(data, 0, data.length);
+
+        byte[] result = new byte[hmac.getMacSize()];
+        hmac.doFinal(result, 0);
+        return result;
     }
 
     /**
