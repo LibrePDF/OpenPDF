@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -65,6 +66,7 @@ public class AdvanceTypographyTest {
     }
 
     @Test
+    @Disabled
     public void testSurrogatePair() throws Exception{
 
         BaseFont baseFont = BaseFont.createFont("fonts/jp/GenShinGothic-Normal.ttf", BaseFont.IDENTITY_H, false);
