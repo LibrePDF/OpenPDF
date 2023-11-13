@@ -65,7 +65,7 @@ public class AdvanceTypographyTest {
         assertArrayEquals(expectedOutput,str.toCharArray());
     }
 
-    @Disabled
+    /*@Disabled
     public void testSurrogatePair() throws Exception{
 
         BaseFont baseFont = BaseFont.createFont("fonts/jp/GenShinGothic-Normal.ttf", BaseFont.IDENTITY_H, false);
@@ -78,7 +78,7 @@ public class AdvanceTypographyTest {
         String str = new String(processedContent, "UnicodeBigUnmarked");
         char[] actual = str.toCharArray();
         assertArrayEquals(expectedOutput, actual);
-    }
+    }*/
 
     private byte[] getFontByte(String fileName) throws IOException {
         InputStream stream = BaseFont.getResourceStream(fileName, null);
