@@ -65,7 +65,6 @@ public class AdvanceTypographyTest {
         assertArrayEquals(expectedOutput,str.toCharArray());
     }
 
-    @Test
     @Disabled
     public void testSurrogatePair() throws Exception{
 
