@@ -239,7 +239,7 @@ class FontDetails {
     private byte[] convertToBytesWithGlyphs(String text) throws UnsupportedEncodingException {
         int len = text.length();
         int[] metrics = null;
-        char[] glyph = new char[len];
+        int[] glyph = new int[len];
         int i = 0;
         for (int k = 0; k < len; ++k) {
             int val;
@@ -257,10 +257,19 @@ class FontDetails {
             Integer gl = m0;
             if (!longTag.containsKey(gl))
                 longTag.put(gl, new int[]{m0, metrics[1], val});
-            glyph[i++] = (char)m0;
+            glyph[i++] = m0;
         }
-        String s = new String(glyph, 0, i);
-        return s.getBytes(CJKFont.CJK_ENCODING);
+        return getCJKEncodingBytes(glyph, i);
+    }
+
+    private byte[] getCJKEncodingBytes(int[] glyph, int size) {
+        byte[] result = new byte[size * 2];
+        for (int i = 0; i < size; i++) {
+            int g = glyph[i];
+            result[i * 2] = (byte)(g >> 8);
+            result[i * 2 + 1] = (byte)(g & 0xFF);
+        }
+        return result;
     }
 
     byte[] convertToBytes(GlyphVector glyphVector) {
