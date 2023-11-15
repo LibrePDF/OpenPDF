@@ -1,7 +1,10 @@
-package com.lowagie.text.pdf;
+package com.lowagie.text.pdf.encryption;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import com.lowagie.text.pdf.PdfEncryption;
+import com.lowagie.text.pdf.PdfWriter;
 
 public class StandardDecryptionTest {
 

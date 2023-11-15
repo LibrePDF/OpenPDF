@@ -2254,6 +2254,35 @@ public class PdfContentByte {
     public void addTemplate(PdfTemplate template, float x, float y) {
         addTemplate(template, 1, 0, 0, 1, x, y);
     }
+	
+	/**
+     * Adds a template to this content using double matrices.
+     *
+     * @param template the template
+     * @param a an element of the transformation matrix
+     * @param b an element of the transformation matrix
+     * @param c an element of the transformation matrix
+     * @param d an element of the transformation matrix
+     * @param e an element of the transformation matrix
+     * @param f an element of the transformation matrix
+     */
+    public void addTemplate(final PdfTemplate template, final double a, final double b, final double c, final double d, final double e, final double f) {
+        checkWriter();
+        checkNoPattern(template);
+        
+        PdfName name = writer.addDirectTemplateSimple(template, null);
+        PageResources prs = getPageResources();
+        name = prs.addXObject(name, template.getIndirectReference());
+
+        content.append("q ");
+        content.append(a).append(' ');
+        content.append(b).append(' ');
+        content.append(c).append(' ');
+        content.append(d).append(' ');
+        content.append(e).append(' ');
+        content.append(f).append(" cm ");
+        content.append(name.getBytes()).append(" Do Q").append_i(separator);
+    }
 
     /**
      * Changes the current color for filling paths (device dependent colors!).

@@ -1,4 +1,4 @@
-package com.lowagie.text.pdf;
+package com.lowagie.text.pdf.encryption;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.exceptions.InvalidPdfException;
+import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
 
 /**

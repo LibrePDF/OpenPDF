@@ -1,4 +1,4 @@
-package com.lowagie.text.pdf;
+package com.lowagie.text.pdf.encryption;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +13,10 @@ import org.junit.jupiter.api.Test;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
+import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
 
 /**

@@ -46,6 +46,22 @@
  */
 package com.lowagie.text.pdf;
 
+import java.awt.geom.AffineTransform;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
@@ -58,17 +74,8 @@ import com.lowagie.text.pdf.collection.PdfCollection;
 import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import com.lowagie.text.pdf.internal.PdfViewerPreferencesImp;
 import com.lowagie.text.xml.xmp.XmpReader;
-import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
 
 class PdfStamperImp extends PdfWriter {
     HashMap<PdfReader, IntHashtable> readers2intrefs = new HashMap<>();
@@ -178,11 +185,11 @@ class PdfStamperImp extends PdfWriter {
                     acroFields.getXfa().setXfa(this);
             }
             if (sigFlags != 0) {
-                acroForm.put(PdfName.SIGFLAGS, new PdfNumber(sigFlags));
-                markUsed(acroForm);
-                markUsed(catalog);
+                	acroForm.put(PdfName.SIGFLAGS, new PdfNumber(sigFlags));
+                	markUsed(acroForm);
+                	markUsed(catalog);
+				}
             }
-        }
         closed = true;
         addSharedObjectsToBody();
         setOutlines();
@@ -540,6 +547,15 @@ class PdfStamperImp extends PdfWriter {
     }
 
     /**
+     * Removes the encryption from the document (and also inherently the permissions)
+     * @throws DocumentException
+     */
+    public void removeEncryption() throws DocumentException {
+        super.setEncryption(null,null,0,ENCRYPTION_NONE);
+        this.reader.setPermissions(0);
+    }
+
+    /**
      * @param reader
      * @param openFile
      * @throws IOException
@@ -852,8 +868,10 @@ class PdfStamperImp extends PdfWriter {
         }
         PdfDictionary acroForm = reader.getCatalog().getAsDict(PdfName.ACROFORM);
         PdfArray acroFds = null;
+        PdfBoolean needAppearance=null;
         if (acroForm != null) {
             acroFds = (PdfArray)PdfReader.getPdfObject(acroForm.get(PdfName.FIELDS), acroForm);
+            needAppearance = (PdfBoolean)acroForm.get(PdfName.NEEDAPPEARANCES);
         }
         for (Map.Entry<String, Item> entry : fields.entrySet()) {
             String name = entry.getKey();
@@ -870,17 +888,104 @@ class PdfStamperImp extends PdfWriter {
                 if (page == -1)
                 	continue;
                 PdfDictionary appDic = merged.getAsDict(PdfName.AP);
+                PdfStream appStream=null;
+                
+                if (appDic != null) {
+                    appStream = appDic.getAsStream(PdfName.N);
+                }
+
+                //Lonzak (fix) if NeedAppearances flag is true then regenerate appearance before flattening
+                if (needAppearance!=null && needAppearance.booleanValue()) {
+                    
+                	boolean regenerate = false;
+
+                	//not existing AP
+                	if((appDic == null || appDic.get(PdfName.N) == null)) {
+                		regenerate=true;
+                	}
+                	else if(appDic.getDirectObject(PdfName.N) instanceof PdfIndirectReference) {
+                		//since newly added
+                		regenerate=false;
+                	}
+                	else {
+	                	int type = acroFields.getFieldType(name);
+	                    String value = acroFields.getField(name);
+	                                    		
+	                    //workaround for libre/open office which creates nearly empty streams: /TX BMC\nEMC
+	                    //Currently only for Textfields - for Radios/Checkboxes the appearance stream has to be determined (by looking at /AS or /V)
+	                    if(type==AcroFields.FIELD_TYPE_TEXT && appStream instanceof PRStream) {
+		                    if(value!=null && !value.isEmpty()) {
+		                    	try {
+		        					byte[] bytes= PdfReader.getStreamBytes((PRStream)appStream);
+		        					((PRStream)appStream).setData(bytes);
+		        					if(new String(bytes).equals("/Tx BMC\nEMC\n")) {
+		        						regenerate=true;
+		        					}
+		        				}
+		        				catch (IOException e) {
+		        					//ignore
+		        				}
+		                    }
+	                    }
+                	}
+                	
+                	if(regenerate) {
+                		try {
+	                        this.acroFields.regenerateField(name);
+	                        appDic = this.acroFields.getFieldItem(name).getMerged(k).getAsDict(PdfName.AP);
+	                    }
+	                    catch (Exception e) {
+	                    	//ignore any exception
+	                    }
+                	}
+                }
+                
+                boolean transformNeeded=false;
+                double rotation = 0;
+                if(merged.getAsDict(PdfName.MK) != null && merged.getAsDict(PdfName.MK).get(PdfName.R) != null){
+                    rotation = merged.getAsDict(PdfName.MK).getAsNumber(PdfName.R).floatValue();
+                }
+                
+                if (this.acroFields.isGenerateAppearances() && appStream!=null) {
+                    
+                    PdfArray bboxRaw = appStream.getAsArray(PdfName.BBOX);
+                    PdfArray rectRaw = merged.getAsArray(PdfName.RECT);
+                    
+                    if (bboxRaw != null && rectRaw != null) {
+                        transformNeeded = true;
+                        PdfRectangle bbox = new PdfRectangle(bboxRaw);
+                        PdfRectangle rect = new PdfRectangle(rectRaw);
+                        
+                        float rectWidth = rect.width();
+                        float rectHeight = rect.height();
+                        
+                        //Switches width and height if the rotation is an odd multiple of 90 degrees
+                        if (Math.abs(rotation)>0 && rotation % 180 != 0 && rotation % 90 == 0) {
+                            rectWidth = rect.height();
+                            rectHeight = rect.width();
+                        }
+                        
+                        float scaleFactorWidth = Math.abs(bbox.width() != 0 ? rectWidth / bbox.width() : 1.0f);
+                        float scaleFactorHeight = Math.abs(bbox.height() != 0 ? rectHeight / bbox.height() : 1.0f);
+                        
+                        PdfArray array = new PdfArray(new float[]{scaleFactorWidth, 0, 0, scaleFactorHeight, 0, 0});
+                        appStream.put(PdfName.MATRIX, array);
+                        markUsed(appStream);
+                    }
+                }
+                                
                 if (appDic != null && (flags & PdfFormField.FLAGS_PRINT) != 0 && (flags & PdfFormField.FLAGS_HIDDEN) == 0) {
-                    PdfObject obj = appDic.get(PdfName.N);
+                    PdfObject normalAppearanceObj = appDic.get(PdfName.N);
                     PdfAppearance app = null;
-                    if (obj != null) {
-                        PdfObject objReal = PdfReader.getPdfObject(obj);
-                        if (obj instanceof PdfIndirectReference && !obj.isIndirect())
-                            app = new PdfAppearance((PdfIndirectReference) obj);
+                    PdfObject objReal = PdfReader.getPdfObject(normalAppearanceObj);
+                    if (normalAppearanceObj != null) {
+                        if (normalAppearanceObj instanceof PdfIndirectReference && !normalAppearanceObj.isIndirect())
+                            app = new PdfAppearance((PdfIndirectReference)normalAppearanceObj);
                         else if (objReal instanceof PdfStream) {
                             ((PdfDictionary) objReal).put(PdfName.SUBTYPE, PdfName.FORM);
-                            app = new PdfAppearance((PdfIndirectReference) obj);
-                        } else {
+                            app = new PdfAppearance((PdfIndirectReference)normalAppearanceObj);
+                        }
+                        else {
                             if (objReal != null && objReal.isDictionary()) {
                                 PdfName as = merged.getAsName(PdfName.AS);
                                 if (as != null) {
@@ -896,11 +1001,52 @@ class PdfStamperImp extends PdfWriter {
                             }
                         }
                     }
-                    if (app != null) {
+                    if (app != null && objReal!=null) {
                         Rectangle box = PdfReader.getNormalizedRectangle(merged.getAsArray(PdfName.RECT));
                         PdfContentByte cb = getOverContent(page);
                         cb.setLiteral("Q ");
+
+                        if(transformNeeded) {
+                            AffineTransform transform = new AffineTransform();
+                            double x = box.getLeft();
+                            double y = box.getBottom();
+                            
+                            if (rotation != 0 && rotation % 90 == 0 && rotation % 270 != 0) {
+                                x += box.getWidth();
+                            }
+                            if (rotation != 0 && (rotation % 180 == 0 || rotation % 270 == 0)) {
+                                y += box.getHeight();
+                            }
+                            transform.translate(x, y);
+                            
+                            //before applying the rotation convert from degree to radiant
+                            transform.rotate(Math.toRadians(rotation));
+
+                            // rotation matrix
+                            double[] matrix = new double[6];
+                            transform.getMatrix(matrix);
+                            cb.addTemplate(app, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5]);
+                        }
+                        else {
+                            //when objReal is an PdfIndirectReference then it was just created (thus it doesn't need to be corrected
+                            if(!(objReal instanceof PdfIndirectReference)) {
+                            	
+                                // Lonzak: npe bugfix
+                                PdfRectangle bBoxCoordinates = new PdfRectangle(((PdfDictionary)objReal).getAsArray(PdfName.BBOX));
+                                if(bBoxCoordinates!=null && bBoxCoordinates.size()>=4) {
+                                    // DEVSIX-1741 - Bugfix backported as Jonthan of iText suggested
+                                    Rectangle bBox = PdfReader.getNormalizedRectangle(bBoxCoordinates);
+                                    cb.addTemplate(app, (box.getWidth() / bBox.getWidth()), 0, 0, (box.getHeight() / bBox.getHeight()), box.getLeft(), box.getBottom());
+                                }
+                                else {
+                                    throw new DocumentException("The required BBox attribute of the field "+ name +" is missing. The PDF is not PDF spec compliant!");
+                                }
+                            }
+                            else {
                         cb.addTemplate(app, box.getLeft(), box.getBottom());
+                            }
+                        }
+                       	
                         cb.setLiteral("q ");
                     }
                 }
@@ -1029,6 +1175,11 @@ class PdfStamperImp extends PdfWriter {
                 if ((annoto instanceof PdfIndirectReference) && !annoto.isIndirect())
                     continue;
 
+				//Lonzak Fix: java.lang.ClassCastException: com.lowagie.text.pdf.PdfNull cannot be cast to com.lowagie.text.pdf.PdfDictionary
+				if(!(annoto instanceof PdfDictionary)) {
+				    continue;
+				}
+
                 PdfDictionary annDic = (PdfDictionary)annoto;
                  if (!annDic.get(PdfName.SUBTYPE).equals(PdfName.FREETEXT))
                     continue;
@@ -1055,7 +1206,8 @@ class PdfStamperImp extends PdfWriter {
                     }
                     else
                     {
-                        if (objReal.isDictionary())
+					    //Lonzak: NPE Fix since objReal or obj can be null
+						if (objReal!=null && objReal.isDictionary())
                         {
                             PdfName as_p = appDic.getAsName(PdfName.AS);
                             if (as_p != null)
@@ -1373,8 +1525,11 @@ class PdfStamperImp extends PdfWriter {
         }
     }
 
-    void addAnnotation(PdfAnnotation annot, int page) {
-        annot.setPage(page);
+    public void addAnnotation(PdfAnnotation annot, int page) {
+    	//Bugfix to prevent that for autofill parents the /P page reference is added [^Lonzak]
+    	if(annot.isAnnotation()){
+        	annot.setPage(page);
+    	}
         addAnnotation(annot, reader.getPageN(page));
     }
     

@@ -1041,7 +1041,7 @@ public class Document implements DocListener {
 	 * 
 	 * @param textRenderingOptions the text rendering options
 	 * @see #setDocumentLanguage(String)
-	 * @see Document#setGlyphSubstitutionsEnabled(boolean)
+	 * @see Document#setGlyphSubstitutionEnabled(boolean)
 	 */
     public void setTextRenderingOptions(TextRenderingOptions textRenderingOptions) {
     	this.textRenderingOptions = textRenderingOptions == null ? new TextRenderingOptions() : textRenderingOptions;
