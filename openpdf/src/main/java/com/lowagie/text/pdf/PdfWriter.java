@@ -1877,6 +1877,8 @@ public class PdfWriter extends DocWriter implements
 
     // types of encryption
 
+    /** No encryption */
+    public static final int ENCRYPTION_NONE = -1;
     /** Type of encryption */
     public static final int STANDARD_ENCRYPTION_40 = 0;
     /** Type of encryption */

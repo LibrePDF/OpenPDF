@@ -2685,6 +2685,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     return pValue;
   }
 
+    public void setPermissions(int permissionValue) {
+        this.pValue=permissionValue;
+    }
+
   /**
    * Returns <CODE>true</CODE> if the PDF has a 128 bit key encryption.
    * 

@@ -119,7 +119,7 @@ public class Executable {
      * Creates a command string array from the string arguments.
      *
      * @param arguments
-     * @return
+     * @return String[] of commands
      */
     private static String[] createCommand(String... arguments) {
         return arguments;
