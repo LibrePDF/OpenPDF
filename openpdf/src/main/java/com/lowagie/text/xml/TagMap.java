@@ -99,7 +99,10 @@ public class TagMap extends HashMap<String, XmlPeer> {
 
     protected void init(InputStream in) {
         try {
-            SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            SAXParser parser = factory.newSAXParser();
             parser.parse(new InputSource(in), new AttributeHandler((Map<String, XmlPeer>) this));
         } catch (Exception e) {
             throw new ExceptionConverter(e);

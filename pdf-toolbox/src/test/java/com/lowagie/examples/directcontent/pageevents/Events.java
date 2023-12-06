@@ -202,7 +202,10 @@ public class Events {
             writer.setPageEvent(events);
 
             // step 3: we create a parser and set the document handler
-            SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            SAXParser parser = factory.newSAXParser();
 
             // step 4: we parse the document
             parser.parse("playRomeoJuliet.xml", new Events().getXmlHandler(document));
