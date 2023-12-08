@@ -181,10 +181,10 @@ class PdfStamperImp extends PdfWriter {
                     acroFields.getXfa().setXfa(this);
             }
             if (sigFlags != 0) {
-                	acroForm.put(PdfName.SIGFLAGS, new PdfNumber(sigFlags));
-                	markUsed(acroForm);
-                	markUsed(catalog);
-				}
+                    acroForm.put(PdfName.SIGFLAGS, new PdfNumber(sigFlags));
+                    markUsed(acroForm);
+                    markUsed(catalog);
+                }
             }
         closed = true;
         addSharedObjectsToBody();
@@ -882,7 +882,7 @@ class PdfStamperImp extends PdfWriter {
                     flags = ff.intValue();
                 int page = item.getPage(k);
                 if (page == -1)
-                	continue;
+                    continue;
                 PdfDictionary appDic = merged.getAsDict(PdfName.AP);
                 PdfStream appStream=null;
                 
@@ -893,51 +893,34 @@ class PdfStamperImp extends PdfWriter {
                 //Lonzak (fix) if NeedAppearances flag is true then regenerate appearance before flattening
                 if (needAppearance!=null && needAppearance.booleanValue()) {
                     
-                	boolean regenerate = false;
+                    boolean regenerate = false;
+                    int type = this.acroFields.getFieldType(name);
 
-                	//not existing AP
-                	if((appDic == null || appDic.get(PdfName.N) == null)) {
-                		regenerate=true;
-                	}
-                	else if(appDic.getDirectObject(PdfName.N) instanceof PdfIndirectReference) {
-                		//since newly added
-                		regenerate=false;
-                	}
-                	else {
-	                	int type = acroFields.getFieldType(name);
-	                    String value = acroFields.getField(name);
-	                                    		
-	                    //workaround for libre/open office which creates nearly empty streams: /TX BMC\nEMC
-	                    //Currently only for Textfields - for Radios/Checkboxes the appearance stream has to be determined (by looking at /AS or /V)
-	                    if(type==AcroFields.FIELD_TYPE_TEXT && appStream instanceof PRStream) {
-		                    if(value!=null && !value.isEmpty()) {
-		                    	try {
-		        					byte[] bytes= PdfReader.getStreamBytes((PRStream)appStream);
-		        					((PRStream)appStream).setData(bytes);
-		        					if(new String(bytes).equals("/Tx BMC\nEMC\n")) {
-		        						regenerate=true;
-		        					}
-		        				}
-		        				catch (IOException e) {
-		        					//ignore
-		        				}
-		                    }
-	                    }
-                	}
-                	
-                	if(regenerate) {
-                		try {
-	                        this.acroFields.regenerateField(name);
-	                        appDic = this.acroFields.getFieldItem(name).getMerged(k).getAsDict(PdfName.AP);
-	                    }
-	                    catch (Exception e) {
-	                    	//ignore any exception
-	                    }
-                	}
+                    if(type!=AcroFields.FIELD_TYPE_SIGNATURE) {
+                        if(appDic != null && appDic.getDirectObject(PdfName.N) instanceof PdfIndirectReference) {
+                            //since newly added
+                            regenerate=false;
+                        }
+                        else {
+                            regenerate=true;
+                        }
+                    }
+                    
+                    if(regenerate) {
+                        try {
+                            this.acroFields.regenerateField(name);
+                            appDic = this.acroFields.getFieldItem(name).getMerged(k).getAsDict(PdfName.AP);
+                        }
+                        catch (Exception e) {
+                            //ignore any exception
+                        }
+                    }
                 }
                 
                 boolean transformNeeded=false;
                 double rotation = 0;
+                //usually using the MK value will render the correct result because the annotation matrix usually is built according to the MK/R value.
+                //if there is a problem with the rotation a mechanism based on the matrix of the appearance as described in ISO 32000-2:2020 section 12.5.5. should be used
                 if(merged.getAsDict(PdfName.MK) != null && merged.getAsDict(PdfName.MK).get(PdfName.R) != null){
                     rotation = merged.getAsDict(PdfName.MK).getAsNumber(PdfName.R).floatValue();
                 }
@@ -1007,12 +990,14 @@ class PdfStamperImp extends PdfWriter {
                             double x = box.getLeft();
                             double y = box.getBottom();
                             
-                            if (rotation != 0 && rotation % 90 == 0 && rotation % 270 != 0) {
+                            rotation = rotation % 360; 
+                            if (rotation == 90 || rotation == 270) {
                                 x += box.getWidth();
                             }
-                            if (rotation != 0 && (rotation % 180 == 0 || rotation % 270 == 0)) {
+                            if (rotation == 180 || rotation == 270) {
                                 y += box.getHeight();
                             }
+                            
                             transform.translate(x, y);
                             
                             //before applying the rotation convert from degree to radiant
@@ -1026,7 +1011,7 @@ class PdfStamperImp extends PdfWriter {
                         else {
                             //when objReal is an PdfIndirectReference then it was just created (thus it doesn't need to be corrected
                             if(!(objReal instanceof PdfIndirectReference)) {
-                            	
+                                
                                 // Lonzak: npe bugfix
                                 PdfRectangle bBoxCoordinates = new PdfRectangle(((PdfDictionary)objReal).getAsArray(PdfName.BBOX));
                                 if(bBoxCoordinates!=null && bBoxCoordinates.size()>=4) {
@@ -1042,7 +1027,7 @@ class PdfStamperImp extends PdfWriter {
                         cb.addTemplate(app, box.getLeft(), box.getBottom());
                             }
                         }
-                       	
+                        
                         cb.setLiteral("q ");
                     }
                 }
@@ -1171,10 +1156,10 @@ class PdfStamperImp extends PdfWriter {
                 if ((annoto instanceof PdfIndirectReference) && !annoto.isIndirect())
                     continue;
 
-				//Lonzak Fix: java.lang.ClassCastException: com.lowagie.text.pdf.PdfNull cannot be cast to com.lowagie.text.pdf.PdfDictionary
-				if(!(annoto instanceof PdfDictionary)) {
-				    continue;
-				}
+                //Lonzak Fix: java.lang.ClassCastException: com.lowagie.text.pdf.PdfNull cannot be cast to com.lowagie.text.pdf.PdfDictionary
+                if(!(annoto instanceof PdfDictionary)) {
+                    continue;
+                }
 
                 PdfDictionary annDic = (PdfDictionary)annoto;
                  if (!annDic.get(PdfName.SUBTYPE).equals(PdfName.FREETEXT))
@@ -1202,8 +1187,8 @@ class PdfStamperImp extends PdfWriter {
                     }
                     else
                     {
-					    //Lonzak: NPE Fix since objReal or obj can be null
-						if (objReal!=null && objReal.isDictionary())
+                        //Lonzak: NPE Fix since objReal or obj can be null
+                        if (objReal!=null && objReal.isDictionary())
                         {
                             PdfName as_p = appDic.getAsName(PdfName.AS);
                             if (as_p != null)
@@ -1522,10 +1507,10 @@ class PdfStamperImp extends PdfWriter {
     }
 
     public void addAnnotation(PdfAnnotation annot, int page) {
-    	//Bugfix to prevent that for autofill parents the /P page reference is added [^Lonzak]
-    	if(annot.isAnnotation()){
-        	annot.setPage(page);
-    	}
+        //Bugfix to prevent that for autofill parents the /P page reference is added [^Lonzak]
+        if(annot.isAnnotation()){
+            annot.setPage(page);
+        }
         addAnnotation(annot, reader.getPageN(page));
     }
     
