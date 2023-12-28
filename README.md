@@ -103,7 +103,7 @@ only contain code that you have written yourself. GPL or AGPL licensed code will
 
 ### Required Dependencies: ###
 
-- Java 8 or later is required to use OpenPDF. All versions Java 8 to Java OpenJDK 15 have been
+- Java 9 or later is required to use OpenPDF. All versions Java 9 to Java OpenJDK 15 have been
   tested to work.
 
 ### UTF-8 Fonts: ###
