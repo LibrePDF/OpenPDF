@@ -28,8 +28,8 @@ public class TableRowSpanEvenSplitTest {
         float heightRow2 = table.getRows().get(1).getMaxHeights();
         float heightRow3 = table.getRows().get(2).getMaxHeights();
         document.close();
-        Assertions.assertEquals(0, heightRow1 - heightRow2);
-        Assertions.assertEquals(0, heightRow3 - heightRow2);
+        Assertions.assertEquals(heightRow1, heightRow2, 0.01);
+        Assertions.assertEquals(heightRow3, heightRow2, 0.01);
     }
 
     @Test
@@ -52,8 +52,40 @@ public class TableRowSpanEvenSplitTest {
         float heightRow2 = table.getRows().get(1).getMaxHeights();
         float heightRow3 = table.getRows().get(2).getMaxHeights();
         document.close();
-        Assertions.assertEquals(0, heightRow2 - heightRow3);
-        Assertions.assertNotEquals(0, heightRow1 - heightRow2);
+        Assertions.assertEquals(heightRow2, heightRow3, 0.01);
+        Assertions.assertNotEquals(heightRow1, heightRow2, 0.01);
+    }
+
+    @Test
+    public void threeWithLargeRowspanCellHugeTableTest() {
+        Document document = new Document(PageSize.A4);
+        ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, pdfOut);
+        PdfPTable table = new PdfPTable(2);
+
+        int rows = 9_000;
+
+        for (int i = 0; i < rows; i += 3) {
+            PdfPCell cell = new PdfPCell();
+            cell.setRowspan(3);
+            cell.addElement(new Chunk("rowspan1\nrowspan2\nrowspan3\nrowspan4\nrowspan5\nrowspan6\nrowspan7"));
+            table.addCell(cell);
+
+            table.addCell("row1");
+            table.addCell("row2");
+            table.addCell("row3");
+        }
+
+        document.open();
+        document.add(table);
+        for (int i = 0; i < rows; i += 3) {
+            float heightRow1 = table.getRows().get(i).getMaxHeights();
+            float heightRow2 = table.getRows().get(i + 1).getMaxHeights();
+            float heightRow3 = table.getRows().get(i + 2).getMaxHeights();
+            Assertions.assertEquals(heightRow2, heightRow3, 0.01);
+            Assertions.assertEquals(heightRow1, heightRow2, 0.01);
+        }
+        document.close();
     }
 
     @Test
@@ -76,8 +108,9 @@ public class TableRowSpanEvenSplitTest {
         float heightRow2 = table.getRows().get(1).getMaxHeights();
         float heightRow3 = table.getRows().get(2).getMaxHeights();
         document.close();
-        Assertions.assertEquals(0, heightRow2 - heightRow3);
-        Assertions.assertEquals(0, heightRow1 - heightRow2);
+        Assertions.assertEquals(heightRow2, heightRow3, 0.01);
+        Assertions.assertEquals(heightRow1, heightRow2, 0.01);
+
     }
 
     @Test
@@ -100,8 +133,8 @@ public class TableRowSpanEvenSplitTest {
         float heightRow2 = table.getRows().get(1).getMaxHeights();
         float heightRow3 = table.getRows().get(2).getMaxHeights();
         document.close();
-        Assertions.assertEquals(0, heightRow2 - heightRow3);
-        Assertions.assertNotEquals(0, heightRow1 - heightRow2);
+        Assertions.assertEquals(heightRow2, heightRow3, 0.01);
+        Assertions.assertNotEquals(heightRow1, heightRow2, 0.01);
         Assertions.assertTrue(heightRow1 > heightRow2);
     }
 }

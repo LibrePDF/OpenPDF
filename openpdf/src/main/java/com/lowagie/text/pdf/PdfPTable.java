@@ -418,6 +418,11 @@ public class PdfPTable implements LargeElement{
         for (int k = 0; k < rows.size(); ++k) {
             totalHeight += getRowHeight(k, firsttime);
         }
+        if(firsttime) {
+            // Redistribute row height for row span once
+            this.redistributeRowspanHeight();
+            calculateHeights(false);
+        }
         return totalHeight;
     }
     
@@ -850,9 +855,6 @@ public class PdfPTable implements LargeElement{
 
     private void redistributeRowspanHeight() {
         float delta = 0.001f;
-        for (PdfPRow pdfPRow : rows) {
-            pdfPRow.calculateHeights();
-        }
         for (int rowIdx = 0; rowIdx < rows.size(); rowIdx++) {
             PdfPRow row = rows.get(rowIdx);
             PdfPCell[] cells = row.getCells();
@@ -909,7 +911,7 @@ public class PdfPTable implements LargeElement{
             return 0;
         if (firsttime) {
             row.setWidths(absoluteWidths);
-            this.redistributeRowspanHeight();
+            row.calculateHeights();
         }
         return row.getMaxHeights();
     }
