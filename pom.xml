@@ -54,7 +54,7 @@
 
     <properties>
         <java-module-name>com.github.librepdf.openpdf.parent</java-module-name>
-        <java.version>1.8</java.version>
+        <java.version>9</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -261,7 +261,7 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <!-- Set java to 8 -->
+            <!-- Set java to 9 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
