@@ -2,8 +2,9 @@ module com.github.librepdf.pdfSwing {
     requires com.github.librepdf.openpdf;
     requires org.dom4j;
     requires pdf.renderer;
+	requires java.desktop;
 
-    exports com.lowagie.rups;
+	exports com.lowagie.rups;
     exports com.lowagie.rups.controller;
     exports com.lowagie.rups.io;
     exports com.lowagie.rups.io.filters;

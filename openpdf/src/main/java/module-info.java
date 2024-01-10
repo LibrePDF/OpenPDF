@@ -3,8 +3,10 @@ module com.github.librepdf.openpdf {
     requires static org.bouncycastle.provider;
     requires static fop;
     requires static java.desktop;
+	requires fop.core;
+	requires com.ibm.icu;
 
-    exports com.lowagie.bouncycastle;
+	exports com.lowagie.bouncycastle;
     exports com.lowagie.text;
     exports com.lowagie.text.alignment;
     exports com.lowagie.text.error_messages;

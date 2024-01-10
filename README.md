@@ -103,8 +103,9 @@ only contain code that you have written yourself. GPL or AGPL licensed code will
 
 ### Required Dependencies: ###
 
-- Java 9 or later is required to use OpenPDF. All versions Java 9 to Java OpenJDK 15 have been
-  tested to work.
+- Java 9 or later is required to use OpenPDF versions up to 1.3.36. We will consider the need for more Java 9+ compatible maintenance releases. 
+- Java 11 or later is required to use OpenPDF versions 1.3.37 and later. All versions Java 11 to Java OpenJDK 21 have been tested to work. We are working on modernizing the OpenPDF library for Java 11+.  
+  
 
 ### UTF-8 Fonts: ###
 
