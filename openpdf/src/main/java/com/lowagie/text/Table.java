@@ -437,6 +437,7 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
      * use {@link Table#setHorizontalAlignment(HorizontalAlignment)} instead
      *
      */
+    @Deprecated
     public void setAlignment(int value) {
         alignment = value;
     }
@@ -448,6 +449,7 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
      * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
      * use {@link Table#setHorizontalAlignment(HorizontalAlignment)} instead
      */
+    @Deprecated
     public void setAlignment(String alignment) {
         if (ElementTags.ALIGN_LEFT.equalsIgnoreCase(alignment)) {
             this.alignment = Element.ALIGN_LEFT;
@@ -1507,6 +1509,7 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
      * @deprecated As of iText 2.0.7, replaced by {@link #getDefaultCell()},
      * scheduled for removal at 2.2.0
      */
+    @Deprecated
     public Cell getDefaultLayout() {
         return getDefaultCell();
     }
@@ -1518,6 +1521,7 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
      * @deprecated As of iText 2.0.7, replaced by {@link #setDefaultCell(Cell)},
      * scheduled for removal at 2.2.0
      */
+    @Deprecated
     public void setDefaultLayout(Cell value) {
         defaultCell = value;
     }

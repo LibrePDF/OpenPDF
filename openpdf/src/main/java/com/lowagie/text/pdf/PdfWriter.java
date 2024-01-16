@@ -1950,26 +1950,36 @@ public class PdfWriter extends DocWriter implements
     public static final int ALLOW_DEGRADED_PRINTING = 4;
 
     /** @deprecated As of iText 2.0.7, use {@link #ALLOW_PRINTING} instead. Scheduled for removal at or after 2.2.0 */
+    @Deprecated
     public static final int AllowPrinting = ALLOW_PRINTING;
     /** @deprecated As of iText 2.0.7, use {@link #ALLOW_MODIFY_CONTENTS} instead. Scheduled for removal at or after 2.2.0 */
+    @Deprecated
     public static final int AllowModifyContents = ALLOW_MODIFY_CONTENTS;
     /** @deprecated As of iText 2.0.7, use {@link #ALLOW_COPY} instead. Scheduled for removal at or after 2.2.0 */
+    @Deprecated
     public static final int AllowCopy = ALLOW_COPY;
     /** @deprecated As of iText 2.0.7, use {@link #ALLOW_MODIFY_ANNOTATIONS} instead. Scheduled for removal at or after 2.2.0 */
+    @Deprecated
     public static final int AllowModifyAnnotations = ALLOW_MODIFY_ANNOTATIONS;
     /** @deprecated As of iText 2.0.7, use {@link #ALLOW_FILL_IN} instead. Scheduled for removal at or after 2.2.0 */
+    @Deprecated
     public static final int AllowFillIn = ALLOW_FILL_IN;
     /** @deprecated As of iText 2.0.7, use {@link #ALLOW_SCREENREADERS} instead. Scheduled for removal at or after 2.2.0 */
+    @Deprecated
     public static final int AllowScreenReaders = ALLOW_SCREENREADERS;
     /** @deprecated As of iText 2.0.7, use {@link #ALLOW_ASSEMBLY} instead. Scheduled for removal at or after 2.2.0 */
+    @Deprecated
     public static final int AllowAssembly = ALLOW_ASSEMBLY;
     /** @deprecated As of iText 2.0.7, use {@link #ALLOW_DEGRADED_PRINTING} instead. Scheduled for removal at or after 2.2.0 */
+    @Deprecated
     public static final int AllowDegradedPrinting = ALLOW_DEGRADED_PRINTING;
 
     // Strength of the encryption (kept for historical reasons)
     /** @deprecated As of iText 2.0.7, use {@link #STANDARD_ENCRYPTION_40} instead. Scheduled for removal at or after 2.2.0 */
+    @Deprecated
     public static final boolean STRENGTH40BITS = false;
     /** @deprecated As of iText 2.0.7, use {@link #STANDARD_ENCRYPTION_128} instead. Scheduled for removal at or after 2.2.0 */
+    @Deprecated
     public static final boolean STRENGTH128BITS = true;
 
     /** Contains the business logic for cryptography. */
@@ -2015,6 +2025,7 @@ public class PdfWriter extends DocWriter implements
      * @throws DocumentException if the document is already open
      * @deprecated As of iText 2.0.3, replaced by (@link #setEncryption(byte[], byte[], int, int)}. Scheduled for removal at or after 2.2.0
      */
+    @Deprecated
     public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits) throws DocumentException {
         setEncryption(userPassword, ownerPassword, permissions, strength128Bits ? STANDARD_ENCRYPTION_128 : STANDARD_ENCRYPTION_40);
     }
@@ -2033,6 +2044,7 @@ public class PdfWriter extends DocWriter implements
      * @throws DocumentException if the document is already open
      * @deprecated As of iText 2.0.3, replaced by (@link #setEncryption(byte[], byte[], int, int)}. Scheduled for removal at or after 2.2.0
      */
+    @Deprecated
     public void setEncryption(boolean strength, String userPassword, String ownerPassword, int permissions) throws DocumentException {
         setEncryption(getISOBytes(userPassword), getISOBytes(ownerPassword), permissions, strength ? STANDARD_ENCRYPTION_128 : STANDARD_ENCRYPTION_40);
     }
@@ -2052,6 +2064,7 @@ public class PdfWriter extends DocWriter implements
      * @throws DocumentException if the document is already open
      * @deprecated As of iText 2.0.3, replaced by (@link #setEncryption(byte[], byte[], int, int)}. Scheduled for removal at or after 2.2.0
      */
+    @Deprecated
     public void setEncryption(int encryptionType, String userPassword, String ownerPassword, int permissions) throws DocumentException {
         setEncryption(getISOBytes(userPassword), getISOBytes(ownerPassword), permissions, encryptionType);
     }
