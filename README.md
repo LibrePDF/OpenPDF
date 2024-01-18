@@ -54,6 +54,39 @@ MPL license only.
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 - [Migration from iText, TIFF support](https://github.com/LibrePDF/OpenPDF/wiki/Migrating-from-iText-2-and-4)
 
+## Hello world example ##
+
+```java
+public class HelloWorld {
+    /**
+     * Generates a PDF file with the text 'Hello World'
+     */
+    public static void main(String[] args) {
+
+        // step 1: creation of a document-object
+        Document document = new Document();
+        try {
+            // step 2:
+            // we create a writer that listens to the document
+            // and directs a PDF-stream to a file
+            PdfWriter.getInstance(document, new FileOutputStream("HelloWorld.pdf"));
+
+            // step 3: we open the document
+            document.open();
+            // step 4: we add a paragraph to the document
+            document.add(new Paragraph("Hello World"));
+        } catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
+
+        // step 5: we close the document
+        document.close();
+    }
+}
+```
+
 ## Background ##
 
 OpenPDF is open source software with a LGPL and MPL license. It is a fork of iText version 4, more
