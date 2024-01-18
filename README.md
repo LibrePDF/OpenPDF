@@ -25,7 +25,7 @@ Some of the features of OpenPDF include:
 
 * Manipulating Existing PDFs: OpenPDF allows you to modify existing PDF documents by adding or removing pages, modifying text, and more.
 
-* Text and Font Support: You can add text to PDF documents using various fonts and styles.
+* Text and Font Support: You can add text to PDF documents using various fonts and styles, and extract text from PDF files.
 
 * Graphics and Images: OpenPDF supports the addition of images and graphics to PDF files.
 
