@@ -18,6 +18,24 @@ Get version 1.3.38 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.3
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
+## Features ##
+Some of the features of OpenPDF include:
+
+* Creating PDFs: You can use OpenPDF to create new PDF documents from scratch.
+
+* Manipulating Existing PDFs: OpenPDF allows you to modify existing PDF documents by adding or removing pages, modifying text, and more.
+
+* Text and Font Support: You can add text to PDF documents using various fonts and styles.
+
+* Graphics and Images: OpenPDF supports the addition of images and graphics to PDF files.
+
+* Table Support: The library facilitates the creation of tables in PDF documents.
+
+* Encryption: You can encrypt PDF documents for security purposes.
+
+* Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
+    
+
 ## Use OpenPDF as Maven dependency
 
 Add this to your pom.xml file to use the latest version of OpenPDF:
