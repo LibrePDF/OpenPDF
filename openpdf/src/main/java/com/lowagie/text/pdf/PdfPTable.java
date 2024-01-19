@@ -864,9 +864,7 @@ public class PdfPTable implements LargeElement{
         for (int rowIdx = 0; rowIdx < rows.size(); rowIdx++) {
             PdfPRow row = rows.get(rowIdx);
 
-            if (row == null) {
-                continue;
-            }
+            if (row == null) continue;
 
             PdfPCell[] cells = row.getCells();
             for (PdfPCell cell : cells) {
@@ -875,9 +873,7 @@ public class PdfPTable implements LargeElement{
                     for (int r = rowIdx; r < rows.size() && r < rowIdx + cell.getRowspan(); r++) {
                         PdfPRow currentRow = rows.get(r);
 
-                        if (currentRow == null) {
-                            continue;
-                        }
+                        if (currentRow == null) continue;
 
                         existingHeights += currentRow.getMaxHeights();
                     }
@@ -885,6 +881,7 @@ public class PdfPTable implements LargeElement{
                     if (heightToDistribute > delta) {
                         ArrayList<Integer> rowsByHeight = new ArrayList<>(cell.getRowspan());
                         for (int r = rowIdx; r < rows.size() && r < rowIdx + cell.getRowspan(); r++) {
+                            if(rows.get(r) == null) continue;
                             rowsByHeight.add(r);
                         }
                         rowsByHeight.sort(Comparator.comparing(r -> rows.get(r).getMaxHeights()));
@@ -902,13 +899,8 @@ public class PdfPTable implements LargeElement{
                             }
                             for (int j = 0; j <= i; j++) {
                                 int r = rowsByHeight.get(j);
-                                PdfPRow currentRowL = rows.get(r);
-
-                                if (currentRowL == null) {
-                                    continue;
-                                }
-
-                                currentRowL.setMaxHeights(currentRowL.getMaxHeights() + additionalHeightPerRow);
+                                PdfPRow smallerRow = rows.get(r);
+                                smallerRow.setMaxHeights(smallerRow.getMaxHeights() + additionalHeightPerRow);
                                 heightToDistribute -= additionalHeightPerRow;
                             }
                         }
@@ -1206,7 +1198,7 @@ public class PdfPTable implements LargeElement{
                 PdfPRow row = getRow(rowIndex);
                 if (row != null) {
                     PdfPCell replaceCell = row.getCells()[colIndex];
-                    if (replaceCell != null) {
+                    if (replaceCell != null && firstRow != null) {
                         firstRow.getCells()[colIndex] = new PdfPCell(replaceCell);
                         float extra = 0;
                         int stop = Math.min(rowIndex + replaceCell.getRowspan(), end);
@@ -1220,11 +1212,13 @@ public class PdfPTable implements LargeElement{
                     }
                 }
             }
-            cell = firstRow.getCells()[colIndex];
-            if (cell == null)
-                colIndex++;
-            else
-                colIndex += cell.getColspan();
+            if(firstRow != null) {
+                cell = firstRow.getCells()[colIndex];
+                if (cell == null)
+                    colIndex++;
+                else
+                    colIndex += cell.getColspan();
+            }
         }
         list.add(firstRow);
         for (int i = start + 1; i < end; i++) {
@@ -1241,7 +1235,9 @@ public class PdfPTable implements LargeElement{
      * @return a PdfRow
      */
     protected PdfPRow adjustCellsInRow(int start, int end) {
-        PdfPRow row = new PdfPRow(getRow(start));
+        PdfPRow sourceRow = getRow(start);
+        if(sourceRow == null) return null
+        PdfPRow row = new PdfPRow(sourceRow);
         row.initExtraHeights();
         PdfPCell cell;
         PdfPCell[] cells = row.getCells();

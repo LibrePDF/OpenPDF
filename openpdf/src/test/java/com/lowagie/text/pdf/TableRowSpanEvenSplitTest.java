@@ -58,6 +58,26 @@ public class TableRowSpanEvenSplitTest {
     }
 
     @Test
+    public void tableWithNullRow() {
+        Document document = new Document(PageSize.A4);
+        ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, pdfOut);
+        PdfPTable table = new PdfPTable(2);
+        PdfPCell cell = new PdfPCell();
+        cell.setRowspan(3);
+        cell.addElement(new Chunk("rowspan\nrowspan\nrowspan"));
+        table.addCell(cell);
+
+        table.addCell("row1\nrow1");
+        table.addCell("row2");
+        table.addCell("row3");
+        table.rows.add(null);
+        document.open();
+        document.add(table);
+        document.close();
+    }
+
+    @Test
     public void threeWithLargeRowspanCellHugeTableTest() {
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
