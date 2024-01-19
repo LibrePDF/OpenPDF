@@ -12,9 +12,9 @@ and bugreports to this GitHub repository.
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 
-## OpenPDF version 1.3.38 released 2024-01-17 ##
+## OpenPDF version 1.3.39 released 2024-01-17 ##
 
-Get version 1.3.38 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.38
+Get version 1.3.39 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.39
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
@@ -45,7 +45,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>1.3.38</version>
+  <version>1.3.39</version>
 </dependency>
 ```
 
@@ -71,39 +71,6 @@ MPL license only.
 - [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-3-17/)
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 - [Migration from iText, TIFF support](https://github.com/LibrePDF/OpenPDF/wiki/Migrating-from-iText-2-and-4)
-
-## Hello world example ##
-
-```java
-public class HelloWorld {
-    /**
-     * Generates a PDF file with the text 'Hello World'
-     */
-    public static void main(String[] args) {
-
-        // step 1: creation of a document-object
-        Document document = new Document();
-        try {
-            // step 2:
-            // we create a writer that listens to the document
-            // and directs a PDF-stream to a file
-            PdfWriter.getInstance(document, new FileOutputStream("HelloWorld.pdf"));
-
-            // step 3: we open the document
-            document.open();
-            // step 4: we add a paragraph to the document
-            document.add(new Paragraph("Hello World"));
-        } catch (DocumentException de) {
-            System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-
-        // step 5: we close the document
-        document.close();
-    }
-}
-```
 
 ## Background ##
 
