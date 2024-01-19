@@ -420,7 +420,11 @@ public class PdfPTable implements LargeElement{
         }
         if(firsttime) {
             // Redistribute row height for row span once
-            this.redistributeRowspanHeight();
+            try {
+                this.redistributeRowspanHeight();
+            } catch (Exception err) {
+                // Exception redistributing rowspan height.
+            }
             calculateHeights(false);
         }
         return totalHeight;
@@ -855,14 +859,27 @@ public class PdfPTable implements LargeElement{
 
     private void redistributeRowspanHeight() {
         float delta = 0.001f;
+        if (rows == null) return;
+
         for (int rowIdx = 0; rowIdx < rows.size(); rowIdx++) {
             PdfPRow row = rows.get(rowIdx);
+
+            if (row == null) {
+                continue;
+            }
+
             PdfPCell[] cells = row.getCells();
             for (PdfPCell cell : cells) {
                 if (cell != null && cell.getRowspan() > 1) {
                     float existingHeights = 0;
                     for (int r = rowIdx; r < rows.size() && r < rowIdx + cell.getRowspan(); r++) {
-                        existingHeights += rows.get(r).getMaxHeights();
+                        PdfPRow currentRow = rows.get(r);
+
+                        if (currentRow == null) {
+                            continue;
+                        }
+
+                        existingHeights += currentRow.getMaxHeights();
                     }
                     float heightToDistribute = cell.getMaxHeight() - existingHeights;
                     if (heightToDistribute > delta) {
@@ -885,7 +902,13 @@ public class PdfPTable implements LargeElement{
                             }
                             for (int j = 0; j <= i; j++) {
                                 int r = rowsByHeight.get(j);
-                                rows.get(r).setMaxHeights(rows.get(r).getMaxHeights() + additionalHeightPerRow);
+                                PdfPRow currentRowL = rows.get(r);
+
+                                if (currentRowL == null) {
+                                    continue;
+                                }
+
+                                currentRowL.setMaxHeights(currentRowL.getMaxHeights() + additionalHeightPerRow);
                                 heightToDistribute -= additionalHeightPerRow;
                             }
                         }
