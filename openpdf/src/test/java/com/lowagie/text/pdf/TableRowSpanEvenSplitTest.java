@@ -57,24 +57,26 @@ public class TableRowSpanEvenSplitTest {
         Assertions.assertNotEquals(heightRow1, heightRow2, 0.01);
     }
 
-    //@Test
+    @Test
     public void tableWithNullRow() {
-        Document document = new Document(PageSize.A4);
-        ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
-        PdfWriter.getInstance(document, pdfOut);
-        PdfPTable table = new PdfPTable(2);
-        PdfPCell cell = new PdfPCell();
-        cell.setRowspan(3);
-        cell.addElement(new Chunk("rowspan\nrowspan\nrowspan"));
-        table.addCell(cell);
+        Assertions.assertDoesNotThrow(() -> {
+            Document document = new Document(PageSize.A4);
+            ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, pdfOut);
+            PdfPTable table = new PdfPTable(2);
+            PdfPCell cell = new PdfPCell();
+            cell.setRowspan(3);
+            cell.addElement(new Chunk("rowspan\nrowspan\nrowspan"));
+            table.addCell(cell);
 
-        table.addCell("row1\nrow1");
-        table.addCell("row2");
-        table.addCell("row3");
-        table.rows.add(null);
-        document.open();
-        document.add(table);
-        document.close();
+            table.addCell("row1\nrow1");
+            table.addCell("row2");
+            table.addCell("row3");
+            table.rows.add(null);
+            document.open();
+            document.add(table);
+            document.close();
+        });
     }
 
     @Test
