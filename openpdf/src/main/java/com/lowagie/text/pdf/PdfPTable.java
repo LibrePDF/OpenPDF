@@ -1236,7 +1236,7 @@ public class PdfPTable implements LargeElement{
      */
     protected PdfPRow adjustCellsInRow(int start, int end) {
         PdfPRow sourceRow = getRow(start);
-        if(sourceRow == null) return null
+        if(sourceRow == null) return null;
         PdfPRow row = new PdfPRow(sourceRow);
         row.initExtraHeights();
         PdfPCell cell;
