@@ -30,12 +30,18 @@ jobs:
       - name: Build with Maven
         run: mvn -B verify --file pom.xml -Dgpg.skip
 
-#      - name: Run codacy-coverage-reporter
-#        uses: codacy/codacy-coverage-reporter-action@v1
-#        with:
-#          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-#          # or
-#          # api-token: ${{ secrets.CODACY_API_TOKEN }}
-#          coverage-reports: ./openpdf/target/site/jacoco/jacoco.xml,./pdf-toolbox/target/site/jacoco/jacoco.xml,./openpdf-fonts-extra/target/site/jacoco/jacoco.xml
-#          # or a comma-separated list for multiple reports
-#          # coverage-reports: <PATH_TO_REPORT>, <PATH_TO_REPORT>
+  codacy-coverage-reporter:
+    needs: build
+    runs-on: ubuntu-latest
+    name: codacy-coverage-reporter
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          # or
+          # api-token: ${{ secrets.CODACY_API_TOKEN }}
+          coverage-reports: ./openpdf/target/site/jacoco/jacoco.xml,./pdf-toolbox/target/site/jacoco/jacoco.xml,./openpdf-fonts-extra/target/site/jacoco/jacoco.xml
+          # or a comma-separated list for multiple reports
+          # coverage-reports: <PATH_TO_REPORT>, <PATH_TO_REPORT>
