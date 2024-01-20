@@ -9,7 +9,7 @@ import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 
 class PdfDocumentCJKExtensionTest {
-	//@Test
+	@Test
 	void generateDocumentsWithCJKExtension() throws IOException {
 		String fontName = "TakaoMjMincho";
 
