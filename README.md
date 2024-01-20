@@ -9,6 +9,8 @@ and bugreports to this GitHub repository.
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf)
 [![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-2.1)
 [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/791d40a437f64c77a0a802ae597a960c)](https://app.codacy.com/gh/LibrePDF/OpenPDF/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 
@@ -34,7 +36,7 @@ Some of the features of OpenPDF include:
 * Encryption: You can encrypt PDF documents for security purposes.
 
 * Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
-    
+
 
 ## Use OpenPDF as Maven dependency
 
@@ -121,8 +123,8 @@ only contain code that you have written yourself. GPL or AGPL licensed code will
 
 ### Required Dependencies: ###
 
-- Java 11 or later is required to use OpenPDF versions 1.3.37 and later. All versions Java 11 to Java OpenJDK 21 have been tested to work. We are working on modernizing the OpenPDF library for Java 11+.  
-  
+- Java 11 or later is required to use OpenPDF versions 1.3.37 and later. All versions Java 11 to Java OpenJDK 21 have been tested to work. We are working on modernizing the OpenPDF library for Java 11+.
+
 
 ### UTF-8 Fonts: ###
 

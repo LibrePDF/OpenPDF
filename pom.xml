@@ -87,6 +87,7 @@
         <!-- test-dependencies -->
         <assertj.version>3.25.1</assertj.version>
         <hamcrest.version>2.2</hamcrest.version>
+        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
         <junit.version>5.10.1</junit.version>
         <mockito4.version>4.11.0</mockito4.version>
         <mockito5.version>5.9.0</mockito5.version>
@@ -377,6 +378,25 @@
                     <historyInputFile>${project.build.directory}/pitest</historyInputFile>
                     <historyOutputFile>${project.build.directory}/pitest</historyOutputFile>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
