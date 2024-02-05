@@ -85,7 +85,7 @@
         <pdf-renderer.version>1.0.5</pdf-renderer.version>
 
         <!-- test-dependencies -->
-        <assertj.version>3.25.2</assertj.version>
+        <assertj.version>3.25.3</assertj.version>
         <hamcrest.version>2.2</hamcrest.version>
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
         <junit.version>5.10.1</junit.version>
