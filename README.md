@@ -16,9 +16,9 @@ and bugreports to this GitHub repository.
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 
-## OpenPDF version 1.3.39 released 2024-01-17 ##
+## OpenPDF version 1.3.40 released 2024-02-12 ##
 
-Get version 1.3.39 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.39
+Get version 1.3.40 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.40
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
@@ -49,7 +49,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>1.3.39</version>
+  <version>1.3.40</version>
 </dependency>
 ```
 
