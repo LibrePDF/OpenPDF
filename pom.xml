@@ -345,10 +345,6 @@
                 <configuration>
                     <!-- unpack bundle, so humans can see the manifest without unpacking the jar -->
                     <unpackBundle>true</unpackBundle>
-                    <!-- All com.lowagie.* packages are 'public' -->
-                    <instructions>
-                        <Export-Package>com.lowagie.*;version="${project.version}"</Export-Package>
-                    </instructions>
                 </configuration>
             </plugin>
             <plugin>
