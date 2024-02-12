@@ -75,6 +75,8 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
     boolean vertical = false;
     
     Map<Integer, Integer> inverseCmap;
+
+    boolean includeCidSet = true;
     
     /**
      * Creates a new TrueType font addressed by Unicode characters. The font
@@ -396,7 +398,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         PdfObject pobj = null;
         PdfIndirectObject obj = null;
         PdfIndirectReference cidset = null;
-        if (subset || writer.getPDFXConformance() == PdfWriter.PDFA1A || writer.getPDFXConformance() == PdfWriter.PDFA1B) {
+        if (includeCidSet || writer.getPDFXConformance() == PdfWriter.PDFA1A || writer.getPDFXConformance() == PdfWriter.PDFA1B) {
             PdfStream stream;
             if (metrics.length == 0) {
                 stream = new PdfStream(new byte[]{(byte)0x80});
@@ -540,5 +542,13 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         if (m == null)
             return null;
         return bboxes[m[0]];
+    }
+
+    public boolean isIncludeCidSet() {
+        return includeCidSet;
+    }
+
+    public void setIncludeCidSet(boolean includeCidSet) {
+        this.includeCidSet = includeCidSet;
     }
 }

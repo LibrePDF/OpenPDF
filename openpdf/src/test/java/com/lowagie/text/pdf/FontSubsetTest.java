@@ -53,24 +53,24 @@ public class FontSubsetTest {
     }
 
     /*
-     * This test is to ensure creation of CIDSet dictionary when using a font subset (required for PDF/A compliance)
+     * This test is to ensure creation of CIDSet dictionary according to the includeCidSet flag
      */
     @Test
-    public void subsetTest() throws Exception {
-        checkSubsetPresence(true);
-        checkSubsetPresence(false);
+    public void includeCidSetTest() throws Exception {
+        checkCidSetPresence(true);
+        checkCidSetPresence(false);
     }
 
-    private void checkSubsetPresence(boolean subsetIncluded) throws Exception {
+    private void checkCidSetPresence(boolean includeCidSet) throws Exception {
         byte[] documentBytes;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             Document document = new Document();
             PdfWriter.getInstance(document, baos);
             document.open();
 
-            BaseFont font = BaseFont.createFont("LiberationSerif-Regular.ttf", BaseFont.IDENTITY_H,
+            TrueTypeFontUnicode font = (TrueTypeFontUnicode) BaseFont.createFont("LiberationSerif-Regular.ttf", BaseFont.IDENTITY_H,
                     BaseFont.EMBEDDED,true, getFontByte("fonts/liberation-serif/LiberationSerif-Regular.ttf"), null);
-            font.setSubset(subsetIncluded);
+            font.setIncludeCidSet(includeCidSet);
             String text = "This is the test string.";
             document.add(new Paragraph(text, new Font(font, 12)));
             document.close();
@@ -91,7 +91,7 @@ public class FontSubsetTest {
                 PdfDictionary fd = dic.getAsDict(PdfName.FONTDESCRIPTOR);
                 if (PdfName.FONT.equals(type) && fd != null) {
                     PdfIndirectReference cidset = fd.getAsIndirectObject(PdfName.CIDSET);
-                    assertEquals(subsetIncluded, cidset != null);
+                    assertEquals(includeCidSet, cidset != null);
                     fontFound = true;
                     break;
                 }
