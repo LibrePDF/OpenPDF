@@ -342,6 +342,11 @@ public abstract class BaseFont {
      * Used to build a randomized prefix for a subset name
      */
     protected SecureRandom secureRandom;
+    
+    /**
+     * Indicates if a CIDSet stream should be included in the document.
+     */
+    protected boolean includeCidSet = true;
 
     static {
         BuiltinFonts14.put(COURIER, PdfName.COURIER);
@@ -1986,5 +1991,26 @@ public abstract class BaseFont {
         } else {
             this.compressionLevel = compressionLevel;
         }
+    }
+    
+    /**
+     * Indicates if a CIDSet stream should be included in the document for {@link TrueTypeFontUnicode}.
+     *
+     * @return <CODE>true</CODE> to include a CIDSet stream.
+     */
+    public boolean isIncludeCidSet() {
+        return includeCidSet;
+    }
+    
+    /**
+     * Indicates if a CIDSet stream should be included in the document for {@link TrueTypeFontUnicode}.
+     * When set to <CODE>true</CODE>, a CIDSet stream will be included in the document.
+     * When set to <CODE>false</CODE>, and {@link PdfWriter#getPDFXConformance()} does not require it,
+     * no CIDSet stream will be included.
+     *
+     * @param includeCidSet new value of {@link BaseFont#includeCidSet}
+     */
+    public void setIncludeCidSet(boolean includeCidSet) {
+        this.includeCidSet = includeCidSet;
     }
 }

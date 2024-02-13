@@ -76,8 +76,6 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
     
     Map<Integer, Integer> inverseCmap;
 
-    boolean includeCidSet = true;
-    
     /**
      * Creates a new TrueType font addressed by Unicode characters. The font
      * will always be embedded.
@@ -544,11 +542,4 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         return bboxes[m[0]];
     }
 
-    public boolean isIncludeCidSet() {
-        return includeCidSet;
-    }
-
-    public void setIncludeCidSet(boolean includeCidSet) {
-        this.includeCidSet = includeCidSet;
-    }
 }

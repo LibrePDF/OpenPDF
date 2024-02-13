@@ -68,7 +68,7 @@ public class FontSubsetTest {
             PdfWriter.getInstance(document, baos);
             document.open();
 
-            TrueTypeFontUnicode font = (TrueTypeFontUnicode) BaseFont.createFont("LiberationSerif-Regular.ttf", BaseFont.IDENTITY_H,
+            BaseFont font = BaseFont.createFont("LiberationSerif-Regular.ttf", BaseFont.IDENTITY_H,
                     BaseFont.EMBEDDED,true, getFontByte("fonts/liberation-serif/LiberationSerif-Regular.ttf"), null);
             font.setIncludeCidSet(includeCidSet);
             String text = "This is the test string.";
