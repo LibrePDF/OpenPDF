@@ -126,21 +126,6 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         return parseToList(reader, style, interfaceProps);
     }
 
-    /**
-     * @deprecated use {@link HTMLWorker#parseToList(Reader, StyleSheet, Map)} since 1.2.22
-     * @param reader  the Reader
-     * @param style the StyleSheet
-     * @param interfaceProps the interface properties
-     * @return an ArrayList
-     * @throws IOException on error
-     */
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public static ArrayList<Element> parseToList(Reader reader, StyleSheet style, HashMap interfaceProps)
-            throws IOException {
-        return parseToList(reader, style, (Map<String, Object>) interfaceProps);
-    }
-
     public static ArrayList<Element> parseToList(Reader reader, StyleSheet style, Map<String, Object> interfaceProps)
             throws IOException {
         HTMLWorker worker = new HTMLWorker(null);
@@ -164,17 +149,6 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
     public Map<String, Object> getInterfaceProps() {
         return interfaceProps;
-    }
-
-    /**
-     *
-     * @deprecated use {@link HTMLWorker#setInterfaceProps(Map)} since 1.2.22
-     * @param interfaceProps the properties of the interface
-     */
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    public void setInterfaceProps(HashMap interfaceProps) {
-        setInterfaceProps((Map<String, Object>) interfaceProps);
     }
 
     public void setInterfaceProps(Map<String, Object> interfaceProps) {
@@ -206,15 +180,6 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         Map<String, String> h = new HashMap<>();
         style.applyStyle("body", h);
         cprops.addToChain("body", h);
-    }
-
-    /**
-     * @deprecated use {@link HTMLWorker#startElement(String, Map)}  } since 1.2.22
-     */
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public void startElement(String tag, HashMap h) {
-        startElement(tag, (Map<String, String>) h);
     }
 
     public void startElement(String tag, Map<String, String> style) {

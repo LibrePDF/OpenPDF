@@ -69,11 +69,8 @@ public class EntitiesToSymbol {
     /**
      * This is a map that contains all possible id values of the entity tag
      * that can be translated to a character in font Symbol.
-     *
-     * @deprecated use the getter ({@link EntitiesToSymbol#getMap()}) instead of accessing this field directly
      */
-    @Deprecated
-    public static final HashMap<String, Character> map;
+    static final HashMap<String, Character> map;
 
     static {
         map = new HashMap<>(300);

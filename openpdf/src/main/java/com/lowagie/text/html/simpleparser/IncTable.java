@@ -64,15 +64,6 @@ public class IncTable {
     private Map<String, String> props = new HashMap<>();
     private List<List<PdfPCell>> rows = new ArrayList<>();
     private List<PdfPCell> cols;
-    /** Creates a new instance of IncTable
-     * @param props a HashMap of the properties
-     */
-
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public IncTable(HashMap props) {
-        this.props.putAll(props);
-    }
 
     public IncTable(Map<String, String> props) {
         this.props.putAll(props);
@@ -82,15 +73,6 @@ public class IncTable {
         if (cols == null)
             cols = new ArrayList<>();
         cols.add(cell);
-    }
-
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public void addCols(ArrayList ncols) {
-        if (cols == null)
-            cols = (List<PdfPCell>)ncols;
-        else
-            cols.addAll(ncols);
     }
     
     public void addCols(List<PdfPCell> ncols) {
@@ -106,15 +88,6 @@ public class IncTable {
             rows.add(cols);
             cols = null;
         }
-    }
-
-    /**
-     * @deprecated use {@link #getTableRows()}
-     * @return an ArrayList of the Rows
-     */
-    @Deprecated
-    public ArrayList getRows() {
-        return (ArrayList) rows;
     }
     
     public List<List<PdfPCell>> getTableRows() {

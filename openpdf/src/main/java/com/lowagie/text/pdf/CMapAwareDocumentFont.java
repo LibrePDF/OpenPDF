@@ -305,23 +305,4 @@ public class CMapAwareDocumentFont extends DocumentFont {
         }
         return result;
     }
-
-    /**
-     * Encodes bytes to a String.
-     * 
-     * @param bytes
-     *            the bytes from a stream
-     * @param offset
-     *            an offset
-     * @param len
-     *            a length
-     * @return a String encoded taking into account if the bytes are in unicode
-     *         or not.
-     * @deprecated method name is not indicative of what it does. Use
-     *             <code>decode</code> instead.
-     */
-    @Deprecated
-    public String encode(byte[] bytes, int offset, int len) {
-        return decode(bytes, offset, len);
-    }
 }

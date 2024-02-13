@@ -418,35 +418,12 @@ public class Chunk implements Element {
      * Gets the attributes for this <CODE>Chunk</CODE>.
      * <P>
      * It may be null.
-     * @deprecated use {@link #getChunkAttributes()}
-     * @return the attributes for this <CODE>Chunk</CODE>
-     */
-    @Deprecated
-    public HashMap getAttributes() {
-        return (HashMap) attributes;
-    }
-
-    /**
-     * Gets the attributes for this <CODE>Chunk</CODE>.
-     * <P>
-     * It may be null.
      * 
      * @return the attributes for this <CODE>Chunk</CODE>
      */
 
     public Map<String, Object> getChunkAttributes() {
         return attributes;
-    }
-
-    /**
-     * Sets the attributes all at once.
-     * @param    attributes    the attributes of a Chunk
-     * @deprecated use {@link #setChunkAttributes(Map)}
-     */
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public void setAttributes(HashMap attributes) {
-        this.attributes = attributes;
     }
 
     /**

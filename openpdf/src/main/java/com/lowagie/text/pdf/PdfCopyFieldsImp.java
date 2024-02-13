@@ -168,7 +168,7 @@ class PdfCopyFieldsImp extends PdfWriter {
         if (acro == null)
             return;
         PdfArray co = acro.getAsArray(PdfName.CO);
-        if (co == null || co.size() == 0)
+        if (co == null || co.isEmpty())
             return;
         AcroFields af = reader.getAcroFields();
         for (int k = 0; k < co.size(); ++k) {
@@ -261,15 +261,6 @@ class PdfCopyFieldsImp extends PdfWriter {
                 annots.add(0, ind);
             }
         }
-    }
-
-    /**
-     * @deprecated use {@link PdfCopyFieldsImp#branchForm(Map, PdfIndirectReference, String)}
-     */
-    @Deprecated
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    protected PdfArray branchForm(HashMap level, PdfIndirectReference parent, String fname) throws IOException {
-        return branchForm((Map<String, Object>) level, parent, fname);
     }
 
     protected PdfArray branchForm(Map<String, Object> level, PdfIndirectReference parent, String fname) throws IOException {

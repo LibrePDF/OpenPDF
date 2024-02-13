@@ -63,8 +63,7 @@ public class ChainedProperties {
     /**
      * Will be replaced with types alternative
      */
-    @Deprecated
-    public ArrayList chain = new ArrayList<>();
+    public ArrayList<Object[]> chain = new ArrayList<>();
 
     /**
      * Creates a new instance of ChainedProperties
@@ -85,7 +84,7 @@ public class ChainedProperties {
      */
     public Optional<String> findProperty(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
-            Object[] obj = (Object[]) chain.get(k);
+            Object[] obj = chain.get(k);
             HashMap prop = (HashMap) obj[1];
             String ret = (String) prop.get(key);
             if (ret != null) {
@@ -114,17 +113,6 @@ public class ChainedProperties {
                 return true;
         }
         return false;
-    }
-
-    /**
-     * @deprecated use {@link ChainedProperties#addToChain(String, HashMap)}
-     * @param key the key
-     * @param prop the properties
-     */
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public void addToChain(String key, HashMap prop) {
-        addToChain(key, (Map<String, String>) prop);
     }
 
     public void addToChain(String key, Map<String, String> prop) {

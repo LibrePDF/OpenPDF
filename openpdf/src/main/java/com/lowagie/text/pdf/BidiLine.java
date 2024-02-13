@@ -206,16 +206,6 @@ public class BidiLine {
         chunks.add(chunk);
     }
 
-    /**
-     * @param chunks an {@link ArrayList} of {@link PdfChunk}
-     * @deprecated  use {@link BidiLine#addChunks(List)}, since 1.2.22
-     */
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public void addChunks(ArrayList chunks) {
-        addChunks((List<PdfChunk>)chunks);
-    }
-
     public void addChunks(List<PdfChunk> chunks) {
         this.chunks.addAll(chunks);
     }
