@@ -75,7 +75,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
     boolean vertical = false;
     
     Map<Integer, Integer> inverseCmap;
-    
+
     /**
      * Creates a new TrueType font addressed by Unicode characters. The font
      * will always be embedded.
@@ -396,7 +396,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         PdfObject pobj = null;
         PdfIndirectObject obj = null;
         PdfIndirectReference cidset = null;
-        if (subset || writer.getPDFXConformance() == PdfWriter.PDFA1A || writer.getPDFXConformance() == PdfWriter.PDFA1B) {
+        if (includeCidSet || writer.getPDFXConformance() == PdfWriter.PDFA1A || writer.getPDFXConformance() == PdfWriter.PDFA1B) {
             PdfStream stream;
             if (metrics.length == 0) {
                 stream = new PdfStream(new byte[]{(byte)0x80});
@@ -541,4 +541,5 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
             return null;
         return bboxes[m[0]];
     }
+
 }

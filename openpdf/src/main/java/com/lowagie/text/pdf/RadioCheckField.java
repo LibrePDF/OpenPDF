@@ -439,7 +439,8 @@ public class RadioCheckField extends BaseField {
      * @throws DocumentException on error
      * 
      * @deprecated use {@link #getKidField()} instead
-     */    
+     */
+    @Deprecated
     public PdfFormField getRadioField() throws IOException, DocumentException {
         return getField(true);
     }
@@ -451,7 +452,8 @@ public class RadioCheckField extends BaseField {
      * @throws DocumentException on error
      * 
      * @deprecated use {@link #getFullField()} instead
-     */    
+     */
+    @Deprecated
     public PdfFormField getCheckField() throws IOException, DocumentException {
         return getField(false);
     }

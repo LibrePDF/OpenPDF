@@ -5,18 +5,40 @@ license. OpenPDF is the LGPL/MPL open source successor of iText, and is based on
 4 svn tag. We welcome contributions from other developers. Please feel free to submit pull-requests
 and bugreports to this GitHub repository.
 
-![CI](https://github.com/LibrePDF/OpenPDF/actions/workflows/maven.yml/badge.svg)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf)
 [![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-2.1)
 [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
 
+![CI](https://github.com/LibrePDF/OpenPDF/actions/workflows/maven.yml/badge.svg)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/791d40a437f64c77a0a802ae597a960c)](https://app.codacy.com/gh/LibrePDF/OpenPDF/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/791d40a437f64c77a0a802ae597a960c)](https://app.codacy.com/gh/LibrePDF/OpenPDF/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+[![CodeQL](https://github.com/LibrePDF/OpenPDF/actions/workflows/codeql.yml/badge.svg)](https://github.com/LibrePDF/OpenPDF/actions/workflows/codeql.yml)
+
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 
-## OpenPDF version 1.3.33 released 2023-11-15 ##
+## OpenPDF version 1.3.40 released 2024-02-12 ##
 
-Get version 1.3.33 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.33
+Get version 1.3.40 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.40
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
+
+## Features ##
+Some of the features of OpenPDF include:
+
+* Creating PDFs: You can use OpenPDF to create new PDF documents from scratch.
+
+* Manipulating Existing PDFs: OpenPDF allows you to modify existing PDF documents by adding or removing pages, modifying text, and more.
+
+* Text and Font Support: You can add text to PDF documents using various fonts and styles, and extract text from PDF files.
+
+* Graphics and Images: OpenPDF supports the addition of images and graphics to PDF files.
+
+* Table Support: The library facilitates the creation of tables in PDF documents.
+
+* Encryption: You can encrypt PDF documents for security purposes.
+
+* Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
+
 
 ## Use OpenPDF as Maven dependency
 
@@ -27,7 +49,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>1.3.33</version>
+  <version>1.3.40</version>
 </dependency>
 ```
 
@@ -50,7 +72,7 @@ MPL license only.
 ## Documentation ##
 
 - [Examples](pdf-toolbox/src/test/java/com/lowagie/examples)
-- [JavaDoc](https://librepdf.github.io/OpenPDF/docs-1-3-17/)
+- [JavaDoc](https://javadoc.io/doc/com.github.librepdf/openpdf/latest/index.html)
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 - [Migration from iText, TIFF support](https://github.com/LibrePDF/OpenPDF/wiki/Migrating-from-iText-2-and-4)
 
@@ -103,8 +125,8 @@ only contain code that you have written yourself. GPL or AGPL licensed code will
 
 ### Required Dependencies: ###
 
-- Java 8 or later is required to use OpenPDF. All versions Java 8 to Java OpenJDK 15 have been
-  tested to work.
+- Java 11 or later is required to use OpenPDF versions 1.3.37 and later. All versions Java 11 to Java OpenJDK 21 have been tested to work. We are working on modernizing the OpenPDF library for Java 11+.
+
 
 ### UTF-8 Fonts: ###
 
@@ -140,9 +162,6 @@ See: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Lat
       on which algorithm you are using)
     - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
 - Apache FOP (`org.apache.xmlgraphics:fop`)
-- Tiff support: Java versions prior to 9 require an additional library in the classpath to handle tiff images. Options are:
-    - https://github.com/haraldk/TwelveMonkeys
-    - https://github.com/jai-imageio/jai-imageio-core
 - Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
 ## Credits ##

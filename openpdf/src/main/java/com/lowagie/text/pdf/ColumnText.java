@@ -1361,6 +1361,7 @@ public class ColumnText {
                 float tableWidth;
                 if (table.isLockedWidth()) {
                     tableWidth = table.getTotalWidth();
+                    table.calculateHeights(true);
                     updateFilledWidth(tableWidth);
                 }
                 else {

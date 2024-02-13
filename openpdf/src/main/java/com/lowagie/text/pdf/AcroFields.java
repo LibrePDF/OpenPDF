@@ -2175,6 +2175,7 @@ public class AcroFields {
      *
      * @deprecated (will remove ' public ' in the future)
      */
+    @Deprecated
     public ArrayList<PdfDictionary> values = new ArrayList<>();
 
     /**
@@ -2182,6 +2183,7 @@ public class AcroFields {
      *
      * @deprecated (will remove ' public ' in the future)
      */
+    @Deprecated
     public ArrayList<PdfDictionary> widgets = new ArrayList<>();
 
     /**
@@ -2189,6 +2191,7 @@ public class AcroFields {
      *
      * @deprecated (will remove ' public ' in the future)
      */
+    @Deprecated
     public ArrayList<PdfIndirectReference> widgetRefs = new ArrayList<>();
 
     /**
@@ -2196,6 +2199,7 @@ public class AcroFields {
      *
      * @deprecated (will remove ' public ' in the future)
      */
+    @Deprecated
     public ArrayList<PdfDictionary> merged = new ArrayList<>();
 
     /**
@@ -2203,12 +2207,14 @@ public class AcroFields {
      *
      * @deprecated (will remove ' public ' in the future)
      */
+    @Deprecated
     public ArrayList<Integer> page = new ArrayList<>();
     /**
      * An array of <CODE>Integer</CODE> with the tab order of the field in the page.
      *
      * @deprecated (will remove ' public ' in the future)
      */
+    @Deprecated
     public ArrayList<Integer> tabOrder = new ArrayList<>();
     
     /**

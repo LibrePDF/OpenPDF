@@ -82,7 +82,7 @@ import java.util.zip.InflaterInputStream;
 
 /**
  * Reads a PDF document.
- * 
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  * @author Kazuya Ujihara
  */
@@ -158,7 +158,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param filename
    *          the file name of the document
    * @throws IOException
@@ -170,7 +170,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param filename
    *          the file name of the document
    * @param ownerPassword
@@ -186,7 +186,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param pdfIn
    *          the byte array with the document
    * @throws IOException
@@ -198,7 +198,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param pdfIn
    *          the byte array with the document
    * @param ownerPassword
@@ -214,7 +214,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param filename
    *          the file name of the document
    * @param certificate
@@ -237,7 +237,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param url
    *          the URL of the document
    * @throws IOException
@@ -249,7 +249,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param url
    *          the URL of the document
    * @param ownerPassword
@@ -265,7 +265,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param is
    *          the <CODE>InputStream</CODE> containing the document. The stream
    *          is read to the end but is not closed
@@ -282,7 +282,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads and parses a PDF document.
-   * 
+   *
    * @param is
    *          the <CODE>InputStream</CODE> containing the document. The stream
    *          is read to the end but is not closed
@@ -299,7 +299,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * mode as only parts of the pdf are read as needed. The pdf is left open but
    * may be closed at any time with <CODE>PdfReader.close()</CODE>, reopen is
    * automatic.
-   * 
+   *
    * @param raf
    *          the document location
    * @param ownerPassword
@@ -317,7 +317,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Creates an independent duplicate.
-   * 
+   *
    * @param reader
    *          the <CODE>PdfReader</CODE> to duplicate
    */
@@ -359,7 +359,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets a new file instance of the original PDF document.
-   * 
+   *
    * @return a new file instance of the original PDF document
    */
   public RandomAccessFileOrArray getSafeFile() {
@@ -372,7 +372,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the number of pages in the document.
-   * 
+   *
    * @return the number of pages in the document
    */
   public int getNumberOfPages() {
@@ -382,7 +382,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Returns the document's catalog. This dictionary is not a copy, any changes
    * will be reflected in the catalog.
-   * 
+   *
    * @return the document's catalog
    */
   public PdfDictionary getCatalog() {
@@ -391,7 +391,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Returns the document's acroform, if it has one.
-   * 
+   *
    * @return the document's acroform
    */
   public PRAcroForm getAcroForm() {
@@ -412,7 +412,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the page rotation. This value can be 0, 90, 180 or 270.
-   * 
+   *
    * @param index
    *          the page number. The first page is 1
    * @return the page rotation
@@ -438,7 +438,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the page size, taking rotation into account. This is a
    * <CODE>Rectangle</CODE> with the value of the /MediaBox and the /Rotate key.
-   * 
+   *
    * @param index
    *          the page number. The first page is 1
    * @return a <CODE>Rectangle</CODE>
@@ -449,12 +449,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the rotated page from a page dictionary.
-   * 
+   *
    * @param page the page dictionary
    * @return the rotated page or null when the page does not exists
    */
   public Rectangle getPageSizeWithRotation(PdfDictionary page) {
-      
+
       if(page!=null) {
           Rectangle rect = getPageSize(page);
           int rotation = getPageRotation(page);
@@ -466,7 +466,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
       }
       return null;
   }
-  
+
   /** Gets the page size, taking rotation into account. This
    * is a <CODE>Rectangle</CODE> with the value of a an arbitrary box and the /Rotate key.
    * @param index the page number. The first page is 1
@@ -474,14 +474,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * @return a <CODE>Rectangle</CODE> or null if the page does not exist
    */
   public Rectangle getPageSizeWithRotation(int index, String boxName) {
-      
+
       Rectangle rect = getBoxSize(index,boxName);
       PdfDictionary page = this.pageRefs.getPageNRelease(index);
-      
+
       if(rect==null || page ==null) {
           return null;
       }
-      
+
       int rotation = getPageRotation(page);
       //except for the mediabox all other boxes can be null
       while (rotation > 0) {
@@ -494,7 +494,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the page size without taking rotation into account. This is the value
    * of the /MediaBox key.
-   * 
+   *
    * @param index
    *          the page number. The first page is 1
    * @return the page size
@@ -505,7 +505,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the page from a page dictionary
-   * 
+   *
    * @param page
    *          the page dictionary
    * @return the page
@@ -521,7 +521,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * displayed or printed. It usually is the same as the media box but may be
    * smaller. If the page doesn't have a crop box the page size will be
    * returned.
-   * 
+   *
    * @param index
    *          the page number. The first page is 1
    * @return the crop box
@@ -537,7 +537,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the box size. Allowed names are: "crop", "trim", "art", "bleed" and
    * "media".
-   * 
+   *
    * @param index
    *          the page number. The first page is 1
    * @param boxName
@@ -572,7 +572,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Returns the content of the document information dictionary as a
    * <CODE>HashMap</CODE> of <CODE>String</CODE>.
-   * 
+   *
    * @return content of the document information dictionary
    */
   public Map<String, String> getInfo() {
@@ -604,7 +604,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Normalizes a <CODE>Rectangle</CODE> so that llx and lly are smaller than
    * urx and ury.
-   * 
+   *
    * @param box
    *          the original rectangle
    * @return a normalized <CODE>Rectangle</CODE>
@@ -949,7 +949,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
           if (!ownerPasswordUsed) {
             // analog of step c of Algorithm 2.A for user password
             hashAlg2B = decrypt.hashAlg2B(password, Arrays.copyOfRange(uValue, 32, 40), null);
-            if (!equalsArray(hashAlg2B, uValue, 32)) 
+            if (!equalsArray(hashAlg2B, uValue, 32))
               throw new BadPasswordException(MessageLocalization.getComposedMessage("bad.user.password"));
             // step e of Algorithm 2.A
             decrypt.setupByUserPassword(documentID, password, uValue, ueValue, oValue, oeValue, pValue);
@@ -1013,7 +1013,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Reads a <CODE>PdfObject</CODE> resolving an indirect reference if needed.
-   * 
+   *
    * @param obj
    *          the <CODE>PdfObject</CODE> to read
    * @return the resolved <CODE>PdfObject</CODE>
@@ -1447,7 +1447,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Eliminates the reference to the object freeing the memory used by it and
    * clearing the xref entry.
-   * 
+   *
    * @param obj
    *          the object. If it's an indirect reference it will be eliminated
    * @return the object or the already erased dereferenced object
@@ -1900,7 +1900,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Decodes a stream that has the FlateDecode filter.
-   * 
+   *
    * @param in
    *          the input data
    * @return the decoded data
@@ -1976,10 +1976,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         break;
       case 3: // PNG_FILTER_AVERAGE
         for (int i = 0; i < bytesPerPixel; i++) {
-          curr[i] += prior[i] / (byte) 2;
+          curr[i] += (byte) (prior[i] / (byte) 2);
         }
         for (int i = bytesPerPixel; i < bytesPerRow; i++) {
-          curr[i] += ((curr[i - bytesPerPixel] & 0xff) + (prior[i] & 0xff)) / (byte) 2;
+          curr[i] = (byte) ((curr[i] + (curr[i - bytesPerPixel] & 0xff) + (prior[i] & 0xff)) / 2);
         }
         break;
       case 4: // PNG_FILTER_PAETH
@@ -2029,7 +2029,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * A helper to FlateDecode.
-   * 
+   *
    * @param in
    *          the input data
    * @param strict
@@ -2059,7 +2059,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Decodes a stream that has the ASCIIHexDecode filter.
-   * 
+   *
    * @param in
    *          the input data
    * @return the decoded data
@@ -2092,7 +2092,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Decodes a stream that has the ASCII85Decode filter.
-   * 
+   *
    * @param in
    *          the input data
    * @return the decoded data
@@ -2158,7 +2158,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Decodes a stream that has the LZWDecode filter.
-   * 
+   *
    * @param in
    *          the input data
    * @return the decoded data
@@ -2172,7 +2172,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Checks if the document had errors and was rebuilt.
-   * 
+   *
    * @return true if rebuilt.
    *
    */
@@ -2182,7 +2182,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the dictionary that represents a page.
-   * 
+   *
    * @param pageNum the page number. 1 is the first
    * @return the page dictionary or null when the page does not exist
    */
@@ -2221,7 +2221,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the page reference to this page.
-   * 
+   *
    * @param pageNum
    *          the page number. 1 is the first
    * @return the page reference
@@ -2232,7 +2232,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the contents of the page.
-   * 
+   *
    * @param pageNum
    *          the page number. 1 is the first
    * @param file
@@ -2271,7 +2271,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the contents of the page.
-   * 
+   *
    * @param pageNum
    *          the page number. 1 is the first
    * @throws IOException
@@ -2324,7 +2324,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Sets the contents of the page.
-   * 
+   *
    * @param content
    *          the new page content
    * @param pageNum
@@ -2359,7 +2359,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Get the content from a stream applying the required filters.
-   * 
+   *
    * @param stream
    *          the stream
    * @param file
@@ -2429,7 +2429,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Get the content from a stream applying the required filters.
-   * 
+   *
    * @param stream
    *          the stream
    * @throws IOException
@@ -2451,7 +2451,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Get the content from a stream as it is without applying any filter.
-   * 
+   *
    * @param stream
    *          the stream
    * @param file
@@ -2504,7 +2504,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Get the content from a stream as it is without applying any filter.
-   * 
+   *
    * @param stream
    *          the stream
    * @throws IOException
@@ -2574,7 +2574,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Checks if the document was changed.
-   * 
+   *
    * @return <CODE>true</CODE> if the document was changed, <CODE>false</CODE>
    *         otherwise
    */
@@ -2585,7 +2585,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Sets the tampered state. A tampered PdfReader cannot be reused in
    * PdfStamper.
-   * 
+   *
    * @param tampered
    *          the tampered state
    */
@@ -2596,7 +2596,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the XML metadata.
-   * 
+   *
    * @throws IOException
    *           on error
    * @return the XML metadata
@@ -2622,7 +2622,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the byte address of the last xref table.
-   * 
+   *
    * @return the byte address of the last xref table
    */
   public int getLastXref() {
@@ -2631,7 +2631,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the number of xref objects.
-   * 
+   *
    * @return the number of xref objects
    */
   public int getXrefSize() {
@@ -2640,7 +2640,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the byte address of the %%EOF marker.
-   * 
+   *
    * @return the byte address of the %%EOF marker
    */
   public int getEofPos() {
@@ -2650,7 +2650,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the PDF version. Only the last version char is returned. For example
    * version 1.4 is returned as '4'.
-   * 
+   *
    * @return the PDF version
    */
   public char getPdfVersion() {
@@ -2659,7 +2659,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Returns <CODE>true</CODE> if the PDF is encrypted.
-   * 
+   *
    * @return <CODE>true</CODE> if the PDF is encrypted
    */
   public boolean isEncrypted() {
@@ -2678,7 +2678,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets the encryption permissions. It can be used directly in
    * <CODE>PdfWriter.setEncryption()</CODE>.
-   * 
+   *
    * @return the encryption permissions
    */
   public int getPermissions() {
@@ -2691,7 +2691,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Returns <CODE>true</CODE> if the PDF has a 128 bit key encryption.
-   * 
+   *
    * @return <CODE>true</CODE> if the PDF has a 128 bit key encryption
    */
   public boolean is128Key() {
@@ -2700,7 +2700,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the trailer dictionary
-   * 
+   *
    * @return the trailer dictionary
    */
   public PdfDictionary getTrailer() {
@@ -2768,7 +2768,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Finds all the font subsets and changes the prefixes to some random values.
-   * 
+   *
    * @return the number of font subsets altered
    */
   public int shuffleSubsetNames() {
@@ -2838,7 +2838,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Finds all the fonts not subset but embedded and marks them as subset.
-   * 
+   *
    * @return the number of fonts altered
    */
   public int createFakeFontSubsets() {
@@ -2898,7 +2898,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets all the named destinations as an <CODE>HashMap</CODE>. The key is the
    * name and the value is the destinations array.
-   * 
+   *
    * @return gets all the named destinations
    */
   public HashMap<Object, PdfObject> getNamedDestination() {
@@ -2908,7 +2908,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Gets all the named destinations as an <CODE>HashMap</CODE>. The key is the
    * name and the value is the destinations array.
-   * 
+   *
    * @param keepNames
    *          true if you want the keys to be real PdfNames instead of Strings
    * @return gets all the named destinations
@@ -2924,7 +2924,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * Gets the named destinations from the /Dests key in the catalog as an
    * <CODE>HashMap</CODE>. The key is the name and the value is the destinations
    * array.
-   * 
+   *
    * @return gets the named destinations
    */
   public HashMap getNamedDestinationFromNames() {
@@ -2935,7 +2935,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * Gets the named destinations from the /Dests key in the catalog as an
    * <CODE>HashMap</CODE>. The key is the name and the value is the destinations
    * array.
-   * 
+   *
    * @param keepNames
    *          true if you want the keys to be real PdfNames instead of Strings
    * @return gets the named destinations
@@ -2968,7 +2968,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * Gets the named destinations from the /Names key in the catalog as an
    * <CODE>HashMap</CODE>. The key is the name and the value is the destinations
    * array.
-   * 
+   *
    * @return gets the named destinations
    */
   public HashMap getNamedDestinationFromStrings() {
@@ -3074,7 +3074,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Replaces remote named links with local destinations that have the same
    * name.
-   * 
+   *
    * @since 5.0
    */
   public void makeRemoteNamedDestinationsLocal() {
@@ -3111,7 +3111,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
   /**
    * Converts a remote named destination GoToR with a local named destination if
    * there's a corresponding name.
-   * 
+   *
    * @param obj
    *          an annotation that needs to be screened for links to external
    *          named destinations.
@@ -3382,7 +3382,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Removes all the unreachable objects.
-   * 
+   *
    * @return the number of indirect objects removed
    */
   public int removeUnusedObjects() {
@@ -3411,7 +3411,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets a read-only version of <CODE>AcroFields</CODE>.
-   * 
+   *
    * @return a read-only version of <CODE>AcroFields</CODE>
    */
   public AcroFields getAcroFields() {
@@ -3420,7 +3420,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the global document JavaScript.
-   * 
+   *
    * @param file
    *          the document file
    * @throws IOException
@@ -3467,7 +3467,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Gets the global document JavaScript.
-   * 
+   *
    * @throws IOException
    *           on error
    * @return the global document JavaScript
@@ -3489,7 +3489,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * Selects the pages to keep in the document. The pages are described as
    * ranges. The page ordering can be changed but no page repetitions are
    * allowed. Note that it may be very slow in partial mode.
-   * 
+   *
    * @param ranges
    *          the comma separated ranges as described in {@link SequenceList}
    */
@@ -3502,7 +3502,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * <CODE>List</CODE> of <CODE>Integer</CODE>. The page ordering can be changed
    * but no page repetitions are allowed. Note that it may be very slow in
    * partial mode.
-   * 
+   *
    * @param pagesToKeep
    *          the pages to keep in the document
    */
@@ -3513,7 +3513,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Sets the viewer preferences as the sum of several constants.
-   * 
+   *
    * @param preferences
    *          the viewer preferences
    * @see PdfViewerPreferences#setViewerPreferences
@@ -3526,7 +3526,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Adds a viewer preference
-   * 
+   *
    * @param key
    *          a key for a viewer preference
    * @param value
@@ -3547,7 +3547,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * Returns a bitset representing the PageMode and PageLayout viewer
    * preferences. Doesn't return any information about the ViewerPreferences
    * dictionary.
-   * 
+   *
    * @return an int that contains the Viewer Preferences.
    */
   public int getSimpleViewerPreferences() {
@@ -3557,7 +3557,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Getter for property appendable.
-   * 
+   *
    * @return Value of property appendable.
    */
   public boolean isAppendable() {
@@ -3566,7 +3566,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Setter for property appendable.
-   * 
+   *
    * @param appendable
    *          New value of property appendable.
    */
@@ -3578,7 +3578,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Getter for property newXrefType.
-   * 
+   *
    * @return Value of property newXrefType.
    */
   public boolean isNewXrefType() {
@@ -3587,7 +3587,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Getter for property fileLength.
-   * 
+   *
    * @return Value of property fileLength.
    */
   public int getFileLength() {
@@ -3596,7 +3596,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
   /**
    * Getter for property hybridXref.
-   * 
+   *
    * @return Value of property hybridXref.
    */
   public boolean isHybridXref() {
@@ -3679,7 +3679,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     /**
      * Gets the page dictionary of the specified page
-     * 
+     *
      * @param pageNum the page number. 1 is the first
      * @return the page dictionary
      */
@@ -3690,7 +3690,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     /**
      * Gets the page reference to this page.
-     * 
+     *
      * @param pageNum the page number.
      * @return a dictionary object or null when the page does not exist
      */
@@ -3702,7 +3702,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     /**
      * Releases the page reference to this page.
-     * 
+     *
      * @param pageNum the page number.
      * @return an indirect reference
      */
@@ -3714,7 +3714,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     /**
      * Gets the page reference to this page.
-     * 
+     *
      * @param pageNum the page number. 1 is the first
      * @return the page reference or null if the page does not exist
      */
@@ -3811,7 +3811,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     /**
      * Adds a PdfDictionary to the pageInh stack to keep track of the page
      * attributes.
-     * 
+     *
      * @param nodePages
      *          a Pages dictionary
      */
@@ -4017,7 +4017,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
    * No signature validation is made, use the methods available for that in
    * <CODE>AcroFields</CODE>.
    * </p>
-   * 
+   *
    * @return gets the certification level for this document
    */
   public int getCertificationLevel() {
