@@ -609,18 +609,6 @@ public class XfaForm {
             addSomNameToSearchNodeChain(inverseSearch, stack, unstack);
         }
 
-        /**
-         * Adds a SOM name to the search node chain.
-         * @param inverseSearch the start point
-         * @param stack the stack with the separated SOM parts
-         * @param unstack the full name
-         * @deprecated use {@link #addSomNameToSearchNodeChain}
-         */
-        @Deprecated
-        @SuppressWarnings("unchecked")
-        public static void inverseSearchAdd(HashMap inverseSearch, Stack2 stack, String unstack) {
-            addSomNameToSearchNodeChain(inverseSearch, stack, unstack);
-        }
         
         /**
          * Adds a SOM name to the search node chain.
@@ -650,18 +638,6 @@ public class XfaForm {
             }
             store.part.add("");
             store.follow.add(unstack);
-        }
-
-        /**
-         * Searches the SOM hierarchy from the bottom.
-         * @param parts the SOM parts
-         * @deprecated use {@link #inverseSearch(List)}
-         * @return the full name or <CODE>null</CODE> if not found
-         */
-        @Deprecated
-        @SuppressWarnings("unchecked")
-        public String inverseSearchGlobal(ArrayList parts) {
-            return inverseSearch(parts);
         }
 
         /**
@@ -728,31 +704,10 @@ public class XfaForm {
 
         /**
          * Gets the order the names appear in the XML, depth first.
-         * @deprecated use {@link #getNamesOrder()}
-         * @return the order the names appear in the XML, depth first
-         */
-        @Deprecated
-        public ArrayList getOrder() {
-            return (ArrayList) order;
-        }
-
-        /**
-         * Gets the order the names appear in the XML, depth first.
          * @return the order the names appear in the XML, depth first
          */
         public List<String> getNamesOrder() {
             return order;
-        }
-
-        /**
-         * Sets the order the names appear in the XML, depth first
-         * @deprecated use {@link #setNamesOrder(List)}
-         * @param order the order the names appear in the XML, depth first
-         */
-        @Deprecated
-        @SuppressWarnings("unchecked")
-        public void setOrder(ArrayList order) {
-            this.order = order;
         }
 
         /**
@@ -765,31 +720,10 @@ public class XfaForm {
 
         /**
          * Gets the mapping of full names to nodes.
-         * @deprecated use {@link #getNodesByName()}
-         * @return the mapping of full names to nodes
-         */
-        @Deprecated
-        public HashMap getName2Node() {
-            return (HashMap) name2Node;
-        }
-
-        /**
-         * Gets the mapping of full names to nodes.
          * @return the mapping of full names to nodes
          */
         public Map<String, Node> getNodesByName() {
             return name2Node;
-        }
-
-        /**
-         * Sets the mapping of full names to nodes.
-         * @deprecated use {@link #setNodesByName(Map)}
-         * @param name2Node the mapping of full names to nodes
-         */
-        @Deprecated
-        @SuppressWarnings("unchecked")
-        public void setName2Node(HashMap name2Node) {
-            this.name2Node = name2Node;
         }
 
         /**
@@ -802,30 +736,10 @@ public class XfaForm {
 
         /**
          * Gets the data to do a search from the bottom hierarchy.
-         * @deprecated use {@link #getInverseSearchData()}
-         * @return the data to do a search from the bottom hierarchy
-         */
-        @Deprecated
-        public HashMap getInverseSearch() {
-            return (HashMap) inverseSearch;
-        }
-
-        /**
-         * Gets the data to do a search from the bottom hierarchy.
          * @return the data to do a search from the bottom hierarchy
          */
         public Map<String, InverseStore> getInverseSearchData() {
             return inverseSearch;
-        }
-
-        /**
-         * Sets the data to do a search from the bottom hierarchy.
-         * @deprecated use {@link #setInverseSearchData(Map)}
-         * @param inverseSearch the data to do a search from the bottom hierarchy
-         */
-        @Deprecated
-        public void setInverseSearch(Map<String, InverseStore> inverseSearch) {
-            this.inverseSearch = inverseSearch;
         }
 
         /**
@@ -967,27 +881,6 @@ public class XfaForm {
                 acroShort2LongName.put(itemShort, itemName);
                 addSomNameToSearchNodeChain(inverseSearch, splitParts(itemShort), itemName);
             }
-        }
-
-        /**
-         * Gets the mapping from short names to long names. A long 
-         * name may contain the #subform name part.
-         * @return the mapping from short names to long names
-         */
-        @Deprecated
-        public HashMap getAcroShort2LongName() {
-            return (HashMap) acroShort2LongName;
-        }
-
-        /**
-         * Sets the mapping from short names to long names. A long 
-         * name may contain the #subform name part.
-         * @param acroShort2LongName the mapping from short names to long names
-         */
-        @Deprecated
-        @SuppressWarnings("unchecked")
-        public void setAcroShort2LongName(HashMap acroShort2LongName) {
-            this.acroShort2LongName = acroShort2LongName;
         }
 
         /**

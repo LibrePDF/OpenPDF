@@ -15,7 +15,7 @@ class SimpleBookmarkTest {
     void testGetBookmarkWithNoTitle() throws IOException {
         InputStream is = getClass().getResourceAsStream("/OutlineUriActionWithNoTitle.pdf");
         PdfReader reader = new PdfReader(is);
-        List<?> list = SimpleBookmark.getBookmark(reader);
+        List<?> list = SimpleBookmark.getBookmarkList(reader);
         assertNotNull(list);
         assertEquals(3, list.size());
     }

@@ -67,22 +67,6 @@ public class ParsedText extends ParsedTextImpl {
      */
     private PdfString pdfText = null;
 
-    /**
-     * This constructor should only be called when the origin for text display is at (0,0) and the
-     * graphical state reflects all transformations of the baseline. This is in text space units.
-     * <p>
-     * Decodes a String (which will contain glyph ids encoded in the font's encoding) based on
-     * the active font. This is supported for compatibility, but is no longer preferred.
-     *
-     * @param text          string
-     * @param graphicsState graphical state
-     * @param textMatrix    transform from text space to graphics (drawing space)
-     */
-    @Deprecated
-    ParsedText(String text, GraphicsState graphicsState, Matrix textMatrix) {
-        this(text, new GraphicsState(graphicsState), textMatrix.multiply(graphicsState.getCtm()),
-                getUnscaledFontSpaceWidth(graphicsState));
-    }
 
     /**
      * This constructor should only be called when the origin for text display is at (0,0) and the
@@ -130,25 +114,6 @@ public class ParsedText extends ParsedTextImpl {
         this.graphicsState = graphicsState;
     }
 
-    /**
-     * Internal constructor when the code points are already in a string.
-     *
-     * @param text          string
-     * @param graphicsState graphical state
-     * @param textMatrix    transform from text space to graphics (drawing space)
-     * @param unscaledWidth width of the space character in the font.
-     */
-    @Deprecated
-    private ParsedText(String text, GraphicsState graphicsState, Matrix textMatrix, float unscaledWidth) {
-        super(text, pointToUserSpace(0, 0, textMatrix),
-                pointToUserSpace(getStringWidth(text, graphicsState), 0f, textMatrix),
-                pointToUserSpace(1.0f, 0f, textMatrix),
-                convertHeightToUser(graphicsState.getFontAscentDescriptor(), textMatrix),
-                convertHeightToUser(graphicsState.getFontDescentDescriptor(), textMatrix),
-                convertWidthToUser(unscaledWidth, textMatrix));
-        textToUserSpaceTransformMatrix = textMatrix;
-        this.graphicsState = graphicsState;
-    }
 
     /**
      * @param xOffset offset in x direction
