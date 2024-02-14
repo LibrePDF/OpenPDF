@@ -187,7 +187,7 @@ public class PdfContentByte {
     public static final int TEXT_RENDER_MODE_FILL_STROKE_CLIP = 6;
     /** A possible text rendering value */
     public static final int TEXT_RENDER_MODE_CLIP = 7;
-    
+
     static final float MIN_FONT_SIZE = 0.0001f;
 
     private static final float[] unitRect = {0, 0, 0, 1, 1, 0, 1, 1};
@@ -1577,7 +1577,7 @@ public class PdfContentByte {
     /**
      *  Shows the <CODE>glyphVector</CODE>.
      *  Layout info in <CODE>glyphVector</CODE> is ignored
-     *  
+     *
      * @param glyphVector containing the glyphs to write
      * @param beginIndex index of first glyph
      * @param endIndex index of last glyph+1
@@ -1585,12 +1585,12 @@ public class PdfContentByte {
     public void showText(GlyphVector glyphVector, int beginIndex, int endIndex) {
         if (state.fontDetails == null) {
             throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
-        }    
+        }
         byte[] b = state.fontDetails.convertToBytes(glyphVector, beginIndex, endIndex);
         escapeString(b, content);
         content.append("Tj").append_i(separator);
     }
-    
+
     /**
      * Constructs a kern array for a text in a certain font
      * @param text the text
@@ -1706,8 +1706,8 @@ public class PdfContentByte {
      */
     public void moveText(float x, float y) {
         if(layoutPositionCorrection != null) {
-            x += layoutPositionCorrection.getX();
-            y += layoutPositionCorrection.getY();
+            x += (float) layoutPositionCorrection.getX();
+            y += (float) layoutPositionCorrection.getY();
             layoutPositionCorrection = null;
         }
         moveTextBasic(x, y);
@@ -1735,8 +1735,8 @@ public class PdfContentByte {
      */
     public void moveTextWithLeading(float x, float y) {
         if(layoutPositionCorrection != null) {
-            x += layoutPositionCorrection.getX();
-            y += layoutPositionCorrection.getY();
+            x += (float) layoutPositionCorrection.getX();
+            y += (float) layoutPositionCorrection.getY();
             layoutPositionCorrection = null;
         }
         state.xTLM += x;
@@ -2254,7 +2254,7 @@ public class PdfContentByte {
     public void addTemplate(PdfTemplate template, float x, float y) {
         addTemplate(template, 1, 0, 0, 1, x, y);
     }
-	
+
 	/**
      * Adds a template to this content using double matrices.
      *
@@ -2269,7 +2269,7 @@ public class PdfContentByte {
     public void addTemplate(final PdfTemplate template, final double a, final double b, final double c, final double d, final double e, final double f) {
         checkWriter();
         checkNoPattern(template);
-        
+
         PdfName name = writer.addDirectTemplateSimple(template, null);
         PageResources prs = getPageResources();
         name = prs.addXObject(name, template.getIndirectReference());
@@ -3258,7 +3258,7 @@ public class PdfContentByte {
         PdfDictionary dict = new PdfDictionary();
         beginMarkedContentSequence(struc, dict);
     }
-    
+
     public void beginMarkedContentSequence(PdfStructureElement struc, PdfDictionary dict) {
         PdfObject obj = struc.get(PdfName.K);
         int mark = pdf.getMarkPoint();
@@ -3352,12 +3352,12 @@ public class PdfContentByte {
     public void beginMarkedContentSequence(PdfName tag) {
         beginMarkedContentSequence(tag, null, false);
     }
-    
+
     /**
      * Checks for any dangling state: Mismatched save/restore state, begin/end text,
      * begin/end layer, or begin/end marked content sequence.
      * If found, this function will throw.  This function is called automatically
-     * during a reset() (from Document.newPage() for example), and before writing 
+     * during a reset() (from Document.newPage() for example), and before writing
      * itself out in toPdf().
      * One possible cause: not calling myPdfGraphics2D.dispose() will leave dangling
      *                     saveState() calls.

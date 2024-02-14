@@ -207,10 +207,8 @@ public class MappedRandomAccessFile implements AutoCloseable {
         if (buffer == null || !buffer.isDirect()) {
             return false;
         }
-        if (cleanJava9(buffer)) {
-            return true;
-        }
-        return cleanOldsJDK(buffer);
+        return cleanJava9(buffer);
+
     }
     
     private static boolean cleanJava9(final java.nio.ByteBuffer buffer) {
@@ -226,28 +224,6 @@ public class MappedRandomAccessFile implements AutoCloseable {
                 invokeCleanerMethod.invoke(theUnsafe, buffer);
                 success = Boolean.TRUE;
             } catch (Exception ignore) {
-                // Ignore
-            }
-            return success;
-        });
-        
-        return b;
-    }
-
-    private static boolean cleanOldsJDK(final java.nio.ByteBuffer buffer) {
-        Boolean b = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
-            Boolean success = Boolean.FALSE;
-            try {
-                Method getCleanerMethod = buffer.getClass()
-                        .getMethod("cleaner", (Class[]) null);
-                if (!getCleanerMethod.isAccessible()) {
-                    getCleanerMethod.setAccessible(true);
-                }
-                Object cleaner = getCleanerMethod.invoke(buffer, (Object[])null);
-                Method clean = cleaner.getClass().getMethod("clean", (Class[])null);
-                clean.invoke(cleaner, (Object[])null);
-                success = Boolean.TRUE;
-            } catch (Exception e) {
                 // Ignore
             }
             return success;
