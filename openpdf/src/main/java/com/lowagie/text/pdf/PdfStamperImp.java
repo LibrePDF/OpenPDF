@@ -991,7 +991,7 @@ class PdfStamperImp extends PdfWriter {
                             double y = box.getBottom();
                             
                             rotation = rotation % 360; 
-                            if (rotation == 90 || rotation == 270) {
+                            if (rotation == 90 || rotation == 180) {
                                 x += box.getWidth();
                             }
                             if (rotation == 180 || rotation == 270) {
