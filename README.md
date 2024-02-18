@@ -16,9 +16,9 @@ and bugreports to this GitHub repository.
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 
-## OpenPDF version 1.3.40 released 2024-02-12 ##
+## OpenPDF version 2.0.0 released 2024-02-18 ##
 
-Get version 1.3.40 here - https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.40
+Get version 2.0.0 here - https://github.com/LibrePDF/OpenPDF/releases/tag/2.0.0
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
@@ -49,7 +49,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>1.3.40</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -126,7 +126,7 @@ only contain code that you have written yourself. GPL or AGPL licensed code will
 ### Required Dependencies: ###
 
 - Java 11 or later is required to use OpenPDF versions 1.3.37 and later. All versions Java 11 to Java OpenJDK 21 have been tested to work.
-- Java 17 or later is required to use OpenPDF versions 2.0.0 (not released yet). We are working on modernizing the OpenPDF library for Java 17+.
+- Java 17 or later is required to use OpenPDF versions 2.0.0. We are working on modernizing the OpenPDF library for Java 17+.
 
 
 ### UTF-8 Fonts: ###
