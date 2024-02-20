@@ -47,14 +47,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>../src/main/resources</directory>
-            </resource>
-        </resources>
-    </build>
 </project>
