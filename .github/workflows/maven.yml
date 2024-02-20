@@ -16,9 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # The last 3 LTS releases
-        # Java 17 is run in codacy-coverage-reporter
-        java: [ 21 ]
+        # Java 11 in this branch 1.4-java11
+        java: [ 11 ]
     name: Java ${{matrix.java}}
     steps:
       - uses: actions/checkout@v4.1.1

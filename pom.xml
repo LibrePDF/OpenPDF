@@ -260,7 +260,7 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <!-- Set java to 9 -->
+            <!-- Set java to 11 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -419,9 +419,9 @@
 
     <profiles>
         <profile>
-            <id>jdk17-plus</id>
+            <id>jdk11-plus</id>
             <activation>
-                <jdk>[17,)</jdk>
+                <jdk>[11,)</jdk>
             </activation>
             <dependencyManagement>
                 <dependencies>
@@ -439,16 +439,16 @@
                         <artifactId>maven-compiler-plugin</artifactId>
                         <version>${maven.compiler.plugin.version}</version>
                         <configuration>
-                            <release>17</release>
+                            <release>11</release>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>compile-java-17</id>
+                                <id>compile-java-11</id>
                                 <goals>
                                     <goal>compile</goal>
                                 </goals>
                                 <configuration>
-                                    <release>17</release>
+                                    <release>11</release>
                                     <compileSourceRoots>
                                         <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
                                     </compileSourceRoots>
