@@ -475,7 +475,7 @@
         <profile>
             <id>jdk9-plus</id>
             <activation>
-                <jdk>[9,)</jdk>
+                <jdk>[8,)</jdk>
             </activation>
             <dependencyManagement>
                 <dependencies>
@@ -502,7 +502,7 @@
                                     <goal>compile</goal>
                                 </goals>
                                 <configuration>
-                                    <release>9</release>
+                                    <release>8</release>
                                     <compileSourceRoots>
                                     </compileSourceRoots>
                                     <multiReleaseOutput>true</multiReleaseOutput>
