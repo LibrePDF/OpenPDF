@@ -98,7 +98,7 @@ public class LayoutProcessor {
         if (enabled) {
             throw new UnsupportedOperationException("LayoutProcessor is already enabled");
         }
-        enabled = true;
+        enable();
         LayoutProcessor.flags = flags;
     }
 
@@ -114,8 +114,7 @@ public class LayoutProcessor {
     /**
      * Enables the processor with the provided flags.
      * <p>
-     * Kerning and ligatures are switched on.
-     * This method can only be called once.
+     * Kerning and ligatures are switched on. This method can only be called once.
      *
      * @param flags see java.awt.Font.layoutGlyphVector
      */
@@ -125,7 +124,7 @@ public class LayoutProcessor {
         }
         setKerning();
         setLigatures();
-        enabled = true;
+        enable();
         LayoutProcessor.flags = flags;
     }
 
