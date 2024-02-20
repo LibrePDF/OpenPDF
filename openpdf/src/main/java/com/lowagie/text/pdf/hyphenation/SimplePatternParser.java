@@ -97,7 +97,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
 
     public void parse(InputStream stream, PatternConsumer consumer) {
         this.consumer = consumer;
-        try (stream) {
+        try {
             SimpleXMLParser.parse(this, stream);
         } catch (IOException e) {
             throw new ExceptionConverter(e);
