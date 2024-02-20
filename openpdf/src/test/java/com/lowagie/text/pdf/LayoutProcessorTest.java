@@ -9,13 +9,9 @@ import org.junit.jupiter.api.Test;
 class LayoutProcessorTest {
 
     @Test
-    void testEnable() {
+    void testEnableDisable() {
         LayoutProcessor.enable();
         assertTrue(LayoutProcessor.isEnabled());
-    }
-
-    @Test
-    void testDisable() {
         LayoutProcessor.disable();
         assertFalse(LayoutProcessor.isEnabled());
         assertThat(LayoutProcessor.getFlags()).isEqualTo(-1);
