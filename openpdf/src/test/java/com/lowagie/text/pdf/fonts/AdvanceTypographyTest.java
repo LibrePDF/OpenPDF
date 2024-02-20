@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.FopGlyphProcessor;
+import com.lowagie.text.pdf.LayoutProcessor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -47,6 +48,19 @@ class AdvanceTypographyTest {
             "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
         assertArrayEquals(expectedOutput, str.toCharArray());
+    }
+
+    @Test
+    void testSubstitutionWithMergeWithLayoutProcessorEnabled() throws Exception {
+        LayoutProcessor.enable();
+        char[] expectedOutput = {254, 278, 390, 314, 331, 376, 254, 285, 278};
+        byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
+            BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, true, false, null,
+                null),
+            "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
+        String str = new String(processedContent, "UnicodeBigUnmarked");
+        assertArrayEquals(expectedOutput, str.toCharArray());
+        LayoutProcessor.disable();
     }
 
     /**
