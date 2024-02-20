@@ -1,5 +1,6 @@
 package com.lowagie.text.pdf.fonts;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import com.lowagie.text.pdf.BaseFont;
@@ -8,64 +9,66 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- *
- * @author  Gajendra kumar (raaz2.gajendra@gmail.com)
+ * @author Gajendra kumar (raaz2.gajendra@gmail.com)
  */
-public class AdvanceTypographyTest {
+class AdvanceTypographyTest {
 
     /**
-     * Without ghyph substitution out will be {660,666,676,1143,656,1130}, which is no correct
-     * FopGlyphProcessor performs ghyph substitution to correct the output
+     * Without glyph substitution out will be {660,666,676,1143,656,1130}, which is no correct FopGlyphProcessor
+     * performs glyph substitution to correct the output
+     *
      * @throws Exception - DocumentException or IOException thrown by the processedContent() method
      */
     @Test
-    public void testTypographySubstitution() throws Exception{
+    void testTypographySubstitution() throws Exception {
         char[] expectedOutput = {660, 666, 911, 656, 1130};
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-                BaseFont.createFont("fonts/jaldi/Jaldi-Regular.ttf", BaseFont.IDENTITY_H, false),
-                "नमस्ते", "fonts/jaldi/Jaldi-Regular.ttf", new HashMap<>(), "dflt");
+            BaseFont.createFont("fonts/jaldi/Jaldi-Regular.ttf", BaseFont.IDENTITY_H, false),
+            "नमस्ते", "fonts/jaldi/Jaldi-Regular.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
 
-        assertArrayEquals(expectedOutput,str.toCharArray());
+        assertArrayEquals(expectedOutput, str.toCharArray());
     }
 
     /**
-     * In some fonts combination of two characters can be represented by single glyph
-     * This method tests above case.
+     * In some fonts combination of two characters can be represented by single glyph This method tests above case.
+     *
      * @throws Exception - UnsupportedEncodingException by the convertToBytesWithGlyphs method
      */
     @Test
-    public void testSubstitutionWithMerge() throws Exception{
+    void testSubstitutionWithMerge() throws Exception {
         char[] expectedOutput = {254, 278, 390, 314, 331, 376, 254, 285, 278};
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-                BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false),
-                "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
+            BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false),
+            "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
-        assertArrayEquals(expectedOutput,str.toCharArray());
+        assertArrayEquals(expectedOutput, str.toCharArray());
     }
 
     /**
-     * Test fonts loaded externally and passed as byte array to BaseFont, Fop should be able to
-     * resolve these fonts
+     * Test fonts loaded externally and passed as byte array to BaseFont, Fop should be able to resolve these fonts
+     *
      * @throws Exception a DocumentException or an IOException thrown by BaseFont.createFont
      */
     @Test
-    public void testInMemoryFonts() throws Exception{
-        char[] expectedOutput = {254,278,390,314,331,376,254,285,278};
+    void testInMemoryFonts() throws Exception {
+        char[] expectedOutput = {254, 278, 390, 314, 331, 376, 254, 285, 278};
         BaseFont font = BaseFont.createFont("ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H,
-                BaseFont.EMBEDDED,true,
-                getFontByte("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf"), null, false,false);
+            BaseFont.EMBEDDED, true,
+            getTestFontByte(), null, false, false);
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-                font, "instruction", "Viaoda Libre", new HashMap<>(), "dflt");
+            font, "instruction", "Viaoda Libre", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
-        assertArrayEquals(expectedOutput,str.toCharArray());
+        assertArrayEquals(expectedOutput, str.toCharArray());
     }
 
-    /*@Disabled
-    public void testSurrogatePair() throws Exception{
+    @Disabled("This test is failing, need to investigate. @YOSHIDA may know the reason.")
+    @Test
+    void testSurrogatePair() throws Exception {
 
         BaseFont baseFont = BaseFont.createFont("fonts/jp/GenShinGothic-Normal.ttf", BaseFont.IDENTITY_H, false);
 
@@ -73,14 +76,15 @@ public class AdvanceTypographyTest {
         // http://en.glyphwiki.org/wiki/u20bb7
         String text = "\uD842\uDFB7";
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-                baseFont, text, "fonts/jp/GenShinGothic-Normal.ttf", new HashMap<>(), "dflt");
+            baseFont, text, "fonts/jp/GenShinGothic-Normal.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
         char[] actual = str.toCharArray();
         assertArrayEquals(expectedOutput, actual);
-    }*/
+    }
 
-    private byte[] getFontByte(String fileName) throws IOException {
-        InputStream stream = BaseFont.getResourceStream(fileName, null);
+    private byte[] getTestFontByte() throws IOException {
+        InputStream stream = BaseFont.getResourceStream("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", null);
+        assertThat(stream).isNotNull();
         return IOUtils.toByteArray(stream);
     }
 }

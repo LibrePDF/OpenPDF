@@ -12,6 +12,7 @@ import com.lowagie.text.pdf.parser.PdfTextExtractor;
 import java.awt.Font;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,13 +25,18 @@ class LayoutProcessor534Test {
         LayoutProcessor.enable(java.awt.Font.LAYOUT_RIGHT_TO_LEFT);
     }
 
+    @AfterAll
+    static void afterAll() {
+        LayoutProcessor.disable();
+    }
+
     @BeforeEach
     void beforeEach() {
         assumeThat(LayoutProcessor.isSet(Font.LAYOUT_RIGHT_TO_LEFT)).isTrue();
     }
 
     @Test
-    public void whenLayoutRightToLeftLatin_thenRevertCharOrder() throws IOException {
+    void whenLayoutRightToLeftLatin_thenRevertCharOrder() throws IOException {
         // given
         Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);
         ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
@@ -61,7 +67,7 @@ class LayoutProcessor534Test {
     }
 
     @Test
-    public void whenLayoutRightToLeftHebrew_thenRevertCharOrder() throws IOException {
+    void whenLayoutRightToLeftHebrew_thenRevertCharOrder() throws IOException {
         // given
         Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);
         ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
