@@ -54,7 +54,7 @@
 
     <properties>
         <java-module-name>com.github.librepdf.openpdf.parent</java-module-name>
-        <java.version>11</java.version>
+        <java.version>8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -79,7 +79,9 @@
         <commons-io.version>2.15.1</commons-io.version>
         <dom4j.version>2.1.4</dom4j.version>
         <fop.version>2.9</fop.version>
-        <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
+        <!-- jakarta.servlet-api.version is only used in Tests.
+        It may not go beyond 5.0.0 while we still support Java 8. -->
+        <jakarta.servlet-api.version>5.0.0</jakarta.servlet-api.version>
         <jcommon.version>1.0.24</jcommon.version>
         <jfreechart.version>1.5.4</jfreechart.version>
         <pdf-renderer.version>1.0.5</pdf-renderer.version>
@@ -260,13 +262,15 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <!-- Set java to 9 -->
+            <!-- Set java to 8 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <release>${java.version}</release>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgs>
                         <arg>-Xlint:unchecked</arg>
                     </compilerArgs>
@@ -301,7 +305,7 @@
                 <version>${maven-repository-plugin.version}</version>
             </plugin>
             <!-- GPG signing config -->
-            <plugin>
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>${maven-gpg-plugin.version}</version>
@@ -314,7 +318,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -344,6 +348,10 @@
                 <configuration>
                     <!-- unpack bundle, so humans can see the manifest without unpacking the jar -->
                     <unpackBundle>true</unpackBundle>
+                    <!-- All com.lowagie.* packages are 'public' -->
+                    <instructions>
+                        <Export-Package>com.lowagie.*;version="${project.version}"</Export-Package>
+                    </instructions>
                 </configuration>
             </plugin>
             <plugin>
@@ -419,9 +427,55 @@
 
     <profiles>
         <profile>
-            <id>jdk17-plus</id>
             <activation>
-                <jdk>[17,)</jdk>
+                <jdk>(,8]</jdk>
+				<activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.mockito</groupId>
+                        <artifactId>mockito-core</artifactId>
+                        <version>${mockito4.version}</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+			<build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>${maven.compiler.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>compile-java-8</id>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <source>1.8</source>
+									<target>1.8</target>
+									<encoding>${project.build.sourceEncoding}</encoding>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+					<plugin>
+						<!-- necessary for junit tests otherwise the file encoding is wrong-->
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>3.2.2</version>
+						<configuration>
+							<argLine>-Dfile.encoding=UTF-8</argLine>
+						</configuration>
+					</plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk9-plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
             </activation>
             <dependencyManagement>
                 <dependencies>
@@ -439,18 +493,17 @@
                         <artifactId>maven-compiler-plugin</artifactId>
                         <version>${maven.compiler.plugin.version}</version>
                         <configuration>
-                            <release>17</release>
+                            <release>8</release>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>compile-java-17</id>
+                                <id>compile-java-9</id>
                                 <goals>
                                     <goal>compile</goal>
                                 </goals>
                                 <configuration>
-                                    <release>17</release>
+                                    <release>9</release>
                                     <compileSourceRoots>
-                                        <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
                                     </compileSourceRoots>
                                     <multiReleaseOutput>true</multiReleaseOutput>
                                 </configuration>
