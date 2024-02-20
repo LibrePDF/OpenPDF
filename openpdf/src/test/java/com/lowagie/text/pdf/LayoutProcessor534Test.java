@@ -36,7 +36,7 @@ class LayoutProcessor534Test {
     }
 
     @Test
-    void whenLayoutRightToLeftLatin_thenRevertCharOrder() throws IOException {
+    void whenLayoutRightToLeftLatinThenRevertCharOrder() throws IOException {
         // given
         Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);
         ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
@@ -67,7 +67,7 @@ class LayoutProcessor534Test {
     }
 
     @Test
-    void whenLayoutRightToLeftHebrew_thenRevertCharOrder() throws IOException {
+    void whenLayoutRightToLeftHebrewThenRevertCharOrder() throws IOException {
         // given
         Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);
         ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
