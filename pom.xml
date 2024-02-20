@@ -260,14 +260,13 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <!-- Set java to 9 -->
+            <!-- Set java to 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                     <compilerArgs>
                         <arg>-Xlint:unchecked</arg>
                     </compilerArgs>
