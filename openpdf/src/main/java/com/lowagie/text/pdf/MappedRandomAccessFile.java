@@ -48,7 +48,7 @@
  */
 package com.lowagie.text.pdf;
 
-import java.lang.Field;
+import java.lang.reflect.Field;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
