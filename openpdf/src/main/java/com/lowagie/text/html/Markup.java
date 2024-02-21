@@ -44,7 +44,7 @@
  *
  * Contributions by:
  * Lubos Strapko
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * https://github.com/LibrePDF/OpenPDF
@@ -273,14 +273,14 @@ public class Markup {
     /** a CSS value for text decoration */
     public static final String CSS_VALUE_UNDERLINE = "underline";
 
-    /** a default value for font-size 
+    /** a default value for font-size
      * @since 2.1.3
      */
     public static final float DEFAULT_FONT_SIZE = 12f;
 
     /**
      * Parses a length.
-     * 
+     *
      * @param string
      *            a length in the form of an optional + or -, followed by a
      *            number and a unit.
@@ -407,6 +407,10 @@ public class Markup {
         if (string.startsWith("ex")) {
             return f * actualFontSize / 2;
         }
+        // percentage of current font size
+        if (string.endsWith("%")) {
+            return (f / 100) * actualFontSize;
+        }
         // default: we assume the length was measured in points
         return f;
     }
@@ -433,7 +437,7 @@ public class Markup {
     /**
      * This method parses a String with attributes and returns a Properties
      * object.
-     * 
+     *
      * @param string
      *            a String of this form: 'key1="value1"; key2="value2";...
      *            keyN="valueN" '
@@ -469,7 +473,7 @@ public class Markup {
 
     /**
      * Removes the comments sections of a String.
-     * 
+     *
      * @param string
      *            the original String
      * @param startComment
