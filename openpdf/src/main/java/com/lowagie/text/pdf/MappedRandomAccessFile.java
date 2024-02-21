@@ -54,10 +54,14 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  * A {@link java.nio.MappedByteBuffer} wrapped as a {@link java.io.RandomAccessFile}
@@ -66,10 +70,10 @@ import java.nio.channels.FileChannel;
  * Created on 6.9.2006
  */
 public class MappedRandomAccessFile implements AutoCloseable {
-    
+
     private MappedByteBuffer mappedByteBuffer = null;
     private FileChannel channel = null;
-    
+
     /**
      * Constructs a new MappedRandomAccessFile instance
      * @param filename String
@@ -79,7 +83,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
      */
     public MappedRandomAccessFile(String filename, String mode)
     throws IOException {
-        
+
         if (mode.equals("rw"))
             init(
                     new java.io.RandomAccessFile(filename, mode).getChannel(),
@@ -88,9 +92,9 @@ public class MappedRandomAccessFile implements AutoCloseable {
             init(
                     new FileInputStream(filename).getChannel(),
                     FileChannel.MapMode.READ_ONLY);
-        
+
     }
-    
+
     /**
      * initializes the channel and mapped bytebuffer
      * @param channel FileChannel
@@ -114,7 +118,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
     public FileChannel getChannel() {
         return channel;
     }
-    
+
     /**
      * @see java.io.RandomAccessFile#read()
      * @return int next integer or -1 on EOF
@@ -123,13 +127,13 @@ public class MappedRandomAccessFile implements AutoCloseable {
         try {
             byte b = mappedByteBuffer.get();
             int n = b & 0xff;
-            
+
             return n;
         } catch (BufferUnderflowException e) {
             return -1; // EOF
         }
     }
-    
+
     /**
      * @see java.io.RandomAccessFile#read(byte[], int, int)
      * @param bytes byte[]
@@ -149,7 +153,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
         mappedByteBuffer.get(bytes, off, len);
         return len;
     }
-    
+
     /**
      * @see java.io.RandomAccessFile#getFilePointer()
      * @return long
@@ -157,7 +161,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
     public long getFilePointer() {
         return mappedByteBuffer.position();
     }
-    
+
     /**
      * @see java.io.RandomAccessFile#seek(long)
      * @param pos long position
@@ -165,7 +169,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
     public void seek(long pos) {
         mappedByteBuffer.position((int) pos);
     }
-    
+
     /**
      * @see java.io.RandomAccessFile#length()
      * @return long length
@@ -173,7 +177,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
     public long length() {
         return mappedByteBuffer.limit();
     }
-    
+
     /**
      * Cleans the mapped bytebuffer and closes the channel
      *
@@ -187,7 +191,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
             channel.close();
         channel = null;
     }
-    
+
     /**
      * invokes the close method
      * @see java.lang.Object#finalize()
@@ -196,34 +200,79 @@ public class MappedRandomAccessFile implements AutoCloseable {
         close();
         super.finalize();
     }
-    
+
+
     /**
-     * invokes the clean method on the ByteBuffer's cleaner
-     * @param buffer ByteBuffer
-     * @return boolean true on success
-     */
-    public static boolean clean(final java.nio.ByteBuffer buffer) {
-        if (buffer == null || !buffer.isDirect()) {
-            return false;
-        }
-        return cleanJava11(buffer);
+   	 * invokes the clean method on the ByteBuffer's cleaner
+   	 *
+   	 * @param buffer ByteBuffer
+   	 * @return boolean true on success
+   	 */
+   	public static boolean clean(final java.nio.ByteBuffer buffer) {
+   		if (buffer == null || !buffer.isDirect()) {
+   			return false;
+   		}
 
-    }
 
-    private static boolean cleanJava11(final ByteBuffer buffer) {
-        Boolean success = Boolean.FALSE;
-        try {
-            MethodHandles.Lookup lookup = MethodHandles.lookup();
-            Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
-            MethodHandle methodHandle = lookup.findStatic(unsafeClass, "getUnsafe", MethodType.methodType(unsafeClass));
-            Object theUnsafe = methodHandle.invoke();
-            MethodHandle invokeCleanerMethod = lookup.findVirtual(unsafeClass, "invokeCleaner", MethodType.methodType(void.class, ByteBuffer.class));
-            invokeCleanerMethod.invoke(theUnsafe, buffer);
-            success = Boolean.TRUE;
-        } catch (Throwable ignore) {
-            // Ignore
-        }
-        return success;
-    }
+
+   		if (cleanJava9(buffer)) {
+   			return true;
+
+   		}
+   		return cleanOldsJDK(buffer);
+   	}
+
+
+
+
+
+
+   	    private static boolean cleanOldsJDK(final java.nio.ByteBuffer buffer) {
+   	        Boolean b = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
+   	            Boolean success = Boolean.FALSE;
+   	            try {
+   	                Method getCleanerMethod = buffer.getClass()
+   	                        .getMethod("cleaner", (Class[]) null);
+   	                if (!getCleanerMethod.isAccessible()) {
+   	                    getCleanerMethod.setAccessible(true);
+   	                }
+   	                Object cleaner = getCleanerMethod.invoke(buffer, (Object[])null);
+   	                Method clean = cleaner.getClass().getMethod("clean", (Class[])null);
+   	                clean.invoke(cleaner, (Object[])null);
+   	                success = Boolean.TRUE;
+   	            } catch (Exception e) {
+   	                // Ignore
+   	            }
+   	            return success;
+   	        });
+
+   	        return b;
+   	    }
+
+
+
+   		  private static boolean cleanJava9(final java.nio.ByteBuffer buffer) {
+   		        Boolean b = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
+   		            Boolean success = Boolean.FALSE;
+   		            try {
+   		                final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+   		                final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
+   		                theUnsafeField.setAccessible(true);
+   		                final Object theUnsafe = theUnsafeField.get(null);
+   		                final Method invokeCleanerMethod = unsafeClass
+   		                        .getMethod("invokeCleaner", ByteBuffer.class);
+   		                invokeCleanerMethod.invoke(theUnsafe, buffer);
+   		                success = Boolean.TRUE;
+   		            } catch (Exception ignore) {
+   		                // Ignore
+   		            }
+   		            return success;
+   		        });
+
+   		        return b;
+   		    }
+
+
+
 
 }
