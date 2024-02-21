@@ -48,16 +48,20 @@
  */
 package com.lowagie.text.pdf;
 
+import java.lang.Field;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  * A {@link java.nio.MappedByteBuffer} wrapped as a {@link java.io.RandomAccessFile}
@@ -197,33 +201,64 @@ public class MappedRandomAccessFile implements AutoCloseable {
         super.finalize();
     }
     
-    /**
-     * invokes the clean method on the ByteBuffer's cleaner
-     * @param buffer ByteBuffer
-     * @return boolean true on success
-     */
-    public static boolean clean(final java.nio.ByteBuffer buffer) {
-        if (buffer == null || !buffer.isDirect()) {
-            return false;
-        }
-        return cleanJava11(buffer);
+      /**
+	 * invokes the clean method on the ByteBuffer's cleaner
+	 *
+	 * @param buffer ByteBuffer
+	 * @return boolean true on success
+	 */
+	public static boolean clean(final java.nio.ByteBuffer buffer) {
+		if (buffer == null || !buffer.isDirect()) {
+			return false;
+		}
 
-    }
+		if (cleanJava9(buffer)) {
+			return true;
+		}
+		return cleanOldsJDK(buffer);
+	}
 
-    private static boolean cleanJava11(final ByteBuffer buffer) {
-        Boolean success = Boolean.FALSE;
-        try {
-            MethodHandles.Lookup lookup = MethodHandles.lookup();
-            Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
-            MethodHandle methodHandle = lookup.findStatic(unsafeClass, "getUnsafe", MethodType.methodType(unsafeClass));
-            Object theUnsafe = methodHandle.invoke();
-            MethodHandle invokeCleanerMethod = lookup.findVirtual(unsafeClass, "invokeCleaner", MethodType.methodType(void.class, ByteBuffer.class));
-            invokeCleanerMethod.invoke(theUnsafe, buffer);
-            success = Boolean.TRUE;
-        } catch (Throwable ignore) {
-            // Ignore
-        }
-        return success;
-    }
+	    private static boolean cleanOldsJDK(final java.nio.ByteBuffer buffer) {
+	        Boolean b = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
+	            Boolean success = Boolean.FALSE;
+	            try {
+	                Method getCleanerMethod = buffer.getClass()
+	                        .getMethod("cleaner", (Class[]) null);
+	                if (!getCleanerMethod.isAccessible()) {
+	                    getCleanerMethod.setAccessible(true);
+	                }
+	                Object cleaner = getCleanerMethod.invoke(buffer, (Object[])null);
+	                Method clean = cleaner.getClass().getMethod("clean", (Class[])null);
+	                clean.invoke(cleaner, (Object[])null);
+	                success = Boolean.TRUE;
+	            } catch (Exception e) {
+	                // Ignore
+	            }
+	            return success;
+	        });
 
-}
+	        return b;
+	    }
+
+
+
+		  private static boolean cleanJava9(final java.nio.ByteBuffer buffer) {
+		        Boolean b = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
+		            Boolean success = Boolean.FALSE;
+		            try {
+		                final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+		                final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
+		                theUnsafeField.setAccessible(true);
+		                final Object theUnsafe = theUnsafeField.get(null);
+		                final Method invokeCleanerMethod = unsafeClass
+		                        .getMethod("invokeCleaner", ByteBuffer.class);
+		                invokeCleanerMethod.invoke(theUnsafe, buffer);
+		                success = Boolean.TRUE;
+		            } catch (Exception ignore) {
+		                // Ignore
+		            }
+		            return success;
+		        });
+
+		        return b;
+		    }
