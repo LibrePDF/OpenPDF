@@ -25,10 +25,10 @@ public enum FontSize {
     private final String textValue;
     private final boolean relative;
 
-    FontSize(String aTextValue, float aScale, boolean aRelative) {
-        textValue = aTextValue;
-        scale = aScale;
-        relative = aRelative;
+    FontSize(String textValue, float scale, boolean relative) {
+        this.textValue = textValue;
+        this.scale = scale;
+        this.relative = relative;
     }
 
     public String getTextValue() {
@@ -41,13 +41,12 @@ public enum FontSize {
 
     public boolean isRelative() { return relative; }
 
-    public static FontSize parse(String aText) {
-        if (aText == null || aText.length() == 0 || !Character.isLetter(aText.charAt(0))) {
+    public static FontSize parse(String text) {
+        if (text == null || text.length() == 0 || !Character.isLetter(text.charAt(0))) {
             return null;
         }
-        aText = aText.toLowerCase();
         for (FontSize fontSize : values()) {
-            if (fontSize.getTextValue().equals(aText)) {
+            if (fontSize.getTextValue().equalsIgnoreCase(text)) {
                 return fontSize;
             }
         }
