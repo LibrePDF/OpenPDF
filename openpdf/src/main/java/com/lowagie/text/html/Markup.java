@@ -479,6 +479,15 @@ public class Markup {
         if (string == null) {
             return 0f;
         }
+        FontSize fs = FontSize.parse(string);// it can be one of the CCS font size names (e.g. 'x-large')
+        if (fs != null) {
+            if (fs.isRelative()) {
+                return fs.getScale() * actualFontSize;
+            } else {
+                return fs.getScale() * DEFAULT_FONT_SIZE;
+            }
+        }
+
         int pos = 0;
         int length = string.length();
         boolean ok = true;
