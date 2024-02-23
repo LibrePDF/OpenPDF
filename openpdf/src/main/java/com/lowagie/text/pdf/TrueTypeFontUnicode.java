@@ -53,6 +53,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Utilities;
 import com.lowagie.text.error_messages.MessageLocalization;
 
+import java.awt.font.GlyphVector;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -198,12 +199,21 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         return total;
     }
 
+    public void addGlyphVectorSentenceMap(char[] sentence, GlyphVector glyph)
+    {
+        System.out.println("addGlyphVectorSentenceMap");
+        System.out.println(sentence);
+        System.out.println(glyph);
+    }
+
     /** Creates a ToUnicode CMap to allow copy and paste from Acrobat.
      * @param metrics metrics[0] contains the glyph index and metrics[2]
      * contains the Unicode code
      * @return the stream representing this CMap or <CODE>null</CODE>
      */    
     private PdfStream getToUnicode(int[][] metrics) {
+        System.out.println("getToUnicode");
+        System.out.println(metrics);
         metrics = filterCmapMetrics(metrics);
         if (metrics.length == 0)
             return null;

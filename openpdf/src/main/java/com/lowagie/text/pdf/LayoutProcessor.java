@@ -319,7 +319,12 @@ public class LayoutProcessor {
                     java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
             }
         }
-        return awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, localFlags);
+        GlyphVector glyph = awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, localFlags);
+        if (baseFont instanceof TrueTypeFontUnicode) {
+            TrueTypeFontUnicode trueTypeFont = (TrueTypeFontUnicode) baseFont;
+            trueTypeFont.addGlyphVectorSentenceMap(chars, glyph);
+        }
+        return glyph;
     }
 
     /**
