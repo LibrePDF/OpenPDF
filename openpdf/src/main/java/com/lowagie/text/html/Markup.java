@@ -213,6 +213,9 @@ public class Markup {
 
     // CSS values
 
+    /** the CSS tag for background style */
+    public static final String CSS_KEY_BG = "background";
+
     /**
      * value for the CSS tag for adding a page break when the document is
      * printed
