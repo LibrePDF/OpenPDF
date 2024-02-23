@@ -7,7 +7,7 @@
 
     This is based on the "Google Java Style", that can be found at https://google.github.io/styleguide/javaguide.html
 
-    The intention is the have only 3 minor diferences (because of the existing code):
+    We have only 3 minor diferences (because of the existing code):
         1 - Indentation with 4 spaces (instead of 2)
         2 - Continuation Indentation of 8 spaces
         3 - Max. line length of 120 characters
