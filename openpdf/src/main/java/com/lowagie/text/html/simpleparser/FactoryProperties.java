@@ -50,27 +50,22 @@
 
 package com.lowagie.text.html.simpleparser;
 
-import static com.lowagie.text.html.Markup.parseLength;
-
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Element;
-import com.lowagie.text.ElementTags;
 import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.FontProvider;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.Paragraph;
+import com.lowagie.text.*;
 import com.lowagie.text.html.HtmlTags;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.HyphenationAuto;
 import com.lowagie.text.pdf.HyphenationEvent;
 import com.lowagie.text.utils.NumberUtilities;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
+import static com.lowagie.text.html.Markup.parseLength;
 
 /**
  * @author psoares
@@ -219,6 +214,7 @@ public class FactoryProperties {
         return new HyphenationAuto(lang, country, leftMin, rightMin);
     }
 
+    @Deprecated // this method is nor called anywhere. But it is public so theoretically it could be called by consumers of OpenPdf, but why?
     public static void insertStyle(Map<String, String> h) {
         String style = h.get("style");
         if (style == null)
@@ -331,15 +327,22 @@ public class FactoryProperties {
                         h.put("u", null);
                     break;
                 }
-                case Markup.CSS_KEY_COLOR:
-                    Color c = Markup.decodeColor(prop.getProperty(key));
-                    if (c != null) {
-                        int hh = c.getRGB();
-                        String hs = Integer.toHexString(hh);
-                        hs = "000000" + hs;
-                        hs = "#" + hs.substring(hs.length() - 6);
-                        h.put("color", hs);
+                case Markup.CSS_KEY_BGCOLOR: {
+                    h.put(Markup.CSS_KEY_BGCOLOR, prop.getProperty(key));
+                    break;
+                }
+                case Markup.CSS_KEY_BG: {
+                    for(String attribute: prop.getProperty(key).split(" ")) {
+                        Color c = Markup.decodeColor(attribute.trim());
+                        if (c != null) {
+                            h.put(Markup.CSS_KEY_BGCOLOR, attribute.trim());
+                            break;
+                        }
                     }
+                    break;
+                }
+                case Markup.CSS_KEY_COLOR:
+                    h.put(Markup.CSS_KEY_COLOR, prop.getProperty(key));
                     break;
                 case Markup.CSS_KEY_LINEHEIGHT: {
                     String ss = prop.getProperty(key).trim();
@@ -388,6 +391,10 @@ public class FactoryProperties {
         } else if (props.hasProperty("sup")) {
             chunk.setTextRise(size);
         }
+        Color bgColor = Markup.decodeColor(props.getProperty(Markup.CSS_KEY_BGCOLOR));
+        if (bgColor != null) {
+            chunk.setBackground(bgColor);
+        }
         chunk.setHyphenation(getHyphenation(props));
         return chunk;
     }
@@ -420,7 +427,7 @@ public class FactoryProperties {
                 .flatMap(NumberUtilities::parseFloat)
                 .orElse(12f);
 
-        Color color = Markup.decodeColor(props.getProperty("color"));
+        Color color = Markup.decodeColor(props.getProperty(Markup.CSS_KEY_COLOR));
         String encoding = props.getOrDefault("encoding", BaseFont.WINANSI);
         return fontImp.getFont(face, encoding, true, size, style, color);
     }

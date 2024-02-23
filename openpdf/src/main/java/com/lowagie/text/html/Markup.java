@@ -52,7 +52,7 @@
 
 package com.lowagie.text.html;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -212,6 +212,9 @@ public class Markup {
     public static final String CSS_KEY_VISIBILITY = "visibility";
 
     // CSS values
+
+    /** the CSS tag for background style */
+    public static final String CSS_KEY_BG = "background";
 
     /**
      * value for the CSS tag for adding a page break when the document is
