@@ -50,22 +50,27 @@
 
 package com.lowagie.text.html.simpleparser;
 
+import static com.lowagie.text.html.Markup.parseLength;
+
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Element;
+import com.lowagie.text.ElementTags;
 import com.lowagie.text.Font;
-import com.lowagie.text.*;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.FontProvider;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.Paragraph;
 import com.lowagie.text.html.HtmlTags;
 import com.lowagie.text.html.Markup;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.HyphenationAuto;
 import com.lowagie.text.pdf.HyphenationEvent;
 import com.lowagie.text.utils.NumberUtilities;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
-import static com.lowagie.text.html.Markup.parseLength;
 
 /**
  * @author psoares
