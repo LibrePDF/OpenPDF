@@ -130,137 +130,7 @@ public class PdfWriter extends DocWriter implements
      * @see PdfObject
      * @see PdfIndirectObject
      */
-
     public static class PdfBody {
-
-        // inner classes
-
-        /**
-         * <CODE>PdfCrossReference</CODE> is an entry in the PDF Cross-Reference table.
-         */
-
-        public static class PdfCrossReference implements Comparable<PdfCrossReference> {
-
-            /**
-             * String template for cross-reference entry PDF representation.
-             *
-             * @see Formatter
-             */
-            private static final String CROSS_REFERENCE_ENTRY_FORMAT = "%010d %05d %c \n";
-
-            // membervariables
-            private final int type;
-
-            /**
-             * Byte offset in the PDF file.
-             */
-            private final long offset;
-
-            private final int refnum;
-            /**
-             * generation of the object.
-             */
-            private final int generation;
-
-            // constructors
-
-            /**
-             * Constructs a cross-reference element for a PdfIndirectObject.
-             *
-             * @param refnum     the reference number
-             * @param offset     byte offset of the object
-             * @param generation generation number of the object
-             */
-
-            public PdfCrossReference(int refnum, long offset, int generation) {
-                type = 0;
-                this.offset = offset;
-                this.refnum = refnum;
-                this.generation = generation;
-            }
-
-            /**
-             * Constructs a cross-reference element for a PdfIndirectObject.
-             *
-             * @param refnum the reference number
-             * @param offset byte offset of the object
-             */
-
-            public PdfCrossReference(int refnum, long offset) {
-                type = 1;
-                this.offset = offset;
-                this.refnum = refnum;
-                this.generation = 0;
-            }
-
-            public PdfCrossReference(int type, int refnum, long offset, int generation) {
-                this.type = type;
-                this.offset = offset;
-                this.refnum = refnum;
-                this.generation = generation;
-            }
-
-            int getRefnum() {
-                return refnum;
-            }
-
-            /**
-             * Writes PDF representation of cross-reference entry to passed output stream.
-             *
-             * @param os Output stream this entry to write to
-             * @throws IOException If any I/O error occurs
-             */
-            public void toPdf(OutputStream os) throws IOException {
-                // TODO: are generation number and 'In use' keyword bound that way?
-                final char inUse = generation == GENERATION_MAX ? 'f' : 'n';
-                os.write(getISOBytes(String.format(CROSS_REFERENCE_ENTRY_FORMAT, offset, generation, inUse)));
-            }
-
-            /**
-             * Writes PDF syntax to the OutputStream
-             *
-             * @param midSize the mid size
-             * @param os      the OutputStream
-             * @throws IOException on error
-             */
-            public void toPdf(int midSize, OutputStream os) throws IOException {
-                os.write((byte) type);
-                while (--midSize >= 0) {
-                    os.write((byte) ((offset >>> (8 * midSize)) & 0xff));
-                }
-                os.write((byte) ((generation >>> 8) & 0xff));
-                os.write((byte) (generation & 0xff));
-            }
-
-            /**
-             * Compares current {@link PdfCrossReference entry} with passed {@code reference} by PDF object number.
-             */
-            @Override
-            public int compareTo(final PdfCrossReference reference) {
-                return Integer.compare(refnum, reference.refnum);
-            }
-
-            /**
-             * Checks if two entries are equal if their PDF object numbers are equal.
-             *
-             * @param obj Another cross-reference entry
-             * @return If null, not of type {@link PdfCrossReference} or object numbers are not equal, returns false;
-             * true otherwise
-             */
-            @Override
-            public boolean equals(Object obj) {
-                if (!(obj instanceof PdfCrossReference other)) {
-                    return false;
-                }
-
-                return refnum == other.refnum;
-            }
-
-            @Override
-            public int hashCode() {
-                return refnum;
-            }
-        }
 
         private static final int OBJSINSTREAM = 200;
 
@@ -351,7 +221,6 @@ public class PdfWriter extends DocWriter implements
          * @return a <CODE>PdfIndirectObject</CODE>
          * @throws IOException
          */
-
         PdfIndirectObject add(PdfObject object) throws IOException {
             return add(object, getIndirectReferenceNumber());
         }
@@ -365,7 +234,6 @@ public class PdfWriter extends DocWriter implements
          *
          * @return a PdfIndirectReference
          */
-
         PdfIndirectReference getPdfIndirectReference() {
             return new PdfIndirectReference(0, getIndirectReferenceNumber());
         }
@@ -389,7 +257,6 @@ public class PdfWriter extends DocWriter implements
          * @return a <CODE>PdfIndirectObject</CODE>
          * @throws IOException
          */
-
         PdfIndirectObject add(PdfObject object, PdfIndirectReference ref) throws IOException {
             return add(object, ref.getNumber());
         }
@@ -429,7 +296,6 @@ public class PdfWriter extends DocWriter implements
          *
          * @return an offset
          */
-
         long offset() {
             return position;
         }
@@ -439,7 +305,6 @@ public class PdfWriter extends DocWriter implements
          *
          * @return a number of objects
          */
-
         int size() {
             return Math.max((xrefs.last()).getRefnum() + 1, refnum);
         }
@@ -524,6 +389,133 @@ public class PdfWriter extends DocWriter implements
                 }
                 // make the trailer
                 trailer.toPdf(writer, os);
+            }
+        }
+
+        // inner classes
+
+        /**
+         * <CODE>PdfCrossReference</CODE> is an entry in the PDF Cross-Reference table.
+         */
+        public static class PdfCrossReference implements Comparable<PdfCrossReference> {
+
+            /**
+             * String template for cross-reference entry PDF representation.
+             *
+             * @see Formatter
+             */
+            private static final String CROSS_REFERENCE_ENTRY_FORMAT = "%010d %05d %c \n";
+
+            // membervariables
+            private final int type;
+
+            /**
+             * Byte offset in the PDF file.
+             */
+            private final long offset;
+
+            private final int refnum;
+            /**
+             * generation of the object.
+             */
+            private final int generation;
+
+            // constructors
+
+            /**
+             * Constructs a cross-reference element for a PdfIndirectObject.
+             *
+             * @param refnum     the reference number
+             * @param offset     byte offset of the object
+             * @param generation generation number of the object
+             */
+            public PdfCrossReference(int refnum, long offset, int generation) {
+                type = 0;
+                this.offset = offset;
+                this.refnum = refnum;
+                this.generation = generation;
+            }
+
+            /**
+             * Constructs a cross-reference element for a PdfIndirectObject.
+             *
+             * @param refnum the reference number
+             * @param offset byte offset of the object
+             */
+            public PdfCrossReference(int refnum, long offset) {
+                type = 1;
+                this.offset = offset;
+                this.refnum = refnum;
+                this.generation = 0;
+            }
+
+            public PdfCrossReference(int type, int refnum, long offset, int generation) {
+                this.type = type;
+                this.offset = offset;
+                this.refnum = refnum;
+                this.generation = generation;
+            }
+
+            int getRefnum() {
+                return refnum;
+            }
+
+            /**
+             * Writes PDF representation of cross-reference entry to passed output stream.
+             *
+             * @param os Output stream this entry to write to
+             * @throws IOException If any I/O error occurs
+             */
+            public void toPdf(OutputStream os) throws IOException {
+                // TODO: are generation number and 'In use' keyword bound that way?
+                final char inUse = generation == GENERATION_MAX ? 'f' : 'n';
+                os.write(getISOBytes(String.format(CROSS_REFERENCE_ENTRY_FORMAT, offset, generation, inUse)));
+            }
+
+            /**
+             * Writes PDF syntax to the OutputStream
+             *
+             * @param midSize the mid size
+             * @param os      the OutputStream
+             * @throws IOException on error
+             */
+            public void toPdf(int midSize, OutputStream os) throws IOException {
+                os.write((byte) type);
+                int thisMidSize = midSize;
+                while (--thisMidSize >= 0) {
+                    os.write((byte) ((offset >>> (8 * thisMidSize)) & 0xff));
+                }
+                os.write((byte) ((generation >>> 8) & 0xff));
+                os.write((byte) (generation & 0xff));
+            }
+
+            /**
+             * Compares current {@link PdfCrossReference entry} with passed {@code reference} by PDF object number.
+             */
+            @Override
+            public int compareTo(final PdfCrossReference reference) {
+                return Integer.compare(refnum, reference.refnum);
+            }
+
+            /**
+             * Checks if two entries are equal if their PDF object numbers are equal.
+             *
+             * @param obj Another cross-reference entry
+             * @return If null, not of type {@link PdfCrossReference} or object numbers are not equal, returns false;
+             * true otherwise
+             */
+            @Override
+            public boolean equals(Object obj) {
+                if (!(obj instanceof PdfCrossReference other)) {
+                    return false;
+                }
+
+                return refnum == other.refnum;
+            }
+
+            @Override
+            public int hashCode() {
+                return refnum;
             }
         }
     }
@@ -1194,7 +1186,7 @@ public class PdfWriter extends DocWriter implements
      * <p>
      * The pages-tree is built and written to the outputstream. A Catalog is constructed, as well as an Info-object, the
      * reference table is composed and everything is written to the outputstream embedded in a Trailer.
-     *gg
+     *
      * @see com.lowagie.text.DocWriter#close()
      */
     @Override
