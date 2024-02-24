@@ -5,6 +5,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +13,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class TextExtractTest {
     @Test
@@ -35,7 +34,7 @@ public class TextExtractTest {
         LayoutProcessor.enableKernLiga();
         float fontSize = 12.0f;
 
-        String testText = "น้ำ";
+        String testText = "กขน้ำตา ญูญูิ่ ก้กิ้";
 
         URL fontPath = TextExtractTest.class.getResource("/fonts/NotoSansThaiLooped/NotoSansThaiLooped-Regular.ttf");
 

@@ -199,11 +199,37 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         return total;
     }
 
-    public void addGlyphVectorSentenceMap(char[] sentence, GlyphVector glyph)
+    public int[][] getSentenceMissingCmap(char[] chars, GlyphVector glyph)
     {
-        System.out.println("addGlyphVectorSentenceMap");
-        System.out.println(sentence);
-        System.out.println(glyph);
+        int[] unicodeChar = new int[chars.length];
+        int[] glyphChar = new int[glyph.getNumGlyphs()];
+        for(int i = 0; i < chars.length; i++){
+            unicodeChar[i] = chars[i];
+        }
+        for(int i = 0; i < glyphChar.length; i++) {
+            glyphChar[i] = glyph.getGlyphCode(i);
+        }
+        int[][] missingCmap = new int[glyphChar.length][2];
+        int count = 0;
+        for(int i = 0; i < glyphChar.length; i++) {
+            int charIndex = glyph.getGlyphCharIndex(i);
+            int glyphCode = glyphChar[i];
+            Integer cmapCharactherCode = getCharacterCode(glyphCode);
+
+            if (cmapCharactherCode == null) {
+                missingCmap[count][0] = glyphCode;
+                missingCmap[count][1] = unicodeChar[charIndex];
+                count+=1;
+            }
+        }
+
+        int[][] result = new int[count][2];
+        for(int i = 0; i < count; i++) {
+            result[i][0] = missingCmap[i][0];
+            result[i][1] = missingCmap[i][1];
+        }
+
+        return result;
     }
 
     /** Creates a ToUnicode CMap to allow copy and paste from Acrobat.
@@ -212,8 +238,6 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
      * @return the stream representing this CMap or <CODE>null</CODE>
      */    
     private PdfStream getToUnicode(int[][] metrics) {
-        System.out.println("getToUnicode");
-        System.out.println(metrics);
         metrics = filterCmapMetrics(metrics);
         if (metrics.length == 0)
             return null;
