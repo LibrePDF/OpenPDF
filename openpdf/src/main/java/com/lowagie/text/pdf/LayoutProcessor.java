@@ -391,12 +391,15 @@ public class LayoutProcessor {
         float dy = (float) p.getY() - lastY;
         cb.moveTextBasic(dx, -dy);
 
-        if (baseFont instanceof TrueTypeFontUnicode && cb.state.fontDetails.longTag != null) {
+        if (baseFont instanceof TrueTypeFontUnicode && cb.state.fontDetails.fillerCmap != null) {
             TrueTypeFontUnicode trueTypeFont = (TrueTypeFontUnicode) baseFont;
             int[][] localCmap = trueTypeFont.getSentenceMissingCmap(text.toCharArray(), glyphVector);
 
             for (int k = 0; k < localCmap.length; ++k) {
-                cb.state.fontDetails.longTag.put(localCmap[k][0], new int[] { localCmap[k][0], 0, localCmap[k][1] });
+                System.out.println("putting");
+                System.out.println(localCmap[k][0]);
+                System.out.println(localCmap[k][1]);
+                cb.state.fontDetails.fillerCmap.put(localCmap[k][0], new int[] { localCmap[k][0], localCmap[k][1] });
             }
         }
 

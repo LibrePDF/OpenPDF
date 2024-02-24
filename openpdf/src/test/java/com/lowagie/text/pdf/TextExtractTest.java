@@ -40,6 +40,7 @@ public class TextExtractTest {
 
         FontFactory.register(fontPath.toString(), "NotoSansThaiLooped");
         Font notoSansThaiLooped = FontFactory.getFont("NotoSansThaiLooped", BaseFont.IDENTITY_H, true, fontSize);
+        notoSansThaiLooped.getBaseFont().setIncludeCidSet(false);
 
         ByteArrayOutputStream pdfOutput = new ByteArrayOutputStream();
         try (Document document = new Document()) {
@@ -53,6 +54,10 @@ public class TextExtractTest {
 
         PdfReader reader = new PdfReader(new ByteArrayInputStream(pdfOutput.toByteArray()));
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(reader);
+
+        // FileOutputStream test = new FileOutputStream("/tmp/output2.pdf");
+        // pdfOutput.writeTo(test);
+
         Assertions.assertEquals(testText, pdfTextExtractor.getTextFromPage(1));
     }
 }

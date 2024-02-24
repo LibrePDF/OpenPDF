@@ -111,6 +111,11 @@ class FontDetails {
      * encoding should be included in the document.
      */
     protected boolean subset = true;
+    /**
+     * Contain glyphs that used but missing in Cmap.
+     * the value is int[]{glyph, Unicode code}
+     */    
+    HashMap<Integer, int[]> fillerCmap;
     
     /**
      * Each font used in a document has an instance of this class.
@@ -136,6 +141,7 @@ class FontDetails {
                 break;
             case BaseFont.FONT_TYPE_TTUNI:
                 longTag = new HashMap<>();
+                fillerCmap = new HashMap<>();
                 ttu = (TrueTypeFontUnicode)baseFont;
                 symbolic = baseFont.isFontSpecific();
                 break;
@@ -345,7 +351,7 @@ class FontDetails {
                     baseFont.writeFont(writer, indirectReference, new Object[]{cjkTag});
                     break;
                 case BaseFont.FONT_TYPE_TTUNI:
-                    baseFont.writeFont(writer, indirectReference, new Object[]{longTag, subset});
+                    baseFont.writeFont(writer, indirectReference, new Object[]{longTag, subset, fillerCmap});
                     break;
             }
         }

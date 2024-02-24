@@ -423,6 +423,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
     @SuppressWarnings("unchecked")
     void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException, IOException {
         HashMap<Integer, int[]> longTag = (HashMap<Integer, int[]>)params[0];
+        HashMap<Integer, int[]> fillerCmap = (HashMap<Integer, int[]>)params[2];
         addRangeUni(longTag, true, subset);
         int[][] metrics = longTag.values().toArray(new int[0][]);
         Arrays.sort(metrics, this);
@@ -482,7 +483,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         obj = writer.addToBody(pobj);
         ind_font = obj.getIndirectReference();
 
-        pobj = getToUnicode(metrics);
+        pobj = getToUnicode(mergeMetricsAndFillerCmap(metrics, fillerCmap));
         PdfIndirectReference toUnicodeRef = null;
         
         if (pobj != null) {
@@ -492,6 +493,22 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
 
         pobj = getFontBaseType(ind_font, subsetPrefix, toUnicodeRef);
         writer.addToBody(pobj, ref);
+    }
+
+    public int[][] mergeMetricsAndFillerCmap(int[][] metric, HashMap<Integer, int[]> fillerCmap) {
+        HashMap<Integer, int[]> result = new HashMap<>();
+        for (int i=0; i<metric.length; i++) {
+            result.put(metric[i][0], metric[i]);
+        }
+
+        for (Map.Entry<Integer, int[]> entry : fillerCmap.entrySet()) {
+            int[] row = entry.getValue();
+            result.put(entry.getKey(), new int[] {row[0], 0, row[1]});
+        }
+
+        int[][] data = result.values().toArray(new int[0][]);
+
+        return data;
     }
     
     /**
