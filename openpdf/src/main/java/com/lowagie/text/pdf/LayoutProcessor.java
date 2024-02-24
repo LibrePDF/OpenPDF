@@ -396,9 +396,6 @@ public class LayoutProcessor {
             int[][] localCmap = trueTypeFont.getSentenceMissingCmap(text.toCharArray(), glyphVector);
 
             for (int k = 0; k < localCmap.length; ++k) {
-                System.out.println("putting");
-                System.out.println(localCmap[k][0]);
-                System.out.println(localCmap[k][1]);
                 cb.state.fontDetails.fillerCmap.put(localCmap[k][0], new int[] { localCmap[k][0], localCmap[k][1] });
             }
         }
