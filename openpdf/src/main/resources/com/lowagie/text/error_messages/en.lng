@@ -368,7 +368,7 @@ unexpected.end.of.file=Unexpected end of file.
 unexpected.eof=Unexpected EOF
 unexpected.gt.gt=Unexpected '>>'
 unexpected.close.bracket=Unexpected ']'
-unknown.color.format.must.be.rgb.or.rrggbb=Unknown color format. Must be #RGB or #RRGGBB
+unknown.color.format.must.be.rgb.or.rrggbb=Unknown color format. Must be #RGB, #RRGGBB, #RGBA or #RRGGBBAA
 unknown.encryption.type.r.eq.1=Unknown encryption type R = {1}
 unknown.encryption.type.v.eq.1=Unknown encryption type V = {1}
 unknown.filter.1=Unknown filter: {1}
@@ -387,6 +387,7 @@ while.removing.wmf.placeable.header=while removing wmf placeable header
 writelength.can.only.be.called.after.output.of.the.stream.body=writeLength() can only be called after output of the stream body.
 writelength.can.only.be.called.in.a.contructed.pdfstream.inputstream.pdfwriter=writeLength() can only be called in a contructed PdfStream(InputStream,PdfWriter).
 wrong.number.of.columns=Wrong number of columns.
+xref.infinite.loop=An infinite loop was detected in the xref table.
 xref.subsection.not.found=xref subsection not found
 xstep.or.ystep.can.not.be.zero=XStep or YStep can not be ZERO.
 you.can.only.add.a.writer.to.a.pdfdocument.once=You can only add a writer to a PdfDocument once.
@@ -406,3 +407,4 @@ you.have.to.define.a.boolean.array.for.this.collection.sort.dictionary=You have 
 you.have.used.the.wrong.constructor.for.this.fieldpositioningevents.class=You have used the wrong constructor for this FieldPositioningEvents class.
 you.must.set.a.value.before.adding.a.prefix=You must set a value before adding a prefix.
 you.need.a.single.boolean.for.this.collection.sort.dictionary=You need a single boolean for this collection sort dictionary.
+you.should.call.document.close.instead=Please call Document.close() instead. The PdfWriter will then be closed automatically.
