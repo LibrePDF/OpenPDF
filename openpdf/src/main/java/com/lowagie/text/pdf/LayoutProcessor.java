@@ -390,6 +390,16 @@ public class LayoutProcessor {
         float dx = (float) p.getX() - lastX;
         float dy = (float) p.getY() - lastY;
         cb.moveTextBasic(dx, -dy);
+
+        if (baseFont instanceof TrueTypeFontUnicode && cb.state.fontDetails.fillerCmap != null) {
+            TrueTypeFontUnicode trueTypeFont = (TrueTypeFontUnicode) baseFont;
+            int[][] localCmap = trueTypeFont.getSentenceMissingCmap(text.toCharArray(), glyphVector);
+
+            for (int k = 0; k < localCmap.length; ++k) {
+                cb.state.fontDetails.fillerCmap.put(localCmap[k][0], new int[] { localCmap[k][0], localCmap[k][1] });
+            }
+        }
+
         return new Point2D.Double(-p.getX(), p.getY());
     }
 

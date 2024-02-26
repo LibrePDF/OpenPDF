@@ -53,6 +53,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Utilities;
 import com.lowagie.text.error_messages.MessageLocalization;
 
+import java.awt.font.GlyphVector;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -196,6 +197,39 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
             }
         }
         return total;
+    }
+
+    public int[][] getSentenceMissingCmap(char[] chars, GlyphVector glyph)
+    {
+        int[] unicodeChar = new int[chars.length];
+        int[] glyphChar = new int[glyph.getNumGlyphs()];
+        for(int i = 0; i < chars.length; i++){
+            unicodeChar[i] = chars[i];
+        }
+        for(int i = 0; i < glyphChar.length; i++) {
+            glyphChar[i] = glyph.getGlyphCode(i);
+        }
+        int[][] missingCmap = new int[glyphChar.length][2];
+        int count = 0;
+        for(int i = 0; i < glyphChar.length; i++) {
+            int charIndex = glyph.getGlyphCharIndex(i);
+            int glyphCode = glyphChar[i];
+            Integer cmapCharactherCode = getCharacterCode(glyphCode);
+
+            if (cmapCharactherCode == null) {
+                missingCmap[count][0] = glyphCode;
+                missingCmap[count][1] = unicodeChar[charIndex];
+                count+=1;
+            }
+        }
+
+        int[][] result = new int[count][2];
+        for(int i = 0; i < count; i++) {
+            result[i][0] = missingCmap[i][0];
+            result[i][1] = missingCmap[i][1];
+        }
+
+        return result;
     }
 
     /** Creates a ToUnicode CMap to allow copy and paste from Acrobat.
@@ -389,6 +423,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
     @SuppressWarnings("unchecked")
     void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException, IOException {
         HashMap<Integer, int[]> longTag = (HashMap<Integer, int[]>)params[0];
+        HashMap<Integer, int[]> fillerCmap = (HashMap<Integer, int[]>)params[2];
         addRangeUni(longTag, true, subset);
         int[][] metrics = longTag.values().toArray(new int[0][]);
         Arrays.sort(metrics, this);
@@ -448,7 +483,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
         obj = writer.addToBody(pobj);
         ind_font = obj.getIndirectReference();
 
-        pobj = getToUnicode(metrics);
+        pobj = getToUnicode(mergeMetricsAndFillerCmap(metrics, fillerCmap));
         PdfIndirectReference toUnicodeRef = null;
         
         if (pobj != null) {
@@ -458,6 +493,22 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator{
 
         pobj = getFontBaseType(ind_font, subsetPrefix, toUnicodeRef);
         writer.addToBody(pobj, ref);
+    }
+
+    public int[][] mergeMetricsAndFillerCmap(int[][] metric, HashMap<Integer, int[]> fillerCmap) {
+        HashMap<Integer, int[]> result = new HashMap<>();
+        for (int i=0; i<metric.length; i++) {
+            result.put(metric[i][0], metric[i]);
+        }
+
+        for (Map.Entry<Integer, int[]> entry : fillerCmap.entrySet()) {
+            int[] row = entry.getValue();
+            result.put(entry.getKey(), new int[] {row[0], 0, row[1]});
+        }
+
+        int[][] data = result.values().toArray(new int[0][]);
+
+        return data;
     }
     
     /**
