@@ -1980,6 +1980,10 @@ public class PdfWriter extends DocWriter implements
         return pdfxConformance.isPdfX();
     }
 
+    public boolean isPdfA1() {
+        return pdfxConformance.isPdfA1();
+    }
+
 //  [C11] Output intents
 
     /**
