@@ -220,6 +220,7 @@ public class PdfAnnotation extends PdfDictionary {
     if (rect != null) {
       put(PdfName.RECT, new PdfRectangle(rect));
     }
+    addFKey();
   }
 
   /**
@@ -239,6 +240,7 @@ public class PdfAnnotation extends PdfDictionary {
     put(PdfName.T, title);
     put(PdfName.RECT, new PdfRectangle(llx, lly, urx, ury));
     put(PdfName.CONTENTS, content);
+    addFKey();
   }
 
   /**
@@ -259,6 +261,7 @@ public class PdfAnnotation extends PdfDictionary {
     put(PdfName.A, action);
     put(PdfName.BORDER, new PdfBorderArray(0, 0, 0));
     put(PdfName.C, new PdfColor(0x00, 0x00, 0xFF));
+    addFKey();
   }
 
   /**
@@ -1072,5 +1075,11 @@ public class PdfAnnotation extends PdfDictionary {
       buf.append(parameters);
       return buf.toString();
     }
+  }
+
+  private void addFKey() {
+      if (writer.isPdfA1()) {
+          put(PdfName.F, new PdfNumber(FLAGS_PRINT));
+      }
   }
 }
