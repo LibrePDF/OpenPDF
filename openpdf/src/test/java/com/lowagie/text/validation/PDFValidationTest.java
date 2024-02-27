@@ -5,6 +5,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfWriter;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.verapdf.core.ModelParsingException;
 import org.verapdf.gf.model.GFModelParser;
@@ -24,10 +25,12 @@ import java.io.InputStream;
 public class PDFValidationTest {
 
     @Test
-    void validatePDFWithVera() throws Exception {
+    public void testValidatePDFWithVera() throws Exception {
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        PdfWriter.getInstance(document, byteArrayOutputStream);
+        PdfWriter pdfWriter = PdfWriter.getInstance(document, byteArrayOutputStream);
+        pdfWriter.setPDFXConformance(PdfWriter.PDFA1B);
+        pdfWriter.createXmpMetadata();
 
         try {
             document.open();
@@ -39,7 +42,7 @@ public class PDFValidationTest {
             document.close();
 
             // Create a veraPDF validator
-            PDFAFlavour flavour = PDFAFlavour.PDFA_1_A;
+            PDFAFlavour flavour = PDFAFlavour.PDFA_1_B;
             try (InputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
                  GFModelParser parser = GFModelParser.createModelWithFlavour(inputStream, flavour)) {
                 PDFAValidator validator = ValidatorFactory.createValidator(flavour, false, 10);
@@ -56,6 +59,7 @@ public class PDFValidationTest {
                     }
 
                 }
+                Assertions.assertTrue(result.isCompliant());
             }
         } catch (ModelParsingException e) {
             e.printStackTrace();
