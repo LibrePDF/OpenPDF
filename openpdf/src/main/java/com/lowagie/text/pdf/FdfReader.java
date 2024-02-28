@@ -114,7 +114,7 @@ public class FdfReader extends PdfReader {
     protected void kidNode(PdfDictionary merged, String name) {
         PdfArray kids = merged.getAsArray(PdfName.KIDS);
         if (kids == null || kids.isEmpty()) {
-            if (!name.isEmpty())
+            if (name.length() > 0)
                 name = name.substring(1);
             fields.put(name, merged);
         }
@@ -150,6 +150,17 @@ public class FdfReader extends PdfReader {
         PdfDictionary merged = new PdfDictionary();
         merged.put(PdfName.KIDS, fld);
         kidNode(merged, "");
+    }
+
+    /** Gets all the fields. The map is keyed by the fully qualified
+     * field name and the value is a merged <CODE>PdfDictionary</CODE>
+     * with the field content.
+     * @deprecated use {@link #getAllFields()}
+     * @return all the fields
+     */
+    @Deprecated
+    public HashMap<String, PdfDictionary> getFields() {
+        return (HashMap<String, PdfDictionary>) fields;
     }
 
     /** Gets all the fields. The map is keyed by the fully qualified

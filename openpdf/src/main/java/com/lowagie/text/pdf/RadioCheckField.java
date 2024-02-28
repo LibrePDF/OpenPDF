@@ -432,6 +432,33 @@ public class RadioCheckField extends BaseField {
     }
     
     /**
+     * Gets the radio field. It's only composed of the widget keys and must be used
+     * with {@link #getRadioGroup(boolean,boolean)}.
+     * @return the radio field
+     * @throws IOException on error
+     * @throws DocumentException on error
+     * 
+     * @deprecated use {@link #getKidField()} instead
+     */
+    @Deprecated
+    public PdfFormField getRadioField() throws IOException, DocumentException {
+        return getField(true);
+    }
+    
+    /**
+     * Gets the check field.
+     * @return the check field
+     * @throws IOException on error
+     * @throws DocumentException on error
+     * 
+     * @deprecated use {@link #getFullField()} instead
+     */
+    @Deprecated
+    public PdfFormField getCheckField() throws IOException, DocumentException {
+        return getField(false);
+    }
+    
+    /**
      * Gets a parent of a checkbox autofill parent. 
      * It is composed of the field specific keys, without the widget ones. 
      * This field is to be used as a field aggregator with {@link PdfFormField#addKid(PdfFormField) addKid()}.

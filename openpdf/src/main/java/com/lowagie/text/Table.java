@@ -428,6 +428,39 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
     public int getAlignment() {
         return alignment;
     }
+    
+    /**
+     * Sets the horizontal alignment.
+     *
+     * @param       value   the new value
+     * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+     * use {@link Table#setHorizontalAlignment(HorizontalAlignment)} instead
+     *
+     */
+    @Deprecated
+    public void setAlignment(int value) {
+        alignment = value;
+    }
+    
+    /**
+     * Sets the alignment of this paragraph.
+     *
+     * @param    alignment        the new alignment as a <CODE>String</CODE>
+     * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+     * use {@link Table#setHorizontalAlignment(HorizontalAlignment)} instead
+     */
+    @Deprecated
+    public void setAlignment(String alignment) {
+        if (ElementTags.ALIGN_LEFT.equalsIgnoreCase(alignment)) {
+            this.alignment = Element.ALIGN_LEFT;
+            return;
+        }
+        if (ElementTags.RIGHT.equalsIgnoreCase(alignment)) {
+            this.alignment = Element.ALIGN_RIGHT;
+            return;
+        }
+        this.alignment = Element.ALIGN_CENTER;
+    }
 
     @Override
     public void setHorizontalAlignment(final HorizontalAlignment alignment) {
@@ -1469,5 +1502,27 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
     public void setComplete(boolean complete) {
         this.complete = complete;
     }
-
+    
+    /**
+     * Gets the default layout of the Table.
+     * @return a cell with all the defaults
+     * @deprecated As of iText 2.0.7, replaced by {@link #getDefaultCell()},
+     * scheduled for removal at 2.2.0
+     */
+    @Deprecated
+    public Cell getDefaultLayout() {
+        return getDefaultCell();
+    }
+    
+    /**
+     * Sets the default layout of the Table to
+     * the provided Cell
+     * @param value a cell with all the defaults
+     * @deprecated As of iText 2.0.7, replaced by {@link #setDefaultCell(Cell)},
+     * scheduled for removal at 2.2.0
+     */
+    @Deprecated
+    public void setDefaultLayout(Cell value) {
+        defaultCell = value;
+    }
 }

@@ -219,7 +219,23 @@ public class FactoryProperties {
         return new HyphenationAuto(lang, country, leftMin, rightMin);
     }
 
+    /**
+     * This method isn't used by iText, but you can use it to analyze
+     * the value of a style attribute inside a HashMap.
+     * The different elements of the style attribute are added to the
+     * HashMap as key-value pairs.
+     *
+     * @param h a HashMap that should have at least a key named
+     *          style. After this method is invoked, more keys could be added.
+     *
+     * @deprecated use {@link FactoryProperties#insertStyle(Map)} instead. (since 1.2.22)
+     */
+    @SuppressWarnings("unchecked")
     @Deprecated // this method is nor called anywhere. But it is public so theoretically it could be called by consumers of OpenPdf, but why?
+    public static void insertStyle(HashMap h) {
+        insertStyle((Map<String, String>) h);
+    }
+
     public static void insertStyle(Map<String, String> h) {
         String style = h.get("style");
         if (style == null)
@@ -339,10 +355,10 @@ public class FactoryProperties {
                 case Markup.CSS_KEY_BG: {
                     for(String attribute: prop.getProperty(key).split(" ")) {
                         Color c = Markup.decodeColor(attribute.trim());
-                        if (c != null) {
+                    if (c != null) {
                             h.put(Markup.CSS_KEY_BGCOLOR, attribute.trim());
                             break;
-                        }
+                    }
                     }
                     break;
                 }

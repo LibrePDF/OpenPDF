@@ -107,6 +107,20 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
         SimpleXMLParser.parse(this, new ByteArrayInputStream(xfdfIn));
     }
 
+    /**
+     * Gets all the fields. The map is keyed by the fully qualified field name and the value is a merged
+     * <CODE>PdfDictionary</CODE> with the
+     * field content.
+     *
+     * @deprecated use {@link #getAllFields()}
+     * @return all the fields
+     */
+    @Override
+    @Deprecated
+    public HashMap<String, String> getFields() {
+        return (HashMap<String, String>) fields;
+    }
+
     @Override
     public Map<String, String> getAllFields() {
         return fields;
@@ -152,6 +166,19 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
      */
     public String getFileSpec() {
         return fileSpec;
+    }
+
+    /**
+     * Called when a start tag is found.
+     *
+     * @param tag the tag name
+     * @param h   the tag's attributes
+     */
+    @Deprecated
+    @Override
+    @SuppressWarnings("unchecked")
+    public void startElement(String tag, HashMap h) {
+        startElement(tag, (Map<String, String>) h);
     }
 
     /**

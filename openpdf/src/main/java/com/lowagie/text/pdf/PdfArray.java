@@ -254,6 +254,17 @@ public class PdfArray extends PdfObject {
      */
     public boolean remove(PdfObject object) {
         return this.arrayList.remove(object);
+    }    
+
+    /**
+     * Get a copy the internal list for this PdfArray.
+     *
+     * @deprecated Please use getElements() instead.
+     * @return a copy of the the internal List.
+     */
+    @Deprecated
+    public List<PdfObject> getArrayList() {
+        return getElements();
     }
 
     /**

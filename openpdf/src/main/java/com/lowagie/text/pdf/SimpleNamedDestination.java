@@ -309,6 +309,12 @@ public final class SimpleNamedDestination implements SimpleXMLDocHandler {
     public void startDocument() {
     }
 
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public void startElement(String tag, HashMap h) {
+        startElement(tag, (Map<String, String>) h);
+    }
+
     public void startElement(String tag, Map<String, String> h) {
         if (xmlNames == null) {
             if (tag.equals("Destination")) {

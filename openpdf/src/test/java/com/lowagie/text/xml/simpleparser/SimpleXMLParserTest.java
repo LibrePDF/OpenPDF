@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
@@ -56,6 +57,9 @@ public class SimpleXMLParserTest {
         TestHandler(Charset charset) {
             this.charset = charset.displayName();
         }
+
+        @Override
+        public void startElement(String tag, HashMap h) {}
 
         @Override
         public void startElement(String tag, Map<String, String> h) {}
