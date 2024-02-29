@@ -92,7 +92,7 @@
         <mockito4.version>4.11.0</mockito4.version>
         <mockito5.version>5.9.0</mockito5.version>
 
-        <checkstyle.version>10.13.0</checkstyle.version>
+        <checkstyle.version>10.14.0</checkstyle.version>
         <maven-jxr-plugin.version>3.3.2</maven-jxr-plugin.version>
     </properties>
 
