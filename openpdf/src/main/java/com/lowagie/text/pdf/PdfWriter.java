@@ -506,10 +506,10 @@ public class PdfWriter extends DocWriter implements
              */
             @Override
             public boolean equals(Object obj) {
-                if (!(obj instanceof PdfCrossReference other)) {
+                if (!(obj instanceof PdfCrossReference)) {
                     return false;
                 }
-
+                PdfCrossReference other = (PdfCrossReference) obj;
                 return refnum == other.refnum;
             }
 
@@ -1319,7 +1319,8 @@ public class PdfWriter extends DocWriter implements
         for (Map.Entry<Object, PdfObject[]> entry : documentProperties.entrySet()) {
             Object prop = entry.getKey();
             PdfObject[] obj = entry.getValue();
-            if (prop instanceof PdfLayerMembership layer) {
+            if (prop instanceof PdfLayerMembership) {
+                PdfLayerMembership layer = (PdfLayerMembership) prop;
                 addToBody(layer.getPdfObject(), layer.getRef());
             } else if ((prop instanceof PdfDictionary) && !(prop instanceof PdfLayer)) {
                 addToBody((PdfDictionary) prop, (PdfIndirectReference) obj[1]);
@@ -2785,7 +2786,8 @@ public class PdfWriter extends DocWriter implements
 
     void registerLayer(PdfOCG layer) {
         PdfXConformanceImp.checkPDFXConformance(this, PdfXConformanceImp.PDFXKEY_LAYER, null);
-        if (layer instanceof PdfLayer la) {
+        if (layer instanceof PdfLayer) {
+            PdfLayer la = (PdfLayer) layer;
             if (la.getTitle() == null) {
                 if (!documentOCG.contains(layer)) {
                     documentOCG.add(layer);
@@ -3291,7 +3293,8 @@ public class PdfWriter extends DocWriter implements
     PdfIndirectReference add(PdfImage pdfImage, PdfIndirectReference fixedRef) throws PdfException {
         if (!imageDictionary.contains(pdfImage.name())) {
             PdfXConformanceImp.checkPDFXConformance(this, PdfXConformanceImp.PDFXKEY_IMAGE, pdfImage);
-            if (fixedRef instanceof PRIndirectReference r2) {
+            if (fixedRef instanceof PRIndirectReference) {
+                PRIndirectReference r2 = (PRIndirectReference) fixedRef;
                 fixedRef = new PdfIndirectReference(0,
                     getNewObjectNumber(r2.getReader(), r2.getNumber(), r2.getGeneration()));
             }
