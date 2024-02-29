@@ -6,7 +6,7 @@ on:
   push:
     branches: [ '*' ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, 1.3-java8, 1.4-java11 ]
 
 permissions:
   contents: read
