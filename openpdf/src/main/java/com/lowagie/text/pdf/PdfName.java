@@ -973,13 +973,6 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     public static final PdfName ITALICANGLE = new PdfName("ItalicAngle");
 
     /**
-     * @deprecated ITXT is a registered prefix of Bruno Lowagie (iText), and will be removed from OpenPDF. Will be
-     * deleted after 2022-04-30.
-     */
-    @Deprecated
-    public static final PdfName ITXT = new PdfName("ITXT");
-
-    /**
      * A name
      */
     public static final PdfName IX = new PdfName("IX");
