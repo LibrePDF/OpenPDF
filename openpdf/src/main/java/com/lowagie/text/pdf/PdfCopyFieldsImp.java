@@ -168,7 +168,7 @@ class PdfCopyFieldsImp extends PdfWriter {
         if (acro == null)
             return;
         PdfArray co = acro.getAsArray(PdfName.CO);
-        if (co == null || co.size() == 0)
+        if (co == null || co.isEmpty())
             return;
         AcroFields af = reader.getAcroFields();
         for (int k = 0; k < co.size(); ++k) {

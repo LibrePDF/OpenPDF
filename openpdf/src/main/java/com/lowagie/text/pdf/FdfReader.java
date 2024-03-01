@@ -114,7 +114,7 @@ public class FdfReader extends PdfReader {
     protected void kidNode(PdfDictionary merged, String name) {
         PdfArray kids = merged.getAsArray(PdfName.KIDS);
         if (kids == null || kids.isEmpty()) {
-            if (name.length() > 0)
+            if (name.isEmpty())
                 name = name.substring(1);
             fields.put(name, merged);
         }

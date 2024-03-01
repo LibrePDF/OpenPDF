@@ -204,8 +204,8 @@ public class Paragraph extends Phrase {
             setIndentationLeft(p.getIndentationLeft());
             setIndentationRight(p.getIndentationRight());
             setFirstLineIndent(p.getFirstLineIndent());
-            setSpacingAfter(p.spacingAfter());
-            setSpacingBefore(p.spacingBefore());
+            setSpacingAfter(p.getSpacingAfter());
+            setSpacingBefore(p.getSpacingBefore());
             setExtraParagraphSpace(p.getExtraParagraphSpace());
 			setRunDirection(p.getRunDirection());
         }

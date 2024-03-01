@@ -184,6 +184,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
      * @throws IOException on error
      * @see java.io.RandomAccessFile#close()
      */
+    @Override
     public void close() throws IOException {
         clean(mappedByteBuffer);
         mappedByteBuffer = null;
@@ -198,6 +199,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
      *
      * @see java.lang.Object#finalize()
      */
+    @Override
     protected void finalize() throws Throwable {
         close();
         super.finalize();
@@ -243,7 +245,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
 
 
     private static boolean cleanJava9(final java.nio.ByteBuffer buffer) {
-        Boolean b = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
+        return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
         Boolean success = Boolean.FALSE;
         try {
                 final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
@@ -259,8 +261,6 @@ public class MappedRandomAccessFile implements AutoCloseable {
         }
         return success;
         });
-        
-        return b;
     }
 
 
