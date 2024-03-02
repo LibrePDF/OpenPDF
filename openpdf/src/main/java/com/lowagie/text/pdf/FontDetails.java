@@ -197,7 +197,7 @@ class FontDetails {
             case BaseFont.FONT_TYPE_T1:
             case BaseFont.FONT_TYPE_TT: {
                 b = baseFont.convertToBytes(text);
-                int len = b.length;
+
                 for (byte b1 : b) {
                     shortTag[b1 & 0xff] = 1;
                 }
@@ -256,7 +256,7 @@ class FontDetails {
         return b;
     }
 
-    private byte[] convertToBytesWithGlyphs(String text) throws UnsupportedEncodingException {
+    private byte[] convertToBytesWithGlyphs(String text) {
         int len = text.length();
         int[] metrics = null;
         int[] glyph = new int[len];
@@ -274,10 +274,8 @@ class FontDetails {
                 continue;
             }
             int m0 = metrics[0];
-            Integer gl = m0;
-            if (!longTag.containsKey(gl)) {
-                longTag.put(gl, new int[]{m0, metrics[1], val});
-            }
+            int m1 = metrics[1];
+            longTag.computeIfAbsent(m0, key -> new int[]{m0, m1, val});
             glyph[i++] = m0;
         }
         return getCJKEncodingBytes(glyph, i);
@@ -291,10 +289,6 @@ class FontDetails {
             result[i * 2 + 1] = (byte) (g & 0xFF);
         }
         return result;
-    }
-
-    byte[] convertToBytes(GlyphVector glyphVector) {
-        return convertToBytes(glyphVector, 0, glyphVector.getNumGlyphs());
     }
 
     byte[] convertToBytes(GlyphVector glyphVector, int beginIndex, int endIndex) {
@@ -325,8 +319,7 @@ class FontDetails {
 
         String s = new String(glyphs, 0, glyphCount);
         try {
-            byte[] b = s.getBytes(CJKFont.CJK_ENCODING);
-            return b;
+            return s.getBytes(CJKFont.CJK_ENCODING);
         } catch (UnsupportedEncodingException e) {
             throw new ExceptionConverter(e);
         }
