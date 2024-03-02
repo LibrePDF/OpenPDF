@@ -12,19 +12,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FontSubsetTest {
+class FontSubsetTest {
 
     /*
      * See : https://github.com/LibrePDF/OpenPDF/issues/623
      */
     @Test
-    public void createSubsetPrefixTest() throws Exception {
+    void createSubsetPrefixTest() throws Exception {
         BaseFont font = BaseFont.createFont("LiberationSerif-Regular.ttf", BaseFont.IDENTITY_H,
-                BaseFont.EMBEDDED,true, getFontByte("fonts/liberation-serif/LiberationSerif-Regular.ttf"), null);
+                BaseFont.EMBEDDED,true, getLiberationFontByte(), null);
         assertNotEquals(font.createSubsetPrefix(), font.createSubsetPrefix());
 
         byte[] baseSeed = new SecureRandom().generateSeed(512);
@@ -46,8 +47,9 @@ public class FontSubsetTest {
         assertEquals(subsetPrefixOne, subsetPrefixTwo); // the desired deterministic behavior
     }
 
-    private byte[] getFontByte(String fileName) throws IOException {
-        try (InputStream stream = BaseFont.getResourceStream(fileName, null)) {
+    private byte[] getLiberationFontByte() throws IOException {
+        try (InputStream stream = BaseFont.getResourceStream("fonts/liberation/LiberationSerif-Regular.ttf", null)) {
+            assertThat(stream).isNotNull();
             return IOUtils.toByteArray(stream);
         }
     }
@@ -56,26 +58,26 @@ public class FontSubsetTest {
      * This test is to ensure creation of CIDSet dictionary according to the includeCidSet flag
      */
     @Test
-    public void includeCidSetTest() throws Exception {
+    void includeCidSetTest() throws Exception {
         checkCidSetPresence(true);
         checkCidSetPresence(false);
     }
 
     private void checkCidSetPresence(boolean includeCidSet) throws Exception {
         byte[] documentBytes;
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             Document document = new Document();
-            PdfWriter.getInstance(document, baos);
+            PdfWriter.getInstance(document, outputStream);
             document.open();
 
             BaseFont font = BaseFont.createFont("LiberationSerif-Regular.ttf", BaseFont.IDENTITY_H,
-                    BaseFont.EMBEDDED,true, getFontByte("fonts/liberation-serif/LiberationSerif-Regular.ttf"), null);
+                    BaseFont.EMBEDDED,true, getLiberationFontByte(), null);
             font.setIncludeCidSet(includeCidSet);
             String text = "This is the test string.";
             document.add(new Paragraph(text, new Font(font, 12)));
             document.close();
 
-            documentBytes = baos.toByteArray();
+            documentBytes = outputStream.toByteArray();
         }
 
         boolean fontFound = false;
@@ -90,8 +92,8 @@ public class FontSubsetTest {
                     continue;
                 PdfDictionary fd = dic.getAsDict(PdfName.FONTDESCRIPTOR);
                 if (PdfName.FONT.equals(type) && fd != null) {
-                    PdfIndirectReference cidset = fd.getAsIndirectObject(PdfName.CIDSET);
-                    assertEquals(includeCidSet, cidset != null);
+                    PdfIndirectReference cidSet = fd.getAsIndirectObject(PdfName.CIDSET);
+                    assertEquals(includeCidSet, cidSet != null);
                     fontFound = true;
                     break;
                 }

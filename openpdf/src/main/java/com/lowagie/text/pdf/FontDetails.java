@@ -362,7 +362,7 @@ class FontDetails {
                     baseFont.writeFont(writer, indirectReference, new Object[]{cjkTag});
                     break;
                 case BaseFont.FONT_TYPE_TTUNI:
-                    baseFont.writeFont(writer, indirectReference, new Object[]{longTag, subset, fillerCmap});
+                    baseFont.writeFont(writer, indirectReference, new Object[]{longTag, subset, getFillerCmap()});
                     break;
             }
         } catch (Exception e) {
