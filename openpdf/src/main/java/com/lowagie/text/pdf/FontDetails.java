@@ -111,6 +111,12 @@ class FontDetails {
      */
     protected boolean subset = true;
 
+    /**
+     * Contain glyphs that used but missing in Cmap. the value is int[]{glyph, Unicode code}
+     */
+    private Map<Integer, int[]> fillerCmap;
+
+
     Map<Integer, int[]> getFillerCmap() {
         return fillerCmap;
     }
@@ -118,11 +124,6 @@ class FontDetails {
     void putFillerCmap(Integer key, int[] value) {
         fillerCmap.put(key, value);
     }
-
-    /**
-     * Contain glyphs that used but missing in Cmap. the value is int[]{glyph, Unicode code}
-     */
-    private Map<Integer, int[]> fillerCmap;
 
     /**
      * Each font used in a document has an instance of this class. This class stores the characters used in the document
