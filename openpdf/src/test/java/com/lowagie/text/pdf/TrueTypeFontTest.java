@@ -11,4 +11,14 @@ class TrueTypeFontTest {
         TrueTypeFont font = new TrueTypeFont();
         assertThat(font).isNotNull();
     }
+
+    @Test
+    void testGetTtcNameNoTtc() {
+        assertThat(TrueTypeFont.getTTCName("font.ttf")).isEqualTo("font.ttf");
+    }
+
+    @Test
+    void testGetTtcName() {
+        assertThat(TrueTypeFont.getTTCName("font.ttc,123456")).isEqualTo("font.ttc");
+    }
 }
