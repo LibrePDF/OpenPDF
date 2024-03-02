@@ -59,11 +59,11 @@ class FontSubsetTest {
      */
     @Test
     void includeCidSetTest() throws Exception {
-        checkCidSetPresence(true);
-        checkCidSetPresence(false);
+        assertCidSetPresence(true);
+        assertCidSetPresence(false);
     }
 
-    private void checkCidSetPresence(boolean includeCidSet) throws Exception {
+    private void assertCidSetPresence(boolean includeCidSet) throws Exception {
         byte[] documentBytes;
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             Document document = new Document();
