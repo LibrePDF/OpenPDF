@@ -39,4 +39,22 @@ class FontDetailsTest {
         assertThat(fontDetails.isSubset()).isTrue();
     }
 
+    @Test
+    void testFillerCMapHelveticaIsNull() throws IOException {
+        BaseFont baseFont = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+        FontDetails fontDetails = new FontDetails(null, null, baseFont);
+        assertThat(fontDetails.getFillerCmap()).isNull();
+    }
+
+    @Test
+    void testFillerCMapLiberationIsNotNull() throws IOException {
+        String fontPath = this.getClass().getClassLoader()
+            .getResource("fonts/liberation/LiberationSerif-Regular.ttf").getFile();
+        BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+        FontDetails fontDetails = new FontDetails(null, null, baseFont);
+        assertThat(fontDetails.getFillerCmap()).isNotNull().isEmpty();
+        fontDetails.putFillerCmap(1, new int[] {1, 2, 3});
+        assertThat(fontDetails.getFillerCmap()).hasSize(1);
+    }
+
 }
