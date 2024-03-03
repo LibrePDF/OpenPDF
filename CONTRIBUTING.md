@@ -36,10 +36,22 @@
 - Feel free to add content to the [Wiki](https://github.com/LibrePDF/OpenPDF/wiki)
 - Also participate in the [Discussions](https://github.com/LibrePDF/OpenPDF/discussions), answering and asking questions
 - You may also contribute with translations in `src/main/java/com/lowagie/text/error_messages`
+- Our [Migration Guide](https://github.com/LibrePDF/OpenPDF/wiki/Migrating-from-iText-2-and-4) need some love, so
+  feel free to contribute. Please describe there the minor changes you had to do to migrate from iText to OpenPDF.
 
 ### How to contribute with Bug Reports
 
-- Please be as detailed as possible, including the version of OpenPDF you are using, the Java version, and the operating system
+- Please be as detailed as possible, including the version of OpenPDF you are using, the Java version, and the operating
+  system
 - If possible, provide a minimal code example that reproduces the problem
 - Describe the expected behavior and the actual behavior
 - Describe how to reproduce the bug
+
+## Become a maintainer
+
+We are looking for maintainers to help us with the project. We need help in:
+- Reviewing and accepting pull requests
+- Answering questions in the discussions or issues
+- Triaging issues which are important to fix
+
+Interested in making OpenPDF better? Please contact @asturio (Claudio Clemens).
