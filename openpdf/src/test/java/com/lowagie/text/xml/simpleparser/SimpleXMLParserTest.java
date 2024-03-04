@@ -6,7 +6,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -42,8 +41,8 @@ public class SimpleXMLParserTest {
 
     static void testCharset(String xml, Charset charset) throws IOException {
         try (
-                TestHandler h = new TestHandler(charset);
-                ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes(charset))
+            TestHandler h = new TestHandler(charset);
+            ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes(charset))
         ) {
             SimpleXMLParser.parse(h, is);
         }
@@ -59,19 +58,25 @@ public class SimpleXMLParserTest {
         }
 
         @Override
-        public void startElement(String tag, HashMap h) {}
+        public void startElement(String tag, HashMap h) {
+            // should do nothing
+        }
 
         @Override
-        public void startElement(String tag, Map<String, String> h) {}
+        public void startElement(String tag, Map<String, String> h) {
+        }
 
         @Override
-        public void endElement(String tag) {}
+        public void endElement(String tag) {
+        }
 
         @Override
-        public void startDocument() {}
+        public void startDocument() {
+        }
 
         @Override
-        public void endDocument() {}
+        public void endDocument() {
+        }
 
         @Override
         public void text(String str) {

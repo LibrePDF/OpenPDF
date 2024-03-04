@@ -1865,7 +1865,6 @@ public class PdfContentByte {
         if (state.scale != 100.0)
             w = (w * state.scale) / 100.0f;
 
-        //System.out.println("String width = " + Float.toString(w));
         return w;
     }
 
@@ -3211,7 +3210,7 @@ public class PdfContentByte {
      * Ends a layer controlled graphic block. It will end the most recent open block.
      */
     public void endLayer() {
-        int n = 1;
+        int n;
         if (layerDepth != null && !layerDepth.isEmpty()) {
             n = layerDepth.get(layerDepth.size() - 1);
             layerDepth.remove(layerDepth.size() - 1);
@@ -3263,7 +3262,7 @@ public class PdfContentByte {
         PdfObject obj = struc.get(PdfName.K);
         int mark = pdf.getMarkPoint();
         if (obj != null) {
-            PdfArray ar = null;
+            PdfArray ar;
             if (obj.isNumber()) {
                 ar = new PdfArray();
                 ar.add(obj);

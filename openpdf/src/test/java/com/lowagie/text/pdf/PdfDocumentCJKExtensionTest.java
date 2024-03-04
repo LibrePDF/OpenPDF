@@ -1,5 +1,7 @@
 package com.lowagie.text.pdf;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -25,7 +27,8 @@ class PdfDocumentCJKExtensionTest {
         String fontPath = "src/test/resources/fonts/TakaoMjFonts/TakaoMjMincho.ttf";
 
         // register font
-        FontFactory.register(fontPath, fontName);
+        assertThatNoException().as("You need to download the font file and place it in the correct place.")
+            .isThrownBy(() -> FontFactory.register(fontPath, fontName));
 
         Document document = new Document();
 
