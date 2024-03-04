@@ -13,7 +13,6 @@ public enum StandardFonts {
     HELVETICA_ITALIC(Font.HELVETICA, Font.ITALIC),
     HELVETICA_BOLD(Font.HELVETICA, Font.BOLD),
     HELVETICA_BOLDITALIC(Font.HELVETICA, Font.BOLDITALIC),
-
     // Times
     TIMES(Font.TIMES_ROMAN, Font.NORMAL),
     TIMES_ITALIC(Font.TIMES_ROMAN, Font.ITALIC),
@@ -26,10 +25,23 @@ public enum StandardFonts {
 
     private int family;
     private int style;
+    /**
+     * @deprecated Use Liberation
+     */
+    @Deprecated
+    private String trueTypeFile;
 
     StandardFonts(int family, int style) {
         this.family = family;
         this.style = style;
+    }
+
+    /**
+     * @deprecated Use Liberation
+     */
+    @Deprecated
+    StandardFonts(String trueTypeFile) {
+        this.trueTypeFile = trueTypeFile;
     }
 
     public Font create() throws IOException {
@@ -38,7 +50,11 @@ public enum StandardFonts {
 
     public Font create(int size) throws IOException {
         final Font font;
-        if (style == -1) {
+        if (trueTypeFile != null) {
+            final String message = String
+                    .format("%s: Please use fonts from openpdf-fonts-extra (Liberation)", this);
+            throw new IOException(message);
+        } else if (style == -1) {
             font = new Font(family, size);
         } else {
             font = new Font(family, size, style);
@@ -47,6 +63,6 @@ public enum StandardFonts {
     }
 
     public boolean isDeprecated() {
-        return false;
+        return trueTypeFile != null;
     }
 }

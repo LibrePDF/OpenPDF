@@ -366,6 +366,18 @@ public class Row implements Element, WithHorizontalAlignment {
     }
     
     /**
+     * Sets the horizontal alignment.
+     *
+     * @param value the new value
+     * @deprecated Setting alignment through unconstrained types is non-obvious and error-prone,
+     * use {@link Row#setHorizontalAlignment(HorizontalAlignment)} instead
+     */
+    @Deprecated
+    public void setHorizontalAlignment(int value) {
+        horizontalAlignment = value;
+    }
+    
+    /**
      * Gets the horizontal alignment.
      *
      * @return  a value

@@ -88,6 +88,16 @@ public class PdfAcroForm extends PdfDictionary {
         put(PdfName.NEEDAPPEARANCES, new PdfBoolean(value));
     }
 
+    /**
+     * Adds fieldTemplates.
+     * @param ft field templates
+     * @deprecated use {@link #addFieldTemplates(Map)}
+     */
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public void addFieldTemplates(HashMap ft) {
+        fieldTemplates.putAll(ft);
+    }
 
     /**
      * Adds fieldTemplates.

@@ -1870,7 +1870,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      *  <li>image dictionary</li>
      *  <li>Type 1 form dictionary</li>
      *  <li>group attributes dictionary</li>
-     *  <li>content group dictionary</li>
+     *  <li>content group dictionary</>
      *  <li>content membership dictionary</li>
      *  <li>Type 1 font dictionary</li>
      *  <li>Type 3 font dictionary</li>

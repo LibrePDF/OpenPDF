@@ -151,6 +151,18 @@ public class TagMap extends HashMap<String, XmlPeer> {
          */
         private XmlPeer currentPeer;
 
+        /**
+         * Constructs a new SAXiTextHandler that will translate all the events
+         * triggered by the parser to actions on the <CODE>Document</CODE>-object.
+         *
+         * @param tagMap A Hashmap containing XmlPeer-objects
+         */
+        @Deprecated
+        @SuppressWarnings("unchecked")
+        public AttributeHandler(HashMap tagMap) {
+            this.tagMap = tagMap;
+        }
+
         public AttributeHandler(Map<String, XmlPeer> tagMap) {
             this.tagMap = tagMap;
         }

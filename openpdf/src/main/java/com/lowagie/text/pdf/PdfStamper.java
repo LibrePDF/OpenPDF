@@ -133,11 +133,34 @@ public class PdfStamper
 
     /** Gets the optional <CODE>String</CODE> map to add or change values in
      * the info dictionary.
+     * @deprecated use {@link #getInfoDictionary()}
+     * @return the map or <CODE>null</CODE>
+     *
+     */
+    @Deprecated
+    public HashMap getMoreInfo() {
+        return (HashMap) this.moreInfo;
+    }
+
+    /** Gets the optional <CODE>String</CODE> map to add or change values in
+     * the info dictionary.
      * @return the map or <CODE>null</CODE>
      *
      */
     public Map<String, String> getInfoDictionary() {
         return moreInfo;
+    }
+
+    /** An optional <CODE>String</CODE> map to add or change values in
+     * the info dictionary. Entries with <CODE>null</CODE>
+     * values delete the key in the original info dictionary
+     * @param moreInfo additional entries to the info dictionary
+     * @deprecated use {@link #setInfoDictionary(Map)}
+     */
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public void setMoreInfo(HashMap moreInfo) {
+        this.moreInfo = moreInfo;
     }
     
     /**

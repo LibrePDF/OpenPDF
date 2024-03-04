@@ -46,6 +46,7 @@
  */
 package com.lowagie.text.xml.simpleparser;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -53,6 +54,12 @@ import java.util.Map;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public interface SimpleXMLDocHandler {
+    /**
+     * Called when a start tag is found.
+     * @param tag the tag name
+     * @param h the tag's attributes
+     */
+    void startElement(String tag, HashMap h);
     /**
      * Called when a start tag is found.
      * @param tag the tag name

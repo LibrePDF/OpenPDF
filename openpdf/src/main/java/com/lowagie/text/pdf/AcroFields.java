@@ -1831,6 +1831,19 @@ public class AcroFields {
    * Gets all the fields. The fields are keyed by the fully qualified field name and the value is an instance of
    * <CODE>AcroFields.Item</CODE>.
    *
+   * @deprecated use {@link AcroFields#getAllFields()}
+   *
+   * @return all the fields
+   */
+  @Deprecated
+  public HashMap getFields() {
+    return (HashMap) fields;
+  }
+
+  /**
+   * Gets all the fields. The fields are keyed by the fully qualified field name and the value is an instance of
+   * <CODE>AcroFields.Item</CODE>.
+   *
    * @return all the fields
    */
   public Map<String, Item> getAllFields() {
@@ -2160,37 +2173,49 @@ public class AcroFields {
     /**
      * An array of <CODE>PdfDictionary</CODE> where the value tag /V is present.
      *
+     * @deprecated (will remove ' public ' in the future)
      */
-    ArrayList<PdfDictionary> values = new ArrayList<>();
+    @Deprecated
+    public ArrayList<PdfDictionary> values = new ArrayList<>();
 
     /**
      * An array of <CODE>PdfDictionary</CODE> with the widgets.
      *
+     * @deprecated (will remove ' public ' in the future)
      */
-    ArrayList<PdfDictionary> widgets = new ArrayList<>();
+    @Deprecated
+    public ArrayList<PdfDictionary> widgets = new ArrayList<>();
 
     /**
      * An array of <CODE>PdfDictionary</CODE> with the widget references.
      *
+     * @deprecated (will remove ' public ' in the future)
      */
-    ArrayList<PdfIndirectReference> widgetRefs = new ArrayList<>();
+    @Deprecated
+    public ArrayList<PdfIndirectReference> widgetRefs = new ArrayList<>();
 
     /**
      * An array of <CODE>PdfDictionary</CODE> with all the field and widget tags merged.
      *
+     * @deprecated (will remove ' public ' in the future)
      */
-    ArrayList<PdfDictionary> merged = new ArrayList<>();
+    @Deprecated
+    public ArrayList<PdfDictionary> merged = new ArrayList<>();
 
     /**
      * An array of <CODE>Integer</CODE> with the page numbers where the widgets are displayed.
      *
+     * @deprecated (will remove ' public ' in the future)
      */
-    ArrayList<Integer> page = new ArrayList<>();
+    @Deprecated
+    public ArrayList<Integer> page = new ArrayList<>();
     /**
      * An array of <CODE>Integer</CODE> with the tab order of the field in the page.
      *
+     * @deprecated (will remove ' public ' in the future)
      */
-    ArrayList<Integer> tabOrder = new ArrayList<>();
+    @Deprecated
+    public ArrayList<Integer> tabOrder = new ArrayList<>();
     
     /**
      * The indirect reference of the item itself
@@ -2387,6 +2412,19 @@ public class AcroFields {
   /**
    * Gets the field names that have signatures and are signed.
    *
+   * @deprecated user {@link AcroFields#getSignedFieldNames()}
+   *
+   * @return the field names that have signatures and are signed
+   */
+  @Deprecated
+  @SuppressWarnings("unchecked")
+  public ArrayList<String> getSignatureNames() {
+      return (ArrayList<String>) getSignedFieldNames();
+  }
+
+  /**
+   * Gets the field names that have signatures and are signed.
+   *
    * @return the field names that have signatures and are signed
    */
   public List<String> getSignedFieldNames() {
@@ -2542,6 +2580,19 @@ public class AcroFields {
       }
       return this.sigTypes;
   }
+
+  /**
+   * Gets the field names that have blank signatures.
+   *
+   * @deprecated use {@link AcroFields#getFieldNamesWithBlankSignatures()}
+   *
+   * @return the field names that have blank signatures
+   */
+  @Deprecated
+  public ArrayList getBlankSignatureNames() {
+    return (ArrayList) getFieldNamesWithBlankSignatures();
+  }
+
     /**
      * Gets the field names that have blank signatures.
      *
@@ -2798,11 +2849,54 @@ public class AcroFields {
 
   /**
    * Gets the appearances cache.
+   * @deprecated use {@link AcroFields#getFieldCacheMap()}
+   * @return the appearances cache
+   * @since 2.1.5  this method used to return a HashMap
+   */
+  @Deprecated
+  public Map getFieldCache() {
+    return fieldCache;
+  }
+
+  /**
+   * Gets the appearances cache.
    *
    * @return the appearances cache
    */
   public Map<String, BaseField> getFieldCacheMap() {
     return fieldCache;
+  }
+
+  /**
+   * Sets a cache for field appearances. Parsing the existing PDF to create a new TextField is time expensive. For those tasks that
+   * repeatedly fill the same PDF with different field values the use of the cache has dramatic speed advantages. An example usage:
+   *
+   * <pre>
+   * String pdfFile = ...;// the pdf file used as template
+   * ArrayList xfdfFiles = ...;// the xfdf file names
+   * ArrayList pdfOutFiles = ...;// the output file names, one for each element in xpdfFiles
+   * HashMap cache = new HashMap();// the appearances cache
+   * PdfReader originalReader = new PdfReader(pdfFile);
+   * for (int k = 0; k &lt; xfdfFiles.size(); ++k) {
+   *    PdfReader reader = new PdfReader(originalReader);
+   *    XfdfReader xfdf = new XfdfReader((String)xfdfFiles.get(k));
+   *    PdfStamper stp = new PdfStamper(reader, new FileOutputStream((String)pdfOutFiles.get(k)));
+   *    AcroFields af = stp.getAcroFields();
+   *    af.setFieldCache(cache);
+   *    af.setFields(xfdf);
+   *    stp.close();
+   * }
+   * </pre>
+   *
+   * @deprecated use {@link AcroFields#setFieldCacheMap(Map)}
+   *
+   * @param fieldCache a Map that will carry the cached appearances
+   * @since 2.1.5  this method used to take a HashMap as parameter
+   */
+  @Deprecated
+  @SuppressWarnings("unchecked")
+  public void setFieldCache(Map fieldCache) {
+    this.fieldCache = fieldCache;
   }
 
   /**
@@ -2954,10 +3048,35 @@ public class AcroFields {
    * Gets the list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can be <CODE>null</CODE>. The fonts in this list
    * will be used if the original font doesn't contain the needed glyphs.
    *
+   * @deprecated use {@link AcroFields#getAllSubstitutionFonts()}
+   * @return the list
+   */
+  @Deprecated
+  public ArrayList getSubstitutionFonts() {
+    return (ArrayList) substitutionFonts;
+  }
+
+  /**
+   * Gets the list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can be <CODE>null</CODE>. The fonts in this list
+   * will be used if the original font doesn't contain the needed glyphs.
+   *
    * @return the list
    */
   public List<BaseFont> getAllSubstitutionFonts() {
     return substitutionFonts;
+  }
+
+  /**
+   * Sets a list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can also be <CODE>null</CODE>. The fonts in this
+   * list will be used if the original font doesn't contain the needed glyphs.
+   *
+   * @deprecated use {@link AcroFields#setAllSubstitutionFonts(List)}
+   * @param substitutionFonts the list
+   */
+  @Deprecated
+  @SuppressWarnings("unchecked")
+  public void setSubstitutionFonts(ArrayList substitutionFonts) {
+    this.substitutionFonts = substitutionFonts;
   }
 
   /**

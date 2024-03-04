@@ -1691,6 +1691,8 @@ public class PdfPKCS7 {
         /**
          * A HashMap with default symbols
          */
+        @Deprecated
+        public static HashMap DefaultSymbols = new HashMap();
         public static Map<ASN1Encodable, String> defaultSymbols = new HashMap<>();
 
         static {
@@ -1710,11 +1712,14 @@ public class PdfPKCS7 {
             defaultSymbols.put(INITIALS, "INITIALS");
             defaultSymbols.put(GENERATION, "GENERATION");
 
+            DefaultSymbols.putAll(defaultSymbols);
         }
 
         /**
          * A HashMap with values
          */
+        @Deprecated
+        public HashMap values = new HashMap();
         public Map<String, List<String>> valuesMap = new HashMap<>();
 
         /**
@@ -1774,11 +1779,34 @@ public class PdfPKCS7 {
         /**
          * gets a field array from the values Hashmap
          *
+         * @param name the name of the field to get
+         * @deprecated use {@link #getFieldsByName(String)}
+         * @return an ArrayList
+         */
+        @Deprecated
+        public ArrayList getFieldArray(String name) {
+            return (ArrayList) valuesMap.get(name);
+        }
+
+        /**
+         * gets a field array from the values Hashmap
+         *
          * @param name  the name of the field array to get
          * @return an ArrayList
          */
         public List<String> getFieldsByName(String name) {
             return valuesMap.get(name);
+        }
+
+        /**
+         * getter for values
+         *
+         * @deprecated use {@link #getAllFields()}
+         * @return a HashMap with the fields of the X509 name
+         */
+        @Deprecated
+        public HashMap getFields() {
+            return (HashMap) valuesMap;
         }
 
         /**

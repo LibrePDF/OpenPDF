@@ -480,6 +480,32 @@ public class Paragraph extends Phrase {
     public void setExtraParagraphSpace(float extraParagraphSpace) {
         this.extraParagraphSpace = extraParagraphSpace;
     }
+    
+    // scheduled for removal
+    
+    /**
+     * Gets the spacing before this paragraph.
+     *
+     * @return    the spacing
+     * @deprecated As of iText 2.1.5, replaced by {@link #getSpacingBefore()},
+     * scheduled for removal at 2.3.0
+     */
+    @Deprecated
+    public float spacingBefore() {
+        return getSpacingBefore();
+    }
+
+    /**
+     * Gets the spacing after this paragraph.
+     *
+     * @return    the spacing
+     * @deprecated As of iText 2.1.5, replaced by {@link #getSpacingAfter()},
+     * scheduled for removal at 2.3.0
+     */
+    @Deprecated
+    public float spacingAfter() {
+        return spacingAfter;
+    }
 
     public int getRunDirection() {
         return runDirection;

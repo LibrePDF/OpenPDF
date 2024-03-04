@@ -59,6 +59,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -101,7 +102,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
             SimpleXMLParser.parse(this, stream);
         } catch (IOException e) {
             throw new ExceptionConverter(e);
-        }
+        } 
     }
 
     protected static String getPattern(String word) {
@@ -175,9 +176,11 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
         return il.toString();
     }
 
+    @Override
     public void endDocument() {
     }
 
+    @Override
     public void endElement(String tag) {
         if (token.length() > 0) {
             String word = token.toString();
@@ -214,6 +217,16 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
     public void startDocument() {
     }
 
+    /**
+     * @deprecated use {@link SimplePatternParser#startElement(String, Map)}
+     */
+    @Override
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public void startElement(String tag, HashMap h) {
+        startElement(tag, ((Map<String, String>) h));
+    }
+
     @Override
     public void startElement(String tag, Map<String, String> h) {
         switch (tag) {
@@ -244,6 +257,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
         token.setLength(0);
     }
 
+    @Override
     public void text(String str) {
         StringTokenizer tk = new StringTokenizer(str);
         while (tk.hasMoreTokens()) {
@@ -269,23 +283,26 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
     }
 
     // PatternConsumer implementation for testing purposes
+    @Override
     public void addClass(String c) {
         System.out.println("class: " + c);
     }
 
+    @Override
     public void addException(String w, ArrayList e) {
         System.out.println("exception: " + w + " : " + e.toString());
     }
 
+    @Override
     public void addPattern(String p, String v) {
         System.out.println("pattern: " + p + " : " + v);
     }
 
     public static void main(String[] args) {
-        try {
+        try (FileInputStream fis = new FileInputStream(args[0]);){
             if (args.length > 0) {
                 SimplePatternParser pp = new SimplePatternParser();
-                pp.parse(new FileInputStream(args[0]), pp);
+                pp.parse(fis, pp);
             }
         } catch (Exception e) {
             e.printStackTrace();
