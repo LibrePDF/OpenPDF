@@ -271,7 +271,7 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgs>
                         <arg>-Xlint:unchecked</arg>
                     </compilerArgs>
@@ -441,7 +441,7 @@
         <profile>
             <activation>
                 <jdk>(,8]</jdk>
-				<activeByDefault>true</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <dependencyManagement>
                 <dependencies>
@@ -452,7 +452,7 @@
                     </dependency>
                 </dependencies>
             </dependencyManagement>
-			<build>
+            <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -466,21 +466,21 @@
                                 </goals>
                                 <configuration>
                                     <source>1.8</source>
-									<target>1.8</target>
-									<encoding>${project.build.sourceEncoding}</encoding>
+                                    <target>1.8</target>
+                                    <encoding>${project.build.sourceEncoding}</encoding>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
-					<plugin>
-						<!-- necessary for junit tests otherwise the file encoding is wrong-->
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>3.2.2</version>
-						<configuration>
-							<argLine>-Dfile.encoding=UTF-8</argLine>
-						</configuration>
-					</plugin>
+                    <plugin>
+                        <!-- necessary for junit tests otherwise the file encoding is wrong-->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.2.2</version>
+                        <configuration>
+                            <argLine>-Dfile.encoding=UTF-8</argLine>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
