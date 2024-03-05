@@ -80,7 +80,8 @@ class AdvanceTypographyTest {
         assertArrayEquals(expectedOutput, str.toCharArray());
     }
 
-    @Disabled("This test is failing, need to investigate. @YOSHIDA may know the reason.")
+    @Disabled("This test is failing, need to investigate. @YOSHIDA may know the reason."
+        + "Should work, when GH-591 #592 is fixed.")
     @Test
     void testSurrogatePair() throws Exception {
 
