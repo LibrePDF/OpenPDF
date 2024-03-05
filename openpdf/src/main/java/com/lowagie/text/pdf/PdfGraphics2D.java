@@ -234,7 +234,7 @@ public class PdfGraphics2D extends Graphics2D {
         composite = parent.composite;
         stroke = parent.stroke;
         originalStroke = parent.originalStroke;
-        strokeOne = (BasicStroke)transformStroke(parent.strokeOne);
+        strokeOne = (BasicStroke)transformStroke(strokeOne);
         oldStroke = parent.strokeOne;
         setStrokeDiff(oldStroke, null);
         cb.saveState();
