@@ -1,6 +1,6 @@
 package com.lowagie.text.pdf;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.lowagie.text.Document;
 
