@@ -203,6 +203,47 @@ public class PdfGraphics2D extends Graphics2D {
     }
 
     /**
+     * Copy constructor for child PdfGraphics2D objects.
+     * @param parent the parent PdfGraphics2D
+     * @see #create()
+     */
+    protected PdfGraphics2D(PdfGraphics2D parent) {
+        this();
+        rhints.putAll( parent.rhints );
+        onlyShapes = parent.onlyShapes;
+        transform = new AffineTransform(parent.transform);
+        baseFonts = parent.baseFonts;
+        fontMapper = parent.fontMapper;
+        paint = parent.paint;
+        fillGState = parent.fillGState;
+        currentFillGState = parent.currentFillGState;
+        currentStrokeGState = parent.currentStrokeGState;
+        strokeGState = parent.strokeGState;
+        background = parent.background;
+        mediaTracker = parent.mediaTracker;
+        convertImagesToJPEG = parent.convertImagesToJPEG;
+        jpegQuality = parent.jpegQuality;
+        setFont(parent.font);
+        cb = parent.cb.getDuplicate();
+        cb.saveState();
+        width = parent.width;
+        height = parent.height;
+        followPath(new Area(new Rectangle2D.Float(0, 0, width, height)), CLIP);
+        if (parent.clip != null)
+            clip = new Area(parent.clip);
+        composite = parent.composite;
+        stroke = parent.stroke;
+        originalStroke = parent.originalStroke;
+        strokeOne = (BasicStroke)transformStroke(parent.strokeOne);
+        oldStroke = parent.strokeOne;
+        setStrokeDiff(oldStroke, null);
+        cb.saveState();
+        if (clip != null)
+            followPath(clip, CLIP);
+        kid = true;
+    }
+
+    /**
      * Shortcut constructor for PDFGraphics2D.
      * @param cb the PdfContentByte
      * @param width the width
@@ -953,46 +994,18 @@ public class PdfGraphics2D extends Graphics2D {
      * @see Graphics#create()
      */
     public Graphics create() {
-        PdfGraphics2D g2 = new PdfGraphics2D();
-        g2.rhints.putAll( this.rhints );
-        g2.onlyShapes = this.onlyShapes;
-        g2.transform = new AffineTransform(this.transform);
-        g2.baseFonts = this.baseFonts;
-        g2.fontMapper = this.fontMapper;
-        g2.paint = this.paint;
-        g2.fillGState = this.fillGState;
-        g2.currentFillGState = this.currentFillGState;
-        g2.currentStrokeGState = this.currentStrokeGState;
-        g2.strokeGState = this.strokeGState;
-        g2.background = this.background;
-        g2.mediaTracker = this.mediaTracker;
-        g2.convertImagesToJPEG = this.convertImagesToJPEG;
-        g2.jpegQuality = this.jpegQuality;
-        g2.setFont(this.font);
-        g2.cb = this.cb.getDuplicate();
-        g2.cb.saveState();
-        g2.width = this.width;
-        g2.height = this.height;
-        g2.followPath(new Area(new Rectangle2D.Float(0, 0, width, height)), CLIP);
-        if (this.clip != null)
-            g2.clip = new Area(this.clip);
-        g2.composite = composite;
-        g2.stroke = stroke;
-        g2.originalStroke = originalStroke;
-        g2.strokeOne = (BasicStroke)g2.transformStroke(g2.strokeOne);
-        g2.oldStroke = g2.strokeOne;
-        g2.setStrokeDiff(g2.oldStroke, null);
-        g2.cb.saveState();
-        if (g2.clip != null)
-            g2.followPath(g2.clip, CLIP);
-        g2.kid = true;
-        if (this.kids == null)
-            this.kids = new ArrayList<>();
-        this.kids.add(cb.getInternalBuffer().size());
-        this.kids.add(g2);
+        PdfGraphics2D g2 = createChild();
+        if (kids == null)
+            kids = new ArrayList<>();
+        kids.add(cb.getInternalBuffer().size());
+        kids.add(g2);
         return g2;
     }
-    
+
+    protected PdfGraphics2D createChild() {
+        return new PdfGraphics2D(this);
+    }
+
     public PdfContentByte getContent() {
         return this.cb;
     }
