@@ -69,6 +69,7 @@
         <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
         <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <maven.test.failure.ignore>false</maven.test.failure.ignore>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
         <pitest-junit5-plugin.version>1.2.1</pitest-junit5-plugin.version>
@@ -373,6 +374,17 @@
                     <historyInputFile>${project.build.directory}/pitest</historyInputFile>
                     <historyOutputFile>${project.build.directory}/pitest</historyOutputFile>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>

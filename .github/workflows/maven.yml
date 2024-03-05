@@ -27,8 +27,10 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{matrix.java}}
+      - name: Check maven version
+        run: mvn -v; echo "** ls **"; pwd && ls -l
       - name: Build with Maven
-        run: mvn -B verify --file pom.xml -Dgpg.skip
+        run: mvn -B install --file pom.xml -Dgpg.skip
 
   codacy-coverage-reporter:
     runs-on: ubuntu-latest
