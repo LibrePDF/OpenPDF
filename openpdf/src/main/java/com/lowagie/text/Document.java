@@ -52,7 +52,6 @@ package com.lowagie.text;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.FopGlyphProcessor;
 import com.lowagie.text.pdf.PdfDate;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -85,8 +84,8 @@ import java.util.Properties;
  *
  * <PRE>// creation of the document with a certain size and certain margins
  * <STRONG>Document document = new Document(PageSize.A4, 50, 50, 50, 50);
- * </STRONG> try { 
- *   // creation of the different writers 
+ * </STRONG> try {
+ *   // creation of the different writers
  *   HtmlWriter.getInstance(<STRONG>document </STRONG>, System.out);
  *   PdfWriter.getInstance(<STRONG>document </STRONG>, new FileOutputStream("text.pdf"));
  *   // we add some meta information to the document
@@ -100,12 +99,12 @@ import java.util.Properties;
  *  }
  *  <STRONG>document.close();</STRONG>
  * </PRE>
- * 
+ *
  * </BLOCKQUOTE>
  */
 
 public class Document implements DocListener {
-    
+
     // membervariables
     private static final String VERSION_PROPERTIES = "com/lowagie/text/version.properties";
     private static final String OPENPDF = "OpenPDF";
@@ -135,52 +134,52 @@ public class Document implements DocListener {
      * Allows the pdf documents to be produced without compression for debugging
      * purposes.
      */
-    public static boolean compress = true; 
-    
+    public static boolean compress = true;
+
     /**
      * When true the file access is not done through a memory mapped file. Use it if the file
      * is too big to be mapped in your address space.
      */
-    public static boolean plainRandomAccess = false; 
- 
+    public static boolean plainRandomAccess = false;
+
     /** Scales the WMF font size. The default value is 0.86. */
     public static float wmfFontCorrection = 0.86f;
-    
+
     /** The DocListener. */
-    private List<DocListener> listeners = new ArrayList<>();
-    
+    private final List<DocListener> listeners = new ArrayList<>();
+
     /** Is the document open or not? */
     protected boolean open;
-    
+
     /** Has the document already been closed? */
     protected boolean close;
-    
+
     // membervariables concerning the layout
-    
+
     /** The size of the page. */
     protected Rectangle pageSize;
-    
+
     /** margin in x direction starting from the left */
     protected float marginLeft = 0;
-    
+
     /** margin in x direction starting from the right */
     protected float marginRight = 0;
-    
+
     /** margin in y direction starting from the top */
     protected float marginTop = 0;
-    
+
     /** margin in y direction starting from the bottom */
     protected float marginBottom = 0;
-    
+
     /** mirroring of the left/right margins */
     protected boolean marginMirroring = false;
-    
+
     /**
      * mirroring of the top/bottom margins
      * @since    2.1.6
      */
     protected boolean marginMirroringTopBottom = false;
-    
+
     /** Content of JavaScript onLoad function */
     protected String javaScript_onLoad = null;
 
@@ -191,23 +190,23 @@ public class Document implements DocListener {
     protected String htmlStyleClass = null;
 
     // headers, footers
-    
+
     /** Current pagenumber */
     protected int pageN = 0;
-    
+
     /** This is the textual part of a Page; it can contain a header */
     protected HeaderFooter header = null;
-    
+
     /** This is the textual part of the footer */
     protected HeaderFooter footer = null;
-    
+
     /** This is a chapter number in case ChapterAutoNumber is used. */
     protected int chapternumber = 0;
 
     /**
      * Text rendering options, including the default language of the document and a flag
      * to enable font glyph substitution (if FOP is available)
-     * 
+     *
      * @since 3.1.15
      */
     TextRenderingOptions textRenderingOptions = new TextRenderingOptions();
@@ -253,7 +252,7 @@ public class Document implements DocListener {
         this.marginTop = marginTop;
         this.marginBottom = marginBottom;
     }
-    
+
     // listener methods
 
     /**
@@ -275,7 +274,7 @@ public class Document implements DocListener {
     public void removeDocListener(DocListener listener) {
         listeners.remove(listener);
     }
-    
+
     // methods implementing the DocListener interface
 
     /**
@@ -302,8 +301,7 @@ public class Document implements DocListener {
         for (DocListener listener : listeners) {
             success |= listener.add(element);
         }
-        if (element instanceof LargeElement) {
-            LargeElement e = (LargeElement)element;
+        if (element instanceof LargeElement e) {
             if (!e.isComplete())
                 e.flushContent();
         }
@@ -354,7 +352,13 @@ public class Document implements DocListener {
      * <p>
      * This change will be effective starting from the next page. If you want to change margins on
      * the first page, you need to set it before opening the document.
-     *
+     * <p>
+     *     A new page is created when you call:
+     *     <ul>
+     *         <li>Document.open()</li>
+     *         <li>Document.newPage(), only if the current page has some content, otherwise no new page will be created</li>
+     *     </ul>
+     * </p>
      * @param marginLeft   the margin on the left
      * @param marginRight  the margin on the right
      * @param marginTop    the margin on the top
@@ -373,7 +377,7 @@ public class Document implements DocListener {
         }
         return true;
     }
-    
+
     /**
      * Signals to all listeners, that a new page has to be started.
      * New pages can only be added on already opened and not yet closed documents.
@@ -595,7 +599,7 @@ public class Document implements DocListener {
             throw new ExceptionConverter(de);
         }
     }
-    
+
     /**
      * Adds the creator to a Document.
      * <P/>
@@ -614,7 +618,7 @@ public class Document implements DocListener {
             throw new ExceptionConverter(de);
         }
     }
-    
+
     /**
      * Adds the producer to a Document.
      * <P/>
@@ -673,12 +677,12 @@ public class Document implements DocListener {
     public boolean addCreationDate(PdfDate date) {
         try {
             return add(new Meta(Element.CREATIONDATE, date.toString()));
-        } 
+        }
         catch (DocumentException de) {
             throw new ExceptionConverter(de);
         }
     }
-    
+
     /**
      * Adds the current date and time to a Document.
      *
@@ -691,7 +695,7 @@ public class Document implements DocListener {
             throw new ExceptionConverter(de);
         }
     }
-    
+
     /**
      * Adds the current date and time to a Document.
      *
@@ -700,94 +704,94 @@ public class Document implements DocListener {
     public boolean addModificationDate(PdfDate date) {
         try {
             return add(new Meta(Element.MODIFICATIONDATE, date.toString()));
-        } 
+        }
         catch (DocumentException de) {
             throw new ExceptionConverter(de);
         }
     }
-    
+
     // methods to get the layout of the document.
-    
+
     /**
  * Returns the left margin.
  *
  * @return    the left margin
  */
-    
+
     public float leftMargin() {
         return marginLeft;
     }
-    
+
     /**
  * Return the right margin.
  *
  * @return    the right margin
  */
-    
+
     public float rightMargin() {
         return marginRight;
     }
-    
+
     /**
  * Returns the top margin.
  *
  * @return    the top margin
  */
-    
+
     public float topMargin() {
         return marginTop;
     }
-    
+
     /**
  * Returns the bottom margin.
  *
  * @return    the bottom margin
  */
-    
+
     public float bottomMargin() {
         return marginBottom;
     }
-    
+
     /**
  * Returns the lower left x-coordinate.
  *
  * @return    the lower left x-coordinate
  */
-    
+
     public float left() {
         return pageSize.getLeft(marginLeft);
     }
-    
+
     /**
  * Returns the upper right x-coordinate.
  *
  * @return    the upper right x-coordinate
  */
-    
+
     public float right() {
         return pageSize.getRight(marginRight);
     }
-    
+
     /**
  * Returns the upper right y-coordinate.
  *
  * @return    the upper right y-coordinate
  */
-    
+
     public float top() {
         return pageSize.getTop(marginTop);
     }
-    
+
     /**
  * Returns the lower left y-coordinate.
  *
  * @return    the lower left y-coordinate
  */
-    
+
     public float bottom() {
         return pageSize.getBottom(marginBottom);
     }
-    
+
     /**
  * Returns the lower left x-coordinate considering a given margin.
  *
@@ -795,11 +799,11 @@ public class Document implements DocListener {
      *            a margin
  * @return    the lower left x-coordinate
  */
-    
+
     public float left(float margin) {
         return pageSize.getLeft(marginLeft + margin);
     }
-    
+
     /**
  * Returns the upper right x-coordinate, considering a given margin.
  *
@@ -807,11 +811,11 @@ public class Document implements DocListener {
      *            a margin
  * @return    the upper right x-coordinate
  */
-    
+
     public float right(float margin) {
         return pageSize.getRight(marginRight + margin);
     }
-    
+
     /**
  * Returns the upper right y-coordinate, considering a given margin.
  *
@@ -819,11 +823,11 @@ public class Document implements DocListener {
      *            a margin
  * @return    the upper right y-coordinate
  */
-    
+
     public float top(float margin) {
         return pageSize.getTop(marginTop + margin);
     }
-    
+
     /**
  * Returns the lower left y-coordinate, considering a given margin.
  *
@@ -831,26 +835,26 @@ public class Document implements DocListener {
      *            a margin
  * @return    the lower left y-coordinate
  */
-    
+
     public float bottom(float margin) {
         return pageSize.getBottom(marginBottom + margin);
     }
-    
+
     /**
  * Gets the pagesize.
-     * 
+     *
  * @return the page size
  */
-    
+
     public Rectangle getPageSize() {
         return this.pageSize;
     }
-    
+
     /**
      * Checks if the document is open.
-     * 
+     *
      * @return <CODE>true</CODE> if the document is open
-     */    
+     */
     public boolean isOpen() {
         return open;
     }
@@ -890,14 +894,14 @@ public class Document implements DocListener {
      * @param code
      *            the JavaScript code to be executed on load of the HTML page
  */
-    
+
     public void setJavaScript_onLoad(String code) {
         this.javaScript_onLoad = code;
     }
 
     /**
  * Gets the JavaScript onLoad command.
-     * 
+     *
  * @return the JavaScript onLoad command
  */
 
@@ -911,14 +915,14 @@ public class Document implements DocListener {
      * @param code
      *            the JavaScript code to be executed on unload of the HTML page
  */
-    
+
     public void setJavaScript_onUnLoad(String code) {
         this.javaScript_onUnLoad = code;
     }
 
     /**
  * Gets the JavaScript onUnLoad command.
-     * 
+     *
  * @return the JavaScript onUnLoad command
  */
 
@@ -932,7 +936,7 @@ public class Document implements DocListener {
      * @param htmlStyleClass
      *            the style class for the HTML body tag
  */
-    
+
     public void setHtmlStyleClass(String htmlStyleClass) {
         this.htmlStyleClass = htmlStyleClass;
     }
@@ -942,20 +946,20 @@ public class Document implements DocListener {
  *
  * @return        the style class of the HTML body tag
  */
-    
+
     public String getHtmlStyleClass() {
         return this.htmlStyleClass;
     }
-    
+
     /**
      * Set the margin mirroring. It will mirror right/left margins for odd/even pages.
      * <p>
      * Note: it will not work with {@link Table}.
-     * 
+     *
      * @param marginMirroring
      *            <CODE>true</CODE> to mirror the margins
      * @return always <CODE>true</CODE>
-     */    
+     */
     public boolean setMarginMirroring(boolean marginMirroring) {
         this.marginMirroring = marginMirroring;
         for (DocListener listener : listeners) {
@@ -963,17 +967,17 @@ public class Document implements DocListener {
         }
         return true;
     }
-    
+
     /**
      * Set the margin mirroring. It will mirror top/bottom margins for odd/even pages.
      * <p>
      * Note: it will not work with {@link Table}.
-     * 
+     *
      * @param marginMirroringTopBottom
      *            <CODE>true</CODE> to mirror the margins
      * @return always <CODE>true</CODE>
      * @since    2.1.6
-     */    
+     */
     public boolean setMarginMirroringTopBottom(boolean marginMirroringTopBottom) {
         this.marginMirroringTopBottom = marginMirroringTopBottom;
         for (DocListener listener : listeners) {
@@ -981,12 +985,12 @@ public class Document implements DocListener {
         }
         return true;
     }
-    
+
     /**
      * Gets the margin mirroring flag.
-     * 
+     *
      * @return the margin mirroring flag
-     */    
+     */
     public boolean isMarginMirroring() {
         return marginMirroring;
     }
@@ -1017,7 +1021,7 @@ public class Document implements DocListener {
 
     /**
      * Set a flag that determine whether glyph substion is enabled when FOP is available.
-     * 
+     *
      * @param glyphSubstitutionEnabled the glyph substitution enabled flag
      * @see FopGlyphProcessor
      * @see #setDocumentLanguage(String)
@@ -1028,17 +1032,17 @@ public class Document implements DocListener {
 
 	/**
 	 * Returns the glyph substitution enabled flag.
-	 * 
+     *
 	 * @return the glyph substitution enabled flag
 	 * @see #setGlyphSubstitutionEnabled(boolean)
 	 */
 	public boolean isGlyphSubstitutionEnabled() {
 		return textRenderingOptions.isGlyphSubstitutionEnabled();
 	}
-    
-	/**
+
+    /**
 	 * Sets the text rendering options.
-	 * 
+     *
 	 * @param textRenderingOptions the text rendering options
 	 * @see #setDocumentLanguage(String)
 	 * @see Document#setGlyphSubstitutionEnabled(boolean)
@@ -1046,10 +1050,10 @@ public class Document implements DocListener {
     public void setTextRenderingOptions(TextRenderingOptions textRenderingOptions) {
     	this.textRenderingOptions = textRenderingOptions == null ? new TextRenderingOptions() : textRenderingOptions;
     }
-    
+
     /**
      * Gets the text rendering options.
-     * 
+     *
      * @return the text rendering options
      * @see #getDocumentLanguage()
      * @see #isGlyphSubstitutionEnabled()
