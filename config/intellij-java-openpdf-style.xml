@@ -1,11 +1,32 @@
-<code_scheme name="OpenPdfStyle" version="173">
+<code_scheme name="OpenPDF Style" version="173">
   <option name="OTHER_INDENT_OPTIONS">
     <value>
+      <option name="INDENT_SIZE" value="2" />
       <option name="CONTINUATION_INDENT_SIZE" value="4" />
+      <option name="TAB_SIZE" value="2" />
     </value>
   </option>
-  <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="true" />
-  <option name="SOFT_MARGINS" value="100" />
+  <option name="KEEP_CONTROL_STATEMENT_IN_ONE_LINE" value="false" />
+  <option name="KEEP_BLANK_LINES_BEFORE_RBRACE" value="0" />
+  <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
+  <option name="ALIGN_MULTILINE_FOR" value="false" />
+  <option name="SPACE_BEFORE_ARRAY_INITIALIZER_LBRACE" value="true" />
+  <option name="CALL_PARAMETERS_WRAP" value="1" />
+  <option name="METHOD_PARAMETERS_WRAP" value="1" />
+  <option name="EXTENDS_LIST_WRAP" value="1" />
+  <option name="THROWS_KEYWORD_WRAP" value="1" />
+  <option name="METHOD_CALL_CHAIN_WRAP" value="1" />
+  <option name="BINARY_OPERATION_WRAP" value="1" />
+  <option name="BINARY_OPERATION_SIGN_ON_NEXT_LINE" value="true" />
+  <option name="TERNARY_OPERATION_WRAP" value="1" />
+  <option name="TERNARY_OPERATION_SIGNS_ON_NEXT_LINE" value="true" />
+  <option name="FOR_STATEMENT_WRAP" value="1" />
+  <option name="ARRAY_INITIALIZER_WRAP" value="1" />
+  <option name="WRAP_COMMENTS" value="true" />
+  <option name="IF_BRACE_FORCE" value="3" />
+  <option name="DOWHILE_BRACE_FORCE" value="3" />
+  <option name="WHILE_BRACE_FORCE" value="3" />
+  <option name="FOR_BRACE_FORCE" value="3" />
   <AndroidXmlCodeStyleSettings>
     <option name="USE_CUSTOM_SETTINGS" value="true" />
     <option name="LAYOUT_SETTINGS">
@@ -82,7 +103,6 @@
   </TypeScriptCodeStyleSettings>
   <XML>
     <option name="XML_ALIGN_ATTRIBUTES" value="false" />
-    <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
   </XML>
   <codeStyleSettings language="CSS">
     <indentOptions>
@@ -110,6 +130,13 @@
     <option name="FOR_BRACE_FORCE" value="3" />
     <option name="PARENT_SETTINGS_INSTALLED" value="true" />
   </codeStyleSettings>
+  <codeStyleSettings language="HTML">
+    <indentOptions>
+      <option name="INDENT_SIZE" value="2" />
+      <option name="CONTINUATION_INDENT_SIZE" value="4" />
+      <option name="TAB_SIZE" value="2" />
+    </indentOptions>
+  </codeStyleSettings>
   <codeStyleSettings language="JAVA">
     <option name="KEEP_CONTROL_STATEMENT_IN_ONE_LINE" value="false" />
     <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
@@ -136,7 +163,8 @@
   </codeStyleSettings>
   <codeStyleSettings language="JSON">
     <indentOptions>
-      <option name="INDENT_SIZE" value="4" />
+      <option name="CONTINUATION_INDENT_SIZE" value="4" />
+      <option name="TAB_SIZE" value="2" />
     </indentOptions>
   </codeStyleSettings>
   <codeStyleSettings language="JavaScript">
@@ -158,6 +186,13 @@
     <option name="FOR_BRACE_FORCE" value="3" />
     <indentOptions>
       <option name="INDENT_SIZE" value="2" />
+      <option name="TAB_SIZE" value="2" />
+    </indentOptions>
+  </codeStyleSettings>
+  <codeStyleSettings language="Markdown">
+    <indentOptions>
+      <option name="INDENT_SIZE" value="2" />
+      <option name="CONTINUATION_INDENT_SIZE" value="4" />
       <option name="TAB_SIZE" value="2" />
     </indentOptions>
   </codeStyleSettings>
@@ -187,8 +222,10 @@
     </indentOptions>
   </codeStyleSettings>
   <codeStyleSettings language="Python">
+    <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
     <option name="RIGHT_MARGIN" value="80" />
     <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
+    <option name="PARENT_SETTINGS_INSTALLED" value="true" />
     <indentOptions>
       <option name="INDENT_SIZE" value="2" />
       <option name="CONTINUATION_INDENT_SIZE" value="4" />
@@ -207,12 +244,6 @@
       <option name="TAB_SIZE" value="2" />
     </indentOptions>
   </codeStyleSettings>
-  <codeStyleSettings language="Shell Script">
-    <indentOptions>
-      <option name="INDENT_SIZE" value="4" />
-      <option name="TAB_SIZE" value="4" />
-    </indentOptions>
-  </codeStyleSettings>
   <codeStyleSettings language="TypeScript">
     <indentOptions>
       <option name="INDENT_SIZE" value="2" />
@@ -221,7 +252,9 @@
   </codeStyleSettings>
   <codeStyleSettings language="XML">
     <indentOptions>
-      <option name="CONTINUATION_INDENT_SIZE" value="4" />
+      <option name="INDENT_SIZE" value="2" />
+      <option name="CONTINUATION_INDENT_SIZE" value="2" />
+      <option name="TAB_SIZE" value="2" />
     </indentOptions>
     <arrangement>
       <rules>
@@ -543,9 +576,7 @@
   <codeStyleSettings language="protobuf">
     <option name="RIGHT_MARGIN" value="80" />
     <indentOptions>
-      <option name="INDENT_SIZE" value="2" />
       <option name="CONTINUATION_INDENT_SIZE" value="2" />
-      <option name="TAB_SIZE" value="2" />
     </indentOptions>
   </codeStyleSettings>
 </code_scheme>
