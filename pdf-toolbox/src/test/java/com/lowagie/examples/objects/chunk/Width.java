@@ -9,23 +9,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.chunk;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * How to measure and scale the width of a Chunk.
- * 
+ *
  * @author blowagie
  */
 
@@ -33,7 +32,7 @@ public class Width {
 
     /**
      * Demonstrates how to measure and scale the width of a Chunk.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {

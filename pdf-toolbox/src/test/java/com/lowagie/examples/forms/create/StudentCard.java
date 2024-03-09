@@ -9,15 +9,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.forms.create;
 
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -32,33 +28,39 @@ import com.lowagie.text.pdf.BarcodeEAN;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Generates a StudentCard
+ *
  * @author blowagie
  */
 public class StudentCard {
+
     /**
      * Generates a StudentCard
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
-        
+
         System.out.println("StudentCard");
-        
+
         // step 1: creation of a document-object
         Rectangle rect = new Rectangle(243, 153);
         rect.setBackgroundColor(new Color(0xFF, 0xFF, 0xCC));
         Document document = new Document(rect, 10, 10, 10, 10);
-        
+
         try {
-            
+
             // step 2:
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("studentcard.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
             Font font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD, Color.BLUE);
             Paragraph p = new Paragraph("Ghent University", font);
@@ -69,7 +71,7 @@ public class StudentCard {
             PdfPTable outertable = new PdfPTable(3);
             outertable.setTotalWidth(200);
             outertable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-            float[] outer = { 60, 25, 15 };
+            float[] outer = {60, 25, 15};
             outertable.setWidths(outer);
             PdfPTable innertable = new PdfPTable(2);
             float[] inner = {35, 65};
@@ -88,13 +90,12 @@ public class StudentCard {
             BarcodeEAN codeEAN = new BarcodeEAN();
             codeEAN.setCodeType(Barcode.EAN13);
             codeEAN.setCode("8010012529736");
-            Image imageEAN = codeEAN.createImageWithBarcode(cb, null, null);            
+            Image imageEAN = codeEAN.createImageWithBarcode(cb, null, null);
             imageEAN.setRotationDegrees(90);
             outertable.getDefaultCell().setBackgroundColor(Color.WHITE);
             outertable.addCell(imageEAN);
             outertable.writeSelectedRows(0, -1, 20, 100, writer.getDirectContent());
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 

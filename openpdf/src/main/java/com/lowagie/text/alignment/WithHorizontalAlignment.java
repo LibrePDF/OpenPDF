@@ -9,9 +9,9 @@ package com.lowagie.text.alignment;
 public interface WithHorizontalAlignment {
 
     /**
-    * Sets horizontal alignment mode.
-    *
-    * @param alignment New alignment mode. If null, current alignment must be left unchanged
-    */
+     * Sets horizontal alignment mode.
+     *
+     * @param alignment New alignment mode. If null, current alignment must be left unchanged
+     */
     void setHorizontalAlignment(final HorizontalAlignment alignment);
 }

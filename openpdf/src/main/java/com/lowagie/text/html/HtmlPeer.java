@@ -49,12 +49,10 @@
 
 package com.lowagie.text.html;
 
-import java.util.Properties;
-
-import org.xml.sax.Attributes;
-
 import com.lowagie.text.ElementTags;
 import com.lowagie.text.xml.XmlPeer;
+import java.util.Properties;
+import org.xml.sax.Attributes;
 
 /**
  * This interface is implemented by the peer of all the iText objects.
@@ -64,11 +62,9 @@ public class HtmlPeer extends XmlPeer {
 
     /**
      * Creates a XmlPeer.
-     * 
-     * @param name
-     *            the iText name of the tag
-     * @param alias
-     *            the Html name of the tag
+     *
+     * @param name  the iText name of the tag
+     * @param alias the Html name of the tag
      */
 
     public HtmlPeer(String name, String alias) {
@@ -77,11 +73,9 @@ public class HtmlPeer extends XmlPeer {
 
     /**
      * Sets an alias for an attribute.
-     * 
-     * @param name
-     *            the iText tagname
-     * @param alias
-     *            the custom tagname
+     *
+     * @param name  the iText tagname
+     * @param alias the custom tagname
      */
 
     public void addAlias(String name, String alias) {

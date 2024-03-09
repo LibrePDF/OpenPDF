@@ -52,26 +52,26 @@ package com.lowagie.text.pdf;
 /**
  * The <CODE>PdfPageElement</CODE> interface has to be implemented by <CODE>PdfPage</CODE> and <CODE>PdfPages</CODE>.
  *
- * @see        PdfPage
- * @see        PdfPages
+ * @see PdfPage
+ * @see PdfPages
  */
 
 interface PdfPageElement {
-    
-/**
- * Set the value for the <B>Parent</B> key in the Page or Pages Dictionary.
- *
- * @param    reference            an indirect reference to a <CODE>PdfPages</CODE>-object
- */
 
-void setParent(PdfIndirectReference reference);
-    
-/**
- * Checks if this page element is a tree of pages.
- *
- * @return    <CODE>true</CODE> if it's a tree of pages;
- *            <CODE>false</CODE> if it's a single page
- */
+    /**
+     * Checks if this page element is a tree of pages.
+     *
+     * @return <CODE>true</CODE> if it's a tree of pages;
+     * <CODE>false</CODE> if it's a single page
+     */
 
-boolean isParent();
+    boolean isParent();
+
+    /**
+     * Set the value for the <B>Parent</B> key in the Page or Pages Dictionary.
+     *
+     * @param reference an indirect reference to a <CODE>PdfPages</CODE>-object
+     */
+
+    void setParent(PdfIndirectReference reference);
 }

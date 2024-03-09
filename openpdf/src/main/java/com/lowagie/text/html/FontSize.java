@@ -31,18 +31,6 @@ public enum FontSize {
         this.relative = relative;
     }
 
-    public String getTextValue() {
-        return textValue;
-    }
-
-    public float getScale() {
-        return scale;
-    }
-
-    public boolean isRelative() {
-        return relative;
-    }
-
     public static FontSize parse(String text) {
         if (text == null || text.isEmpty() || !Character.isLetter(text.charAt(0))) {
             return null;
@@ -53,5 +41,17 @@ public enum FontSize {
             }
         }
         return null;
+    }
+
+    public String getTextValue() {
+        return textValue;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public boolean isRelative() {
+        return relative;
     }
 }

@@ -51,12 +51,15 @@ package com.lowagie.text.pdf;
 
 /**
  * Interface for the OCSP Client.
+ *
  * @since 2.1.6
  */
 public interface OcspClient {
+
     /**
      * Gets an encoded byte array.
-     * @return    a byte array
+     *
+     * @return a byte array
      */
     byte[] getEncoded();
 }

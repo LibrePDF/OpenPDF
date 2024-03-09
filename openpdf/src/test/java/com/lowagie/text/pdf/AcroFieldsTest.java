@@ -3,23 +3,21 @@ package com.lowagie.text.pdf;
 import static java.time.Duration.ofMillis;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.Security;
 import java.util.List;
-
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
-
 public class AcroFieldsTest {
 
     /**
-     * This test fails, because signatureCoversWholeDocument does only check the
-     * last signed block.
+     * This test fails, because signatureCoversWholeDocument does only check the last signed block.
+     *
      * @throws Exception a ClassCastException
      */
     @Test
@@ -46,16 +44,16 @@ public class AcroFieldsTest {
         }
 
     }
-    
+
     @Test
     public void infiniteLoopTest() throws Exception {
-    	try (InputStream is = AcroFieldsTest.class.getResourceAsStream("/pades_infinite_loop.pdf");
-    			PdfReader reader = new PdfReader(is)) {
-    		assertTimeoutPreemptively(ofMillis(500), () -> {
-	    		reader.getAcroFields();
-    		});
-    	}
-    	
+        try (InputStream is = AcroFieldsTest.class.getResourceAsStream("/pades_infinite_loop.pdf");
+                PdfReader reader = new PdfReader(is)) {
+            assertTimeoutPreemptively(ofMillis(500), () -> {
+                reader.getAcroFields();
+            });
+        }
+
     }
 
 }

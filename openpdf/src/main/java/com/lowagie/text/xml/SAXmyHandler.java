@@ -49,10 +49,9 @@
 
 package com.lowagie.text.xml;
 
+import com.lowagie.text.DocListener;
 import java.util.Map;
 import java.util.Properties;
-
-import com.lowagie.text.DocListener;
 import org.xml.sax.Attributes;
 
 /**
@@ -62,8 +61,8 @@ import org.xml.sax.Attributes;
 public class SAXmyHandler extends SAXiTextHandler<XmlPeer> {
 
     /**
-     * Constructs a new SAXiTextHandler that will translate all the events
-     * triggered by the parser to actions on the <CODE>Document</CODE>-object.
+     * Constructs a new SAXiTextHandler that will translate all the events triggered by the parser to actions on the
+     * <CODE>Document</CODE>-object.
      *
      * @param document this is the document on which events must be triggered
      * @param myTags   a user defined tagmap
@@ -72,22 +71,22 @@ public class SAXmyHandler extends SAXiTextHandler<XmlPeer> {
     public SAXmyHandler(DocListener document, Map<String, XmlPeer> myTags) {
         super(document, myTags);
     }
-    
-/**
- * This method gets called when a start tag is encountered.
- * 
-     * @param   uri         the Uniform Resource Identifier
-     * @param   localName         the local name (without prefix), or the empty string if Namespace processing is not being performed.
- * @param    name        the name of the tag that is encountered
- * @param    attrs        the list of attributes
- */
-    
+
+    /**
+     * This method gets called when a start tag is encountered.
+     *
+     * @param uri       the Uniform Resource Identifier
+     * @param localName the local name (without prefix), or the empty string if Namespace processing is not being
+     *                  performed.
+     * @param name      the name of the tag that is encountered
+     * @param attrs     the list of attributes
+     */
+
     public void startElement(String uri, String localName, String name, Attributes attrs) {
         if (myTags.containsKey(name)) {
             XmlPeer peer = myTags.get(name);
             handleStartingTags(peer.getTag(), peer.getAttributes(attrs));
-        }
-        else {
+        } else {
             Properties attributes = new Properties();
             if (attrs != null) {
                 for (int i = 0; i < attrs.getLength(); i++) {
@@ -98,21 +97,21 @@ public class SAXmyHandler extends SAXiTextHandler<XmlPeer> {
             handleStartingTags(name, attributes);
         }
     }
-    
+
     /**
-      * This method gets called when an end tag is encountered.
-      *
-     * @param   uri         the Uniform Resource Identifier
-     * @param   lname         the local name (without prefix), or the empty string if Namespace processing is not being performed.
-     * @param    name        the name of the tag that ends
+     * This method gets called when an end tag is encountered.
+     *
+     * @param uri   the Uniform Resource Identifier
+     * @param lname the local name (without prefix), or the empty string if Namespace processing is not being
+     *              performed.
+     * @param name  the name of the tag that ends
      */
-    
+
     public void endElement(String uri, String lname, String name) {
         if (myTags.containsKey(name)) {
             XmlPeer peer = myTags.get(name);
             handleEndingTags(peer.getTag());
-        }
-        else {
+        } else {
             handleEndingTags(name);
         }
     }

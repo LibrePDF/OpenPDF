@@ -35,11 +35,6 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.swing.JInternalFrame;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -51,9 +46,13 @@ import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.OptionArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.swing.JInternalFrame;
 
 /**
  * This tool lets you generate a PDF that shows N pages on 1.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class NUp extends AbstractTool {
@@ -80,6 +79,20 @@ public class NUp extends AbstractTool {
     }
 
     /**
+     * Generates an NUp version of an existing PDF file.
+     *
+     * @param args String[]
+     */
+    public static void main(String[] args) {
+        NUp tool = new NUp();
+        if (args.length < 2) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
+        tool.execute();
+    }
+
+    /**
      * @see com.lowagie.toolbox.AbstractTool#createFrame()
      */
     protected void createFrame() {
@@ -94,15 +107,18 @@ public class NUp extends AbstractTool {
      */
     public void execute() {
         try {
-            if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
-            File src = (File)getValue("srcfile");
-            if (getValue("destfile") == null) throw new InstantiationException("You need to choose a destination file");
-            File dest = (File)getValue("destfile");
+            if (getValue("srcfile") == null) {
+                throw new InstantiationException("You need to choose a sourcefile");
+            }
+            File src = (File) getValue("srcfile");
+            if (getValue("destfile") == null) {
+                throw new InstantiationException("You need to choose a destination file");
+            }
+            File dest = (File) getValue("destfile");
             int pow2;
             try {
                 pow2 = Integer.parseInt((String) getValue("pow2"));
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 pow2 = 1;
             }
             // we create a reader for a certain document
@@ -111,14 +127,15 @@ public class NUp extends AbstractTool {
             int total = reader.getNumberOfPages();
             System.out.println("There are " + total + " pages in the original file.");
             Rectangle pageSize = reader.getPageSize(1);
-            Rectangle newSize = (pow2 % 2) == 0 ? new Rectangle(pageSize.getWidth(), pageSize.getHeight()) : new Rectangle(pageSize.getHeight(), pageSize.getWidth());
+            Rectangle newSize = (pow2 % 2) == 0 ? new Rectangle(pageSize.getWidth(), pageSize.getHeight())
+                    : new Rectangle(pageSize.getHeight(), pageSize.getWidth());
             Rectangle unitSize = new Rectangle(pageSize.getWidth(), pageSize.getHeight());
             Rectangle currentSize;
             for (int i = 0; i < pow2; i++) {
                 unitSize = new Rectangle(unitSize.getHeight() / 2, unitSize.getWidth());
             }
-            int n = (int)Math.pow(2, pow2);
-            int r = (int)Math.pow(2, pow2 / 2);
+            int n = (int) Math.pow(2, pow2);
+            int r = (int) Math.pow(2, pow2 / 2);
             int c = n / r;
             // step 1: creation of a document-object
             Document document = new Document(newSize, 0, 0, 0, 0);
@@ -139,7 +156,8 @@ public class NUp extends AbstractTool {
                 offsetX = unitSize.getWidth() * ((i % n) % c);
                 offsetY = newSize.getHeight() - (unitSize.getHeight() * (((i % n) / c) + 1));
                 currentSize = reader.getPageSize(p);
-                factor = Math.min(unitSize.getWidth() / currentSize.getWidth(), unitSize.getHeight() / currentSize.getHeight());
+                factor = Math.min(unitSize.getWidth() / currentSize.getWidth(),
+                        unitSize.getHeight() / currentSize.getHeight());
                 offsetX += (unitSize.getWidth() - (currentSize.getWidth() * factor)) / 2f;
                 offsetY += (unitSize.getHeight() - (currentSize.getHeight() * factor)) / 2f;
                 page = writer.getImportedPage(reader, p);
@@ -147,16 +165,14 @@ public class NUp extends AbstractTool {
             }
             // step 5: we close the document
             document.close();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -166,28 +182,12 @@ public class NUp extends AbstractTool {
         // represent the changes of the argument in the internal frame
     }
 
-
     /**
-     * Generates an NUp version of an existing PDF file.
-     *
-     * @param args String[]
-     */
-    public static void main(String[] args) {
-        NUp tool = new NUp();
-        if (args.length < 2) {
-            System.err.println(tool.getUsage());
-        }
-        tool.setMainArguments(args);
-        tool.execute();
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
-        return (File)getValue("destfile");
+        return (File) getValue("destfile");
     }
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 1999-2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,8 +19,7 @@ package com.lowagie.text.pdf.hyphenation;
 import java.io.Serializable;
 
 /**
- * This class implements a simple byte vector with access to the
- * underlying array.
+ * This class implements a simple byte vector with access to the underlying array.
  *
  * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
@@ -101,8 +100,9 @@ public class ByteVector implements Serializable {
 
     /**
      * This is to implement memory allocation in the array. Like malloc().
-     * @param size  The size to add
-     * @return  The index of the size of the old array
+     *
+     * @param size The size to add
+     * @return The index of the size of the old array
      */
     public int alloc(int size) {
         int index = n;

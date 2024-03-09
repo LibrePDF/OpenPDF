@@ -7,18 +7,18 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 public class Footer {
 
-/**
- * Create a document with 2 empty pages and custom numbered footer without before part.
-  * @param args
- */
+    /**
+     * Create a document with 2 empty pages and custom numbered footer without before part.
+     *
+     * @param args
+     */
 
-    public static void main(String []args) {
+    public static void main(String[] args) {
         Document document = new Document(PageSize.A4, 10f, 10f, 10f, 10f);
 
         try {

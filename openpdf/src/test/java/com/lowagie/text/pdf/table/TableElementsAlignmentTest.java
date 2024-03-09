@@ -30,18 +30,18 @@ public class TableElementsAlignmentTest {
     Iterable<DynamicTest> testSettingTableAlignment() {
         final Table table = new Table(1);
         return Arrays.stream(HorizontalAlignment.values())
-            .map(alignment -> dynamicTest(TEST_TITLE + alignment, () -> {
-                table.setHorizontalAlignment(alignment);
-                final int alignmentId = table.getAlignment();
-                assertEquals(alignmentId, alignment.getId());
-            }))
-            .collect(Collectors.toList());
+                .map(alignment -> dynamicTest(TEST_TITLE + alignment, () -> {
+                    table.setHorizontalAlignment(alignment);
+                    final int alignmentId = table.getAlignment();
+                    assertEquals(alignmentId, alignment.getId());
+                }))
+                .collect(Collectors.toList());
     }
 
     @Test
     void testSettingCellHorizontalAlignment() {
         final Cell cell = new Cell();
-        for (final HorizontalAlignment alignment: HorizontalAlignment.values()) {
+        for (final HorizontalAlignment alignment : HorizontalAlignment.values()) {
             cell.setHorizontalAlignment(alignment);
             final int alignmentId = cell.getHorizontalAlignment();
             assertEquals(alignmentId, alignment.getId());
@@ -51,7 +51,7 @@ public class TableElementsAlignmentTest {
     @Test
     void testSettingCellVerticalAlignment() {
         final Cell cell = new Cell();
-        for (final VerticalAlignment alignment: VerticalAlignment.values()) {
+        for (final VerticalAlignment alignment : VerticalAlignment.values()) {
             cell.setVerticalAlignment(alignment);
             final int alignmentId = cell.getVerticalAlignment();
             assertEquals(alignmentId, alignment.getId());

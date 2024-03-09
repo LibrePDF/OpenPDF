@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.optionalcontent;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -30,6 +27,8 @@ import com.lowagie.text.pdf.PdfLayerMembership;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfOCProperties;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Demonstrates how to order optional content groups.
@@ -38,6 +37,7 @@ public class OrderedLayers {
 
     /**
      * Demonstrates how to order optional content groups.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -77,7 +77,7 @@ public class OrderedLayers {
             ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, p3, 50, 500, 0);
             cb.endLayer();
             cb.sanityCheck();
-            
+
             PdfOCProperties p = writer.getOCProperties();
             PdfArray order = new PdfArray();
             order.add(l1.getRef());

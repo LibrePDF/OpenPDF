@@ -60,7 +60,7 @@ import java.util.TreeMap;
 
 /**
  * Class for an index.
- * 
+ *
  * @author Michael Niedermair
  */
 public class IndexEvents extends PdfPageEventHelper {
@@ -69,113 +69,16 @@ public class IndexEvents extends PdfPageEventHelper {
      * keeps the indextag with the pagenumber
      */
     private Map<String, Integer> indextag = new TreeMap<>();
-
-    /**
-     * All the text that is passed to this event, gets registered in the indexentry.
-     * 
-     * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(
-     *      com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document,
-     *      com.lowagie.text.Rectangle, java.lang.String)
-     */
-    public void onGenericTag(PdfWriter writer, Document document,
-            Rectangle rect, String text) {
-        indextag.put(text, writer.getPageNumber());
-    }
-
-    // --------------------------------------------------------------------
     /**
      * indexcounter
      */
     private long indexcounter = 0;
 
+    // --------------------------------------------------------------------
     /**
      * the list for the index entry
      */
     private List<Entry> indexentry = new ArrayList<>();
-
-    /**
-     * Create an index entry.
-     *
-     * @param text  The text for the Chunk.
-     * @param in1   The first level.
-     * @param in2   The second level.
-     * @param in3   The third level.
-     * @return Returns the Chunk.
-     */
-    public Chunk create(final String text, final String in1, final String in2,
-            final String in3) {
-
-        Chunk chunk = new Chunk(text);
-        String tag = "idx_" + (indexcounter++);
-        chunk.setGenericTag(tag);
-        chunk.setLocalDestination(tag);
-        Entry entry = new Entry(in1, in2, in3, tag);
-        indexentry.add(entry);
-        return chunk;
-    }
-
-    /**
-     * Create an index entry.
-     *
-     * @param text  The text for the Chunk.
-     * @param in1   The first level.
-     * @return Returns the Chunk.
-     */
-    public Chunk create(final String text, final String in1) {
-        return create(text, in1, "", "");
-    }
-
-    /**
-     * Create an index entry.
-     *
-     * @param text  The text for the Chunk.
-     * @param in1   The first level.
-     * @param in2   The second level.
-     * @return Returns the Chunk.
-     */
-    public Chunk create(final String text, final String in1, final String in2) {
-        return create(text, in1, in2, "");
-    }
-
-    /**
-     * Create an index entry.
-     *
-     * @param text  The text.
-     * @param in1   The first level.
-     * @param in2   The second level.
-     * @param in3   The third level.
-     */
-    public void create(final Chunk text, final String in1, final String in2,
-            final String in3) {
-
-        String tag = "idx_" + (indexcounter++);
-        text.setGenericTag(tag);
-        text.setLocalDestination(tag);
-        Entry entry = new Entry(in1, in2, in3, tag);
-        indexentry.add(entry);
-    }
-
-    /**
-     * Create an index entry.
-     *
-     * @param text  The text.
-     * @param in1   The first level.
-     */
-    public void create(final Chunk text, final String in1) {
-        create(text, in1, "", "");
-    }
-
-    /**
-     * Create an index entry.
-     *
-     * @param text  The text.
-     * @param in1   The first level.
-     * @param in2   The second level.
-     */
-    public void create(final Chunk text, final String in1, final String in2) {
-        create(text, in1, in2, "");
-    }
-
     /**
      * Comparator for sorting the index
      */
@@ -201,7 +104,102 @@ public class IndexEvents extends PdfPageEventHelper {
     };
 
     /**
+     * All the text that is passed to this event, gets registered in the indexentry.
+     *
+     * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter,
+     * com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
+     */
+    public void onGenericTag(PdfWriter writer, Document document,
+            Rectangle rect, String text) {
+        indextag.put(text, writer.getPageNumber());
+    }
+
+    /**
+     * Create an index entry.
+     *
+     * @param text The text for the Chunk.
+     * @param in1  The first level.
+     * @param in2  The second level.
+     * @param in3  The third level.
+     * @return Returns the Chunk.
+     */
+    public Chunk create(final String text, final String in1, final String in2,
+            final String in3) {
+
+        Chunk chunk = new Chunk(text);
+        String tag = "idx_" + (indexcounter++);
+        chunk.setGenericTag(tag);
+        chunk.setLocalDestination(tag);
+        Entry entry = new Entry(in1, in2, in3, tag);
+        indexentry.add(entry);
+        return chunk;
+    }
+
+    /**
+     * Create an index entry.
+     *
+     * @param text The text for the Chunk.
+     * @param in1  The first level.
+     * @return Returns the Chunk.
+     */
+    public Chunk create(final String text, final String in1) {
+        return create(text, in1, "", "");
+    }
+
+    /**
+     * Create an index entry.
+     *
+     * @param text The text for the Chunk.
+     * @param in1  The first level.
+     * @param in2  The second level.
+     * @return Returns the Chunk.
+     */
+    public Chunk create(final String text, final String in1, final String in2) {
+        return create(text, in1, in2, "");
+    }
+
+    /**
+     * Create an index entry.
+     *
+     * @param text The text.
+     * @param in1  The first level.
+     * @param in2  The second level.
+     * @param in3  The third level.
+     */
+    public void create(final Chunk text, final String in1, final String in2,
+            final String in3) {
+
+        String tag = "idx_" + (indexcounter++);
+        text.setGenericTag(tag);
+        text.setLocalDestination(tag);
+        Entry entry = new Entry(in1, in2, in3, tag);
+        indexentry.add(entry);
+    }
+
+    /**
+     * Create an index entry.
+     *
+     * @param text The text.
+     * @param in1  The first level.
+     */
+    public void create(final Chunk text, final String in1) {
+        create(text, in1, "", "");
+    }
+
+    /**
+     * Create an index entry.
+     *
+     * @param text The text.
+     * @param in1  The first level.
+     * @param in2  The second level.
+     */
+    public void create(final Chunk text, final String in1, final String in2) {
+        create(text, in1, in2, "");
+    }
+
+    /**
      * Set the comparator.
+     *
      * @param aComparator The comparator to set.
      */
     public void setComparator(Comparator<Entry> aComparator) {
@@ -210,6 +208,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
     /**
      * Returns the sorted list with the entries and the collected page numbers.
+     *
      * @return Returns the sorted list with the entries and the collected page numbers.
      */
     public List<Entry> getSortedEntries() {
@@ -235,11 +234,12 @@ public class IndexEvents extends PdfPageEventHelper {
     }
 
     // --------------------------------------------------------------------
+
     /**
      * Class for an index entry.
      * <p>
-     * In the first step, only in1, in2,in3 and tag are used.
-     * After the collections of the index entries, pagenumbers are used.
+     * In the first step, only in1, in2,in3 and tag are used. After the collections of the index entries, pagenumbers
+     * are used.
      * </p>
      */
     public class Entry {
@@ -276,10 +276,11 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * Create a new object.
-         * @param aIn1   The first level.
-         * @param aIn2   The second level.
-         * @param aIn3   The third level.
-         * @param aTag   The tag.
+         *
+         * @param aIn1 The first level.
+         * @param aIn2 The second level.
+         * @param aIn3 The third level.
+         * @param aTag The tag.
          */
         public Entry(final String aIn1, final String aIn2, final String aIn3,
                 final String aTag) {
@@ -291,6 +292,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * Returns the in1.
+         *
          * @return Returns the in1.
          */
         public String getIn1() {
@@ -299,6 +301,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * Returns the in2.
+         *
          * @return Returns the in2.
          */
         public String getIn2() {
@@ -307,6 +310,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * Returns the in3.
+         *
          * @return Returns the in3.
          */
         public String getIn3() {
@@ -315,6 +319,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * Returns the tag.
+         *
          * @return Returns the tag.
          */
         public String getTag() {
@@ -323,6 +328,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * Returns the pagenumber for this entry.
+         *
          * @return Returns the pagenumber for this entry.
          */
         public int getPageNumber() {
@@ -336,8 +342,9 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * Add a pagenumber.
-         * @param number    The page number.
-         * @param tag       The tag.
+         *
+         * @param number The page number.
+         * @param tag    The tag.
          */
         public void addPageNumberAndTag(final int number, final String tag) {
             pagenumbers.add(number);
@@ -346,6 +353,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * Returns the key for the map-entry.
+         *
          * @return Returns the key for the map-entry.
          */
         public String getKey() {
@@ -354,6 +362,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * Returns the pagenumbers.
+         *
          * @return Returns the pagenumbers.
          */
         public List getPagenumbers() {
@@ -362,6 +371,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * Returns the tags.
+         *
          * @return Returns the tags.
          */
         public List getTags() {
@@ -370,6 +380,7 @@ public class IndexEvents extends PdfPageEventHelper {
 
         /**
          * print the entry (only for test)
+         *
          * @return the toString implementation of the entry
          */
         public String toString() {

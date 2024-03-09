@@ -9,14 +9,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.forms;
 
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -27,38 +24,43 @@ import com.lowagie.text.pdf.PdfAppearance;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfFormField;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Generates an Acroform with a RadioButton
+ *
  * @author blowagie
  */
 public class FormRadioButton {
+
     /**
      * Generates an Acroform with a RadioButton
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
-        
+
         System.out.println("RadioButton");
-        
+
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4);
-        
+
         try {
-            
+
             // step 2:
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("radiobutton.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
             PdfContentByte cb = writer.getDirectContent();
             cb.moveTo(0, 0);
             PdfFormField radio = PdfFormField.createRadioButton(writer, true);
             PdfAppearance tpOff = cb.createAppearance(20, 20);
             PdfAppearance tpOn = cb.createAppearance(20, 20);
-            
+
             tpOff.circle(10, 10, 9);
             tpOff.stroke();
 
@@ -76,25 +78,24 @@ public class FormRadioButton {
             radio1.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, "Off", tpOff);
             radio1.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, "MasterCard", tpOn);
             radio.addKid(radio1);
-            
+
             PdfFormField radio2 = PdfFormField.createEmpty(writer);
             radio2.setWidget(new Rectangle(100, 660, 120, 680), PdfAnnotation.HIGHLIGHT_INVERT);
             radio2.setAppearanceState("Off");
             radio2.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, "Off", tpOff);
             radio2.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, "Visa", tpOn);
             radio.addKid(radio2);
-            
+
             PdfFormField radio3 = PdfFormField.createEmpty(writer);
             radio3.setWidget(new Rectangle(100, 620, 120, 640), PdfAnnotation.HIGHLIGHT_INVERT);
             radio3.setAppearanceState("Off");
             radio3.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, "Off", tpOff);
             radio3.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, "American", tpOn);
             radio.addKid(radio3);
-            
+
             writer.addAnnotation(radio);
-            
-        }
-        catch(DocumentException | IOException de) {
+
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 

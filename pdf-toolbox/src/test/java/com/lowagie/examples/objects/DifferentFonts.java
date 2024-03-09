@@ -9,24 +9,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Selects the appropriate fonts that contain the glyphs needed to render text correctly.
  */
 public class DifferentFonts {
+
     /**
      * Using FontSelector.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -46,8 +47,7 @@ public class DifferentFonts {
             document.add(new Paragraph(p));
             // step 5
             document.close();
-        }
-        catch(Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

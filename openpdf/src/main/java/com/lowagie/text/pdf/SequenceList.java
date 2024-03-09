@@ -51,17 +51,16 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * This class expands a string into a list of numbers. The main use is to select a
- * range of pages.
+ * This class expands a string into a list of numbers. The main use is to select a range of pages.
  * <p>
- * The general syntax is:<br>
- * [!][o][odd][e][even]start-end
+ * The general syntax is:<br> [!][o][odd][e][even]start-end
  * <p>
- * You can have multiple ranges separated by commas ','. The '!' modifier removes the
- * range from what is already selected. The range changes are incremental, that is,
- * numbers are added or deleted as the range appears. The start or the end, but not both, can be omitted.
+ * You can have multiple ranges separated by commas ','. The '!' modifier removes the range from what is already
+ * selected. The range changes are incremental, that is, numbers are added or deleted as the range appears. The start or
+ * the end, but not both, can be omitted.
  */
 public class SequenceList {
+
     protected static final int COMMA = 1;
     protected static final int MINUS = 2;
     protected static final int NOT = 3;
@@ -91,23 +90,107 @@ public class SequenceList {
         ptr = 0;
         text = range.toCharArray();
     }
-    
+
+    /**
+     * Generates a list of numbers from a string.
+     *
+     * @param ranges    the comma separated ranges
+     * @param maxNumber the maximum number in the range
+     * @return a list with the numbers as <CODE>Integer</CODE>
+     */
+    public static List<Integer> expand(String ranges, int maxNumber) {
+        SequenceList parse = new SequenceList(ranges);
+        List<Integer> list = new LinkedList<>();
+        boolean sair = false;
+        while (!sair) {
+            sair = parse.getAttributes();
+            if (parse.low == -1 && parse.high == -1 && !parse.even && !parse.odd) {
+                continue;
+            }
+            if (parse.low < 1) {
+                parse.low = 1;
+            }
+            if (parse.high < 1 || parse.high > maxNumber) {
+                parse.high = maxNumber;
+            }
+            if (parse.low > maxNumber) {
+                parse.low = maxNumber;
+            }
+
+            //System.out.println("low="+parse.low+",high="+parse.high+",odd="+parse.odd+",even="+parse.even+",inverse="+parse.inverse);
+            int inc = 1;
+            if (parse.inverse) {
+                if (parse.low > parse.high) {
+                    int t = parse.low;
+                    parse.low = parse.high;
+                    parse.high = t;
+                }
+                for (ListIterator it = list.listIterator(); it.hasNext(); ) {
+                    int n = (Integer) it.next();
+                    if (parse.even && (n & 1) == 1) {
+                        continue;
+                    }
+                    if (parse.odd && (n & 1) == 0) {
+                        continue;
+                    }
+                    if (n >= parse.low && n <= parse.high) {
+                        it.remove();
+                    }
+                }
+            } else {
+                if (parse.low > parse.high) {
+                    inc = -1;
+                    if (parse.odd || parse.even) {
+                        --inc;
+                        if (parse.even) {
+                            parse.low &= ~1;
+                        } else {
+                            parse.low -= ((parse.low & 1) == 1 ? 0 : 1);
+                        }
+                    }
+                    for (int k = parse.low; k >= parse.high; k += inc) {
+                        list.add(k);
+                    }
+                } else {
+                    if (parse.odd || parse.even) {
+                        ++inc;
+                        if (parse.odd) {
+                            parse.low |= 1;
+                        } else {
+                            parse.low += ((parse.low & 1) == 1 ? 1 : 0);
+                        }
+                    }
+                    for (int k = parse.low; k <= parse.high; k += inc) {
+                        list.add(k);
+                    }
+                }
+            }
+//            for (int k = 0; k < list.size(); ++k)
+//                System.out.print(((Integer)list.get(k)).intValue() + ",");
+//            System.out.println();
+        }
+        return list;
+    }
+
     protected char nextChar() {
         while (true) {
-            if (ptr >= text.length)
+            if (ptr >= text.length) {
                 return EOT;
+            }
             char c = text[ptr++];
-            if (c > ' ')
+            if (c > ' ') {
                 return c;
+            }
         }
     }
-    
+
     protected void putBack() {
         --ptr;
-        if (ptr < 0)
+        if (ptr < 0) {
             ptr = 0;
+        }
     }
-    
+
     protected int getType() {
         StringBuilder buf = new StringBuilder();
         int state = FIRST;
@@ -117,8 +200,7 @@ public class SequenceList {
                 if (state == DIGIT) {
                     number = Integer.parseInt(other = buf.toString());
                     return NUMBER;
-                }
-                else if (state == OTHER) {
+                } else if (state == OTHER) {
                     other = buf.toString().toLowerCase();
                     return TEXT;
                 }
@@ -135,24 +217,25 @@ public class SequenceList {
                             return COMMA;
                     }
                     buf.append(c);
-                    if (c >= '0' && c <= '9')
+                    if (c >= '0' && c <= '9') {
                         state = DIGIT;
-                    else
+                    } else {
                         state = OTHER;
+                    }
                     break;
                 case DIGIT:
-                    if (c >= '0' && c <= '9')
+                    if (c >= '0' && c <= '9') {
                         buf.append(c);
-                    else {
+                    } else {
                         putBack();
                         number = Integer.parseInt(other = buf.toString());
                         return NUMBER;
                     }
                     break;
                 case OTHER:
-                    if (NOT_OTHER.indexOf(c) < 0)
+                    if (NOT_OTHER.indexOf(c) < 0) {
                         buf.append(c);
-                    else {
+                    } else {
                         putBack();
                         other = buf.toString().toLowerCase();
                         return TEXT;
@@ -161,18 +244,17 @@ public class SequenceList {
             }
         }
     }
-    
+
     private void otherProc() {
         if (other.equals("odd") || other.equals("o")) {
             odd = true;
             even = false;
-        }
-        else if (other.equals("even") || other.equals("e")) {
+        } else if (other.equals("even") || other.equals("e")) {
             odd = false;
             even = true;
         }
     }
-    
+
     protected boolean getAttributes() {
         low = -1;
         high = -1;
@@ -181,8 +263,9 @@ public class SequenceList {
         while (true) {
             int type = getType();
             if (type == END || type == COMMA) {
-                if (state == DIGIT)
+                if (state == DIGIT) {
                     high = low;
+                }
                 return (type == END);
             }
             switch (state) {
@@ -198,9 +281,9 @@ public class SequenceList {
                             if (type == NUMBER) {
                                 low = number;
                                 state = DIGIT;
-                            }
-                            else
+                            } else {
                                 otherProc();
+                            }
                             break;
                     }
                     break;
@@ -241,77 +324,5 @@ public class SequenceList {
                     break;
             }
         }
-    }
-    
-    /**
-     * Generates a list of numbers from a string.
-     * @param ranges the comma separated ranges
-     * @param maxNumber the maximum number in the range
-     * @return a list with the numbers as <CODE>Integer</CODE>
-     */    
-    public static List<Integer> expand(String ranges, int maxNumber) {
-        SequenceList parse = new SequenceList(ranges);
-        List<Integer> list = new LinkedList<>();
-        boolean sair = false;
-        while (!sair) {
-            sair = parse.getAttributes();
-            if (parse.low == -1 && parse.high == -1 && !parse.even && !parse.odd)
-                continue;
-            if (parse.low < 1)
-                parse.low = 1;
-            if (parse.high < 1 || parse.high > maxNumber)
-                parse.high = maxNumber;
-            if (parse.low > maxNumber)
-                parse.low = maxNumber;
-            
-            //System.out.println("low="+parse.low+",high="+parse.high+",odd="+parse.odd+",even="+parse.even+",inverse="+parse.inverse);
-            int inc = 1;
-            if (parse.inverse) {
-                if (parse.low > parse.high) {
-                    int t = parse.low;
-                    parse.low = parse.high;
-                    parse.high = t;
-                }
-                for (ListIterator it = list.listIterator(); it.hasNext();) {
-                    int n = (Integer) it.next();
-                    if (parse.even && (n & 1) == 1)
-                        continue;
-                    if (parse.odd && (n & 1) == 0)
-                        continue;
-                    if (n >= parse.low && n <= parse.high)
-                        it.remove();
-                }
-            }
-            else {
-                if (parse.low > parse.high) {
-                    inc = -1;
-                    if (parse.odd || parse.even) {
-                        --inc;
-                        if (parse.even)
-                            parse.low &= ~1;
-                        else
-                            parse.low -= ((parse.low & 1) == 1 ? 0 : 1);
-                    }
-                    for (int k = parse.low; k >= parse.high; k += inc)
-                        list.add(k);
-                }
-                else {
-                    if (parse.odd || parse.even) {
-                        ++inc;
-                        if (parse.odd)
-                            parse.low |= 1;
-                        else
-                            parse.low += ((parse.low & 1) == 1 ? 1 : 0);
-                    }
-                    for (int k = parse.low; k <= parse.high; k += inc) {
-                        list.add(k);
-                    }
-                }
-            }
-//            for (int k = 0; k < list.size(); ++k)
-//                System.out.print(((Integer)list.get(k)).intValue() + ",");
-//            System.out.println();
-        }
-        return list;
     }
 }

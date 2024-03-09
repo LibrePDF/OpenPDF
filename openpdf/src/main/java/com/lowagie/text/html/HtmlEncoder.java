@@ -50,7 +50,6 @@
 package com.lowagie.text.html;
 
 import com.lowagie.text.Element;
-
 import java.awt.Color;
 
 /**
@@ -72,13 +71,13 @@ import java.awt.Color;
  * (with xxx = the value of the character)
  * </UL>
  * <p>
- *     Example:
+ * Example:
  * </p>
  * <BLOCKQUOTE><PRE>
  * String htmlPresentation = HtmlEncoder.encode("Marie-Th&#233;r&#232;se S&#248;rensen");
  * </PRE></BLOCKQUOTE>
  * <p>
- *      for more info: see O'Reilly; "HTML: The Definitive Guide" (page 164)
+ * for more info: see O'Reilly; "HTML: The Definitive Guide" (page 164)
  * </p>
  *
  * @author mario.maccarini@ugent.be
@@ -118,7 +117,6 @@ public final class HtmlEncoder {
             htmlCode[i] = "&#" + i + ";";
         }
     }
-
 
     // constructors
 

@@ -61,8 +61,7 @@ import java.util.List;
  * <PRE>
  * <STRONG>HeaderFooter header = new HeaderFooter(new Phrase("This is a header."), false);</STRONG>
  * <STRONG>HeaderFooter footer = new HeaderFooter(new Phrase("This is page "), new Phrase("."));</STRONG>
- * document.setHeader(header);
- * document.setFooter(footer);
+ * document.setHeader(header); document.setFooter(footer);
  * </PRE>
  *
  * </BLOCKQUOTE>

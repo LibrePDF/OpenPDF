@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.fonts.styles;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -21,6 +19,7 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Changing the width of font glyphs.
@@ -29,6 +28,7 @@ public class FixedFontWidth {
 
     /**
      * Changing the width of font glyphs.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -44,13 +44,13 @@ public class FixedFontWidth {
             BaseFont bf = BaseFont.createFont("Helvetica", "winansi", false, false, null, null);
             int[] widths = bf.getWidths();
             for (int k = 0; k < widths.length; ++k) {
-                if (widths[k] != 0)
+                if (widths[k] != 0) {
                     widths[k] = 1000;
+                }
             }
             bf.setForceWidthsOutput(true);
             document.add(new Paragraph("A big text to show Helvetica with fixed width.", new Font(bf)));
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
         // step 5

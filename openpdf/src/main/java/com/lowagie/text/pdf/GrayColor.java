@@ -50,17 +50,14 @@
 package com.lowagie.text.pdf;
 
 /**
- *
- * @author  Paulo Soares (psoares@consiste.pt)
+ * @author Paulo Soares (psoares@consiste.pt)
  */
 public class GrayColor extends ExtendedColor {
 
-    private static final long serialVersionUID = -6571835680819282746L;
-
-    private float gray;
-    
     public static final GrayColor GRAYBLACK = new GrayColor(0);
     public static final GrayColor GRAYWHITE = new GrayColor(MAX_FLOAT_COLOR_VALUE);
+    private static final long serialVersionUID = -6571835680819282746L;
+    private float gray;
 
     public GrayColor(int intGray) {
         this(normalize(intGray) / MAX_INT_COLOR_VALUE);
@@ -84,11 +81,11 @@ public class GrayColor extends ExtendedColor {
     }
 
     public boolean equals(Object obj) {
-        return obj instanceof GrayColor && ((GrayColor)obj).gray == this.gray;
+        return obj instanceof GrayColor && ((GrayColor) obj).gray == this.gray;
     }
-    
+
     public int hashCode() {
         return Float.floatToIntBits(gray);
     }
-    
+
 }

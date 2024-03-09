@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class FooterImageTest {
+
     @Test
     public void onlyTextFooterUpperBoundTest() {
         Document document = new Document(PageSize.A4);
@@ -29,7 +30,8 @@ public class FooterImageTest {
     @Test
     public void imageLeftAlignmentPositionTest() throws IOException {
         Document document = new Document(PageSize.A4);
-        Image jpg = Image.getInstance(Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
+        Image jpg = Image.getInstance(
+                Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
         PdfWriter.getInstance(document, new ByteArrayOutputStream());
 
         Paragraph footerParagraph = new Paragraph();
@@ -55,7 +57,8 @@ public class FooterImageTest {
     @Test
     public void imageRightAlignmentPositionTest() throws IOException {
         Document document = new Document(PageSize.A4);
-        Image jpg = Image.getInstance(Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
+        Image jpg = Image.getInstance(
+                Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
         PdfWriter.getInstance(document, new ByteArrayOutputStream());
         jpg.setAlignment(Element.ALIGN_RIGHT);
 
@@ -81,7 +84,8 @@ public class FooterImageTest {
     @Test
     public void centerUnderlyingPositionTest() throws IOException {
         Document document = new Document(PageSize.A4);
-        Image jpg = Image.getInstance(Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
+        Image jpg = Image.getInstance(
+                Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
         jpg.setAlignment(Image.UNDERLYING);
 
         PdfWriter.getInstance(document, new ByteArrayOutputStream());

@@ -49,17 +49,17 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.DocWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.Rectangle;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
-import com.lowagie.text.DocWriter;
-import com.lowagie.text.Document;
-import com.lowagie.text.Rectangle;
-
 /**
- * <CODE>PdfContents</CODE> is a <CODE>PdfStream</CODE> containing the contents (text + graphics) of a <CODE>PdfPage</CODE>.
+ * <CODE>PdfContents</CODE> is a <CODE>PdfStream</CODE> containing the contents (text + graphics) of a
+ * <CODE>PdfPage</CODE>.
  */
 
 class PdfContents extends PdfStream {
@@ -71,32 +71,32 @@ class PdfContents extends PdfStream {
     static final byte[] ROTATE270 = DocWriter.getISOBytes("0 -1 1 0 ");
     static final byte[] ROTATEFINAL = DocWriter.getISOBytes(" cm\n");
     // constructor
-    
-/**
- * Constructs a <CODE>PdfContents</CODE>-object, containing text and general graphics.
- *
- * @param under the direct content that is under all others
- * @param content the graphics in a page
- * @param text the text in a page
- * @param secondContent the direct content that is over all others
- * @throws BadPdfFormatException on error
- */
-    
-    PdfContents(PdfContentByte under, PdfContentByte content, PdfContentByte text, PdfContentByte secondContent, Rectangle page) throws BadPdfFormatException {
+
+    /**
+     * Constructs a <CODE>PdfContents</CODE>-object, containing text and general graphics.
+     *
+     * @param under         the direct content that is under all others
+     * @param content       the graphics in a page
+     * @param text          the text in a page
+     * @param secondContent the direct content that is over all others
+     * @throws BadPdfFormatException on error
+     */
+
+    PdfContents(PdfContentByte under, PdfContentByte content, PdfContentByte text, PdfContentByte secondContent,
+            Rectangle page) throws BadPdfFormatException {
         super();
         try {
             OutputStream out = null;
             Deflater deflater = null;
             streamBytes = new ByteArrayOutputStream();
-            if (Document.compress)
-            {
+            if (Document.compress) {
                 compressed = true;
                 compressionLevel = text.getPdfWriter().getCompressionLevel();
                 deflater = new Deflater(compressionLevel);
                 out = new DeflaterOutputStream(streamBytes, deflater);
-            }
-            else
+            } else {
                 out = streamBytes;
+            }
             int rotation = page.getRotation();
             switch (rotation) {
                 case 90:
@@ -143,12 +143,12 @@ class PdfContents extends PdfStream {
             if (deflater != null) {
                 deflater.end();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new BadPdfFormatException(e.getMessage());
         }
         put(PdfName.LENGTH, new PdfNumber(streamBytes.size()));
-        if (compressed)
+        if (compressed) {
             put(PdfName.FILTER, PdfName.FLATEDECODE);
+        }
     }
 }

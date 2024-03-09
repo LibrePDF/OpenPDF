@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.alternatives;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -23,6 +20,8 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.SimpleCell;
 import com.lowagie.text.SimpleTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Example that is used to test the TableAttributes class.
@@ -31,13 +30,14 @@ public class TablePdfPTable {
 
     /**
      * Example that is used to test the TableAttributes class.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
         System.out.println("TableAttributes");
         // creation of the document with a certain size and certain margins
         Document document = new Document(PageSize.A4.rotate(), 50, 50, 50, 50);
-        
+
         try {
             // creation of the different writers
             PdfWriter.getInstance(document, new FileOutputStream("tableattributes.pdf"));
@@ -69,15 +69,15 @@ public class TablePdfPTable {
             for (int i = 0; i < 100; i++) {
                 row = new SimpleCell(SimpleCell.ROW);
                 switch (i % 3) {
-                case 0:
-                    row.setBackgroundColor(Color.red);
-                    break;
-                case 1:
-                    row.setBackgroundColor(Color.green);
-                    break;
-                case 2:
-                    row.setBackgroundColor(Color.blue);
-                    break;
+                    case 0:
+                        row.setBackgroundColor(Color.red);
+                        break;
+                    case 1:
+                        row.setBackgroundColor(Color.green);
+                        break;
+                    case 2:
+                        row.setBackgroundColor(Color.blue);
+                        break;
                 }
                 if (i % 2 == 1) {
                     row.setBorderWidth(3f);
@@ -94,8 +94,7 @@ public class TablePdfPTable {
                     cell.add(new Paragraph("Hello!"));
                     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                     row.add(cell);
-                }
-                else {
+                } else {
                     cell = new SimpleCell(SimpleCell.CELL);
                     cell.add(new Paragraph("A"));
                     row.add(cell);
@@ -110,13 +109,12 @@ public class TablePdfPTable {
                 table.addElement(row);
             }
             document.add(table);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         // we close the document
         document.close();
     }
-    
+
 }

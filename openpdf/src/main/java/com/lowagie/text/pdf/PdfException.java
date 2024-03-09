@@ -54,33 +54,33 @@ import com.lowagie.text.DocumentException;
 /**
  * Signals that an unspecified problem while constructing a PDF document.
  *
- * @see        BadPdfFormatException
+ * @see BadPdfFormatException
  */
 
 public class PdfException extends DocumentException {
-    
+
     // constructors
-    
+
     private static final long serialVersionUID = 6767433960955483999L;
 
     public PdfException(Exception ex) {
         super(ex);
     }
 
- /**
- * Constructs a <CODE>PdfException</CODE> without a message.
- */
-    
+    /**
+     * Constructs a <CODE>PdfException</CODE> without a message.
+     */
+
     PdfException() {
         super();
     }
-    
-/**
- * Constructs a <code>PdfException</code> with a message.
- *
- * @param        message            a message describing the exception
- */
-    
+
+    /**
+     * Constructs a <code>PdfException</code> with a message.
+     *
+     * @param message a message describing the exception
+     */
+
     PdfException(String message) {
         super(message);
     }

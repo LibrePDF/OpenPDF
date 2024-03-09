@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.pdfptable;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -21,6 +19,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Writing a PdfPTable at an absolute position.
@@ -29,9 +28,8 @@ public class WriteSelectedRows {
 
     /**
      * Demonstrates the writeSelectedRows method.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -56,7 +54,7 @@ public class WriteSelectedRows {
             document.add(table);
             document.newPage();
             table = new PdfPTable(2);
-            float[] rows = { 50f, 250f };
+            float[] rows = {50f, 250f};
             table.setTotalWidth(rows);
             for (int k = 0; k < 200; ++k) {
                 table.addCell("row " + k);

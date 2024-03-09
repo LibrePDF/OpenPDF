@@ -7,31 +7,18 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 package com.lowagie.rups.controller;
-
-import java.awt.Component;
-import java.awt.Dimension;
-import java.io.File;
-import java.io.IOException;
-import java.util.Observable;
-
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 
 import com.lowagie.rups.io.FileChooserAction;
 import com.lowagie.rups.io.FileCloseAction;
@@ -42,35 +29,54 @@ import com.lowagie.rups.view.RupsMenuBar;
 import com.lowagie.rups.view.itext.treenodes.PdfObjectTreeNode;
 import com.lowagie.rups.view.itext.treenodes.PdfTrailerTreeNode;
 import com.lowagie.text.DocumentException;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
+import java.util.Observable;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 
 /**
- * This class controls all the GUI components that are shown in
- * the RUPS application: the menu bar, the panels,...
+ * This class controls all the GUI components that are shown in the RUPS application: the menu bar, the panels,...
  */
 public class RupsController extends Observable
-    implements TreeSelectionListener, PageSelectionListener {
-    
+        implements TreeSelectionListener, PageSelectionListener {
+
     // member variables
-    
+
     /* file and controller */
-    /** The Pdf file that is currently open in the application. */
+    /**
+     * The Pdf file that is currently open in the application.
+     */
     protected PdfFile pdfFile;
     /**
      * Object with the GUI components for iText.
-     * @since    iText 5.0.0 (renamed from reader which was confusing because reader is normally used for a PdfReader instance)
+     *
+     * @since iText 5.0.0 (renamed from reader which was confusing because reader is normally used for a PdfReader
+     * instance)
      */
     protected PdfReaderController readerController;
 
     /* main components */
-    /** The JMenuBar for the RUPS application. */
+    /**
+     * The JMenuBar for the RUPS application.
+     */
     protected RupsMenuBar menuBar;
-    /** Contains all other components: the page panel, the outline tree, etc. */
+    /**
+     * Contains all other components: the page panel, the outline tree, etc.
+     */
     protected JSplitPane masterComponent;
-    
-    
+
     // constructor
+
     /**
      * Constructs the GUI components of the RUPS application.
+     *
      * @param dimension the Dimension of the GUi components
      */
     public RupsController(Dimension dimension) {
@@ -85,20 +91,20 @@ public class RupsController extends Observable
         // creating the master component
         masterComponent = new JSplitPane();
         masterComponent.setOrientation(JSplitPane.VERTICAL_SPLIT);
-        masterComponent.setDividerLocation((int)(dimension.getHeight() * .70));
+        masterComponent.setDividerLocation((int) (dimension.getHeight() * .70));
         masterComponent.setDividerSize(2);
-        
+
         JSplitPane content = new JSplitPane();
         masterComponent.add(content, JSplitPane.TOP);
         JSplitPane info = new JSplitPane();
         masterComponent.add(info, JSplitPane.BOTTOM);
-        
+
         content.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-        content.setDividerLocation((int)(dimension.getWidth() * .6));
+        content.setDividerLocation((int) (dimension.getWidth() * .6));
         content.setDividerSize(1);
         content.add(new JScrollPane(readerController.getPdfTree()), JSplitPane.LEFT);
         content.add(readerController.getNavigationTabs(), JSplitPane.RIGHT);
-        
+
         info.setDividerLocation((int) (dimension.getWidth() * .3));
         info.setDividerSize(1);
         info.add(readerController.getObjectPanel(), JSplitPane.LEFT);
@@ -107,37 +113,42 @@ public class RupsController extends Observable
         editorPane.addTab("Console", null, cons, "Console window (System.out/System.err)");
         editorPane.setSelectedComponent(cons);
         info.add(editorPane, JSplitPane.RIGHT);
-        
+
     }
 
-    /** Getter for the menubar.
-     * @return the menubar */
+    /**
+     * Getter for the menubar.
+     *
+     * @return the menubar
+     */
     public RupsMenuBar getMenuBar() {
         return menuBar;
     }
-    
-    /** Getter for the master component.
-     * @return the master component */
+
+    /**
+     * Getter for the master component.
+     *
+     * @return the master component
+     */
     public Component getMasterComponent() {
         return masterComponent;
     }
 
     // Observable
-    
+
     /**
      * @see java.util.Observable#notifyObservers(java.lang.Object)
      */
     @Override
     public void notifyObservers(Object obj) {
         if (obj instanceof FileChooserAction) {
-            File file = ((FileChooserAction)obj).getFile();
+            File file = ((FileChooserAction) obj).getFile();
             try {
                 pdfFile = new PdfFile(file);
                 setChanged();
                 super.notifyObservers(RupsMenuBar.OPEN);
                 readerController.startObjectLoader(pdfFile);
-            }
-            catch(IOException | DocumentException ioe) {
+            } catch (IOException | DocumentException ioe) {
                 JOptionPane.showMessageDialog(masterComponent, ioe.getMessage(), "Dialog", JOptionPane.ERROR_MESSAGE);
             }
             return;
@@ -151,7 +162,7 @@ public class RupsController extends Observable
     }
 
     // tree selection
-    
+
     /**
      * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
      */

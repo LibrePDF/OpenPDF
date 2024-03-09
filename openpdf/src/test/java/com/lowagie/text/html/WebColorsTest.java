@@ -23,7 +23,7 @@ public class WebColorsTest {
             WebColors.getRGBColor("");
         });
     }
-    
+
     @Test
     public void testBlankName() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -38,8 +38,8 @@ public class WebColorsTest {
         Color expected = new Color(0, 0, 0, 255);
         Assertions.assertEquals(expected, color);
     }
-    
-    
+
+
     @Test
     public void testHexadecimalSintax() {
         Color expected = new Color(0xff, 0x00, 0x99, 0xff);
@@ -48,7 +48,7 @@ public class WebColorsTest {
         Assertions.assertEquals(expected, WebColors.getRGBColor("#ff0099"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("#FF0099"));
     }
-    
+
     @Test
     public void testHexadecimalSintaxWithAlpha() {
         Color expected = new Color(0xff, 0x00, 0x99, 0xaa);
@@ -58,7 +58,7 @@ public class WebColorsTest {
         Assertions.assertEquals(expected, WebColors.getRGBColor("#ff0099aa"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("#FF0099aa"));
     }
-    
+
     @Test
     public void testHexadecimalBadFormats() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -71,26 +71,27 @@ public class WebColorsTest {
             WebColors.getRGBColor("#zzz");
         });
     }
-   
+
     @Test
     public void testRGB() {
         Color expected = new Color(0xff, 0x00, 0x99, 0xff);
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgb(255,0,153)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgb(255, 0, 153)"));
     }
+
     @Test
     public void testRGBPercentage() {
         Color expected = new Color(0xff, 0x00, 0x99, 0xff);
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgb(100%,0%,60%)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgb(100%, 0%, 60%)"));
     }
-    
+
     @Test
     public void testRGBSpaces() {
-        Color expected = new Color(0xff, 0x00, 0x99, 0xff); 
+        Color expected = new Color(0xff, 0x00, 0x99, 0xff);
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgb(255 0 153)"));
     }
-    
+
     @Test
     public void testRGBAlpha() {
         Color expected = new Color(0xff, 0x00, 0x99, 0xff);
@@ -98,13 +99,14 @@ public class WebColorsTest {
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgb(255, 0, 153, 100%)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgb(255 0 153 / 1)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgb(255 0 153 / 100%)"));
-        
+
         Color expected2 = new Color(0xff, 0x00, 0x99, 0x99);
         Assertions.assertEquals(expected2, WebColors.getRGBColor("rgb(255, 0, 153, 0.6)"));
         Assertions.assertEquals(expected2, WebColors.getRGBColor("rgb(255, 0, 153, 60%)"));
         Assertions.assertEquals(expected2, WebColors.getRGBColor("rgb(255 0 153 / 0.6)"));
         Assertions.assertEquals(expected2, WebColors.getRGBColor("rgb(255 0 153 / 60%)"));
     }
+
     @Test
     public void testRGBAAlias() {
         Color expected = new Color(0xff, 0x00, 0x99, 0xff);
@@ -112,14 +114,14 @@ public class WebColorsTest {
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgba(255, 0, 153, 100%)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgba(255 0 153 / 1)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgba(255 0 153 / 100%)"));
-        
+
         Color expected2 = new Color(0xff, 0x00, 0x99, 0x99);
         Assertions.assertEquals(expected2, WebColors.getRGBColor("rgba(255, 0, 153, 0.6)"));
         Assertions.assertEquals(expected2, WebColors.getRGBColor("rgba(255, 0, 153, 60%)"));
         Assertions.assertEquals(expected2, WebColors.getRGBColor("rgba(255 0 153 / 0.6)"));
         Assertions.assertEquals(expected2, WebColors.getRGBColor("rgba(255 0 153 / 60%)"));
     }
-    
+
     @Test
     public void testRGBFloatValues() {
         Color expected = new Color(0xff, 0x00, 0x99, 0xff);
@@ -127,7 +129,7 @@ public class WebColorsTest {
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgb(255, 0, 153.6, 1)"));
         Assertions.assertEquals(expected, WebColors.getRGBColor("rgb(2.55e2, .1e0, 1.53e2, +.1e3%)"));
     }
-    
+
     @Test
     public void testHSL() {
         Color expected = new Color(0xb3, 0x85, 0xe1, 0xff);
@@ -162,6 +164,6 @@ public class WebColorsTest {
 
 
     }
-    
-        
+
+
 }

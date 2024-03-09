@@ -50,14 +50,17 @@ package com.lowagie.text.pdf;
  * Implements the PostScript XObject.
  */
 public class PdfPSXObject extends PdfTemplate {
-    
-    /** Creates a new instance of PdfPSXObject */
+
+    /**
+     * Creates a new instance of PdfPSXObject
+     */
     protected PdfPSXObject() {
         super();
     }
-    
+
     /**
      * Constructs a PSXObject
+     *
      * @param wr the PdfWriter
      */
     public PdfPSXObject(PdfWriter wr) {
@@ -67,11 +70,11 @@ public class PdfPSXObject extends PdfTemplate {
     /**
      * Gets the stream representing this object.
      *
-     * @param    compressionLevel    the compressionLevel
+     * @param compressionLevel the compressionLevel
      * @return the stream representing this template
-     * @since    2.1.3    (replacing the method without param compressionLevel)
+     * @since 2.1.3    (replacing the method without param compressionLevel)
      */
-    
+
     PdfStream getFormXObject(int compressionLevel) {
         PdfStream s = new PdfStream(content.toByteArray());
         s.put(PdfName.TYPE, PdfName.XOBJECT);
@@ -79,13 +82,14 @@ public class PdfPSXObject extends PdfTemplate {
         s.flateCompress(compressionLevel);
         return s;
     }
-        
+
     /**
-     * Gets a duplicate of this <CODE>PdfPSXObject</CODE>. All
-     * the members are copied by reference but the buffer stays different.
+     * Gets a duplicate of this <CODE>PdfPSXObject</CODE>. All the members are copied by reference but the buffer stays
+     * different.
+     *
      * @return a copy of this <CODE>PdfPSXObject</CODE>
      */
-    
+
     public PdfContentByte getDuplicate() {
         PdfPSXObject tpl = new PdfPSXObject();
         tpl.writer = writer;

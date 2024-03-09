@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.colors;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -23,16 +20,19 @@ import com.lowagie.text.pdf.PdfGState;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfTransparencyGroup;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Demonstrates transparency and images.
  */
 public class Groups {
-    
+
     /**
      * Prints a square and fills half of it with a gray rectangle.
-     * @param x the x-coordinate of the rectangle
-     * @param y the y-coordinate of the rectangle
+     *
+     * @param x  the x-coordinate of the rectangle
+     * @param y  the y-coordinate of the rectangle
      * @param cb the PdfContentByte
      */
     public static void pictureBackdrop(float x, float y, PdfContentByte cb) {
@@ -47,8 +47,9 @@ public class Groups {
 
     /**
      * Prints 3 circles in different colors that intersect with eachother.
-     * @param x the x-coordinate of the intersection
-     * @param y the y-coordinate of the intersection
+     *
+     * @param x  the x-coordinate of the intersection
+     * @param y  the y-coordinate of the intersection
      * @param cb the PdfContentByte
      */
     public static void pictureCircles(float x, float y, PdfContentByte cb) {
@@ -67,6 +68,7 @@ public class Groups {
 
     /**
      * Demonstrates the Transparency functionality.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -81,7 +83,7 @@ public class Groups {
             // step 4: content
             PdfContentByte cb = writer.getDirectContent();
             float gap = (document.getPageSize().getWidth() - 400) / 3;
-            
+
             pictureBackdrop(gap, 500, cb);
             pictureBackdrop(200 + 2 * gap, 500, cb);
             pictureBackdrop(gap, 500 - 200 - gap, cb);
@@ -89,7 +91,7 @@ public class Groups {
 
             PdfTemplate tp;
             PdfTransparencyGroup group;
-            
+
             tp = cb.createTemplate(200, 200);
             pictureCircles(0, 0, tp);
             group = new PdfTransparencyGroup();
@@ -99,7 +101,6 @@ public class Groups {
             tp.sanityCheck();
             cb.addTemplate(tp, gap, 500);
 
-            
             tp = cb.createTemplate(200, 200);
             pictureCircles(0, 0, tp);
             group = new PdfTransparencyGroup();
@@ -109,7 +110,6 @@ public class Groups {
             tp.sanityCheck();
             cb.addTemplate(tp, 200 + 2 * gap, 500);
 
-            
             tp = cb.createTemplate(200, 200);
             pictureCircles(0, 0, tp);
             group = new PdfTransparencyGroup();
@@ -119,7 +119,6 @@ public class Groups {
             tp.sanityCheck();
             cb.addTemplate(tp, gap, 500 - 200 - gap);
 
-            
             tp = cb.createTemplate(200, 200);
             pictureCircles(0, 0, tp);
             group = new PdfTransparencyGroup();
@@ -130,8 +129,7 @@ public class Groups {
             cb.addTemplate(tp, 200 + 2 * gap, 500 - 200 - gap);
 
             cb.sanityCheck();
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
         // step 5: we close the document

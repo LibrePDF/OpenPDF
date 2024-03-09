@@ -54,26 +54,32 @@ package com.lowagie.text.pdf;
  */
 
 public class PdfFormXObject extends PdfStream {
-    
+
     // public static final variables
-    
-/** This is a PdfNumber representing 0. */
+
+    /**
+     * This is a PdfNumber representing 0.
+     */
     public static final PdfNumber ZERO = new PdfNumber(0);
-    
-/** This is a PdfNumber representing 1. */
+
+    /**
+     * This is a PdfNumber representing 1.
+     */
     public static final PdfNumber ONE = new PdfNumber(1);
-    
-/** This is the 1 - matrix. */
+
+    /**
+     * This is the 1 - matrix.
+     */
     public static final PdfLiteral MATRIX = new PdfLiteral("[1 0 0 1 0 0]");
-    
-/**
- * Constructs a <CODE>PdfFormXObject</CODE>-object.
- *
- * @param    template            the template
- * @param    compressionLevel    the compression level for the stream
- * @since    2.1.3 (Replacing the existing constructor with param compressionLevel)
- */
-    
+
+    /**
+     * Constructs a <CODE>PdfFormXObject</CODE>-object.
+     *
+     * @param template         the template
+     * @param compressionLevel the compression level for the stream
+     * @since 2.1.3 (Replacing the existing constructor with param compressionLevel)
+     */
+
     PdfFormXObject(PdfTemplate template, int compressionLevel) // throws BadPdfFormatException
     {
         super();
@@ -82,18 +88,21 @@ public class PdfFormXObject extends PdfStream {
         put(PdfName.RESOURCES, template.getResources());
         put(PdfName.BBOX, new PdfRectangle(template.getBoundingBox()));
         put(PdfName.FORMTYPE, ONE);
-        if (template.getLayer() != null)
+        if (template.getLayer() != null) {
             put(PdfName.OC, template.getLayer().getRef());
-        if (template.getGroup() != null)
+        }
+        if (template.getGroup() != null) {
             put(PdfName.GROUP, template.getGroup());
+        }
         PdfArray matrix = template.getMatrix();
-        if (matrix == null)
+        if (matrix == null) {
             put(PdfName.MATRIX, MATRIX);
-        else
+        } else {
             put(PdfName.MATRIX, matrix);
+        }
         bytes = template.toPdf(null);
         put(PdfName.LENGTH, new PdfNumber(bytes.length));
         flateCompress(compressionLevel);
     }
-    
+
 }

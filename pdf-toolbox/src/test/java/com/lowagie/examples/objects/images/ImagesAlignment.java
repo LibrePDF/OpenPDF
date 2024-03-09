@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.images;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -22,6 +19,8 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Testing Image alignment.
@@ -30,6 +29,7 @@ public class ImagesAlignment {
 
     /**
      * Generates a PDF with Images that are aligned.
+     *
      * @param args no arguments needed
      */
     public static void main(java.lang.String[] args) {
@@ -41,10 +41,10 @@ public class ImagesAlignment {
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
             PdfWriter.getInstance(document, new FileOutputStream("imagesAlignment.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4: content
             Image gif = Image.getInstance("vonnegut.gif");
             gif.setAlignment(Image.RIGHT | Image.TEXTWRAP);
@@ -52,7 +52,7 @@ public class ImagesAlignment {
             jpeg.setAlignment(Image.MIDDLE);
             Image png = Image.getInstance("hitchcock.png");
             png.setAlignment(Image.LEFT | Image.UNDERLYING);
-            
+
             for (int i = 0; i < 100; i++) {
                 document.add(new Phrase("Who is this? "));
             }
@@ -82,8 +82,7 @@ public class ImagesAlignment {
             for (int i = 0; i < 100; i++) {
                 document.add(new Phrase("Who is this? "));
             }
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
         // step 5: we close the document

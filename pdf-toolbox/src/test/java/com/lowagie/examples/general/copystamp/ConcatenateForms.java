@@ -12,10 +12,9 @@
  */
 package com.lowagie.examples.general.copystamp;
 
-import java.io.FileOutputStream;
-
 import com.lowagie.text.pdf.PdfCopyFields;
 import com.lowagie.text.pdf.PdfReader;
+import java.io.FileOutputStream;
 
 /**
  * Concatenates 2 PDF files with forms. The resulting PDF has 1 merged AcroForm.
@@ -24,7 +23,8 @@ public class ConcatenateForms {
 
     /**
      * Concatenates 2 PDF files with forms. The resulting PDF has 1 merged AcroForm.
-     * @param args  no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
         try {

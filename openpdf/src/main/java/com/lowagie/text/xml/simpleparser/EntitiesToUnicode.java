@@ -59,14 +59,10 @@ import java.util.Map;
 @SuppressWarnings("deprecated")
 public class EntitiesToUnicode {
 
-    public static Map<String, Character> getMap() {
-        return map;
-    }
-
     /**
      * This is a map that contains the names of entities and their unicode value.
      */
-     static final HashMap<String, Character> map = new HashMap<>();
+    static final HashMap<String, Character> map = new HashMap<>();
 
     static {
         map.put("nbsp", '\u00a0'); // no-break space = non-breaking space, U+00A0 ISOnum
@@ -80,7 +76,8 @@ public class EntitiesToUnicode {
         map.put("uml", '\u00a8'); // diaeresis = spacing diaeresis, U+00A8 ISOdia
         map.put("copy", '\u00a9'); // copyright sign, U+00A9 ISOnum
         map.put("ordf", '\u00aa'); // feminine ordinal indicator, U+00AA ISOnum
-        map.put("laquo", '\u00ab'); // left-pointing double angle quotation mark = left pointing guillemet, U+00AB ISOnum
+        map.put("laquo",
+                '\u00ab'); // left-pointing double angle quotation mark = left pointing guillemet, U+00AB ISOnum
         map.put("not", '\u00ac'); // not sign, U+00AC ISOnum
         map.put("shy", '\u00ad'); // soft hyphen = discretionary hyphen, U+00AD ISOnum
         map.put("reg", '\u00ae'); // registered sign = registered trade mark sign, U+00AE ISOnum
@@ -96,7 +93,8 @@ public class EntitiesToUnicode {
         map.put("cedil", '\u00b8'); // cedilla = spacing cedilla, U+00B8 ISOdia
         map.put("sup1", '\u00b9'); // superscript one = superscript digit one, U+00B9 ISOnum
         map.put("ordm", '\u00ba'); // masculine ordinal indicator, U+00BA ISOnum
-        map.put("raquo", '\u00bb'); // right-pointing double angle quotation mark = right pointing guillemet, U+00BB ISOnum
+        map.put("raquo",
+                '\u00bb'); // right-pointing double angle quotation mark = right pointing guillemet, U+00BB ISOnum
         map.put("frac14", '\u00bc'); // vulgar fraction one quarter = fraction one quarter, U+00BC ISOnum
         map.put("frac12", '\u00bd'); // vulgar fraction one half = fraction one half, U+00BD ISOnum
         map.put("frac34", '\u00be'); // vulgar fraction three quarters = fraction three quarters, U+00BE ISOnum
@@ -106,7 +104,8 @@ public class EntitiesToUnicode {
         map.put("Acirc", '\u00c2'); // latin capital letter A with circumflex, U+00C2 ISOlat1
         map.put("Atilde", '\u00c3'); // latin capital letter A with tilde, U+00C3 ISOlat1
         map.put("Auml", '\u00c4'); // latin capital letter A with diaeresis, U+00C4 ISOlat1
-        map.put("Aring", '\u00c5'); // latin capital letter A with ring above = latin capital letter A ring, U+00C5 ISOlat1
+        map.put("Aring",
+                '\u00c5'); // latin capital letter A with ring above = latin capital letter A ring, U+00C5 ISOlat1
         map.put("AElig", '\u00c6'); // latin capital letter AE = latin capital ligature AE, U+00C6 ISOlat1
         map.put("Ccedil", '\u00c7'); // latin capital letter C with cedilla, U+00C7 ISOlat1
         map.put("Egrave", '\u00c8'); // latin capital letter E with grave, U+00C8 ISOlat1
@@ -125,7 +124,8 @@ public class EntitiesToUnicode {
         map.put("Otilde", '\u00d5'); // latin capital letter O with tilde, U+00D5 ISOlat1
         map.put("Ouml", '\u00d6'); // latin capital letter O with diaeresis, U+00D6 ISOlat1
         map.put("times", '\u00d7'); // multiplication sign, U+00D7 ISOnum
-        map.put("Oslash", '\u00d8'); // latin capital letter O with stroke = latin capital letter O slash, U+00D8 ISOlat1
+        map.put("Oslash",
+                '\u00d8'); // latin capital letter O with stroke = latin capital letter O slash, U+00D8 ISOlat1
         map.put("Ugrave", '\u00d9'); // latin capital letter U with grave, U+00D9 ISOlat1
         map.put("Uacute", '\u00da'); // latin capital letter U with acute, U+00DA ISOlat1
         map.put("Ucirc", '\u00db'); // latin capital letter U with circumflex, U+00DB ISOlat1
@@ -250,7 +250,7 @@ public class EntitiesToUnicode {
         // be used for 'is implied by' as ISOtech suggests
         map.put("uArr", '\u21d1'); // upwards double arrow, U+21D1 ISOamsa
         map.put("rArr", '\u21d2'); // rightwards double arrow, U+21D2 ISOtech
-        // ISO 10646 does not say this is the 'implies' character but does not have 
+        // ISO 10646 does not say this is the 'implies' character but does not have
         // another character with this function so ?
         // rArr can be used for 'implies' as ISOtech suggests
         map.put("dArr", '\u21d3'); // downwards double arrow, U+21D3 ISOamsa
@@ -294,7 +294,7 @@ public class EntitiesToUnicode {
         map.put("ge", '\u2265'); // greater-than or equal to, U+2265 ISOtech
         map.put("sub", '\u2282'); // subset of, U+2282 ISOtech
         map.put("sup", '\u2283'); // superset of, U+2283 ISOtech
-        // note that nsup, 'not a superset of, U+2283' is not covered by the Symbol 
+        // note that nsup, 'not a superset of, U+2283' is not covered by the Symbol
         // font encoding and is not included. Should it be, for symmetry?
         // It is in ISOamsn
         map.put("nsub", '\u2284'); // not a subset of, U+2284 ISOamsn
@@ -311,10 +311,10 @@ public class EntitiesToUnicode {
         map.put("lfloor", '\u230a'); // left floor = apl downstile, U+230A ISOamsc
         map.put("rfloor", '\u230b'); // right floor, U+230B ISOamsc
         map.put("lang", '\u2329'); // left-pointing angle bracket = bra, U+2329 ISOtech
-        // lang is NOT the same character as U+003C 'less than' 
+        // lang is NOT the same character as U+003C 'less than'
         // or U+2039 'single left-pointing angle quotation mark'
         map.put("rang", '\u232a'); // right-pointing angle bracket = ket, U+232A ISOtech
-        // rang is NOT the same character as U+003E 'greater than' 
+        // rang is NOT the same character as U+003E 'greater than'
         // or U+203A 'single right-pointing angle quotation mark'
         // Geometric Shapes
         map.put("loz", '\u25ca'); // lozenge, U+25CA ISOpub
@@ -365,49 +365,53 @@ public class EntitiesToUnicode {
         // rsaquo is proposed but not yet ISO standardized
         map.put("euro", '\u20ac'); // euro sign, U+20AC NEW
     }
-    
+
+    public static Map<String, Character> getMap() {
+        return map;
+    }
 
     /**
      * Translates an entity to a unicode character.
      *
-     * @param    name    the name of the entity
-     * @return    the corresponding unicode character
+     * @param name the name of the entity
+     * @return the corresponding unicode character
      */
     public static char decodeEntity(String name) {
         if (name.startsWith("#x")) {
             try {
-                return (char)Integer.parseInt(name.substring(2),16);
-            }
-            catch(NumberFormatException nfe) {
+                return (char) Integer.parseInt(name.substring(2), 16);
+            } catch (NumberFormatException nfe) {
                 return '\0';
             }
         }
         if (name.startsWith("#")) {
             try {
-                return (char)Integer.parseInt(name.substring(1));
-            }
-            catch(NumberFormatException nfe) {
+                return (char) Integer.parseInt(name.substring(1));
+            } catch (NumberFormatException nfe) {
                 return '\0';
             }
         }
         Character c = map.get(name);
-        if (c == null)
+        if (c == null) {
             return '\0';
-        else
+        } else {
             return c;
+        }
     }
-    
+
     /**
-     * Translates a String with entities {@literal (&...;)} to a String without entities,
-     * replacing the entity with the right (unicode) character.
+     * Translates a String with entities {@literal (&...;)} to a String without entities, replacing the entity with the
+     * right (unicode) character.
      *
      * @param s string to be decoded
      * @return a ddecoded string
      */
     public static String decodeString(String s) {
         int pos_amp = s.indexOf('&');
-        if (pos_amp == -1) return s;
-        
+        if (pos_amp == -1) {
+            return s;
+        }
+
         int pos_sc;
         int pos_a;
         StringBuilder buf = new StringBuilder(s.substring(0, pos_amp));
@@ -430,16 +434,14 @@ public class EntitiesToUnicode {
             }
             if (replace == '\0') {
                 buf.append(s, pos_amp, pos_sc + 1);
-            }
-            else {
+            } else {
                 buf.append(replace);
             }
             pos_amp = s.indexOf('&', pos_sc);
             if (pos_amp == -1) {
                 buf.append(s.substring(pos_sc + 1));
                 return buf.toString();
-            }
-            else {
+            } else {
                 buf.append(s, pos_sc + 1, pos_amp);
             }
         }

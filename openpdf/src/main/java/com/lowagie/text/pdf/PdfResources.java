@@ -51,40 +51,40 @@ package com.lowagie.text.pdf;
 
 /**
  * <CODE>PdfResources</CODE> is the PDF Resources-object.
- * <P>
+ * <p>
  * The marking operations for drawing a page are stored in a stream that is the value of the
  * <B>Contents</B> key in the Page object's dictionary. Each marking context includes a list
- * of the named resources it uses. This resource list is stored as a dictionary that is the
- * value of the context's <B>Resources</B> key, and it serves two functions: it enumerates
- * the named resources in the contents stream, and it established the mapping from the names
- * to the objects used by the marking operations.<BR>
- * This object is described in the 'Portable Document Format Reference Manual version 1.3'
- * section 7.5 (page 195-197).
+ * of the named resources it uses. This resource list is stored as a dictionary that is the value of the context's
+ * <B>Resources</B> key, and it serves two functions: it enumerates the named resources in the contents stream, and it
+ * established the mapping from the names to the objects used by the marking operations.<BR> This object is described in
+ * the 'Portable Document Format Reference Manual version 1.3' section 7.5 (page 195-197).
  *
- * @see        PdfPage
+ * @see PdfPage
  */
 
 public class PdfResources extends PdfDictionary {
-    
+
     // constructor
-    
-/**
- * Constructs a PDF ResourcesDictionary.
- */
-    
+
+    /**
+     * Constructs a PDF ResourcesDictionary.
+     */
+
     public PdfResources() {
         super();
     }
-    
+
     // methods
-    
+
     void add(PdfName key, PdfDictionary resource) {
-        if (resource.size() == 0)
+        if (resource.size() == 0) {
             return;
+        }
         PdfDictionary dic = getAsDict(key);
-        if (dic == null)
+        if (dic == null) {
             put(key, resource);
-        else
+        } else {
             dic.putAll(resource);
+        }
     }
 }

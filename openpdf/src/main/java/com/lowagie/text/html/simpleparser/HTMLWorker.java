@@ -87,14 +87,16 @@ import java.util.StringTokenizer;
 
 public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
-    public static final String tagsSupportedString = "ol ul li a pre font span br p div body table td th tr i b u sub sup em strong s strike"
-            + " h1 h2 h3 h4 h5 h6 img hr";
+    public static final String tagsSupportedString =
+            "ol ul li a pre font span br p div body table td th tr i b u sub sup em strong s strike"
+                    + " h1 h2 h3 h4 h5 h6 img hr";
     public static final Map<String, Object> tagsSupported = new HashMap<>();
 
     static {
         StringTokenizer tok = new StringTokenizer(tagsSupportedString);
-        while (tok.hasMoreTokens())
+        while (tok.hasMoreTokens()) {
             tagsSupported.put(tok.nextToken(), null);
+        }
     }
 
     protected ArrayList<Element> objectList;
@@ -154,10 +156,12 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
     public void setInterfaceProps(Map<String, Object> interfaceProps) {
         this.interfaceProps = interfaceProps;
         FontProvider ff = null;
-        if (interfaceProps != null)
+        if (interfaceProps != null) {
             ff = (FontProvider) interfaceProps.get("font_factory");
-        if (ff != null)
+        }
+        if (ff != null) {
             factoryProperties.setFontImp(ff);
+        }
     }
 
     public void parse(Reader reader) throws IOException {
@@ -226,8 +230,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 if (addLeadingBreak) { // Not a new paragraph
                     int numChunks = currentParagraph.getChunks().size();
                     if (numChunks == 0 ||
-                            ((Chunk) (currentParagraph.getChunks().get(numChunks - 1))).getContent().endsWith("\n"))
+                            ((Chunk) (currentParagraph.getChunks().get(numChunks - 1))).getContent().endsWith("\n")) {
                         addLeadingBreak = false;
+                    }
                 }
                 String align = style.get("align");
                 int hrAlign = Element.ALIGN_CENTER;
@@ -243,9 +248,12 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 float hrWidth = 1;
                 if (width != null) {
                     float tmpWidth = parseLength(width, Markup.DEFAULT_FONT_SIZE);
-                    if (tmpWidth > 0) hrWidth = tmpWidth;
-                    if (!width.endsWith("%"))
+                    if (tmpWidth > 0) {
+                        hrWidth = tmpWidth;
+                    }
+                    if (!width.endsWith("%")) {
                         hrWidth = 100; // Treat a pixel width as 100% for now.
+                    }
                 }
                 String size = style.get("size");
                 float hrSize = 1;
@@ -258,7 +266,8 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 if (addLeadingBreak) {
                     currentParagraph.add(Chunk.NEWLINE);
                 }
-                currentParagraph.add(new LineSeparator(hrSize, hrWidth, null, hrAlign, currentParagraph.getLeading() / 2));
+                currentParagraph.add(
+                        new LineSeparator(hrSize, hrWidth, null, hrAlign, currentParagraph.getLeading() / 2));
                 currentParagraph.add(Chunk.NEWLINE);
                 return;
             }
@@ -297,15 +306,15 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                     }
                 }
                 if (img == null) {
-                     if (src.startsWith("data:image/")) { // base64 embedded image
-                         int pos = src.indexOf("base64,");
-                         img = Image.getInstance(Base64.getDecoder().decode(src.substring(pos + 7)));
-                     } else {
-                         if (!src.startsWith("http")) {
-                             String path = cprops.getOrDefault("image_path", "");
-                             src = new File(path, src).getPath();
-                         }
-                         img = Image.getInstance(src);
+                    if (src.startsWith("data:image/")) { // base64 embedded image
+                        int pos = src.indexOf("base64,");
+                        img = Image.getInstance(Base64.getDecoder().decode(src.substring(pos + 7)));
+                    } else {
+                        if (!src.startsWith("http")) {
+                            String path = cprops.getOrDefault("image_path", "");
+                            src = new File(path, src).getPath();
+                        }
+                        img = Image.getInstance(src);
                     }
                 }
                 String align = style.get("align");
@@ -322,8 +331,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
                 float actualFontSize = parseLength(cprops.getProperty(ElementTags.SIZE), Markup.DEFAULT_FONT_SIZE);
 
-                if (actualFontSize <= 0f)
+                if (actualFontSize <= 0f) {
                     actualFontSize = Markup.DEFAULT_FONT_SIZE;
+                }
                 float widthInPoints = parseLength(width, actualFontSize);
                 float heightInPoints = parseLength(height, actualFontSize);
                 if (widthInPoints > 0 && heightInPoints > 0) {
@@ -341,20 +351,23 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 if (align != null) {
                     endElement("p");
                     int ralign = Image.MIDDLE;
-                    if (align.equalsIgnoreCase("left"))
+                    if (align.equalsIgnoreCase("left")) {
                         ralign = Image.LEFT;
-                    else if (align.equalsIgnoreCase("right"))
+                    } else if (align.equalsIgnoreCase("right")) {
                         ralign = Image.RIGHT;
+                    }
                     img.setAlignment(ralign);
                     Img i = null;
                     boolean skip = false;
                     if (interfaceProps != null) {
                         i = (Img) interfaceProps.get("img_interface");
-                        if (i != null)
+                        if (i != null) {
                             skip = i.process(img, (HashMap) style, cprops, document);
+                        }
                     }
-                    if (!skip)
+                    if (!skip) {
                         document.add(img);
+                    }
                     cprops.removeChain(tag);
                 } else {
                     cprops.removeChain(tag);
@@ -377,8 +390,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 return;
             }
             if (tag.equals(HtmlTags.UNORDEREDLIST)) {
-                if (pendingLI)
+                if (pendingLI) {
                     endElement(HtmlTags.LISTITEM);
+                }
                 skipText = true;
                 cprops.addToChain(tag, style);
                 com.lowagie.text.List list = new com.lowagie.text.List(false);
@@ -392,8 +406,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 return;
             }
             if (tag.equals(HtmlTags.ORDEREDLIST)) {
-                if (pendingLI)
+                if (pendingLI) {
                     endElement(HtmlTags.LISTITEM);
+                }
                 skipText = true;
                 cprops.addToChain(tag, style);
                 com.lowagie.text.List list = new com.lowagie.text.List(true);
@@ -406,8 +421,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 return;
             }
             if (tag.equals(HtmlTags.LISTITEM)) {
-                if (pendingLI)
+                if (pendingLI) {
                     endElement(HtmlTags.LISTITEM);
+                }
                 skipText = false;
                 pendingLI = true;
                 cprops.addToChain(tag, style);
@@ -428,16 +444,18 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 return;
             }
             if (tag.equals("tr")) {
-                if (pendingTR)
+                if (pendingTR) {
                     endElement("tr");
+                }
                 skipText = true;
                 pendingTR = true;
                 cprops.addToChain("tr", style);
                 return;
             }
             if (tag.equals("td") || tag.equals("th")) {
-                if (pendingTD)
+                if (pendingTD) {
                     endElement(tag);
+                }
                 skipText = false;
                 pendingTD = true;
                 cprops.addToChain("td", style);
@@ -459,8 +477,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
     }
 
     public void endElement(String tag) {
-        if (!tagsSupported.containsKey(tag))
+        if (!tagsSupported.containsKey(tag)) {
             return;
+        }
         try {
             String follow = FactoryProperties.followTags.get(tag);
             if (follow != null) {
@@ -478,8 +497,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 boolean skip = false;
                 if (interfaceProps != null) {
                     ALink i = (ALink) interfaceProps.get("alink_interface");
-                    if (i != null)
+                    if (i != null) {
                         skip = i.process(currentParagraph, cprops);
+                    }
                 }
                 if (!skip) {
                     cprops.findProperty("href").ifPresent(href -> {
@@ -502,9 +522,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 return;
             }
             if (currentParagraph != null) {
-                if (stack.empty())
+                if (stack.empty()) {
                     document.add(currentParagraph);
-                else {
+                } else {
                     Object obj = stack.pop();
                     if (obj instanceof TextElementArray) {
                         TextElementArray current = (TextElementArray) obj;
@@ -516,12 +536,14 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
             currentParagraph = null;
             if (tag.equals(HtmlTags.UNORDEREDLIST)
                     || tag.equals(HtmlTags.ORDEREDLIST)) {
-                if (pendingLI)
+                if (pendingLI) {
                     endElement(HtmlTags.LISTITEM);
+                }
                 skipText = false;
                 cprops.removeChain(tag);
-                if (stack.empty())
+                if (stack.empty()) {
                     return;
+                }
                 Object obj = stack.pop();
                 if (!(obj instanceof com.lowagie.text.List)) {
                     stack.push(obj);
@@ -543,8 +565,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 pendingLI = false;
                 skipText = true;
                 cprops.removeChain(tag);
-                if (stack.empty())
+                if (stack.empty()) {
                     return;
+                }
                 Object obj = stack.pop();
                 if (!(obj instanceof ListItem)) {
                     stack.push(obj);
@@ -562,9 +585,10 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 ListItem item = (ListItem) obj;
                 ((com.lowagie.text.List) list).add(item);
                 List<Element> cks = item.getChunks();
-                if (!cks.isEmpty())
+                if (!cks.isEmpty()) {
                     item.getListSymbol()
                             .setFont(((Chunk) cks.get(0)).getFont());
+                }
                 stack.push(list);
                 return;
             }
@@ -587,16 +611,18 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 return;
             }
             if (tag.equals("table")) {
-                if (pendingTR)
+                if (pendingTR) {
                     endElement("tr");
+                }
                 cprops.removeChain("table");
                 IncTable table = (IncTable) stack.pop();
                 PdfPTable tb = table.buildTable();
                 tb.setSplitRows(true);
-                if (stack.empty())
+                if (stack.empty()) {
                     document.add(tb);
-                else
+                } else {
                     ((TextElementArray) stack.peek()).add(tb);
+                }
                 boolean[] state = (boolean[]) tableState.pop();
                 pendingTR = state[0];
                 pendingTD = state[1];
@@ -604,8 +630,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 return;
             }
             if (tag.equals("tr")) {
-                if (pendingTD)
+                if (pendingTD) {
                     endElement("td");
+                }
                 pendingTR = false;
                 cprops.removeChain("tr");
                 List<PdfPCell> cells = new ArrayList<>();
@@ -638,8 +665,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
     }
 
     public void text(String str) {
-        if (skipText)
+        if (skipText) {
             return;
+        }
         String content = str;
         if (isPRE) {
             if (currentParagraph == null) {
@@ -732,7 +760,7 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
     }
 
     public boolean setMargins(float marginLeft, float marginRight,
-                              float marginTop, float marginBottom) {
+            float marginTop, float marginBottom) {
         return true;
     }
 

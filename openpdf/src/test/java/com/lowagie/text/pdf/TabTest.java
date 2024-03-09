@@ -4,13 +4,13 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 public class TabTest {
+
     @Test
     public void TabTest1() throws IOException {
         Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);

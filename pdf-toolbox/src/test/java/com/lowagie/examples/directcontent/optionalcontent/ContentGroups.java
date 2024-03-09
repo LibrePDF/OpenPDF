@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.optionalcontent;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -32,14 +29,17 @@ import com.lowagie.text.pdf.PdfOCProperties;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Demonstrates how to group optional content.
  */
 public class ContentGroups {
-       
+
     /**
      * Demonstrates how to group optional content.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -76,7 +76,7 @@ public class ContentGroups {
             ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, p3, 50, 500, 0);
             cb.endLayer();
             cb.sanityCheck();
-            
+
             PdfOCProperties p = writer.getOCProperties();
             PdfArray order = new PdfArray();
             order.add(l1.getRef());
@@ -90,8 +90,7 @@ public class ContentGroups {
             p.put(PdfName.D, d);
             // step 5
             document.close();
-        }
-        catch(Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

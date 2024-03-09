@@ -48,34 +48,33 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.Element;
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.MemoryImageSource;
-import com.lowagie.text.error_messages.MessageLocalization;
 
-import com.lowagie.text.Element;
-
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.ExceptionConverter;
-
-/** Implements the code codabar. The default parameters are:
+/**
+ * Implements the code codabar. The default parameters are:
  * <pre>
- *x = 0.8f;
- *n = 2;
- *font = BaseFont.createFont("Helvetica", "winansi", false);
- *size = 8;
- *baseline = size;
- *barHeight = size * 3;
- *textAlignment = Element.ALIGN_CENTER;
- *generateChecksum = false;
- *checksumText = false;
- *startStopText = false;
+ * x = 0.8f;
+ * n = 2;
+ * font = BaseFont.createFont("Helvetica", "winansi", false);
+ * size = 8;
+ * baseline = size;
+ * barHeight = size * 3;
+ * textAlignment = Element.ALIGN_CENTER;
+ * generateChecksum = false;
+ * checksumText = false;
+ * startStopText = false;
  * </pre>
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
-public class BarcodeCodabar extends Barcode{
+public class BarcodeCodabar extends Barcode {
 
     /**
      * The bars to generate the code.
@@ -103,14 +102,17 @@ public class BarcodeCodabar extends Barcode{
                     {0, 0, 0, 1, 0, 1, 1}, // c
                     {0, 0, 0, 1, 1, 1, 0}  // d
             };
- 
-    /** The index chars to <CODE>BARS</CODE>.
-     */    
+
+    /**
+     * The index chars to <CODE>BARS</CODE>.
+     */
     private static final String CHARS = "0123456789-$:/.+ABCD";
-    
-    private static final int START_STOP_IDX = 16;    
-    /** Creates a new BarcodeCodabar.
-     */    
+
+    private static final int START_STOP_IDX = 16;
+
+    /**
+     * Creates a new BarcodeCodabar.
+     */
     public BarcodeCodabar() {
         try {
             x = 0.8f;
@@ -124,69 +126,87 @@ public class BarcodeCodabar extends Barcode{
             checksumText = false;
             startStopText = false;
             codeType = CODABAR;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
-    
-    /** Creates the bars.
+
+    /**
+     * Creates the bars.
+     *
      * @param text the text to create the bars
      * @return the bars
-     */    
+     */
     public static byte[] getBarsCodabar(String text) {
         text = text.toUpperCase();
         int len = text.length();
-        if (len < 2)
-            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("codabar.must.have.at.least.a.start.and.stop.character"));
-        if (CHARS.indexOf(text.charAt(0)) < START_STOP_IDX || CHARS.indexOf(text.charAt(len - 1)) < START_STOP_IDX)
-            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("codabar.must.have.one.of.abcd.as.start.stop.character"));
+        if (len < 2) {
+            throw new IllegalArgumentException(
+                    MessageLocalization.getComposedMessage("codabar.must.have.at.least.a.start.and.stop.character"));
+        }
+        if (CHARS.indexOf(text.charAt(0)) < START_STOP_IDX || CHARS.indexOf(text.charAt(len - 1)) < START_STOP_IDX) {
+            throw new IllegalArgumentException(
+                    MessageLocalization.getComposedMessage("codabar.must.have.one.of.abcd.as.start.stop.character"));
+        }
         byte[] bars = new byte[text.length() * 8 - 1];
         for (int k = 0; k < len; ++k) {
             int idx = CHARS.indexOf(text.charAt(k));
-            if (idx >= START_STOP_IDX && k > 0 && k < len - 1)
-                throw new IllegalArgumentException(MessageLocalization.getComposedMessage("in.codabar.start.stop.characters.are.only.allowed.at.the.extremes"));
-            if (idx < 0)
-                throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.character.1.is.illegal.in.codabar", text.charAt(k)));
+            if (idx >= START_STOP_IDX && k > 0 && k < len - 1) {
+                throw new IllegalArgumentException(MessageLocalization.getComposedMessage(
+                        "in.codabar.start.stop.characters.are.only.allowed.at.the.extremes"));
+            }
+            if (idx < 0) {
+                throw new IllegalArgumentException(
+                        MessageLocalization.getComposedMessage("the.character.1.is.illegal.in.codabar",
+                                text.charAt(k)));
+            }
             System.arraycopy(BARS[idx], 0, bars, k * 8, 7);
         }
         return bars;
     }
-    
+
     public static String calculateChecksum(String code) {
-        if (code.length() < 2)
+        if (code.length() < 2) {
             return code;
+        }
         String text = code.toUpperCase();
         int sum = 0;
         int len = text.length();
-        for (int k = 0; k < len; ++k)
+        for (int k = 0; k < len; ++k) {
             sum += CHARS.indexOf(text.charAt(k));
+        }
         sum = (sum + 15) / 16 * 16 - sum;
         return code.substring(0, len - 1) + CHARS.charAt(sum) + code.substring(len - 1);
     }
-    
-    /** Gets the maximum area that the barcode and the text, if
-     * any, will occupy. The lower left corner is always (0, 0).
+
+    /**
+     * Gets the maximum area that the barcode and the text, if any, will occupy. The lower left corner is always (0,
+     * 0).
+     *
      * @return the size the barcode occupies.
-     */    
+     */
     public Rectangle getBarcodeSize() {
         float fontX = 0;
         float fontY = 0;
         String text = code;
-        if (generateChecksum && checksumText)
+        if (generateChecksum && checksumText) {
             text = calculateChecksum(code);
-        if (!startStopText)
+        }
+        if (!startStopText) {
             text = text.substring(1, text.length() - 1);
+        }
         if (font != null) {
-            if (baseline > 0)
+            if (baseline > 0) {
                 fontY = baseline - font.getFontDescriptor(BaseFont.DESCENT, size);
-            else
+            } else {
                 fontY = -baseline + size;
+            }
             fontX = font.getWidthPoint(altText != null ? altText : text, size);
         }
         text = code;
-        if (generateChecksum)
+        if (generateChecksum) {
             text = calculateChecksum(code);
+        }
         byte[] bars = getBarsCodabar(text);
         int wide = 0;
         for (byte bar : bars) {
@@ -198,50 +218,53 @@ public class BarcodeCodabar extends Barcode{
         float fullHeight = barHeight + fontY;
         return new Rectangle(fullWidth, fullHeight);
     }
-    
-    /** Places the barcode in a <CODE>PdfContentByte</CODE>. The
-     * barcode is always placed at coordinates (0, 0). Use the
+
+    /**
+     * Places the barcode in a <CODE>PdfContentByte</CODE>. The barcode is always placed at coordinates (0, 0). Use the
      * translation matrix to move it elsewhere.
      * <p> The bars and text are written in the following colors:</p>
      * <TABLE BORDER=1>
-     *     <CAPTION>table of the colors of the bars and text</CAPTION>
+     * <CAPTION>table of the colors of the bars and text</CAPTION>
      * <TR>
-     *    <TH><P><CODE>barColor</CODE></TH>
-     *    <TH><P><CODE>textColor</CODE></TH>
-     *    <TH><P>Result</TH>
-     *    </TR>
+     * <TH><P><CODE>barColor</CODE></TH>
+     * <TH><P><CODE>textColor</CODE></TH>
+     * <TH><P>Result</TH>
+     * </TR>
      * <TR>
-     *    <TD><P><CODE>null</CODE></TD>
-     *    <TD><P><CODE>null</CODE></TD>
-     *    <TD><P>bars and text painted with current fill color</TD>
-     *    </TR>
+     * <TD><P><CODE>null</CODE></TD>
+     * <TD><P><CODE>null</CODE></TD>
+     * <TD><P>bars and text painted with current fill color</TD>
+     * </TR>
      * <TR>
-     *    <TD><P><CODE>barColor</CODE></TD>
-     *    <TD><P><CODE>null</CODE></TD>
-     *    <TD><P>bars and text painted with <CODE>barColor</CODE></TD>
-     *    </TR>
+     * <TD><P><CODE>barColor</CODE></TD>
+     * <TD><P><CODE>null</CODE></TD>
+     * <TD><P>bars and text painted with <CODE>barColor</CODE></TD>
+     * </TR>
      * <TR>
-     *    <TD><P><CODE>null</CODE></TD>
-     *    <TD><P><CODE>textColor</CODE></TD>
-     *    <TD><P>bars painted with current color<br>text painted with <CODE>textColor</CODE></TD>
-     *    </TR>
+     * <TD><P><CODE>null</CODE></TD>
+     * <TD><P><CODE>textColor</CODE></TD>
+     * <TD><P>bars painted with current color<br>text painted with <CODE>textColor</CODE></TD>
+     * </TR>
      * <TR>
-     *    <TD><P><CODE>barColor</CODE></TD>
-     *    <TD><P><CODE>textColor</CODE></TD>
-     *    <TD><P>bars painted with <CODE>barColor</CODE><br>text painted with <CODE>textColor</CODE></TD>
-     *    </TR>
+     * <TD><P><CODE>barColor</CODE></TD>
+     * <TD><P><CODE>textColor</CODE></TD>
+     * <TD><P>bars painted with <CODE>barColor</CODE><br>text painted with <CODE>textColor</CODE></TD>
+     * </TR>
      * </TABLE>
-     * @param cb the <CODE>PdfContentByte</CODE> where the barcode will be placed
-     * @param barColor the color of the bars. It can be <CODE>null</CODE>
+     *
+     * @param cb        the <CODE>PdfContentByte</CODE> where the barcode will be placed
+     * @param barColor  the color of the bars. It can be <CODE>null</CODE>
      * @param textColor the color of the text. It can be <CODE>null</CODE>
      * @return the dimensions the barcode occupies
-     */    
+     */
     public Rectangle placeBarcode(PdfContentByte cb, Color barColor, Color textColor) {
         String fullCode = code;
-        if (generateChecksum && checksumText)
+        if (generateChecksum && checksumText) {
             fullCode = calculateChecksum(code);
-        if (!startStopText)
+        }
+        if (!startStopText) {
             fullCode = fullCode.substring(1, fullCode.length() - 1);
+        }
         float fontX = 0;
         if (font != null) {
             fontX = font.getWidthPoint(fullCode = altText != null ? altText : fullCode, size);
@@ -259,42 +282,47 @@ public class BarcodeCodabar extends Barcode{
             case Element.ALIGN_LEFT:
                 break;
             case Element.ALIGN_RIGHT:
-                if (fontX > fullWidth)
+                if (fontX > fullWidth) {
                     barStartX = fontX - fullWidth;
-                else
+                } else {
                     textStartX = fullWidth - fontX;
+                }
                 break;
             default:
-                if (fontX > fullWidth)
+                if (fontX > fullWidth) {
                     barStartX = (fontX - fullWidth) / 2;
-                else
+                } else {
                     textStartX = (fullWidth - fontX) / 2;
+                }
                 break;
         }
         float barStartY = 0;
         float textStartY = 0;
         if (font != null) {
-            if (baseline <= 0)
+            if (baseline <= 0) {
                 textStartY = barHeight - baseline;
-            else {
+            } else {
                 textStartY = -font.getFontDescriptor(BaseFont.DESCENT, size);
                 barStartY = textStartY + baseline;
             }
         }
         boolean print = true;
-        if (barColor != null)
+        if (barColor != null) {
             cb.setColorFill(barColor);
+        }
         for (byte bar : bars) {
             float w = (bar == 0 ? x : x * n);
-            if (print)
+            if (print) {
                 cb.rectangle(barStartX, barStartY, w - inkSpreading, barHeight);
+            }
             print = !print;
             barStartX += w;
         }
         cb.fill();
         if (font != null) {
-            if (textColor != null)
+            if (textColor != null) {
                 cb.setColorFill(textColor);
+            }
             cb.beginText();
             cb.setFontAndSize(font, size);
             cb.setTextMatrix(textStartX, textStartY);
@@ -304,47 +332,52 @@ public class BarcodeCodabar extends Barcode{
         return getBarcodeSize();
     }
 
-    /** Creates a <CODE>java.awt.Image</CODE>. This image only
-     * contains the bars without any text.
+    /**
+     * Creates a <CODE>java.awt.Image</CODE>. This image only contains the bars without any text.
+     *
      * @param foreground the color of the bars
      * @param background the color of the background
      * @return the image
-     */    
+     */
     public java.awt.Image createAwtImage(Color foreground, Color background) {
         int f = foreground.getRGB();
         int g = background.getRGB();
         Canvas canvas = new Canvas();
 
         String fullCode = code;
-        if (generateChecksum && checksumText)
+        if (generateChecksum && checksumText) {
             fullCode = calculateChecksum(code);
-        if (!startStopText)
+        }
+        if (!startStopText) {
             fullCode = fullCode.substring(1, fullCode.length() - 1);
+        }
         byte[] bars = getBarsCodabar(generateChecksum ? calculateChecksum(code) : code);
         int wide = 0;
         for (byte bar1 : bars) {
             wide += bar1;
         }
         int narrow = bars.length - wide;
-        int fullWidth = narrow + wide * (int)n;
+        int fullWidth = narrow + wide * (int) n;
         boolean print = true;
         int ptr = 0;
-        int height = (int)barHeight;
+        int height = (int) barHeight;
         int[] pix = new int[fullWidth * height];
         for (byte bar : bars) {
             int w = (bar == 0 ? 1 : (int) n);
             int c = g;
-            if (print)
+            if (print) {
                 c = f;
+            }
             print = !print;
-            for (int j = 0; j < w; ++j)
+            for (int j = 0; j < w; ++j) {
                 pix[ptr++] = c;
+            }
         }
         for (int k = fullWidth; k < pix.length; k += fullWidth) {
-            System.arraycopy(pix, 0, pix, k, fullWidth); 
+            System.arraycopy(pix, 0, pix, k, fullWidth);
         }
         Image img = canvas.createImage(new MemoryImageSource(fullWidth, height, pix, 0, fullWidth));
-        
+
         return img;
     }
 }

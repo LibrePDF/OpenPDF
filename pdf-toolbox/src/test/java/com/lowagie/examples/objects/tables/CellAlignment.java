@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -22,6 +20,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Change the alignment of the contents of a PdfPCell.
@@ -30,9 +29,8 @@ public class CellAlignment {
 
     /**
      * Changing the alignment
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -48,7 +46,8 @@ public class CellAlignment {
             // step4
             PdfPTable table = new PdfPTable(2);
             PdfPCell cell;
-            Paragraph p = new Paragraph("Quick brown fox jumps over the lazy dog. Quick brown fox jumps over the lazy dog.");
+            Paragraph p = new Paragraph(
+                    "Quick brown fox jumps over the lazy dog. Quick brown fox jumps over the lazy dog.");
             table.addCell("default alignment");
             cell = new PdfPCell(p);
             table.addCell(cell);

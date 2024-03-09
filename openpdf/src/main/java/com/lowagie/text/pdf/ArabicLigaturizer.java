@@ -47,579 +47,56 @@
 package com.lowagie.text.pdf;
 
 /**
- * Shape arabic characters. This code was inspired by an LGPL'ed C library:
- * Pango ( see http://www.pango.com/ ). Note that the code of this is the
- * original work of Paulo Soares. Hence it is perfectly justifiable to distribute
- * it under the MPL.
+ * Shape arabic characters. This code was inspired by an LGPL'ed C library: Pango ( see http://www.pango.com/ ). Note
+ * that the code of this is the original work of Paulo Soares. Hence it is perfectly justifiable to distribute it under
+ * the MPL.
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class ArabicLigaturizer {
-    
-    static boolean isVowel(char s) {
-        return ((s >= 0x064B) && (s <= 0x0655)) || (s == 0x0670);
-    }
 
-    static char charshape(char s, int which)
-    /* which 0=isolated 1=final 2=initial 3=medial */
-    {
-        int l, r, m;
-        if ((s >= 0x0621) && (s <= 0x06D3)) {
-            l = 0;
-            r = chartable.length - 1;
-            while (l <= r) {
-                m = (l + r) / 2;
-                if (s == chartable[m][0]) {
-                    return chartable[m][which + 1];
-                }
-                else if (s < chartable[m][0]) {
-                    r = m - 1;
-                }
-                else {
-                    l = m + 1;
-                }
-            }
-        }
-        else if (s >= 0xfef5 && s <= 0xfefb)
-            return (char)(s + which);
-        return s;
-    }
-
-    static int shapecount(char s) {
-        int l, r, m;
-        if ((s >= 0x0621) && (s <= 0x06D3) && !isVowel(s)) {
-            l = 0;
-            r = chartable.length - 1;
-            while (l <= r) {
-                m = (l + r) / 2;
-                if (s == chartable[m][0]) {
-                    return chartable[m].length - 1;
-                }
-                else if (s < chartable[m][0]) {
-                    r = m - 1;
-                }
-                else {
-                    l = m + 1;
-                }
-            }
-        } else if (s == ZWJ) {
-            return 4;
-        }
-        return 1;
-    }
-
-    static int ligature(char newchar, CharStruct oldchar) {
-        /* 0 == no ligature possible; 1 == vowel; 2 == two chars; 3 == Lam+Alef */
-        int retval = 0;
-
-        if (oldchar.basechar == 0) {
-            return 0;
-        }
-        if (isVowel(newchar)) {
-            retval = 1;
-            if ((oldchar.vowel != 0) && (newchar != SHADDA)) {
-                retval = 2;           /* we eliminate the old vowel .. */
-            }
-            switch (newchar) {
-                case SHADDA:
-                    if (oldchar.mark1 == 0) {
-                        oldchar.mark1 = SHADDA;
-                    }
-                    else {
-                        return 0;         /* no ligature possible */
-                    }
-                    break;
-                case HAMZABELOW:
-                    switch (oldchar.basechar) {
-                        case ALEF:
-                            oldchar.basechar = ALEFHAMZABELOW;
-                            retval = 2;
-                            break;
-                        case LAM_ALEF:
-                            oldchar.basechar = LAM_ALEFHAMZABELOW;
-                            retval = 2;
-                            break;
-                        default:
-                            oldchar.mark1 = HAMZABELOW;
-                            break;
-                    }
-                    break;
-                case HAMZAABOVE:
-                    switch (oldchar.basechar) {
-                        case ALEF:
-                            oldchar.basechar = ALEFHAMZA;
-                            retval = 2;
-                            break;
-                        case LAM_ALEF:
-                            oldchar.basechar = LAM_ALEFHAMZA;
-                            retval = 2;
-                            break;
-                        case WAW:
-                            oldchar.basechar = WAWHAMZA;
-                            retval = 2;
-                            break;
-                        case YEH:
-                        case ALEFMAKSURA:
-                        case FARSIYEH:
-                            oldchar.basechar = YEHHAMZA;
-                            retval = 2;
-                            break;
-                        default:           /* whatever sense this may make .. */
-                            oldchar.mark1 = HAMZAABOVE;
-                            break;
-                    }
-                    break;
-                case MADDA:
-                    switch (oldchar.basechar) {
-                        case ALEF:
-                            oldchar.basechar = ALEFMADDA;
-                            retval = 2;
-                            break;
-                    }
-                    break;
-                default:
-                    oldchar.vowel = newchar;
-                    break;
-            }
-            if (retval == 1) {
-                oldchar.lignum++;
-            }
-            return retval;
-        }
-        if (oldchar.vowel != 0) {  /* if we already joined a vowel, we can't join a Hamza */
-            return 0;
-        }
-        
-        switch (oldchar.basechar) {
-            case LAM:
-                switch (newchar) {
-                    case ALEF:
-                        oldchar.basechar = LAM_ALEF;
-                        oldchar.numshapes = 2;
-                        retval = 3;
-                        break;
-                    case ALEFHAMZA:
-                        oldchar.basechar = LAM_ALEFHAMZA;
-                        oldchar.numshapes = 2;
-                        retval = 3;
-                        break;
-                    case ALEFHAMZABELOW:
-                        oldchar.basechar = LAM_ALEFHAMZABELOW;
-                        oldchar.numshapes = 2;
-                        retval = 3;
-                        break;
-                    case ALEFMADDA:
-                        oldchar.basechar = LAM_ALEFMADDA;
-                        oldchar.numshapes = 2;
-                        retval = 3;
-                        break;
-                }
-                break;
-            case 0:
-                oldchar.basechar = newchar;
-                oldchar.numshapes = shapecount(newchar);
-                retval = 1;
-                break;
-        }
-        return retval;
-    }
-
-    static void copycstostring(StringBuffer string, CharStruct s, int level) {
-        /* s is a shaped charstruct; i is the index into the string */
-        if (s.basechar == 0) {
-            return;
-        }
-
-        string.append(s.basechar);
-        s.lignum--;
-        if (s.mark1 != 0) {
-            if ((level & ar_novowel) == 0) {
-                string.append(s.mark1);
-                s.lignum--;
-            } else {
-                s.lignum--;
-            }
-        }
-        if (s.vowel != 0) {
-            if ((level & ar_novowel) == 0) {
-                string.append(s.vowel);
-                s.lignum--;
-            }
-            else {                       /* vowel elimination */
-                s.lignum--;
-            }
-        }
-//        while (s.lignum > 0) {                           /* NULL-insertion for Langbox-font */
-//            string[i] = 0;
-//            i++;
-//            (s.lignum)--;
-//        }
-//        return i;
-    }
-
-    // return len
-    static void doublelig(StringBuffer string, int level)
-    /* Ok. We have presentation ligatures in our font. */
-    {
-        int len;
-        int olen = len = string.length();
-        int j = 0, si = 1;
-        char lapresult;
-        
-        while (si < olen) {
-            lapresult = 0;
-            if ((level & ar_composedtashkeel) != 0) {
-                switch (string.charAt(j)) {
-                    case SHADDA:
-                        switch (string.charAt(si)) {
-                            case KASRA:
-                                lapresult = 0xFC62;
-                                break;
-                            case FATHA:
-                                lapresult = 0xFC60;
-                                break;
-                            case DAMMA:
-                                lapresult = 0xFC61;
-                                break;
-                            case 0x064C:
-                                lapresult = 0xFC5E;
-                                break;
-                            case 0x064D:
-                                lapresult = 0xFC5F;
-                                break;
-                        }
-                        break;
-                    case KASRA:
-                        if (string.charAt(si) == SHADDA)
-                            lapresult = 0xFC62;
-                        break;
-                    case FATHA:
-                        if (string.charAt(si) == SHADDA)
-                            lapresult = 0xFC60;
-                        break;
-                    case DAMMA:
-                        if (string.charAt(si) == SHADDA)
-                            lapresult = 0xFC61;
-                        break;
-                }
-            }
-            
-            if ((level & ar_lig) != 0) {
-                switch (string.charAt(j)) {
-                    case 0xFEDF:       /* LAM initial */
-                        switch (string.charAt(si)) {
-                            case 0xFE9E:
-                                lapresult = 0xFC3F;
-                                break;        /* JEEM final */
-                            case 0xFEA0:
-                                lapresult = 0xFCC9;
-                                break;        /* JEEM medial */
-                            case 0xFEA2:
-                                lapresult = 0xFC40;
-                                break;        /* HAH final */
-                            case 0xFEA4:
-                                lapresult = 0xFCCA;
-                                break;        /* HAH medial */
-                            case 0xFEA6:
-                                lapresult = 0xFC41;
-                                break;        /* KHAH final */
-                            case 0xFEA8:
-                                lapresult = 0xFCCB;
-                                break;        /* KHAH medial */
-                            case 0xFEE2:
-                                lapresult = 0xFC42;
-                                break;        /* MEEM final */
-                            case 0xFEE4:
-                                lapresult = 0xFCCC;
-                                break;        /* MEEM medial */
-                        }
-                        break;
-                    case 0xFE97:       /* TEH inital */
-                        switch (string.charAt(si)) {
-                            case 0xFEA0:
-                                lapresult = 0xFCA1;
-                                break;        /* JEEM medial */
-                            case 0xFEA4:
-                                lapresult = 0xFCA2;
-                                break;        /* HAH medial */
-                            case 0xFEA8:
-                                lapresult = 0xFCA3;
-                                break;        /* KHAH medial */
-                        }
-                        break;
-                    case 0xFE91:       /* BEH inital */
-                        switch (string.charAt(si)) {
-                            case 0xFEA0:
-                                lapresult = 0xFC9C;
-                                break;        /* JEEM medial */
-                            case 0xFEA4:
-                                lapresult = 0xFC9D;
-                                break;        /* HAH medial */
-                            case 0xFEA8:
-                                lapresult = 0xFC9E;
-                                break;        /* KHAH medial */
-                        }
-                        break;
-                    case 0xFEE7:       /* NOON inital */
-                        switch (string.charAt(si)) {
-                            case 0xFEA0:
-                                lapresult = 0xFCD2;
-                                break;        /* JEEM initial */
-                            case 0xFEA4:
-                                lapresult = 0xFCD3;
-                                break;        /* HAH medial */
-                            case 0xFEA8:
-                                lapresult = 0xFCD4;
-                                break;        /* KHAH medial */
-                        }
-                        break;
-                        
-                    case 0xFEE8:       /* NOON medial */
-                        switch (string.charAt(si)) {
-                            case 0xFEAE:
-                                lapresult = 0xFC8A;
-                                break;        /* REH final  */
-                            case 0xFEB0:
-                                lapresult = 0xFC8B;
-                                break;        /* ZAIN final */
-                        }
-                        break;
-                    case 0xFEE3:       /* MEEM initial */
-                        switch (string.charAt(si)) {
-                            case 0xFEA0:
-                                lapresult = 0xFCCE;
-                                break;        /* JEEM medial */
-                            case 0xFEA4:
-                                lapresult = 0xFCCF;
-                                break;        /* HAH medial */
-                            case 0xFEA8:
-                                lapresult = 0xFCD0;
-                                break;        /* KHAH medial */
-                            case 0xFEE4:
-                                lapresult = 0xFCD1;
-                                break;        /* MEEM medial */
-                        }
-                        break;
-                        
-                    case 0xFED3:       /* FEH initial */
-                        switch (string.charAt(si)) {
-                            case 0xFEF2:
-                                lapresult = 0xFC32;
-                                break;        /* YEH final */
-                        }
-                        break;
-                        
-                    default:
-                        break;
-                }                   /* end switch string[si] */
-            }
-            if (lapresult != 0) {
-                string.setCharAt(j, lapresult);
-                len--;
-                si++;                 /* jump over one character */
-                /* we'll have to change this, too. */
-            }
-            else {
-                j++;
-                string.setCharAt(j, string.charAt(si));
-                si++;
-            }
-        }
-        string.setLength(len);
-    }
-
-    static boolean connects_to_left(CharStruct a) {
-        return a.numshapes > 2;
-    }
-    
-    static void shape(char[] text, StringBuffer string, int level) {
-  /* string is assumed to be empty and big enough.
-   * text is the original text.
-   * This routine does the basic arabic reshaping.
-   * *len the number of non-null characters.
-   *
-   * Note: We have to unshape each character first!
-   */
-        int join;
-        int which;
-        char nextletter;
-
-        int p = 0;                     /* initialize for output */
-        CharStruct oldchar = new CharStruct();
-        CharStruct curchar = new CharStruct();
-        while (p < text.length) {
-            nextletter = text[p++];
-            //nextletter = unshape (nextletter);
-
-            join = ligature(nextletter, curchar);
-            if (join == 0) {                       /* shape curchar */
-                int nc = shapecount(nextletter);
-                //(*len)++;
-                if (nc == 1) {
-                    which = 0;        /* final or isolated */
-                }
-                else {
-                    which = 2;        /* medial or initial */
-                }
-                if (connects_to_left(oldchar)) {
-                    which++;
-                }
-                
-                which = which % (curchar.numshapes);
-                curchar.basechar = charshape(curchar.basechar, which);
-                
-                /* get rid of oldchar */
-                copycstostring(string, oldchar, level);
-                oldchar = curchar;    /* new values in oldchar */
-                
-                /* init new curchar */
-                curchar = new CharStruct();
-                curchar.basechar = nextletter;
-                curchar.numshapes = nc;
-                curchar.lignum++;
-                //          (*len) += unligature (&curchar, level);
-            }
-            //      else
-            //        {
-            //          (*len) += unligature (&curchar, level);
-            //        }
-            //      p = g_utf8_next_char (p);
-        }
-        
-        /* Handle last char */
-        if (connects_to_left(oldchar))
-            which = 1;
-        else
-            which = 0;
-        which = which % (curchar.numshapes);
-        curchar.basechar = charshape(curchar.basechar, which);
-        
-        /* get rid of oldchar */
-        copycstostring(string, oldchar, level);
-        copycstostring(string, curchar, level);
-    }
-
-    static int arabic_shape(char[] src, int srcoffset, int srclength, char[] dest, int destoffset, int destlength, int level) {
-        char[] str = new char[srclength];
-        if (srclength + srcoffset - srcoffset >= 0)
-            System.arraycopy(src, srcoffset, str, srcoffset - srcoffset, srclength + srcoffset - srcoffset);
-        StringBuffer string = new StringBuffer(srclength);
-        shape(str, string, level);
-        if ((level & (ar_composedtashkeel | ar_lig)) != 0)
-            doublelig(string, level);
-//        string.reverse();
-        System.arraycopy(string.toString().toCharArray(), 0, dest, destoffset, string.length());
-        return string.length();
-    }
-
-    static void processNumbers(char[] text, int offset, int length, int options) {
-        int limit = offset + length;
-        if ((options & DIGITS_MASK) != 0) {
-            char digitBase = '\u0030'; // European digits
-            switch (options & DIGIT_TYPE_MASK) {
-                case DIGIT_TYPE_AN:
-                    digitBase = '\u0660';  // Arabic-Indic digits
-                    break;
-                    
-                case DIGIT_TYPE_AN_EXTENDED:
-                    digitBase = '\u06f0';  // Eastern Arabic-Indic digits (Persian and Urdu)
-                    break;
-                    
-                default:
-                    break;
-            }
-            
-            switch (options & DIGITS_MASK) {
-                case DIGITS_EN2AN: {
-                    int digitDelta = digitBase - '\u0030';
-                    for (int i = offset; i < limit; ++i) {
-                        char ch = text[i];
-                        if (ch <= '\u0039' && ch >= '\u0030') {
-                            text[i] += digitDelta;
-                        }
-                    }
-                }
-                break;
-                
-                case DIGITS_AN2EN: {
-                    char digitTop = (char)(digitBase + 9);
-                    int digitDelta = '\u0030' - digitBase;
-                    for (int i = offset; i < limit; ++i) {
-                        char ch = text[i];
-                        if (ch <= digitTop && ch >= digitBase) {
-                            text[i] += digitDelta;
-                        }
-                    }
-                }
-                break;
-
-                case DIGITS_EN2AN_INIT_LR:
-                    shapeToArabicDigitsWithContext(text, 0, length, digitBase, false);
-                    break;
-
-                case DIGITS_EN2AN_INIT_AL:
-                    shapeToArabicDigitsWithContext(text, 0, length, digitBase, true);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
+    public static final int ar_nothing = 0x0;
+    public static final int ar_novowel = 0x1;
+    public static final int ar_composedtashkeel = 0x4;
+    public static final int ar_lig = 0x8;
     /**
-     * Given an array of characters, process a section of it, and replace
-     * European numeral characters (0-9) with Arabic numeral characters
-     * (depending on the {@code digitBase}) if the characters are preceded by
-     * Arabic characters.
-     * 
-     * @param dest
-     *            The array of characters to be processed. Must not be
-     *            {@code null}, and must have a length greater than {@code 0}.
-     * @param start
-     *            The start index of the characters to be processed. The value
-     *            must be greater than, or equal to, {@code 0} and less than the
-     *            length of the array {@code dest}.
-     * @param length
-     *            The number of characters to process. {@code length} +
-     *            {@code start} must be less than, or equal to, the length of
-     *            the array {@code dest}.
-     * @param digitBase
-     *            The code of the character which represents the numeral 0 into
-     *            which the European numbers should be converted. For instance,
-     *            Arabic-Indic digits begin at {@code '\u0660'}, and Eastern
-     *            Arabic-Indic digits (Persian and Urdu) begin at
-     *            {@code '\u06f0'}.
-     * @param lastStrongWasAL
-     *            A boolean flag indicating whether or not the character
-     *            preceding the array of characters to be processed was an
-     *            Arabic character, or not.
+     * Digit shaping option: Replace European digits (U+0030...U+0039) by Arabic-Indic digits.
      */
-    static void shapeToArabicDigitsWithContext(char[] dest, int start, int length, char digitBase, boolean lastStrongWasAL) {
-        digitBase -= '0'; // move common adjustment out of loop
-
-        int limit = start + length;
-        for (int i = start; i < limit; ++i) {
-            char ch = dest[i];
-            switch (Character.getDirectionality(ch)) {
-                case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
-                case Character.DIRECTIONALITY_RIGHT_TO_LEFT:
-                    lastStrongWasAL = false;
-                    break;
-                case Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC:
-                    lastStrongWasAL = true;
-                    break;
-                case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
-                    if (lastStrongWasAL && ch <= '\u0039') {
-                        dest[i] = (char) (ch + digitBase);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
+    public static final int DIGITS_EN2AN = 0x20;
+    /**
+     * Digit shaping option: Replace Arabic-Indic digits by European digits (U+0030...U+0039).
+     */
+    public static final int DIGITS_AN2EN = 0x40;
+    /**
+     * Digit shaping option: Replace European digits (U+0030...U+0039) by Arabic-Indic digits if the most recent
+     * strongly directional character is an Arabic letter (its Bidi direction value is RIGHT_TO_LEFT_ARABIC). The
+     * initial state at the start of the text is assumed to be not an Arabic, letter, so European digits at the start of
+     * the text will not change. Compare to DIGITS_ALEN2AN_INIT_AL.
+     */
+    public static final int DIGITS_EN2AN_INIT_LR = 0x60;
+    /**
+     * Digit shaping option: Replace European digits (U+0030...U+0039) by Arabic-Indic digits if the most recent
+     * strongly directional character is an Arabic letter (its Bidi direction value is RIGHT_TO_LEFT_ARABIC). The
+     * initial state at the start of the text is assumed to be an Arabic, letter, so European digits at the start of the
+     * text will change. Compare to DIGITS_ALEN2AN_INT_LR.
+     */
+    public static final int DIGITS_EN2AN_INIT_AL = 0x80;
+    /**
+     * Bit mask for digit shaping options.
+     */
+    public static final int DIGITS_MASK = 0xe0;
+    /**
+     * Digit type option: Use Arabic-Indic digits (U+0660...U+0669).
+     */
+    public static final int DIGIT_TYPE_AN = 0;
+    /**
+     * Digit type option: Use Eastern (Extended) Arabic-Indic digits (U+06f0...U+06f9).
+     */
+    public static final int DIGIT_TYPE_AN_EXTENDED = 0x100;
+    /**
+     * Bit mask for digit type options.
+     */
+    public static final int DIGIT_TYPE_MASK = 0x0100; // 0x3f00?
     private static final char ALEF = 0x0627;
     private static final char ALEFHAMZA = 0x0623;
     private static final char ALEFHAMZABELOW = 0x0625;
@@ -628,28 +105,23 @@ public class ArabicLigaturizer {
     private static final char HAMZA = 0x0621;
     private static final char TATWEEL = 0x0640;
     private static final char ZWJ = 0x200D;
-
     private static final char HAMZAABOVE = 0x0654;
     private static final char HAMZABELOW = 0x0655;
-
     private static final char WAWHAMZA = 0x0624;
     private static final char YEHHAMZA = 0x0626;
     private static final char WAW = 0x0648;
     private static final char ALEFMAKSURA = 0x0649;
     private static final char YEH = 0x064A;
     private static final char FARSIYEH = 0x06CC;
-
     private static final char SHADDA = 0x0651;
     private static final char KASRA = 0x0650;
     private static final char FATHA = 0x064E;
     private static final char DAMMA = 0x064F;
     private static final char MADDA = 0x0653;
-
     private static final char LAM_ALEF = 0xFEFB;
     private static final char LAM_ALEFHAMZA = 0xFEF7;
     private static final char LAM_ALEFHAMZABELOW = 0xFEF9;
     private static final char LAM_ALEFMADDA = 0xFEF5;
-
     private static final char[][] chartable = {
             {0x0621, 0xFE80}, /* HAMZA */
             {0x0622, 0xFE81, 0xFE82}, /* ALEF WITH MADDA ABOVE */
@@ -728,65 +200,560 @@ public class ArabicLigaturizer {
             {0x06D2, 0xFBAE, 0xFBAF}, /* YEH BARREE */
             {0x06D3, 0xFBB0, 0xFBB1} /* YEH BARREE WITH HAMZA ABOVE */
     };
+    /**
+     * Not a valid option value.
+     */
+    private static final int DIGITS_RESERVED = 0xa0;
 
-        public static final int ar_nothing  = 0x0;
-        public static final int ar_novowel = 0x1;
-        public static final int ar_composedtashkeel = 0x4;
-        public static final int ar_lig = 0x8;
-        /**
-         * Digit shaping option: Replace European digits (U+0030...U+0039) by Arabic-Indic digits.
+    static boolean isVowel(char s) {
+        return ((s >= 0x064B) && (s <= 0x0655)) || (s == 0x0670);
+    }
+
+    static char charshape(char s, int which)
+        /* which 0=isolated 1=final 2=initial 3=medial */ {
+        int l, r, m;
+        if ((s >= 0x0621) && (s <= 0x06D3)) {
+            l = 0;
+            r = chartable.length - 1;
+            while (l <= r) {
+                m = (l + r) / 2;
+                if (s == chartable[m][0]) {
+                    return chartable[m][which + 1];
+                } else if (s < chartable[m][0]) {
+                    r = m - 1;
+                } else {
+                    l = m + 1;
+                }
+            }
+        } else if (s >= 0xfef5 && s <= 0xfefb) {
+            return (char) (s + which);
+        }
+        return s;
+    }
+
+    static int shapecount(char s) {
+        int l, r, m;
+        if ((s >= 0x0621) && (s <= 0x06D3) && !isVowel(s)) {
+            l = 0;
+            r = chartable.length - 1;
+            while (l <= r) {
+                m = (l + r) / 2;
+                if (s == chartable[m][0]) {
+                    return chartable[m].length - 1;
+                } else if (s < chartable[m][0]) {
+                    r = m - 1;
+                } else {
+                    l = m + 1;
+                }
+            }
+        } else if (s == ZWJ) {
+            return 4;
+        }
+        return 1;
+    }
+
+    static int ligature(char newchar, CharStruct oldchar) {
+        /* 0 == no ligature possible; 1 == vowel; 2 == two chars; 3 == Lam+Alef */
+        int retval = 0;
+
+        if (oldchar.basechar == 0) {
+            return 0;
+        }
+        if (isVowel(newchar)) {
+            retval = 1;
+            if ((oldchar.vowel != 0) && (newchar != SHADDA)) {
+                retval = 2;           /* we eliminate the old vowel .. */
+            }
+            switch (newchar) {
+                case SHADDA:
+                    if (oldchar.mark1 == 0) {
+                        oldchar.mark1 = SHADDA;
+                    } else {
+                        return 0;         /* no ligature possible */
+                    }
+                    break;
+                case HAMZABELOW:
+                    switch (oldchar.basechar) {
+                        case ALEF:
+                            oldchar.basechar = ALEFHAMZABELOW;
+                            retval = 2;
+                            break;
+                        case LAM_ALEF:
+                            oldchar.basechar = LAM_ALEFHAMZABELOW;
+                            retval = 2;
+                            break;
+                        default:
+                            oldchar.mark1 = HAMZABELOW;
+                            break;
+                    }
+                    break;
+                case HAMZAABOVE:
+                    switch (oldchar.basechar) {
+                        case ALEF:
+                            oldchar.basechar = ALEFHAMZA;
+                            retval = 2;
+                            break;
+                        case LAM_ALEF:
+                            oldchar.basechar = LAM_ALEFHAMZA;
+                            retval = 2;
+                            break;
+                        case WAW:
+                            oldchar.basechar = WAWHAMZA;
+                            retval = 2;
+                            break;
+                        case YEH:
+                        case ALEFMAKSURA:
+                        case FARSIYEH:
+                            oldchar.basechar = YEHHAMZA;
+                            retval = 2;
+                            break;
+                        default:           /* whatever sense this may make .. */
+                            oldchar.mark1 = HAMZAABOVE;
+                            break;
+                    }
+                    break;
+                case MADDA:
+                    switch (oldchar.basechar) {
+                        case ALEF:
+                            oldchar.basechar = ALEFMADDA;
+                            retval = 2;
+                            break;
+                    }
+                    break;
+                default:
+                    oldchar.vowel = newchar;
+                    break;
+            }
+            if (retval == 1) {
+                oldchar.lignum++;
+            }
+            return retval;
+        }
+        if (oldchar.vowel != 0) {  /* if we already joined a vowel, we can't join a Hamza */
+            return 0;
+        }
+
+        switch (oldchar.basechar) {
+            case LAM:
+                switch (newchar) {
+                    case ALEF:
+                        oldchar.basechar = LAM_ALEF;
+                        oldchar.numshapes = 2;
+                        retval = 3;
+                        break;
+                    case ALEFHAMZA:
+                        oldchar.basechar = LAM_ALEFHAMZA;
+                        oldchar.numshapes = 2;
+                        retval = 3;
+                        break;
+                    case ALEFHAMZABELOW:
+                        oldchar.basechar = LAM_ALEFHAMZABELOW;
+                        oldchar.numshapes = 2;
+                        retval = 3;
+                        break;
+                    case ALEFMADDA:
+                        oldchar.basechar = LAM_ALEFMADDA;
+                        oldchar.numshapes = 2;
+                        retval = 3;
+                        break;
+                }
+                break;
+            case 0:
+                oldchar.basechar = newchar;
+                oldchar.numshapes = shapecount(newchar);
+                retval = 1;
+                break;
+        }
+        return retval;
+    }
+
+    static void copycstostring(StringBuffer string, CharStruct s, int level) {
+        /* s is a shaped charstruct; i is the index into the string */
+        if (s.basechar == 0) {
+            return;
+        }
+
+        string.append(s.basechar);
+        s.lignum--;
+        if (s.mark1 != 0) {
+            if ((level & ar_novowel) == 0) {
+                string.append(s.mark1);
+                s.lignum--;
+            } else {
+                s.lignum--;
+            }
+        }
+        if (s.vowel != 0) {
+            if ((level & ar_novowel) == 0) {
+                string.append(s.vowel);
+                s.lignum--;
+            } else {                       /* vowel elimination */
+                s.lignum--;
+            }
+        }
+//        while (s.lignum > 0) {                           /* NULL-insertion for Langbox-font */
+//            string[i] = 0;
+//            i++;
+//            (s.lignum)--;
+//        }
+//        return i;
+    }
+
+    // return len
+    static void doublelig(StringBuffer string, int level)
+    /* Ok. We have presentation ligatures in our font. */ {
+        int len;
+        int olen = len = string.length();
+        int j = 0, si = 1;
+        char lapresult;
+
+        while (si < olen) {
+            lapresult = 0;
+            if ((level & ar_composedtashkeel) != 0) {
+                switch (string.charAt(j)) {
+                    case SHADDA:
+                        switch (string.charAt(si)) {
+                            case KASRA:
+                                lapresult = 0xFC62;
+                                break;
+                            case FATHA:
+                                lapresult = 0xFC60;
+                                break;
+                            case DAMMA:
+                                lapresult = 0xFC61;
+                                break;
+                            case 0x064C:
+                                lapresult = 0xFC5E;
+                                break;
+                            case 0x064D:
+                                lapresult = 0xFC5F;
+                                break;
+                        }
+                        break;
+                    case KASRA:
+                        if (string.charAt(si) == SHADDA) {
+                            lapresult = 0xFC62;
+                        }
+                        break;
+                    case FATHA:
+                        if (string.charAt(si) == SHADDA) {
+                            lapresult = 0xFC60;
+                        }
+                        break;
+                    case DAMMA:
+                        if (string.charAt(si) == SHADDA) {
+                            lapresult = 0xFC61;
+                        }
+                        break;
+                }
+            }
+
+            if ((level & ar_lig) != 0) {
+                switch (string.charAt(j)) {
+                    case 0xFEDF:       /* LAM initial */
+                        switch (string.charAt(si)) {
+                            case 0xFE9E:
+                                lapresult = 0xFC3F;
+                                break;        /* JEEM final */
+                            case 0xFEA0:
+                                lapresult = 0xFCC9;
+                                break;        /* JEEM medial */
+                            case 0xFEA2:
+                                lapresult = 0xFC40;
+                                break;        /* HAH final */
+                            case 0xFEA4:
+                                lapresult = 0xFCCA;
+                                break;        /* HAH medial */
+                            case 0xFEA6:
+                                lapresult = 0xFC41;
+                                break;        /* KHAH final */
+                            case 0xFEA8:
+                                lapresult = 0xFCCB;
+                                break;        /* KHAH medial */
+                            case 0xFEE2:
+                                lapresult = 0xFC42;
+                                break;        /* MEEM final */
+                            case 0xFEE4:
+                                lapresult = 0xFCCC;
+                                break;        /* MEEM medial */
+                        }
+                        break;
+                    case 0xFE97:       /* TEH inital */
+                        switch (string.charAt(si)) {
+                            case 0xFEA0:
+                                lapresult = 0xFCA1;
+                                break;        /* JEEM medial */
+                            case 0xFEA4:
+                                lapresult = 0xFCA2;
+                                break;        /* HAH medial */
+                            case 0xFEA8:
+                                lapresult = 0xFCA3;
+                                break;        /* KHAH medial */
+                        }
+                        break;
+                    case 0xFE91:       /* BEH inital */
+                        switch (string.charAt(si)) {
+                            case 0xFEA0:
+                                lapresult = 0xFC9C;
+                                break;        /* JEEM medial */
+                            case 0xFEA4:
+                                lapresult = 0xFC9D;
+                                break;        /* HAH medial */
+                            case 0xFEA8:
+                                lapresult = 0xFC9E;
+                                break;        /* KHAH medial */
+                        }
+                        break;
+                    case 0xFEE7:       /* NOON inital */
+                        switch (string.charAt(si)) {
+                            case 0xFEA0:
+                                lapresult = 0xFCD2;
+                                break;        /* JEEM initial */
+                            case 0xFEA4:
+                                lapresult = 0xFCD3;
+                                break;        /* HAH medial */
+                            case 0xFEA8:
+                                lapresult = 0xFCD4;
+                                break;        /* KHAH medial */
+                        }
+                        break;
+
+                    case 0xFEE8:       /* NOON medial */
+                        switch (string.charAt(si)) {
+                            case 0xFEAE:
+                                lapresult = 0xFC8A;
+                                break;        /* REH final  */
+                            case 0xFEB0:
+                                lapresult = 0xFC8B;
+                                break;        /* ZAIN final */
+                        }
+                        break;
+                    case 0xFEE3:       /* MEEM initial */
+                        switch (string.charAt(si)) {
+                            case 0xFEA0:
+                                lapresult = 0xFCCE;
+                                break;        /* JEEM medial */
+                            case 0xFEA4:
+                                lapresult = 0xFCCF;
+                                break;        /* HAH medial */
+                            case 0xFEA8:
+                                lapresult = 0xFCD0;
+                                break;        /* KHAH medial */
+                            case 0xFEE4:
+                                lapresult = 0xFCD1;
+                                break;        /* MEEM medial */
+                        }
+                        break;
+
+                    case 0xFED3:       /* FEH initial */
+                        switch (string.charAt(si)) {
+                            case 0xFEF2:
+                                lapresult = 0xFC32;
+                                break;        /* YEH final */
+                        }
+                        break;
+
+                    default:
+                        break;
+                }                   /* end switch string[si] */
+            }
+            if (lapresult != 0) {
+                string.setCharAt(j, lapresult);
+                len--;
+                si++;                 /* jump over one character */
+                /* we'll have to change this, too. */
+            } else {
+                j++;
+                string.setCharAt(j, string.charAt(si));
+                si++;
+            }
+        }
+        string.setLength(len);
+    }
+
+    static boolean connects_to_left(CharStruct a) {
+        return a.numshapes > 2;
+    }
+
+    static void shape(char[] text, StringBuffer string, int level) {
+        /* string is assumed to be empty and big enough.
+         * text is the original text.
+         * This routine does the basic arabic reshaping.
+         * *len the number of non-null characters.
+         *
+         * Note: We have to unshape each character first!
          */
-        public static final int DIGITS_EN2AN = 0x20;
-        
-        /**
-         * Digit shaping option: Replace Arabic-Indic digits by European digits (U+0030...U+0039).
-         */
-        public static final int DIGITS_AN2EN = 0x40;
-        
-        /**
-         * Digit shaping option:
-         * Replace European digits (U+0030...U+0039) by Arabic-Indic digits
-         * if the most recent strongly directional character
-         * is an Arabic letter (its Bidi direction value is RIGHT_TO_LEFT_ARABIC).
-         * The initial state at the start of the text is assumed to be not an Arabic,
-         * letter, so European digits at the start of the text will not change.
-         * Compare to DIGITS_ALEN2AN_INIT_AL.
-         */
-        public static final int DIGITS_EN2AN_INIT_LR = 0x60;
-        
-        /**
-         * Digit shaping option:
-         * Replace European digits (U+0030...U+0039) by Arabic-Indic digits
-         * if the most recent strongly directional character
-         * is an Arabic letter (its Bidi direction value is RIGHT_TO_LEFT_ARABIC).
-         * The initial state at the start of the text is assumed to be an Arabic,
-         * letter, so European digits at the start of the text will change.
-         * Compare to DIGITS_ALEN2AN_INT_LR.
-         */
-        public static final int DIGITS_EN2AN_INIT_AL = 0x80;
-        
-        /** Not a valid option value. */
-        private static final int DIGITS_RESERVED = 0xa0;
-        
-        /**
-         * Bit mask for digit shaping options.
-         */
-        public static final int DIGITS_MASK = 0xe0;
-        
-        /**
-         * Digit type option: Use Arabic-Indic digits (U+0660...U+0669).
-         */
-        public static final int DIGIT_TYPE_AN = 0;
+        int join;
+        int which;
+        char nextletter;
+
+        int p = 0;                     /* initialize for output */
+        CharStruct oldchar = new CharStruct();
+        CharStruct curchar = new CharStruct();
+        while (p < text.length) {
+            nextletter = text[p++];
+            //nextletter = unshape (nextletter);
+
+            join = ligature(nextletter, curchar);
+            if (join == 0) {                       /* shape curchar */
+                int nc = shapecount(nextletter);
+                //(*len)++;
+                if (nc == 1) {
+                    which = 0;        /* final or isolated */
+                } else {
+                    which = 2;        /* medial or initial */
+                }
+                if (connects_to_left(oldchar)) {
+                    which++;
+                }
+
+                which = which % (curchar.numshapes);
+                curchar.basechar = charshape(curchar.basechar, which);
+
+                /* get rid of oldchar */
+                copycstostring(string, oldchar, level);
+                oldchar = curchar;    /* new values in oldchar */
+
+                /* init new curchar */
+                curchar = new CharStruct();
+                curchar.basechar = nextletter;
+                curchar.numshapes = nc;
+                curchar.lignum++;
+                //          (*len) += unligature (&curchar, level);
+            }
+            //      else
+            //        {
+            //          (*len) += unligature (&curchar, level);
+            //        }
+            //      p = g_utf8_next_char (p);
+        }
+
+        /* Handle last char */
+        if (connects_to_left(oldchar)) {
+            which = 1;
+        } else {
+            which = 0;
+        }
+        which = which % (curchar.numshapes);
+        curchar.basechar = charshape(curchar.basechar, which);
+
+        /* get rid of oldchar */
+        copycstostring(string, oldchar, level);
+        copycstostring(string, curchar, level);
+    }
+
+    static int arabic_shape(char[] src, int srcoffset, int srclength, char[] dest, int destoffset, int destlength,
+            int level) {
+        char[] str = new char[srclength];
+        if (srclength + srcoffset - srcoffset >= 0) {
+            System.arraycopy(src, srcoffset, str, srcoffset - srcoffset, srclength + srcoffset - srcoffset);
+        }
+        StringBuffer string = new StringBuffer(srclength);
+        shape(str, string, level);
+        if ((level & (ar_composedtashkeel | ar_lig)) != 0) {
+            doublelig(string, level);
+        }
+//        string.reverse();
+        System.arraycopy(string.toString().toCharArray(), 0, dest, destoffset, string.length());
+        return string.length();
+    }
+
+    static void processNumbers(char[] text, int offset, int length, int options) {
+        int limit = offset + length;
+        if ((options & DIGITS_MASK) != 0) {
+            char digitBase = '\u0030'; // European digits
+            switch (options & DIGIT_TYPE_MASK) {
+                case DIGIT_TYPE_AN:
+                    digitBase = '\u0660';  // Arabic-Indic digits
+                    break;
+
+                case DIGIT_TYPE_AN_EXTENDED:
+                    digitBase = '\u06f0';  // Eastern Arabic-Indic digits (Persian and Urdu)
+                    break;
+
+                default:
+                    break;
+            }
+
+            switch (options & DIGITS_MASK) {
+                case DIGITS_EN2AN: {
+                    int digitDelta = digitBase - '\u0030';
+                    for (int i = offset; i < limit; ++i) {
+                        char ch = text[i];
+                        if (ch <= '\u0039' && ch >= '\u0030') {
+                            text[i] += digitDelta;
+                        }
+                    }
+                }
+                break;
+
+                case DIGITS_AN2EN: {
+                    char digitTop = (char) (digitBase + 9);
+                    int digitDelta = '\u0030' - digitBase;
+                    for (int i = offset; i < limit; ++i) {
+                        char ch = text[i];
+                        if (ch <= digitTop && ch >= digitBase) {
+                            text[i] += digitDelta;
+                        }
+                    }
+                }
+                break;
+
+                case DIGITS_EN2AN_INIT_LR:
+                    shapeToArabicDigitsWithContext(text, 0, length, digitBase, false);
+                    break;
+
+                case DIGITS_EN2AN_INIT_AL:
+                    shapeToArabicDigitsWithContext(text, 0, length, digitBase, true);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
 
     /**
-     * Digit type option: Use Eastern (Extended) Arabic-Indic digits (U+06f0...U+06f9).
+     * Given an array of characters, process a section of it, and replace European numeral characters (0-9) with Arabic
+     * numeral characters (depending on the {@code digitBase}) if the characters are preceded by Arabic characters.
+     *
+     * @param dest            The array of characters to be processed. Must not be {@code null}, and must have a length
+     *                        greater than {@code 0}.
+     * @param start           The start index of the characters to be processed. The value must be greater than, or
+     *                        equal to, {@code 0} and less than the length of the array {@code dest}.
+     * @param length          The number of characters to process. {@code length} + {@code start} must be less than, or
+     *                        equal to, the length of the array {@code dest}.
+     * @param digitBase       The code of the character which represents the numeral 0 into which the European numbers
+     *                        should be converted. For instance, Arabic-Indic digits begin at {@code '\u0660'}, and
+     *                        Eastern Arabic-Indic digits (Persian and Urdu) begin at {@code '\u06f0'}.
+     * @param lastStrongWasAL A boolean flag indicating whether or not the character preceding the array of characters
+     *                        to be processed was an Arabic character, or not.
      */
-    public static final int DIGIT_TYPE_AN_EXTENDED = 0x100;
+    static void shapeToArabicDigitsWithContext(char[] dest, int start, int length, char digitBase,
+            boolean lastStrongWasAL) {
+        digitBase -= '0'; // move common adjustment out of loop
 
-    /**
-     * Bit mask for digit type options.
-     */
-    public static final int DIGIT_TYPE_MASK = 0x0100; // 0x3f00?
+        int limit = start + length;
+        for (int i = start; i < limit; ++i) {
+            char ch = dest[i];
+            switch (Character.getDirectionality(ch)) {
+                case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT:
+                    lastStrongWasAL = false;
+                    break;
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC:
+                    lastStrongWasAL = true;
+                    break;
+                case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
+                    if (lastStrongWasAL && ch <= '\u0039') {
+                        dest[i] = (char) (ch + digitBase);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
     static class CharStruct {
 

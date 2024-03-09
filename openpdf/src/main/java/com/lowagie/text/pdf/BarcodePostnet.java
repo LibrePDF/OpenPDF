@@ -45,25 +45,26 @@
  * https://github.com/LibrePDF/OpenPDF
  */
 package com.lowagie.text.pdf;
+
+import com.lowagie.text.Rectangle;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.MemoryImageSource;
 
-import com.lowagie.text.Rectangle;
-
-/** Implements the Postnet and Planet barcodes. The default parameters are:
+/**
+ * Implements the Postnet and Planet barcodes. The default parameters are:
  * <pre>
- *n = 72f / 22f; // distance between bars
- *x = 0.02f * 72f; // bar width
- *barHeight = 0.125f * 72f; // height of the tall bars
- *size = 0.05f * 72f; // height of the short bars
- *codeType = POSTNET; // type of code
+ * n = 72f / 22f; // distance between bars
+ * x = 0.02f * 72f; // bar width
+ * barHeight = 0.125f * 72f; // height of the tall bars
+ * size = 0.05f * 72f; // height of the short bars
+ * codeType = POSTNET; // type of code
  * </pre>
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
-public class BarcodePostnet extends Barcode{
+public class BarcodePostnet extends Barcode {
 
     /**
      * The bars for each character.
@@ -81,8 +82,10 @@ public class BarcodePostnet extends Barcode{
                     {1, 0, 0, 1, 0},
                     {1, 0, 1, 0, 0}
             };
-    
-    /** Creates new BarcodePostnet */
+
+    /**
+     * Creates new BarcodePostnet
+     */
     public BarcodePostnet() {
         n = 72f / 22f; // distance between bars
         x = 0.02f * 72f; // bar width
@@ -90,18 +93,20 @@ public class BarcodePostnet extends Barcode{
         size = 0.05f * 72f; // height of the short bars
         codeType = POSTNET; // type of code
     }
-    
-    /** Creates the bars for Postnet.
+
+    /**
+     * Creates the bars for Postnet.
+     *
      * @param text the code to be created without checksum
      * @return the bars
-     */    
+     */
     public static byte[] getBarsPostnet(String text) {
         int total = 0;
         for (int k = text.length() - 1; k >= 0; --k) {
             int n = text.charAt(k) - '0';
             total += n;
         }
-        text += (char)(((10 - (total % 10)) % 10) + '0');
+        text += (char) (((10 - (total % 10)) % 10) + '0');
         byte[] bars = new byte[text.length() * 5 + 2];
         bars[0] = 1;
         bars[bars.length - 1] = 1;
@@ -112,55 +117,59 @@ public class BarcodePostnet extends Barcode{
         return bars;
     }
 
-    /** Gets the maximum area that the barcode and the text, if
-     * any, will occupy. The lower left corner is always (0, 0).
+    /**
+     * Gets the maximum area that the barcode and the text, if any, will occupy. The lower left corner is always (0,
+     * 0).
+     *
      * @return the size the barcode occupies.
      */
     public Rectangle getBarcodeSize() {
         float width = ((code.length() + 1) * 5 + 1) * n + x;
         return new Rectangle(width, barHeight);
     }
-    
-    /** Places the barcode in a <CODE>PdfContentByte</CODE>. The
-     * barcode is always placed at coordinates (0, 0). Use the
+
+    /**
+     * Places the barcode in a <CODE>PdfContentByte</CODE>. The barcode is always placed at coordinates (0, 0). Use the
      * translation matrix to move it elsewhere.
      * <p> The bars and text are written in the following colors:</p>
      * <TABLE BORDER=1>
-     *     <CAPTION>table of the colors of the bars and text</CAPTION>
+     * <CAPTION>table of the colors of the bars and text</CAPTION>
      * <TR>
-     *   <TH><P><CODE>barColor</CODE></TH>
-     *   <TH><P><CODE>textColor</CODE></TH>
-     *   <TH><P>Result</TH>
-     *   </TR>
+     * <TH><P><CODE>barColor</CODE></TH>
+     * <TH><P><CODE>textColor</CODE></TH>
+     * <TH><P>Result</TH>
+     * </TR>
      * <TR>
-     *   <TD><P><CODE>null</CODE></TD>
-     *   <TD><P><CODE>null</CODE></TD>
-     *   <TD><P>bars and text painted with current fill color</TD>
-     *   </TR>
+     * <TD><P><CODE>null</CODE></TD>
+     * <TD><P><CODE>null</CODE></TD>
+     * <TD><P>bars and text painted with current fill color</TD>
+     * </TR>
      * <TR>
-     *   <TD><P><CODE>barColor</CODE></TD>
-     *   <TD><P><CODE>null</CODE></TD>
-     *   <TD><P>bars and text painted with <CODE>barColor</CODE></TD>
-     *   </TR>
+     * <TD><P><CODE>barColor</CODE></TD>
+     * <TD><P><CODE>null</CODE></TD>
+     * <TD><P>bars and text painted with <CODE>barColor</CODE></TD>
+     * </TR>
      * <TR>
-     *   <TD><P><CODE>null</CODE></TD>
-     *   <TD><P><CODE>textColor</CODE></TD>
-     *   <TD><P>bars painted with current color<br>text painted with <CODE>textColor</CODE></TD>
-     *   </TR>
+     * <TD><P><CODE>null</CODE></TD>
+     * <TD><P><CODE>textColor</CODE></TD>
+     * <TD><P>bars painted with current color<br>text painted with <CODE>textColor</CODE></TD>
+     * </TR>
      * <TR>
-     *   <TD><P><CODE>barColor</CODE></TD>
-     *   <TD><P><CODE>textColor</CODE></TD>
-     *   <TD><P>bars painted with <CODE>barColor</CODE><br>text painted with <CODE>textColor</CODE></TD>
-     *   </TR>
+     * <TD><P><CODE>barColor</CODE></TD>
+     * <TD><P><CODE>textColor</CODE></TD>
+     * <TD><P>bars painted with <CODE>barColor</CODE><br>text painted with <CODE>textColor</CODE></TD>
+     * </TR>
      * </TABLE>
-     * @param cb the <CODE>PdfContentByte</CODE> where the barcode will be placed
-     * @param barColor the color of the bars. It can be <CODE>null</CODE>
+     *
+     * @param cb        the <CODE>PdfContentByte</CODE> where the barcode will be placed
+     * @param barColor  the color of the bars. It can be <CODE>null</CODE>
      * @param textColor the color of the text. It can be <CODE>null</CODE>
      * @return the dimensions the barcode occupies
      */
     public Rectangle placeBarcode(PdfContentByte cb, Color barColor, Color textColor) {
-        if (barColor != null)
+        if (barColor != null) {
             cb.setColorFill(barColor);
+        }
         byte[] bars = getBarsPostnet(code);
         byte flip = 1;
         if (codeType == PLANET) {
@@ -176,30 +185,34 @@ public class BarcodePostnet extends Barcode{
         cb.fill();
         return getBarcodeSize();
     }
-    
-    /** Creates a <CODE>java.awt.Image</CODE>. This image only
-     * contains the bars without any text.
+
+    /**
+     * Creates a <CODE>java.awt.Image</CODE>. This image only contains the bars without any text.
+     *
      * @param foreground the color of the bars
      * @param background the color of the background
      * @return the image
-     *
      */
     public java.awt.Image createAwtImage(Color foreground, Color background) {
         int f = foreground.getRGB();
         int g = background.getRGB();
         Canvas canvas = new Canvas();
-        int barWidth = (int)x;
-        if (barWidth <= 0)
+        int barWidth = (int) x;
+        if (barWidth <= 0) {
             barWidth = 1;
-        int barDistance = (int)n;
-        if (barDistance <= barWidth)
+        }
+        int barDistance = (int) n;
+        if (barDistance <= barWidth) {
             barDistance = barWidth + 1;
-        int barShort = (int)size;
-        if (barShort <= 0)
+        }
+        int barShort = (int) size;
+        if (barShort <= 0) {
             barShort = 1;
-        int barTall = (int)barHeight;
-        if (barTall <= barShort)
+        }
+        int barTall = (int) barHeight;
+        if (barTall <= barShort) {
             barTall = barShort + 1;
+        }
         int width = ((code.length() + 1) * 5 + 1) * barDistance + barWidth;
         int[] pix = new int[width * barTall];
         byte[] bars = getBarsPostnet(code);
@@ -218,8 +231,9 @@ public class BarcodePostnet extends Barcode{
             idx += barDistance;
         }
         int limit = width * (barTall - barShort);
-        for (int k = width; k < limit; k += width)
+        for (int k = width; k < limit; k += width) {
             System.arraycopy(pix, 0, pix, k, width);
+        }
         idx = limit;
         for (int k = 0; k < bars.length; ++k) {
             for (int j = 0; j < barDistance; ++j) {
@@ -227,10 +241,11 @@ public class BarcodePostnet extends Barcode{
             }
             idx += barDistance;
         }
-        for (int k = limit + width; k < pix.length; k += width)
+        for (int k = limit + width; k < pix.length; k += width) {
             System.arraycopy(pix, limit, pix, k, width);
+        }
         Image img = canvas.createImage(new MemoryImageSource(width, barTall, pix, 0, width));
-        
+
         return img;
     }
 }

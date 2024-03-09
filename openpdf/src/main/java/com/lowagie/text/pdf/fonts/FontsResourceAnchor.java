@@ -52,11 +52,11 @@ package com.lowagie.text.pdf.fonts;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class FontsResourceAnchor {
-    
+
     /**
      * Creates a FontsResourceAnchor
      */
     public FontsResourceAnchor() {
     }
-    
+
 }

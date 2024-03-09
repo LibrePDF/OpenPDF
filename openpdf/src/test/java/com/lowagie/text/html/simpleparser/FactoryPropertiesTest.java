@@ -1,10 +1,9 @@
 package com.lowagie.text.html.simpleparser;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Serhiy Yakovyn

@@ -7,12 +7,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -20,48 +20,67 @@
 
 package com.lowagie.rups.view;
 
+import com.lowagie.rups.io.FileChooserAction;
+import com.lowagie.rups.io.FileCloseAction;
+import com.lowagie.rups.io.filters.PdfFilter;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
-
 import javax.swing.Box;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import com.lowagie.rups.io.FileChooserAction;
-import com.lowagie.rups.io.FileCloseAction;
-import com.lowagie.rups.io.filters.PdfFilter;
-
 public class RupsMenuBar extends JMenuBar implements Observer {
 
-    /** Caption for the file menu. */
+    /**
+     * Caption for the file menu.
+     */
     public static final String FILE_MENU = "File";
-    /** Caption for "Open file". */
+    /**
+     * Caption for "Open file".
+     */
     public static final String OPEN = "Open";
-    /** Caption for "Close file". */
+    /**
+     * Caption for "Close file".
+     */
     public static final String CLOSE = "Close";
-    /** Caption for the help menu. */
+    /**
+     * Caption for the help menu.
+     */
     public static final String HELP_MENU = "Help";
-    /** Caption for "Help about". */
+    /**
+     * Caption for "Help about".
+     */
     public static final String ABOUT = "About";
     /**
      * Caption for "Help versions".
+     *
      * @since iText 5.0.0 (renamed from VERSIONS)
      */
     public static final String VERSION = "Version";
-    
-    /** The Observable object. */
+    /**
+     * A Serial Version UID.
+     */
+    private static final long serialVersionUID = 6403040037592308742L;
+    /**
+     * The Observable object.
+     */
     protected Observable observable;
-    /** The action needed to open a file. */
+    /**
+     * The action needed to open a file.
+     */
     protected FileChooserAction fileChooserAction;
-    /** The HashMap with all the actions. */
+    /**
+     * The HashMap with all the actions.
+     */
     protected HashMap<String, JMenuItem> items;
-    
+
     /**
      * Creates a JMenuBar.
-     * @param observable    the controller to which this menu bar is added
+     *
+     * @param observable the controller to which this menu bar is added
      */
     public RupsMenuBar(Observable observable) {
         this.observable = observable;
@@ -79,7 +98,7 @@ public class RupsMenuBar extends JMenuBar implements Observer {
         add(help);
         enableItems(false);
     }
-    
+
     /**
      * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
      */
@@ -96,13 +115,13 @@ public class RupsMenuBar extends JMenuBar implements Observer {
             fileChooserAction.actionPerformed(null);
         }
     }
-    
+
     /**
-     * Create an item with a certain caption and a certain action,
-     * then add the item to a menu.
+     * Create an item with a certain caption and a certain action, then add the item to a menu.
+     *
      * @param menu    the menu to which the item has to be added
-     * @param caption    the caption of the item
-     * @param action    the action corresponding with the caption
+     * @param caption the caption of the item
+     * @param action  the action corresponding with the caption
      */
     protected void addItem(JMenu menu, String caption, ActionListener action) {
         JMenuItem item = new JMenuItem(caption);
@@ -110,24 +129,23 @@ public class RupsMenuBar extends JMenuBar implements Observer {
         menu.add(item);
         items.put(caption, item);
     }
-    
+
     /**
      * Enables/Disables a series of menu items.
-     * @param enabled    true for enabling; false for disabling
+     *
+     * @param enabled true for enabling; false for disabling
      */
     protected void enableItems(boolean enabled) {
         enableItem(CLOSE, enabled);
     }
-    
+
     /**
      * Enables/disables a specific menu item
-     * @param caption    the caption of the item that needs to be enabled/disabled
-     * @param enabled    true for enabling; false for disabling
+     *
+     * @param caption the caption of the item that needs to be enabled/disabled
+     * @param enabled true for enabling; false for disabling
      */
     protected void enableItem(String caption, boolean enabled) {
         items.get(caption).setEnabled(enabled);
     }
-    
-    /** A Serial Version UID. */
-    private static final long serialVersionUID = 6403040037592308742L;
 }

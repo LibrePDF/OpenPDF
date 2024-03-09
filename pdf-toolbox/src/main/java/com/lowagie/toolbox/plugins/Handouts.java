@@ -35,12 +35,6 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
@@ -53,9 +47,14 @@ import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.OptionArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
  * Generates a PDF file that is usable as Handout.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class Handouts extends AbstractTool {
@@ -69,7 +68,8 @@ public class Handouts extends AbstractTool {
      */
     public Handouts() {
         arguments.add(new FileArgument(this, "srcfile", "The file you want to convert", false, new PdfFilter()));
-        arguments.add(new FileArgument(this, "destfile", "The file to which the Handout has to be written", true, new PdfFilter()));
+        arguments.add(new FileArgument(this, "destfile", "The file to which the Handout has to be written", true,
+                new PdfFilter()));
         OptionArgument oa = new OptionArgument(this, "pages", "The number of pages you want on one handout page");
         oa.addOption("2 pages on 1", "2");
         oa.addOption("3 pages on 1", "3");
@@ -79,6 +79,20 @@ public class Handouts extends AbstractTool {
         oa.addOption("7 pages on 1", "7");
         oa.addOption("8 pages on 1", "8");
         arguments.add(oa);
+    }
+
+    /**
+     * Converts a PDF file to a PDF file usable as Handout.
+     *
+     * @param args String[]
+     */
+    public static void main(String[] args) {
+        Handouts tool = new Handouts();
+        if (args.length < 2) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
+        tool.execute();
     }
 
     /**
@@ -96,15 +110,18 @@ public class Handouts extends AbstractTool {
      */
     public void execute() {
         try {
-            if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
-            File src = (File)getValue("srcfile");
-            if (getValue("destfile") == null) throw new InstantiationException("You need to choose a destination file");
-            File dest = (File)getValue("destfile");
+            if (getValue("srcfile") == null) {
+                throw new InstantiationException("You need to choose a sourcefile");
+            }
+            File src = (File) getValue("srcfile");
+            if (getValue("destfile") == null) {
+                throw new InstantiationException("You need to choose a destination file");
+            }
+            File dest = (File) getValue("destfile");
             int pages;
             try {
                 pages = Integer.parseInt((String) getValue("pages"));
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 pages = 4;
             }
 
@@ -155,8 +172,7 @@ public class Handouts extends AbstractTool {
                 rotation = reader.getPageRotation(i);
                 if (rotation == 90 || rotation == 270) {
                     cb.addTemplate(page, 0, -factor, factor, 0, x1 + dx, y2[p] + dy + rect.getHeight() * factor);
-                }
-                else {
+                } else {
                     cb.addTemplate(page, factor, 0, 0, factor, x1 + dx, y2[p] + dy);
                 }
                 cb.setRGBColorStroke(0xC0, 0xC0, 0xC0);
@@ -176,8 +192,7 @@ public class Handouts extends AbstractTool {
             }
             // step 5: we close the document
             document.close();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(internalFrame,
                     e.getMessage(),
                     e.getClass().getName(),
@@ -187,9 +202,8 @@ public class Handouts extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -199,28 +213,12 @@ public class Handouts extends AbstractTool {
         // represent the changes of the argument in the internal frame
     }
 
-
     /**
-     * Converts a PDF file to a PDF file usable as Handout.
-     *
-     * @param args String[]
-     */
-    public static void main(String[] args) {
-        Handouts tool = new Handouts();
-        if (args.length < 2) {
-            System.err.println(tool.getUsage());
-        }
-        tool.setMainArguments(args);
-        tool.execute();
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
-        return (File)getValue("destfile");
+        return (File) getValue("destfile");
     }
 }

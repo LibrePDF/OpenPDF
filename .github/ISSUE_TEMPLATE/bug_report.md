@@ -12,6 +12,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Code to reproduce the issue
+
 1. Sample Code
 2. Unit-Test
 
@@ -22,8 +23,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **System (please complete the following information):**
- - OS: [e.g. iOS]
- - Used Font:
+
+- OS: [e.g. iOS]
+- Used Font:
 
 **Additional context**
 Add any other context about the problem here.

@@ -48,50 +48,57 @@
  */
 
 package com.lowagie.text.pdf;
-import java.io.IOException;
 
 import com.lowagie.text.Rectangle;
+import java.io.IOException;
 
 /**
  * Implements the form XObject.
  */
 
 public class PdfTemplate extends PdfContentByte {
+
     public static final int TYPE_TEMPLATE = 1;
     public static final int TYPE_IMPORTED = 2;
     public static final int TYPE_PATTERN = 3;
     protected int type;
-    /** The indirect reference to this template */
-    protected PdfIndirectReference thisReference;
-    
-    /** The resources used by this template */
-    protected PageResources pageResources;
-    
-    
-    /** The bounding box of this template */
-    protected Rectangle bBox = new Rectangle(0, 0);
-    
-    protected PdfArray matrix;
-    
-    protected PdfTransparencyGroup group;
-    
-    protected PdfOCG layer;
-    
     /**
-     *Creates a <CODE>PdfTemplate</CODE>.
+     * The indirect reference to this template
      */
-    
+    protected PdfIndirectReference thisReference;
+
+    /**
+     * The resources used by this template
+     */
+    protected PageResources pageResources;
+
+
+    /**
+     * The bounding box of this template
+     */
+    protected Rectangle bBox = new Rectangle(0, 0);
+
+    protected PdfArray matrix;
+
+    protected PdfTransparencyGroup group;
+
+    protected PdfOCG layer;
+
+    /**
+     * Creates a <CODE>PdfTemplate</CODE>.
+     */
+
     protected PdfTemplate() {
         super(null);
         type = TYPE_TEMPLATE;
     }
-    
+
     /**
      * Creates new PdfTemplate
      *
      * @param wr the <CODE>PdfWriter</CODE>
      */
-    
+
     PdfTemplate(PdfWriter wr) {
         super(wr);
         type = TYPE_TEMPLATE;
@@ -99,24 +106,23 @@ public class PdfTemplate extends PdfContentByte {
         pageResources.addDefaultColor(wr.getDefaultColorspace());
         thisReference = writer.getPdfIndirectReference();
     }
-    
+
     /**
      * Creates a new template.
-     * <P>
-     * Creates a new template that is nothing more than a form XObject. This template can be included
-     * in this template or in another template. Templates are only written
-     * to the output when the document is closed permitting things like showing text in the first page
-     * that is only defined in the last page.
+     * <p>
+     * Creates a new template that is nothing more than a form XObject. This template can be included in this template
+     * or in another template. Templates are only written to the output when the document is closed permitting things
+     * like showing text in the first page that is only defined in the last page.
      *
      * @param writer the PdfWriter to use
-     * @param width the bounding box width
+     * @param width  the bounding box width
      * @param height the bounding box height
      * @return the created template
      */
     public static PdfTemplate createTemplate(PdfWriter writer, float width, float height) {
         return createTemplate(writer, width, height, null);
     }
-    
+
     static PdfTemplate createTemplate(PdfWriter writer, float width, float height, PdfName forcedName) {
         PdfTemplate template = new PdfTemplate(writer);
         template.setWidth(width);
@@ -126,28 +132,6 @@ public class PdfTemplate extends PdfContentByte {
     }
 
     /**
-     * Sets the bounding width of this template.
-     *
-     * @param width the bounding width
-     */
-    
-    public void setWidth(float width) {
-        bBox.setLeft(0);
-        bBox.setRight(width);
-    }
-    
-    /**
-     * Sets the bounding height of this template.
-     *
-     * @param height the bounding height
-     */
-    
-    public void setHeight(float height) {
-        bBox.setBottom(0);
-        bBox.setTop(height);
-    }
-    
-    /**
      * Gets the bounding width of this template.
      *
      * @return width the bounding width
@@ -155,39 +139,63 @@ public class PdfTemplate extends PdfContentByte {
     public float getWidth() {
         return bBox.getWidth();
     }
-    
+
+    /**
+     * Sets the bounding width of this template.
+     *
+     * @param width the bounding width
+     */
+
+    public void setWidth(float width) {
+        bBox.setLeft(0);
+        bBox.setRight(width);
+    }
+
     /**
      * Gets the bounding height of this template.
      *
      * @return height the bounding height
      */
-    
+
     public float getHeight() {
         return bBox.getHeight();
     }
-    
+
+    /**
+     * Sets the bounding height of this template.
+     *
+     * @param height the bounding height
+     */
+
+    public void setHeight(float height) {
+        bBox.setBottom(0);
+        bBox.setTop(height);
+    }
+
     public Rectangle getBoundingBox() {
         return bBox;
     }
-    
+
     public void setBoundingBox(Rectangle bBox) {
         this.bBox = bBox;
     }
-    
-    /**
-     * Sets the layer this template belongs to.
-     * @param layer the layer this template belongs to
-     */    
-    public void setLayer(PdfOCG layer) {
-        this.layer = layer;
-    }
-    
+
     /**
      * Gets the layer this template belongs to.
+     *
      * @return the layer this template belongs to or <code>null</code> for no layer defined
      */
     public PdfOCG getLayer() {
         return layer;
+    }
+
+    /**
+     * Sets the layer this template belongs to.
+     *
+     * @param layer the layer this template belongs to
+     */
+    public void setLayer(PdfOCG layer) {
+        this.layer = layer;
     }
 
     public void setMatrix(float a, float b, float c, float d, float e, float f) {
@@ -203,13 +211,13 @@ public class PdfTemplate extends PdfContentByte {
     PdfArray getMatrix() {
         return matrix;
     }
-    
+
     /**
      * Gets the indirect reference to this template.
      *
      * @return the indirect reference to this template
      */
-    
+
     public PdfIndirectReference getIndirectReference() {
         // uncomment the null check as soon as we're sure all examples still work
         if (thisReference == null /* && writer != null */) {
@@ -217,42 +225,43 @@ public class PdfTemplate extends PdfContentByte {
         }
         return thisReference;
     }
-        
+
     public void beginVariableText() {
         content.append("/Tx BMC ");
     }
-    
+
     public void endVariableText() {
         content.append("EMC ");
     }
-    
+
     /**
      * Constructs the resources used by this template.
      *
      * @return the resources used by this template
      */
-    
+
     PdfObject getResources() {
         return getPageResources().getResources();
     }
-    
+
     /**
      * Gets the stream representing this template.
      *
-     * @param    compressionLevel    the compressionLevel
+     * @param compressionLevel the compressionLevel
      * @return the stream representing this template
-     * @since    2.1.3    (replacing the method without param compressionLevel)
+     * @since 2.1.3    (replacing the method without param compressionLevel)
      */
     PdfStream getFormXObject(int compressionLevel) throws IOException {
         return new PdfFormXObject(this, compressionLevel);
     }
-        
+
     /**
-     * Gets a duplicate of this <CODE>PdfTemplate</CODE>. All
-     * the members are copied by reference but the buffer stays different.
+     * Gets a duplicate of this <CODE>PdfTemplate</CODE>. All the members are copied by reference but the buffer stays
+     * different.
+     *
      * @return a copy of this <CODE>PdfTemplate</CODE>
      */
-    
+
     public PdfContentByte getDuplicate() {
         PdfTemplate tpl = new PdfTemplate();
         tpl.writer = writer;
@@ -268,29 +277,31 @@ public class PdfTemplate extends PdfContentByte {
         tpl.separator = separator;
         return tpl;
     }
-    
+
     public int getType() {
         return type;
     }
-    
+
     PageResources getPageResources() {
         return pageResources;
     }
-    
-    /** Getter for property group.
-     * @return Value of property group.
+
+    /**
+     * Getter for property group.
      *
+     * @return Value of property group.
      */
     public PdfTransparencyGroup getGroup() {
         return this.group;
     }
-    
-    /** Setter for property group.
-     * @param group New value of property group.
+
+    /**
+     * Setter for property group.
      *
+     * @param group New value of property group.
      */
     public void setGroup(PdfTransparencyGroup group) {
         this.group = group;
     }
-    
+
 }

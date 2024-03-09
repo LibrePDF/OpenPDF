@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -21,6 +19,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Change the height of a cell (fixed height), disable text wrapping, set a minimum height.
@@ -29,9 +28,8 @@ public class CellHeights {
 
     /**
      * Height manipulations of cells.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -48,18 +46,20 @@ public class CellHeights {
             PdfPTable table = new PdfPTable(2);
             table.setExtendLastRow(true);
             PdfPCell cell;
-            
+
             // wrap / nowrap
-            cell = new PdfPCell(new Paragraph("blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah"));
+            cell = new PdfPCell(new Paragraph(
+                    "blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah"));
             table.addCell("wrap");
             cell.setNoWrap(false);
             table.addCell(cell);
             table.addCell("no wrap");
             cell.setNoWrap(true);
             table.addCell(cell);
-            
+
             // height
-            cell = new PdfPCell(new Paragraph("1. blah blah\n2. blah blah blah\n3. blah blah\n4. blah blah blah\n5. blah blah\n6. blah blah blah\n7. blah blah\n8. blah blah blah"));
+            cell = new PdfPCell(new Paragraph(
+                    "1. blah blah\n2. blah blah blah\n3. blah blah\n4. blah blah blah\n5. blah blah\n6. blah blah blah\n7. blah blah\n8. blah blah blah"));
             table.addCell("height");
             table.addCell(cell);
             table.addCell("fixed height");

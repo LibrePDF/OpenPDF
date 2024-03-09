@@ -305,7 +305,9 @@ public class Markup {
 
     // CSS values
 
-    /** the CSS tag for background style */
+    /**
+     * the CSS tag for background style
+     */
     public static final String CSS_KEY_BG = "background";
 
     /**
@@ -621,7 +623,7 @@ public class Markup {
      * @return the String stripped of its comment section
      */
     public static String removeComment(String string, String startComment,
-        String endComment) {
+            String endComment) {
         StringBuilder result = new StringBuilder();
         int pos = 0;
         int end = endComment.length();

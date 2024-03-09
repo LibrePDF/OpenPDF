@@ -42,69 +42,49 @@
 package com.lowagie.text.pdf.parser;
 
 /**
- *
- * process a series of objects and text fragments, assembling them into a one
- * final text object representing the whole content.
+ * process a series of objects and text fragments, assembling them into a one final text object representing the whole
+ * content.
  *
  * @author dgd
  */
 public interface TextAssembler {
 
     /**
-     * @param completed
-     *            process a complete chunk -- just add this subsection into the
-     *            proper place.
-     * @param contextName
-     *            Name of the element context we are in. Null value if it's an
-     *            Artifact.
+     * @param completed   process a complete chunk -- just add this subsection into the proper place.
+     * @param contextName Name of the element context we are in. Null value if it's an Artifact.
      */
     void process(FinalText completed, String contextName);
 
     /**
-     * @param completed
-     *            process a complete chunk -- just add this subsection into the
-     *            proper place.
-     * @param contextName
-     *            Name of the element context we are in. Null value if it's an
-     *            Artifact.
+     * @param completed   process a complete chunk -- just add this subsection into the proper place.
+     * @param contextName Name of the element context we are in. Null value if it's an Artifact.
      */
     void process(Word completed, String contextName);
 
     /**
-     * @param parsed
-     *            process one of a number of raw pdf text chunks, with
-     *            placement, font, etc.
-     * @param contextName
-     *            Name of the element context we are in. Null value if it's an
-     *            Artifact.
+     * @param parsed      process one of a number of raw pdf text chunks, with placement, font, etc.
+     * @param contextName Name of the element context we are in. Null value if it's an Artifact.
      */
     void process(ParsedText parsed, String contextName);
 
     /**
-     * @param completed
-     *            process a complete chunk -- just add this subsection into the
-     *            proper place.
+     * @param completed process a complete chunk -- just add this subsection into the proper place.
      */
     void renderText(FinalText completed);
 
     /**
-     * @param parsed
-     *            process one of a number of raw pdf text chunks, with
-     *            placement, font, etc.
+     * @param parsed process one of a number of raw pdf text chunks, with placement, font, etc.
      */
     void renderText(ParsedTextImpl parsed);
 
     /**
-     * @param containingElementName
-     *            This is an element name to surround the extracted text
-     * @return the final text for the set of fragments and fully parsed items we
-     *         were passed during processing.
+     * @param containingElementName This is an element name to surround the extracted text
+     * @return the final text for the set of fragments and fully parsed items we were passed during processing.
      */
     FinalText endParsingContext(String containingElementName);
 
     /**
-     * assembler can calculate an identifier for each word on a page, for use in
-     * markup.
+     * assembler can calculate an identifier for each word on a page, for use in markup.
      *
      * @return the new unique id.
      */
@@ -112,7 +92,6 @@ public interface TextAssembler {
 
     /**
      * @param page number of the page we are assembling
-     *
      */
     void setPage(int page);
 

@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.general.copystamp;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Rectangle;
@@ -22,15 +20,16 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
- * Reads the pages of an existing PDF file and puts 2 pages from the existing doc
- * into one of the new doc.
+ * Reads the pages of an existing PDF file and puts 2 pages from the existing doc into one of the new doc.
  */
 public class TwoOnOne {
+
     /**
-     * Reads the pages of an existing PDF file and puts 2 pages from the existing doc
-     * into one of the new doc.
+     * Reads the pages of an existing PDF file and puts 2 pages from the existing doc into one of the new doc.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -44,7 +43,7 @@ public class TwoOnOne {
             Rectangle psize = reader.getPageSize(1);
             float width = psize.getHeight();
             float height = psize.getWidth();
-            
+
             // step 1: creation of a document-object
             Document document = new Document(new Rectangle(width, height));
             // step 2: we create a writer that listens to the document
@@ -69,13 +68,13 @@ public class TwoOnOne {
                 BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
                 cb.beginText();
                 cb.setFontAndSize(bf, 14);
-                cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "page " + p + " of " + ((n / 2) + (n % 2 > 0? 1 : 0)), width / 2, 40, 0);
+                cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "page " + p + " of " + ((n / 2) + (n % 2 > 0 ? 1 : 0)),
+                        width / 2, 40, 0);
                 cb.endText();
             }
             // step 5: we close the document
             document.close();
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

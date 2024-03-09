@@ -9,13 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.chunk;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -24,10 +21,12 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.HyphenationAuto;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Make iText hyphenate your text.
- * 
+ *
  * @author blowagie
  */
 
@@ -35,9 +34,8 @@ public class Hyphenation {
 
     /**
      * Using auto-hyphenation.
-     * 
-     * @param args
-     *            no arguments needed here
+     *
+     * @param args no arguments needed here
      */
     public static void main(String[] args) {
 

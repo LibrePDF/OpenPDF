@@ -46,12 +46,13 @@
  */
 
 package com.lowagie.text.pdf;
+
+import com.lowagie.text.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.lowagie.text.Rectangle;
-
-/** Implements form fields.
+/**
+ * Implements form fields.
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
@@ -94,20 +95,23 @@ public class PdfFormField extends PdfAnnotation {
     public static final boolean PLAINTEXT = false;
     public static final boolean PASSWORD = true;
     static PdfName[] mergeTarget = {PdfName.FONT, PdfName.XOBJECT, PdfName.COLORSPACE, PdfName.PATTERN};
-    
-    /** Holds value of property parent. */
+
+    /**
+     * Holds value of property parent.
+     */
     protected PdfFormField parent;
-    
+
     protected List<PdfFormField> kids;
 
     /**
      * Constructs a new <CODE>PdfAnnotation</CODE> of subtype link (Action).
-     * @param writer    the PdfWriter
-     * @param llx       lower-left x-coordinated
-     * @param lly       lower-left y-coordinate
-     * @param urx       upper-right x-coordinate
-     * @param ury       upper-right y-coordinate
-     * @param action    the PdfAction
+     *
+     * @param writer the PdfWriter
+     * @param llx    lower-left x-coordinated
+     * @param lly    lower-left y-coordinate
+     * @param urx    upper-right x-coordinate
+     * @param ury    upper-right y-coordinate
+     * @param action the PdfAction
      */
     public PdfFormField(PdfWriter writer, float llx, float lly, float urx, float ury, PdfAction action) {
         super(writer, llx, lly, urx, ury, action);
@@ -116,40 +120,28 @@ public class PdfFormField extends PdfAnnotation {
         annotation = true;
     }
 
-    /** Creates new PdfFormField
-     * @param writer the PdfWriter to associated to the PdfFormField */
+    /**
+     * Creates new PdfFormField
+     *
+     * @param writer the PdfWriter to associated to the PdfFormField
+     */
     protected PdfFormField(PdfWriter writer) {
         super(writer, null);
         form = true;
         annotation = false;
     }
-    
-    public void setWidget(Rectangle rect, PdfName highlight) {
-        put(PdfName.TYPE, PdfName.ANNOT);
-        put(PdfName.SUBTYPE, PdfName.WIDGET);
-        put(PdfName.RECT, new PdfRectangle(rect));
-        annotation = true;
-        if (highlight != null && !highlight.equals(HIGHLIGHT_INVERT))
-            put(PdfName.H, highlight);
-    }
-    
+
     public static PdfFormField createEmpty(PdfWriter writer) {
         PdfFormField field = new PdfFormField(writer);
         return field;
     }
-    
-    public void setButton(int flags) {
-        put(PdfName.FT, PdfName.BTN);
-        if (flags != 0)
-            put(PdfName.FF, new PdfNumber(flags));
-    }
-    
+
     protected static PdfFormField createButton(PdfWriter writer, int flags) {
         PdfFormField field = new PdfFormField(writer);
         field.setButton(flags);
         return field;
     }
-    
+
     public static PdfFormField createPushButton(PdfWriter writer) {
         return createButton(writer, FF_PUSHBUTTON);
     }
@@ -161,40 +153,42 @@ public class PdfFormField extends PdfAnnotation {
     public static PdfFormField createRadioButton(PdfWriter writer, boolean noToggleToOff) {
         return createButton(writer, FF_RADIO + (noToggleToOff ? FF_NO_TOGGLE_TO_OFF : 0));
     }
-    
+
     public static PdfFormField createTextField(PdfWriter writer, boolean multiline, boolean password, int maxLen) {
         PdfFormField field = new PdfFormField(writer);
         field.put(PdfName.FT, PdfName.TX);
         int flags = (multiline ? FF_MULTILINE : 0);
         flags += (password ? FF_PASSWORD : 0);
         field.put(PdfName.FF, new PdfNumber(flags));
-        if (maxLen > 0)
+        if (maxLen > 0) {
             field.put(PdfName.MAXLEN, new PdfNumber(maxLen));
+        }
         return field;
     }
-    
+
     /**
      * Allows creation of a simple textfield.
-     * 
+     *
      * @param writer pdf writer object
-     * @return PdfFormField the created textfield 
+     * @return PdfFormField the created textfield
      */
     public static PdfFormField createTextField(PdfWriter writer) {
         PdfFormField field = new PdfFormField(writer);
         field.put(PdfName.FT, PdfName.TX);
         return field;
     }
-    
+
     protected static PdfFormField createChoice(PdfWriter writer, int flags, PdfArray options, int topIndex) {
         PdfFormField field = new PdfFormField(writer);
         field.put(PdfName.FT, PdfName.CH);
         field.put(PdfName.FF, new PdfNumber(flags));
         field.put(PdfName.OPT, options);
-        if (topIndex > 0)
+        if (topIndex > 0) {
             field.put(PdfName.TI, new PdfNumber(topIndex));
+        }
         return field;
     }
-    
+
     public static PdfFormField createList(PdfWriter writer, String[] options, int topIndex) {
         return createChoice(writer, 0, processOptions(options), topIndex);
     }
@@ -206,11 +200,11 @@ public class PdfFormField extends PdfAnnotation {
     public static PdfFormField createCombo(PdfWriter writer, boolean edit, String[] options, int topIndex) {
         return createChoice(writer, FF_COMBO + (edit ? FF_EDIT : 0), processOptions(options), topIndex);
     }
-    
+
     public static PdfFormField createCombo(PdfWriter writer, boolean edit, String[][] options, int topIndex) {
         return createChoice(writer, FF_COMBO + (edit ? FF_EDIT : 0), processOptions(options), topIndex);
     }
-    
+
     protected static PdfArray processOptions(String[] options) {
         PdfArray array = new PdfArray();
         for (String option : options) {
@@ -218,7 +212,7 @@ public class PdfFormField extends PdfAnnotation {
         }
         return array;
     }
-    
+
     protected static PdfArray processOptions(String[][] options) {
         PdfArray array = new PdfArray();
         for (String[] subOption : options) {
@@ -228,43 +222,106 @@ public class PdfFormField extends PdfAnnotation {
         }
         return array;
     }
-    
+
     public static PdfFormField createSignature(PdfWriter writer) {
         PdfFormField field = new PdfFormField(writer);
         field.put(PdfName.FT, PdfName.SIG);
         return field;
     }
-    
-    /** Getter for property parent.
+
+    static void mergeResources(PdfDictionary result, PdfDictionary source, PdfStamperImp writer) {
+        PdfDictionary dic = null;
+        PdfDictionary res = null;
+        PdfName target = null;
+        for (PdfName pdfName : mergeTarget) {
+            target = pdfName;
+            PdfDictionary pdfDict = source.getAsDict(target);
+            if ((dic = pdfDict) != null) {
+                if ((res = (PdfDictionary) PdfReader.getPdfObject(result.get(target), result)) == null) {
+                    res = new PdfDictionary();
+                }
+                res.mergeDifferent(dic);
+                result.put(target, res);
+                if (writer != null) {
+                    writer.markUsed(res);
+                }
+            }
+        }
+    }
+
+    static void mergeResources(PdfDictionary result, PdfDictionary source) {
+        mergeResources(result, source, null);
+    }
+
+    public static PdfAnnotation shallowDuplicate(PdfAnnotation annot) {
+        PdfAnnotation dup;
+        if (annot.isForm()) {
+            dup = new PdfFormField(annot.writer);
+            PdfFormField dupField = (PdfFormField) dup;
+            PdfFormField srcField = (PdfFormField) annot;
+            dupField.parent = srcField.parent;
+            dupField.kids = srcField.kids;
+        } else {
+            dup = new PdfAnnotation(annot.writer, null);
+        }
+        dup.merge(annot);
+        dup.form = annot.form;
+        dup.annotation = annot.annotation;
+        dup.templates = annot.templates;
+        return dup;
+    }
+
+    public void setWidget(Rectangle rect, PdfName highlight) {
+        put(PdfName.TYPE, PdfName.ANNOT);
+        put(PdfName.SUBTYPE, PdfName.WIDGET);
+        put(PdfName.RECT, new PdfRectangle(rect));
+        annotation = true;
+        if (highlight != null && !highlight.equals(HIGHLIGHT_INVERT)) {
+            put(PdfName.H, highlight);
+        }
+    }
+
+    public void setButton(int flags) {
+        put(PdfName.FT, PdfName.BTN);
+        if (flags != 0) {
+            put(PdfName.FF, new PdfNumber(flags));
+        }
+    }
+
+    /**
+     * Getter for property parent.
+     *
      * @return Value of property parent.
      */
     public PdfFormField getParent() {
         return parent;
     }
-    
+
     public void addKid(PdfFormField field) {
         field.parent = this;
-        if (kids == null)
+        if (kids == null) {
             kids = new ArrayList<>();
+        }
         kids.add(field);
     }
-    
+
     public List<PdfFormField> getKidFields() {
         return kids;
     }
-    
+
     public int setFieldFlags(int flags) {
-        PdfNumber obj = (PdfNumber)get(PdfName.FF);
+        PdfNumber obj = (PdfNumber) get(PdfName.FF);
         int old;
-        if (obj == null)
+        if (obj == null) {
             old = 0;
-        else
+        } else {
             old = obj.intValue();
+        }
         int v = old | flags;
         put(PdfName.FF, new PdfNumber(v));
         return old;
     }
-    
+
     public void setValueAsString(String s) {
         put(PdfName.V, new PdfString(s, PdfObject.TEXT_UNICODE));
     }
@@ -284,51 +341,30 @@ public class PdfFormField extends PdfAnnotation {
     public void setDefaultValueAsName(String s) {
         put(PdfName.DV, new PdfName(s));
     }
-    
+
     public void setFieldName(String s) {
-        if (s != null)
+        if (s != null) {
             put(PdfName.T, new PdfString(s, PdfObject.TEXT_UNICODE));
-    }
-    
-    public void setUserName(String s) {
-        put(PdfName.TU, new PdfString(s, PdfObject.TEXT_UNICODE));
-    }
-    
-    public void setMappingName(String s) {
-        put(PdfName.TM, new PdfString(s, PdfObject.TEXT_UNICODE));
-    }
-    
-    public void setQuadding(int v) {
-        put(PdfName.Q, new PdfNumber(v));
-    }
-    
-    static void mergeResources(PdfDictionary result, PdfDictionary source, PdfStamperImp writer) {
-        PdfDictionary dic = null;
-        PdfDictionary res = null;
-        PdfName target = null;
-        for (PdfName pdfName : mergeTarget) {
-            target = pdfName;
-            PdfDictionary pdfDict = source.getAsDict(target);
-            if ((dic = pdfDict) != null) {
-                if ((res = (PdfDictionary) PdfReader.getPdfObject(result.get(target), result)) == null) {
-                    res = new PdfDictionary();
-                }
-                res.mergeDifferent(dic);
-                result.put(target, res);
-                if (writer != null)
-                    writer.markUsed(res);
-            }
         }
     }
 
-    static void mergeResources(PdfDictionary result, PdfDictionary source) {
-        mergeResources(result, source, null);
+    public void setUserName(String s) {
+        put(PdfName.TU, new PdfString(s, PdfObject.TEXT_UNICODE));
+    }
+
+    public void setMappingName(String s) {
+        put(PdfName.TM, new PdfString(s, PdfObject.TEXT_UNICODE));
+    }
+
+    public void setQuadding(int v) {
+        put(PdfName.Q, new PdfNumber(v));
     }
 
     public void setUsed() {
         used = true;
-        if (parent != null)
+        if (parent != null) {
             put(PdfName.PARENT, parent.getIndirectReference());
+        }
         if (kids != null) {
             PdfArray array = new PdfArray();
             for (PdfFormField kid : kids) {
@@ -336,30 +372,13 @@ public class PdfFormField extends PdfAnnotation {
             }
             put(PdfName.KIDS, array);
         }
-        if (templates == null)
+        if (templates == null) {
             return;
+        }
         PdfDictionary dic = new PdfDictionary();
         for (PdfTemplate template : templates.keySet()) {
             mergeResources(dic, (PdfDictionary) template.getResources());
         }
         put(PdfName.DR, dic);
-    }
-
-    public static PdfAnnotation shallowDuplicate(PdfAnnotation annot) {
-        PdfAnnotation dup;
-        if (annot.isForm()) {
-            dup = new PdfFormField(annot.writer);
-            PdfFormField dupField = (PdfFormField)dup;
-            PdfFormField srcField = (PdfFormField)annot;
-            dupField.parent = srcField.parent;
-            dupField.kids = srcField.kids;
-        }
-        else
-            dup = new PdfAnnotation(annot.writer, null);
-        dup.merge(annot);
-        dup.form = annot.form;
-        dup.annotation = annot.annotation;
-        dup.templates = annot.templates;
-        return dup;
     }
 }

@@ -49,14 +49,13 @@
 
 package com.lowagie.text.html;
 
-import java.util.Properties;
-
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ElementTags;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.xml.SAXiTextHandler;
+import java.util.Properties;
 import org.xml.sax.Attributes;
 
 /**
@@ -77,8 +76,8 @@ public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
     private boolean tableBorder = false;
 
     /**
-     * Constructs a new SAXiTextHandler that will translate all the events
-     * triggered by the parser to actions on the <CODE>Document</CODE>-object.
+     * Constructs a new SAXiTextHandler that will translate all the events triggered by the parser to actions on the
+     * <CODE>Document</CODE>-object.
      *
      * @param document this is the document on which events must be triggered
      */
@@ -87,8 +86,8 @@ public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
     }
 
     /**
-     * Constructs a new SAXiTextHandler that will translate all the events
-     * triggered by the parser to actions on the <CODE>Document</CODE>-object.
+     * Constructs a new SAXiTextHandler that will translate all the events triggered by the parser to actions on the
+     * <CODE>Document</CODE>-object.
      *
      * @param document this is the document on which events must be triggered
      * @param htmlTags a tagmap translating HTML tags to iText tags
@@ -102,11 +101,11 @@ public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
     }
 
     /**
-     * Constructs a new SAXiTextHandler that will translate all the events
-     * triggered by the parser to actions on the <CODE>Document</CODE>-object.
+     * Constructs a new SAXiTextHandler that will translate all the events triggered by the parser to actions on the
+     * <CODE>Document</CODE>-object.
      *
      * @param document this is the document on which events must be triggered
-     * @param bf the base class for the supported fonts
+     * @param bf       the base class for the supported fonts
      */
     public SAXmyHtmlHandler(DocListener document, BaseFont bf) {
         this(document, new HtmlTagMap(), bf);
@@ -116,8 +115,8 @@ public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
      * This method gets called when a start tag is encountered.
      *
      * @param uri       the Uniform Resource Identifier
-     * @param localName the local name (without prefix), or the empty string if
-     *                  Namespace processing is not being performed.
+     * @param localName the local name (without prefix), or the empty string if Namespace processing is not being
+     *                  performed.
      * @param name      the name of the tag that is encountered
      * @param attrs     the list of attributes
      */
@@ -145,10 +144,11 @@ public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
             if (attrs != null) {
                 for (int i = 0; i < attrs.getLength(); i++) {
                     String attribute = attrs.getQName(i);
-                    if (attribute.equalsIgnoreCase(HtmlTags.CONTENT))
+                    if (attribute.equalsIgnoreCase(HtmlTags.CONTENT)) {
                         content = attrs.getValue(i);
-                    else if (attribute.equalsIgnoreCase(HtmlTags.NAME))
+                    } else if (attribute.equalsIgnoreCase(HtmlTags.NAME)) {
                         meta = attrs.getValue(i);
+                    }
                 }
             }
             if (meta != null && content != null) {
@@ -211,8 +211,8 @@ public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
      * This method gets called when an end tag is encountered.
      *
      * @param uri       the Uniform Resource Identifier
-     * @param localName the local name (without prefix), or the empty string if
-     *                  Namespace processing is not being performed.
+     * @param localName the local name (without prefix), or the empty string if Namespace processing is not being
+     *                  performed.
      * @param name      the name of the tag that ends
      */
     @Override

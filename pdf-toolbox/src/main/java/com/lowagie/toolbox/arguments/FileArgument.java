@@ -35,26 +35,32 @@
 
 package com.lowagie.toolbox.arguments;
 
-import java.awt.event.ActionEvent;
-import java.io.File;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
 import com.lowagie.toolbox.AbstractTool;
 import com.lowagie.toolbox.arguments.filters.DirFilter;
 import com.lowagie.toolbox.swing.PdfInformationPanel;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * FileArgument class if the argument is a java.io.File.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class FileArgument extends AbstractArgument {
-    /** a filter to put on the FileChooser. */
+
+    /**
+     * a filter to put on the FileChooser.
+     */
     protected FileFilter filter;
-    /** indicates if the argument has to point to a new or an existing file. */
+    /**
+     * indicates if the argument has to point to a new or an existing file.
+     */
     protected boolean newFile;
-    /** the label */
+    /**
+     * the label
+     */
     PdfInformationPanel label = null;
 
     public FileArgument() {
@@ -64,14 +70,14 @@ public class FileArgument extends AbstractArgument {
     /**
      * Constructs a FileArgument.
      *
-     * @param tool the tool that needs this argument
-     * @param name the name of the argument
+     * @param tool        the tool that needs this argument
+     * @param name        the name of the argument
      * @param description the description of the argument
-     * @param newFile makes the difference between an Open or Save dialog
-     * @param filter FileFilter
+     * @param newFile     makes the difference between an Open or Save dialog
+     * @param filter      FileFilter
      */
     public FileArgument(AbstractTool tool, String name, String description,
-                        boolean newFile, FileFilter filter) {
+            boolean newFile, FileFilter filter) {
         super(tool, name, description, null);
         this.newFile = newFile;
         this.filter = filter;
@@ -79,18 +85,20 @@ public class FileArgument extends AbstractArgument {
 
     /**
      * Constructs a FileArgument.
-     * @param tool    the tool that needs this argument
-     * @param name    the name of the argument
-     * @param description    the description of the argument
-     * @param newFile        makes the difference between an Open or Save dialog
+     *
+     * @param tool        the tool that needs this argument
+     * @param name        the name of the argument
+     * @param description the description of the argument
+     * @param newFile     makes the difference between an Open or Save dialog
      */
     public FileArgument(AbstractTool tool, String name, String description,
-                        boolean newFile) {
+            boolean newFile) {
         this(tool, name, description, newFile, null);
     }
 
     /**
      * Gets the argument as an object.
+     *
      * @return an object
      * @throws InstantiationException if the specified key cannot be compared with the keys currently in the map
      */
@@ -106,9 +114,8 @@ public class FileArgument extends AbstractArgument {
     }
 
     /**
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      * @param e ActionEvent
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
         JFileChooser fc = new JFileChooser();

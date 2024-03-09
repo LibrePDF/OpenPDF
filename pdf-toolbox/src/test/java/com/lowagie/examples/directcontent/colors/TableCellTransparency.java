@@ -27,7 +27,6 @@ import com.lowagie.text.pdf.PdfPatternPainter;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.RGBColor;
-
 import java.awt.Color;
 import java.io.FileOutputStream;
 
@@ -49,8 +48,10 @@ public class TableCellTransparency {
             document.open();
             Rectangle page = document.getPageSize();
             PdfContentByte cb = writer.getDirectContent();
-            Font fontPlain = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.NORMAL, new Color(255, 255, 255, 255));
-            Font fontHalf = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.NORMAL, new Color(255, 255, 255, 125));
+            Font fontPlain = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.NORMAL,
+                    new Color(255, 255, 255, 255));
+            Font fontHalf = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.NORMAL,
+                    new Color(255, 255, 255, 125));
 
             // Table cell transparency with RGB Color
             PdfPTable pdfTableRGB = new PdfPTable(3);
@@ -79,7 +80,8 @@ public class TableCellTransparency {
                 pdfPTableCMYK.addCell(cell);
             }
             pdfPTableCMYK.setTotalWidth(page.getWidth() - document.leftMargin() - document.rightMargin());
-            pdfPTableCMYK.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - document.topMargin() - pdfTableRGB.getTotalHeight() - 10f, cb);
+            pdfPTableCMYK.writeSelectedRows(0, -1, document.leftMargin(),
+                    page.getHeight() - document.topMargin() - pdfTableRGB.getTotalHeight() - 10f, cb);
 
             // Draw pattern filled rectangle using CMYK Color
             PdfTemplate tp = addPatternFilledRectangle(cb, new CMYKColor(.8f, .2f, .1f, .5f, .5f));

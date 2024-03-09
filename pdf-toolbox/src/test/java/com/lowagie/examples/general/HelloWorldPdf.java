@@ -9,25 +9,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.general;
+
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
-
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import org.junit.jupiter.api.Test;
 
 /**
  * Generates a simple 'Hello World' PDF.
- * 
+ *
  * @author blowagie
  */
 
@@ -55,9 +54,9 @@ class HelloWorldPdf {
             pdfRef.setReference("./HelloWorldPdf.pdf");
             Anchor rtfRef = new Anchor("see Hello World in RTF.");
             rtfRef.setReference("./HelloWorldRtf.rtf");
-            
+
             // we add the references, but only to the HTML page:
-            
+
             pdf.pause();
             document.add(pdfRef);
             document.add(Chunk.NEWLINE);

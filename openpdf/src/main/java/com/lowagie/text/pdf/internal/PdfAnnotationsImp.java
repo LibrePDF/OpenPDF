@@ -78,22 +78,67 @@ public class PdfAnnotationsImp {
     protected PdfAcroForm acroForm;
 
     /**
-     * This is the array containing the references to annotations
-     * that were added to the document.
+     * This is the array containing the references to annotations that were added to the document.
      */
     protected List<PdfAnnotation> annotations;
-    
+
     /**
-     * This is an array containing references to some delayed annotations
-     * (that were added for a page that doesn't exist yet).
+     * This is an array containing references to some delayed annotations (that were added for a page that doesn't exist
+     * yet).
      */
     protected List<PdfAnnotation> delayedAnnotations = new ArrayList<>();
-    
-    
+
+
     public PdfAnnotationsImp(PdfWriter writer) {
         acroForm = new PdfAcroForm(writer);
     }
-    
+
+    public static PdfAnnotation convertAnnotation(PdfWriter writer, Annotation annot, Rectangle defaultRect)
+            throws IOException {
+        switch (annot.annotationType()) {
+            case Annotation.URL_NET:
+                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
+                        new PdfAction((URL) annot.getAttributes().get(Annotation.URL)));
+            case Annotation.URL_AS_STRING:
+                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
+                        new PdfAction((String) annot.getAttributes().get(Annotation.FILE)));
+            case Annotation.FILE_DEST:
+                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
+                        new PdfAction((String) annot.getAttributes().get(Annotation.FILE),
+                                (String) annot.getAttributes().get(Annotation.DESTINATION)));
+            case Annotation.SCREEN:
+                boolean[] sparams = (boolean[]) annot.getAttributes().get(Annotation.PARAMETERS);
+                String fname = (String) annot.getAttributes().get(Annotation.FILE);
+                String mimetype = (String) annot.getAttributes().get(Annotation.MIMETYPE);
+                PdfFileSpecification fs;
+                if (sparams[0]) {
+                    fs = PdfFileSpecification.fileEmbedded(writer, fname, fname, null);
+                } else {
+                    fs = PdfFileSpecification.fileExtern(writer, fname);
+                }
+                return PdfAnnotation
+                        .createScreen(writer, new Rectangle(annot.llx(), annot.lly(), annot.urx(), annot.ury()),
+                                fname, fs, mimetype, sparams[1]);
+            case Annotation.FILE_PAGE:
+                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
+                        new PdfAction((String) annot.getAttributes().get(Annotation.FILE),
+                                (Integer) annot.getAttributes().get(Annotation.PAGE)));
+            case Annotation.NAMED_DEST:
+                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
+                        new PdfAction((Integer) annot.getAttributes().get(Annotation.NAMED)));
+            case Annotation.LAUNCH:
+                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
+                        new PdfAction((String) annot.getAttributes().get(Annotation.APPLICATION),
+                                (String) annot.getAttributes().get(Annotation.PARAMETERS),
+                                (String) annot.getAttributes().get(Annotation.OPERATION),
+                                (String) annot.getAttributes().get(Annotation.DEFAULTDIR)));
+            default:
+                return new PdfAnnotation(writer, defaultRect.getLeft(), defaultRect.getBottom(), defaultRect.getRight(),
+                        defaultRect.getTop(), new PdfString(annot.title(), PdfObject.TEXT_UNICODE),
+                        new PdfString(annot.content(), PdfObject.TEXT_UNICODE));
+        }
+    }
+
     /**
      * Checks if the AcroForm is valid.
      *
@@ -102,37 +147,39 @@ public class PdfAnnotationsImp {
     public boolean hasValidAcroForm() {
         return acroForm.isValid();
     }
-    
+
     /**
      * Gets the AcroForm object.
+     *
      * @return the PdfAcroform object of the PdfDocument
      */
     public PdfAcroForm getAcroForm() {
         return acroForm;
     }
-    
+
     public void setSigFlags(int f) {
         acroForm.setSigFlags(f);
     }
-    
+
     public void addCalculationOrder(PdfFormField formField) {
         acroForm.addCalculationOrder(formField);
     }
-    
+
     public void addAnnotation(PdfAnnotation annot) {
         if (annot.isForm()) {
-            PdfFormField field = (PdfFormField)annot;
-            if (field.getParent() == null)
+            PdfFormField field = (PdfFormField) annot;
+            if (field.getParent() == null) {
                 addFormFieldRaw(field);
-        }
-        else
+            }
+        } else {
             annotations.add(annot);
+        }
     }
-    
+
     public void addPlainAnnotation(PdfAnnotation annot) {
         annotations.add(annot);
     }
-    
+
     void addFormFieldRaw(PdfFormField field) {
         annotations.add(field);
         List<PdfFormField> kids = field.getKidFields();
@@ -142,7 +189,7 @@ public class PdfAnnotationsImp {
             }
         }
     }
-    
+
     public boolean hasUnusedAnnotations() {
         return !annotations.isEmpty();
     }
@@ -151,7 +198,7 @@ public class PdfAnnotationsImp {
         annotations = delayedAnnotations;
         delayedAnnotations = new ArrayList<>();
     }
-    
+
     public PdfArray rotateAnnotations(PdfWriter writer, Rectangle pageSize) {
         PdfArray array = new PdfArray();
         int rotation = pageSize.getRotation() % 360;
@@ -166,12 +213,14 @@ public class PdfAnnotationsImp {
             if (dic.isForm()) {
                 if (!dic.isUsed()) {
                     Map<PdfTemplate, Object> templates = dic.getTemplates();
-                    if (templates != null)
+                    if (templates != null) {
                         acroForm.addFieldTemplates(templates);
+                    }
                 }
                 PdfFormField field = (PdfFormField) dic;
-                if (field.getParent() == null)
+                if (field.getParent() == null) {
                     acroForm.addDocumentField(field.getIndirectReference());
+                }
             }
             if (dic.isAnnotation()) {
                 array.add(dic.getIndirectReference());
@@ -215,47 +264,4 @@ public class PdfAnnotationsImp {
         }
         return array;
     }
-    
-    public static PdfAnnotation convertAnnotation(PdfWriter writer, Annotation annot, Rectangle defaultRect) throws IOException {
-        switch(annot.annotationType()) {
-           case Annotation.URL_NET:
-               return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(), new PdfAction((URL) annot.getAttributes().get(Annotation.URL)));
-           case Annotation.URL_AS_STRING:
-               return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(), new PdfAction((String) annot.getAttributes().get(Annotation.FILE)));
-           case Annotation.FILE_DEST:
-               return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
-                       new PdfAction((String) annot.getAttributes().get(Annotation.FILE),
-                               (String) annot.getAttributes().get(Annotation.DESTINATION)));
-            case Annotation.SCREEN:
-                boolean[] sparams = (boolean[]) annot.getAttributes().get(Annotation.PARAMETERS);
-                String fname = (String) annot.getAttributes().get(Annotation.FILE);
-                String mimetype = (String) annot.getAttributes().get(Annotation.MIMETYPE);
-                PdfFileSpecification fs;
-                if (sparams[0]) {
-                    fs = PdfFileSpecification.fileEmbedded(writer, fname, fname, null);
-                } else {
-                    fs = PdfFileSpecification.fileExtern(writer, fname);
-                }
-                return PdfAnnotation
-                        .createScreen(writer, new Rectangle(annot.llx(), annot.lly(), annot.urx(), annot.ury()),
-                                fname, fs, mimetype, sparams[1]);
-            case Annotation.FILE_PAGE:
-                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
-                        new PdfAction((String) annot.getAttributes().get(Annotation.FILE),
-                                (Integer) annot.getAttributes().get(Annotation.PAGE)));
-            case Annotation.NAMED_DEST:
-                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
-                        new PdfAction((Integer) annot.getAttributes().get(Annotation.NAMED)));
-            case Annotation.LAUNCH:
-                return new PdfAnnotation(writer, annot.llx(), annot.lly(), annot.urx(), annot.ury(),
-                        new PdfAction((String) annot.getAttributes().get(Annotation.APPLICATION),
-                                (String) annot.getAttributes().get(Annotation.PARAMETERS),
-                                (String) annot.getAttributes().get(Annotation.OPERATION),
-                                (String) annot.getAttributes().get(Annotation.DEFAULTDIR)));
-            default:
-                return new PdfAnnotation(writer, defaultRect.getLeft(), defaultRect.getBottom(), defaultRect.getRight(),
-                        defaultRect.getTop(), new PdfString(annot.title(), PdfObject.TEXT_UNICODE),
-                        new PdfString(annot.content(), PdfObject.TEXT_UNICODE));
-        }
-   }
 }

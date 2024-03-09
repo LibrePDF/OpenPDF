@@ -30,7 +30,7 @@
  * the MPL, indicate your decision by deleting the provisions above and
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE 
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
@@ -55,66 +55,79 @@ import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Map;
 
 /**
- * With this class you can create an Xmp Stream that can be used for adding
- * Metadata to a PDF Dictionary. Remark that this class doesn't cover the
- * complete XMP specification. 
+ * With this class you can create an Xmp Stream that can be used for adding Metadata to a PDF Dictionary. Remark that
+ * this class doesn't cover the complete XMP specification.
  */
 public class XmpWriter implements AutoCloseable {
 
-    /** A possible charset for the XMP. */
+    /**
+     * A possible charset for the XMP.
+     */
     public static final String UTF8 = "UTF-8";
-    /** A possible charset for the XMP. */
+    /**
+     * A possible charset for the XMP.
+     */
     public static final String UTF16 = "UTF-16";
-    /** A possible charset for the XMP. */
+    /**
+     * A possible charset for the XMP.
+     */
     public static final String UTF16BE = "UTF-16BE";
-    /** A possible charset for the XMP. */
+    /**
+     * A possible charset for the XMP.
+     */
     public static final String UTF16LE = "UTF-16LE";
-    
-    /** String used to fill the extra space. */
-    public static final String EXTRASPACE = "                                                                                                   \n";
-    
-    /** You can add some extra space in the XMP packet; 1 unit in this variable represents 100 spaces and a newline. */
-    protected int extraSpace;
-    
-    /** The writer to which you can write bytes for the XMP stream. */
-    protected OutputStreamWriter writer;
-    
-    /** The about string that goes into the rdf:Description tags. */
-    protected String about;
 
     /**
+     * String used to fill the extra space.
+     */
+    public static final String EXTRASPACE = "                                                                                                   \n";
+    /**
      * Processing Instruction required at the start of an XMP stream
+     *
      * @since iText 2.1.6
      */
     public static final String XPACKET_PI_BEGIN = "<?xpacket begin=\"\uFEFF\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>\n";
-    
     /**
      * Processing Instruction required at the end of an XMP stream for XMP streams that can be updated
+     *
      * @since iText 2.1.6
      */
     public static final String XPACKET_PI_END_W = "<?xpacket end=\"w\"?>";
-    
     /**
      * Processing Instruction required at the end of an XMP stream for XMP streams that are read only
+     *
      * @since iText 2.1.6
      */
     public static final String XPACKET_PI_END_R = "<?xpacket end=\"r\"?>";
-    
-    /** The end attribute. */
-    protected char end = 'w';
-    
     /**
-     * Creates an XmpWriter. 
-     * @param os output stream
+     * You can add some extra space in the XMP packet; 1 unit in this variable represents 100 spaces and a newline.
+     */
+    protected int extraSpace;
+    /**
+     * The writer to which you can write bytes for the XMP stream.
+     */
+    protected OutputStreamWriter writer;
+    /**
+     * The about string that goes into the rdf:Description tags.
+     */
+    protected String about;
+    /**
+     * The end attribute.
+     */
+    protected char end = 'w';
+
+    /**
+     * Creates an XmpWriter.
+     *
+     * @param os          output stream
      * @param utfEncoding utf encoding to be used
-     * @param extraSpace extra space
+     * @param extraSpace  extra space
      * @throws IOException on error
      */
     public XmpWriter(OutputStream os, String utfEncoding, int extraSpace) throws IOException {
@@ -125,9 +138,10 @@ public class XmpWriter implements AutoCloseable {
         writer.write("<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n");
         about = "";
     }
-    
+
     /**
      * Creates an XmpWriter.
+     *
      * @param os output stream
      * @throws IOException on error
      */
@@ -137,10 +151,9 @@ public class XmpWriter implements AutoCloseable {
 
 
     /**
-     * @param os output stream
-     * @param info {@link PdfDictionary}
-     * @param PdfXConformance pdf conformance
-     *                        eg. values {@link PdfWriter#PDFA1A}, {@link PdfWriter#PDFA1B}
+     * @param os              output stream
+     * @param info            {@link PdfDictionary}
+     * @param PdfXConformance pdf conformance eg. values {@link PdfWriter#PDFA1A}, {@link PdfWriter#PDFA1B}
      * @throws IOException on error
      */
     public XmpWriter(OutputStream os, PdfDictionary info, int PdfXConformance) throws IOException {
@@ -154,8 +167,9 @@ public class XmpWriter implements AutoCloseable {
             for (PdfName pdfName : info.getKeys()) {
                 key = pdfName;
                 obj = info.get(key);
-                if (obj == null)
+                if (obj == null) {
                     continue;
+                }
                 if (PdfName.TITLE.equals(key)) {
                     dc.addTitle(((PdfString) obj).toUnicodeString());
                 }
@@ -182,22 +196,29 @@ public class XmpWriter implements AutoCloseable {
                     basic.addModDate(((PdfDate) obj).getW3CDate());
                 }
             }
-            if (dc.size() > 0) addRdfDescription(dc);
-            if (p.size() > 0) addRdfDescription(p);
-            if (basic.size() > 0) addRdfDescription(basic);
+            if (dc.size() > 0) {
+                addRdfDescription(dc);
+            }
+            if (p.size() > 0) {
+                addRdfDescription(p);
+            }
+            if (basic.size() > 0) {
+                addRdfDescription(basic);
+            }
             if (PdfXConformance == PdfWriter.PDFA1A || PdfXConformance == PdfWriter.PDFA1B) {
                 PdfA1Schema a1 = new PdfA1Schema();
-                if (PdfXConformance == PdfWriter.PDFA1A)
+                if (PdfXConformance == PdfWriter.PDFA1A) {
                     a1.addConformance("A");
-                else
+                } else {
                     a1.addConformance("B");
+                }
                 addRdfDescription(a1);
             }
         }
     }
 
     /**
-     * @param os output stream
+     * @param os   output stream
      * @param info map of info
      * @throws IOException on error
      */
@@ -213,8 +234,9 @@ public class XmpWriter implements AutoCloseable {
                 Map.Entry entry = (Map.Entry) o;
                 key = (String) entry.getKey();
                 value = (String) entry.getValue();
-                if (value == null)
+                if (value == null) {
                     continue;
+                }
                 if ("Title".equals(key)) {
                     dc.addTitle(value);
                 }
@@ -241,27 +263,36 @@ public class XmpWriter implements AutoCloseable {
                     basic.addModDate(PdfDate.getW3CDate(value));
                 }
             }
-            if (dc.size() > 0) addRdfDescription(dc);
-            if (p.size() > 0) addRdfDescription(p);
-            if (basic.size() > 0) addRdfDescription(basic);
+            if (dc.size() > 0) {
+                addRdfDescription(dc);
+            }
+            if (p.size() > 0) {
+                addRdfDescription(p);
+            }
+            if (basic.size() > 0) {
+                addRdfDescription(basic);
+            }
         }
     }
-    
-    /** Sets the XMP to read-only */
+
+    /**
+     * Sets the XMP to read-only
+     */
     public void setReadOnly() {
         end = 'r';
     }
-    
+
     /**
      * @param about The about to set.
      */
     public void setAbout(String about) {
         this.about = about;
     }
-    
+
     /**
      * Adds an rdf:Description.
-     * @param xmlns xml namespace
+     *
+     * @param xmlns   xml namespace
      * @param content content
      * @throws IOException on error
      */
@@ -274,9 +305,10 @@ public class XmpWriter implements AutoCloseable {
         writer.write(content);
         writer.write("</rdf:Description>\n");
     }
-    
+
     /**
      * Adds an rdf:Description.
+     *
      * @param s xmp schema
      * @throws IOException on error
      */
@@ -289,9 +321,10 @@ public class XmpWriter implements AutoCloseable {
         writer.write(s.toString());
         writer.write("</rdf:Description>\n");
     }
-    
+
     /**
      * Flushes and closes the XmpWriter.
+     *
      * @throws IOException on error
      */
     public void close() throws IOException {

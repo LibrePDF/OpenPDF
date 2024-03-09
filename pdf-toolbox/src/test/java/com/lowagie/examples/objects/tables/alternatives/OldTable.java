@@ -9,26 +9,27 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.alternatives;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Cell;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Uses the old Table class to have rowspan and spacing.
  */
 public class OldTable {
+
     /**
      * Demonstrates the features of the old Table class.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -66,8 +67,7 @@ public class OldTable {
             table.addCell(cell);
             table.addCell("cell test2");
             document.add(table);
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
         // step 5: we close the document

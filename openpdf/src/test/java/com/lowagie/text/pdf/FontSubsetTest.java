@@ -1,20 +1,19 @@
 package com.lowagie.text.pdf;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
-import org.apache.commons.io.IOUtils;
-import org.bouncycastle.crypto.prng.FixedSecureRandom;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.commons.io.IOUtils;
+import org.bouncycastle.crypto.prng.FixedSecureRandom;
+import org.junit.jupiter.api.Test;
 
 public class FontSubsetTest {
 
@@ -24,14 +23,15 @@ public class FontSubsetTest {
     @Test
     public void createSubsetPrefixTest() throws Exception {
         BaseFont font = BaseFont.createFont("LiberationSerif-Regular.ttf", BaseFont.IDENTITY_H,
-                BaseFont.EMBEDDED,true, getFontByte("fonts/liberation-serif/LiberationSerif-Regular.ttf"), null);
+                BaseFont.EMBEDDED, true, getFontByte("fonts/liberation-serif/LiberationSerif-Regular.ttf"), null);
         assertNotEquals(font.createSubsetPrefix(), font.createSubsetPrefix());
 
         byte[] baseSeed = new SecureRandom().generateSeed(512);
         // init deterministic SecureRandom with a custom base seed
         SecureRandom secureRandom = new FixedSecureRandom(baseSeed);
         font.setSecureRandom(secureRandom);
-        assertNotEquals(font.createSubsetPrefix(), font.createSubsetPrefix()); // still different, as FixedSecureRandom generates a new random on each step
+        assertNotEquals(font.createSubsetPrefix(),
+                font.createSubsetPrefix()); // still different, as FixedSecureRandom generates a new random on each step
 
         SecureRandom secureRandomOne = new FixedSecureRandom(baseSeed);
         font.setSecureRandom(secureRandomOne);
@@ -69,7 +69,7 @@ public class FontSubsetTest {
             document.open();
 
             BaseFont font = BaseFont.createFont("LiberationSerif-Regular.ttf", BaseFont.IDENTITY_H,
-                    BaseFont.EMBEDDED,true, getFontByte("fonts/liberation-serif/LiberationSerif-Regular.ttf"), null);
+                    BaseFont.EMBEDDED, true, getFontByte("fonts/liberation-serif/LiberationSerif-Regular.ttf"), null);
             font.setIncludeCidSet(includeCidSet);
             String text = "This is the test string.";
             document.add(new Paragraph(text, new Font(font, 12)));
@@ -82,12 +82,14 @@ public class FontSubsetTest {
         try (PdfReader reader = new PdfReader(documentBytes)) {
             for (int k = 1; k < reader.getXrefSize(); ++k) {
                 PdfObject obj = reader.getPdfObjectRelease(k);
-                if (obj == null || !obj.isDictionary())
+                if (obj == null || !obj.isDictionary()) {
                     continue;
+                }
                 PdfDictionary dic = (PdfDictionary) obj;
                 PdfObject type = PdfReader.getPdfObjectRelease(dic.get(PdfName.TYPE));
-                if (type == null || !type.isName())
+                if (type == null || !type.isName()) {
                     continue;
+                }
                 PdfDictionary fd = dic.getAsDict(PdfName.FONTDESCRIPTOR);
                 if (PdfName.FONT.equals(type) && fd != null) {
                     PdfIndirectReference cidset = fd.getAsIndirectObject(PdfName.CIDSET);

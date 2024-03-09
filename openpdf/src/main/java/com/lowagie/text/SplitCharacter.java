@@ -51,16 +51,17 @@ package com.lowagie.text;
 
 import com.lowagie.text.pdf.PdfChunk;
 
-/** Interface for customizing the split character.
+/**
+ * Interface for customizing the split character.
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 
 public interface SplitCharacter {
-    
+
     /**
-     * Returns <CODE>true</CODE> if the character can split a line. The splitting implementation
-     * is free to look ahead or look behind characters to make a decision.
+     * Returns <CODE>true</CODE> if the character can split a line. The splitting implementation is free to look ahead
+     * or look behind characters to make a decision.
      * <p>
      * The default implementation is:
      * </p>
@@ -82,14 +83,16 @@ public interface SplitCharacter {
      *    || (c >= 0xff61 && c < 0xffa0));
      * }
      * }</pre>
-     * @param start the lower limit of <CODE>cc</CODE> inclusive
+     *
+     * @param start   the lower limit of <CODE>cc</CODE> inclusive
      * @param current the pointer to the character in <CODE>cc</CODE>
-     * @param end the upper limit of <CODE>cc</CODE> exclusive
-     * @param cc an array of characters at least <CODE>end</CODE> sized
-     * @param ck an array of <CODE>PdfChunk</CODE>. The main use is to be able to call
-     * {@link PdfChunk#getUnicodeEquivalent(int)}. It may be <CODE>null</CODE>
-     * or shorter than <CODE>end</CODE>. If <CODE>null</CODE> no conversion takes place.
-     * If shorter than <CODE>end</CODE> the last element is used
+     * @param end     the upper limit of <CODE>cc</CODE> exclusive
+     * @param cc      an array of characters at least <CODE>end</CODE> sized
+     * @param ck      an array of <CODE>PdfChunk</CODE>. The main use is to be able to call
+     *                {@link PdfChunk#getUnicodeEquivalent(int)}. It may be <CODE>null</CODE> or shorter than
+     *                <CODE>end</CODE>. If <CODE>null</CODE> no conversion takes place. If shorter than
+     *                <CODE>end</CODE>
+     *                the last element is used
      * @return <CODE>true</CODE> if the character(s) can split a line
      */
     boolean isSplitCharacter(int start, int current, int end, char[] cc, PdfChunk[] ck);

@@ -35,17 +35,20 @@
 package com.lowagie.toolbox.arguments.filters;
 
 import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
 
 /**
  * Filters images in a FileChooser.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class ImageFilter extends FileFilter {
 
-    /** Array with all kinds of image extensions. */
+    /**
+     * Array with all kinds of image extensions.
+     */
     public static final String[] IMAGES = new String[8];
+
     static {
         IMAGES[0] = ".jpg";
         IMAGES[1] = ".jpeg";
@@ -57,7 +60,9 @@ public class ImageFilter extends FileFilter {
         IMAGES[7] = ".tiff";
     }
 
-    /** array that enables you to filter on image types. */
+    /**
+     * array that enables you to filter on image types.
+     */
     public boolean[] filter = new boolean[8];
 
     /**
@@ -71,11 +76,12 @@ public class ImageFilter extends FileFilter {
 
     /**
      * Constructs an ImageFilter allowing some images.
+     *
      * @param jpeg indicates if jpegs are allowed
-     * @param png indicates if pngs are allowed
-     * @param gif indicates if gifs are allowed
-     * @param bmp indicates if bmps are allowed
-     * @param wmf indicates if wmfs are allowed
+     * @param png  indicates if pngs are allowed
+     * @param gif  indicates if gifs are allowed
+     * @param bmp  indicates if bmps are allowed
+     * @param wmf  indicates if wmfs are allowed
      * @param tiff indicates if tiffs are allowed
      */
     public ImageFilter(boolean jpeg, boolean png, boolean gif, boolean bmp, boolean wmf, boolean tiff) {
@@ -102,23 +108,25 @@ public class ImageFilter extends FileFilter {
     }
 
     /**
-     *
-     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      * @param f File
      * @return boolean
+     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      */
     public boolean accept(File f) {
-        if (f.isDirectory()) return true;
+        if (f.isDirectory()) {
+            return true;
+        }
         for (int i = 0; i < IMAGES.length; i++) {
-            if (filter[i] && f.getName().toLowerCase().endsWith(IMAGES[i])) return true;
+            if (filter[i] && f.getName().toLowerCase().endsWith(IMAGES[i])) {
+                return true;
+            }
         }
         return false;
     }
 
     /**
-     *
-     * @see javax.swing.filechooser.FileFilter#getDescription()
      * @return String
+     * @see javax.swing.filechooser.FileFilter#getDescription()
      */
     public String getDescription() {
         return "Image files";

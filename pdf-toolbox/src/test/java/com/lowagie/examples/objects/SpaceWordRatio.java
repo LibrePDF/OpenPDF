@@ -9,24 +9,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Space Word Ratio.
  */
 public class SpaceWordRatio {
+
     /**
      * Space Word Ratio.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -46,8 +47,7 @@ public class SpaceWordRatio {
             document.newPage();
             writer.setSpaceCharRatio(PdfWriter.NO_SPACE_CHAR_RATIO);
             document.add(p);
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
         // step 5

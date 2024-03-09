@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects;
@@ -51,10 +51,10 @@ public class FancyLists {
         try {
             // step 2:
             PdfWriter.getInstance(document, new FileOutputStream("fancylists.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
 
             // RomanList
@@ -75,7 +75,7 @@ public class FancyLists {
             }
             document.add(roman2);
             document.newPage();
-            
+
             // GreekList
             GreekList greek = new GreekList(15);
             greek.setLowercase(true);
@@ -86,7 +86,7 @@ public class FancyLists {
             }
             document.add(greek);
             document.newPage();
-            
+
             // GreekList
             GreekList greek2 = new GreekList(15);
             greek2.setLowercase(false);
@@ -96,9 +96,9 @@ public class FancyLists {
                 greek2.add(i + "th item");
             }
             document.add(greek2);
-            
+
             // ZapfDingbatsList
-            ZapfDingbatsList z = new ZapfDingbatsList(42,15);
+            ZapfDingbatsList z = new ZapfDingbatsList(42, 15);
             z.add(new ListItem("first item"));
             z.add(new ListItem("second item"));
             for (int i = 3; i < 20; i++) {
@@ -106,7 +106,7 @@ public class FancyLists {
             }
             document.add(z);
             document.newPage();
-            
+
             // ZapfDingbatsNumberList
             ZapfDingbatsNumberList z0 = new ZapfDingbatsNumberList(0, 15);
             z0.add(new ListItem("first item"));

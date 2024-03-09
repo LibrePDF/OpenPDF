@@ -9,22 +9,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Shows the effect of a negative leading.
- * 
+ *
  * @author blowagie
  */
 
@@ -32,9 +31,8 @@ public class NegativeLeading {
 
     /**
      * Demonstrates what happens if you choose a negative leading.
-     * 
-     * @param args
-     *            no arguments needed here
+     *
+     * @param args no arguments needed here
      */
     public static void main(String[] args) {
 

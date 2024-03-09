@@ -36,29 +36,27 @@
 package com.lowagie.toolbox.arguments.filters;
 
 import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
 
 /**
  * Filters directories in a JFileChooser.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class DirFilter extends FileFilter {
 
     /**
-     *
-     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      * @param f File
      * @return boolean
+     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      */
     public boolean accept(File f) {
         return f.isDirectory();
     }
 
     /**
-     *
-     * @see javax.swing.filechooser.FileFilter#getDescription()
      * @return String
+     * @see javax.swing.filechooser.FileFilter#getDescription()
      */
     public String getDescription() {
         return "directories";

@@ -47,13 +47,12 @@
 package com.lowagie.text.pdf;
 
 /**
- * This class represents the /OCProperties entry in the document catalog
- * and holds the optional content properties dictionary, which contains
- * a list of all the optional content groups in the document, as well as information
- * about the default and alternate configurations for optional content.
+ * This class represents the /OCProperties entry in the document catalog and holds the optional content properties
+ * dictionary, which contains a list of all the optional content groups in the document, as well as information about
+ * the default and alternate configurations for optional content.
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfOCProperties extends PdfDictionary {
-    
+
 }

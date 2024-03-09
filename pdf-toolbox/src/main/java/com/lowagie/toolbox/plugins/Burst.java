@@ -47,11 +47,6 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.swing.JInternalFrame;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfImportedPage;
@@ -62,9 +57,13 @@ import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
 import com.lowagie.toolbox.swing.PdfInformationPanel;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.swing.JInternalFrame;
 
 /**
  * This tool lets you split a PDF in several separate PDF files (1 per page).
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class Burst extends AbstractTool {
@@ -83,6 +82,20 @@ public class Burst extends AbstractTool {
     }
 
     /**
+     * Divide PDF file into pages.
+     *
+     * @param args String[]
+     */
+    public static void main(String[] args) {
+        Burst tool = new Burst();
+        if (args.length < 1) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
+        tool.execute();
+    }
+
+    /**
      * @see com.lowagie.toolbox.AbstractTool#createFrame()
      */
     protected void createFrame() {
@@ -97,8 +110,10 @@ public class Burst extends AbstractTool {
      */
     public void execute() {
         try {
-            if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
-            File src = (File)getValue("srcfile");
+            if (getValue("srcfile") == null) {
+                throw new InstantiationException("You need to choose a sourcefile");
+            }
+            File src = (File) getValue("srcfile");
             File directory = src.getParentFile();
             String name = src.getName();
             name = name.substring(0, name.lastIndexOf('.'));
@@ -114,12 +129,15 @@ public class Burst extends AbstractTool {
             for (int i = 0; i < n; i++) {
                 pagenumber = i + 1;
                 filename = String.valueOf(pagenumber);
-                while (filename.length() < digits) filename = "0" + filename;
+                while (filename.length() < digits) {
+                    filename = "0" + filename;
+                }
                 filename = "_" + filename + ".pdf";
                 // step 1: creation of a document-object
                 document = new Document(reader.getPageSizeWithRotation(pagenumber));
                 // step 2: we create a writer that listens to the document
-                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File(directory, name + filename)));
+                PdfWriter writer = PdfWriter.getInstance(document,
+                        new FileOutputStream(new File(directory, name + filename)));
                 // step 3: we open the document
                 document.open();
                 PdfContentByte cb = writer.getDirectContent();
@@ -127,23 +145,20 @@ public class Burst extends AbstractTool {
                 int rotation = reader.getPageRotation(pagenumber);
                 if (rotation == 90 || rotation == 270) {
                     cb.addTemplate(page, 0, -1f, 1f, 0, 0, reader.getPageSizeWithRotation(pagenumber).getHeight());
-                }
-                else {
+                } else {
                     cb.addTemplate(page, 1f, 0, 0, 1f, 0, 0);
                 }
                 // step 5: we close the document
                 document.close();
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -153,26 +168,10 @@ public class Burst extends AbstractTool {
         // represent the changes of the argument in the internal frame
     }
 
-
     /**
-     * Divide PDF file into pages.
-     *
-     * @param args String[]
-     */
-    public static void main(String[] args) {
-        Burst tool = new Burst();
-        if (args.length < 1) {
-            System.err.println(tool.getUsage());
-        }
-        tool.setMainArguments(args);
-        tool.execute();
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         throw new InstantiationException("There is more than one destfile.");

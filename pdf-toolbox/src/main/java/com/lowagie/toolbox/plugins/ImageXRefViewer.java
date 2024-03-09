@@ -35,13 +35,22 @@
 
 package com.lowagie.toolbox.plugins;
 
+import com.lowagie.text.pdf.PRStream;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfObject;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStream;
+import com.lowagie.toolbox.AbstractTool;
+import com.lowagie.toolbox.arguments.AbstractArgument;
+import com.lowagie.toolbox.arguments.FileArgument;
+import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import com.lowagie.toolbox.swing.EventDispatchingThread;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Cursor;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
-
 import javax.swing.BorderFactory;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -53,54 +62,32 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.lowagie.text.pdf.PRStream;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfObject;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStream;
-import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.arguments.AbstractArgument;
-import com.lowagie.toolbox.arguments.FileArgument;
-import com.lowagie.toolbox.arguments.filters.PdfFilter;
-import com.lowagie.toolbox.swing.EventDispatchingThread;
-
 /**
  * Allows you to inspect the Image XObjects inside a PDF file.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class ImageXRefViewer extends AbstractTool {
-
-    class SpinnerListener implements ChangeListener {
-        private ImageXRefViewer adaptee;
-        SpinnerListener(ImageXRefViewer adaptee) {
-            this.adaptee = adaptee;
-        }
-
-        /**
-         *
-         * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
-         * @param e ChangeEvent
-         */
-        public void stateChanged(ChangeEvent e) {
-            adaptee.propertyChange(e);
-        }
-    }
-
 
     static {
         addVersion("$Id: ImageXRefViewer.java 3271 2008-04-18 20:39:42Z xlv $");
     }
 
-    /** The total number of pictures inside the PDF. */
+    /**
+     * The total number of pictures inside the PDF.
+     */
     int total_number_of_pictures = 0;
-
-    /** The spinner that will allow you to select an image. */
+    /**
+     * The spinner that will allow you to select an image.
+     */
     JSpinner jSpinner = new JSpinner();
-
-    /** The panel that will show the images. */
+    /**
+     * The panel that will show the images.
+     */
     JPanel image_panel = new JPanel();
-
-    /** The layout with the images. */
+    /**
+     * The layout with the images.
+     */
     CardLayout layout = new CardLayout();
 
     /**
@@ -112,10 +99,23 @@ public class ImageXRefViewer extends AbstractTool {
     }
 
     /**
+     * Shows the images that are in the PDF as Image XObjects.
      *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
+     * @param args String[]
+     */
+    public static void main(String[] args) {
+        ImageXRefViewer tool = new ImageXRefViewer();
+        if (args.length < 1) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
+        tool.execute();
+    }
+
+    /**
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         throw new InstantiationException("There is no file to show.");
@@ -162,9 +162,8 @@ public class ImageXRefViewer extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         // do nothing
@@ -190,28 +189,15 @@ public class ImageXRefViewer extends AbstractTool {
     }
 
     /**
-     * Shows the images that are in the PDF as Image XObjects.
-     *
-     * @param args String[]
-     */
-    public static void main(String[] args) {
-        ImageXRefViewer tool = new ImageXRefViewer();
-        if (args.length < 1) {
-            System.err.println(tool.getUsage());
-        }
-        tool.setMainArguments(args);
-        tool.execute();
-    }
-
-    /**
      * @see com.lowagie.toolbox.AbstractTool#execute()
      */
     public void execute() {
         total_number_of_pictures = 0;
         try {
-            if (getValue("srcfile") == null)
+            if (getValue("srcfile") == null) {
                 throw new InstantiationException(
                         "You need to choose a sourcefile");
+            }
             EventDispatchingThread task = new EventDispatchingThread() {
                 public Object construct() {
                     try {
@@ -263,6 +249,23 @@ public class ImageXRefViewer extends AbstractTool {
             JOptionPane.showMessageDialog(internalFrame, e.getMessage(), e
                     .getClass().getName(), JOptionPane.ERROR_MESSAGE);
             System.err.println(e.getMessage());
+        }
+    }
+
+    class SpinnerListener implements ChangeListener {
+
+        private ImageXRefViewer adaptee;
+
+        SpinnerListener(ImageXRefViewer adaptee) {
+            this.adaptee = adaptee;
+        }
+
+        /**
+         * @param e ChangeEvent
+         * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+         */
+        public void stateChanged(ChangeEvent e) {
+            adaptee.propertyChange(e);
         }
     }
 }

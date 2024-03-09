@@ -68,91 +68,89 @@ import org.junit.jupiter.api.TestFactory;
  */
 class PdfCrossReferenceTest {
 
-  private static final Predicate<String> CROSS_REFERENCE_FORMAT = Pattern
-          .compile("^\\d{10} \\d{5} [fn] \n$")
-          .asPredicate();
+    private static final Predicate<String> CROSS_REFERENCE_FORMAT = Pattern
+            .compile("^\\d{10} \\d{5} [fn] \n$")
+            .asPredicate();
+    /**
+     * Each cross-reference entry shall always be exactly 20 bytes (according to PDF specification version 1.7, 7.5.4,
+     * "Cross-Reference Table").
+     */
+    private static final int CROSS_REFERENCE_ENTRY_LENGTH = 20;
+    private static final PdfCrossReference[] REFERENCES = new PdfCrossReference[]{
+            new PdfCrossReference(1, 0, 0),
+            new PdfCrossReference(1, 1, 1),
+            new PdfCrossReference(1, 1_000_000_000, 65_535)
+    };
 
-  /**
-   * Tests comparison between different {@link PdfCrossReference cross-reference entries},
-   * because such entries are ordered through according PDF object numbers.
-   */
-  @TestFactory
-  Iterable<DynamicTest> testComparison() {
-    return Arrays.asList(
-        // Testing {@link Comparable#compareTo(Object)} implementation
-        dynamicTest("Test lesser", () -> {
-          final PdfCrossReference entry1 = new PdfCrossReference(1, 0);
-          final PdfCrossReference entry2 = new PdfCrossReference(2, 0);
-          assertTrue(entry1.compareTo(entry2) < 0);
-        }),
-        dynamicTest("Test greater", () -> {
-          final PdfCrossReference entry1 = new PdfCrossReference(2, 0);
-          final PdfCrossReference entry2 = new PdfCrossReference(1, 0);
-          assertTrue(entry1.compareTo(entry2) > 0);
-        }),
-        dynamicTest("Test equals", () -> {
-          final PdfCrossReference entry1 = new PdfCrossReference(2, 0);
-          final PdfCrossReference entry2 = new PdfCrossReference(2, 0);
-          assertEquals(entry1.compareTo(entry2), 0);
-        }),
+    /**
+     * Tests comparison between different {@link PdfCrossReference cross-reference entries}, because such entries are
+     * ordered through according PDF object numbers.
+     */
+    @TestFactory
+    Iterable<DynamicTest> testComparison() {
+        return Arrays.asList(
+                // Testing {@link Comparable#compareTo(Object)} implementation
+                dynamicTest("Test lesser", () -> {
+                    final PdfCrossReference entry1 = new PdfCrossReference(1, 0);
+                    final PdfCrossReference entry2 = new PdfCrossReference(2, 0);
+                    assertTrue(entry1.compareTo(entry2) < 0);
+                }),
+                dynamicTest("Test greater", () -> {
+                    final PdfCrossReference entry1 = new PdfCrossReference(2, 0);
+                    final PdfCrossReference entry2 = new PdfCrossReference(1, 0);
+                    assertTrue(entry1.compareTo(entry2) > 0);
+                }),
+                dynamicTest("Test equals", () -> {
+                    final PdfCrossReference entry1 = new PdfCrossReference(2, 0);
+                    final PdfCrossReference entry2 = new PdfCrossReference(2, 0);
+                    assertEquals(entry1.compareTo(entry2), 0);
+                }),
 
-        // Testing {@link Object#equals(Object)} implementation
-        dynamicTest("Test lesser", () -> {
-          final PdfCrossReference entry1 = new PdfCrossReference(1, 0);
-          final PdfCrossReference entry2 = new PdfCrossReference(2, 0);
-          assertNotEquals(entry1, entry2);
-        }),
-        dynamicTest("Test greater", () -> {
-          final PdfCrossReference entry1 = new PdfCrossReference(2, 0);
-          final PdfCrossReference entry2 = new PdfCrossReference(1, 0);
-          assertNotEquals(entry1, entry2);
-        }),
-        dynamicTest("Test equals", () -> {
-          final PdfCrossReference entry1 = new PdfCrossReference(2, 0);
-          final PdfCrossReference entry2 = new PdfCrossReference(2, 0);
-          assertEquals(entry1, entry2);
-        }),
+                // Testing {@link Object#equals(Object)} implementation
+                dynamicTest("Test lesser", () -> {
+                    final PdfCrossReference entry1 = new PdfCrossReference(1, 0);
+                    final PdfCrossReference entry2 = new PdfCrossReference(2, 0);
+                    assertNotEquals(entry1, entry2);
+                }),
+                dynamicTest("Test greater", () -> {
+                    final PdfCrossReference entry1 = new PdfCrossReference(2, 0);
+                    final PdfCrossReference entry2 = new PdfCrossReference(1, 0);
+                    assertNotEquals(entry1, entry2);
+                }),
+                dynamicTest("Test equals", () -> {
+                    final PdfCrossReference entry1 = new PdfCrossReference(2, 0);
+                    final PdfCrossReference entry2 = new PdfCrossReference(2, 0);
+                    assertEquals(entry1, entry2);
+                }),
 
-        // Testing {@link Object#hashCode()} implementation
-        dynamicTest("Test hashcode", () -> {
-          final int offset = 1000;
-          assertEquals(new PdfCrossReference(offset, 0).hashCode(), offset);
-        })
-    );
-  }
-
-  /**
-   * Each cross-reference entry shall always be exactly 20 bytes (according to PDF specification
-   * version 1.7, 7.5.4, "Cross-Reference Table").
-   */
-  private static final int CROSS_REFERENCE_ENTRY_LENGTH = 20;
-
-  private static final PdfCrossReference[] REFERENCES = new PdfCrossReference[] {
-      new PdfCrossReference(1, 0, 0),
-      new PdfCrossReference(1, 1, 1),
-      new PdfCrossReference(1, 1_000_000_000, 65_535)
-  };
-
-  /**
-   * Checks generated PDF representation of cross-reference entries.
-   */
-  @TestFactory
-  Iterable<DynamicTest> testPdfRepresentation() throws IOException {
-    final List<DynamicTest> tests = new ArrayList<>();
-    final OutputStream os = mock(OutputStream.class);
-    doAnswer(invocation -> {
-      final byte[] bytes = invocation.getArgument(0);
-      tests.add(dynamicTest("Test not null", () -> assertNotNull(bytes)));
-      tests.add(dynamicTest("Test size", () -> assertEquals(bytes.length, CROSS_REFERENCE_ENTRY_LENGTH)));
-      final String stringRepresentation = new String(bytes);
-      tests.add(dynamicTest("Test format", () -> assertTrue(CROSS_REFERENCE_FORMAT.test(stringRepresentation))));
-      return invocation;
-    }).when(os).write(any());
-
-    for (final PdfCrossReference ref: REFERENCES) {
-      ref.toPdf(os);
+                // Testing {@link Object#hashCode()} implementation
+                dynamicTest("Test hashcode", () -> {
+                    final int offset = 1000;
+                    assertEquals(new PdfCrossReference(offset, 0).hashCode(), offset);
+                })
+        );
     }
 
-    return tests;
-  }
+    /**
+     * Checks generated PDF representation of cross-reference entries.
+     */
+    @TestFactory
+    Iterable<DynamicTest> testPdfRepresentation() throws IOException {
+        final List<DynamicTest> tests = new ArrayList<>();
+        final OutputStream os = mock(OutputStream.class);
+        doAnswer(invocation -> {
+            final byte[] bytes = invocation.getArgument(0);
+            tests.add(dynamicTest("Test not null", () -> assertNotNull(bytes)));
+            tests.add(dynamicTest("Test size", () -> assertEquals(bytes.length, CROSS_REFERENCE_ENTRY_LENGTH)));
+            final String stringRepresentation = new String(bytes);
+            tests.add(dynamicTest("Test format", () -> assertTrue(CROSS_REFERENCE_FORMAT.test(stringRepresentation))));
+            return invocation;
+        }).when(os).write(any());
+
+        for (final PdfCrossReference ref : REFERENCES) {
+            ref.toPdf(os);
+        }
+
+        return tests;
+    }
 }

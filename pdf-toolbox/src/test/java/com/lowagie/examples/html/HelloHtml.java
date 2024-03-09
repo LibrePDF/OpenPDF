@@ -9,22 +9,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.html;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.html.HtmlWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Generates a simple 'Hello World' HTML page.
- * 
+ *
  * @author blowagie
  */
 
@@ -32,7 +31,7 @@ public class HelloHtml {
 
     /**
      * Generates an HTML page with the text 'Hello World'
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
