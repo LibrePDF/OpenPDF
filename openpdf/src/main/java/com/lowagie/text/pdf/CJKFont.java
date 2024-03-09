@@ -51,7 +51,6 @@ package com.lowagie.text.pdf;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.error_messages.MessageLocalization;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -63,11 +62,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Creates a CJK font compatible with the fonts in the Adobe Asian font Pack.
- * 
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 
 class CJKFont extends BaseFont {
+
     /**
      * The encoding used in the PDF document for CJK fonts
      */
@@ -79,17 +79,22 @@ class CJKFont extends BaseFont {
 
     static Properties cjkFonts = new Properties();
     static Properties cjkEncodings = new Properties();
-    Hashtable<String, char[]> allCMaps = new Hashtable<>();
     static ConcurrentHashMap<String, HashMap<Object, Object>> allFonts = new ConcurrentHashMap<>(
             500, 0.85f, 64);
     private static boolean propertiesLoaded = false;
     private static Object initLock = new Object();
-
-    /** The font name */
+    Hashtable<String, char[]> allCMaps = new Hashtable<>();
+    /**
+     * The font name
+     */
     private String fontName;
-    /** The style modifier */
+    /**
+     * The style modifier
+     */
     private String style = "";
-    /** The CMap name associated with this font */
+    /**
+     * The CMap name associated with this font
+     */
     private String CMap;
 
     private boolean cidDirect = false;
@@ -100,42 +105,13 @@ class CJKFont extends BaseFont {
     private HashMap<Object, Object> fontDesc;
     private boolean vertical = false;
 
-    private static void loadProperties() {
-        if (propertiesLoaded) {
-            return;
-        }
-        synchronized (initLock) {
-            if (propertiesLoaded) {
-                return;
-            }
-            try {
-                InputStream is = getResourceStream(RESOURCE_PATH
-                        + "cjkfonts.properties");
-                cjkFonts.load(is);
-                is.close();
-                is = getResourceStream(RESOURCE_PATH
-                        + "cjkencodings.properties");
-                cjkEncodings.load(is);
-                is.close();
-            } catch (Exception e) {
-                cjkFonts = new Properties();
-                cjkEncodings = new Properties();
-            }
-            propertiesLoaded = true;
-        }
-    }
-
     /**
      * Creates a CJK font.
-     * 
-     * @param fontName
-     *            the name of the font
-     * @param enc
-     *            the encoding of the font
-     * @param emb
-     *            always <CODE>false</CODE>. CJK font and not embedded
-     * @throws DocumentException
-     *             on error
+     *
+     * @param fontName the name of the font
+     * @param enc      the encoding of the font
+     * @param emb      always <CODE>false</CODE>. CJK font and not embedded
+     * @throws DocumentException on error
      */
     CJKFont(String fontName, String enc, boolean emb) throws DocumentException {
         loadProperties();
@@ -212,13 +188,36 @@ class CJKFont extends BaseFont {
         vMetrics = (IntHashtable) fontDesc.get("W2");
     }
 
+    private static void loadProperties() {
+        if (propertiesLoaded) {
+            return;
+        }
+        synchronized (initLock) {
+            if (propertiesLoaded) {
+                return;
+            }
+            try {
+                InputStream is = getResourceStream(RESOURCE_PATH
+                        + "cjkfonts.properties");
+                cjkFonts.load(is);
+                is.close();
+                is = getResourceStream(RESOURCE_PATH
+                        + "cjkencodings.properties");
+                cjkEncodings.load(is);
+                is.close();
+            } catch (Exception e) {
+                cjkFonts = new Properties();
+                cjkEncodings = new Properties();
+            }
+            propertiesLoaded = true;
+        }
+    }
+
     /**
      * Checks if its a valid CJK font.
-     * 
-     * @param fontName
-     *            the font name
-     * @param enc
-     *            the encoding
+     *
+     * @param fontName the font name
+     * @param enc      the encoding
      * @return <CODE>true</CODE> if it is CJK font
      */
     public static boolean isCJKFont(String fontName, String enc) {
@@ -228,11 +227,217 @@ class CJKFont extends BaseFont {
                 && (enc.equals("Identity-H") || enc.equals("Identity-V") || encodings.contains("_" + enc + "_"));
     }
 
+    static char[] readCMap(String name) {
+        try {
+            name = name + ".cmap";
+            InputStream is = getResourceStream(RESOURCE_PATH + name);
+            char[] c = new char[0x10000];
+            for (int k = 0; k < 0x10000; ++k) {
+                c[k] = (char) ((is.read() << 8) + is.read());
+            }
+            is.close();
+            return c;
+        } catch (Exception e) {
+            // empty on purpose
+        }
+        return null;
+    }
+
+    static IntHashtable createMetric(String s) {
+        IntHashtable h = new IntHashtable();
+        StringTokenizer tk = new StringTokenizer(s);
+        while (tk.hasMoreTokens()) {
+            int n1 = Integer.parseInt(tk.nextToken());
+            h.put(n1, Integer.parseInt(tk.nextToken()));
+        }
+        return h;
+    }
+
+    static String convertToHCIDMetrics(int[] keys, IntHashtable h) {
+        if (keys.length == 0) {
+            return null;
+        }
+        int lastCid = 0;
+        int lastValue = 0;
+        int start;
+        for (start = 0; start < keys.length; ++start) {
+            lastCid = keys[start];
+            lastValue = h.get(lastCid);
+            if (lastValue != 0) {
+                ++start;
+                break;
+            }
+        }
+        if (lastValue == 0) {
+            return null;
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append('[');
+        buf.append(lastCid);
+        int state = FIRST;
+        for (int k = start; k < keys.length; ++k) {
+            int cid = keys[k];
+            int value = h.get(cid);
+            if (value == 0) {
+                continue;
+            }
+            switch (state) {
+                case FIRST: {
+                    if (cid == lastCid + 1 && value == lastValue) {
+                        state = SERIAL;
+                    } else if (cid == lastCid + 1) {
+                        state = BRACKET;
+                        buf.append('[').append(lastValue);
+                    } else {
+                        buf.append('[').append(lastValue).append(']').append(cid);
+                    }
+                    break;
+                }
+                case BRACKET: {
+                    if (cid == lastCid + 1 && value == lastValue) {
+                        state = SERIAL;
+                        buf.append(']').append(lastCid);
+                    } else if (cid == lastCid + 1) {
+                        buf.append(' ').append(lastValue);
+                    } else {
+                        state = FIRST;
+                        buf.append(' ').append(lastValue).append(']').append(cid);
+                    }
+                    break;
+                }
+                case SERIAL: {
+                    if (cid != lastCid + 1 || value != lastValue) {
+                        buf.append(' ').append(lastCid).append(' ')
+                                .append(lastValue).append(' ').append(cid);
+                        state = FIRST;
+                    }
+                    break;
+                }
+            }
+            lastValue = value;
+            lastCid = cid;
+        }
+        switch (state) {
+            case FIRST: {
+                buf.append('[').append(lastValue).append("]]");
+                break;
+            }
+            case BRACKET: {
+                buf.append(' ').append(lastValue).append("]]");
+                break;
+            }
+            case SERIAL: {
+                buf.append(' ').append(lastCid).append(' ').append(lastValue)
+                        .append(']');
+                break;
+            }
+        }
+        return buf.toString();
+    }
+
+    static String convertToVCIDMetrics(int[] keys, IntHashtable v,
+            IntHashtable h) {
+        if (keys.length == 0) {
+            return null;
+        }
+        int lastCid = 0;
+        int lastValue = 0;
+        int lastHValue = 0;
+        int start;
+        for (start = 0; start < keys.length; ++start) {
+            lastCid = keys[start];
+            lastValue = v.get(lastCid);
+            if (lastValue != 0) {
+                ++start;
+                break;
+            } else {
+                lastHValue = h.get(lastCid);
+            }
+        }
+        if (lastValue == 0) {
+            return null;
+        }
+        if (lastHValue == 0) {
+            lastHValue = 1000;
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append('[');
+        buf.append(lastCid);
+        int state = FIRST;
+        for (int k = start; k < keys.length; ++k) {
+            int cid = keys[k];
+            int value = v.get(cid);
+            if (value == 0) {
+                continue;
+            }
+            int hValue = h.get(lastCid);
+            if (hValue == 0) {
+                hValue = 1000;
+            }
+            switch (state) {
+                case FIRST: {
+                    if (cid == lastCid + 1 && value == lastValue
+                            && hValue == lastHValue) {
+                        state = SERIAL;
+                    } else {
+                        buf.append(' ').append(lastCid).append(' ')
+                                .append(-lastValue).append(' ')
+                                .append(lastHValue / 2).append(' ').append(V1Y)
+                                .append(' ').append(cid);
+                    }
+                    break;
+                }
+                case SERIAL: {
+                    if (cid != lastCid + 1 || value != lastValue
+                            || hValue != lastHValue) {
+                        buf.append(' ').append(lastCid).append(' ')
+                                .append(-lastValue).append(' ')
+                                .append(lastHValue / 2).append(' ').append(V1Y)
+                                .append(' ').append(cid);
+                        state = FIRST;
+                    }
+                    break;
+                }
+            }
+            lastValue = value;
+            lastCid = cid;
+            lastHValue = hValue;
+        }
+        buf.append(' ').append(lastCid).append(' ').append(-lastValue)
+                .append(' ').append(lastHValue / 2).append(' ').append(V1Y)
+                .append(" ]");
+        return buf.toString();
+    }
+
+    static HashMap<Object, Object> readFontProperties(String name) {
+        try {
+            name += ".properties";
+            InputStream is = getResourceStream(RESOURCE_PATH + name);
+            Properties p = new Properties();
+            p.load(is);
+            is.close();
+            IntHashtable W = createMetric(p.getProperty("W"));
+            p.remove("W");
+            IntHashtable W2 = createMetric(p.getProperty("W2"));
+            p.remove("W2");
+            HashMap<Object, Object> map = new HashMap<>();
+            for (Enumeration e = p.keys(); e.hasMoreElements(); ) {
+                Object obj = e.nextElement();
+                map.put(obj, p.getProperty((String) obj));
+            }
+            map.put("W", W);
+            map.put("W2", W2);
+            return map;
+        } catch (Exception e) {
+            // empty on purpose
+        }
+        return null;
+    }
+
     /**
      * Gets the width of a <CODE>char</CODE> in normalized 1000 units.
-     * 
-     * @param char1
-     *            the unicode <CODE>char</CODE> to get the width of
+     *
+     * @param char1 the unicode <CODE>char</CODE> to get the width of
      * @return the width in normalized 1000 units
      */
     @Override
@@ -374,9 +579,8 @@ class CJKFont extends BaseFont {
     }
 
     /**
-     * You can't get the FontStream of a CJK font (CJK fonts are never
-     * embedded), so this method always returns null.
-     * 
+     * You can't get the FontStream of a CJK font (CJK fonts are never embedded), so this method always returns null.
+     *
      * @return null
      * @since 2.1.3
      */
@@ -403,38 +607,36 @@ class CJKFont extends BaseFont {
      * Gets the font parameter identified by <CODE>key</CODE>. Valid values for
      * <CODE>key</CODE> are <CODE>ASCENT</CODE>, <CODE>CAPHEIGHT</CODE>,
      * <CODE>DESCENT</CODE> and <CODE>ITALICANGLE</CODE>.
-     * 
-     * @param key
-     *            the parameter to be extracted
-     * @param fontSize
-     *            the font size in points
+     *
+     * @param key      the parameter to be extracted
+     * @param fontSize the font size in points
      * @return the parameter in points
      */
     @Override
     public float getFontDescriptor(int key, float fontSize) {
         switch (key) {
-        case AWT_ASCENT:
-        case ASCENT:
-            return getDescNumber("Ascent") * fontSize / 1000;
-        case CAPHEIGHT:
-            return getDescNumber("CapHeight") * fontSize / 1000;
-        case AWT_DESCENT:
-        case DESCENT:
-            return getDescNumber("Descent") * fontSize / 1000;
-        case ITALICANGLE:
-            return getDescNumber("ItalicAngle");
-        case BBOXLLX:
-            return fontSize * getBBox(0) / 1000;
-        case BBOXLLY:
-            return fontSize * getBBox(1) / 1000;
-        case BBOXURX:
-            return fontSize * getBBox(2) / 1000;
-        case BBOXURY:
-            return fontSize * getBBox(3) / 1000;
-        case AWT_LEADING:
-            return 0;
-        case AWT_MAXADVANCE:
-            return fontSize * (getBBox(2) - getBBox(0)) / 1000;
+            case AWT_ASCENT:
+            case ASCENT:
+                return getDescNumber("Ascent") * fontSize / 1000;
+            case CAPHEIGHT:
+                return getDescNumber("CapHeight") * fontSize / 1000;
+            case AWT_DESCENT:
+            case DESCENT:
+                return getDescNumber("Descent") * fontSize / 1000;
+            case ITALICANGLE:
+                return getDescNumber("ItalicAngle");
+            case BBOXLLX:
+                return fontSize * getBBox(0) / 1000;
+            case BBOXLLY:
+                return fontSize * getBBox(1) / 1000;
+            case BBOXURX:
+                return fontSize * getBBox(2) / 1000;
+            case BBOXURY:
+                return fontSize * getBBox(3) / 1000;
+            case AWT_LEADING:
+                return 0;
+            case AWT_MAXADVANCE:
+                return fontSize * (getBBox(2) - getBBox(0)) / 1000;
         }
         return 0;
     }
@@ -445,255 +647,53 @@ class CJKFont extends BaseFont {
     }
 
     /**
-     * Gets the full name of the font. If it is a True Type font each array
-     * element will have {Platform ID, Platform Encoding ID, Language ID, font
-     * name}. The interpretation of this values can be found in the Open Type
-     * specification, chapter 2, in the 'name' table.<br>
-     * For the other fonts the array has a single element with {"", "", "", font
-     * name}.
-     * 
+     * Sets the font name that will appear in the pdf font dictionary. Use with care as it can easily make a font
+     * unreadable if not embedded.
+     *
+     * @param name the new font name
+     */
+    @Override
+    public void setPostscriptFontName(String name) {
+        fontName = name;
+    }
+
+    /**
+     * Gets the full name of the font. If it is a True Type font each array element will have {Platform ID, Platform
+     * Encoding ID, Language ID, font name}. The interpretation of this values can be found in the Open Type
+     * specification, chapter 2, in the 'name' table.<br> For the other fonts the array has a single element with {"",
+     * "", "", font name}.
+     *
      * @return the full name of the font
      */
     @Override
     public String[][] getFullFontName() {
-        return new String[][] { { "", "", "", fontName } };
+        return new String[][]{{"", "", "", fontName}};
     }
 
     /**
-     * Gets all the entries of the names-table. If it is a True Type font each
-     * array element will have {Name ID, Platform ID, Platform Encoding ID,
-     * Language ID, font name}. The interpretation of this values can be found
-     * in the Open Type specification, chapter 2, in the 'name' table.<br>
-     * For the other fonts the array has a single element with {"4", "", "", "",
-     * font name}.
-     * 
+     * Gets all the entries of the names-table. If it is a True Type font each array element will have {Name ID,
+     * Platform ID, Platform Encoding ID, Language ID, font name}. The interpretation of this values can be found in the
+     * Open Type specification, chapter 2, in the 'name' table.<br> For the other fonts the array has a single element
+     * with {"4", "", "", "", font name}.
+     *
      * @return the full name of the font
      */
     @Override
     public String[][] getAllNameEntries() {
-        return new String[][] { { "4", "", "", "", fontName } };
+        return new String[][]{{"4", "", "", "", fontName}};
     }
 
     /**
-     * Gets the family name of the font. If it is a True Type font each array
-     * element will have {Platform ID, Platform Encoding ID, Language ID, font
-     * name}. The interpretation of this values can be found in the Open Type
-     * specification, chapter 2, in the 'name' table.<br>
-     * For the other fonts the array has a single element with {"", "", "", font
-     * name}.
-     * 
+     * Gets the family name of the font. If it is a True Type font each array element will have {Platform ID, Platform
+     * Encoding ID, Language ID, font name}. The interpretation of this values can be found in the Open Type
+     * specification, chapter 2, in the 'name' table.<br> For the other fonts the array has a single element with {"",
+     * "", "", font name}.
+     *
      * @return the family name of the font
      */
     @Override
     public String[][] getFamilyFontName() {
         return getFullFontName();
-    }
-
-    static char[] readCMap(String name) {
-        try {
-            name = name + ".cmap";
-            InputStream is = getResourceStream(RESOURCE_PATH + name);
-            char[] c = new char[0x10000];
-            for (int k = 0; k < 0x10000; ++k) {
-                c[k] = (char) ((is.read() << 8) + is.read());
-            }
-            is.close();
-            return c;
-        } catch (Exception e) {
-            // empty on purpose
-        }
-        return null;
-    }
-
-    static IntHashtable createMetric(String s) {
-        IntHashtable h = new IntHashtable();
-        StringTokenizer tk = new StringTokenizer(s);
-        while (tk.hasMoreTokens()) {
-            int n1 = Integer.parseInt(tk.nextToken());
-            h.put(n1, Integer.parseInt(tk.nextToken()));
-        }
-        return h;
-    }
-
-    static String convertToHCIDMetrics(int[] keys, IntHashtable h) {
-        if (keys.length == 0) {
-            return null;
-        }
-        int lastCid = 0;
-        int lastValue = 0;
-        int start;
-        for (start = 0; start < keys.length; ++start) {
-            lastCid = keys[start];
-            lastValue = h.get(lastCid);
-            if (lastValue != 0) {
-                ++start;
-                break;
-            }
-        }
-        if (lastValue == 0) {
-            return null;
-        }
-        StringBuilder buf = new StringBuilder();
-        buf.append('[');
-        buf.append(lastCid);
-        int state = FIRST;
-        for (int k = start; k < keys.length; ++k) {
-            int cid = keys[k];
-            int value = h.get(cid);
-            if (value == 0) {
-                continue;
-            }
-            switch (state) {
-            case FIRST: {
-                if (cid == lastCid + 1 && value == lastValue) {
-                    state = SERIAL;
-                } else if (cid == lastCid + 1) {
-                    state = BRACKET;
-                    buf.append('[').append(lastValue);
-                } else {
-                    buf.append('[').append(lastValue).append(']').append(cid);
-                }
-                break;
-            }
-            case BRACKET: {
-                if (cid == lastCid + 1 && value == lastValue) {
-                    state = SERIAL;
-                    buf.append(']').append(lastCid);
-                } else if (cid == lastCid + 1) {
-                    buf.append(' ').append(lastValue);
-                } else {
-                    state = FIRST;
-                    buf.append(' ').append(lastValue).append(']').append(cid);
-                }
-                break;
-            }
-            case SERIAL: {
-                if (cid != lastCid + 1 || value != lastValue) {
-                    buf.append(' ').append(lastCid).append(' ')
-                            .append(lastValue).append(' ').append(cid);
-                    state = FIRST;
-                }
-                break;
-            }
-            }
-            lastValue = value;
-            lastCid = cid;
-        }
-        switch (state) {
-        case FIRST: {
-            buf.append('[').append(lastValue).append("]]");
-            break;
-        }
-        case BRACKET: {
-            buf.append(' ').append(lastValue).append("]]");
-            break;
-        }
-        case SERIAL: {
-            buf.append(' ').append(lastCid).append(' ').append(lastValue)
-                    .append(']');
-            break;
-        }
-        }
-        return buf.toString();
-    }
-
-    static String convertToVCIDMetrics(int[] keys, IntHashtable v,
-                                       IntHashtable h) {
-        if (keys.length == 0) {
-            return null;
-        }
-        int lastCid = 0;
-        int lastValue = 0;
-        int lastHValue = 0;
-        int start;
-        for (start = 0; start < keys.length; ++start) {
-            lastCid = keys[start];
-            lastValue = v.get(lastCid);
-            if (lastValue != 0) {
-                ++start;
-                break;
-            } else {
-                lastHValue = h.get(lastCid);
-            }
-        }
-        if (lastValue == 0) {
-            return null;
-        }
-        if (lastHValue == 0) {
-            lastHValue = 1000;
-        }
-        StringBuilder buf = new StringBuilder();
-        buf.append('[');
-        buf.append(lastCid);
-        int state = FIRST;
-        for (int k = start; k < keys.length; ++k) {
-            int cid = keys[k];
-            int value = v.get(cid);
-            if (value == 0) {
-                continue;
-            }
-            int hValue = h.get(lastCid);
-            if (hValue == 0) {
-                hValue = 1000;
-            }
-            switch (state) {
-            case FIRST: {
-                if (cid == lastCid + 1 && value == lastValue
-                        && hValue == lastHValue) {
-                    state = SERIAL;
-                } else {
-                    buf.append(' ').append(lastCid).append(' ')
-                            .append(-lastValue).append(' ')
-                            .append(lastHValue / 2).append(' ').append(V1Y)
-                            .append(' ').append(cid);
-                }
-                break;
-            }
-            case SERIAL: {
-                if (cid != lastCid + 1 || value != lastValue
-                        || hValue != lastHValue) {
-                    buf.append(' ').append(lastCid).append(' ')
-                            .append(-lastValue).append(' ')
-                            .append(lastHValue / 2).append(' ').append(V1Y)
-                            .append(' ').append(cid);
-                    state = FIRST;
-                }
-                break;
-            }
-            }
-            lastValue = value;
-            lastCid = cid;
-            lastHValue = hValue;
-        }
-        buf.append(' ').append(lastCid).append(' ').append(-lastValue)
-                .append(' ').append(lastHValue / 2).append(' ').append(V1Y)
-                .append(" ]");
-        return buf.toString();
-    }
-
-    static HashMap<Object, Object> readFontProperties(String name) {
-        try {
-            name += ".properties";
-            InputStream is = getResourceStream(RESOURCE_PATH + name);
-            Properties p = new Properties();
-            p.load(is);
-            is.close();
-            IntHashtable W = createMetric(p.getProperty("W"));
-            p.remove("W");
-            IntHashtable W2 = createMetric(p.getProperty("W2"));
-            p.remove("W2");
-            HashMap<Object, Object> map = new HashMap<>();
-            for (Enumeration e = p.keys(); e.hasMoreElements();) {
-                Object obj = e.nextElement();
-                map.put(obj, p.getProperty((String) obj));
-            }
-            map.put("W", W);
-            map.put("W2", W2);
-            return map;
-        } catch (Exception e) {
-            // empty on purpose
-        }
-        return null;
     }
 
     @Override
@@ -714,7 +714,7 @@ class CJKFont extends BaseFont {
 
     /**
      * Checks if the font has any kerning pairs.
-     * 
+     *
      * @return always <CODE>false</CODE>
      */
     @Override
@@ -724,11 +724,10 @@ class CJKFont extends BaseFont {
 
     /**
      * Checks if a character exists in this font.
-     * 
-     * @param c
-     *            the character to check
+     *
+     * @param c the character to check
      * @return <CODE>true</CODE> if the character has a glyph,
-     *         <CODE>false</CODE> otherwise
+     * <CODE>false</CODE> otherwise
      */
     @Override
     public boolean charExists(int c) {
@@ -740,29 +739,15 @@ class CJKFont extends BaseFont {
 
     /**
      * Sets the character advance.
-     * 
-     * @param c
-     *            the character
-     * @param advance
-     *            the character advance normalized to 1000 units
+     *
+     * @param c       the character
+     * @param advance the character advance normalized to 1000 units
      * @return <CODE>true</CODE> if the advance was set, <CODE>false</CODE>
-     *         otherwise. Will always return <CODE>false</CODE>
+     * otherwise. Will always return <CODE>false</CODE>
      */
     @Override
     public boolean setCharAdvance(int c, int advance) {
         return false;
-    }
-
-    /**
-     * Sets the font name that will appear in the pdf font dictionary. Use with
-     * care as it can easily make a font unreadable if not embedded.
-     * 
-     * @param name
-     *            the new font name
-     */
-    @Override
-    public void setPostscriptFontName(String name) {
-        fontName = name;
     }
 
     @Override

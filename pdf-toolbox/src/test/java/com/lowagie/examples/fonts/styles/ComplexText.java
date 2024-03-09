@@ -71,11 +71,11 @@ public class ComplexText {
             String text = "\u0623\u0648\u0631\u0648\u0628\u0627, \u0628\u0631\u0645\u062c\u064a\u0627\u062a \u0627\u0644\u062d\u0627\u0633\u0648\u0628 + \u0627\u0646\u062a\u0631\u0646\u064a\u062a :";
             Phrase center = new Phrase(text + " Center", ft);
             ColumnText.showTextAligned(cb, PdfContentByte.ALIGN_CENTER, center, 250, 700, 0,
-                PdfWriter.RUN_DIRECTION_RTL, 0);
+                    PdfWriter.RUN_DIRECTION_RTL, 0);
             ColumnText.showTextAligned(cb, PdfContentByte.ALIGN_RIGHT, new Phrase(text + " Right", ft), 250, 650, 20,
-                PdfWriter.RUN_DIRECTION_RTL, 0);
+                    PdfWriter.RUN_DIRECTION_RTL, 0);
             ColumnText.showTextAligned(cb, PdfContentByte.ALIGN_LEFT, new Phrase("Some text Left aligned", ft), 250,
-                600, 20);
+                    600, 20);
             float size = ColumnText.getWidth(center, PdfWriter.RUN_DIRECTION_RTL, 0);
             cb.setRGBColorStroke(255, 0, 0);
             cb.rectangle(250 - size / 2, 690, size, 30);

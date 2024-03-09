@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.fonts.styles;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -25,6 +22,8 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.VerticalText;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Writing Vertical Text.
@@ -38,7 +37,7 @@ public class Vertical {
             "", "", ""};
 
     static String[] encs = {"UniJIS-UCS2-V", "Identity-V"};
-    
+
     /**
      * @param text the text to convert
      * @return converted text
@@ -47,16 +46,18 @@ public class Vertical {
         char[] cid = text.toCharArray();
         for (int k = 0; k < cid.length; ++k) {
             char c = cid[k];
-            if (c == '\n')
+            if (c == '\n') {
                 cid[k] = '\uff00';
-            else
-                cid[k] = (char)(c - ' ' + 8720);
+            } else {
+                cid[k] = (char) (c - ' ' + 8720);
+            }
         }
         return new String(cid);
     }
-    
+
     /**
      * Writing vertical text.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -98,8 +99,7 @@ public class Vertical {
                 document.newPage();
             }
             document.close();
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

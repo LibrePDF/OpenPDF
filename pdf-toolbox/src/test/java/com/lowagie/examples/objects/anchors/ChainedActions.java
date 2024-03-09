@@ -9,22 +9,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.anchors;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfAction;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Creates a documents with chained actions.
- * 
+ *
  * @author blowagie
  */
 
@@ -32,9 +31,8 @@ public class ChainedActions {
 
     /**
      * Creates a document with chained Actions.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 

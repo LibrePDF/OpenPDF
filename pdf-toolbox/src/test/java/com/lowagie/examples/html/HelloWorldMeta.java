@@ -9,22 +9,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.html;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.html.HtmlWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Generates a simple PDF file with metadata.
- * 
+ *
  * @author blowagie
  */
 
@@ -32,7 +31,7 @@ public class HelloWorldMeta {
 
     /**
      * Generates a PDF file with metadata
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {

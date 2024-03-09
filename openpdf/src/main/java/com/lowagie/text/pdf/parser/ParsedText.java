@@ -62,17 +62,17 @@ public class ParsedText extends ParsedTextImpl {
     private final GraphicsState graphicsState;
 
     /**
-     * retain original PdfString as we need to distinguish between the code points contained there,
-     * and the standard Java (Unicode strings) that actually represent the content of this text.
+     * retain original PdfString as we need to distinguish between the code points contained there, and the standard
+     * Java (Unicode strings) that actually represent the content of this text.
      */
     private PdfString pdfText = null;
 
     /**
-     * This constructor should only be called when the origin for text display is at (0,0) and the
-     * graphical state reflects all transformations of the baseline. This is in text space units.
+     * This constructor should only be called when the origin for text display is at (0,0) and the graphical state
+     * reflects all transformations of the baseline. This is in text space units.
      * <p>
-     * Decodes a String (which will contain glyph ids encoded in the font's encoding) based on
-     * the active font. This is supported for compatibility, but is no longer preferred.
+     * Decodes a String (which will contain glyph ids encoded in the font's encoding) based on the active font. This is
+     * supported for compatibility, but is no longer preferred.
      *
      * @param text          string
      * @param graphicsState graphical state
@@ -85,8 +85,8 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * This constructor should only be called when the origin for text display is at (0,0) and the
-     * graphical state reflects all transformations of the baseline. This is in text space units.
+     * This constructor should only be called when the origin for text display is at (0,0) and the graphical state
+     * reflects all transformations of the baseline. This is in text space units.
      *
      * @param text          string
      * @param graphicsState graphical state
@@ -98,11 +98,11 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * Internal constructor for a parsed text item. The constructors that call it
-     * gather some information from the graphical state first.
+     * Internal constructor for a parsed text item. The constructors that call it gather some information from the
+     * graphical state first.
      *
-     * @param text          This is a PdfString containing code points for the current font, not actually characters.
-     *                      If the font has multiByte glyphs, (Identity-H encoding) we reparse the string so that the code
+     * @param text          This is a PdfString containing code points for the current font, not actually characters. If
+     *                      the font has multiByte glyphs, (Identity-H encoding) we reparse the string so that the code
      *                      points don't get split into multiple characters.
      * @param graphicsState graphical state
      * @param textMatrix    transform from text space to graphics (drawing space)
@@ -116,13 +116,15 @@ public class ParsedText extends ParsedTextImpl {
                 convertHeightToUser(graphicsState.getFontDescentDescriptor(), textMatrix),
                 convertWidthToUser(unscaledWidth, textMatrix));
         if (BaseFont.IDENTITY_H.equals(graphicsState.getFont().getEncoding())) {
-            if(graphicsState.getFont().hasUnicodeCMAP()) {
-                if(graphicsState.getFont().hasTwoByteUnicodeCMAP())
+            if (graphicsState.getFont().hasUnicodeCMAP()) {
+                if (graphicsState.getFont().hasTwoByteUnicodeCMAP()) {
                     pdfText = new PdfString(text.toString(), "IDENTITY_H2");
-                else
+                } else {
                     pdfText = new PdfString(text.toString(), "IDENTITY_H1");
-            } else
+                }
+            } else {
                 pdfText = new PdfString(new String(text.getBytes(), StandardCharsets.UTF_16));
+            }
         } else {
             pdfText = text;
         }
@@ -151,24 +153,22 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param xOffset offset in x direction
-     * @param yOffset offset in y direction
+     * @param xOffset                        offset in x direction
+     * @param yOffset                        offset in y direction
      * @param textToUserSpaceTransformMatrix transform from text space to graphics (drawing space)
      * @return the cross product of the offset and the textToUserSpaceTransformMatrix
      */
     private static Vector pointToUserSpace(float xOffset, float yOffset,
-                                           Matrix textToUserSpaceTransformMatrix) {
+            Matrix textToUserSpaceTransformMatrix) {
         return new Vector(xOffset, yOffset, 1f)
                 .cross(textToUserSpaceTransformMatrix);
     }
 
     /**
-     * Calculates the width of a space character. If the font does not define a
-     * width for a standard space character , we also attempt to use the width
-     * of \u00A0 (a non-breaking space in many fonts)
+     * Calculates the width of a space character. If the font does not define a width for a standard space character ,
+     * we also attempt to use the width of \u00A0 (a non-breaking space in many fonts)
      *
-     * @param graphicsState graphic state including current transformation to page coordinates from
-     *                      text measurement
+     * @param graphicsState graphic state including current transformation to page coordinates from text measurement
      * @return the width of a single space character in text space units
      */
     private static float getUnscaledFontSpaceWidth(GraphicsState graphicsState) {
@@ -183,8 +183,7 @@ public class ParsedText extends ParsedTextImpl {
      * Gets the width of a String in text space units
      *
      * @param string        the string that needs measuring
-     * @param graphicsState graphic state including current transformation to page coordinates from
-     *                      text measurement
+     * @param graphicsState graphic state including current transformation to page coordinates from text measurement
      * @return the width of a String in text space units
      */
     private static float getStringWidth(String string, GraphicsState graphicsState) {
@@ -201,12 +200,12 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param width which should be converted to user space
+     * @param width                          which should be converted to user space
      * @param textToUserSpaceTransformMatrix transform from text space to graphics (drawing space)
      * @return distance between start and end position
      */
     private static float convertWidthToUser(float width,
-                                            Matrix textToUserSpaceTransformMatrix) {
+            Matrix textToUserSpaceTransformMatrix) {
         Vector startPos = pointToUserSpace(0, 0, textToUserSpaceTransformMatrix);
         Vector endPos = pointToUserSpace(width, 0,
                 textToUserSpaceTransformMatrix);
@@ -215,20 +214,20 @@ public class ParsedText extends ParsedTextImpl {
 
     /**
      * @param startPos of the vector
-     * @param endPos of the vector
-     * @return (endPos-startPos).length 
+     * @param endPos   of the vector
+     * @return (endPos - startPos).length
      */
     private static float distance(Vector startPos, Vector endPos) {
         return endPos.subtract(startPos).length();
     }
 
     /**
-     * @param height which should be converted to user space
+     * @param height                         which should be converted to user space
      * @param textToUserSpaceTransformMatrix transform from text space to graphics (drawing space)
      * @return distance between start and end position
      */
     private static float convertHeightToUser(float height,
-                                             Matrix textToUserSpaceTransformMatrix) {
+            Matrix textToUserSpaceTransformMatrix) {
         Vector startPos = pointToUserSpace(0, 0, textToUserSpaceTransformMatrix);
         Vector endPos = pointToUserSpace(0, height,
                 textToUserSpaceTransformMatrix);
@@ -236,8 +235,7 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * Decodes a Java String containing glyph ids encoded in the font's encoding, and determine the
-     * unicode equivalent
+     * Decodes a Java String containing glyph ids encoded in the font's encoding, and determine the unicode equivalent
      *
      * @param in the String that needs to be decoded
      * @return the decoded String
@@ -253,11 +251,11 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * This constructor should only be called when the origin for text display is at (0,0) and the
-     * graphical state reflects all transformations of the baseline. This is in text space units.
+     * This constructor should only be called when the origin for text display is at (0,0) and the graphical state
+     * reflects all transformations of the baseline. This is in text space units.
      * <p>
-     * Decodes a PdfString (which will contain glyph ids encoded in the font's encoding) based on
-     * the active font, and determine the unicode equivalent
+     * Decodes a PdfString (which will contain glyph ids encoded in the font's encoding) based on the active font, and
+     * determine the unicode equivalent
      *
      * @param pdfString the String that needs to be encoded
      * @return the encoded String
@@ -269,15 +267,14 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * Break this string if there are spaces within it. If so, we mark the new Words appropriately
-     * for later assembly.
+     * Break this string if there are spaces within it. If so, we mark the new Words appropriately for later assembly.
      * <p>
-     * We are guaranteed that every space (internal word break) in this parsed text object will
-     * create a new word in the result of this method. We are not guaranteed that these Word objects
-     * are actually words until they have been assembled.
+     * We are guaranteed that every space (internal word break) in this parsed text object will create a new word in the
+     * result of this method. We are not guaranteed that these Word objects are actually words until they have been
+     * assembled.
      * <p>
-     * The word following any space preserves that space in its string value, so that the assembler
-     * will not erroneously merge words that should be separate, regardless of the spacing.
+     * The word following any space preserves that space in its string value, so that the assembler will not erroneously
+     * merge words that should be separate, regardless of the spacing.
      *
      * @return list of Word objects.
      */
@@ -325,9 +322,8 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * Calculate whether individual character positions (after font decoding from code to a
-     * character), contain spaces and break words, and whether the resulting words should be treated
-     * as complete (i.e. if any spaces were found.
+     * Calculate whether individual character positions (after font decoding from code to a character), contain spaces
+     * and break words, and whether the resulting words should be treated as complete (i.e. if any spaces were found.
      *
      * @param chars    to check
      * @param hasSpace array same length as chars, each position representing whether it breaks a word
@@ -340,20 +336,21 @@ public class ParsedText extends ParsedTextImpl {
             hasSpace[i] = false;
             String charValue = graphicsState.getFont().decode(c);
 
-            if (charValue != null)
+            if (charValue != null) {
                 for (char cFinal : charValue.toCharArray()) {
                     if (Character.isSpaceChar(cFinal)) {
                         wordsAreComplete = true;
                         hasSpace[i] = true;
                     }
                 }
+            }
         }
         return wordsAreComplete;
     }
 
     /**
-     * Create a word to represent a broken substring at a space. As spaces have zero "word length"
-     * make sure that they also have a baseline to check
+     * Create a word to represent a broken substring at a space. As spaces have zero "word length" make sure that they
+     * also have a baseline to check
      *
      * @param wordAccum          buffer of characters
      * @param wordStartOffset    intial x-offset
@@ -361,16 +358,16 @@ public class ParsedText extends ParsedTextImpl {
      * @param baseline           baseline of this word, so direction of progress can be measured in line ending
      *                           determination.
      * @param wordsAreComplete   true means characters in this word won't be split apart graphically
-     * @param currentBreakBefore true if this word fragment represents a word boundary, and any preceding fragment
-     *                           is complete.
+     * @param currentBreakBefore true if this word fragment represents a word boundary, and any preceding fragment is
+     *                           complete.
      * @return the new word
      */
     private Word createWord(StringBuffer wordAccum,
-                            float wordStartOffset,
-                            float wordEndOffset,
-                            Vector baseline,
-                            boolean wordsAreComplete,
-                            boolean currentBreakBefore) {
+            float wordStartOffset,
+            float wordEndOffset,
+            Vector baseline,
+            boolean wordsAreComplete,
+            boolean currentBreakBefore) {
         return new Word(graphicsState.getFont().decode(wordAccum.toString()), getAscent(), getDescent(),
                 pointToUserSpace(wordStartOffset, 0f, textToUserSpaceTransformMatrix),
                 pointToUserSpace(wordEndOffset, 0f, textToUserSpaceTransformMatrix), baseline,
@@ -378,8 +375,7 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param gs graphic state including current transformation to page coordinates from text
-     *           measurement
+     * @param gs graphic state including current transformation to page coordinates from text measurement
      * @return the unscaled (i.e. in Text space) width of our text
      */
     public float getUnscaledTextWidth(GraphicsState gs) {
@@ -430,8 +426,8 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getFinalText(com.lowagie.text.pdf.PdfReader,
-     * int, com.lowagie.text.pdf.parser.TextAssembler, boolean)
+     * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getFinalText(com.lowagie.text.pdf.PdfReader, int,
+     * com.lowagie.text.pdf.parser.TextAssembler, boolean)
      */
     @Override
     public FinalText getFinalText(PdfReader reader, int page, TextAssembler assembler, boolean useMarkup) {
@@ -456,7 +452,6 @@ public class ParsedText extends ParsedTextImpl {
 
     /**
      * @return a boolean value
-     *
      * @see com.lowagie.text.pdf.parser.ParsedTextImpl#breakBefore()
      */
     @Override

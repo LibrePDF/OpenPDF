@@ -9,14 +9,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.fonts;
 
+import com.lowagie.text.pdf.BaseFont;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-
-import com.lowagie.text.pdf.BaseFont;
 
 /**
  * Retrieving the full font name
@@ -25,11 +24,11 @@ public class FullFontNames {
 
     /**
      * Retrieving the full font name
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-        try
-        {
+        try {
             BufferedWriter out = new BufferedWriter(new FileWriter("fullfontname_arialbi.txt"));
             BaseFont bf = BaseFont.createFont("c:\\windows\\fonts\\arialbi.ttf", "winansi", BaseFont.NOT_EMBEDDED);
             out.write("postscriptname: " + bf.getPostscriptFontName());
@@ -38,13 +37,13 @@ public class FullFontNames {
             out.write("\n\nListing the full font name:\n\n");
             for (String[] name : names) {
                 if (name[0].equals("3") && name[1].equals("1")) // Microsoft encoding
+                {
                     out.write(name[3] + "\r\n");
+                }
             }
             out.flush();
             out.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

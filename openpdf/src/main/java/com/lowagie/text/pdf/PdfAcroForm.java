@@ -49,12 +49,10 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
-
-
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.ExceptionConverter;
 
 /**
  * Each PDF document can contain maximum 1 AcroForm.
@@ -65,31 +63,42 @@ public class PdfAcroForm extends PdfDictionary {
     private PdfWriter writer;
 
 
-    /** This is a map containing FieldTemplates. */
+    /**
+     * This is a map containing FieldTemplates.
+     */
     private Map<PdfTemplate, Object> fieldTemplates = new HashMap<>();
 
-    /** This is an array containing DocumentFields. */
+    /**
+     * This is an array containing DocumentFields.
+     */
     private PdfArray documentFields = new PdfArray();
 
-    /** This is an array containing the calculationorder of the fields. */
+    /**
+     * This is an array containing the calculationorder of the fields.
+     */
     private PdfArray calculationOrder = new PdfArray();
 
-    /** Contains the signature flags. */
+    /**
+     * Contains the signature flags.
+     */
     private int sigFlags = 0;
 
-    /** Creates new PdfAcroForm 
+    /**
+     * Creates new PdfAcroForm
+     *
      * @param writer {@link PdfWriter}
      */
     public PdfAcroForm(PdfWriter writer) {
         this.writer = writer;
     }
-    
+
     public void setNeedAppearances(boolean value) {
         put(PdfName.NEEDAPPEARANCES, new PdfBoolean(value));
     }
 
     /**
      * Adds fieldTemplates.
+     *
      * @param ft field templates
      * @deprecated use {@link #addFieldTemplates(Map)}
      */
@@ -101,6 +110,7 @@ public class PdfAcroForm extends PdfDictionary {
 
     /**
      * Adds fieldTemplates.
+     *
      * @param ft field templates
      */
 
@@ -110,6 +120,7 @@ public class PdfAcroForm extends PdfDictionary {
 
     /**
      * Adds documentFields.
+     *
      * @param ref an object of {@link PdfIndirectReference}
      */
 
@@ -119,17 +130,24 @@ public class PdfAcroForm extends PdfDictionary {
 
     /**
      * Checks if the Acroform is valid
+     *
      * @return true if the Acroform is valid
      */
 
     public boolean isValid() {
-        if (documentFields.size() == 0) return false;
+        if (documentFields.size() == 0) {
+            return false;
+        }
         put(PdfName.FIELDS, documentFields);
-        if (sigFlags != 0)
+        if (sigFlags != 0) {
             put(PdfName.SIGFLAGS, new PdfNumber(sigFlags));
-        if (calculationOrder.size() > 0)
+        }
+        if (calculationOrder.size() > 0) {
             put(PdfName.CO, calculationOrder);
-        if (fieldTemplates.isEmpty()) return true;
+        }
+        if (fieldTemplates.isEmpty()) {
+            return true;
+        }
         PdfDictionary dic = new PdfDictionary();
         for (Object o : fieldTemplates.keySet()) {
             PdfTemplate template = (PdfTemplate) o;
@@ -137,7 +155,7 @@ public class PdfAcroForm extends PdfDictionary {
         }
         put(PdfName.DR, dic);
         put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g "));
-        PdfDictionary fonts = (PdfDictionary)dic.get(PdfName.FONT);
+        PdfDictionary fonts = (PdfDictionary) dic.get(PdfName.FONT);
         if (fonts != null) {
             writer.eliminateFontSubset(fonts);
         }
@@ -146,6 +164,7 @@ public class PdfAcroForm extends PdfDictionary {
 
     /**
      * Adds an object to the calculationOrder.
+     *
      * @param formField an object of {@link PdfFormField}
      */
 
@@ -155,6 +174,7 @@ public class PdfAcroForm extends PdfDictionary {
 
     /**
      * Sets the signature flags.
+     *
      * @param f signature flag
      */
 
@@ -164,6 +184,7 @@ public class PdfAcroForm extends PdfDictionary {
 
     /**
      * Adds a formfield to the AcroForm.
+     *
      * @param formField an object of {@link PdfFormField}
      */
 
@@ -172,40 +193,42 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name name of the field
-     * @param value value of the field
-     * @param url url for the action
-     * @param caption caption
-     * @param font an object of {@link BaseFont}
+     * @param name     name of the field
+     * @param value    value of the field
+     * @param url      url for the action
+     * @param caption  caption
+     * @param font     an object of {@link BaseFont}
      * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx      lower-left-x
+     * @param lly      lower-left-y
+     * @param urx      upper-right-x
+     * @param ury      upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addHtmlPostButton(String name, String caption, String value, String url, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public PdfFormField addHtmlPostButton(String name, String caption, String value, String url, BaseFont font,
+            float fontSize, float llx, float lly, float urx, float ury) {
         PdfAction action = PdfAction.createSubmitForm(url, null, PdfAction.SUBMIT_HTML_FORMAT);
         PdfFormField button = new PdfFormField(writer, llx, lly, urx, ury, action);
         setButtonParams(button, PdfFormField.FF_PUSHBUTTON, name, value);
         drawButton(button, caption, font, fontSize, llx, lly, urx, ury);
         addFormField(button);
-    return button;
+        return button;
     }
 
     /**
-     * @param name name of the field
-     * @param value value of the field
-     * @param caption caption
-     * @param font an object of {@link BaseFont}
+     * @param name     name of the field
+     * @param value    value of the field
+     * @param caption  caption
+     * @param font     an object of {@link BaseFont}
      * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx      lower-left-x
+     * @param lly      lower-left-y
+     * @param urx      upper-right-x
+     * @param ury      upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addResetButton(String name, String caption, String value, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public PdfFormField addResetButton(String name, String caption, String value, BaseFont font, float fontSize,
+            float llx, float lly, float urx, float ury) {
         PdfAction action = PdfAction.createResetForm(null, 0);
         PdfFormField button = new PdfFormField(writer, llx, lly, urx, ury, action);
         setButtonParams(button, PdfFormField.FF_PUSHBUTTON, name, value);
@@ -215,18 +238,20 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name name of the field
-     * @param value value of the field
-     * @param url url of the action
+     * @param name       name of the field
+     * @param value      value of the field
+     * @param url        url of the action
      * @param appearance an object of {@link PdfContentByte}
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx        lower-left-x
+     * @param lly        lower-left-y
+     * @param urx        upper-right-x
+     * @param ury        upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addMap(String name, String value, String url, PdfContentByte appearance, float llx, float lly, float urx, float ury) {
-        PdfAction action = PdfAction.createSubmitForm(url, null, PdfAction.SUBMIT_HTML_FORMAT | PdfAction.SUBMIT_COORDINATES);
+    public PdfFormField addMap(String name, String value, String url, PdfContentByte appearance, float llx, float lly,
+            float urx, float ury) {
+        PdfAction action = PdfAction.createSubmitForm(url, null,
+                PdfAction.SUBMIT_HTML_FORMAT | PdfAction.SUBMIT_COORDINATES);
         PdfFormField button = new PdfFormField(writer, llx, lly, urx, ury, action);
         setButtonParams(button, PdfFormField.FF_PUSHBUTTON, name, null);
         PdfAppearance pa = PdfAppearance.createAppearance(writer, urx - llx, ury - lly);
@@ -237,37 +262,40 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param button an object of {@link PdfFormField}
+     * @param button          an object of {@link PdfFormField}
      * @param characteristics characteristics
-     * @param name name of the field
-     * @param value value of the field
+     * @param name            name of the field
+     * @param value           value of the field
      */
     public void setButtonParams(PdfFormField button, int characteristics, String name, String value) {
         button.setButton(characteristics);
         button.setFlags(PdfAnnotation.FLAGS_PRINT);
         button.setPage();
         button.setFieldName(name);
-        if (value != null) button.setValueAsString(value);
+        if (value != null) {
+            button.setValueAsString(value);
+        }
     }
 
     /**
-     * @param button an object of {@link PdfFormField}
-     * @param caption caption
-     * @param font an object of {@link BaseFont}
+     * @param button   an object of {@link PdfFormField}
+     * @param caption  caption
+     * @param font     an object of {@link BaseFont}
      * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx      lower-left-x
+     * @param lly      lower-left-y
+     * @param urx      upper-right-x
+     * @param ury      upper-right-y
      */
-    public void drawButton(PdfFormField button, String caption, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public void drawButton(PdfFormField button, String caption, BaseFont font, float fontSize, float llx, float lly,
+            float urx, float ury) {
         PdfAppearance pa = PdfAppearance.createAppearance(writer, urx - llx, ury - lly);
         pa.drawButton(0f, 0f, urx - llx, ury - lly, caption, font, fontSize);
         button.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, pa);
     }
 
     /**
-     * @param name name of the field
+     * @param name  name of the field
      * @param value value of the field
      * @return a PdfFormField
      */
@@ -280,17 +308,18 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name name of the field
-     * @param text value for field
-     * @param font an object of {@link BaseFont}
+     * @param name     name of the field
+     * @param text     value for field
+     * @param font     an object of {@link BaseFont}
      * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx      lower-left-x
+     * @param lly      lower-left-y
+     * @param urx      upper-right-x
+     * @param ury      upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addSingleLineTextField(String name, String text, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public PdfFormField addSingleLineTextField(String name, String text, BaseFont font, float fontSize, float llx,
+            float lly, float urx, float ury) {
         PdfFormField field = PdfFormField.createTextField(writer, PdfFormField.SINGLELINE, PdfFormField.PLAINTEXT, 0);
         setTextFieldParams(field, text, name, llx, lly, urx, ury);
         drawSingleLineOfText(field, text, font, fontSize, llx, lly, urx, ury);
@@ -299,17 +328,18 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name name of the field
-     * @param text value for field
-     * @param font an object of {@link BaseFont}
+     * @param name     name of the field
+     * @param text     value for field
+     * @param font     an object of {@link BaseFont}
      * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx      lower-left-x
+     * @param lly      lower-left-y
+     * @param urx      upper-right-x
+     * @param ury      upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addMultiLineTextField(String name, String text, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public PdfFormField addMultiLineTextField(String name, String text, BaseFont font, float fontSize, float llx,
+            float lly, float urx, float ury) {
         PdfFormField field = PdfFormField.createTextField(writer, PdfFormField.MULTILINE, PdfFormField.PLAINTEXT, 0);
         setTextFieldParams(field, text, name, llx, lly, urx, ury);
         drawMultiLineOfText(field, text, font, fontSize, llx, lly, urx, ury);
@@ -318,17 +348,18 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name name of the field
-     * @param text text for the field
-     * @param font an object of {@link BaseFont}
+     * @param name     name of the field
+     * @param text     text for the field
+     * @param font     an object of {@link BaseFont}
      * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx      lower-left-x
+     * @param lly      lower-left-y
+     * @param urx      upper-right-x
+     * @param ury      upper-right-y
      * @return PdfFormField
      */
-    public PdfFormField addSingleLinePasswordField(String name, String text, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public PdfFormField addSingleLinePasswordField(String name, String text, BaseFont font, float fontSize, float llx,
+            float lly, float urx, float ury) {
         PdfFormField field = PdfFormField.createTextField(writer, PdfFormField.SINGLELINE, PdfFormField.PASSWORD, 0);
         setTextFieldParams(field, text, name, llx, lly, urx, ury);
         drawSingleLineOfText(field, text, font, fontSize, llx, lly, urx, ury);
@@ -338,14 +369,15 @@ public class PdfAcroForm extends PdfDictionary {
 
     /**
      * @param field an object of {@link PdfFormField}
-     * @param text text for the field
-     * @param name name of the field
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param text  text for the field
+     * @param name  name of the field
+     * @param llx   lower-left-x
+     * @param lly   lower-left-y
+     * @param urx   upper-right-x
+     * @param ury   upper-right-y
      */
-    public void setTextFieldParams(PdfFormField field, String text, String name, float llx, float lly, float urx, float ury) {
+    public void setTextFieldParams(PdfFormField field, String text, String name, float llx, float lly, float urx,
+            float ury) {
         field.setWidget(new Rectangle(llx, lly, urx, ury), PdfAnnotation.HIGHLIGHT_INVERT);
         field.setValueAsString(text);
         field.setDefaultValueAsString(text);
@@ -355,18 +387,19 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param field field
-     * @param text text for the field
-     * @param font an object of {@link BaseFont}
+     * @param field    field
+     * @param text     text for the field
+     * @param font     an object of {@link BaseFont}
      * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx      lower-left-x
+     * @param lly      lower-left-y
+     * @param urx      upper-right-x
+     * @param ury      upper-right-y
      */
-    public void drawSingleLineOfText(PdfFormField field, String text, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public void drawSingleLineOfText(PdfFormField field, String text, BaseFont font, float fontSize, float llx,
+            float lly, float urx, float ury) {
         PdfAppearance tp = PdfAppearance.createAppearance(writer, urx - llx, ury - lly);
-        PdfAppearance tp2 = (PdfAppearance)tp.getDuplicate();
+        PdfAppearance tp2 = (PdfAppearance) tp.getDuplicate();
         tp2.setFontAndSize(font, fontSize);
         tp2.resetRGBColorFill();
         field.setDefaultAppearanceString(tp2);
@@ -388,18 +421,19 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param field field, an object of {@link PdfFormField}
-     * @param text text for field
-     * @param font an object of {@link BaseFont}
+     * @param field    field, an object of {@link PdfFormField}
+     * @param text     text for field
+     * @param font     an object of {@link BaseFont}
      * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx      lower-left-x
+     * @param lly      lower-left-y
+     * @param urx      upper-right-x
+     * @param ury      upper-right-y
      */
-    public void drawMultiLineOfText(PdfFormField field, String text, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public void drawMultiLineOfText(PdfFormField field, String text, BaseFont font, float fontSize, float llx,
+            float lly, float urx, float ury) {
         PdfAppearance tp = PdfAppearance.createAppearance(writer, urx - llx, ury - lly);
-        PdfAppearance tp2 = (PdfAppearance)tp.getDuplicate();
+        PdfAppearance tp2 = (PdfAppearance) tp.getDuplicate();
         tp2.setFontAndSize(font, fontSize);
         tp2.resetRGBColorFill();
         field.setDefaultAppearanceString(tp2);
@@ -426,16 +460,17 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name field name
+     * @param name   field name
      * @param status status
-     * @param value value of the field
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param value  value of the field
+     * @param llx    lower-left-x
+     * @param lly    lower-left-y
+     * @param urx    upper-right-x
+     * @param ury    upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addCheckBox(String name, String value, boolean status, float llx, float lly, float urx, float ury) {
+    public PdfFormField addCheckBox(String name, String value, boolean status, float llx, float lly, float urx,
+            float ury) {
         PdfFormField field = PdfFormField.createCheckBox(writer);
         setCheckBoxParams(field, name, value, status, llx, lly, urx, ury);
         drawCheckBoxAppearences(field, value, llx, lly, urx, ury);
@@ -444,23 +479,23 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name field name
+     * @param name   field name
      * @param status status
-     * @param field field, an object of {@link PdfFormField}
-     * @param value value of the field
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param field  field, an object of {@link PdfFormField}
+     * @param value  value of the field
+     * @param llx    lower-left-x
+     * @param lly    lower-left-y
+     * @param urx    upper-right-x
+     * @param ury    upper-right-y
      */
-    public void setCheckBoxParams(PdfFormField field, String name, String value, boolean status, float llx, float lly, float urx, float ury) {
+    public void setCheckBoxParams(PdfFormField field, String name, String value, boolean status, float llx, float lly,
+            float urx, float ury) {
         field.setWidget(new Rectangle(llx, lly, urx, ury), PdfAnnotation.HIGHLIGHT_TOGGLE);
         field.setFieldName(name);
         if (status) {
             field.setValueAsName(value);
             field.setAppearanceState(value);
-        }
-        else {
+        } else {
             field.setValueAsName("Off");
             field.setAppearanceState("Off");
         }
@@ -472,22 +507,21 @@ public class PdfAcroForm extends PdfDictionary {
     /**
      * @param field field, an object of {@link PdfFormField}
      * @param value value of the field
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx   lower-left-x
+     * @param lly   lower-left-y
+     * @param urx   upper-right-x
+     * @param ury   upper-right-y
      */
     public void drawCheckBoxAppearences(PdfFormField field, String value, float llx, float lly, float urx, float ury) {
         BaseFont font = null;
         try {
             font = BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
         float size = (ury - lly);
         PdfAppearance tpOn = PdfAppearance.createAppearance(writer, urx - llx, ury - lly);
-        PdfAppearance tp2 = (PdfAppearance)tpOn.getDuplicate();
+        PdfAppearance tp2 = (PdfAppearance) tpOn.getDuplicate();
         tp2.setFontAndSize(font, size);
         tp2.resetRGBColorFill();
         field.setDefaultAppearanceString(tp2);
@@ -506,8 +540,8 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name name of the field
-     * @param defaultValue default value
+     * @param name          name of the field
+     * @param defaultValue  default value
      * @param noToggleToOff noToggleToOff
      * @return a PdfFormField
      */
@@ -527,21 +561,21 @@ public class PdfAcroForm extends PdfDictionary {
 
     /**
      * @param radiogroup radio group field
-     * @param value value of the field
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param value      value of the field
+     * @param llx        lower-left-x
+     * @param lly        lower-left-y
+     * @param urx        upper-right-x
+     * @param ury        upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addRadioButton(PdfFormField radiogroup, String value, float llx, float lly, float urx, float ury) {
+    public PdfFormField addRadioButton(PdfFormField radiogroup, String value, float llx, float lly, float urx,
+            float ury) {
         PdfFormField radio = PdfFormField.createEmpty(writer);
         radio.setWidget(new Rectangle(llx, lly, urx, ury), PdfAnnotation.HIGHLIGHT_TOGGLE);
         String name = radiogroup.get(PdfName.V).toString().substring(1);
         if (name.equals(value)) {
             radio.setAppearanceState(value);
-        }
-        else {
+        } else {
             radio.setAppearanceState("Off");
         }
         drawRadioAppearences(radio, value, llx, lly, urx, ury);
@@ -552,10 +586,10 @@ public class PdfAcroForm extends PdfDictionary {
     /**
      * @param field field, an object of {@link PdfFormField}
      * @param value value
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx   lower-left-x
+     * @param lly   lower-left-y
+     * @param urx   upper-right-x
+     * @param ury   upper-right-y
      */
     public void drawRadioAppearences(PdfFormField field, String value, float llx, float lly, float urx, float ury) {
         PdfAppearance tpOn = PdfAppearance.createAppearance(writer, urx - llx, ury - lly);
@@ -567,18 +601,19 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name name of the field
-     * @param options options
+     * @param name         name of the field
+     * @param options      options
      * @param defaultValue default value
-     * @param font an object of {@link BaseFont}
-     * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param font         an object of {@link BaseFont}
+     * @param fontSize     font size
+     * @param llx          lower-left-x
+     * @param lly          lower-left-y
+     * @param urx          upper-right-x
+     * @param ury          upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addSelectList(String name, String[] options, String defaultValue, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public PdfFormField addSelectList(String name, String[] options, String defaultValue, BaseFont font, float fontSize,
+            float llx, float lly, float urx, float ury) {
         PdfFormField choice = PdfFormField.createList(writer, options, 0);
         setChoiceParams(choice, name, defaultValue, llx, lly, urx, ury);
         StringBuilder text = new StringBuilder();
@@ -591,18 +626,19 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name name of the field
-     * @param options options
+     * @param name         name of the field
+     * @param options      options
      * @param defaultValue default value
-     * @param font an object of {@link BaseFont}
-     * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param font         an object of {@link BaseFont}
+     * @param fontSize     font size
+     * @param llx          lower-left-x
+     * @param lly          lower-left-y
+     * @param urx          upper-right-x
+     * @param ury          upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addSelectList(String name, String[][] options, String defaultValue, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public PdfFormField addSelectList(String name, String[][] options, String defaultValue, BaseFont font,
+            float fontSize, float llx, float lly, float urx, float ury) {
         PdfFormField choice = PdfFormField.createList(writer, options, 0);
         setChoiceParams(choice, name, defaultValue, llx, lly, urx, ury);
         StringBuilder text = new StringBuilder();
@@ -615,19 +651,20 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name name of the field
-     * @param options options
+     * @param name         name of the field
+     * @param options      options
      * @param defaultValue default value
-     * @param editable if field is editable, <code>true</code> or <code>false</code>
-     * @param font an object of {@link BaseFont}
-     * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param editable     if field is editable, <code>true</code> or <code>false</code>
+     * @param font         an object of {@link BaseFont}
+     * @param fontSize     font size
+     * @param llx          lower-left-x
+     * @param lly          lower-left-y
+     * @param urx          upper-right-x
+     * @param ury          upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addComboBox(String name, String[] options, String defaultValue, boolean editable, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public PdfFormField addComboBox(String name, String[] options, String defaultValue, boolean editable, BaseFont font,
+            float fontSize, float llx, float lly, float urx, float ury) {
         PdfFormField choice = PdfFormField.createCombo(writer, editable, options, 0);
         setChoiceParams(choice, name, defaultValue, llx, lly, urx, ury);
         if (defaultValue == null) {
@@ -639,19 +676,20 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param name name of the field
-     * @param options options
+     * @param name         name of the field
+     * @param options      options
      * @param defaultValue default value
-     * @param editable if field is editable, <code>true</code> or <code>false</code>
-     * @param font an object of {@link BaseFont}
-     * @param fontSize font size
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param editable     if field is editable, <code>true</code> or <code>false</code>
+     * @param font         an object of {@link BaseFont}
+     * @param fontSize     font size
+     * @param llx          lower-left-x
+     * @param lly          lower-left-y
+     * @param urx          upper-right-x
+     * @param ury          upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addComboBox(String name, String[][] options, String defaultValue, boolean editable, BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
+    public PdfFormField addComboBox(String name, String[][] options, String defaultValue, boolean editable,
+            BaseFont font, float fontSize, float llx, float lly, float urx, float ury) {
         PdfFormField choice = PdfFormField.createCombo(writer, editable, options, 0);
         setChoiceParams(choice, name, defaultValue, llx, lly, urx, ury);
         String value = null;
@@ -670,15 +708,16 @@ public class PdfAcroForm extends PdfDictionary {
     }
 
     /**
-     * @param field field, an object of {@link PdfFormField}
-     * @param name field name
+     * @param field        field, an object of {@link PdfFormField}
+     * @param name         field name
      * @param defaultValue default calue
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx          lower-left-x
+     * @param lly          lower-left-y
+     * @param urx          upper-right-x
+     * @param ury          upper-right-y
      */
-    public void setChoiceParams(PdfFormField field, String name, String defaultValue, float llx, float lly, float urx, float ury) {
+    public void setChoiceParams(PdfFormField field, String name, String defaultValue, float llx, float lly, float urx,
+            float ury) {
         field.setWidget(new Rectangle(llx, lly, urx, ury), PdfAnnotation.HIGHLIGHT_INVERT);
         if (defaultValue != null) {
             field.setValueAsString(defaultValue);
@@ -692,31 +731,31 @@ public class PdfAcroForm extends PdfDictionary {
 
     /**
      * @param name field name
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx  lower-left-x
+     * @param lly  lower-left-y
+     * @param urx  upper-right-x
+     * @param ury  upper-right-y
      * @return a PdfFormField
      */
-    public PdfFormField addSignature(String name, 
-                    float llx, float lly, float urx, float ury) {
+    public PdfFormField addSignature(String name,
+            float llx, float lly, float urx, float ury) {
         PdfFormField signature = PdfFormField.createSignature(writer);
         setSignatureParams(signature, name, llx, lly, urx, ury);
         drawSignatureAppearences(signature, llx, lly, urx, ury);
         addFormField(signature);
         return signature;
     }
-    
+
     /**
-     * @param name field name
+     * @param name  field name
      * @param field field, an object of {@link PdfFormField}
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx   lower-left-x
+     * @param lly   lower-left-y
+     * @param urx   upper-right-x
+     * @param ury   upper-right-y
      */
     public void setSignatureParams(PdfFormField field, String name,
-                    float llx, float lly, float urx, float ury) {
+            float llx, float lly, float urx, float ury) {
         field.setWidget(new Rectangle(llx, lly, urx, ury), PdfAnnotation.HIGHLIGHT_INVERT);
         field.setFieldName(name);
         field.setFlags(PdfAnnotation.FLAGS_PRINT);
@@ -727,13 +766,13 @@ public class PdfAcroForm extends PdfDictionary {
 
     /**
      * @param field field, an object of {@link PdfFormField}
-     * @param llx lower-left-x
-     * @param lly lower-left-y
-     * @param urx upper-right-x
-     * @param ury upper-right-y
+     * @param llx   lower-left-x
+     * @param lly   lower-left-y
+     * @param urx   upper-right-x
+     * @param ury   upper-right-y
      */
-    public void drawSignatureAppearences(PdfFormField field, 
-                    float llx, float lly, float urx, float ury) {
+    public void drawSignatureAppearences(PdfFormField field,
+            float llx, float lly, float urx, float ury) {
         PdfAppearance tp = PdfAppearance.createAppearance(writer, urx - llx, ury - lly);
         tp.setGrayFill(1.0f);
         tp.rectangle(0, 0, urx - llx, ury - lly);

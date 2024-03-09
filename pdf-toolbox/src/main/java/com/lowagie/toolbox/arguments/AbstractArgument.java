@@ -1,35 +1,45 @@
 package com.lowagie.toolbox.arguments;
 
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import com.lowagie.toolbox.AbstractTool;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * @since 2.1.1 (imported from itexttoolbox project)
  */
-public abstract class AbstractArgument implements ActionListener, PropertyChangeListener{
+public abstract class AbstractArgument implements ActionListener, PropertyChangeListener {
+
+    protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    /**
+     * value of the argument.
+     */
+    protected Object value = null;
+    /**
+     * short name for the argument.
+     */
+    protected String name;
+    /**
+     * reference to the internal frame
+     */
+    protected AbstractTool tool;
+    /**
+     * describes the argument.
+     */
+    protected String description;
+
     public AbstractArgument() {
     }
+
     public AbstractArgument(AbstractTool tool, String name, String description, Object value) {
-            this.tool = tool;
-            this.name = name;
-            this.description = description;
-            this.value=value;
+        this.tool = tool;
+        this.name = name;
+        this.description = description;
+        this.value = value;
     }
-    protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    /** value of the argument. */
-    protected Object value = null;
-    /** short name for the argument. */
-    protected String name;
-    /** reference to the internal frame */
-    protected AbstractTool tool;
-    /** describes the argument. */
-    protected String description;
+
     protected synchronized void firePropertyChange(PropertyChangeEvent evt) {
         pcs.firePropertyChange(evt);
     }
@@ -50,7 +60,16 @@ public abstract class AbstractArgument implements ActionListener, PropertyChange
         return value;
     }
 
-
+    /**
+     * @param value The value to set.
+     */
+    public void setValue(Object value) {
+        Object oldvalue = this.value;
+        this.value = value;
+        tool.valueHasChanged(this);
+        this.firePropertyChange(new PropertyChangeEvent(this, name, oldvalue,
+                this.value));
+    }
 
     public void setValue(Object value, String propertyname) {
         Object oldvalue = this.value;
@@ -58,16 +77,6 @@ public abstract class AbstractArgument implements ActionListener, PropertyChange
         tool.valueHasChanged(this);
         this.firePropertyChange(new PropertyChangeEvent(this, propertyname,
                 oldvalue, this.value));
-    }
-
-
-
-    /**
-     * @param description
-     *            The description to set.
-     */
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     /**
@@ -78,11 +87,10 @@ public abstract class AbstractArgument implements ActionListener, PropertyChange
     }
 
     /**
-     * @param name
-     *            The name to set.
+     * @param description The description to set.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -128,15 +136,10 @@ public abstract class AbstractArgument implements ActionListener, PropertyChange
     }
 
     /**
-     * @param value
-     *            The value to set.
+     * @param name The name to set.
      */
-    public void setValue(Object value) {
-        Object oldvalue = this.value;
-        this.value = value;
-        tool.valueHasChanged(this);
-        this.firePropertyChange(new PropertyChangeEvent(this, name, oldvalue,
-                this.value));
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
@@ -144,6 +147,7 @@ public abstract class AbstractArgument implements ActionListener, PropertyChange
     }
 
     public abstract void actionPerformed(ActionEvent e);
+
     /**
      * Returns a string representation of the object.
      *

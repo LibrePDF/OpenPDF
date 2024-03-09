@@ -9,14 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -25,10 +21,13 @@ import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * How to use class Phrase.
- * 
+ *
  * @author blowagie
  */
 
@@ -36,9 +35,8 @@ public class Phrases {
 
     /**
      * Demonstrates how the class Phrase works.
-     * 
-     * @param args
-     *            no arguments needed here
+     *
+     * @param args no arguments needed here
      */
     public static void main(String[] args) {
 

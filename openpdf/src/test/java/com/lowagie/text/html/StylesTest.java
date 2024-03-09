@@ -9,9 +9,6 @@ import com.lowagie.text.html.simpleparser.StyleSheet;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,9 +19,12 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * Tests generating PDF from HTML with selected CCS style attributes (such as 'font-size', 'background', 'background-color', 'color').
+ * Tests generating PDF from HTML with selected CCS style attributes (such as 'font-size', 'background',
+ * 'background-color', 'color').
  */
 class StylesTest {
 
@@ -44,8 +44,9 @@ class StylesTest {
 
     private Color getBackgroundColor(Chunk chunk) {
         Object[] backgroundAttributes = (Object[]) chunk.getChunkAttributes().get(Chunk.BACKGROUND);
-        if (backgroundAttributes != null && backgroundAttributes.length > 0 && backgroundAttributes[0] instanceof Color ) {
-            return (Color)backgroundAttributes[0];
+        if (backgroundAttributes != null && backgroundAttributes.length > 0
+                && backgroundAttributes[0] instanceof Color) {
+            return (Color) backgroundAttributes[0];
         }
         return null;
     }
@@ -63,12 +64,13 @@ class StylesTest {
     private List<Element> htmlToPdf(String htmlFileName, String pdfFileName) throws IOException {
         StyleSheet styleSheet = new StyleSheet();
         Map<String, Object> interfaceProps = new HashMap<>();
-        try(InputStream inputStream = StylesTest.class.getClassLoader().getResourceAsStream(htmlFileName);
-            OutputStream outputStream = Files.newOutputStream(Paths.get(pdfFileName))) {
+        try (InputStream inputStream = StylesTest.class.getClassLoader().getResourceAsStream(htmlFileName);
+                OutputStream outputStream = Files.newOutputStream(Paths.get(pdfFileName))) {
             if (inputStream == null) {
                 throw new IOException("InputStream could not be created");
             }
-            List<Element> elements = HTMLWorker.parseToList(new InputStreamReader(inputStream), styleSheet, interfaceProps);
+            List<Element> elements = HTMLWorker.parseToList(new InputStreamReader(inputStream), styleSheet,
+                    interfaceProps);
 
             Document document = new Document();
             PdfWriter instance = PdfWriter.getInstance(document, outputStream);

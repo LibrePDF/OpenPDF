@@ -64,6 +64,19 @@ public class FileList
     private static final long serialVersionUID = -7238230038043975672L;
 
     private final Vector<RowContainer> filevector = new Vector<>();
+    private final JPanel jPanel1 = new JPanel();
+    private final BorderLayout borderLayout1 = new BorderLayout();
+    private final JPanel jPanel2 = new JPanel();
+    private final BorderLayout borderLayout2 = new BorderLayout();
+    private final JScrollPane jScrollPane1 = new JScrollPane();
+    private final FileTableModel model = new FileTableModel();
+    private final JTable jTable1 = new JTable(model);
+    private final RowSorter<TableModel> sorter = new TableRowSorter<>(model);
+    private final BorderLayout borderLayout3 = new BorderLayout();
+    private final DropTarget dt = new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this, true, null);
+    private final JPanel jPanel3 = new JPanel();
+    private final JLabel jLabel1 = new JLabel();
+    private final JLabel jLabel2 = new JLabel();
 
     public FileList() {
         super("FileList", true, true, true);
@@ -93,20 +106,6 @@ public class FileList
 //    this.setSize(200,100);
         this.pack();
     }
-
-    private final JPanel jPanel1 = new JPanel();
-    private final BorderLayout borderLayout1 = new BorderLayout();
-    private final JPanel jPanel2 = new JPanel();
-    private final BorderLayout borderLayout2 = new BorderLayout();
-    private final JScrollPane jScrollPane1 = new JScrollPane();
-    private final FileTableModel model = new FileTableModel();
-    private final JTable jTable1 = new JTable(model);
-    private final RowSorter<TableModel> sorter = new TableRowSorter<>(model);
-    private final BorderLayout borderLayout3 = new BorderLayout();
-    private final DropTarget dt = new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this, true, null);
-    private final JPanel jPanel3 = new JPanel();
-    private final JLabel jLabel1 = new JLabel();
-    private final JLabel jLabel2 = new JLabel();
 
     public void dragEnter(DropTargetDragEvent dtde) {
     }
@@ -149,53 +148,6 @@ public class FileList
     }
 
     public void dragExit(DropTargetEvent dte) {
-    }
-
-    class FileTableModel extends AbstractTableModel {
-
-        private static final long serialVersionUID = -8173736343997473512L;
-        private final String[] columnNames = {
-                "Filename", "Pages", "Directory"};
-
-        public int getColumnCount() {
-            return columnNames.length;
-        }
-
-        public int getRowCount() {
-            return filevector.size();
-        }
-
-        public String getColumnName(int col) {
-            return columnNames[col];
-        }
-
-        public Object getValueAt(int row, int col) {
-            switch (col) {
-                case 0:
-                    return filevector.get(row).getFile().getName();
-                case 1:
-                    return filevector.get(row).getPages();
-                case 2:
-                    return filevector.get(row).getFile().getParent();
-            }
-            return null;
-        }
-
-        public Class<?> getColumnClass(int col) {
-            switch (col) {
-                case 0:
-                    return String.class;
-                case 1:
-                    return Integer.class;
-                case 2:
-                    return String.class;
-            }
-            return null;
-        }
-
-        public void removeRow(int row) {
-            filevector.remove(row);
-        }
     }
 
     public void jTable1_keyPressed(KeyEvent e) {
@@ -262,22 +214,6 @@ public class FileList
         private File file;
         private int pages;
 
-        public File getFile() {
-            return file;
-        }
-
-        public int getPages() {
-            return pages;
-        }
-
-        public void setFile(File file) {
-            this.file = file;
-        }
-
-        public void setPages(int pages) {
-            this.pages = pages;
-        }
-
         /**
          * RowContainer
          */
@@ -289,6 +225,69 @@ public class FileList
             } catch (IOException ignored) {
             }
             this.pages = reader.getNumberOfPages();
+        }
+
+        public File getFile() {
+            return file;
+        }
+
+        public void setFile(File file) {
+            this.file = file;
+        }
+
+        public int getPages() {
+            return pages;
+        }
+
+        public void setPages(int pages) {
+            this.pages = pages;
+        }
+    }
+
+    class FileTableModel extends AbstractTableModel {
+
+        private static final long serialVersionUID = -8173736343997473512L;
+        private final String[] columnNames = {
+                "Filename", "Pages", "Directory"};
+
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        public int getRowCount() {
+            return filevector.size();
+        }
+
+        public String getColumnName(int col) {
+            return columnNames[col];
+        }
+
+        public Object getValueAt(int row, int col) {
+            switch (col) {
+                case 0:
+                    return filevector.get(row).getFile().getName();
+                case 1:
+                    return filevector.get(row).getPages();
+                case 2:
+                    return filevector.get(row).getFile().getParent();
+            }
+            return null;
+        }
+
+        public Class<?> getColumnClass(int col) {
+            switch (col) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return Integer.class;
+                case 2:
+                    return String.class;
+            }
+            return null;
+        }
+
+        public void removeRow(int row) {
+            filevector.remove(row);
         }
     }
 }

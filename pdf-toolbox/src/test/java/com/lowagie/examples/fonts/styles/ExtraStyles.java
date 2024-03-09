@@ -9,25 +9,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.fonts.styles;
+
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.pdf.PdfWriter;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
-
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import org.junit.jupiter.api.Test;
 
 /**
  * Demonstrates how to underline and strike through text.
- * 
+ *
  * @author blowagie
  */
 

@@ -30,7 +30,7 @@
  * the MPL, indicate your decision by deleting the provisions above and
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE 
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
@@ -57,7 +57,6 @@ import java.util.Arrays;
  */
 public class XmpBasicSchema extends XmpSchema {
 
-    private static final long serialVersionUID = -2416613941622479298L;
     /**
      * default namespace identifier
      */
@@ -66,7 +65,6 @@ public class XmpBasicSchema extends XmpSchema {
      * default namespace uri
      */
     public static final String DEFAULT_XPATH_URI = "http://ns.adobe.com/xap/1.0/";
-
     /**
      * An unordered array specifying properties that were edited outside the authoring application. Each item should
      * contain a single namespace and XPath separated by one ASCII space (U+0020).
@@ -109,30 +107,34 @@ public class XmpBasicSchema extends XmpSchema {
      * encoding.
      */
     public static final String THUMBNAILS = "xmp:Thumbnails";
+    private static final long serialVersionUID = -2416613941622479298L;
 
 
     public XmpBasicSchema() {
         super("xmlns:" + DEFAULT_XPATH_ID + "=\"" + DEFAULT_XPATH_URI + "\"");
     }
-    
+
     /**
      * Adds the creatortool.
+     *
      * @param creator creator tool
      */
     public void addCreatorTool(String creator) {
         setProperty(CREATORTOOL, creator);
     }
-    
+
     /**
      * Adds the creation date.
+     *
      * @param date creation date
      */
     public void addCreateDate(String date) {
         setProperty(CREATEDATE, date);
     }
-    
+
     /**
      * Adds the modification date.
+     *
      * @param date modification date
      */
     public void addModDate(String date) {
@@ -141,13 +143,16 @@ public class XmpBasicSchema extends XmpSchema {
 
     /**
      * Adds the meta data date.
+     *
      * @param date metadata date
      */
     public void addMetaDataDate(String date) {
         setProperty(METADATADATE, date);
     }
 
-    /** Adds the identifier.
+    /**
+     * Adds the identifier.
+     *
      * @param id identifier
      */
     public void addIdentifiers(String[] id) {
@@ -156,7 +161,9 @@ public class XmpBasicSchema extends XmpSchema {
         setProperty(IDENTIFIER, array);
     }
 
-    /** Adds the nickname.
+    /**
+     * Adds the nickname.
+     *
      * @param name nick name
      */
     public void addNickname(String name) {

@@ -35,12 +35,6 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.toolbox.AbstractTool;
@@ -48,9 +42,14 @@ import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.StringArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
  * Allows you to decrypt an existing PDF file.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class Decrypt extends AbstractTool {
@@ -65,55 +64,9 @@ public class Decrypt extends AbstractTool {
      */
     public Decrypt() {
         arguments.add(new FileArgument(this, "srcfile", "The file you want to decrypt", false, new PdfFilter()));
-        arguments.add(new FileArgument(this, "destfile", "The file to which the decrypted PDF has to be written", true, new PdfFilter()));
+        arguments.add(new FileArgument(this, "destfile", "The file to which the decrypted PDF has to be written", true,
+                new PdfFilter()));
         arguments.add(new StringArgument(this, "ownerpassword", "The ownerpassword you want to add to the PDF file"));
-    }
-
-    /**
-     * @see com.lowagie.toolbox.AbstractTool#createFrame()
-     */
-    protected void createFrame() {
-        internalFrame = new JInternalFrame("Decrypt", true, false, true);
-        internalFrame.setSize(300, 80);
-        internalFrame.setJMenuBar(getMenubar());
-        System.out.println("=== Decrypt OPENED ===");
-    }
-
-    /**
-     * @see com.lowagie.toolbox.AbstractTool#execute()
-     */
-    public void execute() {
-        try {
-            if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
-            if (getValue("destfile") == null) throw new InstantiationException("You need to choose a destination file");
-            byte[] ownerpassword = null;
-            if (getValue("ownerpassword") != null) {
-                ownerpassword = ((String)getValue("ownerpassword")).getBytes();
-            }
-            PdfReader reader = new PdfReader(((File)getValue("srcfile")).getAbsolutePath(), ownerpassword);
-            PdfStamper stamper = new PdfStamper(reader, new FileOutputStream((File)getValue("destfile")));
-            stamper.close();
-        }
-        catch(Exception e) {
-            JOptionPane.showMessageDialog(internalFrame,
-                    e.getMessage(),
-                    e.getClass().getName(),
-                    JOptionPane.ERROR_MESSAGE);
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
-     * @param arg StringArgument
-     */
-    public void valueHasChanged(AbstractArgument arg) {
-        if (internalFrame == null) {
-            // if the internal frame is null, the tool was called from the command line
-            return;
-        }
-        // represent the changes of the argument in the internal frame
     }
 
     /**
@@ -131,13 +84,61 @@ public class Decrypt extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     */
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("Decrypt", true, false, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== Decrypt OPENED ===");
+    }
+
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#execute()
+     */
+    public void execute() {
+        try {
+            if (getValue("srcfile") == null) {
+                throw new InstantiationException("You need to choose a sourcefile");
+            }
+            if (getValue("destfile") == null) {
+                throw new InstantiationException("You need to choose a destination file");
+            }
+            byte[] ownerpassword = null;
+            if (getValue("ownerpassword") != null) {
+                ownerpassword = ((String) getValue("ownerpassword")).getBytes();
+            }
+            PdfReader reader = new PdfReader(((File) getValue("srcfile")).getAbsolutePath(), ownerpassword);
+            PdfStamper stamper = new PdfStamper(reader, new FileOutputStream((File) getValue("destfile")));
+            stamper.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(internalFrame,
+                    e.getMessage(),
+                    e.getClass().getName(),
+                    JOptionPane.ERROR_MESSAGE);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
+     */
+    public void valueHasChanged(AbstractArgument arg) {
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the command line
+            return;
+        }
+        // represent the changes of the argument in the internal frame
+    }
+
+    /**
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
-        return (File)getValue("destfile");
+        return (File) getValue("destfile");
     }
 
 }

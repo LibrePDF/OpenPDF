@@ -52,9 +52,13 @@ class FontTest {
 
     private static final float DEFAULT_FONT_SIZE = 16.0f;
 
+    private static Set<Integer> getStyles() {
+        return STYLES_TO_TEST_METHOD.keySet();
+    }
+
     /**
-     * Checks if style property value is preserved during font construction through {@link FontFactory#getFont(String,
-     * float, int)} method by getting raw property value.
+     * Checks if style property value is preserved during font construction through
+     * {@link FontFactory#getFont(String, float, int)} method by getting raw property value.
      *
      * @see Font#getStyle()
      */
@@ -67,13 +71,9 @@ class FontTest {
         assertEquals(font.getStyle(), style);
     }
 
-    private static Set<Integer> getStyles() {
-        return STYLES_TO_TEST_METHOD.keySet();
-    }
-
     /**
-     * Checks if style property value is preserved during font construction through {@link FontFactory#getFont(String,
-     * float, int)} method by testing appropriate predicate.
+     * Checks if style property value is preserved during font construction through
+     * {@link FontFactory#getFont(String, float, int)} method by testing appropriate predicate.
      *
      * @see Font#isBold()
      * @see Font#isItalic()

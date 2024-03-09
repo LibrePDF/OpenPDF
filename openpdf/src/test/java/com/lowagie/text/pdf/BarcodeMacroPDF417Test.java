@@ -3,17 +3,17 @@ package com.lowagie.text.pdf;
 import com.lowagie.text.Document;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class BarcodeMacroPDF417Test {
+
     private static final Path OUTPUT_DIR = Paths.get(".", "target", "test-classes");
     private static final Path COMP_DIR = Paths.get(".", "src", "test", "resources");
     private static final String FILENAME = "barcode_macro_pdf_417.pdf";

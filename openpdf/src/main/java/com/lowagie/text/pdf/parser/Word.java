@@ -50,28 +50,28 @@ import com.lowagie.text.pdf.PdfReader;
  * @author dgd
  */
 public class Word extends ParsedTextImpl {
-    
+
     /**
-     * Is this an indivisible fragment, because it contained a space or was split from a space-
-     * containing string. Non-splittable words can be merged (into new non-splittable words).
+     * Is this an indivisible fragment, because it contained a space or was split from a space- containing string.
+     * Non-splittable words can be merged (into new non-splittable words).
      */
     private final boolean shouldNotSplit;
     /**
-     * If this word or fragment was preceded by a space, or a line break, it should never be merged
-     * into a preceding word.
+     * If this word or fragment was preceded by a space, or a line break, it should never be merged into a preceding
+     * word.
      */
     private final boolean breakBefore;
 
     /**
-     * @param text text content
-     * @param ascent font ascent (e.g. height)
-     * @param descent How far below the baseline letters go
-     * @param startPoint first point of the text
-     * @param endPoint ending offset of text
-     * @param baseline line along which text is set.
-     * @param spaceWidth how much space is a space supposed to take.
+     * @param text           text content
+     * @param ascent         font ascent (e.g. height)
+     * @param descent        How far below the baseline letters go
+     * @param startPoint     first point of the text
+     * @param endPoint       ending offset of text
+     * @param baseline       line along which text is set.
+     * @param spaceWidth     how much space is a space supposed to take.
      * @param isCompleteWord word should never be split
-     * @param breakBefore word starts here, should never combine to the left.
+     * @param breakBefore    word starts here, should never combine to the left.
      */
     Word(String text, float ascent, float descent, Vector startPoint,
             Vector endPoint, Vector baseline, float spaceWidth, boolean isCompleteWord, boolean breakBefore) {
@@ -80,10 +80,19 @@ public class Word extends ParsedTextImpl {
         this.breakBefore = breakBefore;
     }
 
+    private static String formatPercent(float f) {
+        return String.format("%.2f%%", f);
+    }
+
+    private static String escapeHTML(String s) {
+        return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;");
+    }
+
     /**
      * accept a visitor that is assembling text
-     * 
-     * @param p the assembler that is visiting us.
+     *
+     * @param p           the assembler that is visiting us.
      * @param contextName What is the wrapping markup element name if any
      * @see com.lowagie.text.pdf.parser.ParsedTextImpl#accumulate(com.lowagie.text.pdf.parser.TextAssembler, String)
      * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#accumulate(com.lowagie.text.pdf.parser.TextAssembler, String)
@@ -95,6 +104,7 @@ public class Word extends ParsedTextImpl {
 
     /**
      * Accept a visitor that is assembling text
+     *
      * @param p the assembler that is visiting us.
      * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#assemble(com.lowagie.text.pdf.parser.TextAssembler)
      * @see com.lowagie.text.pdf.parser.ParsedTextImpl#assemble(com.lowagie.text.pdf.parser.TextAssembler)
@@ -104,24 +114,14 @@ public class Word extends ParsedTextImpl {
         p.renderText(this);
     }
 
-    private static String formatPercent(float f) {
-        return String.format("%.2f%%", f);
-    }
-
     /**
-     * Generate markup for this word. send the assembler a strings representing
-     * a CSS style that will format us nicely.
+     * Generate markup for this word. send the assembler a strings representing a CSS style that will format us nicely.
      *
-     * @param text
-     *            passed in because we may have wanted to alter it, e.g. by
-     *            trimming white space, or filtering characters or something.
-     * @param reader
-     *            the file reader from which we are extracting
-     * @param page
-     *            number of the page we are reading text from
-     * @param assembler
-     *            object to assemble text from fragments and larger strings on a
-     *            page.
+     * @param text      passed in because we may have wanted to alter it, e.g. by trimming white space, or filtering
+     *                  characters or something.
+     * @param reader    the file reader from which we are extracting
+     * @param page      number of the page we are reading text from
+     * @param assembler object to assemble text from fragments and larger strings on a page.
      * @return markup to represent this one word.
      */
     private String wordMarkup(String text, PdfReader reader, int page, TextAssembler assembler) {
@@ -136,7 +136,7 @@ public class Word extends ParsedTextImpl {
         }
         mediaBox.normalize();
         if (cropBox != null) {
-            cropBox.normalize(); 
+            cropBox.normalize();
         } else {
             cropBox = reader.getBoxSize(page, "trim");
             if (cropBox != null) {
@@ -151,9 +151,9 @@ public class Word extends ParsedTextImpl {
         Vector endPoint = getEndPoint();
         float pageWidth = cropBox.getWidth();
         float pageHeight = cropBox.getHeight();
-        float leftPercent = (float) ((startPoint.get(0) - xOffset  - mediaBox.getLeft()) / pageWidth * 100.0);
+        float leftPercent = (float) ((startPoint.get(0) - xOffset - mediaBox.getLeft()) / pageWidth * 100.0);
         float bottom = endPoint.get(1) + yOffset - getDescent() - mediaBox.getBottom();
-        float bottomPercent =  bottom / pageHeight * 100f;
+        float bottomPercent = bottom / pageHeight * 100f;
         StringBuilder result = new StringBuilder();
         float width = getWidth();
         float widthPercent = width / pageWidth * 100.0f;
@@ -161,7 +161,8 @@ public class Word extends ParsedTextImpl {
         float height = getAscent();
         float heightPercent = height / pageHeight * 100.0f;
         String myId = assembler.getWordId();
-        Rectangle resultRect = new Rectangle(leftPercent, bottomPercent, leftPercent+widthPercent, bottomPercent+heightPercent);
+        Rectangle resultRect = new Rectangle(leftPercent, bottomPercent, leftPercent + widthPercent,
+                bottomPercent + heightPercent);
         result.append("<span class=\"t-word\" style=\"bottom: ")
                 .append(formatPercent(resultRect.getBottom())).append("; left: ")
                 .append(formatPercent(resultRect.getLeft())).append("; width: ")
@@ -174,14 +175,8 @@ public class Word extends ParsedTextImpl {
         return result.toString();
     }
 
-    private static String escapeHTML(String s) {
-        return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;");
-    }
-
     /**
-     * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getFinalText(PdfReader,
-     *      int, TextAssembler, boolean)
+     * @see com.lowagie.text.pdf.parser.TextAssemblyBuffer#getFinalText(PdfReader, int, TextAssembler, boolean)
      */
     @Override
     public FinalText getFinalText(PdfReader reader, int page,

@@ -1,6 +1,6 @@
 /*
  * Copyright 2002 by Phillip Pan
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at http://www.mozilla.org/MPL/
@@ -52,14 +52,15 @@ import com.lowagie.text.ExceptionConverter;
 /**
  * A <CODE>PdfPattern</CODE> defines a ColorSpace
  *
- * @see        PdfStream
+ * @see PdfStream
  */
 
 public class PdfPattern extends PdfStream {
-    
+
     /**
      * Creates a PdfPattern object.
-     * @param    painter    a pattern painter instance
+     *
+     * @param painter a pattern painter instance
      */
     PdfPattern(PdfPatternPainter painter) {
         this(painter, DEFAULT_COMPRESSION);
@@ -67,15 +68,16 @@ public class PdfPattern extends PdfStream {
 
     /**
      * Creates a PdfPattern object.
-     * @param    painter    a pattern painter instance
-     * @param    compressionLevel the compressionLevel for the stream
-     * @since    2.1.3
+     *
+     * @param painter          a pattern painter instance
+     * @param compressionLevel the compressionLevel for the stream
+     * @since 2.1.3
      */
     PdfPattern(PdfPatternPainter painter, int compressionLevel) {
         super();
         PdfNumber one = new PdfNumber(1);
         PdfArray matrix = painter.getMatrix();
-        if ( matrix != null ) {
+        if (matrix != null) {
             put(PdfName.MATRIX, matrix);
         }
         put(PdfName.TYPE, PdfName.PATTERN);
@@ -83,10 +85,11 @@ public class PdfPattern extends PdfStream {
         put(PdfName.RESOURCES, painter.getResources());
         put(PdfName.TILINGTYPE, one);
         put(PdfName.PATTERNTYPE, one);
-        if (painter.isStencil())
+        if (painter.isStencil()) {
             put(PdfName.PAINTTYPE, new PdfNumber(2));
-        else
+        } else {
             put(PdfName.PAINTTYPE, one);
+        }
         put(PdfName.XSTEP, new PdfNumber(painter.getXStep()));
         put(PdfName.YSTEP, new PdfNumber(painter.getYStep()));
         bytes = painter.toPdf(null);

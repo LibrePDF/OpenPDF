@@ -51,7 +51,6 @@ package com.lowagie.text.pdf;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
 import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
-
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -112,8 +111,8 @@ public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
      * <CODE>PdfDictionary</CODE> with the
      * field content.
      *
-     * @deprecated use {@link #getAllFields()}
      * @return all the fields
+     * @deprecated use {@link #getAllFields()}
      */
     @Override
     @Deprecated

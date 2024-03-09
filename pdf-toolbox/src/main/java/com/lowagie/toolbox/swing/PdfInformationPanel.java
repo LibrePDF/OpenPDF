@@ -33,6 +33,9 @@
  */
 package com.lowagie.toolbox.swing;
 
+import com.lowagie.text.pdf.PdfDate;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.RandomAccessFileOrArray;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
@@ -40,39 +43,47 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
-import com.lowagie.text.pdf.PdfDate;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.RandomAccessFileOrArray;
-
 /**
  * Label for the FileChooser
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class PdfInformationPanel extends JPanel implements PropertyChangeListener {
 
-    /** A serial version id */
+    /**
+     * A serial version id
+     */
     private static final long serialVersionUID = -4171577284617028707L;
 
-    /** The file name of the PDF we're going to label. */
+    /**
+     * The file name of the PDF we're going to label.
+     */
     String filename = "";
 
-    /** the label containing the metadata */
+    /**
+     * the label containing the metadata
+     */
     JLabel label = new JLabel();
 
-    /** the scrollpane to scroll through the label */
+    /**
+     * the scrollpane to scroll through the label
+     */
     JScrollPane scrollpane = new JScrollPane();
 
-    /** the panel to witch the scrollpane will be added. */
+    /**
+     * the panel to witch the scrollpane will be added.
+     */
     JPanel panel = new JPanel();
 
-    /** Construct the information label (actually it's a JPanel). */
+    /**
+     * Construct the information label (actually it's a JPanel).
+     */
     public PdfInformationPanel() {
         try {
             this.setLayout(new BorderLayout());
@@ -97,13 +108,14 @@ public class PdfInformationPanel extends JPanel implements PropertyChangeListene
             int page = 1;
             PdfReader reader = null;
 
-            try (RandomAccessFileOrArray raf = new RandomAccessFileOrArray(file.getAbsolutePath())){
+            try (RandomAccessFileOrArray raf = new RandomAccessFileOrArray(file.getAbsolutePath())) {
                 reader = new PdfReader(raf, null);
                 Map<String, String> pdfinfo = reader.getInfo();
 
                 StringBuilder sb = new StringBuilder();
                 sb.append("<html>=== Document Information ===<p>");
-                sb.append(reader.getCropBox(page).getHeight()).append("*").append(reader.getCropBox(page).getWidth()).append("<p>");
+                sb.append(reader.getCropBox(page).getHeight()).append("*").append(reader.getCropBox(page).getWidth())
+                        .append("<p>");
                 sb.append("PDF Version: ").append(reader.getPdfVersion()).append("<p>");
                 sb.append("Number of pages: ").append(reader.getNumberOfPages()).append("<p>");
                 sb.append("Number of PDF objects: ").append(reader.getXrefSize()).append("<p>");
@@ -127,7 +139,7 @@ public class PdfInformationPanel extends JPanel implements PropertyChangeListene
                 }
                 if (pdfinfo.get("CreationDate") != null) {
                     sb.append("CreationDate= ").append(PdfDate.decode(
-                            pdfinfo.get("CreationDate"))
+                                    pdfinfo.get("CreationDate"))
                             .getTime()).append("<p>");
                 }
                 sb.append("</html>");
@@ -139,9 +151,8 @@ public class PdfInformationPanel extends JPanel implements PropertyChangeListene
     }
 
     /**
-     *
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      * @param evt PropertyChangeEvent
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent evt) {
         filename = evt.getPropertyName();

@@ -9,15 +9,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.forms;
 
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -31,31 +27,37 @@ import com.lowagie.text.pdf.PdfBorderDictionary;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfFormField;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Generates an Acroform with a TextField
+ *
  * @author blowagie
  */
 public class FormTextField {
+
     /**
      * Generates an Acroform with a TextField
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
-        
+
         System.out.println("Textfield");
-        
+
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4);
-        
+
         try {
-            
+
             // step 2:
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("textfield.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
             BaseFont helv = BaseFont.createFont("Helvetica", "winansi", false);
             PdfContentByte cb = writer.getDirectContent();
@@ -72,7 +74,7 @@ public class FormTextField {
             field.setBorderStyle(new PdfBorderDictionary(2, PdfBorderDictionary.STYLE_SOLID));
             field.setPage();
             PdfAppearance tp = cb.createAppearance(171, 19);
-            PdfAppearance da = (PdfAppearance)tp.getDuplicate();
+            PdfAppearance da = (PdfAppearance) tp.getDuplicate();
             da.setFontAndSize(helv, fontSize);
             da.setColorFill(textColor);
             field.setDefaultAppearanceString(da);
@@ -91,9 +93,8 @@ public class FormTextField {
             tp.endVariableText();
             field.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, tp);
             writer.addAnnotation(field);
-            
-        }
-        catch(DocumentException | IOException de) {
+
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 

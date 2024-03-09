@@ -9,13 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -23,6 +19,9 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * A very simple PdfPTable example using getDefaultCell().
@@ -31,9 +30,8 @@ public class DefaultCell {
 
     /**
      * Demonstrates the use of getDefaultCell().
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 

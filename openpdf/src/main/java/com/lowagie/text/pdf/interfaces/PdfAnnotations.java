@@ -56,28 +56,30 @@ import com.lowagie.text.pdf.PdfFormField;
 public interface PdfAnnotations {
 
     /**
-     * Use this methods to get the AcroForm object.
-     * Use this method only if you know what you're doing
+     * Use this methods to get the AcroForm object. Use this method only if you know what you're doing
+     *
      * @return the PdfAcroform object of the PdfDocument
      */
     PdfAcroForm getAcroForm();
-    
+
     /**
-     * Use this methods to add a <CODE>PdfAnnotation</CODE> or a <CODE>PdfFormField</CODE>
-     * to the document. Only the top parent of a <CODE>PdfFormField</CODE>
-     * needs to be added.
+     * Use this methods to add a <CODE>PdfAnnotation</CODE> or a <CODE>PdfFormField</CODE> to the document. Only the top
+     * parent of a <CODE>PdfFormField</CODE> needs to be added.
+     *
      * @param annot the <CODE>PdfAnnotation</CODE> or the <CODE>PdfFormField</CODE> to add
      */
     void addAnnotation(PdfAnnotation annot);
+
     /**
-     * Use this method to adds the <CODE>PdfAnnotation</CODE>
-     * to the calculation order array.
+     * Use this method to adds the <CODE>PdfAnnotation</CODE> to the calculation order array.
+     *
      * @param annot the <CODE>PdfAnnotation</CODE> to be added
      */
     void addCalculationOrder(PdfFormField annot);
-    
+
     /**
      * Use this method to set the signature flags.
+     *
      * @param f the flags. This flags are ORed with current ones
      */
     void setSigFlags(int f);

@@ -9,42 +9,42 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.graphics;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Simple use of PdfContentByte: drawing Circles
  */
 public class Circles {
-    
+
     /**
      * Draws some concentric circles.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-        
+
         System.out.println("Drawing circles");
-        
+
         // step 1: creation of a document-object
         Document document = new Document();
-        
+
         try {
-            
+
             // step 2: creation of the writer
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("circles.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4: we grab the ContentByte and do some stuff with it
             PdfContentByte cb = writer.getDirectContent();
 
@@ -57,10 +57,9 @@ public class Circles {
             cb.setRGBColorFill(0xFF, 0xFF, 0xFF);
             cb.circle(250.0f, 500.0f, 50.0f);
             cb.fill();
-            
+
             cb.sanityCheck();
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 

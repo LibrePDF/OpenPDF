@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -21,6 +19,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Define the widths of the columns of a PdfPTable.
@@ -29,9 +28,8 @@ public class CellWidths {
 
     /**
      * Width manipulations of cells.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 

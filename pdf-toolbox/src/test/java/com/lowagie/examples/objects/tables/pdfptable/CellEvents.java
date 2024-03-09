@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.pdfptable;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Image;
@@ -24,6 +22,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPCellEvent;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * General example using CellEvents.
@@ -31,22 +30,9 @@ import com.lowagie.text.pdf.PdfWriter;
 public class CellEvents implements PdfPCellEvent {
 
     /**
-     * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell,
-     *      com.lowagie.text.Rectangle, com.lowagie.text.pdf.PdfContentByte[])
-     */
-    public void cellLayout(PdfPCell cell, Rectangle position,
-            PdfContentByte[] canvases) {
-        PdfContentByte cb = canvases[PdfPTable.TEXTCANVAS];
-        cb.moveTo(position.getLeft(), position.getBottom());
-        cb.lineTo(position.getRight(), position.getTop());
-        cb.stroke();
-    }
-
-    /**
      * General example using cell events.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -81,5 +67,17 @@ public class CellEvents implements PdfPCellEvent {
         }
         // step5
         document.close();
+    }
+
+    /**
+     * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell, com.lowagie.text.Rectangle,
+     * com.lowagie.text.pdf.PdfContentByte[])
+     */
+    public void cellLayout(PdfPCell cell, Rectangle position,
+            PdfContentByte[] canvases) {
+        PdfContentByte cb = canvases[PdfPTable.TEXTCANVAS];
+        cb.moveTo(position.getLeft(), position.getBottom());
+        cb.lineTo(position.getRight(), position.getTop());
+        cb.stroke();
     }
 }

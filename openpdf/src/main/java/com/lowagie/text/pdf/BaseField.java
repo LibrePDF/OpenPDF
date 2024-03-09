@@ -47,6 +47,10 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.error_messages.MessageLocalization;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,81 +59,102 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Rectangle;
-
-/** Common field variables.
+/**
+ * Common field variables.
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public abstract class BaseField {
 
-    /** A thin border with 1 point width. */
+    /**
+     * A thin border with 1 point width.
+     */
     public static final float BORDER_WIDTH_THIN = 1;
-    /** A medium border with 2 point width. */
+    /**
+     * A medium border with 2 point width.
+     */
     public static final float BORDER_WIDTH_MEDIUM = 2;
-    /** A thick border with 3 point width. */
+    /**
+     * A thick border with 3 point width.
+     */
     public static final float BORDER_WIDTH_THICK = 3;
-    /** The field is visible. */
+    /**
+     * The field is visible.
+     */
     public static final int VISIBLE = 0;
-    /** The field is hidden. */
+    /**
+     * The field is hidden.
+     */
     public static final int HIDDEN = 1;
-    /** The field is visible but does not print. */
+    /**
+     * The field is visible but does not print.
+     */
     public static final int VISIBLE_BUT_DOES_NOT_PRINT = 2;
-    /** The field is hidden but is printable. */
+    /**
+     * The field is hidden but is printable.
+     */
     public static final int HIDDEN_BUT_PRINTABLE = 3;
-    
-    /** The annotation flag: Invisible. */    
+
+    /**
+     * The annotation flag: Invisible.
+     */
     public static final int INVISIBLE = PdfAnnotation.FLAGS_INVISIBLE;
-    /** The annotation flag Hidden. */    
+    /** The annotation flag Hidden. */
     //public static final int HIDDEN = PdfAnnotation.FLAGS_HIDDEN;
-    /** The annotation flag Hidden. */    
+    /**
+     * The annotation flag Hidden.
+     */
     public static final int PRINT = PdfAnnotation.FLAGS_PRINT;
-    /** The annotation flag Hidden. */    
+    /**
+     * The annotation flag Hidden.
+     */
     public static final int NOVIEW = PdfAnnotation.FLAGS_NOVIEW;
-    /** The annotation flag Hidden. */    
+    /**
+     * The annotation flag Hidden.
+     */
     public static final int LOCKED = PdfAnnotation.FLAGS_LOCKED;
-    
-    
-    /** The user may not change the value of the field. */
+
+
+    /**
+     * The user may not change the value of the field.
+     */
     public static final int READ_ONLY = PdfFormField.FF_READ_ONLY;
-    /** The field must have a value at the time it is exported by a submit-form
-     * action.
+    /**
+     * The field must have a value at the time it is exported by a submit-form action.
      */
     public static final int REQUIRED = PdfFormField.FF_REQUIRED;
-    /** The field may contain multiple lines of text.
-     * This flag is only meaningful with text fields.
+    /**
+     * The field may contain multiple lines of text. This flag is only meaningful with text fields.
      */
     public static final int MULTILINE = PdfFormField.FF_MULTILINE;
-    /** The field will not scroll (horizontally for single-line
-     * fields, vertically for multiple-line fields) to accommodate more text
-     * than will fit within its annotation rectangle. Once the field is full, no
-     * further text will be accepted.
+    /**
+     * The field will not scroll (horizontally for single-line fields, vertically for multiple-line fields) to
+     * accommodate more text than will fit within its annotation rectangle. Once the field is full, no further text will
+     * be accepted.
      */
     public static final int DO_NOT_SCROLL = PdfFormField.FF_DONOTSCROLL;
-    /** The field is intended for entering a secure password that should
-     * not be echoed visibly to the screen.
+    /**
+     * The field is intended for entering a secure password that should not be echoed visibly to the screen.
      */
     public static final int PASSWORD = PdfFormField.FF_PASSWORD;
-    /** The text entered in the field represents the pathname of
-     * a file whose contents are to be submitted as the value of the field.
+    /**
+     * The text entered in the field represents the pathname of a file whose contents are to be submitted as the value
+     * of the field.
      */
     public static final int FILE_SELECTION = PdfFormField.FF_FILESELECT;
-    /** The text entered in the field will not be spell-checked.
-     * This flag is meaningful only in text fields and in combo
+    /**
+     * The text entered in the field will not be spell-checked. This flag is meaningful only in text fields and in combo
      * fields with the <CODE>EDIT</CODE> flag set.
      */
     public static final int DO_NOT_SPELL_CHECK = PdfFormField.FF_DONOTSPELLCHECK;
-    /** If set the combo box includes an editable text box as well as a drop list; if
-     * clear, it includes only a drop list.
-     * This flag is only meaningful with combo fields.
+    /**
+     * If set the combo box includes an editable text box as well as a drop list; if clear, it includes only a drop
+     * list. This flag is only meaningful with combo fields.
      */
     public static final int EDIT = PdfFormField.FF_EDIT;
 
-    /** whether or not a list may have multiple selections.  Only applies to /CH LIST
-     * fields, not combo boxes.
+    /**
+     * whether or not a list may have multiple selections.  Only applies to /CH LIST fields, not combo boxes.
      */
     public static final int MULTISELECT = PdfFormField.FF_MULTISELECT;
 
@@ -137,6 +162,12 @@ public abstract class BaseField {
      * combo box flag.
      */
     public static final int COMB = PdfFormField.FF_COMB;
+    private final static Map<PdfName, Integer> fieldKeys = new HashMap<>();
+
+    static {
+        fieldKeys.putAll(PdfCopyFieldsImp.fieldKeys);
+        fieldKeys.put(PdfName.T, 1);
+    }
 
     protected float borderWidth = BORDER_WIDTH_THIN;
     protected int borderStyle = PdfBorderDictionary.STYLE_SOLID;
@@ -149,39 +180,42 @@ public abstract class BaseField {
     protected PdfWriter writer;
     protected String text;
     protected Rectangle box;
-
-    /** Holds value of property rotation. */
+    /**
+     * Holds value of property rotation.
+     */
     protected int rotation = 0;
-
-    /** Holds value of property visibility. */
+    /**
+     * Holds value of property visibility.
+     */
     protected int visibility;
-
-    /** Holds value of property fieldName. */
+    /**
+     * Holds value of property fieldName.
+     */
     protected String fieldName;
-    
-    /** Holds the value of the alternate field name. (PDF attribute 'TU') */
+    /**
+     * Holds the value of the alternate field name. (PDF attribute 'TU')
+     */
     protected String alternateFieldName;
-    
-    /** Holds the value of the mapping field name. (PDF attribute 'TM') */
+    /**
+     * Holds the value of the mapping field name. (PDF attribute 'TM')
+     */
     protected String mappingName;
-
-    /** Holds value of property options. */
+    /**
+     * Holds value of property options.
+     */
     protected int options;
-
-    /** Holds value of property maxCharacterLength. */
+    /**
+     * Holds value of property maxCharacterLength.
+     */
     protected int maxCharacterLength;
 
-    private final static Map<PdfName, Integer> fieldKeys = new HashMap<>();
-
-    static {
-        fieldKeys.putAll(PdfCopyFieldsImp.fieldKeys);
-        fieldKeys.put(PdfName.T, 1);
-    }
-    /** Creates a new <CODE>TextField</CODE>.
-     * @param writer the document <CODE>PdfWriter</CODE>
-     * @param box the field location and dimensions
-     * @param fieldName the field name. If <CODE>null</CODE> only the widget keys
-     * will be included in the field allowing it to be used as a kid field.
+    /**
+     * Creates a new <CODE>TextField</CODE>.
+     *
+     * @param writer    the document <CODE>PdfWriter</CODE>
+     * @param box       the field location and dimensions
+     * @param fieldName the field name. If <CODE>null</CODE> only the widget keys will be included in the field allowing
+     *                  it to be used as a kid field.
      */
     public BaseField(PdfWriter writer, Rectangle box, String fieldName) {
         this.writer = writer;
@@ -189,14 +223,9 @@ public abstract class BaseField {
         this.fieldName = fieldName;
     }
 
-    protected BaseFont getRealFont() throws IOException, DocumentException {
-        if (font == null)
-            return BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, false);
-        else
-            return font;
-    }
-
-    protected static PdfAppearance getBorderAppearance(PdfWriter writer, Rectangle box, int rotation, Color backgroundColor,int borderStyle,float borderWidth, Color borderColor, int options,int maxCharacterLength) {
+    protected static PdfAppearance getBorderAppearance(PdfWriter writer, Rectangle box, int rotation,
+            Color backgroundColor, int borderStyle, float borderWidth, Color borderColor, int options,
+            int maxCharacterLength) {
         PdfAppearance app = PdfAppearance.createAppearance(writer, box.getWidth(), box.getHeight());
         switch (rotation) {
             case 90:
@@ -225,43 +254,45 @@ public abstract class BaseField {
                 app.lineTo(box.getWidth(), borderWidth / 2);
                 app.stroke();
             }
-        }
-        else if (borderStyle == PdfBorderDictionary.STYLE_BEVELED) {
+        } else if (borderStyle == PdfBorderDictionary.STYLE_BEVELED) {
             if (borderWidth != 0 && borderColor != null) {
                 app.setColorStroke(borderColor);
                 app.setLineWidth(borderWidth);
-                app.rectangle(borderWidth / 2, borderWidth / 2, box.getWidth() - borderWidth, box.getHeight() - borderWidth);
+                app.rectangle(borderWidth / 2, borderWidth / 2, box.getWidth() - borderWidth,
+                        box.getHeight() - borderWidth);
                 app.stroke();
             }
             // beveled
             Color actual = backgroundColor;
-            if (actual == null)
+            if (actual == null) {
                 actual = Color.white;
+            }
             app.setGrayFill(1);
-            drawTopFrame(app,borderWidth,box);
+            drawTopFrame(app, borderWidth, box);
             app.setColorFill(actual.darker());
-            drawBottomFrame(app,borderWidth,box);
-        }
-        else if (borderStyle == PdfBorderDictionary.STYLE_INSET) {
+            drawBottomFrame(app, borderWidth, box);
+        } else if (borderStyle == PdfBorderDictionary.STYLE_INSET) {
             if (borderWidth != 0 && borderColor != null) {
                 app.setColorStroke(borderColor);
                 app.setLineWidth(borderWidth);
-                app.rectangle(borderWidth / 2, borderWidth / 2, box.getWidth() - borderWidth, box.getHeight() - borderWidth);
+                app.rectangle(borderWidth / 2, borderWidth / 2, box.getWidth() - borderWidth,
+                        box.getHeight() - borderWidth);
                 app.stroke();
             }
             // inset
             app.setGrayFill(0.5f);
-            drawTopFrame(app,borderWidth,box);
+            drawTopFrame(app, borderWidth, box);
             app.setGrayFill(0.75f);
-            drawBottomFrame(app,borderWidth,box);
-        }
-        else {
+            drawBottomFrame(app, borderWidth, box);
+        } else {
             if (borderWidth != 0 && borderColor != null) {
-                if (borderStyle == PdfBorderDictionary.STYLE_DASHED)
+                if (borderStyle == PdfBorderDictionary.STYLE_DASHED) {
                     app.setLineDash(3, 0);
+                }
                 app.setColorStroke(borderColor);
                 app.setLineWidth(borderWidth);
-                app.rectangle(borderWidth / 2, borderWidth / 2, box.getWidth() - borderWidth, box.getHeight() - borderWidth);
+                app.rectangle(borderWidth / 2, borderWidth / 2, box.getWidth() - borderWidth,
+                        box.getHeight() - borderWidth);
                 app.stroke();
                 //comb formfield flag is set and maxchar must be set (for textfield only!)
                 if ((options & COMB) != 0 && maxCharacterLength > 1) {
@@ -299,17 +330,17 @@ public abstract class BaseField {
         for (int k = 0; k < len; ++k) {
             char c = cs[k];
             if (c == '\r') {
-                if (k + 1 < len && cs[k + 1] == '\n')
+                if (k + 1 < len && cs[k + 1] == '\n') {
                     ++k;
+                }
                 arr.add(buf.toString());
                 buf = new StringBuffer();
-            }
-            else if (c == '\n') {
+            } else if (c == '\n') {
                 arr.add(buf.toString());
                 buf = new StringBuffer();
-            }
-            else
+            } else {
                 buf.append(c);
+            }
         }
         arr.add(buf.toString());
         return arr;
@@ -318,10 +349,12 @@ public abstract class BaseField {
     protected static void trimRight(StringBuffer buf) {
         int len = buf.length();
         while (true) {
-            if (len == 0)
+            if (len == 0) {
                 return;
-            if (buf.charAt(--len) != ' ')
+            }
+            if (buf.charAt(--len) != ' ') {
                 return;
+            }
             buf.setLength(len);
         }
     }
@@ -360,20 +393,23 @@ public abstract class BaseField {
                             lines.add(buf.toString());
                             buf.setLength(0);
                             refk = k;
-                            if (c == ' ')
+                            if (c == ' ') {
                                 state = 2;
-                            else
+                            } else {
                                 state = 1;
+                            }
                         } else {
-                            if (c != ' ')
+                            if (c != ' ') {
                                 state = 1;
+                            }
                         }
                         break;
                     case 1:
                         w += font.getWidthPoint(c, fontSize);
                         buf.append(c);
-                        if (c == ' ')
+                        if (c == ' ') {
                             lastspace = k;
+                        }
                         if (w > width) {
                             w = 0;
                             if (lastspace >= 0) {
@@ -393,8 +429,9 @@ public abstract class BaseField {
                                 lines.add(buf.toString());
                                 buf.setLength(0);
                                 refk = k;
-                                if (c == ' ')
+                                if (c == ' ') {
                                     state = 2;
+                                }
                             }
                         }
                         break;
@@ -423,7 +460,7 @@ public abstract class BaseField {
         app.lineTo(borderWidth, borderWidth);
         app.fill();
     }
-    
+
     private static void drawBottomFrame(PdfAppearance app, float borderWidth, Rectangle box) {
         app.moveTo(borderWidth, borderWidth);
         app.lineTo(box.getWidth() - borderWidth, borderWidth);
@@ -434,278 +471,367 @@ public abstract class BaseField {
         app.lineTo(borderWidth, borderWidth);
         app.fill();
     }
-    /** Gets the border width in points.
+
+    /**
+     * Moves the field keys from <CODE>from</CODE> to <CODE>to</CODE>. The moved keys are removed from
+     * <CODE>from</CODE>.
+     *
+     * @param from the source
+     * @param to   the destination. It may be <CODE>null</CODE>
+     */
+    public static void moveFields(PdfDictionary from, PdfDictionary to) {
+        for (Iterator i = from.getKeys().iterator(); i.hasNext(); ) {
+            PdfName key = (PdfName) i.next();
+            if (fieldKeys.containsKey(key)) {
+                if (to != null) {
+                    to.put(key, from.get(key));
+                }
+                i.remove();
+            }
+        }
+    }
+
+    protected BaseFont getRealFont() throws IOException, DocumentException {
+        if (font == null) {
+            return BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, false);
+        } else {
+            return font;
+        }
+    }
+
+    /**
+     * Gets the border width in points.
+     *
      * @return the border width in points
      */
     public float getBorderWidth() {
         return this.borderWidth;
     }
 
-    /** Sets the border width in points. To eliminate the border
-     * set the border color to <CODE>null</CODE>.
+    /**
+     * Sets the border width in points. To eliminate the border set the border color to <CODE>null</CODE>.
+     *
      * @param borderWidth the border width in points
      */
     public void setBorderWidth(float borderWidth) {
         this.borderWidth = borderWidth;
     }
 
-    /** Gets the border style.
+    /**
+     * Gets the border style.
+     *
      * @return the border style
      */
     public int getBorderStyle() {
         return this.borderStyle;
     }
 
-    /** Sets the border style. The styles are found in <CODE>PdfBorderDictionary</CODE>
-     * and can be <CODE>STYLE_SOLID</CODE>, <CODE>STYLE_DASHED</CODE>,
+    /**
+     * Sets the border style. The styles are found in <CODE>PdfBorderDictionary</CODE> and can be
+     * <CODE>STYLE_SOLID</CODE>, <CODE>STYLE_DASHED</CODE>,
      * <CODE>STYLE_BEVELED</CODE>, <CODE>STYLE_INSET</CODE> and
      * <CODE>STYLE_UNDERLINE</CODE>.
+     *
      * @param borderStyle the border style
      */
     public void setBorderStyle(int borderStyle) {
         this.borderStyle = borderStyle;
     }
 
-    /** Gets the border color.
+    /**
+     * Gets the border color.
+     *
      * @return the border color
      */
     public Color getBorderColor() {
         return this.borderColor;
     }
 
-    /** Sets the border color. Set to <CODE>null</CODE> to remove
-     * the border.
+    /**
+     * Sets the border color. Set to <CODE>null</CODE> to remove the border.
+     *
      * @param borderColor the border color
      */
     public void setBorderColor(Color borderColor) {
         this.borderColor = borderColor;
     }
 
-    /** Gets the background color.
+    /**
+     * Gets the background color.
+     *
      * @return the background color
      */
     public Color getBackgroundColor() {
         return this.backgroundColor;
     }
 
-    /** Sets the background color. Set to <CODE>null</CODE> for
-     * transparent background.
+    /**
+     * Sets the background color. Set to <CODE>null</CODE> for transparent background.
+     *
      * @param backgroundColor the background color
      */
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 
-    /** Gets the text color.
+    /**
+     * Gets the text color.
+     *
      * @return the text color
      */
     public Color getTextColor() {
         return this.textColor;
     }
 
-    /** Sets the text color. If <CODE>null</CODE> the color used
-     * will be black.
+    /**
+     * Sets the text color. If <CODE>null</CODE> the color used will be black.
+     *
      * @param textColor the text color
      */
     public void setTextColor(Color textColor) {
         this.textColor = textColor;
     }
 
-    /** Gets the text font.
+    /**
+     * Gets the text font.
+     *
      * @return the text font
      */
     public BaseFont getFont() {
         return this.font;
     }
 
-    /** Sets the text font. If <CODE>null</CODE> then Helvetica
-     * will be used.
+    /**
+     * Sets the text font. If <CODE>null</CODE> then Helvetica will be used.
+     *
      * @param font the text font
      */
     public void setFont(BaseFont font) {
         this.font = font;
     }
 
-    /** Gets the font size.
+    /**
+     * Gets the font size.
+     *
      * @return the font size
      */
     public float getFontSize() {
         return this.fontSize;
     }
 
-    /** Sets the font size. If 0 then auto-sizing will be used but
-     * only for text fields.
+    /**
+     * Sets the font size. If 0 then auto-sizing will be used but only for text fields.
+     *
      * @param fontSize the font size
      */
     public void setFontSize(float fontSize) {
         this.fontSize = fontSize;
     }
 
-    /** Gets the text horizontal alignment.
+    /**
+     * Gets the text horizontal alignment.
+     *
      * @return the text horizontal alignment
      */
     public int getAlignment() {
         return this.alignment;
     }
 
-    /** Sets the text horizontal alignment. It can be <CODE>Element.ALIGN_LEFT</CODE>,
+    /**
+     * Sets the text horizontal alignment. It can be <CODE>Element.ALIGN_LEFT</CODE>,
      * <CODE>Element.ALIGN_CENTER</CODE> and <CODE>Element.ALIGN_RIGHT</CODE>.
+     *
      * @param alignment the text horizontal alignment
      */
     public void setAlignment(int alignment) {
         this.alignment = alignment;
     }
 
-    /** Gets the text.
+    /**
+     * Gets the text.
+     *
      * @return the text
      */
     public String getText() {
         return this.text;
     }
 
-    /** Sets the text for text fields.
+    /**
+     * Sets the text for text fields.
+     *
      * @param text the text
      */
     public void setText(String text) {
         this.text = text;
     }
 
-    /** Gets the field dimension and position.
+    /**
+     * Gets the field dimension and position.
+     *
      * @return the field dimension and position
      */
     public Rectangle getBox() {
         return this.box;
     }
 
-    /** Sets the field dimension and position.
+    /**
+     * Sets the field dimension and position.
+     *
      * @param box the field dimension and position
      */
     public void setBox(Rectangle box) {
         if (box == null) {
             this.box = null;
-        }
-        else {
+        } else {
             this.box = new Rectangle(box);
             this.box.normalize();
         }
     }
 
-    /** Gets the field rotation.
+    /**
+     * Gets the field rotation.
+     *
      * @return the field rotation
      */
     public int getRotation() {
         return this.rotation;
     }
 
-    /** Sets the field rotation. This value should be the same as
-     * the page rotation where the field will be shown.
+    /**
+     * Sets the field rotation. This value should be the same as the page rotation where the field will be shown.
+     *
      * @param rotation the field rotation
      */
     public void setRotation(int rotation) {
-        if (rotation % 90 != 0)
-            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("rotation.must.be.a.multiple.of.90"));
+        if (rotation % 90 != 0) {
+            throw new IllegalArgumentException(
+                    MessageLocalization.getComposedMessage("rotation.must.be.a.multiple.of.90"));
+        }
         rotation %= 360;
-        if (rotation < 0)
+        if (rotation < 0) {
             rotation += 360;
+        }
         this.rotation = rotation;
     }
 
-    /** Convenience method to set the field rotation the same as the
-     * page rotation.
+    /**
+     * Convenience method to set the field rotation the same as the page rotation.
+     *
      * @param page the page
      */
     public void setRotationFromPage(Rectangle page) {
         setRotation(page.getRotation());
     }
 
-    /** Gets the field visibility flag.
+    /**
+     * Gets the field visibility flag.
+     *
      * @return the field visibility flag
      */
     public int getVisibility() {
         return this.visibility;
     }
 
-    /** Sets the field visibility flag. This flags can be one of
+    /**
+     * Sets the field visibility flag. This flags can be one of
      * <CODE>VISIBLE</CODE>, <CODE>HIDDEN</CODE>, <CODE>VISIBLE_BUT_DOES_NOT_PRINT</CODE>
      * and <CODE>HIDDEN_BUT_PRINTABLE</CODE>.
+     *
      * @param visibility field visibility flag
      */
     public void setVisibility(int visibility) {
         this.visibility = visibility;
     }
 
-    /** Gets the field name.
+    /**
+     * Gets the field name.
+     *
      * @return the field name
      */
     public String getFieldName() {
         return this.fieldName;
     }
 
-    /** Sets the field name.
-     * @param fieldName the field name. If <CODE>null</CODE> only the widget keys
-     * will be included in the field allowing it to be used as a kid field.
+    /**
+     * Sets the field name.
+     *
+     * @param fieldName the field name. If <CODE>null</CODE> only the widget keys will be included in the field allowing
+     *                  it to be used as a kid field.
      */
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
-    
-    /** Gets the alternate field name. (PDF attribute TU)
+
+    /**
+     * Gets the alternate field name. (PDF attribute TU)
+     *
      * @return the alternate field name
      */
     public String getAlternateFieldName() {
         return this.alternateFieldName;
     }
-      
-    /** 
+
+    /**
      * Sets the alternateFieldName field name.
+     *
      * @param alternateFieldName the alternate field name.
      */
     public void setAlternateFieldName(String alternateFieldName) {
         this.alternateFieldName = alternateFieldName;
     }
-    
-    /** Gets the mapping name. (PDF attribute TM)
+
+    /**
+     * Gets the mapping name. (PDF attribute TM)
+     *
      * @return the mapping field name
      */
     public String getMappingName() {
         return this.mappingName;
     }
 
-    /** 
+    /**
      * Sets the mapping name. (PDF TM)
+     *
      * @param mappingName the mapping name.
      */
     public void setMappingName(String mappingName) {
         this.mappingName = mappingName;
     }
 
-    /** Gets the option flags.
+    /**
+     * Gets the option flags.
+     *
      * @return the option flags
      */
     public int getOptions() {
         return this.options;
     }
 
-    /** Sets the option flags. The option flags can be a combination by oring of
+    /**
+     * Sets the option flags. The option flags can be a combination by oring of
      * <CODE>READ_ONLY</CODE>, <CODE>REQUIRED</CODE>,
      * <CODE>MULTILINE</CODE>, <CODE>DO_NOT_SCROLL</CODE>,
      * <CODE>PASSWORD</CODE>, <CODE>FILE_SELECTION</CODE>,
      * <CODE>DO_NOT_SPELL_CHECK</CODE> and <CODE>EDIT</CODE>.
+     *
      * @param options the option flags
      */
     public void setOptions(int options) {
         this.options = options;
     }
 
-    /** Gets the maximum length of the field's text, in characters.
+    /**
+     * Gets the maximum length of the field's text, in characters.
+     *
      * @return the maximum length of the field's text, in characters.
      */
     public int getMaxCharacterLength() {
         return this.maxCharacterLength;
     }
 
-    /** Sets the maximum length of the field's text, in characters.
-     * It is only meaningful for text fields.
+    /**
+     * Sets the maximum length of the field's text, in characters. It is only meaningful for text fields.
+     *
      * @param maxCharacterLength the maximum length of the field's text, in characters
      */
     public void setMaxCharacterLength(int maxCharacterLength) {
@@ -714,6 +840,7 @@ public abstract class BaseField {
 
     /**
      * Getter for property writer.
+     *
      * @return Value of property writer.
      */
     public PdfWriter getWriter() {
@@ -722,26 +849,10 @@ public abstract class BaseField {
 
     /**
      * Setter for property writer.
+     *
      * @param writer New value of property writer.
      */
     public void setWriter(PdfWriter writer) {
         this.writer = writer;
-    }
-
-    /**
-     * Moves the field keys from <CODE>from</CODE> to <CODE>to</CODE>. The moved keys
-     * are removed from <CODE>from</CODE>.
-     * @param from the source
-     * @param to the destination. It may be <CODE>null</CODE>
-     */
-    public static void moveFields(PdfDictionary from, PdfDictionary to) {
-        for (Iterator i = from.getKeys().iterator(); i.hasNext();) {
-            PdfName key = (PdfName)i.next();
-            if (fieldKeys.containsKey(key)) {
-                if (to != null)
-                    to.put(key, from.get(key));
-                i.remove();
-            }
-        }
     }
 }

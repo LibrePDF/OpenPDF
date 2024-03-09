@@ -51,7 +51,6 @@ package com.lowagie.text.xml.simpleparser;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Font;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,13 +61,9 @@ import java.util.Map;
 @SuppressWarnings("deprecated")
 public class EntitiesToSymbol {
 
-    public static Map<String, Character> getMap() {
-        return map;
-    }
-
     /**
-     * This is a map that contains all possible id values of the entity tag
-     * that can be translated to a character in font Symbol.
+     * This is a map that contains all possible id values of the entity tag that can be translated to a character in
+     * font Symbol.
      *
      * @deprecated use the getter ({@link EntitiesToSymbol#getMap()}) instead of accessing this field directly
      */
@@ -353,19 +348,23 @@ public class EntitiesToSymbol {
         map.put("zeta", (char) 122);
     }
 
+    public static Map<String, Character> getMap() {
+        return map;
+    }
+
     /**
      * Gets a chunk with a symbol character.
-     * @param e a symbol value (see Entities class: alfa is greek alfa,...)
+     *
+     * @param e    a symbol value (see Entities class: alfa is greek alfa,...)
      * @param font the font if the symbol isn't found (otherwise Font.SYMBOL)
      * @return a Chunk
      */
     public static Chunk get(String e, Font font) {
         char s = getCorrespondingSymbol(e);
-        if (s == (char)0) {
+        if (s == (char) 0) {
             try {
-                return new Chunk(String.valueOf((char)Integer.parseInt(e)), font);
-            }
-            catch(Exception exception) {
+                return new Chunk(String.valueOf((char) Integer.parseInt(e)), font);
+            } catch (Exception exception) {
                 return new Chunk(e, font);
             }
         }
@@ -376,13 +375,13 @@ public class EntitiesToSymbol {
     /**
      * Looks for the corresponding symbol in the font Symbol.
      *
-     * @param    name    the name of the entity
-     * @return    the corresponding character in font Symbol
+     * @param name the name of the entity
+     * @return the corresponding character in font Symbol
      */
     public static char getCorrespondingSymbol(String name) {
         Character symbol = map.get(name);
         if (symbol == null) {
-            return (char)0;
+            return (char) 0;
         }
         return symbol;
     }

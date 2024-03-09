@@ -9,22 +9,23 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.general.copystamp;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
+import java.io.FileOutputStream;
 
 /**
  * Fill in a simple registration form.
  */
 public class Register {
+
     /**
      * Reads a form and fills in the fields.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -50,8 +51,7 @@ public class Register {
             form2.setField("email", "bruno@lowagie.com");
             stamp2.setFormFlattening(true);
             stamp2.close();
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

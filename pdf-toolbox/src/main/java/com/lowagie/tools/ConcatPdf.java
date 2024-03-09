@@ -49,6 +49,13 @@
 
 package com.lowagie.tools;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.pdf.PdfCopy;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStream;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.SimpleBookmark;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -58,62 +65,53 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.PdfCopy;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStream;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.SimpleBookmark;
-
 /**
  * Tool that can be used to concatenate existing PDF files.
+ *
  * @since 2.1.1 (renamed to follow Java naming conventions)
  */
 public class ConcatPdf {
-    
+
     /**
-     * This class can be used to concatenate existing PDF files.
-     * (This was an example known as PdfCopy.java)
+     * This class can be used to concatenate existing PDF files. (This was an example known as PdfCopy.java)
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         if (args.length < 2) {
             System.err.println("arguments: file1 [file2 ...] destfile");
-        }
-        else {
+        } else {
             try {
-                File outFile = new File(args[args.length-1]);
+                File outFile = new File(args[args.length - 1]);
                 List<File> sources = new ArrayList<>();
-                for (int i = 0; i < args.length -1; i++) {
+                for (int i = 0; i < args.length - 1; i++) {
                     sources.add(new File(args[i]));
                 }
-                concat(sources, outFile);     
-            }
-            catch(IOException e) {
+                concat(sources, outFile);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-    
+
     public static void concat(List<File> sources, File target) throws IOException {
-        
-        for (File source: sources) {
+
+        for (File source : sources) {
             if (!source.isFile() || !source.canRead()) {
                 throw new IOException("cannot read:" + source.getAbsolutePath());
             }
         }
-        
+
         int pageOffset = 0;
         List<Map<String, Object>> master = new ArrayList<>();
-        
+
         Document document = new Document();
-        PdfCopy  writer = new PdfCopy(document, new BufferedOutputStream(Files.newOutputStream(target.toPath())));
+        PdfCopy writer = new PdfCopy(document, new BufferedOutputStream(Files.newOutputStream(target.toPath())));
         writer.setPdfVersion(PdfWriter.VERSION_1_7);
         writer.setFullCompression();
         writer.setCompressionLevel(PdfStream.BEST_COMPRESSION);
         document.open();
-        for (File source: sources) {
+        for (File source : sources) {
             // we create a reader for a certain document
             PdfReader reader = new PdfReader(new BufferedInputStream(Files.newInputStream(source.toPath())));
             reader.consolidateNamedDestinations();

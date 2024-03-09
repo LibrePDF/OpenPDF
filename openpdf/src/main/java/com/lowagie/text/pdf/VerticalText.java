@@ -46,77 +46,98 @@
  * https://github.com/LibrePDF/OpenPDF
  */
 package com.lowagie.text.pdf;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Element;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.error_messages.MessageLocalization;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-/** Writes text vertically. Note that the naming is done according
- * to horizontal text although it refers to vertical text.
- * A line with the alignment Element.LEFT_ALIGN will actually
- * be top aligned.
+/**
+ * Writes text vertically. Note that the naming is done according to horizontal text although it refers to vertical
+ * text. A line with the alignment Element.LEFT_ALIGN will actually be top aligned.
  */
 public class VerticalText {
 
-/** Signals that there are no more text available. */    
+    /**
+     * Signals that there are no more text available.
+     */
     public static final int NO_MORE_TEXT = 1;
-    
-/** Signals that there is no more column. */    
+
+    /**
+     * Signals that there is no more column.
+     */
     public static final int NO_MORE_COLUMN = 2;
 
-/** The chunks that form the text. */    
+    /**
+     * The chunks that form the text.
+     */
     protected ArrayList<PdfChunk> chunks = new ArrayList<>();
 
-    /** The <CODE>PdfContent</CODE> where the text will be written to. */    
+    /**
+     * The <CODE>PdfContent</CODE> where the text will be written to.
+     */
     protected PdfContentByte text;
-    
-    /** The column alignment. Default is left alignment. */
+
+    /**
+     * The column alignment. Default is left alignment.
+     */
     protected int alignment = Element.ALIGN_LEFT;
 
-    /** Marks the chunks to be eliminated when the line is written. */
+    /**
+     * Marks the chunks to be eliminated when the line is written.
+     */
     protected int currentChunkMarker = -1;
-    
-    /** The chunk created by the splitting. */
+
+    /**
+     * The chunk created by the splitting.
+     */
     protected PdfChunk currentStandbyChunk;
-    
-    /** The chunk created by the splitting. */
+
+    /**
+     * The chunk created by the splitting.
+     */
     protected String splittedChunkText;
 
-    /** The leading
-     */    
+    /**
+     * The leading
+     */
     protected float leading;
-    
-    /** The X coordinate.
-     */    
+
+    /**
+     * The X coordinate.
+     */
     protected float startX;
-    
-    /** The Y coordinate.
-     */    
+
+    /**
+     * The Y coordinate.
+     */
     protected float startY;
-    
-    /** The maximum number of vertical lines.
-     */    
+
+    /**
+     * The maximum number of vertical lines.
+     */
     protected int maxLines;
-    
-    /** The height of the text.
-     */    
+
+    /**
+     * The height of the text.
+     */
     protected float height;
-    
-    /** Creates new VerticalText
-     * @param text the place where the text will be written to. Can
-     * be a template.
+
+    /**
+     * Creates new VerticalText
+     *
+     * @param text the place where the text will be written to. Can be a template.
      */
     public VerticalText(PdfContentByte text) {
         this.text = text;
     }
-    
+
     /**
      * Adds a <CODE>Phrase</CODE> to the current text array.
+     *
      * @param phrase the text
      */
     public void addText(Phrase phrase) {
@@ -124,22 +145,25 @@ public class VerticalText {
             chunks.add(new PdfChunk((Chunk) o, null));
         }
     }
-    
+
     /**
      * Adds a <CODE>Chunk</CODE> to the current text array.
+     *
      * @param chunk the text
      */
     public void addText(Chunk chunk) {
         chunks.add(new PdfChunk(chunk, null));
     }
 
-    /** Sets the layout.
-     * @param startX the top right X line position
-     * @param startY the top right Y line position
-     * @param height the height of the lines
+    /**
+     * Sets the layout.
+     *
+     * @param startX   the top right X line position
+     * @param startY   the top right Y line position
+     * @param height   the height of the lines
      * @param maxLines the maximum number of lines
-     * @param leading the separation between the lines
-     */    
+     * @param leading  the separation between the lines
+     */
     public void setVerticalLayout(float startX, float startY, float height, int maxLines, float leading) {
         this.startX = startX;
         this.startY = startY;
@@ -147,29 +171,35 @@ public class VerticalText {
         this.maxLines = maxLines;
         setLeading(leading);
     }
-    
-    /** Sets the separation between the vertical lines.
+
+    /**
+     * Gets the separation between the vertical lines.
+     *
+     * @return the vertical line separation
+     */
+    public float getLeading() {
+        return leading;
+    }
+
+    /**
+     * Sets the separation between the vertical lines.
+     *
      * @param leading the vertical line separation
-     */    
+     */
     public void setLeading(float leading) {
         this.leading = leading;
     }
 
-    /** Gets the separation between the vertical lines.
-     * @return the vertical line separation
-     */    
-    public float getLeading() {
-        return leading;
-    }
-    
     /**
      * Creates a line from the chunk array.
+     *
      * @param width the width of the line
      * @return the line or null if no more chunks
      */
     protected PdfLine createLine(float width) {
-        if (chunks.isEmpty())
+        if (chunks.isEmpty()) {
             return null;
+        }
         splittedChunkText = null;
         currentStandbyChunk = null;
         PdfLine line = new PdfLine(0, width, alignment, 0);
@@ -186,13 +216,14 @@ public class VerticalText {
         }
         return line;
     }
-    
+
     /**
      * Normalizes the list of chunks when the line is accepted.
      */
     protected void shortenChunkArray() {
-        if (currentChunkMarker < 0)
+        if (currentChunkMarker < 0) {
             return;
+        }
         if (currentChunkMarker >= chunks.size()) {
             chunks.clear();
             return;
@@ -207,33 +238,37 @@ public class VerticalText {
 
     /**
      * Outputs the lines to the document. It is equivalent to <CODE>go(false)</CODE>.
-     * @return returns the result of the operation. It can be <CODE>NO_MORE_TEXT</CODE>
-     * and/or <CODE>NO_MORE_COLUMN</CODE>
+     *
+     * @return returns the result of the operation. It can be <CODE>NO_MORE_TEXT</CODE> and/or
+     * <CODE>NO_MORE_COLUMN</CODE>
      */
     public int go() {
         return go(false);
     }
-    
+
     /**
      * Outputs the lines to the document. The output can be simulated.
+     *
      * @param simulate <CODE>true</CODE> to simulate the writing to the document
-     * @return returns the result of the operation. It can be <CODE>NO_MORE_TEXT</CODE>
-     * and/or <CODE>NO_MORE_COLUMN</CODE>
+     * @return returns the result of the operation. It can be <CODE>NO_MORE_TEXT</CODE> and/or
+     * <CODE>NO_MORE_COLUMN</CODE>
      */
     public int go(boolean simulate) {
         boolean dirty = false;
         PdfContentByte graphics = null;
         if (text != null) {
             graphics = text.getDuplicate();
+        } else if (!simulate) {
+            throw new NullPointerException(MessageLocalization.getComposedMessage(
+                    "verticaltext.go.with.simulate.eq.eq.false.and.text.eq.eq.null"));
         }
-        else if (!simulate)
-            throw new NullPointerException(MessageLocalization.getComposedMessage("verticaltext.go.with.simulate.eq.eq.false.and.text.eq.eq.null"));
         int status = 0;
-        for (;;) {
+        for (; ; ) {
             if (maxLines <= 0) {
                 status = NO_MORE_COLUMN;
-                if (chunks.isEmpty())
+                if (chunks.isEmpty()) {
                     status |= NO_MORE_TEXT;
+                }
                 break;
             }
             if (chunks.isEmpty()) {
@@ -259,92 +294,109 @@ public class VerticalText {
         }
         return status;
     }
-    
+
     void writeLine(PdfLine line, PdfContentByte text, PdfContentByte graphics) {
         PdfFont currentFont = null;
         PdfChunk chunk;
         for (Iterator j = line.iterator(); j.hasNext(); ) {
             chunk = (PdfChunk) j.next();
-            
+
             if (chunk.font().compareTo(currentFont) != 0) {
                 currentFont = chunk.font();
                 text.setFontAndSize(currentFont.getFont(), currentFont.size());
             }
             Color color = chunk.color();
-            if (color != null)
+            if (color != null) {
                 text.setColorFill(color);
+            }
             text.showText(chunk.toString());
-            if (color != null)
+            if (color != null) {
                 text.resetRGBColorFill();
+            }
         }
     }
-    
-    /** Sets the new text origin.
+
+    /**
+     * Sets the new text origin.
+     *
      * @param startX the X coordinate
      * @param startY the Y coordinate
-     */    
+     */
     public void setOrigin(float startX, float startY) {
         this.startX = startX;
         this.startY = startY;
     }
-    
-    /** Gets the X coordinate where the next line will be written. This value will change
-     * after each call to <code>go()</code>.
-     * @return  the X coordinate
-     */    
+
+    /**
+     * Gets the X coordinate where the next line will be written. This value will change after each call to
+     * <code>go()</code>.
+     *
+     * @return the X coordinate
+     */
     public float getOriginX() {
         return startX;
     }
 
-    /** Gets the Y coordinate where the next line will be written.
-     * @return  the Y coordinate
-     */    
+    /**
+     * Gets the Y coordinate where the next line will be written.
+     *
+     * @return the Y coordinate
+     */
     public float getOriginY() {
         return startY;
     }
-    
-    /** Gets the maximum number of available lines. This value will change
-     * after each call to <code>go()</code>.
+
+    /**
+     * Gets the maximum number of available lines. This value will change after each call to <code>go()</code>.
+     *
      * @return Value of property maxLines.
      */
     public int getMaxLines() {
         return maxLines;
     }
-    
-    /** Sets the maximum number of lines.
+
+    /**
+     * Sets the maximum number of lines.
+     *
      * @param maxLines the maximum number of lines
      */
     public void setMaxLines(int maxLines) {
         this.maxLines = maxLines;
     }
-    
-    /** Gets the height of the line
+
+    /**
+     * Gets the height of the line
+     *
      * @return the height
      */
     public float getHeight() {
         return height;
     }
-    
-    /** Sets the height of the line
+
+    /**
+     * Sets the height of the line
+     *
      * @param height the new height
      */
     public void setHeight(float height) {
         this.height = height;
     }
-    
-    /**
-     * Sets the alignment.
-     * @param alignment the alignment
-     */
-    public void setAlignment(int alignment) {
-        this.alignment = alignment;
-    }
-    
+
     /**
      * Gets the alignment.
+     *
      * @return the alignment
      */
     public int getAlignment() {
         return alignment;
+    }
+
+    /**
+     * Sets the alignment.
+     *
+     * @param alignment the alignment
+     */
+    public void setAlignment(int alignment) {
+        this.alignment = alignment;
     }
 }

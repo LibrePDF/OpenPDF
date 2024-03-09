@@ -9,25 +9,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.forms.fill;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.FdfReader;
 import com.lowagie.text.pdf.FdfWriter;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
+import java.io.FileOutputStream;
 
 /**
- * How to create an FDF file.
- * How to merge an FDF file with a PDF form.
+ * How to create an FDF file. How to merge an FDF file with a PDF form.
  */
 public class FdfExample {
+
     /**
      * Writes an FDF file and merges it with a PDF form.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -48,10 +48,9 @@ public class FdfExample {
             AcroFields form = stamp.getAcroFields();
             form.setFields(fdfreader);
             stamp.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
 }

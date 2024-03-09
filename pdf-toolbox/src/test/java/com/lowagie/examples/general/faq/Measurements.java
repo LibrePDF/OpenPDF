@@ -9,48 +9,50 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.general.faq;
 
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates the measurement system.
+ *
  * @author blowagie
  */
 public class Measurements {
+
     /**
      * Creates a PDF document explaining the measurement system.
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
-        
-        System.out.println("Measurements");        
+
+        System.out.println("Measurements");
         // step 1: creation of a document-object
         Rectangle pageSize = new Rectangle(288, 720);
         Document document = new Document(pageSize, 36, 18, 72, 72);
-        
+
         try {
-            
+
             // step 2:
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
-            
+
             PdfWriter.getInstance(document, new FileOutputStream("Measurements.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
             document.add(new Paragraph("The size of this page is 288x720 points."));
             document.add(new Paragraph("288pt / 72 points per inch = 4 inch"));
@@ -62,8 +64,7 @@ public class Measurements {
             document.add(new Paragraph("The left border is 36pt or 0.5 inch or 1.27 cm"));
             document.add(new Paragraph("The right border is 18pt or 0.25 inch or 0.63 cm."));
             document.add(new Paragraph("The top and bottom border are 72pt or 1 inch or 2.54 cm."));
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 

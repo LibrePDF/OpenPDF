@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.colors;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Image;
@@ -21,6 +19,7 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Demonstrates transparency and images.
@@ -29,6 +28,7 @@ public class SoftMask {
 
     /**
      * Demonstrates the Transparency functionality.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -55,15 +55,15 @@ public class SoftMask {
             Image img = Image.getInstance("otsoe.jpg");
             img.setAbsolutePosition(100, 550);
             byte[] gradient = new byte[256];
-            for (int k = 0; k < 256; ++k)
-                gradient[k] = (byte)k;
+            for (int k = 0; k < 256; ++k) {
+                gradient[k] = (byte) k;
+            }
             Image smask = Image.getInstance(256, 1, 1, 8, gradient);
             smask.makeMask();
             img.setImageMask(smask);
             cb.addImage(img);
             cb.sanityCheck();
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
         // step 5: we close the document

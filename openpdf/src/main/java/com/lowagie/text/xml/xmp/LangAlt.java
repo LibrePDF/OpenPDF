@@ -30,7 +30,7 @@
  * the MPL, indicate your decision by deleting the provisions above and
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE 
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
@@ -54,23 +54,28 @@ import java.util.Properties;
 
 public class LangAlt extends Properties {
 
-    /** A serial version id. */
-    private static final long serialVersionUID = 4396971487200843099L;
-    
-    /** Key for the default language. */
+    /**
+     * Key for the default language.
+     */
     public static final String DEFAULT = "x-default";
+    /**
+     * A serial version id.
+     */
+    private static final long serialVersionUID = 4396971487200843099L;
 
     /**
      * Creates a Properties object that stores languages for use in an XmpSchema
      *
-     * @param defaultValue  default value
+     * @param defaultValue default value
      */
     public LangAlt(String defaultValue) {
         super();
         addLanguage(DEFAULT, defaultValue);
     }
 
-    /** Creates a Properties object that stores languages for use in an XmpSchema */
+    /**
+     * Creates a Properties object that stores languages for use in an XmpSchema
+     */
     public LangAlt() {
         super();
     }
@@ -79,7 +84,7 @@ public class LangAlt extends Properties {
      * Add a language.
      *
      * @param language language
-     * @param value value
+     * @param value    value
      */
     public void addLanguage(String language, String value) {
         setProperty(language, XmpSchema.escape(value));
@@ -88,7 +93,7 @@ public class LangAlt extends Properties {
     /**
      * Process a property.
      *
-     * @param buf buffer
+     * @param buf  buffer
      * @param lang object
      */
     protected void process(StringBuffer buf, Object lang) {
@@ -105,7 +110,7 @@ public class LangAlt extends Properties {
     public synchronized String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("<rdf:Alt>");
-        for (Enumeration e = this.propertyNames(); e.hasMoreElements();) {
+        for (Enumeration e = this.propertyNames(); e.hasMoreElements(); ) {
             process(sb, e.nextElement());
         }
         sb.append("</rdf:Alt>");

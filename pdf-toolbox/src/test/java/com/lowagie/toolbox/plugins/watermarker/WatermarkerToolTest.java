@@ -6,13 +6,13 @@ public class WatermarkerToolTest {
      * Adding text at absolute positions.
      *
      * @param args no arguments needed
-     *
-     * Before passing that test, you have to create a MyFile.pdf at the project root.
-     * The generated files will be written there too.
-     *
+     *             <p>
+     *             Before passing that test, you have to create a MyFile.pdf at the project root. The generated files
+     *             will be written there too.
      */
     public static void main(String[] args) {
         WatermarkerTool.main(new String[]{"MyFile.pdf", "Specimen", "120", "0.5", "MyFile-watermark.pdf"});
-        WatermarkerTool.main(new String[]{"MyFile.pdf", "Specimen", "120", "0.5", "MyFile-watermark-red.pdf", "#FF0000"});
+        WatermarkerTool.main(
+                new String[]{"MyFile.pdf", "Specimen", "120", "0.5", "MyFile-watermark-red.pdf", "#FF0000"});
     }
 }

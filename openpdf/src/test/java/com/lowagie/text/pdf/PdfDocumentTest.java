@@ -39,12 +39,16 @@ class PdfDocumentTest {
                     final PdfPCell[] cells = result.getRows().get(0).getCells();
                     assertThat(cells.length, equalTo(1));
                 }),
-                DynamicTest.dynamicTest("elements in cell should be 5", () -> assertThat(getCellElements(result).size(), equalTo(5))),
+                DynamicTest.dynamicTest("elements in cell should be 5",
+                        () -> assertThat(getCellElements(result).size(), equalTo(5))),
                 DynamicTest.dynamicTest("element text should be '" + PARAGRAPH_TEXT_1 + "'",
-                        () -> assertThat(getCellElements(result).get(0).getChunks().toString(), equalTo(paragraph1.toString()))),
-                DynamicTest.dynamicTest("element should be table", () -> assertThat(getCellElements(result).get(2), equalTo(table))),
+                        () -> assertThat(getCellElements(result).get(0).getChunks().toString(),
+                                equalTo(paragraph1.toString()))),
+                DynamicTest.dynamicTest("element should be table",
+                        () -> assertThat(getCellElements(result).get(2), equalTo(table))),
                 DynamicTest.dynamicTest("element text should be '" + PARAGRAPH_TEXT_2 + "'",
-                        () -> assertThat(getCellElements(result).get(3).getChunks().toString(), equalTo(paragraph2.toString()))));
+                        () -> assertThat(getCellElements(result).get(3).getChunks().toString(),
+                                equalTo(paragraph2.toString()))));
     }
 
     private List<Element> getCellElements(PdfPTable result) {

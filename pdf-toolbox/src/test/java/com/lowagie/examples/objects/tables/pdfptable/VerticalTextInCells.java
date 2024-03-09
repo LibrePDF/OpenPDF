@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.pdfptable;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -25,16 +22,18 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Vertical Text in Cells.
  */
 public class VerticalTextInCells {
-    
+
     /**
      * Example with vertical text in Cells.
-     * @param args
-     *         no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -47,7 +46,7 @@ public class VerticalTextInCells {
             // step3
             document.open();
             // step4
-            
+
             // make a PdfTemplate with the vertical text
             PdfTemplate template = writer.getDirectContent().createTemplate(20, 20);
             BaseFont bf = BaseFont.createFont("Helvetica", "winansi", false);
@@ -83,8 +82,7 @@ public class VerticalTextInCells {
             table.addCell(cell);
             table.addCell("I see a template on my left");
             document.add(table);
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
         // step5

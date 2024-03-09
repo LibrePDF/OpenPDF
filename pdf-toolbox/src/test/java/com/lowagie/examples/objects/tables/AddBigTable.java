@@ -9,17 +9,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Add a big table to a PDF with document.add().
@@ -28,9 +27,8 @@ public class AddBigTable {
 
     /**
      * Big PdfPTable with document.add().
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -44,9 +42,9 @@ public class AddBigTable {
             // step3
             document.open();
             // step4
-            String[] bogusData = { "M0065920", "SL", "FR86000P", "PCGOLD",
+            String[] bogusData = {"M0065920", "SL", "FR86000P", "PCGOLD",
                     "119000", "96 06", "2001-08-13", "4350", "6011648299",
-                    "FLFLMTGP", "153", "119000.00" };
+                    "FLFLMTGP", "153", "119000.00"};
             int NumColumns = 12;
 
             PdfPTable datatable = new PdfPTable(NumColumns);

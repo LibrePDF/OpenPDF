@@ -36,70 +36,6 @@ public class ProgressServlet extends HttpServlet {
 
     private static final long serialVersionUID = 6272312661092621179L;
 
-    /**
-     * This class will keep a Pdf file
-     *
-     * @author blowagie
-     */
-    public static class MyPdf implements Runnable {
-
-        /**
-         * the ByteArrayOutputStream that holds the PDF data.
-         */
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        /**
-         * the percentage of the PDF file that is finished
-         */
-        int p = 0;
-
-        @Override
-        public void run() {
-            // step 1
-            Document doc = new Document();
-            try {
-                // step 2
-                PdfWriter.getInstance(doc, baos);
-                // step 3
-                doc.open();
-                // step 4
-                while (p < 99) {
-                    doc.add(new Paragraph(new Date().toString()));
-                    // we slow the process down deliberately
-                    Thread.sleep(500);
-                    p++;
-                }
-            } catch (DocumentException | InterruptedException e) {
-                p = -1;
-                e.printStackTrace();
-            }
-            // step 5
-            doc.close();
-            p = 100;
-        }
-
-        /**
-         * Gets the complete PDF data
-         *
-         * @return the PDF as an array of bytes
-         * @throws DocumentException when the document isn't ready yet
-         */
-        public ByteArrayOutputStream getPdf() throws DocumentException {
-            if (p < 100) {
-                throw new DocumentException("The document isn't finished yet!");
-            }
-            return baos;
-        }
-
-        /**
-         * Gets the current percentage of the file that is done.
-         *
-         * @return a percentage or -1 if something went wrong.
-         */
-        public int getPercentage() {
-            return p;
-        }
-    }
-
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -187,5 +123,69 @@ public class ProgressServlet extends HttpServlet {
     private void isError(ServletOutputStream stream) throws IOException {
         stream.print("<html>\n\t<head>\n\t\t<title>Error</title>\n\t</head>\n\t<body>");
         stream.print("An error occured.\n\t</body>\n</html>");
+    }
+
+    /**
+     * This class will keep a Pdf file
+     *
+     * @author blowagie
+     */
+    public static class MyPdf implements Runnable {
+
+        /**
+         * the ByteArrayOutputStream that holds the PDF data.
+         */
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        /**
+         * the percentage of the PDF file that is finished
+         */
+        int p = 0;
+
+        @Override
+        public void run() {
+            // step 1
+            Document doc = new Document();
+            try {
+                // step 2
+                PdfWriter.getInstance(doc, baos);
+                // step 3
+                doc.open();
+                // step 4
+                while (p < 99) {
+                    doc.add(new Paragraph(new Date().toString()));
+                    // we slow the process down deliberately
+                    Thread.sleep(500);
+                    p++;
+                }
+            } catch (DocumentException | InterruptedException e) {
+                p = -1;
+                e.printStackTrace();
+            }
+            // step 5
+            doc.close();
+            p = 100;
+        }
+
+        /**
+         * Gets the complete PDF data
+         *
+         * @return the PDF as an array of bytes
+         * @throws DocumentException when the document isn't ready yet
+         */
+        public ByteArrayOutputStream getPdf() throws DocumentException {
+            if (p < 100) {
+                throw new DocumentException("The document isn't finished yet!");
+            }
+            return baos;
+        }
+
+        /**
+         * Gets the current percentage of the file that is done.
+         *
+         * @return a percentage or -1 if something went wrong.
+         */
+        public int getPercentage() {
+            return p;
+        }
     }
 }

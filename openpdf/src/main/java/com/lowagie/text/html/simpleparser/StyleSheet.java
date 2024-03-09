@@ -50,10 +50,9 @@
 
 package com.lowagie.text.html.simpleparser;
 
+import com.lowagie.text.html.Markup;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.lowagie.text.html.Markup;
 
 public class StyleSheet {
 
@@ -61,10 +60,10 @@ public class StyleSheet {
     private final Map<String, Map<String, String>> tagMap = new HashMap<>();
 
     /**
-     * @deprecated please use #applyStyle(String tag, Map&lt;String, String&gt; props) this method will be
-     * removed in 2.0
      * @param props a HashMap
-     * @param tag the tag
+     * @param tag   the tag
+     * @deprecated please use #applyStyle(String tag, Map&lt;String, String&gt; props) this method will be removed in
+     * 2.0
      */
     @Deprecated
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -80,11 +79,13 @@ public class StyleSheet {
             props.putAll(temp);
         }
         String cm = props.get(Markup.HTML_ATTR_CSS_CLASS);
-        if (cm == null)
+        if (cm == null) {
             return;
+        }
         map = classMap.get(cm.toLowerCase());
-        if (map == null)
+        if (map == null) {
             return;
+        }
         props.remove(Markup.HTML_ATTR_CSS_CLASS);
         Map<String, String> temp = new HashMap<>(map);
         temp.putAll(props);

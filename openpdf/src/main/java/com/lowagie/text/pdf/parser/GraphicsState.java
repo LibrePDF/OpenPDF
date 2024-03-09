@@ -56,6 +56,7 @@ import com.lowagie.text.pdf.DocumentFont;
  */
 @SuppressWarnings("WeakerAccess")
 public class GraphicsState {
+
     /**
      * The current transformation matrix.
      */
@@ -175,8 +176,8 @@ public class GraphicsState {
     }
 
     /**
-     * Get maximum height above the baseline reached by glyphs in this font,
-     * excluding the height of glyphs for accented characters.
+     * Get maximum height above the baseline reached by glyphs in this font, excluding the height of glyphs for accented
+     * characters.
      *
      * @return ascent descriptor value
      */
@@ -185,8 +186,7 @@ public class GraphicsState {
     }
 
     /**
-     * Get maximum depth below the baseline reached by glyphs in this font. The
-     * value is a negative number
+     * Get maximum depth below the baseline reached by glyphs in this font. The value is a negative number
      *
      * @return descent descriptor value
      */
@@ -239,7 +239,8 @@ public class GraphicsState {
     }
 
     /**
-     * Multiply transformation matrix and get result. Result would be also stored in this {@link GraphicsState} instance
+     * Multiply transformation matrix and get result. Result would be also stored in this {@link GraphicsState}
+     * instance
      *
      * @param matrix multiply by matrix
      * @return result matrix

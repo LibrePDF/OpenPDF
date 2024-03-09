@@ -4,12 +4,11 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 /**
  * @author SE_SUSTech, group: Lanrand test issue #620

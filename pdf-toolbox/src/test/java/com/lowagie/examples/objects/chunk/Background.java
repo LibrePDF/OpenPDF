@@ -9,14 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.chunk;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -24,10 +20,13 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates how 'highlight' Chunks using a Background color.
- * 
+ *
  * @author blowagie
  */
 
@@ -35,7 +34,7 @@ public class Background {
 
     /**
      * Using Background Colors in Chunks.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {

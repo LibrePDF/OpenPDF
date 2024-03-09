@@ -50,9 +50,9 @@
 package com.lowagie.text;
 
 /**
- * The RTF jar depends on the iText jar, but the iText jar may not
- * depend on the RTF jar. This interface offers a temporary solution
- * until we find a more elegant way to solve this.
+ * The RTF jar depends on the iText jar, but the iText jar may not depend on the RTF jar. This interface offers a
+ * temporary solution until we find a more elegant way to solve this.
+ *
  * @since 2.1.0
  */
 public interface RtfElementInterface {

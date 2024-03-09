@@ -55,12 +55,14 @@ public interface PdfOCG {
 
     /**
      * Gets the <CODE>PdfIndirectReference</CODE> that represents this layer.
+     *
      * @return the <CODE>PdfIndirectReference</CODE> that represents this layer
      */
     PdfIndirectReference getRef();
-    
+
     /**
      * Gets the object representing the layer.
+     *
      * @return the object representing the layer
      */
     PdfObject getPdfObject();

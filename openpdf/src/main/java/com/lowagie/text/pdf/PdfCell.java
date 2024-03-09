@@ -49,9 +49,6 @@
 
 package com.lowagie.text.pdf;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
@@ -62,29 +59,28 @@ import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * A <CODE>PdfCell</CODE> is the PDF translation of a <CODE>Cell</CODE>.
- * <P>
+ * <p>
  * A <CODE>PdfCell</CODE> is an <CODE>ArrayList</CODE> of <CODE>PdfLine</CODE>s.
- * <P>
+ * <p>
  * When using variable borders ({@link com.lowagie.text.Rectangle#isUseVariableBorders isUseVariableBorders()} == true),
- * the borders are drawn completely inside the cell Rectangle
- * so that adjacent cell borders will not overlap.
- * Otherwise, the borders are drawn on top of the edges of the
- * cell Rectangle and will overlap the borders of adjacent
- * cells.
+ * the borders are drawn completely inside the cell Rectangle so that adjacent cell borders will not overlap. Otherwise,
+ * the borders are drawn on top of the edges of the cell Rectangle and will overlap the borders of adjacent cells.
  *
- * @see        com.lowagie.text.Rectangle
- * @see        com.lowagie.text.Cell
- * @see        PdfLine
- * @see        PdfTable
+ * @see com.lowagie.text.Rectangle
+ * @see com.lowagie.text.Cell
+ * @see PdfLine
+ * @see PdfTable
  */
 
 public class PdfCell extends Rectangle {
 
     // membervariables
-    
+
     /**
      * These are the PdfLines in the Cell.
      */
@@ -131,20 +127,21 @@ public class PdfCell extends Rectangle {
     private boolean header = false;
 
     /**
-     * This is the total height of the content of the cell.  Note that the actual cell
-     * height may be larger due to another cell on the row *
+     * This is the total height of the content of the cell.  Note that the actual cell height may be larger due to
+     * another cell on the row *
      */
     private float contentHeight = 0.0f;
 
     /**
-     * Indicates that the largest ascender height should be used to
-     * determine the height of the first line. Setting this to true can help
-     * with vertical alignment problems. */
+     * Indicates that the largest ascender height should be used to determine the height of the first line. Setting this
+     * to true can help with vertical alignment problems.
+     */
     private boolean useAscender;
 
     /**
-     * Indicates that the largest descender height should be added to the height of
-     * the last line (so characters like y don't dip into the border). */
+     * Indicates that the largest descender height should be added to the height of the last line (so characters like y
+     * don't dip into the border).
+     */
     private boolean useDescender;
 
     /**
@@ -158,17 +155,21 @@ public class PdfCell extends Rectangle {
     private PdfLine lastLine;
 
     // constructors
-    
+    /**
+     * This is the number of the group the cell is in.
+     */
+    private int groupNumber;
+
     /**
      * Constructs a <CODE>PdfCell</CODE>-object.
      *
-     * @param    cell        the original <CODE>Cell</CODE>
-     * @param    rownumber    the number of the <CODE>Row</CODE> the <CODE>Cell</CODE> was in.
-     * @param    left        the left border of the <CODE>PdfCell</CODE>
-     * @param    right        the right border of the <CODE>PdfCell</CODE>
-     * @param    top            the top border of the <CODE>PdfCell</CODE>
-     * @param    cellspacing    the cellspacing of the <CODE>Table</CODE>
-     * @param    cellpadding    the cellpadding    of the <CODE>Table</CODE>
+     * @param cell        the original <CODE>Cell</CODE>
+     * @param rownumber   the number of the <CODE>Row</CODE> the <CODE>Cell</CODE> was in.
+     * @param left        the left border of the <CODE>PdfCell</CODE>
+     * @param right       the right border of the <CODE>PdfCell</CODE>
+     * @param top         the top border of the <CODE>PdfCell</CODE>
+     * @param cellspacing the cellspacing of the <CODE>Table</CODE>
+     * @param cellpadding the cellpadding    of the <CODE>Table</CODE>
      */
 
     public PdfCell(Cell cell, int rownumber, float left, float right, float top, float cellspacing, float cellpadding) {
@@ -197,7 +198,6 @@ public class PdfCell extends Rectangle {
         left += getBorderWidthInside(LEFT);
         right -= getBorderWidthInside(RIGHT);
 
-
         contentHeight = 0;
 
         rowspan = cell.getRowspan();
@@ -205,7 +205,7 @@ public class PdfCell extends Rectangle {
         java.util.List<PdfAction> allActions;
         int aCounter;
         // we loop over all the elements of the cell
-        for (Iterator i = cell.getElements(); i.hasNext();) {
+        for (Iterator i = cell.getElements(); i.hasNext(); ) {
             element = (Element) i.next();
             switch (element.type()) {
                 case Element.JPEG:
@@ -215,17 +215,17 @@ public class PdfCell extends Rectangle {
                 case Element.IMGTEMPLATE:
                     addImage((Image) element, left, right, 0.4f * leading, alignment); //
                     break;
-                    // if the element is a list
+                // if the element is a list
                 case Element.LIST:
                     if (line != null && line.size() > 0) {
                         line.resetAlignment();
                         addLine(line);
                     }
                     // we loop over all the listitems
-                    addList((List)element, left, right, alignment);
+                    addList((List) element, left, right, alignment);
                     line = new PdfLine(left, right, alignment, leading);
                     break;
-                    // if the element is something else
+                // if the element is something else
                 default:
                     allActions = new ArrayList<>();
                     processActions(element, null, allActions);
@@ -248,10 +248,9 @@ public class PdfCell extends Rectangle {
                     // we loop over the chunks
                     java.util.List<? extends Object> chunks = element.getChunks();
                     if (chunks.isEmpty()) {
-                       addLine(line); // add empty line - all cells need some lines even if they are empty
-                       line = new PdfLine(currentLeft, currentRight, alignment, currentLineLeading);
-                    }
-                    else {
+                        addLine(line); // add empty line - all cells need some lines even if they are empty
+                        line = new PdfLine(currentLeft, currentRight, alignment, currentLineLeading);
+                    } else {
                         for (Object chunk1 : chunks) {
                             Chunk c = (Chunk) chunk1;
                             chunk = new PdfChunk(c, (allActions.get(aCounter++)));
@@ -317,6 +316,8 @@ public class PdfCell extends Rectangle {
         this.rownumber = rownumber;
     }
 
+    // overriding of the Rectangle methods
+
     private void addList(List list, float left, float right, int alignment) {
         PdfChunk chunk;
         PdfChunk overflow;
@@ -350,12 +351,52 @@ public class PdfCell extends Rectangle {
         }
     }
 
-    // overriding of the Rectangle methods
+    /**
+     * Returns the lower left x-coordinate.
+     *
+     * @return the lower left x-coordinate
+     */
 
+    public float getLeft() {
+        return super.getLeft(cellspacing);
+    }
 
     /**
-     * Sets the bottom of the Rectangle and determines the proper {link #verticalOffset}
-     * to appropriately align the contents vertically.
+     * Returns the upper right x-coordinate.
+     *
+     * @return the upper right x-coordinate
+     */
+
+    public float getRight() {
+        return super.getRight(cellspacing);
+    }
+
+    /**
+     * Returns the upper right y-coordinate.
+     *
+     * @return the upper right y-coordinate
+     */
+
+    public float getTop() {
+        return super.getTop(cellspacing);
+    }
+
+    /**
+     * Returns the lower left y-coordinate.
+     *
+     * @return the lower left y-coordinate
+     */
+
+    public float getBottom() {
+        return super.getBottom(cellspacing);
+    }
+
+    // methods
+
+    /**
+     * Sets the bottom of the Rectangle and determines the proper {link #verticalOffset} to appropriately align the
+     * contents vertically.
+     *
      * @param value the lower-left y-coordinate of the rectangle
      */
     public void setBottom(float value) {
@@ -388,48 +429,6 @@ public class PdfCell extends Rectangle {
         }
     }
 
-    /**
-     * Returns the lower left x-coordinate.
-     *
-     * @return        the lower left x-coordinate
-     */
-
-    public float getLeft() {
-        return super.getLeft(cellspacing);
-    }
-
-    /**
-     * Returns the upper right x-coordinate.
-     *
-     * @return        the upper right x-coordinate
-     */
-
-    public float getRight() {
-        return super.getRight(cellspacing);
-    }
-
-    /**
-     * Returns the upper right y-coordinate.
-     *
-     * @return        the upper right y-coordinate
-     */
-
-    public float getTop() {
-        return super.getTop(cellspacing);
-    }
-
-    /**
-     * Returns the lower left y-coordinate.
-     *
-     * @return        the lower left y-coordinate
-     */
-
-    public float getBottom() {
-        return super.getBottom(cellspacing);
-    }
-    
-    // methods
-
     private void addLine(PdfLine line) {
         lines.add(line);
         contentHeight += line.height();
@@ -459,9 +458,9 @@ public class PdfCell extends Rectangle {
     }
 
     /**
-     * Calculates what the height of the first line should be so that the content will be
-     * flush with the top.  For text, this is the height of the ascender.  For an image,
-     * it is the actual height of the image.
+     * Calculates what the height of the first line should be so that the content will be flush with the top.  For text,
+     * this is the height of the ascender.  For an image, it is the actual height of the image.
+     *
      * @return the real height of the first line
      */
     private float firstLineRealHeight() {
@@ -481,9 +480,9 @@ public class PdfCell extends Rectangle {
     }
 
     /**
-     * Gets the amount of the border for the specified side that is inside the Rectangle.
-     * For non-variable width borders this is only 1/2 the border width on that side.  This
-     * always returns 0 if {@link #useBorderPadding} is false;
+     * Gets the amount of the border for the specified side that is inside the Rectangle. For non-variable width borders
+     * this is only 1/2 the border width on that side.  This always returns 0 if {@link #useBorderPadding} is false;
+     *
      * @param side the side to check.  One of the side constants in {@link com.lowagie.text.Rectangle}
      * @return the borderwidth inside the cell
      */
@@ -514,7 +513,6 @@ public class PdfCell extends Rectangle {
         }
         return width;
     }
-
 
     /**
      * Adds an image to this Cell.
@@ -555,12 +553,12 @@ public class PdfCell extends Rectangle {
 
     /**
      * Gets the lines of a cell that can be drawn between certain limits.
-     * <P>
+     * <p>
      * Remark: all the lines that can be drawn are removed from the object!
      *
-     * @param    top        the top of the part of the table that can be drawn
-     * @param    bottom    the bottom of the part of the table that can be drawn
-     * @return    an <CODE>ArrayList</CODE> of <CODE>PdfLine</CODE>s
+     * @param top    the top of the part of the table that can be drawn
+     * @param bottom the bottom of the part of the table that can be drawn
+     * @return an <CODE>ArrayList</CODE> of <CODE>PdfLine</CODE>s
      */
 
     public java.util.ArrayList<PdfLine> getLines(float top, float bottom) {
@@ -573,7 +571,7 @@ public class PdfCell extends Rectangle {
         if (getTop() < bottom) {
             return result;
         }
-        
+
         // we loop over the lines
         int size = lines.size();
         boolean aboveBottom = true;
@@ -612,12 +610,12 @@ public class PdfCell extends Rectangle {
 
     /**
      * Gets the images of a cell that can be drawn between certain limits.
-     * <P>
+     * <p>
      * Remark: all the lines that can be drawn are removed from the object!
      *
-     * @param    top        the top of the part of the table that can be drawn
-     * @param    bottom    the bottom of the part of the table that can be drawn
-     * @return    an <CODE>ArrayList</CODE> of <CODE>Image</CODE>s
+     * @param top    the top of the part of the table that can be drawn
+     * @param bottom the bottom of the part of the table that can be drawn
+     * @return an <CODE>ArrayList</CODE> of <CODE>Image</CODE>s
      */
 
     public java.util.ArrayList<Image> getImages(float top, float bottom) {
@@ -632,7 +630,7 @@ public class PdfCell extends Rectangle {
         float height;
         java.util.ArrayList<Image> result = new ArrayList<>();
         // we loop over the images
-        for (Iterator<Image> i = images.iterator(); i.hasNext() && !header;) {
+        for (Iterator<Image> i = images.iterator(); i.hasNext() && !header; ) {
             image = i.next();
             height = image.getAbsoluteY();
             // if the currentPosition is higher than the bottom, we add the line to the result
@@ -648,7 +646,7 @@ public class PdfCell extends Rectangle {
     /**
      * Checks if this cell belongs to the header of a <CODE>PdfTable</CODE>.
      *
-     * @return    <CODE>void</CODE>
+     * @return <CODE>void</CODE>
      */
 
     boolean isHeader() {
@@ -665,11 +663,11 @@ public class PdfCell extends Rectangle {
 
     /**
      * Checks if the cell may be removed.
-     * <P>
-     * Headers may always be removed, even if they are drawn only partially:
-     * they will be repeated on each following page anyway!
+     * <p>
+     * Headers may always be removed, even if they are drawn only partially: they will be repeated on each following
+     * page anyway!
      *
-     * @return    <CODE>true</CODE> if all the lines are already drawn; <CODE>false</CODE> otherwise.
+     * @return <CODE>true</CODE> if all the lines are already drawn; <CODE>false</CODE> otherwise.
      */
 
     boolean mayBeRemoved() {
@@ -679,7 +677,7 @@ public class PdfCell extends Rectangle {
     /**
      * Returns the number of lines in the cell.
      *
-     * @return    a value
+     * @return a value
      */
 
     public int size() {
@@ -689,10 +687,12 @@ public class PdfCell extends Rectangle {
     /**
      * Returns the total height of all the lines in the cell.
      *
-     * @return    a value
+     * @return a value
      */
     private float remainingLinesHeight() {
-        if (lines.isEmpty()) return 0;
+        if (lines.isEmpty()) {
+            return 0;
+        }
         float result = 0;
         int size = lines.size();
         PdfLine line;
@@ -702,6 +702,8 @@ public class PdfCell extends Rectangle {
         }
         return result;
     }
+
+    // methods to retrieve membervariables
 
     /**
      * Returns the height needed to draw the remaining text.
@@ -717,13 +719,11 @@ public class PdfCell extends Rectangle {
         }
         return remainingLinesHeight() + cellspacing + 2 * cellpadding + result;
     }
-    
-    // methods to retrieve membervariables
-    
+
     /**
      * Gets the leading of a cell.
      *
-     * @return    the leading of the lines is the cell.
+     * @return the leading of the lines is the cell.
      */
 
     public float leading() {
@@ -733,7 +733,7 @@ public class PdfCell extends Rectangle {
     /**
      * Gets the number of the row this cell is in..
      *
-     * @return    a number
+     * @return a number
      */
 
     public int rownumber() {
@@ -743,7 +743,7 @@ public class PdfCell extends Rectangle {
     /**
      * Gets the rowspan of a cell.
      *
-     * @return    the rowspan of the cell
+     * @return the rowspan of the cell
      */
 
     public int rowspan() {
@@ -753,7 +753,7 @@ public class PdfCell extends Rectangle {
     /**
      * Gets the cellspacing of a cell.
      *
-     * @return    a value
+     * @return a value
      */
 
     public float cellspacing() {
@@ -763,7 +763,7 @@ public class PdfCell extends Rectangle {
     /**
      * Gets the cellpadding of a cell..
      *
-     * @return    a value
+     * @return a value
      */
 
     public float cellpadding() {
@@ -772,9 +772,10 @@ public class PdfCell extends Rectangle {
 
     /**
      * Processes all actions contained in the cell.
+     *
      * @param element    an element in the cell
-     * @param action    an action that should be coupled to the cell
-     * @param allActions    a list of PdfAction to execute
+     * @param action     an action that should be coupled to the cell
+     * @param allActions a list of PdfAction to execute
      */
 
     protected void processActions(Element element, PdfAction action, java.util.List<PdfAction> allActions) {
@@ -792,7 +793,7 @@ public class PdfCell extends Rectangle {
             case Element.CHAPTER:
             case Element.LISTITEM:
             case Element.PARAGRAPH:
-                for (i = ((ArrayList) element).iterator(); i.hasNext();) {
+                for (i = ((ArrayList) element).iterator(); i.hasNext(); ) {
                     processActions((Element) i.next(), action, allActions);
                 }
                 break;
@@ -800,27 +801,23 @@ public class PdfCell extends Rectangle {
                 allActions.add(action);
                 break;
             case Element.LIST:
-                for (i = ((List) element).getItems().iterator(); i.hasNext();) {
+                for (i = ((List) element).getItems().iterator(); i.hasNext(); ) {
                     processActions((Element) i.next(), action, allActions);
                 }
                 break;
             default:
                 int n = element.getChunks().size();
-                while (n-- > 0)
+                while (n-- > 0) {
                     allActions.add(action);
+                }
                 break;
         }
     }
 
     /**
-     * This is the number of the group the cell is in.
-     */
-    private int groupNumber;
-
-    /**
      * Gets the number of the group this cell is in..
      *
-     * @return    a number
+     * @return a number
      */
 
     public int getGroupNumber() {
@@ -829,6 +826,7 @@ public class PdfCell extends Rectangle {
 
     /**
      * Sets the group number.
+     *
      * @param number
      */
 
@@ -839,9 +837,9 @@ public class PdfCell extends Rectangle {
     /**
      * Gets a Rectangle that is altered to fit on the page.
      *
-     * @param    top        the top position
-     * @param    bottom    the bottom position
-     * @return    a <CODE>Rectangle</CODE>
+     * @param top    the top position
+     * @param bottom the bottom position
+     * @return a <CODE>Rectangle</CODE>
      */
 
     public Rectangle rectangle(float top, float bottom) {
@@ -859,15 +857,8 @@ public class PdfCell extends Rectangle {
     }
 
     /**
-     * Sets the value of useAscender.
-     * @param use use ascender height if true
-     */
-    public void setUseAscender(boolean use) {
-        useAscender = use;
-    }
-
-    /**
      * Gets the value of useAscender
+     *
      * @return useAscender
      */
     public boolean isUseAscender() {
@@ -875,15 +866,17 @@ public class PdfCell extends Rectangle {
     }
 
     /**
-     * Sets the value of useDescender.
-     * @param use use descender height if true
+     * Sets the value of useAscender.
+     *
+     * @param use use ascender height if true
      */
-    public void setUseDescender(boolean use) {
-        useDescender = use;
+    public void setUseAscender(boolean use) {
+        useAscender = use;
     }
 
     /**
      * gets the value of useDescender
+     *
      * @return useDescender
      */
     public boolean isUseDescender() {
@@ -891,19 +884,30 @@ public class PdfCell extends Rectangle {
     }
 
     /**
-     * Sets the value of useBorderPadding.
-     * @param use adjust layout for borders if true
+     * Sets the value of useDescender.
+     *
+     * @param use use descender height if true
      */
-    public void setUseBorderPadding(boolean use) {
-        useBorderPadding = use;
+    public void setUseDescender(boolean use) {
+        useDescender = use;
     }
 
     /**
      * Gets the value of useBorderPadding.
+     *
      * @return useBorderPadding
      */
     public boolean isUseBorderPadding() {
         return useBorderPadding;
+    }
+
+    /**
+     * Sets the value of useBorderPadding.
+     *
+     * @param use adjust layout for borders if true
+     */
+    public void setUseBorderPadding(boolean use) {
+        useBorderPadding = use;
     }
 
 }

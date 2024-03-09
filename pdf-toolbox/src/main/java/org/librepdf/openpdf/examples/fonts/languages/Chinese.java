@@ -1,12 +1,5 @@
 package org.librepdf.openpdf.examples.fonts.languages;
 
-import java.awt.Color;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -14,6 +7,12 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.toolbox.plugins.watermarker.Watermarker;
+import java.awt.Color;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Chinese {
 

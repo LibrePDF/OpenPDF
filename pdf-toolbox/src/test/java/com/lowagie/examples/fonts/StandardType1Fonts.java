@@ -9,23 +9,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.fonts;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Generates a PDF with the 14 Standard Type 1 Fonts.
- * 
+ *
  * @author blowagie
  */
 
@@ -33,7 +32,7 @@ public class StandardType1Fonts {
 
     /**
      * Generates a PDF file with the 14 standard Type 1 Fonts
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -51,7 +50,7 @@ public class StandardType1Fonts {
             // step 3: we open the document
             document.open();
             // step 4:
-            
+
             // the 14 standard fonts in PDF: do not use this Font constructor!
             // this is for demonstration purposes only, use FontFactory!
             Font[] fonts = new Font[14];

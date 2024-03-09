@@ -1,12 +1,12 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
+import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 public class TextExtractTest {
+
     @Test
     public void textExtractTest1() throws IOException {
         PdfReader reader = new PdfReader(TextExtractTest.class.getResourceAsStream("/identity-h.pdf"));

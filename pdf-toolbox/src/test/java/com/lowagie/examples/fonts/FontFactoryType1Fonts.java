@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.fonts;
@@ -25,7 +25,7 @@ import java.io.IOException;
 
 /**
  * Generates a PDF with the 14 Standard Type 1 Fonts (using FontFactory).
- * 
+ *
  * @author blowagie
  */
 
@@ -33,7 +33,7 @@ public class FontFactoryType1Fonts {
 
     /**
      * Generates a PDF file with the 14 standard Type 1 Fonts (using FontFactory)
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -51,7 +51,7 @@ public class FontFactoryType1Fonts {
             // step 3: we open the document
             document.open();
             // step 4:
-            
+
             // the 14 standard fonts in PDF
             Font[] fonts = new Font[15];
             fonts[0] = FontFactory.getFont(FontFactory.COURIER, Font.DEFAULTSIZE, Font.NORMAL);
@@ -71,7 +71,7 @@ public class FontFactoryType1Fonts {
             fonts[14] = FontFactory.getFont(FontFactory.COURIER, Font.DEFAULTSIZE, Font.BOLD | Font.UNDERLINE);
             // add the content
             for (int i = 0; i < fonts.length; i++) {
-                    document.add(new Paragraph("quick brown fox jumps over the lazy dog", fonts[i]));
+                document.add(new Paragraph("quick brown fox jumps over the lazy dog", fonts[i]));
             }
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());

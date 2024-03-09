@@ -48,9 +48,8 @@
 package com.lowagie.text.pdf;
 
 
-import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.ExceptionConverter;
-
+import com.lowagie.text.error_messages.MessageLocalization;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,16 +62,22 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Supports fast encodings for winansi and PDFDocEncoding. Supports conversions
- * from CJK encodings to CID. Supports custom encodings.
- * 
+ * Supports fast encodings for winansi and PDFDocEncoding. Supports conversions from CJK encodings to CID. Supports
+ * custom encodings.
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfEncodings {
+
+    /**
+     * Assumes that '\\n' and '\\r\\n' are the newline sequences. It may not work for all CJK encodings. To be used with
+     * loadCmap().
+     */
+    public static final byte[][] CRLF_CID_NEWLINE = new byte[][]{
+            {(byte) '\n'}, {(byte) '\r', (byte) '\n'}};
     protected static final int CIDNONE = 0;
     protected static final int CIDRANGE = 1;
     protected static final int CIDCHAR = 2;
-
     static final char[] winansiByteToChar = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
             28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
@@ -92,7 +97,6 @@ public class PdfEncodings {
             222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
             235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
             248, 249, 250, 251, 252, 253, 254, 255};
-
     static final char[] pdfEncodingByteToChar = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
             10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
             27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
@@ -113,11 +117,10 @@ public class PdfEncodings {
             218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230,
             231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243,
             244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255};
-
     static final IntHashtable winansi = new IntHashtable();
-
     static final IntHashtable pdfEncoding = new IntHashtable();
-
+    static final ConcurrentHashMap<String, char[][]> cmaps = new ConcurrentHashMap<>(
+            100, 0.85f, 64);
     static ConcurrentHashMap<String, ExtraEncoding> extraEncodings = new ConcurrentHashMap<>(
             200, 0.85f, 64);
 
@@ -144,15 +147,11 @@ public class PdfEncodings {
     }
 
     /**
-     * Converts a <CODE>String</CODE> to a <CODE>byte</CODE> array according to
-     * the font's encoding.
-     * 
-     * @return an array of <CODE>byte</CODE> representing the conversion
-     *         according to the font's encoding
-     * @param encoding
-     *            the encoding
-     * @param text
-     *            the <CODE>String</CODE> to be converted
+     * Converts a <CODE>String</CODE> to a <CODE>byte</CODE> array according to the font's encoding.
+     *
+     * @param encoding the encoding
+     * @param text     the <CODE>String</CODE> to be converted
+     * @return an array of <CODE>byte</CODE> representing the conversion according to the font's encoding
      */
     public static final byte[] convertToBytes(String text, String encoding) {
         if (text == null) {
@@ -224,19 +223,15 @@ public class PdfEncodings {
     }
 
     /**
-     * Converts a <CODE>String</CODE> to a <CODE>byte</CODE> array according to
-     * the font's encoding.
-     * 
-     * @return an array of <CODE>byte</CODE> representing the conversion
-     *         according to the font's encoding
-     * @param encoding
-     *            the encoding
-     * @param char1
-     *            the <CODE>char</CODE> to be converted
+     * Converts a <CODE>String</CODE> to a <CODE>byte</CODE> array according to the font's encoding.
+     *
+     * @param encoding the encoding
+     * @param char1    the <CODE>char</CODE> to be converted
+     * @return an array of <CODE>byte</CODE> representing the conversion according to the font's encoding
      */
     public static final byte[] convertToBytes(char char1, String encoding) {
         if (encoding == null || encoding.length() == 0) {
-            return new byte[] { (byte) char1 };
+            return new byte[]{(byte) char1};
         }
         ExtraEncoding extra = extraEncodings.get(encoding.toLowerCase(Locale.ROOT));
         if (extra != null) {
@@ -259,7 +254,7 @@ public class PdfEncodings {
                 c = hash.get(char1);
             }
             if (c != 0) {
-                return new byte[] { (byte) c };
+                return new byte[]{(byte) c};
             } else {
                 return new byte[0];
             }
@@ -281,13 +276,10 @@ public class PdfEncodings {
     }
 
     /**
-     * Converts a <CODE>byte</CODE> array to a <CODE>String</CODE> according to
-     * the some encoding.
-     * 
-     * @param bytes
-     *            the bytes to convert
-     * @param encoding
-     *            the encoding
+     * Converts a <CODE>byte</CODE> array to a <CODE>String</CODE> according to the some encoding.
+     *
+     * @param bytes    the bytes to convert
+     * @param encoding the encoding
      * @return the converted <CODE>String</CODE>
      */
     public static final String convertToString(byte[] bytes, String encoding) {
@@ -331,9 +323,8 @@ public class PdfEncodings {
 
     /**
      * Checks is <CODE>text</CODE> only has PdfDocEncoding characters.
-     * 
-     * @param text
-     *            the <CODE>String</CODE> to test
+     *
+     * @param text the <CODE>String</CODE> to test
      * @return <CODE>true</CODE> if only PdfDocEncoding characters are present
      */
     public static boolean isPdfDocEncoding(String text) {
@@ -353,23 +344,11 @@ public class PdfEncodings {
         return true;
     }
 
-    static final ConcurrentHashMap<String, char[][]> cmaps = new ConcurrentHashMap<>(
-            100, 0.85f, 64);
     /**
-     * Assumes that '\\n' and '\\r\\n' are the newline sequences. It may not
-     * work for all CJK encodings. To be used with loadCmap().
-     */
-    public static final byte[][] CRLF_CID_NEWLINE = new byte[][]{
-            {(byte) '\n'}, {(byte) '\r', (byte) '\n'}};
-
-    /**
-     * Clears the CJK cmaps from the cache. If <CODE>name</CODE> is the empty
-     * string then all the cache is cleared. Calling this method has no
-     * consequences other than the need to reload the cmap if needed.
-     * 
-     * @param name
-     *            the name of the cmap to clear or all the cmaps if the empty
-     *            string
+     * Clears the CJK cmaps from the cache. If <CODE>name</CODE> is the empty string then all the cache is cleared.
+     * Calling this method has no consequences other than the need to reload the cmap if needed.
+     *
+     * @param name the name of the cmap to clear or all the cmaps if the empty string
      */
     public static void clearCmap(String name) {
         if (name.length() == 0) {
@@ -380,14 +359,10 @@ public class PdfEncodings {
     }
 
     /**
-     * Loads a CJK cmap to the cache with the option of associating sequences to
-     * the newline.
-     * 
-     * @param name
-     *            the CJK cmap name
-     * @param newline
-     *            the sequences to be replaced by a newline in the resulting
-     *            CID. See <CODE>CRLF_CID_NEWLINE</CODE>
+     * Loads a CJK cmap to the cache with the option of associating sequences to the newline.
+     *
+     * @param name    the CJK cmap name
+     * @param newline the sequences to be replaced by a newline in the resulting CID. See <CODE>CRLF_CID_NEWLINE</CODE>
      */
     public static void loadCmap(String name, byte[][] newline) {
         try {
@@ -403,16 +378,12 @@ public class PdfEncodings {
     }
 
     /**
-     * Converts a <CODE>byte</CODE> array encoded as <CODE>name</CODE> to a CID
-     * string. This is needed to reach some CJK characters that don't exist in
-     * 16 bit Unicode.<p> The font to use this result must use the encoding
-     * "Identity-H" or "Identity-V".</p> See
-     * ftp://ftp.oreilly.com/pub/examples/nutshell/cjkv/adobe/.
-     * 
-     * @param name
-     *            the CJK encoding name
-     * @param seq
-     *            the <CODE>byte</CODE> array to be decoded
+     * Converts a <CODE>byte</CODE> array encoded as <CODE>name</CODE> to a CID string. This is needed to reach some CJK
+     * characters that don't exist in 16 bit Unicode.<p> The font to use this result must use the encoding "Identity-H"
+     * or "Identity-V".</p> See ftp://ftp.oreilly.com/pub/examples/nutshell/cjkv/adobe/.
+     *
+     * @param name the CJK encoding name
+     * @param seq  the <CODE>byte</CODE> array to be decoded
      * @return the CID string
      */
     public static String convertCmap(String name, byte[] seq) {
@@ -420,24 +391,18 @@ public class PdfEncodings {
     }
 
     /**
-     * Converts a <CODE>byte</CODE> array encoded as <CODE>name</CODE> to a CID
-     * string. This is needed to reach some CJK characters that don't exist in
-     * 16 bit Unicode.<p> The font to use this result must use the encoding
-     * "Identity-H" or "Identity-V".</p> See
-     * ftp://ftp.oreilly.com/pub/examples/nutshell/cjkv/adobe/.
-     * 
-     * @param name
-     *            the CJK encoding name
-     * @param start
-     *            the start offset in the data
-     * @param length
-     *            the number of bytes to convert
-     * @param seq
-     *            the <CODE>byte</CODE> array to be decoded
+     * Converts a <CODE>byte</CODE> array encoded as <CODE>name</CODE> to a CID string. This is needed to reach some CJK
+     * characters that don't exist in 16 bit Unicode.<p> The font to use this result must use the encoding "Identity-H"
+     * or "Identity-V".</p> See ftp://ftp.oreilly.com/pub/examples/nutshell/cjkv/adobe/.
+     *
+     * @param name   the CJK encoding name
+     * @param start  the start offset in the data
+     * @param length the number of bytes to convert
+     * @param seq    the <CODE>byte</CODE> array to be decoded
      * @return the CID string
      */
     public static String convertCmap(String name, byte[] seq, int start,
-                                     int length) {
+            int length) {
         try {
             char[][] planes = null;
             planes = cmaps.get(name);
@@ -452,7 +417,7 @@ public class PdfEncodings {
     }
 
     static String decodeSequence(byte[] seq, int start, int length,
-                                 char[][] planes) {
+            char[][] planes) {
         StringBuilder buf = new StringBuilder();
         int end = start + length;
         int currentPlane = 0;
@@ -508,53 +473,53 @@ public class PdfEncodings {
                 continue;
             }
             switch (state) {
-            case CIDNONE: {
-                if (line.contains("begincidrange")) {
-                    state = CIDRANGE;
-                } else if (line.contains("begincidchar")) {
-                    state = CIDCHAR;
-                } else if (line.contains("usecmap")) {
+                case CIDNONE: {
+                    if (line.contains("begincidrange")) {
+                        state = CIDRANGE;
+                    } else if (line.contains("begincidchar")) {
+                        state = CIDCHAR;
+                    } else if (line.contains("usecmap")) {
+                        StringTokenizer tk = new StringTokenizer(line);
+                        String t = tk.nextToken();
+                        readCmap(t.substring(1), planes);
+                    }
+                    break;
+                }
+                case CIDRANGE: {
+                    if (line.contains("endcidrange")) {
+                        state = CIDNONE;
+                        break;
+                    }
                     StringTokenizer tk = new StringTokenizer(line);
                     String t = tk.nextToken();
-                    readCmap(t.substring(1), planes);
-                }
-                break;
-            }
-            case CIDRANGE: {
-                if (line.contains("endcidrange")) {
-                    state = CIDNONE;
+                    int size = t.length() / 2 - 1;
+                    long start = Long.parseLong(t.substring(1, t.length() - 1), 16);
+                    t = tk.nextToken();
+                    long end = Long.parseLong(t.substring(1, t.length() - 1), 16);
+                    t = tk.nextToken();
+                    int cid = Integer.parseInt(t);
+                    for (long k = start; k <= end; ++k) {
+                        breakLong(k, size, seqs);
+                        encodeSequence(size, seqs, (char) cid, planes);
+                        ++cid;
+                    }
                     break;
                 }
-                StringTokenizer tk = new StringTokenizer(line);
-                String t = tk.nextToken();
-                int size = t.length() / 2 - 1;
-                long start = Long.parseLong(t.substring(1, t.length() - 1), 16);
-                t = tk.nextToken();
-                long end = Long.parseLong(t.substring(1, t.length() - 1), 16);
-                t = tk.nextToken();
-                int cid = Integer.parseInt(t);
-                for (long k = start; k <= end; ++k) {
-                    breakLong(k, size, seqs);
+                case CIDCHAR: {
+                    if (line.contains("endcidchar")) {
+                        state = CIDNONE;
+                        break;
+                    }
+                    StringTokenizer tk = new StringTokenizer(line);
+                    String t = tk.nextToken();
+                    int size = t.length() / 2 - 1;
+                    long start = Long.parseLong(t.substring(1, t.length() - 1), 16);
+                    t = tk.nextToken();
+                    int cid = Integer.parseInt(t);
+                    breakLong(start, size, seqs);
                     encodeSequence(size, seqs, (char) cid, planes);
-                    ++cid;
-                }
-                break;
-            }
-            case CIDCHAR: {
-                if (line.contains("endcidchar")) {
-                    state = CIDNONE;
                     break;
                 }
-                StringTokenizer tk = new StringTokenizer(line);
-                String t = tk.nextToken();
-                int size = t.length() / 2 - 1;
-                long start = Long.parseLong(t.substring(1, t.length() - 1), 16);
-                t = tk.nextToken();
-                int cid = Integer.parseInt(t);
-                breakLong(start, size, seqs);
-                encodeSequence(size, seqs, (char) cid, planes);
-                break;
-            }
             }
         }
     }
@@ -566,7 +531,7 @@ public class PdfEncodings {
     }
 
     static void encodeSequence(int size, byte[] seqs, char cid,
-                               ArrayList<char[]> planes) {
+            ArrayList<char[]> planes) {
         --size;
         int nextPlane = 0;
         for (int idx = 0; idx < size; ++idx) {
@@ -598,12 +563,9 @@ public class PdfEncodings {
 
     /**
      * Adds an extra encoding.
-     * 
-     * @param name
-     *            the name of the encoding. The encoding recognition is case
-     *            insensitive
-     * @param enc
-     *            the conversion class
+     *
+     * @param name the name of the encoding. The encoding recognition is case insensitive
+     * @param enc  the conversion class
      */
     public static void addExtraEncoding(String name, ExtraEncoding enc) {
         extraEncodings.putIfAbsent(name.toLowerCase(Locale.ROOT), enc);
@@ -611,14 +573,28 @@ public class PdfEncodings {
 
     private static class WingdingsConversion implements ExtraEncoding {
 
+        private final static byte[] table = {0, 35, 34, 0, 0, 0, 41, 62, 81,
+                42, 0, 0, 65, 63, 0, 0, 0, 0, 0, -4, 0, 0, 0, -5, 0, 0, 0, 0,
+                0, 0, 86, 0, 88, 89, 0, 0, 0, 0, 0, 0, 0, 0, -75, 0, 0, 0, 0,
+                0, -74, 0, 0, 0, -83, -81, -84, 0, 0, 0, 0, 0, 0, 0, 0, 124,
+                123, 0, 0, 0, 84, 0, 0, 0, 0, 0, 0, 0, 0, -90, 0, 0, 0, 113,
+                114, 0, 0, 0, 117, 0, 0, 0, 0, 0, 0, 125, 126, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -116,
+                -115, -114, -113, -112, -111, -110, -109, -108, -107, -127,
+                -126, -125, -124, -123, -122, -121, -120, -119, -118, -116,
+                -115, -114, -113, -112, -111, -110, -109, -108, -107, -24, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -24, -40, 0, 0, -60, -58, 0,
+                0, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, -36, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0};
+
         @Override
         public byte[] charToByte(char char1, String encoding) {
             if (char1 == ' ') {
-                return new byte[] { (byte) char1 };
+                return new byte[]{(byte) char1};
             } else if (char1 >= '\u2701' && char1 <= '\u27BE') {
                 byte v = table[char1 - 0x2700];
                 if (v != 0) {
-                    return new byte[] { v };
+                    return new byte[]{v};
                 }
             }
             return new byte[0];
@@ -652,24 +628,39 @@ public class PdfEncodings {
         public String byteToChar(byte[] b, String encoding) {
             return null;
         }
-
-        private final static byte[] table = {0, 35, 34, 0, 0, 0, 41, 62, 81,
-                42, 0, 0, 65, 63, 0, 0, 0, 0, 0, -4, 0, 0, 0, -5, 0, 0, 0, 0,
-                0, 0, 86, 0, 88, 89, 0, 0, 0, 0, 0, 0, 0, 0, -75, 0, 0, 0, 0,
-                0, -74, 0, 0, 0, -83, -81, -84, 0, 0, 0, 0, 0, 0, 0, 0, 124,
-                123, 0, 0, 0, 84, 0, 0, 0, 0, 0, 0, 0, 0, -90, 0, 0, 0, 113,
-                114, 0, 0, 0, 117, 0, 0, 0, 0, 0, 0, 125, 126, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -116,
-                -115, -114, -113, -112, -111, -110, -109, -108, -107, -127,
-                -126, -125, -124, -123, -122, -121, -120, -119, -118, -116,
-                -115, -114, -113, -112, -111, -110, -109, -108, -107, -24, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -24, -40, 0, 0, -60, -58, 0,
-                0, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, -36, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0};
     }
 
     private static class Cp437Conversion implements ExtraEncoding {
+
+        private final static char[] table = {'\u00C7', '\u00FC', '\u00E9',
+                '\u00E2', '\u00E4', '\u00E0', '\u00E5', '\u00E7', '\u00EA',
+                '\u00EB', '\u00E8', '\u00EF', '\u00EE', '\u00EC', '\u00C4',
+                '\u00C5', '\u00C9', '\u00E6', '\u00C6', '\u00F4', '\u00F6',
+                '\u00F2', '\u00FB', '\u00F9', '\u00FF', '\u00D6', '\u00DC',
+                '\u00A2', '\u00A3', '\u00A5', '\u20A7', '\u0192', '\u00E1',
+                '\u00ED', '\u00F3', '\u00FA', '\u00F1', '\u00D1', '\u00AA',
+                '\u00BA', '\u00BF', '\u2310', '\u00AC', '\u00BD', '\u00BC',
+                '\u00A1', '\u00AB', '\u00BB', '\u2591', '\u2592', '\u2593',
+                '\u2502', '\u2524', '\u2561', '\u2562', '\u2556', '\u2555',
+                '\u2563', '\u2551', '\u2557', '\u255D', '\u255C', '\u255B',
+                '\u2510', '\u2514', '\u2534', '\u252C', '\u251C', '\u2500',
+                '\u253C', '\u255E', '\u255F', '\u255A', '\u2554', '\u2569',
+                '\u2566', '\u2560', '\u2550', '\u256C', '\u2567', '\u2568',
+                '\u2564', '\u2565', '\u2559', '\u2558', '\u2552', '\u2553',
+                '\u256B', '\u256A', '\u2518', '\u250C', '\u2588', '\u2584',
+                '\u258C', '\u2590', '\u2580', '\u03B1', '\u00DF', '\u0393',
+                '\u03C0', '\u03A3', '\u03C3', '\u00B5', '\u03C4', '\u03A6',
+                '\u0398', '\u03A9', '\u03B4', '\u221E', '\u03C6', '\u03B5',
+                '\u2229', '\u2261', '\u00B1', '\u2265', '\u2264', '\u2320',
+                '\u2321', '\u00F7', '\u2248', '\u00B0', '\u2219', '\u00B7',
+                '\u221A', '\u207F', '\u00B2', '\u25A0', '\u00A0'};
         private static IntHashtable c2b = new IntHashtable();
+
+        static {
+            for (int k = 0; k < table.length; ++k) {
+                c2b.put(table[k], k + 128);
+            }
+        }
 
         @Override
         public byte[] charToByte(String text, String encoding) {
@@ -698,11 +689,11 @@ public class PdfEncodings {
         @Override
         public byte[] charToByte(char char1, String encoding) {
             if (char1 < 128) {
-                return new byte[] { (byte) char1 };
+                return new byte[]{(byte) char1};
             } else {
                 byte v = (byte) c2b.get(char1);
                 if (v != 0) {
-                    return new byte[] { v };
+                    return new byte[]{v};
                 } else {
                     return new byte[0];
                 }
@@ -728,98 +719,12 @@ public class PdfEncodings {
             }
             return new String(cc, 0, ptr);
         }
-
-        private final static char[] table = {'\u00C7', '\u00FC', '\u00E9',
-                '\u00E2', '\u00E4', '\u00E0', '\u00E5', '\u00E7', '\u00EA',
-                '\u00EB', '\u00E8', '\u00EF', '\u00EE', '\u00EC', '\u00C4',
-                '\u00C5', '\u00C9', '\u00E6', '\u00C6', '\u00F4', '\u00F6',
-                '\u00F2', '\u00FB', '\u00F9', '\u00FF', '\u00D6', '\u00DC',
-                '\u00A2', '\u00A3', '\u00A5', '\u20A7', '\u0192', '\u00E1',
-                '\u00ED', '\u00F3', '\u00FA', '\u00F1', '\u00D1', '\u00AA',
-                '\u00BA', '\u00BF', '\u2310', '\u00AC', '\u00BD', '\u00BC',
-                '\u00A1', '\u00AB', '\u00BB', '\u2591', '\u2592', '\u2593',
-                '\u2502', '\u2524', '\u2561', '\u2562', '\u2556', '\u2555',
-                '\u2563', '\u2551', '\u2557', '\u255D', '\u255C', '\u255B',
-                '\u2510', '\u2514', '\u2534', '\u252C', '\u251C', '\u2500',
-                '\u253C', '\u255E', '\u255F', '\u255A', '\u2554', '\u2569',
-                '\u2566', '\u2560', '\u2550', '\u256C', '\u2567', '\u2568',
-                '\u2564', '\u2565', '\u2559', '\u2558', '\u2552', '\u2553',
-                '\u256B', '\u256A', '\u2518', '\u250C', '\u2588', '\u2584',
-                '\u258C', '\u2590', '\u2580', '\u03B1', '\u00DF', '\u0393',
-                '\u03C0', '\u03A3', '\u03C3', '\u00B5', '\u03C4', '\u03A6',
-                '\u0398', '\u03A9', '\u03B4', '\u221E', '\u03C6', '\u03B5',
-                '\u2229', '\u2261', '\u00B1', '\u2265', '\u2264', '\u2320',
-                '\u2321', '\u00F7', '\u2248', '\u00B0', '\u2219', '\u00B7',
-                '\u221A', '\u207F', '\u00B2', '\u25A0', '\u00A0'};
-
-        static {
-            for (int k = 0; k < table.length; ++k) {
-                c2b.put(table[k], k + 128);
-            }
-        }
     }
 
     private static class SymbolConversion implements ExtraEncoding {
 
         private static final IntHashtable t1 = new IntHashtable();
         private static final IntHashtable t2 = new IntHashtable();
-        private IntHashtable translation;
-        private char[] revTranslation;
-
-        SymbolConversion(boolean symbol) {
-            if (symbol) {
-                translation = t1;
-                revTranslation = table1;
-            } else {
-                translation = t2;
-                revTranslation = table2;
-            }
-        }
-
-        @Override
-        public byte[] charToByte(String text, String encoding) {
-            char[] cc = text.toCharArray();
-            byte[] b = new byte[cc.length];
-            int ptr = 0;
-            int len = cc.length;
-            for (char c : cc) {
-                byte v = (byte) translation.get(c);
-                if (v != 0) {
-                    b[ptr++] = v;
-                }
-            }
-            if (ptr == len) {
-                return b;
-            }
-            byte[] b2 = new byte[ptr];
-            System.arraycopy(b, 0, b2, 0, ptr);
-            return b2;
-        }
-
-        @Override
-        public byte[] charToByte(char char1, String encoding) {
-            byte v = (byte) translation.get(char1);
-            if (v != 0) {
-                return new byte[] { v };
-            } else {
-                return new byte[0];
-            }
-        }
-
-        @Override
-        public String byteToChar(byte[] b, String encoding) {
-            int len = b.length;
-            char[] chars = new char[len];
-            for(int i = 0; i < len; i++) {
-                int pos = b[i]&0xff;
-                if(pos < 32)
-                    chars[i] = 0;
-                else
-                    chars[i] = revTranslation[pos - 32];
-            }
-            return new String(chars);
-        }
-
         private final static char[] table1 = {' ', '!', '\u2200', '#',
                 '\u2203', '%', '&', '\u220b', '(', ')', '*', '+', ',', '-',
                 '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -853,7 +758,6 @@ public class PdfEncodings {
                 '\0', '\u232a', '\u222b', '\u2320', '\u23ae', '\u2321',
                 '\u239e', '\u239f', '\u23a0', '\u23a4', '\u23a5', '\u23a6',
                 '\u23ab', '\u23ac', '\u23ad', '\0'};
-
         private final static char[] table2 = {'\u0020', '\u2701', '\u2702',
                 '\u2703', '\u2704', '\u260e', '\u2706', '\u2707', '\u2708',
                 '\u2709', '\u261b', '\u261e', '\u270C', '\u270D', '\u270E',
@@ -905,6 +809,64 @@ public class PdfEncodings {
                 }
             }
         }
+
+        private IntHashtable translation;
+        private char[] revTranslation;
+
+        SymbolConversion(boolean symbol) {
+            if (symbol) {
+                translation = t1;
+                revTranslation = table1;
+            } else {
+                translation = t2;
+                revTranslation = table2;
+            }
+        }
+
+        @Override
+        public byte[] charToByte(String text, String encoding) {
+            char[] cc = text.toCharArray();
+            byte[] b = new byte[cc.length];
+            int ptr = 0;
+            int len = cc.length;
+            for (char c : cc) {
+                byte v = (byte) translation.get(c);
+                if (v != 0) {
+                    b[ptr++] = v;
+                }
+            }
+            if (ptr == len) {
+                return b;
+            }
+            byte[] b2 = new byte[ptr];
+            System.arraycopy(b, 0, b2, 0, ptr);
+            return b2;
+        }
+
+        @Override
+        public byte[] charToByte(char char1, String encoding) {
+            byte v = (byte) translation.get(char1);
+            if (v != 0) {
+                return new byte[]{v};
+            } else {
+                return new byte[0];
+            }
+        }
+
+        @Override
+        public String byteToChar(byte[] b, String encoding) {
+            int len = b.length;
+            char[] chars = new char[len];
+            for (int i = 0; i < len; i++) {
+                int pos = b[i] & 0xff;
+                if (pos < 32) {
+                    chars[i] = 0;
+                } else {
+                    chars[i] = revTranslation[pos - 32];
+                }
+            }
+            return new String(chars);
+        }
     }
 
     private static class SymbolTTConversion implements ExtraEncoding {
@@ -912,7 +874,7 @@ public class PdfEncodings {
         @Override
         public byte[] charToByte(char char1, String encoding) {
             if ((char1 & 0xff00) == 0 || (char1 & 0xff00) == 0xf000) {
-                return new byte[] { (byte) char1 };
+                return new byte[]{(byte) char1};
             } else {
                 return new byte[0];
             }

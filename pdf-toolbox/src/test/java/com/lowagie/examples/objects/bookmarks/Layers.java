@@ -9,14 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.bookmarks;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -34,10 +30,13 @@ import com.lowagie.text.pdf.PdfOCProperties;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates how layers work.
- * 
+ *
  * @author blowagie
  */
 
@@ -45,9 +44,8 @@ public class Layers {
 
     /**
      * Demonstrates some Layer functionality.
-     * 
-     * @param args
-     *            no arguments needed here
+     *
+     * @param args no arguments needed here
      */
     public static void main(String[] args) {
 

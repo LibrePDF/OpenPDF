@@ -17,6 +17,15 @@ public class SimpleXMLParserTest {
     static final String xmlBOM = bom + xmlRaw;
     static final String xmlI15 = "<?xml version='1.0' encoding='ISO-8859-15'?><a>" + euro + "</a>";
 
+    static void testCharset(String xml, Charset charset) throws IOException {
+        try (
+                TestHandler h = new TestHandler(charset);
+                ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes(charset))
+        ) {
+            SimpleXMLParser.parse(h, is);
+        }
+    }
+
     @Test
     void testDetectUnicode() throws IOException {
         testCharset(xmlRaw, StandardCharsets.UTF_8);
@@ -39,19 +48,10 @@ public class SimpleXMLParserTest {
         testCharset(xml, Charset.forName("ISO-8859-15"));
     }
 
-    static void testCharset(String xml, Charset charset) throws IOException {
-        try (
-            TestHandler h = new TestHandler(charset);
-            ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes(charset))
-        ) {
-            SimpleXMLParser.parse(h, is);
-        }
-    }
-
     static class TestHandler implements SimpleXMLDocHandler, AutoCloseable {
 
-        volatile boolean called = false;
         final String charset;
+        volatile boolean called = false;
 
         TestHandler(Charset charset) {
             this.charset = charset.displayName();

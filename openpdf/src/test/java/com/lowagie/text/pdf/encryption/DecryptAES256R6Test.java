@@ -60,9 +60,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("TEST", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -86,11 +86,11 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals(
-                "Demo   Name   Signature   Date  Elizabeth Schultz (Apr 24, 2018) Elizabeth Schultz Apr 24, 2018 "
-                    + "Elizabeth Schultz Sue Northrop (Apr 24, 2018) Apr 24, 2018 Sue Northrop",
-                new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
+                    "Demo   Name   Signature   Date  Elizabeth Schultz (Apr 24, 2018) Elizabeth Schultz Apr 24, 2018 "
+                            + "Elizabeth Schultz Sue Northrop (Apr 24, 2018) Apr 24, 2018 Sue Northrop",
+                    new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -114,9 +114,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Potato", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -140,9 +140,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(30, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Potato 0", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -166,9 +166,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Hello, world!\n Goodbye, world!",
-                new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
+                    new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -192,9 +192,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Potato", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -215,20 +215,20 @@ class DecryptAES256R6Test {
     @Test
     void testReadEncXiLongPassword() throws IOException {
         try (
-            InputStream resource = getClass().getResourceAsStream(
-                "/issue375/enc-XI-long-password"
-                    +
-                    "=qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv.pdf")
+                InputStream resource = getClass().getResourceAsStream(
+                        "/issue375/enc-XI-long-password"
+                                +
+                                "=qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv.pdf")
         ) {
             PdfReader pdfReader = new PdfReader(resource,
-                "qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv".getBytes(
-                    UTF_8));
+                    "qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv".getBytes(
+                            UTF_8));
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(30, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Potato 0", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -252,9 +252,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(30, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Potato 0", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -278,9 +278,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(30, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Potato 0", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -303,13 +303,13 @@ class DecryptAES256R6Test {
     void testReadEncXiR6V5UAttachmentEncryptedAttachments() {
         Assertions.assertThrows(InvalidPdfException.class, () -> {
             try (InputStream resource = getClass().getResourceAsStream(
-                "/issue375/enc-XI-R6,V5,U=attachment,encrypted-attachments.pdf")) {
+                    "/issue375/enc-XI-R6,V5,U=attachment,encrypted-attachments.pdf")) {
                 PdfReader pdfReader = new PdfReader(resource, "attachment".getBytes(UTF_8));
                 Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
                 Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                    "PdfReader fails to report the correct number of pages");
+                        "PdfReader fails to report the correct number of pages");
                 Assertions.assertEquals("TEST", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                    "Wrong text extracted from page 1");
+                        "Wrong text extracted from page 1");
                 pdfReader.close();
             }
         });
@@ -330,14 +330,14 @@ class DecryptAES256R6Test {
     @Test
     void testReadEncXiR6V5UViewAttachmentsCleartextMetadata() throws IOException {
         try (InputStream resource = getClass().getResourceAsStream(
-            "/issue375/enc-XI-R6,V5,U=view,attachments,cleartext-metadata.pdf")) {
+                "/issue375/enc-XI-R6,V5,U=view,attachments,cleartext-metadata.pdf")) {
             PdfReader pdfReader = new PdfReader(resource, "view".getBytes(UTF_8));
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(30, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Potato 0", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -361,9 +361,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(30, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Potato 0", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -387,9 +387,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(30, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Potato 0", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -413,9 +413,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(30, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Potato 0", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -439,9 +439,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -465,9 +465,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Issue 6010", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -491,12 +491,12 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(10, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Sample PDF Document\n"
-                    + " Robert Maron\n"
-                    + " Grzegorz Grudzi´ nski\n"
-                    + " February 20, 1999", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                            + " Robert Maron\n"
+                            + " Grzegorz Grudzi´ nski\n"
+                            + " February 20, 1999", new PdfTextExtractor(pdfReader).getTextFromPage(1),
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -520,9 +520,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Mu PD F  a lightweight PDF and XPS viewer",
-                new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
+                    new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -546,9 +546,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("Mu PD F  a lightweight PDF and XPS viewer",
-                new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
+                    new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -574,9 +574,9 @@ class DecryptAES256R6Test {
                 PdfReader pdfReader = new PdfReader(resource);
                 Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
                 Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                    "PdfReader fails to report the correct number of pages");
+                        "PdfReader fails to report the correct number of pages");
                 Assertions.assertEquals("TEST", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                    "Wrong text extracted from page 1");
+                        "Wrong text extracted from page 1");
                 pdfReader.close();
             }
         });
@@ -601,9 +601,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals("", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }
@@ -627,7 +627,7 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             // Page has no static content, so no text extraction test
             pdfReader.close();
         }
@@ -654,9 +654,9 @@ class DecryptAES256R6Test {
                 PdfReader pdfReader = new PdfReader(resource);
                 Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
                 Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
-                    "PdfReader fails to report the correct number of pages");
+                        "PdfReader fails to report the correct number of pages");
                 Assertions.assertEquals("TEST", new PdfTextExtractor(pdfReader).getTextFromPage(1),
-                    "Wrong text extracted from page 1");
+                        "Wrong text extracted from page 1");
                 pdfReader.close();
             }
         });
@@ -684,9 +684,9 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(2, pdfReader.getNumberOfPages(),
-                "PdfReader fails to report the correct number of pages");
+                    "PdfReader fails to report the correct number of pages");
             Assertions.assertTrue(new PdfTextExtractor(pdfReader).getTextFromPage(1).startsWith("THIS IS A TEST"),
-                "Wrong text extracted from page 1");
+                    "Wrong text extracted from page 1");
             pdfReader.close();
         }
     }

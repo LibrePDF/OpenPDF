@@ -67,7 +67,7 @@ class ExtractCertificatesTest {
                 X509Name subjectFields = PdfPKCS7.getSubjectFields(certificate);
                 assertThat(subjectFields).isNotNull();
                 assertThat(subjectFields.getAllFields()).isNotEmpty()
-                    .containsKey("C");
+                        .containsKey("C");
                 assertThat(pk.verify()).isTrue();
                 assertThat(pk.verifyTimestampImprint()).isEqualTo(isExpectedValidTimeStamp);
 

@@ -73,6 +73,71 @@ import org.w3c.dom.Node;
  */
 public class AcroFields {
 
+    public static final int DA_FONT = 0;
+    public static final int DA_SIZE = 1;
+    public static final int DA_COLOR = 2;
+    /**
+     * A field type invalid or not found.
+     */
+    public static final int FIELD_TYPE_NONE = 0;
+    /**
+     * A field type.
+     */
+    public static final int FIELD_TYPE_PUSHBUTTON = 1;
+    /**
+     * A field type.
+     */
+    public static final int FIELD_TYPE_CHECKBOX = 2;
+    /**
+     * A field type.
+     */
+    public static final int FIELD_TYPE_RADIOBUTTON = 3;
+    /**
+     * A field type.
+     */
+    public static final int FIELD_TYPE_TEXT = 4;
+    /**
+     * A field type.
+     */
+    public static final int FIELD_TYPE_LIST = 5;
+    /**
+     * A field type.
+     */
+    public static final int FIELD_TYPE_COMBO = 6;
+    /**
+     * A field type.
+     */
+    public static final int FIELD_TYPE_SIGNATURE = 7;
+    private static final HashMap<String, String[]> stdFieldFontNames = new HashMap<>();
+    private static final PdfName[] buttonRemove = {PdfName.MK, PdfName.F, PdfName.FF, PdfName.Q, PdfName.BS,
+            PdfName.BORDER};
+
+    static {
+        stdFieldFontNames.put("CoBO", new String[]{"Courier-BoldOblique"});
+        stdFieldFontNames.put("CoBo", new String[]{"Courier-Bold"});
+        stdFieldFontNames.put("CoOb", new String[]{"Courier-Oblique"});
+        stdFieldFontNames.put("Cour", new String[]{"Courier"});
+        stdFieldFontNames.put("HeBO", new String[]{"Helvetica-BoldOblique"});
+        stdFieldFontNames.put("HeBo", new String[]{"Helvetica-Bold"});
+        stdFieldFontNames.put("HeOb", new String[]{"Helvetica-Oblique"});
+        stdFieldFontNames.put("Helv", new String[]{"Helvetica"});
+        stdFieldFontNames.put("Symb", new String[]{"Symbol"});
+        stdFieldFontNames.put("TiBI", new String[]{"Times-BoldItalic"});
+        stdFieldFontNames.put("TiBo", new String[]{"Times-Bold"});
+        stdFieldFontNames.put("TiIt", new String[]{"Times-Italic"});
+        stdFieldFontNames.put("TiRo", new String[]{"Times-Roman"});
+        stdFieldFontNames.put("ZaDb", new String[]{"ZapfDingbats"});
+        stdFieldFontNames.put("HySm", new String[]{"HYSMyeongJo-Medium", "UniKS-UCS2-H"});
+        stdFieldFontNames.put("HyGo", new String[]{"HYGoThic-Medium", "UniKS-UCS2-H"});
+        stdFieldFontNames.put("KaGo", new String[]{"HeiseiKakuGo-W5", "UniKS-UCS2-H"});
+        stdFieldFontNames.put("KaMi", new String[]{"HeiseiMin-W3", "UniJIS-UCS2-H"});
+        stdFieldFontNames.put("MHei", new String[]{"MHei-Medium", "UniCNS-UCS2-H"});
+        stdFieldFontNames.put("MSun", new String[]{"MSung-Light", "UniCNS-UCS2-H"});
+        stdFieldFontNames.put("STSo", new String[]{"STSong-Light", "UniGB-UCS2-H"});
+    }
+
+    private final Map<Integer, BaseFont> extensionFonts = new HashMap<>();
+    private final Map<String, BaseFont> localFonts = new HashMap<>();
     PdfReader reader;
     PdfWriter writer;
     private Map<String, Item> fields;
@@ -80,64 +145,25 @@ public class AcroFields {
     private Map<String, int[]> sigNames;
     private HashMap<String, SignatureType> sigTypes;
     private boolean append;
-    public static final int DA_FONT = 0;
-    public static final int DA_SIZE = 1;
-    public static final int DA_COLOR = 2;
-    private final Map<Integer, BaseFont> extensionFonts = new HashMap<>();
     private XfaForm xfa;
-
-    /**
-     * A field type invalid or not found.
-     */
-    public static final int FIELD_TYPE_NONE = 0;
-
-    /**
-     * A field type.
-     */
-    public static final int FIELD_TYPE_PUSHBUTTON = 1;
-
-    /**
-     * A field type.
-     */
-    public static final int FIELD_TYPE_CHECKBOX = 2;
-
-    /**
-     * A field type.
-     */
-    public static final int FIELD_TYPE_RADIOBUTTON = 3;
-
-    /**
-     * A field type.
-     */
-    public static final int FIELD_TYPE_TEXT = 4;
-
-    /**
-     * A field type.
-     */
-    public static final int FIELD_TYPE_LIST = 5;
-
-    /**
-     * A field type.
-     */
-    public static final int FIELD_TYPE_COMBO = 6;
-
-    /**
-     * A field type.
-     */
-    public static final int FIELD_TYPE_SIGNATURE = 7;
-
     private boolean lastWasString;
-
     /**
      * Holds value of property generateAppearances.
      */
     private boolean generateAppearances = true;
-
-    private final Map<String, BaseFont> localFonts = new HashMap<>();
-
     private float extraMarginLeft;
     private float extraMarginTop;
     private List<BaseFont> substitutionFonts;
+    /**
+     * Holds value of property totalRevisions.
+     */
+    private int totalRevisions;
+    /**
+     * Holds value of property fieldCache.
+     *
+     * @since 2.1.5  this used to be a HashMap
+     */
+    private Map<String, BaseField> fieldCache;
 
     AcroFields(PdfReader reader, PdfWriter writer) {
         this.reader = reader;
@@ -153,10 +179,106 @@ public class AcroFields {
         fill();
     }
 
+    public static Object[] splitDAelements(String da) {
+        try {
+            PRTokeniser tk = new PRTokeniser(PdfEncodings.convertToBytes(da, null));
+            List<String> stack = new ArrayList<>();
+            Object[] ret = new Object[3];
+            while (tk.nextToken()) {
+                if (tk.getTokenType() == PRTokeniser.TK_COMMENT) {
+                    continue;
+                }
+                if (tk.getTokenType() == PRTokeniser.TK_OTHER) {
+                    String operator = tk.getStringValue();
+                    switch (operator) {
+                        case "Tf":
+                            if (stack.size() >= 2) {
+                                ret[DA_FONT] = stack.get(stack.size() - 2);
+                                ret[DA_SIZE] = Float.parseFloat(stack.get(stack.size() - 1));
+                            }
+                            break;
+                        case "g":
+                            if (!stack.isEmpty()) {
+                                float gray = Float.parseFloat(stack.get(stack.size() - 1));
+                                if (gray != 0) {
+                                    ret[DA_COLOR] = new GrayColor(gray);
+                                }
+                            }
+                            break;
+                        case "rg":
+                            if (stack.size() >= 3) {
+                                float red = Float.parseFloat(stack.get(stack.size() - 3));
+                                float green = Float.parseFloat(stack.get(stack.size() - 2));
+                                float blue = Float.parseFloat(stack.get(stack.size() - 1));
+                                ret[DA_COLOR] = new Color(red, green, blue);
+                            }
+                            break;
+                        case "k":
+                            if (stack.size() >= 4) {
+                                float cyan = Float.parseFloat(stack.get(stack.size() - 4));
+                                float magenta = Float.parseFloat(stack.get(stack.size() - 3));
+                                float yellow = Float.parseFloat(stack.get(stack.size() - 2));
+                                float black = Float.parseFloat(stack.get(stack.size() - 1));
+                                ret[DA_COLOR] = new CMYKColor(cyan, magenta, yellow, black);
+                            }
+                            break;
+                    }
+                    stack.clear();
+                } else {
+                    stack.add(tk.getStringValue());
+                }
+            }
+            return ret;
+        } catch (IOException ioe) {
+            throw new ExceptionConverter(ioe);
+        }
+    }
+
+    /**
+     * Parses and converts colors from PDF to standard AWT Colors.
+     *
+     * @param pdfColor an array of colors
+     * @return AWT-Color
+     */
+    public static Color parseColor(PdfArray pdfColor) {
+
+        //Check for no color -> thus transparent
+        if (pdfColor != null && !pdfColor.isEmpty()) {
+            if (pdfColor.size() == 1) {
+                PdfNumber grey = pdfColor.getAsNumber(0);
+                if (grey != null) {
+                    return new GrayColor(grey.floatValue());
+                }
+            } else if (pdfColor.size() == 3) {
+                PdfNumber red = pdfColor.getAsNumber(0);
+                PdfNumber green = pdfColor.getAsNumber(1);
+                PdfNumber blue = pdfColor.getAsNumber(2);
+
+                if (red != null && green != null && blue != null) {
+                    return new Color(red.floatValue(), green.floatValue(), blue.floatValue());
+                }
+            } else if (pdfColor.size() == 4) {
+                PdfNumber c = pdfColor.getAsNumber(0);
+                PdfNumber m = pdfColor.getAsNumber(1);
+                PdfNumber y = pdfColor.getAsNumber(2);
+                PdfNumber k = pdfColor.getAsNumber(3);
+
+                if (c != null && m != null && y != null && k != null) {
+                    return new CMYKColor(c.floatValue(), m.floatValue(), y.floatValue(), k.floatValue());
+                }
+            } else {
+                throw new RuntimeException(
+                        "Error extracting color: " + pdfColor + " since the color array is too long: "
+                                + pdfColor.length());
+            }
+        }
+        return null;
+    }
+
     void fill() {
         fields = new HashMap<>();
         PdfDictionary top = (PdfDictionary) PdfReader.getPdfObjectReleaseNullConverting(
-            reader.getCatalog().get(PdfName.ACROFORM));
+                reader.getCatalog().get(PdfName.ACROFORM));
         if (top == null) {
             return;
         }
@@ -445,7 +567,7 @@ public class AcroFields {
         }
         if (exportValues != null && displayValues != null && exportValues.length != displayValues.length) {
             throw new IllegalArgumentException(
-                MessageLocalization.getComposedMessage("the.export.and.the.display.array.must.have.the.same.size"));
+                    MessageLocalization.getComposedMessage("the.export.and.the.display.array.must.have.the.same.size"));
         }
         int ftype = getFieldType(fieldName);
         if (ftype != FIELD_TYPE_COMBO && ftype != FIELD_TYPE_LIST) {
@@ -584,61 +706,6 @@ public class AcroFields {
         return true;
     }
 
-    public static Object[] splitDAelements(String da) {
-        try {
-            PRTokeniser tk = new PRTokeniser(PdfEncodings.convertToBytes(da, null));
-            List<String> stack = new ArrayList<>();
-            Object[] ret = new Object[3];
-            while (tk.nextToken()) {
-                if (tk.getTokenType() == PRTokeniser.TK_COMMENT) {
-                    continue;
-                }
-                if (tk.getTokenType() == PRTokeniser.TK_OTHER) {
-                    String operator = tk.getStringValue();
-                    switch (operator) {
-                        case "Tf":
-                            if (stack.size() >= 2) {
-                                ret[DA_FONT] = stack.get(stack.size() - 2);
-                                ret[DA_SIZE] = Float.parseFloat(stack.get(stack.size() - 1));
-                            }
-                            break;
-                        case "g":
-                            if (!stack.isEmpty()) {
-                                float gray = Float.parseFloat(stack.get(stack.size() - 1));
-                                if (gray != 0) {
-                                    ret[DA_COLOR] = new GrayColor(gray);
-                                }
-                            }
-                            break;
-                        case "rg":
-                            if (stack.size() >= 3) {
-                                float red = Float.parseFloat(stack.get(stack.size() - 3));
-                                float green = Float.parseFloat(stack.get(stack.size() - 2));
-                                float blue = Float.parseFloat(stack.get(stack.size() - 1));
-                                ret[DA_COLOR] = new Color(red, green, blue);
-                            }
-                            break;
-                        case "k":
-                            if (stack.size() >= 4) {
-                                float cyan = Float.parseFloat(stack.get(stack.size() - 4));
-                                float magenta = Float.parseFloat(stack.get(stack.size() - 3));
-                                float yellow = Float.parseFloat(stack.get(stack.size() - 2));
-                                float black = Float.parseFloat(stack.get(stack.size() - 1));
-                                ret[DA_COLOR] = new CMYKColor(cyan, magenta, yellow, black);
-                            }
-                            break;
-                    }
-                    stack.clear();
-                } else {
-                    stack.add(tk.getStringValue());
-                }
-            }
-            return ret;
-        } catch (IOException ioe) {
-            throw new ExceptionConverter(ioe);
-        }
-    }
-
     public void decodeGenericDictionary(PdfDictionary merged, BaseField tx) throws DocumentException {
         int flags;
         // the text size and color
@@ -678,7 +745,7 @@ public class AcroFields {
                                         } else {
                                             try {
                                                 porf = BaseFont.createFont("font.ttf", BaseFont.IDENTITY_H, true, false,
-                                                    PdfReader.getStreamBytes(prs), null);
+                                                        PdfReader.getStreamBytes(prs), null);
                                             } catch (Exception ignored) {
                                             }
                                             extensionFonts.put(porkey, porf);
@@ -797,7 +864,7 @@ public class AcroFields {
     }
 
     PdfAppearance getAppearance(PdfDictionary merged, String[] values, String fieldName)
-        throws IOException, DocumentException {
+            throws IOException, DocumentException {
         topFirst = 0;
         String text = (values.length > 0) ? values[0] : null;
 
@@ -831,7 +898,8 @@ public class AcroFields {
         }
         if (!PdfName.CH.equals(fieldType)) {
             throw new DocumentException(
-                MessageLocalization.getComposedMessage("an.appearance.was.requested.without.a.variable.text.field"));
+                    MessageLocalization.getComposedMessage(
+                            "an.appearance.was.requested.without.a.variable.text.field"));
         }
         PdfArray opt = merged.getAsArray(PdfName.OPT);
         int flags = 0;
@@ -900,7 +968,7 @@ public class AcroFields {
     }
 
     PdfAppearance getAppearance(PdfDictionary merged, String text, String fieldName)
-        throws IOException, DocumentException {
+            throws IOException, DocumentException {
         String[] valueArr = new String[1];
         valueArr[0] = text;
         return getAppearance(merged, valueArr, fieldName);
@@ -915,12 +983,12 @@ public class AcroFields {
                 return new GrayColor(ar.getAsNumber(0).floatValue());
             case 3:
                 return new Color(ExtendedColor.normalize(ar.getAsNumber(0).floatValue()),
-                    ExtendedColor.normalize(ar.getAsNumber(1).floatValue()),
-                    ExtendedColor.normalize(ar.getAsNumber(2).floatValue()));
+                        ExtendedColor.normalize(ar.getAsNumber(1).floatValue()),
+                        ExtendedColor.normalize(ar.getAsNumber(2).floatValue()));
             case 4:
                 return new CMYKColor(ar.getAsNumber(0).floatValue(), ar.getAsNumber(1).floatValue(),
-                    ar.getAsNumber(2).floatValue(),
-                    ar.getAsNumber(3).floatValue());
+                        ar.getAsNumber(2).floatValue(),
+                        ar.getAsNumber(3).floatValue());
             default:
                 return null;
         }
@@ -1043,7 +1111,6 @@ public class AcroFields {
         return ret;
     }
 
-
     /**
      * Sets a field property. Valid property names are:
      *
@@ -1152,8 +1219,8 @@ public class AcroFields {
                             if (dao[DA_FONT] != null) {
                                 ByteBuffer buf = cb.getInternalBuffer();
                                 buf.append(new PdfName((String) dao[DA_FONT]).getBytes()).append(' ')
-                                    .append((Float) dao[DA_SIZE])
-                                    .append(" Tf ");
+                                        .append((Float) dao[DA_SIZE])
+                                        .append(" Tf ");
                                 cb.setColorFill((Color) value);
                                 PdfString s = new PdfString(cb.toString());
                                 item.getMerged(k).put(PdfName.DA, s);
@@ -1178,7 +1245,7 @@ public class AcroFields {
                                     fontSize = (Float) value;
                                 }
                                 buf.append(new PdfName((String) dao[DA_FONT]).getBytes()).append(' ').append(fontSize)
-                                    .append(" Tf ");
+                                        .append(" Tf ");
                                 if (dao[DA_COLOR] != null) {
                                     cb.setColorFill((Color) dao[DA_COLOR]);
                                 }
@@ -1362,46 +1429,6 @@ public class AcroFields {
     }
 
     /**
-     * Parses and converts colors from PDF to standard AWT Colors.
-     *
-     * @param pdfColor an array of colors
-     * @return AWT-Color
-     */
-    public static Color parseColor(PdfArray pdfColor) {
-
-        //Check for no color -> thus transparent
-        if (pdfColor != null && !pdfColor.isEmpty()) {
-            if (pdfColor.size() == 1) {
-                PdfNumber grey = pdfColor.getAsNumber(0);
-                if (grey != null) {
-                    return new GrayColor(grey.floatValue());
-                }
-            } else if (pdfColor.size() == 3) {
-                PdfNumber red = pdfColor.getAsNumber(0);
-                PdfNumber green = pdfColor.getAsNumber(1);
-                PdfNumber blue = pdfColor.getAsNumber(2);
-
-                if (red != null && green != null && blue != null) {
-                    return new Color(red.floatValue(), green.floatValue(), blue.floatValue());
-                }
-            } else if (pdfColor.size() == 4) {
-                PdfNumber c = pdfColor.getAsNumber(0);
-                PdfNumber m = pdfColor.getAsNumber(1);
-                PdfNumber y = pdfColor.getAsNumber(2);
-                PdfNumber k = pdfColor.getAsNumber(3);
-
-                if (c != null && m != null && y != null && k != null) {
-                    return new CMYKColor(c.floatValue(), m.floatValue(), y.floatValue(), k.floatValue());
-                }
-            } else {
-                throw new RuntimeException(
-                    "Error extracting color: " + pdfColor + " since the color array is too long: " + pdfColor.length());
-            }
-        }
-        return null;
-    }
-
-    /**
      * Sets a field property. Valid property names are:
      *
      * <ul>
@@ -1562,55 +1589,6 @@ public class AcroFields {
     }
 
     /**
-     * Sets the fields by FDF merging.
-     *
-     * @param fdf the FDF form
-     * @throws IOException       on error
-     * @throws DocumentException on error
-     */
-    public void setFields(FdfReader fdf) throws IOException, DocumentException {
-        Map<String, PdfDictionary> fd = fdf.getAllFields();
-        for (String f : fd.keySet()) {
-            String v = fdf.getFieldValue(f);
-            if (v != null) {
-                setField(f, v);
-            }
-        }
-    }
-
-    /**
-     * Allows merging the fields by a field reader. One use would be to set the fields by XFDF merging.
-     *
-     * @param fieldReader The fields to merge.
-     * @throws IOException       on error
-     * @throws DocumentException on error
-     */
-    public void setFields(XfdfReader fieldReader) throws IOException, DocumentException {
-        setFields((FieldReader) fieldReader);
-    }
-
-    /**
-     * Allows merging the fields by a field reader. One use would be to set the fields by XFDF merging.
-     *
-     * @param fieldReader The fields to merge.
-     * @throws IOException       on error
-     * @throws DocumentException on error
-     */
-    public void setFields(FieldReader fieldReader) throws IOException, DocumentException {
-        Map<String, String> fd = fieldReader.getAllFields();
-        for (String f : fd.keySet()) {
-            String v = fieldReader.getFieldValue(f);
-            if (v != null) {
-                setField(f, v);
-            }
-            List<String> list = fieldReader.getListValues(f);
-            if (list != null) {
-                setListSelection(v, list.toArray(new String[0]));
-            }
-        }
-    }
-
-    /**
      * Regenerates the field appearance. This is useful when you change a field property, but not its value, for
      * instance form.setFieldProperty("f", "bgcolor", Color.BLUE, null); This won't have any effect, unless you use
      * regenerateField("f") after changing the property.
@@ -1656,7 +1634,7 @@ public class AcroFields {
     public boolean setField(String name, String value, String display) throws IOException, DocumentException {
         if (writer == null) {
             throw new DocumentException(
-                MessageLocalization.getComposedMessage("this.acrofields.instance.is.read.only"));
+                    MessageLocalization.getComposedMessage("this.acrofields.instance.is.read.only"));
         }
         if (xfa.isXfaPresent()) {
             name = xfa.findFieldName(name, this);
@@ -1855,6 +1833,55 @@ public class AcroFields {
     }
 
     /**
+     * Sets the fields by FDF merging.
+     *
+     * @param fdf the FDF form
+     * @throws IOException       on error
+     * @throws DocumentException on error
+     */
+    public void setFields(FdfReader fdf) throws IOException, DocumentException {
+        Map<String, PdfDictionary> fd = fdf.getAllFields();
+        for (String f : fd.keySet()) {
+            String v = fdf.getFieldValue(f);
+            if (v != null) {
+                setField(f, v);
+            }
+        }
+    }
+
+    /**
+     * Allows merging the fields by a field reader. One use would be to set the fields by XFDF merging.
+     *
+     * @param fieldReader The fields to merge.
+     * @throws IOException       on error
+     * @throws DocumentException on error
+     */
+    public void setFields(XfdfReader fieldReader) throws IOException, DocumentException {
+        setFields((FieldReader) fieldReader);
+    }
+
+    /**
+     * Allows merging the fields by a field reader. One use would be to set the fields by XFDF merging.
+     *
+     * @param fieldReader The fields to merge.
+     * @throws IOException       on error
+     * @throws DocumentException on error
+     */
+    public void setFields(FieldReader fieldReader) throws IOException, DocumentException {
+        Map<String, String> fd = fieldReader.getAllFields();
+        for (String f : fd.keySet()) {
+            String v = fieldReader.getFieldValue(f);
+            if (v != null) {
+                setField(f, v);
+            }
+            List<String> list = fieldReader.getListValues(f);
+            if (list != null) {
+                setListSelection(v, list.toArray(new String[0]));
+            }
+        }
+    }
+
+    /**
      * Gets all the fields. The fields are keyed by the fully qualified field name and the value is an instance of
      * <CODE>AcroFields.Item</CODE>.
      *
@@ -1927,24 +1954,24 @@ public class AcroFields {
                     switch (rotation) {
                         case 270:
                             r = new Rectangle(
-                                pageSize.getTop() - r.getBottom(),
-                                r.getLeft(),
-                                pageSize.getTop() - r.getTop(),
-                                r.getRight());
+                                    pageSize.getTop() - r.getBottom(),
+                                    r.getLeft(),
+                                    pageSize.getTop() - r.getTop(),
+                                    r.getRight());
                             break;
                         case 180:
                             r = new Rectangle(
-                                pageSize.getRight() - r.getLeft(),
-                                pageSize.getTop() - r.getBottom(),
-                                pageSize.getRight() - r.getRight(),
-                                pageSize.getTop() - r.getTop());
+                                    pageSize.getRight() - r.getLeft(),
+                                    pageSize.getTop() - r.getBottom(),
+                                    pageSize.getRight() - r.getRight(),
+                                    pageSize.getTop() - r.getTop());
                             break;
                         case 90:
                             r = new Rectangle(
-                                r.getBottom(),
-                                pageSize.getRight() - r.getLeft(),
-                                r.getTop(),
-                                pageSize.getRight() - r.getRight());
+                                    r.getBottom(),
+                                    pageSize.getRight() - r.getLeft(),
+                                    r.getTop(),
+                                    pageSize.getRight() - r.getRight());
                             break;
                     }
                     r.normalize();
@@ -2017,7 +2044,7 @@ public class AcroFields {
             return false;
         }
         PdfDictionary acroForm = (PdfDictionary) PdfReader.getPdfObject(reader.getCatalog().get(PdfName.ACROFORM),
-            reader.getCatalog());
+                reader.getCatalog());
 
         if (acroForm == null) {
             return false;
@@ -2102,331 +2129,6 @@ public class AcroFields {
             top.remove(PdfName.NEEDAPPEARANCES);
         } else {
             top.put(PdfName.NEEDAPPEARANCES, PdfBoolean.PDFTRUE);
-        }
-    }
-
-    /**
-     * The field representations for retrieval and modification.
-     */
-    public static class Item {
-
-        /**
-         * <CODE>writeToAll</CODE> constant.
-         *
-         * @since 2.1.5
-         */
-        public static final int WRITE_MERGED = 1;
-
-        /**
-         * <CODE>writeToAll</CODE> and <CODE>markUsed</CODE> constant.
-         *
-         * @since 2.1.5
-         */
-        public static final int WRITE_WIDGET = 2;
-
-        /**
-         * <CODE>writeToAll</CODE> and <CODE>markUsed</CODE> constant.
-         *
-         * @since 2.1.5
-         */
-
-        public static final int WRITE_VALUE = 4;
-        /**
-         * An array of <CODE>PdfDictionary</CODE> where the value tag /V is present.
-         *
-         * @deprecated (will remove ' public ' in the future)
-         */
-        @Deprecated
-        public ArrayList<PdfDictionary> values = new ArrayList<>();
-
-        /**
-         * An array of <CODE>PdfDictionary</CODE> with the widgets.
-         *
-         * @deprecated (will remove ' public ' in the future)
-         */
-        @Deprecated
-        public ArrayList<PdfDictionary> widgets = new ArrayList<>();
-
-        /**
-         * An array of <CODE>PdfDictionary</CODE> with the widget references.
-         *
-         * @deprecated (will remove ' public ' in the future)
-         */
-        @Deprecated
-        public ArrayList<PdfIndirectReference> widgetRefs = new ArrayList<>();
-
-        /**
-         * An array of <CODE>PdfDictionary</CODE> with all the field and widget tags merged.
-         *
-         * @deprecated (will remove ' public ' in the future)
-         */
-        @Deprecated
-        public ArrayList<PdfDictionary> merged = new ArrayList<>();
-
-        /**
-         * An array of <CODE>Integer</CODE> with the page numbers where the widgets are displayed.
-         *
-         * @deprecated (will remove ' public ' in the future)
-         */
-        @Deprecated
-        public ArrayList<Integer> page = new ArrayList<>();
-        /**
-         * An array of <CODE>Integer</CODE> with the tab order of the field in the page.
-         *
-         * @deprecated (will remove ' public ' in the future)
-         */
-        @Deprecated
-        public ArrayList<Integer> tabOrder = new ArrayList<>();
-
-        /**
-         * The indirect reference of the item itself
-         */
-        private final PdfIndirectReference fieldReference;
-
-
-        public Item(PdfIndirectReference ref) {
-            this.fieldReference = ref;
-        }
-
-        /**
-         * This function writes the given key/value pair to all the instances of merged, widget, and/or value, depending
-         * on the
-         * <code>writeFlags</code> setting
-         *
-         * @param key        you'll never guess what this is for.
-         * @param value      if value is null, the key will be removed
-         * @param writeFlags ORed together WRITE_* flags
-         * @since 2.1.5
-         */
-        public void writeToAll(PdfName key, PdfObject value, int writeFlags) {
-            int i;
-            PdfDictionary curDict;
-            if ((writeFlags & WRITE_MERGED) != 0) {
-                for (i = 0; i < merged.size(); ++i) {
-                    curDict = getMerged(i);
-                    curDict.put(key, value);
-                }
-            }
-            if ((writeFlags & WRITE_WIDGET) != 0) {
-                for (i = 0; i < widgets.size(); ++i) {
-                    curDict = getWidget(i);
-                    curDict.put(key, value);
-                }
-            }
-            if ((writeFlags & WRITE_VALUE) != 0) {
-                for (i = 0; i < values.size(); ++i) {
-                    curDict = getValue(i);
-                    curDict.put(key, value);
-                }
-            }
-        }
-
-        /**
-         * Mark all the item dictionaries used matching the given flags
-         *
-         * @param writeFlags   WRITE_MERGED is ignored
-         * @param parentFields parent fields
-         * @since 2.1.5
-         */
-        public void markUsed(AcroFields parentFields, int writeFlags) {
-            if ((writeFlags & WRITE_VALUE) != 0) {
-                for (int i = 0; i < size(); ++i) {
-                    parentFields.markUsed(getValue(i));
-                }
-            }
-            if ((writeFlags & WRITE_WIDGET) != 0) {
-                for (int i = 0; i < size(); ++i) {
-                    parentFields.markUsed(getWidget(i));
-                }
-            }
-        }
-
-        /**
-         * Preferred method of determining the number of instances of a given field.
-         *
-         * @return number of instances
-         * @since 2.1.5
-         */
-        public int size() {
-            return values.size();
-        }
-
-        /**
-         * Remove the given instance from this item.  It is possible to remove all instances using this function.
-         *
-         * @since 2.1.5
-         */
-        public void remove(int killIdx) {
-            values.remove(killIdx);
-            widgets.remove(killIdx);
-            widgetRefs.remove(killIdx);
-            merged.remove(killIdx);
-            page.remove(killIdx);
-            tabOrder.remove(killIdx);
-        }
-
-        /**
-         * Retrieve the value dictionary of the given instance
-         *
-         * @param idx instance index
-         * @return dictionary storing this instance's value.  It may be shared across instances.
-         * @since 2.1.5
-         */
-        public PdfDictionary getValue(int idx) {
-            return values.get(idx);
-        }
-
-        /**
-         * Add a value dict to this Item
-         *
-         * @param value new value dictionary
-         * @since 2.1.5
-         */
-        void addValue(PdfDictionary value) {
-            values.add(value);
-        }
-
-        /**
-         * Retrieve the widget dictionary of the given instance
-         *
-         * @param idx instance index
-         * @return The dictionary found in the appropriate page's Annot array.
-         * @since 2.1.5
-         */
-        public PdfDictionary getWidget(int idx) {
-            return widgets.get(idx);
-        }
-
-        /**
-         * Add a widget dict to this Item
-         *
-         * @since 2.1.5
-         */
-        void addWidget(PdfDictionary widget) {
-            widgets.add(widget);
-        }
-
-        /**
-         * Retrieve the reference to the given instance
-         *
-         * @param idx instance index
-         * @return reference to the given field instance
-         * @since 2.1.5
-         */
-        public PdfIndirectReference getWidgetRef(int idx) {
-            return widgetRefs.get(idx);
-        }
-
-        /**
-         * Add a widget ref to this Item
-         *
-         * @since 2.1.5
-         */
-        void addWidgetRef(PdfIndirectReference widgRef) {
-            widgetRefs.add(widgRef);
-        }
-
-        /**
-         * Retrieve the merged dictionary for the given instance.  The merged dictionary contains all the keys present
-         * in parent fields, though they may have been overwritten (or modified?) by children. Example: a merged radio
-         * field dict will contain /V
-         *
-         * @param idx instance index
-         * @return the merged dictionary for the given instance
-         * @since 2.1.5
-         */
-        public PdfDictionary getMerged(int idx) {
-            return merged.get(idx);
-        }
-
-        /**
-         * Adds a merged dictionary to this Item.
-         *
-         * @since 2.1.5
-         */
-        void addMerged(PdfDictionary mergeDict) {
-            merged.add(mergeDict);
-        }
-
-        /**
-         * Retrieve the page number of the given instance
-         *
-         * @param idx index
-         * @return remember, pages are "1-indexed", not "0-indexed" like field instances.
-         * @since 2.1.5
-         */
-        public Integer getPage(int idx) {
-            return page.get(idx);
-        }
-
-        /**
-         * Adds a page to the current Item.
-         *
-         * @since 2.1.5
-         */
-        void addPage(int pg) {
-            page.add(pg);
-        }
-
-        /**
-         * forces a page value into the Item.
-         *
-         * @since 2.1.5
-         */
-        void forcePage(int idx, int pg) {
-            page.set(idx, pg);
-        }
-
-        /**
-         * Gets the tabOrder.
-         *
-         * @param idx index
-         * @return tab index of the given field instance
-         * @since 2.1.5
-         */
-        public Integer getTabOrder(int idx) {
-            return tabOrder.get(idx);
-        }
-
-        /**
-         * Adds a tab order value to this Item.
-         *
-         * @param order order for the tab
-         * @since 2.1.5
-         */
-        void addTabOrder(int order) {
-            tabOrder.add(order);
-        }
-
-        /**
-         * Returns the indirect reference of the field itself
-         *
-         * @return PdfIndirectReferenceof the field
-         */
-        public PdfIndirectReference getFieldReference() {
-            return this.fieldReference;
-        }
-    }
-
-    private static class InstHit {
-
-        IntHashtable hits;
-
-        public InstHit(int[] inst) {
-            if (inst == null) {
-                return;
-            }
-            hits = new IntHashtable();
-            for (int i : inst) {
-                hits.put(i, 1);
-            }
-        }
-
-        public boolean isHit(int n) {
-            if (hits == null) {
-                return true;
-            }
-            return hits.containsKey(n);
         }
     }
 
@@ -2551,8 +2253,8 @@ public class AcroFields {
                     if (sigRefDict == null) {
                         //not PDF compliant since the content of the array must be a dictionary!
                         throw new IllegalStateException(
-                            "The array of signature reference dictionaries does not contain the correct type (PdfDictionary) but a "
-                                + ref.getPdfObject(i).getClass().getName());
+                                "The array of signature reference dictionaries does not contain the correct type (PdfDictionary) but a "
+                                        + ref.getPdfObject(i).getClass().getName());
                     }
 
                     PdfName name = sigRefDict.getAsName(PdfName.TRANSFORMMETHOD);
@@ -2577,7 +2279,7 @@ public class AcroFields {
                                 this.sigTypes.put(entry.getKey(), SignatureType.CERTIFICATION_FILLINGFORMS_SIGNING);
                             } else if (permissions.intValue() == 3) {
                                 this.sigTypes.put(entry.getKey(),
-                                    SignatureType.CERTIFICATION_FILLINGFORMS_SIGNING_ANNOTATIONS);
+                                        SignatureType.CERTIFICATION_FILLINGFORMS_SIGNING_ANNOTATIONS);
                             } else {
                                 //default according to adobe is 2
                                 this.sigTypes.put(entry.getKey(), SignatureType.CERTIFICATION_FILLINGFORMS_SIGNING);
@@ -2875,15 +2577,6 @@ public class AcroFields {
     }
 
     /**
-     * Gets the appearances cache.
-     *
-     * @return the appearances cache
-     */
-    public Map<String, BaseField> getFieldCacheMap() {
-        return fieldCache;
-    }
-
-    /**
      * Sets a cache for field appearances. Parsing the existing PDF to create a new TextField is time expensive. For
      * those tasks that repeatedly fill the same PDF with different field values the use of the cache has dramatic speed
      * advantages. An example usage:
@@ -2913,6 +2606,15 @@ public class AcroFields {
     @SuppressWarnings("unchecked")
     public void setFieldCache(Map fieldCache) {
         this.fieldCache = fieldCache;
+    }
+
+    /**
+     * Gets the appearances cache.
+     *
+     * @return the appearances cache
+     */
+    public Map<String, BaseField> getFieldCacheMap() {
+        return fieldCache;
     }
 
     /**
@@ -2967,105 +2669,6 @@ public class AcroFields {
         substitutionFonts.add(font);
     }
 
-    private static final HashMap<String, String[]> stdFieldFontNames = new HashMap<>();
-
-    /**
-     * Holds value of property totalRevisions.
-     */
-    private int totalRevisions;
-
-    /**
-     * Holds value of property fieldCache.
-     *
-     * @since 2.1.5  this used to be a HashMap
-     */
-    private Map<String, BaseField> fieldCache;
-
-    static {
-        stdFieldFontNames.put("CoBO", new String[]{"Courier-BoldOblique"});
-        stdFieldFontNames.put("CoBo", new String[]{"Courier-Bold"});
-        stdFieldFontNames.put("CoOb", new String[]{"Courier-Oblique"});
-        stdFieldFontNames.put("Cour", new String[]{"Courier"});
-        stdFieldFontNames.put("HeBO", new String[]{"Helvetica-BoldOblique"});
-        stdFieldFontNames.put("HeBo", new String[]{"Helvetica-Bold"});
-        stdFieldFontNames.put("HeOb", new String[]{"Helvetica-Oblique"});
-        stdFieldFontNames.put("Helv", new String[]{"Helvetica"});
-        stdFieldFontNames.put("Symb", new String[]{"Symbol"});
-        stdFieldFontNames.put("TiBI", new String[]{"Times-BoldItalic"});
-        stdFieldFontNames.put("TiBo", new String[]{"Times-Bold"});
-        stdFieldFontNames.put("TiIt", new String[]{"Times-Italic"});
-        stdFieldFontNames.put("TiRo", new String[]{"Times-Roman"});
-        stdFieldFontNames.put("ZaDb", new String[]{"ZapfDingbats"});
-        stdFieldFontNames.put("HySm", new String[]{"HYSMyeongJo-Medium", "UniKS-UCS2-H"});
-        stdFieldFontNames.put("HyGo", new String[]{"HYGoThic-Medium", "UniKS-UCS2-H"});
-        stdFieldFontNames.put("KaGo", new String[]{"HeiseiKakuGo-W5", "UniKS-UCS2-H"});
-        stdFieldFontNames.put("KaMi", new String[]{"HeiseiMin-W3", "UniJIS-UCS2-H"});
-        stdFieldFontNames.put("MHei", new String[]{"MHei-Medium", "UniCNS-UCS2-H"});
-        stdFieldFontNames.put("MSun", new String[]{"MSung-Light", "UniCNS-UCS2-H"});
-        stdFieldFontNames.put("STSo", new String[]{"STSong-Light", "UniGB-UCS2-H"});
-    }
-
-    private static class RevisionStream extends InputStream {
-
-        private final byte[] b = new byte[1];
-        private final RandomAccessFileOrArray raf;
-        private final int length;
-        private int rangePosition = 0;
-        private boolean closed;
-
-        private RevisionStream(RandomAccessFileOrArray raf, int length) {
-            this.raf = raf;
-            this.length = length;
-        }
-
-        @Override
-        public int read() throws IOException {
-            int n = read(b);
-            if (n != 1) {
-                return -1;
-            }
-            return b[0] & 0xff;
-        }
-
-        @Override
-        public int read(byte[] b, int off, int len) throws IOException {
-            if (b == null) {
-                throw new NullPointerException();
-            } else if ((off < 0) || (off > b.length) || (len < 0) ||
-                ((off + len) > b.length) || ((off + len) < 0)) {
-                throw new IndexOutOfBoundsException();
-            } else if (len == 0) {
-                return 0;
-            }
-            if (rangePosition >= length) {
-                close();
-                return -1;
-            }
-            int elen = Math.min(len, length - rangePosition);
-            raf.readFully(b, off, elen);
-            rangePosition += elen;
-            return elen;
-        }
-
-        @Override
-        public void close() throws IOException {
-            if (!closed) {
-                raf.close();
-                closed = true;
-            }
-        }
-    }
-
-    private static class SorterComparator implements Comparator<Object[]> {
-
-        @Override
-        public int compare(Object[] o1, Object[] o2) {
-            int n1 = ((int[]) o1[1])[0];
-            int n2 = ((int[]) o2[1])[0];
-            return n1 - n2;
-        }
-    }
-
     /**
      * Gets the list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can be <CODE>null</CODE>.
      * The fonts in this list will be used if the original font doesn't contain the needed glyphs.
@@ -3079,16 +2682,6 @@ public class AcroFields {
     }
 
     /**
-     * Gets the list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can be <CODE>null</CODE>.
-     * The fonts in this list will be used if the original font doesn't contain the needed glyphs.
-     *
-     * @return the list
-     */
-    public List<BaseFont> getAllSubstitutionFonts() {
-        return substitutionFonts;
-    }
-
-    /**
      * Sets a list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can also be
      * <CODE>null</CODE>. The fonts in this list will be used if the original font doesn't contain the needed glyphs.
      *
@@ -3099,6 +2692,16 @@ public class AcroFields {
     @SuppressWarnings("unchecked")
     public void setSubstitutionFonts(ArrayList substitutionFonts) {
         this.substitutionFonts = substitutionFonts;
+    }
+
+    /**
+     * Gets the list of substitution fonts. The list is composed of <CODE>BaseFont</CODE> and can be <CODE>null</CODE>.
+     * The fonts in this list will be used if the original font doesn't contain the needed glyphs.
+     *
+     * @return the list
+     */
+    public List<BaseFont> getAllSubstitutionFonts() {
+        return substitutionFonts;
     }
 
     /**
@@ -3136,9 +2739,6 @@ public class AcroFields {
             }
         }
     }
-
-    private static final PdfName[] buttonRemove = {PdfName.MK, PdfName.F, PdfName.FF, PdfName.Q, PdfName.BS,
-        PdfName.BORDER};
 
     /**
      * Creates a new pushbutton from an existing field. If there are several pushbuttons with the same name only the
@@ -3285,6 +2885,387 @@ public class AcroFields {
             merged.put(key, button.get(key));
         }
         return true;
+    }
+
+    /**
+     * The field representations for retrieval and modification.
+     */
+    public static class Item {
+
+        /**
+         * <CODE>writeToAll</CODE> constant.
+         *
+         * @since 2.1.5
+         */
+        public static final int WRITE_MERGED = 1;
+
+        /**
+         * <CODE>writeToAll</CODE> and <CODE>markUsed</CODE> constant.
+         *
+         * @since 2.1.5
+         */
+        public static final int WRITE_WIDGET = 2;
+
+        /**
+         * <CODE>writeToAll</CODE> and <CODE>markUsed</CODE> constant.
+         *
+         * @since 2.1.5
+         */
+
+        public static final int WRITE_VALUE = 4;
+        /**
+         * The indirect reference of the item itself
+         */
+        private final PdfIndirectReference fieldReference;
+        /**
+         * An array of <CODE>PdfDictionary</CODE> where the value tag /V is present.
+         *
+         * @deprecated (will remove ' public ' in the future)
+         */
+        @Deprecated
+        public ArrayList<PdfDictionary> values = new ArrayList<>();
+        /**
+         * An array of <CODE>PdfDictionary</CODE> with the widgets.
+         *
+         * @deprecated (will remove ' public ' in the future)
+         */
+        @Deprecated
+        public ArrayList<PdfDictionary> widgets = new ArrayList<>();
+        /**
+         * An array of <CODE>PdfDictionary</CODE> with the widget references.
+         *
+         * @deprecated (will remove ' public ' in the future)
+         */
+        @Deprecated
+        public ArrayList<PdfIndirectReference> widgetRefs = new ArrayList<>();
+        /**
+         * An array of <CODE>PdfDictionary</CODE> with all the field and widget tags merged.
+         *
+         * @deprecated (will remove ' public ' in the future)
+         */
+        @Deprecated
+        public ArrayList<PdfDictionary> merged = new ArrayList<>();
+        /**
+         * An array of <CODE>Integer</CODE> with the page numbers where the widgets are displayed.
+         *
+         * @deprecated (will remove ' public ' in the future)
+         */
+        @Deprecated
+        public ArrayList<Integer> page = new ArrayList<>();
+        /**
+         * An array of <CODE>Integer</CODE> with the tab order of the field in the page.
+         *
+         * @deprecated (will remove ' public ' in the future)
+         */
+        @Deprecated
+        public ArrayList<Integer> tabOrder = new ArrayList<>();
+
+
+        public Item(PdfIndirectReference ref) {
+            this.fieldReference = ref;
+        }
+
+        /**
+         * This function writes the given key/value pair to all the instances of merged, widget, and/or value, depending
+         * on the
+         * <code>writeFlags</code> setting
+         *
+         * @param key        you'll never guess what this is for.
+         * @param value      if value is null, the key will be removed
+         * @param writeFlags ORed together WRITE_* flags
+         * @since 2.1.5
+         */
+        public void writeToAll(PdfName key, PdfObject value, int writeFlags) {
+            int i;
+            PdfDictionary curDict;
+            if ((writeFlags & WRITE_MERGED) != 0) {
+                for (i = 0; i < merged.size(); ++i) {
+                    curDict = getMerged(i);
+                    curDict.put(key, value);
+                }
+            }
+            if ((writeFlags & WRITE_WIDGET) != 0) {
+                for (i = 0; i < widgets.size(); ++i) {
+                    curDict = getWidget(i);
+                    curDict.put(key, value);
+                }
+            }
+            if ((writeFlags & WRITE_VALUE) != 0) {
+                for (i = 0; i < values.size(); ++i) {
+                    curDict = getValue(i);
+                    curDict.put(key, value);
+                }
+            }
+        }
+
+        /**
+         * Mark all the item dictionaries used matching the given flags
+         *
+         * @param writeFlags   WRITE_MERGED is ignored
+         * @param parentFields parent fields
+         * @since 2.1.5
+         */
+        public void markUsed(AcroFields parentFields, int writeFlags) {
+            if ((writeFlags & WRITE_VALUE) != 0) {
+                for (int i = 0; i < size(); ++i) {
+                    parentFields.markUsed(getValue(i));
+                }
+            }
+            if ((writeFlags & WRITE_WIDGET) != 0) {
+                for (int i = 0; i < size(); ++i) {
+                    parentFields.markUsed(getWidget(i));
+                }
+            }
+        }
+
+        /**
+         * Preferred method of determining the number of instances of a given field.
+         *
+         * @return number of instances
+         * @since 2.1.5
+         */
+        public int size() {
+            return values.size();
+        }
+
+        /**
+         * Remove the given instance from this item.  It is possible to remove all instances using this function.
+         *
+         * @since 2.1.5
+         */
+        public void remove(int killIdx) {
+            values.remove(killIdx);
+            widgets.remove(killIdx);
+            widgetRefs.remove(killIdx);
+            merged.remove(killIdx);
+            page.remove(killIdx);
+            tabOrder.remove(killIdx);
+        }
+
+        /**
+         * Retrieve the value dictionary of the given instance
+         *
+         * @param idx instance index
+         * @return dictionary storing this instance's value.  It may be shared across instances.
+         * @since 2.1.5
+         */
+        public PdfDictionary getValue(int idx) {
+            return values.get(idx);
+        }
+
+        /**
+         * Add a value dict to this Item
+         *
+         * @param value new value dictionary
+         * @since 2.1.5
+         */
+        void addValue(PdfDictionary value) {
+            values.add(value);
+        }
+
+        /**
+         * Retrieve the widget dictionary of the given instance
+         *
+         * @param idx instance index
+         * @return The dictionary found in the appropriate page's Annot array.
+         * @since 2.1.5
+         */
+        public PdfDictionary getWidget(int idx) {
+            return widgets.get(idx);
+        }
+
+        /**
+         * Add a widget dict to this Item
+         *
+         * @since 2.1.5
+         */
+        void addWidget(PdfDictionary widget) {
+            widgets.add(widget);
+        }
+
+        /**
+         * Retrieve the reference to the given instance
+         *
+         * @param idx instance index
+         * @return reference to the given field instance
+         * @since 2.1.5
+         */
+        public PdfIndirectReference getWidgetRef(int idx) {
+            return widgetRefs.get(idx);
+        }
+
+        /**
+         * Add a widget ref to this Item
+         *
+         * @since 2.1.5
+         */
+        void addWidgetRef(PdfIndirectReference widgRef) {
+            widgetRefs.add(widgRef);
+        }
+
+        /**
+         * Retrieve the merged dictionary for the given instance.  The merged dictionary contains all the keys present
+         * in parent fields, though they may have been overwritten (or modified?) by children. Example: a merged radio
+         * field dict will contain /V
+         *
+         * @param idx instance index
+         * @return the merged dictionary for the given instance
+         * @since 2.1.5
+         */
+        public PdfDictionary getMerged(int idx) {
+            return merged.get(idx);
+        }
+
+        /**
+         * Adds a merged dictionary to this Item.
+         *
+         * @since 2.1.5
+         */
+        void addMerged(PdfDictionary mergeDict) {
+            merged.add(mergeDict);
+        }
+
+        /**
+         * Retrieve the page number of the given instance
+         *
+         * @param idx index
+         * @return remember, pages are "1-indexed", not "0-indexed" like field instances.
+         * @since 2.1.5
+         */
+        public Integer getPage(int idx) {
+            return page.get(idx);
+        }
+
+        /**
+         * Adds a page to the current Item.
+         *
+         * @since 2.1.5
+         */
+        void addPage(int pg) {
+            page.add(pg);
+        }
+
+        /**
+         * forces a page value into the Item.
+         *
+         * @since 2.1.5
+         */
+        void forcePage(int idx, int pg) {
+            page.set(idx, pg);
+        }
+
+        /**
+         * Gets the tabOrder.
+         *
+         * @param idx index
+         * @return tab index of the given field instance
+         * @since 2.1.5
+         */
+        public Integer getTabOrder(int idx) {
+            return tabOrder.get(idx);
+        }
+
+        /**
+         * Adds a tab order value to this Item.
+         *
+         * @param order order for the tab
+         * @since 2.1.5
+         */
+        void addTabOrder(int order) {
+            tabOrder.add(order);
+        }
+
+        /**
+         * Returns the indirect reference of the field itself
+         *
+         * @return PdfIndirectReferenceof the field
+         */
+        public PdfIndirectReference getFieldReference() {
+            return this.fieldReference;
+        }
+    }
+
+    private static class InstHit {
+
+        IntHashtable hits;
+
+        public InstHit(int[] inst) {
+            if (inst == null) {
+                return;
+            }
+            hits = new IntHashtable();
+            for (int i : inst) {
+                hits.put(i, 1);
+            }
+        }
+
+        public boolean isHit(int n) {
+            if (hits == null) {
+                return true;
+            }
+            return hits.containsKey(n);
+        }
+    }
+
+    private static class RevisionStream extends InputStream {
+
+        private final byte[] b = new byte[1];
+        private final RandomAccessFileOrArray raf;
+        private final int length;
+        private int rangePosition = 0;
+        private boolean closed;
+
+        private RevisionStream(RandomAccessFileOrArray raf, int length) {
+            this.raf = raf;
+            this.length = length;
+        }
+
+        @Override
+        public int read() throws IOException {
+            int n = read(b);
+            if (n != 1) {
+                return -1;
+            }
+            return b[0] & 0xff;
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            if (b == null) {
+                throw new NullPointerException();
+            } else if ((off < 0) || (off > b.length) || (len < 0) ||
+                    ((off + len) > b.length) || ((off + len) < 0)) {
+                throw new IndexOutOfBoundsException();
+            } else if (len == 0) {
+                return 0;
+            }
+            if (rangePosition >= length) {
+                close();
+                return -1;
+            }
+            int elen = Math.min(len, length - rangePosition);
+            raf.readFully(b, off, elen);
+            rangePosition += elen;
+            return elen;
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (!closed) {
+                raf.close();
+                closed = true;
+            }
+        }
+    }
+
+    private static class SorterComparator implements Comparator<Object[]> {
+
+        @Override
+        public int compare(Object[] o1, Object[] o2) {
+            int n1 = ((int[]) o1[1])[0];
+            int n2 = ((int[]) o2[1])[0];
+            return n1 - n2;
+        }
     }
 
 }

@@ -67,30 +67,34 @@ public class PdfStructureTreeRoot extends PdfDictionary {
      */
     private final PdfWriter writer;
 
-    /** Creates a new instance of PdfStructureTreeRoot */
+    /**
+     * Creates a new instance of PdfStructureTreeRoot
+     */
     PdfStructureTreeRoot(PdfWriter writer) {
         super(PdfName.STRUCTTREEROOT);
         this.writer = writer;
         reference = writer.getPdfIndirectReference();
     }
-    
+
     /**
-     * Maps the user tags to the standard tags. The mapping will allow a standard application to make some sense of the tagged
-     * document whatever the user tags may be.
-     * @param used the user tag
+     * Maps the user tags to the standard tags. The mapping will allow a standard application to make some sense of the
+     * tagged document whatever the user tags may be.
+     *
+     * @param used     the user tag
      * @param standard the standard tag
-     */    
+     */
     public void mapRole(PdfName used, PdfName standard) {
-        PdfDictionary rm = (PdfDictionary)get(PdfName.ROLEMAP);
+        PdfDictionary rm = (PdfDictionary) get(PdfName.ROLEMAP);
         if (rm == null) {
             rm = new PdfDictionary();
             put(PdfName.ROLEMAP, rm);
         }
         rm.put(used, standard);
     }
-    
+
     /**
      * Gets the writer.
+     *
      * @return the writer
      */
     public PdfWriter getWriter() {
@@ -99,9 +103,10 @@ public class PdfStructureTreeRoot extends PdfDictionary {
 
     /**
      * Gets the reference this object will be written to.
+     *
      * @return the reference this object will be written to
-     * @since    2.1.6 method removed in 2.1.5, but restored in 2.1.6
-     */    
+     * @since 2.1.6 method removed in 2.1.5, but restored in 2.1.6
+     */
     public PdfIndirectReference getReference() {
         return this.reference;
     }
@@ -119,7 +124,8 @@ public class PdfStructureTreeRoot extends PdfDictionary {
     private void nodeProcess(PdfDictionary dictionary, PdfIndirectReference reference)
             throws IOException {
         PdfObject obj = dictionary.get(PdfName.K);
-        if (obj != null && obj.isArray() && !((PdfArray) obj).getElements().isEmpty() && !((PdfArray) obj).getElements().get(0).isNumber()) {
+        if (obj != null && obj.isArray() && !((PdfArray) obj).getElements().isEmpty() && !((PdfArray) obj).getElements()
+                .get(0).isNumber()) {
             PdfArray ar = (PdfArray) obj;
             for (int k = 0; k < ar.size(); ++k) {
                 PdfStructureElement e = (PdfStructureElement) ar.getDirectObject(k);
@@ -131,7 +137,7 @@ public class PdfStructureTreeRoot extends PdfDictionary {
             writer.addToBody(dictionary, reference);
         }
     }
-    
+
     void buildTree() throws IOException {
         Map<Integer, PdfIndirectReference> numTree = new HashMap<>();
         for (Integer i : parentTree.keySet()) {
@@ -139,9 +145,10 @@ public class PdfStructureTreeRoot extends PdfDictionary {
             numTree.put(i, writer.addToBody(ar).getIndirectReference());
         }
         PdfDictionary dicTree = PdfNumberTree.writeTree(numTree, writer);
-        if (dicTree != null)
+        if (dicTree != null) {
             put(PdfName.PARENTTREE, writer.addToBody(dicTree).getIndirectReference());
-        
+        }
+
         nodeProcess(this, reference);
     }
 }

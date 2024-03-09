@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.fonts.getting;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -21,13 +19,16 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Using an Open Type Font (CFF only).
  */
 public class OpenTypeFont {
+
     /**
      * Using oth
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -42,8 +43,7 @@ public class OpenTypeFont {
             BaseFont bf = BaseFont.createFont("liz.otf", BaseFont.CP1252, true);
             String text = "Some text with the otf font LIZ.";
             document.add(new Paragraph(text, new Font(bf, 14)));
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
         // step 5

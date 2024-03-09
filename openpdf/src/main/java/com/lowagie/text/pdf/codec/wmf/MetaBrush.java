@@ -48,6 +48,7 @@
  */
 
 package com.lowagie.text.pdf.codec.wmf;
+
 import java.awt.Color;
 import java.io.IOException;
 
@@ -78,15 +79,15 @@ public class MetaBrush extends MetaObject {
         color = in.readColor();
         hatch = in.readWord();
     }
-    
+
     public int getStyle() {
         return style;
     }
-    
+
     public int getHatch() {
         return hatch;
     }
-    
+
     public Color getColor() {
         return color;
     }

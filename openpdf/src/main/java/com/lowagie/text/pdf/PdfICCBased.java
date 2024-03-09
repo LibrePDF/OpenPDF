@@ -46,34 +46,34 @@
  */
 package com.lowagie.text.pdf;
 
-import java.awt.color.ICC_Profile;
-import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
+import java.awt.color.ICC_Profile;
 
 
 /**
  * A <CODE>PdfICCBased</CODE> defines a ColorSpace
  *
- * @see        PdfStream
+ * @see PdfStream
  */
 
 public class PdfICCBased extends PdfStream {
 
     /**
      * Creates an ICC stream.
-     * @param    profile an ICC profile
+     *
+     * @param profile an ICC profile
      */
     public PdfICCBased(ICC_Profile profile) {
         this(profile, DEFAULT_COMPRESSION);
     }
-    
+
     /**
      * Creates an ICC stream.
      *
-     * @param    compressionLevel    the compressionLevel
-     *
-     * @param    profile an ICC profile
-     * @since    2.1.3    (replacing the constructor without param compressionLevel)
+     * @param compressionLevel the compressionLevel
+     * @param profile          an ICC profile
+     * @since 2.1.3    (replacing the constructor without param compressionLevel)
      */
     public PdfICCBased(ICC_Profile profile, int compressionLevel) {
         super();
@@ -90,7 +90,8 @@ public class PdfICCBased extends PdfStream {
                     put(PdfName.ALTERNATE, PdfName.DEVICECMYK);
                     break;
                 default:
-                    throw new PdfException(MessageLocalization.getComposedMessage("1.component.s.is.not.supported", numberOfComponents));
+                    throw new PdfException(MessageLocalization.getComposedMessage("1.component.s.is.not.supported",
+                            numberOfComponents));
             }
             put(PdfName.N, new PdfNumber(numberOfComponents));
             bytes = profile.getData();

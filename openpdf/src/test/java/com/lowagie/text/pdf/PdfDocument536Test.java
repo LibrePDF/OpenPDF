@@ -12,6 +12,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 public class PdfDocument536Test {
+
     @Test
     public void whenSkipFirstHeader_thenHeaderIsNotPresentOnFirstPage() throws IOException {
         // given
@@ -40,9 +41,9 @@ public class PdfDocument536Test {
         PdfTextExtractor extractor = new PdfTextExtractor(reader);
         // then
         assertThat(extractor.getTextFromPage(1)).as("First Page")
-            .doesNotContain("HEADER 1", "HEADER 2", "HEADER 3");
+                .doesNotContain("HEADER 1", "HEADER 2", "HEADER 3");
         assertThat(extractor.getTextFromPage(2)).as("SecondPage")
-            .contains("HEADER 1", "HEADER 2", "HEADER 3");
+                .contains("HEADER 1", "HEADER 2", "HEADER 3");
     }
 
     private void addCell(PdfPTable table, String cellText) {

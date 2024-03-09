@@ -52,12 +52,11 @@ package com.lowagie.text.html;
 import com.lowagie.text.DocListener;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.xml.XmlParser;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * This class can be used to parse some HTML files.

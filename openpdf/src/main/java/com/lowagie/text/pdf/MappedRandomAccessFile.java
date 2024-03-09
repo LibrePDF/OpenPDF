@@ -66,20 +66,20 @@ import java.security.PrivilegedAction;
  * @author Joakim Sandstroem Created on 6.9.2006
  */
 public class MappedRandomAccessFile implements AutoCloseable {
-    
+
     private MappedByteBuffer mappedByteBuffer = null;
     private FileChannel channel = null;
-    
+
     /**
      * Constructs a new MappedRandomAccessFile instance
      *
      * @param filename String
-     * @param mode String r, w or rw
+     * @param mode     String r, w or rw
      * @throws FileNotFoundException on error
-     * @throws IOException on error
+     * @throws IOException           on error
      */
     public MappedRandomAccessFile(String filename, String mode) throws IOException {
-        
+
         if (mode.equals("rw")) {
             init(
                     new java.io.RandomAccessFile(filename, mode).getChannel(),
@@ -89,122 +89,8 @@ public class MappedRandomAccessFile implements AutoCloseable {
                     new FileInputStream(filename).getChannel(),
                     FileChannel.MapMode.READ_ONLY);
         }
-        
-    }
-    
-    /**
-     * initializes the channel and mapped bytebuffer
-     *
-     * @param channel FileChannel
-     * @param mapMode FileChannel.MapMode
-     * @throws IOException
-     */
-    private void init(FileChannel channel, FileChannel.MapMode mapMode)
-    throws IOException {
 
-        if (channel.size() > Integer.MAX_VALUE) {
-            throw new PdfException("The PDF file is too large. Max 2GB. Size: " + channel.size());
-        }
-
-        this.channel = channel;
-        this.mappedByteBuffer = channel.map(mapMode, 0L, channel.size());
-        mappedByteBuffer.load();
     }
-
-    /**
-     * @return  FileChannel
-     * @since 2.0.8
-     */
-    public FileChannel getChannel() {
-        return channel;
-    }
-    
-    /**
-     * @return int next integer or -1 on EOF
-     * @see java.io.RandomAccessFile#read()
-     */
-    public int read() {
-        try {
-            byte b = mappedByteBuffer.get();
-            
-            return b & 0xff;
-        } catch (BufferUnderflowException e) {
-            return -1; // EOF
-        }
-    }
-    
-    /**
-     * @param bytes byte[]
-     * @param off int offset
-     * @param len int length
-     * @return int bytes read or -1 on EOF
-     * @see java.io.RandomAccessFile#read(byte[], int, int)
-     */
-    public int read(byte[] bytes, int off, int len) {
-        int pos = mappedByteBuffer.position();
-        int limit = mappedByteBuffer.limit();
-        if (pos == limit) {
-            return -1; // EOF
-        }
-        int newlimit = pos + len - off;
-        if (newlimit > limit) {
-            len = limit - pos; // don't read beyond EOF
-        }
-        mappedByteBuffer.get(bytes, off, len);
-        return len;
-    }
-    
-    /**
-     * @return long
-     * @see java.io.RandomAccessFile#getFilePointer()
-     */
-    public long getFilePointer() {
-        return mappedByteBuffer.position();
-    }
-    
-    /**
-     * @param pos long position
-     * @see java.io.RandomAccessFile#seek(long)
-     */
-    public void seek(long pos) {
-        mappedByteBuffer.position((int) pos);
-    }
-    
-    /**
-     * @return long length
-     * @see java.io.RandomAccessFile#length()
-     */
-    public long length() {
-        return mappedByteBuffer.limit();
-    }
-    
-    /**
-     * Cleans the mapped bytebuffer and closes the channel
-     *
-     * @throws IOException on error
-     * @see java.io.RandomAccessFile#close()
-     */
-    @Override
-    public void close() throws IOException {
-        clean(mappedByteBuffer);
-        mappedByteBuffer = null;
-        if (channel != null) {
-            channel.close();
-        }
-        channel = null;
-    }
-    
-    /**
-     * invokes the close method
-     *
-     * @see java.lang.Object#finalize()
-     */
-    @Override
-    protected void finalize() throws Throwable {
-        close();
-        super.finalize();
-    }
-    
 
     /**
      * invokes the clean method on the ByteBuffer's cleaner
@@ -222,7 +108,6 @@ public class MappedRandomAccessFile implements AutoCloseable {
         }
         return cleanOldsJDK(buffer);
     }
-
 
     private static boolean cleanOldsJDK(final java.nio.ByteBuffer buffer) {
         return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
@@ -243,24 +128,136 @@ public class MappedRandomAccessFile implements AutoCloseable {
         });
     }
 
-
     private static boolean cleanJava9(final java.nio.ByteBuffer buffer) {
         return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
-        Boolean success = Boolean.FALSE;
-        try {
+            Boolean success = Boolean.FALSE;
+            try {
                 final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
                 final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
                 theUnsafeField.setAccessible(true);
                 final Object theUnsafe = theUnsafeField.get(null);
                 final Method invokeCleanerMethod = unsafeClass
-                    .getMethod("invokeCleaner", ByteBuffer.class);
-            invokeCleanerMethod.invoke(theUnsafe, buffer);
-            success = Boolean.TRUE;
+                        .getMethod("invokeCleaner", ByteBuffer.class);
+                invokeCleanerMethod.invoke(theUnsafe, buffer);
+                success = Boolean.TRUE;
             } catch (Exception ignore) {
-            // Ignore
-        }
-        return success;
+                // Ignore
+            }
+            return success;
         });
+    }
+
+    /**
+     * initializes the channel and mapped bytebuffer
+     *
+     * @param channel FileChannel
+     * @param mapMode FileChannel.MapMode
+     * @throws IOException
+     */
+    private void init(FileChannel channel, FileChannel.MapMode mapMode)
+            throws IOException {
+
+        if (channel.size() > Integer.MAX_VALUE) {
+            throw new PdfException("The PDF file is too large. Max 2GB. Size: " + channel.size());
+        }
+
+        this.channel = channel;
+        this.mappedByteBuffer = channel.map(mapMode, 0L, channel.size());
+        mappedByteBuffer.load();
+    }
+
+    /**
+     * @return FileChannel
+     * @since 2.0.8
+     */
+    public FileChannel getChannel() {
+        return channel;
+    }
+
+    /**
+     * @return int next integer or -1 on EOF
+     * @see java.io.RandomAccessFile#read()
+     */
+    public int read() {
+        try {
+            byte b = mappedByteBuffer.get();
+
+            return b & 0xff;
+        } catch (BufferUnderflowException e) {
+            return -1; // EOF
+        }
+    }
+
+    /**
+     * @param bytes byte[]
+     * @param off   int offset
+     * @param len   int length
+     * @return int bytes read or -1 on EOF
+     * @see java.io.RandomAccessFile#read(byte[], int, int)
+     */
+    public int read(byte[] bytes, int off, int len) {
+        int pos = mappedByteBuffer.position();
+        int limit = mappedByteBuffer.limit();
+        if (pos == limit) {
+            return -1; // EOF
+        }
+        int newlimit = pos + len - off;
+        if (newlimit > limit) {
+            len = limit - pos; // don't read beyond EOF
+        }
+        mappedByteBuffer.get(bytes, off, len);
+        return len;
+    }
+
+    /**
+     * @return long
+     * @see java.io.RandomAccessFile#getFilePointer()
+     */
+    public long getFilePointer() {
+        return mappedByteBuffer.position();
+    }
+
+    /**
+     * @param pos long position
+     * @see java.io.RandomAccessFile#seek(long)
+     */
+    public void seek(long pos) {
+        mappedByteBuffer.position((int) pos);
+    }
+
+    /**
+     * @return long length
+     * @see java.io.RandomAccessFile#length()
+     */
+    public long length() {
+        return mappedByteBuffer.limit();
+    }
+
+    /**
+     * Cleans the mapped bytebuffer and closes the channel
+     *
+     * @throws IOException on error
+     * @see java.io.RandomAccessFile#close()
+     */
+    @Override
+    public void close() throws IOException {
+        clean(mappedByteBuffer);
+        mappedByteBuffer = null;
+        if (channel != null) {
+            channel.close();
+        }
+        channel = null;
+    }
+
+    /**
+     * invokes the close method
+     *
+     * @see java.lang.Object#finalize()
+     */
+    @Override
+    protected void finalize() throws Throwable {
+        close();
+        super.finalize();
     }
 
 

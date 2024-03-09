@@ -61,7 +61,6 @@ import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,14 +80,12 @@ public class PdfTextExtractor {
     private final PdfReader reader;
 
     /**
-     * The {@link TextAssembler} that will receive render notifications and
-     * provide resultant text
+     * The {@link TextAssembler} that will receive render notifications and provide resultant text
      */
     private final TextAssembler renderListener;
 
     /**
-     * Creates a new Text Extractor object, using a {@link TextAssembler} as the
-     * render listener
+     * Creates a new Text Extractor object, using a {@link TextAssembler} as the render listener
      *
      * @param reader the reader with the PDF
      */
@@ -97,8 +94,7 @@ public class PdfTextExtractor {
     }
 
     /**
-     * Creates a new Text Extractor object, using a {@link TextAssembler} as the
-     * render listener
+     * Creates a new Text Extractor object, using a {@link TextAssembler} as the render listener
      *
      * @param reader               the reader with the PDF
      * @param usePdfMarkupElements should we use higher level tags for PDF markup entities?
@@ -111,8 +107,8 @@ public class PdfTextExtractor {
      * Creates a new Text Extractor object.
      *
      * @param reader         the reader with the PDF
-     * @param renderListener the render listener that will be used to analyze renderText
-     *                       operations and provide resultant text
+     * @param renderListener the render listener that will be used to analyze renderText operations and provide
+     *                       resultant text
      */
     public PdfTextExtractor(PdfReader reader, TextAssembler renderListener) {
         this.reader = reader;
@@ -122,8 +118,7 @@ public class PdfTextExtractor {
     /**
      * Gets the content bytes of a page.
      *
-     * @param pageNum the 1-based page number of page you want get the content
-     *                stream from
+     * @param pageNum the 1-based page number of page you want get the content stream from
      * @return a byte array with the effective content stream of a page
      * @throws IOException
      */
@@ -136,8 +131,7 @@ public class PdfTextExtractor {
     }
 
     /**
-     * Gets the content bytes from a content object, which may be a reference a
-     * stream or an array.
+     * Gets the content bytes from a content object, which may be a reference a stream or an array.
      *
      * @param contentObject the object to read bytes from
      * @return the content bytes
@@ -187,8 +181,8 @@ public class PdfTextExtractor {
      * get the text from the page
      *
      * @param page               page number we are interested in
-     * @param useContainerMarkup should we put tags in for PDf markup container elements (not
-     *                           really HTML at the moment).
+     * @param useContainerMarkup should we put tags in for PDf markup container elements (not really HTML at the
+     *                           moment).
      * @return result of extracting the text, with tags as requested.
      * @throws IOException on error
      */
@@ -211,11 +205,10 @@ public class PdfTextExtractor {
      *
      * @param contentBytes the bytes of a content stream
      * @param resources    the resources that come with the content stream
-     * @param handler      interprets events caused by recognition of operations in a
-     *                     content stream.
+     * @param handler      interprets events caused by recognition of operations in a content stream.
      */
     public void processContent(byte[] contentBytes, PdfDictionary resources,
-                               PdfContentStreamHandler handler) {
+            PdfContentStreamHandler handler) {
         handler.pushContext("div class='t-extracted-page'");
         try {
             PdfContentParser ps = new PdfContentParser(new PRTokeniser(contentBytes));

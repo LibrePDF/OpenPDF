@@ -16,23 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class RomanNumberFactoryTest {
 
-    @Test
-    void shouldGetRomanNumberString() {
-        for (int i = 1; i < 2000; i++) {
-            assertNotNull(getString(i));
-        }
-    }
-
-    /**
-     * Tests a few random roman numerals
-     */
-    @Test
-    void shouldGetRomanNumeralRepresentation() {
-        assertEquals("lvi", getString(56));
-        assertEquals("mmcmxcix", getString(2999));
-        assertEquals("mmm", getString(3000));
-    }
-
     static Stream<Arguments> numeralTestProvider() {
         return Stream.of(
                 arguments(0, ""),
@@ -57,6 +40,23 @@ class RomanNumberFactoryTest {
                 arguments(900, "cm"),
                 arguments(1000, "m")
         );
+    }
+
+    @Test
+    void shouldGetRomanNumberString() {
+        for (int i = 1; i < 2000; i++) {
+            assertNotNull(getString(i));
+        }
+    }
+
+    /**
+     * Tests a few random roman numerals
+     */
+    @Test
+    void shouldGetRomanNumeralRepresentation() {
+        assertEquals("lvi", getString(56));
+        assertEquals("mmcmxcix", getString(2999));
+        assertEquals("mmm", getString(3000));
     }
 
     @ParameterizedTest

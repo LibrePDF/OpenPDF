@@ -41,16 +41,6 @@
  */
 package com.lowagie.text.pdf.parser;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
-
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.CMapAwareDocumentFont;
@@ -68,12 +58,28 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Stack;
 
 /**
  * @author dgd
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class PdfContentStreamHandler {
+
+    private final Stack<List<TextAssemblyBuffer>> textFragmentStreams = new Stack<>();
+    private final Stack<String> contextNames = new Stack<>();
+    /**
+     * detail parser for text within a marked section. used by TextAssembler
+     */
+    private final TextAssembler renderListener;
     /**
      * A map with all supported operators operators (PDF syntax).
      */
@@ -90,13 +96,7 @@ public class PdfContentStreamHandler {
      * Text line matrix.
      */
     private Matrix textLineMatrix;
-    private final Stack<List<TextAssemblyBuffer>> textFragmentStreams = new Stack<>();
-    private final Stack<String> contextNames = new Stack<>();
     private List<TextAssemblyBuffer> textFragments = new ArrayList<>();
-    /**
-     * detail parser for text within a marked section. used by TextAssembler
-     */
-    private final TextAssembler renderListener;
 
 
     public PdfContentStreamHandler(TextAssembler renderListener) {
@@ -116,13 +116,11 @@ public class PdfContentStreamHandler {
     }
 
     /**
-     * Registers a content operator that will be called when the specified
-     * operator string is encountered during content processing. Each operator
-     * may be registered only once (it is not legal to have multiple operators
-     * with the same operatorString)
+     * Registers a content operator that will be called when the specified operator string is encountered during content
+     * processing. Each operator may be registered only once (it is not legal to have multiple operators with the same
+     * operatorString)
      *
-     * @param operator the operator that will receive notification when the operator
-     *                 is encountered
+     * @param operator the operator that will receive notification when the operator is encountered
      * @since 2.1.7
      */
     public void registerContentOperator(ContentOperator operator) {
@@ -268,8 +266,7 @@ public class PdfContentStreamHandler {
     }
 
     /**
-     * Adjusts the text matrix for the specified adjustment value (see TJ
-     * operator in the PDF spec for information)
+     * Adjusts the text matrix for the specified adjustment value (see TJ operator in the PDF spec for information)
      *
      * @param tj the text adjustment
      */
@@ -317,6 +314,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (TJ).
      */
     static class ShowTextArray implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -344,6 +342,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (BT).
      */
     static class BeginText implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -363,6 +362,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (ET).
      */
     static class EndText implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -382,6 +382,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (cm).
      */
     static class ModifyCurrentTransformationMatrix implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -402,6 +403,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (').
      */
     static class MoveNextLineAndShowText implements ContentOperator {
+
         private final PdfContentStreamHandler.TextMoveNextLine textMoveNextLine;
         private final PdfContentStreamHandler.ShowText showText;
 
@@ -431,6 +433,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (").
      */
     static class MoveNextLineAndShowTextWithSpacing implements ContentOperator {
+
         private final PdfContentStreamHandler.SetTextWordSpacing setTextWordSpacing;
         private final PdfContentStreamHandler.SetTextCharacterSpacing setTextCharacterSpacing;
         private final MoveNextLineAndShowText moveNextLineAndShowText;
@@ -476,6 +479,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (Q).
      */
     static class PopGraphicsState implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -494,6 +498,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (gs).
      */
     static class ProcessGraphicsStateResource implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -536,6 +541,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (q).
      */
     static class PushGraphicsState implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -556,6 +562,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (Tc).
      */
     static class SetTextCharacterSpacing implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -575,6 +582,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (Tf).
      */
     static class SetTextFont implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -601,6 +609,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (Tm).
      */
     static class TextSetTextMatrix implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -620,6 +629,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (TD).
      */
     static class TextMoveStartNextLineWithLeading implements ContentOperator {
+
         private final PdfContentStreamHandler.TextMoveStartNextLine moveStartNextLine;
 
         private final PdfContentStreamHandler.SetTextLeading setTextLeading;
@@ -654,6 +664,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (Tj).
      */
     static class ShowText implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -673,6 +684,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (T*).
      */
     static class TextMoveNextLine implements ContentOperator {
+
         private final TextMoveStartNextLine moveStartNextLine;
 
         public TextMoveNextLine(TextMoveStartNextLine moveStartNextLine) {
@@ -700,6 +712,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (Td).
      */
     static class TextMoveStartNextLine implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -723,6 +736,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (Tr).
      */
     static class SetTextRenderMode implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -742,6 +756,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (Ts).
      */
     static class SetTextRise implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -761,6 +776,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (TL).
      */
     static class SetTextLeading implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -780,6 +796,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (Tz).
      */
     static class SetTextHorizontalScaling implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -799,6 +816,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (Tw).
      */
     static class SetTextWordSpacing implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -818,6 +836,7 @@ public class PdfContentStreamHandler {
      * A content operator implementation (BMC).
      */
     private static class BeginMarked implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -843,6 +862,29 @@ public class PdfContentStreamHandler {
      * A content operator implementation (BDC).
      */
     private static class BeginMarkedDict implements ContentOperator {
+
+        /**
+         * The BDC marked-content operator which brackets a marked-content sequence of objects within the content
+         * stream.
+         *
+         * @param operands  list of operands
+         * @param resources dictionary
+         * @return PdfDictionary of type BDC marked-content
+         */
+        private static PdfDictionary getBDCDictionary(List<PdfObject> operands, PdfDictionary resources) {
+            PdfObject pdfObject = operands.get(1);
+            if (pdfObject.isName()) {
+                PdfDictionary properties = resources.getAsDict(PdfName.PROPERTIES);
+                PdfIndirectReference ir = properties.getAsIndirectObject((PdfName) pdfObject);
+                if (ir != null) {
+                    pdfObject = ir.getIndRef();
+                } else {
+                    pdfObject = properties.getAsDict((PdfName) pdfObject);
+                }
+            }
+            return (PdfDictionary) pdfObject;
+        }
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -880,32 +922,13 @@ public class PdfContentStreamHandler {
             }
             handler.pushContext(tagName);
         }
-
-        /**
-         * The BDC marked-content operator which brackets a marked-content sequence of objects within the content stream. 
-         * @param operands list of operands
-         * @param resources dictionary
-         * @return PdfDictionary of type BDC marked-content
-         */
-        private static PdfDictionary getBDCDictionary(List<PdfObject> operands, PdfDictionary resources) {
-            PdfObject pdfObject = operands.get(1);
-            if (pdfObject.isName()) {
-                PdfDictionary properties = resources.getAsDict(PdfName.PROPERTIES);
-                PdfIndirectReference ir = properties.getAsIndirectObject((PdfName) pdfObject);
-                if (ir != null) {
-                    pdfObject = ir.getIndRef();
-                } else {
-                    pdfObject = properties.getAsDict((PdfName) pdfObject);
-                }
-            }
-            return (PdfDictionary) pdfObject;
-        }
     }
 
     /**
      * A content operator implementation (EMC).
      */
     private static class EndMarked implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */
@@ -921,6 +944,7 @@ public class PdfContentStreamHandler {
     }
 
     private class Do implements ContentOperator {
+
         /**
          * @see com.lowagie.text.pdf.parser.ContentOperator#getOperatorName()
          */

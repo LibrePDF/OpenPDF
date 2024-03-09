@@ -28,7 +28,7 @@ class PdfDocumentCJKExtensionTest {
 
         // register font
         assertThatNoException().as("You need to download the font file and place it in the correct place.")
-            .isThrownBy(() -> FontFactory.register(fontPath, fontName));
+                .isThrownBy(() -> FontFactory.register(fontPath, fontName));
 
         Document document = new Document();
 
@@ -36,8 +36,8 @@ class PdfDocumentCJKExtensionTest {
         document.setGlyphSubstitutionEnabled(false);
 
         PdfWriter.getInstance(document,
-            Files.newOutputStream(
-                Paths.get("target/" + PdfDocumentCJKExtensionTest.class.getSimpleName() + ".pdf")));
+                Files.newOutputStream(
+                        Paths.get("target/" + PdfDocumentCJKExtensionTest.class.getSimpleName() + ".pdf")));
 
         try {
             Font font = FontFactory.getFont(fontName, "Identity-H", false, 10, 0, null);

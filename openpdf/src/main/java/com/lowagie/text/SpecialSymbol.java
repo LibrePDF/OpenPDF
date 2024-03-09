@@ -51,25 +51,24 @@ package com.lowagie.text;
 
 /**
  * This class contains the symbols that correspond with special symbols.
- * <P>
- * When you construct a <CODE>Phrase</CODE> with Phrase.getInstance using a <CODE>String</CODE>,
- * this <CODE>String</CODE> can contain special Symbols. These are characters with an int value
- * between 913 and 937 (except 930) and between 945 and 969. With this class the value of the
- * corresponding character of the Font Symbol, can be retrieved.
+ * <p>
+ * When you construct a <CODE>Phrase</CODE> with Phrase.getInstance using a <CODE>String</CODE>, this
+ * <CODE>String</CODE> can contain special Symbols. These are characters with an int value between 913 and 937 (except
+ * 930) and between 945 and 969. With this class the value of the corresponding character of the Font Symbol, can be
+ * retrieved.
  *
- * @see        Phrase
- *
- * @author  Bruno Lowagie
- * @author  Evelyne De Cordier
+ * @author Bruno Lowagie
+ * @author Evelyne De Cordier
+ * @see Phrase
  */
 
 public class SpecialSymbol {
-    
+
     /**
      * Returns the first occurrence of a special symbol in a <CODE>String</CODE>.
      *
-     * @param    string        a <CODE>String</CODE>
-     * @return    an index of -1 if no special symbol was found
+     * @param string a <CODE>String</CODE>
+     * @return an index of -1 if no special symbol was found
      */
     public static int index(String string) {
         int length = string.length();
@@ -80,10 +79,11 @@ public class SpecialSymbol {
         }
         return -1;
     }
-    
+
     /**
      * Gets a chunk with a symbol character.
-     * @param c a character that has to be changed into a symbol
+     *
+     * @param c    a character that has to be changed into a symbol
      * @param font Font if there is no SYMBOL character corresponding with c
      * @return a SYMBOL version of a character
      */
@@ -96,15 +96,15 @@ public class SpecialSymbol {
         String s = String.valueOf(greek);
         return new Chunk(s, symbol);
     }
-    
+
     /**
      * Looks for the corresponding symbol in the font Symbol.
      *
-     * @param    c    the original ASCII-char
-     * @return    the corresponding symbol in font Symbol
+     * @param c the original ASCII-char
+     * @return the corresponding symbol in font Symbol
      */
     public static char getCorrespondingSymbol(char c) {
-        switch(c) {
+        switch (c) {
             case 913:
                 return 'A'; // ALFA
             case 914:
@@ -203,8 +203,8 @@ public class SpecialSymbol {
                 return 'y'; // psi
             case 969:
                 return 'w'; // omega
-                default:
-                    return ' ';
+            default:
+                return ' ';
         }
     }
 }

@@ -46,135 +46,140 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.DocWriter;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.interfaces.PdfEncryptionSettings;
+import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.cert.Certificate;
 import java.util.List;
 
-import com.lowagie.text.DocWriter;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.interfaces.PdfEncryptionSettings;
-import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
-
 /**
- * Concatenates PDF documents including form fields. The rules for the form field
- * concatenation are the same as in Acrobat. All the documents are kept in memory unlike
- * PdfCopy.
- * @author  Paulo Soares (psoares@consiste.pt)
+ * Concatenates PDF documents including form fields. The rules for the form field concatenation are the same as in
+ * Acrobat. All the documents are kept in memory unlike PdfCopy.
+ *
+ * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfCopyFields
-    implements PdfViewerPreferences, PdfEncryptionSettings, AutoCloseable {
-    
+        implements PdfViewerPreferences, PdfEncryptionSettings, AutoCloseable {
+
     private PdfCopyFieldsImp fc;
-    
+
     /**
      * Creates a new instance.
+     *
      * @param os the output stream
      * @throws DocumentException on error
-     */    
+     */
     public PdfCopyFields(OutputStream os) throws DocumentException {
         fc = new PdfCopyFieldsImp(os);
     }
-    
+
     /**
      * Creates a new instance.
-     * @param os the output stream
+     *
+     * @param os         the output stream
      * @param pdfVersion the pdf version the output will have
      * @throws DocumentException on error
-     */    
+     */
     public PdfCopyFields(OutputStream os, char pdfVersion) throws DocumentException {
         fc = new PdfCopyFieldsImp(os, pdfVersion);
     }
-    
+
     /**
      * Concatenates a PDF document.
+     *
      * @param reader the PDF document
      * @throws DocumentException on error
-     * @throws IOException on error
-     */    
+     * @throws IOException       on error
+     */
     public void addDocument(PdfReader reader) throws DocumentException, IOException {
         fc.addDocument(reader);
     }
-    
+
     /**
      * Concatenates a PDF document selecting the pages to keep. The pages are described as a
      * <CODE>List</CODE> of <CODE>Integer</CODE>. The page ordering can be changed but
      * no page repetitions are allowed.
-     * @param reader the PDF document
+     *
+     * @param reader      the PDF document
      * @param pagesToKeep the pages to keep
      * @throws DocumentException on error
-     * @throws IOException on error
-     */    
+     * @throws IOException       on error
+     */
     public void addDocument(PdfReader reader, List<Integer> pagesToKeep) throws DocumentException, IOException {
         fc.addDocument(reader, pagesToKeep);
     }
 
     /**
-     * Concatenates a PDF document selecting the pages to keep. The pages are described as
-     * ranges. The page ordering can be changed but
-     * no page repetitions are allowed.
+     * Concatenates a PDF document selecting the pages to keep. The pages are described as ranges. The page ordering can
+     * be changed but no page repetitions are allowed.
+     *
      * @param reader the PDF document
      * @param ranges the comma separated ranges as described in {@link SequenceList}
      * @throws DocumentException on error
-     * @throws IOException on error
-     */    
+     * @throws IOException       on error
+     */
     public void addDocument(PdfReader reader, String ranges) throws DocumentException, IOException {
         fc.addDocument(reader, SequenceList.expand(ranges, reader.getNumberOfPages()));
     }
 
-    /** Sets the encryption options for this document. The userPassword and the
-     *  ownerPassword can be null or have zero length. In this case the ownerPassword
-     *  is replaced by a random string. The open permissions for the document can be
-     *  AllowPrinting, AllowModifyContents, AllowCopy, AllowModifyAnnotations,
-     *  AllowFillIn, AllowScreenReaders, AllowAssembly and AllowDegradedPrinting.
-     *  The permissions can be combined by ORing them.
-     * @param userPassword the user password. Can be null or empty
-     * @param ownerPassword the owner password. Can be null or empty
-     * @param permissions the user permissions
+    /**
+     * Sets the encryption options for this document. The userPassword and the ownerPassword can be null or have zero
+     * length. In this case the ownerPassword is replaced by a random string. The open permissions for the document can
+     * be AllowPrinting, AllowModifyContents, AllowCopy, AllowModifyAnnotations, AllowFillIn, AllowScreenReaders,
+     * AllowAssembly and AllowDegradedPrinting. The permissions can be combined by ORing them.
+     *
+     * @param userPassword    the user password. Can be null or empty
+     * @param ownerPassword   the owner password. Can be null or empty
+     * @param permissions     the user permissions
      * @param strength128Bits <code>true</code> for 128 bit key length, <code>false</code> for 40 bit key length
      * @throws DocumentException if the document is already open
      */
-    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits) throws DocumentException {
-        fc.setEncryption(userPassword, ownerPassword, permissions, strength128Bits ? PdfWriter.STANDARD_ENCRYPTION_128 : PdfWriter.STANDARD_ENCRYPTION_40);
+    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, boolean strength128Bits)
+            throws DocumentException {
+        fc.setEncryption(userPassword, ownerPassword, permissions,
+                strength128Bits ? PdfWriter.STANDARD_ENCRYPTION_128 : PdfWriter.STANDARD_ENCRYPTION_40);
     }
-    
+
     /**
-     * Sets the encryption options for this document. The userPassword and the
-     *  ownerPassword can be null or have zero length. In this case the ownerPassword
-     *  is replaced by a random string. The open permissions for the document can be
-     *  AllowPrinting, AllowModifyContents, AllowCopy, AllowModifyAnnotations,
-     *  AllowFillIn, AllowScreenReaders, AllowAssembly and AllowDegradedPrinting.
-     *  The permissions can be combined by ORing them.
-     * @param strength true for 128 bit key length. false for 40 bit key length
-     * @param userPassword the user password. Can be null or empty
+     * Sets the encryption options for this document. The userPassword and the ownerPassword can be null or have zero
+     * length. In this case the ownerPassword is replaced by a random string. The open permissions for the document can
+     * be AllowPrinting, AllowModifyContents, AllowCopy, AllowModifyAnnotations, AllowFillIn, AllowScreenReaders,
+     * AllowAssembly and AllowDegradedPrinting. The permissions can be combined by ORing them.
+     *
+     * @param strength      true for 128 bit key length. false for 40 bit key length
+     * @param userPassword  the user password. Can be null or empty
      * @param ownerPassword the owner password. Can be null or empty
-     * @param permissions the user permissions
+     * @param permissions   the user permissions
      * @throws DocumentException if the document is already open
      */
-    public void setEncryption(boolean strength, String userPassword, String ownerPassword, int permissions) throws DocumentException {
+    public void setEncryption(boolean strength, String userPassword, String ownerPassword, int permissions)
+            throws DocumentException {
         setEncryption(DocWriter.getISOBytes(userPassword), DocWriter.getISOBytes(ownerPassword), permissions, strength);
     }
- 
+
     /**
      * Closes the output document.
-     */    
+     */
     @Override
     public void close() {
         fc.close();
     }
 
     /**
-     * Opens the document. This is usually not needed as addDocument() will do it
-     * automatically.
-     */    
+     * Opens the document. This is usually not needed as addDocument() will do it automatically.
+     */
     public void open() {
         fc.openDoc();
     }
 
     /**
      * Adds JavaScript to the global document
+     *
      * @param js the JavaScript
-     */    
+     */
     public void addJavaScript(String js) {
         fc.addJavaScript(js, !PdfEncodings.isPdfDocEncoding(js));
     }
@@ -182,30 +187,34 @@ public class PdfCopyFields
     /**
      * Sets the bookmarks. The list structure is defined in
      * <CODE>SimpleBookmark#</CODE>.
+     *
      * @param outlines the bookmarks or <CODE>null</CODE> to remove any
-     */    
+     */
     public void setOutlines(List outlines) {
         fc.setOutlines(outlines);
     }
-    
-    /** Gets the underlying PdfWriter.
+
+    /**
+     * Gets the underlying PdfWriter.
+     *
      * @return the underlying PdfWriter
-     */    
+     */
     public PdfWriter getWriter() {
         return fc;
     }
 
     /**
      * Gets the 1.5 compression status.
+     *
      * @return <code>true</code> if the 1.5 compression is on
      */
     public boolean isFullCompression() {
         return fc.isFullCompression();
     }
-    
+
     /**
-     * Sets the document's compression to the new 1.5 mode with object streams and xref
-     * streams. It can be set at any time but once set it can't be unset.
+     * Sets the document's compression to the new 1.5 mode with object streams and xref streams. It can be set at any
+     * time but once set it can't be unset.
      * <p>
      * If set before opening the document it will also set the pdf version to 1.5.
      */
@@ -217,16 +226,18 @@ public class PdfCopyFields
      * @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(byte[], byte[], int, int)
      */
     @Override
-    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, int encryptionType) throws DocumentException {
+    public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, int encryptionType)
+            throws DocumentException {
         fc.setEncryption(userPassword, ownerPassword, permissions, encryptionType);
     }
 
     /**
-     * @see com.lowagie.text.pdf.interfaces.PdfViewerPreferences#addViewerPreference(com.lowagie.text.pdf.PdfName, com.lowagie.text.pdf.PdfObject)
+     * @see com.lowagie.text.pdf.interfaces.PdfViewerPreferences#addViewerPreference(com.lowagie.text.pdf.PdfName,
+     * com.lowagie.text.pdf.PdfObject)
      */
     @Override
     public void addViewerPreference(PdfName key, PdfObject value) {
-        fc.addViewerPreference(key, value);    
+        fc.addViewerPreference(key, value);
     }
 
     /**
@@ -238,10 +249,11 @@ public class PdfCopyFields
     }
 
     /**
-     * @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(java.security.cert.Certificate[], int[], int)
+     * @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(java.security.cert.Certificate[], int[],
+     * int)
      */
     @Override
     public void setEncryption(Certificate[] certs, int[] permissions, int encryptionType) throws DocumentException {
         fc.setEncryption(certs, permissions, encryptionType);
-    }    
+    }
 }

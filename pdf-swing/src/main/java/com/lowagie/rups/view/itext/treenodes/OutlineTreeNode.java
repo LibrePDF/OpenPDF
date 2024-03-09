@@ -7,12 +7,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -29,34 +29,40 @@ import com.lowagie.text.pdf.PdfName;
  */
 public class OutlineTreeNode extends IconTreeNode {
 
-    /** The corresponding tree node in the PdfTree. */
+    /**
+     * A serial version uid
+     */
+    private static final long serialVersionUID = 5437651809665762952L;
+    /**
+     * The corresponding tree node in the PdfTree.
+     */
     protected PdfObjectTreeNode object_node;
-    
-    /** Creates the root node for the OutlineTree. */
+
+    /**
+     * Creates the root node for the OutlineTree.
+     */
     public OutlineTreeNode() {
         super("outline.png", "Bookmarks");
     }
 
     /**
      * Creates a node corresponding with a node in the PdfTree.
-     * @param    node    a corresponding node
+     *
+     * @param node a corresponding node
      */
     public OutlineTreeNode(PdfObjectTreeNode node) {
         super("outline.png");
         this.object_node = node;
-        PdfDictionary dict = (PdfDictionary)node.getPdfObject();
+        PdfDictionary dict = (PdfDictionary) node.getPdfObject();
         this.setUserObject(dict.get(PdfName.TITLE));
     }
 
     /**
-     * Gets the node in the PdfTree that corresponds with this
-     * OutlineTreeNode.
-     * @return    a PdfObjectTreeNode in the PdfTree
+     * Gets the node in the PdfTree that corresponds with this OutlineTreeNode.
+     *
+     * @return a PdfObjectTreeNode in the PdfTree
      */
     public PdfObjectTreeNode getCorrespondingPdfObjectNode() {
         return object_node;
     }
-
-    /** A serial version uid */
-    private static final long serialVersionUID = 5437651809665762952L;
 }

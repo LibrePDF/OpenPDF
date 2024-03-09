@@ -23,13 +23,16 @@ Get version 2.0.0 here - https://github.com/LibrePDF/OpenPDF/releases/tag/2.0.0
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
 ## Features ##
+
 Some of the features of OpenPDF include:
 
 * Creating PDFs: You can use OpenPDF to create new PDF documents from scratch.
 
-* Manipulating Existing PDFs: OpenPDF allows you to modify existing PDF documents by adding or removing pages, modifying text, and more.
+* Manipulating Existing PDFs: OpenPDF allows you to modify existing PDF documents by adding or removing pages, modifying
+  text, and more.
 
-* Text and Font Support: You can add text to PDF documents using various fonts and styles, and extract text from PDF files.
+* Text and Font Support: You can add text to PDF documents using various fonts and styles, and extract text from PDF
+  files.
 
 * Graphics and Images: OpenPDF supports the addition of images and graphics to PDF files.
 
@@ -38,7 +41,6 @@ Some of the features of OpenPDF include:
 * Encryption: You can encrypt PDF documents for security purposes.
 
 * Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
-
 
 ## Use OpenPDF as Maven dependency
 
@@ -125,9 +127,10 @@ only contain code that you have written yourself. GPL or AGPL licensed code will
 
 ### Required Dependencies: ###
 
-- Java 11 or later is required to use OpenPDF versions 1.3.37 and later. All versions Java 11 to Java OpenJDK 21 have been tested to work.
-- Java 17 or later is required to use OpenPDF versions 2.0.0. We are working on modernizing the OpenPDF library for Java 17+.
-
+- Java 11 or later is required to use OpenPDF versions 1.3.37 and later. All versions Java 11 to Java OpenJDK 21 have
+  been tested to work.
+- Java 17 or later is required to use OpenPDF versions 2.0.0. We are working on modernizing the OpenPDF library for Java
+  17+.
 
 ### UTF-8 Fonts: ###
 
@@ -159,11 +162,12 @@ See: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Lat
 
 - [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
   dependency)
-    - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
-      on which algorithm you are using)
-    - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
+  - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
+    on which algorithm you are using)
+  - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
 - Apache FOP (`org.apache.xmlgraphics:fop`)
 - Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
 ## Credits ##
+
 Please see [Contributors.md](Contributors.md).

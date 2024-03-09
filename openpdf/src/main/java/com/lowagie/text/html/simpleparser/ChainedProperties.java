@@ -80,8 +80,8 @@ public class ChainedProperties {
      * Try find property by its name
      *
      * @param key property name
-     * @return {@link Optional} containing the value or {@link Optional#empty()} if there is no value or
-     * it equals {@code null}
+     * @return {@link Optional} containing the value or {@link Optional#empty()} if there is no value or it equals
+     * {@code null}
      */
     public Optional<String> findProperty(String key) {
         for (int k = chain.size() - 1; k >= 0; --k) {
@@ -110,16 +110,17 @@ public class ChainedProperties {
         for (int k = chain.size() - 1; k >= 0; --k) {
             Object[] obj = (Object[]) chain.get(k);
             HashMap prop = (HashMap) obj[1];
-            if (prop.containsKey(key))
+            if (prop.containsKey(key)) {
                 return true;
+            }
         }
         return false;
     }
 
     /**
-     * @deprecated use {@link ChainedProperties#addToChain(String, HashMap)}
-     * @param key the key
+     * @param key  the key
      * @param prop the properties
+     * @deprecated use {@link ChainedProperties#addToChain(String, HashMap)}
      */
     @Deprecated
     @SuppressWarnings("unchecked")
@@ -156,10 +157,11 @@ public class ChainedProperties {
                         s = 0;
                     }
                 }
-                if (s < 0)
+                if (s < 0) {
                     s = 0;
-                else if (s >= fontSizes.length)
+                } else if (s >= fontSizes.length) {
                     s = fontSizes.length - 1;
+                }
                 prop.put(ElementTags.SIZE, Integer.toString(fontSizes[s]));
             }
         }

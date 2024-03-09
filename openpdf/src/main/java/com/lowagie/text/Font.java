@@ -291,6 +291,88 @@ public class Font implements Comparable {
     // implementation of the Comparable interface
 
     /**
+     * Translates a <CODE>String</CODE> -value of a certain family into the index that is used for this family in this
+     * class.
+     *
+     * @param family A <CODE>String</CODE> representing a certain font-family
+     * @return the corresponding index
+     */
+    public static int getFamilyIndex(String family) {
+        if (family.equalsIgnoreCase(FontFactory.COURIER)) {
+            return COURIER;
+        }
+        if (family.equalsIgnoreCase(FontFactory.HELVETICA)) {
+            return HELVETICA;
+        }
+        if (family.equalsIgnoreCase(FontFactory.TIMES_ROMAN)) {
+            return TIMES_ROMAN;
+        }
+        if (family.equalsIgnoreCase(FontFactory.SYMBOL)) {
+            return SYMBOL;
+        }
+        if (family.equalsIgnoreCase(FontFactory.ZAPFDINGBATS)) {
+            return ZAPFDINGBATS;
+        }
+        return UNDEFINED;
+    }
+
+    // FAMILY
+
+    /**
+     * Returns the font-style, if the font is already styled. <br>
+     * <pre>
+     * For example:
+     * font: Helvetica - style: normal
+     * font: Helvetica-Bold - style: bold
+     * </pre>
+     *
+     * @param fontName the name of the Font
+     * @return the styles of an already styled font.
+     */
+    public static int getFontStyleFromName(final String fontName) {
+        String lowerCaseFontName = fontName.toLowerCase(Locale.ROOT);
+
+        int fontStyle = Font.NORMAL;
+        if (lowerCaseFontName.contains("bold")) {
+            fontStyle |= Font.BOLD;
+        }
+        if (lowerCaseFontName.contains("italic") || lowerCaseFontName.contains("oblique")) {
+            fontStyle |= Font.ITALIC;
+        }
+        return fontStyle;
+    }
+
+    /**
+     * Translates a <CODE>String</CODE> -value of a certain style into the index value is used for this style in this
+     * class.
+     *
+     * @param style A <CODE>String</CODE>
+     * @return the corresponding value
+     */
+    public static int getStyleValue(String style) {
+        int s = 0;
+        if (style.contains(Markup.CSS_VALUE_NORMAL)) {
+            s |= NORMAL;
+        }
+        if (style.contains(Markup.CSS_VALUE_BOLD)) {
+            s |= BOLD;
+        }
+        if (style.contains(Markup.CSS_VALUE_ITALIC)) {
+            s |= ITALIC;
+        }
+        if (style.contains(Markup.CSS_VALUE_OBLIQUE)) {
+            s |= ITALIC;
+        }
+        if (style.contains(Markup.CSS_VALUE_UNDERLINE)) {
+            s |= UNDERLINE;
+        }
+        if (style.contains(Markup.CSS_VALUE_LINETHROUGH)) {
+            s |= STRIKETHRU;
+        }
+        return s;
+    }
+
+    /**
      * Compares this <CODE>Font</CODE> with another
      *
      * @param object the other <CODE>Font</CODE>
@@ -333,8 +415,6 @@ public class Font implements Comparable {
         }
     }
 
-    // FAMILY
-
     /**
      * Gets the family of this font.
      *
@@ -342,6 +422,18 @@ public class Font implements Comparable {
      */
     public int getFamily() {
         return family;
+    }
+
+    // SIZE
+
+    /**
+     * Sets the family using a <CODE>String</CODE> ("Courier", "Helvetica", "Times New Roman", "Symbol" or
+     * "ZapfDingbats").
+     *
+     * @param family A <CODE>String</CODE> representing a certain font-family.
+     */
+    public void setFamily(String family) {
+        this.family = getFamilyIndex(family);
     }
 
     /**
@@ -382,44 +474,6 @@ public class Font implements Comparable {
     }
 
     /**
-     * Sets the family using a <CODE>String</CODE> ("Courier", "Helvetica", "Times New Roman", "Symbol" or
-     * "ZapfDingbats").
-     *
-     * @param family A <CODE>String</CODE> representing a certain font-family.
-     */
-    public void setFamily(String family) {
-        this.family = getFamilyIndex(family);
-    }
-
-    /**
-     * Translates a <CODE>String</CODE> -value of a certain family into the index that is used for this family in this
-     * class.
-     *
-     * @param family A <CODE>String</CODE> representing a certain font-family
-     * @return the corresponding index
-     */
-    public static int getFamilyIndex(String family) {
-        if (family.equalsIgnoreCase(FontFactory.COURIER)) {
-            return COURIER;
-        }
-        if (family.equalsIgnoreCase(FontFactory.HELVETICA)) {
-            return HELVETICA;
-        }
-        if (family.equalsIgnoreCase(FontFactory.TIMES_ROMAN)) {
-            return TIMES_ROMAN;
-        }
-        if (family.equalsIgnoreCase(FontFactory.SYMBOL)) {
-            return SYMBOL;
-        }
-        if (family.equalsIgnoreCase(FontFactory.ZAPFDINGBATS)) {
-            return ZAPFDINGBATS;
-        }
-        return UNDEFINED;
-    }
-
-    // SIZE
-
-    /**
      * Gets the size of this font.
      *
      * @return a size
@@ -427,6 +481,17 @@ public class Font implements Comparable {
     public float getSize() {
         return size;
     }
+
+    /**
+     * Sets the size.
+     *
+     * @param size The new size of the font.
+     */
+    public void setSize(float size) {
+        this.size = size;
+    }
+
+    // STYLE
 
     /**
      * Gets the size that can be used with the calculated <CODE>BaseFont
@@ -454,23 +519,34 @@ public class Font implements Comparable {
     }
 
     /**
-     * Sets the size.
-     *
-     * @param size The new size of the font.
-     */
-    public void setSize(float size) {
-        this.size = size;
-    }
-
-    // STYLE
-
-    /**
      * Gets the style of this font.
      *
      * @return a size
      */
     public int getStyle() {
         return style;
+    }
+
+    /**
+     * Sets the style.
+     *
+     * @param style the style.
+     */
+    public void setStyle(int style) {
+        this.style = style;
+    }
+
+    /**
+     * Sets the style using a <CODE>String</CODE> containing one of more of the following values: normal, bold, italic,
+     * underline, strike.
+     *
+     * @param style A <CODE>String</CODE> representing a certain style.
+     */
+    public void setStyle(String style) {
+        if (this.style == UNDEFINED) {
+            this.style = NORMAL;
+        }
+        this.style |= getStyleValue(style);
     }
 
     /**
@@ -514,30 +590,6 @@ public class Font implements Comparable {
             style = getFontStyleFromName(baseFontName);
         }
         return style;
-    }
-
-    /**
-     * Returns the font-style, if the font is already styled. <br>
-     * <pre>
-     * For example:
-     * font: Helvetica - style: normal
-     * font: Helvetica-Bold - style: bold
-     * </pre>
-     *
-     * @param fontName the name of the Font
-     * @return the styles of an already styled font.
-     */
-    public static int getFontStyleFromName(final String fontName) {
-        String lowerCaseFontName = fontName.toLowerCase(Locale.ROOT);
-
-        int fontStyle = Font.NORMAL;
-        if (lowerCaseFontName.contains("bold")) {
-            fontStyle |= Font.BOLD;
-        }
-        if (lowerCaseFontName.contains("italic") || lowerCaseFontName.contains("oblique")) {
-            fontStyle |= Font.ITALIC;
-        }
-        return fontStyle;
     }
 
     /**
@@ -586,58 +638,6 @@ public class Font implements Comparable {
             return false;
         }
         return (style & STRIKETHRU) == STRIKETHRU;
-    }
-
-    /**
-     * Sets the style.
-     *
-     * @param style the style.
-     */
-    public void setStyle(int style) {
-        this.style = style;
-    }
-
-    /**
-     * Sets the style using a <CODE>String</CODE> containing one of more of the following values: normal, bold, italic,
-     * underline, strike.
-     *
-     * @param style A <CODE>String</CODE> representing a certain style.
-     */
-    public void setStyle(String style) {
-        if (this.style == UNDEFINED) {
-            this.style = NORMAL;
-        }
-        this.style |= getStyleValue(style);
-    }
-
-    /**
-     * Translates a <CODE>String</CODE> -value of a certain style into the index value is used for this style in this
-     * class.
-     *
-     * @param style A <CODE>String</CODE>
-     * @return the corresponding value
-     */
-    public static int getStyleValue(String style) {
-        int s = 0;
-        if (style.contains(Markup.CSS_VALUE_NORMAL)) {
-            s |= NORMAL;
-        }
-        if (style.contains(Markup.CSS_VALUE_BOLD)) {
-            s |= BOLD;
-        }
-        if (style.contains(Markup.CSS_VALUE_ITALIC)) {
-            s |= ITALIC;
-        }
-        if (style.contains(Markup.CSS_VALUE_OBLIQUE)) {
-            s |= ITALIC;
-        }
-        if (style.contains(Markup.CSS_VALUE_UNDERLINE)) {
-            s |= UNDERLINE;
-        }
-        if (style.contains(Markup.CSS_VALUE_LINETHROUGH)) {
-            s |= STRIKETHRU;
-        }
-        return s;
     }
 
     // COLOR

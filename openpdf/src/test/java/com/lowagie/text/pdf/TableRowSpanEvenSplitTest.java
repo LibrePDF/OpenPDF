@@ -4,11 +4,12 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Phrase;
+import java.io.ByteArrayOutputStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import java.io.ByteArrayOutputStream;
 
 public class TableRowSpanEvenSplitTest {
+
     @Test
     public void threeRowSpanTest() {
         Document document = new Document(PageSize.A4);
@@ -225,9 +226,9 @@ public class TableRowSpanEvenSplitTest {
         document.add(table);
         document.close();
 
-        for(int i=1;i<6;i++) {
+        for (int i = 1; i < 6; i++) {
             System.out.println(table.rows.get(i).getMaxHeights() + ", " + i);
-            Assertions.assertTrue(table.rows.get(i).getMaxHeights()> 5f, "Row " + i + " is too small");
+            Assertions.assertTrue(table.rows.get(i).getMaxHeights() > 5f, "Row " + i + " is too small");
             Assertions.assertEquals(table.rows.get(i).getMaxHeights(), table.rows.get(i + 1).getMaxHeights(), 0.01);
         }
     }

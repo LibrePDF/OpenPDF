@@ -49,14 +49,17 @@
 package com.lowagie.text.pdf.crypto;
 
 public class ARCFOUREncryption {
+
     private byte[] state = new byte[256];
     private int x;
     private int y;
 
-    /** Creates a new instance of ARCFOUREncryption */
+    /**
+     * Creates a new instance of ARCFOUREncryption
+     */
     public ARCFOUREncryption() {
     }
-    
+
     public void prepareARCFOURKey(byte[] key) {
         prepareARCFOURKey(key, 0, key.length);
     }
@@ -64,8 +67,9 @@ public class ARCFOUREncryption {
     public void prepareARCFOURKey(byte[] key, int off, int len) {
         int index1 = 0;
         int index2 = 0;
-        for (int k = 0; k < 256; ++k)
-            state[k] = (byte)k;
+        for (int k = 0; k < 256; ++k) {
+            state[k] = (byte) k;
+        }
         x = 0;
         y = 0;
         byte tmp;
@@ -87,7 +91,7 @@ public class ARCFOUREncryption {
             tmp = state[x];
             state[x] = state[y];
             state[y] = tmp;
-            dataOut[k - off + offOut] = (byte)(dataIn[k] ^ state[(state[x] + state[y]) & 255]);
+            dataOut[k - off + offOut] = (byte) (dataIn[k] ^ state[(state[x] + state[y]) & 255]);
         }
     }
 
@@ -101,5 +105,5 @@ public class ARCFOUREncryption {
 
     public void encryptARCFOUR(byte[] data) {
         encryptARCFOUR(data, 0, data.length, data, 0);
-    }   
+    }
 }

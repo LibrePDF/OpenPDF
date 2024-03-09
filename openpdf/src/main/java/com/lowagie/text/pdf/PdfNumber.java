@@ -50,63 +50,60 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.text.error_messages.MessageLocalization;
-
 import java.util.Objects;
 
 /**
  * <CODE>PdfNumber</CODE> provides two types of numbers, integer and real.
- * <P>
- * Integers may be specified by signed or unsigned constants. Reals may only be
- * in decimal format.<BR>
- * This object is described in the 'Portable Document Format Reference Manual
- * version 1.7' section 3.3.2 (page 52-53).
+ * <p>
+ * Integers may be specified by signed or unsigned constants. Reals may only be in decimal format.<BR> This object is
+ * described in the 'Portable Document Format Reference Manual version 1.7' section 3.3.2 (page 52-53).
  *
- * @see        PdfObject
- * @see        BadPdfFormatException
+ * @see PdfObject
+ * @see BadPdfFormatException
  */
 public class PdfNumber extends PdfObject implements Comparable<PdfNumber> {
 
     // CLASS VARIABLES
-    
+
     /**
      * actual value of this <CODE>PdfNumber</CODE>, represented as a
      * <CODE>double</CODE>
      */
     private double value;
-    
+
     // CONSTRUCTORS
-    
+
     /**
      * Constructs a <CODE>PdfNumber</CODE>-object.
      *
-     * @param content    value of the new <CODE>PdfNumber</CODE>-object
+     * @param content value of the new <CODE>PdfNumber</CODE>-object
      */
     public PdfNumber(String content) {
         super(NUMBER);
         try {
             value = Double.parseDouble(content.trim());
             setContent(content);
-        }
-        catch (NumberFormatException nfe){
-            throw new RuntimeException(MessageLocalization.getComposedMessage("1.is.not.a.valid.number.2", content, nfe.toString()));
+        } catch (NumberFormatException nfe) {
+            throw new RuntimeException(
+                    MessageLocalization.getComposedMessage("1.is.not.a.valid.number.2", content, nfe.toString()));
         }
     }
-    
+
     /**
      * Constructs a new <CODE>PdfNumber</CODE>-object of type integer.
      *
-     * @param value    value of the new <CODE>PdfNumber</CODE>-object
+     * @param value value of the new <CODE>PdfNumber</CODE>-object
      */
     public PdfNumber(int value) {
         super(NUMBER);
         this.value = value;
         setContent(String.valueOf(value));
     }
-    
+
     /**
      * Constructs a new <CODE>PdfNumber</CODE>-object of type long.
      *
-     * @param value    value of the new <CODE>PdfNumber</CODE>-object
+     * @param value value of the new <CODE>PdfNumber</CODE>-object
      */
     public PdfNumber(long value) {
         super(NUMBER);
@@ -117,25 +114,25 @@ public class PdfNumber extends PdfObject implements Comparable<PdfNumber> {
     /**
      * Constructs a new <CODE>PdfNumber</CODE>-object of type real.
      *
-     * @param value    value of the new <CODE>PdfNumber</CODE>-object
+     * @param value value of the new <CODE>PdfNumber</CODE>-object
      */
     public PdfNumber(double value) {
         super(NUMBER);
         this.value = value;
         setContent(ByteBuffer.formatDouble(value));
     }
-    
+
     /**
      * Constructs a new <CODE>PdfNumber</CODE>-object of type real.
      *
-     * @param value    value of the new <CODE>PdfNumber</CODE>-object
+     * @param value value of the new <CODE>PdfNumber</CODE>-object
      */
     public PdfNumber(float value) {
-        this((double)value);
+        this((double) value);
     }
-    
+
     // methods returning the value of this object
-    
+
     /**
      * Returns the primitive <CODE>int</CODE> value of this object.
      *
@@ -144,7 +141,7 @@ public class PdfNumber extends PdfObject implements Comparable<PdfNumber> {
     public int intValue() {
         return (int) value;
     }
-    
+
     /**
      * Returns the primitive <CODE>double</CODE> value of this object.
      *
@@ -153,18 +150,18 @@ public class PdfNumber extends PdfObject implements Comparable<PdfNumber> {
     public double doubleValue() {
         return value;
     }
-    
+
     /**
      * Returns the primitive <CODE>float</CODE> value of this object.
      *
      * @return The value as <CODE>float</CODE>
      */
     public float floatValue() {
-        return (float)value;
+        return (float) value;
     }
-    
+
     // other methods
-    
+
     /**
      * Increments the value of the <CODE>PdfNumber</CODE>-object by 1.
      */
@@ -193,7 +190,9 @@ public class PdfNumber extends PdfObject implements Comparable<PdfNumber> {
     @Override
     public int compareTo(PdfNumber o) {
         Objects.requireNonNull(o, "PdfNumber is null, can't be compared to current instance.");
-        if (this == o) return 0;
+        if (this == o) {
+            return 0;
+        }
         return Double.compare(o.value, value);
     }
 }

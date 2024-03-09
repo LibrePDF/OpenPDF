@@ -49,22 +49,21 @@
 
 package com.lowagie.text;
 
+import com.lowagie.text.error_messages.MessageLocalization;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
- * An <CODE>Jpeg2000</CODE> is the representation of a graphic element (JPEG)
- * that has to be inserted into the document
+ * An <CODE>Jpeg2000</CODE> is the representation of a graphic element (JPEG) that has to be inserted into the document
  *
  * @see Element
  * @see Image
  */
 public class Jpeg2000 extends Image {
-    
+
     // public static final membervariables
-    
+
     public static final int JP2_JP = 0x6a502020;
     public static final int JP2_IHDR = 0x69686472;
     public static final int JPIP_JPIP = 0x6a706970;
@@ -81,9 +80,9 @@ public class Jpeg2000 extends Image {
     InputStream inp;
     int boxLength;
     int boxType;
-    
+
     // Constructors
-    
+
     Jpeg2000(Image image) {
         super(image);
     }
@@ -93,7 +92,7 @@ public class Jpeg2000 extends Image {
      *
      * @param url the <CODE>URL</CODE> where the image can be found
      * @throws BadElementException on error
-     * @throws IOException on error
+     * @throws IOException         on error
      */
     public Jpeg2000(URL url) throws BadElementException, IOException {
         super(url);
@@ -108,7 +107,7 @@ public class Jpeg2000 extends Image {
      * @throws IOException         on error
      */
     public Jpeg2000(byte[] img) throws BadElementException, IOException {
-        super((URL)null);
+        super((URL) null);
         rawData = img;
         originalData = img;
         processParameters();
@@ -120,15 +119,15 @@ public class Jpeg2000 extends Image {
      * @param img    the memory image.
      * @param width  the width you want the image to have
      * @param height the height you want the image to have
-     * @throws BadElementException  on error
-     * @throws IOException on error
+     * @throws BadElementException on error
+     * @throws IOException         on error
      */
     public Jpeg2000(byte[] img, float width, float height) throws BadElementException, IOException {
         this(img);
         scaledWidth = width;
         scaledHeight = height;
     }
-    
+
     private int cio_read(int n) throws IOException {
         int v = 0;
         for (int i = n - 1; i >= 0; i--) {
@@ -136,25 +135,27 @@ public class Jpeg2000 extends Image {
         }
         return v;
     }
-    
+
     public void jp2_read_boxhdr() throws IOException {
         boxLength = cio_read(4);
         boxType = cio_read(4);
         if (boxLength == 1) {
             if (cio_read(4) != 0) {
-                throw new IOException(MessageLocalization.getComposedMessage("cannot.handle.box.sizes.higher.than.2.32"));
+                throw new IOException(
+                        MessageLocalization.getComposedMessage("cannot.handle.box.sizes.higher.than.2.32"));
             }
             boxLength = cio_read(4);
-            if (boxLength == 0) 
+            if (boxLength == 0) {
                 throw new IOException(MessageLocalization.getComposedMessage("unsupported.box.size.eq.eq.0"));
-        }
-        else if (boxLength == 0) {
+            }
+        } else if (boxLength == 0) {
             throw new IOException(MessageLocalization.getComposedMessage("unsupported.box.size.eq.eq.0"));
         }
     }
-    
+
     /**
      * This method checks if the image is a valid JPEG and processes some parameters.
+     *
      * @throws IOException on error
      */
     private void processParameters() throws IOException {
@@ -163,11 +164,10 @@ public class Jpeg2000 extends Image {
         inp = null;
         try {
             String errorID;
-            if (rawData == null){
+            if (rawData == null) {
                 inp = url.openStream();
                 errorID = url.toString();
-            }
-            else{
+            } else {
                 inp = new java.io.ByteArrayInputStream(rawData);
                 errorID = "Byte array";
             }
@@ -195,7 +195,7 @@ public class Jpeg2000 extends Image {
                         Utilities.skip(inp, boxLength - 8);
                         jp2_read_boxhdr();
                     }
-                } while(JP2_JP2H != boxType);
+                } while (JP2_JP2H != boxType);
                 jp2_read_boxhdr();
                 if (JP2_IHDR != boxType) {
                     throw new IOException(MessageLocalization.getComposedMessage("expected.ihdr.marker"));
@@ -205,8 +205,7 @@ public class Jpeg2000 extends Image {
                 scaledWidth = cio_read(4);
                 setRight(scaledWidth);
                 bpc = -1;
-            }
-            else if (boxLength == 0xff4fff51) {
+            } else if (boxLength == 0xff4fff51) {
                 Utilities.skip(inp, 4);
                 int x1 = cio_read(4);
                 int y1 = cio_read(4);
@@ -219,14 +218,15 @@ public class Jpeg2000 extends Image {
                 setTop(scaledHeight);
                 scaledWidth = x1 - x0;
                 setRight(scaledWidth);
-            }
-            else {
+            } else {
                 throw new IOException(MessageLocalization.getComposedMessage("not.a.valid.jpeg2000.file"));
             }
-        }
-        finally {
+        } finally {
             if (inp != null) {
-                try{inp.close();}catch(Exception e){}
+                try {
+                    inp.close();
+                } catch (Exception e) {
+                }
                 inp = null;
             }
         }

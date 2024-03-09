@@ -9,15 +9,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.forms;
 
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -28,31 +24,37 @@ import com.lowagie.text.pdf.PdfBorderDictionary;
 import com.lowagie.text.pdf.PdfFormField;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.TextField;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates the use of PageSize.
+ *
  * @author blowagie
  */
 public class TextFields {
+
     /**
      * Creates a PDF document with a certain pagesize
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
-        
+
         System.out.println("Textfields");
-        
+
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4.rotate());
-        
+
         try {
-            
+
             // step 2:
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("TextFields.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
             TextField tf = new TextField(writer, new Rectangle(100, 300, 100 + 100, 300 + 50), "Dickens");
             tf.setBackgroundColor(Color.RED);
@@ -65,7 +67,7 @@ public class TextFields {
             tf.setRotation(90);
             PdfFormField field = tf.getTextField();
             writer.addAnnotation(field);
-            
+
             tf = new TextField(writer, new Rectangle(250, 300, 250 + 100, 300 + 20), "Combos");
             tf.setBackgroundColor(Color.RED);
             tf.setBorderColor(Color.BLUE);
@@ -78,7 +80,7 @@ public class TextFields {
             tf.setRotation(90);
             field = tf.getComboField();
             writer.addAnnotation(field);
-            
+
             tf = new TextField(writer, new Rectangle(400, 300, 400 + 100, 300 + 50), "Lists");
             tf.setBackgroundColor(Color.YELLOW);
             tf.setBorderColor(Color.RED);
@@ -90,9 +92,8 @@ public class TextFields {
             tf.setChoiceSelection(4);
             field = tf.getListField();
             writer.addAnnotation(field);
-            
-        }
-        catch(DocumentException | IOException de) {
+
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 

@@ -35,13 +35,6 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-
-import javax.swing.JInternalFrame;
-
 import com.lowagie.text.pdf.PRStream;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDictionary;
@@ -55,9 +48,15 @@ import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
 import com.lowagie.toolbox.swing.PdfInformationPanel;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import javax.swing.JInternalFrame;
 
 /**
  * This tool lets you extract the attachments of a PDF.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class ExtractAttachments extends AbstractTool {
@@ -77,6 +76,61 @@ public class ExtractAttachments extends AbstractTool {
     }
 
     /**
+     * Extract the attachments of a PDF.
+     *
+     * @param args String[]
+     */
+    public static void main(String[] args) {
+        ExtractAttachments tool = new ExtractAttachments();
+        if (args.length < 1) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
+        tool.execute();
+    }
+
+    /**
+     * Unpacks a file attachment.
+     *
+     * @param reader   The object that reads the PDF document
+     * @param filespec The dictionary containing the file specifications
+     * @param outPath  The path where the attachment has to be written
+     * @throws IOException on error
+     */
+    public static void unpackFile(PdfReader reader, PdfDictionary filespec,
+            String outPath) throws IOException {
+        if (filespec == null) {
+            return;
+        }
+        PdfName type = filespec.getAsName(PdfName.TYPE);
+        if (!PdfName.F.equals(type) && !PdfName.FILESPEC.equals(type)) {
+            return;
+        }
+        PdfDictionary ef = filespec.getAsDict(PdfName.EF);
+        if (ef == null) {
+            return;
+        }
+        PdfString fn = filespec.getAsString(PdfName.F);
+        System.out.println("Unpacking file '" + fn + "' to " + outPath);
+        if (fn == null) {
+            return;
+        }
+        File fLast = new File(fn.toUnicodeString());
+        File fullPath = new File(outPath, fLast.getName());
+        if (fullPath.exists()) {
+            return;
+        }
+        PRStream prs = (PRStream) PdfReader.getPdfObject(ef.get(PdfName.F));
+        if (prs == null) {
+            return;
+        }
+        byte[] b = PdfReader.getStreamBytes(prs);
+        FileOutputStream fout = new FileOutputStream(fullPath);
+        fout.write(b);
+        fout.close();
+    }
+
+    /**
      * @see com.lowagie.toolbox.AbstractTool#createFrame()
      */
     protected void createFrame() {
@@ -92,9 +146,10 @@ public class ExtractAttachments extends AbstractTool {
      */
     public void execute() {
         try {
-            if (getValue("srcfile") == null)
+            if (getValue("srcfile") == null) {
                 throw new InstantiationException(
                         "You need to choose a sourcefile");
+            }
             File src = (File) getValue("srcfile");
 
             // we create a reader for a certain document
@@ -121,13 +176,15 @@ public class ExtractAttachments extends AbstractTool {
             }
             for (int k = 1; k <= reader.getNumberOfPages(); ++k) {
                 PdfArray annots = reader.getPageN(k).getAsArray(PdfName.ANNOTS);
-                if (annots == null)
+                if (annots == null) {
                     continue;
+                }
                 for (PdfObject pdfObject : annots.getElements()) {
                     PdfDictionary annot = (PdfDictionary) PdfReader.getPdfObject(pdfObject);
                     PdfName subType = annot.getAsName(PdfName.SUBTYPE);
-                    if (!PdfName.FILEATTACHMENT.equals(subType))
+                    if (!PdfName.FILEATTACHMENT.equals(subType)) {
                         continue;
+                    }
                     PdfDictionary filespec = annot.getAsDict(PdfName.FS);
                     unpackFile(reader, filespec, outPath);
                 }
@@ -139,9 +196,8 @@ public class ExtractAttachments extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -153,65 +209,12 @@ public class ExtractAttachments extends AbstractTool {
     }
 
     /**
-     * Extract the attachments of a PDF.
-     *
-     * @param args String[]
-     */
-    public static void main(String[] args) {
-        ExtractAttachments tool = new ExtractAttachments();
-        if (args.length < 1) {
-            System.err.println(tool.getUsage());
-        }
-        tool.setMainArguments(args);
-        tool.execute();
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         throw new InstantiationException("There is more than one destfile.");
-    }
-
-    /**
-     * Unpacks a file attachment.
-     *
-     * @param reader
-     *            The object that reads the PDF document
-     * @param filespec
-     *            The dictionary containing the file specifications
-     * @param outPath
-     *            The path where the attachment has to be written
-     * @throws IOException on error
-     */
-    public static void unpackFile(PdfReader reader, PdfDictionary filespec,
-            String outPath) throws IOException {
-        if (filespec == null)
-            return;
-        PdfName type = filespec.getAsName(PdfName.TYPE);
-        if (!PdfName.F.equals(type) && !PdfName.FILESPEC.equals(type))
-            return;
-        PdfDictionary ef =filespec.getAsDict(PdfName.EF);
-        if (ef == null)
-            return;
-        PdfString fn = filespec.getAsString(PdfName.F);
-        System.out.println("Unpacking file '" + fn + "' to " + outPath);
-        if (fn == null)
-            return;
-        File fLast = new File(fn.toUnicodeString());
-        File fullPath = new File(outPath, fLast.getName());
-        if (fullPath.exists())
-            return;
-        PRStream prs = (PRStream) PdfReader.getPdfObject(ef.get(PdfName.F));
-        if (prs == null)
-            return;
-        byte[] b = PdfReader.getStreamBytes(prs);
-        FileOutputStream fout = new FileOutputStream(fullPath);
-        fout.write(b);
-        fout.close();
     }
 
 }

@@ -48,6 +48,7 @@
  */
 package com.lowagie.text.error_messages;
 
+import com.lowagie.text.pdf.BaseFont;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,22 +59,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.lowagie.text.pdf.BaseFont;
-
 /**
- * Localizes error messages. The messages are located in the package
- * com.lowagie.text.error_messages in the form language_country.lng.
- * The internal file encoding is UTF-8 without any escape chars, it's not a
- * normal property file. See en.lng for more information on the internal format.
+ * Localizes error messages. The messages are located in the package com.lowagie.text.error_messages in the form
+ * language_country.lng. The internal file encoding is UTF-8 without any escape chars, it's not a normal property file.
+ * See en.lng for more information on the internal format.
+ *
  * @author Paulo Soares (psoares@glintt.com)
  */
 public final class MessageLocalization {
+
+    private static final String BASE_PATH = "com/lowagie/text/error_messages/";
     private static Map<String, String> defaultLanguage = new HashMap<>();
     private static Map<String, String> currentLanguage;
-    private static final String BASE_PATH = "com/lowagie/text/error_messages/";
-
-    private MessageLocalization() {
-    }
 
     static {
         try {
@@ -81,12 +78,17 @@ public final class MessageLocalization {
         } catch (Exception ex) {
             // do nothing
         }
-        if (defaultLanguage == null)
+        if (defaultLanguage == null) {
             defaultLanguage = new HashMap<>();
+        }
+    }
+
+    private MessageLocalization() {
     }
 
     /**
      * Get a message without parameters.
+     *
      * @param key the key to the message
      * @return the message
      */
@@ -95,18 +97,21 @@ public final class MessageLocalization {
         String val;
         if (cl != null) {
             val = cl.get(key);
-            if (val != null)
+            if (val != null) {
                 return val;
+            }
         }
         cl = defaultLanguage;
         val = cl.get(key);
-        if (val != null)
+        if (val != null) {
             return val;
+        }
         return "No message found for " + key;
     }
 
     /**
      * Get a message without parameters.
+     *
      * @param key the key to the message
      * @return the message
      */
@@ -115,10 +120,10 @@ public final class MessageLocalization {
     }
 
     /**
-     * Get a message with one parameter. The parameter will replace the string
-     * "{1}" found in the message.
+     * Get a message with one parameter. The parameter will replace the string "{1}" found in the message.
+     *
      * @param key the key to the message
-     * @param p1 the parameter
+     * @param p1  the parameter
      * @return the message
      */
     public static String getComposedMessage(String key, Object p1) {
@@ -126,10 +131,10 @@ public final class MessageLocalization {
     }
 
     /**
-     * Get a message with one parameter. The parameter will replace the string
-     * "{1}" found in the message.
+     * Get a message with one parameter. The parameter will replace the string "{1}" found in the message.
+     *
      * @param key the key to the message
-     * @param p1 the parameter
+     * @param p1  the parameter
      * @return the message
      */
     public static String getComposedMessage(String key, int p1) {
@@ -137,11 +142,11 @@ public final class MessageLocalization {
     }
 
     /**
-     * Get a message with one parameter. The parameter will replace the string
-     * "{1}", "{2}" found in the message.
+     * Get a message with one parameter. The parameter will replace the string "{1}", "{2}" found in the message.
+     *
      * @param key the key to the message
-     * @param p1 the parameter
-     * @param p2 the parameter
+     * @param p1  the parameter
+     * @param p2  the parameter
      * @return the message
      */
     public static String getComposedMessage(String key, Object p1, Object p2) {
@@ -149,12 +154,13 @@ public final class MessageLocalization {
     }
 
     /**
-     * Get a message with one parameter. The parameter will replace the string
-     * "{1}", "{2}", "{3}" found in the message.
+     * Get a message with one parameter. The parameter will replace the string "{1}", "{2}", "{3}" found in the
+     * message.
+     *
      * @param key the key to the message
-     * @param p1 the parameter
-     * @param p2 the parameter
-     * @param p3 the parameter
+     * @param p1  the parameter
+     * @param p2  the parameter
+     * @param p3  the parameter
      * @return the message
      */
     public static String getComposedMessage(String key, Object p1, Object p2, Object p3) {
@@ -162,13 +168,14 @@ public final class MessageLocalization {
     }
 
     /**
-     * Get a message with two parameters. The parameters will replace the strings
-     * "{1}", "{2}", "{3}", "{4}" found in the message.
+     * Get a message with two parameters. The parameters will replace the strings "{1}", "{2}", "{3}", "{4}" found in
+     * the message.
+     *
      * @param key the key to the message
-     * @param p1 the parameter
-     * @param p2 the parameter
-     * @param p3 the parameter
-     * @param p4 the parameter
+     * @param p1  the parameter
+     * @param p2  the parameter
+     * @param p3  the parameter
+     * @param p4  the parameter
      * @return the message
      */
     public static String getComposedMessage(String key, Object p1, Object p2, Object p3, Object p4) {
@@ -189,24 +196,26 @@ public final class MessageLocalization {
     }
 
     /**
-     * Sets the language to be used globally for the error messages. The language
-     * is a two letter lowercase country designation like "en" or "pt". The country
-     * is an optional two letter uppercase code like "US" or "PT".
+     * Sets the language to be used globally for the error messages. The language is a two letter lowercase country
+     * designation like "en" or "pt". The country is an optional two letter uppercase code like "US" or "PT".
+     *
      * @param language the language
-     * @param country the country
+     * @param country  the country
      * @return true if the language was found, false otherwise
      * @throws IOException on error
      */
     public static boolean setLanguage(String language, String country) throws IOException {
         Map<String, String> lang = getLanguageMessages(language, country);
-        if (lang == null)
+        if (lang == null) {
             return false;
+        }
         currentLanguage = lang;
         return true;
     }
 
     /**
      * Sets the error messages directly from a Reader.
+     *
      * @param r the Reader
      * @throws IOException on error
      */
@@ -215,28 +224,32 @@ public final class MessageLocalization {
     }
 
     private static Map<String, String> getLanguageMessages(String language, String country) throws IOException {
-        if (language == null)
+        if (language == null) {
             throw new IllegalArgumentException("The language cannot be null.");
+        }
         InputStream is = null;
         try {
             String file;
-            if (country != null)
+            if (country != null) {
                 file = language + "_" + country + ".lng";
-            else
+            } else {
                 file = language + ".lng";
+            }
             is = BaseFont.getResourceStream(BASE_PATH + file, MessageLocalization.class.getClassLoader());
-            if (is != null)
+            if (is != null) {
                 return readLanguageStream(is);
-            if (country == null)
+            }
+            if (country == null) {
                 return null;
+            }
             file = language + ".lng";
             is = BaseFont.getResourceStream(BASE_PATH + file, MessageLocalization.class.getClassLoader());
-            if (is != null)
+            if (is != null) {
                 return readLanguageStream(is);
-            else
+            } else {
                 return null;
-        }
-        finally {
+            }
+        } finally {
             try {
                 if (is != null) {
                     is.close();

@@ -9,13 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.chunk;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -25,36 +22,20 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates the use of the Generic PageEvent.
- * 
+ *
  * @author blowagie
  */
 
 public class Generic extends PdfPageEventHelper {
-    /**
-     * Draws an ellipse if the text was ellipse, a box if the text was box.
-     * 
-     * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
-     */
-    public void onGenericTag(PdfWriter writer, Document document, Rectangle rect, String text) {
-        if ("ellipse".equals(text)) {
-            PdfContentByte cb = writer.getDirectContent();
-            cb.setRGBColorStroke(0xFF, 0x00, 0x00);
-            cb.ellipse(rect.getLeft(), rect.getBottom() - 5f, rect.getRight(), rect.getTop());
-            cb.stroke();
-            cb.resetRGBColorStroke();
-        }
-        else if ("box".equals(text)) {
-            PdfContentByte cb = writer.getDirectContentUnder();
-            rect.setGrayFill(0.5f);
-            cb.rectangle(rect);
-        }
-    }
+
     /**
      * Generic page event.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -69,7 +50,7 @@ public class Generic extends PdfPageEventHelper {
             PdfWriter writer = PdfWriter.getInstance(document,
                     new FileOutputStream("Generic.pdf"));
             writer.setPageEvent(new Generic());
-            
+
             // step 3: we open the document
             document.open();
             // step 4:
@@ -102,5 +83,25 @@ public class Generic extends PdfPageEventHelper {
 
         // step 5: we close the document
         document.close();
+    }
+
+    /**
+     * Draws an ellipse if the text was ellipse, a box if the text was box.
+     *
+     * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter,
+     * com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
+     */
+    public void onGenericTag(PdfWriter writer, Document document, Rectangle rect, String text) {
+        if ("ellipse".equals(text)) {
+            PdfContentByte cb = writer.getDirectContent();
+            cb.setRGBColorStroke(0xFF, 0x00, 0x00);
+            cb.ellipse(rect.getLeft(), rect.getBottom() - 5f, rect.getRight(), rect.getTop());
+            cb.stroke();
+            cb.resetRGBColorStroke();
+        } else if ("box".equals(text)) {
+            PdfContentByte cb = writer.getDirectContentUnder();
+            rect.setGrayFill(0.5f);
+            cb.rectangle(rect);
+        }
     }
 }

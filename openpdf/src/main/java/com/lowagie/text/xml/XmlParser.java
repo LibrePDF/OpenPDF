@@ -49,6 +49,8 @@
 
 package com.lowagie.text.xml;
 
+import com.lowagie.text.DocListener;
+import com.lowagie.text.ExceptionConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -56,9 +58,6 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import com.lowagie.text.DocListener;
-import com.lowagie.text.ExceptionConverter;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -85,116 +84,6 @@ public class XmlParser {
             parser = factory.newSAXParser();
         } catch (ParserConfigurationException | SAXException pce) {
             throw new ExceptionConverter(pce);
-        }
-    }
-
-    /**
-     * Parses a given file.
-     *
-     * @param document The document that will listen to the parser
-     * @param is       The InputStream with the contents
-     */
-
-    public void go(DocListener document, InputSource is) {
-        try {
-            parser.parse(is, new SAXiTextHandler<>(document));
-        } catch (SAXException | IOException se) {
-            throw new ExceptionConverter(se);
-        }
-    }
-
-    /**
-     * Parses a given file.
-     *
-     * @param document The document that will listen to the parser
-     * @param is       The input source with the content
-     * @param tagmap   A user defined tagmap
-     */
-
-    public void go(DocListener document, InputSource is, String tagmap) {
-        try {
-            parser.parse(is, new SAXmyHandler(document, new TagMap(tagmap)));
-        } catch (SAXException | IOException se) {
-            throw new ExceptionConverter(se);
-        }
-    }
-
-    /**
-     * Parses a given file.
-     *
-     * @param document The document that will listen to the parser
-     * @param is       the input source with the content
-     * @param tagmap   an inputstream to a user defined tagmap
-     */
-
-    public void go(DocListener document, InputSource is, InputStream tagmap) {
-        try {
-            parser.parse(is, new SAXmyHandler(document, new TagMap(tagmap)));
-        } catch (SAXException | IOException se) {
-            throw new ExceptionConverter(se);
-        }
-    }
-
-    /**
-     * Parses a given file.
-     *
-     * @param document The document that will listen to the parser
-     * @param is       the input source with the content
-     * @param tagmap   a user defined tagmap
-     */
-
-    public void go(DocListener document, InputSource is, Map<String, XmlPeer> tagmap) {
-        try {
-            parser.parse(is, new SAXmyHandler(document, tagmap));
-        } catch (SAXException | IOException se) {
-            throw new ExceptionConverter(se);
-        }
-    }
-
-    /**
-     * Parses a given file.
-     *
-     * @param document The document that will listen to the parser
-     * @param file     The path to a file with the content
-     */
-
-    public void go(DocListener document, String file) {
-        try {
-            parser.parse(file, new SAXiTextHandler<>(document));
-        } catch (SAXException | IOException se) {
-            throw new ExceptionConverter(se);
-        }
-    }
-
-    /**
-     * Parses a given file.
-     *
-     * @param document the document that will listen to the parser
-     * @param file     the path to a file with the content
-     * @param tagmap   a user defined tagmap
-     */
-
-    public void go(DocListener document, String file, String tagmap) {
-        try {
-            parser.parse(file, new SAXmyHandler(document, new TagMap(tagmap)));
-        } catch (SAXException | IOException se) {
-            throw new ExceptionConverter(se);
-        }
-    }
-
-    /**
-     * Parses a given file.
-     *
-     * @param document The document that will listen to the parser
-     * @param file     the path to a file with the content
-     * @param tagmap   a user defined tagmap
-     */
-
-    public void go(DocListener document, String file, Map<String, XmlPeer> tagmap) {
-        try {
-            parser.parse(file, new SAXmyHandler(document, tagmap));
-        } catch (SAXException | IOException se) {
-            throw new ExceptionConverter(se);
         }
     }
 
@@ -348,5 +237,115 @@ public class XmlParser {
     public static void parse(DocListener document, Reader is, Map<String, XmlPeer> tagmap) {
         XmlParser xmlParser = new XmlParser();
         xmlParser.go(document, new InputSource(is), tagmap);
+    }
+
+    /**
+     * Parses a given file.
+     *
+     * @param document The document that will listen to the parser
+     * @param is       The InputStream with the contents
+     */
+
+    public void go(DocListener document, InputSource is) {
+        try {
+            parser.parse(is, new SAXiTextHandler<>(document));
+        } catch (SAXException | IOException se) {
+            throw new ExceptionConverter(se);
+        }
+    }
+
+    /**
+     * Parses a given file.
+     *
+     * @param document The document that will listen to the parser
+     * @param is       The input source with the content
+     * @param tagmap   A user defined tagmap
+     */
+
+    public void go(DocListener document, InputSource is, String tagmap) {
+        try {
+            parser.parse(is, new SAXmyHandler(document, new TagMap(tagmap)));
+        } catch (SAXException | IOException se) {
+            throw new ExceptionConverter(se);
+        }
+    }
+
+    /**
+     * Parses a given file.
+     *
+     * @param document The document that will listen to the parser
+     * @param is       the input source with the content
+     * @param tagmap   an inputstream to a user defined tagmap
+     */
+
+    public void go(DocListener document, InputSource is, InputStream tagmap) {
+        try {
+            parser.parse(is, new SAXmyHandler(document, new TagMap(tagmap)));
+        } catch (SAXException | IOException se) {
+            throw new ExceptionConverter(se);
+        }
+    }
+
+    /**
+     * Parses a given file.
+     *
+     * @param document The document that will listen to the parser
+     * @param is       the input source with the content
+     * @param tagmap   a user defined tagmap
+     */
+
+    public void go(DocListener document, InputSource is, Map<String, XmlPeer> tagmap) {
+        try {
+            parser.parse(is, new SAXmyHandler(document, tagmap));
+        } catch (SAXException | IOException se) {
+            throw new ExceptionConverter(se);
+        }
+    }
+
+    /**
+     * Parses a given file.
+     *
+     * @param document The document that will listen to the parser
+     * @param file     The path to a file with the content
+     */
+
+    public void go(DocListener document, String file) {
+        try {
+            parser.parse(file, new SAXiTextHandler<>(document));
+        } catch (SAXException | IOException se) {
+            throw new ExceptionConverter(se);
+        }
+    }
+
+    /**
+     * Parses a given file.
+     *
+     * @param document the document that will listen to the parser
+     * @param file     the path to a file with the content
+     * @param tagmap   a user defined tagmap
+     */
+
+    public void go(DocListener document, String file, String tagmap) {
+        try {
+            parser.parse(file, new SAXmyHandler(document, new TagMap(tagmap)));
+        } catch (SAXException | IOException se) {
+            throw new ExceptionConverter(se);
+        }
+    }
+
+    /**
+     * Parses a given file.
+     *
+     * @param document The document that will listen to the parser
+     * @param file     the path to a file with the content
+     * @param tagmap   a user defined tagmap
+     */
+
+    public void go(DocListener document, String file, Map<String, XmlPeer> tagmap) {
+        try {
+            parser.parse(file, new SAXmyHandler(document, tagmap));
+        } catch (SAXException | IOException se) {
+            throw new ExceptionConverter(se);
+        }
     }
 }

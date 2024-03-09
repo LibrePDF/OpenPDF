@@ -47,11 +47,10 @@
 package com.lowagie.text;
 
 /**
- * 
  * A special-version of <CODE>LIST</CODE> which use zapfdingbats-letters.
- * 
- * @see com.lowagie.text.List
+ *
  * @author Michael Niedermair and Bruno Lowagie
+ * @see com.lowagie.text.List
  */
 
 public class ZapfDingbatsList extends List {
@@ -63,7 +62,7 @@ public class ZapfDingbatsList extends List {
 
     /**
      * Creates a ZapfDingbatsList
-     * 
+     *
      * @param zn a char-number
      */
     public ZapfDingbatsList(int zn) {
@@ -76,9 +75,9 @@ public class ZapfDingbatsList extends List {
 
     /**
      * Creates a ZapfDingbatsList
-     * 
-     * @param zn a char-number
-     * @param symbolIndent    indent
+     *
+     * @param zn           a char-number
+     * @param symbolIndent indent
      */
     public ZapfDingbatsList(int zn, int symbolIndent) {
         super(true, symbolIndent);
@@ -89,7 +88,17 @@ public class ZapfDingbatsList extends List {
     }
 
     /**
-     * set the char-number 
+     * get the char-number
+     *
+     * @return char-number
+     */
+    public int getCharNumber() {
+        return zn;
+    }
+
+    /**
+     * set the char-number
+     *
      * @param zn a char-number
      */
     public void setCharNumber(int zn) {
@@ -97,18 +106,9 @@ public class ZapfDingbatsList extends List {
     }
 
     /**
-     * get the char-number
-     *
-     * @return    char-number
-     */
-    public int getCharNumber() {
-        return zn;
-    }
-
-    /**
      * Adds an <CODE>Element</CODE> to the <CODE>List</CODE>.
      *
-     * @param    o    the element to add.
+     * @param o the element to add.
      * @return true if adding the element succeeded
      */
     @Override
@@ -116,7 +116,7 @@ public class ZapfDingbatsList extends List {
         if (o instanceof ListItem) {
             ListItem item = (ListItem) o;
             Chunk chunk = new Chunk(preSymbol, symbol.getFont());
-            chunk.append(String.valueOf((char)zn));
+            chunk.append(String.valueOf((char) zn));
             chunk.append(postSymbol);
             item.setListSymbol(chunk);
             item.setIndentationLeft(symbolIndent, autoindent);
@@ -134,7 +134,7 @@ public class ZapfDingbatsList extends List {
     /**
      * Adds a <CODE>String</CODE> to the <CODE>List</CODE>.
      *
-     * @param    s    the string to add.
+     * @param s the string to add.
      * @return true if adding the string succeeded
      */
     @Override
