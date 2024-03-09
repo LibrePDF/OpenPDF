@@ -48,31 +48,30 @@
  */
 package com.lowagie.tools;
 
-import java.awt.GraphicsEnvironment;
-import javax.swing.JOptionPane;
-
 import com.lowagie.text.Document;
 import com.lowagie.toolbox.Toolbox;
+import java.awt.GraphicsEnvironment;
+import javax.swing.JOptionPane;
 
 public class ToolboxAvailable {
 
     /**
-     * Checks if the toolbox if available.
-     * If it is, the toolbox is started.
-     * If it isn't, an error message is shown.
+     * Checks if the toolbox if available. If it is, the toolbox is started. If it isn't, an error message is shown.
+     *
      * @param args the command-line args
      */
     public static void main(String[] args) {
         if (GraphicsEnvironment.isHeadless()) {
             System.out.println(Document.getVersion() + " Toolbox error: headless display");
-        } else
-        try {
-            Toolbox.main(args);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                    "You need the iText-toolbox.jar with class com.lowagie.toolbox.Toolbox to use the iText Toolbox.",
-                    Document.getVersion() + " Toolbox error",
-                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                Toolbox.main(args);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,
+                        "You need the iText-toolbox.jar with class com.lowagie.toolbox.Toolbox to use the iText Toolbox.",
+                        Document.getVersion() + " Toolbox error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 }

@@ -9,11 +9,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.general.webapp;
 
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.PdfWriter;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,23 +25,22 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.PdfWriter;
-
 /**
  * Explains how to print silently via Servlet/Browser.
- * @author     Heiner Jostkleigrewe, Heiner.Jostkleigrewe@gt-net.de
+ *
+ * @author Heiner Jostkleigrewe, Heiner.Jostkleigrewe@gt-net.de
  */
 public class SilentPrintServlet extends HttpServlet {
-    private static final long serialVersionUID = -3250788071256174348L;
 
-    /** a possible status */
+    /**
+     * a possible status
+     */
     public static final int ACT_INIT = 0;
-
-    /** a possible status */
+    /**
+     * a possible status
+     */
     public static final int ACT_REPORT_1 = 1;
+    private static final long serialVersionUID = -3250788071256174348L;
 
     @Override
     public void doGet(HttpServletRequest requ, HttpServletResponse resp)
@@ -53,15 +56,15 @@ public class SilentPrintServlet extends HttpServlet {
 
     /**
      * The actual business logic.
-     * 
-     * @param requ    the request object
-     * @param resp    the response object
+     *
+     * @param requ the request object
+     * @param resp the response object
      * @throws IOException on error
      */
     public void doWork(HttpServletRequest requ, HttpServletResponse resp)
             throws IOException {
         ServletOutputStream out = resp.getOutputStream();
-        
+
         // what did the user request?
         int action = ACT_INIT;
         int sub = ACT_INIT;
@@ -72,33 +75,34 @@ public class SilentPrintServlet extends HttpServlet {
         }
 
         switch (action) {
-        case ACT_INIT: {
-            htmlHeader(out, resp);
-            formular(out, requ, sub);
-            break;
-        }
-
-        case ACT_REPORT_1: {
-            Document document = new Document();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            try {
-                PdfWriter writer = PdfWriter.getInstance(document, baos);
-                document.open();
-                if (requ.getParameter("preview") == null)
-                    writer.addJavaScript("this.print(false);", false);
-                document.add(new Chunk("Silent Auto Print"));
-                document.close();
-            } catch (DocumentException e) {
-                e.printStackTrace();
+            case ACT_INIT: {
+                htmlHeader(out, resp);
+                formular(out, requ, sub);
+                break;
             }
-            resp.setContentType("application/pdf");
 
-            resp.setContentLength(baos.size());
-            baos.writeTo(out);
-            out.flush();
-            break;
-        }
+            case ACT_REPORT_1: {
+                Document document = new Document();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+                try {
+                    PdfWriter writer = PdfWriter.getInstance(document, baos);
+                    document.open();
+                    if (requ.getParameter("preview") == null) {
+                        writer.addJavaScript("this.print(false);", false);
+                    }
+                    document.add(new Chunk("Silent Auto Print"));
+                    document.close();
+                } catch (DocumentException e) {
+                    e.printStackTrace();
+                }
+                resp.setContentType("application/pdf");
+
+                resp.setContentLength(baos.size());
+                baos.writeTo(out);
+                out.flush();
+                break;
+            }
         }
     }
 
@@ -142,8 +146,8 @@ public class SilentPrintServlet extends HttpServlet {
                 out.print(requ.getRequestURI());
                 out.print("?action=");
                 out.print(sub);
-                out
-                        .print("&preview=Y\", \"Printing\", \"width=800,height=450,scrollbars,menubar=yes,resizable=yes\");");
+                out.print(
+                        "&preview=Y\", \"Printing\", \"width=800,height=450,scrollbars,menubar=yes,resizable=yes\");");
                 out.println("</script>");
             } else {
                 out.print("<iframe src='");

@@ -33,9 +33,38 @@ import org.junit.jupiter.api.Test;
 class PdfTextExtractorTest {
 
     private static final String LOREM_IPSUM =
-        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
-            + "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed "
-            + "diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.";
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
+                    + "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed "
+                    + "diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.";
+
+    static byte[] createSimpleDocumentWithElements(Element... elements) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, baos);
+
+        document.open();
+        for (Element element : elements) {
+            document.add(element);
+        }
+        document.close();
+
+        return baos.toByteArray();
+    }
+
+    protected static byte[] readDocument(final File file) throws IOException {
+        try (ByteArrayOutputStream fileBytes = new ByteArrayOutputStream();
+                InputStream inputStream = Files.newInputStream(file.toPath())) {
+            final byte[] buffer = new byte[8192];
+            while (true) {
+                final int bytesRead = inputStream.read(buffer);
+                if (bytesRead == -1) {
+                    break;
+                }
+                fileBytes.write(buffer, 0, bytesRead);
+            }
+            return fileBytes.toByteArray();
+        }
+    }
 
     @Test
     void testPageExceeded() throws Exception {
@@ -95,8 +124,8 @@ class PdfTextExtractorTest {
     void whenTrunkedWordsInChunks_expectsFullWordAsExtraction() throws IOException {
         // given
         byte[] pdfBytes = createSimpleDocumentWithElements(
-            new Chunk("trun"),
-            new Chunk("ked"));
+                new Chunk("trun"),
+                new Chunk("ked"));
         // when
         final String extracted = new PdfTextExtractor(new PdfReader(pdfBytes)).getTextFromPage(1);
         // then
@@ -107,8 +136,8 @@ class PdfTextExtractorTest {
     void getTextFromPageWithPhrases_expectsNoAddedSpace() throws IOException {
         // given
         byte[] pdfBytes = createSimpleDocumentWithElements(
-            new Phrase("Phrase begin. "),
-            new Phrase("Phrase End.")
+                new Phrase("Phrase begin. "),
+                new Phrase("Phrase End.")
         );
         // when
         final String extracted = new PdfTextExtractor(new PdfReader(pdfBytes)).getTextFromPage(1);
@@ -116,16 +145,15 @@ class PdfTextExtractorTest {
         assertThat(extracted, is("Phrase begin. Phrase End."));
     }
 
-
     @Test
     void getTextFromPageWithParagraphs_expectsTextHasNoMultipleSpaces() throws IOException {
         // given
         final Paragraph loremIpsumParagraph = new Paragraph(LOREM_IPSUM);
         loremIpsumParagraph.setAlignment(Element.ALIGN_JUSTIFIED);
         byte[] pdfBytes = createSimpleDocumentWithElements(
-            loremIpsumParagraph,
-            Chunk.NEWLINE,
-            loremIpsumParagraph
+                loremIpsumParagraph,
+                Chunk.NEWLINE,
+                loremIpsumParagraph
         );
         final String expected = LOREM_IPSUM + " " + LOREM_IPSUM;
         // when
@@ -137,7 +165,7 @@ class PdfTextExtractorTest {
 
     @Test
     void getTextFromPageInTablesWithSingleWords_expectsWordsAreSeparatedBySpaces()
-        throws IOException {
+            throws IOException {
         // given
         PdfPTable table = new PdfPTable(3);
         table.addCell("One");
@@ -150,20 +178,6 @@ class PdfTextExtractorTest {
         assertThat(extracted, is("One Two Three"));
     }
 
-    static byte[] createSimpleDocumentWithElements(Element... elements) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Document document = new Document(PageSize.A4);
-        PdfWriter.getInstance(document, baos);
-
-        document.open();
-        for (Element element : elements) {
-            document.add(element);
-        }
-        document.close();
-
-        return baos.toByteArray();
-    }
-
     private String getString(String fileName, int pageNumber) throws Exception {
         URL resource = getClass().getResource("/" + fileName);
         return getString(new File(resource.toURI()), pageNumber);
@@ -174,20 +188,5 @@ class PdfTextExtractorTest {
         final PdfReader pdfReader = new PdfReader(pdfBytes);
 
         return new PdfTextExtractor(pdfReader).getTextFromPage(pageNumber);
-    }
-
-    protected static byte[] readDocument(final File file) throws IOException {
-        try (ByteArrayOutputStream fileBytes = new ByteArrayOutputStream();
-            InputStream inputStream = Files.newInputStream(file.toPath())) {
-            final byte[] buffer = new byte[8192];
-            while (true) {
-                final int bytesRead = inputStream.read(buffer);
-                if (bytesRead == -1) {
-                    break;
-                }
-                fileBytes.write(buffer, 0, bytesRead);
-            }
-            return fileBytes.toByteArray();
-        }
     }
 }

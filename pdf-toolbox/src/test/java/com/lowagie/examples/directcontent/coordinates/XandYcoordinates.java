@@ -9,14 +9,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.directcontent.coordinates;
 
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -24,35 +21,40 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates how the PDF coordinate system works.
+ *
  * @author blowagie
  */
 public class XandYcoordinates {
+
     /**
      * Creates a PDF document with shapes, lines and text at specific X and Y coordinates.
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
-        
-        System.out.println("X and Y coordinate system");        
+
+        System.out.println("X and Y coordinate system");
         // step 1: creation of a document-object
         Document document = new Document();
-        
-        try {      
+
+        try {
             // step 2: creation of the writer
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("XandY.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
             PdfContentByte cb = writer.getDirectContent();
-            
+
             // we create a PdfTemplate
             PdfTemplate template = cb.createTemplate(25, 25);
-            
+
             // we add some crosses to visualize the coordinates
             template.moveTo(13, 0);
             template.lineTo(13, 25);
@@ -60,7 +62,7 @@ public class XandYcoordinates {
             template.lineTo(50, 13);
             template.stroke();
             template.sanityCheck();
-            
+
             // we add the template on different positions
             cb.addTemplate(template, 216 - 13, 720 - 13);
             cb.addTemplate(template, 360 - 13, 360 - 13);
@@ -74,7 +76,7 @@ public class XandYcoordinates {
             cb.lineTo(72, 144);
             cb.lineTo(144, 288);
             cb.stroke();
-            
+
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
             cb.beginText();
             cb.setFontAndSize(bf, 12);
@@ -83,11 +85,10 @@ public class XandYcoordinates {
             cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "(5\", 7\")", 360 + 25, 504 + 5, 0);
             cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "(1\", 2\")", 72 + 25, 144 + 5, 0);
             cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "(2\", 4\")", 144 + 25, 288 + 5, 0);
-            cb.endText(); 
-            
+            cb.endText();
+
             cb.sanityCheck();
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 

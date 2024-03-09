@@ -41,9 +41,9 @@ class PdfDocument536Test {
         PdfTextExtractor extractor = new PdfTextExtractor(reader);
         // then
         assertThat(extractor.getTextFromPage(1)).as("First Page")
-            .doesNotContain("HEADER 1", "HEADER 2", "HEADER 3");
+                .doesNotContain("HEADER 1", "HEADER 2", "HEADER 3");
         assertThat(extractor.getTextFromPage(2)).as("SecondPage")
-            .contains("HEADER 1", "HEADER 2", "HEADER 3");
+                .contains("HEADER 1", "HEADER 2", "HEADER 3");
         Document.compress = true;
     }
 

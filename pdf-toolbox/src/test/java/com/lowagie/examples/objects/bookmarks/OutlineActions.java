@@ -9,14 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.bookmarks;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -28,10 +24,13 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfDestination;
 import com.lowagie.text.pdf.PdfOutline;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates how pagelabels work.
- * 
+ *
  * @author blowagie
  */
 
@@ -39,7 +38,7 @@ public class OutlineActions {
 
     /**
      * Demonstrates some PageLabel functionality.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -63,7 +62,8 @@ public class OutlineActions {
             // we add the outline
             PdfContentByte cb = writer.getDirectContent();
             PdfOutline root = cb.getRootOutline();
-            PdfOutline links = new PdfOutline(root, new PdfAction("https://github.com/LibrePDF/OpenPDFlinks.html"), "Useful links");
+            PdfOutline links = new PdfOutline(root, new PdfAction("https://github.com/LibrePDF/OpenPDFlinks.html"),
+                    "Useful links");
             links.setColor(new Color(0x00, 0x80, 0x80));
             links.setStyle(Font.BOLD);
             new PdfOutline(links, new PdfAction("http://www.lowagie.com/iText"), "Bruno's iText site");
@@ -74,7 +74,7 @@ public class OutlineActions {
             new PdfOutline(other, new PdfAction("remote.pdf", 1), "Go to yhe first page of a remote file");
             new PdfOutline(other, new PdfAction("remote.pdf", "test"), "Go to a local destination in a remote file");
             new PdfOutline(other, PdfAction.javaScript("app.alert('Hello');\r", writer), "Say Hello");
-            
+
             remote.add(new Paragraph("Some remote document"));
             remote.newPage();
             Paragraph p = new Paragraph("This paragraph contains a ");

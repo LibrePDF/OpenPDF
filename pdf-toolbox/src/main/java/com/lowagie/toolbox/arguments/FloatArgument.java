@@ -34,15 +34,15 @@
  */
 package com.lowagie.toolbox.arguments;
 
-import java.awt.event.ActionEvent;
-
 import com.lowagie.toolbox.AbstractTool;
 import com.lowagie.toolbox.swing.CustomDialog;
+import java.awt.event.ActionEvent;
 
 /**
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class FloatArgument extends AbstractArgument {
+
     public FloatArgument() {
         super();
     }
@@ -57,8 +57,8 @@ public class FloatArgument extends AbstractArgument {
      * @param e ActionEvent
      */
     public void actionPerformed(ActionEvent e) {
-        CustomDialog cd=new CustomDialog("Enter a value for " + name +
-                                             ":",CustomDialog.instantiateFloatDocument());
-       setValue(cd.showInputDialog(this.getValue()==null?"0":this.getValue().toString()));
-   }
+        CustomDialog cd = new CustomDialog("Enter a value for " + name +
+                ":", CustomDialog.instantiateFloatDocument());
+        setValue(cd.showInputDialog(this.getValue() == null ? "0" : this.getValue().toString()));
+    }
 }

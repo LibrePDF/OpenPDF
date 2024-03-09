@@ -52,27 +52,29 @@ package com.lowagie.text.factories;
 import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
- * This class can produce String combinations representing a number.
- * "a" to "z" represent 1 to 26, "AA" represents 27, "AB" represents 28,
- * and so on; "ZZ" is followed by "AAA".
+ * This class can produce String combinations representing a number. "a" to "z" represent 1 to 26, "AA" represents 27,
+ * "AB" represents 28, and so on; "ZZ" is followed by "AAA".
  */
 public class RomanAlphabetFactory {
 
     /**
-     * Translates a positive integer (not equal to zero)
-     * into a String using the letters 'a' to 'z';
-     * 1 = a, 2 = b, ..., 26 = z, 27 = aa, 28 = ab,...
+     * Translates a positive integer (not equal to zero) into a String using the letters 'a' to 'z'; 1 = a, 2 = b, ...,
+     * 26 = z, 27 = aa, 28 = ab,...
+     *
      * @param index the integer to translate
      * @return the lowercase String representing the integer
      */
     public static final String getString(int index) {
-        if (index < 1) throw new NumberFormatException(MessageLocalization.getComposedMessage("you.can.t.translate.a.negative.number.into.an.alphabetical.value"));
+        if (index < 1) {
+            throw new NumberFormatException(MessageLocalization.getComposedMessage(
+                    "you.can.t.translate.a.negative.number.into.an.alphabetical.value"));
+        }
 
         index--;
         int bytes = 1;
         int start = 0;
         int symbols = 26;
-        while(index >= symbols + start) {
+        while (index >= symbols + start) {
             bytes++;
             start += symbols;
             symbols *= 26;
@@ -80,8 +82,8 @@ public class RomanAlphabetFactory {
 
         int c = index - start;
         char[] value = new char[bytes];
-        while(bytes > 0) {
-            value[--bytes] = (char)( 'a' + (c % 26));
+        while (bytes > 0) {
+            value[--bytes] = (char) ('a' + (c % 26));
             c /= 26;
         }
 
@@ -89,9 +91,9 @@ public class RomanAlphabetFactory {
     }
 
     /**
-     * Translates a positive integer (not equal to zero)
-     * into a String using the letters 'a' to 'z';
-     * 1 = a, 2 = b, ..., 26 = z, 27 = aa, 28 = ab,...
+     * Translates a positive integer (not equal to zero) into a String using the letters 'a' to 'z'; 1 = a, 2 = b, ...,
+     * 26 = z, 27 = aa, 28 = ab,...
+     *
      * @param index the number to translate
      * @return the lowercase String representing the integer
      */
@@ -100,9 +102,9 @@ public class RomanAlphabetFactory {
     }
 
     /**
-     * Translates a positive integer (not equal to zero)
-     * into a String using the letters 'A' to 'Z';
-     * 1 = A, 2 = B, ..., 26 = Z, 27 = AA, 28 = AB,...
+     * Translates a positive integer (not equal to zero) into a String using the letters 'A' to 'Z'; 1 = A, 2 = B, ...,
+     * 26 = Z, 27 = AA, 28 = AB,...
+     *
      * @param index the number to translate
      * @return the uppercase String representing the integer
      */
@@ -112,18 +114,17 @@ public class RomanAlphabetFactory {
 
 
     /**
-     * Translates a positive integer (not equal to zero)
-     * into a String using the letters 'a' to 'z'
-     * (a = 1, b = 2, ..., z = 26, aa = 27, ab = 28,...).
-     * @param index the number to translate
+     * Translates a positive integer (not equal to zero) into a String using the letters 'a' to 'z' (a = 1, b = 2, ...,
+     * z = 26, aa = 27, ab = 28,...).
+     *
+     * @param index     the number to translate
      * @param lowercase true for lowercase, false for uppercase
      * @return the lowercase String representing the integer
      */
     public static final String getString(int index, boolean lowercase) {
         if (lowercase) {
             return getLowerCaseString(index);
-        }
-        else {
+        } else {
             return getUpperCaseString(index);
         }
     }

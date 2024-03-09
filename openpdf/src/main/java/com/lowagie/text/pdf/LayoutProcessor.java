@@ -258,8 +258,8 @@ public class LayoutProcessor {
                 if (file.canRead()) {
                     inputStream = Files.newInputStream(file.toPath());
                 } else if (filename.startsWith("file:/") || filename.startsWith("http://")
-                    || filename.startsWith("https://") || filename.startsWith("jar:")
-                    || filename.startsWith("wsjar:")) {
+                        || filename.startsWith("https://") || filename.startsWith("jar:")
+                        || filename.startsWith("wsjar:")) {
                     inputStream = new URL(filename).openStream();
                 } else if ("-".equals(filename)) {
                     inputStream = System.in;
@@ -268,7 +268,7 @@ public class LayoutProcessor {
                 }
                 if (inputStream == null) {
                     throw new IOException(
-                        MessageLocalization.getComposedMessage("1.not.found.as.file.or.resource", filename));
+                            MessageLocalization.getComposedMessage("1.not.found.as.file.or.resource", filename));
                 }
                 awtFont = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, inputStream);
                 if (awtFont != null) {
@@ -316,7 +316,7 @@ public class LayoutProcessor {
             Object runDirection = textAttributes.get(TextAttribute.RUN_DIRECTION);
             if (runDirection != null) {
                 localFlags = runDirection == TextAttribute.RUN_DIRECTION_LTR ? java.awt.Font.LAYOUT_LEFT_TO_RIGHT :
-                    java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
+                        java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
             }
         }
         return awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, localFlags);

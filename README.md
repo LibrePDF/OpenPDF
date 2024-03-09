@@ -45,9 +45,9 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 ```xml
 
 <dependency>
-    <groupId>com.github.librepdf</groupId>
-    <artifactId>openpdf</artifactId>
-    <version>2.0.1</version>
+  <groupId>com.github.librepdf</groupId>
+  <artifactId>openpdf</artifactId>
+  <version>2.0.1</version>
 </dependency>
 ```
 
@@ -144,9 +144,9 @@ and use the class `org.librepdf.openpdf.fonts.Liberation`.
 ```xml
 
 <dependency>
-    <groupId>com.github.librepdf</groupId>
-    <artifactId>openpdf-fonts-extra</artifactId>
-    <version>${openpdf.version}</version>
+  <groupId>com.github.librepdf</groupId>
+  <artifactId>openpdf-fonts-extra</artifactId>
+  <version>${openpdf.version}</version>
 </dependency>
 ```
 
@@ -166,9 +166,9 @@ See: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Lat
 
 - [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
   dependency)
-    - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
-      on which algorithm you are using)
-    - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
+  - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
+    on which algorithm you are using)
+  - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
 - Apache FOP (`org.apache.xmlgraphics:fop`)
 - Please refer to our [pom.xml](pom.xml) to see what version is needed.
 

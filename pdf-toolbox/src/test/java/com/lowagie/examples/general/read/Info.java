@@ -9,26 +9,27 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.general.read;
 
+import com.lowagie.text.pdf.PdfReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-
-import com.lowagie.text.pdf.PdfReader;
 
 /**
  * Getting information from a PDF file.
  */
 public class Info {
+
     /**
      * Getting information from a PDF file
-     * @param args     the names of paths to PDF files.
+     *
+     * @param args the names of paths to PDF files.
      */
     public static void main(String[] args) {
         try {
-        BufferedWriter out = new BufferedWriter(new FileWriter("info.txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter("info.txt"));
             for (String arg : args) {
                 PdfReader r = new PdfReader(arg);
                 out.write(arg);
@@ -36,10 +37,9 @@ public class Info {
                 out.write(r.getInfo().toString());
                 out.write("\r\n------------------------------------\r\n");
             }
-        out.flush();
-        out.close();
-        }
-        catch(Exception e) {
+            out.flush();
+            out.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

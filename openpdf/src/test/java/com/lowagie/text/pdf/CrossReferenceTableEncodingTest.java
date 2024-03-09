@@ -18,9 +18,9 @@ public class CrossReferenceTableEncodingTest {
 
     private static String filterPdf(final String pdf) {
         return pdf.replaceAll("<</ModDate.*?>>", "")
-            .replaceAll("<</CreationDate.*?>>", "")
-            .replaceAll("<</Info .*?>>", "<</Info XXXXX>>")
-            .replaceAll("startxref\\n(\\d+)\\n%%EOF", "startxref\nXXXXX\n%%EOF");
+                .replaceAll("<</CreationDate.*?>>", "")
+                .replaceAll("<</Info .*?>>", "<</Info XXXXX>>")
+                .replaceAll("startxref\\n(\\d+)\\n%%EOF", "startxref\nXXXXX\n%%EOF");
     }
 
     // This test was once red, even it was not easy to accomplish this. The test must be run with

@@ -50,30 +50,39 @@ import java.util.Map;
 
 /**
  * The handler for the events fired by <CODE>SimpleXMLParser</CODE>.
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public interface SimpleXMLDocHandler {
+
     /**
      * Called when a start tag is found.
+     *
      * @param tag the tag name
-     * @param h the tag's attributes
+     * @param h   the tag's attributes
      */
     void startElement(String tag, Map<String, String> h);
+
     /**
      * Called when an end tag is found.
+     *
      * @param tag the tag name
      */
     void endElement(String tag);
+
     /**
      * Called when the document starts to be parsed.
      */
     void startDocument();
+
     /**
      * Called after the document is parsed.
      */
     void endDocument();
+
     /**
      * Called when a text element is found.
+     *
      * @param str the text element, probably a fragment.
      */
     void text(String str);

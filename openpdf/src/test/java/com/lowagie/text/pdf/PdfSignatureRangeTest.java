@@ -1,35 +1,17 @@
 package com.lowagie.text.pdf;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Utilities;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Utilities;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class PdfSignatureRangeTest {
-
-    @Test
-    void bigFileSignature() throws DocumentException, IOException {
-        byte[] pdf = Utilities.toByteArray(getClass().getResourceAsStream("/EmptyPage.pdf"));
-        checkSignature(pdf);
-        checkSignature(enlarge(pdf, 100001));
-        checkSignature(enlarge(pdf, 16777217)); // must be odd, as only the last bit is lost
-    }
-
-    @Test
-    void objectXrefDocumentSignature() throws DocumentException, IOException {
-        byte[] pdf = Utilities.toByteArray(getClass().getResourceAsStream("/objectXref.pdf"));
-        checkSignature(pdf);
-        checkSignature(enlarge(pdf, 100001));
-        checkSignature(enlarge(pdf, 16777217)); // must be odd, as only the last bit is lost
-    }
 
     private static void checkSignature(byte[] pdf) throws IOException {
         byte[] produced = fakeSignature(pdf);
@@ -70,6 +52,22 @@ public class PdfSignatureRangeTest {
         System.arraycopy(pdf, 0, out, 0, pdf.length - trailerSize);
         System.arraycopy(pdf, pdf.length - trailerSize, out, out.length - trailerSize, trailerSize);
         return out;
+    }
+
+    @Test
+    void bigFileSignature() throws DocumentException, IOException {
+        byte[] pdf = Utilities.toByteArray(getClass().getResourceAsStream("/EmptyPage.pdf"));
+        checkSignature(pdf);
+        checkSignature(enlarge(pdf, 100001));
+        checkSignature(enlarge(pdf, 16777217)); // must be odd, as only the last bit is lost
+    }
+
+    @Test
+    void objectXrefDocumentSignature() throws DocumentException, IOException {
+        byte[] pdf = Utilities.toByteArray(getClass().getResourceAsStream("/objectXref.pdf"));
+        checkSignature(pdf);
+        checkSignature(enlarge(pdf, 100001));
+        checkSignature(enlarge(pdf, 16777217)); // must be odd, as only the last bit is lost
     }
 
 }

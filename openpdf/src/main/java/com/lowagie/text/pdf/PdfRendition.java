@@ -52,10 +52,11 @@ import java.io.IOException;
  * A Rendition dictionary (pdf spec 1.5)
  */
 public class PdfRendition extends PdfDictionary {
-     PdfRendition(String file, PdfFileSpecification fs, String mimeType) throws IOException{
-         put(PdfName.S, new PdfName("MR"));
-         put(PdfName.N, new PdfString("Rendition for "+file));
-         put(PdfName.C, new PdfMediaClipData(file, fs, mimeType));
-     }
+
+    PdfRendition(String file, PdfFileSpecification fs, String mimeType) throws IOException {
+        put(PdfName.S, new PdfName("MR"));
+        put(PdfName.N, new PdfString("Rendition for " + file));
+        put(PdfName.C, new PdfMediaClipData(file, fs, mimeType));
+    }
 
 }

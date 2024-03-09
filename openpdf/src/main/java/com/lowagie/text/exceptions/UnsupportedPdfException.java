@@ -48,23 +48,26 @@
  */
 
 package com.lowagie.text.exceptions;
+
 /**
- * Typed exception used when opening an existing PDF document.
- * Gets thrown when the document isn't a valid PDF document according to iText,
- * but it's different from the InvalidPdfException in the sense that it may
- * be an iText limitation (most of the times it isn't but you might have
- * bumped into something that has been added to the PDF specs, but that isn't
- * supported in iText yet).
+ * Typed exception used when opening an existing PDF document. Gets thrown when the document isn't a valid PDF document
+ * according to iText, but it's different from the InvalidPdfException in the sense that it may be an iText limitation
+ * (most of the times it isn't but you might have bumped into something that has been added to the PDF specs, but that
+ * isn't supported in iText yet).
+ *
  * @since 2.1.5
  */
 public class UnsupportedPdfException extends InvalidPdfException {
 
-    /** a serial version UID */
+    /**
+     * a serial version UID
+     */
     private static final long serialVersionUID = 2180764250839096628L;
 
     /**
      * Creates an instance of an UnsupportedPdfException.
-     * @param    message    the reason why the document isn't a PDF document according to iText.
+     *
+     * @param message the reason why the document isn't a PDF document according to iText.
      */
     public UnsupportedPdfException(String message) {
         super(message);

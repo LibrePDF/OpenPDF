@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 
 class GreekAlphabetFactoryTest {
 
-  @Test
-  void shouldGetGreekString() {
-    for (int i = 1; i < 1000; i++) {
-      assertNotNull(getString(i));
+    @Test
+    void shouldGetGreekString() {
+        for (int i = 1; i < 1000; i++) {
+            assertNotNull(getString(i));
+        }
     }
-  }
 
 }

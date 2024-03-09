@@ -9,14 +9,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.forms;
 
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -26,31 +23,36 @@ import com.lowagie.text.pdf.PdfAnnotation;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfFormField;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Generates an Acroform with a Combobox
+ *
  * @author blowagie
  */
 public class FormCombo {
+
     /**
      * Generates an Acroform with a Combobox
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
-        
+
         System.out.println("Combo");
-        
+
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4);
-        
+
         try {
-            
+
             // step 2:
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("combo.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
             PdfContentByte cb = writer.getDirectContent();
             cb.moveTo(0, 0);
@@ -60,9 +62,8 @@ public class FormCombo {
             field.setFieldName("ACombo");
             field.setValueAsString("Red");
             writer.addAnnotation(field);
-            
-        }
-        catch(DocumentException | IOException de) {
+
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 

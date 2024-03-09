@@ -9,26 +9,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.bookmarks;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPageLabels;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Demonstrates how pagelabels work.
- * 
+ *
  * @author blowagie
  */
 
@@ -36,7 +35,7 @@ public class PageLabels {
 
     /**
      * Demonstrates some PageLabel functionality.
-     * 
+     *
      * @param args no arguments needed here
      * @throws IOException thrown when a I/O operation fails
      */
@@ -54,7 +53,8 @@ public class PageLabels {
         // step 4:
         // we add some content
         for (int k = 1; k <= 10; ++k) {
-            document.add(new Paragraph("This document has the logical page numbers: i,ii,iii,iv,1,2,3,A-8,A-9,A-10\nReal page " + k));
+            document.add(new Paragraph(
+                    "This document has the logical page numbers: i,ii,iii,iv,1,2,3,A-8,A-9,A-10\nReal page " + k));
             document.newPage();
         }
         PdfPageLabels pdfPageLabels = new PdfPageLabels();
@@ -70,7 +70,8 @@ public class PageLabels {
         PdfReader reader = new PdfReader("PageLabels.pdf");
         final String[] pageLabels = PdfPageLabels.getPageLabels(reader);
         assertThat(pageLabels).isNotNull();
-        assertThat(Arrays.asList(pageLabels)).containsExactly("i", "ii", "iii", "iv", "1", "2", "3", "A-8", "A-9", "A-10");
+        assertThat(Arrays.asList(pageLabels)).containsExactly("i", "ii", "iii", "iv", "1", "2", "3", "A-8", "A-9",
+                "A-10");
         final PdfPageLabels.PdfPageLabelFormat[] pageLabelFormats = PdfPageLabels.getPageLabelFormats(reader);
         assertThat(pageLabelFormats).isNotNull();
         assertThat(pageLabelFormats).hasSize(3);

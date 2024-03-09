@@ -4,33 +4,27 @@
 
 package com.lowagie.text.pdf;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-
-import org.junit.jupiter.api.Test;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.draw.LineSeparator;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import org.junit.jupiter.api.Test;
 
 public class ColumnTextSeparator {
 
+    public static final float[][] COLUMNS = {{36, 36, 296, 806}, {299, 36, 559, 806}};
     private String filePath;
 
-    public static final float[][] COLUMNS = {{ 36, 36, 296, 806 } , { 299, 36, 559, 806 }};
-
     @Test
-    public void test_columnTextSeparator() throws Exception{
-        filePath = System.getProperty("user.dir")+"/src/test/resources";
+    public void test_columnTextSeparator() throws Exception {
+        filePath = System.getProperty("user.dir") + "/src/test/resources";
 
-        File RESULT = new File(filePath+"/columnTextSeparator.pdf");
+        File RESULT = new File(filePath + "/columnTextSeparator.pdf");
         // step 1
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -58,13 +52,14 @@ public class ColumnTextSeparator {
         int column = 0;
         int status = ColumnText.START_COLUMN;
         while (ColumnText.hasMoreText(status)) {
-            ct.setSimpleColumn(COLUMNS[column][0], COLUMNS[column][1],COLUMNS[column][2], COLUMNS[column][3]);
+            ct.setSimpleColumn(COLUMNS[column][0], COLUMNS[column][1], COLUMNS[column][2], COLUMNS[column][3]);
             ct.setYLine(COLUMNS[column][3]);
             status = ct.go();
             linesWritten += ct.getLinesWritten();
             column = Math.abs(column - 1);
-            if (column == 0)
+            if (column == 0) {
                 document.newPage();
+            }
         }
 
         document.close();
@@ -73,10 +68,6 @@ public class ColumnTextSeparator {
         fos.write(baos.toByteArray());
         fos.close();
     }
-
-
-
-
 
 
 }

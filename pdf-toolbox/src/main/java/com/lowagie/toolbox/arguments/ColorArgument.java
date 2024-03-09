@@ -34,17 +34,16 @@
  */
 package com.lowagie.toolbox.arguments;
 
+import com.lowagie.toolbox.AbstractTool;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JColorChooser;
-
-import com.lowagie.toolbox.AbstractTool;
 
 /**
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class ColorArgument extends AbstractArgument {
+
     public ColorArgument() {
         super();
     }
@@ -70,12 +69,12 @@ public class ColorArgument extends AbstractArgument {
             initialColor = Color.decode(value.toString());
         }
         Color newColor = JColorChooser.showDialog(tool.getInternalFrame(),
-                                                  "Choose Color", initialColor);
+                "Choose Color", initialColor);
         setValue("0x"
-                 + Integer.toHexString(
-                         (newColor.getRed() << 16)
-                         | (newColor.getGreen() << 8)
-                         | (newColor.getBlue() << 0)).toUpperCase());
+                + Integer.toHexString(
+                (newColor.getRed() << 16)
+                        | (newColor.getGreen() << 8)
+                        | (newColor.getBlue() << 0)).toUpperCase());
     }
 
 

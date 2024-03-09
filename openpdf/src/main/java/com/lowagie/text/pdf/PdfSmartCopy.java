@@ -18,9 +18,9 @@
  * All Rights Reserved.
  * Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer
  * are Copyright (C) 2000, 2001, 2002 by Paulo Soares. All Rights Reserved.
- * 
+ *
  * This class was written by Michael Neuweiler based on hints given by Bruno Lowagie
- * 
+ *
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
  *
@@ -50,6 +50,9 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.ExceptionConverter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.MessageDigest;
@@ -57,44 +60,40 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
-
 
 /**
- * PdfSmartCopy has the same functionality as PdfCopy,
- * but when resources (such as fonts, images,...) are
- * encountered, a reference to these resources is saved
- * in a cache, so that they can be reused.
- * This requires more memory, but reduces the file size
- * of the resulting PDF document.
+ * PdfSmartCopy has the same functionality as PdfCopy, but when resources (such as fonts, images,...) are encountered, a
+ * reference to these resources is saved in a cache, so that they can be reused. This requires more memory, but reduces
+ * the file size of the resulting PDF document.
  */
 
 public class PdfSmartCopy extends PdfCopy {
 
-    /** the cache with the streams and references. */
+    /**
+     * the cache with the streams and references.
+     */
     private Map<ByteStore, PdfIndirectReference> streamMap = null;
 
-    /** Creates a PdfSmartCopy instance.
-     * @param os the OutputStream
+    /**
+     * Creates a PdfSmartCopy instance.
+     *
+     * @param os       the OutputStream
      * @param document the document
-     * @throws DocumentException on error */
+     * @throws DocumentException on error
+     */
     public PdfSmartCopy(Document document, OutputStream os) throws DocumentException {
         super(document, os);
         this.streamMap = new HashMap<>();
     }
+
     /**
-     * Translate a PRIndirectReference to a PdfIndirectReference
-     * In addition, translates the object numbers, and copies the
-     * referenced object to the output file if it wasn't available
-     * in the cache yet. If it's in the cache, the reference to
-     * the already used stream is returned.
-     * 
-     * NB: PRIndirectReferences (and PRIndirectObjects) really need to know what
-     * file they came from, because each file has its own namespace. The translation
-     * we do from their namespace to ours is *at best* heuristic, and guaranteed to
-     * fail under some circumstances.
+     * Translate a PRIndirectReference to a PdfIndirectReference In addition, translates the object numbers, and copies
+     * the referenced object to the output file if it wasn't available in the cache yet. If it's in the cache, the
+     * reference to the already used stream is returned.
+     * <p>
+     * NB: PRIndirectReferences (and PRIndirectObjects) really need to know what file they came from, because each file
+     * has its own namespace. The translation we do from their namespace to ours is *at best* heuristic, and guaranteed
+     * to fail under some circumstances.
      */
     protected PdfIndirectReference copyIndirect(PRIndirectReference in) throws IOException, BadPdfFormatException {
         PdfObject srcObj = PdfReader.getPdfObjectRelease(in);
@@ -105,14 +104,13 @@ public class PdfSmartCopy extends PdfCopy {
         }
         if (srcObj.isStream()) {
             try {
-                streamKey = new ByteStore((PRStream)srcObj);
+                streamKey = new ByteStore((PRStream) srcObj);
                 validStream = true;
                 PdfIndirectReference streamRef = streamMap.get(streamKey);
                 if (streamRef != null) {
                     return streamRef;
                 }
-            }
-            catch (IOException ioe) {
+            } catch (IOException ioe) {
                 //
             }
         }
@@ -131,7 +129,7 @@ public class PdfSmartCopy extends PdfCopy {
             indirects.put(key, iRef);
         }
         if (srcObj.isDictionary()) {
-            PdfObject type = PdfReader.getPdfObjectRelease(((PdfDictionary)srcObj).get(PdfName.TYPE));
+            PdfObject type = PdfReader.getPdfObjectRelease(((PdfDictionary) srcObj).get(PdfName.TYPE));
             if (PdfName.PAGE.equals(type)) {
                 return theRef;
             }
@@ -148,17 +146,16 @@ public class PdfSmartCopy extends PdfCopy {
     }
 
     static class ByteStore {
+
+        private final int MAX_LEVELS = 100;
         private byte[] b;
         private int hash;
         private MessageDigest md5;
-        
-        private final int MAX_LEVELS = 100;
-        
+
         ByteStore(PRStream str) throws IOException {
             try {
                 md5 = MessageDigest.getInstance("MD5");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new ExceptionConverter(e);
             }
             ByteBuffer bb = new ByteBuffer();
@@ -179,26 +176,22 @@ public class PdfSmartCopy extends PdfCopy {
             obj = PdfReader.getPdfObject(obj);
             if (obj.isStream()) {
                 bb.append("$B");
-                serDic((PdfDictionary)obj, level - 1, bb);
+                serDic((PdfDictionary) obj, level - 1, bb);
                 md5.reset();
-                bb.append(md5.digest(PdfReader.getStreamBytesRaw((PRStream)obj)));
-            }
-            else if (obj.isDictionary()) {
-                serDic((PdfDictionary)obj, level - 1, bb);
-            }
-            else if (obj.isArray()) {
-                serArray((PdfArray)obj, level - 1, bb);
-            }
-            else if (obj.isString()) {
+                bb.append(md5.digest(PdfReader.getStreamBytesRaw((PRStream) obj)));
+            } else if (obj.isDictionary()) {
+                serDic((PdfDictionary) obj, level - 1, bb);
+            } else if (obj.isArray()) {
+                serArray((PdfArray) obj, level - 1, bb);
+            } else if (obj.isString()) {
                 bb.append("$S").append(obj.toString());
-            }
-            else if (obj.isName()) {
+            } else if (obj.isName()) {
                 bb.append("$N").append(obj.toString());
-            }
-            else
+            } else {
                 bb.append("$L").append(obj.toString());
+            }
         }
-        
+
         private void serDic(PdfDictionary dic, int level, ByteBuffer bb) throws IOException {
             bb.append("$D");
             if (level <= 0) {
@@ -211,7 +204,7 @@ public class PdfSmartCopy extends PdfCopy {
                 serObject(dic.get((PdfName) key), level, bb);
             }
         }
-        
+
         private void serArray(PdfArray array, int level, ByteBuffer bb) throws IOException {
             bb.append("$A");
             if (level <= 0) {
@@ -221,7 +214,6 @@ public class PdfSmartCopy extends PdfCopy {
                 serObject(array.getPdfObject(k), level, bb);
             }
         }
-        
 
 
         public boolean equals(Object obj) {
@@ -231,7 +223,7 @@ public class PdfSmartCopy extends PdfCopy {
             if (hashCode() != obj.hashCode()) {
                 return false;
             }
-            return Arrays.equals(b, ((ByteStore)obj).b);
+            return Arrays.equals(b, ((ByteStore) obj).b);
         }
 
         public int hashCode() {

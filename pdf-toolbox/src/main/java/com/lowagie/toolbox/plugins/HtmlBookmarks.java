@@ -48,14 +48,6 @@
  */
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Chapter;
 import com.lowagie.text.Chunk;
@@ -73,9 +65,17 @@ import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.StringArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
 import com.lowagie.tools.Executable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
  * Allows you to generate an index file in HTML containing Bookmarks to an existing PDF file.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class HtmlBookmarks extends AbstractTool {
@@ -94,96 +94,10 @@ public class HtmlBookmarks extends AbstractTool {
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#createFrame()
-     */
-    protected void createFrame() {
-        internalFrame = new JInternalFrame("Html Bookmarks", true, true, true);
-        internalFrame.setSize(300, 80);
-        internalFrame.setJMenuBar(getMenubar());
-        System.out.println("=== Html Bookmarks OPENED ===");
-    }
-
-    /**
-     * @see com.lowagie.toolbox.AbstractTool#execute()
-     */
-    public void execute() {
-        try {
-            if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
-            File src = (File)getValue("srcfile");
-            PdfReader reader;
-            if (getValue("ownerpassword") == null) {
-                reader = new PdfReader(src.getAbsolutePath());
-            }
-            else {
-                reader = new PdfReader(src.getAbsolutePath(), ((String)getValue("ownerpassword")).getBytes());
-            }
-            File directory = src.getParentFile();
-            String name = src.getName();
-            name = name.substring(0, name.lastIndexOf('.'));
-            File html = new File(directory, name + "_index.html");
-            Document document = new Document();
-            HtmlWriter.getInstance(document, new FileOutputStream(html));
-            Object css = getValue("css");
-            if (css != null) {
-                document.add(new Header(HtmlTags.STYLESHEET, css.toString()));
-            }
-            Object title = reader.getInfo().get("Title");
-            if (title == null)
-                document.addTitle("Index for " + src.getName());
-            else
-                document.addKeywords("Index for '" + title + "'");
-            String keywords = reader.getInfo().get("Keywords");
-            if (keywords != null)
-                document.addKeywords(keywords);
-            String description = reader.getInfo().get("Subject");
-            if (keywords != null)
-                document.addSubject(description);
-            document.open();
-            Paragraph t;
-            if (title == null)
-                t = new Paragraph("Index for " + src.getName());
-            else
-                t = new Paragraph("Index for '" + title + "'");
-            document.add(t);
-            if (description != null) {
-                Paragraph d = new Paragraph(description);
-                document.add(d);
-            }
-            List<Map<String, Object>> mapList = SimpleBookmark.getBookmarkList(reader);
-            if (mapList == null) {
-                document.add(new Paragraph("This document has no bookmarks."));
-            }
-            else {
-                for (Map<String, Object> map : mapList) {
-                    Chapter chapter = (Chapter) createBookmark(src.getName(), null, map);
-                    // As long as the Definition of mapList and kids is recursive, we have to work with unchecked casts
-                    @SuppressWarnings("unchecked")
-                    List<Map<String, Object>> kids = (List<Map<String, Object>>) map.get("Kids");
-                    if (kids != null) {
-                        for (Map<String, Object> kid : kids) {
-                            addBookmark(src.getName(), chapter, kid);
-                        }
-                    }
-                    document.add(chapter);
-                }
-            }
-            document.close();
-            Executable.launchBrowser(html.getAbsolutePath());
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(internalFrame,
-                    e.getMessage(),
-                    e.getClass().getName(),
-                    JOptionPane.ERROR_MESSAGE);
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
      * Recursive method to write Bookmark titles to the System.out.
-     * @param pdf the path to the PDF file
-     * @param section the section to which the bookmarks should be added
+     *
+     * @param pdf      the path to the PDF file
+     * @param section  the section to which the bookmarks should be added
      * @param bookmark a Map containing a Bookmark (and possible kids)
      */
     private static void addBookmark(String pdf, Section section, Map<String, Object> bookmark) {
@@ -191,7 +105,9 @@ public class HtmlBookmarks extends AbstractTool {
         // As long as the Definition of mapList and kids is recursive, we have to work with unchecked casts
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> kids = (List<Map<String, Object>>) bookmark.get("Kids");
-        if (kids == null) return;
+        if (kids == null) {
+            return;
+        }
         for (Map<String, Object> kid : kids) {
             addBookmark(pdf, s, kid);
         }
@@ -199,41 +115,39 @@ public class HtmlBookmarks extends AbstractTool {
 
     /**
      * Adds a line with the title and an anchor.
-     * @param pdf the link to the PDF file
-     * @param section the section that gets the line
+     *
+     * @param pdf      the link to the PDF file
+     * @param section  the section that gets the line
      * @param bookmark the bookmark that has the data for the line
      * @return a subsection of section
      */
     private static Section createBookmark(String pdf, Section section, Map<String, Object> bookmark) {
         Section s;
-        Paragraph title = new Paragraph((String)bookmark.get("Title"));
-        System.out.println((String)bookmark.get("Title"));
-        String action = (String)bookmark.get("Action");
+        Paragraph title = new Paragraph((String) bookmark.get("Title"));
+        System.out.println((String) bookmark.get("Title"));
+        String action = (String) bookmark.get("Action");
         if ("GoTo".equals(action)) {
             if (bookmark.get("Page") != null) {
-                String page = (String)bookmark.get("Page");
+                String page = (String) bookmark.get("Page");
                 StringTokenizer tokens = new StringTokenizer(page);
                 String token = tokens.nextToken();
                 Anchor anchor = new Anchor(" page" + token);
                 anchor.setReference(pdf + "#page=" + token);
                 title.add(anchor);
             }
-        }
-        else if ("URI".equals(action)) {
-            String url = (String)bookmark.get("URI");
+        } else if ("URI".equals(action)) {
+            String url = (String) bookmark.get("URI");
             Anchor anchor = new Anchor(" Goto URL");
             anchor.setReference(url);
             title.add(anchor);
-        }
-        else if ("GoToR".equals(action)) {
-            String remote = (String)bookmark.get("File");
+        } else if ("GoToR".equals(action)) {
+            String remote = (String) bookmark.get("File");
             Anchor anchor = new Anchor(" goto " + remote);
             if (bookmark.get("Named") != null) {
-                String named = (String)bookmark.get("Named");
+                String named = (String) bookmark.get("Named");
                 remote = remote + "#nameddest=" + named;
-            }
-            else if (bookmark.get("Page") != null) {
-                String page = (String)bookmark.get("Page");
+            } else if (bookmark.get("Page") != null) {
+                String page = (String) bookmark.get("Page");
                 StringTokenizer tokens = new StringTokenizer(page);
                 String token = tokens.nextToken();
                 anchor.add(new Chunk(" page " + token));
@@ -244,25 +158,11 @@ public class HtmlBookmarks extends AbstractTool {
         }
         if (section == null) {
             s = new Chapter(title, 0);
-        }
-        else {
+        } else {
             s = section.addSection(title);
         }
         s.setNumberDepth(0);
         return s;
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
-     * @param arg StringArgument
-     */
-    public void valueHasChanged(AbstractArgument arg) {
-        if (internalFrame == null) {
-            // if the internal frame is null, the tool was called from the command line
-            return;
-        }
-        // represent the changes of the argument in the internal frame
     }
 
     /**
@@ -280,10 +180,111 @@ public class HtmlBookmarks extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     */
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("Html Bookmarks", true, true, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== Html Bookmarks OPENED ===");
+    }
+
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#execute()
+     */
+    public void execute() {
+        try {
+            if (getValue("srcfile") == null) {
+                throw new InstantiationException("You need to choose a sourcefile");
+            }
+            File src = (File) getValue("srcfile");
+            PdfReader reader;
+            if (getValue("ownerpassword") == null) {
+                reader = new PdfReader(src.getAbsolutePath());
+            } else {
+                reader = new PdfReader(src.getAbsolutePath(), ((String) getValue("ownerpassword")).getBytes());
+            }
+            File directory = src.getParentFile();
+            String name = src.getName();
+            name = name.substring(0, name.lastIndexOf('.'));
+            File html = new File(directory, name + "_index.html");
+            Document document = new Document();
+            HtmlWriter.getInstance(document, new FileOutputStream(html));
+            Object css = getValue("css");
+            if (css != null) {
+                document.add(new Header(HtmlTags.STYLESHEET, css.toString()));
+            }
+            Object title = reader.getInfo().get("Title");
+            if (title == null) {
+                document.addTitle("Index for " + src.getName());
+            } else {
+                document.addKeywords("Index for '" + title + "'");
+            }
+            String keywords = reader.getInfo().get("Keywords");
+            if (keywords != null) {
+                document.addKeywords(keywords);
+            }
+            String description = reader.getInfo().get("Subject");
+            if (keywords != null) {
+                document.addSubject(description);
+            }
+            document.open();
+            Paragraph t;
+            if (title == null) {
+                t = new Paragraph("Index for " + src.getName());
+            } else {
+                t = new Paragraph("Index for '" + title + "'");
+            }
+            document.add(t);
+            if (description != null) {
+                Paragraph d = new Paragraph(description);
+                document.add(d);
+            }
+            List<Map<String, Object>> mapList = SimpleBookmark.getBookmarkList(reader);
+            if (mapList == null) {
+                document.add(new Paragraph("This document has no bookmarks."));
+            } else {
+                for (Map<String, Object> map : mapList) {
+                    Chapter chapter = (Chapter) createBookmark(src.getName(), null, map);
+                    // As long as the Definition of mapList and kids is recursive, we have to work with unchecked casts
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> kids = (List<Map<String, Object>>) map.get("Kids");
+                    if (kids != null) {
+                        for (Map<String, Object> kid : kids) {
+                            addBookmark(src.getName(), chapter, kid);
+                        }
+                    }
+                    document.add(chapter);
+                }
+            }
+            document.close();
+            Executable.launchBrowser(html.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(internalFrame,
+                    e.getMessage(),
+                    e.getClass().getName(),
+                    JOptionPane.ERROR_MESSAGE);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
+     */
+    public void valueHasChanged(AbstractArgument arg) {
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the command line
+            return;
+        }
+        // represent the changes of the argument in the internal frame
+    }
+
+    /**
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         throw new InstantiationException("There is no file to show.");

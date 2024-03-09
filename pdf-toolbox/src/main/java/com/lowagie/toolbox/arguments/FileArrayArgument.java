@@ -34,19 +34,21 @@
  */
 package com.lowagie.toolbox.arguments;
 
+import com.lowagie.toolbox.AbstractTool;
+import com.lowagie.toolbox.swing.FileList;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
-
-import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.swing.FileList;
 
 
 /**
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class FileArrayArgument extends AbstractArgument {
+
+    FileList fileList1 = new FileList();
+
     public FileArrayArgument() {
         super();
         try {
@@ -65,6 +67,10 @@ public class FileArrayArgument extends AbstractArgument {
         }
     }
 
+    public static void main(String[] args) {
+        FileArrayArgument filearrayargument = new FileArrayArgument();
+    }
+
     public void actionPerformed(ActionEvent e) {
         fileList1.setLocation(10, 10);
         fileList1.setVisible(true);
@@ -81,7 +87,6 @@ public class FileArrayArgument extends AbstractArgument {
 //        }
     }
 
-
     public Object getArgument() throws InstantiationException {
         if (value == null) {
             return null;
@@ -93,15 +98,10 @@ public class FileArrayArgument extends AbstractArgument {
         }
     }
 
-    public static void main(String[] args) {
-        FileArrayArgument filearrayargument = new FileArrayArgument();
-    }
-
     private void jbInit() throws Exception {
         fileList1.addPropertyChangeListener(this);
     }
 
-    FileList fileList1 = new FileList();
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyname = evt.getPropertyName();
         if (propertyname.equals("filevector")) {
@@ -111,6 +111,7 @@ public class FileArrayArgument extends AbstractArgument {
             }
         }
     }
+
     /**
      * Returns a string representation of the object.
      *

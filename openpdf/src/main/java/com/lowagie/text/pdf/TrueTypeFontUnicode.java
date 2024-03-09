@@ -70,7 +70,7 @@ import java.util.Map;
 class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
 
     private static final byte[] rotbits = {(byte) 0x80, (byte) 0x40, (byte) 0x20, (byte) 0x10, (byte) 0x08, (byte) 0x04,
-        (byte) 0x02, (byte) 0x01};
+            (byte) 0x02, (byte) 0x01};
 
     /**
      * <CODE>true</CODE> if the encoding is vertical.
@@ -91,7 +91,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
      * @throws IOException       the font file could not be read
      */
     TrueTypeFontUnicode(String ttFile, String enc, boolean emb, byte[] ttfAfm, boolean forceRead)
-        throws DocumentException, IOException {
+            throws DocumentException, IOException {
         String nameBase = getBaseName(ttFile);
         String ttcName = getTTCName(nameBase);
         if (nameBase.length() < ttFile.length()) {
@@ -106,13 +106,13 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
         }
         fontType = FONT_TYPE_TTUNI;
         if ((fileName.toLowerCase().endsWith(".ttf") || fileName.toLowerCase().endsWith(".otf")
-            || fileName.toLowerCase().endsWith(".ttc")) && ((enc.equals(IDENTITY_H) || enc.equals(IDENTITY_V))
-            && emb)) {
+                || fileName.toLowerCase().endsWith(".ttc")) && ((enc.equals(IDENTITY_H) || enc.equals(IDENTITY_V))
+                && emb)) {
             process(ttfAfm, forceRead);
             if (os_2.fsType == 2) {
                 throw new DocumentException(
-                    MessageLocalization.getComposedMessage("1.cannot.be.embedded.due.to.licensing.restrictions",
-                        fileName + style));
+                        MessageLocalization.getComposedMessage("1.cannot.be.embedded.due.to.licensing.restrictions",
+                                fileName + style));
             }
             // Sivan
             if ((cmap31 == null && !fontSpecific) || (cmap10 == null && fontSpecific)) {
@@ -128,9 +128,30 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
             }
         } else {
             throw new DocumentException(
-                MessageLocalization.getComposedMessage("1.2.is.not.a.ttf.font.file", fileName, style));
+                    MessageLocalization.getComposedMessage("1.2.is.not.a.ttf.font.file", fileName, style));
         }
         vertical = enc.endsWith("V");
+    }
+
+    private static String toHex4(int n) {
+        String s = "0000" + Integer.toHexString(n);
+        return s.substring(s.length() - 4);
+    }
+
+    /**
+     * Gets an hex string in the format "&lt;HHHH&gt;".
+     *
+     * @param n the number
+     * @return the hex string
+     */
+    static String toHex(int n) {
+        if (n < 0x10000) {
+            return "<" + toHex4(n) + ">";
+        }
+        n -= 0x10000;
+        int high = (n / 0x400) + 0xd800;
+        int low = (n % 0x400) + 0xdc00;
+        return "[<" + toHex4(high) + toHex4(low) + ">]";
     }
 
     @Override
@@ -157,7 +178,6 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
     protected Integer getCharacterCode(int code) {
         return inverseCmap == null ? null : inverseCmap.get(code);
     }
-
 
     /**
      * Gets the width of a <CODE>char</CODE> in normalized 1000 units.
@@ -243,19 +263,19 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
             return null;
         }
         StringBuilder buf = new StringBuilder(
-            "/CIDInit /ProcSet findresource begin\n" +
-                "12 dict begin\n" +
-                "begincmap\n" +
-                "/CIDSystemInfo\n" +
-                "<< /Registry (TTX+0)\n" +
-                "/Ordering (T42UV)\n" +
-                "/Supplement 0\n" +
-                ">> def\n" +
-                "/CMapName /TTX+0 def\n" +
-                "/CMapType 2 def\n" +
-                "1 begincodespacerange\n" +
-                "<0000><FFFF>\n" +
-                "endcodespacerange\n");
+                "/CIDInit /ProcSet findresource begin\n" +
+                        "12 dict begin\n" +
+                        "begincmap\n" +
+                        "/CIDSystemInfo\n" +
+                        "<< /Registry (TTX+0)\n" +
+                        "/Ordering (T42UV)\n" +
+                        "/Supplement 0\n" +
+                        ">> def\n" +
+                        "/CMapName /TTX+0 def\n" +
+                        "/CMapType 2 def\n" +
+                        "1 begincodespacerange\n" +
+                        "<0000><FFFF>\n" +
+                        "endcodespacerange\n");
         int size = 0;
         for (int k = 0; k < metrics.length; ++k) {
             if (size == 0) {
@@ -271,10 +291,10 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
             buf.append(fromTo).append(fromTo).append(toHex(metric[2])).append('\n');
         }
         buf.append(
-            "endbfrange\n" +
-                "endcmap\n" +
-                "CMapName currentdict /CMap defineresource pop\n" +
-                "end end\n");
+                "endbfrange\n" +
+                        "endcmap\n" +
+                        "CMapName currentdict /CMap defineresource pop\n" +
+                        "end end\n");
         String s = buf.toString();
         PdfStream stream = new PdfStream(PdfEncodings.convertToBytes(s, null));
         stream.flateCompress(compressionLevel);
@@ -302,27 +322,6 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
         }
 
         return cmapMetrics.toArray(new int[0][]);
-    }
-
-    private static String toHex4(int n) {
-        String s = "0000" + Integer.toHexString(n);
-        return s.substring(s.length() - 4);
-    }
-
-    /**
-     * Gets an hex string in the format "&lt;HHHH&gt;".
-     *
-     * @param n the number
-     * @return the hex string
-     */
-    static String toHex(int n) {
-        if (n < 0x10000) {
-            return "<" + toHex4(n) + ">";
-        }
-        n -= 0x10000;
-        int high = (n / 0x400) + 0xd800;
-        int low = (n % 0x400) + 0xdc00;
-        return "[<" + toHex4(high) + toHex4(low) + ">]";
     }
 
     /**
@@ -390,7 +389,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
      * @return the stream
      */
     private PdfDictionary getFontBaseType(PdfIndirectReference descendant, String subsetPrefix,
-        PdfIndirectReference toUnicode) {
+            PdfIndirectReference toUnicode) {
         PdfDictionary dic = new PdfDictionary(PdfName.FONT);
 
         dic.put(PdfName.SUBTYPE, PdfName.TYPE0);
@@ -443,7 +442,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
         PdfIndirectObject obj;
         PdfIndirectReference cidset = null;
         if (includeCidSet || writer.getPDFXConformance() == PdfWriter.PDFA1A
-            || writer.getPDFXConformance() == PdfWriter.PDFA1B) {
+                || writer.getPDFXConformance() == PdfWriter.PDFA1B) {
             PdfStream stream;
             if (metrics.length == 0) {
                 stream = new PdfStream(new byte[]{(byte) 0x80});
@@ -473,7 +472,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
             byte[] b;
             if (subset || directoryOffset != 0) {
                 TrueTypeFontSubSet sb = new TrueTypeFontSubSet(fileName, new RandomAccessFileOrArray(rf), longTag,
-                    directoryOffset, false, false);
+                        directoryOffset, false, false);
                 b = sb.process();
             } else {
                 b = getFullFont();

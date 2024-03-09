@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -28,18 +25,23 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+
 /**
  * Wrapping a PdfTemplate in an Image.
  */
 public class TemplateImages {
+
     /**
      * PdfTemplates can be wrapped in an Image.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-        
+
         System.out.println("PdfTemplate wrapped in an Image");
-            
+
         // step 1: creation of a document-object
         Rectangle rect = new Rectangle(PageSize.A4);
         rect.setBackgroundColor(new Color(238, 221, 88));
@@ -84,7 +86,7 @@ public class TemplateImages {
             table.addCell("I see a template on my right");
             table.addCell(cell);
             table.addCell("I see a template on my left");
-            
+
             Paragraph p1 = new Paragraph("This is a template ");
             p1.add(ck);
             p1.add(" just here.");
@@ -95,13 +97,13 @@ public class TemplateImages {
             p2.setLeading(img.getScaledHeight() * 1.1f);
             p2.setAlignment(Element.ALIGN_JUSTIFIED);
             img.scalePercent(70);
-            for (int k = 0; k < 20; ++k)
+            for (int k = 0; k < 20; ++k) {
                 p2.add(ck);
+            }
             document.add(p2);
             // step 5: we close the document
             document.close();
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             System.err.println(de.getMessage());
         }
     }

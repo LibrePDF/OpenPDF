@@ -35,17 +35,17 @@
 
 package com.lowagie.toolbox.arguments;
 
+import com.lowagie.text.PageSize;
+import com.lowagie.toolbox.AbstractTool;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
 import java.util.TreeMap;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
-import com.lowagie.text.PageSize;
-import com.lowagie.toolbox.AbstractTool;
-
 /**
  * Argument that can be one of several options.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class PageSizeArgument extends OptionArgument {
@@ -55,12 +55,9 @@ public class PageSizeArgument extends OptionArgument {
     /**
      * Constructs an OptionArgument.
      *
-     * @param tool
-     *            the tool that needs this argument
-     * @param name
-     *            the name of the argument
-     * @param description
-     *            the description of the argument
+     * @param tool        the tool that needs this argument
+     * @param name        the name of the argument
+     * @param description the description of the argument
      */
     public PageSizeArgument(AbstractTool tool, String name, String description) {
         super(tool, name, description);
@@ -77,8 +74,9 @@ public class PageSizeArgument extends OptionArgument {
 
     /**
      * Adds an Option.
+     *
      * @param description the description of the option
-     * @param value the value of the option
+     * @param value       the value of the option
      */
     public void addOption(String description, String value) {
         options.put(description, value);
@@ -86,6 +84,7 @@ public class PageSizeArgument extends OptionArgument {
 
     /**
      * Gets the options.
+     *
      * @return Returns the options.
      */
     public TreeMap<String, String> getOptions() {
@@ -94,6 +93,7 @@ public class PageSizeArgument extends OptionArgument {
 
     /**
      * Gets the argument as an object.
+     *
      * @return an object
      * @throws InstantiationException if the key can't be compared with the other ones in the map
      */
@@ -109,9 +109,8 @@ public class PageSizeArgument extends OptionArgument {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.arguments.StringArgument#getUsage()
      * @return String
+     * @see com.lowagie.toolbox.arguments.StringArgument#getUsage()
      */
     public String getUsage() {
         StringBuilder buf = new StringBuilder("  ");
@@ -131,9 +130,8 @@ public class PageSizeArgument extends OptionArgument {
     }
 
     /**
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      * @param evt ActionEvent
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent evt) {
         Object[] message = new Object[2];
@@ -152,11 +150,12 @@ public class PageSizeArgument extends OptionArgument {
                 null,
                 null,
                 null
-                     );
+        );
         if (result == 0) {
             setValue(cb.getSelectedItem());
         }
     }
+
     /**
      * Returns a string representation of the object.
      *

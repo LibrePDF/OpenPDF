@@ -46,21 +46,21 @@
  */
 package com.lowagie.text.pdf;
 
-import java.awt.Color;
-import java.util.ArrayList;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Utilities;
+import java.awt.Color;
+import java.util.ArrayList;
 
-/** Selects the appropriate fonts that contain the glyphs needed to
- * render text correctly. The fonts are checked in order until the
- * character is found.
+/**
+ * Selects the appropriate fonts that contain the glyphs needed to render text correctly. The fonts are checked in order
+ * until the character is found.
  * <p>
- * The built in fonts "Symbol" and "ZapfDingbats", if used, have a special encoding
- * to allow the characters to be referred by Unicode.
+ * The built in fonts "Symbol" and "ZapfDingbats", if used, have a special encoding to allow the characters to be
+ * referred by Unicode.
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class FontSelector {
@@ -75,6 +75,7 @@ public class FontSelector {
 
     /**
      * change the color of default font in <CODE>FontSelector</CODE>.
+     *
      * @param color the <CODE>Color</CODE> of default font
      */
     public void setDefaultColor(Color color) {
@@ -83,6 +84,7 @@ public class FontSelector {
 
     /**
      * change the size of default font in <CODE>FontSelector</CODE>.
+     *
      * @param size the size of default font
      */
     public void setDefaultSize(float size) {
@@ -91,6 +93,7 @@ public class FontSelector {
 
     /**
      * Adds a <CODE>Font</CODE> to be searched for valid characters.
+     *
      * @param font the <CODE>Font</CODE>
      */
     public void addFont(Font font) {
@@ -104,8 +107,8 @@ public class FontSelector {
     }
 
     /**
-     * Process the text so that it will render with a combination of fonts
-     * if needed.
+     * Process the text so that it will render with a combination of fonts if needed.
+     *
      * @param text the text
      * @return a <CODE>Phrase</CODE> with one or more chunks
      */

@@ -20,11 +20,11 @@ class PhraseTest {
         ArrayList<Element> chunks = phrase.getChunks();
         assertThat(chunks).hasSize(2);
         assertThat(chunks.get(0))
-            .isInstanceOf(Chunk.class)
-            .extracting("font").isEqualTo(times);
+                .isInstanceOf(Chunk.class)
+                .extracting("font").isEqualTo(times);
         assertThat(chunks.get(1))
-            .isInstanceOf(Chunk.class)
-            .extracting("font").isEqualTo(helvetica);
+                .isInstanceOf(Chunk.class)
+                .extracting("font").isEqualTo(helvetica);
     }
 
 }

@@ -40,13 +40,6 @@ import static java.awt.Color.decode;
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 
-import java.awt.Color;
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.toolbox.AbstractTool;
@@ -56,10 +49,15 @@ import com.lowagie.toolbox.arguments.FloatArgument;
 import com.lowagie.toolbox.arguments.IntegerArgument;
 import com.lowagie.toolbox.arguments.StringArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
  * This tool lets you add a text watermark to all pages of a document.
- * 
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class WatermarkerTool extends AbstractTool {
@@ -87,6 +85,43 @@ public class WatermarkerTool extends AbstractTool {
         arguments.add(new StringArgument(this, "color",
                 "The color of the watermark text"));
         inputfile.addPropertyChangeListener(destfile);
+    }
+
+    /**
+     * This methods helps you running this tool as a standalone application.
+     *
+     * <p>
+     * Call it like this from command line: java com.lowagie.tools.plugins.Watermarker input.pdf Draft 230 0.2
+     * output.pdf #FF000000
+     *
+     * <p>
+     * "input.pdf" is the input file name to be processed
+     * <p>
+     * "Draft" is the text written as transparent "watermark" on top of each page
+     * <p>
+     * "230" is the font size
+     * <p>
+     * "0.2" is the opacity (1.0 completely opaque, 0.0 completely transparent)
+     * <p>
+     * "output.pdf" is the output file name
+     * <p>
+     * (Optional) "#FF0000" is the color (in hex format like #nnnnnn or 0xnnnnnn), #000000 (black) by default
+     *
+     * <p>
+     * Call it from within other Java code:
+     *
+     * <p>
+     * Watermarker.main(new String[]{"input.pdf","Draft","230","0.2","output.pdf","#FF000000"});
+     *
+     * @param args the srcfile, watermark text and destfile
+     */
+    public static void main(String[] args) {
+        WatermarkerTool watermarkerTool = new WatermarkerTool();
+        if (args.length < 5 || args.length > 6) {
+            System.err.println(watermarkerTool.getUsage());
+        }
+        watermarkerTool.setMainArguments(args);
+        watermarkerTool.execute();
     }
 
     /**
@@ -148,9 +183,8 @@ public class WatermarkerTool extends AbstractTool {
     }
 
     /**
-     * Gets the PDF file that should be generated (or null if the output isn't a
-     * PDF file).
-     * 
+     * Gets the PDF file that should be generated (or null if the output isn't a PDF file).
+     *
      * @return the PDF file that should be generated
      * @throws InstantiationException on error
      */
@@ -161,9 +195,8 @@ public class WatermarkerTool extends AbstractTool {
 
     /**
      * Indicates that the value of an argument has changed.
-     * 
-     * @param arg
-     *            the argument that has changed
+     *
+     * @param arg the argument that has changed
      */
     @Override
     public void valueHasChanged(AbstractArgument arg) {
@@ -180,46 +213,6 @@ public class WatermarkerTool extends AbstractTool {
                     + "_out.pdf";
             destfile.setValue(filenameout);
         }
-    }
-
-    /**
-     * This methods helps you running this tool as a standalone application.
-     * 
-     * <p>
-     * Call it like this from command line: java
-     * com.lowagie.tools.plugins.Watermarker input.pdf Draft 230 0.2 output.pdf #FF000000
-     * 
-     * <p>
-     * "input.pdf" is the input file name to be processed
-     * <p>
-     * "Draft" is the text written as transparent "watermark" on top of each
-     * page
-     * <p>
-     * "230" is the font size
-     * <p>
-     * "0.2" is the opacity (1.0 completely opaque, 0.0 completely transparent)
-     * <p>
-     * "output.pdf" is the output file name
-     * <p>
-     * (Optional) "#FF0000" is the color (in hex format like #nnnnnn or 0xnnnnnn), #000000 (black) by default
-     * 
-     * <p>
-     * Call it from within other Java code:
-     * 
-     * <p>
-     * Watermarker.main(new
-     * String[]{"input.pdf","Draft","230","0.2","output.pdf","#FF000000"});
-     * 
-     * @param args
-     *            the srcfile, watermark text and destfile
-     */
-    public static void main(String[] args) {
-        WatermarkerTool watermarkerTool = new WatermarkerTool();
-        if (args.length < 5 || args.length > 6) {
-            System.err.println(watermarkerTool.getUsage());
-        }
-        watermarkerTool.setMainArguments(args);
-        watermarkerTool.execute();
     }
 
 }

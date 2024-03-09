@@ -51,91 +51,91 @@ package com.lowagie.text;
 import java.util.HashMap;
 
 /**
- * A <CODE>Footnote</CODE> is a little note that can be added at the bottom of a
- * page.
+ * A <CODE>Footnote</CODE> is a little note that can be added at the bottom of a page.
  *
  * @see Element
  * @see Anchor
  */
 public class Footnote extends Phrase {
 
-  // membervariables
-  /**
-   * This is a possible footnote type.
-   */
-  public static final int TEXT = 0;
+    // membervariables
+    /**
+     * This is a possible footnote type.
+     */
+    public static final int TEXT = 0;
 
-  /**
-   * This is a possible attribute.
-   */
-  public static final String CONTENT = "content";
+    /**
+     * This is a possible attribute.
+     */
+    public static final String CONTENT = "content";
 
-  /**
-   * This is a possible attribute.
-   */
-  public static final String FONT = "font";
+    /**
+     * This is a possible attribute.
+     */
+    public static final String FONT = "font";
 
-  /**
-   * This is a possible attribute.
-   */
-  public static final String DESTINATION = "destination";
+    /**
+     * This is a possible attribute.
+     */
+    public static final String DESTINATION = "destination";
 
-  /**
-   * This is a possible attribute.
-   */
-  public static final String PAGE = "page";
+    /**
+     * This is a possible attribute.
+     */
+    public static final String PAGE = "page";
 
-  /**
-   * This is a possible attribute.
-   */
-  public static final String NAMED = "named";
+    /**
+     * This is a possible attribute.
+     */
+    public static final String NAMED = "named";
 
-  /**
-   * This is the type of footnote.
-   */
-  protected int footnoteType;
+    /**
+     * This is the type of footnote.
+     */
+    protected int footnoteType;
 
-  /**
-   * This is the title of the <CODE>Annotation</CODE>.
-   */
-  protected HashMap footnoteAttributes = new HashMap();
+    /**
+     * This is the title of the <CODE>Annotation</CODE>.
+     */
+    protected HashMap footnoteAttributes = new HashMap();
 
-  public Footnote() {
-    super();
-  }
+    public Footnote() {
+        super();
+    }
 
-  public Footnote(Chunk chunk) {
-    super(chunk);
-  }
+    public Footnote(Chunk chunk) {
+        super(chunk);
+    }
 
-  public Footnote(String text, Font font) {
-    super(text, font);
-  }
+    public Footnote(String text, Font font) {
+        super(text, font);
+    }
 
-  public Footnote(String text) {
-    super(text);
-  }
+    public Footnote(String text) {
+        super(text);
+    }
 
-  // implementation of the Element-methods
-  /**
-   * Gets the type of the text element.
-   * <p>
-   * 
-   * @return a type
-   */
-  @Override
-  public int type() {
-    return Element.FOOTNOTE;
-  }
+    // implementation of the Element-methods
 
-  /**
-   * Returns the type of this <CODE>Annotation</CODE>.
-   * <p>
-   * 
-   * @return a type
-   */
-  public int footnoteType() {
-    return footnoteType;
-  }
+    /**
+     * Gets the type of the text element.
+     * <p>
+     *
+     * @return a type
+     */
+    @Override
+    public int type() {
+        return Element.FOOTNOTE;
+    }
+
+    /**
+     * Returns the type of this <CODE>Annotation</CODE>.
+     * <p>
+     *
+     * @return a type
+     */
+    public int footnoteType() {
+        return footnoteType;
+    }
 
 }

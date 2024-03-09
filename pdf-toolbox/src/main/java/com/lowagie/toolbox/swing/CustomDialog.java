@@ -35,7 +35,6 @@
 package com.lowagie.toolbox.swing;
 
 import java.awt.Toolkit;
-
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -49,16 +48,13 @@ import javax.swing.text.PlainDocument;
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class CustomDialog {
-    JDialog dialog = null;
-    private JTextField textField = new JTextField(10);
 
+    JDialog dialog = null;
     JPanel jPanel1 = new JPanel();
     PlainDocument plainDocument;
-
     String msgString1;
-
     Object[] array;
-
+    private JTextField textField = new JTextField(10);
     private JOptionPane optionPane;
 
     public CustomDialog(String msgstring, PlainDocument plainDocument) {
@@ -74,10 +70,6 @@ public class CustomDialog {
 
     public CustomDialog() {
         this("Enter a value:", new PlainDocument());
-    }
-
-    private void jbInit() throws Exception {
-        textField.setDocument(plainDocument);
     }
 
     public static PlainDocument instantiateFloatDocument() {
@@ -130,12 +122,15 @@ public class CustomDialog {
         return stringDocument;
     }
 
+    private void jbInit() throws Exception {
+        textField.setDocument(plainDocument);
+    }
 
     public void setMsgString1(String msgString1) {
         this.msgString1 = msgString1;
-        array = new Object[] {msgString1, textField};
+        array = new Object[]{msgString1, textField};
         optionPane = new JOptionPane(array, JOptionPane.QUESTION_MESSAGE,
-                                     JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.OK_CANCEL_OPTION);
         dialog = optionPane.createDialog(UIManager.getString(
                 "OptionPane.inputDialogTitle", null));
     }

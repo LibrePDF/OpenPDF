@@ -35,30 +35,33 @@
 
 package com.lowagie.toolbox.arguments;
 
+import com.lowagie.toolbox.AbstractTool;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 
-import com.lowagie.toolbox.AbstractTool;
-
 /**
  * Argument that results in a set of "1" and "0" values.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class BitsetArgument extends AbstractArgument {
-    /** These are the different options that can be true or false. */
+
+    /**
+     * These are the different options that can be true or false.
+     */
     private JCheckBox[] options;
 
     /**
      * Constructs an BitsetArgument.
-     * @param tool the tool that needs this argument
-     * @param name the name of the argument
+     *
+     * @param tool        the tool that needs this argument
+     * @param name        the name of the argument
      * @param description the description of the argument
-     * @param options the different options that can be true or false
+     * @param options     the different options that can be true or false
      */
     public BitsetArgument(AbstractTool tool, String name, String description,
-                          String[] options) {
+            String[] options) {
         super(tool, name, description, null);
         this.options = new JCheckBox[options.length];
         for (int i = 0; i < options.length; i++) {
@@ -67,9 +70,8 @@ public class BitsetArgument extends AbstractArgument {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.arguments.StringArgument#getUsage()
      * @return String
+     * @see com.lowagie.toolbox.arguments.StringArgument#getUsage()
      */
     public String getUsage() {
         StringBuilder buf = new StringBuilder(super.getUsage());
@@ -83,9 +85,8 @@ public class BitsetArgument extends AbstractArgument {
     }
 
     /**
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      * @param evt ActionEvent
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent evt) {
         Object[] message = new Object[1 + options.length];
@@ -100,7 +101,7 @@ public class BitsetArgument extends AbstractArgument {
                 null,
                 null,
                 null
-                     );
+        );
         if (result == 0) {
             StringBuilder buf = new StringBuilder();
             for (JCheckBox option : options) {

@@ -18,7 +18,6 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.html.HtmlParser;
 import com.lowagie.text.pdf.PdfWriter;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -44,7 +43,8 @@ public class ParseHelloHtml {
             // step 2: we open the document
             document.open();
             // step 3: parsing the HTML document to convert it in PDF
-            HtmlParser.parse(document, ParseHelloHtml.class.getClassLoader().getResourceAsStream("com/lowagie/examples/html/parseHelloWorld.html"));
+            HtmlParser.parse(document, ParseHelloHtml.class.getClassLoader()
+                    .getResourceAsStream("com/lowagie/examples/html/parseHelloWorld.html"));
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }

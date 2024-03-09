@@ -24,9 +24,9 @@
 
 - We use the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html) with
   some exceptionsu
-    - Indentation: 4 spaces
-    - Continuation indent: 8 spaces
-    - Line length: 120 characters
+  - Indentation: 4 spaces
+  - Continuation indent: 8 spaces
+  - Line length: 120 characters
 - Make sure to add tests for your changes
 - Fix any checkstyle issues before submitting your pull request (`mvn checkstyle:check`)
 - Fix any issues found by the CI build after submitting your pull request

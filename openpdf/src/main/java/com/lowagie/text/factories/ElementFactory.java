@@ -41,7 +41,7 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
  * details.
- * 
+ *
  * Contributions by:
  * Lubos Strapko
  *
@@ -51,17 +51,6 @@
  */
 package com.lowagie.text.factories;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
-import com.lowagie.text.alignment.HorizontalAlignment;
-import com.lowagie.text.alignment.VerticalAlignment;
-import com.lowagie.text.error_messages.MessageLocalization;
-
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
 import com.lowagie.text.BadElementException;
@@ -69,7 +58,7 @@ import com.lowagie.text.Cell;
 import com.lowagie.text.ChapterAutoNumber;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.ElementTags;
-
+import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Image;
 import com.lowagie.text.List;
@@ -80,8 +69,16 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.Section;
 import com.lowagie.text.Table;
 import com.lowagie.text.Utilities;
-import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.VerticalAlignment;
+import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.html.Markup;
+import java.awt.Color;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * This class is able to create Element objects based on a list of properties.
@@ -90,7 +87,8 @@ public class ElementFactory {
 
     /**
      * Creates a Chunk object based on a list of properties.
-     * @param attributes    The properties to base the parameters on
+     *
+     * @param attributes The properties to base the parameters on
      * @return a Chunk
      */
     public static Chunk getChunk(Properties attributes) {
@@ -147,7 +145,8 @@ public class ElementFactory {
 
     /**
      * Creates a Phrase object based on a list of properties.
-     * @param attributes    The properties to base the parameters on
+     *
+     * @param attributes The properties to base the parameters on
      * @return a Phrase
      */
     public static Phrase getPhrase(Properties attributes) {
@@ -176,7 +175,8 @@ public class ElementFactory {
 
     /**
      * Creates an Anchor object based on a list of properties.
-     * @param attributes    The properties to base the parameters on
+     *
+     * @param attributes The properties to base the parameters on
      * @return an Anchor
      */
     public static Anchor getAnchor(Properties attributes) {
@@ -195,7 +195,8 @@ public class ElementFactory {
 
     /**
      * Creates a Paragraph object based on a list of properties.
-     * @param attributes    The properties to base the parameters on
+     *
+     * @param attributes The properties to base the parameters on
      * @return a Paragraph
      */
     public static Paragraph getParagraph(Properties attributes) {
@@ -218,7 +219,8 @@ public class ElementFactory {
 
     /**
      * Creates a ListItem object based on a list of properties.
-     * @param attributes    The properties to base the parameters on
+     *
+     * @param attributes The properties to base the parameters on
      * @return a ListItem
      */
     public static ListItem getListItem(Properties attributes) {
@@ -228,7 +230,8 @@ public class ElementFactory {
 
     /**
      * Creates a List object based on a list of properties.
-     * @param attributes    The properties to base the parameters on
+     *
+     * @param attributes The properties to base the parameters on
      * @return the List
      */
     public static List getList(Properties attributes) {
@@ -284,7 +287,8 @@ public class ElementFactory {
 
     /**
      * Creates a Cell object based on a list of properties.
-     * @param attributes    The properties to base the parameters on
+     *
+     * @param attributes The properties to base the parameters on
      * @return a Cell
      */
     public static Cell getCell(Properties attributes) {
@@ -293,7 +297,8 @@ public class ElementFactory {
 
         try {
             if (attributes.getProperty(ElementTags.HORIZONTALALIGN) != null) {
-                final HorizontalAlignment horizontalAlignment = HorizontalAlignment.valueOf(attributes.getProperty(ElementTags.HORIZONTALALIGN));
+                final HorizontalAlignment horizontalAlignment = HorizontalAlignment.valueOf(
+                        attributes.getProperty(ElementTags.HORIZONTALALIGN));
                 cell.setHorizontalAlignment(horizontalAlignment);
             } else {
                 cell.setHorizontalAlignment(HorizontalAlignment.UNDEFINED);
@@ -303,7 +308,8 @@ public class ElementFactory {
         }
         try {
             if (attributes.getProperty(ElementTags.VERTICALALIGN) != null) {
-                final VerticalAlignment verticalAlignment = VerticalAlignment.valueOf(attributes.getProperty(ElementTags.VERTICALALIGN));
+                final VerticalAlignment verticalAlignment = VerticalAlignment.valueOf(
+                        attributes.getProperty(ElementTags.VERTICALALIGN));
                 cell.setVerticalAlignment(verticalAlignment);
             } else {
                 cell.setVerticalAlignment(VerticalAlignment.UNDEFINED);
@@ -339,7 +345,8 @@ public class ElementFactory {
 
     /**
      * Creates an Table object based on a list of properties.
-     * @param attributes    The properties to base the parameters on
+     *
+     * @param attributes The properties to base the parameters on
      * @return a Table
      */
     public static Table getTable(Properties attributes) {
@@ -401,11 +408,11 @@ public class ElementFactory {
             }
             value = attributes.getProperty(ElementTags.WIDTH);
             if (value != null) {
-                if (value.endsWith("%"))
+                if (value.endsWith("%")) {
                     table.setWidth(Float.parseFloat(value.substring(0, value
                             .length() - 1)
                             + "f"));
-                else {
+                } else {
                     table.setWidth(Float.parseFloat(value + "f"));
                     table.setLocked(true);
                 }
@@ -426,8 +433,9 @@ public class ElementFactory {
 
     /**
      * Sets some Rectangle properties (for a Cell, Table,...).
-     * @param rect          The Rectangle to set the properties to
-     * @param attributes    The properties to base the parameters on
+     *
+     * @param rect       The Rectangle to set the properties to
+     * @param attributes The properties to base the parameters on
      */
     private static void setRectangleProperties(Rectangle rect,
             Properties attributes) {
@@ -458,12 +466,15 @@ public class ElementFactory {
             int red = 0;
             int green = 0;
             int blue = 0;
-            if (r != null)
+            if (r != null) {
                 red = Integer.parseInt(r);
-            if (g != null)
+            }
+            if (g != null) {
                 green = Integer.parseInt(g);
-            if (b != null)
+            }
+            if (b != null) {
                 blue = Integer.parseInt(b);
+            }
             rect.setBorderColor(new Color(red, green, blue));
         } else {
             rect.setBorderColor(Markup.decodeColor(attributes
@@ -477,12 +488,15 @@ public class ElementFactory {
             int red = 0;
             int green = 0;
             int blue = 0;
-            if (r != null)
+            if (r != null) {
                 red = Integer.parseInt(r);
-            if (g != null)
+            }
+            if (g != null) {
                 green = Integer.parseInt(g);
-            if (b != null)
+            }
+            if (b != null) {
                 blue = Integer.parseInt(b);
+            }
             rect.setBackgroundColor(new Color(red, green, blue));
         } else if (value != null) {
             rect.setBackgroundColor(Markup.decodeColor(value));
@@ -496,7 +510,8 @@ public class ElementFactory {
 
     /**
      * Creates a ChapterAutoNumber object based on a list of properties.
-     * @param attributes    The properties to base the parameters on
+     *
+     * @param attributes The properties to base the parameters on
      * @return a Chapter
      */
     public static ChapterAutoNumber getChapter(Properties attributes) {
@@ -507,8 +522,9 @@ public class ElementFactory {
 
     /**
      * Creates a Section object based on a list of properties.
-     * @param attributes    The attributes to base the parameters on
-     * @param parent        The parent Section to add a Section to
+     *
+     * @param attributes The attributes to base the parameters on
+     * @param parent     The parent Section to add a Section to
      * @return a Section
      */
     public static Section getSection(Section parent, Properties attributes) {
@@ -519,8 +535,9 @@ public class ElementFactory {
 
     /**
      * Helper method to create a Chapter/Section object.
-     * @param attributes    The attributes to base the parameters on
-     * @param section       The part of the document to set the parameters to
+     *
+     * @param attributes The attributes to base the parameters on
+     * @param section    The part of the document to set the parameters to
      */
     private static void setSectionParameters(Section section,
             Properties attributes) {
@@ -545,36 +562,41 @@ public class ElementFactory {
 
     /**
      * Creates an Image object based on a list of properties.
-     * @param attributes    The properties to base the Image on
+     *
+     * @param attributes The properties to base the Image on
      * @return an Image
-     * @throws IOException          thrown if an I/O problem occurs
-     * @throws BadElementException  the exception thrown when the Element doesn't have the right form
+     * @throws IOException         thrown if an I/O problem occurs
+     * @throws BadElementException the exception thrown when the Element doesn't have the right form
      */
     public static Image getImage(Properties attributes)
             throws BadElementException, IOException {
         String value;
 
         value = attributes.getProperty(ElementTags.URL);
-        if (value == null)
+        if (value == null) {
             throw new MalformedURLException(MessageLocalization.getComposedMessage("the.url.of.the.image.is.missing"));
+        }
         Image image = Image.getInstance(value);
 
         value = attributes.getProperty(ElementTags.ALIGN);
         int align = 0;
         if (value != null) {
-            if (ElementTags.ALIGN_LEFT.equalsIgnoreCase(value))
+            if (ElementTags.ALIGN_LEFT.equalsIgnoreCase(value)) {
                 align |= Image.LEFT;
-            else if (ElementTags.ALIGN_RIGHT.equalsIgnoreCase(value))
+            } else if (ElementTags.ALIGN_RIGHT.equalsIgnoreCase(value)) {
                 align |= Image.RIGHT;
-            else if (ElementTags.ALIGN_MIDDLE.equalsIgnoreCase(value))
+            } else if (ElementTags.ALIGN_MIDDLE.equalsIgnoreCase(value)) {
                 align |= Image.MIDDLE;
+            }
         }
         if ("true".equalsIgnoreCase(attributes
-                .getProperty(ElementTags.UNDERLYING)))
+                .getProperty(ElementTags.UNDERLYING))) {
             align |= Image.UNDERLYING;
+        }
         if ("true".equalsIgnoreCase(attributes
-                .getProperty(ElementTags.TEXTWRAP)))
+                .getProperty(ElementTags.TEXTWRAP))) {
             align |= Image.TEXTWRAP;
+        }
         image.setAlignment(align);
 
         value = attributes.getProperty(ElementTags.ALT);
@@ -605,7 +627,8 @@ public class ElementFactory {
 
     /**
      * Creates an Annotation object based on a list of properties.
-     * @param attributes    The properties to base the Annotation on
+     *
+     * @param attributes The properties to base the Annotation on
      * @return an Annotation
      */
     public static Annotation getAnnotation(Properties attributes) {

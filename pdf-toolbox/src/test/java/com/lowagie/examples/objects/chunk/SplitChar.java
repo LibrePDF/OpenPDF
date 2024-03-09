@@ -9,13 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.chunk;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -26,10 +23,12 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.SplitCharacter;
 import com.lowagie.text.pdf.PdfChunk;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates the use of the splitcharacter.
- * 
+ *
  * @author blowagie
  */
 
@@ -37,7 +36,7 @@ public class SplitChar implements SplitCharacter {
 
     /**
      * Demonstrates the use of the splitcharacter.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -59,12 +58,12 @@ public class SplitChar implements SplitCharacter {
             Paragraph p;
             String text = "Some.text.to.show.the.splitting.action.of.the.interface.";
             Font font = FontFactory.getFont(FontFactory.HELVETICA, 24);
-            
+
             document.add(new Paragraph("Normal split."));
             chunk = new Chunk(text, font);
             p = new Paragraph(24, chunk);
             document.add(p);
-            
+
             document.add(new Paragraph("The dot '.' is the split character."));
             chunk = new Chunk(text, font);
             chunk.setSplitCharacter(new SplitChar());
@@ -83,10 +82,11 @@ public class SplitChar implements SplitCharacter {
      */
     public boolean isSplitCharacter(int start, int current, int end, char[] cc, PdfChunk[] ck) {
         char c;
-        if (ck == null)
+        if (ck == null) {
             c = cc[current];
-        else
+        } else {
             c = (char) ck[Math.min(current, ck.length - 1)].getUnicodeEquivalent(cc[current]);
+        }
         return (c == '.');
     }
 }

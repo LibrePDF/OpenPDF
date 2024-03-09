@@ -210,341 +210,6 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
     // implementation of the Element-methods
 
     /**
-     * Processes the element by adding it (or the different parts) to an
-     * <CODE>ElementListener</CODE>.
-     *
-     * @param listener an <CODE>ElementListener</CODE>
-     * @return <CODE>true</CODE> if the element was processed successfully
-     */
-    @Override
-    public boolean process(ElementListener listener) {
-        try {
-            for (Object o : this) {
-                listener.add((Element) o);
-            }
-            return true;
-        } catch (DocumentException de) {
-            return false;
-        }
-    }
-
-    /**
-     * Gets the type of the text element.
-     *
-     * @return a type
-     */
-    @Override
-    public int type() {
-        return Element.PHRASE;
-    }
-
-    /**
-     * Gets all the chunks in this element.
-     *
-     * @return an <CODE>ArrayList</CODE>
-     */
-    @Override
-    public ArrayList<Element> getChunks() {
-        ArrayList<Element> tmp = new ArrayList<>();
-        for (Element element : this) {
-            tmp.addAll(element.getChunks());
-        }
-        return tmp;
-    }
-
-    /**
-     * @see com.lowagie.text.Element#isContent()
-     * @since iText 2.0.8
-     */
-    @Override
-    public boolean isContent() {
-        return true;
-    }
-
-    /**
-     * @see com.lowagie.text.Element#isNestable()
-     * @since iText 2.0.8
-     */
-    @Override
-    public boolean isNestable() {
-        return true;
-    }
-
-    // overriding some of the ArrayList-methods
-
-    /**
-     * Adds a <CODE>Chunk</CODE>, an <CODE>Anchor</CODE> or another <CODE>Phrase</CODE> to this <CODE>Phrase</CODE>.
-     *
-     * @param index   index at which the specified element is to be inserted
-     * @param element an object of type <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
-     * @throws ClassCastException when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or
-     *                            <CODE>Phrase</CODE>
-     */
-    @Override
-    public void add(int index, Element element) {
-        if (element == null) {
-            return;
-        }
-        try {
-            if (element.type() == Element.CHUNK) {
-                Chunk chunk = (Chunk) element;
-                if (!font.isStandardFont()) {
-                    chunk.setFont(font.difference(chunk.getFont()));
-                }
-                if (hyphenation != null && chunk.getHyphenation() == null && !chunk.isEmpty()) {
-                    chunk.setHyphenation(hyphenation);
-                }
-                super.add(index, chunk);
-            } else if (element.type() == Element.PHRASE ||
-                element.type() == Element.ANCHOR ||
-                element.type() == Element.ANNOTATION ||
-                element.type() == Element.TABLE || // line added by David Freels
-                element.type() == Element.YMARK ||
-                element.type() == Element.MARKED) {
-                super.add(index, element);
-            } else {
-                throw new ClassCastException(String.valueOf(element.type()));
-            }
-        } catch (ClassCastException cce) {
-            throw new ClassCastException(
-                MessageLocalization.getComposedMessage("insertion.of.illegal.element.1", cce.getMessage()));
-        }
-    }
-
-    /**
-     * Adds a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or another <CODE>Phrase</CODE> to this <CODE>Phrase</CODE>.
-     *
-     * @param o an object of type <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
-     * @return a boolean
-     * @throws ClassCastException when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or
-     *                            <CODE>Phrase</CODE>
-     */
-    public boolean add(String o) {
-        if (o == null) {
-            return false;
-        }
-        return super.add(new Chunk(o, font));
-    }
-
-    @Override
-    public boolean add(Element element) {
-        if (element == null) {
-            return false;
-        }
-        if (element instanceof RtfElementInterface) {
-            return super.add(element);
-        }
-        try {
-            switch (element.type()) {
-                case Element.CHUNK:
-                    return addChunk((Chunk) element);
-                case Element.PHRASE:
-                case Element.PARAGRAPH:
-                    Phrase phrase = (Phrase) element;
-                    boolean success = true;
-                    Element e;
-                    for (Object o1 : phrase) {
-                        e = (Element) o1;
-                        if (e instanceof Chunk) {
-                            success &= addChunk((Chunk) e);
-                        } else {
-                            success &= this.add(e);
-                        }
-                    }
-                    return success;
-                case Element.MARKED:
-                case Element.ANCHOR:
-                case Element.ANNOTATION:
-                case Element.FOOTNOTE:
-                case Element.TABLE: // case added by David Freels
-                case Element.PTABLE: // case added by mr. Karen Vardanyan
-                    // This will only work for PDF!!! Not for RTF/HTML
-                case Element.LIST:
-                case Element.YMARK:
-                    return super.add(element);
-                default:
-                    throw new ClassCastException(String.valueOf(element.type()));
-            }
-        } catch (ClassCastException cce) {
-            throw new ClassCastException(
-                MessageLocalization.getComposedMessage("insertion.of.illegal.element.1", cce.getMessage()));
-        }
-    }
-
-    /**
-     * Adds a collection of <CODE>Chunk</CODE>s to this <CODE>Phrase</CODE>.
-     *
-     * @param collection a collection of <CODE>Chunk</CODE>s, <CODE>Anchor</CODE>s and <CODE>Phrase</CODE>s.
-     * @return <CODE>true</CODE> if the action succeeded, <CODE>false</CODE> if not.
-     * @throws ClassCastException when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or
-     *                            <CODE>Phrase</CODE>
-     */
-    @Override
-    public boolean addAll(Collection<? extends Element> collection) {
-        for (Element o : collection) {
-            this.add(o);
-        }
-        return true;
-    }
-
-    /**
-     * Adds a Chunk.
-     * <p>
-     * This method is a hack to solve a problem I had with phrases that were split between chunks in the wrong place.
-     *
-     * @param chunk a Chunk to add to the Phrase
-     * @return true if adding the Chunk succeeded
-     */
-    protected boolean addChunk(Chunk chunk) {
-        Font f = chunk.getFont();
-        String c = chunk.getContent();
-        if (font != null && !font.isStandardFont()) {
-            f = font.difference(chunk.getFont());
-        }
-        if (size() > 0 && !chunk.hasAttributes()) {
-            try {
-                Chunk previous = (Chunk) get(size() - 1);
-                if (!previous.hasAttributes()
-                    && (f == null
-                    || f.compareTo(previous.getFont()) == 0)
-                    && !"".equals(previous.getContent().trim())
-                    && !"".equals(c.trim())) {
-                    previous.append(c);
-                    return true;
-                }
-            } catch (ClassCastException ignored) {
-            }
-        }
-        Chunk newChunk = new Chunk(c, f);
-        newChunk.setChunkAttributes(chunk.getChunkAttributes());
-        if (hyphenation != null && newChunk.getHyphenation() == null && !newChunk.isEmpty()) {
-            newChunk.setHyphenation(hyphenation);
-        }
-        return super.add(newChunk);
-    }
-
-    /**
-     * Adds a <CODE>Object</CODE> to the <CODE>Paragraph</CODE>.
-     *
-     * @param object the object to add.
-     */
-    protected void addSpecial(Object object) {
-        super.add((Element) object);
-    }
-
-    // other methods that change the member variables
-
-    /**
-     * Sets the leading of this phrase.
-     *
-     * @param leading the new leading
-     */
-
-    public void setLeading(float leading) {
-        this.leading = leading;
-    }
-
-    /**
-     * Sets the main font of this Phrase.
-     * <p>
-     * Please note that this font will only be used on new content added to the Phrase. It won't change the font of
-     * existing content.
-     *
-     * @param font the new font
-     */
-    public void setFont(Font font) {
-        this.font = font;
-    }
-
-    // methods to retrieve information
-
-    /**
-     * Gets the leading of this phrase.
-     *
-     * @return the linespacing
-     */
-    public float getLeading() {
-        if (Float.isNaN(leading) && font != null) {
-            return font.getCalculatedLeading(1.5f);
-        }
-        return leading;
-    }
-
-    /**
-     * Checks you if the leading of this phrase is defined.
-     *
-     * @return true if the leading is defined
-     */
-    public boolean hasLeading() {
-        return !Float.isNaN(leading);
-    }
-
-    /**
-     * Gets the font of the first <CODE>Chunk</CODE> that appears in this <CODE>Phrase</CODE>.
-     *
-     * @return a <CODE>Font</CODE>
-     */
-    public Font getFont() {
-        return font;
-    }
-
-    /**
-     * Returns the content as a String object. This method differs from toString because toString will return an
-     * ArrayList with the toString value of the Chunks in this Phrase.
-     *
-     * @return an <code>String</code>
-     */
-    public String getContent() {
-        StringBuilder buf = new StringBuilder();
-        for (Object o : getChunks()) {
-            buf.append(o.toString());
-        }
-        return buf.toString();
-    }
-
-    /**
-     * Checks is this <CODE>Phrase</CODE> contains no or 1 empty <CODE>Chunk</CODE>.
-     *
-     * @return <CODE>false</CODE> if the <CODE>Phrase</CODE>
-     * contains more than one or more non-empty<CODE>Chunk</CODE>s.
-     */
-    @Override
-    public boolean isEmpty() {
-        switch (size()) {
-            case 0:
-                return true;
-            case 1:
-                Element element = get(0);
-                return element.type() == Element.CHUNK && ((Chunk) element).isEmpty();
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Getter for the hyphenation settings.
-     *
-     * @return a HyphenationEvent
-     * @since 2.1.2
-     */
-    public HyphenationEvent getHyphenation() {
-        return hyphenation;
-    }
-
-    /**
-     * Setter for the hyphenation.
-     *
-     * @param hyphenation a HyphenationEvent instance
-     * @since 2.1.2
-     */
-    public void setHyphenation(HyphenationEvent hyphenation) {
-        this.hyphenation = hyphenation;
-    }
-
-    // kept for historical reasons; people should use FontSelector
-    // eligible for deprecation, but the methods are mentioned in the book p277.
-
-    /**
      * Constructs a Phrase that can be used in the static getInstance() method.
      *
      * @param dummy a dummy parameter
@@ -608,6 +273,341 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
             p.add(new Chunk(string, font));
         }
         return p;
+    }
+
+    /**
+     * Processes the element by adding it (or the different parts) to an
+     * <CODE>ElementListener</CODE>.
+     *
+     * @param listener an <CODE>ElementListener</CODE>
+     * @return <CODE>true</CODE> if the element was processed successfully
+     */
+    @Override
+    public boolean process(ElementListener listener) {
+        try {
+            for (Object o : this) {
+                listener.add((Element) o);
+            }
+            return true;
+        } catch (DocumentException de) {
+            return false;
+        }
+    }
+
+    // overriding some of the ArrayList-methods
+
+    /**
+     * Gets the type of the text element.
+     *
+     * @return a type
+     */
+    @Override
+    public int type() {
+        return Element.PHRASE;
+    }
+
+    /**
+     * Gets all the chunks in this element.
+     *
+     * @return an <CODE>ArrayList</CODE>
+     */
+    @Override
+    public ArrayList<Element> getChunks() {
+        ArrayList<Element> tmp = new ArrayList<>();
+        for (Element element : this) {
+            tmp.addAll(element.getChunks());
+        }
+        return tmp;
+    }
+
+    /**
+     * @see com.lowagie.text.Element#isContent()
+     * @since iText 2.0.8
+     */
+    @Override
+    public boolean isContent() {
+        return true;
+    }
+
+    /**
+     * @see com.lowagie.text.Element#isNestable()
+     * @since iText 2.0.8
+     */
+    @Override
+    public boolean isNestable() {
+        return true;
+    }
+
+    /**
+     * Adds a <CODE>Chunk</CODE>, an <CODE>Anchor</CODE> or another <CODE>Phrase</CODE> to this <CODE>Phrase</CODE>.
+     *
+     * @param index   index at which the specified element is to be inserted
+     * @param element an object of type <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
+     * @throws ClassCastException when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or
+     *                            <CODE>Phrase</CODE>
+     */
+    @Override
+    public void add(int index, Element element) {
+        if (element == null) {
+            return;
+        }
+        try {
+            if (element.type() == Element.CHUNK) {
+                Chunk chunk = (Chunk) element;
+                if (!font.isStandardFont()) {
+                    chunk.setFont(font.difference(chunk.getFont()));
+                }
+                if (hyphenation != null && chunk.getHyphenation() == null && !chunk.isEmpty()) {
+                    chunk.setHyphenation(hyphenation);
+                }
+                super.add(index, chunk);
+            } else if (element.type() == Element.PHRASE ||
+                    element.type() == Element.ANCHOR ||
+                    element.type() == Element.ANNOTATION ||
+                    element.type() == Element.TABLE || // line added by David Freels
+                    element.type() == Element.YMARK ||
+                    element.type() == Element.MARKED) {
+                super.add(index, element);
+            } else {
+                throw new ClassCastException(String.valueOf(element.type()));
+            }
+        } catch (ClassCastException cce) {
+            throw new ClassCastException(
+                    MessageLocalization.getComposedMessage("insertion.of.illegal.element.1", cce.getMessage()));
+        }
+    }
+
+    /**
+     * Adds a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or another <CODE>Phrase</CODE> to this <CODE>Phrase</CODE>.
+     *
+     * @param o an object of type <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or <CODE>Phrase</CODE>
+     * @return a boolean
+     * @throws ClassCastException when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or
+     *                            <CODE>Phrase</CODE>
+     */
+    public boolean add(String o) {
+        if (o == null) {
+            return false;
+        }
+        return super.add(new Chunk(o, font));
+    }
+
+    // other methods that change the member variables
+
+    @Override
+    public boolean add(Element element) {
+        if (element == null) {
+            return false;
+        }
+        if (element instanceof RtfElementInterface) {
+            return super.add(element);
+        }
+        try {
+            switch (element.type()) {
+                case Element.CHUNK:
+                    return addChunk((Chunk) element);
+                case Element.PHRASE:
+                case Element.PARAGRAPH:
+                    Phrase phrase = (Phrase) element;
+                    boolean success = true;
+                    Element e;
+                    for (Object o1 : phrase) {
+                        e = (Element) o1;
+                        if (e instanceof Chunk) {
+                            success &= addChunk((Chunk) e);
+                        } else {
+                            success &= this.add(e);
+                        }
+                    }
+                    return success;
+                case Element.MARKED:
+                case Element.ANCHOR:
+                case Element.ANNOTATION:
+                case Element.FOOTNOTE:
+                case Element.TABLE: // case added by David Freels
+                case Element.PTABLE: // case added by mr. Karen Vardanyan
+                    // This will only work for PDF!!! Not for RTF/HTML
+                case Element.LIST:
+                case Element.YMARK:
+                    return super.add(element);
+                default:
+                    throw new ClassCastException(String.valueOf(element.type()));
+            }
+        } catch (ClassCastException cce) {
+            throw new ClassCastException(
+                    MessageLocalization.getComposedMessage("insertion.of.illegal.element.1", cce.getMessage()));
+        }
+    }
+
+    /**
+     * Adds a collection of <CODE>Chunk</CODE>s to this <CODE>Phrase</CODE>.
+     *
+     * @param collection a collection of <CODE>Chunk</CODE>s, <CODE>Anchor</CODE>s and <CODE>Phrase</CODE>s.
+     * @return <CODE>true</CODE> if the action succeeded, <CODE>false</CODE> if not.
+     * @throws ClassCastException when you try to add something that isn't a <CODE>Chunk</CODE>, <CODE>Anchor</CODE> or
+     *                            <CODE>Phrase</CODE>
+     */
+    @Override
+    public boolean addAll(Collection<? extends Element> collection) {
+        for (Element o : collection) {
+            this.add(o);
+        }
+        return true;
+    }
+
+    // methods to retrieve information
+
+    /**
+     * Adds a Chunk.
+     * <p>
+     * This method is a hack to solve a problem I had with phrases that were split between chunks in the wrong place.
+     *
+     * @param chunk a Chunk to add to the Phrase
+     * @return true if adding the Chunk succeeded
+     */
+    protected boolean addChunk(Chunk chunk) {
+        Font f = chunk.getFont();
+        String c = chunk.getContent();
+        if (font != null && !font.isStandardFont()) {
+            f = font.difference(chunk.getFont());
+        }
+        if (size() > 0 && !chunk.hasAttributes()) {
+            try {
+                Chunk previous = (Chunk) get(size() - 1);
+                if (!previous.hasAttributes()
+                        && (f == null
+                        || f.compareTo(previous.getFont()) == 0)
+                        && !"".equals(previous.getContent().trim())
+                        && !"".equals(c.trim())) {
+                    previous.append(c);
+                    return true;
+                }
+            } catch (ClassCastException ignored) {
+            }
+        }
+        Chunk newChunk = new Chunk(c, f);
+        newChunk.setChunkAttributes(chunk.getChunkAttributes());
+        if (hyphenation != null && newChunk.getHyphenation() == null && !newChunk.isEmpty()) {
+            newChunk.setHyphenation(hyphenation);
+        }
+        return super.add(newChunk);
+    }
+
+    /**
+     * Adds a <CODE>Object</CODE> to the <CODE>Paragraph</CODE>.
+     *
+     * @param object the object to add.
+     */
+    protected void addSpecial(Object object) {
+        super.add((Element) object);
+    }
+
+    /**
+     * Gets the leading of this phrase.
+     *
+     * @return the linespacing
+     */
+    public float getLeading() {
+        if (Float.isNaN(leading) && font != null) {
+            return font.getCalculatedLeading(1.5f);
+        }
+        return leading;
+    }
+
+    /**
+     * Sets the leading of this phrase.
+     *
+     * @param leading the new leading
+     */
+
+    public void setLeading(float leading) {
+        this.leading = leading;
+    }
+
+    /**
+     * Checks you if the leading of this phrase is defined.
+     *
+     * @return true if the leading is defined
+     */
+    public boolean hasLeading() {
+        return !Float.isNaN(leading);
+    }
+
+    /**
+     * Gets the font of the first <CODE>Chunk</CODE> that appears in this <CODE>Phrase</CODE>.
+     *
+     * @return a <CODE>Font</CODE>
+     */
+    public Font getFont() {
+        return font;
+    }
+
+    /**
+     * Sets the main font of this Phrase.
+     * <p>
+     * Please note that this font will only be used on new content added to the Phrase. It won't change the font of
+     * existing content.
+     *
+     * @param font the new font
+     */
+    public void setFont(Font font) {
+        this.font = font;
+    }
+
+    // kept for historical reasons; people should use FontSelector
+    // eligible for deprecation, but the methods are mentioned in the book p277.
+
+    /**
+     * Returns the content as a String object. This method differs from toString because toString will return an
+     * ArrayList with the toString value of the Chunks in this Phrase.
+     *
+     * @return an <code>String</code>
+     */
+    public String getContent() {
+        StringBuilder buf = new StringBuilder();
+        for (Object o : getChunks()) {
+            buf.append(o.toString());
+        }
+        return buf.toString();
+    }
+
+    /**
+     * Checks is this <CODE>Phrase</CODE> contains no or 1 empty <CODE>Chunk</CODE>.
+     *
+     * @return <CODE>false</CODE> if the <CODE>Phrase</CODE>
+     * contains more than one or more non-empty<CODE>Chunk</CODE>s.
+     */
+    @Override
+    public boolean isEmpty() {
+        switch (size()) {
+            case 0:
+                return true;
+            case 1:
+                Element element = get(0);
+                return element.type() == Element.CHUNK && ((Chunk) element).isEmpty();
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Getter for the hyphenation settings.
+     *
+     * @return a HyphenationEvent
+     * @since 2.1.2
+     */
+    public HyphenationEvent getHyphenation() {
+        return hyphenation;
+    }
+
+    /**
+     * Setter for the hyphenation.
+     *
+     * @param hyphenation a HyphenationEvent instance
+     * @since 2.1.2
+     */
+    public void setHyphenation(HyphenationEvent hyphenation) {
+        this.hyphenation = hyphenation;
     }
 
 }

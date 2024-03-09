@@ -9,23 +9,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.forms.fill;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.XfdfReader;
+import java.io.FileOutputStream;
 
 /**
  * How to merge an XFDF file with a PDF form.
  */
 public class XfdfExample {
+
     /**
      * Merges an XFDF file with a PDF form.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -37,10 +38,9 @@ public class XfdfExample {
             AcroFields form = stamp.getAcroFields();
             form.setFields(fdfreader);
             stamp.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
 }

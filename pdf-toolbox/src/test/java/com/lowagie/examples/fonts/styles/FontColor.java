@@ -9,14 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.fonts.styles;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -27,10 +23,13 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * How to change the color of a font.
- * 
+ *
  * @author blowagie
  */
 
@@ -38,7 +37,7 @@ public class FontColor {
 
     /**
      * Changing Font colors
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -56,8 +55,10 @@ public class FontColor {
             // step 3: we open the document
             document.open();
             // step 4:
-            Font red = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.BOLD, new Color(0xFF, 0x00, 0x00));
-            Font blue = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.ITALIC, new Color(0x00, 0x00, 0xFF));
+            Font red = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.BOLD,
+                    new Color(0xFF, 0x00, 0x00));
+            Font blue = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.ITALIC,
+                    new Color(0x00, 0x00, 0xFF));
             Paragraph p;
             p = new Paragraph("Roses are ");
             p.add(new Chunk("red", red));

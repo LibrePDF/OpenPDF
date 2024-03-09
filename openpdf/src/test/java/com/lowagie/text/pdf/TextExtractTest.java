@@ -7,16 +7,15 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class TextExtractTest {
+
     @Test
     void textExtractTest1() throws IOException {
         PdfReader reader = new PdfReader(TextExtractTest.class.getResourceAsStream("/identity-h.pdf"));

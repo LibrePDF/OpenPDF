@@ -51,7 +51,7 @@ package com.lowagie.text.pdf;
 import java.util.HashMap;
 
 class PageResources {
-    
+
     protected PdfDictionary fontDictionary = new PdfDictionary();
     protected PdfDictionary xObjectDictionary = new PdfDictionary();
     protected PdfDictionary colorDictionary = new PdfDictionary();
@@ -66,14 +66,16 @@ class PageResources {
 
     PageResources() {
     }
-    
+
     void setOriginalResources(PdfDictionary resources, int[] newNamePtr) {
-        if (newNamePtr != null)
+        if (newNamePtr != null) {
             namePtr = newNamePtr;
+        }
         forbiddenNames = new HashMap<>();
         usedNames = new HashMap<>();
-        if (resources == null)
+        if (resources == null) {
             return;
+        }
         originalResources = new PdfDictionary();
         originalResources.merge(resources);
         for (PdfName key : resources.getKeys()) {
@@ -89,7 +91,7 @@ class PageResources {
             }
         }
     }
-    
+
     PdfName translateName(PdfName name) {
         PdfName translated = name;
         if (forbiddenNames != null) {
@@ -103,7 +105,7 @@ class PageResources {
         }
         return translated;
     }
-    
+
     PdfName addFont(PdfName name, PdfIndirectReference reference) {
         name = translateName(name);
         fontDictionary.put(name, reference);
@@ -123,10 +125,11 @@ class PageResources {
     }
 
     void addDefaultColor(PdfName name, PdfObject obj) {
-        if (obj == null || obj.isNull())
+        if (obj == null || obj.isNull()) {
             colorDictionary.remove(name);
-        else
+        } else {
             colorDictionary.put(name, obj);
+        }
     }
 
     void addDefaultColor(PdfDictionary dic) {
@@ -142,7 +145,7 @@ class PageResources {
         shadingDictionary.put(name, reference);
         return name;
     }
-    
+
     PdfName addPattern(PdfName name, PdfIndirectReference reference) {
         name = translateName(name);
         patternDictionary.put(name, reference);
@@ -162,9 +165,10 @@ class PageResources {
     }
 
     PdfDictionary getResources() {
-       PdfResources resources = new PdfResources();
-        if (originalResources != null)
+        PdfResources resources = new PdfResources();
+        if (originalResources != null) {
             resources.putAll(originalResources);
+        }
         //resources.put(PdfName.PROCSET, new PdfLiteral("[/PDF /Text /ImageB /ImageC /ImageI]"));
         resources.add(PdfName.FONT, fontDictionary);
         resources.add(PdfName.XOBJECT, xObjectDictionary);
@@ -175,14 +179,14 @@ class PageResources {
         resources.add(PdfName.PROPERTIES, propertyDictionary);
         return resources;
     }
-    
+
     boolean hasResources() {
         return (fontDictionary.size() > 0
-            || xObjectDictionary.size() > 0
-            || colorDictionary.size() > 0
-            || patternDictionary.size() > 0
-            || shadingDictionary.size() > 0
-            || extGStateDictionary.size() > 0
-            || propertyDictionary.size() > 0);
+                || xObjectDictionary.size() > 0
+                || colorDictionary.size() > 0
+                || patternDictionary.size() > 0
+                || shadingDictionary.size() > 0
+                || extGStateDictionary.size() > 0
+                || propertyDictionary.size() > 0);
     }
 }

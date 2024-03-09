@@ -48,7 +48,6 @@ package com.lowagie.text.pdf.parser;
 
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfObject;
-
 import java.util.List;
 
 /**
@@ -57,6 +56,7 @@ import java.util.List;
  * @since 2.1.4
  */
 public interface ContentOperator {
+
     /**
      * Invokes a content operator.
      *
@@ -67,8 +67,7 @@ public interface ContentOperator {
     void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources);
 
     /**
-     * @return the name of the operator as it will be recognized in the pdf
-     * stream
+     * @return the name of the operator as it will be recognized in the pdf stream
      */
     String getOperatorName();
 }

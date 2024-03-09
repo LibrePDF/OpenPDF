@@ -9,14 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.optionalcontent;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -36,18 +31,24 @@ import com.lowagie.text.pdf.PdfLayerMembership;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.TextField;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Demonstrates the use of layers.
  */
 public class OptionalContent {
+
     /**
      * Demonstrates the use of layers.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
         try {
-            System.out.println("Optional content");        
+            System.out.println("Optional content");
             // step 1: creation of a document-object
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             // step 2: creation of the writer
@@ -58,7 +59,8 @@ public class OptionalContent {
             document.open();
             // step 4: content
             PdfContentByte cb = writer.getDirectContent();
-            Phrase explanation = new Phrase("Automatic layers, form fields, images, templates and actions", new Font(Font.HELVETICA, 18, Font.BOLD, Color.red));
+            Phrase explanation = new Phrase("Automatic layers, form fields, images, templates and actions",
+                    new Font(Font.HELVETICA, 18, Font.BOLD, Color.red));
             ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, explanation, 50, 650, 0);
             PdfLayer l1 = new PdfLayer("Layer 1", writer);
             PdfLayer l2 = new PdfLayer("Layer 2", writer);
@@ -104,14 +106,15 @@ public class OptionalContent {
             state.add(l3);
             state.add(l4);
             PdfAction action = PdfAction.setOCGstate(state, true);
-            Chunk ck = new Chunk("Click here to toggle the layers", new Font(Font.HELVETICA, 18, Font.NORMAL, Color.yellow)).setBackground(Color.blue).setAction(action);
+            Chunk ck = new Chunk("Click here to toggle the layers",
+                    new Font(Font.HELVETICA, 18, Font.NORMAL, Color.yellow)).setBackground(Color.blue)
+                    .setAction(action);
             ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, new Phrase(ck), 250, 400, 0);
             cb.sanityCheck();
-            
+
             // step 5: closing the document
             document.close();
-        }
-        catch(Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

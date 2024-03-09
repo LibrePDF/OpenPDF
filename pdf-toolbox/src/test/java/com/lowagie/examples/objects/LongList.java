@@ -14,13 +14,12 @@
 
 package com.lowagie.examples.objects;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.List;
 import com.lowagie.text.ListItem;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 /**
  * Demonstrates some List functionality.
@@ -47,7 +46,7 @@ public class LongList {
         List list = new List(true);
         for (int i = 0; i < 30; i++) {
             list.add(new ListItem("This is the line with the number " + (i + 1)
-                + ". Don't worry if the line is very long, but we need to a line break."));
+                    + ". Don't worry if the line is very long, but we need to a line break."));
         }
         document.add(list);
         // step 5: we close the document

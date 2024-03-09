@@ -52,34 +52,37 @@ package com.lowagie.text;
 /**
  * Signals an attempt to create an <CODE>Element</CODE> that hasn't got the right form.
  *
- * @see        DocumentException
- * @see        Cell
- * @see        Table
+ * @see DocumentException
+ * @see Cell
+ * @see Table
  */
 
 public class BadElementException extends DocumentException {
-    
+
     private static final long serialVersionUID = -799006030723822254L;
 
     // constructors
+
     /**
      * Constructs a BadElementException
+     *
      * @param ex an Exception object that has to be turned into a BadElementException
      */
     public BadElementException(Exception ex) {
         super(ex);
     }
-    
+
     /**
      * Constructs a <CODE>BadElementException</CODE> without a message.
      */
     BadElementException() {
         super();
     }
-    
+
     /**
      * Constructs a <code>BadElementException</code> with a message.
-     * @param        message            a message describing the exception
+     *
+     * @param message a message describing the exception
      */
     public BadElementException(String message) {
         super(message);

@@ -38,6 +38,10 @@ class FontTest {
 
     private static final float DEFAULT_FONT_SIZE = 16.0f;
 
+    private static Set<Integer> getStyles() {
+        return STYLES_TO_TEST_METHOD.keySet();
+    }
+
     /**
      * Checks if style property value is preserved during font construction through
      * {@link FontFactory#getFont(String, float, int)} method by getting raw property value.
@@ -51,10 +55,6 @@ class FontTest {
         // TODO: complement tests after adding enum with font styles
         final Font font = FontFactory.getFont(FONT_NAME_WITHOUT_STYLES, DEFAULT_FONT_SIZE, style);
         assertEquals(font.getStyle(), style);
-    }
-
-    private static Set<Integer> getStyles() {
-        return STYLES_TO_TEST_METHOD.keySet();
     }
 
     /**
@@ -85,7 +85,7 @@ class FontTest {
         } else {
             assertEquals(style, font.getCombinedStyle(), "Total style should be the given style: " + style);
             assertEquals(font.getBaseFontStyle(), style ^ font.getCalculatedStyle(), "Styles should not repeat in"
-                + " Font and BaseFont.");
+                    + " Font and BaseFont.");
         }
     }
 

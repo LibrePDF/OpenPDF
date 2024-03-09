@@ -7,12 +7,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -37,39 +37,59 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
 /**
- * A Class that redirects everything written to System.out and System.err
- * to a JTextPane.
+ * A Class that redirects everything written to System.out and System.err to a JTextPane.
  */
 public class Console implements Observer {
 
-    /** Single Console instance. */
+    /**
+     * Single Console instance.
+     */
     private static Console console = null;
-    
-    /** Custom PrintStream. */
+
+    /**
+     * Custom PrintStream.
+     */
     PrintStream printStream;
-    /** Custom OutputStream. */
+    /**
+     * Custom OutputStream.
+     */
     PipedOutputStream poCustom;
-    /** Custom InputStream. */
+    /**
+     * Custom InputStream.
+     */
     PipedInputStream piCustom;
-    
-    /** OutputStream for System.out. */
+
+    /**
+     * OutputStream for System.out.
+     */
     PipedOutputStream poOut;
-    /** InputStream for System.out. */
+    /**
+     * InputStream for System.out.
+     */
     PipedInputStream piOut;
 
-    /** OutputStream for System.err. */
+    /**
+     * OutputStream for System.err.
+     */
     PipedOutputStream poErr;
-    /** InputStream for System.err. */
+    /**
+     * InputStream for System.err.
+     */
     PipedInputStream piErr;
-    
-    /** The StyleContext for the Console. */
+
+    /**
+     * The StyleContext for the Console.
+     */
     ConsoleStyleContext styleContext = new ConsoleStyleContext();
-    
-    /** The text area to which everything is written. */
+
+    /**
+     * The text area to which everything is written.
+     */
     JTextPane textArea = new JTextPane(new DefaultStyledDocument(styleContext));
 
     /**
      * Creates a new Console object.
+     *
      * @throws IOException
      */
     private Console() throws IOException {
@@ -77,7 +97,7 @@ public class Console implements Observer {
         piCustom = new PipedInputStream();
         poCustom = new PipedOutputStream();
         printStream = new PrintStream(poCustom);
-        
+
         // Set up System.out
         piOut = new PipedInputStream();
         poOut = new PipedOutputStream(piOut);
@@ -99,6 +119,7 @@ public class Console implements Observer {
 
     /**
      * Console is a Singleton class: you can only get one Console.
+     *
      * @return the Console
      */
     public static synchronized Console getInstance() {
@@ -113,6 +134,21 @@ public class Console implements Observer {
     }
 
     /**
+     * Allows you to print something to the custom PrintStream.
+     *
+     * @param s the message you want to send to the Console
+     */
+    public static void println(String s) {
+        PrintStream ps = getInstance().getPrintStream();
+        if (ps == null) {
+            System.out.println(s);
+        } else {
+            ps.println(s);
+            ps.flush();
+        }
+    }
+
+    /**
      * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
      */
     public void update(Observable observable, Object obj) {
@@ -123,24 +159,10 @@ public class Console implements Observer {
             textArea.setText("");
         }
     }
-    
-    /**
-     * Allows you to print something to the custom PrintStream.
-     * @param    s    the message you want to send to the Console
-     */
-    public static void println(String s) {
-        PrintStream ps = getInstance().getPrintStream();
-        if (ps == null) {
-            System.out.println(s);
-        }
-        else {
-            ps.println(s);
-            ps.flush();
-        }
-    }
 
     /**
      * Get the custom PrintStream of the console.
+     *
      * @return the PrintStream
      */
     public PrintStream getPrintStream() {
@@ -149,22 +171,30 @@ public class Console implements Observer {
 
     /**
      * Get the JTextArea to which everything is written.
+     *
      * @return the JTextArea
      */
     public JTextPane getTextArea() {
         return textArea;
     }
-    
+
     /**
      * The thread that will write everything to the text area.
      */
     class ReadWriteThread extends Thread {
-        /** The InputStream of this Thread */
+
+        /**
+         * The InputStream of this Thread
+         */
         PipedInputStream pi;
-        /** The type (CUSTOM, SYSTEMOUT, SYSTEMERR) of this Thread */
+        /**
+         * The type (CUSTOM, SYSTEMOUT, SYSTEMERR) of this Thread
+         */
         String type;
 
-        /** Create the ReaderThread. */
+        /**
+         * Create the ReaderThread.
+         */
         ReadWriteThread(PipedInputStream pi, String type) {
             super();
             this.pi = pi;
@@ -187,7 +217,7 @@ public class Console implements Observer {
                     AttributeSet attset = styleContext.getStyle(type);
                     String snippet = new String(buf, 0, len);
                     doc.insertString(doc.getLength(),
-                                     snippet, attset);
+                            snippet, attset);
                     printStream.print(snippet);
                     textArea.setCaretPosition(textArea.getDocument().getLength());
                 } catch (BadLocationException | IOException ignored) {
@@ -195,23 +225,33 @@ public class Console implements Observer {
                 }
             }
         }
-    }    
-    
+    }
+
     /**
      * The style context defining the styles of each type of PrintStream.
      */
     class ConsoleStyleContext extends StyleContext {
 
-        /** A Serial Version UID. */
-        private static final long serialVersionUID = 7253870053566811171L;
-        /** The name of the Style used for Custom messages */
+        /**
+         * The name of the Style used for Custom messages
+         */
         public static final String CUSTOM = "Custom";
-        /** The name of the Style used for System.out */
+        /**
+         * The name of the Style used for System.out
+         */
         public static final String SYSTEMOUT = "SystemOut";
-        /** The name of the Style used for System.err */
+        /**
+         * The name of the Style used for System.err
+         */
         public static final String SYSTEMERR = "SystemErr";
+        /**
+         * A Serial Version UID.
+         */
+        private static final long serialVersionUID = 7253870053566811171L;
 
-        /** Creates the style context for the Console. */
+        /**
+         * Creates the style context for the Console.
+         */
         public ConsoleStyleContext() {
             super();
             Style root = getStyle(DEFAULT_STYLE);

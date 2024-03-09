@@ -7,12 +7,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -20,37 +20,47 @@
 
 package com.lowagie.rups.model;
 
-import java.util.Observable;
-
 import com.lowagie.text.pdf.PdfReader;
+import java.util.Observable;
 
 /**
  * Loads the necessary iText PDF objects in Background.
  */
 public class ObjectLoader extends BackgroundTask {
-    /** This is the object that will forward the updates to the observers. */
+
+    /**
+     * This is the object that will forward the updates to the observers.
+     */
     protected Observable observable;
-    /** iText's PdfReader object. */
+    /**
+     * iText's PdfReader object.
+     */
     protected PdfReader reader;
-    /** The factory that can provide PDF objects. */
+    /**
+     * The factory that can provide PDF objects.
+     */
     protected IndirectObjectFactory objects;
-    /** The factory that can provide tree nodes. */
+    /**
+     * The factory that can provide tree nodes.
+     */
     protected TreeNodeFactory nodes;
-    
+
     /**
      * Creates a new ObjectLoader.
-     * @param    observable    the object that will forward the changes.
-     * @param    reader        the PdfReader from which the objects will be read.
+     *
+     * @param observable the object that will forward the changes.
+     * @param reader     the PdfReader from which the objects will be read.
      */
     public ObjectLoader(Observable observable, PdfReader reader) {
         this.observable = observable;
         this.reader = reader;
         start();
     }
-    
+
     /**
      * Getter for the PdfReader object.
-     * @return    a reader object
+     *
+     * @return a reader object
      */
     public PdfReader getReader() {
         return reader;
@@ -58,7 +68,8 @@ public class ObjectLoader extends BackgroundTask {
 
     /**
      * Getter for the object factory.
-     * @return    an indirect object factory
+     *
+     * @return an indirect object factory
      */
     public IndirectObjectFactory getObjects() {
         return objects;
@@ -66,12 +77,13 @@ public class ObjectLoader extends BackgroundTask {
 
     /**
      * Getter for the tree node factory.
-     * @return    a tree node factory
+     *
+     * @return a tree node factory
      */
     public TreeNodeFactory getNodes() {
         return nodes;
     }
-    
+
     /**
      * @see com.lowagie.rups.model.BackgroundTask#doTask()
      */

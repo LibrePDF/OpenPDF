@@ -24,8 +24,8 @@ class WatermarkerTest {
 
         // WHEN
         byte[] result = new Watermarker(input, text, fontsize, opacity)
-            .withColor(RED)
-            .write();
+                .withColor(RED)
+                .write();
 
         // THEN
         assertTrue(result.length > input.length);
@@ -37,7 +37,7 @@ class WatermarkerTest {
     @SuppressWarnings("unused")
     private void writeOnDisk(byte[] result) throws IOException {
         try (FileOutputStream fileOutputStream =
-            new FileOutputStream("src/test/resources/layers-marked.pdf")) {
+                new FileOutputStream("src/test/resources/layers-marked.pdf")) {
             fileOutputStream.write(result);
         }
     }

@@ -40,24 +40,16 @@ import javax.swing.SwingUtilities;
 public abstract class EventDispatchingThread {
 
     /**
-     * Inner class that holds the reference to the thread.
+     * The value of an object constructed by the construct() method.
      */
-    private static class ThreadWrapper {
-        private Thread thread;
-        ThreadWrapper(Thread t) { thread = t; }
-        synchronized Thread get() { return thread; }
-        synchronized void clear() { thread = null; }
-    }
-
-    /** The value of an object constructed by the construct() method.  */
     private Object value;
-    /** A wrapper for the tread that executes a time-consuming task. */
+    /**
+     * A wrapper for the tread that executes a time-consuming task.
+     */
     private ThreadWrapper thread;
 
     /**
-     * Starts a thread.
-     * Executes the time-consuming task in the construct method;
-     * finally calls the finish().
+     * Starts a thread. Executes the time-consuming task in the construct method; finally calls the finish().
      */
     public EventDispatchingThread() {
         final Runnable doFinished = this::finished;
@@ -65,8 +57,7 @@ public abstract class EventDispatchingThread {
         Runnable doConstruct = () -> {
             try {
                 value = construct();
-            }
-            finally {
+            } finally {
                 thread.clear();
             }
             SwingUtilities.invokeLater(doFinished);
@@ -104,8 +95,7 @@ public abstract class EventDispatchingThread {
     }
 
     /**
-     * Called on the event dispatching thread once the
-     * construct method has finished its task.
+     * Called on the event dispatching thread once the construct method has finished its task.
      */
     public void finished() {
     }
@@ -113,8 +103,7 @@ public abstract class EventDispatchingThread {
     /**
      * Returns the value created by the construct method.
      *
-     * @return the value created by the construct method or null
-     * if the task was interrupted before it was finished.
+     * @return the value created by the construct method or null if the task was interrupted before it was finished.
      */
     public Object get() {
         while (true) {
@@ -124,11 +113,30 @@ public abstract class EventDispatchingThread {
             }
             try {
                 t.join();
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // propagate
                 return null;
             }
+        }
+    }
+
+    /**
+     * Inner class that holds the reference to the thread.
+     */
+    private static class ThreadWrapper {
+
+        private Thread thread;
+
+        ThreadWrapper(Thread t) {
+            thread = t;
+        }
+
+        synchronized Thread get() {
+            return thread;
+        }
+
+        synchronized void clear() {
+            thread = null;
         }
     }
 }

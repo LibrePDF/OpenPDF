@@ -47,35 +47,41 @@
 
 package com.lowagie.text.pdf;
 
-/** Implements the signature dictionary.
+/**
+ * Implements the signature dictionary.
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PdfSignature extends PdfDictionary {
 
-    /** Creates new PdfSignature
-     * @param filter the filter
-     * @param subFilter the sub filter */
+    /**
+     * Creates new PdfSignature
+     *
+     * @param filter    the filter
+     * @param subFilter the sub filter
+     */
     public PdfSignature(PdfName filter, PdfName subFilter) {
         super(PdfName.SIG);
         put(PdfName.FILTER, filter);
         put(PdfName.SUBFILTER, subFilter);
     }
-    
+
     public void setByteRange(int[] range) {
         PdfArray array = new PdfArray();
-        for (int i : range) array.add(new PdfNumber(i));
+        for (int i : range) {
+            array.add(new PdfNumber(i));
+        }
         put(PdfName.BYTERANGE, array);
     }
-    
+
     public void setContents(byte[] contents) {
         put(PdfName.CONTENTS, new PdfString(contents).setHexWriting(true));
     }
-    
+
     public void setCert(byte[] cert) {
         put(PdfName.CERT, new PdfString(cert));
     }
-    
+
     public void setName(String name) {
         put(PdfName.NAME, new PdfString(name, PdfObject.TEXT_UNICODE));
     }
@@ -91,15 +97,15 @@ public class PdfSignature extends PdfDictionary {
     public void setReason(String name) {
         put(PdfName.REASON, new PdfString(name, PdfObject.TEXT_UNICODE));
     }
-    
+
     public void setContact(String name) {
         put(PdfName.CONTACTINFO, new PdfString(name, PdfObject.TEXT_UNICODE));
     }
-    
+
     /**
      * Return the build properties dictionary (PDF Dictionary name: Prop_Build)
-     *  
-     * @return the build properties dictionary 
+     *
+     * @return the build properties dictionary
      */
     public PdfSignatureBuildProperties getPdfSignatureBuildProperties() {
         PdfSignatureBuildProperties buildPropDic = (PdfSignatureBuildProperties) getAsDict(PdfName.PROP_BUILD);

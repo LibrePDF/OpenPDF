@@ -49,56 +49,59 @@
 
 package com.lowagie.text.pdf.draw;
 
-import java.util.ArrayList;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.ElementListener;
 import com.lowagie.text.pdf.PdfContentByte;
+import java.util.ArrayList;
 
 /**
- * Helper class implementing the DrawInterface. Can be used to add
- * horizontal or vertical separators. Won't draw anything unless
- * you implement the draw method.
- * @since    2.1.2
+ * Helper class implementing the DrawInterface. Can be used to add horizontal or vertical separators. Won't draw
+ * anything unless you implement the draw method.
+ *
+ * @since 2.1.2
  */
 
 public class VerticalPositionMark implements DrawInterface, Element {
 
-    /** Another implementation of the DrawInterface; its draw method will overrule LineSeparator.draw(). */
+    /**
+     * Another implementation of the DrawInterface; its draw method will overrule LineSeparator.draw().
+     */
     protected DrawInterface drawInterface = null;
 
-    /** The offset for the line. */
-    protected float offset = 0;
-    
     /**
-     * Creates a vertical position mark that won't draw anything unless
-     * you define a DrawInterface.
+     * The offset for the line.
      */
-    public VerticalPositionMark() {    
+    protected float offset = 0;
+
+    /**
+     * Creates a vertical position mark that won't draw anything unless you define a DrawInterface.
+     */
+    public VerticalPositionMark() {
     }
 
     /**
-     * Creates a vertical position mark that won't draw anything unless
-     * you define a DrawInterface.
-     * @param    drawInterface    the drawInterface for this vertical position mark.
-     * @param    offset            the offset for this vertical position mark.
+     * Creates a vertical position mark that won't draw anything unless you define a DrawInterface.
+     *
+     * @param drawInterface the drawInterface for this vertical position mark.
+     * @param offset        the offset for this vertical position mark.
      */
     public VerticalPositionMark(DrawInterface drawInterface, float offset) {
         this.drawInterface = drawInterface;
         this.offset = offset;
     }
-    
+
     /**
-     * @see com.lowagie.text.pdf.draw.DrawInterface#draw(com.lowagie.text.pdf.PdfContentByte, float, float, float, float, float)
+     * @see com.lowagie.text.pdf.draw.DrawInterface#draw(com.lowagie.text.pdf.PdfContentByte, float, float, float,
+     * float, float)
      */
     public void draw(PdfContentByte canvas, float llx, float lly, float urx, float ury, float y) {
         if (drawInterface != null) {
             drawInterface.draw(canvas, llx, lly, urx, ury, y + offset);
         }
     }
-    
+
     /**
      * @see com.lowagie.text.Element#process(com.lowagie.text.ElementListener)
      */
@@ -142,7 +145,8 @@ public class VerticalPositionMark implements DrawInterface, Element {
 
     /**
      * Getter for the interface with the overruling draw() method.
-     * @return    a DrawInterface implementation
+     *
+     * @return a DrawInterface implementation
      */
     public DrawInterface getDrawInterface() {
         return drawInterface;
@@ -150,6 +154,7 @@ public class VerticalPositionMark implements DrawInterface, Element {
 
     /**
      * Setter for the interface with the overruling draw() method.
+     *
      * @param drawInterface a DrawInterface implementation
      */
     public void setDrawInterface(DrawInterface drawInterface) {
@@ -158,17 +163,18 @@ public class VerticalPositionMark implements DrawInterface, Element {
 
     /**
      * Getter for the offset relative to the baseline of the current line.
-     * @return    an offset
+     *
+     * @return an offset
      */
     public float getOffset() {
         return offset;
     }
 
     /**
-     * Setter for the offset. The offset is relative to the current
-     * Y position. If you want to underline something, you have to
-     * choose a negative offset.
-     * @param offset    an offset
+     * Setter for the offset. The offset is relative to the current Y position. If you want to underline something, you
+     * have to choose a negative offset.
+     *
+     * @param offset an offset
      */
     public void setOffset(float offset) {
         this.offset = offset;

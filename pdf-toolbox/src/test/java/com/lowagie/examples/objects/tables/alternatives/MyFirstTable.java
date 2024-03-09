@@ -9,18 +9,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.alternatives;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * A very simple Table example.
@@ -29,9 +28,8 @@ public class MyFirstTable {
 
     /**
      * A very simple Table example.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
         System.out.println("My first table");

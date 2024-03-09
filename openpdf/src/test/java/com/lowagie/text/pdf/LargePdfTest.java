@@ -35,7 +35,7 @@ class LargePdfTest {
     @Test
     void writeLargePdf() throws Exception {
         Document document = PdfTestBase.createPdf(
-            Files.newOutputStream(largeFile.toPath()));
+                Files.newOutputStream(largeFile.toPath()));
 
         document.open();
         document.newPage();
@@ -46,7 +46,7 @@ class LargePdfTest {
 
         for (long i = 0; i < 19500; i++) {
             Image jpg = Image.getInstance(
-                "../pdf-toolbox/src/test/java/com/lowagie/examples/objects/images/sunflower-back.jpg");
+                    "../pdf-toolbox/src/test/java/com/lowagie/examples/objects/images/sunflower-back.jpg");
             document.add(jpg);
             document.add(new Paragraph(longString));
         }
@@ -56,7 +56,7 @@ class LargePdfTest {
 
         // This will fail now.
         assertThatThrownBy(() -> new PdfReader(canonicalPath))
-            .isInstanceOf(PdfException.class);
+                .isInstanceOf(PdfException.class);
     }
 
 }

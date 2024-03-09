@@ -14,17 +14,16 @@ package com.lowagie.examples.objects.images;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.awt.Color;
-import java.awt.Toolkit;
-import java.io.ByteArrayOutputStream;
-import java.net.URL;
-import org.junit.jupiter.api.Test;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Image;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.awt.Toolkit;
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
+import org.junit.jupiter.api.Test;
 
 /**
  * Using the java.awt.Image object.

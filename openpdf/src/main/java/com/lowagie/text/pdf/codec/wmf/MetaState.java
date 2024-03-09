@@ -49,16 +49,15 @@
 
 package com.lowagie.text.pdf.codec.wmf;
 
+import com.lowagie.text.pdf.PdfContentByte;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import com.lowagie.text.pdf.PdfContentByte;
-
 public class MetaState {
-    
+
     public static final int TA_NOUPDATECP = 0;
     public static final int TA_UPDATECP = 1;
     public static final int TA_LEFT = 0;
@@ -67,7 +66,7 @@ public class MetaState {
     public static final int TA_TOP = 0;
     public static final int TA_BOTTOM = 8;
     public static final int TA_BASELINE = 24;
-    
+
     public static final int TRANSPARENT = 1;
     public static final int OPAQUE = 2;
 
@@ -92,9 +91,11 @@ public class MetaState {
     public int extentWy;
     public float scalingX;
     public float scalingY;
-    
 
-    /** Creates new MetaState */
+
+    /**
+     * Creates new MetaState
+     */
     public MetaState() {
         savedStates = new Stack<>();
         MetaObjects = new ArrayList<>();
@@ -107,7 +108,7 @@ public class MetaState {
     public MetaState(MetaState state) {
         setMetaState(state);
     }
-    
+
     public void setMetaState(MetaState state) {
         savedStates = state.savedStates;
         MetaObjects = state.MetaObjects;
@@ -138,28 +139,27 @@ public class MetaState {
         }
         MetaObjects.add(object);
     }
-    
+
     public void selectMetaObject(int index, PdfContentByte cb) {
-        MetaObject obj = (MetaObject)MetaObjects.get(index);
-        if (obj == null)
+        MetaObject obj = (MetaObject) MetaObjects.get(index);
+        if (obj == null) {
             return;
+        }
         int style;
         switch (obj.getType()) {
             case MetaObject.META_BRUSH:
-                currentBrush = (MetaBrush)obj;
+                currentBrush = (MetaBrush) obj;
                 style = currentBrush.getStyle();
                 if (style == MetaBrush.BS_SOLID) {
                     Color color = currentBrush.getColor();
                     cb.setColorFill(color);
-                }
-                else if (style == MetaBrush.BS_HATCHED) {
+                } else if (style == MetaBrush.BS_HATCHED) {
                     Color color = currentBackgroundColor;
                     cb.setColorFill(color);
                 }
                 break;
-            case MetaObject.META_PEN:
-            {
-                currentPen = (MetaPen)obj;
+            case MetaObject.META_PEN: {
+                currentPen = (MetaPen) obj;
                 style = currentPen.getStyle();
                 if (style != MetaPen.PS_NULL) {
                     Color color = currentPen.getColor();
@@ -180,23 +180,22 @@ public class MetaState {
                             break;
                         default:
                             cb.setLineDash(0);
-                            break;                            
+                            break;
                     }
                 }
                 break;
             }
-            case MetaObject.META_FONT:
-            {
-                currentFont = (MetaFont)obj;
+            case MetaObject.META_FONT: {
+                currentFont = (MetaFont) obj;
                 break;
             }
         }
     }
-    
+
     public void deleteMetaObject(int index) {
         MetaObjects.set(index, null);
     }
-    
+
     public void saveState(PdfContentByte cb) {
         cb.saveState();
         MetaState state = new MetaState(this);
@@ -205,12 +204,14 @@ public class MetaState {
 
     public void restoreState(int index, PdfContentByte cb) {
         int pops;
-        if (index < 0)
+        if (index < 0) {
             pops = Math.min(-index, savedStates.size());
-        else
+        } else {
             pops = Math.max(savedStates.size() - index, 0);
-        if (pops == 0)
+        }
+        if (pops == 0) {
             return;
+        }
         MetaState state = null;
         while (pops-- != 0) {
             cb.restoreState();
@@ -218,58 +219,59 @@ public class MetaState {
         }
         setMetaState(state);
     }
-    
+
     public void cleanup(PdfContentByte cb) {
         int k = savedStates.size();
-        while (k-- > 0)
+        while (k-- > 0) {
             cb.restoreState();
+        }
     }
-    
+
     public float transformX(int x) {
-        return ((float)x - offsetWx) * scalingX / extentWx;
+        return ((float) x - offsetWx) * scalingX / extentWx;
     }
 
     public float transformY(int y) {
-        return (1f - ((float)y - offsetWy) / extentWy) * scalingY;
+        return (1f - ((float) y - offsetWy) / extentWy) * scalingY;
     }
-    
+
     public void setScalingX(float scalingX) {
         this.scalingX = scalingX;
     }
-    
+
     public void setScalingY(float scalingY) {
         this.scalingY = scalingY;
     }
-    
+
     public void setOffsetWx(int offsetWx) {
         this.offsetWx = offsetWx;
     }
-    
+
     public void setOffsetWy(int offsetWy) {
         this.offsetWy = offsetWy;
     }
-    
+
     public void setExtentWx(int extentWx) {
         this.extentWx = extentWx;
     }
-    
+
     public void setExtentWy(int extentWy) {
         this.extentWy = extentWy;
     }
-    
+
     public float transformAngle(float angle) {
         float ta = scalingY < 0 ? -angle : angle;
-        return (float)(scalingX < 0 ? Math.PI - ta : ta);
-    }
-    
-    public void setCurrentPoint(Point p) {
-        currentPoint = p;
+        return (float) (scalingX < 0 ? Math.PI - ta : ta);
     }
 
     public Point getCurrentPoint() {
         return currentPoint;
     }
-    
+
+    public void setCurrentPoint(Point p) {
+        currentPoint = p;
+    }
+
     public MetaBrush getCurrentBrush() {
         return currentBrush;
     }
@@ -281,93 +283,113 @@ public class MetaState {
     public MetaFont getCurrentFont() {
         return currentFont;
     }
-    
-    /** Getter for property currentBackgroundColor.
+
+    /**
+     * Getter for property currentBackgroundColor.
+     *
      * @return Value of property currentBackgroundColor.
      */
     public Color getCurrentBackgroundColor() {
         return currentBackgroundColor;
     }
-    
-    /** Setter for property currentBackgroundColor.
+
+    /**
+     * Setter for property currentBackgroundColor.
+     *
      * @param currentBackgroundColor New value of property currentBackgroundColor.
      */
     public void setCurrentBackgroundColor(Color currentBackgroundColor) {
         this.currentBackgroundColor = currentBackgroundColor;
     }
-    
-    /** Getter for property currentTextColor.
+
+    /**
+     * Getter for property currentTextColor.
+     *
      * @return Value of property currentTextColor.
      */
     public Color getCurrentTextColor() {
         return currentTextColor;
     }
-    
-    /** Setter for property currentTextColor.
+
+    /**
+     * Setter for property currentTextColor.
+     *
      * @param currentTextColor New value of property currentTextColor.
      */
     public void setCurrentTextColor(Color currentTextColor) {
         this.currentTextColor = currentTextColor;
     }
-    
-    /** Getter for property backgroundMode.
+
+    /**
+     * Getter for property backgroundMode.
+     *
      * @return Value of property backgroundMode.
      */
     public int getBackgroundMode() {
         return backgroundMode;
     }
-    
-    /** Setter for property backgroundMode.
+
+    /**
+     * Setter for property backgroundMode.
+     *
      * @param backgroundMode New value of property backgroundMode.
      */
     public void setBackgroundMode(int backgroundMode) {
         this.backgroundMode = backgroundMode;
     }
-    
-    /** Getter for property textAlign.
+
+    /**
+     * Getter for property textAlign.
+     *
      * @return Value of property textAlign.
      */
     public int getTextAlign() {
         return textAlign;
     }
-    
-    /** Setter for property textAlign.
+
+    /**
+     * Setter for property textAlign.
+     *
      * @param textAlign New value of property textAlign.
      */
     public void setTextAlign(int textAlign) {
         this.textAlign = textAlign;
     }
-    
-    /** Getter for property polyFillMode.
+
+    /**
+     * Getter for property polyFillMode.
+     *
      * @return Value of property polyFillMode.
      */
     public int getPolyFillMode() {
         return polyFillMode;
     }
-    
-    /** Setter for property polyFillMode.
+
+    /**
+     * Setter for property polyFillMode.
+     *
      * @param polyFillMode New value of property polyFillMode.
      */
     public void setPolyFillMode(int polyFillMode) {
         this.polyFillMode = polyFillMode;
     }
-    
+
     public void setLineJoinRectangle(PdfContentByte cb) {
         if (lineJoin != 0) {
             lineJoin = 0;
             cb.setLineJoin(0);
         }
     }
-    
+
     public void setLineJoinPolygon(PdfContentByte cb) {
         if (lineJoin == 0) {
             lineJoin = 1;
             cb.setLineJoin(1);
         }
     }
-    
+
     public boolean getLineNeutral() {
         return (lineJoin == 0);
     }
-    
+
 }

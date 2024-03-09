@@ -3,9 +3,6 @@ package com.lowagie.toolbox.plugins.watermarker;
 import static com.lowagie.text.pdf.BaseFont.WINANSI;
 import static com.lowagie.text.pdf.BaseFont.createFont;
 
-import java.awt.Color;
-import java.io.IOException;
-
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
@@ -13,10 +10,12 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfGState;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
+import java.awt.Color;
+import java.io.IOException;
 
 /**
- * The concrete class which will write a the watermark on the stamp.
- * It is meant to be used through WatermarkerTool or WatermarkerBuilder.
+ * The concrete class which will write a the watermark on the stamp. It is meant to be used through WatermarkerTool or
+ * WatermarkerBuilder.
  */
 class Writer {
 
@@ -43,14 +42,14 @@ class Writer {
     }
 
     /**
-     * Does the magic, with all parameters already set and valid. At the end, the PDF file configured through
-     * the stamp parameter will be written.
+     * Does the magic, with all parameters already set and valid. At the end, the PDF file configured through the stamp
+     * parameter will be written.
      *
      * @throws DocumentException if the default "Helvetica" font cannot be created
-     * @throws IOException if the default "Helvetica" font cannot be created
+     * @throws IOException       if the default "Helvetica" font cannot be created
      */
     void write() throws IOException, DocumentException {
-        final BaseFont bf = (font != null) ? font : createFont("Helvetica", WINANSI,false);
+        final BaseFont bf = (font != null) ? font : createFont("Helvetica", WINANSI, false);
         int pagecount = reader.getNumberOfPages();
         PdfGState gs1 = new PdfGState();
         gs1.setFillOpacity(opacity);

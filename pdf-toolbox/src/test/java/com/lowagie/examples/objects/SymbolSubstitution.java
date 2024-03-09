@@ -9,22 +9,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Shows how special characters are substituted with Phrase.getInstance.
- * 
+ *
  * @author blowagie
  */
 
@@ -32,7 +31,7 @@ public class SymbolSubstitution {
 
     /**
      * How to substiture special characters with Phrase.getInstance.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -52,9 +51,9 @@ public class SymbolSubstitution {
             // step 4:
             document.add(Phrase.getInstance("What is the " + (char) 945 + "-coefficient of the "
                     + (char) 946 + "-factor in the " + (char) 947 + "-equation?\n"));
-                    for (int i = 913; i < 970; i++) {
-                        document.add(Phrase.getInstance(" " + i + ": " + (char) i));
-                    }
+            for (int i = 913; i < 970; i++) {
+                document.add(Phrase.getInstance(" " + i + ": " + (char) i));
+            }
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }

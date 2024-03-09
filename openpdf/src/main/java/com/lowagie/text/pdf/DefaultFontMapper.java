@@ -47,7 +47,6 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.text.ExceptionConverter;
-
 import java.awt.Font;
 import java.io.File;
 import java.util.HashMap;
@@ -61,280 +60,281 @@ import java.util.HashMap;
 
 public class DefaultFontMapper implements FontMapper {
 
-  /**
-   * A representation of BaseFont parameters.
-   */
-  public static class BaseFontParameters {
+    /**
+     * Maps aliases to names.
+     */
+    private HashMap<String, String> aliases = new HashMap<>();
+    /**
+     * Maps names to BaseFont parameters.
+     */
+    private HashMap<String, BaseFontParameters> mapper = new HashMap<>();
 
     /**
-     * The font name.
-     */
-    public String fontName;
-    /**
-     * The encoding for that font.
-     */
-    public String encoding;
-    /**
-     * The embedding for that font.
-     */
-    public boolean embedded;
-    /**
-     * Whether the font is cached of not.
-     */
-    public boolean cached;
-    /**
-     * The font bytes for ttf and afm.
-     */
-    public byte[] ttfAfm;
-    /**
-     * The font bytes for pfb.
-     */
-    public byte[] pfb;
-
-    /**
-     * Constructs default BaseFont parameters.
+     * Returns a BaseFont which can be used to represent the given AWT Font
      *
-     * @param fontName the font name or location
+     * @param font the font to be converted
+     * @return a BaseFont which has similar properties to the provided Font
      */
-    public BaseFontParameters(String fontName) {
-      this.fontName = fontName;
-      encoding = BaseFont.CP1252;
-      embedded = BaseFont.EMBEDDED;
-      cached = BaseFont.CACHED;
+
+    public BaseFont awtToPdf(Font font) {
+        try {
+            BaseFontParameters p = getBaseFontParameters(font.getFontName());
+            if (p != null) {
+                return BaseFont.createFont(p.fontName, p.encoding, p.embedded, p.cached, p.ttfAfm, p.pfb);
+            }
+            final String fontKey;
+            final String logicalName = font.getName().toLowerCase();
+
+            if (logicalName.equals("dialoginput") || logicalName.contains("mono") || logicalName.startsWith(
+                    "courier")) {
+
+                if (font.isItalic()) {
+                    if (font.isBold()) {
+                        fontKey = BaseFont.COURIER_BOLDOBLIQUE;
+
+                    } else {
+                        fontKey = BaseFont.COURIER_OBLIQUE;
+                    }
+
+                } else {
+                    if (font.isBold()) {
+                        fontKey = BaseFont.COURIER_BOLD;
+
+                    } else {
+                        fontKey = BaseFont.COURIER;
+                    }
+                }
+
+            } else if (logicalName.equals("serif") || logicalName.equals("timesroman")) {
+
+                if (font.isItalic()) {
+                    if (font.isBold()) {
+                        fontKey = BaseFont.TIMES_BOLDITALIC;
+
+                    } else {
+                        fontKey = BaseFont.TIMES_ITALIC;
+                    }
+
+                } else {
+                    if (font.isBold()) {
+                        fontKey = BaseFont.TIMES_BOLD;
+
+                    } else {
+                        fontKey = BaseFont.TIMES_ROMAN;
+                    }
+                }
+
+            } else {  // default, this catches Dialog and SansSerif
+
+                if (font.isItalic()) {
+                    if (font.isBold()) {
+                        fontKey = BaseFont.HELVETICA_BOLDOBLIQUE;
+
+                    } else {
+                        fontKey = BaseFont.HELVETICA_OBLIQUE;
+                    }
+
+                } else {
+                    if (font.isBold()) {
+                        fontKey = BaseFont.HELVETICA_BOLD;
+                    } else {
+                        fontKey = BaseFont.HELVETICA;
+                    }
+                }
+            }
+            return BaseFont.createFont(fontKey, BaseFont.CP1252, false);
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
     }
-  }
 
-  /**
-   * Maps aliases to names.
-   */
-  private HashMap<String, String> aliases = new HashMap<>();
-  /**
-   * Maps names to BaseFont parameters.
-   */
-  private HashMap<String, BaseFontParameters> mapper = new HashMap<>();
+    /**
+     * Returns an AWT Font which can be used to represent the given BaseFont
+     *
+     * @param font the font to be converted
+     * @param size the desired point size of the resulting font
+     * @return a Font which has similar properties to the provided BaseFont
+     */
 
-  /**
-   * Returns a BaseFont which can be used to represent the given AWT Font
-   *
-   * @param  font    the font to be converted
-   * @return a BaseFont which has similar properties to the provided Font
-   */
+    public Font pdfToAwt(BaseFont font, int size) {
+        String[][] names = font.getFullFontName();
+        if (names.length == 1) {
+            return new Font(names[0][3], Font.PLAIN, size);
+        }
+        String name10 = null;
+        String name3x = null;
+        for (String[] name : names) {
+            if (name[0].equals("1") && name[1].equals("0")) {
+                name10 = name[3];
+            } else if (name[2].equals("1033")) {
+                name3x = name[3];
+                break;
+            }
+        }
+        String finalName = name3x;
+        if (finalName == null) {
+            finalName = name10;
+        }
+        if (finalName == null) {
+            finalName = names[0][3];
+        }
+        return new Font(finalName, Font.PLAIN, size);
+    }
 
-  public BaseFont awtToPdf(Font font) {
-    try {
-      BaseFontParameters p = getBaseFontParameters(font.getFontName());
-      if (p != null) {
-        return BaseFont.createFont(p.fontName, p.encoding, p.embedded, p.cached, p.ttfAfm, p.pfb);
-      }
-      final String fontKey;
-      final String logicalName = font.getName().toLowerCase();
+    /**
+     * Maps a name to a BaseFont parameter.
+     *
+     * @param awtName    the name
+     * @param parameters the BaseFont parameter
+     */
+    public void putName(String awtName, BaseFontParameters parameters) {
+        mapper.put(awtName, parameters);
+    }
 
-      if (logicalName.equals("dialoginput") || logicalName.contains("mono") || logicalName.startsWith("courier")) {
+    /**
+     * Maps an alias to a name.
+     *
+     * @param alias   the alias
+     * @param awtName the name
+     */
+    public void putAlias(String alias, String awtName) {
+        aliases.put(alias, awtName);
+    }
 
-        if (font.isItalic()) {
-          if (font.isBold()) {
-            fontKey = BaseFont.COURIER_BOLDOBLIQUE;
-
-          } else {
-            fontKey = BaseFont.COURIER_OBLIQUE;
-          }
-
+    /**
+     * Looks for a BaseFont parameter associated with a name.
+     *
+     * @param name the name
+     * @return the BaseFont parameter or <CODE>null</CODE> if not found.
+     */
+    public BaseFontParameters getBaseFontParameters(String name) {
+        String alias = aliases.get(name);
+        if (alias == null) {
+            return mapper.get(name);
+        }
+        BaseFontParameters p = mapper.get(alias);
+        if (p == null) {
+            return mapper.get(name);
         } else {
-          if (font.isBold()) {
-            fontKey = BaseFont.COURIER_BOLD;
-
-          } else {
-            fontKey = BaseFont.COURIER;
-          }
+            return p;
         }
+    }
 
-      } else if (logicalName.equals("serif") || logicalName.equals("timesroman")) {
-
-        if (font.isItalic()) {
-          if (font.isBold()) {
-            fontKey = BaseFont.TIMES_BOLDITALIC;
-
-          } else {
-            fontKey = BaseFont.TIMES_ITALIC;
-          }
-
-        } else {
-          if (font.isBold()) {
-            fontKey = BaseFont.TIMES_BOLD;
-
-          } else {
-            fontKey = BaseFont.TIMES_ROMAN;
-          }
+    /**
+     * Inserts the names in this map.
+     *
+     * @param allNames the returned value of calling {@link BaseFont#getAllFontNames(String, String, byte[])}
+     * @param path     the full path to the font
+     */
+    public void insertNames(Object[] allNames, String path) {
+        String[][] names = (String[][]) allNames[2];
+        String main = null;
+        for (String[] name : names) {
+            if (name[2].equals("1033")) {
+                main = name[3];
+                break;
+            }
         }
-
-      } else {  // default, this catches Dialog and SansSerif
-
-        if (font.isItalic()) {
-          if (font.isBold()) {
-            fontKey = BaseFont.HELVETICA_BOLDOBLIQUE;
-
-          } else {
-            fontKey = BaseFont.HELVETICA_OBLIQUE;
-          }
-
-        } else {
-          if (font.isBold()) {
-            fontKey = BaseFont.HELVETICA_BOLD;
-          } else {
-            fontKey = BaseFont.HELVETICA;
-          }
+        if (main == null) {
+            main = names[0][3];
         }
-      }
-      return BaseFont.createFont(fontKey, BaseFont.CP1252, false);
-    } catch (Exception e) {
-      throw new ExceptionConverter(e);
-    }
-  }
-
-  /**
-   * Returns an AWT Font which can be used to represent the given BaseFont
-   *
-   * @param  font    the font to be converted
-   * @param  size    the desired point size of the resulting font
-   * @return a Font which has similar properties to the provided BaseFont
-   */
-
-  public Font pdfToAwt(BaseFont font, int size) {
-    String[][] names = font.getFullFontName();
-    if (names.length == 1) {
-      return new Font(names[0][3], Font.PLAIN, size);
-    }
-    String name10 = null;
-    String name3x = null;
-    for (String[] name : names) {
-      if (name[0].equals("1") && name[1].equals("0")) {
-        name10 = name[3];
-      } else if (name[2].equals("1033")) {
-        name3x = name[3];
-        break;
-      }
-    }
-    String finalName = name3x;
-    if (finalName == null) {
-      finalName = name10;
-    }
-    if (finalName == null) {
-      finalName = names[0][3];
-    }
-    return new Font(finalName, Font.PLAIN, size);
-  }
-
-  /**
-   * Maps a name to a BaseFont parameter.
-   *
-   * @param awtName the name
-   * @param parameters the BaseFont parameter
-   */
-  public void putName(String awtName, BaseFontParameters parameters) {
-    mapper.put(awtName, parameters);
-  }
-
-  /**
-   * Maps an alias to a name.
-   *
-   * @param alias the alias
-   * @param awtName the name
-   */
-  public void putAlias(String alias, String awtName) {
-    aliases.put(alias, awtName);
-  }
-
-  /**
-   * Looks for a BaseFont parameter associated with a name.
-   *
-   * @param name the name
-   * @return the BaseFont parameter or <CODE>null</CODE> if not found.
-   */
-  public BaseFontParameters getBaseFontParameters(String name) {
-    String alias = aliases.get(name);
-    if (alias == null) {
-      return mapper.get(name);
-    }
-    BaseFontParameters p = mapper.get(alias);
-    if (p == null) {
-      return mapper.get(name);
-    } else {
-      return p;
-    }
-  }
-
-  /**
-   * Inserts the names in this map.
-   *
-   * @param allNames the returned value of calling {@link BaseFont#getAllFontNames(String, String, byte[])}
-   * @param path the full path to the font
-   */
-  public void insertNames(Object[] allNames, String path) {
-    String[][] names = (String[][]) allNames[2];
-    String main = null;
-    for (String[] name : names) {
-      if (name[2].equals("1033")) {
-        main = name[3];
-        break;
-      }
-    }
-    if (main == null) {
-      main = names[0][3];
-    }
-    BaseFontParameters p = new BaseFontParameters(path);
-    mapper.put(main, p);
-      for (String[] name : names) {
-          aliases.put(name[3], main);
-      }
-    aliases.put((String) allNames[0], main);
-  }
-
-  /**
-   * Inserts all the fonts recognized by iText in the
-   * <CODE>directory</CODE> into the map. The encoding
-   * will be <CODE>BaseFont.CP1252</CODE> but can be changed later.
-   *
-   * @param dir the directory to scan
-   * @return the number of files processed
-   */
-  public int insertDirectory(String dir) {
-    File file = new File(dir);
-    if (!file.exists() || !file.isDirectory()) {
-      return 0;
-    }
-    File[] files = file.listFiles();
-    if (files == null) {
-      return 0;
-    }
-    int count = 0;
-    for (File file1 : files) {
-      file = file1;
-      String name = file.getPath().toLowerCase();
-      try {
-        if (name.endsWith(".ttf") || name.endsWith(".otf") || name.endsWith(".afm")) {
-          Object[] allNames = BaseFont.getAllFontNames(file.getPath(), BaseFont.CP1252, null);
-          insertNames(allNames, file.getPath());
-          ++count;
-        } else if (name.endsWith(".ttc")) {
-          String[] ttcs = BaseFont.enumerateTTCNames(file.getPath());
-          for (int j = 0; j < ttcs.length; ++j) {
-            String nt = file.getPath() + "," + j;
-            Object[] allNames = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
-            insertNames(allNames, nt);
-          }
-          ++count;
+        BaseFontParameters p = new BaseFontParameters(path);
+        mapper.put(main, p);
+        for (String[] name : names) {
+            aliases.put(name[3], main);
         }
-      } catch (Exception e) {
-      }
+        aliases.put((String) allNames[0], main);
     }
-    return count;
-  }
 
-  public HashMap<String, BaseFontParameters> getMapper() {
-    return mapper;
-  }
+    /**
+     * Inserts all the fonts recognized by iText in the
+     * <CODE>directory</CODE> into the map. The encoding
+     * will be <CODE>BaseFont.CP1252</CODE> but can be changed later.
+     *
+     * @param dir the directory to scan
+     * @return the number of files processed
+     */
+    public int insertDirectory(String dir) {
+        File file = new File(dir);
+        if (!file.exists() || !file.isDirectory()) {
+            return 0;
+        }
+        File[] files = file.listFiles();
+        if (files == null) {
+            return 0;
+        }
+        int count = 0;
+        for (File file1 : files) {
+            file = file1;
+            String name = file.getPath().toLowerCase();
+            try {
+                if (name.endsWith(".ttf") || name.endsWith(".otf") || name.endsWith(".afm")) {
+                    Object[] allNames = BaseFont.getAllFontNames(file.getPath(), BaseFont.CP1252, null);
+                    insertNames(allNames, file.getPath());
+                    ++count;
+                } else if (name.endsWith(".ttc")) {
+                    String[] ttcs = BaseFont.enumerateTTCNames(file.getPath());
+                    for (int j = 0; j < ttcs.length; ++j) {
+                        String nt = file.getPath() + "," + j;
+                        Object[] allNames = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
+                        insertNames(allNames, nt);
+                    }
+                    ++count;
+                }
+            } catch (Exception e) {
+            }
+        }
+        return count;
+    }
 
-  public HashMap<String, String> getAliases() {
-    return aliases;
-  }
+    public HashMap<String, BaseFontParameters> getMapper() {
+        return mapper;
+    }
+
+    public HashMap<String, String> getAliases() {
+        return aliases;
+    }
+
+    /**
+     * A representation of BaseFont parameters.
+     */
+    public static class BaseFontParameters {
+
+        /**
+         * The font name.
+         */
+        public String fontName;
+        /**
+         * The encoding for that font.
+         */
+        public String encoding;
+        /**
+         * The embedding for that font.
+         */
+        public boolean embedded;
+        /**
+         * Whether the font is cached of not.
+         */
+        public boolean cached;
+        /**
+         * The font bytes for ttf and afm.
+         */
+        public byte[] ttfAfm;
+        /**
+         * The font bytes for pfb.
+         */
+        public byte[] pfb;
+
+        /**
+         * Constructs default BaseFont parameters.
+         *
+         * @param fontName the font name or location
+         */
+        public BaseFontParameters(String fontName) {
+            this.fontName = fontName;
+            encoding = BaseFont.CP1252;
+            embedded = BaseFont.EMBEDDED;
+            cached = BaseFont.CACHED;
+        }
+    }
 }

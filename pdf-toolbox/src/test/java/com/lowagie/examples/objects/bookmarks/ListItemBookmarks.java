@@ -18,9 +18,8 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfAction;
 import com.lowagie.text.pdf.PdfOutline;
 import com.lowagie.text.pdf.PdfWriter;
-import org.librepdf.openpdf.examples.content.Constants;
-
 import java.io.FileOutputStream;
+import org.librepdf.openpdf.examples.content.Constants;
 
 /**
  * Creates a document with outlines (bookmarks) for ListItems.

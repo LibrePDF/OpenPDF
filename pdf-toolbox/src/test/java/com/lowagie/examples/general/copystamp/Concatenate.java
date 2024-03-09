@@ -13,14 +13,10 @@
 
 /**
  * This class demonstrates copying a PDF file using iText.
+ *
  * @author Mark Thompson
  */
 package com.lowagie.examples.general.copystamp;
-
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PRAcroForm;
@@ -28,6 +24,10 @@ import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.SimpleBookmark;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tool that can be used to concatenate existing PDF files.
@@ -35,24 +35,23 @@ import com.lowagie.text.pdf.SimpleBookmark;
 public class Concatenate {
 
     /**
-     * This class can be used to concatenate existing PDF files.
-     * (This was an example known as PdfCopy.java)
+     * This class can be used to concatenate existing PDF files. (This was an example known as PdfCopy.java)
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         if (args.length < 2) {
             System.err.println("arguments: file1 [file2 ...] destfile");
-        }
-        else {
+        } else {
             System.out.println("PdfCopy example");
             try {
                 int pageOffset = 0;
                 List<Map<String, Object>> master = new ArrayList<>();
                 int f = 0;
-                String outFile = args[args.length-1];
+                String outFile = args[args.length - 1];
                 Document document = null;
-                PdfCopy  writer = null;
-                while (f < args.length-1) {
+                PdfCopy writer = null;
+                while (f < args.length - 1) {
                     // we create a reader for a certain document
                     PdfReader reader = new PdfReader(args[f]);
                     reader.consolidateNamedDestinations();
@@ -60,12 +59,13 @@ public class Concatenate {
                     int n = reader.getNumberOfPages();
                     List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmarkList(reader);
                     if (bookmarks != null) {
-                        if (pageOffset != 0)
+                        if (pageOffset != 0) {
                             SimpleBookmark.shiftPageNumbersInRange(bookmarks, pageOffset, null);
+                        }
                         master.addAll(bookmarks);
                     }
                     pageOffset += n;
-                    
+
                     if (f == 0) {
                         // step 1: creation of a document-object
                         document = new Document(reader.getPageSizeWithRotation(1));
@@ -82,16 +82,17 @@ public class Concatenate {
                         writer.addPage(page);
                     }
                     PRAcroForm form = reader.getAcroForm();
-                    if (form != null)
+                    if (form != null) {
                         writer.copyAcroForm(reader);
+                    }
                     f++;
                 }
-                if (!master.isEmpty())
+                if (!master.isEmpty()) {
                     writer.setOutlines(master);
+                }
                 // step 5: we close the document
                 document.close();
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

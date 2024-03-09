@@ -47,35 +47,38 @@
 package com.lowagie.text.pdf;
 
 public class StampContent extends PdfContentByte {
+
     PdfStamperImp.PageStamp ps;
     PageResources pageResources;
-    
-    /** Creates a new instance of StampContent */
+
+    /**
+     * Creates a new instance of StampContent
+     */
     StampContent(PdfStamperImp stamper, PdfStamperImp.PageStamp ps) {
         super(stamper);
         this.ps = ps;
         pageResources = ps.pageResources;
     }
-    
+
     public void setAction(PdfAction action, float llx, float lly, float urx, float ury) {
-        ((PdfStamperImp)writer).addAnnotation(new PdfAnnotation(writer, llx, lly, urx, ury, action), ps.pageN);
+        ((PdfStamperImp) writer).addAnnotation(new PdfAnnotation(writer, llx, lly, urx, ury, action), ps.pageN);
     }
 
     /**
-     * Gets a duplicate of this <CODE>PdfContentByte</CODE>. All
-     * the members are copied by reference but the buffer stays different.
+     * Gets a duplicate of this <CODE>PdfContentByte</CODE>. All the members are copied by reference but the buffer
+     * stays different.
      *
      * @return a copy of this <CODE>PdfContentByte</CODE>
      */
     public PdfContentByte getDuplicate() {
-        return new StampContent((PdfStamperImp)writer, ps);
+        return new StampContent((PdfStamperImp) writer, ps);
     }
 
     PageResources getPageResources() {
         return pageResources;
     }
-    
+
     void addAnnotation(PdfAnnotation annot) {
-        ((PdfStamperImp)writer).addAnnotation(annot, ps.pageN);
+        ((PdfStamperImp) writer).addAnnotation(annot, ps.pageN);
     }
 }

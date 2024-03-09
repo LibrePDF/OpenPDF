@@ -49,27 +49,27 @@
 
 package com.lowagie.text.pdf.events;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPTableEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * If you want to add more than one page event to a PdfPTable,
- * you have to construct a PdfPTableEventForwarder, add the
- * different events to this object and add the forwarder to
- * the PdfWriter.
+ * If you want to add more than one page event to a PdfPTable, you have to construct a PdfPTableEventForwarder, add the
+ * different events to this object and add the forwarder to the PdfWriter.
  */
 
 public class PdfPTableEventForwarder implements PdfPTableEvent {
 
-    /** ArrayList containing all the PageEvents that have to be executed. */
+    /**
+     * ArrayList containing all the PageEvents that have to be executed.
+     */
     protected List<PdfPTableEvent> events = new ArrayList<>();
-    
-    /** 
+
+    /**
      * Add a page event to the forwarder.
+     *
      * @param event an event that has to be added to the forwarder.
      */
     public void addTableEvent(PdfPTableEvent event) {
@@ -77,9 +77,11 @@ public class PdfPTableEventForwarder implements PdfPTableEvent {
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPTableEvent#tableLayout(com.lowagie.text.pdf.PdfPTable, float[][], float[], int, int, com.lowagie.text.pdf.PdfContentByte[])
+     * @see com.lowagie.text.pdf.PdfPTableEvent#tableLayout(com.lowagie.text.pdf.PdfPTable, float[][], float[], int,
+     * int, com.lowagie.text.pdf.PdfContentByte[])
      */
-    public void tableLayout(PdfPTable table, float[][] widths, float[] heights, int headerRows, int rowStart, PdfContentByte[] canvases) {
+    public void tableLayout(PdfPTable table, float[][] widths, float[] heights, int headerRows, int rowStart,
+            PdfContentByte[] canvases) {
         PdfPTableEvent event;
         for (Object event1 : events) {
             event = (PdfPTableEvent) event1;

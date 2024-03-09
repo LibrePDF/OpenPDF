@@ -35,14 +35,6 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JInternalFrame;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
@@ -53,9 +45,16 @@ import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.FileArrayArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JInternalFrame;
 
 /**
  * Concatenates two PDF files
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class ConcatN extends AbstractTool {
@@ -70,10 +69,24 @@ public class ConcatN extends AbstractTool {
     public ConcatN() {
         menuoptions = MENU_EXECUTE | MENU_EXECUTE_SHOW;
         arguments.add(new FileArrayArgument(this, "srcfiles",
-                                            "The list of PDF files"));
+                "The list of PDF files"));
         arguments.add(new FileArgument(this, "destfile",
                 "The file to which the concatenated PDF has to be written", true,
-                                       new PdfFilter()));
+                new PdfFilter()));
+    }
+
+    /**
+     * Concatenates two PDF files.
+     *
+     * @param args String[]
+     */
+    public static void main(String[] args) {
+        ConcatN tool = new ConcatN();
+        if (args.length < 2) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
+        tool.execute();
     }
 
     /**
@@ -126,7 +139,7 @@ public class ConcatN extends AbstractTool {
                     document = new Document(reader.getPageSizeWithRotation(1));
                     // step 2: we create a writer that listens to the document
                     writer = new PdfCopy(document,
-                                         new FileOutputStream(pdf_file));
+                            new FileOutputStream(pdf_file));
                     // step 3: we open the document
                     document.open();
                 }
@@ -150,9 +163,8 @@ public class ConcatN extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -162,26 +174,10 @@ public class ConcatN extends AbstractTool {
         // represent the changes of the argument in the internal frame
     }
 
-
     /**
-     * Concatenates two PDF files.
-     *
-     * @param args String[]
-     */
-    public static void main(String[] args) {
-        ConcatN tool = new ConcatN();
-        if (args.length < 2) {
-            System.err.println(tool.getUsage());
-        }
-        tool.setMainArguments(args);
-        tool.execute();
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         return (File) getValue("destfile");

@@ -34,11 +34,6 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.swing.JInternalFrame;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -49,9 +44,13 @@ import com.lowagie.toolbox.AbstractTool;
 import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.swing.JInternalFrame;
 
 /**
  * This tool lets you generate a PDF that shows N pages on 1.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class Divide extends AbstractTool {
@@ -69,6 +68,20 @@ public class Divide extends AbstractTool {
                 "The file you want to divide", false, new PdfFilter()));
         arguments.add(new FileArgument(this, "destfile", "The resulting PDF",
                 true, new PdfFilter()));
+    }
+
+    /**
+     * Generates a divided version of an NUp version of an existing PDF file.
+     *
+     * @param args String[]
+     */
+    public static void main(String[] args) {
+        Divide tool = new Divide();
+        if (args.length < 2) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
+        tool.execute();
     }
 
     /**
@@ -144,9 +157,8 @@ public class Divide extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -158,24 +170,9 @@ public class Divide extends AbstractTool {
     }
 
     /**
-     * Generates a divided version of an NUp version of an existing PDF file.
-     *
-     * @param args String[]
-     */
-    public static void main(String[] args) {
-        Divide tool = new Divide();
-        if (args.length < 2) {
-            System.err.println(tool.getUsage());
-        }
-        tool.setMainArguments(args);
-        tool.execute();
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         return (File) getValue("destfile");

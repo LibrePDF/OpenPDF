@@ -54,34 +54,37 @@
 
 /**
  * The OpenPDF project has permission from the author to use this class under a LGPL/MPL license on 2018-08-06:
- *
+ * <p>
  * Hi Andreas,
- *
+ * <p>
  * you have my permission to use my code with your license.
- *
+ * <p>
  * Regards
- *
- *
- * Heinz
- * --
- * Dr Heinz M. Kabutz (PhD CompSci)
+ * <p>
+ * <p>
+ * Heinz -- Dr Heinz M. Kabutz (PhD CompSci)
  */
 
 package com.lowagie.text;
 
 /**
- * The ExceptionConverter changes a checked exception into an
- * unchecked exception.
+ * The ExceptionConverter changes a checked exception into an unchecked exception.
  */
 public class ExceptionConverter extends RuntimeException {
+
     private static final long serialVersionUID = 8657630363395849399L;
-    /** we keep a handle to the wrapped exception */
+    /**
+     * we keep a handle to the wrapped exception
+     */
     private Exception ex;
-    /** prefix for the exception */
+    /**
+     * prefix for the exception
+     */
     private String prefix;
 
     /**
      * Construct a RuntimeException based on another Exception
+     *
      * @param ex the exception that has to be turned into a RuntimeException
      */
     public ExceptionConverter(Exception ex) {
@@ -90,11 +93,11 @@ public class ExceptionConverter extends RuntimeException {
     }
 
     /**
-     * Convert an Exception into an unchecked exception. Return the exception if it is
-     * already an unchecked exception or return an ExceptionConverter wrapper otherwise
+     * Convert an Exception into an unchecked exception. Return the exception if it is already an unchecked exception or
+     * return an ExceptionConverter wrapper otherwise
      *
      * @param ex the exception to convert
-     * @return an unchecked exception 
+     * @return an unchecked exception
      * @since 2.1.6
      */
     public static final RuntimeException convertException(Exception ex) {
@@ -105,7 +108,8 @@ public class ExceptionConverter extends RuntimeException {
     }
 
     /**
-     * and allow the user of ExceptionConverter to get a handle to it. 
+     * and allow the user of ExceptionConverter to get a handle to it.
+     *
      * @return the original exception
      */
     public Exception getException() {
@@ -113,7 +117,8 @@ public class ExceptionConverter extends RuntimeException {
     }
 
     /**
-     * We print the message of the checked exception 
+     * We print the message of the checked exception
+     *
      * @return message of the original exception
      */
     public String getMessage() {
@@ -122,6 +127,7 @@ public class ExceptionConverter extends RuntimeException {
 
     /**
      * and make sure we also produce a localized version
+     *
      * @return localized version of the message
      */
     public String getLocalizedMessage() {
@@ -129,21 +135,24 @@ public class ExceptionConverter extends RuntimeException {
     }
 
     /**
-     * The toString() is changed to be prefixed with ExceptionConverter 
+     * The toString() is changed to be prefixed with ExceptionConverter
+     *
      * @return String version of the exception
      */
     public String toString() {
         return prefix + ex;
     }
 
-    /** we have to override this as well */
+    /**
+     * we have to override this as well
+     */
     public void printStackTrace() {
         printStackTrace(System.err);
     }
 
     /**
-     * here we prefix, with printStream.print(), not printStream.println(), the stack
-     * trace with "ExceptionConverter:" 
+     * here we prefix, with printStream.print(), not printStream.println(), the stack trace with "ExceptionConverter:"
+     *
      * @param printStream printStream
      */
     public void printStackTrace(java.io.PrintStream printStream) {
@@ -154,7 +163,8 @@ public class ExceptionConverter extends RuntimeException {
     }
 
     /**
-     * Again, we prefix the stack trace with "ExceptionConverter:" 
+     * Again, we prefix the stack trace with "ExceptionConverter:"
+     *
      * @param printWriter printWriter
      */
     public void printStackTrace(java.io.PrintWriter printWriter) {
@@ -165,9 +175,9 @@ public class ExceptionConverter extends RuntimeException {
     }
 
     /**
-     * requests to fill in the stack trace we will have to ignore.
-     * We can't throw an exception here, because this method
-     * is called by the constructor of Throwable 
+     * requests to fill in the stack trace we will have to ignore. We can't throw an exception here, because this method
+     * is called by the constructor of Throwable
+     *
      * @return a Throwable
      */
     public synchronized Throwable fillInStackTrace() {

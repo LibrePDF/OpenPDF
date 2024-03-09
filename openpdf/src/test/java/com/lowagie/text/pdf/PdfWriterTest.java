@@ -21,7 +21,8 @@ class PdfWriterTest {
             document.add(new Phrase("Hello World"));
             // then
             assertThatIllegalStateException().isThrownBy(writer::close)
-                .withMessage("Please call Document.close() instead. The PdfWriter will then be closed automatically.");
+                    .withMessage(
+                            "Please call Document.close() instead. The PdfWriter will then be closed automatically.");
         }
     }
 

@@ -9,15 +9,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.general.copystamp;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.pdf.PdfEncryptor;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Encrypts an existing PDF file.
@@ -26,6 +25,7 @@ public class EncryptorExample {
 
     /**
      * Reads and encrypts an existing PDF file.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -38,8 +38,7 @@ public class EncryptorExample {
                     "World".getBytes(),
                     PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY,
                     false);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -65,6 +65,11 @@ import java.util.Map;
 class FontDetails {
 
     /**
+     * Indicates if only a subset of the glyphs and widths for that particular encoding should be included in the
+     * document.
+     */
+    protected boolean subset = true;
+    /**
      * The indirect reference to this font
      */
     PdfIndirectReference indirectReference;
@@ -106,24 +111,10 @@ class FontDetails {
      */
     boolean symbolic;
     /**
-     * Indicates if only a subset of the glyphs and widths for that particular encoding should be included in the
-     * document.
-     */
-    protected boolean subset = true;
-
-    /**
      * Contain glyphs that used but missing in Cmap. the value is int[]{glyph, Unicode code}
      */
     private Map<Integer, int[]> fillerCmap;
 
-
-    Map<Integer, int[]> getFillerCmap() {
-        return fillerCmap;
-    }
-
-    void putFillerCmap(Integer key, int[] value) {
-        fillerCmap.put(key, value);
-    }
 
     /**
      * Each font used in a document has an instance of this class. This class stores the characters used in the document
@@ -154,6 +145,14 @@ class FontDetails {
                 symbolic = baseFont.isFontSpecific();
                 break;
         }
+    }
+
+    Map<Integer, int[]> getFillerCmap() {
+        return fillerCmap;
+    }
+
+    void putFillerCmap(Integer key, int[] value) {
+        fillerCmap.put(key, value);
     }
 
     /**
@@ -231,7 +230,7 @@ class FontDetails {
                                 continue;
                             }
                             longTag.put(metrics[0],
-                                new int[]{metrics[0], metrics[1], ttu.getUnicodeDifferences(b[k] & 0xff)});
+                                    new int[]{metrics[0], metrics[1], ttu.getUnicodeDifferences(b[k] & 0xff)});
                             glyph[i++] = (char) metrics[0];
                         }
                         String s = new String(glyph, 0, i);
@@ -240,10 +239,10 @@ class FontDetails {
                     } else {
                         String fileName = ((TrueTypeFontUnicode) getBaseFont()).fileName;
                         if (options.isGlyphSubstitutionEnabled() && FopGlyphProcessor.isFopSupported()
-                            && (fileName != null && fileName.length() > 0
-                            && (fileName.contains(".ttf") || fileName.contains(".TTF")))) {
+                                && (fileName != null && fileName.length() > 0
+                                && (fileName.contains(".ttf") || fileName.contains(".TTF")))) {
                             return FopGlyphProcessor.convertToBytesWithGlyphs(ttu, text, fileName, longTag,
-                                options.getDocumentLanguage());
+                                    options.getDocumentLanguage());
                         } else {
                             return convertToBytesWithGlyphs(text);
                         }
@@ -313,7 +312,7 @@ class FontDetails {
                 int glyphWidth = ttu.getGlyphWidth(code);
                 Integer charCode = ttu.getCharacterCode(code);
                 int[] metrics = charCode != null ? new int[]{code, glyphWidth, charCode} : new int[]{
-                    code, glyphWidth};
+                        code, glyphWidth};
                 longTag.put(codeKey, metrics);
             }
         }

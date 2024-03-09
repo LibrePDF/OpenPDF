@@ -49,30 +49,28 @@
 
 package com.lowagie.text.pdf;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.error_messages.MessageLocalization;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * <CODE>PdfPages</CODE> is the PDF Pages-object.
- * <P>
- * The Pages of a document are accessible through a tree of nodes known as the Pages tree.
- * This tree defines the ordering of the pages in the document.<BR>
- * This object is described in the 'Portable Document Format Reference Manual version 1.3'
- * section 6.3 (page 71-73)
+ * <p>
+ * The Pages of a document are accessible through a tree of nodes known as the Pages tree. This tree defines the
+ * ordering of the pages in the document.<BR> This object is described in the 'Portable Document Format Reference Manual
+ * version 1.3' section 6.3 (page 71-73)
  *
- * @see        PdfPage
+ * @see PdfPage
  */
 
 public class PdfPages {
 
     private final ArrayList<PdfIndirectReference> pages = new ArrayList<>();
     private final ArrayList<PdfIndirectReference> parents = new ArrayList<>();
-    private int leafSize = 10;
     private final PdfWriter writer;
+    private int leafSize = 10;
     private PdfIndirectReference topParent;
 
     // constructors
@@ -87,35 +85,36 @@ public class PdfPages {
 
     void addPage(PdfDictionary page) {
         try {
-            if ((pages.size() % leafSize) == 0)
+            if ((pages.size() % leafSize) == 0) {
                 parents.add(writer.getPdfIndirectReference());
+            }
             PdfIndirectReference parent = parents.get(parents.size() - 1);
             page.put(PdfName.PARENT, parent);
             PdfIndirectReference current = writer.getCurrentPage();
             writer.addToBody(page, current);
             pages.add(current);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
 
     PdfIndirectReference addPageRef(PdfIndirectReference pageRef) {
         try {
-            if ((pages.size() % leafSize) == 0)
+            if ((pages.size() % leafSize) == 0) {
                 parents.add(writer.getPdfIndirectReference());
+            }
             pages.add(pageRef);
             return parents.get(parents.size() - 1);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
     }
 
     // returns the top parent to include in the catalog
     PdfIndirectReference writePageTree() throws IOException {
-        if (pages.isEmpty())
+        if (pages.isEmpty()) {
             throw new IOException(MessageLocalization.getComposedMessage("the.document.has.no.pages"));
+        }
         int leaf = 1;
         ArrayList<PdfIndirectReference> tParents = parents;
         ArrayList<PdfIndirectReference> tPages = pages;
@@ -124,26 +123,29 @@ public class PdfPages {
             leaf *= leafSize;
             int stdCount = leafSize;
             int rightCount = tPages.size() % leafSize;
-            if (rightCount == 0)
+            if (rightCount == 0) {
                 rightCount = leafSize;
+            }
             for (int p = 0; p < tParents.size(); ++p) {
                 int count;
                 int thisLeaf = leaf;
                 if (p == tParents.size() - 1) {
                     count = rightCount;
                     thisLeaf = pages.size() % leaf;
-                    if (thisLeaf == 0)
+                    if (thisLeaf == 0) {
                         thisLeaf = leaf;
-                }
-                else
+                    }
+                } else {
                     count = stdCount;
+                }
                 PdfDictionary top = new PdfDictionary(PdfName.PAGES);
                 top.put(PdfName.COUNT, new PdfNumber(thisLeaf));
                 PdfArray kids = new PdfArray(tPages.subList(p * stdCount, p * stdCount + count));
                 top.put(PdfName.KIDS, kids);
                 if (tParents.size() > 1) {
-                    if ((p % leafSize) == 0)
+                    if ((p % leafSize) == 0) {
                         nextParents.add(writer.getPdfIndirectReference());
+                    }
                     top.put(PdfName.PARENT, nextParents.get(p / leafSize));
                 }
                 writer.addToBody(top, tParents.get(p));
@@ -159,8 +161,10 @@ public class PdfPages {
     }
 
     void setLinearMode(PdfIndirectReference topParent) {
-        if (parents.size() > 1)
-            throw new RuntimeException(MessageLocalization.getComposedMessage("linear.page.mode.can.only.be.called.with.a.single.parent"));
+        if (parents.size() > 1) {
+            throw new RuntimeException(
+                    MessageLocalization.getComposedMessage("linear.page.mode.can.only.be.called.with.a.single.parent"));
+        }
         if (topParent != null) {
             this.topParent = topParent;
             parents.clear();
@@ -170,20 +174,30 @@ public class PdfPages {
     }
 
     int reorderPages(int[] order) throws DocumentException {
-        if (order == null)
+        if (order == null) {
             return pages.size();
-        if (parents.size() > 1)
-            throw new DocumentException(MessageLocalization.getComposedMessage("page.reordering.requires.a.single.parent.in.the.page.tree.call.pdfwriter.setlinearmode.after.open"));
-        if (order.length != pages.size())
-            throw new DocumentException(MessageLocalization.getComposedMessage("page.reordering.requires.an.array.with.the.same.size.as.the.number.of.pages"));
+        }
+        if (parents.size() > 1) {
+            throw new DocumentException(MessageLocalization.getComposedMessage(
+                    "page.reordering.requires.a.single.parent.in.the.page.tree.call.pdfwriter.setlinearmode.after.open"));
+        }
+        if (order.length != pages.size()) {
+            throw new DocumentException(MessageLocalization.getComposedMessage(
+                    "page.reordering.requires.an.array.with.the.same.size.as.the.number.of.pages"));
+        }
         int max = pages.size();
         boolean[] temp = new boolean[max];
         for (int k = 0; k < max; ++k) {
             int p = order[k];
-            if (p < 1 || p > max)
-                throw new DocumentException(MessageLocalization.getComposedMessage("page.reordering.requires.pages.between.1.and.1.found.2", String.valueOf(max), String.valueOf(p)));
-            if (temp[p - 1])
-                throw new DocumentException(MessageLocalization.getComposedMessage("page.reordering.requires.no.page.repetition.page.1.is.repeated", p));
+            if (p < 1 || p > max) {
+                throw new DocumentException(
+                        MessageLocalization.getComposedMessage("page.reordering.requires.pages.between.1.and.1.found.2",
+                                String.valueOf(max), String.valueOf(p)));
+            }
+            if (temp[p - 1]) {
+                throw new DocumentException(MessageLocalization.getComposedMessage(
+                        "page.reordering.requires.no.page.repetition.page.1.is.repeated", p));
+            }
             temp[p - 1] = true;
         }
         PdfIndirectReference[] copy = pages.toArray(new PdfIndirectReference[0]);

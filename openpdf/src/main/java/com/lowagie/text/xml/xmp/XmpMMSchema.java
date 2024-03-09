@@ -30,7 +30,7 @@
  * the MPL, indicate your decision by deleting the provisions above and
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE 
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
@@ -54,7 +54,6 @@ package com.lowagie.text.xml.xmp;
  */
 public class XmpMMSchema extends XmpSchema {
 
-    private static final long serialVersionUID = 1408509596611634862L;
     /**
      * default namespace identifier
      */
@@ -63,8 +62,6 @@ public class XmpMMSchema extends XmpSchema {
      * default namespace uri
      */
     public static final String DEFAULT_XPATH_URI = "http://ns.adobe.com/xap/1.0/mm/";
-
-
     /**
      * A reference to the original document from which this one is derived. It is a minimal reference; missing
      * components can be assumed to be unchanged. For example, a new version might only need to specify the instance ID
@@ -125,6 +122,7 @@ public class XmpMMSchema extends XmpSchema {
      * The version history associated with this resource.
      */
     public static final String VERSIONS = "xmpMM:Versions";
+    private static final long serialVersionUID = 1408509596611634862L;
 
     public XmpMMSchema() {
         super("xmlns:" + DEFAULT_XPATH_ID + "=\"" + DEFAULT_XPATH_URI + "\"");

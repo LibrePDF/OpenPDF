@@ -35,44 +35,42 @@
 
 package com.lowagie.toolbox.arguments;
 
-import java.awt.event.ActionEvent;
-
 import com.lowagie.toolbox.AbstractTool;
 import com.lowagie.toolbox.swing.CustomDialog;
+import java.awt.event.ActionEvent;
 
 /**
  * This is an argument of one of the tools in the toolbox.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class IntegerArgument extends AbstractArgument {
 
-    /** Constructs a IntegerArgument. */
+    /**
+     * Constructs a IntegerArgument.
+     */
     public IntegerArgument() {
     }
 
     /**
      * Constructs a IntegerArgument.
      *
-     * @param tool
-     *            the tool that needs this argument
-     * @param name
-     *            the name of the argument
-     * @param description
-     *            the description of the argument
+     * @param tool        the tool that needs this argument
+     * @param name        the name of the argument
+     * @param description the description of the argument
      */
     public IntegerArgument(AbstractTool tool, String name, String description) {
         super(tool, name, description, null);
     }
 
     /**
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      * @param e ActionEvent
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
         CustomDialog cd = new CustomDialog("Enter a value for " + name +
-                                           ":",
-                                           CustomDialog.instantiateIntegerDocument());
-        setValue(cd.showInputDialog(this.getValue()==null?"0":this.getValue().toString()));
+                ":",
+                CustomDialog.instantiateIntegerDocument());
+        setValue(cd.showInputDialog(this.getValue() == null ? "0" : this.getValue().toString()));
     }
 }

@@ -48,1033 +48,69 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Image;
+import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.pdf.codec.CCITTG4Encoder;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.image.MemoryImageSource;
 import java.util.ArrayList;
 
-import com.lowagie.text.error_messages.MessageLocalization;
-
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Image;
-import com.lowagie.text.pdf.codec.CCITTG4Encoder;
-
-/** Generates the 2D barcode PDF417. Supports dimensioning auto-sizing, fixed
- * and variable sizes, automatic and manual error levels, raw codeword input,
- * codeword size optimization and bitmap inversion. The output can
- * be a CCITT G4 <CODE>Image</CODE> or a raw bitmap.
+/**
+ * Generates the 2D barcode PDF417. Supports dimensioning auto-sizing, fixed and variable sizes, automatic and manual
+ * error levels, raw codeword input, codeword size optimization and bitmap inversion. The output can be a CCITT G4
+ * <CODE>Image</CODE> or a raw bitmap.
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public class BarcodePDF417 {
 
-    /** Auto-size is made based on <CODE>aspectRatio</CODE> and <CODE>yHeight</CODE>. */    
+    /**
+     * Auto-size is made based on <CODE>aspectRatio</CODE> and <CODE>yHeight</CODE>.
+     */
     public static final int PDF417_USE_ASPECT_RATIO = 0;
-    /** The size of the barcode will be at least <CODE>codeColumns*codeRows</CODE>. */    
+    /**
+     * The size of the barcode will be at least <CODE>codeColumns*codeRows</CODE>.
+     */
     public static final int PDF417_FIXED_RECTANGLE = 1;
-    /** The size will be at least <CODE>codeColumns</CODE>
-     * with a variable number of <CODE>codeRows</CODE>.
-     */    
+    /**
+     * The size will be at least <CODE>codeColumns</CODE> with a variable number of <CODE>codeRows</CODE>.
+     */
     public static final int PDF417_FIXED_COLUMNS = 2;
-    /** The size will be at least <CODE>codeRows</CODE>
-     * with a variable number of <CODE>codeColumns</CODE>.
-     */    
+    /**
+     * The size will be at least <CODE>codeRows</CODE> with a variable number of <CODE>codeColumns</CODE>.
+     */
     public static final int PDF417_FIXED_ROWS = 4;
-    /** The error level correction is set automatically according
-     * to ISO 15438 recommendations.
-     */    
+    /**
+     * The error level correction is set automatically according to ISO 15438 recommendations.
+     */
     public static final int PDF417_AUTO_ERROR_LEVEL = 0;
-    /** The error level correction is set by the user. It can be 0 to 8. */    
+    /**
+     * The error level correction is set by the user. It can be 0 to 8.
+     */
     public static final int PDF417_USE_ERROR_LEVEL = 16;
     /**
      * One single binary segment is used
      */
     public static final int PDF417_FORCE_BINARY = 32;
-    /** No <CODE>text</CODE> interpretation is done and the content of <CODE>codewords</CODE>
-     * is used directly.
-     */    
+    /**
+     * No <CODE>text</CODE> interpretation is done and the content of <CODE>codewords</CODE> is used directly.
+     */
     public static final int PDF417_USE_RAW_CODEWORDS = 64;
-    /** Inverts the output bits of the raw bitmap that is normally
-     * bit one for black. It has only effect for the raw bitmap.
-     */    
+    /**
+     * Inverts the output bits of the raw bitmap that is normally bit one for black. It has only effect for the raw
+     * bitmap.
+     */
     public static final int PDF417_INVERT_BITMAP = 128;
-    /** Use Macro PDF417 Encoding
+    /**
+     * Use Macro PDF417 Encoding
+     *
      * @see #setMacroFileId(String)
      * @see #setMacroSegmentId(int)
      * @see #setMacroSegmentCount(int)
-     */    
+     */
     public static final int PDF417_USE_MACRO = 256;
-    
-
-    private int macroSegmentCount=0;
-    private int macroSegmentId=-1;
-    private String macroFileId;
-    private int macroIndex;
-    protected int bitPtr;
-    protected int cwPtr;
-    protected SegmentList segmentList;
-    
-    
-    /** Creates a new <CODE>BarcodePDF417</CODE> with the default settings. */    
-    public BarcodePDF417() {
-        setDefaultParameters();
-    }
-    
-    /**
-     * Sets the segment id for macro PDF417 encoding
-     * @param id the id (starting at 0)
-     * @see #setMacroSegmentCount(int)
-     */
-    public void setMacroSegmentId(int id) {
-        this.macroSegmentId = id;
-    }
-    
-    /**
-     * Sets the segment count for macro PDF417 encoding
-     * @param cnt the number of macro segments
-     * @see #setMacroSegmentId(int)
-     */
-    public void setMacroSegmentCount(int cnt) {
-        this.macroSegmentCount = cnt;
-    }
-
-    /**
-     * Sets the File ID for macro PDF417 encoding 
-     * @param id the file id
-     */
-    public void setMacroFileId(String id) {
-        this.macroFileId = id;        
-    }
-       
-    protected boolean checkSegmentType(Segment segment, char type) {
-        if (segment == null)
-            return false;
-        return segment.type == type;
-    }
-    
-    protected int getSegmentLength(Segment segment) {
-        if (segment == null)
-            return 0;
-        return segment.end - segment.start;
-    }
-    
-    /** Set the default settings that correspond to <CODE>PDF417_USE_ASPECT_RATIO</CODE>
-     * and <CODE>PDF417_AUTO_ERROR_LEVEL</CODE>.
-     */    
-    public void setDefaultParameters() {
-        options = 0;
-        outBits = null;
-        text = new byte[0];
-        yHeight = 3;
-        aspectRatio = 0.5f;
-    }
-
-    protected void outCodeword17(int codeword) {
-        int bytePtr = bitPtr / 8;
-        int bit = bitPtr - bytePtr * 8;
-        outBits[bytePtr++] |= codeword >> (9 + bit);
-        outBits[bytePtr++] |= codeword >> (1 + bit);
-        codeword <<= 8;
-        outBits[bytePtr] |= codeword >> (1 + bit);
-        bitPtr += 17;
-    }
-
-    protected void outCodeword18(int codeword) {
-        int bytePtr = bitPtr / 8;
-        int bit = bitPtr - bytePtr * 8;
-        outBits[bytePtr++] |= codeword >> (10 + bit);
-        outBits[bytePtr++] |= codeword >> (2 + bit);
-        codeword <<= 8;
-        outBits[bytePtr] |= codeword >> (2 + bit);
-        if (bit == 7)
-            outBits[++bytePtr] |= 0x80;
-        bitPtr += 18;
-    }
-
-    protected void outCodeword(int codeword) {
-        outCodeword17(codeword);
-    }
-
-    protected void outStopPattern() {
-        outCodeword18(STOP_PATTERN);
-    }
-
-    protected void outStartPattern() {
-        outCodeword17(START_PATTERN);
-    }
-
-    protected void outPaintCode() {
-        int codePtr = 0;
-        bitColumns = START_CODE_SIZE * (codeColumns + 3) + STOP_SIZE;
-        int lenBits = ((bitColumns - 1) / 8 + 1) * codeRows;
-        outBits = new byte[lenBits];
-        for (int row = 0; row < codeRows; ++row) {
-            bitPtr = ((bitColumns - 1) / 8 + 1) * 8 * row;
-            int rowMod = row % 3;
-            int[] cluster = CLUSTERS[rowMod];
-            outStartPattern();
-            int edge = 0;
-            switch (rowMod) {
-            case 0:
-                edge = 30 * (row / 3) + ((codeRows - 1) / 3);
-                break;
-            case 1:
-                edge = 30 * (row / 3) + errorLevel * 3 + ((codeRows - 1) % 3);
-                break;
-            default:
-                edge = 30 * (row / 3) + codeColumns - 1;
-                break;
-            }
-            outCodeword(cluster[edge]);
-
-            for (int column = 0; column < codeColumns; ++column) {
-                outCodeword(cluster[codewords[codePtr++]]);
-            }
-
-            switch (rowMod) {
-            case 0:
-                edge = 30 * (row / 3) + codeColumns - 1;
-                break;
-            case 1:
-                edge = 30 * (row / 3) + ((codeRows - 1) / 3);
-                break;
-            default:
-                edge = 30 * (row / 3) + errorLevel * 3 + ((codeRows - 1) % 3);
-                break;
-            }
-            outCodeword(cluster[edge]);
-            outStopPattern();
-        }
-        if ((options & PDF417_INVERT_BITMAP) != 0) {
-            for (int k = 0; k < outBits.length; ++k)
-                outBits[k] ^= 0xff;
-        }
-    }
-
-    protected void calculateErrorCorrection(int dest) {
-        if (errorLevel < 0 || errorLevel > 8)
-            errorLevel = 0;
-        int[] A = ERROR_LEVEL[errorLevel];
-        int Alength = 2 << errorLevel;
-        for (int k = 0; k < Alength; ++k)
-            codewords[dest + k] = 0;
-        int lastE = Alength - 1;
-        for (int k = 0; k < lenCodewords; ++k) {
-            int t1 = codewords[k] + codewords[dest];
-            for (int e = 0; e <= lastE; ++e) {
-                int t2 = (t1 * A[lastE - e]) % MOD;
-                int t3 = MOD - t2;
-                codewords[dest + e] = ((e == lastE ? 0 : codewords[dest + e + 1]) + t3) % MOD;
-            }
-        }
-        for (int k = 0; k < Alength; ++k)
-            codewords[dest + k] = (MOD - codewords[dest + k]) % MOD;
-    }
-    
-    private static int getTextTypeAndValue(byte[] input, int maxLength, int idx) {
-        if (idx >= maxLength)
-            return 0;
-        char c = (char)(input[idx] & 0xff);
-        if (c >= 'A' && c <= 'Z')
-            return (ALPHA + c - 'A');
-        if (c >= 'a' && c <= 'z')
-            return (LOWER + c - 'a');
-        if (c == ' ')
-            return (ALPHA + LOWER + MIXED + SPACE);
-        int ms = MIXED_SET.indexOf(c);
-        int ps = PUNCTUATION_SET.indexOf(c);
-        if (ms < 0 && ps < 0)
-            return (ISBYTE + c);
-        if (ms == ps)
-            return (MIXED + PUNCTUATION + ms);
-        if (ms >= 0)
-            return (MIXED + ms);
-        return (PUNCTUATION + ps);
-    }
-    
-    protected int getTextTypeAndValue(int maxLength, int idx) {
-        return getTextTypeAndValue(text, maxLength,idx);
-    }
-    
-    private void textCompaction(byte[] input, int start, int length) {
-        int[] dest = new int[ABSOLUTE_MAX_TEXT_SIZE * 2];
-        int mode = ALPHA;
-        int ptr = 0;
-        int fullBytes = 0;
-        int v = 0;
-        int k;
-        int size;
-        length += start;
-        for (k = start; k < length; ++k) {
-            v = getTextTypeAndValue(input, length, k);
-            if ((v & mode) != 0) {
-                dest[ptr++] = v & 0xff;
-                continue;
-            }
-            if ((v & ISBYTE) != 0) {
-                if ((ptr & 1) != 0) {
-                    //add a padding word
-                    dest[ptr++] = PAL;
-                    mode = (mode & PUNCTUATION) != 0 ? ALPHA : mode;
-                }
-                dest[ptr++] = BYTESHIFT;
-                dest[ptr++] = v & 0xff;
-                fullBytes += 2;
-                continue;
-            }
-            switch (mode) {
-            case ALPHA:
-                if ((v & LOWER) != 0) {
-                    dest[ptr++] = LL;
-                    dest[ptr++] = v & 0xff;
-                    mode = LOWER;
-                }
-                else if ((v & MIXED) != 0) {
-                    dest[ptr++] = ML;
-                    dest[ptr++] = v & 0xff;
-                    mode = MIXED;
-                }
-                else if ((getTextTypeAndValue(input, length, k + 1) & getTextTypeAndValue(input, length, k + 2) & PUNCTUATION) != 0) {
-                    dest[ptr++] = ML;
-                    dest[ptr++] = PL;
-                    dest[ptr++] = v & 0xff;
-                    mode = PUNCTUATION;
-                }
-                else {
-                    dest[ptr++] = PS;
-                    dest[ptr++] = v & 0xff;
-                }
-                break;
-            case LOWER:
-                if ((v & ALPHA) != 0) {
-                    if ((getTextTypeAndValue(input, length, k + 1) & getTextTypeAndValue(input, length, k + 2) & ALPHA) != 0) {
-                        dest[ptr++] = ML;
-                        dest[ptr++] = AL;
-                        mode = ALPHA;
-                    }
-                    else {
-                        dest[ptr++] = AS;
-                    }
-                    dest[ptr++] = v & 0xff;
-                }
-                else if ((v & MIXED) != 0) {
-                    dest[ptr++] = ML;
-                    dest[ptr++] = v & 0xff;
-                    mode = MIXED;
-                }
-                else if ((getTextTypeAndValue(input, length, k + 1) & getTextTypeAndValue(input, length, k + 2) & PUNCTUATION) != 0) {
-                    dest[ptr++] = ML;
-                    dest[ptr++] = PL;
-                    dest[ptr++] = v & 0xff;
-                    mode = PUNCTUATION;
-                }
-                else {
-                    dest[ptr++] = PS;
-                    dest[ptr++] = v & 0xff;
-                }
-                break;
-            case MIXED:
-                if ((v & LOWER) != 0) {
-                    dest[ptr++] = LL;
-                    dest[ptr++] = v & 0xff;
-                    mode = LOWER;
-                }
-                else if ((v & ALPHA) != 0) {
-                    dest[ptr++] = AL;
-                    dest[ptr++] = v & 0xff;
-                    mode = ALPHA;
-                }
-                else if ((getTextTypeAndValue(input, length, k + 1) & getTextTypeAndValue(input, length, k + 2) & PUNCTUATION) != 0) {
-                    dest[ptr++] = PL;
-                    dest[ptr++] = v & 0xff;
-                    mode = PUNCTUATION;
-                }
-                else {
-                    dest[ptr++] = PS;
-                    dest[ptr++] = v & 0xff;
-                }
-                break;
-            case PUNCTUATION:
-                dest[ptr++] = PAL;
-                mode = ALPHA;
-                --k;
-                break;
-            }
-        }
-        if ((ptr & 1) != 0)
-            dest[ptr++] = PS;
-        size = (ptr + fullBytes) / 2;
-        if (size + cwPtr > MAX_DATA_CODEWORDS) {
-            throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.text.is.too.big"));
-        }
-        length = ptr;
-        ptr = 0;
-        while (ptr < length) {
-            v = dest[ptr++];
-            if (v >= 30) {
-                codewords[cwPtr++] = v;
-                codewords[cwPtr++] = dest[ptr++];
-            }
-            else
-                codewords[cwPtr++] = v * 30 + dest[ptr++];
-        }
-    }
-    protected void textCompaction(int start, int length) {
-        textCompaction(text, start, length);
-    }
-
-    protected void basicNumberCompaction(int start, int length) {
-        basicNumberCompaction(text, start, length);
-    }
-
-    private void basicNumberCompaction(byte[] input, int start, int length) {
-        int ret = cwPtr;
-        int retLast = length / 3;
-        int ni, k;
-        cwPtr += retLast + 1;
-        for (k = 0; k <= retLast; ++k)
-            codewords[ret + k] = 0;
-        codewords[ret + retLast] = 1;
-        length += start;
-        for (ni = start; ni < length; ++ni) {
-            // multiply by 10
-            for (k = retLast; k >= 0; --k)
-                codewords[ret + k] *= 10;
-            // add the digit
-            codewords[ret + retLast] += input[ni] - '0';
-            // propagate carry
-            for (k = retLast; k > 0; --k) {
-                codewords[ret + k - 1] += codewords[ret + k] / 900;
-                codewords[ret + k] %= 900;
-            }
-        }
-    }
-
-    private void numberCompaction(byte[] input, int start, int length) {
-        int full = (length / 44) * 15;
-        int size = length % 44;
-        int k;
-        if (size == 0)
-            size = full;
-        else
-            size = full + size / 3 + 1;
-        if (size + cwPtr > MAX_DATA_CODEWORDS) {
-            throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.text.is.too.big"));
-        }
-        length += start;
-        for (k = start; k < length; k += 44) {
-            size = length - k < 44 ? length - k : 44;
-            basicNumberCompaction(input, k, size);
-        }        
-        }
-    
-    protected void numberCompaction(int start, int length) {
-        numberCompaction(text, start, length);
-    }
-
-    protected void byteCompaction6(int start) {
-        int length = 6;
-        int ret = cwPtr;
-        int retLast = 4;
-        int ni, k;
-        cwPtr += retLast + 1;
-        for (k = 0; k <= retLast ; ++k)
-            codewords[ret + k] = 0;
-        length += start;
-        for (ni = start; ni < length; ++ni) {
-            // multiply by 256
-            for (k = retLast; k >= 0; --k)
-                codewords[ret + k] *= 256;
-            // add the digit
-            codewords[ret + retLast] += text[ni] & 0xff;
-            // propagate carry
-            for (k = retLast; k > 0; --k) {
-                codewords[ret + k - 1] += codewords[ret + k] / 900;
-                codewords[ret + k] %= 900;
-            }
-        }
-    }
-
-    void byteCompaction(int start, int length) {
-        int k, j;
-        int size = (length / 6) * 5 + (length % 6);
-        if (size + cwPtr > MAX_DATA_CODEWORDS) {
-            throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.text.is.too.big"));
-        }
-        length += start;
-        for (k = start; k < length; k += 6) {
-            size = length - k < 44 ? length - k : 6;
-            if (size < 6) {
-                for (j = 0; j < size; ++j)
-                    codewords[cwPtr++] = text[k + j] & 0xff;
-            }
-            else {
-                byteCompaction6(k);
-            }
-        }
-    }
-
-    void breakString() {
-        int textLength = text.length;
-        int lastP = 0;
-        int startN = 0;
-        int nd = 0;
-        char c = 0;
-        int k, j;
-        boolean lastTxt, txt;
-        Segment v;
-        Segment vp;
-        Segment vn;
-        
-        if ((options & PDF417_FORCE_BINARY) != 0) {
-            segmentList.add('B', 0, textLength);
-            return;
-        }
-        for (k = 0; k < textLength; ++k) {
-            c = (char)(text[k] & 0xff);
-            if (c >= '0' && c <= '9') {
-                if (nd == 0)
-                    startN = k;
-                ++nd;
-                continue;
-            }
-            if (nd >= 13) {
-                if (lastP != startN) {
-                    c = (char)(text[lastP] & 0xff);
-                    lastTxt = (c >= ' ' && c < 127) || c == '\r' || c == '\n' || c == '\t';
-                    for (j = lastP; j < startN; ++j) {
-                        c = (char)(text[j] & 0xff);
-                        txt = (c >= ' ' && c < 127) || c == '\r' || c == '\n' || c == '\t';
-                        if (txt != lastTxt) {
-                            segmentList.add(lastTxt ? 'T' : 'B', lastP, j);
-                            lastP = j;
-                            lastTxt = txt;
-                        }
-                    }
-                    segmentList.add(lastTxt ? 'T' : 'B', lastP, startN);
-                }
-                segmentList.add('N', startN, k);
-                lastP = k;
-            }
-            nd = 0;
-        }
-        if (nd < 13)
-            startN = textLength;
-        if (lastP != startN) {
-            c = (char)(text[lastP] & 0xff);
-            lastTxt = (c >= ' ' && c < 127) || c == '\r' || c == '\n' || c == '\t';
-            for (j = lastP; j < startN; ++j) {
-                c = (char)(text[j] & 0xff);
-                txt = (c >= ' ' && c < 127) || c == '\r' || c == '\n' || c == '\t';
-                if (txt != lastTxt) {
-                    segmentList.add(lastTxt ? 'T' : 'B', lastP, j);
-                    lastP = j;
-                    lastTxt = txt;
-                }
-            }
-            segmentList.add(lastTxt ? 'T' : 'B', lastP, startN);
-        }
-        if (nd >= 13)
-            segmentList.add('N', startN, textLength);
-        //optimize
-        //merge short binary
-        for (k = 0; k < segmentList.size(); ++k) {
-            v = segmentList.get(k);
-            vp = segmentList.get(k - 1);
-            vn = segmentList.get(k + 1);
-            if (checkSegmentType(v, 'B') && getSegmentLength(v) == 1) {
-                if (checkSegmentType(vp, 'T') && checkSegmentType(vn, 'T') 
-                    && getSegmentLength(vp) + getSegmentLength(vn) >= 3) {
-                    vp.end = vn.end;
-                    segmentList.remove(k);
-                    segmentList.remove(k);
-                    k = -1;
-                    continue;
-                }
-            }
-        }
-        //merge text sections
-        for (k = 0; k < segmentList.size(); ++k) {
-            v = segmentList.get(k);
-            vp = segmentList.get(k - 1);
-            vn = segmentList.get(k + 1);
-            if (checkSegmentType(v, 'T') && getSegmentLength(v) >= 5) {
-                boolean redo = false;
-                if ((checkSegmentType(vp, 'B') && getSegmentLength(vp) == 1) || checkSegmentType(vp, 'T')) {
-                    redo = true;
-                    v.start = vp.start;
-                    segmentList.remove(k - 1);
-                    --k;
-                }
-                if ((checkSegmentType(vn, 'B') && getSegmentLength(vn) == 1) || checkSegmentType(vn, 'T')) {
-                    redo = true;
-                    v.end = vn.end;
-                    segmentList.remove(k + 1);
-                }
-                if (redo) {
-                    k = -1;
-                }
-            }
-        }
-        //merge binary sections
-        for (k = 0; k < segmentList.size(); ++k) {
-            v = segmentList.get(k);
-            vp = segmentList.get(k - 1);
-            vn = segmentList.get(k + 1);
-            if (checkSegmentType(v, 'B')) {
-                boolean redo = false;
-                if ((checkSegmentType(vp, 'T') && getSegmentLength(vp) < 5) || checkSegmentType(vp, 'B')) {
-                    redo = true;
-                    v.start = vp.start;
-                    segmentList.remove(k - 1);
-                    --k;
-                }
-                if ((checkSegmentType(vn, 'T') && getSegmentLength(vn) < 5) || checkSegmentType(vn, 'B')) {
-                    redo = true;
-                    v.end = vn.end;
-                    segmentList.remove(k + 1);
-                }
-                if (redo) {
-                    k = -1;
-                }
-            }
-        }
-        // check if all numbers
-        if (segmentList.size() == 1 && (v = segmentList.get(0)).type == 'T' && getSegmentLength(v) >= 8) {
-            for (k = v.start; k < v.end; ++k) {
-                c = (char)(text[k] & 0xff);
-                if (c < '0' || c > '9')
-                    break;
-            }
-            if (k == v.end)
-                v.type = 'N';
-        }
-    }
-
-    protected void assemble() {
-        int k;
-        if (segmentList.size() == 0)
-            return;
-        cwPtr = 1;
-        for (k = 0; k < segmentList.size(); ++k) {
-            Segment v = segmentList.get(k);
-            switch (v.type) {
-            case 'T':
-                if (k != 0)
-                    codewords[cwPtr++] = TEXT_MODE;
-                textCompaction(v.start, getSegmentLength(v));
-                break;
-            case 'N':
-                codewords[cwPtr++] = NUMERIC_MODE;
-                numberCompaction(v.start, getSegmentLength(v));
-                break;
-            case 'B':
-                codewords[cwPtr++] = (getSegmentLength(v) % 6) != 0 ? BYTE_MODE : BYTE_MODE_6;
-                byteCompaction(v.start, getSegmentLength(v));
-                break;
-            }
-        }
-
-        if ((options & PDF417_USE_MACRO) != 0) {
-            macroCodes();
-        }
-
-    }
-    
-    private void macroCodes() {
-        if (macroSegmentId < 0) {
-            throw new IllegalStateException(MessageLocalization.getComposedMessage("macrosegmentid.must.be.gt.eq.0"));
-        }
-        if (macroSegmentId >= macroSegmentCount) {
-            throw new IllegalStateException(MessageLocalization.getComposedMessage("macrosegmentid.must.be.lt.macrosemgentcount"));
-        }
-
-        macroIndex = cwPtr;
-        codewords[cwPtr++] = MACRO_SEGMENT_ID;
-        append(macroSegmentId, 5);
-            
-        if (macroFileId != null) {
-            append(macroFileId);
-        }
-                
-        if (macroSegmentId >= macroSegmentCount-1) {
-            codewords[cwPtr++] = MACRO_LAST_SEGMENT;
-        }
-        
-    }
-    
-    private void append(int in, int len) {
-        StringBuilder sb = new StringBuilder(len+1);
-        sb.append(in);
-        for(int i = sb.length(); i < len; i++) {
-            sb.insert(0, "0");
-        }
-    
-        byte[] bytes = PdfEncodings.convertToBytes(sb.toString(), "cp437");
-        numberCompaction(bytes, 0, bytes.length);
-    }    
-    
-    private void append(String s) {
-        byte[] bytes = PdfEncodings.convertToBytes(s, "cp437");
-        textCompaction(bytes, 0, bytes.length);
-    }    
-    
-    
-    protected static int maxPossibleErrorLevel(int remain) {
-        int level = 8;
-        int size = 512;
-        while (level > 0) {
-            if (remain >= size)
-                return level;
-            --level;
-            size >>= 1;
-        }
-        return 0;
-    }
-
-    protected void dumpList() {
-        if (segmentList.size() == 0)
-            return;
-        for (int k = 0; k < segmentList.size(); ++k) {
-            Segment v = segmentList.get(k);
-            int len = getSegmentLength(v);
-            char[] c = new char[len];
-            for (int j = 0; j < len; ++j) {
-                c[j] = (char)(text[v.start + j] & 0xff);
-                if (c[j] == '\r')
-                    c[j] = '\n';
-            }
-            StringBuilder sb = new StringBuilder();
-            sb.append(v.type);
-            sb.append(c);
-            System.out.println(sb.toString());
-        }
-    }
-
-    protected int getMaxSquare() {
-        if (codeColumns > 21) {
-            codeColumns = 29;
-            codeRows = 32;
-        }
-        else {
-            codeColumns = 16;
-            codeRows = 58;
-        }
-        return MAX_DATA_CODEWORDS + 2;
-    }
-
-    /** Paints the barcode. If no exception was thrown a valid barcode is available. */    
-    public void paintCode() {
-        int maxErr, lenErr, tot, pad;
-        if ((options & PDF417_USE_RAW_CODEWORDS) != 0) {
-            if (lenCodewords > MAX_DATA_CODEWORDS || lenCodewords < 1 || lenCodewords != codewords[0]) {
-                throw new IllegalArgumentException(MessageLocalization.getComposedMessage("invalid.codeword.size"));
-            }
-        }
-        else {
-            if (text == null)
-                throw new NullPointerException(MessageLocalization.getComposedMessage("text.cannot.be.null"));
-            if (text.length > ABSOLUTE_MAX_TEXT_SIZE) {
-                throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.text.is.too.big"));
-            }
-            segmentList = new SegmentList();
-            breakString();
-            //dumpList();
-            assemble();
-            segmentList = null;
-            codewords[0] = lenCodewords = cwPtr;
-        }
-        maxErr = maxPossibleErrorLevel(MAX_DATA_CODEWORDS + 2 - lenCodewords);
-        if ((options & PDF417_USE_ERROR_LEVEL) == 0) {
-            if (lenCodewords < 41)
-                errorLevel = 2;
-            else if (lenCodewords < 161)
-                errorLevel = 3;
-            else if (lenCodewords < 321)
-                errorLevel = 4;
-            else
-                errorLevel = 5;
-        }
-        if (errorLevel < 0)
-            errorLevel = 0;
-        else if (errorLevel > maxErr)
-            errorLevel = maxErr;
-        if (codeColumns < 1)
-            codeColumns = 1;
-        else if (codeColumns > 30)
-            codeColumns = 30;
-        if (codeRows < 3)
-            codeRows = 3;
-        else if (codeRows > 90)
-            codeRows = 90;
-        lenErr = 2 << errorLevel;
-        boolean fixedColumn = (options & PDF417_FIXED_ROWS) == 0;
-        boolean skipRowColAdjust = false;
-        tot = lenCodewords + lenErr;
-        if ((options & PDF417_FIXED_RECTANGLE) != 0) {
-            tot = codeColumns * codeRows;
-            if (tot > MAX_DATA_CODEWORDS + 2) {
-                tot = getMaxSquare();
-            }
-            if (tot < lenCodewords + lenErr)
-                tot = lenCodewords + lenErr;
-            else
-                skipRowColAdjust = true;
-        }
-        else if ((options & (PDF417_FIXED_COLUMNS | PDF417_FIXED_ROWS)) == 0) {
-            double c, b;
-            fixedColumn = true;
-            if (aspectRatio < 0.001)
-                aspectRatio = 0.001f;
-            else if (aspectRatio > 1000)
-                aspectRatio = 1000;
-            b = 73 * aspectRatio - 4;
-            c = (-b + Math.sqrt(b * b + 4 * 17 * aspectRatio * (lenCodewords + lenErr) * yHeight)) / (2 * 17 * aspectRatio);
-            codeColumns = (int)(c + 0.5);
-            if (codeColumns < 1)
-                codeColumns = 1;
-            else if (codeColumns > 30)
-                codeColumns = 30;
-        }
-        if (!skipRowColAdjust) {
-            if (fixedColumn) {
-                codeRows = (tot - 1) / codeColumns + 1;
-                if (codeRows < 3)
-                    codeRows = 3;
-                else if (codeRows > 90) {
-                    codeRows = 90;
-                    codeColumns = (tot - 1) / 90 + 1;
-                }
-            }
-            else {
-                codeColumns = (tot - 1) / codeRows + 1;
-                if (codeColumns > 30) {
-                    codeColumns = 30;
-                    codeRows = (tot - 1) / 30 + 1;
-                }
-            }
-            tot = codeRows * codeColumns;
-        }
-        if (tot > MAX_DATA_CODEWORDS + 2) {
-            tot = getMaxSquare();
-        }
-        errorLevel = maxPossibleErrorLevel(tot - lenCodewords);
-        lenErr = 2 << errorLevel;
-        pad = tot - lenErr - lenCodewords;
-        if ((options & PDF417_USE_MACRO) != 0) {
-            // the padding comes before the control block
-            int lenCodewordsAdjusted = lenCodewords = macroIndex;
-            System.arraycopy(codewords, macroIndex, codewords, macroIndex + pad, lenCodewordsAdjusted);
-            cwPtr = lenCodewords + pad;
-            while (pad-- != 0)
-                codewords[macroIndex++] = TEXT_MODE;
-        }
-        else {
-            cwPtr = lenCodewords;
-            while (pad-- != 0)
-                codewords[cwPtr++] = TEXT_MODE;
-        }
-        codewords[0] = lenCodewords = cwPtr;
-        calculateErrorCorrection(lenCodewords);
-        lenCodewords = tot;
-        outPaintCode();
-    }
-
-    /** Gets an <CODE>Image</CODE> with the barcode. The image will have to be
-     * scaled in the Y direction by <CODE>yHeight</CODE>for the barcode
-     * to have the right printing aspect.
-     * @return the barcode <CODE>Image</CODE>
-     * @throws BadElementException on error
-     */    
-    public Image getImage() throws BadElementException {
-        paintCode();
-        byte[] g4 = CCITTG4Encoder.compress(outBits, bitColumns, codeRows);
-        return Image.getInstance(bitColumns, codeRows, false, Image.CCITTG4, (options & PDF417_INVERT_BITMAP) == 0 ? 0 : Image.CCITT_BLACKIS1, g4, null);
-    }
-
-    /** Creates a <CODE>java.awt.Image</CODE>.
-     * @param foreground the color of the bars
-     * @param background the color of the background
-     * @return the image
-     */    
-    public java.awt.Image createAwtImage(Color foreground, Color background) {
-        int f = foreground.getRGB();
-        int g = background.getRGB();
-        Canvas canvas = new Canvas();
-
-        paintCode();
-        int h = (int)yHeight;
-        int[] pix = new int[bitColumns * codeRows * h];
-        int stride = (bitColumns + 7) / 8;
-        int ptr = 0;
-        for (int k = 0; k < codeRows; ++k) {
-            int p = k * stride;
-            for (int j = 0; j < bitColumns; ++j) {
-                int b = outBits[p + (j / 8)] & 0xff;
-                b <<= j % 8;
-                pix[ptr++] = (b & 0x80) == 0 ? g : f;
-            }
-            for (int j = 1; j < h; ++j) {
-                System.arraycopy(pix, ptr - bitColumns, pix, ptr + bitColumns * (j - 1), bitColumns);
-            }
-            ptr += bitColumns * (h - 1);
-        }
-        
-        java.awt.Image img = canvas.createImage(new MemoryImageSource(bitColumns, codeRows * h, pix, 0, bitColumns));
-        return img;
-    }
-    
-    /** Gets the raw image bits of the barcode. The image will have to
-     * be scaled in the Y direction by <CODE>yHeight</CODE>.
-     * @return The raw barcode image
-     */
-    public byte[] getOutBits() {
-        return this.outBits;
-    }
-    
-    /** Gets the number of X pixels of <CODE>outBits</CODE>.
-     * @return the number of X pixels of <CODE>outBits</CODE>
-     */
-    public int getBitColumns() {
-        return this.bitColumns;
-    }
-    
-    /** Gets the number of Y pixels of <CODE>outBits</CODE>.
-     * It is also the number of rows in the barcode.
-     * @return the number of Y pixels of <CODE>outBits</CODE>
-     */
-    public int getCodeRows() {
-        return this.codeRows;
-    }
-    
-    /** Sets the number of barcode rows. This number may be changed
-     * to keep the barcode valid.
-     * @param codeRows the number of barcode rows
-     */
-    public void setCodeRows(int codeRows) {
-        this.codeRows = codeRows;
-    }
-    
-    /** Gets the number of barcode data columns.
-     * @return he number of barcode data columns
-     */
-    public int getCodeColumns() {
-        return this.codeColumns;
-    }
-    
-    /** Sets the number of barcode data columns.
-     * This number may be changed to keep the barcode valid.
-     * @param codeColumns the number of barcode data columns
-     */
-    public void setCodeColumns(int codeColumns) {
-        this.codeColumns = codeColumns;
-    }
-    
-    /** Gets the codeword array. This array is always 928 elements long.
-     * It can be written to if the option <CODE>PDF417_USE_RAW_CODEWORDS</CODE>
-     * is set.
-     * @return the codeword array
-     */
-    public int[] getCodewords() {
-        return this.codewords;
-    }
-    
-    /** Gets the length of the codewords.
-     * @return the length of the codewords
-     */
-    public int getLenCodewords() {
-        return this.lenCodewords;
-    }
-    
-    /** Sets the length of the codewords.
-     * @param lenCodewords the length of the codewords
-     */
-    public void setLenCodewords(int lenCodewords) {
-        this.lenCodewords = lenCodewords;
-    }
-    
-    /** Gets the error level correction used for the barcode. It may different
-     * from the previously set value.
-     * @return the error level correction used for the barcode
-     */
-    public int getErrorLevel() {
-        return this.errorLevel;
-    }
-    
-    /** Sets the error level correction for the barcode.
-     * @param errorLevel the error level correction for the barcode
-     */
-    public void setErrorLevel(int errorLevel) {
-        this.errorLevel = errorLevel;
-    }
-    
-    /** Gets the bytes that form the barcode. This bytes should
-     * be interpreted in the codepage Cp437.
-     * @return the bytes that form the barcode
-     */
-    public byte[] getText() {
-        return this.text;
-    }
-    
-    /** Sets the bytes that form the barcode. This bytes should
-     * be interpreted in the codepage Cp437.
-     * @param text the bytes that form the barcode
-     */
-    public void setText(byte[] text) {
-        this.text = text;
-    }
-    
-    /** Sets the text that will form the barcode. This text is converted
-     * to bytes using the encoding Cp437.
-     * @param s the text that will form the barcode
-     */    
-    public void setText(String s) {
-        this.text = PdfEncodings.convertToBytes(s, "cp437");
-    }
-    
-    /** Gets the options to generate the barcode.
-     * @return the options to generate the barcode
-     */
-    public int getOptions() {
-        return this.options;
-    }
-    
-    /** Sets the options to generate the barcode. This can be all
-     * the <CODE>PDF417_*</CODE> constants.
-     * @param options the options to generate the barcode
-     */
-    public void setOptions(int options) {
-        this.options = options;
-    }
-    
-    /** Gets the barcode aspect ratio.
-     * @return the barcode aspect ratio
-     */
-    public float getAspectRatio() {
-        return this.aspectRatio;
-    }
-    
-    /** Sets the barcode aspect ratio. A ratio or 0.5 will make the
-     * barcode width twice as large as the height.
-     * @param aspectRatio the barcode aspect ratio
-     */
-    public void setAspectRatio(float aspectRatio) {
-        this.aspectRatio = aspectRatio;
-    }
-    
-    /** Gets the Y pixel height relative to X.
-     * @return the Y pixel height relative to X
-     */
-    public float getYHeight() {
-        return this.yHeight;
-    }
-    
-    /** Sets the Y pixel height relative to X. It is usually 3.
-     * @param yHeight the Y pixel height relative to X
-     */
-    public void setYHeight(float yHeight) {
-        this.yHeight = yHeight;
-    }
-    
     protected static final int START_PATTERN = 0x1fea8;
     protected static final int STOP_PATTERN = 0x3fa29;
     protected static final int START_CODE_SIZE = 17;
@@ -1100,12 +136,10 @@ public class BarcodePDF417 {
     protected static final int NUMERIC_MODE = 902;
     protected static final int ABSOLUTE_MAX_TEXT_SIZE = 5420;
     protected static final int MAX_DATA_CODEWORDS = 926;
-    protected static final int MACRO_SEGMENT_ID=928;
-    protected static final int MACRO_LAST_SEGMENT=922;
-
+    protected static final int MACRO_SEGMENT_ID = 928;
+    protected static final int MACRO_LAST_SEGMENT = 922;
     private static final String MIXED_SET = "0123456789&\r\t,:#-.$/+%*=^";
     private static final String PUNCTUATION_SET = ";<>@[\\]_`~!\r\t,:\n-.$/\"|*()?{}'";
-
     private static final int[][] CLUSTERS =
             {{
                     0x1d5c0, 0x1eaf0, 0x1f57c, 0x1d4e0, 0x1ea78, 0x1f53e, 0x1a8c0, 0x1d470,
@@ -1462,7 +496,6 @@ public class BarcodePDF417 {
                     0x10396, 0x107b6, 0x187d4, 0x187d2, 0x10794, 0x10fb4, 0x10792, 0x10fb2,
                     0x1c7ea
             }};
-
     private static final int[][] ERROR_LEVEL =
             {{
                     27, 917
@@ -1540,71 +573,1127 @@ public class BarcodePDF417 {
                     407, 164, 332, 899, 165, 726, 600, 325, 498, 655, 357, 752, 768, 223, 849, 647,
                     63, 310, 863, 251, 366, 304, 282, 738, 675, 410, 389, 244, 31, 121, 303, 263
             }};
-    
-    /** Holds value of property outBits. */
+    protected int bitPtr;
+    protected int cwPtr;
+    protected SegmentList segmentList;
+    private int macroSegmentCount = 0;
+    private int macroSegmentId = -1;
+    private String macroFileId;
+    private int macroIndex;
+    /**
+     * Holds value of property outBits.
+     */
     private byte[] outBits;
-    
-    /** Holds value of property bitColumns. */
+    /**
+     * Holds value of property bitColumns.
+     */
     private int bitColumns;
-    
-    /** Holds value of property codeRows. */
+    /**
+     * Holds value of property codeRows.
+     */
     private int codeRows;
-    
-    /** Holds value of property codeColumns. */
+    /**
+     * Holds value of property codeColumns.
+     */
     private int codeColumns;
-    
-    /** Holds value of property codewords. */
+    /**
+     * Holds value of property codewords.
+     */
     private int[] codewords = new int[MAX_DATA_CODEWORDS + 2];
-    
-    /** Holds value of property lenCodewords. */
+    /**
+     * Holds value of property lenCodewords.
+     */
     private int lenCodewords;
-    
-    /** Holds value of property errorLevel. */
+    /**
+     * Holds value of property errorLevel.
+     */
     private int errorLevel;
-    
-    /** Holds value of property text. */
+    /**
+     * Holds value of property text.
+     */
     private byte[] text;
-    
-    /** Holds value of property options. */
+    /**
+     * Holds value of property options.
+     */
     private int options;
-    
-    /** Holds value of property aspectRatio. */
+    /**
+     * Holds value of property aspectRatio.
+     */
     private float aspectRatio;
-    
-    /** Holds value of property yHeight. */
+    /**
+     * Holds value of property yHeight.
+     */
     private float yHeight;
-    
+
+    /**
+     * Creates a new <CODE>BarcodePDF417</CODE> with the default settings.
+     */
+    public BarcodePDF417() {
+        setDefaultParameters();
+    }
+
+    private static int getTextTypeAndValue(byte[] input, int maxLength, int idx) {
+        if (idx >= maxLength) {
+            return 0;
+        }
+        char c = (char) (input[idx] & 0xff);
+        if (c >= 'A' && c <= 'Z') {
+            return (ALPHA + c - 'A');
+        }
+        if (c >= 'a' && c <= 'z') {
+            return (LOWER + c - 'a');
+        }
+        if (c == ' ') {
+            return (ALPHA + LOWER + MIXED + SPACE);
+        }
+        int ms = MIXED_SET.indexOf(c);
+        int ps = PUNCTUATION_SET.indexOf(c);
+        if (ms < 0 && ps < 0) {
+            return (ISBYTE + c);
+        }
+        if (ms == ps) {
+            return (MIXED + PUNCTUATION + ms);
+        }
+        if (ms >= 0) {
+            return (MIXED + ms);
+        }
+        return (PUNCTUATION + ps);
+    }
+
+    protected static int maxPossibleErrorLevel(int remain) {
+        int level = 8;
+        int size = 512;
+        while (level > 0) {
+            if (remain >= size) {
+                return level;
+            }
+            --level;
+            size >>= 1;
+        }
+        return 0;
+    }
+
+    /**
+     * Sets the segment id for macro PDF417 encoding
+     *
+     * @param id the id (starting at 0)
+     * @see #setMacroSegmentCount(int)
+     */
+    public void setMacroSegmentId(int id) {
+        this.macroSegmentId = id;
+    }
+
+    /**
+     * Sets the segment count for macro PDF417 encoding
+     *
+     * @param cnt the number of macro segments
+     * @see #setMacroSegmentId(int)
+     */
+    public void setMacroSegmentCount(int cnt) {
+        this.macroSegmentCount = cnt;
+    }
+
+    /**
+     * Sets the File ID for macro PDF417 encoding
+     *
+     * @param id the file id
+     */
+    public void setMacroFileId(String id) {
+        this.macroFileId = id;
+    }
+
+    protected boolean checkSegmentType(Segment segment, char type) {
+        if (segment == null) {
+            return false;
+        }
+        return segment.type == type;
+    }
+
+    protected int getSegmentLength(Segment segment) {
+        if (segment == null) {
+            return 0;
+        }
+        return segment.end - segment.start;
+    }
+
+    /**
+     * Set the default settings that correspond to <CODE>PDF417_USE_ASPECT_RATIO</CODE> and
+     * <CODE>PDF417_AUTO_ERROR_LEVEL</CODE>.
+     */
+    public void setDefaultParameters() {
+        options = 0;
+        outBits = null;
+        text = new byte[0];
+        yHeight = 3;
+        aspectRatio = 0.5f;
+    }
+
+    protected void outCodeword17(int codeword) {
+        int bytePtr = bitPtr / 8;
+        int bit = bitPtr - bytePtr * 8;
+        outBits[bytePtr++] |= codeword >> (9 + bit);
+        outBits[bytePtr++] |= codeword >> (1 + bit);
+        codeword <<= 8;
+        outBits[bytePtr] |= codeword >> (1 + bit);
+        bitPtr += 17;
+    }
+
+    protected void outCodeword18(int codeword) {
+        int bytePtr = bitPtr / 8;
+        int bit = bitPtr - bytePtr * 8;
+        outBits[bytePtr++] |= codeword >> (10 + bit);
+        outBits[bytePtr++] |= codeword >> (2 + bit);
+        codeword <<= 8;
+        outBits[bytePtr] |= codeword >> (2 + bit);
+        if (bit == 7) {
+            outBits[++bytePtr] |= 0x80;
+        }
+        bitPtr += 18;
+    }
+
+    protected void outCodeword(int codeword) {
+        outCodeword17(codeword);
+    }
+
+    protected void outStopPattern() {
+        outCodeword18(STOP_PATTERN);
+    }
+
+    protected void outStartPattern() {
+        outCodeword17(START_PATTERN);
+    }
+
+    protected void outPaintCode() {
+        int codePtr = 0;
+        bitColumns = START_CODE_SIZE * (codeColumns + 3) + STOP_SIZE;
+        int lenBits = ((bitColumns - 1) / 8 + 1) * codeRows;
+        outBits = new byte[lenBits];
+        for (int row = 0; row < codeRows; ++row) {
+            bitPtr = ((bitColumns - 1) / 8 + 1) * 8 * row;
+            int rowMod = row % 3;
+            int[] cluster = CLUSTERS[rowMod];
+            outStartPattern();
+            int edge = 0;
+            switch (rowMod) {
+                case 0:
+                    edge = 30 * (row / 3) + ((codeRows - 1) / 3);
+                    break;
+                case 1:
+                    edge = 30 * (row / 3) + errorLevel * 3 + ((codeRows - 1) % 3);
+                    break;
+                default:
+                    edge = 30 * (row / 3) + codeColumns - 1;
+                    break;
+            }
+            outCodeword(cluster[edge]);
+
+            for (int column = 0; column < codeColumns; ++column) {
+                outCodeword(cluster[codewords[codePtr++]]);
+            }
+
+            switch (rowMod) {
+                case 0:
+                    edge = 30 * (row / 3) + codeColumns - 1;
+                    break;
+                case 1:
+                    edge = 30 * (row / 3) + ((codeRows - 1) / 3);
+                    break;
+                default:
+                    edge = 30 * (row / 3) + errorLevel * 3 + ((codeRows - 1) % 3);
+                    break;
+            }
+            outCodeword(cluster[edge]);
+            outStopPattern();
+        }
+        if ((options & PDF417_INVERT_BITMAP) != 0) {
+            for (int k = 0; k < outBits.length; ++k) {
+                outBits[k] ^= 0xff;
+            }
+        }
+    }
+
+    protected void calculateErrorCorrection(int dest) {
+        if (errorLevel < 0 || errorLevel > 8) {
+            errorLevel = 0;
+        }
+        int[] A = ERROR_LEVEL[errorLevel];
+        int Alength = 2 << errorLevel;
+        for (int k = 0; k < Alength; ++k) {
+            codewords[dest + k] = 0;
+        }
+        int lastE = Alength - 1;
+        for (int k = 0; k < lenCodewords; ++k) {
+            int t1 = codewords[k] + codewords[dest];
+            for (int e = 0; e <= lastE; ++e) {
+                int t2 = (t1 * A[lastE - e]) % MOD;
+                int t3 = MOD - t2;
+                codewords[dest + e] = ((e == lastE ? 0 : codewords[dest + e + 1]) + t3) % MOD;
+            }
+        }
+        for (int k = 0; k < Alength; ++k) {
+            codewords[dest + k] = (MOD - codewords[dest + k]) % MOD;
+        }
+    }
+
+    protected int getTextTypeAndValue(int maxLength, int idx) {
+        return getTextTypeAndValue(text, maxLength, idx);
+    }
+
+    private void textCompaction(byte[] input, int start, int length) {
+        int[] dest = new int[ABSOLUTE_MAX_TEXT_SIZE * 2];
+        int mode = ALPHA;
+        int ptr = 0;
+        int fullBytes = 0;
+        int v = 0;
+        int k;
+        int size;
+        length += start;
+        for (k = start; k < length; ++k) {
+            v = getTextTypeAndValue(input, length, k);
+            if ((v & mode) != 0) {
+                dest[ptr++] = v & 0xff;
+                continue;
+            }
+            if ((v & ISBYTE) != 0) {
+                if ((ptr & 1) != 0) {
+                    //add a padding word
+                    dest[ptr++] = PAL;
+                    mode = (mode & PUNCTUATION) != 0 ? ALPHA : mode;
+                }
+                dest[ptr++] = BYTESHIFT;
+                dest[ptr++] = v & 0xff;
+                fullBytes += 2;
+                continue;
+            }
+            switch (mode) {
+                case ALPHA:
+                    if ((v & LOWER) != 0) {
+                        dest[ptr++] = LL;
+                        dest[ptr++] = v & 0xff;
+                        mode = LOWER;
+                    } else if ((v & MIXED) != 0) {
+                        dest[ptr++] = ML;
+                        dest[ptr++] = v & 0xff;
+                        mode = MIXED;
+                    } else if ((getTextTypeAndValue(input, length, k + 1) & getTextTypeAndValue(input, length, k + 2)
+                            & PUNCTUATION) != 0) {
+                        dest[ptr++] = ML;
+                        dest[ptr++] = PL;
+                        dest[ptr++] = v & 0xff;
+                        mode = PUNCTUATION;
+                    } else {
+                        dest[ptr++] = PS;
+                        dest[ptr++] = v & 0xff;
+                    }
+                    break;
+                case LOWER:
+                    if ((v & ALPHA) != 0) {
+                        if ((getTextTypeAndValue(input, length, k + 1) & getTextTypeAndValue(input, length, k + 2)
+                                & ALPHA) != 0) {
+                            dest[ptr++] = ML;
+                            dest[ptr++] = AL;
+                            mode = ALPHA;
+                        } else {
+                            dest[ptr++] = AS;
+                        }
+                        dest[ptr++] = v & 0xff;
+                    } else if ((v & MIXED) != 0) {
+                        dest[ptr++] = ML;
+                        dest[ptr++] = v & 0xff;
+                        mode = MIXED;
+                    } else if ((getTextTypeAndValue(input, length, k + 1) & getTextTypeAndValue(input, length, k + 2)
+                            & PUNCTUATION) != 0) {
+                        dest[ptr++] = ML;
+                        dest[ptr++] = PL;
+                        dest[ptr++] = v & 0xff;
+                        mode = PUNCTUATION;
+                    } else {
+                        dest[ptr++] = PS;
+                        dest[ptr++] = v & 0xff;
+                    }
+                    break;
+                case MIXED:
+                    if ((v & LOWER) != 0) {
+                        dest[ptr++] = LL;
+                        dest[ptr++] = v & 0xff;
+                        mode = LOWER;
+                    } else if ((v & ALPHA) != 0) {
+                        dest[ptr++] = AL;
+                        dest[ptr++] = v & 0xff;
+                        mode = ALPHA;
+                    } else if ((getTextTypeAndValue(input, length, k + 1) & getTextTypeAndValue(input, length, k + 2)
+                            & PUNCTUATION) != 0) {
+                        dest[ptr++] = PL;
+                        dest[ptr++] = v & 0xff;
+                        mode = PUNCTUATION;
+                    } else {
+                        dest[ptr++] = PS;
+                        dest[ptr++] = v & 0xff;
+                    }
+                    break;
+                case PUNCTUATION:
+                    dest[ptr++] = PAL;
+                    mode = ALPHA;
+                    --k;
+                    break;
+            }
+        }
+        if ((ptr & 1) != 0) {
+            dest[ptr++] = PS;
+        }
+        size = (ptr + fullBytes) / 2;
+        if (size + cwPtr > MAX_DATA_CODEWORDS) {
+            throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.text.is.too.big"));
+        }
+        length = ptr;
+        ptr = 0;
+        while (ptr < length) {
+            v = dest[ptr++];
+            if (v >= 30) {
+                codewords[cwPtr++] = v;
+                codewords[cwPtr++] = dest[ptr++];
+            } else {
+                codewords[cwPtr++] = v * 30 + dest[ptr++];
+            }
+        }
+    }
+
+    protected void textCompaction(int start, int length) {
+        textCompaction(text, start, length);
+    }
+
+    protected void basicNumberCompaction(int start, int length) {
+        basicNumberCompaction(text, start, length);
+    }
+
+    private void basicNumberCompaction(byte[] input, int start, int length) {
+        int ret = cwPtr;
+        int retLast = length / 3;
+        int ni, k;
+        cwPtr += retLast + 1;
+        for (k = 0; k <= retLast; ++k) {
+            codewords[ret + k] = 0;
+        }
+        codewords[ret + retLast] = 1;
+        length += start;
+        for (ni = start; ni < length; ++ni) {
+            // multiply by 10
+            for (k = retLast; k >= 0; --k) {
+                codewords[ret + k] *= 10;
+            }
+            // add the digit
+            codewords[ret + retLast] += input[ni] - '0';
+            // propagate carry
+            for (k = retLast; k > 0; --k) {
+                codewords[ret + k - 1] += codewords[ret + k] / 900;
+                codewords[ret + k] %= 900;
+            }
+        }
+    }
+
+    private void numberCompaction(byte[] input, int start, int length) {
+        int full = (length / 44) * 15;
+        int size = length % 44;
+        int k;
+        if (size == 0) {
+            size = full;
+        } else {
+            size = full + size / 3 + 1;
+        }
+        if (size + cwPtr > MAX_DATA_CODEWORDS) {
+            throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.text.is.too.big"));
+        }
+        length += start;
+        for (k = start; k < length; k += 44) {
+            size = length - k < 44 ? length - k : 44;
+            basicNumberCompaction(input, k, size);
+        }
+    }
+
+    protected void numberCompaction(int start, int length) {
+        numberCompaction(text, start, length);
+    }
+
+    protected void byteCompaction6(int start) {
+        int length = 6;
+        int ret = cwPtr;
+        int retLast = 4;
+        int ni, k;
+        cwPtr += retLast + 1;
+        for (k = 0; k <= retLast; ++k) {
+            codewords[ret + k] = 0;
+        }
+        length += start;
+        for (ni = start; ni < length; ++ni) {
+            // multiply by 256
+            for (k = retLast; k >= 0; --k) {
+                codewords[ret + k] *= 256;
+            }
+            // add the digit
+            codewords[ret + retLast] += text[ni] & 0xff;
+            // propagate carry
+            for (k = retLast; k > 0; --k) {
+                codewords[ret + k - 1] += codewords[ret + k] / 900;
+                codewords[ret + k] %= 900;
+            }
+        }
+    }
+
+    void byteCompaction(int start, int length) {
+        int k, j;
+        int size = (length / 6) * 5 + (length % 6);
+        if (size + cwPtr > MAX_DATA_CODEWORDS) {
+            throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.text.is.too.big"));
+        }
+        length += start;
+        for (k = start; k < length; k += 6) {
+            size = length - k < 44 ? length - k : 6;
+            if (size < 6) {
+                for (j = 0; j < size; ++j) {
+                    codewords[cwPtr++] = text[k + j] & 0xff;
+                }
+            } else {
+                byteCompaction6(k);
+            }
+        }
+    }
+
+    void breakString() {
+        int textLength = text.length;
+        int lastP = 0;
+        int startN = 0;
+        int nd = 0;
+        char c = 0;
+        int k, j;
+        boolean lastTxt, txt;
+        Segment v;
+        Segment vp;
+        Segment vn;
+
+        if ((options & PDF417_FORCE_BINARY) != 0) {
+            segmentList.add('B', 0, textLength);
+            return;
+        }
+        for (k = 0; k < textLength; ++k) {
+            c = (char) (text[k] & 0xff);
+            if (c >= '0' && c <= '9') {
+                if (nd == 0) {
+                    startN = k;
+                }
+                ++nd;
+                continue;
+            }
+            if (nd >= 13) {
+                if (lastP != startN) {
+                    c = (char) (text[lastP] & 0xff);
+                    lastTxt = (c >= ' ' && c < 127) || c == '\r' || c == '\n' || c == '\t';
+                    for (j = lastP; j < startN; ++j) {
+                        c = (char) (text[j] & 0xff);
+                        txt = (c >= ' ' && c < 127) || c == '\r' || c == '\n' || c == '\t';
+                        if (txt != lastTxt) {
+                            segmentList.add(lastTxt ? 'T' : 'B', lastP, j);
+                            lastP = j;
+                            lastTxt = txt;
+                        }
+                    }
+                    segmentList.add(lastTxt ? 'T' : 'B', lastP, startN);
+                }
+                segmentList.add('N', startN, k);
+                lastP = k;
+            }
+            nd = 0;
+        }
+        if (nd < 13) {
+            startN = textLength;
+        }
+        if (lastP != startN) {
+            c = (char) (text[lastP] & 0xff);
+            lastTxt = (c >= ' ' && c < 127) || c == '\r' || c == '\n' || c == '\t';
+            for (j = lastP; j < startN; ++j) {
+                c = (char) (text[j] & 0xff);
+                txt = (c >= ' ' && c < 127) || c == '\r' || c == '\n' || c == '\t';
+                if (txt != lastTxt) {
+                    segmentList.add(lastTxt ? 'T' : 'B', lastP, j);
+                    lastP = j;
+                    lastTxt = txt;
+                }
+            }
+            segmentList.add(lastTxt ? 'T' : 'B', lastP, startN);
+        }
+        if (nd >= 13) {
+            segmentList.add('N', startN, textLength);
+        }
+        //optimize
+        //merge short binary
+        for (k = 0; k < segmentList.size(); ++k) {
+            v = segmentList.get(k);
+            vp = segmentList.get(k - 1);
+            vn = segmentList.get(k + 1);
+            if (checkSegmentType(v, 'B') && getSegmentLength(v) == 1) {
+                if (checkSegmentType(vp, 'T') && checkSegmentType(vn, 'T')
+                        && getSegmentLength(vp) + getSegmentLength(vn) >= 3) {
+                    vp.end = vn.end;
+                    segmentList.remove(k);
+                    segmentList.remove(k);
+                    k = -1;
+                    continue;
+                }
+            }
+        }
+        //merge text sections
+        for (k = 0; k < segmentList.size(); ++k) {
+            v = segmentList.get(k);
+            vp = segmentList.get(k - 1);
+            vn = segmentList.get(k + 1);
+            if (checkSegmentType(v, 'T') && getSegmentLength(v) >= 5) {
+                boolean redo = false;
+                if ((checkSegmentType(vp, 'B') && getSegmentLength(vp) == 1) || checkSegmentType(vp, 'T')) {
+                    redo = true;
+                    v.start = vp.start;
+                    segmentList.remove(k - 1);
+                    --k;
+                }
+                if ((checkSegmentType(vn, 'B') && getSegmentLength(vn) == 1) || checkSegmentType(vn, 'T')) {
+                    redo = true;
+                    v.end = vn.end;
+                    segmentList.remove(k + 1);
+                }
+                if (redo) {
+                    k = -1;
+                }
+            }
+        }
+        //merge binary sections
+        for (k = 0; k < segmentList.size(); ++k) {
+            v = segmentList.get(k);
+            vp = segmentList.get(k - 1);
+            vn = segmentList.get(k + 1);
+            if (checkSegmentType(v, 'B')) {
+                boolean redo = false;
+                if ((checkSegmentType(vp, 'T') && getSegmentLength(vp) < 5) || checkSegmentType(vp, 'B')) {
+                    redo = true;
+                    v.start = vp.start;
+                    segmentList.remove(k - 1);
+                    --k;
+                }
+                if ((checkSegmentType(vn, 'T') && getSegmentLength(vn) < 5) || checkSegmentType(vn, 'B')) {
+                    redo = true;
+                    v.end = vn.end;
+                    segmentList.remove(k + 1);
+                }
+                if (redo) {
+                    k = -1;
+                }
+            }
+        }
+        // check if all numbers
+        if (segmentList.size() == 1 && (v = segmentList.get(0)).type == 'T' && getSegmentLength(v) >= 8) {
+            for (k = v.start; k < v.end; ++k) {
+                c = (char) (text[k] & 0xff);
+                if (c < '0' || c > '9') {
+                    break;
+                }
+            }
+            if (k == v.end) {
+                v.type = 'N';
+            }
+        }
+    }
+
+    protected void assemble() {
+        int k;
+        if (segmentList.size() == 0) {
+            return;
+        }
+        cwPtr = 1;
+        for (k = 0; k < segmentList.size(); ++k) {
+            Segment v = segmentList.get(k);
+            switch (v.type) {
+                case 'T':
+                    if (k != 0) {
+                        codewords[cwPtr++] = TEXT_MODE;
+                    }
+                    textCompaction(v.start, getSegmentLength(v));
+                    break;
+                case 'N':
+                    codewords[cwPtr++] = NUMERIC_MODE;
+                    numberCompaction(v.start, getSegmentLength(v));
+                    break;
+                case 'B':
+                    codewords[cwPtr++] = (getSegmentLength(v) % 6) != 0 ? BYTE_MODE : BYTE_MODE_6;
+                    byteCompaction(v.start, getSegmentLength(v));
+                    break;
+            }
+        }
+
+        if ((options & PDF417_USE_MACRO) != 0) {
+            macroCodes();
+        }
+
+    }
+
+    private void macroCodes() {
+        if (macroSegmentId < 0) {
+            throw new IllegalStateException(MessageLocalization.getComposedMessage("macrosegmentid.must.be.gt.eq.0"));
+        }
+        if (macroSegmentId >= macroSegmentCount) {
+            throw new IllegalStateException(
+                    MessageLocalization.getComposedMessage("macrosegmentid.must.be.lt.macrosemgentcount"));
+        }
+
+        macroIndex = cwPtr;
+        codewords[cwPtr++] = MACRO_SEGMENT_ID;
+        append(macroSegmentId, 5);
+
+        if (macroFileId != null) {
+            append(macroFileId);
+        }
+
+        if (macroSegmentId >= macroSegmentCount - 1) {
+            codewords[cwPtr++] = MACRO_LAST_SEGMENT;
+        }
+
+    }
+
+    private void append(int in, int len) {
+        StringBuilder sb = new StringBuilder(len + 1);
+        sb.append(in);
+        for (int i = sb.length(); i < len; i++) {
+            sb.insert(0, "0");
+        }
+
+        byte[] bytes = PdfEncodings.convertToBytes(sb.toString(), "cp437");
+        numberCompaction(bytes, 0, bytes.length);
+    }
+
+    private void append(String s) {
+        byte[] bytes = PdfEncodings.convertToBytes(s, "cp437");
+        textCompaction(bytes, 0, bytes.length);
+    }
+
+    protected void dumpList() {
+        if (segmentList.size() == 0) {
+            return;
+        }
+        for (int k = 0; k < segmentList.size(); ++k) {
+            Segment v = segmentList.get(k);
+            int len = getSegmentLength(v);
+            char[] c = new char[len];
+            for (int j = 0; j < len; ++j) {
+                c[j] = (char) (text[v.start + j] & 0xff);
+                if (c[j] == '\r') {
+                    c[j] = '\n';
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append(v.type);
+            sb.append(c);
+            System.out.println(sb.toString());
+        }
+    }
+
+    protected int getMaxSquare() {
+        if (codeColumns > 21) {
+            codeColumns = 29;
+            codeRows = 32;
+        } else {
+            codeColumns = 16;
+            codeRows = 58;
+        }
+        return MAX_DATA_CODEWORDS + 2;
+    }
+
+    /**
+     * Paints the barcode. If no exception was thrown a valid barcode is available.
+     */
+    public void paintCode() {
+        int maxErr, lenErr, tot, pad;
+        if ((options & PDF417_USE_RAW_CODEWORDS) != 0) {
+            if (lenCodewords > MAX_DATA_CODEWORDS || lenCodewords < 1 || lenCodewords != codewords[0]) {
+                throw new IllegalArgumentException(MessageLocalization.getComposedMessage("invalid.codeword.size"));
+            }
+        } else {
+            if (text == null) {
+                throw new NullPointerException(MessageLocalization.getComposedMessage("text.cannot.be.null"));
+            }
+            if (text.length > ABSOLUTE_MAX_TEXT_SIZE) {
+                throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.text.is.too.big"));
+            }
+            segmentList = new SegmentList();
+            breakString();
+            //dumpList();
+            assemble();
+            segmentList = null;
+            codewords[0] = lenCodewords = cwPtr;
+        }
+        maxErr = maxPossibleErrorLevel(MAX_DATA_CODEWORDS + 2 - lenCodewords);
+        if ((options & PDF417_USE_ERROR_LEVEL) == 0) {
+            if (lenCodewords < 41) {
+                errorLevel = 2;
+            } else if (lenCodewords < 161) {
+                errorLevel = 3;
+            } else if (lenCodewords < 321) {
+                errorLevel = 4;
+            } else {
+                errorLevel = 5;
+            }
+        }
+        if (errorLevel < 0) {
+            errorLevel = 0;
+        } else if (errorLevel > maxErr) {
+            errorLevel = maxErr;
+        }
+        if (codeColumns < 1) {
+            codeColumns = 1;
+        } else if (codeColumns > 30) {
+            codeColumns = 30;
+        }
+        if (codeRows < 3) {
+            codeRows = 3;
+        } else if (codeRows > 90) {
+            codeRows = 90;
+        }
+        lenErr = 2 << errorLevel;
+        boolean fixedColumn = (options & PDF417_FIXED_ROWS) == 0;
+        boolean skipRowColAdjust = false;
+        tot = lenCodewords + lenErr;
+        if ((options & PDF417_FIXED_RECTANGLE) != 0) {
+            tot = codeColumns * codeRows;
+            if (tot > MAX_DATA_CODEWORDS + 2) {
+                tot = getMaxSquare();
+            }
+            if (tot < lenCodewords + lenErr) {
+                tot = lenCodewords + lenErr;
+            } else {
+                skipRowColAdjust = true;
+            }
+        } else if ((options & (PDF417_FIXED_COLUMNS | PDF417_FIXED_ROWS)) == 0) {
+            double c, b;
+            fixedColumn = true;
+            if (aspectRatio < 0.001) {
+                aspectRatio = 0.001f;
+            } else if (aspectRatio > 1000) {
+                aspectRatio = 1000;
+            }
+            b = 73 * aspectRatio - 4;
+            c = (-b + Math.sqrt(b * b + 4 * 17 * aspectRatio * (lenCodewords + lenErr) * yHeight)) / (2 * 17
+                    * aspectRatio);
+            codeColumns = (int) (c + 0.5);
+            if (codeColumns < 1) {
+                codeColumns = 1;
+            } else if (codeColumns > 30) {
+                codeColumns = 30;
+            }
+        }
+        if (!skipRowColAdjust) {
+            if (fixedColumn) {
+                codeRows = (tot - 1) / codeColumns + 1;
+                if (codeRows < 3) {
+                    codeRows = 3;
+                } else if (codeRows > 90) {
+                    codeRows = 90;
+                    codeColumns = (tot - 1) / 90 + 1;
+                }
+            } else {
+                codeColumns = (tot - 1) / codeRows + 1;
+                if (codeColumns > 30) {
+                    codeColumns = 30;
+                    codeRows = (tot - 1) / 30 + 1;
+                }
+            }
+            tot = codeRows * codeColumns;
+        }
+        if (tot > MAX_DATA_CODEWORDS + 2) {
+            tot = getMaxSquare();
+        }
+        errorLevel = maxPossibleErrorLevel(tot - lenCodewords);
+        lenErr = 2 << errorLevel;
+        pad = tot - lenErr - lenCodewords;
+        if ((options & PDF417_USE_MACRO) != 0) {
+            // the padding comes before the control block
+            int lenCodewordsAdjusted = lenCodewords = macroIndex;
+            System.arraycopy(codewords, macroIndex, codewords, macroIndex + pad, lenCodewordsAdjusted);
+            cwPtr = lenCodewords + pad;
+            while (pad-- != 0) {
+                codewords[macroIndex++] = TEXT_MODE;
+            }
+        } else {
+            cwPtr = lenCodewords;
+            while (pad-- != 0) {
+                codewords[cwPtr++] = TEXT_MODE;
+            }
+        }
+        codewords[0] = lenCodewords = cwPtr;
+        calculateErrorCorrection(lenCodewords);
+        lenCodewords = tot;
+        outPaintCode();
+    }
+
+    /**
+     * Gets an <CODE>Image</CODE> with the barcode. The image will have to be scaled in the Y direction by
+     * <CODE>yHeight</CODE>for the barcode to have the right printing aspect.
+     *
+     * @return the barcode <CODE>Image</CODE>
+     * @throws BadElementException on error
+     */
+    public Image getImage() throws BadElementException {
+        paintCode();
+        byte[] g4 = CCITTG4Encoder.compress(outBits, bitColumns, codeRows);
+        return Image.getInstance(bitColumns, codeRows, false, Image.CCITTG4,
+                (options & PDF417_INVERT_BITMAP) == 0 ? 0 : Image.CCITT_BLACKIS1, g4, null);
+    }
+
+    /**
+     * Creates a <CODE>java.awt.Image</CODE>.
+     *
+     * @param foreground the color of the bars
+     * @param background the color of the background
+     * @return the image
+     */
+    public java.awt.Image createAwtImage(Color foreground, Color background) {
+        int f = foreground.getRGB();
+        int g = background.getRGB();
+        Canvas canvas = new Canvas();
+
+        paintCode();
+        int h = (int) yHeight;
+        int[] pix = new int[bitColumns * codeRows * h];
+        int stride = (bitColumns + 7) / 8;
+        int ptr = 0;
+        for (int k = 0; k < codeRows; ++k) {
+            int p = k * stride;
+            for (int j = 0; j < bitColumns; ++j) {
+                int b = outBits[p + (j / 8)] & 0xff;
+                b <<= j % 8;
+                pix[ptr++] = (b & 0x80) == 0 ? g : f;
+            }
+            for (int j = 1; j < h; ++j) {
+                System.arraycopy(pix, ptr - bitColumns, pix, ptr + bitColumns * (j - 1), bitColumns);
+            }
+            ptr += bitColumns * (h - 1);
+        }
+
+        java.awt.Image img = canvas.createImage(new MemoryImageSource(bitColumns, codeRows * h, pix, 0, bitColumns));
+        return img;
+    }
+
+    /**
+     * Gets the raw image bits of the barcode. The image will have to be scaled in the Y direction by
+     * <CODE>yHeight</CODE>.
+     *
+     * @return The raw barcode image
+     */
+    public byte[] getOutBits() {
+        return this.outBits;
+    }
+
+    /**
+     * Gets the number of X pixels of <CODE>outBits</CODE>.
+     *
+     * @return the number of X pixels of <CODE>outBits</CODE>
+     */
+    public int getBitColumns() {
+        return this.bitColumns;
+    }
+
+    /**
+     * Gets the number of Y pixels of <CODE>outBits</CODE>. It is also the number of rows in the barcode.
+     *
+     * @return the number of Y pixels of <CODE>outBits</CODE>
+     */
+    public int getCodeRows() {
+        return this.codeRows;
+    }
+
+    /**
+     * Sets the number of barcode rows. This number may be changed to keep the barcode valid.
+     *
+     * @param codeRows the number of barcode rows
+     */
+    public void setCodeRows(int codeRows) {
+        this.codeRows = codeRows;
+    }
+
+    /**
+     * Gets the number of barcode data columns.
+     *
+     * @return he number of barcode data columns
+     */
+    public int getCodeColumns() {
+        return this.codeColumns;
+    }
+
+    /**
+     * Sets the number of barcode data columns. This number may be changed to keep the barcode valid.
+     *
+     * @param codeColumns the number of barcode data columns
+     */
+    public void setCodeColumns(int codeColumns) {
+        this.codeColumns = codeColumns;
+    }
+
+    /**
+     * Gets the codeword array. This array is always 928 elements long. It can be written to if the option
+     * <CODE>PDF417_USE_RAW_CODEWORDS</CODE> is set.
+     *
+     * @return the codeword array
+     */
+    public int[] getCodewords() {
+        return this.codewords;
+    }
+
+    /**
+     * Gets the length of the codewords.
+     *
+     * @return the length of the codewords
+     */
+    public int getLenCodewords() {
+        return this.lenCodewords;
+    }
+
+    /**
+     * Sets the length of the codewords.
+     *
+     * @param lenCodewords the length of the codewords
+     */
+    public void setLenCodewords(int lenCodewords) {
+        this.lenCodewords = lenCodewords;
+    }
+
+    /**
+     * Gets the error level correction used for the barcode. It may different from the previously set value.
+     *
+     * @return the error level correction used for the barcode
+     */
+    public int getErrorLevel() {
+        return this.errorLevel;
+    }
+
+    /**
+     * Sets the error level correction for the barcode.
+     *
+     * @param errorLevel the error level correction for the barcode
+     */
+    public void setErrorLevel(int errorLevel) {
+        this.errorLevel = errorLevel;
+    }
+
+    /**
+     * Gets the bytes that form the barcode. This bytes should be interpreted in the codepage Cp437.
+     *
+     * @return the bytes that form the barcode
+     */
+    public byte[] getText() {
+        return this.text;
+    }
+
+    /**
+     * Sets the bytes that form the barcode. This bytes should be interpreted in the codepage Cp437.
+     *
+     * @param text the bytes that form the barcode
+     */
+    public void setText(byte[] text) {
+        this.text = text;
+    }
+
+    /**
+     * Sets the text that will form the barcode. This text is converted to bytes using the encoding Cp437.
+     *
+     * @param s the text that will form the barcode
+     */
+    public void setText(String s) {
+        this.text = PdfEncodings.convertToBytes(s, "cp437");
+    }
+
+    /**
+     * Gets the options to generate the barcode.
+     *
+     * @return the options to generate the barcode
+     */
+    public int getOptions() {
+        return this.options;
+    }
+
+    /**
+     * Sets the options to generate the barcode. This can be all the <CODE>PDF417_*</CODE> constants.
+     *
+     * @param options the options to generate the barcode
+     */
+    public void setOptions(int options) {
+        this.options = options;
+    }
+
+    /**
+     * Gets the barcode aspect ratio.
+     *
+     * @return the barcode aspect ratio
+     */
+    public float getAspectRatio() {
+        return this.aspectRatio;
+    }
+
+    /**
+     * Sets the barcode aspect ratio. A ratio or 0.5 will make the barcode width twice as large as the height.
+     *
+     * @param aspectRatio the barcode aspect ratio
+     */
+    public void setAspectRatio(float aspectRatio) {
+        this.aspectRatio = aspectRatio;
+    }
+
+    /**
+     * Gets the Y pixel height relative to X.
+     *
+     * @return the Y pixel height relative to X
+     */
+    public float getYHeight() {
+        return this.yHeight;
+    }
+
+    /**
+     * Sets the Y pixel height relative to X. It is usually 3.
+     *
+     * @param yHeight the Y pixel height relative to X
+     */
+    public void setYHeight(float yHeight) {
+        this.yHeight = yHeight;
+    }
+
     protected static class Segment {
+
         public char type;
         public int start;
         public int end;
-        
+
         public Segment(char type, int start, int end) {
             this.type = type;
             this.start = start;
             this.end = end;
         }
     }
-    
+
     protected static class SegmentList {
+
         protected ArrayList<Segment> list = new ArrayList<>();
-        
+
         public void add(char type, int start, int end) {
             list.add(new Segment(type, start, end));
         }
 
         public Segment get(int idx) {
-            if (idx < 0 || idx >= list.size())
+            if (idx < 0 || idx >= list.size()) {
                 return null;
+            }
             return list.get(idx);
         }
 
         public void remove(int idx) {
-            if (idx < 0 || idx >= list.size())
+            if (idx < 0 || idx >= list.size()) {
                 return;
+            }
             list.remove(idx);
         }
-        
+
         public int size() {
             return list.size();
         }

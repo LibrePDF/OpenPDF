@@ -25,29 +25,29 @@ public enum VerticalAlignment {
         this.id = id;
     }
 
-    public int getId() {
-        return id;
-    }
-
     /**
-    * Constructs {@link VerticalAlignment} instance from passed unique alignment {@code id}.
-    *
-    * @param id Alignment unique ID
-    * @see Element#ALIGN_UNDEFINED
-    * @see Element#ALIGN_TOP
-    * @see Element#ALIGN_MIDDLE
-    * @see Element#ALIGN_BOTTOM
-    * @see Element#ALIGN_BASELINE
-    * @return {@link Optional} containing alignment instance. If {@code id} is not recognized,
-    * {@link Optional#empty()} will be returned
-    */
+     * Constructs {@link VerticalAlignment} instance from passed unique alignment {@code id}.
+     *
+     * @param id Alignment unique ID
+     * @return {@link Optional} containing alignment instance. If {@code id} is not recognized, {@link Optional#empty()}
+     * will be returned
+     * @see Element#ALIGN_UNDEFINED
+     * @see Element#ALIGN_TOP
+     * @see Element#ALIGN_MIDDLE
+     * @see Element#ALIGN_BOTTOM
+     * @see Element#ALIGN_BASELINE
+     */
     public static Optional<VerticalAlignment> of(final int id) {
-        for (final VerticalAlignment alignment: values()) {
+        for (final VerticalAlignment alignment : values()) {
             if (alignment.id == id) {
                 return Optional.of(alignment);
             }
         }
 
         return Optional.empty();
+    }
+
+    public int getId() {
+        return id;
     }
 }

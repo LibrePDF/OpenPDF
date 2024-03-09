@@ -17,8 +17,8 @@ class FontDetailsTest {
     @Test
     void convertToBytesShouldExerciseSomeCode() throws IOException {
         BaseFont baseFont = BaseFont.createFont(
-            this.getClass().getClassLoader().getResource("fonts/jp/GenShinGothic-Normal.ttf").getFile(),
-            BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                this.getClass().getClassLoader().getResource("fonts/jp/GenShinGothic-Normal.ttf").getFile(),
+                BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         FontDetails fontDetails = new FontDetails(null, null, baseFont);
         TextRenderingOptions options = new TextRenderingOptions();
         byte[] bytes = fontDetails.convertToBytes("hällö wörld", options);
@@ -29,7 +29,7 @@ class FontDetailsTest {
     @Test
     void convertToBytesAwesomeShouldExerciseSomeCode() throws IOException {
         String fontPath = this.getClass().getClassLoader()
-            .getResource("fonts/font-awesome/fa-v4compatibility.ttf").getFile();
+                .getResource("fonts/font-awesome/fa-v4compatibility.ttf").getFile();
         BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         FontDetails fontDetails = new FontDetails(null, null, baseFont);
         TextRenderingOptions options = new TextRenderingOptions();
@@ -49,11 +49,11 @@ class FontDetailsTest {
     @Test
     void testFillerCMapLiberationIsNotNull() throws IOException {
         String fontPath = this.getClass().getClassLoader()
-            .getResource("fonts/liberation/LiberationSerif-Regular.ttf").getFile();
+                .getResource("fonts/liberation/LiberationSerif-Regular.ttf").getFile();
         BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         FontDetails fontDetails = new FontDetails(null, null, baseFont);
         assertThat(fontDetails.getFillerCmap()).isNotNull().isEmpty();
-        fontDetails.putFillerCmap(1, new int[] {1, 2, 3});
+        fontDetails.putFillerCmap(1, new int[]{1, 2, 3});
         assertThat(fontDetails.getFillerCmap()).hasSize(1);
     }
 

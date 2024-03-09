@@ -35,41 +35,45 @@
 
 package com.lowagie.toolbox.arguments;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
 import com.lowagie.text.Image;
 import com.lowagie.toolbox.AbstractTool;
 import com.lowagie.toolbox.arguments.filters.ImageFilter;
+import java.awt.event.ActionEvent;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * StringArgument class if the argument is a com.lowagie.text.Image.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class ImageArgument extends AbstractArgument {
-    /** a filter to put on the FileChooser. */
+
+    /**
+     * a filter to put on the FileChooser.
+     */
     private FileFilter filter;
 
     /**
      * Constructs a FileArgument.
-     * @param tool    the tool that needs this argument
-     * @param name    the name of the argument
-     * @param description    the description of the argument
-     * @param filter        a custom filter
+     *
+     * @param tool        the tool that needs this argument
+     * @param name        the name of the argument
+     * @param description the description of the argument
+     * @param filter      a custom filter
      */
     public ImageArgument(AbstractTool tool, String name, String description,
-                         FileFilter filter) {
+            FileFilter filter) {
         super(tool, name, description, null);
         this.filter = filter;
     }
 
     /**
      * Constructs a FileArgument.
-     * @param tool    the tool that needs this argument
-     * @param name    the name of the argument
-     * @param description    the description of the argument
+     *
+     * @param tool        the tool that needs this argument
+     * @param name        the name of the argument
+     * @param description the description of the argument
      */
     public ImageArgument(AbstractTool tool, String name, String description) {
         this(tool, name, description, new ImageFilter());
@@ -77,6 +81,7 @@ public class ImageArgument extends AbstractArgument {
 
     /**
      * Gets the argument as an object.
+     *
      * @return an object
      * @throws InstantiationException if the specified key cannot be compared with the keys currently in the map
      */
@@ -92,9 +97,8 @@ public class ImageArgument extends AbstractArgument {
     }
 
     /**
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      * @param e ActionEvent
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
         JFileChooser fc = new JFileChooser();

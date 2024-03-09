@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.colors;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -22,12 +20,16 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfFunction;
 import com.lowagie.text.pdf.PdfShading;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+
 /**
  * Shading example
  */
 public class Shading {
+
     /**
      * Shading example.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -38,13 +40,13 @@ public class Shading {
             document.open();
 
             PdfFunction function1 = PdfFunction.type2(writer, new float[]{0, 1}, null,
-                new float[]{.929f, .357f, 1, .298f}, new float[]{.631f, .278f, 1, .027f}, 1.048f);
+                    new float[]{.929f, .357f, 1, .298f}, new float[]{.631f, .278f, 1, .027f}, 1.048f);
             PdfFunction function2 = PdfFunction.type2(writer, new float[]{0, 1}, null,
-                new float[]{.929f, .357f, 1, .298f}, new float[]{.941f, .4f, 1, .102f}, 1.374f);
+                    new float[]{.929f, .357f, 1, .298f}, new float[]{.941f, .4f, 1, .102f}, 1.374f);
             PdfFunction function3 = PdfFunction.type3(writer, new float[]{0, 1}, null,
-                new PdfFunction[]{function1, function2}, new float[]{.708f}, new float[]{1, 0, 0, 1});
+                    new PdfFunction[]{function1, function2}, new float[]{.708f}, new float[]{1, 0, 0, 1});
             PdfShading shading = PdfShading.type3(writer, new CMYKColor(0, 0, 0, 0),
-                new float[]{0, 0, .096f, 0, 0, 1}, null, function3, new boolean[]{true, true});
+                    new float[]{0, 0, .096f, 0, 0, 1}, null, function3, new boolean[]{true, true});
             PdfContentByte cb = writer.getDirectContent();
             cb.moveTo(316.789f, 140.311f);
             cb.curveTo(303.222f, 146.388f, 282.966f, 136.518f, 279.122f, 121.983f);
@@ -58,12 +60,11 @@ public class Shading {
             cb.concatCTM(27.7843f, 0, 0, -27.7843f, 310.2461f, 121.1521f);
             cb.paintShading(shading);
             cb.restoreState();
-            
+
             cb.sanityCheck();
-            
+
             document.close();
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

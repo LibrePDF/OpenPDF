@@ -90,31 +90,27 @@ public class Toolbox extends JFrame implements ActionListener {
      */
     private final JDesktopPane desktop;
     /**
+     * toolarray
+     */
+    private final ArrayList<AbstractTool> toolarray = new ArrayList<>();
+    private final Vector<String> menulist = new Vector<>();
+    private final Vector<String> menuitemlist = new Vector<>();
+    /**
      * The ConsolePane of the toolbox.
      */
     private JScrollPane console;
-
     /**
      * The list of tools in the toolbox.
      */
     private Properties toolmap = new Properties();
-
     /**
      * x-coordinate of the location of a new internal frame.
      */
     private int locationX = 0;
-
     /**
      * y-coordinate of the location of a new internal frame.
      */
     private int locationY = 0;
-    /**
-     * toolarray
-     */
-    private final ArrayList<AbstractTool> toolarray = new ArrayList<>();
-
-    private final Vector<String> menulist = new Vector<>();
-    private final Vector<String> menuitemlist = new Vector<>();
 
     /**
      * Constructs the Toolbox object.
@@ -182,9 +178,28 @@ public class Toolbox extends JFrame implements ActionListener {
                 System.arraycopy(args, 1, nargs, 0, args.length - 1);
                 tool.setMainArguments(nargs);
                 tool.execute();
-            } catch (PropertyVetoException | InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
+            } catch (PropertyVetoException | InstantiationException | IllegalAccessException |
+                     ClassNotFoundException ex) {
             }
         }
+    }
+
+    /**
+     * Centers a JFrame.
+     *
+     * @param f JFrame
+     */
+    public static void centerFrame(Frame f) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = f.getSize();
+        if (frameSize.height > screenSize.height) {
+            frameSize.height = screenSize.height;
+        }
+        if (frameSize.width > screenSize.width) {
+            frameSize.width = screenSize.width;
+        }
+        f.setLocation((screenSize.width - frameSize.width) / 2,
+                (screenSize.height - frameSize.height) / 2);
     }
 
     /**
@@ -318,24 +333,6 @@ public class Toolbox extends JFrame implements ActionListener {
     }
 
     /**
-     * Centers a JFrame.
-     *
-     * @param f JFrame
-     */
-    public static void centerFrame(Frame f) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = f.getSize();
-        if (frameSize.height > screenSize.height) {
-            frameSize.height = screenSize.height;
-        }
-        if (frameSize.width > screenSize.width) {
-            frameSize.width = screenSize.width;
-        }
-        f.setLocation((screenSize.width - frameSize.width) / 2,
-                (screenSize.height - frameSize.height) / 2);
-    }
-
-    /**
      * @param evt ActionEvent
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
@@ -393,27 +390,14 @@ public class Toolbox extends JFrame implements ActionListener {
         }
     }
 
+    public Vector<String> getMenulist() {
+        return menulist;
+    }
+
     /**
      * A Class that redirects output to System.out and System.err.
      */
     public class Console {
-
-        class ErrorContext extends StyleContext {
-
-            private static final long serialVersionUID = 7766294638325167438L;
-            public static final String STDERROR = "Error";
-            public static final String STDOUT = "StdOut";
-
-            public ErrorContext() {
-                super();
-                Style root = getStyle(DEFAULT_STYLE);
-                Style s = addStyle(STDERROR, root);
-                StyleConstants.setForeground(s, Color.RED);
-                s = addStyle(STDOUT, root);
-                StyleConstants.setForeground(s, Color.BLACK);
-            }
-        }
-
 
         PipedInputStream piOut;
         PipedInputStream piErr;
@@ -451,6 +435,22 @@ public class Toolbox extends JFrame implements ActionListener {
             new ReaderThread(piErr, ErrorContext.STDERROR).start();
         }
 
+        class ErrorContext extends StyleContext {
+
+            public static final String STDERROR = "Error";
+            public static final String STDOUT = "StdOut";
+            private static final long serialVersionUID = 7766294638325167438L;
+
+            public ErrorContext() {
+                super();
+                Style root = getStyle(DEFAULT_STYLE);
+                Style s = addStyle(STDERROR, root);
+                StyleConstants.setForeground(s, Color.RED);
+                s = addStyle(STDOUT, root);
+                StyleConstants.setForeground(s, Color.BLACK);
+            }
+        }
+
         class ReaderThread extends Thread {
 
             PipedInputStream pi;
@@ -485,10 +485,5 @@ public class Toolbox extends JFrame implements ActionListener {
                 }
             }
         }
-    }
-
-
-    public Vector<String> getMenulist() {
-        return menulist;
     }
 }

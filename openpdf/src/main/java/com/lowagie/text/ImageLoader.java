@@ -45,19 +45,19 @@
 
 package com.lowagie.text;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import javax.imageio.ImageIO;
 
 /**
  * Loads image files such as PNG, JPEG, GIF, TIFF and BMP.
- *
+ * <p>
  * TODO: The goal of this class is to use Java ImageIO to parse images and metadata,
  * and embed the image in the PDF in the best way (the compressed image format, not the raw pixels).
- *
- *
+ * <p>
+ * <p>
  * We don't want to maintain our own image codecs.
  *
  * @author Andreas Rosdal
@@ -162,7 +162,7 @@ public class ImageLoader {
 
     /**
      * Creates an Image from an array of tiff image bytes.
-     * 
+     *
      * @param imageData bytes of the tiff image
      * @return an objet of type <code>Image</code>
      */
@@ -178,7 +178,6 @@ public class ImageLoader {
 
     /**
      * Creates an Image from a JPEG image file in a byte array.
-     *
      *
      * @param imageData bytes of the image
      * @return an object of type <code>Image</code>

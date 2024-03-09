@@ -11,9 +11,9 @@ class TrueTypeFontUnicodeTest {
     @Test
     void test() {
         assertThatThrownBy(
-            () -> new TrueTypeFontUnicode("notReallyAFont", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null, true))
-            .isInstanceOf(DocumentException.class)
-            .hasMessage("notReallyAFont  is not a TTF font file.");
+                () -> new TrueTypeFontUnicode("notReallyAFont", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null, true))
+                .isInstanceOf(DocumentException.class)
+                .hasMessage("notReallyAFont  is not a TTF font file.");
     }
 
 }

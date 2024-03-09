@@ -16,7 +16,7 @@ class TabTest {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         String stringWithTab = "data\ttable";
         try (Document document
-            = new Document(PageSize.A4.rotate(), 10, 10, 10, 10)) {
+                = new Document(PageSize.A4.rotate(), 10, 10, 10, 10)) {
             Document.compress = false;
             PdfWriter.getInstance(document, stream);
             document.open();

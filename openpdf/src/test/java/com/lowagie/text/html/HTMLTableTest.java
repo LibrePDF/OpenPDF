@@ -1,14 +1,15 @@
 package com.lowagie.text.html;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.html.simpleparser.HTMLWorker;
-import org.junit.jupiter.api.Test;
-import java.io.StringReader;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.html.simpleparser.HTMLWorker;
+import java.io.StringReader;
+import org.junit.jupiter.api.Test;
+
 public class HTMLTableTest {
+
     /**
      * Bug fix scenario: a table with rowspan doesn't work
      */

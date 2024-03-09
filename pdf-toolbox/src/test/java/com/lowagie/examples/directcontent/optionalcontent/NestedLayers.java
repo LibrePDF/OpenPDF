@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.optionalcontent;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -29,14 +26,17 @@ import com.lowagie.text.pdf.PdfLayer;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfOCProperties;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Demonstrates the use of nested layers.
  */
 public class NestedLayers {
-       
+
     /**
      * Demonstrates the use of nested layers
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -73,7 +73,7 @@ public class NestedLayers {
             cb.endLayer();
             cb.endLayer();
             cb.sanityCheck();
-            
+
             PdfOCProperties p = writer.getOCProperties();
             PdfArray order = new PdfArray();
             order.add(l1.getRef());
@@ -87,8 +87,7 @@ public class NestedLayers {
             p.put(PdfName.D, d);
             // step 5
             document.close();
-        }
-        catch(Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

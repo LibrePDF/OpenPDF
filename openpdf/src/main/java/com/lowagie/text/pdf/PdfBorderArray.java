@@ -52,37 +52,40 @@ package com.lowagie.text.pdf;
 /**
  * A <CODE>PdfBorderArray</CODE> defines the border of a <CODE>PdfAnnotation</CODE>.
  *
- * @see        PdfArray
+ * @see PdfArray
  */
 
 public class PdfBorderArray extends PdfArray {
-    
+
     // constructors
-    
-/**
- * Constructs a new <CODE>PdfBorderArray</CODE>.
- * @param width the width
- * @param vRadius the vertical radius
- * @param hRadius the horizontal radius
- */
-    
+
+    /**
+     * Constructs a new <CODE>PdfBorderArray</CODE>.
+     *
+     * @param width   the width
+     * @param vRadius the vertical radius
+     * @param hRadius the horizontal radius
+     */
+
     public PdfBorderArray(float hRadius, float vRadius, float width) {
         this(hRadius, vRadius, width, null);
     }
-    
-/**
- * Constructs a new <CODE>PdfBorderArray</CODE>.
- * @param dash the dash pattern of the border
- * @param hRadius the horizontal radius
- * @param vRadius the vertical radius
- * @param width the width
- */
-    
+
+    /**
+     * Constructs a new <CODE>PdfBorderArray</CODE>.
+     *
+     * @param dash    the dash pattern of the border
+     * @param hRadius the horizontal radius
+     * @param vRadius the vertical radius
+     * @param width   the width
+     */
+
     public PdfBorderArray(float hRadius, float vRadius, float width, PdfDashPattern dash) {
         super(new PdfNumber(hRadius));
         add(new PdfNumber(vRadius));
         add(new PdfNumber(width));
-        if (dash != null)
+        if (dash != null) {
             add(dash);
+        }
     }
 }

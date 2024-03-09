@@ -18,7 +18,6 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.html.simpleparser.HTMLWorker;
 import com.lowagie.text.html.simpleparser.StyleSheet;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;

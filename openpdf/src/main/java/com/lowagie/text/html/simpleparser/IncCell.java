@@ -68,7 +68,8 @@ public class IncCell implements TextElementArray {
 
     /**
      * Creates a new instance of IncCell
-     * @param tag the tag
+     *
+     * @param tag   the tag
      * @param props the ChainedProperties
      */
     public IncCell(String tag, ChainedProperties props) {
@@ -93,10 +94,11 @@ public class IncCell implements TextElementArray {
                         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                     } else if ("right".equalsIgnoreCase(align)) {
                         cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                    } else if ("left".equalsIgnoreCase(align))
+                    } else if ("left".equalsIgnoreCase(align)) {
                         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-                    else if ("justify".equalsIgnoreCase(align))
+                    } else if ("justify".equalsIgnoreCase(align)) {
                         cell.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+                    }
                 });
 
         props.findProperty("valign")

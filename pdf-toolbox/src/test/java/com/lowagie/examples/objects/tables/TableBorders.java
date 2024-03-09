@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -27,16 +24,18 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Demonstrates different borderstyles.
  */
 public class TableBorders {
+
     /**
      * Demonstrates different borderstyles.
-     * 
-     * @param args
-     *            the number of rows for each table fragment.
+     *
+     * @param args the number of rows for each table fragment.
      */
     public static void main(String[] args) {
 
@@ -50,7 +49,7 @@ public class TableBorders {
             // step3
             document.open();
             // step4
-            
+
             // page 1
             Font tableFont = FontFactory.getFont("Helvetica", 8, Font.BOLD, Color.BLACK);
             float padding = 0f;
@@ -68,9 +67,9 @@ public class TableBorders {
             Paragraph p;
             p = new Paragraph("\nVarious border widths and colors\nuseAscender=true, useDescender=true", font);
             document.add(p);
-            
+
             document.newPage();
-            
+
             // page 2
             padding = 2f;
             border = new Rectangle(0f, 0f);
@@ -80,11 +79,13 @@ public class TableBorders {
             border.setBorderWidthTop(2f);
             border.setBorderColor(Color.BLACK);
             makeTestPage(tableFont, border, writer, document, padding, true, true);
-            p = new Paragraph("More typical use - padding of 2\nuseBorderPadding=true, useAscender=true, useDescender=true", font);
+            p = new Paragraph(
+                    "More typical use - padding of 2\nuseBorderPadding=true, useAscender=true, useDescender=true",
+                    font);
             document.add(p);
-            
+
             document.newPage();
-            
+
             // page 3
             padding = 0f;
             border = new Rectangle(0f, 0f);
@@ -96,9 +97,9 @@ public class TableBorders {
             makeTestPage(tableFont, border, writer, document, padding, false, true);
             p = new Paragraph("\nuseBorderPadding=true, useAscender=false, useDescender=true", font);
             document.add(p);
-            
+
             document.newPage();
-            
+
             // page 4
             padding = 0f;
             border = new Rectangle(0f, 0f);
@@ -110,9 +111,9 @@ public class TableBorders {
             makeTestPage(tableFont, border, writer, document, padding, false, false);
             p = new Paragraph("\nuseBorderPadding=true, useAscender=false, useDescender=false", font);
             document.add(p);
-            
+
             document.newPage();
-            
+
             // page 5
             padding = 0f;
             border = new Rectangle(0f, 0f);
@@ -132,7 +133,7 @@ public class TableBorders {
     }
 
     private static void makeTestPage(Font tableFont, Rectangle borders, PdfWriter writer, Document document,
-                              float padding, boolean ascender, boolean descender) throws DocumentException {
+            float padding, boolean ascender, boolean descender) throws DocumentException {
         document.newPage();
         PdfPTable table = null;
         table = new PdfPTable(4);
@@ -140,19 +141,34 @@ public class TableBorders {
 
         float leading = tableFont.getSize() * 1.2f;
 
-        table.addCell(makeCell("1-Top", Element.ALIGN_TOP, Element.ALIGN_LEFT, tableFont, leading, padding, borders, ascender, descender));
-        table.addCell(makeCell("2-Middle", Element.ALIGN_MIDDLE, Element.ALIGN_LEFT, tableFont, leading, padding, borders, ascender, descender));
-        table.addCell(makeCell("3-Bottom", Element.ALIGN_BOTTOM, Element.ALIGN_LEFT, tableFont, leading, padding, borders, ascender, descender));
-        table.addCell(makeCell("4-Has a y", Element.ALIGN_TOP, Element.ALIGN_LEFT, tableFont, leading, padding, borders, ascender, descender));
+        table.addCell(
+                makeCell("1-Top", Element.ALIGN_TOP, Element.ALIGN_LEFT, tableFont, leading, padding, borders, ascender,
+                        descender));
+        table.addCell(
+                makeCell("2-Middle", Element.ALIGN_MIDDLE, Element.ALIGN_LEFT, tableFont, leading, padding, borders,
+                        ascender, descender));
+        table.addCell(
+                makeCell("3-Bottom", Element.ALIGN_BOTTOM, Element.ALIGN_LEFT, tableFont, leading, padding, borders,
+                        ascender, descender));
+        table.addCell(makeCell("4-Has a y", Element.ALIGN_TOP, Element.ALIGN_LEFT, tableFont, leading, padding, borders,
+                ascender, descender));
 
-        table.addCell(makeCell("5-Abcdy", Element.ALIGN_TOP, Element.ALIGN_LEFT, tableFont, leading, padding, borders, ascender, descender));
-        table.addCell(makeCell("6-Abcdy", Element.ALIGN_MIDDLE, Element.ALIGN_LEFT, tableFont, leading, padding, borders, ascender, descender));
-        table.addCell(makeCell("7-Abcdy", Element.ALIGN_BOTTOM, Element.ALIGN_LEFT, tableFont, leading, padding, borders, ascender, descender));
-        table.addCell(makeCell("8-This\nis\na little\ntaller", Element.ALIGN_TOP, Element.ALIGN_LEFT, tableFont, leading, padding, borders, ascender, descender));
+        table.addCell(makeCell("5-Abcdy", Element.ALIGN_TOP, Element.ALIGN_LEFT, tableFont, leading, padding, borders,
+                ascender, descender));
+        table.addCell(
+                makeCell("6-Abcdy", Element.ALIGN_MIDDLE, Element.ALIGN_LEFT, tableFont, leading, padding, borders,
+                        ascender, descender));
+        table.addCell(
+                makeCell("7-Abcdy", Element.ALIGN_BOTTOM, Element.ALIGN_LEFT, tableFont, leading, padding, borders,
+                        ascender, descender));
+        table.addCell(
+                makeCell("8-This\nis\na little\ntaller", Element.ALIGN_TOP, Element.ALIGN_LEFT, tableFont, leading,
+                        padding, borders, ascender, descender));
         document.add(table);
     }
 
-    private static PdfPCell makeCell(String text, int vAlignment, int hAlignment, Font font, float leading, float padding, Rectangle borders, boolean ascender, boolean descender) {
+    private static PdfPCell makeCell(String text, int vAlignment, int hAlignment, Font font, float leading,
+            float padding, Rectangle borders, boolean ascender, boolean descender) {
         Paragraph p = new Paragraph(text, font);
         p.setLeading(leading);
 

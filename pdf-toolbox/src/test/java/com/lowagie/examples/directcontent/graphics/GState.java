@@ -9,19 +9,18 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.graphics;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfGState;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Changing the Graphics State with PdfGState.
@@ -30,9 +29,8 @@ public class GState {
 
     /**
      * Changing the Graphics State with PdfGState.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
         System.out.println("Changing the Graphics State with PdfGState");
@@ -71,7 +69,7 @@ public class GState {
             cb.fill();
             cb.circle(260.0f, 500.0f, 50.0f);
             cb.fill();
-            
+
             cb.sanityCheck();
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());

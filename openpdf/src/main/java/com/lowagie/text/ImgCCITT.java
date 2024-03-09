@@ -50,16 +50,15 @@
 
 package com.lowagie.text;
 
-import java.net.URL;
 import com.lowagie.text.error_messages.MessageLocalization;
+import java.net.URL;
 
 /**
  * CCITT Image data that has to be inserted into the document
  *
- * @see        Element
- * @see        Image
- *
- * @author  Paulo Soares
+ * @author Paulo Soares
+ * @see Element
+ * @see Image
  */
 
 public class ImgCCITT extends Image {
@@ -68,26 +67,29 @@ public class ImgCCITT extends Image {
         super(image);
     }
 
-    /** Creates an Image with CCITT compression.
+    /**
+     * Creates an Image with CCITT compression.
      *
-     * @param width the exact width of the image
-     * @param height the exact height of the image
-     * @param reverseBits reverses the bits in <code>data</code>.
-     *  Bit 0 is swapped with bit 7 and so on.
-     * @param typeCCITT the type of compression in <code>data</code>. It can be
-     * CCITTG4, CCITTG31D, CCITTG32D
-     * @param parameters parameters associated with this stream. Possible values are
-     * CCITT_BLACKIS1, CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and CCITT_ENDOFBLOCK or a
-     * combination of them
-     * @param data the image data
+     * @param width       the exact width of the image
+     * @param height      the exact height of the image
+     * @param reverseBits reverses the bits in <code>data</code>. Bit 0 is swapped with bit 7 and so on.
+     * @param typeCCITT   the type of compression in <code>data</code>. It can be CCITTG4, CCITTG31D, CCITTG32D
+     * @param parameters  parameters associated with this stream. Possible values are CCITT_BLACKIS1,
+     *                    CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and CCITT_ENDOFBLOCK or a combination of them
+     * @param data        the image data
      * @throws BadElementException on error
      */
 
-    public ImgCCITT(int width, int height, boolean reverseBits, int typeCCITT, int parameters, byte[] data) throws BadElementException{
-        super((URL)null);
-        if (typeCCITT != CCITTG4 && typeCCITT != CCITTG3_1D && typeCCITT != CCITTG3_2D)
-            throw new BadElementException(MessageLocalization.getComposedMessage("the.ccitt.compression.type.must.be.ccittg4.ccittg3.1d.or.ccittg3.2d"));
-        if (reverseBits) throw new BadElementException("Reversing bits is not supported");
+    public ImgCCITT(int width, int height, boolean reverseBits, int typeCCITT, int parameters, byte[] data)
+            throws BadElementException {
+        super((URL) null);
+        if (typeCCITT != CCITTG4 && typeCCITT != CCITTG3_1D && typeCCITT != CCITTG3_2D) {
+            throw new BadElementException(MessageLocalization.getComposedMessage(
+                    "the.ccitt.compression.type.must.be.ccittg4.ccittg3.1d.or.ccittg3.2d"));
+        }
+        if (reverseBits) {
+            throw new BadElementException("Reversing bits is not supported");
+        }
         type = IMGRAW;
         scaledHeight = height;
         setTop(scaledHeight);

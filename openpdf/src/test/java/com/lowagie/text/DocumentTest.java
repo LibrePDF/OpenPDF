@@ -18,8 +18,8 @@ class DocumentTest {
 
         // Then
         assertThat(versionInCode)
-            .as("Version number in code %s is not correct.", versionInCode)
-            .matches("^OpenPDF \\d+\\.\\d+\\.\\d+(-SNAPSHOT)?$");
+                .as("Version number in code %s is not correct.", versionInCode)
+                .matches("^OpenPDF \\d+\\.\\d+\\.\\d+(-SNAPSHOT)?$");
     }
 
     @Test

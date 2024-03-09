@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.directcontent.pageevents;
@@ -28,33 +28,21 @@ import org.librepdf.openpdf.examples.content.Constants;
 
 /**
  * Creates a document with outlines (bookmarks).
- * 
+ *
  * @author blowagie
  */
 
 public class Bookmarks extends PdfPageEventHelper {
 
-    /** Keeps the number of the current paragraph. */
-    private int n = 0;
-    
     /**
-     * Adds an outline for every new Paragraph
-     * @param writer        The PdfWrite to write to the Document
-     * @param document      The Document to write to
-     * @param position      An int that specifies the y / x coordinate of the top / left edge of the window
+     * Keeps the number of the current paragraph.
      */
-    public void onParagraph(PdfWriter writer, Document document, float position) {
-        n++;
-        PdfContentByte cb = writer.getDirectContent();
-        PdfDestination destination = new PdfDestination(PdfDestination.FITH, position);
-        new PdfOutline(cb.getRootOutline(), destination, "paragraph " + n);
-    }
+    private int n = 0;
 
     /**
      * Creates a document with outlines.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -83,5 +71,19 @@ public class Bookmarks extends PdfPageEventHelper {
 
         // step 5: we close the document
         document.close();
+    }
+
+    /**
+     * Adds an outline for every new Paragraph
+     *
+     * @param writer   The PdfWrite to write to the Document
+     * @param document The Document to write to
+     * @param position An int that specifies the y / x coordinate of the top / left edge of the window
+     */
+    public void onParagraph(PdfWriter writer, Document document, float position) {
+        n++;
+        PdfContentByte cb = writer.getDirectContent();
+        PdfDestination destination = new PdfDestination(PdfDestination.FITH, position);
+        new PdfOutline(cb.getRootOutline(), destination, "paragraph " + n);
     }
 }

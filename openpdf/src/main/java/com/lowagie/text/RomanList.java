@@ -49,16 +49,15 @@ package com.lowagie.text;
 import com.lowagie.text.factories.RomanNumberFactory;
 
 /**
- * 
  * A special-version of <CODE>LIST</CODE> which use roman-letters.
- * 
+ *
  * @see com.lowagie.text.List
  */
 
 public class RomanList extends List {
 
     // constructors
-    
+
     /**
      * Initialization
      */
@@ -68,17 +67,18 @@ public class RomanList extends List {
 
     /**
      * Initialization
-     * 
-     * @param symbolIndent    indent
+     *
+     * @param symbolIndent indent
      */
     public RomanList(int symbolIndent) {
         super(true, symbolIndent);
     }
 
     /**
-     * Initialization 
-     * @param    lowercase        roman-char in lowercase   
-     * @param     symbolIndent    indent
+     * Initialization
+     *
+     * @param lowercase    roman-char in lowercase
+     * @param symbolIndent indent
      */
     public RomanList(boolean lowercase, int symbolIndent) {
         super(true, symbolIndent);
@@ -86,11 +86,11 @@ public class RomanList extends List {
     }
 
     // overridden methods
-    
+
     /**
      * Adds an <CODE>Element</CODE> to the <CODE>List</CODE>.
      *
-     * @param    o    the element to add.
+     * @param o the element to add.
      * @return true if adding the element succeeded
      */
     @Override
@@ -117,7 +117,7 @@ public class RomanList extends List {
     /**
      * Adds a <CODE>String</CODE> to the <CODE>List</CODE>.
      *
-     * @param    s    the string to add.
+     * @param s the string to add.
      * @return true if adding the string succeeded
      */
     @Override

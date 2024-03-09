@@ -47,7 +47,8 @@
 
 package com.lowagie.text.pdf;
 
-/** Implements a shading pattern as a <code>Color</code>.
+/**
+ * Implements a shading pattern as a <code>Color</code>.
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
@@ -58,6 +59,7 @@ public class ShadingColor extends ExtendedColor {
 
     /**
      * Creates a shading color.
+     *
      * @param shadingPattern the shading pattern
      */
     public ShadingColor(PdfShadingPattern shadingPattern) {
@@ -67,18 +69,19 @@ public class ShadingColor extends ExtendedColor {
 
     /**
      * Gets the shading pattern.
+     *
      * @return a shading pattern.
      */
     public PdfShadingPattern getPdfShadingPattern() {
         return shadingPattern;
     }
-    
+
     public boolean equals(Object obj) {
         return this == obj;
     }
-    
+
     public int hashCode() {
         return shadingPattern.hashCode();
     }
-    
+
 }

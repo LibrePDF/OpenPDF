@@ -35,21 +35,19 @@
 
 package com.lowagie.toolbox;
 
+import com.lowagie.toolbox.arguments.AbstractArgument;
+import com.lowagie.tools.Executable;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
-
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-
-import com.lowagie.toolbox.arguments.AbstractArgument;
-import com.lowagie.tools.Executable;
 
 /**
  * Every iText tool has to extend this abstract class.
@@ -60,24 +58,38 @@ import com.lowagie.tools.Executable;
  */
 public abstract class AbstractTool implements ActionListener {
 
-    /** An array with the plugin_versions of the tool. */
-    public static ArrayList<String> versionsarray = new ArrayList<>();
-
-    /** The internal frame of the tool. */
-    protected JInternalFrame internalFrame = null;
-    /** The list of arguments needed by the tool. */
-    protected ArrayList<AbstractArgument> arguments = new ArrayList<>();
-    /** Execute menu options */
-    protected int menuoptions = MENU_EXECUTE;
-    /** a menu option */
+    /**
+     * a menu option
+     */
     public static final int MENU_EXECUTE = 1;
-    /** a menu option */
+    /**
+     * a menu option
+     */
     public static final int MENU_EXECUTE_SHOW = 2;
-    /** a menu option */
+    /**
+     * a menu option
+     */
     public static final int MENU_EXECUTE_PRINT = 4;
-    /** a menu option */
+    /**
+     * a menu option
+     */
     public static final int MENU_EXECUTE_PRINT_SILENT = 8;
-
+    /**
+     * An array with the plugin_versions of the tool.
+     */
+    public static ArrayList<String> versionsarray = new ArrayList<>();
+    /**
+     * The internal frame of the tool.
+     */
+    protected JInternalFrame internalFrame = null;
+    /**
+     * The list of arguments needed by the tool.
+     */
+    protected ArrayList<AbstractArgument> arguments = new ArrayList<>();
+    /**
+     * Execute menu options
+     */
+    protected int menuoptions = MENU_EXECUTE;
     /**
      * awtdesktop
      */
@@ -94,20 +106,23 @@ public abstract class AbstractTool implements ActionListener {
     }
 
     /**
-     * Sets the arguments.
-     * @param arguments The arguments to set.
+     * Add the version of the plugin to the plugin_versions array.
+     *
+     * @param version the version to add.
      */
-    public void setArguments(ArrayList<AbstractArgument> arguments) {
-        this.arguments = arguments;
+    protected static void addVersion(String version) {
+        version = version.substring(5, version.length() - 2);
+        versionsarray.add(version);
     }
 
     /**
      * Sets the arguments.
+     *
      * @param args the arguments as String-array.
      */
     public void setMainArguments(String[] args) {
         int counter = 0;
-        for (AbstractArgument argument: arguments) {
+        for (AbstractArgument argument : arguments) {
             if (args.length > counter) {
                 argument.setValue(args[counter]);
             } else {
@@ -119,10 +134,20 @@ public abstract class AbstractTool implements ActionListener {
 
     /**
      * Gets the arguments.
+     *
      * @return Returns the arguments.
      */
     public ArrayList<AbstractArgument> getArguments() {
         return arguments;
+    }
+
+    /**
+     * Sets the arguments.
+     *
+     * @param arguments The arguments to set.
+     */
+    public void setArguments(ArrayList<AbstractArgument> arguments) {
+        this.arguments = arguments;
     }
 
     /**
@@ -133,7 +158,7 @@ public abstract class AbstractTool implements ActionListener {
      * @throws InstantiationException on error
      */
     public Object getValue(String name) throws InstantiationException {
-        for (AbstractArgument argument: arguments) {
+        for (AbstractArgument argument : arguments) {
             if (name.equals(argument.getName())) {
                 return argument.getArgument();
             }
@@ -142,19 +167,8 @@ public abstract class AbstractTool implements ActionListener {
     }
 
     /**
-     * Sets the internal frame.
-     * @param internalFrame The internalFrame to set.
-     */
-    public void setInternalFrame(JInternalFrame internalFrame) {
-        this.internalFrame = internalFrame;
-    }
-
-    public void setMenubar(JMenuBar menubar) {
-        this.menubar = menubar;
-    }
-
-    /**
      * Returns the internal frame. Creates one if it's null.
+     *
      * @return Returns the internalFrame.
      */
     public JInternalFrame getInternalFrame() {
@@ -165,7 +179,17 @@ public abstract class AbstractTool implements ActionListener {
     }
 
     /**
+     * Sets the internal frame.
+     *
+     * @param internalFrame The internalFrame to set.
+     */
+    public void setInternalFrame(JInternalFrame internalFrame) {
+        this.internalFrame = internalFrame;
+    }
+
+    /**
      * Gets the menubar.
+     *
      * @return a menubar for this tool
      */
     public JMenuBar getMenubar() {
@@ -210,7 +234,7 @@ public abstract class AbstractTool implements ActionListener {
             JMenu params = new JMenu(ToolMenuItems.ARGUMENTS);
             tool.setMnemonic(KeyEvent.VK_T);
             JMenuItem item;
-            for (AbstractArgument argument: arguments) {
+            for (AbstractArgument argument : arguments) {
                 item = new JMenuItem(argument.getName());
                 item.setToolTipText(argument.getDescription());
                 item.addActionListener(argument);
@@ -220,19 +244,25 @@ public abstract class AbstractTool implements ActionListener {
         }
         return menubar;
     }
+
+    public void setMenubar(JMenuBar menubar) {
+        this.menubar = menubar;
+    }
+
     /**
      * Gets the usage of the tool.
+     *
      * @return a String describing how to use the tool.
      */
     public String getUsage() {
         StringBuilder buf = new StringBuilder("java ");
         buf.append(getClass().getName());
-        for (AbstractArgument argument: arguments) {
+        for (AbstractArgument argument : arguments) {
             buf.append(' ');
             buf.append(argument.getName());
         }
         buf.append('\n');
-        for (AbstractArgument argument: arguments) {
+        for (AbstractArgument argument : arguments) {
             buf.append(argument.getUsage());
         }
         return buf.toString();
@@ -240,11 +270,12 @@ public abstract class AbstractTool implements ActionListener {
 
     /**
      * Gets the current arguments of the tool.
+     *
      * @return a String with the list of arguments and their values.
      */
     private String getArgs() {
         StringBuilder buf = new StringBuilder("Current arguments:\n");
-        for (AbstractArgument argument: arguments) {
+        for (AbstractArgument argument : arguments) {
             buf.append("  ");
             buf.append(argument.getName());
             if (argument.getValue() == null) {
@@ -259,14 +290,13 @@ public abstract class AbstractTool implements ActionListener {
     }
 
     /**
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      * @param evt ActionEvent
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent evt) {
         if (ToolMenuItems.CLOSE.equals(evt.getActionCommand())) {
             System.out.println("=== " + getInternalFrame().getTitle() +
-                               " CLOSED ===");
+                    " CLOSED ===");
             internalFrame.dispose();
         }
         if (ToolMenuItems.USAGE.equals(evt.getActionCommand())) {
@@ -282,7 +312,7 @@ public abstract class AbstractTool implements ActionListener {
             this.execute();
             try {
                 if (awtdesktop != null &&
-                    awtdesktop.isSupported(Desktop.Action.OPEN)) {
+                        awtdesktop.isSupported(Desktop.Action.OPEN)) {
                     awtdesktop.open(getDestPathPDF());
                 } else {
                     Executable.openDocument(getDestPathPDF());
@@ -295,7 +325,7 @@ public abstract class AbstractTool implements ActionListener {
             this.execute();
             try {
                 if (awtdesktop != null &&
-                    awtdesktop.isSupported(Desktop.Action.PRINT)) {
+                        awtdesktop.isSupported(Desktop.Action.PRINT)) {
                     awtdesktop.print(getDestPathPDF());
                 } else {
                     Executable.printDocument(getDestPathPDF());
@@ -316,6 +346,7 @@ public abstract class AbstractTool implements ActionListener {
 
     /**
      * Gets the PDF file that should be generated (or null if the output isn't a PDF file).
+     *
      * @return the PDF file that should be generated
      * @throws InstantiationException on error
      */
@@ -333,16 +364,8 @@ public abstract class AbstractTool implements ActionListener {
 
     /**
      * Indicates that the value of an argument has changed.
+     *
      * @param arg the argument that has changed
      */
     public abstract void valueHasChanged(AbstractArgument arg);
-
-    /**
-     * Add the version of the plugin to the plugin_versions array.
-     * @param version the version to add.
-     */
-    protected static void addVersion(String version) {
-        version = version.substring(5, version.length() - 2);
-        versionsarray.add(version);
-    }
 }
