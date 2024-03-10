@@ -687,7 +687,7 @@ public class PdfGraphics2D extends Graphics2D {
         if (newStroke == oldStroke) {
             return;
         }
-        if (!(newStroke instanceof BasicStroke nStroke)) {
+        if (!(newStroke instanceof BasicStroke basicStroke)) {
             return;
         }
         boolean oldOk = (oldStroke instanceof BasicStroke);
@@ -695,11 +695,11 @@ public class PdfGraphics2D extends Graphics2D {
         if (oldOk) {
             oStroke = (BasicStroke) oldStroke;
         }
-        if (!oldOk || nStroke.getLineWidth() != oStroke.getLineWidth()) {
-            cb.setLineWidth(nStroke.getLineWidth());
+        if (!oldOk || basicStroke.getLineWidth() != oStroke.getLineWidth()) {
+            cb.setLineWidth(basicStroke.getLineWidth());
         }
-        if (!oldOk || nStroke.getEndCap() != oStroke.getEndCap()) {
-            switch (nStroke.getEndCap()) {
+        if (!oldOk || basicStroke.getEndCap() != oStroke.getEndCap()) {
+            switch (basicStroke.getEndCap()) {
                 case BasicStroke.CAP_BUTT:
                     cb.setLineCap(0);
                     break;
@@ -710,8 +710,8 @@ public class PdfGraphics2D extends Graphics2D {
                     cb.setLineCap(1);
             }
         }
-        if (!oldOk || nStroke.getLineJoin() != oStroke.getLineJoin()) {
-            switch (nStroke.getLineJoin()) {
+        if (!oldOk || basicStroke.getLineJoin() != oStroke.getLineJoin()) {
+            switch (basicStroke.getLineJoin()) {
                 case BasicStroke.JOIN_MITER:
                     cb.setLineJoin(0);
                     break;
@@ -722,16 +722,16 @@ public class PdfGraphics2D extends Graphics2D {
                     cb.setLineJoin(1);
             }
         }
-        if (!oldOk || nStroke.getMiterLimit() != oStroke.getMiterLimit()) {
-            cb.setMiterLimit(nStroke.getMiterLimit());
+        if (!oldOk || basicStroke.getMiterLimit() != oStroke.getMiterLimit()) {
+            cb.setMiterLimit(basicStroke.getMiterLimit());
         }
         boolean makeDash;
         if (oldOk) {
-            if (nStroke.getDashArray() != null) {
-                if (nStroke.getDashPhase() != oStroke.getDashPhase()) {
+            if (basicStroke.getDashArray() != null) {
+                if (basicStroke.getDashPhase() != oStroke.getDashPhase()) {
                     makeDash = true;
                 } else {
-                    makeDash = !java.util.Arrays.equals(nStroke.getDashArray(), oStroke.getDashArray());
+                    makeDash = !java.util.Arrays.equals(basicStroke.getDashArray(), oStroke.getDashArray());
                 }
             } else {
                 makeDash = oStroke.getDashArray() != null;
@@ -740,7 +740,7 @@ public class PdfGraphics2D extends Graphics2D {
             makeDash = true;
         }
         if (makeDash) {
-            float[] dash = nStroke.getDashArray();
+            float[] dash = basicStroke.getDashArray();
             if (dash == null) {
                 cb.setLiteral("[]0 d\n");
             } else {
@@ -751,7 +751,7 @@ public class PdfGraphics2D extends Graphics2D {
                     cb.setLiteral(' ');
                 }
                 cb.setLiteral(']');
-                cb.setLiteral(nStroke.getDashPhase());
+                cb.setLiteral(basicStroke.getDashPhase());
                 cb.setLiteral(" d\n");
             }
         }
