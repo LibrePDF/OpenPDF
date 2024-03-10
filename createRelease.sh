@@ -44,7 +44,7 @@ echo "#3. Commit changes and tag"
 git commit -a -m "Set version to ${VERSION}" && git tag "${VERSION}"
 
 echo "#4. Make a staging release"
-mvn clean deploy
+mvn clean deploy -Prelease
 RC=$?
 if [ $RC -eq 0 ]
 then

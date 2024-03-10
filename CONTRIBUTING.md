@@ -10,7 +10,7 @@
 ### Building the project
 
 1. Clone the repository (or your fork)
-2. Run `mvn clean install -Dgpg.skip` in the root directory
+2. Run `mvn clean install` in the root directory
 
 ### Compatibility matrix
 
