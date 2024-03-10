@@ -572,8 +572,9 @@ public class PRTokeniser implements AutoCloseable {
         // skip initial whitespace; added this because PdfReader.rebuildXref()
         // assumes that line provided by readLineSegment does not have init. whitespace;
         if (ptr < len) {
-            while (isWhitespace((c = read())))
-                ;
+            while (isWhitespace((c = read()))) {
+                // consume input
+            }
         }
         while (!eol && ptr < len) {
             switch (c) {

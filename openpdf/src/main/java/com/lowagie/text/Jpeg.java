@@ -185,7 +185,7 @@ public class Jpeg extends Image {
      * Returns a type of marker.
      *
      * @param marker an int
-     * @return a type: <VAR>VALID_MARKER</CODE>, <VAR>UNSUPPORTED_MARKER</VAR> or <VAR>NOPARAM_MARKER</VAR>
+     * @return a type: <code>VALID_MARKER</code>, <code>UNSUPPORTED_MARKER</code> or <code>NOPARAM_MARKER</code>
      */
     private static int marker(int marker) {
         for (int validMarker : VALID_MARKERS) {

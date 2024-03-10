@@ -222,7 +222,8 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * two cases listed below. Every annotation (including those whose Subtype value is Widget, as used for form
      * fields), except for the two cases listed below, shall have at least one appearance dictionary. Exclusions:
      * <ul>
-     * <li>Annotations where the value of the Rect key consists of an array where the value at index 1 is equal to the value at index 3 or the value at index 2 is equal to the value at index 4</li>
+     * <li>Annotations where the value of the Rect key consists of an array where the value at index 1 is equal to the
+     * value at index 3 or the value at index 2 is equal to the value at index 4</li>
      * <li>Annotations whose Subtype value is Popup, Projection or Link.</li>
      * </ul>
      */
@@ -3208,12 +3209,12 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
     /**
      * List of names used for widget annotations
      */
-    private static ArrayList<PdfName> widgetNames;
+    private static final ArrayList<PdfName> widgetNames;
 
     /**
      * List of names used in form field dictionaries
      */
-    private static ArrayList<PdfName> formfieldNames;
+    private static final ArrayList<PdfName> formfieldNames;
 
     /*
      * Use reflection to cache all the static public final names so

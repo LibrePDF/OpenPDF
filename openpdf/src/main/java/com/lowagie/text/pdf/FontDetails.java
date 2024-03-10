@@ -300,12 +300,12 @@ class FontDetails {
         int glyphCount = 0;
         for (int i = beginIndex; i < endIndex; i++) {
             int code = glyphVector.getGlyphCode(i);
-            if (code == 0xFFFE || code == 0xFFFF) {// considered non-glyphs by
-                // AWT
+            if (code == 0xFFFE || code == 0xFFFF) {
+                // considered non-glyphs by AWT
                 continue;
             }
 
-            glyphs[glyphCount++] = (char) code;// FIXME supplementary plane?
+            glyphs[glyphCount++] = (char) code; // FIXME supplementary plane?
 
             Integer codeKey = code;
             if (!longTag.containsKey(codeKey)) {

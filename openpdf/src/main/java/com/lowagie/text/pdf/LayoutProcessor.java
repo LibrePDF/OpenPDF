@@ -208,8 +208,8 @@ public class LayoutProcessor {
      *
      * @param font           The font for which kerning is to be turned on
      * @param textAttributes Map of text attributes to be set
-     * @see <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
-     * Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>*
+     * @see <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html" >Oracle: The Java™ Tutorials,
+     * Using Text Attributes to Style Text</a>
      */
     private static void setTextAttributes(com.lowagie.text.Font font, Map<TextAttribute, Object> textAttributes) {
         BaseFont baseFont = font.getBaseFont();

@@ -145,7 +145,7 @@ public class PdfGraphics2D extends Graphics2D {
     private float width;
     private float height;
     private Area clip;
-    private RenderingHints rhints = new RenderingHints(null);
+    private final RenderingHints rhints = new RenderingHints(null);
     private Stroke stroke;
     private Stroke originalStroke;
     private PdfContentByte cb;
@@ -366,10 +366,9 @@ public class PdfGraphics2D extends Graphics2D {
         underline = false;
         Set<AttributedCharacterIterator.Attribute> set = iter.getAttributes().keySet();
         for (AttributedCharacterIterator.Attribute attribute : set) {
-            if (!(attribute instanceof TextAttribute)) {
+            if (!(attribute instanceof TextAttribute textattribute)) {
                 continue;
             }
-            TextAttribute textattribute = (TextAttribute) attribute;
             if (textattribute.equals(TextAttribute.FONT)) {
                 Font font = (Font) iter.getAttributes().get(textattribute);
                 setFont(font);
@@ -527,11 +526,10 @@ public class PdfGraphics2D extends Graphics2D {
                     // Simulate a bold font.
                     float strokeWidth = font.getSize2D() * (weight - TextAttribute.WEIGHT_REGULAR) / 30f;
                     if (strokeWidth != 1) {
-                        if (realPaint instanceof Color) {
+                        if (realPaint instanceof Color color) {
                             cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE);
                             oldStroke = new BasicStroke(strokeWidth);
                             cb.setLineWidth(strokeWidth);
-                            Color color = (Color) realPaint;
                             int alpha = color.getAlpha();
                             if (alpha != currentStrokeGState) {
                                 currentStrokeGState = alpha;
@@ -671,10 +669,9 @@ public class PdfGraphics2D extends Graphics2D {
     }
 
     private Stroke transformStroke(Stroke stroke) {
-        if (!(stroke instanceof BasicStroke)) {
+        if (!(stroke instanceof BasicStroke st)) {
             return stroke;
         }
-        BasicStroke st = (BasicStroke) stroke;
         float scale = (float) Math.sqrt(Math.abs(transform.getDeterminant()));
         float[] dash = st.getDashArray();
         if (dash != null) {
@@ -690,10 +687,9 @@ public class PdfGraphics2D extends Graphics2D {
         if (newStroke == oldStroke) {
             return;
         }
-        if (!(newStroke instanceof BasicStroke)) {
+        if (!(newStroke instanceof BasicStroke nStroke)) {
             return;
         }
-        BasicStroke nStroke = (BasicStroke) newStroke;
         boolean oldOk = (oldStroke instanceof BasicStroke);
         BasicStroke oStroke = null;
         if (oldOk) {
@@ -813,7 +809,7 @@ public class PdfGraphics2D extends Graphics2D {
      * @see Graphics#translate(int, int)
      */
     public void translate(int x, int y) {
-        translate((double) x, (double) y);
+        translate(x, (double) y);
     }
 
     /**
@@ -900,9 +896,7 @@ public class PdfGraphics2D extends Graphics2D {
         this.paint = paint;
         realPaint = paint;
 
-        if ((composite instanceof AlphaComposite) && (paint instanceof Color)) {
-
-            AlphaComposite co = (AlphaComposite) composite;
+        if ((composite instanceof AlphaComposite co) && (paint instanceof Color)) {
 
             if (co.getRule() == 3) {
                 Color c = (Color) paint;
@@ -927,18 +921,15 @@ public class PdfGraphics2D extends Graphics2D {
      */
     public void setComposite(Composite comp) {
 
-        if (comp instanceof AlphaComposite) {
-
-            AlphaComposite composite = (AlphaComposite) comp;
+        if (comp instanceof AlphaComposite composite) {
 
             if (composite.getRule() == 3) {
 
                 alpha = composite.getAlpha();
                 this.composite = composite;
 
-                if (realPaint != null && (realPaint instanceof Color)) {
+                if (realPaint != null && (realPaint instanceof Color c)) {
 
-                    Color c = (Color) realPaint;
                     paint = new Color(c.getRed(), c.getGreen(), c.getBlue(),
                             (int) (c.getAlpha() * alpha));
                 }
@@ -1556,7 +1547,7 @@ public class PdfGraphics2D extends Graphics2D {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageWriteParam iwparam = new JPEGImageWriteParam(Locale.getDefault());
                 iwparam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                iwparam.setCompressionQuality(jpegQuality);//Set here your compression rate
+                iwparam.setCompressionQuality(jpegQuality); //Set here your compression rate
                 ImageWriter iw = ImageIO.getImageWritersByFormatName("jpg").next();
                 ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
                 iw.setOutput(ios);
@@ -1614,8 +1605,7 @@ public class PdfGraphics2D extends Graphics2D {
     }
 
     private void setPaint(boolean invert, double xoffset, double yoffset, boolean fill) {
-        if (paint instanceof Color) {
-            Color color = (Color) paint;
+        if (paint instanceof Color color) {
             int alpha = color.getAlpha();
             if (fill) {
                 if (alpha != currentFillGState) {
@@ -1642,8 +1632,7 @@ public class PdfGraphics2D extends Graphics2D {
                 }
                 cb.setColorStroke(color);
             }
-        } else if (paint instanceof GradientPaint) {
-            GradientPaint gp = (GradientPaint) paint;
+        } else if (paint instanceof GradientPaint gp) {
             Point2D p1 = gp.getPoint1();
             transform.transform(p1, p1);
             Point2D p2 = gp.getPoint2();
@@ -1806,14 +1795,16 @@ public class PdfGraphics2D extends Graphics2D {
 
 
     /**
-     * Wrapper class that helps to draw string with sun.font.CompositeFont (Windows logical fonts).</br> If the given
+     * Wrapper class that helps to draw string with sun.font.CompositeFont (Windows logical fonts).
+     *
+     * <p> If the given
      * font is a sun.font.CompositeFont than try to find some font (an implementation of sun.font.Font2D) that will
      * display current text. For some symbols that cannot be displayed with the font from the first slot of the
-     * composite font all other font will be checked.</br>
-     * </br>
+     * composite font all other font will be checked.
+     * <p>
      * This processing is not necessary only for Mac OS - there isn't used "sun.font.CompositeFont", but
-     * "sun.font.CFont".</br>
-     * </br>
+     * "sun.font.CFont".
+     * <p>
      * Since the <code>sun.*</code> packages are not part of the supported, public interface the reflection will be
      * used.
      */
@@ -1886,9 +1877,12 @@ public class PdfGraphics2D extends Graphics2D {
 
         /**
          * Update module of the given class to open the given package to the target module if the target module is
-         * opened for the current module.<br/> This helps to avoid warnings for the
-         * <code>--illegal-access=permit<code/>. Actually (java 9-13) "permit" is default mode, but in the future java
-         * releases the default mode will be "deny". It's also important to add <code>--add-opens<code/> for the given
+         * opened for the current module.
+         *
+         * <p>
+         * This helps to avoid warnings for the
+         * <code>--illegal-access=permit</code>. Actually (java 9-13) "permit" is default mode, but in the future java
+         * releases the default mode will be "deny". It's also important to add <code>--add-opens</code> for the given
          * package if it's need.
          */
         private static void updateModuleToOpenPackage(Class<?> classInModule, String packageName) {
@@ -1976,8 +1970,10 @@ public class PdfGraphics2D extends Graphics2D {
         }
 
         /**
-         * Draw text with the given font at the specified position. This method splits the string into parts so that it
-         * can be displayed with a matching (font that can display all symbols of this part of string) slot font.</br>
+         * Draw text with the given font at the specified position.
+         * <p>This method splits the string into parts so that it
+         * can be displayed with a matching (font that can display all symbols of this part of string) slot font.
+         * <p>
          * If some class/method cannot be found or throw exception the default drawing string function will be used for
          * a drawing string.
          *
@@ -2019,10 +2015,11 @@ public class PdfGraphics2D extends Graphics2D {
         }
 
         /**
-         * Split string into visible and not visible parts.</br> This method split string into substring parts. For each
-         * splitted part correspond found {@link BaseFont base font} from the slots of the composite font witch can
-         * display all characters of the part of string. If no font found the {@link BaseFont base font} from the own
-         * composite font will be used.
+         * Split string into visible and not visible parts.
+         * <p>
+         * This method split string into substring parts. For each splitted part correspond found
+         * {@link BaseFont base font} from the slots of the composite font witch can display all characters of the part
+         * of string. If no font found the {@link BaseFont base font} from the own composite font will be used.
          *
          * @param s
          * @param compositeFont

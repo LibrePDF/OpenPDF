@@ -191,8 +191,7 @@ public class PdfReaderController extends Observable implements Observer {
      */
     @Override
     public void notifyObservers(Object obj) {
-        if (obj instanceof ObjectLoader) {
-            ObjectLoader loader = (ObjectLoader) obj;
+        if (obj instanceof ObjectLoader loader) {
             nodes = loader.getNodes();
             PdfTrailerTreeNode root = pdfTree.getRoot();
             root.setTrailer(loader.getReader().getTrailer());
@@ -264,17 +263,12 @@ public class PdfReaderController extends Observable implements Observer {
             notifyObservers(null);
             nodes = null;
         }
-        if (obj instanceof PdfObjectTreeNode) {
-            PdfObjectTreeNode node = (PdfObjectTreeNode) obj;
+        if (obj instanceof PdfObjectTreeNode node) {
             nodes.expandNode(node);
             if (node.isRecursive()) {
                 pdfTree.selectNode(node.getAncestor());
                 return;
-            }/*
-            if (node.isIndirect()) {
-                xref.selectRowByReference(node.getNumber());
-                return;
-            }*/
+            }
             render(node.getPdfObject());
         }
     }

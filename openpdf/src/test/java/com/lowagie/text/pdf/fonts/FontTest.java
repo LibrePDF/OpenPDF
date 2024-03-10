@@ -22,15 +22,17 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 class FontTest {
 
-    private static final Map<Integer, Predicate<Font>> STYLES_TO_TEST_METHOD = new HashMap<>() {{
-        put(Font.NORMAL, f -> !f.isBold() && !f.isItalic() && !f.isStrikethru() && !f.isUnderlined());
-        put(Font.BOLD, Font::isBold);
-        put(Font.ITALIC, Font::isItalic);
-        put(Font.UNDERLINE, Font::isUnderlined);
-        put(Font.STRIKETHRU, Font::isStrikethru);
-        put(Font.BOLDITALIC, f -> f.isBold() && f.isItalic());
-        put(Font.UNDERLINE | Font.BOLD, f -> f.isUnderlined() && f.isBold());
-    }};
+    private static final Map<Integer, Predicate<Font>> STYLES_TO_TEST_METHOD = new HashMap<>() {
+        {
+            put(Font.NORMAL, f -> !f.isBold() && !f.isItalic() && !f.isStrikethru() && !f.isUnderlined());
+            put(Font.BOLD, Font::isBold);
+            put(Font.ITALIC, Font::isItalic);
+            put(Font.UNDERLINE, Font::isUnderlined);
+            put(Font.STRIKETHRU, Font::isStrikethru);
+            put(Font.BOLDITALIC, f -> f.isBold() && f.isItalic());
+            put(Font.UNDERLINE | Font.BOLD, f -> f.isUnderlined() && f.isBold());
+        }
+    };
 
     private static final String FONT_NAME_WITHOUT_STYLES = "non-existing-font";
 

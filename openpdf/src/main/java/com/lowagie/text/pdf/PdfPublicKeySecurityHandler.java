@@ -180,10 +180,7 @@ public class PdfPublicKeySecurityHandler {
         }
 
         Certificate certificate = recipient.getCertificate();
-        int permission = recipient.getPermission();// PdfWriter.AllowCopy |
-        // PdfWriter.AllowPrinting |
-        // PdfWriter.AllowScreenReaders |
-        // PdfWriter.AllowAssembly;
+        int permission = recipient.getPermission();
 
         permission |= 0xfffff0c0;
         permission &= 0xfffffffc;
