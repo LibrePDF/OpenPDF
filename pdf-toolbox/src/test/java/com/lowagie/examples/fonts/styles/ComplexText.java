@@ -68,7 +68,8 @@ public class ComplexText {
             BaseFont bf = BaseFont.createFont("c:\\windows\\fonts\\arialuni.ttf", BaseFont.IDENTITY_H, true);
             Font ft = new Font(bf, 12);
             // This is the text:
-            String text = "\u0623\u0648\u0631\u0648\u0628\u0627, \u0628\u0631\u0645\u062c\u064a\u0627\u062a \u0627\u0644\u062d\u0627\u0633\u0648\u0628 + \u0627\u0646\u062a\u0631\u0646\u064a\u062a :";
+            String text = "\u0623\u0648\u0631\u0648\u0628\u0627, \u0628\u0631\u0645\u062c\u064a\u0627\u062a"
+                    + " \u0627\u0644\u062d\u0627\u0633\u0648\u0628 + \u0627\u0646\u062a\u0631\u0646\u064a\u062a :";
             Phrase center = new Phrase(text + " Center", ft);
             ColumnText.showTextAligned(cb, PdfContentByte.ALIGN_CENTER, center, 250, 700, 0,
                     PdfWriter.RUN_DIRECTION_RTL, 0);

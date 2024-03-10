@@ -54,7 +54,8 @@ public class LandscapePortrait {
 
             // step 4: we add some content
             document.add(new Paragraph(
-                    "To create a document in landscape format, just make the height smaller than the width. For instance by rotating the PageSize Rectangle: PageSize.A4.rotate()"));
+                    "To create a document in landscape format, just make the height smaller than the width. For "
+                            + "instance by rotating the PageSize Rectangle: PageSize.A4.rotate()"));
             document.setPageSize(PageSize.A4);
             document.newPage();
             document.add(new Paragraph("This is portrait again"));

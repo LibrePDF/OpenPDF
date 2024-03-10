@@ -1637,7 +1637,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     ownerPasswordUsed = true;
                 }
             } else {
-                // implements Algorithm 2.A: Retrieving the file encryption key from an encrypted document in order to decrypt it (revision 6 and later) - ISO 32000-2 section 7.6.4.3.3
+                /* implements Algorithm 2.A: Retrieving the file encryption key from an encrypted document in order to
+                 decrypt it (revision 6 and later) - ISO 32000-2 section 7.6.4.3.3 */
                 s = enc.get(PdfName.UE).toString();
                 strings.remove(enc.get(PdfName.UE));
                 byte[] ueValue = com.lowagie.text.DocWriter.getISOBytes(s);

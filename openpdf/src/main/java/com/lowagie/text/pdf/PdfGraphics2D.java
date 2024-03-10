@@ -145,7 +145,7 @@ public class PdfGraphics2D extends Graphics2D {
     private float width;
     private float height;
     private Area clip;
-    private RenderingHints rhints = new RenderingHints(null);
+    private final RenderingHints rhints = new RenderingHints(null);
     private Stroke stroke;
     private Stroke originalStroke;
     private PdfContentByte cb;
@@ -374,7 +374,7 @@ public class PdfGraphics2D extends Graphics2D {
         if (onlyShapes) {
             drawGlyphVector(this.font.layoutGlyphVector(getFontRenderContext(), s.toCharArray(), 0, s.length(),
                     java.awt.Font.LAYOUT_LEFT_TO_RIGHT), x, y);
-//            Use the following line to compile in JDK 1.3    
+//            Use the following line to compile in JDK 1.3
 //            drawGlyphVector(this.font.createGlyphVector(getFontRenderContext(), s), x, y);
         } else {
             if (!Float.isFinite(fontSize) || fontSize < PdfContentByte.MIN_FONT_SIZE) {
@@ -769,7 +769,7 @@ public class PdfGraphics2D extends Graphics2D {
      * @see Graphics#translate(int, int)
      */
     public void translate(int x, int y) {
-        translate((double) x, (double) y);
+        translate(x, (double) y);
     }
 
     /**
@@ -1542,7 +1542,7 @@ public class PdfGraphics2D extends Graphics2D {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageWriteParam iwparam = new JPEGImageWriteParam(Locale.getDefault());
                 iwparam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                iwparam.setCompressionQuality(jpegQuality);//Set here your compression rate
+                iwparam.setCompressionQuality(jpegQuality); //Set here your compression rate
                 ImageWriter iw = ImageIO.getImageWritersByFormatName("jpg").next();
                 ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
                 iw.setOutput(ios);
@@ -1792,14 +1792,16 @@ public class PdfGraphics2D extends Graphics2D {
 
 
     /**
-     * Wrapper class that helps to draw string with sun.font.CompositeFont (Windows logical fonts).</br> If the given
+     * Wrapper class that helps to draw string with sun.font.CompositeFont (Windows logical fonts).
+     *
+     * <p> If the given
      * font is a sun.font.CompositeFont than try to find some font (an implementation of sun.font.Font2D) that will
      * display current text. For some symbols that cannot be displayed with the font from the first slot of the
-     * composite font all other font will be checked.</br>
-     * </br>
+     * composite font all other font will be checked.
+     * <p>
      * This processing is not necessary only for Mac OS - there isn't used "sun.font.CompositeFont", but
-     * "sun.font.CFont".</br>
-     * </br>
+     * "sun.font.CFont".
+     * <p>
      * Since the <code>sun.*</code> packages are not part of the supported, public interface the reflection will be
      * used.
      */
@@ -1872,9 +1874,12 @@ public class PdfGraphics2D extends Graphics2D {
 
         /**
          * Update module of the given class to open the given package to the target module if the target module is
-         * opened for the current module.<br/> This helps to avoid warnings for the
-         * <code>--illegal-access=permit<code/>. Actually (java 9-13) "permit" is default mode, but in the future java
-         * releases the default mode will be "deny". It's also important to add <code>--add-opens<code/> for the given
+         * opened for the current module.
+         *
+         * <p>
+         * This helps to avoid warnings for the
+         * <code>--illegal-access=permit</code>. Actually (java 9-13) "permit" is default mode, but in the future java
+         * releases the default mode will be "deny". It's also important to add <code>--add-opens</code> for the given
          * package if it's need.
          */
         private static void updateModuleToOpenPackage(Class<?> classInModule, String packageName) {
@@ -1962,8 +1967,10 @@ public class PdfGraphics2D extends Graphics2D {
         }
 
         /**
-         * Draw text with the given font at the specified position. This method splits the string into parts so that it
-         * can be displayed with a matching (font that can display all symbols of this part of string) slot font.</br>
+         * Draw text with the given font at the specified position.
+         * <p>This method splits the string into parts so that it
+         * can be displayed with a matching (font that can display all symbols of this part of string) slot font.
+         * <p>
          * If some class/method cannot be found or throw exception the default drawing string function will be used for
          * a drawing string.
          *
@@ -2005,10 +2012,11 @@ public class PdfGraphics2D extends Graphics2D {
         }
 
         /**
-         * Split string into visible and not visible parts.</br> This method split string into substring parts. For each
-         * splitted part correspond found {@link BaseFont base font} from the slots of the composite font witch can
-         * display all characters of the part of string. If no font found the {@link BaseFont base font} from the own
-         * composite font will be used.
+         * Split string into visible and not visible parts.
+         * <p>
+         * This method split string into substring parts. For each splitted part correspond found
+         * {@link BaseFont base font} from the slots of the composite font witch can display all characters of the part
+         * of string. If no font found the {@link BaseFont base font} from the own composite font will be used.
          *
          * @param s
          * @param compositeFont
