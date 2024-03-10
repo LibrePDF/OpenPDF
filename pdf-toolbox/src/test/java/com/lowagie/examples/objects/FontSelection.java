@@ -42,7 +42,9 @@ public class FontSelection {
             // step 4
             String text = "This text is the first verse of \u275dThe Iliad\u275e. It's not polytonic as it should be "
                     + "with \u2798 and \u279a entoation variants but that's all we have for now.\n\n"
-                    + "\u2766\u00a0\u00a0\u039c\u03b7\u03bd\u03b9\u03bd \u03b1\u03b5\u03b9\u03b4\u03b5, \u03b8\u03b5\u03b1, \u03a0\u03b7\u03bb\u03b7\u03b9\u03b1\u03b4\u03b5\u03c9 \u0391\u03c7\u03b9\u03bb\u03b7\u03bf\u03c2";
+                    + "\u2766\u00a0\u00a0\u039c\u03b7\u03bd\u03b9\u03bd \u03b1\u03b5\u03b9\u03b4\u03b5, "
+                    + "\u03b8\u03b5\u03b1, \u03a0\u03b7\u03bb\u03b7\u03b9\u03b1\u03b4\u03b5\u03c9 "
+                    + "\u0391\u03c7\u03b9\u03bb\u03b7\u03bf\u03c2";
             FontSelector sel = new FontSelector();
             sel.addFont(new Font(Font.TIMES_ROMAN, 12));
             sel.addFont(new Font(Font.ZAPFDINGBATS, 12));

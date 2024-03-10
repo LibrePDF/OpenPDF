@@ -892,7 +892,7 @@ public class PdfChunk {
      * Removes all the <VAR>' '</VAR> and <VAR>'-'</VAR>-characters on the right of a <CODE>String</CODE>.
      * <p>
      *
-     * @param string the <CODE>String<CODE> that has to be trimmed.
+     * @param string the <CODE>String</CODE> that has to be trimmed.
      * @return the trimmed <CODE>String</CODE>
      */
     String trim(String string) {

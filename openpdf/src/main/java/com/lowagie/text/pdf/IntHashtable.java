@@ -72,7 +72,7 @@ public class IntHashtable implements Cloneable {
      *
      * @serial
      */
-    private float loadFactor;
+    private final float loadFactor;
 
     /***
      * <p>Constructs a new, empty hashtable with a default capacity and load
@@ -364,8 +364,9 @@ public class IntHashtable implements Cloneable {
         Entry entry = null;
         while (true) {
             if (entry == null) {
-                while ((index-- > 0) && ((entry = table[index]) == null))
-                    ;
+                while ((index-- > 0) && ((entry = table[index]) == null)) {
+                    // searching
+                }
             }
             if (entry == null) {
                 break;
@@ -383,8 +384,9 @@ public class IntHashtable implements Cloneable {
         }
         int index = table.length;
         Entry entry = null;
-        while ((index-- > 0) && ((entry = table[index]) == null))
-            ;
+        while ((index-- > 0) && ((entry = table[index]) == null)) {
+            // searching
+        }
         if (entry == null) {
             return 0;
         }
@@ -473,8 +475,9 @@ public class IntHashtable implements Cloneable {
 
         public Object next() {
             if (entry == null) {
-                while ((index-- > 0) && ((entry = table[index]) == null))
-                    ;
+                while ((index-- > 0) && ((entry = table[index]) == null)) {
+                    // searching
+                }
             }
             if (entry != null) {
                 Entry e = entry;

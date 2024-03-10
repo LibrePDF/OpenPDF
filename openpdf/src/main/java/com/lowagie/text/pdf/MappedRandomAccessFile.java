@@ -230,6 +230,8 @@ public class MappedRandomAccessFile implements AutoCloseable {
      *
      * @see java.lang.Object#finalize()
      */
+    @Override
+    @Deprecated(since = "OpenPDF-2.0.2", forRemoval = true)
     protected void finalize() throws Throwable {
         close();
         super.finalize();

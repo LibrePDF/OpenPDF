@@ -214,9 +214,11 @@ public class Add3D extends AbstractTool {
             stream.writeLength();
 
             // Create 3D view dictionary
-            // PDF documentation states that this can be left out, but without normally we will just get a blank 3D image because of wrong coordinate space transformations, etc.
-            // Instead of providing camera-to-world transformation here, we could also reference view in U3D file itself (would be U3DPath key instead of C2W key, U3D value instead of M value for MS key), but i haven't tried up to now
-            // We could also provide an activation dictionary (defining activation behavior), and field-of-view for P entry if needed
+            // PDF documentation states that this can be left out, but without normally we will just get a blank 3D
+            // image because of wrong coordinate space transformations, etc. Instead of providing camera-to-world
+            // transformation here, we could also reference view in U3D file itself (would be U3DPath key instead of
+            // C2W key, U3D value instead of M value for MS key), but i haven't tried up to now We could also provide
+            // an activation dictionary (defining activation behavior), and field-of-view for P entry if needed
             PdfDictionary dict = new PdfDictionary(new PdfName(PDF_NAME_3DVIEW));
 
             dict.put(new PdfName(PDF_NAME_XN), new PdfString("Default"));
