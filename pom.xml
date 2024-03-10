@@ -12,6 +12,7 @@
   <name>OpenPDF - Free and Open PDF</name>
   <description>Open and Free PDF library.</description>
   <url>https://github.com/LibrePDF/OpenPDF</url>
+
   <licenses>
     <license>
       <name>GNU Lesser General Public License (LGPL), Version 2.1</name>
@@ -30,7 +31,19 @@
       <name>The OpenPDF Project</name>
       <organizationUrl>https://github.com/librepdf</organizationUrl>
     </developer>
+    <developer>
+      <name>Claudio Clemens</name>
+      <email>asturio@gmx.net</email>
+      <organization>LibrePDF</organization>
+      <organizationUrl>https://github.com/librepdf</organizationUrl>
+    </developer>
   </developers>
+
+  <scm>
+    <url>scm:git:https://github.com/LibrePDF/OpenPDF</url>
+    <connection>scm:git:https://github.com/LibrePDF/OpenPDF.git</connection>
+    <developerConnection>scm:git:https://github.com/LibrePDF/OpenPDF.git</developerConnection>
+  </scm>
 
   <modules>
     <module>openpdf</module>
@@ -38,12 +51,6 @@
     <module>pdf-toolbox</module>
     <module>openpdf-fonts-extra</module>
   </modules>
-
-  <scm>
-    <url>scm:git:https://github.com/LibrePDF/OpenPDF</url>
-    <connection>scm:git:https://github.com/LibrePDF/OpenPDF</connection>
-    <developerConnection>scm:git:https://github.com/LibrePDF/OpenPDF</developerConnection>
-  </scm>
   <!-- Distribution config from http://central.sonatype.org/pages/apache-maven.html#distribution-management-and-authentication -->
   <distributionManagement>
     <snapshotRepository>
@@ -66,8 +73,10 @@
     <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>3.3.2</maven-jxr-plugin.version>
     <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
     <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
+    <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
     <maven.test.failure.ignore>false</maven.test.failure.ignore>
@@ -89,15 +98,13 @@
 
     <!-- test-dependencies -->
     <assertj.version>3.25.3</assertj.version>
+    <!-- checkstyle 10.0 needs java 11 -->
+    <checkstyle.version>9.3</checkstyle.version>
     <hamcrest.version>2.2</hamcrest.version>
     <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
     <junit.version>5.10.2</junit.version>
     <mockito4.version>4.11.0</mockito4.version>
     <mockito5.version>5.9.0</mockito5.version>
-
-    <!-- checkstyle 10.0 needs java 11 -->
-    <checkstyle.version>9.3</checkstyle.version>
-    <maven-jxr-plugin.version>3.3.2</maven-jxr-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -194,46 +201,16 @@
             </dependency>
           </dependencies>
         </plugin>
+        <plugin>
+          <!-- maven-site-plugin -->
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
     <plugins>
-      <!-- Create sources for better debugging and context assist -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>${maven-source-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Create javadoc for help -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven-javadoc-plugin.version}</version>
-        <configuration>
-          <source>${java.version}</source>
-        </configuration>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <!-- Disable doclint checks to build it under java 8 javadoc -->
-            <configuration>
-              <additionalJOptions>-Xdoclint:none</additionalJOptions>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <!-- Clean also test results -->
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
@@ -272,7 +249,6 @@
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
-          <encoding>${project.build.sourceEncoding}</encoding>
           <compilerArgs>
             <arg>-Xlint:unchecked</arg>
           </compilerArgs>
@@ -305,21 +281,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-repository-plugin</artifactId>
         <version>${maven-repository-plugin.version}</version>
-      </plugin>
-      <!-- GPG signing config -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>${maven-gpg-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
@@ -440,6 +401,7 @@
 
   <profiles>
     <profile>
+      <id>jdk8</id>
       <activation>
         <jdk>(,8]</jdk>
         <activeByDefault>true</activeByDefault>
@@ -485,6 +447,7 @@
         </plugins>
       </build>
     </profile>
+
     <profile>
       <id>jdk9-plus</id>
       <activation>
@@ -510,7 +473,7 @@
             </configuration>
             <executions>
               <execution>
-                <id>compile-java-9</id>
+                <id>compile-java-8</id>
                 <goals>
                   <goal>compile</goal>
                 </goals>
@@ -524,6 +487,68 @@
             </executions>
           </plugin>
         </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <!-- Create javadoc for help -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <configuration>
+              <source>${java.version}</source>
+            </configuration>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <!-- Disable doclint checks to build it under java 8 javadoc -->
+                <configuration>
+                  <additionalJOptions>-Xdoclint:none</additionalJOptions>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Create sources for better debugging and context assist -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- GPG signing config -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+
       </build>
     </profile>
   </profiles>
