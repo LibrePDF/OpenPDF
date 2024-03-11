@@ -1474,7 +1474,6 @@ class PdfStamperImp extends PdfWriter {
             if (annot.isForm()) {
                 fieldsAdded = true;
                 getAcroFields();
-                //@sonatype-lift ignore since before 'isForm' is called
                 PdfFormField field = (PdfFormField) annot;
                 if (field.getParent() != null) {
                     return;
@@ -1498,7 +1497,6 @@ class PdfStamperImp extends PdfWriter {
                             fieldTemplates.putAll(templates);
                         }
                     }
-                    //@sonatype-lift ignore since before 'isForm' is called
                     PdfFormField field = (PdfFormField) annot;
                     if (field.getParent() == null) {
                         addDocumentField(field.getIndirectReference());

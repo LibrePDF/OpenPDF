@@ -31,6 +31,20 @@
 - Fix any checkstyle issues before submitting your pull request (`mvn checkstyle:check`)
 - Fix any issues found by the CI build after submitting your pull request
 
+### Configuring your IDE
+
+1. Configure the formatter (configuration files are in the `config` directory) or
+2. Use the editorconfig plugin for your IDE
+3. Use checkstyle plugin for your IDE (configuration is `checkstyle.xml`), or run `mvn checkstyle:check`
+4. Use sonarlint plugin for your IDE
+
+### Other code quality tools we use
+
+1. Codacy: https://app.codacy.com/gh/LibrePDF/OpenPDF/dashboard
+2. CodeFactor: https://www.codefactor.io/repository/github/librepdf/openpdf
+3. CodeQL: https://github.com/LibrePDF/OpenPDF/actions/workflows/codeql.yml
+4. SonarCloud: https://sonarcloud.io/dashboard?id=LibrePDF_OpenPDF
+
 ### How to contribute with Documentation
 
 - Feel free to add content to the [Wiki](https://github.com/LibrePDF/OpenPDF/wiki)
