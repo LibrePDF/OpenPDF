@@ -9,8 +9,9 @@ import org.junit.jupiter.api.Test;
 
 class FontDetailsTest {
 
+    @SuppressWarnings("DataFlowIssue")
     @Test
-    void convertToBytesBaseFontNullShouldThrowNpe() throws IOException {
+    void convertToBytesBaseFontNullShouldThrowNpe() {
         assertThatNullPointerException().isThrownBy(() -> new FontDetails(null, null, null));
     }
 
