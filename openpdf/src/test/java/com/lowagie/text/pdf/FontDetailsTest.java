@@ -10,15 +10,14 @@ import org.junit.jupiter.api.Test;
 class FontDetailsTest {
 
     @Test
-    void convertToBytesBaseFontNullShouldThrowNpe() {
+    void convertToBytesBaseFontNullShouldThrowNpe() throws IOException {
         assertThatNullPointerException().isThrownBy(() -> new FontDetails(null, null, null));
     }
 
     @Test
     void convertToBytesShouldExerciseSomeCode() throws IOException {
-        BaseFont baseFont = BaseFont.createFont(
-                this.getClass().getClassLoader().getResource("fonts/jp/GenShinGothic-Normal.ttf").getFile(),
-                BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        String filename = "src/test/resources/fonts/jp/GenShinGothic-Normal.ttf";
+        BaseFont baseFont = BaseFont.createFont(filename, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         FontDetails fontDetails = new FontDetails(null, null, baseFont);
         TextRenderingOptions options = new TextRenderingOptions();
         byte[] bytes = fontDetails.convertToBytes("hällö wörld", options);
@@ -28,9 +27,8 @@ class FontDetailsTest {
 
     @Test
     void convertToBytesAwesomeShouldExerciseSomeCode() throws IOException {
-        String fontPath = this.getClass().getClassLoader()
-                .getResource("fonts/font-awesome/fa-v4compatibility.ttf").getFile();
-        BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        String fileName = "src/test/resources/fonts/font-awesome/fa-v4compatibility.ttf";
+        BaseFont baseFont = BaseFont.createFont(fileName, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         FontDetails fontDetails = new FontDetails(null, null, baseFont);
         TextRenderingOptions options = new TextRenderingOptions();
         String earthAmericas = "\uf0ac";
@@ -48,9 +46,8 @@ class FontDetailsTest {
 
     @Test
     void testFillerCMapLiberationIsNotNull() throws IOException {
-        String fontPath = this.getClass().getClassLoader()
-                .getResource("fonts/liberation/LiberationSerif-Regular.ttf").getFile();
-        BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+        String filename = "src/test/resources/fonts/liberation/LiberationSerif-Regular.ttf";
+        BaseFont baseFont = BaseFont.createFont(filename, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         FontDetails fontDetails = new FontDetails(null, null, baseFont);
         assertThat(fontDetails.getFillerCmap()).isNotNull().isEmpty();
         fontDetails.putFillerCmap(1, new int[]{1, 2, 3});
