@@ -2,8 +2,12 @@ package com.lowagie.text;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 
 class ImageTest {
@@ -19,44 +23,59 @@ class ImageTest {
 
     @Test
     void shouldReturnImageWithUrlForPath() throws Exception {
-        final Image image = Image.getInstance(ClassLoader.getSystemResource("H.gif").getPath());
+        String fileName = "src/test/resources/H.gif";
+        final Image image = Image.getInstance(fileName);
         assertNotNull(image.getUrl());
     }
 
     @Test
-    void performanceTestPng() throws IOException {
+    void shouldReturnImageWithoutUrl() throws IOException {
+        byte[] imageBytes = readFileBytes();
+        Image image = Image.getInstance(imageBytes);
+        assertNotNull(image);
+        assertNull(image.getUrl());
+        assertThat(image.getRawData()).isNotEmpty();
+    }
+
+    @Test
+    void performanceTestPngFilename() throws IOException {
         long start = System.nanoTime();
         Image image = null;
         for (int i = 0; i < PERFORMANCE_ITERATIONS; i++) {
-            image = Image.getInstance(ClassLoader.getSystemResource("imageTest/ImageTest.png").getPath());
+            String fileName = "src/test/resources/imageTest/ImageTest.png";
+            image = Image.getInstance(fileName);
         }
         long deltaMillis = (System.nanoTime() - start) / 1_000_000 / PERFORMANCE_ITERATIONS;
         if (PERFORMANCE_ITERATIONS > 1) {
             System.out.format("Load PNG ~time after %d iterations %d ms%n", PERFORMANCE_ITERATIONS, deltaMillis);
         }
-        assertNotNull(image.getUrl());
+        assertNotNull(image);
+        assertThat(image.getRawData()).isNotEmpty();
     }
 
     @Test
-    void performanceTestJpg() throws IOException {
+    void performanceTestJpgWithFilename() throws IOException {
         long start = System.nanoTime();
         Image image = null;
         for (int i = 0; i < PERFORMANCE_ITERATIONS; i++) {
-            image = Image.getInstance(ClassLoader.getSystemResource("imageTest/ImageTest.jpg").getPath());
+            String fileName = "src/test/resources/imageTest/ImageTest.jpg";
+            image = Image.getInstance(fileName);
         }
         long deltaMillis = (System.nanoTime() - start) / 1_000_000 / PERFORMANCE_ITERATIONS;
         if (PERFORMANCE_ITERATIONS > 1) {
             System.out.format("Load JPG ~time after %d iterations %d ms%n", PERFORMANCE_ITERATIONS, deltaMillis);
         }
         assertNotNull(image.getUrl());
+        assertThat(image.getRawData()).isNotEmpty();
     }
 
     @Test
-    void performanceTestGif() throws IOException {
+    void performanceTestGifWithFilename() throws IOException {
         long start = System.nanoTime();
         Image image = null;
         for (int i = 0; i < PERFORMANCE_ITERATIONS; i++) {
-            image = Image.getInstance(ClassLoader.getSystemResource("imageTest/ImageTest.gif").getPath());
+            String fileName = "src/test/resources/imageTest/ImageTest.gif";
+            image = Image.getInstance(fileName);
         }
         long deltaMillis = (System.nanoTime() - start) / 1_000_000 / PERFORMANCE_ITERATIONS;
         if (PERFORMANCE_ITERATIONS > 1) {
@@ -65,4 +84,11 @@ class ImageTest {
         assertThat(deltaMillis).isLessThan(200);
         assertNotNull(image.getUrl());
     }
+
+    private byte[] readFileBytes() throws IOException {
+        String name = "src/test/resources/imageTest/ImageTest.png";
+        Path path = Paths.get(name);
+        return Files.readAllBytes(path);
+    }
+
 }
