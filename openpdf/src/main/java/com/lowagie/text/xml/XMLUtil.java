@@ -44,12 +44,14 @@
 package com.lowagie.text.xml;
 
 public class XMLUtil {
+
     /**
      * Escapes a string with the appropriated XML codes.
-     * @param s the string to be escaped
+     *
+     * @param s         the string to be escaped
      * @param onlyASCII codes above 127 will always be escaped with &amp;#nn; if <CODE>true</CODE>
      * @return the escaped string
-     */    
+     */
     public static String escapeXML(String s, boolean onlyASCII) {
         char[] cc = s.toCharArray();
         int len = cc.length;

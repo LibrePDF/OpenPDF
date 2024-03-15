@@ -52,11 +52,12 @@ import com.lowagie.text.pdf.crypto.AESCipher;
 import com.lowagie.text.pdf.crypto.ARCFOUREncryption;
 
 public class StandardDecryption {
+
+    private static final int AES_128 = 4;
+    private static final int AES_256_V3 = 6;
     protected ARCFOUREncryption arcfour;
     protected AESCipher cipher;
     private byte[] key;
-    private static final int AES_128 = 4;
-    private static final int AES_256_V3 = 6;
     private boolean aes;
     private boolean initiated;
     private byte[] iv = new byte[16];
@@ -64,9 +65,10 @@ public class StandardDecryption {
 
     /**
      * Creates a new instance of StandardDecryption
-     * @param key a byte array containing the key
-     * @param off the begining of the key in the array
-     * @param len the length
+     *
+     * @param key      a byte array containing the key
+     * @param off      the begining of the key in the array
+     * @param len      the length
      * @param revision the aes revision
      */
     public StandardDecryption(byte[] key, int off, int len, int revision) {
@@ -74,18 +76,17 @@ public class StandardDecryption {
         if (aes) {
             this.key = new byte[len];
             System.arraycopy(key, off, this.key, 0, len);
-        }
-        else {
+        } else {
             arcfour = new ARCFOUREncryption();
             arcfour.prepareARCFOURKey(key, off, len);
         }
     }
-    
+
     public byte[] update(byte[] b, int off, int len) {
         if (aes) {
-            if (initiated)
+            if (initiated) {
                 return cipher.update(b, off, len);
-            else {
+            } else {
                 int left = Math.min(iv.length - ivptr, len);
                 System.arraycopy(b, off, iv, ivptr, left);
                 off += left;
@@ -94,24 +95,24 @@ public class StandardDecryption {
                 if (ivptr == iv.length) {
                     cipher = new AESCipher(false, key, iv);
                     initiated = true;
-                    if (len > 0)
+                    if (len > 0) {
                         return cipher.update(b, off, len);
+                    }
                 }
                 return null;
             }
-        }
-        else {
+        } else {
             byte[] b2 = new byte[len];
             arcfour.encryptARCFOUR(b, off, len, b2, 0);
             return b2;
         }
     }
-    
+
     public byte[] finish() {
         if (aes && cipher != null) {
             return cipher.doFinal();
-        }
-        else
+        } else {
             return null;
+        }
     }
 }

@@ -5,6 +5,9 @@ import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.verapdf.core.ModelParsingException;
@@ -14,10 +17,6 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.TestAssertion;
 import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 
 /**
  * Validate PDF files created by OpenPDF using Vera.
@@ -44,7 +43,7 @@ public class PDFValidationTest {
             // Create a veraPDF validator
             PDFAFlavour flavour = PDFAFlavour.PDFA_1_B;
             try (InputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-                 GFModelParser parser = GFModelParser.createModelWithFlavour(inputStream, flavour)) {
+                    GFModelParser parser = GFModelParser.createModelWithFlavour(inputStream, flavour)) {
                 PDFAValidator validator = ValidatorFactory.createValidator(flavour, false, 10);
                 ValidationResult result = validator.validate(parser);
 

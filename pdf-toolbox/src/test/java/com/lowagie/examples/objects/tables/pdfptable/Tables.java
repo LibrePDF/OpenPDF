@@ -14,12 +14,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.pdfptable;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -30,6 +27,8 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Adds a table to a page twice.
@@ -38,14 +37,13 @@ public class Tables {
 
     /**
      * Adds a table to a page twice.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
         Font font8 = FontFactory.getFont(FontFactory.HELVETICA, 8);
-        
+
         // step 1
         Document document = new Document(PageSize.A4);
 
@@ -59,7 +57,7 @@ public class Tables {
             document.open();
 
             // step 4
-            float[] columnDefinitionSize = { 33.33F, 33.33F, 33.33F };
+            float[] columnDefinitionSize = {33.33F, 33.33F, 33.33F};
 
             float pos = height / 2;
             PdfPTable table = null;
@@ -83,9 +81,9 @@ public class Tables {
             table.addCell(new Phrase("39100 Dole France", font8));
             table.addCell(new Phrase("12345 Ulm Germany", font8));
             table.addCell(new Phrase("45789 Cambridge  England", font8));
-            
+
             document.add(table);
-            
+
             table = new PdfPTable(columnDefinitionSize);
             table.getDefaultCell().setBorder(0);
             table.setHorizontalAlignment(0);
@@ -104,11 +102,9 @@ public class Tables {
             table.addCell(new Phrase("39100 Dole France", font8));
             table.addCell(new Phrase("12345 Ulm Germany", font8));
             table.addCell(new Phrase("45789 Cambridge  England", font8));
-            
-            table.writeSelectedRows(0, -1, 50, pos, writer.getDirectContent());
-        }
 
-        catch (DocumentException | IOException de) {
+            table.writeSelectedRows(0, -1, 50, pos, writer.getDirectContent());
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
         // step 5

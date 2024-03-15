@@ -47,10 +47,9 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.lowagie.text.Rectangle;
 
 /**
  * Implements the appearance stream to be used with form fields..
@@ -59,6 +58,7 @@ import com.lowagie.text.Rectangle;
 public class PdfAppearance extends PdfTemplate {
 
     public static final Map<String, PdfName> stdFieldFontNames = new HashMap<>();
+
     static {
         stdFieldFontNames.put("Courier-BoldOblique", new PdfName("CoBO"));
         stdFieldFontNames.put("Courier-Bold", new PdfName("CoBo"));
@@ -86,41 +86,41 @@ public class PdfAppearance extends PdfTemplate {
         stdFieldFontNames.put("HYSMyeongJoStd-Medium", new PdfName("HySm"));
         stdFieldFontNames.put("KozMinPro-Regular", new PdfName("KaMi"));
     }
-    
+
     /**
-     *Creates a <CODE>PdfAppearance</CODE>.
+     * Creates a <CODE>PdfAppearance</CODE>.
      */
-    
+
     PdfAppearance() {
         super();
         separator = ' ';
     }
-    
+
     PdfAppearance(PdfIndirectReference iref) {
         thisReference = iref;
     }
-    
+
     /**
      * Creates new PdfTemplate
      *
      * @param wr the <CODE>PdfWriter</CODE>
      */
-    
+
     PdfAppearance(PdfWriter wr) {
         super(wr);
         separator = ' ';
     }
-    
+
     /**
      * Creates a new appearance to be used with form fields.
      *
      * @param writer the PdfWriter to use
-     * @param width the bounding box width
+     * @param width  the bounding box width
      * @param height the bounding box height
      * @return the appearance created
      */
     public static PdfAppearance createAppearance(PdfWriter writer, float width, float height) {
-        return createAppearance(writer, width, height, (PdfName)null);
+        return createAppearance(writer, width, height, (PdfName) null);
     }
 
     private static PdfAppearance createAppearance(PdfWriter writer, float width, float height, PdfName forcedName) {
@@ -130,19 +130,19 @@ public class PdfAppearance extends PdfTemplate {
         writer.addDirectTemplateSimple(template, forcedName);
         return template;
     }
-    
+
     /**
-     * Creates a new appearance to be used with existing form fields.
-     * (Create an empty signature appearance with an existing reference).
-     * 
+     * Creates a new appearance to be used with existing form fields. (Create an empty signature appearance with an
+     * existing reference).
+     *
      * @param writer the PdfWriter to use
-     * @param width the bounding box width
+     * @param width  the bounding box width
      * @param height the bounding box height
-     * @param ref to be overwritten
-     * 
-     * @return the created appearance 
+     * @param ref    to be overwritten
+     * @return the created appearance
      */
-    public static PdfAppearance createAppearance(PdfWriter writer, float width, float height, PdfIndirectReference ref) {
+    public static PdfAppearance createAppearance(PdfWriter writer, float width, float height,
+            PdfIndirectReference ref) {
         PdfAppearance template = new PdfAppearance(ref);
         template.setWidth(width);
         template.setHeight(height);
@@ -153,22 +153,22 @@ public class PdfAppearance extends PdfTemplate {
     /**
      * Set the font and the size for the subsequent text writing.
      *
-     * @param bf the font
+     * @param bf   the font
      * @param size the font size in points
      */
     public void setFontAndSize(BaseFont bf, float size) {
         checkWriter();
         state.size = size;
         if (bf.getFontType() == BaseFont.FONT_TYPE_DOCUMENT) {
-            state.fontDetails = new FontDetails(null, ((DocumentFont)bf).getIndirectReference(), bf);
-        }
-        else
+            state.fontDetails = new FontDetails(null, ((DocumentFont) bf).getIndirectReference(), bf);
+        } else {
             state.fontDetails = writer.addSimple(bf);
+        }
         PdfName psn = stdFieldFontNames.get(bf.getPostscriptFontName());
         if (psn == null) {
-            if (bf.isSubset() && bf.getFontType() == BaseFont.FONT_TYPE_TTUNI)
+            if (bf.isSubset() && bf.getFontType() == BaseFont.FONT_TYPE_TTUNI) {
                 psn = state.fontDetails.getFontName();
-            else {
+            } else {
                 psn = new PdfName(bf.getPostscriptFontName());
                 state.fontDetails.setSubset(false);
             }

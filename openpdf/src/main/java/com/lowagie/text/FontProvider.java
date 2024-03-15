@@ -50,12 +50,12 @@ package com.lowagie.text;
 import java.awt.Color;
 
 /**
- * These two methods are used by FactoryProperties (for HTMLWorker).
- * It's implemented by FontFactoryImp.
+ * These two methods are used by FactoryProperties (for HTMLWorker). It's implemented by FontFactoryImp.
  *
  * @since iText 5.0
  */
 public interface FontProvider {
+
     /**
      * Checks if a certain font is registered.
      *

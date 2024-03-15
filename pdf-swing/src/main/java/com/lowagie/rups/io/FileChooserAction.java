@@ -7,12 +7,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,31 +23,42 @@ package com.lowagie.rups.io;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.Observable;
-
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * Allows you to browse the file system and forwards the file
- * to the object that is waiting for you to choose a file.
+ * Allows you to browse the file system and forwards the file to the object that is waiting for you to choose a file.
  */
 public class FileChooserAction extends AbstractAction {
-    
-    /** An object that is expecting the result of the file chooser action. */
+
+    /**
+     * A serial version UID.
+     */
+    private static final long serialVersionUID = 2225830878098387118L;
+    /**
+     * An object that is expecting the result of the file chooser action.
+     */
     protected Observable observable;
-    /** A file filter to apply when browsing for a file. */
+    /**
+     * A file filter to apply when browsing for a file.
+     */
     protected FileFilter filter;
-    /** Indicates if you're browsing to create a new or an existing file. */
+    /**
+     * Indicates if you're browsing to create a new or an existing file.
+     */
     protected boolean newFile;
-    /** The file that was chosen. */
+    /**
+     * The file that was chosen.
+     */
     protected File file;
-    
+
     /**
      * Creates a new file chooser action.
-     * @param observable    the object waiting for you to select file
+     *
+     * @param observable the object waiting for you to select file
      * @param caption    a description for the action
-     * @param filter    a filter to apply when browsing
+     * @param filter     a filter to apply when browsing
      * @param newFile    indicates if you should browse for a new or existing file
      */
     public FileChooserAction(Observable observable, String caption, FileFilter filter, boolean newFile) {
@@ -56,7 +67,7 @@ public class FileChooserAction extends AbstractAction {
         this.filter = filter;
         this.newFile = newFile;
     }
-    
+
     /**
      * Getter for the file.
      *
@@ -77,8 +88,7 @@ public class FileChooserAction extends AbstractAction {
         int okCancel;
         if (newFile) {
             okCancel = fc.showSaveDialog(null);
-        }
-        else {
+        } else {
             okCancel = fc.showOpenDialog(null);
         }
         if (okCancel == JFileChooser.APPROVE_OPTION) {
@@ -86,8 +96,5 @@ public class FileChooserAction extends AbstractAction {
             observable.notifyObservers(this);
         }
     }
-
-    /** A serial version UID. */
-    private static final long serialVersionUID = 2225830878098387118L;
 
 }

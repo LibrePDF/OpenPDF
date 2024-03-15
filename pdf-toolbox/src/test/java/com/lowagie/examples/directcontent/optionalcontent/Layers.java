@@ -9,14 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.optionalcontent;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -27,14 +22,19 @@ import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfLayer;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Layer radio group and zoom.
  */
 public class Layers {
-       
+
     /**
      * Layer radio group and zoom.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -50,7 +50,8 @@ public class Layers {
             document.open();
             // step 4
             PdfContentByte cb = writer.getDirectContent();
-            Phrase explanation = new Phrase("Layer radio group and zoom", new Font(Font.HELVETICA, 20, Font.BOLD, Color.red));
+            Phrase explanation = new Phrase("Layer radio group and zoom",
+                    new Font(Font.HELVETICA, 20, Font.BOLD, Color.red));
             ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, explanation, 50, 650, 0);
             PdfLayer title = PdfLayer.createTitle("Layer radio group", writer);
             PdfLayer l1 = new PdfLayer("Layer 1", writer);
@@ -86,11 +87,11 @@ public class Layers {
             cb.beginLayer(l4);
             ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, p4, 50, 450, 0);
             cb.endLayer();
-            ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, new Phrase("<< Zoom here!", new Font(Font.COURIER, 12, Font.NORMAL, Color.blue)), 150, 450, 0);
+            ColumnText.showTextAligned(cb, Element.ALIGN_LEFT,
+                    new Phrase("<< Zoom here!", new Font(Font.COURIER, 12, Font.NORMAL, Color.blue)), 150, 450, 0);
             // step 5
             document.close();
-        }
-        catch(Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

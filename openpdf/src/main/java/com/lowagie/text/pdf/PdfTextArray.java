@@ -54,17 +54,16 @@ import java.util.List;
 
 /**
  * <CODE>PdfTextArray</CODE> defines an array with displacements and <CODE>PdfString</CODE>-objects.
- * <P>
- * A <CODE>TextArray</CODE> is used with the operator <VAR>TJ</VAR> in <CODE>PdfText</CODE>.
- * The first object in this array has to be a <CODE>PdfString</CODE>;
- * see reference manual version 1.3 section 8.7.5, pages 346-347.
- *       OR
- * see reference manual version 1.6 section 5.3.2, pages 378-379.
+ * <p>
+ * A <CODE>TextArray</CODE> is used with the operator <VAR>TJ</VAR> in <CODE>PdfText</CODE>. The first object in this
+ * array has to be a <CODE>PdfString</CODE>; see reference manual version 1.3 section 8.7.5, pages 346-347. OR see
+ * reference manual version 1.6 section 5.3.2, pages 378-379.
  */
 
-public class PdfTextArray{
+public class PdfTextArray {
+
     private List<Object> arrayList = new LinkedList<>();
-    
+
     // To emit a more efficient array, we consolidate
     // repeated numbers or strings into single array entries.
     // "add( 50 ); add( -50 );" will REMOVE the combined zero from the array.
@@ -73,24 +72,24 @@ public class PdfTextArray{
     private String lastStr;
     private Float lastNum;
     private boolean isRTL = false;
-    
+
     // constructors
     public PdfTextArray(String str) {
         add(str);
     }
-    
+
     public PdfTextArray() {
     }
-    
+
     /**
      * Adds a <CODE>PdfNumber</CODE> to the <CODE>PdfArray</CODE>.
      *
-     * @param  number   displacement of the string
+     * @param number displacement of the string
      */
     public void add(PdfNumber number) {
         add((float) number.doubleValue());
     }
-    
+
     public void add(float number) {
         if (number != 0) {
             if (lastNum != null) {
@@ -102,32 +101,35 @@ public class PdfTextArray{
                 }
             } else {
                 lastNum = number;
-                if (isRTL)
+                if (isRTL) {
                     arrayList.add(0, lastNum);
-                else
+                } else {
                     arrayList.add(lastNum);
+                }
             }
-            
+
             lastStr = null;
         }
         // adding zero doesn't modify the TextArray at all
     }
-    
+
     public void add(String str) {
-        if (isRTL)
+        if (isRTL) {
             str = new StringBuffer(str).reverse().toString();
+        }
         if (str.length() > 0) {
             if (lastStr != null) {
-                if (isRTL)
+                if (isRTL) {
                     lastStr = str + lastStr;
-                else
+                } else {
                     lastStr = lastStr + str;
+                }
                 replaceLast(lastStr);
             } else {
                 lastStr = str;
                 if (isRTL) {
                     arrayList.add(0, lastStr);
-                }else {
+                } else {
                     arrayList.add(lastStr);
                 }
             }
@@ -139,20 +141,21 @@ public class PdfTextArray{
     List getArrayList() {
         return arrayList;
     }
-    
+
     private void replaceLast(Object obj) {
         // deliberately throw the IndexOutOfBoundsException if we screw up.
-        if (isRTL)
+        if (isRTL) {
             arrayList.set(0, obj);
-        else
+        } else {
             arrayList.set(arrayList.size() - 1, obj);
+        }
     }
 
-    public void setRTL(boolean isRTL){
-        this.isRTL = isRTL;
-    }
-
-    public boolean getRTL(){
+    public boolean getRTL() {
         return this.isRTL;
+    }
+
+    public void setRTL(boolean isRTL) {
+        this.isRTL = isRTL;
     }
 }

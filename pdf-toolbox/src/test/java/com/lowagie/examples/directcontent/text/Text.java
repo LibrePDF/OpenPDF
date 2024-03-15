@@ -9,44 +9,46 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.text;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 /**
  * Adding text at an absolute position.
  */
 public class Text {
+
     /**
      * Adding text at absolute positions.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-        
+
         System.out.println("Text at absolute positions");
-        
+
         // step 1: creation of a document-object
         Document document = new Document();
-        
+
         try {
-            
+
             // step 2: creation of the writer
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("text.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4: we grab the ContentByte and do some stuff with it
             PdfContentByte cb = writer.getDirectContent();
-            
+
             // first we draw some lines to be able to visualize the text alignment functions
             cb.setLineWidth(0f);
             cb.moveTo(250, 500);
@@ -84,10 +86,9 @@ public class Text {
 
             // we tell the contentByte, we've finished drawing text
             cb.endText();
-            
+
             cb.sanityCheck();
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 

@@ -1,15 +1,5 @@
 package com.lowagie.text;
 
-import com.lowagie.text.pdf.PdfWriter;
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Test;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.lowagie.text.StandardFonts.COURIER;
 import static com.lowagie.text.StandardFonts.COURIER_BOLD;
 import static com.lowagie.text.StandardFonts.COURIER_BOLDITALIC;
@@ -28,14 +18,23 @@ import static com.lowagie.text.StandardFonts.values;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
+
 class StandardFontsTest {
 
     @Test
     void createDocumentAllFonts() {
         try (// step 1: we create a writer that listens to the document
-             FileOutputStream outputStream = new FileOutputStream("target/StandardFonts.pdf");
-             // step 2: creation of a document-object
-             Document document = new Document()) {
+                FileOutputStream outputStream = new FileOutputStream("target/StandardFonts.pdf");
+                // step 2: creation of a document-object
+                Document document = new Document()) {
             PdfWriter.getInstance(document, outputStream);
             // step 3: we open the document
             document.open();

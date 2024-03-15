@@ -28,7 +28,7 @@ class BaseFontTest {
         String[][] fullFontName = BaseFont.getFullFontName("ViaodaLibre-Regular.ttf", "UTF-8", bytes);
         // then
         assertThat(fullFontName).hasDimensions(1, 4)
-            .contains(new String[]{"3", "1", "1033", "Viaoda Libre Regular"}, atIndex(0));
+                .contains(new String[]{"3", "1", "1033", "Viaoda Libre Regular"}, atIndex(0));
     }
 
     // test getDescent()

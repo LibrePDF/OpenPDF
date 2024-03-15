@@ -54,34 +54,35 @@ import java.util.ArrayList;
 
 /**
  * A <CODE>Chapter</CODE> is a special <CODE>Section</CODE>.
- * <P>
- * A chapter number has to be created using a <CODE>Paragraph</CODE> as title
- * and an <CODE>int</CODE> as chapter number. The chapter number is shown be
- * default. If you don't want to see the chapter number, you have to set the
- * numberdepth to <VAR>0</VAR>.
- * <P>
+ * <p>
+ * A chapter number has to be created using a <CODE>Paragraph</CODE> as title and an <CODE>int</CODE> as chapter number.
+ * The chapter number is shown be default. If you don't want to see the chapter number, you have to set the numberdepth
+ * to <VAR>0</VAR>.
+ * <p>
  * Example:
  * <BLOCKQUOTE><PRE>
- * Paragraph title2 = new Paragraph("This is Chapter 2", FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLDITALIC, new Color(0, 0, 255)));
+ * Paragraph title2 = new Paragraph("This is Chapter 2", FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLDITALIC,
+ * new Color(0, 0, 255)));
  * <STRONG>Chapter chapter2 = new Chapter(title2, 2);</STRONG>
  * <STRONG>chapter2.setNumberDepth(0);</STRONG>
  * Paragraph someText = new Paragraph("This is some text");
  * <STRONG>chapter2.add(someText);</STRONG>
- * Paragraph title21 = new Paragraph("This is Section 1 in Chapter 2", FontFactory.getFont(FontFactory.HELVETICA, 16, Font.BOLD, new Color(255, 0, 0)));
- * Section section1 = <STRONG>chapter2.addSection(title21);</STRONG>
- * Paragraph someSectionText = new Paragraph("This is some silly paragraph in a chapter and/or section. It contains some text to test the functionality of Chapters and Section.");
- * section1.add(someSectionText);
+ * Paragraph title21 = new Paragraph("This is Section 1 in Chapter 2", FontFactory.getFont(FontFactory.HELVETICA, 16,
+ * Font.BOLD, new Color(255, 0, 0))); Section section1 = <STRONG>chapter2.addSection(title21);</STRONG> Paragraph
+ * someSectionText = new Paragraph("This is some silly paragraph in a chapter and/or section. It contains some text to
+ * test the functionality of Chapters and Section."); section1.add(someSectionText);
  * </PRE></BLOCKQUOTE>
  */
 
 public class Chapter extends Section {
-    
+
     // constant
     private static final long serialVersionUID = 1791000695779357361L;
-    
+
     /**
      * Constructs a new <CODE>Chapter</CODE>.
-     * @param    number        the Chapter number
+     *
+     * @param number the Chapter number
      */
     public Chapter(int number) {
         super(null, 1);
@@ -89,37 +90,37 @@ public class Chapter extends Section {
         numbers.add(number);
         triggerNewPage = true;
     }
-    
+
     /**
      * Constructs a new <CODE>Chapter</CODE>.
      *
-     * @param    title        the Chapter title (as a <CODE>Paragraph</CODE>)
-     * @param    number        the Chapter number
+     * @param title  the Chapter title (as a <CODE>Paragraph</CODE>)
+     * @param number the Chapter number
      */
-    
+
     public Chapter(Paragraph title, int number) {
         super(title, 1);
         numbers = new ArrayList<>();
         numbers.add(number);
         triggerNewPage = true;
     }
-    
+
     /**
      * Constructs a new <CODE>Chapter</CODE>.
      *
-     * @param    title        the Chapter title (as a <CODE>String</CODE>)
-     * @param    number        the Chapter number
+     * @param title  the Chapter title (as a <CODE>String</CODE>)
+     * @param number the Chapter number
      */
     public Chapter(String title, int number) {
         this(new Paragraph(title), number);
     }
-    
+
     // implementation of the Element-methods
-    
+
     /**
      * Gets the type of the text element.
      *
-     * @return    a type
+     * @return a type
      */
     public int type() {
         return Element.CHAPTER;
@@ -127,7 +128,7 @@ public class Chapter extends Section {
 
     /**
      * @see com.lowagie.text.Element#isNestable()
-     * @since    iText 2.0.8
+     * @since iText 2.0.8
      */
     public boolean isNestable() {
         return false;

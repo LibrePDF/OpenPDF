@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.general.faq;
@@ -46,14 +46,13 @@ public class OpenPdfVersion {
             // we create a writer that listens to the document
             // and directs a PDF-stream to a file
             PdfWriter.getInstance(document, new FileOutputStream("version.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
             document.add(new Paragraph("This page was made using " + Document.getVersion()));
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 

@@ -52,8 +52,7 @@ package com.lowagie.text.pdf;
 import java.awt.Color;
 
 /**
- *
- * @author  psoares
+ * @author psoares
  */
 public class SpotColor extends ExtendedColor {
 
@@ -63,23 +62,24 @@ public class SpotColor extends ExtendedColor {
 
     public SpotColor(PdfSpotColor spot, float tint) {
         this((spot.getAlternativeCS().getRed() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
-            (spot.getAlternativeCS().getGreen() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
-            (spot.getAlternativeCS().getBlue() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
-            (spot.getAlternativeCS().getAlpha() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
+                (spot.getAlternativeCS().getGreen() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
+                (spot.getAlternativeCS().getBlue() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
+                (spot.getAlternativeCS().getAlpha() / MAX_INT_COLOR_VALUE - MAX_FLOAT_COLOR_VALUE) * tint + 1,
                 tint);
         this.spot = spot;
     }
 
     public SpotColor(float red, float green, float blue, float alpha, float tint) {
         super(TYPE_SEPARATION, red, green, blue, alpha);
-        this.spot = new PdfSpotColor("Color rgba(" + red + ", " + green + ", " + blue+ ", " + alpha + ")", new Color(red, green, blue, alpha));
+        this.spot = new PdfSpotColor("Color rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")",
+                new Color(red, green, blue, alpha));
         this.tint = tint;
     }
 
     public PdfSpotColor getPdfSpotColor() {
         return spot;
     }
-    
+
     public float getTint() {
         return tint;
     }
@@ -87,7 +87,7 @@ public class SpotColor extends ExtendedColor {
     public boolean equals(Object obj) {
         return this == obj;
     }
-    
+
     public int hashCode() {
         return spot.hashCode() ^ Float.floatToIntBits(tint);
     }

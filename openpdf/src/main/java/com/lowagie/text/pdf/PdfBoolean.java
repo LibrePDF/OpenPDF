@@ -54,82 +54,84 @@ import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * <CODE>PdfBoolean</CODE> is the boolean object represented by the keywords <VAR>true</VAR> or <VAR>false</VAR>.
- * <P>
- * This object is described in the 'Portable Document Format Reference Manual version 1.7'
- * section 3.2.1 (page 52).
+ * <p>
+ * This object is described in the 'Portable Document Format Reference Manual version 1.7' section 3.2.1 (page 52).
  *
- * @see        PdfObject
- * @see        BadPdfFormatException
+ * @see PdfObject
+ * @see BadPdfFormatException
  */
 
 public class PdfBoolean extends PdfObject {
-    
+
     // static membervariables (possible values of a boolean object)
     public static final PdfBoolean PDFTRUE = new PdfBoolean(true);
     public static final PdfBoolean PDFFALSE = new PdfBoolean(false);
-/** A possible value of <CODE>PdfBoolean</CODE> */
+    /**
+     * A possible value of <CODE>PdfBoolean</CODE>
+     */
     public static final String TRUE = "true";
-    
-/** A possible value of <CODE>PdfBoolean</CODE> */
+
+    /**
+     * A possible value of <CODE>PdfBoolean</CODE>
+     */
     public static final String FALSE = "false";
-    
+
     // membervariables
-    
-/** the boolean value of this object */
+
+    /**
+     * the boolean value of this object
+     */
     private boolean value;
-    
+
     // constructors
-    
-/**
- * Constructs a <CODE>PdfBoolean</CODE>-object.
- *
- * @param        value            the value of the new <CODE>PdfObject</CODE>
- */
-    
+
+    /**
+     * Constructs a <CODE>PdfBoolean</CODE>-object.
+     *
+     * @param value the value of the new <CODE>PdfObject</CODE>
+     */
+
     public PdfBoolean(boolean value) {
         super(BOOLEAN);
         if (value) {
             setContent(TRUE);
-        }
-        else {
+        } else {
             setContent(FALSE);
         }
         this.value = value;
     }
-    
-/**
- * Constructs a <CODE>PdfBoolean</CODE>-object.
- *
- * @param        value            the value of the new <CODE>PdfObject</CODE>, represented as a <CODE>String</CODE>
- *
- * @throws        BadPdfFormatException    thrown if the <VAR>value</VAR> isn't '<CODE>true</CODE>' or '<CODE>false</CODE>'
- */
-    
+
+    /**
+     * Constructs a <CODE>PdfBoolean</CODE>-object.
+     *
+     * @param value the value of the new <CODE>PdfObject</CODE>, represented as a <CODE>String</CODE>
+     * @throws BadPdfFormatException thrown if the <VAR>value</VAR> isn't '<CODE>true</CODE>' or '<CODE>false</CODE>'
+     */
+
     public PdfBoolean(String value) throws BadPdfFormatException {
         super(BOOLEAN, value);
         if (value.equals(TRUE)) {
             this.value = true;
-        }
-        else if (value.equals(FALSE)) {
+        } else if (value.equals(FALSE)) {
             this.value = false;
-        }
-        else {
-            throw new BadPdfFormatException(MessageLocalization.getComposedMessage("the.value.has.to.be.true.of.false.instead.of.1", value));
+        } else {
+            throw new BadPdfFormatException(
+                    MessageLocalization.getComposedMessage("the.value.has.to.be.true.of.false.instead.of.1", value));
         }
     }
-    
+
     // methods returning the value of this object
-    
-/**
- * Returns the primitive value of the <CODE>PdfBoolean</CODE>-object.
- *
- * @return        the actual value of the object.
- */
-    
+
+    /**
+     * Returns the primitive value of the <CODE>PdfBoolean</CODE>-object.
+     *
+     * @return the actual value of the object.
+     */
+
     public boolean booleanValue() {
         return value;
     }
-    
+
     public String toString() {
         return value ? TRUE : FALSE;
     }

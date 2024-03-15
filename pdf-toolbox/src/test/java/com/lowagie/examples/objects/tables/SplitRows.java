@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -21,6 +19,7 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Add a table to a PDF with document.add() and if the cell doesn't fit, the row is split in two parts.
@@ -29,9 +28,8 @@ public class SplitRows {
 
     /**
      * Demonstrates how rows are split when the cell is too big.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -54,7 +52,9 @@ public class SplitRows {
             document3.open();
             // step4
             String text = "Quick brown fox jumps over the lazy dog. ";
-            for (int i = 0; i < 5; i++) text += text;
+            for (int i = 0; i < 5; i++) {
+                text += text;
+            }
             PdfPTable table = new PdfPTable(2);
             PdfPCell largeCell;
             Phrase phrase;
@@ -63,7 +63,9 @@ public class SplitRows {
                 for (int j = 0; j < i; j++) {
                     phrase.add(new Phrase(text));
                 }
-                if (i == 7) phrase = new Phrase(text);
+                if (i == 7) {
+                    phrase = new Phrase(text);
+                }
                 table.addCell(String.valueOf(i));
                 largeCell = new PdfPCell(phrase);
                 table.addCell(largeCell);

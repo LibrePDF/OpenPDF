@@ -9,13 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.anchors;
-
-import java.io.FileOutputStream;
-import java.net.URL;
 
 import com.lowagie.text.Annotation;
 import com.lowagie.text.Chunk;
@@ -26,10 +23,12 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfAction;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.net.URL;
 
 /**
  * Creates two documents with different types of Annotations.
- * 
+ *
  * @author blowagie
  */
 
@@ -37,9 +36,8 @@ public class SimpleAnnotations {
 
     /**
      * Creates documents with some simple annotations.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -92,11 +90,11 @@ public class SimpleAnnotations {
             }
             document1.add(new Annotation("blahblah", "Adding an annotation without specifying coordinates"));
             for (int i = 0; i < 3; i++) {
-                document1.add(new Paragraph("blahblahblah"));    
+                document1.add(new Paragraph("blahblahblah"));
             }
             document1.newPage();
             document1.add(new Chunk("marked chunk").setLocalDestination("mark"));
-            
+
             // document2
             document2.add(new Paragraph("Each square on this page represents an annotation."));
             PdfContentByte cb2 = writer2.getDirectContent();
@@ -109,7 +107,7 @@ public class SimpleAnnotations {
             Annotation a7 = new Annotation(100f, 400f, 200f, 500f,
                     "SimpleAnnotations1.pdf", 2);
             document2.add(a7);
-            Annotation a8 = new Annotation(    100f, 250f, 200f, 350f,
+            Annotation a8 = new Annotation(100f, 250f, 200f, 350f,
                     "C://windows/notepad.exe", null, null, null);
             document2.add(a8);
             // draw rectangles to show where the annotations were added

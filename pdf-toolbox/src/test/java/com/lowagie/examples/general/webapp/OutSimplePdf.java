@@ -9,26 +9,26 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.general.webapp;
 
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
-
 /**
  * Hello World example as a Servlet.
  */
 public class OutSimplePdf extends HttpServlet {
+
     private static final long serialVersionUID = 2788260006560387781L;
 
     @Override
@@ -38,22 +38,24 @@ public class OutSimplePdf extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-            makePdf(request, response, "POST");
+        makePdf(request, response, "POST");
     }
+
     /**
      * Performs the action: generate a PDF from a GET or POST.
-     * 
-     * @param request    the Servlets request object
-     * @param response    the Servlets request object
-     * @param methodGetPost    the method that was used in the form
+     *
+     * @param request       the Servlets request object
+     * @param response      the Servlets request object
+     * @param methodGetPost the method that was used in the form
      */
     public void makePdf(HttpServletRequest request, HttpServletResponse response, String methodGetPost) {
         try {
 
             // take the message from the URL or create default message
             String msg = request.getParameter("msg");
-            if (msg == null || msg.trim().length() <= 0)
+            if (msg == null || msg.trim().length() <= 0) {
                 msg = "[ specify a message in the 'msg' argument on the URL ]";
+            }
 
             // create simple doc and write to a ByteArrayOutputStream
             Document document = new Document();

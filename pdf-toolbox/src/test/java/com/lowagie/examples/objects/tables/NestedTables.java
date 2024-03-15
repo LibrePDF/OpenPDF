@@ -9,16 +9,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Demonstrates the use of nested tables.
@@ -27,9 +26,8 @@ public class NestedTables {
 
     /**
      * Using nested tables.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -53,11 +51,9 @@ public class NestedTables {
             for (int k = 0; k < 24; ++k) {
                 if (k == 1) {
                     table.addCell(nested1);
-                }
-                else if (k == 20) {
+                } else if (k == 20) {
                     table.addCell(nested2);
-                }
-                else {
+                } else {
                     table.addCell("cell " + k);
                 }
             }

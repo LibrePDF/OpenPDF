@@ -2,18 +2,17 @@ package com.lowagie.toolbox.plugins.watermarker;
 
 import static java.awt.Color.BLACK;
 
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-
 /**
- * This class is the API equivalent of the WatermarkerTool.
- * It lets you add a text watermark to all pages of a document given in input.
+ * This class is the API equivalent of the WatermarkerTool. It lets you add a text watermark to all pages of a document
+ * given in input.
  */
 public class Watermarker {
 
@@ -27,13 +26,13 @@ public class Watermarker {
     private BaseFont font = null;
 
     /**
-     *  The main constructor with all mandatory arguments. By default, the color stays black.
+     * The main constructor with all mandatory arguments. By default, the color stays black.
      *
-     * @param input the pdf content as a byte[]
-     * @param text the text to write as watermark
+     * @param input    the pdf content as a byte[]
+     * @param text     the text to write as watermark
      * @param fontsize the fontsize of the watermark
-     * @param opacity the opacity of the watermark
-     * @throws IOException on error
+     * @param opacity  the opacity of the watermark
+     * @throws IOException       on error
      * @throws DocumentException on error
      */
     public Watermarker(byte[] input, String text, int fontsize, float opacity) throws IOException, DocumentException {
@@ -65,7 +64,7 @@ public class Watermarker {
      * Write the watermark to the pdf given in entry.
      *
      * @return a brand new byte[] without modifying the original one.
-     * @throws IOException on error
+     * @throws IOException       on error
      * @throws DocumentException on error
      */
     public byte[] write() throws IOException, DocumentException {

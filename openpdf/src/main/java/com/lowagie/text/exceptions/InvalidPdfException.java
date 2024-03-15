@@ -52,18 +52,22 @@ package com.lowagie.text.exceptions;
 import java.io.IOException;
 
 /**
- * Typed exception used when opening an existing PDF document.
- * Gets thrown when the document isn't a valid PDF document.
+ * Typed exception used when opening an existing PDF document. Gets thrown when the document isn't a valid PDF
+ * document.
+ *
  * @since 2.1.5
  */
 public class InvalidPdfException extends IOException {
 
-    /** a serial version UID */
+    /**
+     * a serial version UID
+     */
     private static final long serialVersionUID = -2319614911517026938L;
 
     /**
      * Creates an instance of a NoPdfException.
-     * @param    message    the reason why the document isn't a PDF document according to iText.
+     *
+     * @param message the reason why the document isn't a PDF document according to iText.
      */
     public InvalidPdfException(String message) {
         super(message);

@@ -1,16 +1,15 @@
 package com.lowagie.text.html;
-import java.io.InputStream;
-
-import com.lowagie.text.Document;
-import org.junit.jupiter.api.Test;
-
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import com.lowagie.text.Document;
+import java.io.InputStream;
+import org.junit.jupiter.api.Test;
+
 /**
- * This test class contains a series of smoke tests. The goal of these tests is not validate the generated document,
- * but to ensure no exception is thrown.
+ * This test class contains a series of smoke tests. The goal of these tests is not validate the generated document, but
+ * to ensure no exception is thrown.
  */
 public class SAXmyHtmlHandlerTest {
 
@@ -35,13 +34,14 @@ public class SAXmyHtmlHandlerTest {
 
     /**
      * Parse the input HTML file to PDF file.
+     *
      * @param is The input stream of the HTML file.
      */
     void parseHtml(InputStream is) {
         try {
             Document doc1 = new Document();
             doc1.open();
-            HtmlParser.parse(doc1,is);
+            HtmlParser.parse(doc1, is);
             assertNotNull(doc1, () -> is + " was not parsed successfully");
         } catch (Exception e) {
             fail(() -> is + " resulted in " + e);

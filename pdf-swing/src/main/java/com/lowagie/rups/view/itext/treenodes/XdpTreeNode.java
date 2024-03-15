@@ -7,12 +7,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -20,8 +20,9 @@
 
 package com.lowagie.rups.view.itext.treenodes;
 
+import com.lowagie.rups.view.icons.IconFetcher;
+import com.lowagie.rups.view.icons.IconTreeNode;
 import java.util.List;
-
 import org.dom4j.Attribute;
 import org.dom4j.Branch;
 import org.dom4j.Comment;
@@ -32,22 +33,22 @@ import org.dom4j.Node;
 import org.dom4j.ProcessingInstruction;
 import org.dom4j.Text;
 
-import com.lowagie.rups.view.icons.IconFetcher;
-import com.lowagie.rups.view.icons.IconTreeNode;
-
 public class XdpTreeNode extends IconTreeNode {
 
-    /** A serial version UID. */
+    /**
+     * A serial version UID.
+     */
     private static final long serialVersionUID = -6431790925424045933L;
 
     /**
      * Constructs an XdpTreeNode
-     * @param node    the XML node
+     *
+     * @param node the XML node
      */
     public XdpTreeNode(Node node) {
         super(null, node);
         if (node instanceof Element) {
-            Element element = (Element)node;
+            Element element = (Element) node;
             addChildNodes(element.attributes());
         }
         if (node instanceof Branch) {
@@ -76,24 +77,28 @@ public class XdpTreeNode extends IconTreeNode {
     private void addChildNodes(List list) {
         for (Object o : list) {
             Node n = (Node) o;
-            if (n instanceof Namespace) continue;
-            if (n instanceof Comment) continue;
+            if (n instanceof Namespace) {
+                continue;
+            }
+            if (n instanceof Comment) {
+                continue;
+            }
             this.add(new XdpTreeNode(n));
         }
     }
 
     public Node getNode() {
-        return (Node)getUserObject();
+        return (Node) getUserObject();
     }
-    
+
     public String toString() {
         Node node = getNode();
         if (node instanceof Element) {
-            Element e = (Element)node;
+            Element e = (Element) node;
             return e.getName();
         }
         if (node instanceof Attribute) {
-            Attribute a = (Attribute)node;
+            Attribute a = (Attribute) node;
             StringBuilder buf = new StringBuilder();
             buf.append(a.getName());
             buf.append("=\"");
@@ -102,11 +107,11 @@ public class XdpTreeNode extends IconTreeNode {
             return buf.toString();
         }
         if (node instanceof Text) {
-            Text t = (Text)node;
+            Text t = (Text) node;
             return t.getText();
         }
         if (node instanceof ProcessingInstruction) {
-            ProcessingInstruction pi = (ProcessingInstruction)node;
+            ProcessingInstruction pi = (ProcessingInstruction) node;
             StringBuilder buf = new StringBuilder("<?");
             buf.append(pi.getName());
             buf.append(' ');

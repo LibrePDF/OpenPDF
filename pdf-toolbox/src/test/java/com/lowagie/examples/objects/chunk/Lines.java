@@ -9,14 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.chunk;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -25,10 +21,13 @@ import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates how to add lines to underline Chunks, strike through, etc...
- * 
+ *
  * @author blowagie
  */
 
@@ -36,7 +35,7 @@ public class Lines {
 
     /**
      * Underline or strike through text.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -60,7 +59,7 @@ public class Lines {
             p.add(underlined);
             document.add(p);
             Chunk strikethru = new Chunk("strike through example");
-            strikethru.setUnderline(0.5f, 3f);    
+            strikethru.setUnderline(0.5f, 3f);
             document.add(strikethru);
             document.add(Chunk.NEWLINE);
             document.add(Chunk.NEWLINE);
@@ -68,7 +67,8 @@ public class Lines {
             Chunk c;
             c = new Chunk("Multiple lines");
             c.setUnderline(new Color(0xFF, 0x00, 0x00), 0.0f, 0.3f, 0.0f, 0.4f, PdfContentByte.LINE_CAP_ROUND);
-            c.setUnderline(new Color(0x00, 0xFF, 0x00), 5.0f, 0.0f, 0.0f, -0.5f, PdfContentByte.LINE_CAP_PROJECTING_SQUARE);
+            c.setUnderline(new Color(0x00, 0xFF, 0x00), 5.0f, 0.0f, 0.0f, -0.5f,
+                    PdfContentByte.LINE_CAP_PROJECTING_SQUARE);
             c.setUnderline(new Color(0x00, 0x00, 0xFF), 0.0f, 0.2f, 15.0f, 0.0f, PdfContentByte.LINE_CAP_BUTT);
             document.add(c);
             document.add(Chunk.NEWLINE);
@@ -76,7 +76,8 @@ public class Lines {
             document.add(Chunk.NEWLINE);
             c = new Chunk("Multiple lines", FontFactory.getFont(FontFactory.HELVETICA, 24));
             c.setUnderline(new Color(0xFF, 0x00, 0x00), 0.0f, 0.3f, 0.0f, 0.4f, PdfContentByte.LINE_CAP_ROUND);
-            c.setUnderline(new Color(0x00, 0xFF, 0x00), 5.0f, 0.0f, 0.0f, -0.5f, PdfContentByte.LINE_CAP_PROJECTING_SQUARE);
+            c.setUnderline(new Color(0x00, 0xFF, 0x00), 5.0f, 0.0f, 0.0f, -0.5f,
+                    PdfContentByte.LINE_CAP_PROJECTING_SQUARE);
             c.setUnderline(new Color(0x00, 0x00, 0xFF), 0.0f, 0.2f, 15.0f, 0.0f, PdfContentByte.LINE_CAP_BUTT);
             document.add(c);
         } catch (DocumentException | IOException de) {

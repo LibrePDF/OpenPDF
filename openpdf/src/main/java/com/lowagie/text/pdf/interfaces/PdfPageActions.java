@@ -59,25 +59,28 @@ import com.lowagie.text.pdf.PdfTransition;
  */
 
 public interface PdfPageActions {
-    
+
     /**
      * Sets the open and close page additional action.
-     * @param actionType the action type. It can be <CODE>PdfWriter.PAGE_OPEN</CODE>
-     * or <CODE>PdfWriter.PAGE_CLOSE</CODE>
-     * @param action the action to perform
+     *
+     * @param actionType the action type. It can be <CODE>PdfWriter.PAGE_OPEN</CODE> or
+     *                   <CODE>PdfWriter.PAGE_CLOSE</CODE>
+     * @param action     the action to perform
      * @throws DocumentException if the action type is invalid
      */
     void setPageAction(PdfName actionType, PdfAction action) throws DocumentException;
 
     /**
      * Sets the display duration for the page (for presentations)
-     * @param seconds   the number of seconds to display the page
+     *
+     * @param seconds the number of seconds to display the page
      */
     void setDuration(int seconds);
-    
+
     /**
      * Sets the transition for the page
-     * @param transition   the Transition object
+     *
+     * @param transition the Transition object
      */
     void setTransition(PdfTransition transition);
 }

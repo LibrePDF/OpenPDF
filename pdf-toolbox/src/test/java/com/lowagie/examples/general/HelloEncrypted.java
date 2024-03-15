@@ -9,31 +9,29 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.general;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Generates an encrypted 'Hello World' PDF file.
- * 
+ *
  * @author blowagie
  */
 
 public class HelloEncrypted {
 
     /**
-     * Generates a PDF file with the text 'Hello World'
-     * that is protected with the password 'Hello'.
-     * 
+     * Generates a PDF file with the text 'Hello World' that is protected with the password 'Hello'.
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -48,7 +46,8 @@ public class HelloEncrypted {
             // and directs a PDF-stream to a file
             PdfWriter writer = PdfWriter.getInstance(document,
                     new FileOutputStream("HelloEncrypted.pdf"));
-            writer.setEncryption("Hello".getBytes(), "World".getBytes(), PdfWriter.ALLOW_COPY | PdfWriter.ALLOW_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128);
+            writer.setEncryption("Hello".getBytes(), "World".getBytes(),
+                    PdfWriter.ALLOW_COPY | PdfWriter.ALLOW_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128);
             // step 3: we open the document
             document.open();
             // step 4: we add a paragraph to the document

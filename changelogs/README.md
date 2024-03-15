@@ -1,6 +1,7 @@
 # Creating the changelog
 
 ## How to create a changelog
+
 - Take a look at all commits since the last release
 - Group them into categories
 - Create a new file in the `changelogs` folder with the name `x.y.z.md` where `x.y.z` is the version number

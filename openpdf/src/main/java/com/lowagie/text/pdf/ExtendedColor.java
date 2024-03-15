@@ -50,49 +50,68 @@
 package com.lowagie.text.pdf;
 
 import java.awt.Color;
-/**
- *
- * @author  Paulo Soares (psoares@consiste.pt)
- */
-public abstract class ExtendedColor extends Color{
-    
-    private static final long serialVersionUID = 2722660170712380080L;
-    /** a type of extended color. */
-    public static final int TYPE_RGB = 0;
-    /** a type of extended color. */
-    public static final int TYPE_GRAY = 1;
-    /** a type of extended color. */
-    public static final int TYPE_CMYK = 2;
-    /** a type of extended color. */
-    public static final int TYPE_SEPARATION = 3;
-    /** a type of extended color. */
-    public static final int TYPE_PATTERN = 4;
-    /** a type of extended color. */
-    public static final int TYPE_SHADING = 5;
-    /** the max int color value (255) expressed in int */
-    public static final int MAX_COLOR_VALUE = 0xFF;
-    /** the max int color value (255) expressed in float */
-    public static final float MAX_INT_COLOR_VALUE = 0xFF;
-    /** the max float color value (1) expressed in float */
-    public static final float MAX_FLOAT_COLOR_VALUE = 0x1;
 
+/**
+ * @author Paulo Soares (psoares@consiste.pt)
+ */
+public abstract class ExtendedColor extends Color {
+
+    /**
+     * a type of extended color.
+     */
+    public static final int TYPE_RGB = 0;
+    /**
+     * a type of extended color.
+     */
+    public static final int TYPE_GRAY = 1;
+    /**
+     * a type of extended color.
+     */
+    public static final int TYPE_CMYK = 2;
+    /**
+     * a type of extended color.
+     */
+    public static final int TYPE_SEPARATION = 3;
+    /**
+     * a type of extended color.
+     */
+    public static final int TYPE_PATTERN = 4;
+    /**
+     * a type of extended color.
+     */
+    public static final int TYPE_SHADING = 5;
+    /**
+     * the max int color value (255) expressed in int
+     */
+    public static final int MAX_COLOR_VALUE = 0xFF;
+    /**
+     * the max int color value (255) expressed in float
+     */
+    public static final float MAX_INT_COLOR_VALUE = 0xFF;
+    /**
+     * the max float color value (1) expressed in float
+     */
+    public static final float MAX_FLOAT_COLOR_VALUE = 0x1;
+    private static final long serialVersionUID = 2722660170712380080L;
     protected int type;
 
     /**
      * Constructs an extended color of a certain type.
+     *
      * @param type {@link ExtendedColor#type}
      */
     public ExtendedColor(int type) {
         super(0, 0, 0);
         this.type = type;
     }
-    
+
     /**
      * Constructs an extended color of a certain type and a certain color.
-     * @param type {@link ExtendedColor#type}
-     * @param red red quotient
+     *
+     * @param type  {@link ExtendedColor#type}
+     * @param red   red quotient
      * @param green green quotient
-     * @param blue blue quotient
+     * @param blue  blue quotient
      */
     public ExtendedColor(int type, float red, float green, float blue) {
         this(type, normalize(red), normalize(green), normalize(blue), MAX_FLOAT_COLOR_VALUE);
@@ -100,10 +119,11 @@ public abstract class ExtendedColor extends Color{
 
     /**
      * Constructs an extended color of a certain type and a certain color.
-     * @param type {@link ExtendedColor#type}
-     * @param red red quotient
+     *
+     * @param type  {@link ExtendedColor#type}
+     * @param red   red quotient
      * @param green green quotient
-     * @param blue blue quotient
+     * @param blue  blue quotient
      * @param alpha alpha quotient
      */
     public ExtendedColor(int type, float red, float green, float blue, float alpha) {
@@ -112,37 +132,44 @@ public abstract class ExtendedColor extends Color{
     }
 
     /**
-     * Gets the type of this color.
-     * @return one of the types (see constants)
-     */
-    public int getType() {
-        return type;
-    }
-    
-    /**
      * Gets the type of a given color.
+     *
      * @param color an object of {@link Color}
      * @return one of the types (see constants)
      */
     public static int getType(Color color) {
-        if (color instanceof ExtendedColor)
-            return ((ExtendedColor)color).getType();
+        if (color instanceof ExtendedColor) {
+            return ((ExtendedColor) color).getType();
+        }
         return TYPE_RGB;
     }
 
     static final float normalize(float value) {
-        if (value < 0f)
+        if (value < 0f) {
             return 0f;
-        if (value > MAX_FLOAT_COLOR_VALUE)
+        }
+        if (value > MAX_FLOAT_COLOR_VALUE) {
             return MAX_FLOAT_COLOR_VALUE;
+        }
         return value;
     }
 
     static final int normalize(int value) {
-        if (value < 0)
+        if (value < 0) {
             return 0;
-        if (value > (int)MAX_INT_COLOR_VALUE)
-            return (int)MAX_INT_COLOR_VALUE;
+        }
+        if (value > (int) MAX_INT_COLOR_VALUE) {
+            return (int) MAX_INT_COLOR_VALUE;
+        }
         return value;
+    }
+
+    /**
+     * Gets the type of this color.
+     *
+     * @return one of the types (see constants)
+     */
+    public int getType() {
+        return type;
     }
 }

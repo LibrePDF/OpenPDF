@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.alternatives;
 
@@ -25,8 +25,10 @@ import java.io.IOException;
  * Using CellsFitPage for a Cell that doesn't fit the page.
  */
 public class LargeCell {
+
     /**
      * Demonstrates the features of the old Table class.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -60,8 +62,7 @@ public class LargeCell {
             table.addCell("text");
             table.addCell("text");
             document.add(table);
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
         // step 5: we close the document

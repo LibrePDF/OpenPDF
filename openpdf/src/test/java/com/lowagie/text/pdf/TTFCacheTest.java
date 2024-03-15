@@ -19,7 +19,7 @@ class TTFCacheTest {
     @Test
     void whenGetTTFFileWithNullFileNameShouldThrowNpe() throws IOException {
         TrueTypeFontUnicode font = (TrueTypeFontUnicode) BaseFont
-            .createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false);
+                .createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false);
         assertThatNullPointerException().isThrownBy(() -> TTFCache.getTTFFile(null, font));
     }
 
@@ -27,7 +27,7 @@ class TTFCacheTest {
     void whenGetTTFFileShouldThrowNpe() throws IOException {
         // given
         TrueTypeFontUnicode font = (TrueTypeFontUnicode) BaseFont
-            .createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false);
+                .createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false);
 
         // when
         TTFFile ttfFile = TTFCache.getTTFFile("ViaodaLibre-Regular.ttf", font);
@@ -43,11 +43,11 @@ class TTFCacheTest {
     void whenLoadTTFShouldThrowNpe() throws IOException {
         // given
         TrueTypeFontUnicode font = (TrueTypeFontUnicode) BaseFont
-            .createFont("fonts/jaldi/Jaldi-Regular.otf", BaseFont.IDENTITY_H, false);
+                .createFont("fonts/jaldi/Jaldi-Regular.otf", BaseFont.IDENTITY_H, false);
         font.cff = true;
         // when then
         Assertions.assertThatThrownBy(() -> TTFCache.getTTFFile("Jaldi-Regular.otf", font))
-            .isInstanceOf(ExceptionConverter.class);
+                .isInstanceOf(ExceptionConverter.class);
     }
 
 }

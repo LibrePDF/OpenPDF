@@ -9,25 +9,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.chunk;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.StringTokenizer;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.StringTokenizer;
 
 /**
  * Demonstrates how sub- and superscript works.
- * 
+ *
  * @author blowagie
  */
 
@@ -35,7 +34,7 @@ public class SubSupScript {
 
     /**
      * Demonstrates the use of Subscript and superscript.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {

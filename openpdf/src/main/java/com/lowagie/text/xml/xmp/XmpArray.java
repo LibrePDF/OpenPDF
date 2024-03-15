@@ -30,7 +30,7 @@
  * the MPL, indicate your decision by deleting the provisions above and
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE 
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
@@ -56,27 +56,36 @@ import java.util.ArrayList;
  */
 public class XmpArray extends ArrayList<String> {
 
-    private static final long serialVersionUID = 5722854116328732742L;
-    /** An array that is unordered. */
+    /**
+     * An array that is unordered.
+     */
     public static final String UNORDERED = "rdf:Bag";
-    /** An array that is ordered. */
+    /**
+     * An array that is ordered.
+     */
     public static final String ORDERED = "rdf:Seq";
-    /** An array with alternatives. */
+    /**
+     * An array with alternatives.
+     */
     public static final String ALTERNATIVE = "rdf:Alt";
-    
-    /** the type of array. */
+    private static final long serialVersionUID = 5722854116328732742L;
+    /**
+     * the type of array.
+     */
     protected String type;
-    
+
     /**
      * Creates an XmpArray.
+     *
      * @param type the type of array: UNORDERED, ORDERED or ALTERNATIVE.
      */
     public XmpArray(String type) {
         this.type = type;
     }
-    
+
     /**
      * Returns the String representation of the XmpArray.
+     *
      * @return a String representation
      */
     public String toString() {

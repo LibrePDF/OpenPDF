@@ -1,29 +1,41 @@
 package com.lowagie.text.pdf;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
-
 /**
- * This will create a file which is ~14GB, then attempt to read it.
- * This will crash, because OpenPDF doesn't support reading PDF files
- * larger than 2GB now.
- *
+ * This will create a file which is > 2 GB, then attempt to read it. This will crash, because OpenPDF doesn't support
+ * reading PDF files larger than 2 GB now.
  */
-public class LargePdfTest {
+class LargePdfTest {
 
-    @Disabled
+    private File largeFile;
+
+    @BeforeEach
+    void before() throws IOException {
+        largeFile = Files.createTempFile("largePDFFile", ".pdf").toFile();
+    }
+
+    @AfterEach
+    void after() throws IOException {
+        Files.deleteIfExists(largeFile.toPath());
+    }
+
+    @Disabled("Because it takes too long to run this test")
     @Test
     void writeLargePdf() throws Exception {
-        File largeFile = Files.createTempFile("largePDFFile", ".pdf").toFile();
         Document document = PdfTestBase.createPdf(
-                new FileOutputStream(largeFile));
+                Files.newOutputStream(largeFile.toPath()));
 
         document.open();
         document.newPage();
@@ -32,17 +44,19 @@ public class LargePdfTest {
             longString += longString;
         }
 
-        for (long i = 0; i < 120000; i++) {
-            Image jpg = Image.getInstance("../pdf-toolbox/src/test/java/com/lowagie/examples/objects/images/sunflower-back.jpg");
+        for (long i = 0; i < 19500; i++) {
+            Image jpg = Image.getInstance(
+                    "../pdf-toolbox/src/test/java/com/lowagie/examples/objects/images/sunflower-back.jpg");
             document.add(jpg);
             document.add(new Paragraph(longString));
         }
         document.close();
 
+        String canonicalPath = largeFile.getCanonicalPath();
+
         // This will fail now.
-        PdfReader r = new PdfReader(largeFile.getCanonicalPath());
-
-
+        assertThatThrownBy(() -> new PdfReader(canonicalPath))
+                .isInstanceOf(PdfException.class);
     }
 
 }

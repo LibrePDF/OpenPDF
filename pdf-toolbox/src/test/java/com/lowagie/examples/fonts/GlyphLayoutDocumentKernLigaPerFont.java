@@ -30,12 +30,12 @@ import java.nio.file.Paths;
 public class GlyphLayoutDocumentKernLigaPerFont {
 
     public static String TEXT_INTRO =
-        "Test of kerning and ligatures per font\n"
-            + "Using LayoutProcessor for glyph layout with Java built-in routines.\n\n";
+            "Test of kerning and ligatures per font\n"
+                    + "Using LayoutProcessor for glyph layout with Java built-in routines.\n\n";
 
 
     public static String TEST_TEXT =
-        "AVATAR Vector TeX ff ffi ffl fi fl.";
+            "AVATAR Vector TeX ff ffi ffl fi fl.";
 
     /**
      * Main method

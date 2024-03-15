@@ -9,24 +9,23 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Demonstrates some Chunk functionality.
- * 
+ *
  * @author blowagie
  */
 
@@ -34,7 +33,7 @@ public class Chunks {
 
     /**
      * Demonstrates some Chunk functionality.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -60,7 +59,8 @@ public class Chunks {
             Chunk dog = new Chunk("the lazy dog");
             float subscript = -8.0f;
             dog.setTextRise(subscript);
-            dog.setUnderline(new Color(0xFF, 0x00, 0x00), 3.0f, 0.0f, -5.0f + subscript, 0.0f, PdfContentByte.LINE_CAP_ROUND);
+            dog.setUnderline(new Color(0xFF, 0x00, 0x00), 3.0f, 0.0f, -5.0f + subscript, 0.0f,
+                    PdfContentByte.LINE_CAP_ROUND);
             document.add(fox);
             document.add(jumps);
             document.add(dog);

@@ -104,8 +104,9 @@ public class TablePdfTest {
 
         } finally {
             // close document
-            if (document != null)
+            if (document != null) {
                 document.close();
+            }
         }
 
     }

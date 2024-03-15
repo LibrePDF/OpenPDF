@@ -44,7 +44,7 @@
  *
  * Contributions by:
  * Lubos Strapko
- * 
+ *
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * https://github.com/LibrePDF/OpenPDF
@@ -52,10 +52,9 @@
 
 package com.lowagie.text.html;
 
-import java.util.HashMap;
-
 import com.lowagie.text.ElementTags;
 import com.lowagie.text.FontFactory;
+import java.util.HashMap;
 
 /**
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
@@ -232,6 +231,7 @@ public class HtmlTagMap extends HashMap<String, HtmlPeer> {
 
     /**
      * Checks if this is the root tag.
+     *
      * @param tag a tagvalue
      * @return true if tag is HTML or html
      */
@@ -242,6 +242,7 @@ public class HtmlTagMap extends HashMap<String, HtmlPeer> {
 
     /**
      * Checks if this is the head tag.
+     *
      * @param tag a tagvalue
      * @return true if tag is HEAD or head
      */
@@ -252,6 +253,7 @@ public class HtmlTagMap extends HashMap<String, HtmlPeer> {
 
     /**
      * Checks if this is the meta tag.
+     *
      * @param tag a tagvalue
      * @return true if tag is META or meta
      */
@@ -262,6 +264,7 @@ public class HtmlTagMap extends HashMap<String, HtmlPeer> {
 
     /**
      * Checks if this is the link tag.
+     *
      * @param tag a tagvalue
      * @return true if tag is LINK or link
      */
@@ -272,6 +275,7 @@ public class HtmlTagMap extends HashMap<String, HtmlPeer> {
 
     /**
      * Checks if this is the title tag.
+     *
      * @param tag a tagvalue
      * @return true if tag is TITLE or title
      */
@@ -282,6 +286,7 @@ public class HtmlTagMap extends HashMap<String, HtmlPeer> {
 
     /**
      * Checks if this is the root tag.
+     *
      * @param tag a tagvalue
      * @return true if tag is BODY or body
      */
@@ -292,6 +297,7 @@ public class HtmlTagMap extends HashMap<String, HtmlPeer> {
 
     /**
      * Checks if this is a special tag.
+     *
      * @param tag a tagvalue
      * @return true if tag is a HTML, HEAD, META, LINK or BODY tag (case insensitive)
      */

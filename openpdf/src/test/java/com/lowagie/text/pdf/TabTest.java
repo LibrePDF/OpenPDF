@@ -4,30 +4,28 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+class TabTest {
 
-public class TabTest {
     @Test
-    public void TabTest1() throws IOException {
-        Document document = new Document(PageSize.A4.rotate(), 10, 10, 10, 10);
-        Document.compress = false;
+    void TabTest1() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        try {
-            PdfWriter.getInstance(document,
-                    stream);
+        String stringWithTab = "data\ttable";
+        try (Document document
+                = new Document(PageSize.A4.rotate(), 10, 10, 10, 10)) {
+            Document.compress = false;
+            PdfWriter.getInstance(document, stream);
             document.open();
-            Chunk a = new Chunk("data\ttable");
+            Chunk a = new Chunk(stringWithTab);
             document.add(a);
-        } catch (Exception de) {
-            de.printStackTrace();
         }
-        document.close();
         PdfReader rd = new PdfReader(stream.toByteArray());
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(rd);
-        Assertions.assertEquals(pdfTextExtractor.getTextFromPage(1), "data\ttable");
+        Assertions.assertEquals(stringWithTab, pdfTextExtractor.getTextFromPage(1));
+        Document.compress = true;
     }
 }

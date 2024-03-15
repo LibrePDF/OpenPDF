@@ -64,8 +64,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * Reads an XMP stream into an org.w3c.dom.Document objects.
- * Allows you to replace the contents of a specific tag.
+ * Reads an XMP stream into an org.w3c.dom.Document objects. Allows you to replace the contents of a specific tag.
+ *
  * @since 2.1.3
  */
 
@@ -106,28 +106,31 @@ public class XmpReader {
     public boolean replace(String namespaceURI, String localName, String value) {
         NodeList nodes = domDocument.getElementsByTagNameNS(namespaceURI, localName);
         Node node;
-        if (nodes.getLength() == 0)
+        if (nodes.getLength() == 0) {
             return false;
+        }
         for (int i = 0; i < nodes.getLength(); i++) {
             node = nodes.item(i);
             setNodeText(domDocument, node, value);
         }
         return true;
-    }    
-    
+    }
+
     /**
      * Adds a tag.
-     * @param    namespaceURI    the URI of the namespace
-     * @param    parent            the tag name of the parent
-     * @param    localName        the name of the tag to add
-     * @param    value            the new content for the tag
-     * @return    true if the content was successfully added
-     * @since    2.1.6
+     *
+     * @param namespaceURI the URI of the namespace
+     * @param parent       the tag name of the parent
+     * @param localName    the name of the tag to add
+     * @param value        the new content for the tag
+     * @return true if the content was successfully added
+     * @since 2.1.6
      */
     public boolean add(String parent, String namespaceURI, String localName, String value) {
         NodeList nodes = domDocument.getElementsByTagName(parent);
-        if (nodes.getLength() == 0)
+        if (nodes.getLength() == 0) {
             return false;
+        }
         Node pNode;
         Node node;
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -145,18 +148,19 @@ public class XmpReader {
         }
         return false;
     }
-    
+
     /**
-     * Sets the text of this node. All the child's node are deleted and a new
-     * child text node is created.
+     * Sets the text of this node. All the child's node are deleted and a new child text node is created.
+     *
      * @param domDocument the <CODE>Document</CODE> that contains the node
-     * @param n the <CODE>Node</CODE> to add the text to
-     * @param value the text to add
+     * @param n           the <CODE>Node</CODE> to add the text to
+     * @param value       the text to add
      * @return <code>true</code> if added successfully, else <code>false</code>
      */
     public boolean setNodeText(Document domDocument, Node n, String value) {
-        if (n == null)
+        if (n == null) {
             return false;
+        }
         Node nc = null;
         while ((nc = n.getFirstChild()) != null) {
             n.removeChild(nc);
@@ -164,7 +168,7 @@ public class XmpReader {
         n.appendChild(domDocument.createTextNode(value));
         return true;
     }
-    
+
     /**
      * Writes the document to a byte array.
      *

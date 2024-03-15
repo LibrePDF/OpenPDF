@@ -9,13 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.general.copystamp;
-
-import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.lowagie.text.Element;
 import com.lowagie.text.Image;
@@ -24,13 +20,18 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Reads the pages of an existing PDF file, adds pagenumbers and a watermark.
  */
 public class AddWatermarkPageNumbers {
+
     /**
      * Reads the pages of an existing PDF file, adds pagenumbers and a watermark.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -80,8 +81,7 @@ public class AddWatermarkPageNumbers {
             under.addTemplate(stamp.getImportedPage(reader2, 3), 1, 0, 0, 1, 0, 0);
             // closing PdfStamper will generate the new PDF file
             stamp.close();
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

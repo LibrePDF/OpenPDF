@@ -1,9 +1,13 @@
 # Credits ##
+
 Significant [Contributors to OpenPDF](https://github.com/LibrePDF/OpenPDF/graphs/contributors) on GitHub.
 
-In GitHub User alphabetical order.
+**Please note**: this document won't be updated anymore. If you are a contributor and want to be listed here, simply
+update this file and create a pull request. The reason for this is that updating this file is a manual process and
+quite an overhead. The GitHub contributor list is always up-to-date and can be used as a reference.
 
 ## Maintainers and Members ##
+
 * [@asturio](https://github.com/asturio) - Claudio Clemens
 * [@bengolder](https://github.com/bengolder) - Benjamin Golder
 * [@daviddurand](https://github.com/daviddurand) - David G. Durand
@@ -13,9 +17,12 @@ In GitHub User alphabetical order.
 
 ## Contributors ##
 
+In GitHub User alphabetical order.
+
 * [@abdullahcevik](https://github.com/abdullahcevik) - Abdullah Çevik
 * [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
-* [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, 1.3.32 to 2.0.0, now retired from OpenPDF development.
+* [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, 1.3.32
+  to 2.0.0, now retired from OpenPDF development.
 * [@AnthonyStevens](https://github.com/AnthonyStevens) - Anthony Stevens
 * [@applikationsprogramvara](https://github.com/applikationsprogramvara)
 * [@arational](https://github.com/arational) - Ivan Stefanischin

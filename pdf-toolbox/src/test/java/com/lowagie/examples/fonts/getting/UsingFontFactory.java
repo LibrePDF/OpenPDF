@@ -9,15 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.fonts.getting;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.TreeSet;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -25,10 +20,14 @@ import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 /**
  * Special rendering of Chunks.
- * 
+ *
  * @author blowagie
  */
 
@@ -36,7 +35,7 @@ public class UsingFontFactory {
 
     /**
      * Special rendering of Chunks.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -76,8 +75,7 @@ public class UsingFontFactory {
                 try {
                     p = new Paragraph(quick, FontFactory.getFont(name, BaseFont.WINANSI, BaseFont.EMBEDDED));
                     document.add(p);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     document.add(new Paragraph(e.getMessage()));
                 }
                 c--;

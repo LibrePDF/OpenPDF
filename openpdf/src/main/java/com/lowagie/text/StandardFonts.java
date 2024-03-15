@@ -1,7 +1,5 @@
 package com.lowagie.text;
 
-import java.io.IOException;
-
 public enum StandardFonts {
     // Courier
     COURIER(Font.COURIER, Font.NORMAL),
@@ -24,19 +22,19 @@ public enum StandardFonts {
     ZAPFDINGBATS(Font.ZAPFDINGBATS, -1),
     ;
 
-    private int family;
-    private int style;
+    private final int family;
+    private final int style;
 
     StandardFonts(int family, int style) {
         this.family = family;
         this.style = style;
     }
 
-    public Font create() throws IOException {
+    public Font create() {
         return create(Font.DEFAULTSIZE);
     }
 
-    public Font create(int size) throws IOException {
+    public Font create(int size) {
         final Font font;
         if (style == -1) {
             font = new Font(family, size);
@@ -46,6 +44,10 @@ public enum StandardFonts {
         return font;
     }
 
+    /**
+     * @deprecated As of OpenPDF 2.0.0. Was only in 1.3 relevant
+     */
+    @Deprecated(since = "2.0.2", forRemoval = true)
     public boolean isDeprecated() {
         return false;
     }

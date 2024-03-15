@@ -50,8 +50,7 @@
 package com.lowagie.text.pdf;
 
 /**
- *
- * @author  Paulo Soares (psoares@consiste.pt)
+ * @author Paulo Soares (psoares@consiste.pt)
  */
 public class CMYKColor extends ExtendedColor {
 
@@ -63,33 +62,39 @@ public class CMYKColor extends ExtendedColor {
 
     /**
      * Constructs a CMYK Color based on 4 color values (values are integers from 0 to 255).
-     * @param intCyan cyan value
+     *
+     * @param intCyan    cyan value
      * @param intMagenta magenta value
-     * @param intYellow yellow value
-     * @param intBlack black value
+     * @param intYellow  yellow value
+     * @param intBlack   black value
      */
     public CMYKColor(int intCyan, int intMagenta, int intYellow, int intBlack) {
-        this(normalize(intCyan) / MAX_INT_COLOR_VALUE, normalize(intMagenta) / MAX_INT_COLOR_VALUE, normalize(intYellow) / MAX_INT_COLOR_VALUE, normalize(intBlack) / MAX_INT_COLOR_VALUE);
+        this(normalize(intCyan) / MAX_INT_COLOR_VALUE, normalize(intMagenta) / MAX_INT_COLOR_VALUE,
+                normalize(intYellow) / MAX_INT_COLOR_VALUE, normalize(intBlack) / MAX_INT_COLOR_VALUE);
     }
 
     /**
      * Constructs a CMYK Color based on 4 color values (values are integers from 0 to 255).
-     * @param intCyan cyan value
+     *
+     * @param intCyan    cyan value
      * @param intMagenta magenta value
-     * @param intYellow yellow value
-     * @param intBlack black value
-     * @param intAlpha alpha value
+     * @param intYellow  yellow value
+     * @param intBlack   black value
+     * @param intAlpha   alpha value
      */
     public CMYKColor(int intCyan, int intMagenta, int intYellow, int intBlack, int intAlpha) {
-        this(normalize(intCyan) / MAX_INT_COLOR_VALUE, normalize(intMagenta) / MAX_INT_COLOR_VALUE, normalize(intYellow) / MAX_INT_COLOR_VALUE, normalize(intBlack) / MAX_INT_COLOR_VALUE, normalize(intAlpha) / MAX_INT_COLOR_VALUE);
+        this(normalize(intCyan) / MAX_INT_COLOR_VALUE, normalize(intMagenta) / MAX_INT_COLOR_VALUE,
+                normalize(intYellow) / MAX_INT_COLOR_VALUE, normalize(intBlack) / MAX_INT_COLOR_VALUE,
+                normalize(intAlpha) / MAX_INT_COLOR_VALUE);
     }
 
     /**
      * Construct a CMYK Color.
-     * @param floatCyan cyan value
+     *
+     * @param floatCyan    cyan value
      * @param floatMagenta magenta value
-     * @param floatYellow yellow value
-     * @param floatBlack black value
+     * @param floatYellow  yellow value
+     * @param floatBlack   black value
      */
     public CMYKColor(float floatCyan, float floatMagenta, float floatYellow, float floatBlack) {
         this(floatCyan, floatMagenta, floatYellow, floatBlack, MAX_FLOAT_COLOR_VALUE);
@@ -97,11 +102,12 @@ public class CMYKColor extends ExtendedColor {
 
     /**
      * Construct a CMYK Color.
-     * @param floatCyan cyan value
+     *
+     * @param floatCyan    cyan value
      * @param floatMagenta magenta value
-     * @param floatYellow yellow value
-     * @param floatBlack black value
-     * @param floatAlpha alpha value
+     * @param floatYellow  yellow value
+     * @param floatBlack   black value
+     * @param floatAlpha   alpha value
      */
     public CMYKColor(float floatCyan, float floatMagenta, float floatYellow, float floatBlack, float floatAlpha) {
         super(TYPE_CMYK, MAX_FLOAT_COLOR_VALUE - normalize(floatCyan) - normalize(floatBlack),
@@ -142,12 +148,14 @@ public class CMYKColor extends ExtendedColor {
     }
 
     public boolean equals(Object obj) {
-        if (!(obj instanceof CMYKColor))
+        if (!(obj instanceof CMYKColor)) {
             return false;
-        CMYKColor c2 = (CMYKColor)obj;
-        return (cyan == c2.cyan && magenta == c2.magenta && yellow == c2.yellow && black == c2.black && getAlpha() == c2.getAlpha());
+        }
+        CMYKColor c2 = (CMYKColor) obj;
+        return (cyan == c2.cyan && magenta == c2.magenta && yellow == c2.yellow && black == c2.black
+                && getAlpha() == c2.getAlpha());
     }
-    
+
     public int hashCode() {
         return Float.floatToIntBits(cyan)
                 ^ Float.floatToIntBits(magenta)
@@ -156,5 +164,5 @@ public class CMYKColor extends ExtendedColor {
                 ^ Float.floatToIntBits(getAlpha())
                 ;
     }
-    
+
 }

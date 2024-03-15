@@ -51,7 +51,6 @@ import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,18 +62,16 @@ import java.util.List;
 
 /**
  * Tool that parses the content of a PDF document.
- * 
+ *
  * @since 2.1.4
  */
 @SuppressWarnings("WeakerAccess")
 public class PdfContentReaderTool {
 
     /**
-     * Shows the detail of a dictionary. This is similar to the PdfLister
-     * functionality.
-     * 
-     * @param dic
-     *            the dictionary of which you want the detail
+     * Shows the detail of a dictionary. This is similar to the PdfLister functionality.
+     *
+     * @param dic the dictionary of which you want the detail
      * @return a String representation of the dictionary
      */
     public static String getDictionaryDetail(PdfDictionary dic) {
@@ -83,11 +80,9 @@ public class PdfContentReaderTool {
 
     /**
      * Shows the detail of a dictionary.
-     * 
-     * @param dic
-     *            the dictionary of which you want the detail
-     * @param depth
-     *            the depth of the current dictionary (for nested dictionaries)
+     *
+     * @param dic   the dictionary of which you want the detail
+     * @param depth the depth of the current dictionary (for nested dictionaries)
      * @return a String representation of the dictionary
      */
     public static String getDictionaryDetail(PdfDictionary dic, int depth) {
@@ -123,17 +118,13 @@ public class PdfContentReaderTool {
     }
 
     /**
-     * Writes information about a specific page from PdfReader to the specified
-     * output stream.
-     * 
+     * Writes information about a specific page from PdfReader to the specified output stream.
+     *
+     * @param reader  the PdfReader to read the page content from
+     * @param pageNum the page number to read
+     * @param out     the output stream to send the content to
+     * @throws IOException thrown when an I/O operation goes wrong
      * @since 2.1.5
-     * @param reader
-     *            the PdfReader to read the page content from
-     * @param pageNum
-     *            the page number to read
-     * @param out
-     *            the output stream to send the content to
-     * @throws IOException  thrown when an I/O operation goes wrong
      */
     public static void listContentStreamForPage(PdfReader reader, int pageNum, PrintWriter out)
             throws IOException {
@@ -168,15 +159,12 @@ public class PdfContentReaderTool {
     }
 
     /**
-     * Writes information about each page in a PDF file to the specified output
-     * stream.
-     * 
+     * Writes information about each page in a PDF file to the specified output stream.
+     *
+     * @param pdfFile a File instance referring to a PDF file
+     * @param out     the output stream to send the content to
+     * @throws IOException thrown when an I/O operation goes wrong
      * @since 2.1.5
-     * @param pdfFile
-     *            a File instance referring to a PDF file
-     * @param out
-     *            the output stream to send the content to
-     * @throws IOException  thrown when an I/O operation goes wrong
      */
     public static void listContentStream(File pdfFile, PrintWriter out)
             throws IOException {
@@ -191,17 +179,13 @@ public class PdfContentReaderTool {
     }
 
     /**
-     * Writes information about the specified page in a PDF file to the
-     * specified output stream.
-     * 
+     * Writes information about the specified page in a PDF file to the specified output stream.
+     *
+     * @param pdfFile a File instance referring to a PDF file
+     * @param pageNum the page number to read
+     * @param out     the output stream to send the content to
+     * @throws IOException thrown when an I/O operation goes wrong
      * @since 2.1.5
-     * @param pdfFile
-     *            a File instance referring to a PDF file
-     * @param pageNum
-     *            the page number to read
-     * @param out
-     *            the output stream to send the content to
-     * @throws IOException  thrown when an I/O operation goes wrong
      */
     public static void listContentStream(File pdfFile, int pageNum,
             PrintWriter out) throws IOException {
@@ -211,9 +195,8 @@ public class PdfContentReaderTool {
     }
 
     /**
-     * Writes information about each page in a PDF file to the specified file,
-     * or System.out.
-     * 
+     * Writes information about each page in a PDF file to the specified file, or System.out.
+     *
      * @param args the arguments passed to the command line
      */
     public static void main(String[] args) {

@@ -6,39 +6,39 @@ license. OpenPDF is the LGPL/MPL open source successor of iText, and is based on
 and bugreports to this GitHub repository.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.librepdf/openpdf)
-[![License (LGPL version 3.0)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-2.1)
+![CI](https://github.com/LibrePDF/OpenPDF/actions/workflows/maven.yml/badge.svg)
+[![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-2.1)
 [![License (MPL)](https://img.shields.io/badge/license-Mozilla%20Public%20License-yellow.svg?style=flat-square)](http://opensource.org/licenses/MPL-2.0)
 
-![CI](https://github.com/LibrePDF/OpenPDF/actions/workflows/maven.yml/badge.svg)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/791d40a437f64c77a0a802ae597a960c)](https://app.codacy.com/gh/LibrePDF/OpenPDF/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/791d40a437f64c77a0a802ae597a960c)](https://app.codacy.com/gh/LibrePDF/OpenPDF/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 [![CodeQL](https://github.com/LibrePDF/OpenPDF/actions/workflows/codeql.yml/badge.svg)](https://github.com/LibrePDF/OpenPDF/actions/workflows/codeql.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=LibrePDF_OpenPDF&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=LibrePDF_OpenPDF)
+[![CodeFactor](https://www.codefactor.io/repository/github/librepdf/openpdf/badge)](https://www.codefactor.io/repository/github/librepdf/openpdf)
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 
-## OpenPDF version 2.0.0 released 2024-02-18 ##
+## OpenPDF version 2.0.1 released 2024-03-03 ##
 
-Get version 2.0.0 here - https://github.com/LibrePDF/OpenPDF/releases/tag/2.0.0
+Get version 2.0.1 here - https://github.com/LibrePDF/OpenPDF/releases/tag/2.0.1
+
+Please note: Repositories like Maven Central and others may take a few days to update.
 
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
 
 ## Features ##
+
 Some of the features of OpenPDF include:
 
 * Creating PDFs: You can use OpenPDF to create new PDF documents from scratch.
-
-* Manipulating Existing PDFs: OpenPDF allows you to modify existing PDF documents by adding or removing pages, modifying text, and more.
-
-* Text and Font Support: You can add text to PDF documents using various fonts and styles, and extract text from PDF files.
-
+* Manipulating Existing PDFs: OpenPDF allows you to modify existing PDF documents by adding or removing pages, modifying
+  text, and more.
+* Text and Font Support: You can add text to PDF documents using various fonts and styles, and extract text from PDF
+  files.
 * Graphics and Images: OpenPDF supports the addition of images and graphics to PDF files.
-
 * Table Support: The library facilitates the creation of tables in PDF documents.
-
 * Encryption: You can encrypt PDF documents for security purposes.
-
 * Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
-
 
 ## Use OpenPDF as Maven dependency
 
@@ -49,7 +49,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1</version>
 </dependency>
 ```
 
@@ -57,11 +57,11 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 
 [GNU Lesser General Public License (LGPL), Version 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1)
 
-For a short explanation see https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License
+> For a short explanation see https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License
 
 [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
 
-For a short explanation see https://en.wikipedia.org/wiki/Mozilla_Public_License
+> For a short explanation see https://en.wikipedia.org/wiki/Mozilla_Public_License
 
 You can find also a nice explanation of these licenses under https://itsfoss.com/open-source-licenses-explained/
 
@@ -97,13 +97,13 @@ OpenPDF ancestors in GitHub (in fork order):
 
 ## Projects using OpenPDF ##
 
-- Spring Framework https://github.com/spring-projects/spring-framework
-- flyingsaucer https://github.com/flyingsaucerproject/flyingsaucer
+- [Spring Framework](https://github.com/spring-projects/spring-framework)
+- [flyingsaucer](https://github.com/flyingsaucerproject/flyingsaucer)
+- [Digital Signature Service](https://github.com/esig/dss)
 - Confluence PDF Export
-- Digital Signature Service - https://github.com/esig/dss
 - OpenCMS, Nuxeo Web Framework, QR Invoice Library and many closed source commercial applications as
   well.
-- Full list here: https://mvnrepository.com/artifact/com.github.librepdf/openpdf/usages
+- Full list here: [Artifacts using OpenPDF](https://mvnrepository.com/artifact/com.github.librepdf/openpdf/usages)
 
 ## Android ##
 
@@ -116,18 +116,26 @@ Release the hounds!  Please send all pull requests. Make sure that your contribu
 released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must
 only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
 
+More details: [Contributing](CONTRIBUTING.md)
+
 ### Coding Style ###
 
-- Code indentation style is 4 spaces.
+- Code indentation style is 4 spaces. Maximum line length is 120 characters.
 - Generally try to preserve the coding style in the file you are modifying.
 
 ## Dependencies ##
 
 ### Required Dependencies: ###
 
-- Java 11 or later is required to use OpenPDF versions 1.3.37 and later. All versions Java 11 to Java OpenJDK 21 have been tested to work.
-- Java 17 or later is required to use OpenPDF versions 2.0.0. We are working on modernizing the OpenPDF library for Java 17+.
+We have now different versions of OpenPDF, and they require different versions of Java:
 
+- The 2.0.x Branch requires Java 17 or later.
+- The 1.4.x Branch requires Java 11 or later.
+- The 1.3.x Branch requires Java 8 or later.
+- Some versions of 1.3 where release with Java 11 as minimum requirement, but we have reverted this
+  to Java 8 as minimum requirement.
+- OpenPDF versions 2.0.x: We are working on modernizing the OpenPDF library for Java
+  17+.
 
 ### UTF-8 Fonts: ###
 
@@ -136,6 +144,7 @@ jar. If you want to use the bundled UTF-8 fonts, please add the following depend
 and use the class `org.librepdf.openpdf.fonts.Liberation`.
 
 ```xml
+
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf-fonts-extra</artifactId>
@@ -159,11 +168,12 @@ See: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Lat
 
 - [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
   dependency)
-    - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
-      on which algorithm you are using)
-    - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
+  - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
+    on which algorithm you are using)
+  - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
 - Apache FOP (`org.apache.xmlgraphics:fop`)
 - Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
 ## Credits ##
+
 Please see [Contributors.md](Contributors.md).

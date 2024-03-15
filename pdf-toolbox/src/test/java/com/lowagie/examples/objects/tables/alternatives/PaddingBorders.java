@@ -9,13 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.alternatives;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Cell;
 import com.lowagie.text.Document;
@@ -23,13 +19,18 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Changing the padding and the borders of table cells.
  */
 public class PaddingBorders {
+
     /**
      * Creating tables with different borders and padding.
+     *
      * @param args no arguments needed.
      */
     public static void main(String[] args) {
@@ -60,7 +61,7 @@ public class PaddingBorders {
             table.setConvert2pdfptable(true);
             document.add(new Paragraph("converted to PdfPTable:"));
             document.add(table);
-            
+
             table = new Table(3);
             table.setBorderWidth(3);
             table.setBorderColor(new Color(255, 0, 0));
@@ -87,8 +88,7 @@ public class PaddingBorders {
             table.setConvert2pdfptable(true);
             document.add(new Paragraph("converted to PdfPTable:"));
             document.add(table);
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
         // step 5: we close the document

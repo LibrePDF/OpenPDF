@@ -9,14 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.chunk;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -24,10 +20,13 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Special rendering of Chunks.
- * 
+ *
  * @author blowagie
  */
 
@@ -35,7 +34,7 @@ public class Rendering {
 
     /**
      * Special rendering of Chunks.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -52,7 +51,7 @@ public class Rendering {
 
             // step 3: we open the document
             document.open();
-            // step 4:            
+            // step 4:
             Paragraph p = new Paragraph("Text Rendering:");
             document.add(p);
             Chunk chunk = new Chunk("rendering test");
@@ -71,7 +70,7 @@ public class Rendering {
             Chunk bold = new Chunk("This looks like Font.BOLD");
             bold.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE, 0.5f, new Color(0x00, 0x00, 0x00));
             document.add(bold);
-            
+
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }

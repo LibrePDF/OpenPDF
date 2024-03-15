@@ -30,7 +30,7 @@
  * the MPL, indicate your decision by deleting the provisions above and
  * replace them with the notice and other provisions required by the LGPL.
  * If you do not delete the provisions above, a recipient may use your version
- * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE 
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
@@ -59,9 +59,11 @@ public abstract class XmpSchema extends Properties {
 
     private static final long serialVersionUID = -176374295948945272L;
 
-    /** the namesspace */
+    /**
+     * the namesspace
+     */
     protected String xmlns;
-    
+
     /**
      * Constructs an XMP schema.
      *
@@ -71,8 +73,40 @@ public abstract class XmpSchema extends Properties {
         super();
         this.xmlns = xmlns;
     }
+
+    /**
+     * @param content content
+     * @return an escaped string
+     */
+    public static String escape(String content) {
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < content.length(); i++) {
+            switch (content.charAt(i)) {
+                case '<':
+                    buf.append("&lt;");
+                    break;
+                case '>':
+                    buf.append("&gt;");
+                    break;
+                case '\'':
+                    buf.append("&apos;");
+                    break;
+                case '\"':
+                    buf.append("&quot;");
+                    break;
+                case '&':
+                    buf.append("&amp;");
+                    break;
+                default:
+                    buf.append(content.charAt(i));
+            }
+        }
+        return buf.toString();
+    }
+
     /**
      * The String representation of the contents.
+     *
      * @return a String representation.
      */
     @Override
@@ -83,10 +117,12 @@ public abstract class XmpSchema extends Properties {
         }
         return buf.toString();
     }
+
     /**
      * Processes a property
+     *
      * @param buf buffer
-     * @param p object
+     * @param p   object
      */
     protected void process(StringBuffer buf, Object p) {
         buf.append('<');
@@ -97,22 +133,23 @@ public abstract class XmpSchema extends Properties {
         buf.append(p);
         buf.append('>');
     }
+
     /**
      * @return Returns the xmlns.
      */
     public String getXmlns() {
         return xmlns;
-    }    
-    
+    }
+
     /**
-     * @param key property key
+     * @param key   property key
      * @param value value
      * @return the previous property (null if there wasn't one)
      */
     public Object addProperty(String key, String value) {
         return this.setProperty(key, value);
     }
-    
+
     /**
      * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
      */
@@ -120,56 +157,24 @@ public abstract class XmpSchema extends Properties {
     public synchronized Object setProperty(String key, String value) {
         return super.setProperty(key, escape(value));
     }
-    
+
     /**
-     * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
-     * 
-     * @param key used as key
+     * @param key   used as key
      * @param value toString called on this value
      * @return the previous property (null if there wasn't one)
+     * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
      */
     public Object setProperty(String key, XmpArray value) {
         return super.setProperty(key, value.toString());
     }
-    
+
     /**
-     * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
-     *
-     * @param key used as key
+     * @param key   used as key
      * @param value toString called on this value
      * @return the previous property (null if there wasn't one)
+     * @see java.util.Properties#setProperty(java.lang.String, java.lang.String)
      */
     public Object setProperty(String key, LangAlt value) {
         return super.setProperty(key, value.toString());
-     }
-    
-    /**
-     * @param content content
-     * @return an escaped string
-     */
-    public static String escape(String content) {
-        StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < content.length(); i++) {
-            switch(content.charAt(i)) {
-            case '<':
-                buf.append("&lt;");
-                break;
-            case '>':
-                buf.append("&gt;");
-                break;
-            case '\'':
-                buf.append("&apos;");
-                break;
-            case '\"':
-                buf.append("&quot;");
-                break;
-            case '&':
-                buf.append("&amp;");
-                break;
-            default:
-                buf.append(content.charAt(i));
-            }
-        }
-        return buf.toString();
     }
 }

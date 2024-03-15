@@ -51,7 +51,6 @@ package com.lowagie.text.pdf;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.xml.simpleparser.SimpleXMLDocHandler;
 import com.lowagie.text.xml.simpleparser.SimpleXMLParser;
-
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;

@@ -28,8 +28,8 @@ class AdvanceTypographyTest {
     void testTypographySubstitution() throws Exception {
         char[] expectedOutput = {660, 666, 911, 656, 1130};
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-            BaseFont.createFont("fonts/jaldi/Jaldi-Regular.ttf", BaseFont.IDENTITY_H, false),
-            "नमस्ते", "fonts/jaldi/Jaldi-Regular.ttf", new HashMap<>(), "dflt");
+                BaseFont.createFont("fonts/jaldi/Jaldi-Regular.ttf", BaseFont.IDENTITY_H, false),
+                "नमस्ते", "fonts/jaldi/Jaldi-Regular.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
 
         assertArrayEquals(expectedOutput, str.toCharArray());
@@ -44,8 +44,8 @@ class AdvanceTypographyTest {
     void testSubstitutionWithMerge() throws Exception {
         char[] expectedOutput = {254, 278, 390, 314, 331, 376, 254, 285, 278};
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-            BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false),
-            "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
+                BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false),
+                "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
         assertArrayEquals(expectedOutput, str.toCharArray());
     }
@@ -55,9 +55,10 @@ class AdvanceTypographyTest {
         LayoutProcessor.enable();
         char[] expectedOutput = {254, 278, 390, 314, 331, 376, 254, 285, 278};
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-            BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, true, false, null,
-                null),
-            "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
+                BaseFont.createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, true, false,
+                        null,
+                        null),
+                "instruction", "fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
         assertArrayEquals(expectedOutput, str.toCharArray());
         LayoutProcessor.disable();
@@ -72,15 +73,16 @@ class AdvanceTypographyTest {
     void testInMemoryFonts() throws Exception {
         char[] expectedOutput = {254, 278, 390, 314, 331, 376, 254, 285, 278};
         BaseFont font = BaseFont.createFont("ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H,
-            BaseFont.EMBEDDED, true,
-            getTestFontByte(), null, false, false);
+                BaseFont.EMBEDDED, true,
+                getTestFontByte(), null, false, false);
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-            font, "instruction", "Viaoda Libre", new HashMap<>(), "dflt");
+                font, "instruction", "Viaoda Libre", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
         assertArrayEquals(expectedOutput, str.toCharArray());
     }
 
-    @Disabled("This test is failing, need to investigate. @YOSHIDA may know the reason.")
+    @Disabled("This test is failing, need to investigate. @YOSHIDA may know the reason."
+            + "Should work, when GH-591 #592 is fixed.")
     @Test
     void testSurrogatePair() throws Exception {
 
@@ -90,7 +92,7 @@ class AdvanceTypographyTest {
         // http://en.glyphwiki.org/wiki/u20bb7
         String text = "\uD842\uDFB7";
         byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-            baseFont, text, "fonts/jp/GenShinGothic-Normal.ttf", new HashMap<>(), "dflt");
+                baseFont, text, "fonts/jp/GenShinGothic-Normal.ttf", new HashMap<>(), "dflt");
         String str = new String(processedContent, "UnicodeBigUnmarked");
         char[] actual = str.toCharArray();
         assertArrayEquals(expectedOutput, actual);

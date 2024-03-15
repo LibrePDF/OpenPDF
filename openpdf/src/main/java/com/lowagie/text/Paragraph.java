@@ -53,152 +53,163 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * A <CODE>Paragraph</CODE> is a series of <CODE>Chunk</CODE>s and/or <CODE>Phrases</CODE>.
- * <P>
- * A <CODE>Paragraph</CODE> has the same qualities of a <CODE>Phrase</CODE>, but also
- * some additional layout-parameters:
+ * <p>
+ * A <CODE>Paragraph</CODE> has the same qualities of a <CODE>Phrase</CODE>, but also some additional
+ * layout-parameters:
  * <UL>
  * <LI>the indentation
  * <LI>the alignment of the text
  * </UL>
- *
+ * <p>
  * Example:
  * <BLOCKQUOTE><PRE>
  * <STRONG>Paragraph p = new Paragraph("This is a paragraph",
- *               FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLDITALIC, new Color(0, 0, 255)));</STRONG>
+ * FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLDITALIC, new Color(0, 0, 255)));</STRONG>
  * </PRE></BLOCKQUOTE>
  *
- * @see        Element
- * @see        Phrase
- * @see        ListItem
+ * @see Element
+ * @see Phrase
+ * @see ListItem
  */
 
 public class Paragraph extends Phrase {
-    
+
     // constants
     private static final long serialVersionUID = 7852314969733375514L;
-    
+
     // membervariables
-    
-    /** The alignment of the text. */
+
+    /**
+     * The alignment of the text.
+     */
     protected int alignment = Element.ALIGN_UNDEFINED;
 
-    /** The base run direction of paragraph */
+    /**
+     * The base run direction of paragraph
+     */
     protected int runDirection = PdfWriter.RUN_DIRECTION_DEFAULT;
-    
-    /** The text leading that is multiplied by the biggest font size in the line. */
+
+    /**
+     * The text leading that is multiplied by the biggest font size in the line.
+     */
     protected float multipliedLeading = 0;
-    
-    /** The indentation of this paragraph on the left side. */
+
+    /**
+     * The indentation of this paragraph on the left side.
+     */
     protected float indentationLeft;
-    
-    /** The indentation of this paragraph on the right side. */
+
+    /**
+     * The indentation of this paragraph on the right side.
+     */
     protected float indentationRight;
-    
-    /** Holds value of property firstLineIndent. */
-    private float firstLineIndent = 0;
-    
-    /** The spacing before the paragraph. */
+    /**
+     * The spacing before the paragraph.
+     */
     protected float spacingBefore;
-    
-    /** The spacing after the paragraph. */
+    /**
+     * The spacing after the paragraph.
+     */
     protected float spacingAfter;
-    
-    /** Holds value of property extraParagraphSpace. */
-    private float extraParagraphSpace = 0;
-    
-    /** Does the paragraph has to be kept together on 1 page. */
+    /**
+     * Does the paragraph has to be kept together on 1 page.
+     */
     protected boolean keeptogether = false;
-    
+    /**
+     * Holds value of property firstLineIndent.
+     */
+    private float firstLineIndent = 0;
+    /**
+     * Holds value of property extraParagraphSpace.
+     */
+    private float extraParagraphSpace = 0;
+
     // constructors
-    
+
     /**
      * Constructs a <CODE>Paragraph</CODE>.
      */
     public Paragraph() {
         super();
     }
-    
+
     /**
      * Constructs a <CODE>Paragraph</CODE> with a certain leading.
      *
-     * @param    leading        the leading
+     * @param leading the leading
      */
     public Paragraph(float leading) {
         super(leading);
     }
-    
+
     /**
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>Chunk</CODE>.
      *
-     * @param    chunk        a <CODE>Chunk</CODE>
-     */    
+     * @param chunk a <CODE>Chunk</CODE>
+     */
     public Paragraph(Chunk chunk) {
         super(chunk);
     }
-    
+
     /**
-     * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>Chunk</CODE>
-     * and a certain leading.
+     * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>Chunk</CODE> and a certain leading.
      *
-     * @param    leading        the leading
-     * @param    chunk        a <CODE>Chunk</CODE>
-     */    
+     * @param leading the leading
+     * @param chunk   a <CODE>Chunk</CODE>
+     */
     public Paragraph(float leading, Chunk chunk) {
         super(leading, chunk);
     }
-    
+
     /**
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE>.
      *
-     * @param    string        a <CODE>String</CODE>
+     * @param string a <CODE>String</CODE>
      */
     public Paragraph(String string) {
         super(string);
     }
-    
+
     /**
-     * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE>
-     * and a certain <CODE>Font</CODE>.
+     * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE> and a certain <CODE>Font</CODE>.
      *
-     * @param    string        a <CODE>String</CODE>
-     * @param    font        a <CODE>Font</CODE>
+     * @param string a <CODE>String</CODE>
+     * @param font   a <CODE>Font</CODE>
      */
     public Paragraph(String string, Font font) {
         super(string, font);
     }
-    
+
     /**
-     * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE>
-     * and a certain leading.
+     * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>String</CODE> and a certain leading.
      *
-     * @param    leading        the leading
-     * @param    string        a <CODE>String</CODE>
+     * @param leading the leading
+     * @param string  a <CODE>String</CODE>
      */
     public Paragraph(float leading, String string) {
         super(leading, string);
     }
-    
+
     /**
-     * Constructs a <CODE>Paragraph</CODE> with a certain leading, <CODE>String</CODE>
-     * and <CODE>Font</CODE>.
+     * Constructs a <CODE>Paragraph</CODE> with a certain leading, <CODE>String</CODE> and <CODE>Font</CODE>.
      *
-     * @param    leading        the leading
-     * @param    string        a <CODE>String</CODE>
-     * @param    font        a <CODE>Font</CODE>
+     * @param leading the leading
+     * @param string  a <CODE>String</CODE>
+     * @param font    a <CODE>Font</CODE>
      */
     public Paragraph(float leading, String string, Font font) {
         super(leading, string, font);
     }
-    
+
     /**
      * Constructs a <CODE>Paragraph</CODE> with a certain <CODE>Phrase</CODE>.
      *
-     * @param    phrase        a <CODE>Phrase</CODE>
-     */    
+     * @param phrase a <CODE>Phrase</CODE>
+     */
     public Paragraph(Phrase phrase) {
         super(phrase);
         if (phrase instanceof Paragraph) {
-            Paragraph p = (Paragraph)phrase;
+            Paragraph p = (Paragraph) phrase;
             setAlignment(p.alignment);
             setLeading(phrase.getLeading(), p.multipliedLeading);
             setIndentationLeft(p.getIndentationLeft());
@@ -207,27 +218,27 @@ public class Paragraph extends Phrase {
             setSpacingAfter(p.getSpacingAfter());
             setSpacingBefore(p.getSpacingBefore());
             setExtraParagraphSpace(p.getExtraParagraphSpace());
-			setRunDirection(p.getRunDirection());
+            setRunDirection(p.getRunDirection());
         }
     }
-    
+
     // implementation of the Element-methods
-    
+
     /**
      * Gets the type of the text element.
      *
-     * @return    a type
+     * @return a type
      */
     public int type() {
         return Element.PARAGRAPH;
     }
-    
+
     // methods
-    
+
     /**
      * Adds an <CODE>Object</CODE> to the <CODE>Paragraph</CODE>.
      *
-     * @param    o   object        the object to add.
+     * @param o object        the object to add.
      * @return true is adding the object succeeded
      */
     public boolean add(Element o) {
@@ -236,41 +247,85 @@ public class Paragraph extends Phrase {
             list.setIndentationLeft(list.getIndentationLeft() + indentationLeft);
             list.setIndentationRight(indentationRight);
             return super.add(list);
-        }
-        else if (o instanceof Image) {
+        } else if (o instanceof Image) {
             super.addSpecial(o);
             return true;
-        }
-        else if (o instanceof Paragraph) {
+        } else if (o instanceof Paragraph) {
             super.add(o);
             java.util.List chunks = getChunks();
             if (!chunks.isEmpty()) {
                 Chunk tmp = ((Chunk) chunks.get(chunks.size() - 1));
                 super.add(new Chunk("\n", tmp.getFont()));
-            }
-            else {
+            } else {
                 super.add(Chunk.NEWLINE);
             }
             return true;
         }
         return super.add(o);
     }
-    
+
     // setting the membervariables
-    
+
+    /**
+     * @see com.lowagie.text.Phrase#setLeading(float)
+     */
+    public void setLeading(float fixedLeading) {
+        this.leading = fixedLeading;
+        this.multipliedLeading = 0;
+    }
+
+    /**
+     * Sets the leading fixed and variable. The resultant leading will be fixedLeading+multipliedLeading*maxFontSize
+     * where maxFontSize is the size of the biggest font in the line.
+     *
+     * @param fixedLeading      the fixed leading
+     * @param multipliedLeading the variable leading
+     */
+    public void setLeading(float fixedLeading, float multipliedLeading) {
+        this.leading = fixedLeading;
+        this.multipliedLeading = multipliedLeading;
+    }
+
+    /**
+     * Checks if this paragraph has to be kept together on one page.
+     *
+     * @return true if the paragraph may not be split over 2 pages.
+     */
+    public boolean getKeepTogether() {
+        return keeptogether;
+    }
+
+    /**
+     * Indicates that the paragraph has to be kept together on one page.
+     *
+     * @param keeptogether true of the paragraph may not be split over 2 pages
+     */
+    public void setKeepTogether(boolean keeptogether) {
+        this.keeptogether = keeptogether;
+    }
+
+    /**
+     * Gets the alignment of this paragraph.
+     *
+     * @return alignment
+     */
+    public int getAlignment() {
+        return alignment;
+    }
+
     /**
      * Sets the alignment of this paragraph.
      *
-     * @param    alignment        the new alignment
+     * @param alignment the new alignment
      */
     public void setAlignment(int alignment) {
         this.alignment = alignment;
     }
-    
+
     /**
      * Sets the alignment of this paragraph.
      *
-     * @param    alignment        the new alignment as a <CODE>String</CODE>
+     * @param alignment the new alignment as a <CODE>String</CODE>
      */
     public void setAlignment(String alignment) {
         if (ElementTags.ALIGN_CENTER.equalsIgnoreCase(alignment)) {
@@ -291,125 +346,31 @@ public class Paragraph extends Phrase {
         }
         this.alignment = Element.ALIGN_LEFT;
     }
-    
+
     /**
-     * @see com.lowagie.text.Phrase#setLeading(float)
+     * Gets the variable leading
+     *
+     * @return the leading
      */
-    public void setLeading(float fixedLeading) {
-        this.leading = fixedLeading;
-        this.multipliedLeading = 0;
+    public float getMultipliedLeading() {
+        return multipliedLeading;
     }
-    
+
     /**
-     * Sets the variable leading. The resultant leading will be
-     * multipliedLeading*maxFontSize where maxFontSize is the
+     * Sets the variable leading. The resultant leading will be multipliedLeading*maxFontSize where maxFontSize is the
      * size of the biggest font in the line.
+     *
      * @param multipliedLeading the variable leading
      */
     public void setMultipliedLeading(float multipliedLeading) {
         this.leading = 0;
         this.multipliedLeading = multipliedLeading;
     }
-    
-    /**
-     * Sets the leading fixed and variable. The resultant leading will be
-     * fixedLeading+multipliedLeading*maxFontSize where maxFontSize is the
-     * size of the biggest font in the line.
-     * @param fixedLeading the fixed leading
-     * @param multipliedLeading the variable leading
-     */
-    public void setLeading(float fixedLeading, float multipliedLeading) {
-        this.leading = fixedLeading;
-        this.multipliedLeading = multipliedLeading;
-    }
-    
-    /**
-     * Sets the indentation of this paragraph on the left side.
-     *
-     * @param    indentation        the new indentation
-     */
-    public void setIndentationLeft(float indentation) {
-        this.indentationLeft = indentation;
-    }
-    
-    /**
-     * Sets the indentation of this paragraph on the right side.
-     *
-     * @param    indentation        the new indentation
-     */
-    public void setIndentationRight(float indentation) {
-        this.indentationRight = indentation;
-    }
-    
-    /**
-     * Setter for property firstLineIndent.
-     * @param firstLineIndent New value of property firstLineIndent.
-     */
-    public void setFirstLineIndent(float firstLineIndent) {
-        this.firstLineIndent = firstLineIndent;
-    }
-    
-    /**
-     * Sets the spacing before this paragraph.
-     *
-     * @param    spacing        the new spacing
-     */
-    public void setSpacingBefore(float spacing) {
-        this.spacingBefore = spacing;
-    }
-    
-    /**
-     * Sets the spacing after this paragraph.
-     *
-     * @param    spacing        the new spacing
-     */
-    public void setSpacingAfter(float spacing) {
-        this.spacingAfter = spacing;
-    }
-    
-    /**
-     * Indicates that the paragraph has to be kept together on one page.
-     *
-     * @param   keeptogether    true of the paragraph may not be split over 2 pages
-     */
-    public void setKeepTogether(boolean keeptogether) {
-        this.keeptogether = keeptogether;
-    }
-    
-    /**
-     * Checks if this paragraph has to be kept together on one page.
-     *
-     * @return  true if the paragraph may not be split over 2 pages.
-     */
-    public boolean getKeepTogether() {
-        return keeptogether;
-    }
-
-    // methods to retrieve information
 
     /**
-     * Gets the alignment of this paragraph.
+     * Gets the total leading. This method is based on the assumption that the font of the Paragraph is the font of all
+     * the elements that make part of the paragraph. This isn't necessarily true.
      *
-     * @return    alignment
-     */
-    public int getAlignment() {
-        return alignment;
-    }
-    
-    /**
-     * Gets the variable leading
-     * @return the leading
-     */
-    public float getMultipliedLeading() {
-        return multipliedLeading;
-    }
-    
-    /**
-     * Gets the total leading.
-     * This method is based on the assumption that the
-     * font of the Paragraph is the font of all the elements
-     * that make part of the paragraph. This isn't necessarily
-     * true.
      * @return the total leading (fixed and multiplied)
      */
     public float getTotalLeading() {
@@ -424,57 +385,109 @@ public class Paragraph extends Phrase {
     /**
      * Gets the indentation of this paragraph on the left side.
      *
-     * @return    the indentation
+     * @return the indentation
      */
     public float getIndentationLeft() {
         return indentationLeft;
     }
 
     /**
+     * Sets the indentation of this paragraph on the left side.
+     *
+     * @param indentation the new indentation
+     */
+    public void setIndentationLeft(float indentation) {
+        this.indentationLeft = indentation;
+    }
+
+    // methods to retrieve information
+
+    /**
      * Gets the indentation of this paragraph on the right side.
      *
-     * @return    the indentation
+     * @return the indentation
      */
     public float getIndentationRight() {
         return indentationRight;
     }
-    
+
+    /**
+     * Sets the indentation of this paragraph on the right side.
+     *
+     * @param indentation the new indentation
+     */
+    public void setIndentationRight(float indentation) {
+        this.indentationRight = indentation;
+    }
+
     /**
      * Getter for property firstLineIndent.
+     *
      * @return Value of property firstLineIndent.
      */
     public float getFirstLineIndent() {
         return this.firstLineIndent;
     }
-    
+
+    /**
+     * Setter for property firstLineIndent.
+     *
+     * @param firstLineIndent New value of property firstLineIndent.
+     */
+    public void setFirstLineIndent(float firstLineIndent) {
+        this.firstLineIndent = firstLineIndent;
+    }
+
     /**
      * Gets the spacing before this paragraph.
-     * @return    the spacing
-     * @since    2.1.5
+     *
+     * @return the spacing
+     * @since 2.1.5
      */
     public float getSpacingBefore() {
         return spacingBefore;
-    }    
-    
+    }
+
+    /**
+     * Sets the spacing before this paragraph.
+     *
+     * @param spacing the new spacing
+     */
+    public void setSpacingBefore(float spacing) {
+        this.spacingBefore = spacing;
+    }
+
     /**
      * Gets the spacing after this paragraph.
-     * @return    the spacing
-     * @since    2.1.5
+     *
+     * @return the spacing
+     * @since 2.1.5
      */
     public float getSpacingAfter() {
         return spacingAfter;
-    }  
-    
+    }
+
+    /**
+     * Sets the spacing after this paragraph.
+     *
+     * @param spacing the new spacing
+     */
+    public void setSpacingAfter(float spacing) {
+        this.spacingAfter = spacing;
+    }
+
     /**
      * Getter for property extraParagraphSpace.
+     *
      * @return Value of property extraParagraphSpace.
      */
     public float getExtraParagraphSpace() {
         return this.extraParagraphSpace;
     }
-    
+
     /**
      * Setter for property extraParagraphSpace.
+     *
      * @param extraParagraphSpace New value of property extraParagraphSpace.
      */
     public void setExtraParagraphSpace(float extraParagraphSpace) {

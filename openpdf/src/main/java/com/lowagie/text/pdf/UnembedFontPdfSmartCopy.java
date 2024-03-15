@@ -1,23 +1,23 @@
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-
 /**
- * Makes a copy of a PDF, unembedding all embedded fonts. All font headers and descriptors are preserved and only the font file is removed.
+ * Makes a copy of a PDF, unembedding all embedded fonts. All font headers and descriptors are preserved and only the
+ * font file is removed.
  */
 public class UnembedFontPdfSmartCopy extends PdfSmartCopy {
-    
+
     public UnembedFontPdfSmartCopy(Document document, OutputStream os)
             throws DocumentException {
         super(document, os);
     }
 
     protected PdfDictionary copyDictionary(PdfDictionary in)
-        throws IOException, BadPdfFormatException {
+            throws IOException, BadPdfFormatException {
 
         PdfDictionary out = new PdfDictionary();
         PdfObject type = PdfReader.getPdfObjectRelease(in.get(PdfName.TYPE));

@@ -9,16 +9,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.fonts;
 
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
 
 /**
  * Listing the encodings of font comic
@@ -27,13 +26,15 @@ public class ListEncodings {
 
     /**
      * Listing the encodings of font comic.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
         System.out.println("Listing Font properties");
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter("encodings.txt"));
-            BaseFont bfComic = BaseFont.createFont("c:\\windows\\fonts\\comicbd.ttf", BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+            BaseFont bfComic = BaseFont.createFont("c:\\windows\\fonts\\comicbd.ttf", BaseFont.CP1252,
+                    BaseFont.NOT_EMBEDDED);
             out.write("postscriptname: " + bfComic.getPostscriptFontName());
             out.write("\r\n\r\n");
             String[] codePages = bfComic.getCodePagesSupported();

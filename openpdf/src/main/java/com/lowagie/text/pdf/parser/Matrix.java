@@ -49,12 +49,12 @@ package com.lowagie.text.pdf.parser;
 import java.util.Arrays;
 
 /**
- * Keeps all the values of a 3 by 3 matrix
- * and allows you to do some math with matrices.
+ * Keeps all the values of a 3 by 3 matrix and allows you to do some math with matrices.
  *
  * @since 2.1.4
  */
 public class Matrix {
+
     /**
      * the row=1, col=1 position ('a') in the matrix.
      */
@@ -151,8 +151,7 @@ public class Matrix {
     }
 
     /**
-     * multiplies this matrix by 'b' and returns the result
-     * See http://en.wikipedia.org/wiki/Matrix_multiplication
+     * multiplies this matrix by 'b' and returns the result See http://en.wikipedia.org/wiki/Matrix_multiplication
      *
      * @param by The matrix to multiply by
      * @return the resulting matrix
@@ -213,8 +212,9 @@ public class Matrix {
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Matrix))
+        if (!(obj instanceof Matrix)) {
             return false;
+        }
 
         return Arrays.equals(vals, ((Matrix) obj).vals);
     }

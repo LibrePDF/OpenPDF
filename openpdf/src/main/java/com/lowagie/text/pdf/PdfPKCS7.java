@@ -48,6 +48,8 @@ package com.lowagie.text.pdf;
 
 import static org.bouncycastle.asn1.x509.Extension.authorityInfoAccess;
 
+import com.lowagie.text.ExceptionConverter;
+import com.lowagie.text.error_messages.MessageLocalization;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -118,36 +120,12 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.tsp.TimeStampTokenInfo;
 
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.error_messages.MessageLocalization;
-
 /**
- * This class does all the processing related to signing and verifying a PKCS#7
- * signature.
+ * This class does all the processing related to signing and verifying a PKCS#7 signature.
  * <p>
  * It's based in code found at org.bouncycastle.
  */
 public class PdfPKCS7 {
-
-    private byte[] sigAttr;
-    private byte[] digestAttr;
-    private int version, signerversion;
-    private Set<String> digestalgos;
-    private final List<Certificate> certs;
-    private List<Certificate> signCerts;
-    private final List<CRL> crls;
-    private X509Certificate signCert;
-    private byte[] digest;
-    private MessageDigest messageDigest;
-    private String digestAlgorithm, digestEncryptionAlgorithm;
-    private Signature sig;
-    private transient PrivateKey privKey;
-    private byte[] RSAdata;
-    private boolean verified;
-    private boolean verifyResult;
-    private byte[] externalDigest;
-    private byte[] externalRSAdata;
-    private final String provider;
 
     private static final String ID_PKCS7_DATA = "1.2.840.113549.1.7.1";
     private static final String ID_PKCS7_SIGNED_DATA = "1.2.840.113549.1.7.2";
@@ -158,28 +136,6 @@ public class PdfPKCS7 {
     private static final String ID_MESSAGE_DIGEST = "1.2.840.113549.1.9.4";
     private static final String ID_SIGNING_TIME = "1.2.840.113549.1.9.5";
     private static final String ID_ADBE_REVOCATION = "1.2.840.113583.1.1.8";
-    /**
-     * Holds value of property reason.
-     */
-    private String reason;
-
-    /**
-     * Holds value of property location.
-     */
-    private String location;
-
-    /**
-     * Holds value of property signDate.
-     */
-    private Calendar signDate;
-
-    /**
-     * Holds value of property signName.
-     */
-    private String signName;
-
-    private TimeStampToken timeStampToken;
-
     private static final Map<String, String> digestNames = new HashMap<>();
     private static final Map<String, String> algorithmNames = new HashMap<>();
     private static final Map<String, String> allowedDigests = new HashMap<>();
@@ -227,8 +183,8 @@ public class PdfPKCS7 {
         algorithmNames.put("1.3.36.3.3.1.2", "RSA");
         algorithmNames.put("1.3.36.3.3.1.4", "RSA");
         algorithmNames.put(ID_ECDSA, "ECDSA");
-        algorithmNames.put("1.2.840.10045.4.1", "ECDSA"); 
-        algorithmNames.put("1.2.840.10045.4.3", "ECDSA"); 
+        algorithmNames.put("1.2.840.10045.4.1", "ECDSA");
+        algorithmNames.put("1.2.840.10045.4.3", "ECDSA");
         algorithmNames.put("1.2.840.10045.4.3.2", "ECDSA");
         algorithmNames.put("1.2.840.10045.4.3.3", "ECDSA");
         algorithmNames.put("1.2.840.10045.4.3.4", "ECDSA");
@@ -255,64 +211,43 @@ public class PdfPKCS7 {
         allowedDigests.put("RIPEMD-256", "1.3.36.3.2.3");
     }
 
+    private final List<Certificate> certs;
+    private final List<CRL> crls;
+    private final String provider;
+    private byte[] sigAttr;
+    private byte[] digestAttr;
+    private int version, signerversion;
+    private Set<String> digestalgos;
+    private List<Certificate> signCerts;
+    private X509Certificate signCert;
+    private byte[] digest;
+    private MessageDigest messageDigest;
+    private String digestAlgorithm, digestEncryptionAlgorithm;
+    private Signature sig;
+    private transient PrivateKey privKey;
+    private byte[] RSAdata;
+    private boolean verified;
+    private boolean verifyResult;
+    private byte[] externalDigest;
+    private byte[] externalRSAdata;
     /**
-     * Gets the digest name for a certain id
-     *
-     * @param oid an id (for instance "1.2.840.113549.2.5")
-     * @return a digest name (for instance "MD5")
-     * @since 2.1.6
+     * Holds value of property reason.
      */
-    public static String getDigest(String oid) {
-        return Optional.ofNullable(digestNames.get(oid))
-                .orElse(oid);
-    }
-
+    private String reason;
     /**
-     * Gets the algorithm name for a certain id.
-     *
-     * @param oid an id (for instance "1.2.840.113549.1.1.1")
-     * @return an algorithm name (for instance "RSA")
-     * @since 2.1.6
+     * Holds value of property location.
      */
-    public static String getAlgorithm(String oid) {
-        return Optional.ofNullable(algorithmNames.get(oid))
-                .orElse(oid);
-    }
-
+    private String location;
     /**
-     * Gets the oid for given digest name.
-     *
-     * @param digestName digest name (for instance "SHA-256")
-     * @return a digest OID (for instance "2.16.840.1.101.3.4.2.1") or {@code null} if the oid for provided name is not found
+     * Holds value of property signDate.
      */
-    public static String getDigestOid(String digestName) {
-        return digestName != null ? allowedDigests.get(digestName) : null;
-    }
-
+    private Calendar signDate;
     /**
-     * Gets the timestamp token if there is one.
-     *
-     * @return the timestamp token or null
-     * @since 2.1.6
+     * Holds value of property signName.
      */
-    public TimeStampToken getTimeStampToken() {
-        return timeStampToken;
-    }
-
-    /**
-     * Gets the timestamp date
-     *
-     * @return a date
-     * @since 2.1.6
-     */
-    public Calendar getTimeStampDate() {
-        if (timeStampToken == null)
-            return null;
-        Calendar cal = new GregorianCalendar();
-        Date date = timeStampToken.getTimeStampInfo().getGenTime();
-        cal.setTime(date);
-        return cal;
-    }
+    private String signName;
+    private TimeStampToken timeStampToken;
+    private BasicOCSPResp basicResp;
 
     /**
      * Verifies a signature using the sub-filter adbe.x509.rsa_sha1.
@@ -326,7 +261,8 @@ public class PdfPKCS7 {
         try {
             this.provider = provider;
             CertificateFactory certificateFactory = new CertificateFactory();
-            Collection<Certificate> certificates = certificateFactory.engineGenerateCertificates(new ByteArrayInputStream(certsKey));
+            Collection<Certificate> certificates = certificateFactory.engineGenerateCertificates(
+                    new ByteArrayInputStream(certsKey));
             certs = new ArrayList<>(certificates);
             signCerts = certs;
             signCert = (X509Certificate) certs.iterator().next();
@@ -344,54 +280,8 @@ public class PdfPKCS7 {
         }
     }
 
-    private BasicOCSPResp basicResp;
-
     /**
-     * Gets the OCSP basic response if there is one.
-     *
-     * @return the OCSP basic response or null
-     * @since 2.1.6
-     */
-    public BasicOCSPResp getOcsp() {
-        return basicResp;
-    }
-
-    private void findOcsp(ASN1Sequence seq) throws IOException {
-        basicResp = null;
-        while ((!(seq.getObjectAt(0) instanceof ASN1ObjectIdentifier))
-                || !((ASN1ObjectIdentifier) seq.getObjectAt(0)).getId().equals(
-                OCSPObjectIdentifiers.id_pkix_ocsp_basic.getId())) {
-            boolean ret = true;
-            int k = 0;
-            while (k < seq.size()) {
-                if (seq.getObjectAt(k) instanceof ASN1Sequence) {
-                    seq = (ASN1Sequence) seq.getObjectAt(0);
-                    ret = false;
-                    break;
-                }
-                if (seq.getObjectAt(k) instanceof ASN1TaggedObject) {
-                    ASN1TaggedObject tag = (ASN1TaggedObject) seq.getObjectAt(k);
-                    if (tag.getBaseObject() instanceof ASN1Sequence) {
-                        seq = (ASN1Sequence) tag.getBaseObject();
-                        ret = false;
-                        break;
-                    } else
-                        return;
-                }
-                ++k;
-            }
-            if (ret)
-                return;
-        }
-        DEROctetString os = (DEROctetString) seq.getObjectAt(1);
-        ASN1InputStream inp = new ASN1InputStream(os.getOctets());
-        BasicOCSPResponse resp = BasicOCSPResponse.getInstance(inp.readObject());
-        basicResp = new BasicOCSPResp(resp);
-    }
-
-    /**
-     * Verifies a signature using the sub-filter adbe.pkcs7.detached or
-     * adbe.pkcs7.sha1.
+     * Verifies a signature using the sub-filter adbe.pkcs7.detached or adbe.pkcs7.sha1.
      *
      * @param contentsKey the /Contents key
      * @param provider    the provider or <code>null</code> for the default provider
@@ -423,11 +313,13 @@ public class PdfPKCS7 {
             ASN1Sequence signedData = (ASN1Sequence) pkcs;
             ASN1ObjectIdentifier objId = (ASN1ObjectIdentifier) signedData
                     .getObjectAt(0);
-            if (!objId.getId().equals(ID_PKCS7_SIGNED_DATA))
+            if (!objId.getId().equals(ID_PKCS7_SIGNED_DATA)) {
                 throw new IllegalArgumentException(
                         MessageLocalization
                                 .getComposedMessage("not.a.valid.pkcs.7.object.not.signed.data"));
-            ASN1Sequence content = (ASN1Sequence)((ASN1TaggedObject)signedData.getObjectAt(1)).getBaseObject();            // the positions that we care are:
+            }
+            ASN1Sequence content = (ASN1Sequence) ((ASN1TaggedObject) signedData.getObjectAt(
+                    1)).getBaseObject();            // the positions that we care are:
             // the positions that we care are:
             // 0 - version
             // 1 - digestAlgorithms
@@ -449,7 +341,8 @@ public class PdfPKCS7 {
 
             // the certificates and crls
             CertificateFactory certificateFactory = new CertificateFactory();
-            Collection<Certificate> certificates = certificateFactory.engineGenerateCertificates(new ByteArrayInputStream(contentsKey));
+            Collection<Certificate> certificates = certificateFactory.engineGenerateCertificates(
+                    new ByteArrayInputStream(contentsKey));
             this.certs = new ArrayList<>(certificates);
             X509CRLParser cl = new X509CRLParser();
             cl.engineInit(new ByteArrayInputStream(contentsKey));
@@ -458,20 +351,24 @@ public class PdfPKCS7 {
             // the possible ID_PKCS7_DATA
             ASN1Sequence rsaData = (ASN1Sequence) content.getObjectAt(2);
             if (rsaData.size() > 1) {
-                ASN1OctetString rsaDataContent = (ASN1OctetString)((ASN1TaggedObject)rsaData.getObjectAt(1)).getBaseObject();
+                ASN1OctetString rsaDataContent = (ASN1OctetString) ((ASN1TaggedObject) rsaData.getObjectAt(
+                        1)).getBaseObject();
                 RSAdata = rsaDataContent.getOctets();
             }
 
             int next = 3;
-            while (content.getObjectAt(next) instanceof ASN1TaggedObject)
-            	++next;
+            while (content.getObjectAt(next) instanceof ASN1TaggedObject) {
+                ++next;
+            }
 
             // the signerInfos
             ASN1Set signerInfos = (ASN1Set) content.getObjectAt(next);
-            if (signerInfos.size() != 1)
+            if (signerInfos.size() != 1) {
                 throw new IllegalArgumentException(
                         MessageLocalization
-                                .getComposedMessage("this.pkcs.7.object.has.multiple.signerinfos.only.one.is.supported.at.this.time"));
+                                .getComposedMessage(
+                                        "this.pkcs.7.object.has.multiple.signerinfos.only.one.is.supported.at.this.time"));
+            }
             ASN1Sequence signerInfo = (ASN1Sequence) signerInfos.getObjectAt(0);
             // the positions that we care are
             // 0 - version
@@ -521,24 +418,26 @@ public class PdfPKCS7 {
                         ASN1Sequence seqout = (ASN1Sequence) setout.getObjectAt(0);
                         for (int j = 0; j < seqout.size(); ++j) {
                             ASN1TaggedObject tg = (ASN1TaggedObject) seqout.getObjectAt(j);
-                            if (tg.getTagNo() != 1)
+                            if (tg.getTagNo() != 1) {
                                 continue;
+                            }
                             ASN1Sequence seqin = (ASN1Sequence) tg.getBaseObject();
                             findOcsp(seqin);
                         }
                     }
                 }
-                if (digestAttr == null)
+                if (digestAttr == null) {
                     throw new IllegalArgumentException(
                             MessageLocalization
                                     .getComposedMessage("authenticated.attribute.is.missing.the.digest"));
+                }
                 ++next;
             }
             digestEncryptionAlgorithm = ((ASN1ObjectIdentifier) ((ASN1Sequence) signerInfo
                     .getObjectAt(next++)).getObjectAt(0)).getId();
             digest = ((DEROctetString) signerInfo.getObjectAt(next++)).getOctets();
             if (next < signerInfo.size() && (signerInfo.getObjectAt(next) instanceof ASN1TaggedObject)) {
-            	ASN1TaggedObject taggedObject = (ASN1TaggedObject) signerInfo.getObjectAt(next);
+                ASN1TaggedObject taggedObject = (ASN1TaggedObject) signerInfo.getObjectAt(next);
                 ASN1Set unat = ASN1Set.getInstance(taggedObject, false);
                 AttributeTable attble = new AttributeTable(unat);
                 Attribute ts = attble.get(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken);
@@ -550,16 +449,18 @@ public class PdfPKCS7 {
                 }
             }
             if (RSAdata != null || digestAttr != null) {
-                if (provider == null || provider.startsWith("SunPKCS11"))
+                if (provider == null || provider.startsWith("SunPKCS11")) {
                     messageDigest = MessageDigest.getInstance(getStandardJavaName(getHashAlgorithm()));
-                else
+                } else {
                     messageDigest = MessageDigest.getInstance(getStandardJavaName(getHashAlgorithm()),
                             provider);
+                }
             }
-            if (provider == null)
+            if (provider == null) {
                 sig = Signature.getInstance(getDigestAlgorithm());
-            else
+            } else {
                 sig = Signature.getInstance(getDigestAlgorithm(), provider);
+            }
             sig.initVerify(signCert.getPublicKey());
         } catch (Exception e) {
             throw new ExceptionConverter(e);
@@ -580,17 +481,18 @@ public class PdfPKCS7 {
      * @throws NoSuchAlgorithmException on error
      */
     public PdfPKCS7(PrivateKey privKey, Certificate[] certChain, CRL[] crlList,
-                    String hashAlgorithm, String provider, boolean hasRSAdata)
+            String hashAlgorithm, String provider, boolean hasRSAdata)
             throws InvalidKeyException, NoSuchProviderException,
             NoSuchAlgorithmException {
         this.privKey = privKey;
         this.provider = provider;
 
         digestAlgorithm = allowedDigests.get(hashAlgorithm.toUpperCase());
-        if (digestAlgorithm == null)
+        if (digestAlgorithm == null) {
             throw new NoSuchAlgorithmException(
                     MessageLocalization.getComposedMessage("unknown.hash.algorithm.1",
                             hashAlgorithm));
+        }
 
         version = signerversion = 1;
         certs = new ArrayList<>();
@@ -628,202 +530,61 @@ public class PdfPKCS7 {
         }
         if (hasRSAdata) {
             RSAdata = new byte[0];
-            if (provider == null || provider.startsWith("SunPKCS11"))
+            if (provider == null || provider.startsWith("SunPKCS11")) {
                 messageDigest = MessageDigest.getInstance(getStandardJavaName(getHashAlgorithm()));
-            else
+            } else {
                 messageDigest = MessageDigest.getInstance(getStandardJavaName(getHashAlgorithm()), provider);
+            }
         }
 
         if (privKey != null) {
-            if (provider == null)
+            if (provider == null) {
                 sig = Signature.getInstance(getDigestAlgorithm());
-            else
+            } else {
                 sig = Signature.getInstance(getDigestAlgorithm(), provider);
+            }
 
             sig.initSign(privKey);
         }
     }
 
     /**
-     * Update the digest with the specified bytes. This method is used both for
-     * signing and verifying
+     * Gets the digest name for a certain id
      *
-     * @param buf the data buffer
-     * @param off the offset in the data buffer
-     * @param len the data length
-     * @throws SignatureException on error
-     */
-    public void update(byte[] buf, int off, int len) throws SignatureException {
-        if (RSAdata != null || digestAttr != null)
-            messageDigest.update(buf, off, len);
-        else
-            sig.update(buf, off, len);
-    }
-
-    /**
-     * Verify the digest.
-     *
-     * @return <CODE>true</CODE> if the signature checks out, <CODE>false</CODE>
-     * otherwise
-     * @throws SignatureException on error
-     */
-    public boolean verify() throws SignatureException {
-        if (verified)
-            return verifyResult;
-        if (sigAttr != null) {
-            sig.update(sigAttr);
-            if (RSAdata != null) {
-                byte[] msd = messageDigest.digest();
-                messageDigest.update(msd);
-            }
-            verifyResult = (Arrays.equals(messageDigest.digest(), digestAttr) && sig
-                    .verify(digest));
-        } else {
-            if (RSAdata != null)
-                sig.update(messageDigest.digest());
-            verifyResult = sig.verify(digest);
-        }
-        verified = true;
-        return verifyResult;
-    }
-
-    /**
-     * Checks if the timestamp refers to this document.
-     *
-     * @return true if it checks false otherwise
-     * @throws java.security.NoSuchAlgorithmException on error
+     * @param oid an id (for instance "1.2.840.113549.2.5")
+     * @return a digest name (for instance "MD5")
      * @since 2.1.6
      */
-    public boolean verifyTimestampImprint() throws NoSuchAlgorithmException {
-        if (timeStampToken == null)
-            return false;
-        MessageImprint imprint = timeStampToken.getTimeStampInfo().toASN1Structure()
-                .getMessageImprint();
-        TimeStampTokenInfo info = timeStampToken.getTimeStampInfo();
-        String algOID = info.getMessageImprintAlgOID().getId();
-        byte[] md =  MessageDigest.getInstance(getStandardJavaName(getDigest(algOID))).digest(digest);
-        byte[] imphashed = imprint.getHashedMessage();
-        return Arrays.equals(md, imphashed);
+    public static String getDigest(String oid) {
+        return Optional.ofNullable(digestNames.get(oid))
+                .orElse(oid);
     }
 
     /**
-     * Get all the X.509 certificates associated with this PKCS#7 object in no
-     * particular order. Other certificates, from OCSP for example, will also be
-     * included.
+     * Gets the algorithm name for a certain id.
      *
-     * @return the X.509 certificates associated with this PKCS#7 object
-     */
-    public Certificate[] getCertificates() {
-        return certs.toArray(new Certificate[0]);
-    }
-
-    /**
-     * Get the X.509 sign certificate chain associated with this PKCS#7 object.
-     * Only the certificates used for the main signature will be returned, with
-     * the signing certificate first.
-     *
-     * @return the X.509 certificates associated with this PKCS#7 object
+     * @param oid an id (for instance "1.2.840.113549.1.1.1")
+     * @return an algorithm name (for instance "RSA")
      * @since 2.1.6
      */
-    public Certificate[] getSignCertificateChain() {
-        return signCerts.toArray(new X509Certificate[0]);
-    }
-
-    private void signCertificateChain() {
-        List<Certificate> cc = new ArrayList<>();
-        cc.add(signCert);
-        List<Certificate> oc = new ArrayList<>(certs);
-        for (int k = 0; k < oc.size(); ++k) {
-            if (signCert.getSerialNumber().equals(
-                    ((X509Certificate) oc.get(k)).getSerialNumber())) {
-                oc.remove(k);
-                --k;
-            }
-        }
-        boolean found = true;
-        while (found) {
-            X509Certificate v = (X509Certificate) cc.get(cc.size() - 1);
-            found = false;
-            for (int k = 0; k < oc.size(); ++k) {
-                try {
-                    if (provider == null)
-                        v.verify(oc.get(k).getPublicKey());
-                    else
-                        v.verify(oc.get(k).getPublicKey(), provider);
-                    found = true;
-                    cc.add(oc.get(k));
-                    oc.remove(k);
-                    break;
-                } catch (Exception ignored) {
-                }
-            }
-        }
-        signCerts = cc;
+    public static String getAlgorithm(String oid) {
+        return Optional.ofNullable(algorithmNames.get(oid))
+                .orElse(oid);
     }
 
     /**
-     * Get the X.509 certificate revocation lists associated with this PKCS#7
-     * object
+     * Gets the oid for given digest name.
      *
-     * @return the X.509 certificate revocation lists associated with this PKCS#7
-     * object
+     * @param digestName digest name (for instance "SHA-256")
+     * @return a digest OID (for instance "2.16.840.1.101.3.4.2.1") or {@code null} if the oid for provided name is not
+     * found
      */
-    public Collection getCRLs() {
-        return crls;
+    public static String getDigestOid(String digestName) {
+        return digestName != null ? allowedDigests.get(digestName) : null;
     }
 
     /**
-     * Get the X.509 certificate actually used to sign the digest.
-     *
-     * @return the X.509 certificate actually used to sign the digest
-     */
-    public X509Certificate getSigningCertificate() {
-        return signCert;
-    }
-
-    /**
-     * Get the version of the PKCS#7 object. Always 1
-     *
-     * @return the version of the PKCS#7 object. Always 1
-     */
-    public int getVersion() {
-        return version;
-    }
-
-    /**
-     * Get the version of the PKCS#7 "SignerInfo" object. Always 1
-     *
-     * @return the version of the PKCS#7 "SignerInfo" object. Always 1
-     */
-    public int getSigningInfoVersion() {
-        return signerversion;
-    }
-
-    /**
-     * Get the algorithm used to calculate the message digest
-     *
-     * @return the algorithm used to calculate the message digest
-     */
-    public String getDigestAlgorithm() {
-        String dea = getAlgorithm(digestEncryptionAlgorithm);
-        if (dea == null)
-            dea = digestEncryptionAlgorithm;
-
-        return getHashAlgorithm() + "with" + dea;
-    }
-
-    /**
-     * Returns the algorithm.
-     *
-     * @return the digest algorithm
-     */
-    public String getHashAlgorithm() {
-        return getDigest(digestAlgorithm);
-    }
-
-    /**
-     * Loads the default root certificates at
-     * &lt;java.home&gt;/lib/security/cacerts with the default provider.
+     * Loads the default root certificates at &lt;java.home&gt;/lib/security/cacerts with the default provider.
      *
      * @return a <CODE>KeyStore</CODE>
      */
@@ -832,8 +593,7 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Loads the default root certificates at
-     * &lt;java.home&gt;/lib/security/cacerts.
+     * Loads the default root certificates at &lt;java.home&gt;/lib/security/cacerts.
      *
      * @param provider the provider or <code>null</code> for the default provider
      * @return a <CODE>KeyStore</CODE>
@@ -844,10 +604,11 @@ public class PdfPKCS7 {
         file = new File(file, "cacerts");
         try (FileInputStream fin = new FileInputStream(file)) {
             KeyStore k;
-            if (provider == null)
+            if (provider == null) {
                 k = KeyStore.getInstance("JKS");
-            else
+            } else {
                 k = KeyStore.getInstance("JKS", provider);
+            }
             k.load(fin, null);
             return k;
         } catch (Exception e) {
@@ -865,11 +626,13 @@ public class PdfPKCS7 {
      * <CODE>null</CODE> if no error
      */
     public static String verifyCertificate(X509Certificate cert, Collection crls,
-                                           Calendar calendar) {
-        if (calendar == null)
+            Calendar calendar) {
+        if (calendar == null) {
             calendar = new GregorianCalendar();
-        if (cert.hasUnsupportedCriticalExtension())
+        }
+        if (cert.hasUnsupportedCriticalExtension()) {
             return "Has unsupported critical extension";
+        }
         try {
             cert.checkValidity(calendar.getTime());
         } catch (Exception e) {
@@ -877,8 +640,9 @@ public class PdfPKCS7 {
         }
         if (crls != null) {
             for (Object crl : crls) {
-                if (((CRL) crl).isRevoked(cert))
+                if (((CRL) crl).isRevoked(cert)) {
                     return "Certificate revoked";
+                }
             }
         }
         return null;
@@ -896,25 +660,29 @@ public class PdfPKCS7 {
      * failed certificate and <CODE>error</CODE> is the error message
      */
     public static Object[] verifyCertificates(Certificate[] certs,
-                                              KeyStore keystore, Collection crls, Calendar calendar) {
-        if (calendar == null)
+            KeyStore keystore, Collection crls, Calendar calendar) {
+        if (calendar == null) {
             calendar = new GregorianCalendar();
+        }
         for (int k = 0; k < certs.length; ++k) {
             X509Certificate cert = (X509Certificate) certs[k];
             String err = verifyCertificate(cert, crls, calendar);
-            if (err != null)
+            if (err != null) {
                 return new Object[]{cert, err};
+            }
             try {
                 for (Enumeration aliases = keystore.aliases(); aliases
                         .hasMoreElements(); ) {
                     try {
                         String alias = (String) aliases.nextElement();
-                        if (!keystore.isCertificateEntry(alias))
+                        if (!keystore.isCertificateEntry(alias)) {
                             continue;
+                        }
                         X509Certificate certStoreX509 = (X509Certificate) keystore
                                 .getCertificate(alias);
-                        if (verifyCertificate(certStoreX509, crls, calendar) != null)
+                        if (verifyCertificate(certStoreX509, crls, calendar) != null) {
                             continue;
+                        }
                         try {
                             cert.verify(certStoreX509.getPublicKey());
                             return null;
@@ -927,8 +695,9 @@ public class PdfPKCS7 {
             }
             int j;
             for (j = 0; j < certs.length; ++j) {
-                if (j == k)
+                if (j == k) {
                     continue;
+                }
                 X509Certificate certNext = (X509Certificate) certs[j];
                 try {
                     cert.verify(certNext.getPublicKey());
@@ -936,12 +705,291 @@ public class PdfPKCS7 {
                 } catch (Exception ignored) {
                 }
             }
-            if (j == certs.length)
+            if (j == certs.length) {
                 return new Object[]{cert,
                         "Cannot be verified against the KeyStore or the certificate chain"};
+            }
         }
         return new Object[]{null,
                 "Invalid state. Possible circular certificate chain"};
+    }
+
+    /**
+     * Retrieves the OCSP URL from the given certificate.
+     *
+     * @param certificate the certificate
+     * @return the URL or null
+     * @since 2.1.6
+     */
+    public static String getOCSPURL(X509Certificate certificate) {
+        try {
+            ASN1Primitive obj = getExtensionValue(certificate, authorityInfoAccess.getId());
+            if (obj == null) {
+                return null;
+            }
+
+            ASN1Sequence AccessDescriptions = (ASN1Sequence) obj;
+            for (int i = 0; i < AccessDescriptions.size(); i++) {
+                ASN1Sequence AccessDescription = (ASN1Sequence) AccessDescriptions
+                        .getObjectAt(i);
+                if (AccessDescription.size() == 2) {
+                    if ((AccessDescription.getObjectAt(0) instanceof ASN1ObjectIdentifier)
+                            && ((ASN1ObjectIdentifier) AccessDescription.getObjectAt(0))
+                            .getId().equals("1.3.6.1.5.5.7.48.1")) {
+                        return getStringFromGeneralName((ASN1Primitive) AccessDescription
+                                .getObjectAt(1));
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
+    private static ASN1Primitive getExtensionValue(X509Certificate cert,
+            String oid) throws IOException {
+        byte[] bytes = cert.getExtensionValue(oid);
+        if (bytes == null) {
+            return null;
+        }
+        ASN1InputStream aIn = new ASN1InputStream(new ByteArrayInputStream(bytes));
+        ASN1OctetString octs = (ASN1OctetString) aIn.readObject();
+        aIn = new ASN1InputStream(new ByteArrayInputStream(octs.getOctets()));
+        return aIn.readObject();
+    }
+
+    private static String getStringFromGeneralName(ASN1Primitive names) {
+        ASN1TaggedObject taggedObject = (ASN1TaggedObject) names;
+        return new String(ASN1OctetString.getInstance(taggedObject, false)
+                .getOctets(), StandardCharsets.ISO_8859_1);
+    }
+
+    /**
+     * Get the "issuer" from the TBSCertificate bytes that are passed in
+     *
+     * @param enc a TBSCertificate in a byte array
+     * @return a ASN1Primitive
+     */
+    private static ASN1Primitive getIssuer(byte[] enc) {
+        try {
+            ASN1InputStream in = new ASN1InputStream(new ByteArrayInputStream(enc));
+            ASN1Sequence seq = (ASN1Sequence) in.readObject();
+            return (ASN1Primitive) seq
+                    .getObjectAt(seq.getObjectAt(0) instanceof ASN1TaggedObject ? 3 : 2);
+        } catch (IOException e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    /**
+     * Get the "subject" from the TBSCertificate bytes that are passed in
+     *
+     * @param enc A TBSCertificate in a byte array
+     * @return a ASN1Primitive
+     */
+    private static ASN1Primitive getSubject(byte[] enc) {
+        try {
+            ASN1InputStream in = new ASN1InputStream(new ByteArrayInputStream(enc));
+            ASN1Sequence seq = (ASN1Sequence) in.readObject();
+            return (ASN1Primitive) seq
+                    .getObjectAt(seq.getObjectAt(0) instanceof ASN1TaggedObject ? 5 : 4);
+        } catch (IOException e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    /**
+     * Get the issuer fields from an X509 Certificate
+     *
+     * @param cert an X509Certificate
+     * @return an X509Name
+     */
+    public static X509Name getIssuerFields(X509Certificate cert) {
+        try {
+            return new X509Name((ASN1Sequence) getIssuer(cert.getTBSCertificate()));
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    /**
+     * Get the subject fields from an X509 Certificate
+     *
+     * @param cert an X509Certificate
+     * @return an X509Name
+     */
+    public static X509Name getSubjectFields(X509Certificate cert) {
+        try {
+            return new X509Name((ASN1Sequence) getSubject(cert.getTBSCertificate()));
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    private static String getStandardJavaName(String algName) {
+        if ("SHA1".equals(algName)) {
+            return "SHA-1";
+        }
+        if ("SHA224".equals(algName)) {
+            return "SHA-224";
+        }
+        if ("SHA256".equals(algName)) {
+            return "SHA-256";
+        }
+        if ("SHA384".equals(algName)) {
+            return "SHA-384";
+        }
+        if ("SHA512".equals(algName)) {
+            return "SHA-512";
+        }
+        return algName;
+
+    }
+
+    /**
+     * Gets the timestamp token if there is one.
+     *
+     * @return the timestamp token or null
+     * @since 2.1.6
+     */
+    public TimeStampToken getTimeStampToken() {
+        return timeStampToken;
+    }
+
+    /**
+     * Gets the timestamp date
+     *
+     * @return a date
+     * @since 2.1.6
+     */
+    public Calendar getTimeStampDate() {
+        if (timeStampToken == null) {
+            return null;
+        }
+        Calendar cal = new GregorianCalendar();
+        Date date = timeStampToken.getTimeStampInfo().getGenTime();
+        cal.setTime(date);
+        return cal;
+    }
+
+    /**
+     * Gets the OCSP basic response if there is one.
+     *
+     * @return the OCSP basic response or null
+     * @since 2.1.6
+     */
+    public BasicOCSPResp getOcsp() {
+        return basicResp;
+    }
+
+    private void findOcsp(ASN1Sequence seq) throws IOException {
+        basicResp = null;
+        while ((!(seq.getObjectAt(0) instanceof ASN1ObjectIdentifier))
+                || !((ASN1ObjectIdentifier) seq.getObjectAt(0)).getId().equals(
+                OCSPObjectIdentifiers.id_pkix_ocsp_basic.getId())) {
+            boolean ret = true;
+            int k = 0;
+            while (k < seq.size()) {
+                if (seq.getObjectAt(k) instanceof ASN1Sequence) {
+                    seq = (ASN1Sequence) seq.getObjectAt(0);
+                    ret = false;
+                    break;
+                }
+                if (seq.getObjectAt(k) instanceof ASN1TaggedObject) {
+                    ASN1TaggedObject tag = (ASN1TaggedObject) seq.getObjectAt(k);
+                    if (tag.getBaseObject() instanceof ASN1Sequence) {
+                        seq = (ASN1Sequence) tag.getBaseObject();
+                        ret = false;
+                        break;
+                    } else {
+                        return;
+                    }
+                }
+                ++k;
+            }
+            if (ret) {
+                return;
+            }
+        }
+        DEROctetString os = (DEROctetString) seq.getObjectAt(1);
+        ASN1InputStream inp = new ASN1InputStream(os.getOctets());
+        BasicOCSPResponse resp = BasicOCSPResponse.getInstance(inp.readObject());
+        basicResp = new BasicOCSPResp(resp);
+    }
+
+    /**
+     * Update the digest with the specified bytes. This method is used both for signing and verifying
+     *
+     * @param buf the data buffer
+     * @param off the offset in the data buffer
+     * @param len the data length
+     * @throws SignatureException on error
+     */
+    public void update(byte[] buf, int off, int len) throws SignatureException {
+        if (RSAdata != null || digestAttr != null) {
+            messageDigest.update(buf, off, len);
+        } else {
+            sig.update(buf, off, len);
+        }
+    }
+
+    /**
+     * Verify the digest.
+     *
+     * @return <CODE>true</CODE> if the signature checks out, <CODE>false</CODE>
+     * otherwise
+     * @throws SignatureException on error
+     */
+    public boolean verify() throws SignatureException {
+        if (verified) {
+            return verifyResult;
+        }
+        if (sigAttr != null) {
+            sig.update(sigAttr);
+            if (RSAdata != null) {
+                byte[] msd = messageDigest.digest();
+                messageDigest.update(msd);
+            }
+            verifyResult = (Arrays.equals(messageDigest.digest(), digestAttr) && sig
+                    .verify(digest));
+        } else {
+            if (RSAdata != null) {
+                sig.update(messageDigest.digest());
+            }
+            verifyResult = sig.verify(digest);
+        }
+        verified = true;
+        return verifyResult;
+    }
+
+    /**
+     * Checks if the timestamp refers to this document.
+     *
+     * @return true if it checks false otherwise
+     * @throws java.security.NoSuchAlgorithmException on error
+     * @since 2.1.6
+     */
+    public boolean verifyTimestampImprint() throws NoSuchAlgorithmException {
+        if (timeStampToken == null) {
+            return false;
+        }
+        MessageImprint imprint = timeStampToken.getTimeStampInfo().toASN1Structure()
+                .getMessageImprint();
+        TimeStampTokenInfo info = timeStampToken.getTimeStampInfo();
+        String algOID = info.getMessageImprintAlgOID().getId();
+        byte[] md = MessageDigest.getInstance(getStandardJavaName(getDigest(algOID))).digest(digest);
+        byte[] imphashed = imprint.getHashedMessage();
+        return Arrays.equals(md, imphashed);
+    }
+
+    /**
+     * Get all the X.509 certificates associated with this PKCS#7 object in no particular order. Other certificates,
+     * from OCSP for example, will also be included.
+     *
+     * @return the X.509 certificates associated with this PKCS#7 object
+     */
+    public Certificate[] getCertificates() {
+        return certs.toArray(new Certificate[0]);
     }
 
     // OJO... Modificacion de
@@ -1017,35 +1065,106 @@ public class PdfPKCS7 {
     // ******************************************************************************
 
     /**
-     * Retrieves the OCSP URL from the given certificate.
+     * Get the X.509 sign certificate chain associated with this PKCS#7 object. Only the certificates used for the main
+     * signature will be returned, with the signing certificate first.
      *
-     * @param certificate the certificate
-     * @return the URL or null
+     * @return the X.509 certificates associated with this PKCS#7 object
      * @since 2.1.6
      */
-    public static String getOCSPURL(X509Certificate certificate) {
-        try {
-            ASN1Primitive obj = getExtensionValue(certificate, authorityInfoAccess.getId());
-            if (obj == null) {
-                return null;
-            }
+    public Certificate[] getSignCertificateChain() {
+        return signCerts.toArray(new X509Certificate[0]);
+    }
 
-            ASN1Sequence AccessDescriptions = (ASN1Sequence) obj;
-            for (int i = 0; i < AccessDescriptions.size(); i++) {
-                ASN1Sequence AccessDescription = (ASN1Sequence) AccessDescriptions
-                        .getObjectAt(i);
-                if (AccessDescription.size() == 2) {
-                    if ((AccessDescription.getObjectAt(0) instanceof ASN1ObjectIdentifier)
-                            && ((ASN1ObjectIdentifier) AccessDescription.getObjectAt(0))
-                            .getId().equals("1.3.6.1.5.5.7.48.1")) {
-                        return getStringFromGeneralName((ASN1Primitive) AccessDescription
-                                .getObjectAt(1));
+    private void signCertificateChain() {
+        List<Certificate> cc = new ArrayList<>();
+        cc.add(signCert);
+        List<Certificate> oc = new ArrayList<>(certs);
+        for (int k = 0; k < oc.size(); ++k) {
+            if (signCert.getSerialNumber().equals(
+                    ((X509Certificate) oc.get(k)).getSerialNumber())) {
+                oc.remove(k);
+                --k;
+            }
+        }
+        boolean found = true;
+        while (found) {
+            X509Certificate v = (X509Certificate) cc.get(cc.size() - 1);
+            found = false;
+            for (int k = 0; k < oc.size(); ++k) {
+                try {
+                    if (provider == null) {
+                        v.verify(oc.get(k).getPublicKey());
+                    } else {
+                        v.verify(oc.get(k).getPublicKey(), provider);
                     }
+                    found = true;
+                    cc.add(oc.get(k));
+                    oc.remove(k);
+                    break;
+                } catch (Exception ignored) {
                 }
             }
-        } catch (Exception ignored) {
         }
-        return null;
+        signCerts = cc;
+    }
+
+    /**
+     * Get the X.509 certificate revocation lists associated with this PKCS#7 object
+     *
+     * @return the X.509 certificate revocation lists associated with this PKCS#7 object
+     */
+    public Collection getCRLs() {
+        return crls;
+    }
+
+    /**
+     * Get the X.509 certificate actually used to sign the digest.
+     *
+     * @return the X.509 certificate actually used to sign the digest
+     */
+    public X509Certificate getSigningCertificate() {
+        return signCert;
+    }
+
+    /**
+     * Get the version of the PKCS#7 object. Always 1
+     *
+     * @return the version of the PKCS#7 object. Always 1
+     */
+    public int getVersion() {
+        return version;
+    }
+
+    /**
+     * Get the version of the PKCS#7 "SignerInfo" object. Always 1
+     *
+     * @return the version of the PKCS#7 "SignerInfo" object. Always 1
+     */
+    public int getSigningInfoVersion() {
+        return signerversion;
+    }
+
+    /**
+     * Get the algorithm used to calculate the message digest
+     *
+     * @return the algorithm used to calculate the message digest
+     */
+    public String getDigestAlgorithm() {
+        String dea = getAlgorithm(digestEncryptionAlgorithm);
+        if (dea == null) {
+            dea = digestEncryptionAlgorithm;
+        }
+
+        return getHashAlgorithm() + "with" + dea;
+    }
+
+    /**
+     * Returns the algorithm.
+     *
+     * @return the digest algorithm
+     */
+    public String getHashAlgorithm() {
+        return getDigest(digestAlgorithm);
     }
 
     /**
@@ -1055,10 +1174,12 @@ public class PdfPKCS7 {
      * @since 2.1.6
      */
     public boolean isRevocationValid() {
-        if (basicResp == null)
+        if (basicResp == null) {
             return false;
-        if (signCerts.size() < 2)
+        }
+        if (signCerts.size() < 2) {
             return false;
+        }
         try {
             X509Certificate[] cs = (X509Certificate[]) getSignCertificateChain();
             SingleResp sr = basicResp.getResponses()[0];
@@ -1082,86 +1203,6 @@ public class PdfPKCS7 {
         return false;
     }
 
-    private static ASN1Primitive getExtensionValue(X509Certificate cert,
-                                                   String oid) throws IOException {
-        byte[] bytes = cert.getExtensionValue(oid);
-        if (bytes == null) {
-            return null;
-        }
-        ASN1InputStream aIn = new ASN1InputStream(new ByteArrayInputStream(bytes));
-        ASN1OctetString octs = (ASN1OctetString) aIn.readObject();
-        aIn = new ASN1InputStream(new ByteArrayInputStream(octs.getOctets()));
-        return aIn.readObject();
-    }
-
-    private static String getStringFromGeneralName(ASN1Primitive names) {
-       	ASN1TaggedObject taggedObject = (ASN1TaggedObject) names ;
-        return new String(ASN1OctetString.getInstance(taggedObject, false)
-                .getOctets(), StandardCharsets.ISO_8859_1);
-    }
-
-    /**
-     * Get the "issuer" from the TBSCertificate bytes that are passed in
-     *
-     * @param enc a TBSCertificate in a byte array
-     * @return a ASN1Primitive
-     */
-    private static ASN1Primitive getIssuer(byte[] enc) {
-        try {
-            ASN1InputStream in = new ASN1InputStream(new ByteArrayInputStream(enc));
-            ASN1Sequence seq = (ASN1Sequence) in.readObject();
-            return (ASN1Primitive) seq
-                    .getObjectAt(seq.getObjectAt(0) instanceof ASN1TaggedObject ? 3 : 2);
-        } catch (IOException e) {
-            throw new ExceptionConverter(e);
-        }
-    }
-
-    /**
-     * Get the "subject" from the TBSCertificate bytes that are passed in
-     *
-     * @param enc A TBSCertificate in a byte array
-     * @return a ASN1Primitive
-     */
-    private static ASN1Primitive getSubject(byte[] enc) {
-        try {
-            ASN1InputStream in = new ASN1InputStream(new ByteArrayInputStream(enc));
-            ASN1Sequence seq = (ASN1Sequence) in.readObject();
-            return (ASN1Primitive) seq
-                    .getObjectAt(seq.getObjectAt(0) instanceof ASN1TaggedObject ? 5 : 4);
-        } catch (IOException e) {
-            throw new ExceptionConverter(e);
-        }
-    }
-
-    /**
-     * Get the issuer fields from an X509 Certificate
-     *
-     * @param cert an X509Certificate
-     * @return an X509Name
-     */
-    public static X509Name getIssuerFields(X509Certificate cert) {
-        try {
-            return new X509Name((ASN1Sequence) getIssuer(cert.getTBSCertificate()));
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
-    }
-
-    /**
-     * Get the subject fields from an X509 Certificate
-     *
-     * @param cert an X509Certificate
-     * @return an X509Name
-     */
-    public static X509Name getSubjectFields(X509Certificate cert) {
-        try {
-            return new X509Name((ASN1Sequence) getSubject(cert.getTBSCertificate()));
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
-    }
-
     /**
      * Gets the bytes for the PKCS#1 object.
      *
@@ -1169,10 +1210,11 @@ public class PdfPKCS7 {
      */
     public byte[] getEncodedPKCS1() {
         try {
-            if (externalDigest != null)
+            if (externalDigest != null) {
                 digest = externalDigest;
-            else
+            } else {
                 digest = sig.sign();
+            }
             ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 
             ASN1OutputStream dout = ASN1OutputStream.create(bOut);
@@ -1196,7 +1238,7 @@ public class PdfPKCS7 {
      *                                  or "DSA"
      */
     public void setExternalDigest(byte[] digest, byte[] RSAdata,
-                                  String digestEncryptionAlgorithm) {
+            String digestEncryptionAlgorithm) {
         externalDigest = digest;
         externalRSAdata = RSAdata;
         if (digestEncryptionAlgorithm != null) {
@@ -1206,10 +1248,11 @@ public class PdfPKCS7 {
                 this.digestEncryptionAlgorithm = ID_DSA;
             } else if (digestEncryptionAlgorithm.equals("EC")) {
                 digestEncryptionAlgorithm = ID_ECDSA;
-            } else
+            } else {
                 throw new ExceptionConverter(new NoSuchAlgorithmException(
                         MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
                                 digestEncryptionAlgorithm)));
+            }
         }
     }
 
@@ -1223,9 +1266,8 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Gets the bytes for the PKCS7SignedData object. Optionally the
-     * authenticatedAttributes in the signerInfo can also be set. If either of the
-     * parameters is <CODE>null</CODE>, none will be used.
+     * Gets the bytes for the PKCS7SignedData object. Optionally the authenticatedAttributes in the signerInfo can also
+     * be set. If either of the parameters is <CODE>null</CODE>, none will be used.
      *
      * @param secondDigest the digest in the authenticatedAttributes
      * @param signingTime  the signing time in the authenticatedAttributes
@@ -1236,24 +1278,24 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Gets the bytes for the PKCS7SignedData object. Optionally the
-     * authenticatedAttributes in the signerInfo can also be set, OR a
-     * time-stamp-authority client may be provided.
+     * Gets the bytes for the PKCS7SignedData object. Optionally the authenticatedAttributes in the signerInfo can also
+     * be set, OR a time-stamp-authority client may be provided.
      *
      * @param secondDigest the digest in the authenticatedAttributes
      * @param signingTime  the signing time in the authenticatedAttributes
      * @param tsaClient    TSAClient - null or an optional time stamp authority client
-     * @param ocsp a byte array
+     * @param ocsp         a byte array
      * @return byte[] the bytes for the PKCS7SignedData object
      * @since 2.1.6
      */
     public byte[] getEncodedPKCS7(byte[] secondDigest, Calendar signingTime,
-                                  TSAClient tsaClient, byte[] ocsp) {
+            TSAClient tsaClient, byte[] ocsp) {
         try {
             if (externalDigest != null) {
                 digest = externalDigest;
-                if (RSAdata != null)
+                if (RSAdata != null) {
                     RSAdata = externalRSAdata;
+                }
             } else if (externalRSAdata != null && RSAdata != null) {
                 RSAdata = externalRSAdata;
                 sig.update(RSAdata);
@@ -1278,8 +1320,9 @@ public class PdfPKCS7 {
             // Create the contentInfo.
             ASN1EncodableVector v = new ASN1EncodableVector();
             v.add(new ASN1ObjectIdentifier(ID_PKCS7_DATA));
-            if (RSAdata != null)
+            if (RSAdata != null) {
                 v.add(new DERTaggedObject(0, new DEROctetString(RSAdata)));
+            }
             DERSequence contentinfo = new DERSequence(v);
 
             // Get all the certificates
@@ -1369,10 +1412,9 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Added by Aiken Sam, 2006-11-15, modifed by Martin Brunecky 07/12/2007 to
-     * start with the timeStampToken (signedData 1.2.840.113549.1.7.2). Token is
-     * the TSA response without response status, which is usually handled by the
-     * (vendor supplied) TSA request/response interface).
+     * Added by Aiken Sam, 2006-11-15, modifed by Martin Brunecky 07/12/2007 to start with the timeStampToken
+     * (signedData 1.2.840.113549.1.7.2). Token is the TSA response without response status, which is usually handled by
+     * the (vendor supplied) TSA request/response interface).
      *
      * @param timeStampToken byte[] - time stamp token, DER encoded signedData
      * @return ASN1EncodableVector
@@ -1380,8 +1422,9 @@ public class PdfPKCS7 {
      */
     private ASN1EncodableVector buildUnauthenticatedAttributes(
             byte[] timeStampToken) throws IOException {
-        if (timeStampToken == null)
+        if (timeStampToken == null) {
             return null;
+        }
 
         // @todo: move this together with the rest of the defintions
         String ID_TIME_STAMP_TOKEN = "1.2.840.113549.1.9.16.2.14"; // RFC 3161
@@ -1401,12 +1444,10 @@ public class PdfPKCS7 {
     }
 
     /**
-     * When using authenticatedAttributes the authentication process is different.
-     * The document digest is generated and put inside the attribute. The signing
-     * is done over the DER encoded authenticatedAttributes. This method provides
-     * that encoding and the parameters must be exactly the same as in
-     * {@link #getEncodedPKCS7(byte[], Calendar)}.
-     * A simple example:
+     * When using authenticatedAttributes the authentication process is different. The document digest is generated and
+     * put inside the attribute. The signing is done over the DER encoded authenticatedAttributes. This method provides
+     * that encoding and the parameters must be exactly the same as in {@link #getEncodedPKCS7(byte[], Calendar)}. A
+     * simple example:
      *
      * <pre>
      * Calendar cal = Calendar.getInstance();
@@ -1426,12 +1467,11 @@ public class PdfPKCS7 {
      *
      * @param secondDigest the content digest
      * @param signingTime  the signing time
-     * @param ocsp a byte array
-     * @return the byte array representation of the authenticatedAttributes ready
-     * to be signed
+     * @param ocsp         a byte array
+     * @return the byte array representation of the authenticatedAttributes ready to be signed
      */
     public byte[] getAuthenticatedAttributeBytes(byte[] secondDigest,
-                                                 Calendar signingTime, byte[] ocsp) {
+            Calendar signingTime, byte[] ocsp) {
         try {
             return getAuthenticatedAttributeSet(secondDigest, signingTime, ocsp)
                     .getEncoded(ASN1Encoding.DER);
@@ -1441,7 +1481,7 @@ public class PdfPKCS7 {
     }
 
     private DERSet getAuthenticatedAttributeSet(byte[] secondDigest,
-                                                Calendar signingTime, byte[] ocsp) {
+            Calendar signingTime, byte[] ocsp) {
         try {
             ASN1EncodableVector attribute = new ASN1EncodableVector();
             ASN1EncodableVector v = new ASN1EncodableVector();
@@ -1563,31 +1603,11 @@ public class PdfPKCS7 {
         this.signName = signName;
     }
 
-
-    private static String getStandardJavaName(String algName) {
-    	if ("SHA1".equals(algName)) {
-    		return "SHA-1";
-    	}
-    	if ("SHA224".equals(algName)) {
-    		return "SHA-224";
-    	}
-    	if ("SHA256".equals(algName)) {
-    		return "SHA-256";
-    	}
-    	if ("SHA384".equals(algName)) {
-    		return "SHA-384";
-    	}
-    	if ("SHA512".equals(algName)) {
-    		return "SHA-512";
-    	}
-    	return algName;
-
-    }
-
     /**
      * a class that holds an X509 name
      */
     public static class X509Name {
+
         /**
          * country code - StringType(SIZE(2))
          */
@@ -1665,8 +1685,7 @@ public class PdfPKCS7 {
         /**
          * Email address (RSA PKCS#9 extension) - IA5String.
          * <p>
-         * Note: if you're trying to be ultra orthodox, don't use this! It shouldn't
-         * be in here.
+         * Note: if you're trying to be ultra orthodox, don't use this! It shouldn't be in here.
          */
         public static final ASN1ObjectIdentifier EmailAddress = new ASN1ObjectIdentifier(
                 "1.2.840.113549.1.9.1");
@@ -1732,8 +1751,9 @@ public class PdfPKCS7 {
                     ASN1Sequence s = (ASN1Sequence) set.getObjectAt(i);
                     ASN1Encodable encodable = s.getObjectAt(0);
                     String id = defaultSymbols.get(encodable);
-                    if (id == null)
+                    if (id == null) {
                         continue;
+                    }
                     List<String> vs = valuesMap.computeIfAbsent(id, k -> new ArrayList<>());
                     vs.add(((ASN1String) s.getObjectAt(1)).getString());
                 }
@@ -1774,7 +1794,7 @@ public class PdfPKCS7 {
         /**
          * gets a field array from the values Hashmap
          *
-         * @param name  the name of the field array to get
+         * @param name the name of the field array to get
          * @return an ArrayList
          */
         public List<String> getFieldsByName(String name) {
@@ -1801,14 +1821,14 @@ public class PdfPKCS7 {
     }
 
     /**
-     * class for breaking up an X500 Name into it's component tokens, ala
-     * java.util.StringTokenizer. We need this class as some of the lightweight
-     * Java environment don't support classes like StringTokenizer.
+     * class for breaking up an X500 Name into it's component tokens, ala java.util.StringTokenizer. We need this class
+     * as some of the lightweight Java environment don't support classes like StringTokenizer.
      */
     public static class X509NameTokenizer {
+
         private final String oid;
-        private int index;
         private final StringBuffer buf = new StringBuffer();
+        private int index;
 
         public X509NameTokenizer(String oid) {
             this.oid = oid;

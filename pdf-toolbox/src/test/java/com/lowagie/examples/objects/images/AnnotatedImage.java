@@ -9,29 +9,31 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.images;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Annotation;
 import com.lowagie.text.Document;
 import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+
 /**
  * Images with an annotation.
  */
-public class AnnotatedImage {    
+public class AnnotatedImage {
+
     /**
      * Adds some annotated images to a PDF file.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
-        
+
         System.out.println("images and annotations");
-        
+
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         try {
@@ -49,11 +51,10 @@ public class AnnotatedImage {
             wmf.setAnnotation(new Annotation(0, 0, 0, 0, "http://www.lowagie.com/iText"));
             wmf.setAbsolutePosition(100f, 200f);
             document.add(wmf);
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
-        
+
         // step 5: we close the document
         document.close();
     }

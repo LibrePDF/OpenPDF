@@ -50,9 +50,8 @@
 package com.lowagie.text.xml;
 
 import com.lowagie.text.ElementTags;
-import org.xml.sax.Attributes;
-
 import java.util.Properties;
+import org.xml.sax.Attributes;
 
 /**
  * This interface is implemented by the peer of all the iText objects.

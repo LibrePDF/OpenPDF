@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.colors;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -23,13 +20,17 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfShading;
 import com.lowagie.text.pdf.PdfShadingPattern;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Shading example
  */
 public class ShadingPattern {
+
     /**
      * Shading example.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -49,12 +50,12 @@ public class ShadingPattern {
             cb.setFontAndSize(bf, 40);
             cb.showText("Look at this text!");
             cb.endText();
-            PdfShading shadingR = PdfShading.simpleRadial(writer, 200, 500, 50, 300, 500, 100, new Color(255, 247, 148), new Color(247, 138, 107), false, false);
+            PdfShading shadingR = PdfShading.simpleRadial(writer, 200, 500, 50, 300, 500, 100, new Color(255, 247, 148),
+                    new Color(247, 138, 107), false, false);
             cb.paintShading(shadingR);
             cb.sanityCheck();
             document.close();
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

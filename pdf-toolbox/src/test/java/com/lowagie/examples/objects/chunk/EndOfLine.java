@@ -9,14 +9,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.chunk;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -24,10 +20,13 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Shows what happens if the end of the line is reached
- * 
+ *
  * @author blowagie
  */
 
@@ -35,7 +34,7 @@ public class EndOfLine {
 
     /**
      * Demonstrates the use of the Phrase object.
-     * 
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
@@ -55,14 +54,16 @@ public class EndOfLine {
             // step 4:
             Chunk chunk = new Chunk("quick brown fox jumps over the lazy dog ");
             for (int i = 0; i < 5; i++) {
-                chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.3f, new Color(i * 30, i * 30, i * 30));
+                chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.3f,
+                        new Color(i * 30, i * 30, i * 30));
                 document.add(chunk);
             }
             document.newPage();
             Phrase p = new Phrase(16f);
             for (int i = 0; i < 5; i++) {
                 chunk = new Chunk("quick brown fox jumps over the lazy dog ");
-                chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.3f, new Color(i * 30, i * 30, i * 30));
+                chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.3f,
+                        new Color(i * 30, i * 30, i * 30));
                 p.add(chunk);
             }
             document.add(p);

@@ -47,52 +47,28 @@
  * https://github.com/LibrePDF/OpenPDF
  */
 package com.lowagie.text.factories;
+
 /**
  * This class can produce String combinations representing a roman number.
  */
 public class RomanNumberFactory {
-    /**
-     * Helper class for Roman Digits
-     */
-    private static class RomanDigit {
-
-        /** part of a roman number */
-        public char digit;
-
-        /** value of the roman digit */
-        public int value;
-
-        /** can the digit be used as a prefix */
-        public boolean pre;
-
-        /**
-         * Constructs a roman digit
-         * @param digit the roman digit
-         * @param value the value
-         * @param pre can it be used as a prefix
-         */
-        RomanDigit(char digit, int value, boolean pre) {
-            this.digit = digit;
-            this.value = value;
-            this.pre = pre;
-        }
-    }
 
     /**
      * Array with Roman digits.
      */
     private static final RomanDigit[] roman = {
-        new RomanDigit('m', 1000, false),
-        new RomanDigit('d', 500, false),
-        new RomanDigit('c', 100, true),
-        new RomanDigit('l', 50, false),
-        new RomanDigit('x', 10, true),
-        new RomanDigit('v', 5, false),
-        new RomanDigit('i', 1, true)
+            new RomanDigit('m', 1000, false),
+            new RomanDigit('d', 500, false),
+            new RomanDigit('c', 100, true),
+            new RomanDigit('l', 50, false),
+            new RomanDigit('x', 10, true),
+            new RomanDigit('v', 5, false),
+            new RomanDigit('i', 1, true)
     };
 
     /**
      * Changes an int into a lower case roman number.
+     *
      * @param index the original number
      * @return the roman number (lower case)
      */
@@ -130,7 +106,9 @@ public class RomanNumberFactory {
             }
             // look for the next digit that can be used in a special way
             int j = pos;
-            while (!roman[++j].pre);
+            while (!roman[++j].pre) {
+                // find j
+            }
 
             // does the special notation apply?
             if (index + roman[j].value >= dig.value) {
@@ -144,6 +122,7 @@ public class RomanNumberFactory {
 
     /**
      * Changes an int into a lower case roman number.
+     *
      * @param index the original number
      * @return the roman number (lower case)
      */
@@ -153,6 +132,7 @@ public class RomanNumberFactory {
 
     /**
      * Changes an int into an upper case roman number.
+     *
      * @param index the original number
      * @return the roman number (lower case)
      */
@@ -162,16 +142,50 @@ public class RomanNumberFactory {
 
     /**
      * Changes an int into a roman number.
-     * @param index the original number
+     *
+     * @param index     the original number
      * @param lowercase true for lowercase, false for uppercase
      * @return the roman number (lower case)
      */
     public static String getString(int index, boolean lowercase) {
         if (lowercase) {
             return getLowerCaseString(index);
-        }
-        else {
+        } else {
             return getUpperCaseString(index);
+        }
+    }
+
+    /**
+     * Helper class for Roman Digits
+     */
+    private static class RomanDigit {
+
+        /**
+         * part of a roman number
+         */
+        public char digit;
+
+        /**
+         * value of the roman digit
+         */
+        public int value;
+
+        /**
+         * can the digit be used as a prefix
+         */
+        public boolean pre;
+
+        /**
+         * Constructs a roman digit
+         *
+         * @param digit the roman digit
+         * @param value the value
+         * @param pre   can it be used as a prefix
+         */
+        RomanDigit(char digit, int value, boolean pre) {
+            this.digit = digit;
+            this.value = value;
+            this.pre = pre;
         }
     }
 }

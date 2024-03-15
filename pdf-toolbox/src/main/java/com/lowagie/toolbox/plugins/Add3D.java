@@ -30,14 +30,6 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
@@ -66,18 +58,21 @@ import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.StringArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
 import com.lowagie.toolbox.arguments.filters.U3DFilter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
- * This tool lets you add a embedded u3d 3d annotation to the first page of a document. Look for
- * sample files at http://u3d.svn.sourceforge.net/viewvc/u3d/trunk/Source/Samples/Data/
+ * This tool lets you add a embedded u3d 3d annotation to the first page of a document. Look for sample files at
+ * http://u3d.svn.sourceforge.net/viewvc/u3d/trunk/Source/Samples/Data/
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class Add3D extends AbstractTool {
-    static {
-        addVersion("$Id: Add3D.java 3373 2008-05-12 16:21:24Z xlv $");
-    }
 
-    FileArgument destfile = null;
     public static final String PDF_NAME_3D = "3D";
     public static final String PDF_NAME_3DD = "3DD";
     public static final String PDF_NAME_3DV = "3DV";
@@ -88,6 +83,12 @@ public class Add3D extends AbstractTool {
     public static final String PDF_NAME_U3D = "U3D";
     public static final String PDF_NAME_XN = "XN";
 
+    static {
+        addVersion("$Id: Add3D.java 3373 2008-05-12 16:21:24Z xlv $");
+    }
+
+    FileArgument destfile = null;
+
     /**
      * This tool lets you add a embedded u3d 3d annotation to the first page of a document.
      */
@@ -95,27 +96,63 @@ public class Add3D extends AbstractTool {
         super();
         menuoptions = MENU_EXECUTE | MENU_EXECUTE_SHOW;
         FileArgument inputfile = new FileArgument(this, "srcfile",
-                                                  "The file you want to add the u3d File", false,
-                                                  new PdfFilter());
+                "The file you want to add the u3d File", false,
+                new PdfFilter());
         arguments.add(inputfile);
         FileArgument u3dinputfile = new FileArgument(this, "srcu3dfile",
                 "The u3d file you want to add", false,
                 new U3DFilter());
         arguments.add(u3dinputfile);
         StringArgument pagenumber = new StringArgument(this, "pagenumber",
-                                   "The pagenumber where to add the u3d annotation");
-                           pagenumber.setValue("1");
+                "The pagenumber where to add the u3d annotation");
+        pagenumber.setValue("1");
         arguments.add(pagenumber);
         destfile = new FileArgument(this, "destfile",
-                                    "The file that contains the u3d annotation after processing",
-                                    true, new PdfFilter());
+                "The file that contains the u3d annotation after processing",
+                true, new PdfFilter());
         arguments.add(destfile);
         inputfile.addPropertyChangeListener(destfile);
     }
 
+    public static void AddButton(float x, float y, String fname, String js,
+            String image, PdfWriter wr) {
+        try {
+//            URL url=Add3D.class.getResource(
+//                image);
+//            PdfFileSpecification fs=PdfFileSpecification.fileEmbedded(wr,image,image,null);
+//            wr.addAnnotation(PdfAnnotation.createScreen(wr,new Rectangle(x, y, x + img.plainWidth(),
+//                                  y + img.plainHeight())));
+            Image img = Image.getInstance(image);
+            PushbuttonField bt = new PushbuttonField(wr,
+                    new Rectangle(x, y, x + img.getPlainWidth(),
+                            y + img.getPlainHeight()), fname);
+            bt.setLayout(PushbuttonField.LAYOUT_ICON_ONLY);
+            bt.setImage(img);
+            PdfFormField ff = bt.getField();
+            PdfAction ac = PdfAction.javaScript(js, wr);
+            ff.setAction(ac);
+            wr.addAnnotation(ff);
+        } catch (IOException | DocumentException ignored) {
+            // ignored
+        }
+    }
+
+    /**
+     * This methods helps you running this tool as a standalone application.
+     *
+     * @param args the srcfile and destfile
+     */
+    public static void main(String[] args) {
+        Add3D add3d = new Add3D();
+        if (args.length != 4) {
+            System.err.println(add3d.getUsage());
+        }
+        add3d.setMainArguments(args);
+        add3d.execute();
+    }
+
     /**
      * Creates the internal frame.
-     *
      */
     protected void createFrame() {
         internalFrame = new JInternalFrame("Add3D", true, true, true);
@@ -126,7 +163,6 @@ public class Add3D extends AbstractTool {
 
     /**
      * Executes the tool (in most cases this generates a PDF file).
-     *
      */
     public void execute() {
         try {
@@ -142,16 +178,16 @@ public class Add3D extends AbstractTool {
                 throw new InstantiationException(
                         "You need to choose a destination file");
             }
-            int pagenumber = Integer.parseInt( (String) getValue("pagenumber"));
+            int pagenumber = Integer.parseInt((String) getValue("pagenumber"));
             // Create 3D annotation
             // Required definitions
             PdfIndirectReference streamRef;
             PdfIndirectObject objRef;
             PdfReader reader = new PdfReader(((File) getValue("srcfile"))
-                                             .getAbsolutePath());
+                    .getAbsolutePath());
 
             String u3dFileName = ((File) getValue("srcu3dfile"))
-                                 .getAbsolutePath();
+                    .getAbsolutePath();
             PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(
                     (File) getValue("destfile")));
             PdfWriter wr = stamp.getWriter();
@@ -166,28 +202,32 @@ public class Add3D extends AbstractTool {
 
 // Create stream to carry attachment
             PdfStream stream = new PdfStream(new FileInputStream(u3dFileName),
-                                             wr);
+                    wr);
             stream.put(new PdfName("OnInstantiate"),
-                       wr.addToBody(oni).getIndirectReference());
+                    wr.addToBody(oni).getIndirectReference());
             stream.put(PdfName.TYPE, new PdfName(PDF_NAME_3D)); // Mandatory keys
             stream.put(PdfName.SUBTYPE, new PdfName(PDF_NAME_U3D));
             stream.flateCompress();
 
-            streamRef = wr.addToBody(stream).getIndirectReference(); // Write stream contents, get reference to stream object, write actual stream length
+            streamRef = wr.addToBody(stream)
+                    .getIndirectReference(); // Write stream contents, get reference to stream object, write actual stream length
             stream.writeLength();
 
             // Create 3D view dictionary
-            // PDF documentation states that this can be left out, but without normally we will just get a blank 3D image because of wrong coordinate space transformations, etc.
-            // Instead of providing camera-to-world transformation here, we could also reference view in U3D file itself (would be U3DPath key instead of C2W key, U3D value instead of M value for MS key), but i haven't tried up to now
-            // We could also provide an activation dictionary (defining activation behavior), and field-of-view for P entry if needed
+            // PDF documentation states that this can be left out, but without normally we will just get a blank 3D
+            // image because of wrong coordinate space transformations, etc. Instead of providing camera-to-world
+            // transformation here, we could also reference view in U3D file itself (would be U3DPath key instead of
+            // C2W key, U3D value instead of M value for MS key), but i haven't tried up to now We could also provide
+            // an activation dictionary (defining activation behavior), and field-of-view for P entry if needed
             PdfDictionary dict = new PdfDictionary(new PdfName(PDF_NAME_3DVIEW));
 
             dict.put(new PdfName(PDF_NAME_XN), new PdfString("Default"));
             dict.put(new PdfName(PDF_NAME_IN), new PdfString("Unnamed"));
-            dict.put(new PdfName(PDF_NAME_MS), PdfName.M); // States that we have to provide camera-to-world coordinate transformation
+            dict.put(new PdfName(PDF_NAME_MS),
+                    PdfName.M); // States that we have to provide camera-to-world coordinate transformation
             dict.put(new PdfName(PDF_NAME_C2W),
-                     new PdfArray(new float[] {1, 0, 0, 0, 0, -1, 0, 1, 0, 3,
-                                  -235, 28F})); // 3d transformation matrix (demo for teapot)
+                    new PdfArray(new float[]{1, 0, 0, 0, 0, -1, 0, 1, 0, 3,
+                            -235, 28F})); // 3d transformation matrix (demo for teapot)
             dict.put(PdfName.CO, new PdfNumber(235)); // Camera distance along z-axis (demo for teapot)
 
             objRef = wr.addToBody(dict); // Write view dictionary, get reference
@@ -220,48 +260,24 @@ public class Add3D extends AbstractTool {
             stamp.addAnnotation(annot, pagenumber);
             AddButton(100, 100, "Rotate",
                     "im = this.getAnnots3D(0)[0].context3D;\rim.runtime.setCurrentTool(\"Rotate\");",
-                      "rotate.png", wr);
+                    "rotate.png", wr);
             AddButton(150, 100, "Pan",
                     "im = this.getAnnots3D(0)[0].context3D;\rim.runtime.setCurrentTool(\"Pan\");",
-                      "translate.png", wr);
+                    "translate.png", wr);
             AddButton(200, 100, "Zoom",
                     "im = this.getAnnots3D(0)[0].context3D;\rim.runtime.setCurrentTool(\"Zoom\");",
-                      "zoom.png", wr);
+                    "zoom.png", wr);
             stamp.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(internalFrame, e.getMessage(), e
-                                          .getClass().getName(),
-                                          JOptionPane.ERROR_MESSAGE);
+                            .getClass().getName(),
+                    JOptionPane.ERROR_MESSAGE);
             System.err.println(e.getMessage());
         }
     }
 
-    public static void AddButton(float x, float y, String fname, String js,
-                                 String image, PdfWriter wr) {
-        try {
-//            URL url=Add3D.class.getResource(
-//                image);
-//            PdfFileSpecification fs=PdfFileSpecification.fileEmbedded(wr,image,image,null);
-//            wr.addAnnotation(PdfAnnotation.createScreen(wr,new Rectangle(x, y, x + img.plainWidth(),
-//                                  y + img.plainHeight())));
-            Image img = Image.getInstance(image);
-            PushbuttonField bt = new PushbuttonField(wr,
-                    new Rectangle(x, y, x + img.getPlainWidth(),
-                                  y + img.getPlainHeight()), fname);
-            bt.setLayout(PushbuttonField.LAYOUT_ICON_ONLY);
-            bt.setImage(img);
-            PdfFormField ff = bt.getField();
-            PdfAction ac = PdfAction.javaScript(js, wr);
-            ff.setAction(ac);
-            wr.addAnnotation(ff);
-        } catch (IOException | DocumentException ignored) {
-            // ignored
-        }
-    }
-
     /**
-     * Gets the PDF file that should be generated (or null if the output isn't a
-     * PDF file).
+     * Gets the PDF file that should be generated (or null if the output isn't a PDF file).
      *
      * @return the PDF file that should be generated
      * @throws InstantiationException on error
@@ -273,8 +289,7 @@ public class Add3D extends AbstractTool {
     /**
      * Indicates that the value of an argument has changed.
      *
-     * @param arg
-     *            the argument that has changed
+     * @param arg the argument that has changed
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -283,24 +298,11 @@ public class Add3D extends AbstractTool {
             return;
         }
         if (destfile.getValue() == null &&
-            arg.getName().equalsIgnoreCase("srcfile")) {
+                arg.getName().equalsIgnoreCase("srcfile")) {
             String filename = arg.getValue().toString();
             String filenameout = filename.substring(0, filename.indexOf(".",
                     filename.length() - 4)) + "_out.pdf";
             destfile.setValue(filenameout);
         }
-    }
-
-    /**
-     * This methods helps you running this tool as a standalone application.
-     * @param args the srcfile and destfile
-     */
-    public static void main(String[] args) {
-        Add3D add3d = new Add3D();
-        if (args.length != 4) {
-            System.err.println(add3d.getUsage());
-        }
-        add3d.setMainArguments(args);
-        add3d.execute();
     }
 }

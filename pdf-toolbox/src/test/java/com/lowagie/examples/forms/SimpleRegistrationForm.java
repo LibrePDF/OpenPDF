@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.forms;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -26,24 +23,28 @@ import com.lowagie.text.pdf.PdfPCellEvent;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.TextField;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * General example using TableEvents and CellEvents.
  */
 public class SimpleRegistrationForm implements PdfPCellEvent {
-    
-    /** the writer with the acroform */
+
+    /**
+     * the writer with the acroform
+     */
     private PdfWriter writer;
 
-    /** the current fieldname */
+    /**
+     * the current fieldname
+     */
     private String fieldname = "NoName";
 
     /**
      * Construct an implementation of PdfPCellEvent.
-     * 
-     * @param writer
-     *            the writer with the Acroform that will have to hold the
-     *            fields.
+     *
+     * @param writer the writer with the Acroform that will have to hold the fields.
      */
     public SimpleRegistrationForm(PdfWriter writer) {
         this.writer = writer;
@@ -51,13 +52,9 @@ public class SimpleRegistrationForm implements PdfPCellEvent {
 
     /**
      * Construct an implementation of PdfPCellEvent.
-     * 
-     * @param writer
-     *            the writer with the Acroform that will have to hold the
-     *            fields.
-     * @param fieldname
-     *            the name of the TextField
-     *  
+     *
+     * @param writer    the writer with the Acroform that will have to hold the fields.
+     * @param fieldname the name of the TextField
      */
     public SimpleRegistrationForm(PdfWriter writer, String fieldname) {
         this.writer = writer;
@@ -65,25 +62,8 @@ public class SimpleRegistrationForm implements PdfPCellEvent {
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell,
-     *      com.lowagie.text.Rectangle, com.lowagie.text.pdf.PdfContentByte[])
-     */
-    public void cellLayout(PdfPCell cell, Rectangle position,
-            PdfContentByte[] canvases) {
-        TextField tf = new TextField(writer, position, fieldname);
-        tf.setFontSize(12);
-        try {
-            PdfFormField field = tf.getTextField();
-            writer.addAnnotation(field);
-        } catch (IOException | DocumentException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Example originally written by Wendy Smoak to generate a Table with
-     * 'floating boxes'. Adapted by Bruno Lowagie.
-     * 
+     * Example originally written by Wendy Smoak to generate a Table with 'floating boxes'. Adapted by Bruno Lowagie.
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -130,5 +110,21 @@ public class SimpleRegistrationForm implements PdfPCellEvent {
         }
         // step 5
         document.close();
+    }
+
+    /**
+     * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell, com.lowagie.text.Rectangle,
+     * com.lowagie.text.pdf.PdfContentByte[])
+     */
+    public void cellLayout(PdfPCell cell, Rectangle position,
+            PdfContentByte[] canvases) {
+        TextField tf = new TextField(writer, position, fieldname);
+        tf.setFontSize(12);
+        try {
+            PdfFormField field = tf.getTextField();
+            writer.addAnnotation(field);
+        } catch (IOException | DocumentException e) {
+            e.printStackTrace();
+        }
     }
 }

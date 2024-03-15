@@ -35,23 +35,22 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.SimpleBookmark;
 import com.lowagie.toolbox.AbstractTool;
 import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
  * Allows you to add bookmarks to an existing PDF file
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class Bookmarks2XML extends AbstractTool {
@@ -64,56 +63,9 @@ public class Bookmarks2XML extends AbstractTool {
      * Constructs an Bookmarks2XML object.
      */
     public Bookmarks2XML() {
-        arguments.add(new FileArgument(this, "pdffile", "the PDF from which you want to extract bookmarks", false, new PdfFilter()));
+        arguments.add(new FileArgument(this, "pdffile", "the PDF from which you want to extract bookmarks", false,
+                new PdfFilter()));
         arguments.add(new FileArgument(this, "xmlfile", "the resulting bookmarks file in XML", true));
-    }
-
-    /**
-     * @see com.lowagie.toolbox.AbstractTool#createFrame()
-     */
-    protected void createFrame() {
-        internalFrame = new JInternalFrame("Bookmarks2XML", true, true, true);
-        internalFrame.setSize(300, 80);
-        internalFrame.setJMenuBar(getMenubar());
-        System.out.println("=== Bookmarks2XML OPENED ===");
-    }
-
-    /**
-     * @see com.lowagie.toolbox.AbstractTool#execute()
-     */
-    public void execute() {
-        try {
-            if (getValue("xmlfile") == null) throw new InstantiationException("You need to choose an xml file");
-            if (getValue("pdffile") == null) throw new InstantiationException("You need to choose a source PDF file");
-            PdfReader reader = new PdfReader(((File)getValue("pdffile")).getAbsolutePath());
-            reader.consolidateNamedDestinations();
-            List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmarkList( reader );
-            // save them in XML format
-            FileOutputStream bmWriter = new FileOutputStream( (File)getValue("xmlfile") );
-            SimpleBookmark.exportToXML(bookmarks, bmWriter, "UTF-8", false);
-            bmWriter.close();
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(internalFrame,
-                    e.getMessage(),
-                    e.getClass().getName(),
-                    JOptionPane.ERROR_MESSAGE);
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
-     * @param arg StringArgument
-     */
-    public void valueHasChanged(AbstractArgument arg) {
-        if (internalFrame == null) {
-            // if the internal frame is null, the tool was called from the command line
-            return;
-        }
-        // represent the changes of the argument in the internal frame
     }
 
     /**
@@ -131,10 +83,59 @@ public class Bookmarks2XML extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     */
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("Bookmarks2XML", true, true, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== Bookmarks2XML OPENED ===");
+    }
+
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#execute()
+     */
+    public void execute() {
+        try {
+            if (getValue("xmlfile") == null) {
+                throw new InstantiationException("You need to choose an xml file");
+            }
+            if (getValue("pdffile") == null) {
+                throw new InstantiationException("You need to choose a source PDF file");
+            }
+            PdfReader reader = new PdfReader(((File) getValue("pdffile")).getAbsolutePath());
+            reader.consolidateNamedDestinations();
+            List<Map<String, Object>> bookmarks = SimpleBookmark.getBookmarkList(reader);
+            // save them in XML format
+            FileOutputStream bmWriter = new FileOutputStream((File) getValue("xmlfile"));
+            SimpleBookmark.exportToXML(bookmarks, bmWriter, "UTF-8", false);
+            bmWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(internalFrame,
+                    e.getMessage(),
+                    e.getClass().getName(),
+                    JOptionPane.ERROR_MESSAGE);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
+     */
+    public void valueHasChanged(AbstractArgument arg) {
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the command line
+            return;
+        }
+        // represent the changes of the argument in the internal frame
+    }
+
+    /**
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         throw new InstantiationException("There is no file to show.");

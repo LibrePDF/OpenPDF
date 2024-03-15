@@ -1,36 +1,37 @@
 package com.lowagie.text.pdf;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class TextExtractTest {
+class TextExtractTest {
+
     @Test
-    public void textExtractTest1() throws IOException {
+    void textExtractTest1() throws IOException {
         PdfReader reader = new PdfReader(TextExtractTest.class.getResourceAsStream("/identity-h.pdf"));
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(reader);
         Assertions.assertEquals("Hello World", pdfTextExtractor.getTextFromPage(1));
     }
 
     @Test
-    public void textExtractTest2() throws IOException {
+    void textExtractTest2() throws IOException {
         PdfReader reader = new PdfReader(TextExtractTest.class.getResourceAsStream("/HelloWorldMeta.pdf"));
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(reader);
         Assertions.assertEquals("Hello World", pdfTextExtractor.getTextFromPage(1));
     }
 
     @Test
-    public void textCreateAndExtractTest2() throws IOException {
+    void textCreateAndExtractTest2() throws IOException {
         LayoutProcessor.enableKernLiga();
         float fontSize = 12.0f;
 
@@ -38,6 +39,7 @@ public class TextExtractTest {
 
         URL fontPath = TextExtractTest.class.getResource("/fonts/NotoSansThaiLooped/NotoSansThaiLooped-Regular.ttf");
 
+        assertThat(fontPath).isNotNull();
         FontFactory.register(fontPath.toString(), "NotoSansThaiLooped");
         Font notoSansThaiLooped = FontFactory.getFont("NotoSansThaiLooped", BaseFont.IDENTITY_H, true, fontSize);
         notoSansThaiLooped.getBaseFont().setIncludeCidSet(false);
@@ -48,7 +50,6 @@ public class TextExtractTest {
             writer.setInitialLeading(16.0f);
             document.open();
             document.add(new Chunk(testText, notoSansThaiLooped));
-            document.close();
         }
         LayoutProcessor.disable();
 

@@ -34,12 +34,6 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
@@ -49,6 +43,10 @@ import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.OptionArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
 import com.lowagie.toolbox.swing.PdfInformationPanel;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
  * @since 2.1.1 (imported from itexttoolbox project)
@@ -63,37 +61,16 @@ public class CompressDecompressPageContent extends AbstractTool {
      * Constructs a Burst object.
      */
     public CompressDecompressPageContent() {
-        FileArgument f = new FileArgument(this, "srcfile", "The file you want to compress/decompress", false, new PdfFilter());
+        FileArgument f = new FileArgument(this, "srcfile", "The file you want to compress/decompress", false,
+                new PdfFilter());
         f.setLabel(new PdfInformationPanel());
         arguments.add(f);
-        arguments.add(new FileArgument(this, "destfile", "The file to which the compressed/decompressed PDF has to be written", true, new PdfFilter()));
+        arguments.add(new FileArgument(this, "destfile",
+                "The file to which the compressed/decompressed PDF has to be written", true, new PdfFilter()));
         OptionArgument oa = new OptionArgument(this, "compress", "compress");
         oa.addOption("Compress page content", "true");
         oa.addOption("Decompress page content", "false");
         arguments.add(oa);
-    }
-
-    /**
-     * @see com.lowagie.toolbox.AbstractTool#createFrame()
-     */
-    protected void createFrame() {
-        internalFrame = new JInternalFrame("Compress/Decompress", true, false, true);
-        internalFrame.setSize(300, 80);
-        internalFrame.setJMenuBar(getMenubar());
-        System.out.println("=== Compress/Decompress OPENED ===");
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
-     * @param arg StringArgument
-     */
-    public void valueHasChanged(AbstractArgument arg) {
-        if (internalFrame == null) {
-            // if the internal frame is null, the tool was called from the command line
-            return;
-        }
-        // represent the changes of the argument in the internal frame
     }
 
     /**
@@ -111,13 +88,34 @@ public class CompressDecompressPageContent extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     */
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("Compress/Decompress", true, false, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== Compress/Decompress OPENED ===");
+    }
+
+    /**
+     * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
+     */
+    public void valueHasChanged(AbstractArgument arg) {
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the command line
+            return;
+        }
+        // represent the changes of the argument in the internal frame
+    }
+
+    /**
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
-        return (File)getValue("destfile");
+        return (File) getValue("destfile");
     }
 
     /**
@@ -125,12 +123,16 @@ public class CompressDecompressPageContent extends AbstractTool {
      */
     public void execute() {
         try {
-            if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
-            if (getValue("destfile") == null) throw new InstantiationException("You need to choose a destination file");
+            if (getValue("srcfile") == null) {
+                throw new InstantiationException("You need to choose a sourcefile");
+            }
+            if (getValue("destfile") == null) {
+                throw new InstantiationException("You need to choose a destination file");
+            }
             boolean compress = "true".equals(getValue("compress"));
-            PdfReader reader = new PdfReader(((File)getValue("srcfile")).getAbsolutePath());
+            PdfReader reader = new PdfReader(((File) getValue("srcfile")).getAbsolutePath());
             PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(getDestPathPDF()));
-            synchronized(arguments) {
+            synchronized (arguments) {
                 Document.compress = compress;
                 int total = reader.getNumberOfPages() + 1;
                 for (int i = 1; i < total; i++) {
@@ -139,8 +141,7 @@ public class CompressDecompressPageContent extends AbstractTool {
                 stamper.close();
                 Document.compress = true;
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(internalFrame,
                     e.getMessage(),
                     e.getClass().getName(),

@@ -47,16 +47,15 @@
 package com.lowagie.text.pdf.parser;
 
 /**
- * Represents a vector (i.e. a point in space).  This class is completely
- * unrelated to the {@link java.util.Vector} class in the standard JRE.
+ * Represents a vector (i.e. a point in space).  This class is completely unrelated to the {@link java.util.Vector}
+ * class in the standard JRE.
  * <br><br>
- * For many PDF related operations, the z coordinate is specified as 1
- * This is to support the coordinate transformation calculations.  If it
- * helps, just think of all PDF drawing operations as occurring in a single plane
- * with z=1.
+ * For many PDF related operations, the z coordinate is specified as 1 This is to support the coordinate transformation
+ * calculations.  If it helps, just think of all PDF drawing operations as occurring in a single plane with z=1.
  */
 @SuppressWarnings("WeakerAccess")
 public class Vector {
+
     /**
      * index of the X coordinate
      */
@@ -170,9 +169,8 @@ public class Vector {
      * Computes the length of this vector
      *
      * <b>Note:</b> If you are working with raw vectors from PDF, be careful -
-     * the Z axis will generally be set to 1.  If you want to compute the
-     * length of a vector, subtract it from the origin first (this will set
-     * the Z axis to 0).
+     * the Z axis will generally be set to 1.  If you want to compute the length of a vector, subtract it from the
+     * origin first (this will set the Z axis to 0).
      * <p>
      * For example:
      * <code>aVector.subtract(originVector).length();</code>
@@ -186,8 +184,7 @@ public class Vector {
     /**
      * Computes the length squared of this vector.
      * <p>
-     * The square of the length is less expensive to compute, and is often
-     * useful without taking the square root.
+     * The square of the length is less expensive to compute, and is often useful without taking the square root.
      * <br><br>
      * <b>Note:</b> See the important note under {@link Vector#length()}
      *

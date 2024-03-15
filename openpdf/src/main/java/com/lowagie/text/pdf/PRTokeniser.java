@@ -49,15 +49,15 @@
 
 package com.lowagie.text.pdf;
 
-import java.io.IOException;
-import com.lowagie.text.exceptions.InvalidPdfException;
 import com.lowagie.text.error_messages.MessageLocalization;
+import com.lowagie.text.exceptions.InvalidPdfException;
+import java.io.IOException;
+
 /**
- *
- * @author  Paulo Soares (psoares@consiste.pt)
+ * @author Paulo Soares (psoares@consiste.pt)
  */
 public class PRTokeniser implements AutoCloseable {
-    
+
     public static final int TK_NUMBER = 1;
     public static final int TK_STRING = 2;
     public static final int TK_NAME = 3;
@@ -96,17 +96,17 @@ public class PRTokeniser implements AutoCloseable {
             false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false};
-    
+
     static final String EMPTY = "";
 
-    
+
     protected RandomAccessFileOrArray file;
     protected int type;
     protected String stringValue;
     protected int reference;
     protected int generation;
     protected boolean hexString;
-       
+
     public PRTokeniser(String filename) throws IOException {
         file = new RandomAccessFileOrArray(filename);
     }
@@ -114,55 +114,15 @@ public class PRTokeniser implements AutoCloseable {
     public PRTokeniser(byte[] pdfIn) {
         file = new RandomAccessFileOrArray(pdfIn);
     }
-    
+
     public PRTokeniser(RandomAccessFileOrArray file) {
         this.file = file;
-    }
-    
-    public void seek(int pos) throws IOException {
-        file.seek(pos);
-    }
-    
-    public int getFilePointer() throws IOException {
-        return file.getFilePointer();
-    }
-
-    public void close() throws IOException {
-        file.close();
-    }
-    
-    public int length() throws IOException {
-        return file.length();
-    }
-
-    public int read() throws IOException {
-        return file.read();
-    }
-    
-    public RandomAccessFileOrArray getSafeFile() {
-        return new RandomAccessFileOrArray(file);
-    }
-    
-    public RandomAccessFileOrArray getFile() {
-        return file;
-    }
-    
-    public String readString(int size) throws IOException {
-        StringBuilder buf = new StringBuilder();
-        int ch;
-        while ((size--) > 0) {
-            ch = file.read();
-            if (ch == -1)
-                break;
-            buf.append((char)ch);
-        }
-        return buf.toString();
     }
 
     public static final boolean isWhitespace(int ch) {
         return (ch == 0 || ch == 9 || ch == 10 || ch == 12 || ch == 13 || ch == 32);
     }
-    
+
     public static final boolean isDelimiter(int ch) {
         return (ch == '(' || ch == ')' || ch == '<' || ch == '>' || ch == '[' || ch == ']' || ch == '/' || ch == '%');
     }
@@ -171,47 +131,131 @@ public class PRTokeniser implements AutoCloseable {
         return delims[ch + 1];
     }
 
+    public static int getHex(int v) {
+        if (v >= '0' && v <= '9') {
+            return v - '0';
+        }
+        if (v >= 'A' && v <= 'F') {
+            return v - 'A' + 10;
+        }
+        if (v >= 'a' && v <= 'f') {
+            return v - 'a' + 10;
+        }
+        return -1;
+    }
+
+    public static int[] checkObjectStart(byte[] line) {
+        try {
+            PRTokeniser tk = new PRTokeniser(line);
+            int num = 0;
+            int gen = 0;
+            if (!tk.nextToken() || tk.getTokenType() != TK_NUMBER) {
+                return null;
+            }
+            num = tk.intValue();
+            if (!tk.nextToken() || tk.getTokenType() != TK_NUMBER) {
+                return null;
+            }
+            gen = tk.intValue();
+            if (!tk.nextToken()) {
+                return null;
+            }
+            if (!tk.getStringValue().equals("obj")) {
+                return null;
+            }
+            return new int[]{num, gen};
+        } catch (Exception ioe) {
+            // empty on purpose
+        }
+        return null;
+    }
+
+    public void seek(int pos) throws IOException {
+        file.seek(pos);
+    }
+
+    public int getFilePointer() throws IOException {
+        return file.getFilePointer();
+    }
+
+    public void close() throws IOException {
+        file.close();
+    }
+
+    public int length() throws IOException {
+        return file.length();
+    }
+
+    public int read() throws IOException {
+        return file.read();
+    }
+
+    public RandomAccessFileOrArray getSafeFile() {
+        return new RandomAccessFileOrArray(file);
+    }
+
+    public RandomAccessFileOrArray getFile() {
+        return file;
+    }
+
+    public String readString(int size) throws IOException {
+        StringBuilder buf = new StringBuilder();
+        int ch;
+        while ((size--) > 0) {
+            ch = file.read();
+            if (ch == -1) {
+                break;
+            }
+            buf.append((char) ch);
+        }
+        return buf.toString();
+    }
+
     public int getTokenType() {
         return type;
     }
-    
+
     public String getStringValue() {
         return stringValue;
     }
-    
+
     public int getReference() {
         return reference;
     }
-    
+
     public int getGeneration() {
         return generation;
     }
-    
+
     public void backOnePosition(int ch) {
-        if (ch != -1)
-            file.pushBack((byte)ch);
+        if (ch != -1) {
+            file.pushBack((byte) ch);
+        }
     }
-    
+
     public void throwError(String error) throws IOException {
-        throw new InvalidPdfException(MessageLocalization.getComposedMessage("1.at.file.pointer.2", error, String.valueOf(file.getFilePointer())));
+        throw new InvalidPdfException(MessageLocalization.getComposedMessage("1.at.file.pointer.2", error,
+                String.valueOf(file.getFilePointer())));
     }
-    
+
     public char checkPdfHeader() throws IOException {
         file.setStartOffset(0);
         String str = readString(1024);
         int idx = str.indexOf("%PDF-");
-        if (idx < 0)
+        if (idx < 0) {
             throw new InvalidPdfException(MessageLocalization.getComposedMessage("pdf.header.not.found"));
+        }
         file.setStartOffset(idx);
         return str.charAt(idx + 7);
     }
-    
+
     public void checkFdfHeader() throws IOException {
         file.setStartOffset(0);
         String str = readString(1024);
         int idx = str.indexOf("%FDF-1.2");
-        if (idx < 0)
+        if (idx < 0) {
             throw new InvalidPdfException(MessageLocalization.getComposedMessage("fdf.header.not.found"));
+        }
         file.setStartOffset(idx);
     }
 
@@ -226,41 +270,32 @@ public class PRTokeniser implements AutoCloseable {
             String str = readString(step + delta);
             idx = str.lastIndexOf("startxref");
         } while (pos > 0 && idx < 0);
-        if (idx < 0)
+        if (idx < 0) {
             throw new InvalidPdfException(MessageLocalization.getComposedMessage("pdf.startxref.not.found"));
+        }
         return pos + idx;
     }
 
-    public static int getHex(int v) {
-        if (v >= '0' && v <= '9')
-            return v - '0';
-        if (v >= 'A' && v <= 'F')
-            return v - 'A' + 10;
-        if (v >= 'a' && v <= 'f')
-            return v - 'a' + 10;
-        return -1;
-    }
-    
     public void nextValidToken() throws IOException {
         int level = 0;
         String n1 = null;
         String n2 = null;
         int ptr = 0;
         while (nextToken() || level == 2) {
-            if (type == TK_COMMENT)
+            if (type == TK_COMMENT) {
                 continue;
+            }
             switch (level) {
-                case 0:
-                {
-                    if (type != TK_NUMBER)
+                case 0: {
+                    if (type != TK_NUMBER) {
                         return;
+                    }
                     ptr = file.getFilePointer();
                     n1 = stringValue;
                     ++level;
                     break;
                 }
-                case 1:
-                {
+                case 1: {
                     if (type != TK_NUMBER) {
                         file.seek(ptr);
                         type = TK_NUMBER;
@@ -271,8 +306,7 @@ public class PRTokeniser implements AutoCloseable {
                     ++level;
                     break;
                 }
-                default:
-                {
+                default: {
                     if (type != TK_OTHER || !stringValue.equals("R")) {
                         file.seek(ptr);
                         type = TK_NUMBER;
@@ -305,13 +339,13 @@ public class PRTokeniser implements AutoCloseable {
         // or the last token ended exactly at the end of a stream.  This last
         // case can occur inside an Object Stream.
     }
-    
+
     public boolean nextToken() throws IOException {
         int ch = 0;
         do {
             ch = file.read();
         } while (ch != -1 && isWhitespace(ch));
-        if (ch == -1){
+        if (ch == -1) {
             type = TK_ENDOFFILE;
             return false;
         }
@@ -329,30 +363,30 @@ public class PRTokeniser implements AutoCloseable {
             case ']':
                 type = TK_END_ARRAY;
                 break;
-            case '/':
-            {
+            case '/': {
                 outBuf = new StringBuffer();
                 type = TK_NAME;
                 while (true) {
                     ch = file.read();
-                    if (delims[ch + 1])
+                    if (delims[ch + 1]) {
                         break;
+                    }
                     if (ch == '#') {
                         ch = (getHex(file.read()) << 4) + getHex(file.read());
                     }
-                    outBuf.append((char)ch);
+                    outBuf.append((char) ch);
                 }
                 backOnePosition(ch);
                 break;
             }
             case '>':
                 ch = file.read();
-                if (ch != '>')
+                if (ch != '>') {
                     throwError(MessageLocalization.getComposedMessage("greaterthan.not.expected"));
+                }
                 type = TK_END_DIC;
                 break;
-            case '<':
-            {
+            case '<': {
                 int v1 = file.read();
                 while (isWhitespace(v1)) {
                     v1 = file.read();
@@ -366,30 +400,36 @@ public class PRTokeniser implements AutoCloseable {
                 hexString = true;
                 int v2 = 0;
                 while (true) {
-                    while (isWhitespace(v1))
+                    while (isWhitespace(v1)) {
                         v1 = file.read();
-                    if (v1 == '>')
+                    }
+                    if (v1 == '>') {
                         break;
+                    }
                     v1 = getHex(v1);
-                    if (v1 < 0)
+                    if (v1 < 0) {
                         break;
+                    }
                     v2 = file.read();
-                    while (isWhitespace(v2))
+                    while (isWhitespace(v2)) {
                         v2 = file.read();
+                    }
                     if (v2 == '>') {
                         ch = v1 << 4;
-                        outBuf.append((char)ch);
+                        outBuf.append((char) ch);
                         break;
                     }
                     v2 = getHex(v2);
-                    if (v2 < 0)
+                    if (v2 < 0) {
                         break;
+                    }
                     ch = (v1 << 4) + v2;
-                    outBuf.append((char)ch);
+                    outBuf.append((char) ch);
                     v1 = file.read();
                 }
-                if (v1 < 0 || v2 < 0)
+                if (v1 < 0 || v2 < 0) {
                     throwError(MessageLocalization.getComposedMessage("error.reading.string"));
+                }
                 break;
             }
             case '%':
@@ -398,23 +438,21 @@ public class PRTokeniser implements AutoCloseable {
                     ch = file.read();
                 } while (ch != -1 && ch != '\r' && ch != '\n');
                 break;
-            case '(':
-            {
+            case '(': {
                 outBuf = new StringBuffer();
                 type = TK_STRING;
                 hexString = false;
                 int nesting = 0;
                 while (true) {
                     ch = file.read();
-                    if (ch == -1)
+                    if (ch == -1) {
                         break;
+                    }
                     if (ch == '(') {
                         ++nesting;
-                    }
-                    else if (ch == ')') {
+                    } else if (ch == ')') {
                         --nesting;
-                    }
-                    else if (ch == '\\') {
+                    } else if (ch == '\\') {
                         boolean lineBreak = false;
                         ch = file.read();
                         switch (ch) {
@@ -440,14 +478,14 @@ public class PRTokeniser implements AutoCloseable {
                             case '\r':
                                 lineBreak = true;
                                 ch = file.read();
-                                if (ch != '\n')
+                                if (ch != '\n') {
                                     backOnePosition(ch);
+                                }
                                 break;
                             case '\n':
                                 lineBreak = true;
                                 break;
-                            default:
-                            {
+                            default: {
                                 if (ch < '0' || ch > '7') {
                                     break;
                                 }
@@ -470,42 +508,44 @@ public class PRTokeniser implements AutoCloseable {
                                 break;
                             }
                         }
-                        if (lineBreak)
+                        if (lineBreak) {
                             continue;
-                        if (ch < 0)
+                        }
+                        if (ch < 0) {
                             break;
-                    }
-                    else if (ch == '\r') {
+                        }
+                    } else if (ch == '\r') {
                         ch = file.read();
-                        if (ch < 0)
+                        if (ch < 0) {
                             break;
+                        }
                         if (ch != '\n') {
                             backOnePosition(ch);
                             ch = '\n';
                         }
                     }
-                    if (nesting == -1)
+                    if (nesting == -1) {
                         break;
-                    outBuf.append((char)ch);
+                    }
+                    outBuf.append((char) ch);
                 }
-                if (ch == -1)
+                if (ch == -1) {
                     throwError(MessageLocalization.getComposedMessage("error.reading.string"));
+                }
                 break;
             }
-            default:
-            {
+            default: {
                 outBuf = new StringBuffer();
                 if (ch == '-' || ch == '+' || ch == '.' || (ch >= '0' && ch <= '9')) {
                     type = TK_NUMBER;
                     do {
-                        outBuf.append((char)ch);
+                        outBuf.append((char) ch);
                         ch = file.read();
                     } while (ch != -1 && ((ch >= '0' && ch <= '9') || ch == '.'));
-                }
-                else {
+                } else {
                     type = TK_OTHER;
                     do {
-                        outBuf.append((char)ch);
+                        outBuf.append((char) ch);
                         ch = file.read();
                     } while (!delims[ch + 1]);
                 }
@@ -513,28 +553,31 @@ public class PRTokeniser implements AutoCloseable {
                 break;
             }
         }
-        if (outBuf != null)
+        if (outBuf != null) {
             stringValue = outBuf.toString();
+        }
         return true;
     }
-    
+
     public int intValue() {
         return Integer.parseInt(stringValue);
     }
-    
+
     public boolean readLineSegment(byte[] input) throws IOException {
         int c = -1;
         boolean eol = false;
         int ptr = 0;
         int len = input.length;
-    // ssteward, pdftk-1.10, 040922: 
-    // skip initial whitespace; added this because PdfReader.rebuildXref()
-    // assumes that line provided by readLineSegment does not have init. whitespace;
-    if ( ptr < len ) {
-        while ( isWhitespace( (c = read()) ) );
-    }
-    while ( !eol && ptr < len ) {
-        switch (c) {
+        // ssteward, pdftk-1.10, 040922:
+        // skip initial whitespace; added this because PdfReader.rebuildXref()
+        // assumes that line provided by readLineSegment does not have init. whitespace;
+        if (ptr < len) {
+            while (isWhitespace((c = read()))) {
+                // consume input
+            }
+        }
+        while (!eol && ptr < len) {
+            switch (c) {
                 case -1:
                 case '\n':
                     eol = true;
@@ -547,17 +590,16 @@ public class PRTokeniser implements AutoCloseable {
                     }
                     break;
                 default:
-                    input[ptr++] = (byte)c;
+                    input[ptr++] = (byte) c;
                     break;
             }
 
-        // break loop? do it before we read() again
-        if( eol || len <= ptr ) {
-        break;
-        }
-        else {
-        c = read();
-        }
+            // break loop? do it before we read() again
+            if (eol || len <= ptr) {
+                break;
+            } else {
+                c = read();
+            }
         }
         if (ptr >= len) {
             eol = false;
@@ -577,42 +619,19 @@ public class PRTokeniser implements AutoCloseable {
                 }
             }
         }
-        
+
         if ((c == -1) && (ptr == 0)) {
             return false;
         }
         if (ptr + 2 <= len) {
-            input[ptr++] = (byte)' ';
-            input[ptr] = (byte)'X';
+            input[ptr++] = (byte) ' ';
+            input[ptr] = (byte) 'X';
         }
         return true;
     }
-    
-    public static int[] checkObjectStart(byte[] line) {
-        try {
-            PRTokeniser tk = new PRTokeniser(line);
-            int num = 0;
-            int gen = 0;
-            if (!tk.nextToken() || tk.getTokenType() != TK_NUMBER)
-                return null;
-            num = tk.intValue();
-            if (!tk.nextToken() || tk.getTokenType() != TK_NUMBER)
-                return null;
-            gen = tk.intValue();
-            if (!tk.nextToken())
-                return null;
-            if (!tk.getStringValue().equals("obj"))
-                return null;
-            return new int[]{num, gen};
-        }
-        catch (Exception ioe) {
-            // empty on purpose
-        }
-        return null;
-    }
-    
+
     public boolean isHexString() {
         return this.hexString;
     }
-    
+
 }

@@ -7,25 +7,18 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 package com.lowagie.rups.view.itext;
-
-import java.util.Observable;
-import java.util.Observer;
-
-import javax.swing.JTable;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.table.TableColumn;
 
 import com.lowagie.rups.controller.PdfReaderController;
 import com.lowagie.rups.model.IndirectObjectFactory;
@@ -34,24 +27,40 @@ import com.lowagie.rups.view.models.JTableAutoModel;
 import com.lowagie.rups.view.models.JTableAutoModelInterface;
 import com.lowagie.text.pdf.PdfNull;
 import com.lowagie.text.pdf.PdfObject;
+import java.util.Observable;
+import java.util.Observer;
+import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.table.TableColumn;
 
 /**
  * A JTable that shows the indirect objects of a PDF xref table.
  */
 public class XRefTable extends JTable implements JTableAutoModelInterface, Observer {
 
-    /** The factory that can produce all the indirect objects. */
+    /**
+     * A serial version UID.
+     */
+    private static final long serialVersionUID = -382184619041375537L;
+    /**
+     * The factory that can produce all the indirect objects.
+     */
     protected IndirectObjectFactory objects;
-    /** The renderer that will render an object when selected in the table. */
+    /**
+     * The renderer that will render an object when selected in the table.
+     */
     protected PdfReaderController controller;
-    
-    /** Creates a JTable visualizing xref table.
-     * @param controller The renderer that will render an object when selected in the table.*/
+
+    /**
+     * Creates a JTable visualizing xref table.
+     *
+     * @param controller The renderer that will render an object when selected in the table.
+     */
     public XRefTable(PdfReaderController controller) {
         super();
         this.controller = controller;
     }
-    
+
     /**
      * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
      */
@@ -63,26 +72,28 @@ public class XRefTable extends JTable implements JTableAutoModelInterface, Obser
         }
         if (observable instanceof PdfReaderController
                 && obj instanceof ObjectLoader) {
-            ObjectLoader loader = (ObjectLoader)obj;
+            ObjectLoader loader = (ObjectLoader) obj;
             objects = loader.getObjects();
             setModel(new JTableAutoModel(this));
-            TableColumn col= getColumnModel().getColumn(0);
+            TableColumn col = getColumnModel().getColumn(0);
             col.setPreferredWidth(5);
         }
     }
-    
+
     /**
      * @see javax.swing.JTable#getColumnCount()
      */
     public int getColumnCount() {
         return 2;
     }
-    
+
     /**
      * @see javax.swing.JTable#getRowCount()
      */
     public int getRowCount() {
-        if (objects == null) return 0;
+        if (objects == null) {
+            return 0;
+        }
         return objects.size();
     }
 
@@ -91,63 +102,67 @@ public class XRefTable extends JTable implements JTableAutoModelInterface, Obser
      */
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
-        case 0:
-            return getObjectReferenceByRow(rowIndex);
-        case 1:
-            return getObjectDescriptionByRow(rowIndex);
-        default:
-            return null;
+            case 0:
+                return getObjectReferenceByRow(rowIndex);
+            case 1:
+                return getObjectDescriptionByRow(rowIndex);
+            default:
+                return null;
         }
     }
-    
+
     /**
-     * Gets the reference number of an indirect object
-     * based on the row index.
-     * @param rowIndex    a row number
-     * @return    a reference number
+     * Gets the reference number of an indirect object based on the row index.
+     *
+     * @param rowIndex a row number
+     * @return a reference number
      */
     protected int getObjectReferenceByRow(int rowIndex) {
         return objects.getRefByIndex(rowIndex);
     }
-    
+
     /**
      * Gets the object that is shown in a row.
-     * @param rowIndex    the row number containing the object
-     * @return    a PDF object
+     *
+     * @param rowIndex the row number containing the object
+     * @return a PDF object
      */
     protected String getObjectDescriptionByRow(int rowIndex) {
         PdfObject object = objects.getObjectByIndex(rowIndex);
-        if (object instanceof PdfNull)
+        if (object instanceof PdfNull) {
             return "Indirect object";
+        }
         return object.toString();
     }
-    
+
     /**
      * @see javax.swing.JTable#getColumnName(int)
      */
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
-        case 0:
-            return "Number";
-        case 1:
-            return "Object";
-        default:
-            return null;
+            case 0:
+                return "Number";
+            case 1:
+                return "Object";
+            default:
+                return null;
         }
     }
-    
+
     /**
      * Gets the object that is shown in a row.
-     * @param rowIndex    the row number containing the object
-     * @return    a PDF object
+     *
+     * @param rowIndex the row number containing the object
+     * @return a PDF object
      */
     protected PdfObject getObjectByRow(int rowIndex) {
         return objects.loadObjectByReference(getObjectReferenceByRow(rowIndex));
     }
-    
+
     /**
      * Selects a row containing information about an indirect object.
-     * @param ref    the reference number of the indirect object
+     *
+     * @param ref the reference number of the indirect object
      */
     public void selectRowByReference(int ref) {
         int row = objects.getIndexByRef(ref);
@@ -161,15 +176,13 @@ public class XRefTable extends JTable implements JTableAutoModelInterface, Obser
      */
     @Override
     public void valueChanged(ListSelectionEvent evt) {
-        if (evt != null)
+        if (evt != null) {
             super.valueChanged(evt);
+        }
         if (controller != null && objects != null) {
             controller.render(getObjectByRow(this.getSelectedRow()));
             controller.selectNode(getObjectReferenceByRow(getSelectedRow()));
         }
     }
-    
-    /** A serial version UID. */
-    private static final long serialVersionUID = -382184619041375537L;
 
 }

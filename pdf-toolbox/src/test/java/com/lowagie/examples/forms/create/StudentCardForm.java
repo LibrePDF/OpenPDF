@@ -9,15 +9,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.forms.create;
 
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -33,57 +29,53 @@ import com.lowagie.text.pdf.PdfPCellEvent;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.TextField;
+import java.awt.Color;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Generates a StudentCard as a form
+ *
  * @author blowagie
  */
 public class StudentCardForm implements PdfPCellEvent {
-    
-    /** the writer with the acroform */
+
+    /**
+     * the writer with the acroform
+     */
     private PdfFormField field;
 
     /**
      * Construct an implementation of PdfPCellEvent.
-     * 
-     * @param field
-     *            a form field
-     *  
+     *
+     * @param field a form field
      */
     public StudentCardForm(PdfFormField field) {
         this.field = field;
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell,
-     *      com.lowagie.text.Rectangle, com.lowagie.text.pdf.PdfContentByte[])
-     */
-    public void cellLayout(PdfPCell cell, Rectangle position,
-            PdfContentByte[] canvases) {
-        field.setWidget(position, null);
-    }
-    
-    /**
      * Generates a StudentCard as a form
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
-        
+
         System.out.println("StudentCard as a form");
-        
+
         // step 1: creation of a document-object
         Rectangle rect = new Rectangle(243, 153);
         rect.setBackgroundColor(new Color(0xFF, 0xFF, 0xCC));
         Document document = new Document(rect, 10, 10, 10, 10);
-        
+
         try {
-            
+
             // step 2:
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("studentcardform.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
             Font font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD, Color.BLUE);
             Paragraph p = new Paragraph("Ghent University", font);
@@ -93,7 +85,7 @@ public class StudentCardForm implements PdfPCellEvent {
             PdfPTable outertable = new PdfPTable(3);
             outertable.setTotalWidth(200);
             outertable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-            float[] outer = { 60, 25, 15 };
+            float[] outer = {60, 25, 15};
             outertable.setWidths(outer);
             PdfPTable innertable = new PdfPTable(2);
             float[] inner = {35, 65};
@@ -154,12 +146,20 @@ public class StudentCardForm implements PdfPCellEvent {
             writer.addAnnotation(option);
             writer.addAnnotation(picture);
             writer.addAnnotation(barcode);
-        }
-        catch(DocumentException | IOException de) {
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 
         // step 5: we close the document
         document.close();
+    }
+
+    /**
+     * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell, com.lowagie.text.Rectangle,
+     * com.lowagie.text.pdf.PdfContentByte[])
+     */
+    public void cellLayout(PdfPCell cell, Rectangle position,
+            PdfContentByte[] canvases) {
+        field.setWidget(position, null);
     }
 }

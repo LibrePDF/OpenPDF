@@ -1,15 +1,16 @@
 package com.lowagie.text.pdf.sign;
 
-import java.security.KeyStore;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfPKCS7;
+import com.lowagie.text.pdf.PdfPKCS7.X509Name;
 import com.lowagie.text.pdf.PdfReader;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.Calendar;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class ExtractCertificatesTest {
@@ -21,29 +22,26 @@ class ExtractCertificatesTest {
 
     @Test
     void testSha1() throws Exception {
-        extract("src/test/resources/sample_signed-sha1.pdf");
+        extract("src/test/resources/sample_signed-sha1.pdf", false);
     }
 
     @Test
     void testSha512() throws Exception {
-        extract("src/test/resources/sample_signed-sha512.pdf");
+        extract("src/test/resources/sample_signed-sha512.pdf", false);
     }
 
     /**
-     * Extract certificates and validate timestamp
-     * Sample file taken from https://www.tecxoft.com/samples.php (it has signature with timestamp with SHA-256)
-     * NB: Signature will only be valid till 2022/01/02 (Hence only Sout is used not assert)
-     *
-     * @throws Exception
+     * Extract certificates and validate timestamp Sample file taken from <a
+     * href="https://www.tecxoft.com/samples.php">...</a> (it has signature with timestamp with SHA-256) NB: Signature
+     * will only be valid till 2022/01/02 (Hence only Sout is used not assert)
      */
     @Test
     void testSha256TimeStamp() throws Exception {
-        extract("src/test/resources/pdf_digital_signature_timestamp.pdf");
+        extract("src/test/resources/pdf_digital_signature_timestamp.pdf", true);
     }
 
-    private void extract(String pdf) throws Exception {
+    private void extract(String pdf, boolean isExpectedValidTimeStamp) throws Exception {
 
-        List<X509Certificate> certificates = new ArrayList<>();
         System.out.println("pdf name: " + pdf);
 
         KeyStore kall = PdfPKCS7.loadCacertsKeyStore();
@@ -52,29 +50,32 @@ class ExtractCertificatesTest {
             AcroFields fields = reader.getAcroFields();
 
             List<String> signatures = fields.getSignedFieldNames();
-            System.out.println("Signs: " + signatures.size());
+            assertThat(signatures).isNotEmpty().hasSize(1);
             for (String signature : signatures) {
 
-                System.out.println("Signature name: " + signature);
-                System.out.println("Signature covers whole document: " + fields.signatureCoversWholeDocument(signature));
-                System.out.println(
-                        "Document revision: " + fields.getRevision(signature) + " of " + fields.getTotalRevisions());
+                assertThat(signature).isNotEmpty();
+                boolean isWholeDocumentCovered = fields.signatureCoversWholeDocument(signature);
+                assertThat(isWholeDocumentCovered).isTrue();
+                assertThat(fields.getRevision(signature)).isEqualTo(1);
+                assertThat(fields.getTotalRevisions()).isEqualTo(1);
 
                 PdfPKCS7 pk = fields.verifySignature(signature);
                 Calendar cal = pk.getSignDate();
                 Certificate[] pkc = pk.getCertificates();
                 X509Certificate certificate = pk.getSigningCertificate();
-                certificates.add(certificate);
-                System.out.println("sign date:" + cal.getTime());
-                System.out.println("Subject: " + PdfPKCS7.getSubjectFields(certificate));
-                System.out.println("Document modified: " + !pk.verify());
-                System.out.println("Timestamp valid: " + pk.verifyTimestampImprint());
+                assertThat(cal).isLessThan(Calendar.getInstance());
+                X509Name subjectFields = PdfPKCS7.getSubjectFields(certificate);
+                assertThat(subjectFields).isNotNull();
+                assertThat(subjectFields.getAllFields()).isNotEmpty()
+                        .containsKey("C");
+                assertThat(pk.verify()).isTrue();
+                assertThat(pk.verifyTimestampImprint()).isEqualTo(isExpectedValidTimeStamp);
 
                 Object[] fails = PdfPKCS7.verifyCertificates(pkc, kall, null, cal);
                 if (fails == null) {
                     System.out.println("Certificates verified against the KeyStore");
                 } else {
-                    System.out.println("Certificate failed: " + fails[1]);
+                    System.err.println("Certificate failed: " + fails[1]);
                 }
 
             }

@@ -3,6 +3,7 @@ package com.lowagie.text.error_messages;
 import java.io.IOException;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -16,6 +17,11 @@ class MessageLocalizationPtTest {
     @BeforeAll
     static void beforeAll() throws IOException {
         MessageLocalization.setLanguage("pt", null);
+    }
+
+    @AfterAll
+    static void afterAll() throws IOException {
+        MessageLocalization.setLanguage("en", null);
     }
 
     @ParameterizedTest

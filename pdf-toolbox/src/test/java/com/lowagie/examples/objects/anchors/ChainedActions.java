@@ -9,22 +9,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.objects.anchors;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfAction;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * Creates a documents with chained actions.
- * 
+ *
  * @author blowagie
  */
 
@@ -32,9 +31,8 @@ public class ChainedActions {
 
     /**
      * Creates a document with chained Actions.
-     * 
-     * @param args
-     *            no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -48,7 +46,7 @@ public class ChainedActions {
             // step 2:
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
                     "ChainedActions.pdf"));
-            // step 3: we add Javascript as Metadata and we open the document        
+            // step 3: we add Javascript as Metadata and we open the document
             document.open();
             // step 4: we add some content
             PdfAction action = PdfAction.javaScript("app.alert('Welcome at my site');\r", writer);

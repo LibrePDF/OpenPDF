@@ -35,12 +35,6 @@
 
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.util.Map;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
 import com.lowagie.text.pdf.PdfEncryptor;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.toolbox.AbstractTool;
@@ -48,12 +42,18 @@ import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.StringArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import java.io.File;
+import java.util.Map;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
  * Allows you to inspect an existing PDF file.
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class InspectPDF extends AbstractTool {
+
     static {
         addVersion("$Id: InspectPDF.java 3826 2009-03-31 17:46:18Z blowagie $");
     }
@@ -64,6 +64,20 @@ public class InspectPDF extends AbstractTool {
     public InspectPDF() {
         arguments.add(new FileArgument(this, "srcfile", "The file you want to inspect", false, new PdfFilter()));
         arguments.add(new StringArgument(this, "ownerpassword", "The owner password if the file is encrypt"));
+    }
+
+    /**
+     * Inspects an existing PDF file.
+     *
+     * @param args String[]
+     */
+    public static void main(String[] args) {
+        InspectPDF tool = new InspectPDF();
+        if (args.length < 1) {
+            System.err.println(tool.getUsage());
+        }
+        tool.setMainArguments(args);
+        tool.execute();
     }
 
     /**
@@ -81,13 +95,15 @@ public class InspectPDF extends AbstractTool {
      */
     public void execute() {
         try {
-            if (getValue("srcfile") == null) throw new InstantiationException("You need to choose a sourcefile");
+            if (getValue("srcfile") == null) {
+                throw new InstantiationException("You need to choose a sourcefile");
+            }
             PdfReader reader;
             if (getValue("ownerpassword") == null) {
-                reader = new PdfReader(((File)getValue("srcfile")).getAbsolutePath());
-            }
-            else {
-                reader = new PdfReader(((File)getValue("srcfile")).getAbsolutePath(), ((String)getValue("ownerpassword")).getBytes());
+                reader = new PdfReader(((File) getValue("srcfile")).getAbsolutePath());
+            } else {
+                reader = new PdfReader(((File) getValue("srcfile")).getAbsolutePath(),
+                        ((String) getValue("ownerpassword")).getBytes());
             }
             // Some general document information and page size
             System.out.println("=== Document Information ===");
@@ -106,19 +122,17 @@ public class InspectPDF extends AbstractTool {
             Map<String, String> info = reader.getInfo();
             String key;
             String value;
-            for (Map.Entry<String, String> entry: info.entrySet()) {
+            for (Map.Entry<String, String> entry : info.entrySet()) {
                 key = entry.getKey();
                 value = entry.getValue();
                 System.out.println(key + ": " + value);
             }
             if (reader.getMetadata() == null) {
                 System.out.println("There is no XML Metadata in the file");
-            }
-            else {
+            } else {
                 System.out.println("XML Metadata: " + new String(reader.getMetadata()));
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(internalFrame,
                     e.getMessage(),
                     e.getClass().getName(),
@@ -128,9 +142,8 @@ public class InspectPDF extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -141,24 +154,9 @@ public class InspectPDF extends AbstractTool {
     }
 
     /**
-     * Inspects an existing PDF file.
-     *
-     * @param args String[]
-     */
-    public static void main(String[] args) {
-        InspectPDF tool = new InspectPDF();
-        if (args.length < 1) {
-            System.err.println(tool.getUsage());
-        }
-        tool.setMainArguments(args);
-        tool.execute();
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         throw new InstantiationException("There is no file to show.");

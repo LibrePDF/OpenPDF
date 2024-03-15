@@ -1,9 +1,12 @@
 package com.lowagie.text.pdf;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Utilities;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -13,11 +16,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
 
 public class PdfProtectedDocumentTest {
 
@@ -35,8 +34,8 @@ public class PdfProtectedDocumentTest {
         // Sign and compare the generated range
         for (int i = 0; i < 10; i++) {
             try (InputStream is = getClass().getResourceAsStream("/open_protected.pdf");
-                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                 PdfReader reader = new PdfReader(is, new byte[]{' '})) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    PdfReader reader = new PdfReader(is, new byte[]{' '})) {
                 originalDocId = reader.getDocumentId();
 
                 PdfStamper stp = PdfStamper.createSignature(reader, baos, '\0', null, true);
@@ -84,7 +83,7 @@ public class PdfProtectedDocumentTest {
 
             // Ensure document is readable
             try (InputStream is = new ByteArrayInputStream(documentBytes);
-                 PdfReader reader = new PdfReader(is, new byte[]{' '})) {
+                    PdfReader reader = new PdfReader(is, new byte[]{' '})) {
                 assertNotNull(reader);
 
                 byte[] documentId = reader.getDocumentId();
@@ -93,7 +92,8 @@ public class PdfProtectedDocumentTest {
 
                 PdfArray idArray = reader.getTrailer().getAsArray(PdfName.ID);
                 assertEquals(2, idArray.size());
-                assertArrayEquals(documentId, com.lowagie.text.DocWriter.getISOBytes(idArray.getPdfObject(0).toString()));
+                assertArrayEquals(documentId,
+                        com.lowagie.text.DocWriter.getISOBytes(idArray.getPdfObject(0).toString()));
 
                 byte[] currentChangingId = DocWriter.getISOBytes(idArray.getPdfObject(1).toString());
                 if (changingId != null) {
@@ -120,8 +120,8 @@ public class PdfProtectedDocumentTest {
         // Sign and compare the generated range
         for (int i = 0; i < 10; i++) {
             try (InputStream is = getClass().getResourceAsStream("/open_protected.pdf");
-                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                 PdfReader reader = new PdfReader(is, new byte[]{' '})) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    PdfReader reader = new PdfReader(is, new byte[]{' '})) {
                 originalDocId = reader.getDocumentId();
 
                 PdfStamper stp = PdfStamper.createSignature(reader, baos, '\0', null, true);
@@ -170,7 +170,7 @@ public class PdfProtectedDocumentTest {
 
             // Ensure document is readable
             try (InputStream is = new ByteArrayInputStream(documentBytes);
-                 PdfReader reader = new PdfReader(is, new byte[]{' '})) {
+                    PdfReader reader = new PdfReader(is, new byte[]{' '})) {
                 assertNotNull(reader);
 
                 byte[] documentId = reader.getDocumentId();
@@ -179,7 +179,8 @@ public class PdfProtectedDocumentTest {
 
                 PdfArray idArray = reader.getTrailer().getAsArray(PdfName.ID);
                 assertEquals(2, idArray.size());
-                assertArrayEquals(documentId, com.lowagie.text.DocWriter.getISOBytes(idArray.getPdfObject(0).toString()));
+                assertArrayEquals(documentId,
+                        com.lowagie.text.DocWriter.getISOBytes(idArray.getPdfObject(0).toString()));
                 assertEquals("123", idArray.getPdfObject(1).toString());
             }
         }

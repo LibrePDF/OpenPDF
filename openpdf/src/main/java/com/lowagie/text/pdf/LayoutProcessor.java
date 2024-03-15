@@ -208,8 +208,8 @@ public class LayoutProcessor {
      *
      * @param font           The font for which kerning is to be turned on
      * @param textAttributes Map of text attributes to be set
-     * @see <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
-     * Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>*
+     * @see <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html" >Oracle: The Java™ Tutorials,
+     * Using Text Attributes to Style Text</a>
      */
     private static void setTextAttributes(com.lowagie.text.Font font, Map<TextAttribute, Object> textAttributes) {
         BaseFont baseFont = font.getBaseFont();
@@ -258,8 +258,8 @@ public class LayoutProcessor {
                 if (file.canRead()) {
                     inputStream = Files.newInputStream(file.toPath());
                 } else if (filename.startsWith("file:/") || filename.startsWith("http://")
-                    || filename.startsWith("https://") || filename.startsWith("jar:")
-                    || filename.startsWith("wsjar:")) {
+                        || filename.startsWith("https://") || filename.startsWith("jar:")
+                        || filename.startsWith("wsjar:")) {
                     inputStream = new URL(filename).openStream();
                 } else if ("-".equals(filename)) {
                     inputStream = System.in;
@@ -268,7 +268,7 @@ public class LayoutProcessor {
                 }
                 if (inputStream == null) {
                     throw new IOException(
-                        MessageLocalization.getComposedMessage("1.not.found.as.file.or.resource", filename));
+                            MessageLocalization.getComposedMessage("1.not.found.as.file.or.resource", filename));
                 }
                 awtFont = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, inputStream);
                 if (awtFont != null) {
@@ -316,7 +316,7 @@ public class LayoutProcessor {
             Object runDirection = textAttributes.get(TextAttribute.RUN_DIRECTION);
             if (runDirection != null) {
                 localFlags = runDirection == TextAttribute.RUN_DIRECTION_LTR ? java.awt.Font.LAYOUT_LEFT_TO_RIGHT :
-                    java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
+                        java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
             }
         }
         return awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, localFlags);
@@ -391,12 +391,11 @@ public class LayoutProcessor {
         float dy = (float) p.getY() - lastY;
         cb.moveTextBasic(dx, -dy);
 
-        if (baseFont instanceof TrueTypeFontUnicode && cb.state.fontDetails.fillerCmap != null) {
-            TrueTypeFontUnicode trueTypeFont = (TrueTypeFontUnicode) baseFont;
+        if (baseFont instanceof TrueTypeFontUnicode trueTypeFont && cb.state.fontDetails.getFillerCmap() != null) {
             int[][] localCmap = trueTypeFont.getSentenceMissingCmap(text.toCharArray(), glyphVector);
 
-            for (int k = 0; k < localCmap.length; ++k) {
-                cb.state.fontDetails.fillerCmap.put(localCmap[k][0], new int[] { localCmap[k][0], localCmap[k][1] });
+            for (int[] ints : localCmap) {
+                cb.state.fontDetails.putFillerCmap(ints[0], new int[]{ints[0], ints[1]});
             }
         }
 

@@ -48,15 +48,6 @@
  */
 package com.lowagie.toolbox.plugins;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
@@ -65,9 +56,17 @@ import com.lowagie.toolbox.AbstractTool;
 import com.lowagie.toolbox.arguments.AbstractArgument;
 import com.lowagie.toolbox.arguments.FileArgument;
 import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
  * Allows you to add bookmarks to an existing PDF file
+ *
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class XML2Bookmarks extends AbstractTool {
@@ -81,59 +80,9 @@ public class XML2Bookmarks extends AbstractTool {
      */
     public XML2Bookmarks() {
         arguments.add(new FileArgument(this, "xmlfile", "the bookmarks in XML", false));
-        arguments.add(new FileArgument(this, "pdffile", "the PDF to which you want to add bookmarks", false, new PdfFilter()));
+        arguments.add(new FileArgument(this, "pdffile", "the PDF to which you want to add bookmarks", false,
+                new PdfFilter()));
         arguments.add(new FileArgument(this, "destfile", "the resulting PDF", true, new PdfFilter()));
-    }
-
-    /**
-     * @see com.lowagie.toolbox.AbstractTool#createFrame()
-     */
-    protected void createFrame() {
-        internalFrame = new JInternalFrame("XML + PDF = PDF", true, true, true);
-        internalFrame.setSize(300, 80);
-        internalFrame.setJMenuBar(getMenubar());
-        System.out.println("=== XML2Bookmarks OPENED ===");
-    }
-
-    /**
-     * @see com.lowagie.toolbox.AbstractTool#execute()
-     */
-    public void execute() {
-        try {
-            if (getValue("xmlfile") == null) throw new InstantiationException("You need to choose an xml file");
-            if (getValue("pdffile") == null) throw new InstantiationException("You need to choose a source PDF file");
-            if (getValue("destfile") == null) throw new InstantiationException("You need to choose a destination PDF file");
-            FileInputStream bmReader = new FileInputStream( (File) getValue("xmlfile") );
-            List<Map<String, Object>> bookmarks = SimpleBookmark.importFromXML(bmReader);
-            bmReader.close();
-            PdfReader reader = new PdfReader(((File)getValue("pdffile")).getAbsolutePath());
-            reader.consolidateNamedDestinations();
-            PdfStamper stamper = new PdfStamper(reader, new FileOutputStream((File)getValue("destfile")));
-            stamper.setOutlines(bookmarks);
-            stamper.setViewerPreferences(reader.getSimpleViewerPreferences() | PdfWriter.PageModeUseOutlines);
-            stamper.close();
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(internalFrame,
-                    e.getMessage(),
-                    e.getClass().getName(),
-                    JOptionPane.ERROR_MESSAGE);
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
-     * @param arg StringArgument
-     */
-    public void valueHasChanged(AbstractArgument arg) {
-        if (internalFrame == null) {
-            // if the internal frame is null, the tool was called from the command line
-            return;
-        }
-        // represent the changes of the argument in the internal frame
     }
 
     /**
@@ -151,13 +100,67 @@ public class XML2Bookmarks extends AbstractTool {
     }
 
     /**
-     *
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
-     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     */
+    protected void createFrame() {
+        internalFrame = new JInternalFrame("XML + PDF = PDF", true, true, true);
+        internalFrame.setSize(300, 80);
+        internalFrame.setJMenuBar(getMenubar());
+        System.out.println("=== XML2Bookmarks OPENED ===");
+    }
+
+    /**
+     * @see com.lowagie.toolbox.AbstractTool#execute()
+     */
+    public void execute() {
+        try {
+            if (getValue("xmlfile") == null) {
+                throw new InstantiationException("You need to choose an xml file");
+            }
+            if (getValue("pdffile") == null) {
+                throw new InstantiationException("You need to choose a source PDF file");
+            }
+            if (getValue("destfile") == null) {
+                throw new InstantiationException("You need to choose a destination PDF file");
+            }
+            FileInputStream bmReader = new FileInputStream((File) getValue("xmlfile"));
+            List<Map<String, Object>> bookmarks = SimpleBookmark.importFromXML(bmReader);
+            bmReader.close();
+            PdfReader reader = new PdfReader(((File) getValue("pdffile")).getAbsolutePath());
+            reader.consolidateNamedDestinations();
+            PdfStamper stamper = new PdfStamper(reader, new FileOutputStream((File) getValue("destfile")));
+            stamper.setOutlines(bookmarks);
+            stamper.setViewerPreferences(reader.getSimpleViewerPreferences() | PdfWriter.PageModeUseOutlines);
+            stamper.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(internalFrame,
+                    e.getMessage(),
+                    e.getClass().getName(),
+                    JOptionPane.ERROR_MESSAGE);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * @param arg StringArgument
+     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
+     */
+    public void valueHasChanged(AbstractArgument arg) {
+        if (internalFrame == null) {
+            // if the internal frame is null, the tool was called from the command line
+            return;
+        }
+        // represent the changes of the argument in the internal frame
+    }
+
+    /**
      * @return File
+     * @throws InstantiationException on error
+     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
-        return (File)getValue("destfile");
+        return (File) getValue("destfile");
     }
 
 }

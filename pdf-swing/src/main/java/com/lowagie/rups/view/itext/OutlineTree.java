@@ -7,26 +7,18 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 package com.lowagie.rups.view.itext;
-
-import java.util.Observable;
-import java.util.Observer;
-
-import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeModel;
 
 import com.lowagie.rups.controller.PdfReaderController;
 import com.lowagie.rups.model.ObjectLoader;
@@ -36,18 +28,32 @@ import com.lowagie.rups.view.itext.treenodes.OutlineTreeNode;
 import com.lowagie.rups.view.itext.treenodes.PdfObjectTreeNode;
 import com.lowagie.rups.view.itext.treenodes.PdfTrailerTreeNode;
 import com.lowagie.text.pdf.PdfName;
+import java.util.Observable;
+import java.util.Observer;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
- * A JTree visualizing information about the outlines (aka bookmarks) of
- * the PDF file (if any).
+ * A JTree visualizing information about the outlines (aka bookmarks) of the PDF file (if any).
  */
 public class OutlineTree extends JTree implements TreeSelectionListener, Observer {
 
-    /** Nodes in the FormTree correspond with nodes in the main PdfTree. */
+    /**
+     * A serial version uid.
+     */
+    private static final long serialVersionUID = 5646572654823301007L;
+    /**
+     * Nodes in the FormTree correspond with nodes in the main PdfTree.
+     */
     protected PdfReaderController controller;
-    
-    /** Creates a new outline tree.
-     *  @param controller   The renderer that will render an object when selected in the table.*/
+
+    /**
+     * Creates a new outline tree.
+     *
+     * @param controller The renderer that will render an object when selected in the table.
+     */
     public OutlineTree(PdfReaderController controller) {
         super();
         this.controller = controller;
@@ -66,7 +72,7 @@ public class OutlineTree extends JTree implements TreeSelectionListener, Observe
             return;
         }
         if (obj instanceof ObjectLoader) {
-            ObjectLoader loader = (ObjectLoader)obj;
+            ObjectLoader loader = (ObjectLoader) obj;
             TreeNodeFactory factory = loader.getNodes();
             PdfTrailerTreeNode trailer = controller.getPdfTree().getRoot();
             PdfObjectTreeNode catalog = factory.getChildNode(trailer, PdfName.ROOT);
@@ -79,7 +85,7 @@ public class OutlineTree extends JTree implements TreeSelectionListener, Observe
             setModel(new DefaultTreeModel(root));
         }
     }
-    
+
     /**
      * Method that can be used recursively to load the outline hierarchy into the tree.
      */
@@ -100,15 +106,14 @@ public class OutlineTree extends JTree implements TreeSelectionListener, Observe
      * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
      */
     public void valueChanged(TreeSelectionEvent evt) {
-        if (controller == null)
+        if (controller == null) {
             return;
-        OutlineTreeNode selectednode = (OutlineTreeNode)this.getLastSelectedPathComponent();
+        }
+        OutlineTreeNode selectednode = (OutlineTreeNode) this.getLastSelectedPathComponent();
         PdfObjectTreeNode node = selectednode.getCorrespondingPdfObjectNode();
-        if (node != null)
+        if (node != null) {
             controller.selectNode(node);
+        }
     }
-
-    /** A serial version uid. */
-    private static final long serialVersionUID = 5646572654823301007L;
 
 }

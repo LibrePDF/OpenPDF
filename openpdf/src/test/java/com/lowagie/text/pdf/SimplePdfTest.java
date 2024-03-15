@@ -1,27 +1,21 @@
 package com.lowagie.text.pdf;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
-
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.lowagie.text.Annotation;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.nio.file.Files;
+import org.junit.jupiter.api.Test;
 
 public class SimplePdfTest {
 
@@ -39,8 +33,9 @@ public class SimplePdfTest {
             document.add(rect);
         } finally {
             // close document
-            if (document != null)
+            if (document != null) {
                 document.close();
+            }
         }
 
     }
@@ -48,8 +43,8 @@ public class SimplePdfTest {
     @Test
     void testTryWithResources_with_os_before_doc() throws Exception {
         try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
-            FileOutputStream os = new FileOutputStream(Files.createTempFile("temp-file-name", ".pdf").toFile());
-             Document document = new Document()
+                FileOutputStream os = new FileOutputStream(Files.createTempFile("temp-file-name", ".pdf").toFile());
+                Document document = new Document()
         ) {
             PdfWriter writer = PdfWriter.getInstance(document, os);
             document.open();
@@ -64,9 +59,10 @@ public class SimplePdfTest {
     @Test
     void testTryWithResources_with_unknown_os() throws Exception {
         try (PdfReader reader = new PdfReader("./src/test/resources/HelloWorldMeta.pdf");
-             Document document = new Document()
+                Document document = new Document()
         ) {
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(File.createTempFile("temp-file-name", ".pdf")));
+            PdfWriter writer = PdfWriter.getInstance(document,
+                    new FileOutputStream(File.createTempFile("temp-file-name", ".pdf")));
             document.open();
             final PdfContentByte cb = writer.getDirectContent();
 
@@ -75,11 +71,12 @@ public class SimplePdfTest {
             cb.addTemplate(page, 1, 0, 0, 1, 0, 0);
         }
     }
+
     @Test
     void testDocumentId() throws Exception {
         byte[] docBytes = null;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             Document document = new Document(PageSize.A4)) {
+                Document document = new Document(PageSize.A4)) {
             PdfWriter pdfWriter = PdfWriter.getInstance(document, baos);
             document.open();
             document.add(new Paragraph("This is a simple PDF"));
@@ -89,7 +86,7 @@ public class SimplePdfTest {
         }
 
         try (InputStream is = new ByteArrayInputStream(docBytes);
-             PdfReader reader = new PdfReader(is)) {
+                PdfReader reader = new PdfReader(is)) {
             byte[] documentId = reader.getDocumentId();
             assertNotNull(documentId);
 

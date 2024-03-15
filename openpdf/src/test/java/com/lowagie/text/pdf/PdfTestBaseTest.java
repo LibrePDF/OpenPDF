@@ -1,10 +1,9 @@
 package com.lowagie.text.pdf;
 
-import java.io.ByteArrayOutputStream;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
+import java.io.ByteArrayOutputStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +20,9 @@ public class PdfTestBaseTest {
             pdf.add(new Paragraph("Hello World!"));
         } finally {
             // close document
-            if (pdf != null)
+            if (pdf != null) {
                 pdf.close();
+            }
         }
         final byte[] bytes = stream.toByteArray();
         Assertions.assertNotNull(bytes, "There should be some PDF-bytes there.");

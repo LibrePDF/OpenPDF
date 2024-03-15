@@ -49,14 +49,6 @@
 
 package com.lowagie.text.xml;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EmptyStackException;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Stack;
-
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
 import com.lowagie.text.BadElementException;
@@ -83,12 +75,19 @@ import com.lowagie.text.factories.ElementFactory;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.draw.LineSeparator;
 import com.lowagie.text.xml.simpleparser.EntitiesToSymbol;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EmptyStackException;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Stack;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * This class is a Handler that controls the iText XML to PDF conversion.
- * Subclass it, if you want to change the way iText translates XML to PDF.
+ * This class is a Handler that controls the iText XML to PDF conversion. Subclass it, if you want to change the way
+ * iText translates XML to PDF.
  */
 
 public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
@@ -99,8 +98,7 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
     protected DocListener document;
 
     /**
-     * This is a <CODE>Stack</CODE> of objects, waiting to be added to the
-     * document.
+     * This is a <CODE>Stack</CODE> of objects, waiting to be added to the document.
      */
     protected Stack<Element> stack;
 
@@ -118,16 +116,14 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
      * This is the current chunk to which characters can be added.
      */
     protected boolean ignore = false;
-
-    /**
-     * This is a flag that can be set, if you want to open and close the
-     * Document-object yourself.
-     */
-    private boolean controlOpenClose = true;
     /**
      * This hashmap contains all the custom keys and peers.
      */
     protected Map<String, T> myTags;
+    /**
+     * This is a flag that can be set, if you want to open and close the Document-object yourself.
+     */
+    private boolean controlOpenClose = true;
     /**
      * current margin of a page.
      */
@@ -156,8 +152,8 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
 
     /**
      * @param document the DocListener
-     * @param myTags a Map of the tags
-     * @param bf the base class for the supported fonts
+     * @param myTags   a Map of the tags
+     * @param bf       the base class for the supported fonts
      */
     public SAXiTextHandler(DocListener document, Map<String, T> myTags, BaseFont bf) {
         this(document, myTags);
@@ -166,7 +162,7 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
 
     /**
      * @param document the DocListener
-     * @param myTags a Map of the tags
+     * @param myTags   a Map of the tags
      */
     public SAXiTextHandler(DocListener document, Map<String, T> myTags) {
         this(document);
@@ -174,16 +170,14 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
     }
 
     /**
-     * Sets the parameter that allows you to enable/disable the control over the
-     * Document.open() and Document.close() method.
+     * Sets the parameter that allows you to enable/disable the control over the Document.open() and Document.close()
+     * method.
      * <p>
-     * If you set this parameter to true (= default), the parser will open the
-     * Document object when the start-root-tag is encountered and close it when
-     * the end-root-tag is met. If you set it to false, you have to open and
-     * close the Document object yourself.
+     * If you set this parameter to true (= default), the parser will open the Document object when the start-root-tag
+     * is encountered and close it when the end-root-tag is met. If you set it to false, you have to open and close the
+     * Document object yourself.
      *
-     * @param controlOpenClose set this to false if you plan to open/close the Document
-     *                         yourself
+     * @param controlOpenClose set this to false if you plan to open/close the Document yourself
      */
 
     public void setControlOpenClose(boolean controlOpenClose) {
@@ -194,8 +188,8 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
      * This method gets called when a start tag is encountered.
      *
      * @param uri        the Uniform Resource Identifier
-     * @param localName  the local name (without prefix), or the empty string if
-     *                   Namespace processing is not being performed.
+     * @param localName  the local name (without prefix), or the empty string if Namespace processing is not being
+     *                   performed.
      * @param name       the name of the tag that is encountered
      * @param attributes the list of attributes
      */
@@ -451,14 +445,18 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
                 value = attributes.getProperty(key);
                 try {
                     // margin specific code suggested by Reza Nasiri
-                    if (ElementTags.LEFT.equalsIgnoreCase(key))
+                    if (ElementTags.LEFT.equalsIgnoreCase(key)) {
                         leftMargin = Float.parseFloat(value + "f");
-                    if (ElementTags.RIGHT.equalsIgnoreCase(key))
+                    }
+                    if (ElementTags.RIGHT.equalsIgnoreCase(key)) {
                         rightMargin = Float.parseFloat(value + "f");
-                    if (ElementTags.TOP.equalsIgnoreCase(key))
+                    }
+                    if (ElementTags.TOP.equalsIgnoreCase(key)) {
                         topMargin = Float.parseFloat(value + "f");
-                    if (ElementTags.BOTTOM.equalsIgnoreCase(key))
+                    }
+                    if (ElementTags.BOTTOM.equalsIgnoreCase(key)) {
                         bottomMargin = Float.parseFloat(value + "f");
+                    }
                 } catch (Exception ex) {
                     throw new ExceptionConverter(ex);
                 }
@@ -493,8 +491,9 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
             }
             document.setMargins(leftMargin, rightMargin, topMargin, bottomMargin);
 
-            if (controlOpenClose)
+            if (controlOpenClose) {
                 document.open();
+            }
         }
 
     }
@@ -579,8 +578,8 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
      * This method gets called when an end tag is encountered.
      *
      * @param uri   the Uniform Resource Identifier
-     * @param lname the local name (without prefix), or the empty string if
-     *              Namespace processing is not being performed.
+     * @param lname the local name (without prefix), or the empty string if Namespace processing is not being
+     *              performed.
      * @param name  the name of the tag that ends
      */
 
@@ -602,8 +601,9 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
             ignore = false;
             return;
         }
-        if (ignore)
+        if (ignore) {
             return;
+        }
         // tags that don't have any content
         if (isNewpage(name) || ElementTags.ANNOTATION.equals(name) || ElementTags.IMAGE.equals(name)
                 || isNewline(name)) {
@@ -811,11 +811,10 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
         }
 
         // ... if it is a Phrase, we have to wrap the Image in a new Chunk
-        else if (current instanceof Phrase){
-            ((TextElementArray)current).add(new Chunk(img,0,0));
+        else if (current instanceof Phrase) {
+            ((TextElementArray) current).add(new Chunk(img, 0, 0));
             stack.push(current);
         }
-
 
         // ...if not, we need to to a lot of stuff
         else {

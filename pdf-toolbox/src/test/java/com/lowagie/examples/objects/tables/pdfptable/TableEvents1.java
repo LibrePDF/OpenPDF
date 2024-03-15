@@ -9,11 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.pdfptable;
-
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -26,68 +24,17 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPTableEvent;
 import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 /**
  * General example using TableEvents.
  */
 public class TableEvents1 implements PdfPTableEvent {
-    /**
-     * @see com.lowagie.text.pdf.PdfPTableEvent#tableLayout(com.lowagie.text.pdf.PdfPTable, float[][], float[], int, int, com.lowagie.text.pdf.PdfContentByte[])
-     */
-    public void tableLayout(PdfPTable table, float[][] width, float[] heights, int headerRows, int rowStart, PdfContentByte[] canvases) {
-        
-        // widths of the different cells of the first row
-        float[] widths = width[0];
-        
-        PdfContentByte cb = canvases[PdfPTable.TEXTCANVAS];
-        cb.saveState();
-        // border for the complete table
-        cb.setLineWidth(2);
-        cb.setRGBColorStroke(255, 0, 0);
-        cb.rectangle(widths[0], heights[heights.length - 1], widths[widths.length - 1] - widths[0], heights[0] - heights[heights.length - 1]);
-        cb.stroke();
-        
-        // border for the header rows
-        if (headerRows > 0) {
-            float headerHeight = heights[0];
-            for (int k = 0; k < headerRows; ++k)
-                headerHeight += heights[k];
-            cb.setRGBColorStroke(0, 0, 255);
-            cb.rectangle(widths[0], heights[headerRows], widths[widths.length - 1] - widths[0], heights[0] - heights[headerRows]);
-            cb.stroke();
-        }
-        cb.restoreState();
-        
-        cb = canvases[PdfPTable.BASECANVAS];
-        cb.saveState();
-        // border for the cells
-        cb.setLineWidth(.5f);
-        // loop over the rows
-        for (int line = 0; line < heights.length - 1; ++line) {
-            // loop over the columns
-            for (int col = 0; col < widths.length - 1; ++col) {
-                if (line == 0 && col == 0)
-                    cb.setAction(new PdfAction("https://github.com/LibrePDF/OpenPDF"),
-                        widths[col], heights[line + 1], widths[col + 1], heights[line]);
-                cb.setRGBColorStrokeF((float)Math.random(), (float)Math.random(), (float)Math.random());
-                // horizontal borderline
-                cb.moveTo(widths[col], heights[line]);
-                cb.lineTo(widths[col + 1], heights[line]);
-                cb.stroke();
-                // vertical borderline
-                cb.setRGBColorStrokeF((float)Math.random(), (float)Math.random(), (float)Math.random());
-                cb.moveTo(widths[col], heights[line]);
-                cb.lineTo(widths[col], heights[line + 1]);
-                cb.stroke();
-            }
-        }
-        cb.restoreState();
-    }
-    
+
     /**
      * General example using table events.
-     * @param args
-     *         no arguments needed
+     *
+     * @param args no arguments needed
      */
     public static void main(String[] args) {
 
@@ -103,41 +50,101 @@ public class TableEvents1 implements PdfPTableEvent {
             PdfPTable table = new PdfPTable(4);
             table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
             for (int k = 0; k < 24; ++k) {
-                if (k != 0)
+                if (k != 0) {
                     table.addCell(String.valueOf(k));
-                else
+                } else {
                     table.addCell("This is an URL");
+                }
             }
             TableEvents1 event = new TableEvents1();
             table.setTableEvent(event);
-            
+
             // add the table with document add
             document.add(table);
             // add the table at an absolute position
             table.setTotalWidth(300);
             table.writeSelectedRows(0, -1, 100, 600, writer.getDirectContent());
-            
+
             document.newPage();
-            
+
             table = new PdfPTable(4);
             float fontSize = 12;
             BaseFont bf = BaseFont.createFont("Helvetica", "winansi", false);
             table.getDefaultCell().setPaddingTop(bf.getFontDescriptor(BaseFont.ASCENT, fontSize) - fontSize + 2);
             table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
             for (int k = 0; k < 500 * 4; ++k) {
-                if (k == 0)
+                if (k == 0) {
                     table.addCell(new Phrase("This is an URL", new Font(bf, fontSize)));
-                else
+                } else {
                     table.addCell(new Phrase(String.valueOf(k), new Font(bf, fontSize)));
+                }
             }
             table.setTableEvent(event);
             table.setHeaderRows(3);
             document.add(table);
-        }
-        catch (Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
         // step5
         document.close();
+    }
+
+    /**
+     * @see com.lowagie.text.pdf.PdfPTableEvent#tableLayout(com.lowagie.text.pdf.PdfPTable, float[][], float[], int,
+     * int, com.lowagie.text.pdf.PdfContentByte[])
+     */
+    public void tableLayout(PdfPTable table, float[][] width, float[] heights, int headerRows, int rowStart,
+            PdfContentByte[] canvases) {
+
+        // widths of the different cells of the first row
+        float[] widths = width[0];
+
+        PdfContentByte cb = canvases[PdfPTable.TEXTCANVAS];
+        cb.saveState();
+        // border for the complete table
+        cb.setLineWidth(2);
+        cb.setRGBColorStroke(255, 0, 0);
+        cb.rectangle(widths[0], heights[heights.length - 1], widths[widths.length - 1] - widths[0],
+                heights[0] - heights[heights.length - 1]);
+        cb.stroke();
+
+        // border for the header rows
+        if (headerRows > 0) {
+            float headerHeight = heights[0];
+            for (int k = 0; k < headerRows; ++k) {
+                headerHeight += heights[k];
+            }
+            cb.setRGBColorStroke(0, 0, 255);
+            cb.rectangle(widths[0], heights[headerRows], widths[widths.length - 1] - widths[0],
+                    heights[0] - heights[headerRows]);
+            cb.stroke();
+        }
+        cb.restoreState();
+
+        cb = canvases[PdfPTable.BASECANVAS];
+        cb.saveState();
+        // border for the cells
+        cb.setLineWidth(.5f);
+        // loop over the rows
+        for (int line = 0; line < heights.length - 1; ++line) {
+            // loop over the columns
+            for (int col = 0; col < widths.length - 1; ++col) {
+                if (line == 0 && col == 0) {
+                    cb.setAction(new PdfAction("https://github.com/LibrePDF/OpenPDF"),
+                            widths[col], heights[line + 1], widths[col + 1], heights[line]);
+                }
+                cb.setRGBColorStrokeF((float) Math.random(), (float) Math.random(), (float) Math.random());
+                // horizontal borderline
+                cb.moveTo(widths[col], heights[line]);
+                cb.lineTo(widths[col + 1], heights[line]);
+                cb.stroke();
+                // vertical borderline
+                cb.setRGBColorStrokeF((float) Math.random(), (float) Math.random(), (float) Math.random());
+                cb.moveTo(widths[col], heights[line]);
+                cb.lineTo(widths[col], heights[line + 1]);
+                cb.stroke();
+            }
+        }
+        cb.restoreState();
     }
 }

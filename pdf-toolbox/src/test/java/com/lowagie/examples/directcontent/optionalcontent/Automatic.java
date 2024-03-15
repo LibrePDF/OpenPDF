@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.directcontent.optionalcontent;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -25,14 +22,17 @@ import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfLayer;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Automatic layer grouping and nesting
  */
 public class Automatic {
-       
+
     /**
      * Automatic grouping and nesting.
+     *
      * @param args no arguments needed
      */
     public static void main(String[] args) {
@@ -48,7 +48,8 @@ public class Automatic {
             document.open();
             // step 4
             PdfContentByte cb = writer.getDirectContent();
-            Phrase explanation = new Phrase("Automatic layer grouping and nesting", new Font(Font.HELVETICA, 20, Font.BOLD, Color.red));
+            Phrase explanation = new Phrase("Automatic layer grouping and nesting",
+                    new Font(Font.HELVETICA, 20, Font.BOLD, Color.red));
             ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, explanation, 50, 650, 0);
             PdfLayer l12 = new PdfLayer("Layer nesting", writer);
             PdfLayer l1 = new PdfLayer("Layer 1", writer);
@@ -77,11 +78,10 @@ public class Automatic {
             ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, p4, 50, 450, 0);
             cb.endLayer();
             cb.sanityCheck();
-            
+
             // step 5
             document.close();
-        }
-        catch(Exception de) {
+        } catch (Exception de) {
             de.printStackTrace();
         }
     }

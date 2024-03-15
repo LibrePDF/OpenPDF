@@ -1,22 +1,22 @@
 package com.lowagie.text;
 
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Objects;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
-
 public class FooterTableTest {
+
     @Test
     public void imageLeftAlignmentPositionTest() throws IOException {
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, new ByteArrayOutputStream());
 
-        Image jpg = Image.getInstance(Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
+        Image jpg = Image.getInstance(
+                Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
         jpg.setAlignment(Image.RIGHT);
 
         PdfPTable table = new PdfPTable(3);

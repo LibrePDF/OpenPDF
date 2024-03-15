@@ -9,15 +9,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 
 package com.lowagie.examples.forms;
 
-
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -28,31 +24,38 @@ import com.lowagie.text.pdf.PdfAppearance;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfFormField;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Generates an Acroform with a PushButton
+ *
  * @author blowagie
  */
 public class FormPushButton {
+
     /**
      * Generates an Acroform with a PushButton
+     *
      * @param args no arguments needed here
      */
     public static void main(String[] args) {
-        
+
         System.out.println("PushButton");
         Document.compress = false;
         // step 1: creation of a document-object
         Document document = new Document(PageSize.A4);
-        
+
         try {
-            
+
             // step 2:
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("pushbutton.pdf"));
-            
+            PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("pushbutton.pdf")));
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4:
             PdfFormField pushbutton = PdfFormField.createPushButton(writer);
             PdfContentByte cb = writer.getDirectContent();
@@ -68,20 +71,20 @@ public class FormPushButton {
             PdfAppearance down = cb.createAppearance(100, 50);
             down.setColorFill(Color.BLUE);
             down.rectangle(5, 5, 90, 40);
-            down.fill();            
+            down.fill();
             pushbutton.setFieldName("PushMe");
             pushbutton.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, normal);
             pushbutton.setAppearance(PdfAnnotation.APPEARANCE_ROLLOVER, rollover);
             pushbutton.setAppearance(PdfAnnotation.APPEARANCE_DOWN, down);
             pushbutton.setWidget(new Rectangle(100, 700, 200, 750), PdfAnnotation.HIGHLIGHT_PUSH);
             writer.addAnnotation(pushbutton);
-            
-        }
-        catch(DocumentException | IOException de) {
+
+        } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());
         }
 
         // step 5: we close the document
         document.close();
+        Document.compress = true;
     }
 }

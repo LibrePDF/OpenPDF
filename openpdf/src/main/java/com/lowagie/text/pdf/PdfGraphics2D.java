@@ -51,7 +51,6 @@ package com.lowagie.text.pdf;
 
 import com.lowagie.text.pdf.internal.PolylineShape;
 import com.lowagie.text.utils.SystemPropertyUtil;
-
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -118,18 +117,25 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
 
 public class PdfGraphics2D extends Graphics2D {
-    
+
+    public static final int AFM_DIVISOR = 1000; // used to calculate coordinates
     private static final int FILL = 1;
     private static final int STROKE = 2;
     private static final int CLIP = 3;
-    private BasicStroke strokeOne = new BasicStroke(1);
-    
     private static final AffineTransform IDENTITY = new AffineTransform();
-    
-    private static final Set<String>	 LOGICAL_FONT_NAMES                = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Dialog", "DialogInput", "Monospaced", "Serif", "SansSerif")));
-    private static final String			 BOLD_FONT_FACE_NAME_SUFFIX        = ".bold";
-    private static final String			 BOLD_ITALIC_FONT_FACE_NAME_SUFFIX = ".bolditalic";
-    
+
+    private static final Set<String> LOGICAL_FONT_NAMES = Collections.unmodifiableSet(
+            new HashSet<>(Arrays.asList("Dialog", "DialogInput", "Monospaced", "Serif", "SansSerif")));
+    private static final String BOLD_FONT_FACE_NAME_SUFFIX = ".bold";
+    private static final String BOLD_ITALIC_FONT_FACE_NAME_SUFFIX = ".bolditalic";
+    private final CompositeFontDrawer compositeFontDrawer = new CompositeFontDrawer();
+    // Added by Jurij Bilas
+    protected boolean underline;          // indicates if the font style is underlined
+    protected PdfGState[] fillGState = new PdfGState[256];
+    protected PdfGState[] strokeGState = new PdfGState[256];
+    protected int currentFillGState = 255;
+    protected int currentStrokeGState = 255;
+    private BasicStroke strokeOne = new BasicStroke(1);
     private Font font;
     private BaseFont baseFont;
     private float fontSize;
@@ -138,64 +144,37 @@ public class PdfGraphics2D extends Graphics2D {
     private Color background;
     private float width;
     private float height;
-    
     private Area clip;
-    
-    private RenderingHints rhints = new RenderingHints(null);
-    
+    private final RenderingHints rhints = new RenderingHints(null);
     private Stroke stroke;
     private Stroke originalStroke;
-    
     private PdfContentByte cb;
-    
-    /** Storage for BaseFont objects created. */
+    /**
+     * Storage for BaseFont objects created.
+     */
     private Map<String, BaseFont> baseFonts;
-    
     private boolean disposeCalled = false;
-    
     private FontMapper fontMapper;
-    
     private List<Object> kids;
-    
     private boolean kid = false;
-    
     private Graphics2D dg2 = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB).createGraphics();
-    
     private boolean onlyShapes = false;
-    
     private Stroke oldStroke;
     private Paint paintFill;
     private Paint paintStroke;
-    
     private MediaTracker mediaTracker;
-
-    // Added by Jurij Bilas
-    protected boolean underline;          // indicates if the font style is underlined
-
-    protected PdfGState[] fillGState = new PdfGState[256];
-    protected PdfGState[] strokeGState = new PdfGState[256];
-    protected int currentFillGState = 255;
-    protected int currentStrokeGState = 255;
-    
-    public static final int AFM_DIVISOR = 1000; // used to calculate coordinates
-
     private boolean convertImagesToJPEG = false;
     private float jpegQuality = .95f;
-
     // Added by Alexej Suchov
     private float alpha;
-
     // Added by Alexej Suchov
     private Composite composite;
-
     // Added by Alexej Suchov
     private Paint realPaint;
-    
-    private final CompositeFontDrawer compositeFontDrawer = new CompositeFontDrawer();
-
     // make use of compositeFontDrawer configurable ... may be set via property or directly via setter
-    private boolean isCompositeFontDrawerEnabled = SystemPropertyUtil.getBoolean("com.github.librepdf.openpdf.compositeFontDrawerEnabled", true);
-    
+    private boolean isCompositeFontDrawerEnabled = SystemPropertyUtil.getBoolean(
+            "com.github.librepdf.openpdf.compositeFontDrawerEnabled", true);
+
     private PdfGraphics2D() {
         dg2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -203,9 +182,54 @@ public class PdfGraphics2D extends Graphics2D {
     }
 
     /**
+     * Copy constructor for child PdfGraphics2D objects.
+     *
+     * @param parent the parent PdfGraphics2D
+     * @see #create()
+     */
+    protected PdfGraphics2D(PdfGraphics2D parent) {
+        this();
+        rhints.putAll(parent.rhints);
+        onlyShapes = parent.onlyShapes;
+        transform = new AffineTransform(parent.transform);
+        baseFonts = parent.baseFonts;
+        fontMapper = parent.fontMapper;
+        paint = parent.paint;
+        fillGState = parent.fillGState;
+        currentFillGState = parent.currentFillGState;
+        currentStrokeGState = parent.currentStrokeGState;
+        strokeGState = parent.strokeGState;
+        background = parent.background;
+        mediaTracker = parent.mediaTracker;
+        convertImagesToJPEG = parent.convertImagesToJPEG;
+        jpegQuality = parent.jpegQuality;
+        setFont(parent.font);
+        cb = parent.cb.getDuplicate();
+        cb.saveState();
+        width = parent.width;
+        height = parent.height;
+        followPath(new Area(new Rectangle2D.Float(0, 0, width, height)), CLIP);
+        if (parent.clip != null) {
+            clip = new Area(parent.clip);
+        }
+        composite = parent.composite;
+        stroke = parent.stroke;
+        originalStroke = parent.originalStroke;
+        strokeOne = (BasicStroke) transformStroke(strokeOne);
+        oldStroke = parent.strokeOne;
+        setStrokeDiff(oldStroke, null);
+        cb.saveState();
+        if (clip != null) {
+            followPath(clip, CLIP);
+        }
+        kid = true;
+    }
+
+    /**
      * Shortcut constructor for PDFGraphics2D.
-     * @param cb the PdfContentByte
-     * @param width the width
+     *
+     * @param cb     the PdfContentByte
+     * @param width  the width
      * @param height the height
      */
     public PdfGraphics2D(PdfContentByte cb, float width, float height) {
@@ -214,15 +238,17 @@ public class PdfGraphics2D extends Graphics2D {
 
     /**
      * Constructor for PDFGraphics2D.
-     * @param cb                    The PdfContentByte
-     * @param width                 The width
-     * @param height                The height
-     * @param fontMapper            The fonts to put in the BaseFont Map
-     * @param onlyShapes            True if there are only shapes, false otherwise
-     * @param convertImagesToJPEG   True to convert to JPEG, false otherwise
-     * @param quality               The JPEG quality
+     *
+     * @param cb                  The PdfContentByte
+     * @param width               The width
+     * @param height              The height
+     * @param fontMapper          The fonts to put in the BaseFont Map
+     * @param onlyShapes          True if there are only shapes, false otherwise
+     * @param convertImagesToJPEG True to convert to JPEG, false otherwise
+     * @param quality             The JPEG quality
      */
-    public PdfGraphics2D(PdfContentByte cb, float width, float height, FontMapper fontMapper, boolean onlyShapes, boolean convertImagesToJPEG, float quality) {
+    public PdfGraphics2D(PdfContentByte cb, float width, float height, FontMapper fontMapper, boolean onlyShapes,
+            boolean convertImagesToJPEG, float quality) {
         super();
         dg2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -234,8 +260,9 @@ public class PdfGraphics2D extends Graphics2D {
         this.baseFonts = new HashMap<>();
         if (!onlyShapes) {
             this.fontMapper = fontMapper;
-            if (this.fontMapper == null)
+            if (this.fontMapper == null) {
                 this.fontMapper = new DefaultFontMapper();
+            }
         }
         paint = Color.black;
         background = Color.white;
@@ -250,21 +277,32 @@ public class PdfGraphics2D extends Graphics2D {
         setStrokeDiff(stroke, null);
         cb.saveState();
     }
-    
+
+    /**
+     * Calculates position and/or stroke thickness depending on the font size
+     *
+     * @param d value to be converted
+     * @param i font size
+     * @return position and/or stroke thickness depending on the font size
+     */
+    public static double asPoints(double d, int i) {
+        return d * i / AFM_DIVISOR;
+    }
+
     /**
      * @see Graphics2D#draw(Shape)
      */
     public void draw(Shape s) {
         followPath(s, STROKE);
     }
-    
+
     /**
      * @see Graphics2D#drawImage(Image, AffineTransform, ImageObserver)
      */
     public boolean drawImage(Image img, AffineTransform xform, ImageObserver obs) {
         return drawImage(img, null, xform, null, obs);
     }
-    
+
     /**
      * @see Graphics2D#drawImage(BufferedImage, BufferedImageOp, int, int)
      */
@@ -276,14 +314,14 @@ public class PdfGraphics2D extends Graphics2D {
         }
         drawImage(result, x, y, null);
     }
-    
+
     /**
      * @see Graphics2D#drawRenderedImage(RenderedImage, AffineTransform)
      */
     public void drawRenderedImage(RenderedImage img, AffineTransform xform) {
         BufferedImage image = null;
         if (img instanceof BufferedImage) {
-            image = (BufferedImage)img;
+            image = (BufferedImage) img;
         } else {
             ColorModel cm = img.getColorModel();
             int width = img.getWidth();
@@ -292,60 +330,52 @@ public class PdfGraphics2D extends Graphics2D {
             boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
             Hashtable<String, Object> properties = new Hashtable<>();
             String[] keys = img.getPropertyNames();
-            if (keys!=null) {
+            if (keys != null) {
                 for (String key : keys) {
                     properties.put(key, img.getProperty(key));
                 }
             }
             BufferedImage result = new BufferedImage(cm, raster, isAlphaPremultiplied, properties);
             img.copyData(raster);
-            image=result;
+            image = result;
         }
         drawImage(image, xform, null);
     }
-    
+
     /**
      * @see Graphics2D#drawRenderableImage(RenderableImage, AffineTransform)
      */
     public void drawRenderableImage(RenderableImage img, AffineTransform xform) {
         drawRenderedImage(img.createDefaultRendering(), xform);
     }
-    
+
     /**
      * @see Graphics#drawString(String, int, int)
      */
     public void drawString(String s, int x, int y) {
-        drawString(s, (float)x, (float)y);
+        drawString(s, (float) x, (float) y);
     }
-    
+
     /**
-     * Calculates position and/or stroke thickness depending on the font size
-     * @param d value to be converted
-     * @param i font size
-     * @return position and/or stroke thickness depending on the font size
-     */
-    public static double asPoints(double d, int i) {
-        return d * i / AFM_DIVISOR;
-    }
-    /**
-     * This routine goes through the attributes and sets the font
-     * before calling the actual string drawing routine
-     * @param iter  the AttributedCharacterIterator
+     * This routine goes through the attributes and sets the font before calling the actual string drawing routine
+     *
+     * @param iter the AttributedCharacterIterator
      */
     @SuppressWarnings("unchecked")
     protected void doAttributes(AttributedCharacterIterator iter) {
         underline = false;
         Set<AttributedCharacterIterator.Attribute> set = iter.getAttributes().keySet();
         for (AttributedCharacterIterator.Attribute attribute : set) {
-            if (!(attribute instanceof TextAttribute))
+            if (!(attribute instanceof TextAttribute textattribute)) {
                 continue;
-            TextAttribute textattribute = (TextAttribute) attribute;
+            }
             if (textattribute.equals(TextAttribute.FONT)) {
                 Font font = (Font) iter.getAttributes().get(textattribute);
                 setFont(font);
             } else if (textattribute.equals(TextAttribute.UNDERLINE)) {
-                if (iter.getAttributes().get(textattribute) == TextAttribute.UNDERLINE_ON)
+                if (iter.getAttributes().get(textattribute) == TextAttribute.UNDERLINE_ON) {
                     underline = true;
+                }
             } else if (textattribute.equals(TextAttribute.SIZE)) {
                 Object obj = iter.getAttributes().get(textattribute);
                 if (obj instanceof Integer) {
@@ -359,17 +389,17 @@ public class PdfGraphics2D extends Graphics2D {
                 setColor((Color) iter.getAttributes().get(textattribute));
             } else if (textattribute.equals(TextAttribute.FAMILY)) {
                 Font font = getFont();
-                Map<TextAttribute, Object> fontAttributes = (Map<TextAttribute, Object>)font.getAttributes();
+                Map<TextAttribute, Object> fontAttributes = (Map<TextAttribute, Object>) font.getAttributes();
                 fontAttributes.put(TextAttribute.FAMILY, iter.getAttributes().get(textattribute));
                 setFont(font.deriveFont(fontAttributes));
             } else if (textattribute.equals(TextAttribute.POSTURE)) {
                 Font font = getFont();
-                Map<TextAttribute, Object> fontAttributes = (Map<TextAttribute, Object>)font.getAttributes();
+                Map<TextAttribute, Object> fontAttributes = (Map<TextAttribute, Object>) font.getAttributes();
                 fontAttributes.put(TextAttribute.POSTURE, iter.getAttributes().get(textattribute));
                 setFont(font.deriveFont(fontAttributes));
             } else if (textattribute.equals(TextAttribute.WEIGHT)) {
                 Font font = getFont();
-                Map<TextAttribute, Object> fontAttributes = (Map<TextAttribute, Object>)font.getAttributes();
+                Map<TextAttribute, Object> fontAttributes = (Map<TextAttribute, Object>) font.getAttributes();
                 fontAttributes.put(TextAttribute.WEIGHT, iter.getAttributes().get(textattribute));
                 setFont(font.deriveFont(fontAttributes));
             }
@@ -385,15 +415,17 @@ public class PdfGraphics2D extends Graphics2D {
         }
         setFillPaint();
         if (onlyShapes) {
-            drawGlyphVector(this.font.layoutGlyphVector(getFontRenderContext(), s.toCharArray(), 0, s.length(), java.awt.Font.LAYOUT_LEFT_TO_RIGHT), x, y);
-//            Use the following line to compile in JDK 1.3    
+            drawGlyphVector(this.font.layoutGlyphVector(getFontRenderContext(), s.toCharArray(), 0, s.length(),
+                    java.awt.Font.LAYOUT_LEFT_TO_RIGHT), x, y);
+//            Use the following line to compile in JDK 1.3
 //            drawGlyphVector(this.font.createGlyphVector(getFontRenderContext(), s), x, y);
         } else {
             if (!Float.isFinite(fontSize) || fontSize < PdfContentByte.MIN_FONT_SIZE) {
                 return;
             }
             double width = 0;
-            if (isCompositeFontDrawerEnabled && CompositeFontDrawer.isSupported() && compositeFontDrawer.isCompositeFont(font)) {
+            if (isCompositeFontDrawerEnabled && CompositeFontDrawer.isSupported()
+                    && compositeFontDrawer.isCompositeFont(font)) {
                 width = compositeFontDrawer.drawString(s, font, x, y, this::getCachedBaseFont, this::drawString);
             } else {
                 // Splitting string to the parts depending on they visibility preserves
@@ -404,22 +436,22 @@ public class PdfGraphics2D extends Graphics2D {
                     width += drawString(str, baseFont, x + width, y);
                 }
             }
-            if(underline) {
+            if (underline) {
                 // These two are supposed to be taken from the .AFM file
                 //int UnderlinePosition = -100;
                 int UnderlineThickness = 50;
                 //
-                double d = asPoints(UnderlineThickness, (int)fontSize);
+                double d = asPoints(UnderlineThickness, (int) fontSize);
                 Stroke savedStroke = originalStroke;
-                setStroke(new BasicStroke((float)d));
-                y = (float)(y + asPoints(UnderlineThickness, (int)fontSize));
-                Line2D line = new Line2D.Double(x, y, width+x, y);
+                setStroke(new BasicStroke((float) d));
+                y = (float) (y + asPoints(UnderlineThickness, (int) fontSize));
+                Line2D line = new Line2D.Double(x, y, width + x, y);
                 draw(line);
                 setStroke(savedStroke);
             }
         }
     }
-    
+
     private double drawString(String s, BaseFont baseFont, double x, double y) {
         boolean restoreTextRenderingMode = false;
         AffineTransform at = getTransform();
@@ -429,7 +461,7 @@ public class PdfGraphics2D extends Graphics2D {
             at2.concatenate(font.getTransform());
             setTransform(at2);
             AffineTransform inverse = this.normalizeMatrix();
-            AffineTransform flipper = AffineTransform.getScaleInstance(1,-1);
+            AffineTransform flipper = AffineTransform.getScaleInstance(1, -1);
             inverse.concatenate(flipper);
             double[] mx = new double[6];
             inverse.getMatrix(mx);
@@ -459,15 +491,15 @@ public class PdfGraphics2D extends Graphics2D {
                         angle2 = -angle2;
                     }
                     if (angle == 0) {
-                         mx[2] = angle2 / 100.0f;
+                        mx[2] = angle2 / 100.0f;
                     }
                 }
-           }
-           cb.setTextMatrix((float)mx[0], (float)mx[1], (float)mx[2], (float)mx[3], (float)mx[4], (float)mx[5]);
-           Float fontTextAttributeWidth = (Float)font.getAttributes().get(TextAttribute.WIDTH);
-           fontTextAttributeWidth = (fontTextAttributeWidth == null)
-                                    ? TextAttribute.WIDTH_REGULAR
-                                    : fontTextAttributeWidth;
+            }
+            cb.setTextMatrix((float) mx[0], (float) mx[1], (float) mx[2], (float) mx[3], (float) mx[4], (float) mx[5]);
+            Float fontTextAttributeWidth = (Float) font.getAttributes().get(TextAttribute.WIDTH);
+            fontTextAttributeWidth = (fontTextAttributeWidth == null)
+                    ? TextAttribute.WIDTH_REGULAR
+                    : fontTextAttributeWidth;
 
             if (!TextAttribute.WIDTH_REGULAR.equals(fontTextAttributeWidth)) {
                 cb.setHorizontalScaling(100.0f / fontTextAttributeWidth);
@@ -481,24 +513,23 @@ public class PdfGraphics2D extends Graphics2D {
                 Float weight = (Float) font.getAttributes().get(TextAttribute.WEIGHT);
                 if (weight == null) {
                     weight = (font.isBold()) ? TextAttribute.WEIGHT_BOLD
-                                             : TextAttribute.WEIGHT_REGULAR;
+                            : TextAttribute.WEIGHT_REGULAR;
                 }
                 String fontFaceName = font.getFontName();
                 String fontLogicalName = font.getName();
                 if ((font.isBold() || (weight >= TextAttribute.WEIGHT_SEMIBOLD))
-                    && (fontFaceName.equals(fontLogicalName) ||
-                    		// bold logical font face name has suffix ".bold" / ".bolditalic"
-                    		(LOGICAL_FONT_NAMES.contains(fontLogicalName) &&
-                    				(fontFaceName.equals(fontLogicalName + BOLD_FONT_FACE_NAME_SUFFIX) ||
-                    				 fontFaceName.equals(fontLogicalName + BOLD_ITALIC_FONT_FACE_NAME_SUFFIX))))) {
+                        && (fontFaceName.equals(fontLogicalName) ||
+                        // bold logical font face name has suffix ".bold" / ".bolditalic"
+                        (LOGICAL_FONT_NAMES.contains(fontLogicalName) &&
+                                (fontFaceName.equals(fontLogicalName + BOLD_FONT_FACE_NAME_SUFFIX) ||
+                                        fontFaceName.equals(fontLogicalName + BOLD_ITALIC_FONT_FACE_NAME_SUFFIX))))) {
                     // Simulate a bold font.
                     float strokeWidth = font.getSize2D() * (weight - TextAttribute.WEIGHT_REGULAR) / 30f;
                     if (strokeWidth != 1) {
-                        if(realPaint instanceof Color){
+                        if (realPaint instanceof Color color) {
                             cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE);
                             oldStroke = new BasicStroke(strokeWidth);
                             cb.setLineWidth(strokeWidth);
-                            Color color = (Color)realPaint;
                             int alpha = color.getAlpha();
                             if (alpha != currentStrokeGState) {
                                 currentStrokeGState = alpha;
@@ -537,11 +568,11 @@ public class PdfGraphics2D extends Graphics2D {
                 }
                 double leftX = cb.getXTLM();
                 double leftY = cb.getYTLM();
-                PdfAction action = new  PdfAction(url.toString());
-                cb.setAction(action, (float)leftX, (float)leftY, (float)(leftX+width), (float)(leftY+height));
+                PdfAction action = new PdfAction(url.toString());
+                cb.setAction(action, (float) leftX, (float) leftY, (float) (leftX + width), (float) (leftY + height));
             }
             if (s.length() > 1) {
-                float adv = ((float)width - baseFont.getWidthPoint(s, fontSize)) / (s.length() - 1);
+                float adv = ((float) width - baseFont.getWidthPoint(s, fontSize)) / (s.length() - 1);
                 cb.setCharacterSpacing(adv);
             }
             cb.showText(s);
@@ -568,9 +599,9 @@ public class PdfGraphics2D extends Graphics2D {
      * @see Graphics#drawString(AttributedCharacterIterator, int, int)
      */
     public void drawString(AttributedCharacterIterator iterator, int x, int y) {
-        drawString(iterator, (float)x, (float)y);
+        drawString(iterator, (float) x, (float) y);
     }
-    
+
     /**
      * @see Graphics2D#drawString(AttributedCharacterIterator, float, float)
      */
@@ -583,26 +614,23 @@ public class PdfGraphics2D extends Graphics2D {
         drawString(sb.toString(),x,y);
 */
         StringBuilder stringbuffer = new StringBuilder(iter.getEndIndex());
-        for(char c = iter.first(); c != '\uFFFF'; c = iter.next())
-        {
-            if(iter.getIndex() == iter.getRunStart())
-            {
-                if(stringbuffer.length() > 0)
-                {
+        for (char c = iter.first(); c != '\uFFFF'; c = iter.next()) {
+            if (iter.getIndex() == iter.getRunStart()) {
+                if (stringbuffer.length() > 0) {
                     drawString(stringbuffer.toString(), x, y);
                     FontMetrics fontmetrics = getFontMetrics();
-                    x = (float)(x + fontmetrics.getStringBounds(stringbuffer.toString(), this).getWidth());
+                    x = (float) (x + fontmetrics.getStringBounds(stringbuffer.toString(), this).getWidth());
                     stringbuffer.delete(0, stringbuffer.length());
                 }
                 doAttributes(iter);
             }
             stringbuffer.append(c);
         }
-        
+
         drawString(stringbuffer.toString(), x, y);
         underline = false;
     }
-    
+
     /**
      * @see Graphics2D#drawGlyphVector(GlyphVector, float, float)
      */
@@ -610,14 +638,14 @@ public class PdfGraphics2D extends Graphics2D {
         Shape s = g.getOutline(x, y);
         fill(s);
     }
-    
+
     /**
      * @see Graphics2D#fill(Shape)
      */
     public void fill(Shape s) {
         followPath(s, FILL);
     }
-    
+
     /**
      * @see Graphics2D#hit(Rectangle, Shape, boolean)
      */
@@ -627,36 +655,281 @@ public class PdfGraphics2D extends Graphics2D {
         }
         s = transform.createTransformedShape(s);
         Area area = new Area(s);
-        if (clip != null)
+        if (clip != null) {
             area.intersect(clip);
+        }
         return area.intersects(rect.x, rect.y, rect.width, rect.height);
     }
-    
+
     /**
      * @see Graphics2D#getDeviceConfiguration()
      */
     public GraphicsConfiguration getDeviceConfiguration() {
         return dg2.getDeviceConfiguration();
     }
-    
+
+    private Stroke transformStroke(Stroke stroke) {
+        if (!(stroke instanceof BasicStroke st)) {
+            return stroke;
+        }
+        float scale = (float) Math.sqrt(Math.abs(transform.getDeterminant()));
+        float[] dash = st.getDashArray();
+        if (dash != null) {
+            for (int k = 0; k < dash.length; ++k) {
+                dash[k] *= scale;
+            }
+        }
+        return new BasicStroke(st.getLineWidth() * scale, st.getEndCap(), st.getLineJoin(), st.getMiterLimit(), dash,
+                st.getDashPhase() * scale);
+    }
+
+    private void setStrokeDiff(Stroke newStroke, Stroke oldStroke) {
+        if (newStroke == oldStroke) {
+            return;
+        }
+        if (!(newStroke instanceof BasicStroke basicStroke)) {
+            return;
+        }
+        boolean oldOk = (oldStroke instanceof BasicStroke);
+        BasicStroke oStroke = null;
+        if (oldOk) {
+            oStroke = (BasicStroke) oldStroke;
+        }
+        if (!oldOk || basicStroke.getLineWidth() != oStroke.getLineWidth()) {
+            cb.setLineWidth(basicStroke.getLineWidth());
+        }
+        if (!oldOk || basicStroke.getEndCap() != oStroke.getEndCap()) {
+            switch (basicStroke.getEndCap()) {
+                case BasicStroke.CAP_BUTT:
+                    cb.setLineCap(0);
+                    break;
+                case BasicStroke.CAP_SQUARE:
+                    cb.setLineCap(2);
+                    break;
+                default:
+                    cb.setLineCap(1);
+            }
+        }
+        if (!oldOk || basicStroke.getLineJoin() != oStroke.getLineJoin()) {
+            switch (basicStroke.getLineJoin()) {
+                case BasicStroke.JOIN_MITER:
+                    cb.setLineJoin(0);
+                    break;
+                case BasicStroke.JOIN_BEVEL:
+                    cb.setLineJoin(2);
+                    break;
+                default:
+                    cb.setLineJoin(1);
+            }
+        }
+        if (!oldOk || basicStroke.getMiterLimit() != oStroke.getMiterLimit()) {
+            cb.setMiterLimit(basicStroke.getMiterLimit());
+        }
+        boolean makeDash;
+        if (oldOk) {
+            if (basicStroke.getDashArray() != null) {
+                if (basicStroke.getDashPhase() != oStroke.getDashPhase()) {
+                    makeDash = true;
+                } else {
+                    makeDash = !java.util.Arrays.equals(basicStroke.getDashArray(), oStroke.getDashArray());
+                }
+            } else {
+                makeDash = oStroke.getDashArray() != null;
+            }
+        } else {
+            makeDash = true;
+        }
+        if (makeDash) {
+            float[] dash = basicStroke.getDashArray();
+            if (dash == null) {
+                cb.setLiteral("[]0 d\n");
+            } else {
+                cb.setLiteral('[');
+                int lim = dash.length;
+                for (float dash1 : dash) {
+                    cb.setLiteral(dash1);
+                    cb.setLiteral(' ');
+                }
+                cb.setLiteral(']');
+                cb.setLiteral(basicStroke.getDashPhase());
+                cb.setLiteral(" d\n");
+            }
+        }
+    }
+
+    /**
+     * Sets a rendering hint
+     *
+     * @param arg0 the Key
+     * @param arg1 the Object to associate to it
+     */
+    public void setRenderingHint(Key arg0, Object arg1) {
+        if (arg1 != null) {
+            rhints.put(arg0, arg1);
+        } else {
+            if (arg0 instanceof HyperLinkKey) {
+                rhints.put(arg0, HyperLinkKey.VALUE_HYPERLINKKEY_OFF);
+            } else {
+                rhints.remove(arg0);
+            }
+        }
+    }
+
+    /**
+     * @param arg0 a key
+     * @return the rendering hint
+     */
+    public Object getRenderingHint(Key arg0) {
+        return rhints.get(arg0);
+    }
+
+    /**
+     * @see Graphics2D#addRenderingHints(Map)
+     */
+    public void addRenderingHints(Map hints) {
+        rhints.putAll(hints);
+    }
+
+    /**
+     * @see Graphics2D#getRenderingHints()
+     */
+    public RenderingHints getRenderingHints() {
+        return rhints;
+    }
+
+    /**
+     * @see Graphics2D#setRenderingHints(Map)
+     */
+    public void setRenderingHints(Map hints) {
+        rhints.clear();
+        rhints.putAll(hints);
+    }
+
+    /**
+     * @see Graphics#translate(int, int)
+     */
+    public void translate(int x, int y) {
+        translate(x, (double) y);
+    }
+
+    /**
+     * @see Graphics2D#translate(double, double)
+     */
+    public void translate(double tx, double ty) {
+        transform.translate(tx, ty);
+    }
+
+    /**
+     * @see Graphics2D#rotate(double)
+     */
+    public void rotate(double theta) {
+        transform.rotate(theta);
+    }
+
+    /**
+     * @see Graphics2D#rotate(double, double, double)
+     */
+    public void rotate(double theta, double x, double y) {
+        transform.rotate(theta, x, y);
+    }
+
+    /**
+     * @see Graphics2D#scale(double, double)
+     */
+    public void scale(double sx, double sy) {
+        transform.scale(sx, sy);
+        this.stroke = transformStroke(originalStroke);
+    }
+
+    /**
+     * @see Graphics2D#shear(double, double)
+     */
+    public void shear(double shx, double shy) {
+        transform.shear(shx, shy);
+    }
+
+    /**
+     * @see Graphics2D#transform(AffineTransform)
+     */
+    public void transform(AffineTransform tx) {
+        transform.concatenate(tx);
+        this.stroke = transformStroke(originalStroke);
+    }
+
+    /**
+     * @see Graphics2D#getTransform()
+     */
+    public AffineTransform getTransform() {
+        return new AffineTransform(transform);
+    }
+
+    /**
+     * @see Graphics2D#setTransform(AffineTransform)
+     */
+    public void setTransform(AffineTransform t) {
+        transform = new AffineTransform(t);
+        this.stroke = transformStroke(originalStroke);
+    }
+
     /**
      * Method contributed by Alexej Suchov
+     *
+     * @see Graphics2D#getPaint()
+     */
+    public Paint getPaint() {
+        if (realPaint != null) {
+            return realPaint;
+        } else {
+            return paint;
+        }
+    }
+
+    /**
+     * Method contributed by Alexej Suchov
+     *
+     * @see Graphics2D#setPaint(Paint)
+     */
+    public void setPaint(Paint paint) {
+        if (paint == null) {
+            return;
+        }
+        this.paint = paint;
+        realPaint = paint;
+
+        if ((composite instanceof AlphaComposite co) && (paint instanceof Color)) {
+
+            if (co.getRule() == 3) {
+                Color c = (Color) paint;
+                this.paint = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (c.getAlpha() * alpha));
+                realPaint = paint;
+            }
+        }
+
+    }
+
+    /**
+     * @see Graphics2D#getComposite()
+     */
+    public Composite getComposite() {
+        return composite;
+    }
+
+    /**
+     * Method contributed by Alexej Suchov
+     *
      * @see Graphics2D#setComposite(Composite)
      */
     public void setComposite(Composite comp) {
-        
-        if (comp instanceof AlphaComposite) {
 
-            AlphaComposite composite = (AlphaComposite) comp;
+        if (comp instanceof AlphaComposite composite) {
 
             if (composite.getRule() == 3) {
 
                 alpha = composite.getAlpha();
                 this.composite = composite;
 
-                if (realPaint != null && (realPaint instanceof Color)) {
+                if (realPaint != null && (realPaint instanceof Color c)) {
 
-                    Color c = (Color) realPaint;
                     paint = new Color(c.getRed(), c.getGreen(), c.getBlue(),
                             (int) (c.getAlpha() * alpha));
                 }
@@ -668,112 +941,28 @@ public class PdfGraphics2D extends Graphics2D {
         alpha = 1.0F;
 
     }
-    
+
     /**
-     * Method contributed by Alexej Suchov
-     * @see Graphics2D#setPaint(Paint)
+     * @see Graphics2D#getBackground()
      */
-    public void setPaint(Paint paint) {
-        if (paint == null)
-            return;
-        this.paint = paint;
-        realPaint = paint;
-
-        if ((composite instanceof AlphaComposite) && (paint instanceof Color)) {
-            
-            AlphaComposite co = (AlphaComposite) composite;
-            
-            if (co.getRule() == 3) {
-                Color c = (Color) paint;
-                this.paint = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (c.getAlpha() * alpha));
-                realPaint = paint;
-            }
-        }
-
+    public Color getBackground() {
+        return background;
     }
 
-    private Stroke transformStroke(Stroke stroke) {
-        if (!(stroke instanceof BasicStroke))
-            return stroke;
-        BasicStroke st = (BasicStroke)stroke;
-        float scale = (float)Math.sqrt(Math.abs(transform.getDeterminant()));
-        float[] dash = st.getDashArray();
-        if (dash != null) {
-            for (int k = 0; k < dash.length; ++k)
-                dash[k] *= scale;
-        }
-        return new BasicStroke(st.getLineWidth() * scale, st.getEndCap(), st.getLineJoin(), st.getMiterLimit(), dash, st.getDashPhase() * scale);
+    /**
+     * @see Graphics2D#setBackground(Color)
+     */
+    public void setBackground(Color color) {
+        background = color;
     }
-    
-    private void setStrokeDiff(Stroke newStroke, Stroke oldStroke) {
-        if (newStroke == oldStroke)
-            return;
-        if (!(newStroke instanceof BasicStroke))
-            return;
-        BasicStroke nStroke = (BasicStroke)newStroke;
-        boolean oldOk = (oldStroke instanceof BasicStroke);
-        BasicStroke oStroke = null;
-        if (oldOk)
-            oStroke = (BasicStroke)oldStroke;
-        if (!oldOk || nStroke.getLineWidth() != oStroke.getLineWidth())
-            cb.setLineWidth(nStroke.getLineWidth());
-        if (!oldOk || nStroke.getEndCap() != oStroke.getEndCap()) {
-            switch (nStroke.getEndCap()) {
-            case BasicStroke.CAP_BUTT:
-                cb.setLineCap(0);
-                break;
-            case BasicStroke.CAP_SQUARE:
-                cb.setLineCap(2);
-                break;
-            default:
-                cb.setLineCap(1);
-            }
-        }
-        if (!oldOk || nStroke.getLineJoin() != oStroke.getLineJoin()) {
-            switch (nStroke.getLineJoin()) {
-            case BasicStroke.JOIN_MITER:
-                cb.setLineJoin(0);
-                break;
-            case BasicStroke.JOIN_BEVEL:
-                cb.setLineJoin(2);
-                break;
-            default:
-                cb.setLineJoin(1);
-            }
-        }
-        if (!oldOk || nStroke.getMiterLimit() != oStroke.getMiterLimit())
-            cb.setMiterLimit(nStroke.getMiterLimit());
-        boolean makeDash;
-        if (oldOk) {
-            if (nStroke.getDashArray() != null) {
-                if (nStroke.getDashPhase() != oStroke.getDashPhase()) {
-                    makeDash = true;
-                }
-                else makeDash = !java.util.Arrays.equals(nStroke.getDashArray(), oStroke.getDashArray());
-            }
-            else makeDash = oStroke.getDashArray() != null;
-        }
-        else {
-            makeDash = true;
-        }
-        if (makeDash) {
-            float[] dash = nStroke.getDashArray();
-            if (dash == null)
-                cb.setLiteral("[]0 d\n");
-            else {
-                cb.setLiteral('[');
-                int lim = dash.length;
-                for (float dash1 : dash) {
-                    cb.setLiteral(dash1);
-                    cb.setLiteral(' ');
-                }
-                cb.setLiteral(']');
-                cb.setLiteral(nStroke.getDashPhase());
-                cb.setLiteral(" d\n");
-            }
-        }
+
+    /**
+     * @see Graphics2D#getStroke()
+     */
+    public Stroke getStroke() {
+        return originalStroke;
     }
-    
+
     /**
      * @see Graphics2D#setStroke(Stroke)
      */
@@ -781,258 +970,77 @@ public class PdfGraphics2D extends Graphics2D {
         originalStroke = s;
         this.stroke = transformStroke(s);
     }
-    
-    
-    /**
-     * Sets a rendering hint
-     * @param arg0 the Key
-     * @param arg1 the Object to associate to it
-     */
-    public void setRenderingHint(Key arg0, Object arg1) {
-         if (arg1 != null) {
-             rhints.put(arg0, arg1);
-         } else {
-             if (arg0 instanceof HyperLinkKey)
-             {
-                 rhints.put(arg0, HyperLinkKey.VALUE_HYPERLINKKEY_OFF);
-             }
-             else
-             {
-                 rhints.remove(arg0);
-             }
-         }
-    }
-    
-    /**
-     * @param arg0 a key
-     * @return the rendering hint
-     */
-    public Object getRenderingHint(Key arg0) {
-        return rhints.get(arg0);
-    }
-    
-    /**
-     * @see Graphics2D#setRenderingHints(Map)
-     */
-    public void setRenderingHints(Map hints) {
-        rhints.clear();
-        rhints.putAll(hints);
-    }
-    
-    /**
-     * @see Graphics2D#addRenderingHints(Map)
-     */
-    public void addRenderingHints(Map hints) {
-        rhints.putAll(hints);
-    }
-    
-    /**
-     * @see Graphics2D#getRenderingHints()
-     */
-    public RenderingHints getRenderingHints() {
-        return rhints;
-    }
-    
-    /**
-     * @see Graphics#translate(int, int)
-     */
-    public void translate(int x, int y) {
-        translate((double)x, (double)y);
-    }
-    
-    /**
-     * @see Graphics2D#translate(double, double)
-     */
-    public void translate(double tx, double ty) {
-        transform.translate(tx,ty);
-    }
-    
-    /**
-     * @see Graphics2D#rotate(double)
-     */
-    public void rotate(double theta) {
-        transform.rotate(theta);
-    }
-    
-    /**
-     * @see Graphics2D#rotate(double, double, double)
-     */
-    public void rotate(double theta, double x, double y) {
-        transform.rotate(theta, x, y);
-    }
-    
-    /**
-     * @see Graphics2D#scale(double, double)
-     */
-    public void scale(double sx, double sy) {
-        transform.scale(sx, sy);
-        this.stroke = transformStroke(originalStroke);
-    }
-    
-    /**
-     * @see Graphics2D#shear(double, double)
-     */
-    public void shear(double shx, double shy) {
-        transform.shear(shx, shy);
-    }
-    
-    /**
-     * @see Graphics2D#transform(AffineTransform)
-     */
-    public void transform(AffineTransform tx) {
-        transform.concatenate(tx);
-        this.stroke = transformStroke(originalStroke);
-    }
-    
-    /**
-     * @see Graphics2D#setTransform(AffineTransform)
-     */
-    public void setTransform(AffineTransform t) {
-        transform = new AffineTransform(t);
-        this.stroke = transformStroke(originalStroke);
-    }
-    
-    /**
-     * @see Graphics2D#getTransform()
-     */
-    public AffineTransform getTransform() {
-        return new AffineTransform(transform);
-    }
-    
-    /**
-     * Method contributed by Alexej Suchov
-     * @see Graphics2D#getPaint()
-     */
-    public Paint getPaint() {
-        if (realPaint != null) {
-            return realPaint;
-        } else {
-            return paint;
-        }
-    }
-    
-    /**
-     * @see Graphics2D#getComposite()
-     */
-    public Composite getComposite() {
-        return composite;
-    }
-    
-    /**
-     * @see Graphics2D#setBackground(Color)
-     */
-    public void setBackground(Color color) {
-        background = color;
-    }
-    
-    /**
-     * @see Graphics2D#getBackground()
-     */
-    public Color getBackground() {
-        return background;
-    }
-    
-    /**
-     * @see Graphics2D#getStroke()
-     */
-    public Stroke getStroke() {
-        return originalStroke;
-    }
-    
-    
+
     /**
      * @see Graphics2D#getFontRenderContext()
      */
     public FontRenderContext getFontRenderContext() {
-        boolean antialias = RenderingHints.VALUE_TEXT_ANTIALIAS_ON.equals(getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
-        boolean fractions = RenderingHints.VALUE_FRACTIONALMETRICS_ON.equals(getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS));
+        boolean antialias = RenderingHints.VALUE_TEXT_ANTIALIAS_ON.equals(
+                getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
+        boolean fractions = RenderingHints.VALUE_FRACTIONALMETRICS_ON.equals(
+                getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS));
         return new FontRenderContext(new AffineTransform(), antialias, fractions);
     }
-    
+
     /**
      * @see Graphics#create()
      */
     public Graphics create() {
-        PdfGraphics2D g2 = new PdfGraphics2D();
-        g2.rhints.putAll( this.rhints );
-        g2.onlyShapes = this.onlyShapes;
-        g2.transform = new AffineTransform(this.transform);
-        g2.baseFonts = this.baseFonts;
-        g2.fontMapper = this.fontMapper;
-        g2.paint = this.paint;
-        g2.fillGState = this.fillGState;
-        g2.currentFillGState = this.currentFillGState;
-        g2.currentStrokeGState = this.currentStrokeGState;
-        g2.strokeGState = this.strokeGState;
-        g2.background = this.background;
-        g2.mediaTracker = this.mediaTracker;
-        g2.convertImagesToJPEG = this.convertImagesToJPEG;
-        g2.jpegQuality = this.jpegQuality;
-        g2.setFont(this.font);
-        g2.cb = this.cb.getDuplicate();
-        g2.cb.saveState();
-        g2.width = this.width;
-        g2.height = this.height;
-        g2.followPath(new Area(new Rectangle2D.Float(0, 0, width, height)), CLIP);
-        if (this.clip != null)
-            g2.clip = new Area(this.clip);
-        g2.composite = composite;
-        g2.stroke = stroke;
-        g2.originalStroke = originalStroke;
-        g2.strokeOne = (BasicStroke)g2.transformStroke(g2.strokeOne);
-        g2.oldStroke = g2.strokeOne;
-        g2.setStrokeDiff(g2.oldStroke, null);
-        g2.cb.saveState();
-        if (g2.clip != null)
-            g2.followPath(g2.clip, CLIP);
-        g2.kid = true;
-        if (this.kids == null)
-            this.kids = new ArrayList<>();
-        this.kids.add(cb.getInternalBuffer().size());
-        this.kids.add(g2);
+        PdfGraphics2D g2 = createChild();
+        if (kids == null) {
+            kids = new ArrayList<>();
+        }
+        kids.add(cb.getInternalBuffer().size());
+        kids.add(g2);
         return g2;
     }
-    
+
+    protected PdfGraphics2D createChild() {
+        return new PdfGraphics2D(this);
+    }
+
     public PdfContentByte getContent() {
         return this.cb;
     }
+
     /**
      * @see Graphics#getColor()
      */
     public Color getColor() {
         if (paint instanceof Color) {
-            return (Color)paint;
+            return (Color) paint;
         } else {
             return Color.black;
         }
     }
-    
+
     /**
      * @see Graphics#setColor(Color)
      */
     public void setColor(Color color) {
         setPaint(color);
     }
-    
+
     /**
      * @see Graphics#setPaintMode()
      */
-    public void setPaintMode() {}
-    
+    public void setPaintMode() {
+    }
+
     /**
      * @see Graphics#setXORMode(Color)
      */
     public void setXORMode(Color c1) {
-        
+
     }
-    
+
     /**
      * @see Graphics#getFont()
      */
     public Font getFont() {
         return font;
     }
-    
+
     /**
      * @see Graphics#setFont(Font)
      */
@@ -1040,19 +1048,21 @@ public class PdfGraphics2D extends Graphics2D {
      * Sets the current font.
      */
     public void setFont(Font f) {
-        if (f == null)
+        if (f == null) {
             return;
+        }
         if (onlyShapes) {
             font = f;
             return;
         }
-        if (f == font)
+        if (f == font) {
             return;
+        }
         font = f;
         fontSize = f.getSize2D();
         baseFont = getCachedBaseFont(f);
     }
-    
+
     private BaseFont getCachedBaseFont(Font f) {
         synchronized (baseFonts) {
             BaseFont bf = baseFonts.get(f.getFontName());
@@ -1063,39 +1073,40 @@ public class PdfGraphics2D extends Graphics2D {
             return bf;
         }
     }
-    
+
     /**
      * @see Graphics#getFontMetrics(Font)
      */
     public FontMetrics getFontMetrics(Font f) {
         return dg2.getFontMetrics(f);
     }
-    
+
     /**
      * @see Graphics#getClipBounds()
      */
     public Rectangle getClipBounds() {
-        if (clip == null)
+        if (clip == null) {
             return null;
+        }
         return getClip().getBounds();
     }
-    
+
     /**
      * @see Graphics#clipRect(int, int, int, int)
      */
     public void clipRect(int x, int y, int width, int height) {
-        Rectangle2D rect = new Rectangle2D.Double(x,y,width,height);
+        Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
         clip(rect);
     }
-    
+
     /**
      * @see Graphics#setClip(int, int, int, int)
      */
     public void setClip(int x, int y, int width, int height) {
-        Rectangle2D rect = new Rectangle2D.Double(x,y,width,height);
+        Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
         setClip(rect);
     }
-    
+
     /**
      * @see Graphics2D#clip(Shape)
      */
@@ -1105,37 +1116,37 @@ public class PdfGraphics2D extends Graphics2D {
             return;
         }
         s = transform.createTransformedShape(s);
-        if (clip == null)
+        if (clip == null) {
             clip = new Area(s);
-        else
+        } else {
             clip.intersect(new Area(s));
+        }
         followPath(s, CLIP);
     }
-    
+
     /**
      * @see Graphics#getClip()
      */
     public Shape getClip() {
         try {
             return transform.createInverse().createTransformedShape(clip);
-        }
-        catch (NoninvertibleTransformException e) {
+        } catch (NoninvertibleTransformException e) {
             return null;
         }
     }
-    
+
     /**
      * @see Graphics#setClip(Shape)
      */
     public void setClip(Shape s) {
         cb.restoreState();
         cb.saveState();
-        if (s != null)
+        if (s != null) {
             s = transform.createTransformedShape(s);
+        }
         if (s == null) {
             clip = null;
-        }
-        else {
+        } else {
             clip = new Area(s);
             followPath(s, CLIP);
         }
@@ -1143,14 +1154,14 @@ public class PdfGraphics2D extends Graphics2D {
         currentFillGState = currentStrokeGState = -1;
         oldStroke = strokeOne;
     }
-    
+
     /**
      * @see Graphics#copyArea(int, int, int, int, int, int)
      */
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
-        
+
     }
-    
+
     /**
      * @see Graphics#drawLine(int, int, int, int)
      */
@@ -1158,47 +1169,47 @@ public class PdfGraphics2D extends Graphics2D {
         Line2D line = new Line2D.Double(x1, y1, x2, y2);
         draw(line);
     }
-    
+
     /**
      * @see Graphics#fillRect(int, int, int, int)
      */
     public void drawRect(int x, int y, int width, int height) {
         draw(new Rectangle(x, y, width, height));
     }
-    
+
     /**
      * @see Graphics#fillRect(int, int, int, int)
      */
     public void fillRect(int x, int y, int width, int height) {
-        fill(new Rectangle(x,y,width,height));
+        fill(new Rectangle(x, y, width, height));
     }
-    
+
     /**
      * @see Graphics#clearRect(int, int, int, int)
      */
     public void clearRect(int x, int y, int width, int height) {
         Paint temp = paint;
         setPaint(background);
-        fillRect(x,y,width,height);
+        fillRect(x, y, width, height);
         setPaint(temp);
     }
-    
+
     /**
      * @see Graphics#drawRoundRect(int, int, int, int, int, int)
      */
     public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
-        RoundRectangle2D rect = new RoundRectangle2D.Double(x,y,width,height,arcWidth, arcHeight);
+        RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, arcWidth, arcHeight);
         draw(rect);
     }
-    
+
     /**
      * @see Graphics#fillRoundRect(int, int, int, int, int, int)
      */
     public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
-        RoundRectangle2D rect = new RoundRectangle2D.Double(x,y,width,height,arcWidth, arcHeight);
+        RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, arcWidth, arcHeight);
         fill(rect);
     }
-    
+
     /**
      * @see Graphics#drawOval(int, int, int, int)
      */
@@ -1206,7 +1217,7 @@ public class PdfGraphics2D extends Graphics2D {
         Ellipse2D oval = new Ellipse2D.Float(x, y, width, height);
         draw(oval);
     }
-    
+
     /**
      * @see Graphics#fillOval(int, int, int, int)
      */
@@ -1214,24 +1225,24 @@ public class PdfGraphics2D extends Graphics2D {
         Ellipse2D oval = new Ellipse2D.Float(x, y, width, height);
         fill(oval);
     }
-    
+
     /**
      * @see Graphics#drawArc(int, int, int, int, int, int)
      */
     public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-        Arc2D arc = new Arc2D.Double(x,y,width,height,startAngle, arcAngle, Arc2D.OPEN);
+        Arc2D arc = new Arc2D.Double(x, y, width, height, startAngle, arcAngle, Arc2D.OPEN);
         draw(arc);
 
     }
-    
+
     /**
      * @see Graphics#fillArc(int, int, int, int, int, int)
      */
     public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-        Arc2D arc = new Arc2D.Double(x,y,width,height,startAngle, arcAngle, Arc2D.PIE);
+        Arc2D arc = new Arc2D.Double(x, y, width, height, startAngle, arcAngle, Arc2D.PIE);
         fill(arc);
     }
-    
+
     /**
      * @see Graphics#drawPolyline(int[], int[], int)
      */
@@ -1239,7 +1250,7 @@ public class PdfGraphics2D extends Graphics2D {
         PolylineShape polyline = new PolylineShape(x, y, nPoints);
         draw(polyline);
     }
-    
+
     /**
      * @see Graphics#drawPolygon(int[], int[], int)
      */
@@ -1247,7 +1258,7 @@ public class PdfGraphics2D extends Graphics2D {
         Polygon poly = new Polygon(xPoints, yPoints, nPoints);
         draw(poly);
     }
-    
+
     /**
      * @see Graphics#fillPolygon(int[], int[], int)
      */
@@ -1258,21 +1269,21 @@ public class PdfGraphics2D extends Graphics2D {
         }
         fill(poly);
     }
-    
+
     /**
      * @see Graphics#drawImage(Image, int, int, ImageObserver)
      */
     public boolean drawImage(Image img, int x, int y, ImageObserver observer) {
         return drawImage(img, x, y, null, observer);
     }
-    
+
     /**
      * @see Graphics#drawImage(Image, int, int, int, int, ImageObserver)
      */
     public boolean drawImage(Image img, int x, int y, int width, int height, ImageObserver observer) {
         return drawImage(img, x, y, width, height, null, observer);
     }
-    
+
     /**
      * @see Graphics#drawImage(Image, int, int, Color, ImageObserver)
      */
@@ -1280,61 +1291,67 @@ public class PdfGraphics2D extends Graphics2D {
         waitForImage(img);
         return drawImage(img, x, y, img.getWidth(observer), img.getHeight(observer), bgcolor, observer);
     }
-    
+
     /**
      * @see Graphics#drawImage(Image, int, int, int, int, Color, ImageObserver)
      */
     public boolean drawImage(Image img, int x, int y, int width, int height, Color bgcolor, ImageObserver observer) {
         waitForImage(img);
-        double scalex = width/(double)img.getWidth(observer);
-        double scaley = height/(double)img.getHeight(observer);
-        AffineTransform tx = AffineTransform.getTranslateInstance(x,y);
-        tx.scale(scalex,scaley);
+        double scalex = width / (double) img.getWidth(observer);
+        double scaley = height / (double) img.getHeight(observer);
+        AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
+        tx.scale(scalex, scaley);
         return drawImage(img, null, tx, bgcolor, observer);
     }
-    
+
     /**
      * @see Graphics#drawImage(Image, int, int, int, int, int, int, int, int, ImageObserver)
      */
-    public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, ImageObserver observer) {
+    public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2,
+            ImageObserver observer) {
         return drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null, observer);
     }
-    
+
     /**
      * @see Graphics#drawImage(Image, int, int, int, int, int, int, int, int, Color, ImageObserver)
      */
-    public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, Color bgcolor, ImageObserver observer) {
+    public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2,
+            Color bgcolor, ImageObserver observer) {
         waitForImage(img);
-        double dwidth = (double)dx2-dx1;
-        double dheight = (double)dy2-dy1;
-        double swidth = (double)sx2-sx1;
-        double sheight = (double)sy2-sy1;
-        
+        double dwidth = (double) dx2 - dx1;
+        double dheight = (double) dy2 - dy1;
+        double swidth = (double) sx2 - sx1;
+        double sheight = (double) sy2 - sy1;
+
         //if either width or height is 0, then there is nothing to draw
-        if (dwidth == 0 || dheight == 0 || swidth == 0 || sheight == 0) return true;
-        
-        double scalex = dwidth/swidth;
-        double scaley = dheight/sheight;
-        
-        double transx = sx1*scalex;
-        double transy = sy1*scaley;
-        AffineTransform tx = AffineTransform.getTranslateInstance(dx1-transx,dy1-transy);
-        tx.scale(scalex,scaley);
-        
-        BufferedImage mask = new BufferedImage(img.getWidth(observer), img.getHeight(observer), BufferedImage.TYPE_BYTE_BINARY);
+        if (dwidth == 0 || dheight == 0 || swidth == 0 || sheight == 0) {
+            return true;
+        }
+
+        double scalex = dwidth / swidth;
+        double scaley = dheight / sheight;
+
+        double transx = sx1 * scalex;
+        double transy = sy1 * scaley;
+        AffineTransform tx = AffineTransform.getTranslateInstance(dx1 - transx, dy1 - transy);
+        tx.scale(scalex, scaley);
+
+        BufferedImage mask = new BufferedImage(img.getWidth(observer), img.getHeight(observer),
+                BufferedImage.TYPE_BYTE_BINARY);
         Graphics g = mask.getGraphics();
-        g.fillRect(sx1,sy1, (int)swidth, (int)sheight);
+        g.fillRect(sx1, sy1, (int) swidth, (int) sheight);
         drawImage(img, mask, tx, null, observer);
         g.dispose();
         return true;
     }
-    
+
     /**
      * @see Graphics#dispose()
      */
     public void dispose() {
-        if (kid)
+        if (kid) {
             return;
+        }
         if (!disposeCalled) {
             disposeCalled = true;
             cb.restoreState();
@@ -1350,7 +1367,7 @@ public class PdfGraphics2D extends Graphics2D {
             }
         }
     }
-    
+
     private void internalDispose(ByteBuffer buf) {
         int last = 0;
         int pos = 0;
@@ -1358,7 +1375,7 @@ public class PdfGraphics2D extends Graphics2D {
         if (kids != null) {
             for (int k = 0; k < kids.size(); k += 2) {
                 pos = (Integer) kids.get(k);
-                PdfGraphics2D g2 = (PdfGraphics2D)kids.get(k + 1);
+                PdfGraphics2D g2 = (PdfGraphics2D) kids.get(k + 1);
                 g2.cb.restoreState();
                 g2.cb.restoreState();
                 buf.append(buf2.getBuffer(), last, pos - last);
@@ -1370,7 +1387,7 @@ public class PdfGraphics2D extends Graphics2D {
         }
         buf.append(buf2.getBuffer(), last, buf2.size() - last);
     }
-    
+
     ///////////////////////////////////////////////
     //
     //
@@ -1379,7 +1396,9 @@ public class PdfGraphics2D extends Graphics2D {
     //
 
     /**
-     * Enables/Disables the composite font drawer due to issues with custom font mappers that do not always default to one specific font but allow custom fonts.
+     * Enables/Disables the composite font drawer due to issues with custom font mappers that do not always default to
+     * one specific font but allow custom fonts.
+     *
      * @param compositeFontDrawerEnabled true if the composite font drawer should be used else false.
      */
     public void setCompositeFontDrawerEnabled(boolean compositeFontDrawerEnabled) {
@@ -1387,33 +1406,36 @@ public class PdfGraphics2D extends Graphics2D {
     }
 
     private void followPath(Shape s, int drawType) {
-        if (s==null) return;
-        if (drawType==STROKE) {
+        if (s == null) {
+            return;
+        }
+        if (drawType == STROKE) {
             if (!(stroke instanceof BasicStroke)) {
                 s = stroke.createStrokedShape(s);
                 followPath(s, FILL);
                 return;
             }
         }
-        if (drawType==STROKE) {
+        if (drawType == STROKE) {
             setStrokeDiff(stroke, oldStroke);
             oldStroke = stroke;
             setStrokePaint();
-        }
-        else if (drawType==FILL)
+        } else if (drawType == FILL) {
             setFillPaint();
+        }
         PathIterator points;
         int traces = 0;
-        if (drawType == CLIP)
+        if (drawType == CLIP) {
             points = s.getPathIterator(IDENTITY);
-        else
+        } else {
             points = s.getPathIterator(transform);
+        }
         float[] coords = new float[6];
-        while(!points.isDone()) {
+        while (!points.isDone()) {
             ++traces;
             int segtype = points.currentSegment(coords);
             normalizeY(coords);
-            switch(segtype) {
+            switch (segtype) {
                 case PathIterator.SEG_CLOSE:
                     cb.closePath();
                     break;
@@ -1437,63 +1459,68 @@ public class PdfGraphics2D extends Graphics2D {
             points.next();
         }
         switch (drawType) {
-        case FILL:
-            if (traces > 0) {
-                if (points.getWindingRule() == PathIterator.WIND_EVEN_ODD)
-                    cb.eoFill();
-                else
-                    cb.fill();
-            }
-            break;
-        case STROKE:
-            if (traces > 0)
-                cb.stroke();
-            break;
-        default: //drawType==CLIP
-            if (traces == 0)
-                cb.rectangle(0, 0, 0, 0);
-            if (points.getWindingRule() == PathIterator.WIND_EVEN_ODD)
-                cb.eoClip();
-            else
-                cb.clip();
-            cb.newPath();
+            case FILL:
+                if (traces > 0) {
+                    if (points.getWindingRule() == PathIterator.WIND_EVEN_ODD) {
+                        cb.eoFill();
+                    } else {
+                        cb.fill();
+                    }
+                }
+                break;
+            case STROKE:
+                if (traces > 0) {
+                    cb.stroke();
+                }
+                break;
+            default: //drawType==CLIP
+                if (traces == 0) {
+                    cb.rectangle(0, 0, 0, 0);
+                }
+                if (points.getWindingRule() == PathIterator.WIND_EVEN_ODD) {
+                    cb.eoClip();
+                } else {
+                    cb.clip();
+                }
+                cb.newPath();
         }
     }
-    
+
     private float normalizeY(float y) {
         return this.height - y;
     }
-    
+
     private void normalizeY(float[] coords) {
         coords[1] = normalizeY(coords[1]);
         coords[3] = normalizeY(coords[3]);
         coords[5] = normalizeY(coords[5]);
     }
-    
+
     private AffineTransform normalizeMatrix() {
         double[] mx = new double[6];
-        AffineTransform result = AffineTransform.getTranslateInstance(0,0);
+        AffineTransform result = AffineTransform.getTranslateInstance(0, 0);
         result.getMatrix(mx);
-        mx[3]=-1;
-        mx[5]=height;
+        mx[3] = -1;
+        mx[5] = height;
         result = new AffineTransform(mx);
         result.concatenate(transform);
         return result;
     }
-    
+
     private boolean drawImage(Image img, Image mask, AffineTransform xform, Color bgColor, ImageObserver obs) {
-        if (xform==null)
+        if (xform == null) {
             xform = new AffineTransform();
-        else
+        } else {
             xform = new AffineTransform(xform);
+        }
         xform.translate(0, img.getHeight(obs));
         xform.scale(img.getWidth(obs), img.getHeight(obs));
-        
+
         AffineTransform inverse = this.normalizeMatrix();
-        AffineTransform flipper = AffineTransform.getScaleInstance(1,-1);
+        AffineTransform flipper = AffineTransform.getScaleInstance(1, -1);
         inverse.concatenate(xform);
         inverse.concatenate(flipper);
-        
+
         double[] mx = new double[6];
         inverse.getMatrix(mx);
         if (currentFillGState != 255) {
@@ -1505,22 +1532,22 @@ public class PdfGraphics2D extends Graphics2D {
             }
             cb.setGState(gs);
         }
-        
+
         try {
             com.lowagie.text.Image image = null;
-            if(!convertImagesToJPEG){
+            if (!convertImagesToJPEG) {
                 image = com.lowagie.text.Image.getInstance(img, bgColor);
-            }
-            else{
-                BufferedImage scaled = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            } else {
+                BufferedImage scaled = new BufferedImage(img.getWidth(null), img.getHeight(null),
+                        BufferedImage.TYPE_INT_RGB);
                 Graphics2D g3 = scaled.createGraphics();
                 g3.drawImage(img, 0, 0, img.getWidth(null), img.getHeight(null), null);
                 g3.dispose();
-                
+
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageWriteParam iwparam = new JPEGImageWriteParam(Locale.getDefault());
                 iwparam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                iwparam.setCompressionQuality(jpegQuality);//Set here your compression rate
+                iwparam.setCompressionQuality(jpegQuality); //Set here your compression rate
                 ImageWriter iw = ImageIO.getImageWritersByFormatName("jpg").next();
                 ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
                 iw.setOutput(ios);
@@ -1531,19 +1558,20 @@ public class PdfGraphics2D extends Graphics2D {
                 scaled.flush();
                 scaled = null;
                 image = com.lowagie.text.Image.getInstance(baos.toByteArray());
-                
+
             }
-            if (mask!=null) {
+            if (mask != null) {
                 com.lowagie.text.Image msk = com.lowagie.text.Image.getInstance(mask, null, true);
                 msk.makeMask();
                 msk.setInverted(true);
                 image.setImageMask(msk);
             }
-            cb.addImage(image, (float)mx[0], (float)mx[1], (float)mx[2], (float)mx[3], (float)mx[4], (float)mx[5]);
+            cb.addImage(image, (float) mx[0], (float) mx[1], (float) mx[2], (float) mx[3], (float) mx[4],
+                    (float) mx[5]);
             Object url = getRenderingHint(HyperLinkKey.KEY_INSTANCE);
             if (url != null && !url.equals(HyperLinkKey.VALUE_HYPERLINKKEY_OFF)) {
-                PdfAction action = new  PdfAction(url.toString());
-                cb.setAction(action, (float)mx[4], (float)mx[5], (float)(mx[0]+mx[4]), (float)(mx[3]+mx[5]));
+                PdfAction action = new PdfAction(url.toString());
+                cb.setAction(action, (float) mx[4], (float) mx[5], (float) (mx[0] + mx[4]), (float) (mx[3] + mx[5]));
             }
         } catch (Exception ex) {
             throw new IllegalArgumentException();
@@ -1551,33 +1579,33 @@ public class PdfGraphics2D extends Graphics2D {
         if (currentFillGState != 255 && currentFillGState != -1) {
             PdfGState gs = fillGState[currentFillGState];
             cb.setGState(gs);
-        }        
+        }
         return true;
     }
-    
+
     private boolean checkNewPaint(Paint oldPaint) {
-        if (paint == oldPaint)
+        if (paint == oldPaint) {
             return false;
+        }
         return !((paint instanceof Color) && paint.equals(oldPaint));
     }
-    
+
     private void setFillPaint() {
         if (checkNewPaint(paintFill)) {
             paintFill = paint;
             setPaint(false, 0, 0, true);
         }
     }
-    
+
     private void setStrokePaint() {
         if (checkNewPaint(paintStroke)) {
             paintStroke = paint;
             setPaint(false, 0, 0, false);
         }
     }
-    
+
     private void setPaint(boolean invert, double xoffset, double yoffset, boolean fill) {
-        if (paint instanceof Color) {
-            Color color = (Color)paint;
+        if (paint instanceof Color color) {
             int alpha = color.getAlpha();
             if (fill) {
                 if (alpha != currentFillGState) {
@@ -1591,8 +1619,7 @@ public class PdfGraphics2D extends Graphics2D {
                     cb.setGState(gs);
                 }
                 cb.setColorFill(color);
-            }
-            else {
+            } else {
                 if (alpha != currentStrokeGState) {
                     currentStrokeGState = alpha;
                     PdfGState gs = strokeGState[alpha];
@@ -1605,25 +1632,24 @@ public class PdfGraphics2D extends Graphics2D {
                 }
                 cb.setColorStroke(color);
             }
-        }
-        else if (paint instanceof GradientPaint) {
-            GradientPaint gp = (GradientPaint)paint;
+        } else if (paint instanceof GradientPaint gp) {
             Point2D p1 = gp.getPoint1();
             transform.transform(p1, p1);
             Point2D p2 = gp.getPoint2();
             transform.transform(p2, p2);
             Color c1 = gp.getColor1();
             Color c2 = gp.getColor2();
-            PdfShading shading = PdfShading.simpleAxial(cb.getPdfWriter(), (float)p1.getX(), normalizeY((float)p1.getY()), (float)p2.getX(), normalizeY((float)p2.getY()), c1, c2);
+            PdfShading shading = PdfShading.simpleAxial(cb.getPdfWriter(), (float) p1.getX(),
+                    normalizeY((float) p1.getY()), (float) p2.getX(), normalizeY((float) p2.getY()), c1, c2);
             PdfShadingPattern pat = new PdfShadingPattern(shading);
-            if (fill)
+            if (fill) {
                 cb.setShadingFill(pat);
-            else
+            } else {
                 cb.setShadingStroke(pat);
-        }
-        else if (paint instanceof TexturePaint) {
+            }
+        } else if (paint instanceof TexturePaint) {
             try {
-                TexturePaint tp = (TexturePaint)paint;
+                TexturePaint tp = (TexturePaint) paint;
                 BufferedImage img = tp.getImage();
                 Rectangle2D rect = tp.getAnchorRect();
                 com.lowagie.text.Image image = com.lowagie.text.Image.getInstance(img, null);
@@ -1633,50 +1659,52 @@ public class PdfGraphics2D extends Graphics2D {
                 inverse.scale(rect.getWidth() / image.getWidth(), -rect.getHeight() / image.getHeight());
                 double[] mx = new double[6];
                 inverse.getMatrix(mx);
-                pattern.setPatternMatrix((float)mx[0], (float)mx[1], (float)mx[2], (float)mx[3], (float)mx[4], (float)mx[5]) ;
-                image.setAbsolutePosition(0,0);
+                pattern.setPatternMatrix((float) mx[0], (float) mx[1], (float) mx[2], (float) mx[3], (float) mx[4],
+                        (float) mx[5]);
+                image.setAbsolutePosition(0, 0);
                 pattern.addImage(image);
-                if (fill)
+                if (fill) {
                     cb.setPatternFill(pattern);
-                else
+                } else {
                     cb.setPatternStroke(pattern);
+                }
             } catch (Exception ex) {
-                if (fill)
+                if (fill) {
                     cb.setColorFill(Color.gray);
-                else
+                } else {
                     cb.setColorStroke(Color.gray);
+                }
             }
-        }
-        else {
+        } else {
             try {
                 BufferedImage img = null;
                 int type = BufferedImage.TYPE_4BYTE_ABGR;
                 if (paint.getTransparency() == Transparency.OPAQUE) {
                     type = BufferedImage.TYPE_3BYTE_BGR;
                 }
-                img = new BufferedImage((int)width, (int)height, type);
-                Graphics2D g = (Graphics2D)img.getGraphics();
+                img = new BufferedImage((int) width, (int) height, type);
+                Graphics2D g = (Graphics2D) img.getGraphics();
                 g.transform(transform);
                 AffineTransform inv = transform.createInverse();
-                Shape fillRect = new Rectangle2D.Double(0,0,img.getWidth(),img.getHeight());
+                Shape fillRect = new Rectangle2D.Double(0, 0, img.getWidth(), img.getHeight());
                 fillRect = inv.createTransformedShape(fillRect);
                 g.setPaint(paint);
                 g.fill(fillRect);
                 if (invert) {
                     AffineTransform tx = new AffineTransform();
-                    tx.scale(1,-1);
-                    tx.translate(-xoffset,-yoffset);
-                    g.drawImage(img,tx,null);
+                    tx.scale(1, -1);
+                    tx.translate(-xoffset, -yoffset);
+                    g.drawImage(img, tx, null);
                 }
                 g.dispose();
                 g = null;
                 com.lowagie.text.Image image = com.lowagie.text.Image.getInstance(img, null);
                 PdfPatternPainter pattern = cb.createPattern(width, height);
-                image.setAbsolutePosition(0,0);
+                image.setAbsolutePosition(0, 0);
                 pattern.addImage(image);
 
                 if (fill) {
-                    if (currentFillGState != 255){
+                    if (currentFillGState != 255) {
                         currentFillGState = 255;
                         PdfGState gs = fillGState[255];
                         if (gs == null) {
@@ -1687,40 +1715,38 @@ public class PdfGraphics2D extends Graphics2D {
                         cb.setGState(gs);
                     }
                     cb.setPatternFill(pattern);
-                }
-                else {
+                } else {
                     cb.setPatternStroke(pattern);
                 }
             } catch (Exception ex) {
-                if (fill)
+                if (fill) {
                     cb.setColorFill(Color.gray);
-                else
+                } else {
                     cb.setColorStroke(Color.gray);
+                }
             }
         }
     }
-    
+
     private synchronized void waitForImage(java.awt.Image image) {
-        if (mediaTracker == null)
+        if (mediaTracker == null) {
             mediaTracker = new MediaTracker(new PdfGraphics2D.FakeComponent());
+        }
         mediaTracker.addImage(image, 0);
         try {
             mediaTracker.waitForID(0);
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             // empty on purpose
         }
         mediaTracker.removeImage(image);
     }
 
     /**
-     * Split the given string into substrings depending on if all characters of substring can be
-     * displayed with the defined font or not.
+     * Split the given string into substrings depending on if all characters of substring can be displayed with the
+     * defined font or not.
      *
-     * @param s
-     *            given string
+     * @param s given string
      * @return list of substrings that can be displayed by with the defined font or not.
-     *
      */
     private List<String> splitIntoSubstringsByVisibility(String s) {
         List<String> stringParts = new ArrayList<>();
@@ -1740,7 +1766,7 @@ public class PdfGraphics2D extends Graphics2D {
         return stringParts;
     }
 
-        
+
     static private class FakeComponent extends Component {
 
         private static final long serialVersionUID = 6450197945596086638L;
@@ -1749,70 +1775,61 @@ public class PdfGraphics2D extends Graphics2D {
     /**
      * @since 2.0.8
      */
-    public static class HyperLinkKey extends RenderingHints.Key
-    {
-         public static final HyperLinkKey KEY_INSTANCE = new HyperLinkKey(9999);
-         public static final Object VALUE_HYPERLINKKEY_OFF = "0";
-         
+    public static class HyperLinkKey extends RenderingHints.Key {
+
+        public static final HyperLinkKey KEY_INSTANCE = new HyperLinkKey(9999);
+        public static final Object VALUE_HYPERLINKKEY_OFF = "0";
+
         protected HyperLinkKey(int arg0) {
             super(arg0);
         }
-        
-        public boolean isCompatibleValue(Object val)
-        {
+
+        public boolean isCompatibleValue(Object val) {
             return true;
         }
-        public String toString()
-        {
+
+        public String toString() {
             return "HyperLinkKey";
         }
     }
 
 
     /**
-     * Wrapper class that helps to draw string with sun.font.CompositeFont (Windows logical
-     * fonts).</br>
-     * If the given font is a sun.font.CompositeFont than try to find some font (an implementation
-     * of sun.font.Font2D) that will display current text. For some symbols that cannot be displayed
-     * with the font from the first slot of the composite font all other font will be checked.</br>
-     * </br>
-     * This processing is not necessary only for Mac OS - there isn't used "sun.font.CompositeFont",
-     * but "sun.font.CFont".</br>
-     * </br>
-     * Since the <code>sun.*</code> packages are not part of the supported, public interface the
-     * reflection will be used.
+     * Wrapper class that helps to draw string with sun.font.CompositeFont (Windows logical fonts).
+     *
+     * <p> If the given
+     * font is a sun.font.CompositeFont than try to find some font (an implementation of sun.font.Font2D) that will
+     * display current text. For some symbols that cannot be displayed with the font from the first slot of the
+     * composite font all other font will be checked.
+     * <p>
+     * This processing is not necessary only for Mac OS - there isn't used "sun.font.CompositeFont", but
+     * "sun.font.CFont".
+     * <p>
+     * Since the <code>sun.*</code> packages are not part of the supported, public interface the reflection will be
+     * used.
      */
-    private static class CompositeFontDrawer
-    {
+    private static class CompositeFontDrawer {
 
-        static boolean isSupported() {
-            return SUPPORTED;
-        }
-
-        private static final String    GET_MODULE_METHOD_NAME       = "getModule";
-        private static final String    IS_OPEN_METHOD_NAME          = "isOpen";
-        private static final String    ADD_OPENS_METHOD_NAME        = "addOpens";
-
-        private static final String    COMPOSITE_FONT_CLASS_NAME    = "sun.font.CompositeFont";
-        private static final Class<?>  COMPOSITE_FONT_CLASS;
-        private static final String    GET_NUM_SLOTS_METHOD_NAME    = "getNumSlots";
-        private static final Method    GET_NUM_SLOTS_METHOD;
-        private static final String    GET_SLOT_FONT_METHOD_NAME    = "getSlotFont";
-        private static final Method    GET_SLOT_FONT_METHOD;
-
-        private static final String    FONT_UTILITIES_CLASS_NAME    = "sun.font.FontUtilities";
-        private static final Class<?>  FONT_UTILITIES_CLASS;
-        private static final String    GET_FONT2D_METHOD_NAME       = "getFont2D";
-        private static final Method    GET_FONT2D_METHOD;
-
-        private static final String    FONT2D_CLASS_NAME            = "sun.font.Font2D";
-        private static final Class<?>  FONT2D_CLASS;
-        private static final String    CAN_DISPLAY_METHOD_NAME      = "canDisplay";
-        private static final Method    CAN_DYSPLAY_METHOD;
-        private static final String    GET_FONT_NAME_METHOD_NAME    = "getFontName";
-        private static final Method    GET_FONT_NAME_METHOD;
-
-        private static final boolean   SUPPORTED;
+        private static final String GET_MODULE_METHOD_NAME = "getModule";
+        private static final String IS_OPEN_METHOD_NAME = "isOpen";
+        private static final String ADD_OPENS_METHOD_NAME = "addOpens";
+        private static final String COMPOSITE_FONT_CLASS_NAME = "sun.font.CompositeFont";
+        private static final Class<?> COMPOSITE_FONT_CLASS;
+        private static final String GET_NUM_SLOTS_METHOD_NAME = "getNumSlots";
+        private static final Method GET_NUM_SLOTS_METHOD;
+        private static final String GET_SLOT_FONT_METHOD_NAME = "getSlotFont";
+        private static final Method GET_SLOT_FONT_METHOD;
+        private static final String FONT_UTILITIES_CLASS_NAME = "sun.font.FontUtilities";
+        private static final Class<?> FONT_UTILITIES_CLASS;
+        private static final String GET_FONT2D_METHOD_NAME = "getFont2D";
+        private static final Method GET_FONT2D_METHOD;
+        private static final String FONT2D_CLASS_NAME = "sun.font.Font2D";
+        private static final Class<?> FONT2D_CLASS;
+        private static final String CAN_DISPLAY_METHOD_NAME = "canDisplay";
+        private static final Method CAN_DYSPLAY_METHOD;
+        private static final String GET_FONT_NAME_METHOD_NAME = "getFontName";
+        private static final Method GET_FONT_NAME_METHOD;
+        private static final boolean SUPPORTED;
 
         static {
             String osName = System.getProperty("os.name", "unknownOS");
@@ -1843,14 +1860,30 @@ public class PdfGraphics2D extends Graphics2D {
                     GET_SLOT_FONT_METHOD != null && CAN_DYSPLAY_METHOD != null && GET_FONT_NAME_METHOD != null;
         }
 
+        private final transient StringBuilder sb = new StringBuilder();
         /**
-         * Update module of the given class to open the given
-         * package to the target module if the target module
-         * is opened for the current module.<br/>
-         * This helps to avoid warnings for the <code>--illegal-access=permit<code/>.
-         * Actually (java 9-13) "permit" is default mode, but in the future java
-         * releases the default mode will be "deny". It's also important to
-         * add <code>--add-opens<code/> for the given package if it's need.
+         * Splitted parts of the string.
+         */
+        private final transient List<String> stringParts = new ArrayList<>();
+        /**
+         * {@link BaseFont Base fonts} that corresponds to the splitted part of the string
+         */
+        private final transient List<BaseFont> correspondingBaseFontsForParts = new ArrayList<>();
+        private final transient Map<String, Boolean> fontFamilyComposite = new HashMap<>();
+
+        static boolean isSupported() {
+            return SUPPORTED;
+        }
+
+        /**
+         * Update module of the given class to open the given package to the target module if the target module is
+         * opened for the current module.
+         *
+         * <p>
+         * This helps to avoid warnings for the
+         * <code>--illegal-access=permit</code>. Actually (java 9-13) "permit" is default mode, but in the future java
+         * releases the default mode will be "deny". It's also important to add <code>--add-opens</code> for the given
+         * package if it's need.
          */
         private static void updateModuleToOpenPackage(Class<?> classInModule, String packageName) {
             if (classInModule == null || packageName == null) {
@@ -1907,25 +1940,12 @@ public class PdfGraphics2D extends Graphics2D {
             return method;
         }
 
-        private final transient StringBuilder            sb                                = new StringBuilder();
-        /**
-         * Splitted parts of the string.
-         */
-        private final transient List<String>            stringParts                        = new ArrayList<>();
-        /**
-         * {@link BaseFont Base fonts} that corresponds to the splitted part of the string
-         */
-        private final transient List<BaseFont>          correspondingBaseFontsForParts     = new ArrayList<>();
-
-        private final transient Map<String, Boolean>    fontFamilyComposite                = new HashMap<>();
-
         /**
          * Check if the given font is a composite font.
          *
-         * @param font
-         *            given font
+         * @param font given font
          * @return <code>true</code> if the given font is sun.font.CompositeFont. <code>False</code>
-         *         otherwise.
+         * otherwise.
          */
         boolean isCompositeFont(Font font) {
             if (!isSupported() || font == null) {
@@ -1950,29 +1970,25 @@ public class PdfGraphics2D extends Graphics2D {
         }
 
         /**
-         * Draw text with the given font at the specified position. This method splits the string
-         * into parts so that it can be displayed with a matching (font that can display all symbols
-         * of this part of string) slot font.</br>
-         * If some class/method cannot be found or throw exception the default drawing string
-         * function will be used for a drawing string.
+         * Draw text with the given font at the specified position.
+         * <p>This method splits the string into parts so that it
+         * can be displayed with a matching (font that can display all symbols of this part of string) slot font.
+         * <p>
+         * If some class/method cannot be found or throw exception the default drawing string function will be used for
+         * a drawing string.
          *
-         * @param s
-         *            given string that should be drawn
-         * @param compositeFont
-         *            composite font. This font should be an instance of composite font, otherwise
-         *            the default drawing function will be called.
-         * @param x
-         *            the x coordinate of the location
-         * @param y
-         *            the y coordinate of the location
-         * @param fontConverter
-         *            function that convert {@link java.awt.Font font} to the needed
-         *            {@link com.lowagie.text.pdf.BaseFont base font}
-         * @param defaultDrawingFunction
-         *            default drawing function that will be used for drawing string.
+         * @param s                      given string that should be drawn
+         * @param compositeFont          composite font. This font should be an instance of composite font, otherwise
+         *                               the default drawing function will be called.
+         * @param x                      the x coordinate of the location
+         * @param y                      the y coordinate of the location
+         * @param fontConverter          function that convert {@link java.awt.Font font} to the needed
+         *                               {@link com.lowagie.text.pdf.BaseFont base font}
+         * @param defaultDrawingFunction default drawing function that will be used for drawing string.
          * @return width of the drawn string.
          */
-        double drawString(String s, Font compositeFont, double x, double y, Function<Font, BaseFont> fontConverter, DrawStringFunction defaultDrawingFunction) {
+        double drawString(String s, Font compositeFont, double x, double y, Function<Font, BaseFont> fontConverter,
+                DrawStringFunction defaultDrawingFunction) {
             String fontFamily = compositeFont.getFamily();
             if (!isSupported() || (fontFamily != null && !fontFamilyComposite.get(fontFamily))) {
                 assert false;
@@ -1998,21 +2014,23 @@ public class PdfGraphics2D extends Graphics2D {
             }
         }
 
-		/**
-		 * Split string into visible and not visible parts.</br>
-		 * This method split string into substring parts. For each splitted part
-		 * correspond found {@link BaseFont base font} from the slots of the composite
-		 * font witch can display all characters of the part of string. If no font found
-		 * the {@link BaseFont base font} from the own composite font will be used.
-		 *
-		 * @param s
-		 * @param compositeFont
-		 * @param fontConverter
-		 * @throws IllegalAccessException
-		 * @throws IllegalArgumentException
-		 * @throws InvocationTargetException
-		 */
-        private void splitStringIntoDisplayableParts(String s, Font compositeFont, Function<Font, BaseFont> fontConverter) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        /**
+         * Split string into visible and not visible parts.
+         * <p>
+         * This method split string into substring parts. For each splitted part correspond found
+         * {@link BaseFont base font} from the slots of the composite font witch can display all characters of the part
+         * of string. If no font found the {@link BaseFont base font} from the own composite font will be used.
+         *
+         * @param s
+         * @param compositeFont
+         * @param fontConverter
+         * @throws IllegalAccessException
+         * @throws IllegalArgumentException
+         * @throws InvocationTargetException
+         */
+        private void splitStringIntoDisplayableParts(String s, Font compositeFont,
+                Function<Font, BaseFont> fontConverter)
+                throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             Object result = GET_FONT2D_METHOD.invoke(null, compositeFont);
             if (result.getClass() != COMPOSITE_FONT_CLASS) {
                 throw new IllegalArgumentException("Given font isn't a composite font.");
@@ -2034,13 +2052,14 @@ public class PdfGraphics2D extends Graphics2D {
                     }
                     Boolean canBeDysplayedByPhysicalFont = (Boolean) CAN_DYSPLAY_METHOD.invoke(phFont, c);
                     if (canBeDysplayedByPhysicalFont) {
-                    	Object fontNameResult = GET_FONT_NAME_METHOD.invoke(phFont, (Locale) null);
-                    	Font font = new Font((String) fontNameResult, compositeFont.getStyle(), compositeFont.getSize());
-                    	BaseFont correspondingBaseFont = fontConverter.apply(font);
-                    	if (correspondingBaseFont != null && correspondingBaseFont.charExists(c)) {
-                    		if (sb.length() == 0) {
-                            	correspondingBaseFontsForParts.add(correspondingBaseFont);
-                            	lastBaseFont = correspondingBaseFont;
+                        Object fontNameResult = GET_FONT_NAME_METHOD.invoke(phFont, (Locale) null);
+                        Font font = new Font((String) fontNameResult, compositeFont.getStyle(),
+                                compositeFont.getSize());
+                        BaseFont correspondingBaseFont = fontConverter.apply(font);
+                        if (correspondingBaseFont != null && correspondingBaseFont.charExists(c)) {
+                            if (sb.length() == 0) {
+                                correspondingBaseFontsForParts.add(correspondingBaseFont);
+                                lastBaseFont = correspondingBaseFont;
                             } else if (!Objects.equals(lastBaseFont, correspondingBaseFont)) {
                                 stringParts.add(sb.toString());
                                 sb.setLength(0);
@@ -2050,13 +2069,13 @@ public class PdfGraphics2D extends Graphics2D {
                             sb.append(c);
                             found = true;
                             break;
-                    	}
+                        }
                     }
                 }
                 if (!found) {
                     if (sb.length() == 0) {
-                    	correspondingBaseFontsForParts.add(baseFontFromCompositeFont);
-                    	lastBaseFont = null;
+                        correspondingBaseFontsForParts.add(baseFontFromCompositeFont);
+                        lastBaseFont = null;
                     } else if (lastBaseFont != null) {
                         stringParts.add(sb.toString());
                         sb.setLength(0);
@@ -2071,8 +2090,8 @@ public class PdfGraphics2D extends Graphics2D {
         }
 
         @FunctionalInterface
-        public interface DrawStringFunction
-        {
+        public interface DrawStringFunction {
+
             double drawString(String s, BaseFont basicFont, double x, double y);
         }
     }

@@ -49,6 +49,8 @@
 
 package com.lowagie.text.html;
 
+import static com.lowagie.text.error_messages.MessageLocalization.getComposedMessage;
+
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
 import com.lowagie.text.BadElementException;
@@ -76,7 +78,6 @@ import com.lowagie.text.Section;
 import com.lowagie.text.SimpleTable;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.BaseFont;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
@@ -87,32 +88,24 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 
-import static com.lowagie.text.error_messages.MessageLocalization.getComposedMessage;
-
 /**
  * A <CODE>DocWriter</CODE> class for HTML.
  * <p>
- * An <CODE>HtmlWriter</CODE> can be added as a <CODE>DocListener</CODE>
- * to a certain <CODE>Document</CODE> by getting an instance.
- * Every <CODE>Element</CODE> added to the original <CODE>Document</CODE>
- * will be written to the <CODE>OutputStream</CODE> of this <CODE>HtmlWriter</CODE>.
+ * An <CODE>HtmlWriter</CODE> can be added as a <CODE>DocListener</CODE> to a certain <CODE>Document</CODE> by getting
+ * an instance. Every <CODE>Element</CODE> added to the original <CODE>Document</CODE> will be written to the
+ * <CODE>OutputStream</CODE> of this <CODE>HtmlWriter</CODE>.
  * <p>
  * Example:
  * <BLOCKQUOTE><PRE>
- * // creation of the document with a certain size and certain margins
- * Document document = new Document(PageSize.A4, 50, 50, 50, 50);
- * try {
- * // this will write HTML to the Standard OutputStream
+ * // creation of the document with a certain size and certain margins Document document = new Document(PageSize.A4, 50,
+ * 50, 50, 50); try { // this will write HTML to the Standard OutputStream
  * <STRONG>HtmlWriter.getInstance(document, System.out);</STRONG>
  * // this will write HTML to a file called text.html
  * <STRONG>HtmlWriter.getInstance(document, new FileOutputStream("text.html"));</STRONG>
  * // this will write HTML to for instance the OutputStream of a HttpServletResponse-object
  * <STRONG>HtmlWriter.getInstance(document, response.getOutputStream());</STRONG>
- * }
- * catch(DocumentException de) {
- * System.err.println(de.getMessage());
- * }
- * // this will close the document and all the OutputStreams listening to it
+ * } catch(DocumentException de) { System.err.println(de.getMessage()); } // this will close the document and all the
+ * OutputStreams listening to it
  * <STRONG>document.close();</STRONG>
  * </PRE></BLOCKQUOTE>
  */
@@ -250,7 +243,8 @@ public class HtmlWriter extends DocWriter {
             return false;
         }
         if (open && !element.isContent()) {
-            throw new DocumentException(getComposedMessage("the.document.is.open.you.can.only.add.elements.with.content"));
+            throw new DocumentException(
+                    getComposedMessage("the.document.is.open.you.can.only.add.elements.with.content"));
         }
         try {
             switch (element.type()) {
@@ -459,7 +453,8 @@ public class HtmlWriter extends DocWriter {
     }
 
     /**
-     * Writes a JavaScript section or, if the markup attribute HtmlTags.URL is set, a JavaScript reference in the header.
+     * Writes a JavaScript section or, if the markup attribute HtmlTags.URL is set, a JavaScript reference in the
+     * header.
      *
      * @param header the element that has to be written
      * @throws IOException on error
@@ -541,11 +536,9 @@ public class HtmlWriter extends DocWriter {
     /**
      * Sets the basepath for images.
      * <p>
-     * This is especially useful if you add images using a file,
-     * rather than an URL. In PDF there is no problem, since
-     * the images are added inline, but in HTML it is sometimes
-     * necessary to use a relative path or a special path to some
-     * images directory.
+     * This is especially useful if you add images using a file, rather than an URL. In PDF there is no problem, since
+     * the images are added inline, but in HTML it is sometimes necessary to use a relative path or a special path to
+     * some images directory.
      *
      * @param imagepath the new imagepath
      */
@@ -625,7 +618,9 @@ public class HtmlWriter extends DocWriter {
                     return;
                 }
 
-                if (chunk.isEmpty()) return;
+                if (chunk.isEmpty()) {
+                    return;
+                }
                 Map<String, Object> attributes = chunk.getChunkAttributes();
                 if (attributes != null && attributes.get(Chunk.NEWPAGE) != null) {
                     return;
@@ -672,8 +667,9 @@ public class HtmlWriter extends DocWriter {
             case Element.PHRASE: {
                 Phrase phrase = (Phrase) element;
                 styleAttributes = new Properties();
-                if (phrase.hasLeading())
+                if (phrase.hasLeading()) {
                     styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, phrase.getLeading() + "pt");
+                }
 
                 // start tag
                 addTabs(indent);
@@ -695,8 +691,9 @@ public class HtmlWriter extends DocWriter {
             case Element.ANCHOR: {
                 Anchor anchor = (Anchor) element;
                 styleAttributes = new Properties();
-                if (anchor.hasLeading())
+                if (anchor.hasLeading()) {
                     styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, anchor.getLeading() + "pt");
+                }
 
                 // start tag
                 addTabs(indent);
@@ -724,8 +721,9 @@ public class HtmlWriter extends DocWriter {
             case Element.PARAGRAPH: {
                 Paragraph paragraph = (Paragraph) element;
                 styleAttributes = new Properties();
-                if (paragraph.hasLeading())
+                if (paragraph.hasLeading()) {
                     styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, paragraph.getTotalLeading() + "pt");
+                }
                 // start tag
                 addTabs(indent);
                 writeStart(HtmlTags.DIV);
@@ -780,8 +778,9 @@ public class HtmlWriter extends DocWriter {
             case Element.LISTITEM: {
                 ListItem listItem = (ListItem) element;
                 styleAttributes = new Properties();
-                if (listItem.hasLeading())
+                if (listItem.hasLeading()) {
                     styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, listItem.getTotalLeading() + "pt");
+                }
 
                 // start tag
                 addTabs(indent);
@@ -991,8 +990,9 @@ public class HtmlWriter extends DocWriter {
                 depth = 5;
             }
             Properties styleAttributes = new Properties();
-            if (section.getTitle().hasLeading())
+            if (section.getTitle().hasLeading()) {
                 styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, section.getTitle().getTotalLeading() + "pt");
+            }
             // start tag
             addTabs(indent);
             writeStart(HtmlTags.H[depth]);
@@ -1054,13 +1054,15 @@ public class HtmlWriter extends DocWriter {
             if (bf != null) {
                 String ps = bf.getPostscriptFontName().toLowerCase();
                 if (ps.contains("bold")) {
-                    if (fontstyle == Font.UNDEFINED)
+                    if (fontstyle == Font.UNDEFINED) {
                         fontstyle = 0;
+                    }
                     fontstyle |= Font.BOLD;
                 }
                 if (ps.contains("italic") || ps.contains("oblique")) {
-                    if (fontstyle == Font.UNDEFINED)
+                    if (fontstyle == Font.UNDEFINED) {
                         fontstyle = 0;
+                    }
                     fontstyle |= Font.ITALIC;
                 }
             }

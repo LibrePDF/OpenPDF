@@ -9,12 +9,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  
+ *
  */
 package com.lowagie.examples.objects.tables.pdfptable;
-
-import java.awt.Color;
-import java.io.FileOutputStream;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -24,16 +21,18 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.FileOutputStream;
 
 /**
  * Break a large table up into different smaller tables in order to save memory.
  */
 public class FragmentTable {
+
     /**
      * Break a large table up into several smaller tables for memory management purposes.
-     * 
-     * @param args
-     *            the number of rows for each table fragment.
+     *
+     * @param args the number of rows for each table fragment.
      */
     public static void main(String[] args) {
 

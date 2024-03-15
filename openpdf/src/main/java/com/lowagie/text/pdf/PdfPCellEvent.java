@@ -48,12 +48,16 @@ package com.lowagie.text.pdf;
 
 import com.lowagie.text.Rectangle;
 
-/** An event called for a single cell.
+/**
+ * An event called for a single cell.
+ *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public interface PdfPCellEvent {
-    /** This method is called at the end of the cell rendering. The text or graphics are added to
-     * one of the 4 <CODE>PdfContentByte</CODE> contained in
+
+    /**
+     * This method is called at the end of the cell rendering. The text or graphics are added to one of the 4
+     * <CODE>PdfContentByte</CODE> contained in
      * <CODE>canvases</CODE>.<br>
      * The indexes to <CODE>canvases</CODE> are:
      * <ul>
@@ -66,7 +70,8 @@ public interface PdfPCellEvent {
      * </ul>
      * The layers are placed in sequence on top of each other.
      * <p>
-     * @param cell the cell
+     *
+     * @param cell     the cell
      * @param position the coordinates of the cell
      * @param canvases an array of <CODE>PdfContentByte</CODE>
      */
