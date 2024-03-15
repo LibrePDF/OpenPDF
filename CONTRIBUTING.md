@@ -71,3 +71,5 @@ We are looking for maintainers to help us with the project. We need help in:
 - Triaging issues which are important to fix
 
 Interested in making OpenPDF better? Please contact @asturio (Claudio Clemens).
+
+Further interesting article: [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
