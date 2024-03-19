@@ -89,7 +89,7 @@ public class ExceptionConverter extends RuntimeException {
      */
     public ExceptionConverter(Exception ex) {
         this.ex = ex;
-        prefix = (ex instanceof RuntimeException) ? "" : "ExceptionConverter: ";
+        this.prefix = (ex instanceof RuntimeException) ? "" : "ExceptionConverter: ";
     }
 
     /**
@@ -113,7 +113,7 @@ public class ExceptionConverter extends RuntimeException {
      * @return the original exception
      */
     public Exception getException() {
-        return ex;
+        return this.ex;
     }
 
     /**
@@ -121,8 +121,9 @@ public class ExceptionConverter extends RuntimeException {
      *
      * @return message of the original exception
      */
+    @Override
     public String getMessage() {
-        return ex.getMessage();
+        return this.ex.getMessage();
     }
 
     /**
@@ -130,8 +131,9 @@ public class ExceptionConverter extends RuntimeException {
      *
      * @return localized version of the message
      */
+    @Override
     public String getLocalizedMessage() {
-        return ex.getLocalizedMessage();
+        return this.ex.getLocalizedMessage();
     }
 
     /**
@@ -139,13 +141,15 @@ public class ExceptionConverter extends RuntimeException {
      *
      * @return String version of the exception
      */
+    @Override
     public String toString() {
-        return prefix + ex;
+        return this.prefix + this.ex;
     }
 
     /**
      * we have to override this as well
      */
+    @Override
     public void printStackTrace() {
         printStackTrace(System.err);
     }
@@ -155,10 +159,11 @@ public class ExceptionConverter extends RuntimeException {
      *
      * @param printStream printStream
      */
+    @Override
     public void printStackTrace(java.io.PrintStream printStream) {
         synchronized (printStream) {
-            printStream.print(prefix);
-            ex.printStackTrace(printStream);
+            printStream.print(this.prefix);
+            this.ex.printStackTrace(printStream);
         }
     }
 
@@ -167,10 +172,11 @@ public class ExceptionConverter extends RuntimeException {
      *
      * @param printWriter printWriter
      */
+    @Override
     public void printStackTrace(java.io.PrintWriter printWriter) {
         synchronized (printWriter) {
-            printWriter.print(prefix);
-            ex.printStackTrace(printWriter);
+            printWriter.print(this.prefix);
+            this.ex.printStackTrace(printWriter);
         }
     }
 
@@ -180,6 +186,7 @@ public class ExceptionConverter extends RuntimeException {
      *
      * @return a Throwable
      */
+    @Override
     public synchronized Throwable fillInStackTrace() {
         return this;
     }
