@@ -594,6 +594,7 @@ public class PdfPKCS7 {
     /**
      * Determines an OID by signing and hash algorithm. If nothing is found null will be returned.
      * 
+     * 
      * @param signingAlgorithm - currently RSA, DSA and ECDSA are supported. 
      * @param hashAlgorithm like SHA1, SHA2 or SHA3
      */
@@ -617,14 +618,14 @@ public class PdfPKCS7 {
             case "EC":
             case "ECDSA": returnValue = ecdsaOids.get(hashAlgorithm);
                         //fallback
-                        if(returnValue == null) {
+                        if (returnValue == null) {
                             returnValue = ID_ECDSA;
                         }
                         break;
             default: returnValue = null;
         }
         
-        if(returnValue==null) {
+        if (returnValue == null) {
             //nothing found so check BC
             DefaultSignatureAlgorithmIdentifierFinder finder = new DefaultSignatureAlgorithmIdentifierFinder();
             try {
@@ -1336,7 +1337,7 @@ public class PdfPKCS7 {
             String hashAlgorithm = getHashAlgorithm();
             this.digestEncryptionAlgorithm = PdfPKCS7.getOidForAlgorithmAndHash(digestEncryptionAlgorithm, hashAlgorithm);
             
-            if (this.digestEncryptionAlgorithm==null) {
+            if (this.digestEncryptionAlgorithm == null) {
                 throw new ExceptionConverter(new NoSuchAlgorithmException("Unknown key algorithm " + digestEncryptionAlgorithm + " hash " + hashAlgorithm));
             }
         }
