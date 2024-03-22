@@ -593,8 +593,7 @@ public class PdfPKCS7 {
     
     /**
      * Determines an OID by signing and hash algorithm. If nothing is found null will be returned.
-     * 
-     * 
+     *
      * @param signingAlgorithm - currently RSA, DSA and ECDSA are supported. 
      * @param hashAlgorithm like SHA1, SHA2 or SHA3
      */
