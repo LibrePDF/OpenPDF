@@ -219,15 +219,15 @@ public class PdfPKCS7 {
         allowedDigests.put("RIPEMD-256", "1.3.36.3.2.3");
 
         //all oids according to http://oidref.com/1.2.840.113549.1.1
-        rsaOids.put("SHA256","1.2.840.113549.1.1.11");
+        rsaOids.put("SHA256", "1.2.840.113549.1.1.11");
         //add a 2nd time with "-" due to different crypto providers (sun vs bc) 
-        rsaOids.put("SHA-256","1.2.840.113549.1.1.11");
-        rsaOids.put("SHA384","1.2.840.113549.1.1.12");
-        rsaOids.put("SHA-384","1.2.840.113549.1.1.12");
-        rsaOids.put("SHA512","1.2.840.113549.1.1.13");
-        rsaOids.put("SHA-512","1.2.840.113549.1.1.13");
-        rsaOids.put("SHA224","1.2.840.113549.1.1.14");
-        rsaOids.put("SHA-224","1.2.840.113549.1.1.14");
+        rsaOids.put("SHA-256", "1.2.840.113549.1.1.11");
+        rsaOids.put("SHA384", "1.2.840.113549.1.1.12");
+        rsaOids.put("SHA-384", "1.2.840.113549.1.1.12");
+        rsaOids.put("SHA512", "1.2.840.113549.1.1.13");
+        rsaOids.put("SHA-512", "1.2.840.113549.1.1.13");
+        rsaOids.put("SHA224", "1.2.840.113549.1.1.14");
+        rsaOids.put("SHA-224", "1.2.840.113549.1.1.14");
         rsaOids.put("SHA3-224", "2.16.840.1.101.3.4.3.13");
         rsaOids.put("SHA3-256", "2.16.840.1.101.3.4.3.14");
         rsaOids.put("SHA3-384", "2.16.840.1.101.3.4.3.15");
@@ -567,8 +567,8 @@ public class PdfPKCS7 {
             String signingAlgorithm = privKey.getAlgorithm();
             this.digestEncryptionAlgorithm = getOidForAlgorithmAndHash(signingAlgorithm, hashAlgorithm);
             
-            if (this.digestEncryptionAlgorithm==null) {
-                throw new ExceptionConverter(new NoSuchAlgorithmException("Unknown key algorithm "+this.digestEncryptionAlgorithm+" and hash "+hashAlgorithm));
+            if (this.digestEncryptionAlgorithm == null) {
+                throw new ExceptionConverter(new NoSuchAlgorithmException("Unknown key algorithm " + this.digestEncryptionAlgorithm + " and hash " + hashAlgorithm));
             }
         }
         if (hasRSAdata) {
@@ -601,27 +601,27 @@ public class PdfPKCS7 {
         
         String returnValue;
         
-        switch(signingAlgorithm) {
-            case "RSA": returnValue=rsaOids.get(hashAlgorithm);
+        switch (signingAlgorithm) {
+            case "RSA": returnValue = rsaOids.get(hashAlgorithm);
                         //fallback
-                        if(returnValue==null) {
-                            returnValue=ID_RSA;
+                        if (returnValue == null) {
+                            returnValue = ID_RSA;
                         }
                         break;
-            case "DSA": returnValue=dsaOids.get(hashAlgorithm);
+            case "DSA": returnValue = dsaOids.get(hashAlgorithm);
                         //fallback
-                        if(returnValue==null) {
-                            returnValue=ID_DSA;
+                        if (returnValue == null) {
+                            returnValue = ID_DSA;
                         }
                         break;
             case "EC":
-            case "ECDSA": returnValue=ecdsaOids.get(hashAlgorithm);
+            case "ECDSA": returnValue = ecdsaOids.get(hashAlgorithm);
                         //fallback
-                        if(returnValue==null) {
-                            returnValue=ID_ECDSA;
+                        if(returnValue == null) {
+                            returnValue = ID_ECDSA;
                         }
                         break;
-            default: returnValue=null;
+            default: returnValue = null;
         }
         
         if(returnValue==null) {
@@ -631,7 +631,7 @@ public class PdfPKCS7 {
                 AlgorithmIdentifier id = finder.find(hashAlgorithm + "with" + signingAlgorithm);
                 returnValue = id.getAlgorithm().getId();
             }
-            catch(IllegalArgumentException iae) {
+            catch (IllegalArgumentException iae) {
                 //it was just a try, return null then
             }
         }
@@ -1337,7 +1337,7 @@ public class PdfPKCS7 {
             this.digestEncryptionAlgorithm = PdfPKCS7.getOidForAlgorithmAndHash(digestEncryptionAlgorithm, hashAlgorithm);
             
             if (this.digestEncryptionAlgorithm==null) {
-                throw new ExceptionConverter(new NoSuchAlgorithmException("Unknown key algorithm "+digestEncryptionAlgorithm+" hash "+hashAlgorithm));
+                throw new ExceptionConverter(new NoSuchAlgorithmException("Unknown key algorithm " + digestEncryptionAlgorithm + " hash " + hashAlgorithm));
             }
         }
     }
