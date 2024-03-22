@@ -27,6 +27,13 @@ class ImageTest {
     }
 
     @Test
+    void shouldReturnImageWithUrlFromClasspath() throws Exception {
+        String fileName = "H.gif";
+        final Image image = Image.getInstanceFromClasspath(fileName);
+        assertNotNull(image.getUrl());
+    }
+
+    @Test
     void shouldReturnImageWithoutUrl() throws IOException {
         byte[] imageBytes = readFileBytes();
         Image image = Image.getInstance(imageBytes);
