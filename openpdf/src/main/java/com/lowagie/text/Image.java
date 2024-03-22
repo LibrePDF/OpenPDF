@@ -552,6 +552,21 @@ public abstract class Image extends Rectangle {
     }
 
     /**
+     * Gets an instance of an Image from the classpath.
+     *
+     * @param filename a filename
+     * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
+     * <CODE>Png</CODE>
+     * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws IOException         if image is not recognized
+     */
+    public static Image getInstanceFromClasspath(String filename)
+            throws BadElementException, IOException {
+        URL url = Image.class.getResource("/" + filename);
+        return getInstance(url);
+    }
+
+    /**
      * gets an instance of an Image
      *
      * @param imgb raw image date
