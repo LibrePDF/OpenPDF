@@ -979,8 +979,8 @@ class PdfStamperImp extends PdfWriter {
 
                     if (bboxRaw != null && rectRaw != null) {
                         transformNeeded = true;
-                        PdfRectangle bbox = new PdfRectangle(bboxRaw);
-                        PdfRectangle rect = new PdfRectangle(rectRaw);
+                        PdfRectangle bbox = new PdfRectangle(PdfReader.getNormalizedRectangle(bboxRaw));
+                        PdfRectangle rect = new PdfRectangle(PdfReader.getNormalizedRectangle(rectRaw));
 
                         float rectWidth = rect.width();
                         float rectHeight = rect.height();
