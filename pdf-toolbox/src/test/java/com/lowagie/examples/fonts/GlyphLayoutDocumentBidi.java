@@ -1,7 +1,5 @@
 
 /*
- * GlyphLayoutDocumentDinSpec91379
- *
  * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
  * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial

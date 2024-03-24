@@ -261,17 +261,17 @@ public class PdfContentByte {
      */
     static byte[] escapeString(byte[] b) {
         ByteBuffer content = new ByteBuffer();
-        escapeString(b, content);
+        escapeAndAppendString(b, content);
         return content.toByteArray();
     }
 
     /**
-     * Escapes a <CODE>byte</CODE> array according to the PDF conventions.
+     * Escapes a <CODE>byte</CODE> array according to the PDF conventions and append it to <CODE>content</CODE>
      *
      * @param b       the <CODE>byte</CODE> array to escape
-     * @param content the content
+     * @param content the content to append the escaped string
      */
-    static void escapeString(byte[] b, ByteBuffer content) {
+    static void escapeAndAppendString(byte[] b, ByteBuffer content) {
         content.append_i('(');
         for (byte c : b) {
             switch (c) {
@@ -1688,7 +1688,7 @@ public class PdfContentByte {
                     MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         }
         byte[] b = state.fontDetails.convertToBytes(text, getPdfDocument().getTextRenderingOptions());
-        escapeString(b, content);
+        escapeAndAppendString(b, content);
     }
 
     /**
@@ -1747,7 +1747,7 @@ public class PdfContentByte {
                     MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         }
         byte[] b = state.fontDetails.convertToBytes(glyphVector, beginIndex, endIndex);
-        escapeString(b, content);
+        escapeAndAppendString(b, content);
         content.append("Tj").append_i(separator);
     }
 
@@ -2161,8 +2161,8 @@ public class PdfContentByte {
      * Creates a new template.
      * <p>
      * Creates a new template that is nothing more than a form XObject. This template can be included in this
-     * <CODE>PdfContentByte</CODE> or in another template. Templates are only written to the output when the document
-     * is closed permitting things like showing text in the first page that is only defined in the last page.
+     * <CODE>PdfContentByte</CODE> or in another template. Templates are only written to the output when the document is
+     * closed permitting things like showing text in the first page that is only defined in the last page.
      *
      * @param width  the bounding box width
      * @param height the bounding box height
@@ -2748,6 +2748,36 @@ public class PdfContentByte {
             throw new NullPointerException(
                     MessageLocalization.getComposedMessage("the.writer.in.pdfcontentbyte.is.null"));
         }
+    }
+
+    /**
+     * Show an array of glyphs.
+     *
+     * @param glyphs array of glyphs
+     */
+    public void showText(PdfGlyphArray glyphs) {
+        if (state.fontDetails == null) {
+            throw new NullPointerException(
+                    MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
+        }
+        content.append("[");
+        List arrayList = glyphs.getList();
+        boolean lastWasDisplacement = false;
+        for (Object obj : arrayList) {
+            if (obj instanceof Integer) { // glyph code
+                byte[] b = state.fontDetails.convertToBytes((Integer) obj);
+                escapeAndAppendString(b, content); // appends escapedString to content
+                lastWasDisplacement = false;
+            } else { // displacement
+                if (lastWasDisplacement) {
+                    content.append(' ');
+                } else {
+                    lastWasDisplacement = true;
+                }
+                content.append((Float) obj);
+            }
+        }
+        content.append("]TJ").append_i(separator);
     }
 
     /**

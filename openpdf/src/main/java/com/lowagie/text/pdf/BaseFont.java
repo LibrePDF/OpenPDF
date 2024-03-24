@@ -724,6 +724,7 @@ public abstract class BaseFont {
         if (cached) {
             fontFound = fontCache.get(key);
             if (fontFound != null) {
+                LayoutProcessor.loadFont(fontFound, name);
                 return fontFound;
             }
         }
