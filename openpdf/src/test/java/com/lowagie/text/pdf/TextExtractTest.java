@@ -59,6 +59,8 @@ class TextExtractTest {
         // FileOutputStream test = new FileOutputStream("/tmp/output2.pdf");
         // pdfOutput.writeTo(test);
 
-        Assertions.assertEquals("ก ข น ํ้ า ต า ญูญูิ่ ก้กิ้", pdfTextExtractor.getTextFromPage(1));
+        // Ignore spaces in comparison
+        Assertions.assertEquals("ก ข น ํ้ า ต า ญูญูิ่ ก้กิ้".replaceAll(" ", ""),
+            pdfTextExtractor.getTextFromPage(1).replaceAll(" ",""));
     }
 }

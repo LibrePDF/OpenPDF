@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 class TTFCacheTest {
 
     @Test
-    void whenGetTTFFileWithNullTtuShouldThrowNpe() {
-        assertThatNullPointerException().isThrownBy(() -> TTFCache.getTTFFile("test", null));
+    void whenGetTTFFileWithNotExistingFileAndNullTtuShouldThrowNpe() {
+        assertThatNullPointerException().isThrownBy(() -> TTFCache.getTTFFile("test-TFFile-With-Null-Ttu", null));
     }
 
     @Test
@@ -24,7 +24,7 @@ class TTFCacheTest {
     }
 
     @Test
-    void whenGetTTFFileShouldThrowNpe() throws IOException {
+    void whenTTFCacheGetShouldEqualToTTFFileGet() throws IOException {
         // given
         TrueTypeFontUnicode font = (TrueTypeFontUnicode) BaseFont
                 .createFont("fonts/Viaoda_Libre/ViaodaLibre-Regular.ttf", BaseFont.IDENTITY_H, false);
