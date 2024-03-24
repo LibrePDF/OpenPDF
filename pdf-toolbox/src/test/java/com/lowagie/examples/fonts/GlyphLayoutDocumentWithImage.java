@@ -9,9 +9,14 @@
  */
 package com.lowagie.examples.fonts;
 
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
-
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.LayoutProcessor;
+import com.lowagie.text.pdf.PdfWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

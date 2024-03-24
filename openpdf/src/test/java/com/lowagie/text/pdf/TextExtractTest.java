@@ -61,6 +61,6 @@ class TextExtractTest {
 
         // Ignore spaces in comparison
         Assertions.assertEquals("ก ข น ํ้ า ต า ญูญูิ่ ก้กิ้".replaceAll(" ", ""),
-            pdfTextExtractor.getTextFromPage(1).replaceAll(" ",""));
+            pdfTextExtractor.getTextFromPage(1).replaceAll(" ", ""));
     }
 }

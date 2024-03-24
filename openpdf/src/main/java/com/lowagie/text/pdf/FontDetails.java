@@ -315,8 +315,8 @@ class FontDetails {
         if (fontType != BaseFont.FONT_TYPE_TTUNI) {
             throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
         }
-        if (glyphCode == 0xFFFE || glyphCode == 0xFFFF) {// considered non-glyphs by
-            // AWT
+        if (glyphCode == 0xFFFE || glyphCode == 0xFFFF) {
+            // considered non-glyphs by AWT
             return new byte[]{};
         }
         if (!longTag.containsKey(glyphCode)) {

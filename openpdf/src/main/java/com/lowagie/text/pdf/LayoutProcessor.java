@@ -69,6 +69,7 @@ public class LayoutProcessor {
         ONE,
         TWO
     }
+
     private static Version version = Version.TWO;
 
     private static final int DEFAULT_FLAGS = -1;
@@ -142,6 +143,7 @@ public class LayoutProcessor {
 
     /**
      * Set version
+     *
      * @param version to set
      * @deprecated To be used *only*, if version two produces incorrect PDF - please file an issue if this occurs
      */
@@ -251,6 +253,7 @@ public class LayoutProcessor {
 
     /**
      * Returns the currennt version
+     *
      * @return current version
      */
     public static Version getVersion() {
@@ -450,7 +453,7 @@ public class LayoutProcessor {
         GlyphVector glyphVector = computeGlyphVector(baseFont, fontSize, text);
         completeCmap(cb, baseFont, text, glyphVector);
 
-        if(writeActualText) {
+        if (writeActualText) {
             PdfDictionary d = new PdfDictionary();
             d.put(PdfName.ACTUALTEXT, new PdfString(text, PdfString.TEXT_UNICODE));
             cb.beginMarkedContentSequence(PdfName.SPAN, d, true);
@@ -484,7 +487,7 @@ public class LayoutProcessor {
             float py = (float) p.getY();
 
             if (Math.abs(py) >= deltaY) {
-                if(!ga.isEmpty()) {
+                if (!ga.isEmpty()) {
                     cb.showText(ga);
                     ga.clear();
                 }
