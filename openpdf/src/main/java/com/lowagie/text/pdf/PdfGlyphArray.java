@@ -48,9 +48,6 @@ import java.util.List;
 public class PdfGlyphArray {
     private final List<Object> list = new LinkedList<>();
 
-    public PdfGlyphArray() {
-    }
-
     public void add(float displacement) {
         list.add(displacement);
     }

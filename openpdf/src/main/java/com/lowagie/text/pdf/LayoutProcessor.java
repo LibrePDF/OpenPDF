@@ -229,7 +229,7 @@ public class LayoutProcessor {
      * @param font           The font for which kerning is to be turned on
      * @param textAttributes Map of text attributes to be set
      * @see <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
-     * Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>*
+     * Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>
      */
     private static void setTextAttributes(com.lowagie.text.Font font, Map<TextAttribute, Object> textAttributes) {
         BaseFont baseFont = font.getBaseFont();
@@ -455,7 +455,7 @@ public class LayoutProcessor {
 
         if (writeActualText) {
             PdfDictionary d = new PdfDictionary();
-            d.put(PdfName.ACTUALTEXT, new PdfString(text, PdfString.TEXT_UNICODE));
+            d.put(PdfName.ACTUALTEXT, new PdfString(text, PdfObject.TEXT_UNICODE));
             cb.beginMarkedContentSequence(PdfName.SPAN, d, true);
         }
         if (noAdjustments(glyphVector)) {
