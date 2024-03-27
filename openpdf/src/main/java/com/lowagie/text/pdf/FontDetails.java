@@ -54,6 +54,7 @@ import com.lowagie.text.TextRenderingOptions;
 import com.lowagie.text.Utilities;
 import java.awt.font.GlyphVector;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -154,6 +155,18 @@ class FontDetails {
     void putFillerCmap(Integer key, int[] value) {
         fillerCmap.put(key, value);
     }
+
+    void addMissingCmapEntries(String text, GlyphVector glyphVector, BaseFont baseFont) {
+
+        if (baseFont instanceof TrueTypeFontUnicode trueTypeFont && getFillerCmap() != null) {
+            int[][] localCmap = trueTypeFont.getSentenceMissingCmap(text, glyphVector);
+
+            for (int[] ints : localCmap) {
+                putFillerCmap(ints[0], new int[]{ints[0], ints[1]});
+            }
+        }
+    }
+
 
     /**
      * Gets the indirect reference to this font.
@@ -291,6 +304,32 @@ class FontDetails {
         return result;
     }
 
+    /**
+     * Convert a glyph code to bytes
+     *
+     * @param glyphCode
+     * @return byte array with one or two bytes as UTF-16BE representation of the glyph code
+     * @see <CODE>convertToBytes(GlyphVector glyphVector,...)</CODE>
+     */
+    byte[] convertToBytes(final int glyphCode) {
+        if (fontType != BaseFont.FONT_TYPE_TTUNI) {
+            throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
+        }
+        if (glyphCode == 0xFFFE || glyphCode == 0xFFFF) {
+            // considered non-glyphs by AWT
+            return new byte[]{};
+        }
+        if (!longTag.containsKey(glyphCode)) {
+            int glyphWidth = ttu.getGlyphWidth(glyphCode);
+            Integer charCode = ttu.getCharacterCode(glyphCode);
+            int[] metrics = charCode != null ? new int[]{glyphCode, glyphWidth, charCode} : new int[]{
+                glyphCode, glyphWidth};
+            longTag.put(glyphCode, metrics);
+        }
+        String s = new String(Character.toChars(glyphCode));
+        return s.getBytes(StandardCharsets.UTF_16BE);
+    }
+
     byte[] convertToBytes(GlyphVector glyphVector, int beginIndex, int endIndex) {
         if (fontType != BaseFont.FONT_TYPE_TTUNI || symbolic) {
             throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
@@ -305,7 +344,7 @@ class FontDetails {
                 continue;
             }
 
-            glyphs[glyphCount++] = (char) code; // FIXME supplementary plane?
+            glyphCount += Character.toChars(code, glyphs, glyphCount);
 
             Integer codeKey = code;
             if (!longTag.containsKey(codeKey)) {
@@ -318,11 +357,7 @@ class FontDetails {
         }
 
         String s = new String(glyphs, 0, glyphCount);
-        try {
-            return s.getBytes(CJKFont.CJK_ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            throw new ExceptionConverter(e);
-        }
+        return s.getBytes(StandardCharsets.UTF_16BE);
     }
 
 

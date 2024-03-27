@@ -1,6 +1,4 @@
 /*
- * GlyphLayoutFormDin91379
- *
  * This code is part of the 'OpenPDF Tutorial'.
  * You can find the complete tutorial at the following address:
  * https://github.com/LibrePDF/OpenPDF/wiki/Tutorial
@@ -30,14 +28,13 @@ public class GlyphLayoutFormDin91379 {
 
     public static String TEXT_INTRO =
             "Test of formatting for letters and sequences defined in:\n"
-                    + "DIN 91379:2022-08: Characters and defined character sequences in Unicode for the electronic\n "
-                    + "processing of names and data exchange in Europe, with CD-ROM\n"
-                    + "See https://www.beuth.de/de/norm/din-91379/353496133\n"
-                    + "    https://github.com/String-Latin/DIN-91379-Characters-and-Sequences"
+                    + "DIN 91379:2022-08: Characters and defined character sequences in Unicode for the\n"
+                    + "electronic processing of names and data exchange in Europe, with CD-ROM.\n"
+                    + "See https://github.com/String-Latin/DIN-91379-Characters-and-Sequences\n"
                     + "and https://en.wikipedia.org/wiki/DIN_91379\n\n"
-                    + "Fonts used: Noto Sans Regular, Noto Sans Math Regular\n"
-                    + "    see https://fonts.google.com/noto/specimen/Noto+Sans"
-                    + "    and https://github.com/googlefonts/noto-fonts/tree/main/hinted/ttf\n"
+                    + "Fonts used: Noto Sans Regular, Noto Sans Math Regular, Noto Serif Regular\n"
+                    + "See https://fonts.google.com/noto/specimen/Noto+Sans\n"
+                    + "and https://github.com/googlefonts/noto-fonts/tree/main/hinted/ttf\n"
                     + "Using LayoutProcessor for glyph layout with Java built-in routines.\n\n";
 
     public static String LATIN_CHARS_DIN_91379 =
@@ -78,7 +75,7 @@ public class GlyphLayoutFormDin91379 {
                     + "bnlopt; Non-Letters N3 (normative)\n"
                     + "¤ ¦ ¸ ¼ ½ ¾ \n"
                     + "bnlnot; Non-Letters N4 (normative) -omitted-\n"
-                    + "dc; Combining diacritics (normative) ̀-omitted-\n"
+                    + "dc; Combining diacritics (normative) -omitted-\n"
                     + "gl; Greek Letters (extended)\n"
                     + "Ά Έ Ή Ί Ό Ύ Ώ ΐ Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ "
                     + "Τ Υ Φ Χ Ψ Ω Ϊ Ϋ ά έ ή ί ΰ α β γ δ ε ζ η θ ι κ λ μ ν "
@@ -97,19 +94,18 @@ public class GlyphLayoutFormDin91379 {
      * @param args -- not used
      */
     public static void main(String[] args) throws Exception {
-        test("GlyphLayoutFormDin91379.pdf", "com/lowagie/examples/fonts/form/PdfFormLayoutProcessor.pdf",
-                TEXT_INTRO + LATIN_CHARS_DIN_91379);
+        test("GlyphLayoutFormDin91379.pdf");
     }
 
     /**
      * Run the test: Print the characters of DIN 91379 in a pdf form
      *
      * @param fileName Name of output file
-     * @param formPath Name of input pdf form
-     * @param text     Text to show
      * @throws Exception in case of error
      */
-    public static void test(String fileName, String formPath, String text) throws Exception {
+    public static void test(String fileName) throws Exception {
+        String formPath = "com/lowagie/examples/fonts/form/PdfFormLayoutProcessor.pdf";
+        String text = TEXT_INTRO + LATIN_CHARS_DIN_91379;
 
         // Enable the LayoutProcessor with kerning and ligatures
         LayoutProcessor.enableKernLiga();

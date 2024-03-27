@@ -1,7 +1,7 @@
 /*
  * LayoutProcessor.java
  *
- * Copyright 2020-2022 Volker Kunert.
+ * Copyright 2020-2024 Volker Kunert.
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -65,6 +65,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class LayoutProcessor {
 
+    public enum Version {
+        ONE,
+        TWO
+    }
+
+    private static Version version = Version.TWO;
+
     private static final int DEFAULT_FLAGS = -1;
     private static final Map<BaseFont, java.awt.Font> awtFontMap = new ConcurrentHashMap<>();
 
@@ -73,6 +80,8 @@ public class LayoutProcessor {
     // Static variables can only be set once
     private static boolean enabled = false;
     private static int flags = DEFAULT_FLAGS;
+
+    private static boolean writeActualText;
 
     private LayoutProcessor() {
         throw new UnsupportedOperationException("static class");
@@ -130,6 +139,17 @@ public class LayoutProcessor {
 
     public static boolean isEnabled() {
         return enabled;
+    }
+
+    /**
+     * Set version
+     *
+     * @param version to set
+     * @deprecated To be used *only*, if version two produces incorrect PDF - please file an issue if this occurs
+     */
+    @Deprecated
+    public static void setVersion(Version version) {
+        LayoutProcessor.version = version;
     }
 
     /**
@@ -208,8 +228,8 @@ public class LayoutProcessor {
      *
      * @param font           The font for which kerning is to be turned on
      * @param textAttributes Map of text attributes to be set
-     * @see <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html" >Oracle: The Java™ Tutorials,
-     * Using Text Attributes to Style Text</a>
+     * @see <a href="https://docs.oracle.com/javase/tutorial/2d/text/textattributes.html">
+     * Oracle: The Java™ Tutorials, Using Text Attributes to Style Text</a>
      */
     private static void setTextAttributes(com.lowagie.text.Font font, Map<TextAttribute, Object> textAttributes) {
         BaseFont baseFont = font.getBaseFont();
@@ -220,8 +240,24 @@ public class LayoutProcessor {
         }
     }
 
+    /**
+     * Include ACTUALTEXT in PDF
+     */
+    public static void setWriteActualText() {
+        writeActualText = true;
+    }
+
     public static int getFlags() {
         return flags;
+    }
+
+    /**
+     * Returns the currennt version
+     *
+     * @return current version
+     */
+    public static Version getVersion() {
+        return  LayoutProcessor.version;
     }
 
     public static boolean isSet(int queryFlags) {
@@ -240,7 +276,7 @@ public class LayoutProcessor {
      * @throws RuntimeException if font can not be loaded
      */
     public static void loadFont(BaseFont baseFont, String filename) {
-        if (!enabled) {
+        if (!enabled || awtFontMap.get(baseFont) != null) {
             return;
         }
 
@@ -328,7 +364,7 @@ public class LayoutProcessor {
      * @param glyphVector glyph vector containing the positions
      * @return true, if the glyphVector contains adjustments
      */
-    private static boolean hasAdjustments(GlyphVector glyphVector) {
+    private static boolean noAdjustments(GlyphVector glyphVector) {
         boolean retVal = false;
         float lastX = 0f;
         float lastY = 0f;
@@ -348,7 +384,7 @@ public class LayoutProcessor {
             lastX = (float) p.getX();
             lastY = (float) p.getY();
         }
-        return retVal;
+        return !retVal;
     }
 
     /**
@@ -361,8 +397,26 @@ public class LayoutProcessor {
      * @return layout position correction to correct the start of the next line
      */
     public static Point2D showText(PdfContentByte cb, BaseFont baseFont, float fontSize, String text) {
+
+        if (LayoutProcessor.version == Version.ONE) {
+            return showText1(cb, baseFont, fontSize, text);
+        } else {
+            return showText2(cb, baseFont, fontSize, text);
+        }
+    }
+
+
+    private static void completeCmap(PdfContentByte cb, BaseFont baseFont, String text, GlyphVector glyphVector) {
+        cb.state.fontDetails.addMissingCmapEntries(text, glyphVector, baseFont);
+    }
+
+
+    @Deprecated
+    private static Point2D showText1(PdfContentByte cb, BaseFont baseFont, float fontSize, String text) {
         GlyphVector glyphVector = computeGlyphVector(baseFont, fontSize, text);
-        if (!hasAdjustments(glyphVector)) {
+        completeCmap(cb, baseFont, text, glyphVector);
+
+        if (noAdjustments(glyphVector)) {
             cb.showText(glyphVector);
             Point2D p = glyphVector.getGlyphPosition(glyphVector.getNumGlyphs());
             float dx = (float) p.getX();
@@ -391,15 +445,73 @@ public class LayoutProcessor {
         float dy = (float) p.getY() - lastY;
         cb.moveTextBasic(dx, -dy);
 
-        if (baseFont instanceof TrueTypeFontUnicode trueTypeFont && cb.state.fontDetails.getFillerCmap() != null) {
-            int[][] localCmap = trueTypeFont.getSentenceMissingCmap(text.toCharArray(), glyphVector);
-
-            for (int[] ints : localCmap) {
-                cb.state.fontDetails.putFillerCmap(ints[0], new int[]{ints[0], ints[1]});
-            }
-        }
-
         return new Point2D.Double(-p.getX(), p.getY());
+    }
+
+
+    private static Point2D showText2(PdfContentByte cb, BaseFont baseFont, float fontSize, String text) {
+        GlyphVector glyphVector = computeGlyphVector(baseFont, fontSize, text);
+        completeCmap(cb, baseFont, text, glyphVector);
+
+        if (writeActualText) {
+            PdfDictionary d = new PdfDictionary();
+            d.put(PdfName.ACTUALTEXT, new PdfString(text, PdfObject.TEXT_UNICODE));
+            cb.beginMarkedContentSequence(PdfName.SPAN, d, true);
+        }
+        if (noAdjustments(glyphVector)) {
+            cb.showText(glyphVector);
+        } else {
+            adjustAndShowText(cb, fontSize, glyphVector);
+        }
+        if (writeActualText) {
+            cb.endMarkedContentSequence();
+        }
+        return new Point2D.Double(0.0, 0.0);
+    }
+
+
+    private static void adjustAndShowText(PdfContentByte cb, final float fontSize, final GlyphVector glyphVector) {
+
+        final float deltaY = 0.001f;
+        final float deltaX = deltaY * 1000f / fontSize;
+        final float factorX = 1000f / fontSize;
+
+        float lastX = 0f;
+
+        PdfGlyphArray ga = new PdfGlyphArray();
+
+        for (int i = 0; i < glyphVector.getNumGlyphs(); i++) {
+            Point2D p = glyphVector.getGlyphPosition(i);
+            float ax = (i == 0) ? 0.0f : glyphVector.getGlyphMetrics(i - 1).getAdvanceX();
+            float dx = (float) p.getX() - lastX - ax;
+            float py = (float) p.getY();
+
+            if (Math.abs(py) >= deltaY) {
+                if (!ga.isEmpty()) {
+                    cb.showText(ga);
+                    ga.clear();
+                }
+                cb.setTextRise(-py);
+            }
+            if (Math.abs(dx) >= deltaX) {
+                ga.add(-dx * factorX);
+            }
+            ga.add(glyphVector.getGlyphCode(i));
+            if (Math.abs(py) >= deltaY) {
+                cb.showText(ga);
+                ga.clear();
+                cb.setTextRise(0.0f);
+            }
+            lastX = (float) p.getX();
+        }
+        Point2D p = glyphVector.getGlyphPosition(glyphVector.getNumGlyphs());
+        float ax = (glyphVector.getNumGlyphs() == 0) ? 0.0f : glyphVector.getGlyphMetrics(glyphVector.getNumGlyphs() - 1).getAdvanceX();
+        float dx = (float) p.getX() - lastX - ax;
+        if (Math.abs(dx) >= deltaX) {
+            ga.add(-dx * factorX);
+        }
+        cb.showText(ga);
+        ga.clear();
     }
 
     public static void disable() {
@@ -407,5 +519,7 @@ public class LayoutProcessor {
         flags = DEFAULT_FLAGS;
         awtFontMap.clear();
         globalTextAttributes.clear();
+        writeActualText = false;
+        setVersion(Version.TWO);
     }
 }
