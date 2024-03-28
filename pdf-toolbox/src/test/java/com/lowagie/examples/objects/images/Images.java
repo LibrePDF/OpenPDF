@@ -49,25 +49,25 @@ public class Images {
 
             // step 4:
             document.add(new Paragraph("A picture of my dog: otsoe.jpg"));
-            Image jpg = Image.getInstance("otsoe.jpg");
+            Image jpg = Image.getInstanceFromClasspath("otsoe.jpg");
             document.add(jpg);
             document.add(new Paragraph("getacro.gif"));
-            Image gif = Image.getInstance("getacro.gif");
+            Image gif = Image.getInstanceFromClasspath("getacro.gif");
             document.add(gif);
             document.add(new Paragraph("pngnow.png"));
-            Image png = Image.getInstance("pngnow.png");
+            Image png = Image.getInstanceFromClasspath("pngnow.png");
             document.add(png);
             document.add(new Paragraph("grayscaled.png"));
-            Image grayscaledPng = Image.getInstance("grayscaled.png");
+            Image grayscaledPng = Image.getInstanceFromClasspath("grayscaled.png");
             document.add(grayscaledPng);
             document.add(new Paragraph("iText.bmp"));
-            Image bmp = Image.getInstance("iText.bmp");
+            Image bmp = Image.getInstanceFromClasspath("iText.bmp");
             document.add(bmp);
             document.add(new Paragraph("iText.wmf"));
-            Image wmf = Image.getInstance("iText.wmf");
+            Image wmf = Image.getInstanceFromClasspath("iText.wmf");
             document.add(wmf);
             document.add(new Paragraph("iText.tif"));
-            Image tif = Image.getInstance("iText.tif");
+            Image tif = Image.getInstanceFromClasspath("iText.tif");
             document.add(tif);
         } catch (DocumentException | IOException de) {
             System.err.println(de.getMessage());

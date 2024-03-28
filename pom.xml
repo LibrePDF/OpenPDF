@@ -69,8 +69,8 @@
     <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
     <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
-    <maven.compiler.plugin.version>3.12.1</maven.compiler.plugin.version>
-    <maven-gpg-plugin.version>3.2.0</maven-gpg-plugin.version>
+    <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+    <maven-gpg-plugin.version>3.2.2</maven-gpg-plugin.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.3.2</maven-jxr-plugin.version>
@@ -96,7 +96,7 @@
 
     <!-- test-dependencies -->
     <assertj.version>3.25.3</assertj.version>
-    <checkstyle.version>10.14.1</checkstyle.version>
+    <checkstyle.version>10.14.2</checkstyle.version>
     <hamcrest.version>2.2</hamcrest.version>
     <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
     <junit.version>5.10.2</junit.version>

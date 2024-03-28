@@ -179,6 +179,7 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
         return inverseCmap == null ? null : inverseCmap.get(code);
     }
 
+
     /**
      * Gets the width of a <CODE>char</CODE> in normalized 1000 units.
      *
@@ -234,17 +235,18 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
         return total;
     }
 
-    int[][] getSentenceMissingCmap(char[] chars, GlyphVector glyph) {
-        char[] unicodeChar = Arrays.copyOf(chars, chars.length);
-        int[] glyphChar = glyph.getGlyphCodes(0, glyph.getNumGlyphs(), new int[glyph.getNumGlyphs()]);
+    int[][] getSentenceMissingCmap(String text, GlyphVector glyphVector) {
+        char[] chars = text.toCharArray();
+        int[] glyphCodes = glyphVector.getGlyphCodes(0, glyphVector.getNumGlyphs(),
+                new int[glyphVector.getNumGlyphs()]);
 
         List<int[]> missingCmapList = new ArrayList<>();
-        for (int i = 0; i < glyphChar.length; i++) {
-            int charIndex = glyph.getGlyphCharIndex(i);
-            int glyphCode = glyphChar[i];
+        for (int i = 0; i < glyphCodes.length; i++) {
+            int charIndex = glyphVector.getGlyphCharIndex(i);
+            int glyphCode = glyphCodes[i];
             Integer cmapCharactherCode = getCharacterCode(glyphCode);
             if (cmapCharactherCode == null) {
-                missingCmapList.add(new int[]{glyphCode, unicodeChar[charIndex]});
+                missingCmapList.add(new int[]{glyphCode, chars[charIndex]});
             }
         }
 
