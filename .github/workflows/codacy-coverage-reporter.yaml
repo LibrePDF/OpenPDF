@@ -19,6 +19,8 @@ jobs:
 
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@v1
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: ./openpdf/target/site/jacoco/jacoco.xml, ./pdf-toolbox/target/site/jacoco/jacoco.xml, ./openpdf-fonts-extra/target/site/jacoco/jacoco.xml
