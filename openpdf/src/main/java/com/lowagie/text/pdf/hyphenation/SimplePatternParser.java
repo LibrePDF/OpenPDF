@@ -117,13 +117,13 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
     }
 
     public static void main(String[] args) {
-        try {
-            if (args.length > 0) {
+        if (args.length > 0) {
+            try (FileInputStream fis = new FileInputStream(args[0])) {
                 SimplePatternParser pp = new SimplePatternParser();
-                pp.parse(new FileInputStream(args[0]), pp);
+                pp.parse(fis, pp);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -180,9 +180,11 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
         return res.toString();
     }
 
+    @Override
     public void endDocument() {
     }
 
+    @Override
     public void endElement(String tag) {
         if (token.length() > 0) {
             String word = token.toString();
@@ -249,6 +251,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
         token.setLength(0);
     }
 
+    @Override
     public void text(String str) {
         StringTokenizer tk = new StringTokenizer(str);
         while (tk.hasMoreTokens()) {
@@ -274,14 +277,17 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
     }
 
     // PatternConsumer implementation for testing purposes
+    @Override
     public void addClass(String c) {
         System.out.println("class: " + c);
     }
 
+    @Override
     public void addException(String w, ArrayList e) {
         System.out.println("exception: " + w + " : " + e.toString());
     }
 
+    @Override
     public void addPattern(String p, String v) {
         System.out.println("pattern: " + p + " : " + v);
     }

@@ -93,14 +93,14 @@ public class Hyphenator {
      * @return a hyphenation tree
      */
     public static HyphenationTree getResourceHyphenationTree(String key) {
-        try {
-            InputStream stream = BaseFont.getResourceStream(defaultHyphLocation + key + ".xml");
-            if (stream == null && key.length() > 2) {
-                stream = BaseFont.getResourceStream(defaultHyphLocation + key.substring(0, 2) + ".xml");
-            }
-            if (stream == null) {
-                return null;
-            }
+
+        InputStream stream = readHyphenationFile(key);
+
+        if (stream == null) {
+            return null;
+        }
+
+        try (InputStream resourceStream = stream) {
             HyphenationTree hTree = new HyphenationTree();
             hTree.loadSimplePatterns(stream);
             return hTree;
@@ -109,35 +109,52 @@ public class Hyphenator {
         }
     }
 
+    private static InputStream readHyphenationFile(String key) {
+        InputStream stream = BaseFont.getResourceStream(defaultHyphLocation + key + ".xml");
+        if (stream == null && key.length() > 2) {
+            stream = BaseFont.getResourceStream(defaultHyphLocation + key.substring(0, 2) + ".xml");
+        }
+        return stream;
+    }
+
     /**
      * @param key The language to get the tree from
-     * @return a hyphenation tree
+     * @return a hyphenation tree or null
      */
     public static HyphenationTree getFileHyphenationTree(String key) {
-        try {
-            if (hyphenDir == null) {
-                return null;
-            }
-            InputStream stream = null;
-            File hyphenFile = new File(hyphenDir, key + ".xml");
-            if (hyphenFile.canRead()) {
-                stream = new FileInputStream(hyphenFile);
-            }
-            if (stream == null && key.length() > 2) {
-                hyphenFile = new File(hyphenDir, key.substring(0, 2) + ".xml");
-                if (hyphenFile.canRead()) {
-                    stream = new FileInputStream(hyphenFile);
-                }
-            }
-            if (stream == null) {
-                return null;
-            }
+
+        if (hyphenDir == null) {
+            return null;
+        }
+
+        File hyphenFile = getHyphenFile(key);
+        if (hyphenFile == null) {
+            return null;
+        }
+
+        try (InputStream stream = new FileInputStream(hyphenFile)) {
             HyphenationTree hTree = new HyphenationTree();
             hTree.loadSimplePatterns(stream);
             return hTree;
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private static File getHyphenFile(String key) {
+        File hyphenFile = new File(hyphenDir, key + ".xml");
+        if (hyphenFile.canRead()) {
+            return hyphenFile;
+        }
+
+        if (key.length() > 2) {
+            hyphenFile = new File(hyphenDir, key.substring(0, 2) + ".xml");
+            if (hyphenFile.canRead()) {
+                return hyphenFile;
+            }
+        }
+
+        return null;
     }
 
     /**

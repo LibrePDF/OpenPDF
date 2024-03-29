@@ -198,7 +198,7 @@ public class AcroFields {
                             }
                             break;
                         case "g":
-                            if (stack.size() >= 1) {
+                            if (!stack.isEmpty()) {
                                 float gray = Float.parseFloat(stack.get(stack.size() - 1));
                                 if (gray != 0) {
                                     ret[DA_COLOR] = new GrayColor(gray);
@@ -283,7 +283,7 @@ public class AcroFields {
             return;
         }
         PdfArray arrfds = (PdfArray) PdfReader.getPdfObjectRelease(top.get(PdfName.FIELDS));
-        if (arrfds == null || arrfds.size() == 0) {
+        if (arrfds == null || arrfds.isEmpty()) {
             return;
         }
         for (int k = 1; k <= reader.getNumberOfPages(); ++k) {
@@ -344,7 +344,7 @@ public class AcroFields {
                         annot = null;
                     }
                 }
-                if (name.length() > 0) {
+                if (!name.isEmpty()) {
                     name = name.substring(0, name.length() - 1);
                 }
                 Item item = fields.get(name);
@@ -466,11 +466,11 @@ public class AcroFields {
      * @return String[] of appearance names or null if the field can not be found
      */
     public String[] getAppearanceNames(String fieldName, int idx) {
-        Item fd = (Item) this.fields.get(fieldName);
+        Item fd = this.fields.get(fieldName);
         if (fd == null) {
             return null;
         }
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
 
         PdfDictionary dic = fd.getWidget(idx);
         dic = dic.getAsDict(PdfName.AP);
@@ -478,9 +478,8 @@ public class AcroFields {
             dic = dic.getAsDict(PdfName.N);
             if (dic != null) {
 
-                Iterator it = dic.getKeys().iterator();
-                while (it.hasNext()) {
-                    String name = PdfName.decodeName(((PdfName) it.next()).toString());
+                for (PdfName pdfName : dic.getKeys()) {
+                    String name = PdfName.decodeName(pdfName.toString());
                     if (!names.contains(name)) {
                         names.add(name);
                     }
@@ -799,7 +798,6 @@ public class AcroFields {
         }
         //flags
         PdfNumber nfl = merged.getAsNumber(PdfName.F);
-        flags = 0;
         tx.setVisibility(BaseField.VISIBLE_BUT_DOES_NOT_PRINT);
         if (nfl != null) {
             flags = nfl.intValue();
@@ -870,7 +868,7 @@ public class AcroFields {
         topFirst = 0;
         String text = (values.length > 0) ? values[0] : null;
 
-        TextField tx = null;
+        TextField tx;
         if (fieldCache == null || !fieldCache.containsKey(fieldName)) {
             tx = new TextField(writer, null, null);
             tx.setExtraMargin(extraMarginLeft, extraMarginTop);
@@ -1055,7 +1053,7 @@ public class AcroFields {
             }
             PdfArray opts = item.getValue(0).getAsArray(PdfName.OPT);
             if (opts != null) {
-                int idx = 0;
+                int idx;
                 try {
                     idx = Integer.parseInt(value);
                     PdfString ps = opts.getAsString(idx);
@@ -1072,7 +1070,7 @@ public class AcroFields {
         } else if (v instanceof PdfName) {
             return PdfName.decodeName(v.toString());
         } else if (v instanceof PdfArray) {
-            return ((PdfArray) v).toString();
+            return v.toString();
         } else {
             return "";
         }
@@ -1097,10 +1095,6 @@ public class AcroFields {
         if (item == null) {
             return ret;
         }
-        //PdfName type = (PdfName)PdfReader.getPdfObject(((PdfDictionary)item.merged.get(0)).get(PdfName.FT));
-        //if (!PdfName.CH.equals(type)) {
-        //    return ret;
-        //}
         PdfArray values = item.getMerged(0).getAsArray(PdfName.I);
         if (values == null) {
             return ret;
@@ -1320,7 +1314,7 @@ public class AcroFields {
             throw new RuntimeException("No reader has been supplied to this AcroFields instance!");
         }
         try {
-            Item item = (Item) this.fields.get(field);
+            Item item = this.fields.get(field);
             if (item == null) {
                 return false;
             }
@@ -2225,7 +2219,7 @@ public class AcroFields {
             }
 
             PdfArray ref = v.getAsArray(PdfName.REFERENCE);
-            if (ref == null || ref.size() == 0) {
+            if (ref == null || ref.isEmpty()) {
                 this.sigTypes.put(entry.getKey(), SignatureType.APPROVAL);
             } else {
 
@@ -2859,7 +2853,7 @@ public class AcroFields {
          */
         public void writeToAll(PdfName key, PdfObject value, int writeFlags) {
             int i;
-            PdfDictionary curDict = null;
+            PdfDictionary curDict;
             if ((writeFlags & WRITE_MERGED) != 0) {
                 for (i = 0; i < merged.size(); ++i) {
                     curDict = getMerged(i);
@@ -3102,6 +3096,7 @@ public class AcroFields {
             this.length = length;
         }
 
+        @Override
         public int read() throws IOException {
             int n = read(b);
             if (n != 1) {
@@ -3110,6 +3105,7 @@ public class AcroFields {
             return b[0] & 0xff;
         }
 
+        @Override
         public int read(byte[] b, int off, int len) throws IOException {
             if (b == null) {
                 throw new NullPointerException();
@@ -3129,6 +3125,7 @@ public class AcroFields {
             return elen;
         }
 
+        @Override
         public void close() throws IOException {
             if (!closed) {
                 raf.close();
@@ -3139,6 +3136,7 @@ public class AcroFields {
 
     private static class SorterComparator implements Comparator<Object[]> {
 
+        @Override
         public int compare(Object[] o1, Object[] o2) {
             int n1 = ((int[]) o1[1])[0];
             int n2 = ((int[]) o2[1])[0];

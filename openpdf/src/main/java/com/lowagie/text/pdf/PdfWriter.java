@@ -1423,6 +1423,7 @@ public class PdfWriter extends DocWriter implements
      * @see com.lowagie.text.pdf.interfaces.PdfVersion#addDeveloperExtension(com.lowagie.text.pdf.PdfDeveloperExtension)
      * @since 2.1.6
      */
+    @Override
     public void addDeveloperExtension(PdfDeveloperExtension de) {
         pdf_version.addDeveloperExtension(de);
     }
@@ -1437,15 +1438,15 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfVersion#setPdfVersion(char)
      */
+    @Override
     public void setPdfVersion(char version) {
         pdf_version.setPdfVersion(version);
     }
 
-//  [F3] adding fonts
-
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfVersion#setPdfVersion(com.lowagie.text.pdf.PdfName)
      */
+    @Override
     public void setPdfVersion(PdfName version) {
         pdf_version.setPdfVersion(version);
     }
@@ -1453,6 +1454,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfViewerPreferences#setViewerPreferences(int)
      */
+    @Override
     public void setViewerPreferences(int preferences) {
         pdf.setViewerPreferences(preferences);
     }
@@ -1461,6 +1463,7 @@ public class PdfWriter extends DocWriter implements
      * @see com.lowagie.text.pdf.interfaces.PdfViewerPreferences#addViewerPreference(com.lowagie.text.pdf.PdfName,
      * com.lowagie.text.pdf.PdfObject)
      */
+    @Override
     public void addViewerPreference(PdfName key, PdfObject value) {
         pdf.addViewerPreference(key, value);
     }
@@ -1623,6 +1626,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfDocumentActions#setOpenAction(java.lang.String)
      */
+    @Override
     public void setOpenAction(String name) {
         pdf.setOpenAction(name);
     }
@@ -1630,6 +1634,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfDocumentActions#setOpenAction(com.lowagie.text.pdf.PdfAction)
      */
+    @Override
     public void setOpenAction(PdfAction action) {
         pdf.setOpenAction(action);
     }
@@ -1638,6 +1643,7 @@ public class PdfWriter extends DocWriter implements
      * @see com.lowagie.text.pdf.interfaces.PdfDocumentActions#setAdditionalAction(com.lowagie.text.pdf.PdfName,
      * com.lowagie.text.pdf.PdfAction)
      */
+    @Override
     public void setAdditionalAction(PdfName actionType, PdfAction action) throws DocumentException {
         if (!(actionType.equals(DOCUMENT_CLOSE) ||
                 actionType.equals(WILL_SAVE) ||
@@ -1665,6 +1671,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfAnnotations#getAcroForm()
      */
+    @Override
     public PdfAcroForm getAcroForm() {
         return pdf.getAcroForm();
     }
@@ -1672,6 +1679,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfAnnotations#addAnnotation(com.lowagie.text.pdf.PdfAnnotation)
      */
+    @Override
     public void addAnnotation(PdfAnnotation annot) {
         pdf.addAnnotation(annot);
     }
@@ -1685,6 +1693,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfAnnotations#addCalculationOrder(com.lowagie.text.pdf.PdfFormField)
      */
+    @Override
     public void addCalculationOrder(PdfFormField annot) {
         pdf.addCalculationOrder(annot);
     }
@@ -1692,6 +1701,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfAnnotations#setSigFlags(int)
      */
+    @Override
     public void setSigFlags(int f) {
         pdf.setSigFlags(f);
     }
@@ -1744,6 +1754,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfXConformance#getPDFXConformance()
      */
+    @Override
     public int getPDFXConformance() {
         return pdfxConformance.getPDFXConformance();
     }
@@ -1751,6 +1762,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfXConformance#setPDFXConformance(int)
      */
+    @Override
     public void setPDFXConformance(int pdfx) {
         if (pdfxConformance.getPDFXConformance() == pdfx) {
             return;
@@ -1775,6 +1787,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfXConformance#isPdfX()
      */
+    @Override
     public boolean isPdfX() {
         return pdfxConformance.isPdfX();
     }
@@ -1896,6 +1909,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(byte[], byte[], int, int)
      */
+    @Override
     public void setEncryption(byte[] userPassword, byte[] ownerPassword, int permissions, int encryptionType)
             throws DocumentException {
         if (pdf.isOpen()) {
@@ -1911,6 +1925,7 @@ public class PdfWriter extends DocWriter implements
      * @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(java.security.cert.Certificate[], int[],
      * int)
      */
+    @Override
     public void setEncryption(Certificate[] certs, int[] permissions, int encryptionType) throws DocumentException {
         if (pdf.isOpen()) {
             throw new DocumentException(
@@ -2452,6 +2467,7 @@ public class PdfWriter extends DocWriter implements
      * @see com.lowagie.text.pdf.interfaces.PdfPageActions#setPageAction(com.lowagie.text.pdf.PdfName,
      * com.lowagie.text.pdf.PdfAction)
      */
+    @Override
     public void setPageAction(PdfName actionType, PdfAction action) throws DocumentException {
         if (!actionType.equals(PAGE_OPEN) && !actionType.equals(PAGE_CLOSE)) {
             throw new DocumentException(
@@ -2466,6 +2482,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfPageActions#setDuration(int)
      */
+    @Override
     public void setDuration(int seconds) {
         pdf.setDuration(seconds);
     }
@@ -2473,6 +2490,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfPageActions#setTransition(com.lowagie.text.pdf.PdfTransition)
      */
+    @Override
     public void setTransition(PdfTransition transition) {
         pdf.setTransition(transition);
     }
@@ -2538,6 +2556,7 @@ public class PdfWriter extends DocWriter implements
      *
      * @return the run direction
      */
+    @Override
     public int getRunDirection() {
         return runDirection;
     }
@@ -2547,6 +2566,7 @@ public class PdfWriter extends DocWriter implements
      *
      * @param runDirection the run direction
      */
+    @Override
     public void setRunDirection(int runDirection) {
         if (runDirection < RUN_DIRECTION_NO_BIDI || runDirection > RUN_DIRECTION_RTL) {
             throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.run.direction.1", runDirection));

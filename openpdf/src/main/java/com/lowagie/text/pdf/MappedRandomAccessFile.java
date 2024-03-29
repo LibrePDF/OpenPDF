@@ -77,8 +77,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
      * @throws FileNotFoundException on error
      * @throws IOException           on error
      */
-    public MappedRandomAccessFile(String filename, String mode)
-            throws IOException {
+    public MappedRandomAccessFile(String filename, String mode) throws IOException {
 
         if (mode.equals("rw")) {
             init(
@@ -157,9 +156,8 @@ public class MappedRandomAccessFile implements AutoCloseable {
     public int read() {
         try {
             byte b = mappedByteBuffer.get();
-            int n = b & 0xff;
 
-            return n;
+            return b & 0xff;
         } catch (BufferUnderflowException e) {
             return -1; // EOF
         }
@@ -216,6 +214,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
      * @throws IOException on error
      * @see java.io.RandomAccessFile#close()
      */
+    @Override
     public void close() throws IOException {
         clean(mappedByteBuffer);
         mappedByteBuffer = null;
