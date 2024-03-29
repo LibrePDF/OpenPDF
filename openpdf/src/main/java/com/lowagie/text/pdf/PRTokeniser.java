@@ -119,15 +119,15 @@ public class PRTokeniser implements AutoCloseable {
         this.file = file;
     }
 
-    public static final boolean isWhitespace(int ch) {
+    public static boolean isWhitespace(int ch) {
         return (ch == 0 || ch == 9 || ch == 10 || ch == 12 || ch == 13 || ch == 32);
     }
 
-    public static final boolean isDelimiter(int ch) {
+    public static boolean isDelimiter(int ch) {
         return (ch == '(' || ch == ')' || ch == '<' || ch == '>' || ch == '[' || ch == ']' || ch == '/' || ch == '%');
     }
 
-    public static final boolean isDelimiterWhitespace(int ch) {
+    public static boolean isDelimiterWhitespace(int ch) {
         return delims[ch + 1];
     }
 
@@ -147,8 +147,8 @@ public class PRTokeniser implements AutoCloseable {
     public static int[] checkObjectStart(byte[] line) {
         try {
             PRTokeniser tk = new PRTokeniser(line);
-            int num = 0;
-            int gen = 0;
+            int num;
+            int gen;
             if (!tk.nextToken() || tk.getTokenType() != TK_NUMBER) {
                 return null;
             }
@@ -327,12 +327,6 @@ public class PRTokeniser implements AutoCloseable {
             stringValue = n1;
             return;
         }
-//                if (type == TK_ENDOFFILE && level > 0)
-//                    {
-//                        file.seek(ptr);
-//                        type = TK_NUMBER;
-//                        stringValue = n1;
-//                    }
 
         throwError("Unexpected end of file");
         // if we hit here, the file is either corrupt (stream ended unexpectedly),
@@ -341,7 +335,7 @@ public class PRTokeniser implements AutoCloseable {
     }
 
     public boolean nextToken() throws IOException {
-        int ch = 0;
+        int ch;
         do {
             ch = file.read();
         } while (ch != -1 && isWhitespace(ch));
@@ -353,7 +347,7 @@ public class PRTokeniser implements AutoCloseable {
         // Note:  We have to initialize stringValue here, after we've looked for the end of the stream,
         // to ensure that we don't lose the value of a token that might end exactly at the end
         // of the stream
-        StringBuffer outBuf = null;
+        StringBuilder outBuf = null;
         stringValue = EMPTY;
 
         switch (ch) {
@@ -364,7 +358,7 @@ public class PRTokeniser implements AutoCloseable {
                 type = TK_END_ARRAY;
                 break;
             case '/': {
-                outBuf = new StringBuffer();
+                outBuf = new StringBuilder();
                 type = TK_NAME;
                 while (true) {
                     ch = file.read();
@@ -395,7 +389,7 @@ public class PRTokeniser implements AutoCloseable {
                     type = TK_START_DIC;
                     break;
                 }
-                outBuf = new StringBuffer();
+                outBuf = new StringBuilder();
                 type = TK_STRING;
                 hexString = true;
                 int v2 = 0;
@@ -439,7 +433,7 @@ public class PRTokeniser implements AutoCloseable {
                 } while (ch != -1 && ch != '\r' && ch != '\n');
                 break;
             case '(': {
-                outBuf = new StringBuffer();
+                outBuf = new StringBuilder();
                 type = TK_STRING;
                 hexString = false;
                 int nesting = 0;
@@ -535,7 +529,7 @@ public class PRTokeniser implements AutoCloseable {
                 break;
             }
             default: {
-                outBuf = new StringBuffer();
+                outBuf = new StringBuilder();
                 if (ch == '-' || ch == '+' || ch == '.' || (ch >= '0' && ch <= '9')) {
                     type = TK_NUMBER;
                     do {

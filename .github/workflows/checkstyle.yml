@@ -1,9 +1,5 @@
 name: OpenPDF checkstyle
-on:
-  push:
-    branches: [ '*' ]
-  pull_request:
-    branches: [ '*' ]
+on: [ push, pull_request ]
 
 jobs:
   checkstyle_job:
@@ -11,9 +7,9 @@ jobs:
     name: Checkstyle job
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4
       - name: Run check style
-        uses: dbelyaev/action-checkstyle@v1.2.1
+        uses: dbelyaev/action-checkstyle@v1
         with:
           checkstyle_config: 'checkstyle.xml'
           reporter: 'github-pr-check'

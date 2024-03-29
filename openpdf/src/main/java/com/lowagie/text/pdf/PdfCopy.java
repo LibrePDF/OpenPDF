@@ -493,6 +493,7 @@ public class PdfCopy extends PdfWriter {
         return null;
     }
 
+    @Override
     public void addAnnotation(PdfAnnotation annot) {
     }
 

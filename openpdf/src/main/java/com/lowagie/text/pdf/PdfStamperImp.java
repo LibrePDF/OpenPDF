@@ -979,8 +979,8 @@ class PdfStamperImp extends PdfWriter {
 
                     if (bboxRaw != null && rectRaw != null) {
                         transformNeeded = true;
-                        PdfRectangle bbox = new PdfRectangle(bboxRaw);
-                        PdfRectangle rect = new PdfRectangle(rectRaw);
+                        PdfRectangle bbox = new PdfRectangle(PdfReader.getNormalizedRectangle(bboxRaw));
+                        PdfRectangle rect = new PdfRectangle(PdfReader.getNormalizedRectangle(rectRaw));
 
                         float rectWidth = rect.width();
                         float rectHeight = rect.height();
@@ -1474,7 +1474,7 @@ class PdfStamperImp extends PdfWriter {
             if (annot.isForm()) {
                 fieldsAdded = true;
                 getAcroFields();
-                //@sonatype-lift ignore since before 'isForm' is called 
+                //@sonatype-lift ignore since before 'isForm' is called
                 PdfFormField field = (PdfFormField) annot;
                 if (field.getParent() != null) {
                     return;
@@ -1498,7 +1498,7 @@ class PdfStamperImp extends PdfWriter {
                             fieldTemplates.putAll(templates);
                         }
                     }
-                    //@sonatype-lift ignore since before 'isForm' is called 
+                    //@sonatype-lift ignore since before 'isForm' is called
                     PdfFormField field = (PdfFormField) annot;
                     if (field.getParent() == null) {
                         addDocumentField(field.getIndirectReference());
@@ -1690,6 +1690,7 @@ class PdfStamperImp extends PdfWriter {
      * @param preferences the viewer preferences
      * @see PdfWriter#setViewerPreferences(int)
      */
+    @Override
     public void setViewerPreferences(int preferences) {
         useVp = true;
         this.viewerPreferences.setViewerPreferences(preferences);
@@ -1702,6 +1703,7 @@ class PdfStamperImp extends PdfWriter {
      * @param value the value for the viewer preference
      * @see PdfViewerPreferences#addViewerPreference
      */
+    @Override
     public void addViewerPreference(PdfName key, PdfObject value) {
         useVp = true;
         this.viewerPreferences.addViewerPreference(key, value);
@@ -1712,6 +1714,7 @@ class PdfStamperImp extends PdfWriter {
      *
      * @param f the flags. This flags are ORed with current ones
      */
+    @Override
     public void setSigFlags(int f) {
         sigFlags |= f;
     }
@@ -1724,6 +1727,7 @@ class PdfStamperImp extends PdfWriter {
      * @throws PdfException ignore
      * @see PdfStamper#setPageAction(PdfName, PdfAction, int)
      */
+    @Override
     public void setPageAction(PdfName actionType, PdfAction action) throws PdfException {
         throw new UnsupportedOperationException(MessageLocalization.getComposedMessage(
                 "use.setpageaction.pdfname.actiontype.pdfaction.action.int.page"));
@@ -1759,6 +1763,7 @@ class PdfStamperImp extends PdfWriter {
      *
      * @param seconds ignore
      */
+    @Override
     public void setDuration(int seconds) {
         throw new UnsupportedOperationException(MessageLocalization.getComposedMessage(
                 "use.setpageaction.pdfname.actiontype.pdfaction.action.int.page"));
@@ -1769,6 +1774,7 @@ class PdfStamperImp extends PdfWriter {
      *
      * @param transition ignore
      */
+    @Override
     public void setTransition(PdfTransition transition) {
         throw new UnsupportedOperationException(MessageLocalization.getComposedMessage(
                 "use.setpageaction.pdfname.actiontype.pdfaction.action.int.page"));
@@ -1845,6 +1851,7 @@ class PdfStamperImp extends PdfWriter {
      * @param action     the action to execute in response to the trigger
      * @throws PdfException on invalid action type
      */
+    @Override
     public void setAdditionalAction(PdfName actionType, PdfAction action) throws PdfException {
         if (!(actionType.equals(DOCUMENT_CLOSE) ||
                 actionType.equals(WILL_SAVE) ||
@@ -1873,6 +1880,7 @@ class PdfStamperImp extends PdfWriter {
     /**
      * @see com.lowagie.text.pdf.PdfWriter#setOpenAction(com.lowagie.text.pdf.PdfAction)
      */
+    @Override
     public void setOpenAction(PdfAction action) {
         openAction = action;
     }
@@ -1880,6 +1888,7 @@ class PdfStamperImp extends PdfWriter {
     /**
      * @see com.lowagie.text.pdf.PdfWriter#setOpenAction(java.lang.String)
      */
+    @Override
     public void setOpenAction(String name) {
         throw new UnsupportedOperationException(
                 MessageLocalization.getComposedMessage("open.actions.by.name.are.not.supported"));

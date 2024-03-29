@@ -109,12 +109,14 @@ import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.tsp.MessageImprint;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.jcajce.provider.asymmetric.x509.CertificateFactory;
 import org.bouncycastle.jce.provider.X509CRLParser;
+import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.TimeStampToken;
@@ -139,6 +141,10 @@ public class PdfPKCS7 {
     private static final Map<String, String> digestNames = new HashMap<>();
     private static final Map<String, String> algorithmNames = new HashMap<>();
     private static final Map<String, String> allowedDigests = new HashMap<>();
+    //for correct OID determination
+    private static final HashMap<String, String> rsaOids = new HashMap<>();
+    private static final HashMap<String, String> dsaOids = new HashMap<>();
+    private static final HashMap<String, String> ecdsaOids = new HashMap<>();
 
     static {
         digestNames.put("1.2.840.113549.2.5", "MD5");
@@ -182,13 +188,15 @@ public class PdfPKCS7 {
         algorithmNames.put("1.3.36.3.3.1.3", "RSA");
         algorithmNames.put("1.3.36.3.3.1.2", "RSA");
         algorithmNames.put("1.3.36.3.3.1.4", "RSA");
-        algorithmNames.put(ID_ECDSA, "ECDSA");
-        algorithmNames.put("1.2.840.10045.4.1", "ECDSA");
-        algorithmNames.put("1.2.840.10045.4.3", "ECDSA");
-        algorithmNames.put("1.2.840.10045.4.3.2", "ECDSA");
-        algorithmNames.put("1.2.840.10045.4.3.3", "ECDSA");
-        algorithmNames.put("1.2.840.10045.4.3.4", "ECDSA");
+        algorithmNames.put("1.2.840.10045.2.1", "ECDSA");
+        algorithmNames.put("1.2.840.10045.4.1", "ECDSA"); //SHA1
+        algorithmNames.put("1.2.840.10045.4.3", "ECDSA"); //SHA2
+        algorithmNames.put("1.2.840.10045.4.3.1", "ECDSA"); //SHA224
+        algorithmNames.put("1.2.840.10045.4.3.2", "ECDSA"); //SHA256
+        algorithmNames.put("1.2.840.10045.4.3.3", "ECDSA"); //SHA384
+        algorithmNames.put("1.2.840.10045.4.3.4", "ECDSA"); //SHA512
         algorithmNames.put("1.2.840.113549.1.1.10", "RSAandMGF1");
+
         allowedDigests.put("MD5", "1.2.840.113549.2.5");
         allowedDigests.put("MD2", "1.2.840.113549.2.2");
         allowedDigests.put("SHA1", "1.3.14.3.2.26");
@@ -209,6 +217,50 @@ public class PdfPKCS7 {
         allowedDigests.put("RIPEMD-160", "1.3.36.3.2.1");
         allowedDigests.put("RIPEMD256", "1.3.36.3.2.3");
         allowedDigests.put("RIPEMD-256", "1.3.36.3.2.3");
+
+        //all oids according to http://oidref.com/1.2.840.113549.1.1
+        rsaOids.put("SHA256", "1.2.840.113549.1.1.11");
+        //add a 2nd time with "-" due to different crypto providers (sun vs bc)
+        rsaOids.put("SHA-256", "1.2.840.113549.1.1.11");
+        rsaOids.put("SHA384", "1.2.840.113549.1.1.12");
+        rsaOids.put("SHA-384", "1.2.840.113549.1.1.12");
+        rsaOids.put("SHA512", "1.2.840.113549.1.1.13");
+        rsaOids.put("SHA-512", "1.2.840.113549.1.1.13");
+        rsaOids.put("SHA224", "1.2.840.113549.1.1.14");
+        rsaOids.put("SHA-224", "1.2.840.113549.1.1.14");
+        rsaOids.put("SHA3-224", "2.16.840.1.101.3.4.3.13");
+        rsaOids.put("SHA3-256", "2.16.840.1.101.3.4.3.14");
+        rsaOids.put("SHA3-384", "2.16.840.1.101.3.4.3.15");
+        rsaOids.put("SHA3-512", "2.16.840.1.101.3.4.3.16");
+
+        dsaOids.put("SHA224", "2.16.840.1.101.3.4.3.1");
+        dsaOids.put("SHA-224", "2.16.840.1.101.3.4.3.1");
+        dsaOids.put("SHA256", "2.16.840.1.101.3.4.3.2");
+        dsaOids.put("SHA-256", "2.16.840.1.101.3.4.3.2");
+        //https://oid-rep.orange-labs.fr/get/2.16.840.1.101.3.4.3.3
+        dsaOids.put("SHA384", "2.16.840.1.101.3.4.3.3");
+        dsaOids.put("SHA-384", "2.16.840.1.101.3.4.3.3");
+        dsaOids.put("SHA512", "2.16.840.1.101.3.4.3.4");
+        dsaOids.put("SHA-512", "2.16.840.1.101.3.4.3.4");
+        //https://javadoc.io/doc/org.bouncycastle/bcprov-ext-jdk15on/1.55/org/bouncycastle/asn1/nist/NISTObjectIdentifiers.html
+        dsaOids.put("SHA3-224", "2.16.840.1.101.3.4.3.5");
+        dsaOids.put("SHA3-256", "2.16.840.1.101.3.4.3.6");
+        dsaOids.put("SHA3-384", "2.16.840.1.101.3.4.3.7");
+        dsaOids.put("SHA3-512", "2.16.840.1.101.3.4.3.8");
+
+        ecdsaOids.put("SHA1", "1.2.840.10045.4.1");
+        ecdsaOids.put("SHA224", "1.2.840.10045.4.3.1");
+        ecdsaOids.put("SHA-224", "1.2.840.10045.4.3.1");
+        ecdsaOids.put("SHA256", "1.2.840.10045.4.3.2");
+        ecdsaOids.put("SHA-256", "1.2.840.10045.4.3.2");
+        ecdsaOids.put("SHA384", "1.2.840.10045.4.3.3");
+        ecdsaOids.put("SHA-384", "1.2.840.10045.4.3.3");
+        ecdsaOids.put("SHA512", "1.2.840.10045.4.3.4");
+        ecdsaOids.put("SHA-512", "1.2.840.10045.4.3.4");
+        ecdsaOids.put("SHA3-224", "2.16.840.1.101.3.4.3.9");
+        ecdsaOids.put("SHA3-256", "2.16.840.1.101.3.4.3.10");
+        ecdsaOids.put("SHA3-384", "2.16.840.1.101.3.4.3.11");
+        ecdsaOids.put("SHA3-512", "2.16.840.1.101.3.4.3.12");
     }
 
     private final List<Certificate> certs;
@@ -511,21 +563,13 @@ public class PdfPKCS7 {
         }
 
         if (privKey != null) {
-            //
-            // Now we have private key, find out what the digestEncryptionAlgorithm
-            // is.
-            //
-            digestEncryptionAlgorithm = privKey.getAlgorithm();
-            if (digestEncryptionAlgorithm.equals("RSA")) {
-                digestEncryptionAlgorithm = ID_RSA;
-            } else if (digestEncryptionAlgorithm.equals("DSA")) {
-                digestEncryptionAlgorithm = ID_DSA;
-            } else if (digestEncryptionAlgorithm.equals("EC") || digestEncryptionAlgorithm.equals("ECDSA")) {
-                digestEncryptionAlgorithm = ID_ECDSA;
-            } else {
-                throw new NoSuchAlgorithmException(
-                        MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
-                                digestEncryptionAlgorithm));
+            // Now we have private key, find out what the digestEncryptionAlgorithm is.
+            String signingAlgorithm = privKey.getAlgorithm();
+            this.digestEncryptionAlgorithm = getOidForAlgorithmAndHash(signingAlgorithm, hashAlgorithm);
+
+            if (this.digestEncryptionAlgorithm == null) {
+                throw new ExceptionConverter(new NoSuchAlgorithmException(
+                        "Unknown key algorithm " + this.digestEncryptionAlgorithm + " and hash " + hashAlgorithm));
             }
         }
         if (hasRSAdata) {
@@ -546,6 +590,57 @@ public class PdfPKCS7 {
 
             sig.initSign(privKey);
         }
+    }
+
+    /**
+     * Determines an OID by signing and hash algorithm. If nothing is found null will be returned.
+     *
+     * @param signingAlgorithm - currently RSA, DSA and ECDSA are supported.
+     * @param hashAlgorithm    like SHA1, SHA2 or SHA3
+     */
+    private static String getOidForAlgorithmAndHash(String signingAlgorithm, String hashAlgorithm) {
+
+        String returnValue;
+
+        switch (signingAlgorithm) {
+            case "RSA":
+                returnValue = rsaOids.get(hashAlgorithm);
+                //fallback
+                if (returnValue == null) {
+                    returnValue = ID_RSA;
+                }
+                break;
+            case "DSA":
+                returnValue = dsaOids.get(hashAlgorithm);
+                //fallback
+                if (returnValue == null) {
+                    returnValue = ID_DSA;
+                }
+                break;
+            case "EC":
+            case "ECDSA":
+                returnValue = ecdsaOids.get(hashAlgorithm);
+                //fallback
+                if (returnValue == null) {
+                    returnValue = ID_ECDSA;
+                }
+                break;
+            default:
+                returnValue = null;
+        }
+
+        if (returnValue == null) {
+            //nothing found so check BC
+            DefaultSignatureAlgorithmIdentifierFinder finder = new DefaultSignatureAlgorithmIdentifierFinder();
+            try {
+                AlgorithmIdentifier id = finder.find(hashAlgorithm + "with" + signingAlgorithm);
+                returnValue = id.getAlgorithm().getId();
+            } catch (IllegalArgumentException iae) {
+                //it was just a try, return null then
+            }
+        }
+
+        return returnValue;
     }
 
     /**
@@ -1239,19 +1334,16 @@ public class PdfPKCS7 {
      */
     public void setExternalDigest(byte[] digest, byte[] RSAdata,
             String digestEncryptionAlgorithm) {
-        externalDigest = digest;
-        externalRSAdata = RSAdata;
+        this.externalDigest = digest;
+        this.externalRSAdata = RSAdata;
         if (digestEncryptionAlgorithm != null) {
-            if (digestEncryptionAlgorithm.equals("RSA")) {
-                this.digestEncryptionAlgorithm = ID_RSA;
-            } else if (digestEncryptionAlgorithm.equals("DSA")) {
-                this.digestEncryptionAlgorithm = ID_DSA;
-            } else if (digestEncryptionAlgorithm.equals("EC")) {
-                digestEncryptionAlgorithm = ID_ECDSA;
-            } else {
+            String hashAlgorithm = getHashAlgorithm();
+            this.digestEncryptionAlgorithm = PdfPKCS7.getOidForAlgorithmAndHash(digestEncryptionAlgorithm,
+                    hashAlgorithm);
+
+            if (this.digestEncryptionAlgorithm == null) {
                 throw new ExceptionConverter(new NoSuchAlgorithmException(
-                        MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
-                                digestEncryptionAlgorithm)));
+                        "Unknown key algorithm " + digestEncryptionAlgorithm + " hash " + hashAlgorithm));
             }
         }
     }
@@ -1742,10 +1834,10 @@ public class PdfPKCS7 {
          * @param seq an ASN1 Sequence
          */
         public X509Name(ASN1Sequence seq) {
-            Enumeration e = seq.getObjects();
+            Enumeration<ASN1Set> e = seq.getObjects();
 
             while (e.hasMoreElements()) {
-                ASN1Set set = (ASN1Set) e.nextElement();
+                ASN1Set set = e.nextElement();
 
                 for (int i = 0; i < set.size(); i++) {
                     ASN1Sequence s = (ASN1Sequence) set.getObjectAt(i);
