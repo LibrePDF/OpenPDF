@@ -5,7 +5,7 @@
 
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf-parent</artifactId>
-  <version>1.4.2-SNAPSHOT</version> <!-- artifact.version -->
+  <version>1.4.2</version> <!-- artifact.version -->
   <packaging>pom</packaging>
 
   <!-- please run mvn tidy:pom once in a while -->
