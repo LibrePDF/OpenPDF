@@ -707,7 +707,7 @@ public class AcroFields {
     }
 
     public void decodeGenericDictionary(PdfDictionary merged, BaseField tx) throws DocumentException {
-        int flags = 0;
+        int flags;
         // the text size and color
         PdfString da = merged.getAsString(PdfName.DA);
         if (da != null) {
@@ -2398,7 +2398,7 @@ public class AcroFields {
         try {
             PdfName sub = v.getAsName(PdfName.SUBFILTER);
             PdfString contents = v.getAsString(PdfName.CONTENTS);
-            PdfPKCS7 pk = null;
+            PdfPKCS7 pk;
             if (sub.equals(PdfName.ADBE_X509_RSA_SHA1)) {
                 PdfString cert = v.getAsString(PdfName.CERT);
                 pk = new PdfPKCS7(contents.getOriginalBytes(), cert.getBytes(), provider);
@@ -2835,7 +2835,7 @@ public class AcroFields {
         /**
          * The indirect reference of the item itself
          */
-        private PdfIndirectReference fieldReference;
+        private final PdfIndirectReference fieldReference;
 
         public Item(PdfIndirectReference ref) {
             this.fieldReference = ref;
