@@ -1415,6 +1415,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see com.lowagie.text.pdf.interfaces.PdfVersion#setAtLeastPdfVersion(char)
      */
+    @Override
     public void setAtLeastPdfVersion(char version) {
         pdf_version.setAtLeastPdfVersion(version);
     }
