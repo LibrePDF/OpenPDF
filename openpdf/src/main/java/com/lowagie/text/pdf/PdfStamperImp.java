@@ -979,8 +979,8 @@ class PdfStamperImp extends PdfWriter {
 
                     if (bboxRaw != null && rectRaw != null) {
                         transformNeeded = true;
-                        PdfRectangle bbox = new PdfRectangle(PdfReader.getNormalizedRectangle(bboxRaw));
-                        PdfRectangle rect = new PdfRectangle(PdfReader.getNormalizedRectangle(rectRaw));
+                        PdfRectangle bbox = new PdfRectangle(bboxRaw);
+                        PdfRectangle rect = new PdfRectangle(rectRaw);
 
                         float rectWidth = rect.width();
                         float rectHeight = rect.height();
@@ -1060,8 +1060,7 @@ class PdfStamperImp extends PdfWriter {
                             if (!(objReal instanceof PdfIndirectReference)) {
 
                                 // Lonzak: npe bugfix
-                                PdfRectangle bBoxCoordinates = new PdfRectangle(
-                                        ((PdfDictionary) objReal).getAsArray(PdfName.BBOX));
+                                PdfArray bBoxCoordinates = ((PdfDictionary) objReal).getAsArray(PdfName.BBOX);
                                 if (bBoxCoordinates != null && bBoxCoordinates.size() >= 4) {
                                     // DEVSIX-1741 - Bugfix backported as Jonthan of iText suggested
                                     Rectangle bBox = PdfReader.getNormalizedRectangle(bBoxCoordinates);

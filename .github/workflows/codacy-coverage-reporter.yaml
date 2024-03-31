@@ -1,0 +1,26 @@
+name: Codacy Coverage Reporter
+
+on: [ push ]
+
+jobs:
+  codacy-coverage-reporter:
+    runs-on: ubuntu-latest
+    name: codacy-coverage-reporter
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Create coverage reports
+        run: mvn -B verify --file pom.xml
+
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@v1
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ./openpdf/target/site/jacoco/jacoco.xml, ./pdf-toolbox/target/site/jacoco/jacoco.xml, ./openpdf-fonts-extra/target/site/jacoco/jacoco.xml

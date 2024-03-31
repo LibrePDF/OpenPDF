@@ -160,16 +160,7 @@ public class PdfRectangle extends PdfArray {
      * @param rectangle as a PdfArray
      */
     public PdfRectangle(PdfArray rectangle) {
-        this(convertToFloat(rectangle.getPdfObject(0)), convertToFloat(rectangle.getPdfObject(1)),
-                convertToFloat(rectangle.getPdfObject(2)), convertToFloat(rectangle.getPdfObject(3)));
-    }
-
-    private static float convertToFloat(PdfObject object) {
-        if (!(object instanceof PdfNumber)) {
-            throw new IllegalArgumentException(
-                    "Invalid argument. Float value (coordinate) expected! But was " + object);
-        }
-        return ((PdfNumber) object).floatValue();
+        this(PdfReader.getNormalizedRectangle(rectangle));
     }
 
     // methods
