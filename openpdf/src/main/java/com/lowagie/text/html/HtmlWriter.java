@@ -60,6 +60,7 @@ import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.ElementListener;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
 import com.lowagie.text.Header;
@@ -80,6 +81,7 @@ import com.lowagie.text.Table;
 import com.lowagie.text.pdf.BaseFont;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.EmptyStackException;
 import java.util.Enumeration;
@@ -111,6 +113,46 @@ import java.util.Stack;
  */
 
 public class HtmlWriter extends DocWriter {
+
+    /**
+     * This is some byte that is often used.
+     */
+    private static final byte NEWLINE = (byte) '\n';
+
+    /**
+     * This is some byte that is often used.
+     */
+    private static final byte TAB = (byte) '\t';
+
+    /**
+     * This is some byte that is often used.
+     */
+    private static final byte LT = (byte) '<';
+
+    /**
+     * This is some byte that is often used.
+     */
+    private static final byte SPACE = (byte) ' ';
+
+    /**
+     * This is some byte that is often used.
+     */
+    private static final byte EQUALS = (byte) '=';
+
+    /**
+     * This is some byte that is often used.
+     */
+    private static final byte QUOTE = (byte) '\"';
+
+    /**
+     * This is some byte that is often used.
+     */
+    private static final byte GT = (byte) '>';
+
+    /**
+     * This is some byte that is often used.
+     */
+    private static final byte FORWARD = (byte) '/';
 
     // static membervariables (tags)
 
@@ -191,6 +233,25 @@ public class HtmlWriter extends DocWriter {
             os.write(GT);
         } catch (IOException ioe) {
             throw new ExceptionConverter(ioe);
+        }
+    }
+
+    /**
+     * Processes the element by adding it (or the different parts) to an
+     * <CODE>ElementListener</CODE>.
+     *
+     * @param listener an <CODE>ElementListener</CODE>
+     * @return <CODE>true</CODE> if the element was processed successfully
+     */
+    private static boolean process(ElementListener listener) {
+        java.util.List<Element> list = new ArrayList<>();
+        try {
+            for (Object o : list) {
+                listener.add((Element) o);
+            }
+            return true;
+        } catch (DocumentException de) {
+            return false;
         }
     }
 
@@ -295,15 +356,15 @@ public class HtmlWriter extends DocWriter {
                         MarkedObject mo = ((MarkedSection) element).getTitle();
                         if (mo != null) {
                             markup = mo.getMarkupAttributes();
-                            mo.process(this);
+                            process(this);
                         }
-                        ms.process(this);
+                        process(this);
                         writeEnd(HtmlTags.DIV);
                         return true;
                     } else {
                         MarkedObject mo = (MarkedObject) element;
                         markup = mo.getMarkupAttributes();
-                        return mo.process(this);
+                        return process(this);
                     }
                 default:
                     write(element, 2);

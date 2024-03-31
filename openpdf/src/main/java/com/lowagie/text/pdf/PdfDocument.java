@@ -59,6 +59,7 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.ElementListener;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
 import com.lowagie.text.HeaderFooter;
@@ -313,6 +314,25 @@ public class PdfDocument extends Document {
     }
 
     /**
+     * Processes the element by adding it (or the different parts) to an
+     * <CODE>ElementListener</CODE>.
+     *
+     * @param listener an <CODE>ElementListener</CODE>
+     * @return <CODE>true</CODE> if the element was processed successfully
+     */
+    private static boolean process(ElementListener listener) {
+        java.util.List<Element> list = new ArrayList<>();
+        try {
+            for (Object o : list) {
+                listener.add((Element) o);
+            }
+            return true;
+        } catch (DocumentException de) {
+            return false;
+        }
+    }
+
+    /**
      * Integrate a paragraph into a table, so it can be a whole.
      * <p>Note: This is not a table with square, it's just like the paragraph, but
      * it cannot be separated.
@@ -471,7 +491,7 @@ public class PdfDocument extends Document {
                         anchorAction = new PdfAction(url);
                     }
                     // we process the element
-                    element.process(this);
+                    process(this);
                     anchorAction = null;
                     leadingCount--;
                     break;
@@ -498,7 +518,7 @@ public class PdfDocument extends Document {
                     // we cast the element to a phrase and set the leading of the document
                     leading = ((Phrase) element).getLeading();
                     // we process the element
-                    element.process(this);
+                    process(this);
                     leadingCount--;
                     break;
                 }
@@ -539,7 +559,7 @@ public class PdfDocument extends Document {
                         indentation.indentRight += paragraph.getIndentationRight();
                     } else {
                         line.setExtraIndent(paragraph.getFirstLineIndent());
-                        element.process(this);
+                        process(this);
                         carriageReturn();
                         addSpacing(paragraph.getSpacingAfter(), paragraph.getTotalLeading(), paragraph.getFont());
                     }
@@ -607,7 +627,7 @@ public class PdfDocument extends Document {
                     }
                     indentation.sectionIndentLeft += section.getIndentation();
                     // we process the section
-                    element.process(this);
+                    process(this);
                     flushLines();
                     // some parameters are set back to normal again
                     indentation.sectionIndentLeft -= (section.getIndentationLeft() + section.getIndentation());
@@ -633,7 +653,7 @@ public class PdfDocument extends Document {
                     indentation.listIndentLeft += list.getIndentationLeft();
                     indentation.indentRight += list.getIndentationRight();
                     // we process the items in the list
-                    element.process(this);
+                    process(this);
                     // some parameters are set back to normal again
                     indentation.listIndentLeft -= list.getIndentationLeft();
                     indentation.indentRight -= list.getIndentationRight();
@@ -657,7 +677,7 @@ public class PdfDocument extends Document {
                     // we prepare the current line to be able to show us the listsymbol
                     line.setListItem(listItem);
                     // we process the item
-                    element.process(this);
+                    process(this);
 
                     addSpacing(listItem.getSpacingAfter(), listItem.getTotalLeading(), listItem.getFont());
 
@@ -776,11 +796,11 @@ public class PdfDocument extends Document {
                     if (element instanceof MarkedSection) {
                         mo = ((MarkedSection) element).getTitle();
                         if (mo != null) {
-                            mo.process(this);
+                            process(this);
                         }
                     }
                     mo = (MarkedObject) element;
-                    mo.process(this);
+                    process(this);
                     break;
                 }
                 default:
@@ -1821,7 +1841,7 @@ public class PdfDocument extends Document {
             f.setStyle(style);
         }
         Chunk space = new Chunk(" ", f);
-        space.process(this);
+        process(this);
         carriageReturn();
         leading = oldleading;
     }

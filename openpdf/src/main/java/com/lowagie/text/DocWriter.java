@@ -77,27 +77,27 @@ public abstract class DocWriter implements DocListener {
     /**
      * This is some byte that is often used.
      */
-    public static final byte NEWLINE = (byte) '\n';
+    private static final byte NEWLINE = (byte) '\n';
 
     /**
      * This is some byte that is often used.
      */
-    public static final byte TAB = (byte) '\t';
+    private static final byte TAB = (byte) '\t';
 
     /**
      * This is some byte that is often used.
      */
-    public static final byte LT = (byte) '<';
+    private static final byte LT = (byte) '<';
 
     /**
      * This is some byte that is often used.
      */
-    public static final byte SPACE = (byte) ' ';
+    private static final byte SPACE = (byte) ' ';
 
     /**
      * This is some byte that is often used.
      */
-    public static final byte EQUALS = (byte) '=';
+    private static final byte EQUALS = (byte) '=';
 
     /**
      * This is some byte that is often used.
@@ -107,12 +107,12 @@ public abstract class DocWriter implements DocListener {
     /**
      * This is some byte that is often used.
      */
-    public static final byte GT = (byte) '>';
+    private static final byte GT = (byte) '>';
 
     /**
      * This is some byte that is often used.
      */
-    public static final byte FORWARD = (byte) '/';
+    private static final byte FORWARD = (byte) '/';
 
     // membervariables
 

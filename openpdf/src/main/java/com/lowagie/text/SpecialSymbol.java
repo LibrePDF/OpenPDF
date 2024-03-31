@@ -93,8 +93,8 @@ public class SpecialSymbol {
             return new Chunk(String.valueOf(c), font);
         }
         Font symbol = new Font(Font.SYMBOL, font.getSize(), font.getStyle(), font.getColor());
-        String s = String.valueOf(greek);
-        return new Chunk(s, symbol);
+        String greekCharacter = String.valueOf(greek);
+        return new Chunk(greekCharacter, symbol);
     }
 
     /**

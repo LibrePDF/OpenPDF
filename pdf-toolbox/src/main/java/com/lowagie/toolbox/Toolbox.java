@@ -36,6 +36,7 @@
 package com.lowagie.toolbox;
 
 import com.lowagie.tools.Executable;
+import com.lowagie.toolbox.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -89,10 +90,7 @@ public class Toolbox extends JFrame implements ActionListener {
      * The DesktopPane of the toolbox.
      */
     private final JDesktopPane desktop;
-    /**
-     * toolarray
-     */
-    private final ArrayList<AbstractTool> toolarray = new ArrayList<>();
+
     private final Vector<String> menulist = new Vector<>();
     private final Vector<String> menuitemlist = new Vector<>();
     /**
@@ -106,11 +104,9 @@ public class Toolbox extends JFrame implements ActionListener {
     /**
      * x-coordinate of the location of a new internal frame.
      */
-    private int locationX = 0;
-    /**
-     * y-coordinate of the location of a new internal frame.
-     */
-    private int locationY = 0;
+
+
+    private static com.lowagie.toolbox.Frame frame = new com.lowagie.toolbox.Frame();
 
     /**
      * Constructs the Toolbox object.
@@ -143,7 +139,7 @@ public class Toolbox extends JFrame implements ActionListener {
         splitPane.setOneTouchExpandable(true);
         splitPane.setDividerLocation(300);
         setContentPane(splitPane);
-        centerFrame(this);
+        frame.centerFrame(this);
         setVisible(true);
     }
 
@@ -173,7 +169,7 @@ public class Toolbox extends JFrame implements ActionListener {
         Toolbox toolbox = new Toolbox();
         if (args.length > 0) {
             try {
-                AbstractTool tool = toolbox.createFrame(args[0]);
+                AbstractTool tool = frame.createFrame(args[0]);
                 String[] nargs = new String[args.length - 1];
                 System.arraycopy(args, 1, nargs, 0, args.length - 1);
                 tool.setMainArguments(nargs);
@@ -189,18 +185,18 @@ public class Toolbox extends JFrame implements ActionListener {
      *
      * @param f JFrame
      */
-    public static void centerFrame(Frame f) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = f.getSize();
-        if (frameSize.height > screenSize.height) {
-            frameSize.height = screenSize.height;
-        }
-        if (frameSize.width > screenSize.width) {
-            frameSize.width = screenSize.width;
-        }
-        f.setLocation((screenSize.width - frameSize.width) / 2,
-                (screenSize.height - frameSize.height) / 2);
-    }
+//    public static void centerFrame(Frame f) {
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//        Dimension frameSize = f.getSize();
+//        if (frameSize.height > screenSize.height) {
+//            frameSize.height = screenSize.height;
+//        }
+//        if (frameSize.width > screenSize.width) {
+//            frameSize.width = screenSize.width;
+//        }
+//        f.setLocation((screenSize.width - frameSize.width) / 2,
+//                (screenSize.height - frameSize.height) / 2);
+//    }
 
     /**
      * Gets the menubar.
@@ -309,28 +305,28 @@ public class Toolbox extends JFrame implements ActionListener {
      * @throws ClassNotFoundException on error
      * @throws PropertyVetoException  on error of property rights
      */
-    public AbstractTool createFrame(String name) throws InstantiationException,
-            IllegalAccessException, ClassNotFoundException,
-            PropertyVetoException {
-        AbstractTool ti = null;
-        String classname = (String) toolmap.get(name);
-        ti = (AbstractTool) Class.forName(classname).newInstance();
-        toolarray.add(ti);
-        JInternalFrame f = ti.getInternalFrame();
-        f.setLocation(locationX, locationY);
-        locationX += 25;
-        if (locationX > this.getWidth() + 50) {
-            locationX = 0;
-        }
-        locationY += 25;
-        if (locationY > this.getHeight() + 50) {
-            locationY = 0;
-        }
-        f.setVisible(true);
-        desktop.add(f);
-        f.setSelected(true);
-        return ti;
-    }
+//    public AbstractTool createFrame(String name) throws InstantiationException,
+//            IllegalAccessException, ClassNotFoundException,
+//            PropertyVetoException {
+//        AbstractTool ti = null;
+//        String classname = (String) toolmap.get(name);
+//        ti = (AbstractTool) Class.forName(classname).newInstance();
+//        toolarray.add(ti);
+//        JInternalFrame f = ti.getInternalFrame();
+//        f.setLocation(locationX, locationY);
+//        locationX += 25;
+//        if (locationX > this.getWidth() + 50) {
+//            locationX = 0;
+//        }
+//        locationY += 25;
+//        if (locationY > this.getHeight() + 50) {
+//            locationY = 0;
+//        }
+//        f.setVisible(true);
+//        desktop.add(f);
+//        f.setSelected(true);
+//        return ti;
+//    }
 
     /**
      * @param evt ActionEvent
@@ -379,11 +375,11 @@ public class Toolbox extends JFrame implements ActionListener {
             }
         } else if (ToolMenuItems.VERSION.equals(evt.getActionCommand())) {
             JFrame f = new Versions();
-            centerFrame(f);
+            frame.centerFrame(f);
             f.setVisible(true);
         } else {
             try {
-                createFrame(evt.getActionCommand());
+                frame.createFrame(evt.getActionCommand());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -397,93 +393,5 @@ public class Toolbox extends JFrame implements ActionListener {
     /**
      * A Class that redirects output to System.out and System.err.
      */
-    public class Console {
 
-        PipedInputStream piOut;
-        PipedInputStream piErr;
-        PipedOutputStream poOut;
-        PipedOutputStream poErr;
-        ErrorContext errorcontext = new ErrorContext();
-        JTextPane textArea = new JTextPane(new DefaultStyledDocument(
-                errorcontext));
-        PrintStream oriout;
-        PrintStream orierr;
-
-        /**
-         * Creates a new Console object.
-         *
-         * @throws IOException on error
-         */
-        public Console() throws IOException {
-            // Set up System.out
-            piOut = new PipedInputStream();
-            poOut = new PipedOutputStream(piOut);
-            oriout = System.out;
-            System.setOut(new PrintStream(poOut, true));
-
-            // Set up System.err
-            piErr = new PipedInputStream();
-            poErr = new PipedOutputStream(piErr);
-            orierr = System.err;
-            System.setErr(new PrintStream(poErr, true));
-
-            // Add a scrolling text area
-            textArea.setEditable(false);
-
-            // Create reader threads
-            new ReaderThread(piOut, ErrorContext.STDOUT).start();
-            new ReaderThread(piErr, ErrorContext.STDERROR).start();
-        }
-
-        class ErrorContext extends StyleContext {
-
-            public static final String STDERROR = "Error";
-            public static final String STDOUT = "StdOut";
-            private static final long serialVersionUID = 7766294638325167438L;
-
-            public ErrorContext() {
-                super();
-                Style root = getStyle(DEFAULT_STYLE);
-                Style s = addStyle(STDERROR, root);
-                StyleConstants.setForeground(s, Color.RED);
-                s = addStyle(STDOUT, root);
-                StyleConstants.setForeground(s, Color.BLACK);
-            }
-        }
-
-        class ReaderThread extends Thread {
-
-            PipedInputStream pi;
-            String type;
-
-            ReaderThread(PipedInputStream pi, String type) {
-                this.pi = pi;
-                this.type = type;
-            }
-
-            /**
-             * @see java.lang.Thread#run()
-             */
-            public void run() {
-                final byte[] buf = new byte[1024];
-
-                while (true) {
-                    try {
-                        final int len = pi.read(buf);
-                        if (len == -1) {
-                            break;
-                        }
-                        javax.swing.text.Document doc = textArea.getDocument();
-                        AttributeSet attset = errorcontext.getStyle(type);
-                        String snippet = new String(buf, 0, len);
-                        doc.insertString(doc.getLength(),
-                                snippet, attset);
-                        oriout.print(snippet);
-                        textArea.setCaretPosition(textArea.getDocument().getLength());
-                    } catch (BadLocationException | IOException ex) {
-                    }
-                }
-            }
-        }
-    }
 }

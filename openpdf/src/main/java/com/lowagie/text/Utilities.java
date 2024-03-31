@@ -306,7 +306,17 @@ public class Utilities {
      * @since 2.1.2
      */
     public static int convertToUtf32(char highSurrogate, char lowSurrogate) {
-        return (((highSurrogate - 0xd800) * 0x400) + (lowSurrogate - 0xdc00)) + 0x10000;
+        final int HIGH_SURROGATE_BASE = 0xd800;
+        final int LOW_SURROGATE_BASE = 0xdc00;
+        final int SURROGATE_OFFSET = 0x10000;
+        final int SURROGATE_UNIT = 0x400;
+
+        int highSurrogateValue = highSurrogate - HIGH_SURROGATE_BASE;
+        int lowSurrogateValue = lowSurrogate - LOW_SURROGATE_BASE;
+
+        int utf32Value = (highSurrogateValue * SURROGATE_UNIT) + lowSurrogateValue + SURROGATE_OFFSET;
+
+        return utf32Value;
     }
 
     /**

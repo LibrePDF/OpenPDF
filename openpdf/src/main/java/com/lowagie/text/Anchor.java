@@ -191,26 +191,42 @@ public class Anchor extends Phrase {
      */
     public boolean process(ElementListener listener) {
         try {
-            Chunk chunk;
-            Iterator i = getChunks().iterator();
             boolean localDestination = (reference != null && reference.startsWith("#"));
             boolean notGotoOK = true;
+            Iterator i = getChunks().iterator();
+
             while (i.hasNext()) {
-                chunk = (Chunk) i.next();
-                if (name != null && notGotoOK && !chunk.isEmpty()) {
-                    chunk.setLocalDestination(name);
-                    notGotoOK = false;
-                }
-                if (localDestination) {
-                    chunk.setLocalGoto(reference.substring(1));
-                }
+                Chunk chunk = (Chunk) i.next();
+                processChunk(chunk, localDestination, notGotoOK);
                 listener.add(chunk);
             }
+
             return true;
         } catch (DocumentException de) {
             return false;
         }
     }
+
+    private void processChunk(Chunk chunk, boolean localDestination, boolean notGotoOK) {
+        if (notGotoOK && !chunk.isEmpty()) {
+            setChunkLocalDestination(chunk);
+            notGotoOK = false;
+        }
+        if (localDestination) {
+            setChunkLocalGoto(chunk);
+        }
+    }
+
+    private void setChunkLocalDestination(Chunk chunk) {
+        if (name != null) {
+            chunk.setLocalDestination(name);
+        }
+    }
+
+    private void setChunkLocalGoto(Chunk chunk) {
+        chunk.setLocalGoto(reference.substring(1));
+    }
+
 
     /**
      * Gets all the chunks in this element.

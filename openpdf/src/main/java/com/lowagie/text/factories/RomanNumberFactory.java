@@ -51,7 +51,7 @@ package com.lowagie.text.factories;
 /**
  * This class can produce String combinations representing a roman number.
  */
-public class RomanNumberFactory {
+public class    RomanNumberFactory {
 
     /**
      * Array with Roman digits.
