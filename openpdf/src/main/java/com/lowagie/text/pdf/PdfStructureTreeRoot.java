@@ -59,8 +59,14 @@ import java.util.Map;
  */
 public class PdfStructureTreeRoot extends PdfDictionary {
 
-    private final Map<Integer, PdfArray> parentTree = new HashMap<>();
+    private final Map<Integer, PdfObject> parentTree = new HashMap<>();
     private final PdfIndirectReference reference;
+
+    /** Next key to be used for adding to the parentTree */
+    private int parentTreeNextKey = 0;
+
+    /** Map which connects [page number] with corresponding [parentTree entry key]  */
+    private final Map<Integer, Integer> pageKeysMap = new HashMap<>();
 
     /**
      * Holds value of property writer.
@@ -111,14 +117,32 @@ public class PdfStructureTreeRoot extends PdfDictionary {
         return this.reference;
     }
 
+    /**
+     * Adds a reference to the existing (already added to the document) object to the parentTree.
+     * This method can be used when the object is need to be referenced via /StructParent key.
+     *
+     * @return key which define the object record key (e.g. in /NUMS array)
+     */
+    public int addExistingObject(PdfIndirectReference reference) {
+        int key = parentTreeNextKey;
+        parentTree.put(key, reference);
+        parentTreeNextKey++;
+        return key;
+    }
+
     void setPageMark(int page, PdfIndirectReference reference) {
-        Integer i = page;
-        PdfArray ar = parentTree.get(i);
-        if (ar == null) {
-            ar = new PdfArray();
-            parentTree.put(i, ar);
+        Integer entryForPageArray = pageKeysMap.get(page);
+        if (entryForPageArray == null) {
+            //putting page array
+            PdfArray ar = new PdfArray();
+            entryForPageArray = parentTreeNextKey;
+            parentTree.put(entryForPageArray, ar);
+            parentTreeNextKey++;
+            pageKeysMap.put(page, entryForPageArray);
         }
-        ar.add(reference);
+
+        PdfArray pageArray = (PdfArray) parentTree.get(entryForPageArray);
+        pageArray.add(reference);
     }
 
     private void nodeProcess(PdfDictionary dictionary, PdfIndirectReference reference)
@@ -128,9 +152,15 @@ public class PdfStructureTreeRoot extends PdfDictionary {
                 .get(0).isNumber()) {
             PdfArray ar = (PdfArray) obj;
             for (int k = 0; k < ar.size(); ++k) {
-                PdfStructureElement e = (PdfStructureElement) ar.getDirectObject(k);
-                ar.set(k, e.getReference());
-                nodeProcess(e, e.getReference());
+                PdfObject pdfObj = ar.getDirectObject(k);
+
+                if (pdfObj instanceof PdfStructureElement) {
+                    PdfStructureElement e = (PdfStructureElement) pdfObj;
+                    ar.set(k, e.getReference());
+                    nodeProcess(e, e.getReference());
+                } else if (pdfObj instanceof PdfIndirectReference) {
+                    ar.set(k, pdfObj);
+                }
             }
         }
         if (reference != null) {
@@ -141,8 +171,13 @@ public class PdfStructureTreeRoot extends PdfDictionary {
     void buildTree() throws IOException {
         Map<Integer, PdfIndirectReference> numTree = new HashMap<>();
         for (Integer i : parentTree.keySet()) {
-            PdfArray ar = parentTree.get(i);
-            numTree.put(i, writer.addToBody(ar).getIndirectReference());
+            PdfObject ar = parentTree.get(i);
+            if (ar instanceof PdfIndirectReference) {
+                //saving the reference to the object which was already added to the body
+                numTree.put(i, (PdfIndirectReference) ar);
+            } else {
+                numTree.put(i, writer.addToBody(ar).getIndirectReference());
+            }
         }
         PdfDictionary dicTree = PdfNumberTree.writeTree(numTree, writer);
         if (dicTree != null) {
