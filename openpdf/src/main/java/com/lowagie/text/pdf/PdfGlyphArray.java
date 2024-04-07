@@ -49,7 +49,6 @@ import java.util.List;
  */
 public class PdfGlyphArray {
 
-    public static class GlyphSubList extends ArrayList<Integer>{}
     private final LinkedList<Object> list = new LinkedList<>();
 
     public void add(float displacement) {
@@ -78,5 +77,9 @@ public class PdfGlyphArray {
 
     public boolean isEmpty() {
         return list.isEmpty();
+    }
+
+    public static class GlyphSubList extends ArrayList<Integer> {
+
     }
 }
