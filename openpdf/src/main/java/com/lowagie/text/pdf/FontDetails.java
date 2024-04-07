@@ -54,8 +54,12 @@ import com.lowagie.text.TextRenderingOptions;
 import com.lowagie.text.Utilities;
 import java.awt.font.GlyphVector;
 import java.io.UnsupportedEncodingException;
+import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -307,26 +311,38 @@ class FontDetails {
     /**
      * Convert a glyph code to bytes
      *
-     * @param glyphCode
+     * @param glyphCodes List of glyph codes
      * @return byte array with one or two bytes as UTF-16BE representation of the glyph code
      * @see <CODE>convertToBytes(GlyphVector glyphVector,...)</CODE>
      */
-    byte[] convertToBytes(final int glyphCode) {
+    byte[] convertToBytes(final List<Integer> glyphCodes) {
         if (fontType != BaseFont.FONT_TYPE_TTUNI) {
             throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
         }
-        if (glyphCode == 0xFFFE || glyphCode == 0xFFFF) {
-            // considered non-glyphs by AWT
-            return new byte[]{};
+        List<Integer> codePoints = new ArrayList<>();
+        for (int glyphCode: glyphCodes) {
+            if (glyphCode == 0xFFFE || glyphCode == 0xFFFF) {
+                // considered non-glyphs by AWT
+                return new byte[]{};
+            }
+            codePoints.add(glyphCode);
+            if (!longTag.containsKey(glyphCode)) {
+                int glyphWidth = ttu.getGlyphWidth(glyphCode);
+                Integer charCode = ttu.getCharacterCode(glyphCode);
+                int[] metrics = charCode != null ? new int[]{glyphCode, glyphWidth, charCode} : new int[]{
+                        glyphCode, glyphWidth};
+                longTag.put(glyphCode, metrics);
+            }
         }
-        if (!longTag.containsKey(glyphCode)) {
-            int glyphWidth = ttu.getGlyphWidth(glyphCode);
-            Integer charCode = ttu.getCharacterCode(glyphCode);
-            int[] metrics = charCode != null ? new int[]{glyphCode, glyphWidth, charCode} : new int[]{
-                glyphCode, glyphWidth};
-            longTag.put(glyphCode, metrics);
+        return getBytesFromCodePoints(codePoints);
+    }
+
+    private static byte[] getBytesFromCodePoints(List<Integer> codePoints) {
+        int[] codePointsArray = new int[codePoints.size()];
+        for (int i=0; i< codePoints.size(); i++) {
+            codePointsArray[i] = codePoints.get(i);
         }
-        String s = new String(Character.toChars(glyphCode));
+        String s = new String(codePointsArray, 0, codePointsArray.length);
         return s.getBytes(StandardCharsets.UTF_16BE);
     }
 
@@ -334,17 +350,15 @@ class FontDetails {
         if (fontType != BaseFont.FONT_TYPE_TTUNI || symbolic) {
             throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
         }
+        List<Integer> codePoints = new ArrayList<>();
 
-        char[] glyphs = new char[endIndex - beginIndex];
-        int glyphCount = 0;
         for (int i = beginIndex; i < endIndex; i++) {
             int code = glyphVector.getGlyphCode(i);
             if (code == 0xFFFE || code == 0xFFFF) {
                 // considered non-glyphs by AWT
                 continue;
             }
-
-            glyphCount += Character.toChars(code, glyphs, glyphCount);
+            codePoints.add(code);
 
             Integer codeKey = code;
             if (!longTag.containsKey(codeKey)) {
@@ -355,9 +369,7 @@ class FontDetails {
                 longTag.put(codeKey, metrics);
             }
         }
-
-        String s = new String(glyphs, 0, glyphCount);
-        return s.getBytes(StandardCharsets.UTF_16BE);
+        return getBytesFromCodePoints(codePoints);
     }
 
 
