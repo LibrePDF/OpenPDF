@@ -2760,7 +2760,7 @@ public class PdfContentByte {
             throw new NullPointerException(
                     MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         }
-        if(glyphs.isEmpty()) {
+        if (glyphs.isEmpty()) {
             return;
         }
         content.append("[");

@@ -318,7 +318,7 @@ class FontDetails {
             throw new UnsupportedOperationException("Only supported for True Type Unicode fonts");
         }
         List<Integer> codePoints = new ArrayList<>();
-        for (int glyphCode: glyphCodes) {
+        for (int glyphCode : glyphCodes) {
             if (glyphCode == 0xFFFE || glyphCode == 0xFFFF) {
                 // considered non-glyphs by AWT
                 return new byte[]{};
@@ -337,7 +337,7 @@ class FontDetails {
 
     private static byte[] getBytesFromCodePoints(List<Integer> codePoints) {
         int[] codePointsArray = new int[codePoints.size()];
-        for (int i=0; i< codePoints.size(); i++) {
+        for (int i = 0; i < codePoints.size(); i++) {
             codePointsArray[i] = codePoints.get(i);
         }
         String s = new String(codePointsArray, 0, codePointsArray.length);
