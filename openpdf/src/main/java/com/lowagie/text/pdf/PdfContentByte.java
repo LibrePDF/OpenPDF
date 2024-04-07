@@ -2760,12 +2760,15 @@ public class PdfContentByte {
             throw new NullPointerException(
                     MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         }
+        if(glyphs.isEmpty()) {
+            return;
+        }
         content.append("[");
         List arrayList = glyphs.getList();
         boolean lastWasDisplacement = false;
         for (Object obj : arrayList) {
-            if (obj instanceof Integer) { // glyph code
-                byte[] b = state.fontDetails.convertToBytes((Integer) obj);
+            if (obj instanceof PdfGlyphArray.GlyphSubList) { // glyph codes
+                byte[] b = state.fontDetails.convertToBytes((PdfGlyphArray.GlyphSubList) obj);
                 escapeAndAppendString(b, content); // appends escapedString to content
                 lastWasDisplacement = false;
             } else { // displacement

@@ -39,25 +39,37 @@
 
 package com.lowagie.text.pdf;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Defines an array with displacements and glyph codes.
+ * Defines an array with displacements and sub lists of glyph codes.
  */
 public class PdfGlyphArray {
-    private final List<Object> list = new LinkedList<>();
+
+    public static class GlyphSubList extends ArrayList<Integer>{}
+    private final LinkedList<Object> list = new LinkedList<>();
 
     public void add(float displacement) {
         list.add(displacement);
     }
 
     public void add(int glyphCode) {
-        list.add(glyphCode);
+        Object last = list.peekLast();
+        GlyphSubList glyphSublist;
+        if (last instanceof GlyphSubList) {
+            glyphSublist = (GlyphSubList) last;
+        } else {
+            glyphSublist = new GlyphSubList();
+            list.add(glyphSublist);
+        }
+        glyphSublist.add(glyphCode);
     }
 
     List<Object> getList() {
-        return list;
+        return Collections.unmodifiableList(list);
     }
 
     public void clear() {
