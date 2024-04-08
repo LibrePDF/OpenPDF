@@ -142,9 +142,8 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
             cb.showText(text);
             cb.endText();
             cb.addTemplate(tpl, document.left() + textSize, textBase);
-        }
-        // for even numbers, show the footer at the right
-        else {
+        } else {
+            // for even numbers, show the footer at the right
             float adjust = helv.getWidthPoint("0", 12);
             cb.setTextMatrix(document.right() - textSize - adjust, textBase);
             cb.showText(text);

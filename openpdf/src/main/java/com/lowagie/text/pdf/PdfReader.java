@@ -4133,9 +4133,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     page.put(PdfName.MEDIABOX, arr);
                 }
                 refsn.add(rpage);
-            }
-            // reference to a branch
-            else {
+            } else {
+                // reference to a branch
                 page.put(PdfName.TYPE, PdfName.PAGES);
                 pushPageAttributes(page);
                 for (int k = 0; k < kidsPR.size(); ++k) {

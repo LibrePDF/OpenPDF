@@ -1270,9 +1270,8 @@ public class PdfContentByte {
             // if the box is a rectangle, it is added as a rectangle
             if (rectangle.hasBorder(Rectangle.BOX)) {
                 rectangle(x1, y1, x2 - x1, y2 - y1);
-            }
-            // if the border isn't a rectangle, the different sides are added apart
-            else {
+            } else {
+                // if the border isn't a rectangle, the different sides are added apart
                 if (rectangle.hasBorder(Rectangle.RIGHT)) {
                     moveTo(x2, y1);
                     lineTo(x2, y2);
@@ -2161,7 +2160,8 @@ public class PdfContentByte {
      * Creates a new template.
      * <p>
      * Creates a new template that is nothing more than a form XObject. This template can be included in this
-     * <CODE>PdfContentByte</CODE> or in another template. Templates are only written to the output when the document is
+     * <CODE>PdfContentByte</CODE> or in another template. Templates are only written to the output when the document
+     * is
      * closed permitting things like showing text in the first page that is only defined in the last page.
      *
      * @param width  the bounding box width

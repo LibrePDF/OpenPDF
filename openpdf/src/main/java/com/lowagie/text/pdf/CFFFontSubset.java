@@ -411,9 +411,8 @@ public class CFFFontSubset extends CFFFont {
         // If type==1 -> bias=0
         if (fonts[Font].CharstringType == 1) {
             return 0;
-        }
-        // else calc according to the count
-        else if (nSubrs < 1240) {
+        } else if (nSubrs < 1240) {
+            // else calc according to the count
             return 107;
         } else if (nSubrs < 33900) {
             return 1131;
@@ -480,9 +479,8 @@ public class CFFFontSubset extends CFFFont {
                             RETURN_OP);
                 }
             }
-        }
-        // If the font is not CID && the Private Subr exists then subset:
-        else if (fonts[Font].privateSubrs >= 0) {
+        } else if (fonts[Font].privateSubrs >= 0) {
+            // If the font is not CID && the Private Subr exists then subset:
             // Build the subrs offsets;
             fonts[Font].SubrsOffsets = getIndex(fonts[Font].privateSubrs);
             //Scans the Charstring data storing the used Local and Global subroutines
@@ -677,9 +675,8 @@ public class CFFFontSubset extends CFFFont {
                     }
                     seek(pos);
                 }
-            }
-            // a call to a Gsubr
-            else if (Objects.equals(key, "callgsubr")) {
+            } else if (Objects.equals(key, "callgsubr")) {
+                // a call to a Gsubr
                 // Verify that arguments are passed
                 if (NumOfArgs > 0) {
                     // Calc the index of the Subrs
@@ -692,16 +689,14 @@ public class CFFFontSubset extends CFFFont {
                     CalcHints(gsubrOffsets[Subr], gsubrOffsets[Subr + 1], LBias, GBias, LSubrsOffsets);
                     seek(pos);
                 }
-            }
-            // A call to "stem"
-            else if (Objects.equals(key, "hstem") || Objects.equals(key, "vstem") || Objects.equals(key, "hstemhm")
+            } else if (Objects.equals(key, "hstem") || Objects.equals(key, "vstem") || Objects.equals(key, "hstemhm")
                     || Objects.equals(key, "vstemhm"))
+            // A call to "stem"
             // Increment the NumOfHints by the number couples of of arguments
             {
                 NumOfHints += NumOfArgs / 2;
-            }
-            // A call to "mask"
-            else if (Objects.equals(key, "hintmask") || Objects.equals(key, "cntrmask")) {
+            } else if (Objects.equals(key, "hintmask") || Objects.equals(key, "cntrmask")) {
+                // A call to "mask"
                 // Compute the size of the mask
                 int SizeOfMask = NumOfHints / 8;
                 if (NumOfHints % 8 != 0 || SizeOfMask == 0) {
@@ -726,9 +721,8 @@ public class CFFFontSubset extends CFFFont {
             // The operators that enlarge the stack by one
             if (StackHandel == 1) {
                 PushStack();
-            }
-            // The operators that pop the stack
-            else {
+            } else {
+                // The operators that pop the stack
                 // Abs value for the for loop
                 StackHandel *= -1;
                 for (int i = 0; i < StackHandel; i++) {
@@ -736,9 +730,8 @@ public class CFFFontSubset extends CFFFont {
                 }
             }
 
-        }
-        // All other flush the stack
-        else {
+        } else {
+            // All other flush the stack
             EmptyStack();
         }
     }
@@ -901,24 +894,20 @@ public class CFFFontSubset extends CFFFont {
                     CalcHints(LSubrsOffsets[Subr], LSubrsOffsets[Subr + 1], LBias, GBias, LSubrsOffsets);
                     seek(pos);
                 }
-            }
-            // a call to a Gsubr
-            else if (Objects.equals(key, "callgsubr")) {
+            } else if (Objects.equals(key, "callgsubr")) {
+                // a call to a Gsubr
                 if (NumOfArgs > 0) {
                     int Subr = (Integer) TopElement + GBias;
                     CalcHints(gsubrOffsets[Subr], gsubrOffsets[Subr + 1], LBias, GBias, LSubrsOffsets);
                     seek(pos);
                 }
-            }
-            // A call to "stem"
-            else if (Objects.equals(key, "hstem") || Objects.equals(key, "vstem") || Objects.equals(key, "hstemhm")
-                    || Objects.equals(key, "vstemhm"))
-            // Increment the NumOfHints by the number couples of of arguments
-            {
+            } else if (Objects.equals(key, "hstem") || Objects.equals(key, "vstem") || Objects.equals(key, "hstemhm")
+                    || Objects.equals(key, "vstemhm")) {
+                // A call to "stem"
+                // Increment the NumOfHints by the number couples of of arguments
                 NumOfHints += NumOfArgs / 2;
-            }
-            // A call to "mask"
-            else if (Objects.equals(key, "hintmask") || Objects.equals(key, "cntrmask")) {
+            } else if (Objects.equals(key, "hintmask") || Objects.equals(key, "cntrmask")) {
+                // A call to "mask"
                 // Compute the size of the mask
                 int SizeOfMask = NumOfHints / 8;
                 if (NumOfHints % 8 != 0 || SizeOfMask == 0) {
@@ -1124,11 +1113,10 @@ public class CFFFontSubset extends CFFFont {
 
         if (fonts[Font].isCID) {
             OutputList.addLast(getEntireIndexRange(stringIndexOffset));
-        }
-        // If the font is not CID we need to append new strings.
-        // We need 3 more strings: Registry, Ordering, and a FontName for one FD.
-        // The total length is at most "Adobe"+"Identity"+63 = 76
-        else {
+        } else {
+            // If the font is not CID we need to append new strings.
+            // We need 3 more strings: Registry, Ordering, and a FontName for one FD.
+            // The total length is at most "Adobe"+"Identity"+63 = 76
             CreateNewStringIndex(Font);
         }
 
@@ -1146,9 +1134,8 @@ public class CFFFontSubset extends CFFFont {
             // If an FDSelect exists copy it
             if (fonts[Font].fdselectOffset >= 0) {
                 OutputList.addLast(new RangeItem(buf, fonts[Font].fdselectOffset, fonts[Font].FDSelectLength));
-            }
-            // Else create a new one
-            else {
+            } else {
+                // Else create a new one
                 CreateFDSelect(fdselectRef, fonts[Font].nglyphs);
             }
 
@@ -1170,9 +1157,8 @@ public class CFFFontSubset extends CFFFont {
                 CreateFDArray(fdarrayRef, privateRef, Font);
             }
 
-        }
-        // If the font is not CID
-        else {
+        } else {
+            // If the font is not CID
             // create FDSelect
             CreateFDSelect(fdselectRef, fonts[Font].nglyphs);
             // recreate a new charset
@@ -1481,10 +1467,9 @@ public class CFFFontSubset extends CFFFont {
                         OutputList.addLast(new UInt8Item((char) 18)); // Private
                         // Go back to place
                         seek(p2);
-                    }
-                    // Else copy the entire range
-                    else  // other than private
-                    {
+                    } else {
+                        // Else copy the entire range
+                        // other than private
                         OutputList.addLast(new RangeItem(buf, p1, p2 - p1));
                     }
                 }
@@ -1526,9 +1511,8 @@ public class CFFFontSubset extends CFFFont {
                         fdSubrs[i] = new DictOffsetItem();
                         OutputList.addLast(fdSubrs[i]);
                         OutputList.addLast(new UInt8Item((char) 19)); // Subrs
-                    }
-                    // Else copy the entire range
-                    else {
+                    } else {
+                        // Else copy the entire range
                         OutputList.addLast(new RangeItem(buf, p1, p2 - p1));
                     }
                 }
@@ -1631,9 +1615,8 @@ public class CFFFontSubset extends CFFFont {
             if (Objects.equals(key, "Subrs")) {
                 OutputList.addLast(Subr);
                 OutputList.addLast(new UInt8Item((char) 19)); // Subrs
-            }
-            // Else copy the entire range
-            else {
+            } else {
+                // Else copy the entire range
                 OutputList.addLast(new RangeItem(buf, p1, p2 - p1));
             }
         }

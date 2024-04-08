@@ -323,9 +323,8 @@ public final class SimpleXMLParser {
             // read a new character
             if (previousCharacter == -1) {
                 character = reader.read();
-            }
-            // or re-examine the previous character
-            else {
+            } else {
+                // or re-examine the previous character
                 character = previousCharacter;
                 previousCharacter = -1;
             }

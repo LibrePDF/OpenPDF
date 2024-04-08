@@ -808,16 +808,12 @@ public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
         if (current instanceof Section || current instanceof Cell) {
             ((TextElementArray) current).add(img);
             stack.push(current);
-        }
-
-        // ... if it is a Phrase, we have to wrap the Image in a new Chunk
-        else if (current instanceof Phrase) {
+        } else if (current instanceof Phrase) {
+            // ... if it is a Phrase, we have to wrap the Image in a new Chunk
             ((TextElementArray) current).add(new Chunk(img, 0, 0));
             stack.push(current);
-        }
-
-        // ...if not, we need to to a lot of stuff
-        else {
+        } else {
+            // ...if not, we need to to a lot of stuff
             Stack<Element> newStack = new Stack<>();
             while (!(current instanceof Section || current instanceof Cell)) {
                 newStack.push(current);

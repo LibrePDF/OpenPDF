@@ -674,10 +674,8 @@ public final class Pfm2afm {
         out.print("\nItalicAngle ");
         if (italic != 0 || fname.toLowerCase(Locale.ROOT).contains("italic")) {
             out.print("-12.00");
-        }
-            /* this is a typical value; something else may work better for a
-               specific font */
-        else {
+        } else {
+            // this is a typical value; something else may work better for a specific font
             out.print("0");
         }
 

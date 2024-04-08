@@ -2719,9 +2719,8 @@ public class PdfWriter extends DocWriter implements
         // if the images is already added, just retrieve the name
         if (images.containsKey(image.getMySerialId())) {
             name = images.get(image.getMySerialId());
-        }
-        // if it's a new image, add it to the document
-        else {
+        } else {
+            // if it's a new image, add it to the document
             if (image.isImgTemplate()) {
                 name = new PdfName("img" + images.size());
                 if (image instanceof ImgWMF) {

@@ -1226,9 +1226,8 @@ public class PdfDocument extends Document {
                     lines.add(line);
                     pageEmpty = false;
                 }
-            }
-            // if the end of the line is reached, we start a new page
-            else {
+            } else {
+                // if the end of the line is reached, we start a new page
                 newPage();
             }
         }
@@ -1677,10 +1676,9 @@ public class PdfDocument extends Document {
                 PdfTextArray array = new PdfTextArray();
                 array.add((tabPosition - xMarker) * 1000f / chunk.font.size() / hScale);
                 text.showText(array);
-            }
-            // If it is a CJK chunk or Unicode TTF we will have to simulate the
-            // space adjustment.
-            else if (isJustified && numberOfSpaces > 0 && chunk.isSpecialEncoding()) {
+            } else if (isJustified && numberOfSpaces > 0 && chunk.isSpecialEncoding()) {
+                // If it is a CJK chunk or Unicode TTF we will have to simulate the
+                // space adjustment.
                 if (hScale != lastHScale) {
                     lastHScale = hScale;
                     text.setWordSpacing(baseWordSpacing / hScale);

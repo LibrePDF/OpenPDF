@@ -184,27 +184,24 @@ public class PdfLine {
             width = originalWidth - tabPosition;
             chunk.adjustLeft(left);
             addToLine(chunk);
-        }
-        // if the length of the chunk > 0 we add it to the line
-        else if (chunk.length() > 0 || chunk.isImage()) {
+        } else if (chunk.length() > 0 || chunk.isImage()) {
+            // if the length of the chunk > 0 we add it to the line
             if (overflow != null) {
                 chunk.trimLastSpace();
             }
             width -= chunk.width();
             addToLine(chunk);
-        }
-        // if the length == 0 and there were no other chunks added to the line yet,
-        // we risk to end up in an endless loop trying endlessly to add the same chunk
-        else if (line.size() < 1) {
+        } else if (line.size() < 1) {
+            // if the length == 0 and there were no other chunks added to the line yet,
+            // we risk to end up in an endless loop trying endlessly to add the same chunk
             chunk = overflow;
             overflow = chunk.truncate(width);
             width -= chunk.width();
             if (chunk.length() > 0) {
                 addToLine(chunk);
                 return overflow;
-            }
-            // if the chunk couldn't even be truncated, we add everything, so be it
-            else {
+            } else {
+                // if the chunk couldn't even be truncated, we add everything, so be it
                 if (overflow != null) {
                     addToLine(overflow);
                 }

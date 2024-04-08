@@ -1333,8 +1333,7 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
             } else {
                 j++;
             }
-        }
-        while (
+        } while (
                 (i < rows.size()) && (j < columns) && (rows.get(i).isReserved(j))
         );
         curPosition = new Point(i, j);
