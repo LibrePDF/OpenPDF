@@ -24,7 +24,7 @@ Get version 2.0.2 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.0.2
 
 Please note: Repositories like Maven Central and others may take a few days to update.
 
-### Other versions:
+### Other versions
 
 - [OpenPDF 1.4.2 (release 2024-03-30)](https://github.com/LibrePDF/OpenPDF/releases/tag/1.4.2)
 - [OpenPDF 1.3.43 (release 2024-03-29)](https://github.com/LibrePDF/OpenPDF/releases/tag/1.3.43)
