@@ -1124,8 +1124,8 @@ public class PdfSignatureAppearance {
                     sigField.addKid(field);
                     field = null;
                 }
-            } else if (!isInvisible()) // Si es una pagina especifica
-            {
+            } else if (!isInvisible()) {
+                // Si es una pagina especifica
                 sigField.setWidget(getPageRect(), null);
             } else {
                 sigField.setWidget(new Rectangle(0, 0), null);

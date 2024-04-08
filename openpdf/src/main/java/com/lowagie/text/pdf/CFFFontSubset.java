@@ -198,9 +198,8 @@ public class CFFFontSubset extends CFFFont {
                 // Build the FDArrayUsed hashmap
                 BuildFDArrayUsed(i);
             }
-            if (fonts[i].isCID)
-            // Build the FD Array used Hash Map
-            {
+            if (fonts[i].isCID) {
+                // Build the FD Array used Hash Map
                 ReadFDArray(i);
             }
             // compute the charset length
@@ -491,9 +490,8 @@ public class CFFFontSubset extends CFFFont {
         // For all fonts subset the Global Subroutines
         // Scan the Global Subr Hashmap recursively on the Gsubrs
         BuildGSubrsUsed(Font);
-        if (fonts[Font].privateSubrs >= 0)
-        // Builds the New Local Subrs index
-        {
+        if (fonts[Font].privateSubrs >= 0) {
+            // Builds the New Local Subrs index
             NewSubrsIndexNonCID = BuildNewIndex(fonts[Font].SubrsOffsets, hSubrsUsedNonCID, RETURN_OP);
         }
         //Builds the New Global Subrs index
@@ -555,15 +553,13 @@ public class CFFFontSubset extends CFFFont {
                 // Using FDSELECT find the FD Array the glyph belongs to.
                 int GlyphFD = fonts[Font].FDSelect[glyph];
                 // If the Glyph is part of the FD being processed
-                if (GlyphFD == FD)
-                // Find the Subrs called by the glyph and insert to hash:
-                {
+                if (GlyphFD == FD) {
+                    // Find the Subrs called by the glyph and insert to hash:
                     ReadASubr(Start, End, GBias, LBias, hSubr, lSubr, SubrsOffsets);
                 }
-            } else
-            // If the font is not CID
-            //Find the Subrs called by the glyph and insert to hash:
-            {
+            } else {
+                // If the font is not CID
+                //Find the Subrs called by the glyph and insert to hash:
                 ReadASubr(Start, End, GBias, LBias, hSubr, lSubr, SubrsOffsets);
             }
         }
@@ -690,10 +686,9 @@ public class CFFFontSubset extends CFFFont {
                     seek(pos);
                 }
             } else if (Objects.equals(key, "hstem") || Objects.equals(key, "vstem") || Objects.equals(key, "hstemhm")
-                    || Objects.equals(key, "vstemhm"))
-            // A call to "stem"
-            // Increment the NumOfHints by the number couples of of arguments
-            {
+                    || Objects.equals(key, "vstemhm")) {
+                // A call to "stem"
+                // Increment the NumOfHints by the number couples of of arguments
                 NumOfHints += NumOfArgs / 2;
             } else if (Objects.equals(key, "hintmask") || Objects.equals(key, "cntrmask")) {
                 // A call to "mask"
@@ -806,36 +801,36 @@ public class CFFFontSubset extends CFFFont {
             // Read the first Char
             char b0 = getCard8();
             // decode according to the type1/type2 format
-            if (b0 == 28) // the two next bytes represent a short int;
-            {
+            if (b0 == 28) {
+                // the two next bytes represent a short int;
                 int first = getCard8();
                 int second = getCard8();
                 args[arg_count] = first << 8 | second;
                 arg_count++;
                 continue;
             }
-            if (b0 >= 32 && b0 <= 246) // The byte read is the byte;
-            {
+            if (b0 >= 32 && b0 <= 246) {
+                // The byte read is the byte;
                 args[arg_count] = b0 - 139;
                 arg_count++;
                 continue;
             }
-            if (b0 >= 247 && b0 <= 250) // The byte read and the next byte constitute a short int
-            {
+            if (b0 >= 247 && b0 <= 250) {
+                // The byte read and the next byte constitute a short int
                 int w = getCard8();
                 args[arg_count] = (b0 - 247) * 256 + w + 108;
                 arg_count++;
                 continue;
             }
-            if (b0 >= 251 && b0 <= 254)// Same as above except negative
-            {
+            if (b0 >= 251 && b0 <= 254) {
+                // Same as above except negative
                 int w = getCard8();
                 args[arg_count] = -(b0 - 251) * 256 - w - 108;
                 arg_count++;
                 continue;
             }
-            if (b0 == 255)// The next for bytes represent a double.
-            {
+            if (b0 == 255) {
+                // The next for bytes represent a double.
                 int first = getCard8();
                 int second = getCard8();
                 int third = getCard8();
@@ -844,8 +839,8 @@ public class CFFFontSubset extends CFFFont {
                 arg_count++;
                 continue;
             }
-            if (b0 <= 31) // An operator was found.. Set Key.
-            {
+            if (b0 <= 31) {
+                // An operator was found. Set Key.
                 gotKey = true;
                 // 12 is an escape command therefore the next byte is a part
                 // of this command
@@ -1151,9 +1146,8 @@ public class CFFFontSubset extends CFFFont {
                 OutputList.addLast(new MarkerItem(fdarrayRef));
                 // Build a new FDArray with its private dicts and their LSubrs
                 Reconstruct(Font);
-            } else
-            // Else create a new one
-            {
+            } else {
+                // Else create a new one
                 CreateFDArray(fdarrayRef, privateRef, Font);
             }
 

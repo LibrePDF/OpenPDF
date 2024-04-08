@@ -3344,8 +3344,8 @@ public class PdfDocument extends Document {
                     for (Map.Entry<String, Object[]> entry : localDestinations.entrySet()) {
                         String name = entry.getKey();
                         Object[] obj = entry.getValue();
-                        if (obj[2] == null) //no destination
-                        {
+                        if (obj[2] == null) {
+                            //no destination
                             continue;
                         }
                         PdfIndirectReference ref = (PdfIndirectReference) obj[1];

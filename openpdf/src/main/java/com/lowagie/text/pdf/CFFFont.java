@@ -299,10 +299,9 @@ public class CFFFont {
                 seek(fonts[j].privateOffset);
                 while (getPosition() < fonts[j].privateOffset + fonts[j].privateLength) {
                     getDictItem();
-                    if (Objects.equals(key, "Subrs"))
-                    //Add the private offset to the lsubrs since the offset is
-                    // relative to the beginning of the PrivateDict
-                    {
+                    if (Objects.equals(key, "Subrs")) {
+                        //Add the private offset to the lsubrs since the offset is
+                        // relative to the beginning of the PrivateDict
                         fonts[j].privateSubrs = (Integer) args[0] + fonts[j].privateOffset;
                     }
                 }
@@ -589,9 +588,7 @@ public class CFFFont {
      * @param fontName name of the font
      * @return byte array
      */
-    public byte[] getCID(String fontName)
-    //throws java.io.FileNotFoundException
-    {
+    public byte[] getCID(String fontName) {
         int j;
         for (j = 0; j < fonts.length; j++) {
             if (fontName.equals(fonts[j].name)) {
@@ -1108,7 +1105,7 @@ public class CFFFont {
 
         // this is incomplete!
         public void emit(byte[] buffer) {
-            buffer[myOffset + 0] = (byte) ((value >>> 16) & 0xff);
+            buffer[myOffset] = (byte) ((value >>> 16) & 0xff);
             buffer[myOffset + 1] = (byte) ((value >>> 8) & 0xff);
             buffer[myOffset + 2] = (byte) ((value >>> 0) & 0xff);
         }
@@ -1133,7 +1130,7 @@ public class CFFFont {
 
         // this is incomplete!
         public void emit(byte[] buffer) {
-            buffer[myOffset + 0] = (byte) ((value >>> 24) & 0xff);
+            buffer[myOffset] = (byte) ((value >>> 24) & 0xff);
             buffer[myOffset + 1] = (byte) ((value >>> 16) & 0xff);
             buffer[myOffset + 2] = (byte) ((value >>> 8) & 0xff);
             buffer[myOffset + 3] = (byte) ((value >>> 0) & 0xff);
@@ -1159,7 +1156,7 @@ public class CFFFont {
 
         // this is incomplete!
         public void emit(byte[] buffer) {
-            buffer[myOffset + 0] = (byte) ((value >>> 8) & 0xff);
+            buffer[myOffset] = (byte) ((value >>> 8) & 0xff);
             buffer[myOffset + 1] = (byte) ((value >>> 0) & 0xff);
         }
     }
@@ -1183,7 +1180,7 @@ public class CFFFont {
 
         // this is incomplete!
         public void emit(byte[] buffer) {
-            buffer[myOffset + 0] = (byte) ((value >>> 0) & 0xff);
+            buffer[myOffset] = (byte) ((value >>> 0) & 0xff);
         }
     }
 

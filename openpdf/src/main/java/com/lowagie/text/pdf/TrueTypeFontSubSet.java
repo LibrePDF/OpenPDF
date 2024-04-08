@@ -354,8 +354,8 @@ class TrueTypeFontSubSet {
             glyphsInList.add(glyph0);
         }
         tableGlyphOffset = tableLocation[TABLE_OFFSET];
-        for (int k = 0; k < glyphsInList.size();
-                ++k) {    // TODO: concurrent List modification error in checkGlyphComposite(glyph)
+        for (int k = 0; k < glyphsInList.size(); ++k) {
+            // TODO: concurrent List modification error in checkGlyphComposite(glyph)
             int glyph = glyphsInList.get(k);
             checkGlyphComposite(glyph);
         }
@@ -363,8 +363,8 @@ class TrueTypeFontSubSet {
 
     protected void checkGlyphComposite(int glyph) throws IOException {
         int start = locaTable[glyph];
-        if (start == locaTable[glyph + 1]) // no contour
-        {
+        if (start == locaTable[glyph + 1]) {
+            // no contour
             return;
         }
         rf.seek(tableGlyphOffset + start);

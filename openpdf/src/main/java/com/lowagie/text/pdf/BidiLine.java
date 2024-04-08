@@ -948,8 +948,8 @@ public class BidiLine {
             onlyOddLevels &= b;
             onlyEvenLevels |= b;
         }
-        if ((onlyEvenLevels & 1) == 0) // nothing to do
-        {
+        if ((onlyEvenLevels & 1) == 0) {
+            // nothing to do
             return;
         }
         if ((onlyOddLevels & 1) == 1) { // single inversion

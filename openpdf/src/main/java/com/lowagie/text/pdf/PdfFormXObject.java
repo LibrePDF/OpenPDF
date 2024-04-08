@@ -80,8 +80,7 @@ public class PdfFormXObject extends PdfStream {
      * @since 2.1.3 (Replacing the existing constructor with param compressionLevel)
      */
 
-    PdfFormXObject(PdfTemplate template, int compressionLevel) // throws BadPdfFormatException
-    {
+    PdfFormXObject(PdfTemplate template, int compressionLevel) {
         super();
         put(PdfName.TYPE, PdfName.XOBJECT);
         put(PdfName.SUBTYPE, PdfName.FORM);

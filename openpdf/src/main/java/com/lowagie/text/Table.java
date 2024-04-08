@@ -1091,8 +1091,8 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
             lDummyHeights[i] = lNewMaxRows;
         }
 
-        if ((lTotalColumns != columns) || (lTotalRows != rows.size()) || isTable)    // NO ADJUSTMENT
-        {
+        if ((lTotalColumns != columns) || (lTotalRows != rows.size()) || isTable) {
+            // NO ADJUSTMENT
             // ** WIDTH
             // set correct width for new columns
             // divide width over new nr of columns
@@ -1126,8 +1126,8 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
             for (i = 0; i < rows.size(); i++) {
                 lDummyColumn = 0;
                 for (j = 0; j < columns; j++) {
-                    if (rows.get(i).getCell(j) instanceof Table)       // copy values from embedded table
-                    {
+                    if (rows.get(i).getCell(j) instanceof Table) {
+                        // copy values from embedded table
                         lDummyTable = (Table) rows.get(i).getCell(j);
 
                         // Work out where columns in table table correspond to columns in current table
@@ -1171,8 +1171,8 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
                                 }
                             }
                         }
-                    } else        // copy others values
-                    {
+                    } else {
+                        // copy others values
                         TableRectangle aElement = getElement(i, j);
 
                         if (aElement instanceof Cell) {
@@ -1228,9 +1228,8 @@ public class Table extends TableRectangle implements LargeElement, WithHorizonta
      */
     private boolean isValidLocation(Cell aCell, Point aLocation) {
         // rowspan not beyond last column
-        if (aLocation.x
-                < rows.size())        // if false : new location is already at new, not-yet-created area so no check
-        {
+        if (aLocation.x < rows.size()) {
+            // if false : new location is already at new, not-yet-created area so no check
             if ((aLocation.y + aCell.getColspan()) > columns) {
                 return false;
             }

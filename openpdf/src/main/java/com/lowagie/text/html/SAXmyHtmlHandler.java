@@ -62,13 +62,13 @@ import org.xml.sax.Attributes;
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
  */
 
-public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> // SAXmyHandler
-{
+public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> {
+// SAXmyHandler
 
     /**
      * These are the properties of the body section.
      */
-    private Properties bodyAttributes = new Properties();
+    private final Properties bodyAttributes = new Properties();
 
     /**
      * This is the status of the table border.
