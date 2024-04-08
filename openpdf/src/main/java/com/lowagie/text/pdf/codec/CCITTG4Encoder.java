@@ -548,21 +548,21 @@ public class CCITTG4Encoder {
         int b1 = (pixel(refline, 0, 0) != 0 ? 0 : finddiff(refline, 0, 0, rowpixels, 0));
         int a2, b2;
 
-        for (;;) {
+        for (; ; ) {
             b2 = finddiff2(refline, 0, b1, rowpixels, pixel(refline, 0, b1));
             int d = b1 - a1;
 
-            if (b2 >= a1 && !(-3 <= d && d <= 3)) { 
+            if (b2 >= a1 && !(-3 <= d && d <= 3)) {
                 a2 = finddiff2(dataBp, offsetData, a1, rowpixels, pixel(dataBp, offsetData, a1));
                 handleHorizontalMode(a0, a1, a2);
                 a0 = a2;
-                } else if (b2 >= a1) { 
-                    putcode(vcodes[d + 3]);
-                    a0 = a1;
-                    } else { 
-                        putcode(passcode);
-                        a0 = b2;
-                        }
+            } else if (b2 >= a1) {
+                putcode(vcodes[d + 3]);
+                a0 = a1;
+            } else {
+                putcode(passcode);
+                a0 = b2;
+            }
             if (a0 >= rowpixels) {
                 break;
             }
