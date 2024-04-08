@@ -473,7 +473,7 @@ public class LayoutProcessor {
     private static void adjustAndShowText(PdfContentByte cb, final float fontSize, final GlyphVector glyphVector) {
 
         final float deltaY = 1e-5f;
-        final float deltaX = deltaY * 1000f / fontSize;
+        final float deltaX = deltaY;
         final float factorX = 1000f / fontSize;
 
         float lastX = 0f;
