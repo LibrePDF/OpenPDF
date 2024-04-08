@@ -15,14 +15,17 @@ quite an overhead. The GitHub contributor list is always up-to-date and can be u
 * [@rtfarte](https://github.com/rtfarte) - Art Krahenbuhl
 * [@tlxtellef](https://github.com/tlxtellef) - Tellef
 
+### Previous Maintainers ###
+
+* [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, 1.3.32
+  to 2.0.0, now retired from OpenPDF development.
+
 ## Contributors ##
 
 In GitHub User alphabetical order.
 
 * [@abdullahcevik](https://github.com/abdullahcevik) - Abdullah Çevik
 * [@albfernandez](https://github.com/albfernandez) - Alberto Fernández
-* [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, 1.3.32
-  to 2.0.0, now retired from OpenPDF development.
 * [@AnthonyStevens](https://github.com/AnthonyStevens) - Anthony Stevens
 * [@applikationsprogramvara](https://github.com/applikationsprogramvara)
 * [@arational](https://github.com/arational) - Ivan Stefanischin
