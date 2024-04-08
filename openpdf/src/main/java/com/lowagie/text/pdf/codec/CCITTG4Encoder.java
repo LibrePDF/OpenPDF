@@ -548,35 +548,38 @@ public class CCITTG4Encoder {
         int b1 = (pixel(refline, 0, 0) != 0 ? 0 : finddiff(refline, 0, 0, rowpixels, 0));
         int a2, b2;
 
-        for (; ; ) {
+        for (;;) {
             b2 = finddiff2(refline, 0, b1, rowpixels, pixel(refline, 0, b1));
-            if (b2 >= a1) {
-                int d = b1 - a1;
-                if (!(-3 <= d && d <= 3)) {    /* horizontal mode */
-                    a2 = finddiff2(dataBp, offsetData, a1, rowpixels, pixel(dataBp, offsetData, a1));
-                    putcode(horizcode);
-                    if (a0 + a1 == 0 || pixel(dataBp, offsetData, a0) == 0) {
-                        putspan(a1 - a0, TIFFFaxWhiteCodes);
-                        putspan(a2 - a1, TIFFFaxBlackCodes);
-                    } else {
-                        putspan(a1 - a0, TIFFFaxBlackCodes);
-                        putspan(a2 - a1, TIFFFaxWhiteCodes);
-                    }
-                    a0 = a2;
-                } else {            /* vertical mode */
+            int d = b1 - a1;
+
+            if (b2 >= a1 && !(-3 <= d && d <= 3)) { 
+                a2 = finddiff2(dataBp, offsetData, a1, rowpixels, pixel(dataBp, offsetData, a1));
+                handleHorizontalMode(a0, a1, a2);
+                a0 = a2;
+                } else if (b2 >= a1) { 
                     putcode(vcodes[d + 3]);
                     a0 = a1;
-                }
-            } else {                /* pass mode */
-                putcode(passcode);
-                a0 = b2;
-            }
+                    } else { 
+                        putcode(passcode);
+                        a0 = b2;
+                        }
             if (a0 >= rowpixels) {
                 break;
             }
             a1 = finddiff(dataBp, offsetData, a0, rowpixels, pixel(dataBp, offsetData, a0));
             b1 = finddiff(refline, 0, a0, rowpixels, pixel(dataBp, offsetData, a0) ^ 1);
             b1 = finddiff(refline, 0, b1, rowpixels, pixel(dataBp, offsetData, a0));
+        }
+    }
+
+    private void handleHorizontalMode(int a0, int a1, int a2) {
+        putcode(horizcode);
+        if (a0 + a1 == 0 || pixel(dataBp, offsetData, a0) == 0) {
+            putspan(a1 - a0, TIFFFaxWhiteCodes);
+            putspan(a2 - a1, TIFFFaxBlackCodes);
+        } else {
+            putspan(a1 - a0, TIFFFaxBlackCodes);
+            putspan(a2 - a1, TIFFFaxWhiteCodes);
         }
     }
 
