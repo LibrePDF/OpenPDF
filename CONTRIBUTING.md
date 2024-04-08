@@ -23,7 +23,7 @@
 ### Please note
 
 - We use the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html) with
-  some exceptionsu
+  some exceptions
   - Indentation: 4 spaces
   - Continuation indent: 8 spaces
   - Line length: 120 characters
