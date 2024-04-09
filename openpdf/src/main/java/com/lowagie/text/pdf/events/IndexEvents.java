@@ -83,16 +83,16 @@ public class IndexEvents extends PdfPageEventHelper {
      * Comparator for sorting the index
      */
     private Comparator<Entry> comparator = (en1, en2) -> {
-    	
+    
         int rt = compareStringsIgnoreCase(en1.getIn1(), en2.getIn1());
         
-        if(rt != 0) {
+        if (rt != 0) {
             return rt;
         }
         
         rt = compareStringsIgnoreCase(en1.getIn2(), en2.getIn2());
         
-        if(rt != 0) {
+        if (rt != 0) {
             return rt;
         }
         
@@ -105,7 +105,7 @@ public class IndexEvents extends PdfPageEventHelper {
     };
     
     private int compareStringsIgnoreCase(String str1, String str2) {
-        if(str1 == null || str2 == null) {
+        if (str1 == null || str2 == null) {
             return 0;
         }
         return str1.compareToIgnoreCase(str2);
