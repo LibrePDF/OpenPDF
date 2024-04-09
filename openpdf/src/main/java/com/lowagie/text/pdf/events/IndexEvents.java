@@ -82,7 +82,8 @@ public class IndexEvents extends PdfPageEventHelper {
     /**
      * Comparator for sorting the index
      */
-    private Comparator<Entry> comparator = (en1, en2) -> {
+    private Comparator<Entry> comparator = (en1, en2) -> 
+    {
         int rt = compareStringsIgnoreCase(en1.getIn1(), en2.getIn1());
         
         if (rt != 0) {
@@ -109,6 +110,7 @@ public class IndexEvents extends PdfPageEventHelper {
         }
         return str1.compareToIgnoreCase(str2);
     }
+
 
     /**
      * All the text that is passed to this event, gets registered in the indexentry.
