@@ -36,8 +36,8 @@ public class FullFontNames {
             String[][] names = bf.getFullFontName();
             out.write("\n\nListing the full font name:\n\n");
             for (String[] name : names) {
-                if (name[0].equals("3") && name[1].equals("1")) // Microsoft encoding
-                {
+                // Microsoft encoding
+                if (name[0].equals("3") && name[1].equals("1")) {
                     out.write(name[3] + "\r\n");
                 }
             }

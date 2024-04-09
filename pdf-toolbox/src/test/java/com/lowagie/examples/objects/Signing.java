@@ -44,7 +44,7 @@ public class Signing {
 
     private static void addUnverifiedSignature(boolean visible) {
         try {
-            String visibility = visible == true ? "visible" : "invisible";
+            String visibility = visible ? "visible" : "invisible";
             String description = "Document with " + visibility + " signature";
             System.out.println(description);
 
