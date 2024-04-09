@@ -87,13 +87,13 @@ public class IndexEvents extends PdfPageEventHelper {
         int rt = compareStringsIgnoreCase(en1.getIn1(), en2.getIn1());
         
         if(rt != 0) {
-        	return rt;
+            return rt;
         }
         
         rt = compareStringsIgnoreCase(en1.getIn2(), en2.getIn2());
         
         if(rt != 0) {
-        	return rt;
+            return rt;
         }
         
         // in2 equals
@@ -105,10 +105,10 @@ public class IndexEvents extends PdfPageEventHelper {
     };
     
     private int compareStringsIgnoreCase(String str1, String str2) {
-    	if(str1 == null || str2 == null) {
-    		return 0;
-    	}
-    	return str1.compareToIgnoreCase(str2);
+        if(str1 == null || str2 == null) {
+            return 0;
+        }
+        return str1.compareToIgnoreCase(str2);
     }
 
     /**
