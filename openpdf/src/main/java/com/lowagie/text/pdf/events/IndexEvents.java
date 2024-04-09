@@ -83,7 +83,6 @@ public class IndexEvents extends PdfPageEventHelper {
      * Comparator for sorting the index
      */
     private Comparator<Entry> comparator = (en1, en2) -> {
-    
         int rt = compareStringsIgnoreCase(en1.getIn1(), en2.getIn1());
         
         if (rt != 0) {
@@ -103,7 +102,7 @@ public class IndexEvents extends PdfPageEventHelper {
         
         return 0;
     };
-    
+
     private int compareStringsIgnoreCase(String str1, String str2) {
         if (str1 == null || str2 == null) {
             return 0;
