@@ -100,7 +100,6 @@ public class IndexEvents extends PdfPageEventHelper {
         return compareStringsIgnoreCase(en1.getIn3(), en2.getIn3());
     };
 
-
     private int compareStringsIgnoreCase(String str1, String str2) {
     
         if (str1 == null || str2 == null) {
