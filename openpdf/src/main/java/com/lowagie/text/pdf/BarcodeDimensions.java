@@ -4,8 +4,7 @@ public class BarcodeDimensions {
 
     private int height;
     private int width;
-    private int ws;
-    private int options;
+    private int border;
 
     public int getHeight() {
         return height;
@@ -23,20 +22,23 @@ public class BarcodeDimensions {
         this.width = width;
     }
 
-    public int getWs() {
-        return ws;
+    public int getBorder() {
+        return border;
     }
 
-    public void setWs(int ws) {
-        this.ws = ws;
+    public void setBorder(int border) {
+        this.border = border;
     }
 
-    public int getOptions() {
-        return options;
+    public BarcodeDimensions(int width, int height, int border) {
+        this.width = width;
+        this.height = height;
+        this.border = border;
     }
 
-    public void setOptions(int options) {
-        this.options = options;
+    public BarcodeDimensions(){
+        this(0, 0, 0);
     }
+
 
 }
