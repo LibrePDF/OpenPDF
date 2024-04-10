@@ -824,10 +824,10 @@ public class BarcodeDatamatrix {
         if (image == null) {
             return null;
         }
-        int width=dimensions.getWidth() + 2 * dimensions.getBorder();
-        int height=dimensions.getHeight() + 2 * dimensions.getBorder();
-        byte[] g4 = CCITTG4Encoder.compress(image, width,height);
-        return Image.getInstance(width,height, false, Image.CCITTG4, 0, g4, null);
+        int width = dimensions.getWidth() + 2 * dimensions.getBorder();
+        int height = dimensions.getHeight() + 2 * dimensions.getBorder();
+        byte[] g4 = CCITTG4Encoder.compress(image, width, height);
+        return Image.getInstance(width, height, false, Image.CCITTG4, 0, g4, null);
     }
 
     /**
