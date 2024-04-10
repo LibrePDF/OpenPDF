@@ -936,7 +936,7 @@ public class BarcodeDatamatrix {
     /**
      * Sets the whitespace border around the barcode.
      *
-     * @param ws the whitespace border around the barcode
+     * @param border the whitespace border around the barcode
      */
     public void setBorder(int border) {
         dimensions.setBorder(border);

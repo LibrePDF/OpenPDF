@@ -36,7 +36,7 @@ public class BarcodeDimensions {
         this.border = border;
     }
 
-    public BarcodeDimensions(){
+    public BarcodeDimensions() {
         this(0, 0, 0);
     }
 
