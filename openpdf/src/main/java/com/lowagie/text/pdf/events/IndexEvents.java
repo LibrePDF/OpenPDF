@@ -83,25 +83,32 @@ public class IndexEvents extends PdfPageEventHelper {
      * Comparator for sorting the index
      */
     private Comparator<Entry> comparator = (en1, en2) -> {
-
-        int rt = 0;
-        if (en1.getIn1() != null && en2.getIn1() != null) {
-            if ((rt = en1.getIn1().compareToIgnoreCase(en2.getIn1())) == 0) {
-                // in1 equals
-                if (en1.getIn2() != null && en2.getIn2() != null) {
-                    if ((rt = en1.getIn2()
-                            .compareToIgnoreCase(en2.getIn2())) == 0) {
-                        // in2 equals
-                        if (en1.getIn3() != null && en2.getIn3() != null) {
-                            rt = en1.getIn3().compareToIgnoreCase(
-                                    en2.getIn3());
-                        }
-                    }
-                }
-            }
+    
+        int rt = compareStringsIgnoreCase(en1.getIn1(), en2.getIn1());
+        
+        if (rt != 0) {
+            return rt;
         }
-        return rt;
+        
+        rt = compareStringsIgnoreCase(en1.getIn2(), en2.getIn2());
+        
+        if (rt != 0) {
+            return rt;
+        }
+        
+        // in2 equals
+        return compareStringsIgnoreCase(en1.getIn3(), en2.getIn3());
     };
+
+    private int compareStringsIgnoreCase(String str1, String str2) {
+    
+        if (str1 == null || str2 == null) {
+            return 0;
+        }
+        
+        return str1.compareToIgnoreCase(str2);
+    }
+
 
     /**
      * All the text that is passed to this event, gets registered in the indexentry.
