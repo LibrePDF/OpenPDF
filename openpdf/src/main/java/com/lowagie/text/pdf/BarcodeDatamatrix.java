@@ -160,9 +160,7 @@ public class BarcodeDatamatrix {
     private int extOut;
     private short[] place;
     private byte[] image;
-    private int height;
-    private int width;
-    private int ws;
+    private BarcodeDimensions dimensions;
     private int options;
 
     /**
@@ -589,8 +587,10 @@ public class BarcodeDatamatrix {
 
     private void draw(byte[] data, int dataSize, DmParams dm) {
         int i, j, p, x, y, xs, ys, z;
+        int ws = dimensions.getBorder();
         int xByte = (dm.width + ws * 2 + 7) / 8;
         Arrays.fill(image, (byte) 0);
+
         //alignment patterns
         //dotted horizontal line
         for (i = ws; i < dm.height + ws; i += dm.heightSection) {
@@ -633,7 +633,7 @@ public class BarcodeDatamatrix {
 
     private int processExtensions(byte[] text, int textOffset, int textSize, byte[] data) {
         int order, ptrIn, ptrOut, eci, fn, ft, fi, c;
-        if ((options & DM_EXTENSION) == 0) {
+        if ((this.options & DM_EXTENSION) == 0) {
             return 0;
         }
         order = 0;
@@ -767,10 +767,10 @@ public class BarcodeDatamatrix {
             return DM_ERROR_EXTENSION;
         }
         e = -1;
-        if (height == 0 || width == 0) {
+        if (dimensions.getHeight() == 0 || dimensions.getWidth() == 0) {
             last = dmSizes[dmSizes.length - 1];
             e = getEncodation(text, textOffset + extOut, textSize - extOut, data, extCount, last.dataSize - extCount,
-                    options, false);
+            this.options, false);
             if (e < 0) {
                 return DM_ERROR_TEXT_TOO_BIG;
             }
@@ -781,11 +781,11 @@ public class BarcodeDatamatrix {
                 }
             }
             dm = dmSizes[k];
-            height = dm.height;
-            width = dm.width;
+            dimensions.setHeight(dm.height);
+            dimensions.setWidth(dm.width);
         } else {
             for (k = 0; k < dmSizes.length; ++k) {
-                if (height == dmSizes[k].height && width == dmSizes[k].width) {
+                if (dimensions.getHeight() == dmSizes[k].height && dimensions.getWidth() == dmSizes[k].width) {
                     break;
                 }
             }
@@ -794,16 +794,16 @@ public class BarcodeDatamatrix {
             }
             dm = dmSizes[k];
             e = getEncodation(text, textOffset + extOut, textSize - extOut, data, extCount, dm.dataSize - extCount,
-                    options, true);
+            this.options, true);
             if (e < 0) {
                 return DM_ERROR_TEXT_TOO_BIG;
             }
             e += extCount;
         }
-        if ((options & DM_TEST) != 0) {
+        if ((this.options & DM_TEST) != 0) {
             return DM_NO_ERROR;
         }
-        image = new byte[(((dm.width + 2 * ws) + 7) / 8) * (dm.height + 2 * ws)];
+        image = new byte[(((dm.width + 2 * dimensions.getBorder()) + 7) / 8) * (dm.height + 2 * dimensions.getBorder())];
         makePadding(data, e, dm.dataSize - e);
         place = Placement.doPlacement(dm.height - (dm.height / dm.heightSection * 2),
                 dm.width - (dm.width / dm.widthSection * 2));
@@ -824,8 +824,10 @@ public class BarcodeDatamatrix {
         if (image == null) {
             return null;
         }
-        byte[] g4 = CCITTG4Encoder.compress(image, width + 2 * ws, height + 2 * ws);
-        return Image.getInstance(width + 2 * ws, height + 2 * ws, false, Image.CCITTG4, 0, g4, null);
+        int width = dimensions.getWidth() + 2 * dimensions.getBorder();
+        int height = dimensions.getHeight() + 2 * dimensions.getBorder();
+        byte[] g4 = CCITTG4Encoder.compress(image, width, height);
+        return Image.getInstance(width, height, false, Image.CCITTG4, 0, g4, null);
     }
 
     /**
@@ -844,8 +846,8 @@ public class BarcodeDatamatrix {
         int g = background.getRGB();
         Canvas canvas = new Canvas();
 
-        int w = width + 2 * ws;
-        int h = height + 2 * ws;
+        int w = dimensions.getWidth() + 2 * dimensions.getBorder();
+        int h = dimensions.getHeight() + 2 * dimensions.getBorder();
         int[] pix = new int[w * h];
         int stride = (w + 7) / 8;
         int ptr = 0;
@@ -879,7 +881,7 @@ public class BarcodeDatamatrix {
      * @return the height of the barcode
      */
     public int getHeight() {
-        return height;
+        return dimensions.getHeight();
     }
 
     /**
@@ -894,7 +896,7 @@ public class BarcodeDatamatrix {
      * @param height the height of the barcode
      */
     public void setHeight(int height) {
-        this.height = height;
+        dimensions.setHeight(height);
     }
 
     /**
@@ -904,7 +906,7 @@ public class BarcodeDatamatrix {
      * @return the width of the barcode
      */
     public int getWidth() {
-        return width;
+        return dimensions.getWidth();
     }
 
     /**
@@ -919,7 +921,7 @@ public class BarcodeDatamatrix {
      * @param width the width of the barcode
      */
     public void setWidth(int width) {
-        this.width = width;
+        dimensions.setWidth(width);
     }
 
     /**
@@ -927,17 +929,17 @@ public class BarcodeDatamatrix {
      *
      * @return the whitespace border around the barcode
      */
-    public int getWs() {
-        return ws;
+    public int getBorder() {
+        return dimensions.getBorder();
     }
 
     /**
      * Sets the whitespace border around the barcode.
      *
-     * @param ws the whitespace border around the barcode
+     * @param border the whitespace border around the barcode
      */
-    public void setWs(int ws) {
-        this.ws = ws;
+    public void setBorder(int border) {
+        dimensions.setBorder(border);
     }
 
     /**
