@@ -57,7 +57,7 @@ import java.awt.image.MemoryImageSource;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -124,7 +124,7 @@ public class BarcodeDatamatrix {
      */
     public static final int DM_TEST = 64;
 
-    private final static DmParams[] dmSizes = {
+    private static final DmParams[] dmSizes = {
             new DmParams(10, 10, 10, 10, 3, 3, 5),
             new DmParams(12, 12, 12, 12, 5, 5, 7),
             new DmParams(8, 18, 8, 18, 5, 5, 7),
@@ -157,17 +157,11 @@ public class BarcodeDatamatrix {
             new DmParams(144, 144, 24, 24, 1558, 156, 62)};
 
     private static final String x12 = "\r*> 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private final BarcodeDimensions dimensions = new BarcodeDimensions();
     private int extOut;
     private short[] place;
     private byte[] image;
-    private BarcodeDimensions dimensions;
     private int options;
-
-    /**
-     * Creates an instance of this class.
-     */
-    public BarcodeDatamatrix() {
-    }
 
     private static void makePadding(byte[] data, int position, int count) {
         //already in ascii mode
@@ -190,16 +184,15 @@ public class BarcodeDatamatrix {
 
     private static int asciiEncodation(byte[] text, int textOffset, int textLength, byte[] data, int dataOffset,
             int dataLength) {
-        int ptrIn, ptrOut, c;
-        ptrIn = textOffset;
-        ptrOut = dataOffset;
+        int ptrIn = textOffset;
+        int ptrOut = dataOffset;
         textLength += textOffset;
         dataLength += dataOffset;
         while (ptrIn < textLength) {
             if (ptrOut >= dataLength) {
                 return -1;
             }
-            c = text[ptrIn++] & 0xff;
+            int c = text[ptrIn++] & 0xff;
             if (isDigit(c) && ptrIn < textLength && isDigit(text[ptrIn] & 0xff)) {
                 data[ptrOut++] = (byte) ((c - '0') * 10 + (text[ptrIn++] & 0xff) - '0' + 130);
             } else if (c > 127) {
@@ -217,7 +210,6 @@ public class BarcodeDatamatrix {
 
     private static int b256Encodation(byte[] text, int textOffset, int textLength, byte[] data, int dataOffset,
             int dataLength) {
-        int k, j, prn, tv, c;
         if (textLength == 0) {
             return 0;
         }
@@ -228,6 +220,7 @@ public class BarcodeDatamatrix {
             return -1;
         }
         data[dataOffset] = (byte) 231;
+        int k;
         if (textLength < 250) {
             data[dataOffset + 1] = (byte) textLength;
             k = 2;
@@ -238,10 +231,10 @@ public class BarcodeDatamatrix {
         }
         System.arraycopy(text, textOffset, data, k + dataOffset, textLength);
         k += textLength + dataOffset;
-        for (j = dataOffset + 1; j < k; ++j) {
-            c = data[j] & 0xff;
-            prn = ((149 * (j + 1)) % 255) + 1;
-            tv = c + prn;
+        for (int j = dataOffset + 1; j < k; ++j) {
+            int c = data[j] & 0xff;
+            int prn = ((149 * (j + 1)) % 255) + 1;
+            int tv = c + prn;
             if (tv > 255) {
                 tv -= 256;
             }
@@ -253,15 +246,12 @@ public class BarcodeDatamatrix {
 
     private static int X12Encodation(byte[] text, int textOffset, int textLength, byte[] data, int dataOffset,
             int dataLength) {
-        int ptrIn, ptrOut, count, k, n, ci;
-        byte c;
         if (textLength == 0) {
             return 0;
         }
-        ptrIn = 0;
-        ptrOut = 0;
+        int ptrIn = 0;
         byte[] x = new byte[textLength];
-        count = 0;
+        int count = 0;
         for (; ptrIn < textLength; ++ptrIn) {
             int i = x12.indexOf((char) text[ptrIn + textOffset]);
             if (i >= 0) {
@@ -272,7 +262,7 @@ public class BarcodeDatamatrix {
                 if (count >= 6) {
                     count -= (count / 3) * 3;
                 }
-                for (k = 0; k < count; ++k) {
+                for (int k = 0; k < count; ++k) {
                     x[ptrIn - k - 1] = 100;
                 }
                 count = 0;
@@ -281,11 +271,12 @@ public class BarcodeDatamatrix {
         if (count >= 6) {
             count -= (count / 3) * 3;
         }
-        for (k = 0; k < count; ++k) {
+        for (int k = 0; k < count; ++k) {
             x[ptrIn - k - 1] = 100;
         }
         ptrIn = 0;
-        c = 0;
+        byte c;
+        int ptrOut = 0;
         for (; ptrIn < textLength; ++ptrIn) {
             c = x[ptrIn];
             if (ptrOut >= dataLength) {
@@ -301,7 +292,7 @@ public class BarcodeDatamatrix {
                 if (x.length - 1 < ptrIn + 2) {
                     break;
                 }
-                n = 1600 * x[ptrIn] + 40 * x[ptrIn + 1] + x[ptrIn + 2] + 1;
+                int n = 1600 * x[ptrIn] + 40 * x[ptrIn + 1] + x[ptrIn + 2] + 1;
                 data[dataOffset + ptrOut++] = (byte) (n / 256);
                 data[dataOffset + ptrOut++] = (byte) n;
                 ptrIn += 2;
@@ -309,7 +300,7 @@ public class BarcodeDatamatrix {
                 if (ptrIn > 0 && x[ptrIn - 1] < 40) {
                     data[dataOffset + ptrOut++] = (byte) 254;
                 }
-                ci = text[ptrIn + textOffset] & 0xff;
+                int ci = text[ptrIn + textOffset] & 0xff;
                 if (ci > 127) {
                     data[dataOffset + ptrOut++] = (byte) 235;
                     ci -= 128;
@@ -320,7 +311,6 @@ public class BarcodeDatamatrix {
                 data[dataOffset + ptrOut++] = (byte) (ci + 1);
             }
         }
-        c = 100;
         c = x[textLength - 1];
         if (ptrIn != textLength || (c < 40 && ptrOut >= dataLength)) {
             return -1;
@@ -333,15 +323,15 @@ public class BarcodeDatamatrix {
 
     private static int EdifactEncodation(byte[] text, int textOffset, int textLength, byte[] data, int dataOffset,
             int dataLength) {
-        int ptrIn, ptrOut, edi, pedi, c;
         if (textLength == 0) {
             return 0;
         }
-        ptrIn = 0;
-        ptrOut = 0;
-        edi = 0;
-        pedi = 18;
+        int ptrIn = 0;
+        int ptrOut = 0;
+        int edi = 0;
+        int pedi = 18;
         boolean ascii = true;
+        int c;
         for (; ptrIn < textLength; ++ptrIn) {
             c = text[ptrIn + textOffset] & 0xff;
             if (((c & 0xe0) == 0x40 || (c & 0xe0) == 0x20) && c != '_') {
@@ -417,19 +407,19 @@ public class BarcodeDatamatrix {
 
     private static int C40OrTextEncodation(byte[] text, int textOffset, int textLength, byte[] data, int dataOffset,
             int dataLength, boolean c40) {
-        int ptrIn, ptrOut, encPtr, last0, last1, i, a, c;
-        String basic, shift2, shift3;
         if (textLength == 0) {
             return 0;
         }
-        ptrIn = 0;
-        ptrOut = 0;
+        int ptrIn = 0;
+        int ptrOut = 0;
         if (c40) {
             data[dataOffset + ptrOut++] = (byte) 230;
         } else {
             data[dataOffset + ptrOut++] = (byte) 239;
         }
-        shift2 = "!\"#$%&'()*+,-./:;<=>?@[\\]^_";
+        String basic;
+        String shift2 = "!\"#$%&'()*+,-./:;<=>?@[\\]^_";
+        String shift3;
         if (c40) {
             basic = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             shift3 = "`abcdefghijklmnopqrstuvwxyz{|}~\177";
@@ -438,15 +428,15 @@ public class BarcodeDatamatrix {
             shift3 = "`ABCDEFGHIJKLMNOPQRSTUVWXYZ{|}~\177";
         }
         int[] enc = new int[textLength * 4 + 10];
-        encPtr = 0;
-        last0 = 0;
-        last1 = 0;
+        int encPtr = 0;
+        int last0 = 0;
+        int last1 = 0;
         while (ptrIn < textLength) {
             if ((encPtr % 3) == 0) {
                 last0 = ptrIn;
                 last1 = encPtr;
             }
-            c = text[textOffset + ptrIn++] & 0xff;
+            int c = text[textOffset + ptrIn++] & 0xff;
             if (c > 127) {
                 c -= 128;
                 enc[encPtr++] = 1;
@@ -473,9 +463,9 @@ public class BarcodeDatamatrix {
         if (encPtr / 3 * 2 > dataLength - 2) {
             return -1;
         }
-        i = 0;
+        int i = 0;
         for (; i < encPtr; i += 3) {
-            a = 1600 * enc[i] + 40 * enc[i + 1] + enc[i + 2] + 1;
+            int a = 1600 * enc[i] + 40 * enc[i + 1] + enc[i + 2] + 1;
             data[dataOffset + ptrOut++] = (byte) (a / 256);
             data[dataOffset + ptrOut++] = (byte) a;
         }
@@ -489,12 +479,10 @@ public class BarcodeDatamatrix {
 
     private static int getEncodation(byte[] text, int textOffset, int textSize, byte[] data, int dataOffset,
             int dataSize, int options, boolean firstMatch) {
-        int e, j, k;
         int[] e1 = new int[6];
         if (dataSize < 0) {
             return -1;
         }
-        e = -1;
         options &= 7;
         if (options == 0) {
             e1[0] = asciiEncodation(text, textOffset, textSize, data, dataOffset, dataSize);
@@ -524,9 +512,9 @@ public class BarcodeDatamatrix {
             if (e1[0] < 0 && e1[1] < 0 && e1[2] < 0 && e1[3] < 0 && e1[4] < 0 && e1[5] < 0) {
                 return -1;
             }
-            j = 0;
-            e = 99999;
-            for (k = 0; k < 6; ++k) {
+            int j = 0;
+            int e = 99999;
+            for (int k = 0; k < 6; ++k) {
                 if (e1[k] >= 0 && e1[k] < e) {
                     e = e1[k];
                     j = k;
@@ -569,10 +557,9 @@ public class BarcodeDatamatrix {
     }
 
     private static int getNumber(byte[] text, int ptrIn, int n) {
-        int v, j, c;
-        v = 0;
-        for (j = 0; j < n; ++j) {
-            c = text[ptrIn++] & 0xff;
+        int v = 0;
+        for (int j = 0; j < n; ++j) {
+            int c = text[ptrIn++] & 0xff;
             if (c < '0' || c > '9') {
                 return -1;
             }
@@ -586,42 +573,41 @@ public class BarcodeDatamatrix {
     }
 
     private void draw(byte[] data, int dataSize, DmParams dm) {
-        int i, j, p, x, y, xs, ys, z;
         int ws = dimensions.getBorder();
         int xByte = (dm.width + ws * 2 + 7) / 8;
         Arrays.fill(image, (byte) 0);
 
         //alignment patterns
         //dotted horizontal line
-        for (i = ws; i < dm.height + ws; i += dm.heightSection) {
-            for (j = ws; j < dm.width + ws; j += 2) {
+        for (int i = ws; i < dm.height + ws; i += dm.heightSection) {
+            for (int j = ws; j < dm.width + ws; j += 2) {
                 setBit(j, i, xByte);
             }
         }
         //solid horizontal line
-        for (i = dm.heightSection - 1 + ws; i < dm.height + ws; i += dm.heightSection) {
-            for (j = ws; j < dm.width + ws; ++j) {
+        for (int i = dm.heightSection - 1 + ws; i < dm.height + ws; i += dm.heightSection) {
+            for (int j = ws; j < dm.width + ws; ++j) {
                 setBit(j, i, xByte);
             }
         }
         //solid vertical line
-        for (i = ws; i < dm.width + ws; i += dm.widthSection) {
-            for (j = ws; j < dm.height + ws; ++j) {
+        for (int i = ws; i < dm.width + ws; i += dm.widthSection) {
+            for (int j = ws; j < dm.height + ws; ++j) {
                 setBit(i, j, xByte);
             }
         }
         //dotted vertical line
-        for (i = dm.widthSection - 1 + ws; i < dm.width + ws; i += dm.widthSection) {
-            for (j = 1 + ws; j < dm.height + ws; j += 2) {
+        for (int i = dm.widthSection - 1 + ws; i < dm.width + ws; i += dm.widthSection) {
+            for (int j = 1 + ws; j < dm.height + ws; j += 2) {
                 setBit(i, j, xByte);
             }
         }
-        p = 0;
-        for (ys = 0; ys < dm.height; ys += dm.heightSection) {
-            for (y = 1; y < dm.heightSection - 1; ++y) {
-                for (xs = 0; xs < dm.width; xs += dm.widthSection) {
-                    for (x = 1; x < dm.widthSection - 1; ++x) {
-                        z = place[p++];
+        int p = 0;
+        for (int ys = 0; ys < dm.height; ys += dm.heightSection) {
+            for (int y = 1; y < dm.heightSection - 1; ++y) {
+                for (int xs = 0; xs < dm.width; xs += dm.widthSection) {
+                    for (int x = 1; x < dm.widthSection - 1; ++x) {
+                        int z = place[p++];
                         if (z == 1 || (z > 1 && ((data[z / 8 - 1] & 0xff) & (128 >> (z % 8))) != 0)) {
                             setBit(x + xs + ws, y + ys + ws, xByte);
                         }
@@ -632,18 +618,17 @@ public class BarcodeDatamatrix {
     }
 
     private int processExtensions(byte[] text, int textOffset, int textSize, byte[] data) {
-        int order, ptrIn, ptrOut, eci, fn, ft, fi, c;
         if ((this.options & DM_EXTENSION) == 0) {
             return 0;
         }
-        order = 0;
-        ptrIn = 0;
-        ptrOut = 0;
+        int order = 0;
+        int ptrIn = 0;
+        int ptrOut = 0;
         while (ptrIn < textSize) {
             if (order > 20) {
                 return -1;
             }
-            c = text[textOffset + ptrIn++] & 0xff;
+            int c = text[textOffset + ptrIn++] & 0xff;
             ++order;
             switch (c) {
                 case '.':
@@ -653,7 +638,7 @@ public class BarcodeDatamatrix {
                     if (ptrIn + 6 > textSize) {
                         return -1;
                     }
-                    eci = getNumber(text, textOffset + ptrIn, 6);
+                    int eci = getNumber(text, textOffset + ptrIn, 6);
                     if (eci < 0) {
                         return -1;
                     }
@@ -677,17 +662,17 @@ public class BarcodeDatamatrix {
                     if (ptrIn + 9 > textSize) {
                         return -1;
                     }
-                    fn = getNumber(text, textOffset + ptrIn, 2);
+                    int fn = getNumber(text, textOffset + ptrIn, 2);
                     if (fn <= 0 || fn > 16) {
                         return -1;
                     }
                     ptrIn += 2;
-                    ft = getNumber(text, textOffset + ptrIn, 2);
+                    int ft = getNumber(text, textOffset + ptrIn, 2);
                     if (ft <= 1 || ft > 16) {
                         return -1;
                     }
                     ptrIn += 2;
-                    fi = getNumber(text, textOffset + ptrIn, 5);
+                    int fi = getNumber(text, textOffset + ptrIn, 5);
                     if (fi < 0) {
                         return -1;
                     }
@@ -711,7 +696,7 @@ public class BarcodeDatamatrix {
                         return -1;
                     }
                     c = text[textOffset + ptrIn++] & 0xff;
-                    if (c != '5' && c != '5') {
+                    if (c != '5') {
                         return -1;
                     }
                     data[ptrOut++] = (byte) (234);
@@ -758,19 +743,20 @@ public class BarcodeDatamatrix {
      * <CODE>DM_ERROR_EXTENSION</CODE> - an error was while parsing an extension.
      */
     public int generate(byte[] text, int textOffset, int textSize) {
-        int extCount, e, k, full;
-        DmParams dm, last;
         byte[] data = new byte[2500];
         extOut = 0;
-        extCount = processExtensions(text, textOffset, textSize, data);
+        int extCount = processExtensions(text, textOffset, textSize, data);
         if (extCount < 0) {
             return DM_ERROR_EXTENSION;
         }
-        e = -1;
+        int k;
+        int e;
+        DmParams dm;
         if (dimensions.getHeight() == 0 || dimensions.getWidth() == 0) {
-            last = dmSizes[dmSizes.length - 1];
-            e = getEncodation(text, textOffset + extOut, textSize - extOut, data, extCount, last.dataSize - extCount,
-            this.options, false);
+            DmParams last = dmSizes[dmSizes.length - 1];
+            e = getEncodation(text, textOffset + extOut, textSize - extOut, data, extCount,
+                    last.dataSize - extCount,
+                    this.options, false);
             if (e < 0) {
                 return DM_ERROR_TEXT_TOO_BIG;
             }
@@ -794,7 +780,7 @@ public class BarcodeDatamatrix {
             }
             dm = dmSizes[k];
             e = getEncodation(text, textOffset + extOut, textSize - extOut, data, extCount, dm.dataSize - extCount,
-            this.options, true);
+                    this.options, true);
             if (e < 0) {
                 return DM_ERROR_TEXT_TOO_BIG;
             }
@@ -803,11 +789,12 @@ public class BarcodeDatamatrix {
         if ((this.options & DM_TEST) != 0) {
             return DM_NO_ERROR;
         }
-        image = new byte[(((dm.width + 2 * dimensions.getBorder()) + 7) / 8) * (dm.height + 2 * dimensions.getBorder())];
+        image = new byte[(((dm.width + 2 * dimensions.getBorder()) + 7) / 8) * (dm.height
+                + 2 * dimensions.getBorder())];
         makePadding(data, e, dm.dataSize - e);
         place = Placement.doPlacement(dm.height - (dm.height / dm.heightSection * 2),
                 dm.width - (dm.width / dm.widthSection * 2));
-        full = dm.dataSize + ((dm.dataSize + 2) / dm.dataBlock) * dm.errorBlock;
+        int full = dm.dataSize + ((dm.dataSize + 2) / dm.dataBlock) * dm.errorBlock;
         ReedSolomon.generateECC(data, dm.dataSize, dm.dataBlock, dm.errorBlock);
         draw(data, full, dm);
         return DM_NO_ERROR;
@@ -859,8 +846,7 @@ public class BarcodeDatamatrix {
                 pix[ptr++] = (b & 0x80) == 0 ? g : f;
             }
         }
-        java.awt.Image img = canvas.createImage(new MemoryImageSource(w, h, pix, 0, w));
-        return img;
+        return canvas.createImage(new MemoryImageSource(w, h, pix, 0, w));
     }
 
     /**
@@ -925,6 +911,22 @@ public class BarcodeDatamatrix {
     }
 
     /**
+     * @deprecated use {@link #getBorder()}
+     */
+    @Deprecated(since = "OpenPDF 2.0.3", forRemoval = true)
+    public int getWs() {
+        return getBorder();
+    }
+
+    /**
+     * @deprecated use {@link #setBorder(int)}
+     */
+    @Deprecated(since = "OpenPDF 2.0.3", forRemoval = true)
+    public void setWs(int border) {
+        setBorder(border);
+    }
+
+    /**
      * Gets the whitespace border around the barcode.
      *
      * @return the whitespace border around the barcode
@@ -952,7 +954,8 @@ public class BarcodeDatamatrix {
     }
 
     /**
-     * Sets the options for the barcode generation. The options can be:<p> One of:<br>
+     * Sets the options for the barcode generation. The options can be:
+     * <p> One of:<br>
      * <CODE>DM_AUTO</CODE> - the best encodation will be used<br>
      * <CODE>DM_ASCII</CODE> - ASCII encodation<br>
      * <CODE>DM_C40</CODE> - C40 encodation<br>
@@ -962,13 +965,14 @@ public class BarcodeDatamatrix {
      * <CODE>DM_EDIFACT</CODE> - EDIFACT encodation<br>
      * <CODE>DM_RAW</CODE> - no encodation. The bytes provided are already encoded and will be added directly to the
      * barcode, using padding if needed. It assumes that the encodation state is left at ASCII after the last byte.<br>
-     * <p>
-     * One of:<br>
+     * <p>One of:<br>
      * <CODE>DM_EXTENSION</CODE> - allows extensions to be embedded at the start of the text:<p>
      * exxxxxx - ECI number xxxxxx<br> m5 - macro 5<br> m6 - macro 6<br> f - FNC1<br> saabbccccc - Structured Append, aa
      * symbol position (1-16), bb total number of symbols (2-16), ccccc file identification (0-64515)<br> p - Reader
      * programming<br> . - extension terminator<p> Example for a structured append, symbol 2 of 6, with FNC1 and ECI
-     * 000005. The actual text is "Hello".<p> s020600075fe000005.Hello<p> One of:<br>
+     * 000005. The actual text is "Hello".
+     * <p> s020600075fe000005.Hello
+     * <p> One of:<br>
      * <CODE>DM_TEST</CODE> - doesn't generate the image but returns all the other information.
      *
      * @param options the barcode options
@@ -1001,7 +1005,7 @@ public class BarcodeDatamatrix {
 
     static class Placement {
 
-        private static final Map<Integer, short[]> cache = new Hashtable<>();
+        private static final Map<Integer, short[]> cache = new HashMap<>();
         private int nrow;
         private int ncol;
         private short[] array;
@@ -1096,13 +1100,12 @@ public class BarcodeDatamatrix {
 
         /* "ECC200" fills an nrow x ncol array with appropriate values for ECC200 */
         private void ecc200() {
-            int row, col, chr;
             /* First, fill the array[] with invalid entries */
             Arrays.fill(array, (short) 0);
             /* Starting in the correct location for character #1, bit 8,... */
-            chr = 1;
-            row = 4;
-            col = 0;
+            int chr = 1;
+            int row = 4;
+            int col = 0;
             do {
                 /* repeatedly first check for one of the special corner cases, then... */
                 if ((row == nrow) && (col == 0)) {
@@ -1310,14 +1313,13 @@ public class BarcodeDatamatrix {
         }
 
         private static void reedSolomonBlock(byte[] wd, int nd, byte[] ncout, int nc, int[] c) {
-            int i, j, k;
 
-            for (i = 0; i <= nc; i++) {
+            for (int i = 0; i <= nc; i++) {
                 ncout[i] = 0;
             }
-            for (i = 0; i < nd; i++) {
-                k = (ncout[0] ^ wd[i]) & 0xff;
-                for (j = 0; j < nc; j++) {
+            for (int i = 0; i < nd; i++) {
+                int k = (ncout[0] ^ wd[i]) & 0xff;
+                for (int j = 0; j < nc; j++) {
                     ncout[j] = (byte) (ncout[j + 1] ^ (k == 0 ? 0
                             : (byte) alog[(log[k] + log[c[nc - j - 1]]) % (255)]));
                 }
@@ -1331,13 +1333,13 @@ public class BarcodeDatamatrix {
             byte[] ecc = new byte[256];
             int[] c = getPoly(nc);
             for (b = 0; b < blocks; b++) {
-                int n, p = 0;
-                for (n = b; n < nd; n += blocks) {
+                int p = 0;
+                for (int n = b; n < nd; n += blocks) {
                     buf[p++] = wd[n];
                 }
                 reedSolomonBlock(buf, p, ecc, nc, c);
                 p = 0;
-                for (n = b; n < nc * blocks; n += blocks) {
+                for (int n = b; n < nc * blocks; n += blocks) {
                     wd[nd + n] = ecc[p++];
                 }
             }
