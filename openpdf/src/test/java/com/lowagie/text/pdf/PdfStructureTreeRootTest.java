@@ -75,7 +75,7 @@ class PdfStructureTreeRootTest {
 
         PdfStructureTreeRoot treeRoot = new PdfStructureTreeRoot(mockWriter);
 
-        assertDoesNotThrow(() -> treeRoot.buildTree());
+        assertDoesNotThrow(treeRoot::buildTree);
     }
 
     @Test
@@ -86,6 +86,38 @@ class PdfStructureTreeRootTest {
         PdfStructureTreeRoot treeRoot = new PdfStructureTreeRoot(mockWriter);
         treeRoot.setPageMark(1, mock(PdfIndirectReference.class));
 
-        assertThrows(IOException.class, () -> treeRoot.buildTree());
+        assertThrows(IOException.class, treeRoot::buildTree);
+    }
+
+    @Test
+    void getOrCreatePageKeyShouldCreateNewPageArrayWhenNotExists() {
+        PdfWriter mockWriter = mock(PdfWriter.class);
+        PdfStructureTreeRoot treeRoot = new PdfStructureTreeRoot(mockWriter);
+
+        PdfIndirectReference mockRef = mock(PdfIndirectReference.class);
+
+        int firstKey = treeRoot.addExistingObject(mockRef);
+        assertEquals(0, firstKey);
+
+        int pageKey = treeRoot.getOrCreatePageKey(1);
+        assertEquals(1, pageKey);
+    }
+
+    @Test
+    void getOrCreatePageKeyShouldReturnExistingPageKey() {
+        PdfWriter mockWriter = mock(PdfWriter.class);
+        PdfStructureTreeRoot treeRoot = new PdfStructureTreeRoot(mockWriter);
+
+        PdfIndirectReference mockRef = mock(PdfIndirectReference.class);
+
+        int firstKey = treeRoot.addExistingObject(mockRef);
+        assertEquals(0, firstKey);
+
+        //key should be created when setting page mark
+        treeRoot.setPageMark(1, mock(PdfIndirectReference.class));
+
+        //existing key should be returned
+        int pageKey = treeRoot.getOrCreatePageKey(1);
+        assertEquals(1, pageKey);
     }
 }

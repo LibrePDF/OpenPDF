@@ -977,7 +977,10 @@ public class PdfDocument extends Document {
 
             // [F12] we add tag info
             if (writer.isTagged()) {
-                page.put(PdfName.STRUCTPARENTS, new PdfNumber(writer.getCurrentPageNumber() - 1));
+                //connecting /NUMS array entry (pageIdValue) with Page via /STRUCTPARENTS value
+                int pageIdValue = writer.getStructureTreeRoot()
+                        .getOrCreatePageKey(writer.getCurrentPageNumber() - 1);
+                page.put(PdfName.STRUCTPARENTS, new PdfNumber(pageIdValue));
             }
 
             if (text.size() > textEmptySize) {

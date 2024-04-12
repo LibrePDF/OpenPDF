@@ -1093,15 +1093,26 @@ public class PdfWriter extends DocWriter implements
      *
      * @return a page number
      */
-
     public int getPageNumber() {
         return pdf.getPageNumber();
     }
 
-    PdfIndirectReference getCurrentPage() {
+    /**
+     * Retrieves a reference to the current page of the document.
+     * The current page is typically the last page that was modified or accessed.
+     *
+     * @return a {@link PdfIndirectReference} object pointing to the current page in the PDF document.
+     */
+    public PdfIndirectReference getCurrentPage() {
         return getPageReference(currentPageNumber);
     }
 
+    /**
+     * Returns the number of the current page in the document.
+     * The current page is typically the last page that was modified or accessed.
+     *
+     * @return the current page number.
+     */
     public int getCurrentPageNumber() {
         return currentPageNumber;
     }
