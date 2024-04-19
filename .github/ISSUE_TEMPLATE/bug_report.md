@@ -35,6 +35,10 @@ If applicable, add screenshots to help explain your problem.
 - Used font:
 - OpenPDF version:
 
+## Your real name
+Please specify your full name here, so that we can verify your identity. 
+If you have a conflict of interest describe this here also.
+
 ### Additional context
 
 Add any other context about the problem here.
