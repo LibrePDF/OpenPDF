@@ -122,7 +122,8 @@ only contain code that you have written yourself. GPL or AGPL licensed code will
 
 To contribute code to the OpenPDF project, your GitHub account must contain your real name, so that we can verify 
 your identity. This is to ensure the trust, security and integrity of the OpenPDF project, and to prevent security incidents
-such as the "XZ Utils backdoor". Knowning the real name of the contributors will also identify and prevent conflict of interests. 
+such as the "XZ Utils backdoor". Knowning the real name of the contributors will also identify and prevent
+conflict of interests. 
 
 More details: [Contributing](CONTRIBUTING.md)
 
