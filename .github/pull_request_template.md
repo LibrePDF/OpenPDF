@@ -14,7 +14,8 @@ Related Issue: #
 Is anything broken because of the new code? Any changes in method signatures?
 
 ## Your real name
-Please specify your full name here, so that we can verify your identity. If you have a conflict of interest describe this here also.
+Please specify your full name here, so that we can verify your identity. 
+If you have a conflict of interest describe this here also.
 
 ## Testing details
 
