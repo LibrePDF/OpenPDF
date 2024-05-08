@@ -1301,7 +1301,18 @@ public class ColumnText {
                 float listIndentation = list.getIndentationLeft();
                 int count = 0;
                 Stack<Object[]> stack = new Stack<>();
-                for (int k = 0; k < items.size(); ++k) {
+                for (int k = 0; k <= items.size(); ++k) {
+                    if (k == items.size()) {
+                        if (!stack.isEmpty()) {
+                            Object[] objs = stack.pop();
+                            list = (com.lowagie.text.List) objs[0];
+                            items = list.getItems();
+                            k = (Integer) objs[1];
+                            listIndentation = (Float) objs[2];
+                        }
+                        continue;
+                    }
+
                     Object obj = items.get(k);
                     if (obj instanceof ListItem) {
                         if (count == listIdx) {
@@ -1316,16 +1327,6 @@ public class ColumnText {
                         items = list.getItems();
                         listIndentation += list.getIndentationLeft();
                         k = -1;
-                        continue;
-                    }
-                    if (k == items.size() - 1) {
-                        if (!stack.isEmpty()) {
-                            Object[] objs = stack.pop();
-                            list = (com.lowagie.text.List) objs[0];
-                            items = list.getItems();
-                            k = (Integer) objs[1];
-                            listIndentation = (Float) objs[2];
-                        }
                     }
                 }
                 int status = 0;
