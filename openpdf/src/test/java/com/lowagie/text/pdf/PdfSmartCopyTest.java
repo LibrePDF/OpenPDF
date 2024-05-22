@@ -1,20 +1,17 @@
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.Document;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
-
-import com.lowagie.text.Paragraph;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PdfSmartCopyTest {
 
