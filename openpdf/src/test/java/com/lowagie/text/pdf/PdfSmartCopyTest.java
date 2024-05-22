@@ -1,12 +1,20 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.text.Document;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
+
+import com.lowagie.text.Paragraph;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PdfSmartCopyTest {
 
@@ -41,6 +49,34 @@ public class PdfSmartCopyTest {
             document.close();
             copy.close();
         });
+    }
+
+    @Test
+    public void canWriteAndCopy() throws IOException {
+        try (PdfReader reader = new PdfReader("src/test/resources/pdfsmartcopy_bec.pdf")) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            try (Document document = new Document()) {
+                try (PdfCopy copy = new PdfSmartCopy(document, outputStream)) {
+                    document.open();
+
+                    document.add(new Paragraph("Front page"));
+                    document.newPage();
+
+                    int n = reader.getNumberOfPages();
+                    for (int currentPage = 1; currentPage <= n; currentPage++) {
+                        PdfImportedPage page = copy.getImportedPage(reader, currentPage);
+                        copy.addPage(page);
+                    }
+                    copy.freeReader(reader);
+
+                    document.newPage();
+                    document.add(new Paragraph("Last page"));
+                }
+            }
+            try (PdfReader reader2 = new PdfReader(outputStream.toByteArray())) {
+                assertEquals(2 + reader.getNumberOfPages(), reader2.getNumberOfPages());
+            }
+        }
     }
 
 }
