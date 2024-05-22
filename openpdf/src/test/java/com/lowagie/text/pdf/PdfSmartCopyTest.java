@@ -20,7 +20,7 @@ public class PdfSmartCopyTest {
     }
 
     @Test
-    public void test1() {
+    void test1() {
         File orig = new File("src/test/resources/pdfsmartcopy_bec.pdf");
         check(orig, 1);
     }
@@ -49,7 +49,7 @@ public class PdfSmartCopyTest {
     }
 
     @Test
-    public void canWriteAndCopy() throws IOException {
+    void canWriteAndCopy() throws IOException {
         try (PdfReader reader = new PdfReader("src/test/resources/pdfsmartcopy_bec.pdf")) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             try (Document document = new Document()) {
