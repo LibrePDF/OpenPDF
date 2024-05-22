@@ -20,7 +20,7 @@ public class PdfSmartCopyTest {
     }
 
     @Test
-    void test1() {
+    public void test1() {
         File orig = new File("src/test/resources/pdfsmartcopy_bec.pdf");
         check(orig, 1);
     }
