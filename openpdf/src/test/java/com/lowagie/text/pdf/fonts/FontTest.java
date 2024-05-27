@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -44,6 +45,11 @@ class FontTest {
         return STYLES_TO_TEST_METHOD.keySet();
     }
 
+    @BeforeAll
+    static void beforeAll() {
+        FontFactory.registerDirectories();
+    }
+
     /**
      * Checks if style property value is preserved during font construction through
      * {@link FontFactory#getFont(String, float, int)} method by getting raw property value.
@@ -53,7 +59,6 @@ class FontTest {
     @ParameterizedTest(name = "Style {0}")
     @MethodSource("getStyles")
     void testStyleSettingByValue(int style) {
-        FontFactory.registerDirectories();
         // TODO: complement tests after adding enum with font styles
         final Font font = FontFactory.getFont(FONT_NAME_WITHOUT_STYLES, DEFAULT_FONT_SIZE, style);
         assertEquals(font.getStyle(), style);
