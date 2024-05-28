@@ -4,14 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
-
+import com.lowagie.text.Phrase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -110,4 +110,30 @@ public class PdfSmartCopyTest {
         }
     }
 
+
+    @Test
+    void verbose() throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (Document document = new Document()) {
+            try (PdfCopy copy = new PdfSmartCopy(document, outputStream)) {
+                document.open();
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                Document tempDocument = new Document();
+                PdfWriter tempWriter = PdfWriter.getInstance(tempDocument, baos);
+                tempDocument.open();
+                tempDocument.add(new Phrase("Front page"));
+                tempDocument.close();
+                PdfReader tempReader = new PdfReader(baos.toByteArray());
+                PdfImportedPage page = copy.getImportedPage(tempReader, 1);
+                copy.addPage(page);
+                copy.freeReader(tempReader);
+
+                document.newPage();
+                document.add(new Paragraph("Last page"));
+            }
+        }
+        Files.write(Path.of("/home/faber-espensenr/tmp/x3.pdf"), outputStream.toByteArray());
+
+    }
 }
