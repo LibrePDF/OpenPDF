@@ -109,31 +109,4 @@ public class PdfSmartCopyTest {
             }
         }
     }
-
-
-    @Test
-    void verbose() throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (Document document = new Document()) {
-            try (PdfCopy copy = new PdfSmartCopy(document, outputStream)) {
-                document.open();
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                Document tempDocument = new Document();
-                PdfWriter tempWriter = PdfWriter.getInstance(tempDocument, baos);
-                tempDocument.open();
-                tempDocument.add(new Phrase("Front page"));
-                tempDocument.close();
-                PdfReader tempReader = new PdfReader(baos.toByteArray());
-                PdfImportedPage page = copy.getImportedPage(tempReader, 1);
-                copy.addPage(page);
-                copy.freeReader(tempReader);
-
-                document.newPage();
-                document.add(new Paragraph("Last page"));
-            }
-        }
-        Files.write(Path.of("/home/faber-espensenr/tmp/x3.pdf"), outputStream.toByteArray());
-
-    }
 }
