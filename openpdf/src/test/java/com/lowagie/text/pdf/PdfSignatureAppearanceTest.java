@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.Utilities;
 import java.io.ByteArrayInputStream;
@@ -103,6 +104,8 @@ public class PdfSignatureAppearanceTest {
         byte[] expectedDigestClose = null;
 
         Calendar signDate = Calendar.getInstance();
+        Image sigImg = Image.getInstance(getClass().getClassLoader().getResource("GitHub-Mark-32px.png"));
+        PdfReader sigPdf = new PdfReader(getClass().getClassLoader().getResource("SimulatedBoldAndStrokeWidth.pdf"));
 
         byte[] originalDocId = null;
         PdfObject overrideFileId = new PdfLiteral("<123><123>".getBytes());
@@ -129,6 +132,17 @@ public class PdfSignatureAppearanceTest {
                 sap.setSignDate(signDate);
                 sap.setVisibleSignature(new Rectangle(100, 100), 1);
                 sap.setLayer2Text("Hello world");
+                if (i < 5) {
+                    // Test image signature in the first half of the tests
+                    sap.setSignatureGraphic(sigImg);
+                } else {
+                    // Test PDF signature in the second half of the tests
+                    if (i == 5) {
+                        expectedDigestPreClose = null;
+                        expectedDigestClose = null;
+                    }
+                    sap.setSignaturePDF(sigPdf, 1);
+                }
 
                 Map<PdfName, Integer> exc = new HashMap<>();
                 exc.put(PdfName.CONTENTS, 10);
