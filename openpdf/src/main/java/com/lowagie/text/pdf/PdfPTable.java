@@ -656,6 +656,9 @@ public class PdfPTable implements LargeElement {
      * @param table the table to be added to the cell
      */
     public PdfPCell addCell(PdfPTable table) {
+        if(table == this) {
+    		throw new DocumentException("unable.to.add.self.to.table.contents");
+    	}
         defaultCell.setTable(table);
         addCell(defaultCell);
         defaultCell.setTable(null);
