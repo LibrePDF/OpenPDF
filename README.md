@@ -18,9 +18,9 @@ and bugreports to this GitHub repository.
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 
-## OpenPDF version 2.0.2 released 2024-04-07
+## OpenPDF version 2.0.3 released 2024-08-07
 
-Get version 2.0.2 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.0.2
+Get version 2.0.3 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.0.3
 
 Please note: Repositories like Maven Central and others may take a few days to update.
 
@@ -53,7 +53,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>2.0.2</version>
+  <version>2.0.3</version>
 </dependency>
 ```
 
@@ -120,10 +120,10 @@ Release the hounds!  Please send all pull requests. Make sure that your contribu
 released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must
 only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
 
-To contribute code to the OpenPDF project, your GitHub account must contain your real name, so that 
-we can verify your identity. This is to ensure the trust, security and integrity of the OpenPDF 
+To contribute code to the OpenPDF project, your GitHub account must contain your real name, so that
+we can verify your identity. This is to ensure the trust, security and integrity of the OpenPDF
 project, and to prevent security incidents such as the "XZ Utils backdoor". Knowning the real name
-of the contributors will also identify and prevent conflict of interests. 
+of the contributors will also identify and prevent conflict of interests.
 
 More details: [Contributing](CONTRIBUTING.md)
 
