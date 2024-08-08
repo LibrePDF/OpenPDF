@@ -654,11 +654,12 @@ public class PdfPTable implements LargeElement {
      * Adds a nested table.
      *
      * @param table the table to be added to the cell
+     * @throws DocumentException if table tries to add itself
      */
-    public PdfPCell addCell(PdfPTable table) {
-        if(table == this) {
-    		throw new DocumentException("unable.to.add.self.to.table.contents");
-    	}
+    public PdfPCell addCell(PdfPTable table) throws DocumentException {
+        if (table == this) {
+            throw new DocumentException("unable.to.add.self.to.table.contents");
+        }
         defaultCell.setTable(table);
         addCell(defaultCell);
         defaultCell.setTable(null);
