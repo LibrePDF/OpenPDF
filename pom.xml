@@ -99,7 +99,7 @@
     <checkstyle.version>10.17.0</checkstyle.version>
     <hamcrest.version>2.2</hamcrest.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-    <junit.version>5.10.2</junit.version>
+    <junit.version>5.10.3</junit.version>
     <mockito4.version>4.11.0</mockito4.version>
     <mockito5.version>5.9.0</mockito5.version>
   </properties>
