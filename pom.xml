@@ -97,7 +97,7 @@
     <!-- test-dependencies -->
     <assertj.version>3.26.0</assertj.version>
     <checkstyle.version>10.17.0</checkstyle.version>
-    <hamcrest.version>2.2</hamcrest.version>
+    <hamcrest.version>3.0</hamcrest.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <junit.version>5.10.2</junit.version>
     <mockito4.version>4.11.0</mockito4.version>
