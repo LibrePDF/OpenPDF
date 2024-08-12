@@ -59,6 +59,11 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 
 ## License
 
+OpenPDF uses dual licensing: when using the library, you may choose either Mozilla Public License Version 2.0
+or GNU Lesser General Public License 2.1.
+
+The SPDX license identifier for OpenPDF licensing is `MPL-2.0 OR LGPL-2.1+`
+
 [GNU Lesser General Public License (LGPL), Version 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1)
 
 > For a short explanation see https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License
