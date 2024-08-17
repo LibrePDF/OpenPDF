@@ -9,7 +9,7 @@ License: GNU Lesser General Public License
 
 ---
 
-This is a fork of [pdf-renderer](http://java.net/projects/pdf-renderer) (covered by the LGPL-2.1 license) for improvement purposes.
+This is a fork of https://github.com/katjas/PDFrenderer which is based on [pdf-renderer](http://java.net/projects/pdf-renderer) (covered by the LGPL-2.1 license) for improvement purposes.
 
 The principal objective of the fork is to improve the original PDF renderer. The original version is able to handle most of the PDF 1.4 features, but has several bugs and missing functionality.
 

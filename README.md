@@ -43,6 +43,7 @@ Some of the features of OpenPDF include:
 * Table Support: The library facilitates the creation of tables in PDF documents.
 * Encryption: You can encrypt PDF documents for security purposes.
 * Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
+* Convert PDF files to images using [openpdf-pdfrenderer](openpdf-pdfrenderer).
 
 ## Use OpenPDF as Maven dependency
 
@@ -68,6 +69,8 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 > For a short explanation see https://en.wikipedia.org/wiki/Mozilla_Public_License
 
 You can find also a nice explanation of these licenses under https://itsfoss.com/open-source-licenses-explained/
+
+openpdf-pdfrenderer is licensed with GNU Lesser General Public License (LGPL), Version 2.1 only.
 
 We want OpenPDF to consist of source code which is consistently licensed with the LGPL and MPL
 licences only. This also means that any new contributions to the project must have a dual LGPL and
