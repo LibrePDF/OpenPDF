@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Andreas Røsdal.
+ * Copyright 2024 OpenPDF
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -9,13 +9,13 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  * for the specific language governing rights and limitations under the License.
  *
- * The Original Code is 'OpenPDF'.
+ * The Original Code is 'iText, a free JAVA-PDF library'.
  *
  * The Initial Developer of the Original Code is Bruno Lowagie. Portions created by
- * the Initial Developer are Copyright (C) 1999-2008 by Bruno Lowagie.
+ * the Initial Developer are Copyright (C) 1999, 2000, 2001, 2002 by Bruno Lowagie.
  * All Rights Reserved.
  * Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer
- * are Copyright (C) 2000-2008 by Paulo Soares. All Rights Reserved.
+ * are Copyright (C) 2000, 2001, 2002 by Paulo Soares. All Rights Reserved.
  *
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
@@ -45,10 +45,8 @@
  * https://github.com/LibrePDF/OpenPDF
  */
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.github.librepdf.pdfrenderer.PDFFile;
 import com.github.librepdf.pdfrenderer.PDFPage;
@@ -60,61 +58,88 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PdfRendererToImageTest {
 
-    @Test
-    public void testPDFRenderToImage() throws DocumentException, IOException {
-        // Step 1: Create a sample PDF using OpenPDF
-        byte[] pdfBytes = createSamplePdf();
+    private byte[][] pdfBytesArray;
 
-        // Step 2: Load the PDF using PDFRenderer
-        PDFFile pdfFile = new PDFFile(ByteBuffer.wrap(pdfBytes));
+    @BeforeEach
+    public void setUp() throws Exception {
+        // Array of PDF file names
+        String[] pdfFiles = {"invoice-1.pdf", "pdfsmartcopy_bec_image.pdf"};
+        pdfBytesArray = new byte[pdfFiles.length][];
 
-        // Ensure there is at least one page in the PDF
-        int numPages = pdfFile.getNumPages();
-        assert(numPages > 0);
-
-        // Use the correct page index (PDFRenderer typically uses 1-based indexing)
-        PDFPage page = pdfFile.getPage(1, true);  // Fetch the first page
-
-        // Step 3: Setup the dimensions for the output image
-        int width = (int) page.getBBox().getWidth();
-        int height = (int) page.getBBox().getHeight();
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = image.createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
-        // Step 4: Render the page to the image
-        Rectangle rect = new Rectangle(0, 0, width, height);
-        PDFRenderer renderer = new PDFRenderer(page, g2d, rect, null, Color.WHITE);
-        renderer.run();
-
-        // Step 5: Save the image to a file (for verification)
-        File outputfile = new File("pdf-to-image-test-output.png");
-        ImageIO.write(image, "png", outputfile);
-
-        // Step 6: Assert that the image is not null
-        assertNotNull(image, "Image should not be null");
-
-        // Cleanup graphics object
-        g2d.dispose();
+        // Load each PDF file from the resources directory and convert it to bytes
+        for (int i = 0; i < pdfFiles.length; i++) {
+            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(pdfFiles[i])) {
+                assertNotNull(inputStream, "PDF file not found in resources: " + pdfFiles[i]);
+                pdfBytesArray[i] = readPdfToByteArray(inputStream);
+            }
+        }
     }
 
-    private byte[] createSamplePdf() throws DocumentException, IOException {
-        // Use OpenPDF to create a simple PDF in memory
-        Document document = new Document();
+    private byte[] readPdfToByteArray(InputStream inputStream) throws IOException {
+        // Read the entire InputStream into a ByteArrayOutputStream, then convert to byte[]
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PdfWriter.getInstance(document, baos);
-
-        document.open();
-        document.add(new Paragraph("Hello, World! This is a test PDF."));
-        document.close();
-
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            baos.write(buffer, 0, length);
+        }
         return baos.toByteArray();
+    }
+
+    @Test
+    public void testPDFRenderToImage() throws IOException {
+        String[] pdfFiles = {"invoice-1.pdf", "pdfsmartcopy_bec_image.pdf"};
+
+        for (int i = 0; i < pdfBytesArray.length; i++) {
+            byte[] pdfBytes = pdfBytesArray[i];
+
+            // Step 1: Load the PDF using PDFRenderer
+            PDFFile pdfFile = new PDFFile(ByteBuffer.wrap(pdfBytes));
+
+            // Ensure there is at least one page in the PDF
+            int numPages = pdfFile.getNumPages();
+            assertTrue(numPages > 0, "PDF should contain at least one page");
+
+            // Use the correct page index (PDFRenderer typically uses 1-based indexing)
+            PDFPage page = pdfFile.getPage(1, true);  // Fetch the first page
+
+            // Step 2: Setup the dimensions for the output image
+            int width = (int) page.getBBox().getWidth();
+            int height = (int) page.getBBox().getHeight();
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = image.createGraphics();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+            // Step 3: Render the page to the image
+            Rectangle rect = new Rectangle(0, 0, width, height);
+            PDFRenderer renderer = new PDFRenderer(page, g2d, rect, null, Color.WHITE);
+
+            renderer.run();
+
+            // Step 4: Save the image to a file (for verification)
+            File outputfile = new File("pdf-to-image-test-output-" + pdfFiles[i] + ".png");
+            ImageIO.write(image, "png", outputfile);
+
+            // Step 5: Verify that the image was saved correctly
+            assertTrue(outputfile.exists(), "Output image file should exist for " + pdfFiles[i]);
+            assertTrue(outputfile.length() > 0, "Output image file should not be empty for " + pdfFiles[i]);
+
+            // Step 6: Load the image back and check its properties
+            BufferedImage loadedImage = ImageIO.read(outputfile);
+            assertNotNull(loadedImage, "Loaded image should not be null for " + pdfFiles[i]);
+            assertEquals(width, loadedImage.getWidth(), "Image width should match the PDF page width for " + pdfFiles[i]);
+            assertEquals(height, loadedImage.getHeight(), "Image height should match the PDF page height for " + pdfFiles[i]);
+
+            // Cleanup graphics object
+            g2d.dispose();
+        }
     }
 }

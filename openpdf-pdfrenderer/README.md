@@ -3,7 +3,7 @@ openpdf-pdfrenderer
 
 PDF to Image renderer for OpenPDF. 
 
-Because every PDF library should be able to create a PNG from a PDF.
+Because every fine PDF library should be able to create a PNG image from a PDF page.
 
 License: GNU Lesser General Public License
 
