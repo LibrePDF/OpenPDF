@@ -77,12 +77,12 @@ public class PdfTextExtractor {
     /**
      * The PdfReader that holds the PDF file.
      */
-    private final PdfReader reader;
+    protected final PdfReader reader;
 
     /**
      * The {@link TextAssembler} that will receive render notifications and provide resultant text
      */
-    private final TextAssembler renderListener;
+    protected final TextAssembler renderListener;
 
     /**
      * Creates a new Text Extractor object, using a {@link TextAssembler} as the render listener
@@ -122,7 +122,7 @@ public class PdfTextExtractor {
      * @return a byte array with the effective content stream of a page
      * @throws IOException
      */
-    private byte[] getContentBytesForPage(int pageNum) throws IOException {
+    protected byte[] getContentBytesForPage(int pageNum) throws IOException {
         try (RandomAccessFileOrArray ignored = reader.getSafeFile()) {
             PdfDictionary pageDictionary = reader.getPageN(pageNum);
             PdfObject contentObject = pageDictionary.get(PdfName.CONTENTS);
