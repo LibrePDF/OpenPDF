@@ -50,6 +50,7 @@
     <module>pdf-swing</module>
     <module>pdf-toolbox</module>
     <module>openpdf-fonts-extra</module>
+    <module>openpdf-pdfrenderer</module>
   </modules>
   <!-- Distribution config from http://central.sonatype.org/pages/apache-maven.html#distribution-management-and-authentication -->
   <distributionManagement>
@@ -135,11 +136,6 @@
         <groupId>org.jfree</groupId>
         <artifactId>jcommon</artifactId>
         <version>${jcommon.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.swinglabs</groupId>
-        <artifactId>pdf-renderer</artifactId>
-        <version>${pdf-renderer.version}</version>
       </dependency>
       <dependency>
         <groupId>org.dom4j</groupId>

@@ -21,8 +21,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>pdf-renderer</artifactId>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf-pdfrenderer</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.dom4j</groupId>
