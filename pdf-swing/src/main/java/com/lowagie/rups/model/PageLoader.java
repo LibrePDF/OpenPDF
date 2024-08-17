@@ -20,8 +20,8 @@
 
 package com.lowagie.rups.model;
 
-import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFPage;
+import com.github.librepdf.pdfrenderer.PDFFile;
+import com.github.librepdf.pdfrenderer.PDFPage;
 
 /**
  * Loads all the PDFPage objects for SUN's PDF Renderer in Background.

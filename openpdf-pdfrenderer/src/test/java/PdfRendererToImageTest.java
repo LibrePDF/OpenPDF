@@ -50,9 +50,9 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 import org.junit.jupiter.api.Test;
-import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFPage;
-import com.sun.pdfview.PDFRenderer;
+import com.github.librepdf.pdfrenderer.PDFFile;
+import com.github.librepdf.pdfrenderer.PDFPage;
+import com.github.librepdf.pdfrenderer.PDFRenderer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
