@@ -270,6 +270,8 @@ public class LayoutProcessor {
 
     /**
      * Loads the AWT font needed for layout
+     * <p>
+     * If baseFont is not instanceof TrueTypeFontUnicode *no* font is loaded.
      *
      * @param baseFont OpenPdf base font
      * @param filename of the font file
@@ -279,7 +281,9 @@ public class LayoutProcessor {
         if (!enabled || awtFontMap.get(baseFont) != null) {
             return;
         }
-
+        if (!(baseFont instanceof TrueTypeFontUnicode)) {
+            return;
+        }
         java.awt.Font awtFont;
         InputStream inputStream = null;
         try {
