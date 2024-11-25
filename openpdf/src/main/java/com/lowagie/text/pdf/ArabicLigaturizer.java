@@ -52,7 +52,10 @@ package com.lowagie.text.pdf;
  * the MPL.
  *
  * @author Paulo Soares (psoares@consiste.pt)
+ * @deprecated Deprecated due lack of maintainer. Please use {@link LayoutProcessor} or render your Fonts using FOP so
+ * glyph substitution is done correctly.
  */
+@Deprecated(since = "2.0.4")
 public class ArabicLigaturizer {
 
     public static final int ar_nothing = 0x0;
