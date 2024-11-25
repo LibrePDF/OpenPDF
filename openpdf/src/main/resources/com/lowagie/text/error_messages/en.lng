@@ -359,6 +359,7 @@ tsa.1.failed.to.return.time.stamp.token.2=TSA '{1}' failed to return time stamp 
 two.byte.arrays.are.needed.if.the.type1.font.is.embedded=Two byte arrays are needed if the Type1 font is embedded.
 type3.font.used.with.the.wrong.pdfwriter=Type3 font used with the wrong PdfWriter
 types.is.null=types is null
+unable.to.add.self.to.table.contents=Unable to add self to table contents.
 unbalanced.begin.end.marked.content.operators=Unbalanced begin/end marked content operators.
 unbalanced.begin.end.text.operators=Unbalanced begin/end text operators.
 unbalanced.layer.operators=Unbalanced layer operators.

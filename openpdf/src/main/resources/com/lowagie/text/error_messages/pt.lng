@@ -5,4 +5,5 @@ fdf.header.not.found=Início de FDF não encontrado.
 greaterthan.not.expected='>' inesperado
 pdf.header.not.found=Início de PDF não encontrado.
 pdf.startxref.not.found=startxref de PDF não encontrado.
+unable.to.add.self.to.table.contents=Não é possível adicionar a si mesmo ao conteúdo da tabela.
 xref.infinite.loop=Um loop infinito foi detectado na tabela xref.
