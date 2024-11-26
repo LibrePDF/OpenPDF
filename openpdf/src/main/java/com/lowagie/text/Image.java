@@ -73,14 +73,13 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.ArrayList;
 
 /**
  * An <CODE>Image</CODE> is the representation of a graphic element
  * (JPEG, PNG or GIF) that has to be inserted into the
- * 
  * document
  *
  * @see Element
@@ -214,7 +213,7 @@ public abstract class Image extends Rectangle {
     public static final int ORIGINAL_JBIG2 = 9;
 
     // member variables
-    public static final int[] PNGID = { 137, 80, 78, 71, 13, 10, 26, 10 };
+    public static final int[] PNGID = {137, 80, 78, 71, 13, 10, 26, 10};
     /**
      * a static that is used for attributing a unique id to each image.
      */
@@ -222,6 +221,21 @@ public abstract class Image extends Rectangle {
     /**
      * The image type.
      */
+
+    private static final List<ImageFormatHandler> IMAGE_LOADERS = new ArrayList<>();
+
+    static {
+        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isGifFormat, (rawBytes,
+                url) -> rawBytes != null ? ImageLoader.getGifImage(rawBytes) : ImageLoader.getGifImage(url)));
+        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isJpegFormat, (rawBytes,
+                url) -> rawBytes != null ? ImageLoader.getJpegImage(rawBytes) : ImageLoader.getJpegImage(url)));
+        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isPngFormat, (rawBytes,
+                url) -> rawBytes != null ? ImageLoader.getPngImage(rawBytes) : ImageLoader.getPngImage(url)));
+        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isBmpFormat, (rawBytes,
+                url) -> rawBytes != null ? ImageLoader.getBmpImage(rawBytes) : ImageLoader.getBmpImage(url)));
+        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isTiffFormat, (rawBytes,
+                url) -> rawBytes != null ? ImageLoader.getTiffImage(rawBytes) : ImageLoader.getTiffImage(url)));
+    }
     protected int type;
     /**
      * The URL of the image.
@@ -371,8 +385,7 @@ public abstract class Image extends Rectangle {
     // implementation of the Element interface
     /**
      * Holds value of property directReference. An image is embedded into
-     * a PDF as an Image XObject. This object is
-     * 
+a PDF as an Image XObject. This object is
      * referenced by a PdfIndirectReference object.
      */
     private PdfIndirectReference directReference;
@@ -465,42 +478,27 @@ public abstract class Image extends Rectangle {
         this.transparency = image.transparency;
     }
 
-    private static final List<ImageFormatHandler> IMAGE_LOADERS = new ArrayList<>();
-    static {
-        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isGifFormat, (rawBytes, url) -> 
-            rawBytes != null ? ImageLoader.getGifImage(rawBytes) : ImageLoader.getGifImage(url)));
-        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isJpegFormat, (rawBytes, url) -> 
-            rawBytes != null ? ImageLoader.getJpegImage(rawBytes) : ImageLoader.getJpegImage(url)));
-        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isPngFormat, (rawBytes, url) -> 
-            rawBytes != null ? ImageLoader.getPngImage(rawBytes) : ImageLoader.getPngImage(url)));
-        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isBmpFormat, (rawBytes, url) -> 
-            rawBytes != null ? ImageLoader.getBmpImage(rawBytes) : ImageLoader.getBmpImage(url)));
-        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isTiffFormat, (rawBytes, url) -> 
-            rawBytes != null ? ImageLoader.getTiffImage(rawBytes) : ImageLoader.getTiffImage(url)));
-    }
-    
-
     private static boolean isGifFormat(int[] headerBytes) {
         return headerBytes[0] == 'G' && headerBytes[1] == 'I' && headerBytes[2] == 'F';
     }
-    
+
     private static boolean isJpegFormat(int[] headerBytes) {
         return headerBytes[0] == 0xFF && headerBytes[1] == 0xD8;
     }
-    
+
     private static boolean isPngFormat(int[] headerBytes) {
         return headerBytes[0] == 137 && headerBytes[1] == 80 && headerBytes[2] == 78 && headerBytes[3] == 71;
     }
-    
+
     private static boolean isBmpFormat(int[] headerBytes) {
         return headerBytes[0] == 'B' && headerBytes[1] == 'M';
     }
-    
+
     private static boolean isTiffFormat(int[] headerBytes) {
         return (headerBytes[0] == 'I' && headerBytes[1] == 'I' && headerBytes[2] == 42 && headerBytes[3] == 0) ||
-               (headerBytes[0] == 'M' && headerBytes[1] == 'M' && headerBytes[2] == 0 && headerBytes[3] == 42);
+                (headerBytes[0] == 'M' && headerBytes[1] == 'M' && headerBytes[2] == 0 && headerBytes[3] == 42);
     }
-    
+
     private static class ImageFormatHandler {
         Predicate<int[]> predicate;
         BiFunction<byte[], URL, Image> loader;
@@ -518,7 +516,7 @@ public abstract class Image extends Rectangle {
      * @param url an URL
      * @return an Image
      * @throws BadElementException   if error in creating {@link
-     *                               ImgWMF#ImgWMF(byte[]) ImgWMF}
+ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws MalformedURLException if bad url
      * @throws IOException           if image is not recognized
      */
@@ -548,9 +546,9 @@ public abstract class Image extends Rectangle {
      *
      * @param filename a filename
      * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
-     *         <CODE>Png</CODE>
+     * <CODE>Png</CODE>
      * @throws BadElementException if error in creating {@link
-     *                             ImgWMF#ImgWMF(byte[]) ImgWMF}
+ ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws IOException         if image is not recognized
      */
     public static Image getInstance(String filename)
@@ -565,7 +563,7 @@ public abstract class Image extends Rectangle {
      * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
      *         <CODE>Png</CODE>
      * @throws BadElementException if error in creating {@link
-     *                             ImgWMF#ImgWMF(byte[]) ImgWMF}
+ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws IOException         if image is not recognized
      */
     public static Image getInstanceFromClasspath(String filename)
@@ -662,13 +660,13 @@ public abstract class Image extends Rectangle {
      * @param width        the exact width of the image
      * @param height       the exact height of the image
      * @param reverseBits  reverses the bits in <code>data</code>. Bit 0
-     *                     is swapped with bit 7 and so on
+is swapped with bit 7 and so on
      * @param typeCCITT    the type of compression in <code>data</code>.
-     *                     It can be CCITTG4, CCITTG31D, CCITTG32D
+It can be CCITTG4, CCITTG31D, CCITTG32D
      * @param parameters   parameters associated with this stream.
-     *                     Possible values are CCITT_BLACKIS1,
+Possible values are CCITT_BLACKIS1,
      *                     CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and
-     *                     CCITT_ENDOFBLOCK or a combination of them
+CCITT_ENDOFBLOCK or a combination of them
      * @param data         the image data
      * @param transparency transparency information in the Mask format of the image
      *                     dictionary
@@ -697,7 +695,7 @@ public abstract class Image extends Rectangle {
      * @param data         the image data
      * @param bpc          bits per component
      * @param transparency transparency information in the Mask format of
-     *                     the image dictionary
+the image dictionary
      * @return an object of type <CODE>ImgRaw</CODE>
      * @throws BadElementException on error
      */
@@ -722,7 +720,7 @@ public abstract class Image extends Rectangle {
      * gets an instance of an Image
      *
      * @param template a PdfTemplate that has to be wrapped in an
-     *                 <code>Image</code> object
+<code>Image</code> object
      * @return an Image object
      * @throws BadElementException on error
      */
@@ -736,7 +734,7 @@ public abstract class Image extends Rectangle {
      *
      * @param image   the <CODE>java.awt.Image</CODE> to convert
      * @param color   if different from <CODE>null</CODE> the
-     *                transparency pixels are replaced by this color
+transparency pixels are replaced by this color
      * @param forceBW if <CODE>true</CODE> the image is treated as black and white
      * @return an object of type <CODE>ImgRaw</CODE>
      * @throws BadElementException on error
@@ -915,8 +913,8 @@ public abstract class Image extends Rectangle {
      * Gets an instance of an Image from a java.awt.Image.
      *
      * @param image the <CODE>java.awt.Image</CODE> to convert
-     * @param color if different from <CODE>null</CODE> the transparency pixels are
-     *              replaced by this color
+     * @param color if different from <CODE>null</CODE> the transparency 
+pixels are replaced by this color
      * @return an object of type <CODE>ImgRaw</CODE>
      * @throws BadElementException on error
      * @throws IOException         on error
@@ -928,10 +926,10 @@ public abstract class Image extends Rectangle {
 
     /**
      * Gets an instance of a Image from a java.awt.Image. The image is
-     * added as a JPEG with a user defined quality.
+added as a JPEG with a user defined quality.
      *
      * @param writer   the <CODE>PdfWriter</CODE> object to which the
-     *                 image will be added
+image will be added
      * @param awtImage the <CODE>java.awt.Image</CODE> to convert
      * @param quality  a float value between <code>0</code> and <code>1</code>
      * @return an object of type <CODE>PdfTemplate</CODE>
@@ -947,10 +945,10 @@ public abstract class Image extends Rectangle {
 
     /**
      * Gets an instance of a Image from a java.awt.Image. The image is
-     * added as a JPEG with a user defined quality.
+added as a JPEG with a user defined quality.
      *
      * @param cb       the <CODE>PdfContentByte</CODE> object to which
-     *                 the image will be added
+the image will be added
      * @param awtImage the <CODE>java.awt.Image</CODE> to convert
      * @param quality  a float value between <code>0</code> and <code>1</code>
      * @return an object of type <CODE>PdfTemplate</CODE>
@@ -1096,7 +1094,7 @@ public abstract class Image extends Rectangle {
 
     /**
      * Returns <CODE>true</CODE> if the image is an
-     * <CODE>ImgTemplate</CODE> -object.
+<CODE>ImgTemplate</CODE> -object.
      *
      * @return a <CODE>boolean</CODE>
      */
@@ -1482,7 +1480,7 @@ public abstract class Image extends Rectangle {
 
     /**
      * Some image formats, like TIFF may present the images rotated that
-     * have to be compensated.
+have to be compensated.
      *
      * @param initialRotation New value of property initialRotation.
      */
@@ -1612,7 +1610,7 @@ public abstract class Image extends Rectangle {
      * Gets the layer this image belongs to.
      *
      * @return the layer this image belongs to or <code>null</code> for
-     *         no layer defined
+no layer defined
      */
     public PdfOCG getLayer() {
         return layer;
@@ -1638,7 +1636,7 @@ public abstract class Image extends Rectangle {
 
     /**
      * Sets the image interpolation. Image interpolation attempts to
-     * produce a smooth transition between adjacent sample
+produce a smooth transition between adjacent sample
      * values.
      *
      * @param interpolation New value of property interpolation.
@@ -1896,7 +1894,7 @@ public abstract class Image extends Rectangle {
 
     /**
      * Returns <CODE>true</CODE> if this <CODE>Image</CODE> has the
-     * requisites to be a mask.
+requisites to be a mask.
      *
      * @return <CODE>true</CODE> if this <CODE>Image</CODE> can be a mask
      */
@@ -1978,7 +1976,7 @@ public abstract class Image extends Rectangle {
      * Returns the compression level used for images written as a compressed stream.
      *
      * @return the compression level (0 = best speed, 9 = best
-     *         compression, -1 is default)
+compression, -1 is default)
      * @since 2.1.3
      */
     public int getCompressionLevel() {
@@ -1987,10 +1985,10 @@ public abstract class Image extends Rectangle {
 
     /**
      * Sets the compression level to be used if the image is written as a
-     * compressed stream.
+compressed stream.
      *
      * @param compressionLevel a value between 0 (best speed) and 9 (best
-     *                         compression)
+compression)
      * @since 2.1.3
      */
     public void setCompressionLevel(int compressionLevel) {

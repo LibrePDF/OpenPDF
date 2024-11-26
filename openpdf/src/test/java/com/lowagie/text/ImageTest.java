@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
-import java.io.InputStream;
 import org.junit.jupiter.api.Test;
 
 class ImageTest {
@@ -14,7 +13,6 @@ class ImageTest {
 
     @Test
     void performanceTestPngFilename() throws IOException {
-        long start = System.nanoTime();
         Image image = null;
         for (int i = 0; i < PERFORMANCE_ITERATIONS; i++) {
             String fileName = "imageTest/ImageTest.png";
@@ -26,7 +24,6 @@ class ImageTest {
 
     @Test
     void performanceTestJpgWithFilename() throws IOException {
-        long start = System.nanoTime();
         Image image = null;
         for (int i = 0; i < PERFORMANCE_ITERATIONS; i++) {
             String fileName = "imageTest/ImageTest.jpg";
