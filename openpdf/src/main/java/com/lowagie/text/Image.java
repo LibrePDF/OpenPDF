@@ -382,6 +382,8 @@ public abstract class Image extends Rectangle {
      */
     protected int[] transparency;
 
+    protected PdfTemplate templateData;
+
     // implementation of the Element interface
     /**
      * Holds value of property directReference. An image is embedded into
@@ -1149,7 +1151,6 @@ the image will be added
     public int getBpc() {
         return bpc;
     }
-
     /**
      * Gets the template to be used as an image.
      * <p>
@@ -1997,5 +1998,19 @@ compression)
         } else {
             this.compressionLevel = compressionLevel;
         }
+    }
+
+    public void setTemplateData(Image image, PdfTemplate template) throws BadElementException {
+        if (template == null) {
+            throw new BadElementException("Template cannot be null");
+        }
+        if (template.getType() == PdfTemplate.TYPE_PATTERN) {
+            throw new BadElementException("A pattern cannot be used as a template to create an image");
+        }
+        image.templateData = template;
+        image.scaledWidth = template.getWidth();
+        image.scaledHeight = template.getHeight();
+        image.setTop(image.scaledHeight);
+        image.setRight(image.scaledWidth);
     }
 }
