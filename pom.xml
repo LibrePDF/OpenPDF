@@ -88,7 +88,7 @@
     <bouncycastle.version>1.78.1</bouncycastle.version>
     <commons-io.version>2.16.1</commons-io.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <fop.version>2.9</fop.version>
+    <fop.version>2.10</fop.version>
     <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
     <jcommon.version>1.0.24</jcommon.version>
     <jfreechart.version>1.5.5</jfreechart.version>
