@@ -172,6 +172,7 @@ public class PdfSignatureAppearance {
     private Certificate[] certChain;
     private int render = SignatureRenderDescription;
     private Image signatureGraphic = null;
+    private PdfImportedPage signaturePDF = null;
     /**
      * Holds value of property contact.
      */
@@ -312,6 +313,24 @@ public class PdfSignatureAppearance {
     }
 
     /**
+     * Gets the PDF page to render.
+     *
+     * @return the PDF page
+     */
+    public PdfImportedPage getSignaturePDF() {
+        return signaturePDF;
+    }
+
+    /**
+     * Check whether we already have a valid signature graphic (image or PDF).
+     *
+     * @return true if we have one valid signature graphic
+     */
+    public boolean hasValidSignatureGraphic() {
+        return (signatureGraphic != null || signaturePDF != null);
+    }
+
+    /**
      * Sets the Image object to render when Render is set to
      * <CODE>SignatureRenderGraphicAndDescription</CODE>
      *
@@ -320,6 +339,21 @@ public class PdfSignatureAppearance {
      */
     public void setSignatureGraphic(Image signatureGraphic) {
         this.signatureGraphic = signatureGraphic;
+        this.signaturePDF = null;
+    }
+
+    /**
+     * Sets the PDF page to render as signature when Render is set to
+     * <CODE>SignatureRenderGraphicAndDescription</CODE>
+     *
+     * @param sigFile
+     *          The PDF file to be rendered.
+     * @param pgnum
+     *          The page number in the sigFile to be rendered (start from 1).
+     */
+    public void setSignaturePDF(PdfReader sigFile, int pgnum) {
+        this.signaturePDF = writer.getImportedPage(sigFile, pgnum);
+        this.signatureGraphic = null;
     }
 
     /**
@@ -632,7 +666,7 @@ public class PdfSignatureAppearance {
             Rectangle signatureRect = null;
 
             if (render == SignatureRenderNameAndDescription
-                    || (render == SignatureRenderGraphicAndDescription && this.signatureGraphic != null)) {
+                || (render == SignatureRenderGraphicAndDescription && hasValidSignatureGraphic())) {
                 // origin is the bottom-left
                 signatureRect = new Rectangle(MARGIN, MARGIN, rect.getWidth() / 2
                         - MARGIN, rect.getHeight() - MARGIN);
@@ -674,48 +708,9 @@ public class PdfSignatureAppearance {
 
                 ct2.go();
             } else if (render == SignatureRenderGraphicAndDescription) {
-                ColumnText ct2 = new ColumnText(t);
-                ct2.setRunDirection(runDirection);
-                ct2.setSimpleColumn(signatureRect.getLeft(), signatureRect.getBottom(),
-                        signatureRect.getRight(), signatureRect.getTop(), 0,
-                        Element.ALIGN_RIGHT);
-
-                Image im = Image.getInstance(signatureGraphic);
-                im.scaleToFit(signatureRect.getWidth(), signatureRect.getHeight());
-
-                Paragraph p = new Paragraph();
-                // must calculate the point to draw from to make image appear in middle
-                // of column
-                float x = 0;
-                // experimentation found this magic number to counteract Adobe's
-                // signature graphic, which
-                // offsets the y co-ordinate by 15 units
-                float y = -im.getScaledHeight() + 15;
-
-                x = x + (signatureRect.getWidth() - im.getScaledWidth()) / 2;
-                y = y - (signatureRect.getHeight() - im.getScaledHeight()) / 2;
-                p.add(new Chunk(im, x
-                        + (signatureRect.getWidth() - im.getScaledWidth()) / 2, y, false));
-                ct2.addElement(p);
-                ct2.go();
+                renderSignatureGraphic(t, signatureRect);
             } else if (this.render == SignatureRenderGraphic) {
-                ColumnText ct2 = new ColumnText(t);
-                ct2.setRunDirection(this.runDirection);
-                ct2.setSimpleColumn(signatureRect.getLeft(), signatureRect.getBottom(), signatureRect.getRight(),
-                        signatureRect.getTop(), 0, Element.ALIGN_RIGHT);
-
-                Image im = Image.getInstance(this.signatureGraphic);
-                im.scaleToFit(signatureRect.getWidth(), signatureRect.getHeight());
-
-                Paragraph p = new Paragraph(signatureRect.getHeight());
-                // must calculate the point to draw from, to make image appear in the middle of the column
-                float x = (signatureRect.getWidth() - im.getScaledWidth()) / 2f;
-                float y = (signatureRect.getHeight() - im.getScaledHeight()) / 2f;
-
-                p.add(new Chunk(im, x, y, false));
-
-                ct2.addElement(p);
-                ct2.go();
+                renderSignatureGraphic(t, signatureRect);
             }
 
             if (this.render != SignatureRenderGraphic) {
@@ -799,6 +794,38 @@ public class PdfSignatureAppearance {
         napp.addTemplate(frm, 0, 0);
         return napp;
     }
+
+    /**
+     * A helper to render signature graphic (PDF or image) to a give new layer
+     *
+     * @param t the new PDF object/layer to render on
+     */
+    private void renderSignatureGraphic(PdfTemplate t, Rectangle signatureRect) {
+        if (this.signatureGraphic != null) {
+            ColumnText ct2 = new ColumnText(t);
+            ct2.setRunDirection(this.runDirection);
+            ct2.setSimpleColumn(signatureRect.getLeft(), signatureRect.getBottom(), signatureRect.getRight(),
+                    signatureRect.getTop(), 0, Element.ALIGN_RIGHT);
+
+            Image im = Image.getInstance(this.signatureGraphic);
+            im.scaleToFit(signatureRect.getWidth(), signatureRect.getHeight());
+
+            Paragraph p = new Paragraph(signatureRect.getHeight());
+            // must calculate the point to draw from, to make image appear in the middle of the column
+            float x = (signatureRect.getWidth() - im.getScaledWidth()) / 2f;
+            float y = (signatureRect.getHeight() - im.getScaledHeight()) / 2f;
+
+            p.add(new Chunk(im, x, y, false));
+
+            ct2.addElement(p);
+            ct2.go();
+        } else if (this.signaturePDF != null) {
+            float scale = Math.min(signatureRect.getWidth() / signaturePDF.getWidth(),
+                    signatureRect.getHeight() / signaturePDF.getHeight());
+            t.addTemplate(signaturePDF, scale, 0, 0, scale, 0, 0);
+        }
+    }
+
 
     /**
      * Sets the digest/signature to an external calculated value.
