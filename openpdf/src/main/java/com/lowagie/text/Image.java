@@ -2013,4 +2013,15 @@ compression)
         image.setTop(image.scaledHeight);
         image.setRight(image.scaledWidth);
     }
+
+    // Factory method to create a new Image from a template
+    public static Image createFromTemplate(PdfTemplate template) throws BadElementException {
+        // Create a new Image object
+        Image img = new Image((URL) null) {}; // Abstract class instantiation workaround
+
+        // Use the existing setTemplateData method to initialize the object
+        img.setTemplateData(img, template);
+
+        return img;
+    }
 }
