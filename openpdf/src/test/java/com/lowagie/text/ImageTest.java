@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class ImageTest {
 
+    // For performance testing, set this to something > 100
     private static final int PERFORMANCE_ITERATIONS = 1;
 
     @Test
@@ -53,12 +54,5 @@ class ImageTest {
         final Image image = Image.getInstance(ClassLoader.getSystemResource(fileName));
         assertNotNull(image.getUrl(), "Image URL should not be null when loaded from a file path");
     }
-
-    private byte[] readFileBytes(String filePath) throws IOException {
-        InputStream stream = ClassLoader.getSystemResourceAsStream(filePath);
-        if (stream == null) {
-            throw new IOException("File not found: " + filePath);
-        }
-        return stream.readAllBytes();
-    }
+    
 }
