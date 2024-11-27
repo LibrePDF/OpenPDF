@@ -73,7 +73,7 @@
     <maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
     <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
-    <maven-jxr-plugin.version>3.4.0</maven-jxr-plugin.version>
+    <maven-jxr-plugin.version>3.6.0</maven-jxr-plugin.version>
     <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
     <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
     <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
