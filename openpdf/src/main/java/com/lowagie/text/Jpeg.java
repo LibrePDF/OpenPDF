@@ -241,7 +241,10 @@ public class Jpeg extends Image {
                     throw new IOException(MessageLocalization.getComposedMessage("premature.eof.while.reading.jpg"));
                 }
                 if (v == 0xFF) {
-                    int marker = is.read();
+                    int marker;
+                    do {
+                        marker = is.read();
+                    } while (marker == 0xFF); // Skip extra FF bytes, per JPEG spec B.1.1.2
                     if (firstPass && marker == M_APP0) {
                         firstPass = false;
                         len = getShort(is);
