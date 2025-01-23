@@ -302,6 +302,7 @@ public class RadioCheckField extends BaseField {
             //draw surrounding rectangle
             //"1 1 "+(width-2)+" "+(height-2)+" re"
             app.rectangle(1, 1, box.getWidth() - 2, box.getHeight() - 2);
+            app.stroke();
 
             //"W"
             app.clip();
