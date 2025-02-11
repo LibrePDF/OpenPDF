@@ -72,6 +72,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Base64;
 
 
 /**
@@ -538,17 +539,31 @@ public abstract class Image extends Rectangle {
     }
 
     /**
-     * Gets an instance of an Image.
+     * Determine if an image is base64 encoded <br/>
+     * And Gets an instance of an Image.
      *
-     * @param filename a filename
+     * @param src an image Source
      * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
      * <CODE>Png</CODE>
      * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws IOException         if image is not recognized
      */
-    public static Image getInstance(String filename)
+    public static Image getInstance(String src)
             throws BadElementException, IOException {
-        return getInstance(Utilities.toURL(filename));
+        final String htmlBase64Prefix = "data:image/png;base64,";
+
+        byte[] imageDecode = null;
+
+        try {
+            imageDecode = Base64.getDecoder().decode(src.replace(htmlBase64Prefix, ""));
+        } catch (IllegalArgumentException ignored) {
+        }
+
+        if (imageDecode != null) {
+            return getInstance(imageDecode);
+        }
+
+        return getInstance(Utilities.toURL(src));
     }
 
     /**
