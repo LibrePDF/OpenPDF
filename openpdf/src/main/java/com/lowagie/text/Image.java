@@ -64,14 +64,19 @@ import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.codec.CCITTG4Encoder;
+import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.color.ICC_Profile;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -458,6 +463,18 @@ public abstract class Image extends Rectangle {
         this.transparency = image.transparency;
     }
 
+    // data:[<media type>][;charset=<character set>][;base64],<data>
+    public static Image getInstance(String mediaType, String base64Data) throws BadElementException, IOException {
+        // Decode the base64 string into a byte array
+        byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+
+        // Convert the byte array into a BufferedImage
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes)) {
+            BufferedImage bufferedImage = ImageIO.read(bis);
+            return Image.getInstance(bufferedImage, null, false);
+        }
+    }
+
     /**
      * Gets an instance of an Image.
      *
@@ -537,6 +554,32 @@ public abstract class Image extends Rectangle {
         }
     }
 
+
+    private static Pattern IMAGE_DATA_PATTERN = Pattern.compile("data:(image\\/[a-zA-Z0-9+-]+);.*(base64),(.*)");
+    private static class ImageInput {
+        private String mediaType;
+        private String base64Data;
+        private String filename;
+
+        private ImageInput(String input) {
+            Matcher m = IMAGE_DATA_PATTERN.matcher(input);
+            if (m.find()) {
+                this.mediaType = m.group(1).trim();
+                this.base64Data = m.group(3).trim();
+            } else {
+                this.filename = input;
+            }
+        }
+
+        public Image getInstance() throws IOException {
+            if (filename != null) {
+                return Image.getInstance(filename);
+            } else {
+                return Image.getInstance(mediaType, base64Data);
+            }
+        }
+    }
+
     /**
      * Gets an instance of an Image.
      *
@@ -546,9 +589,8 @@ public abstract class Image extends Rectangle {
      * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws IOException         if image is not recognized
      */
-    public static Image getInstance(String filename)
-            throws BadElementException, IOException {
-        return getInstance(Utilities.toURL(filename));
+    public static Image getInstance(String filename) throws BadElementException, IOException {
+        return new ImageInput(filename).getInstance();
     }
 
     /**
