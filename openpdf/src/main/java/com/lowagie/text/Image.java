@@ -64,17 +64,18 @@ import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.codec.CCITTG4Encoder;
-import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.color.ICC_Profile;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -463,16 +464,32 @@ public abstract class Image extends Rectangle {
         this.transparency = image.transparency;
     }
 
-    // data:[<media type>][;charset=<character set>][;base64],<data>
+    private enum ImageType {
+        PNG(ImageLoader::getPngImage),
+        GIF(ImageLoader::getGifImage),
+        JPEG2000(ImageLoader::getJpeg2000Image),
+        JPEG(ImageLoader::getJpegImage),
+        BMP(ImageLoader::getBmpImage),
+        TIFF(ImageLoader::getTiffImage),
+        ;
+        private Function<byte[], Image> byteLoaderFun;
+
+        ImageType(Function<byte[], Image> loaderFun) {
+            this.byteLoaderFun = loaderFun;
+        }
+
+        private boolean matches(String mediaType) {
+            return mediaType != null && mediaType.toUpperCase().contains(this.name());
+        }
+    }
+
     public static Image getInstance(String mediaType, String base64Data) throws BadElementException, IOException {
         // Decode the base64 string into a byte array
         byte[] imageBytes = Base64.getDecoder().decode(base64Data);
 
-        // Convert the byte array into a BufferedImage
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes)) {
-            BufferedImage bufferedImage = ImageIO.read(bis);
-            return Image.getInstance(bufferedImage, null, false);
-        }
+        Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(mediaType)).findFirst();
+        ImageType imageType = o.orElseThrow(()->new BadElementException("media type not supported: " + mediaType));
+        return imageType.byteLoaderFun.apply(imageBytes);
     }
 
     /**
@@ -486,10 +503,9 @@ public abstract class Image extends Rectangle {
      */
     public static Image getInstance(URL url) throws BadElementException,
             IOException {
-        InputStream is = null;
         Image img = null;
-        try {
-            is = url.openStream();
+        try (InputStream is = url.openStream()){
+
             int c1 = is.read();
             int c2 = is.read();
             int c3 = is.read();
@@ -499,9 +515,7 @@ public abstract class Image extends Rectangle {
             int c6 = is.read();
             int c7 = is.read();
             int c8 = is.read();
-            is.close();
 
-            is = null;
             if (c1 == 'G' && c2 == 'I' && c3 == 'F') {
                 img = ImageLoader.getGifImage(url);
                 return img;
@@ -544,9 +558,6 @@ public abstract class Image extends Rectangle {
             throw new IOException(url.toString()
                     + " is not a recognized imageformat.");
         } finally {
-            if (is != null) {
-                is.close();
-            }
             if (img != null) {
                 // Make sure the URL is always set
                 img.setUrl(url);
@@ -555,14 +566,14 @@ public abstract class Image extends Rectangle {
     }
 
 
-    private static Pattern IMAGE_DATA_PATTERN = Pattern.compile("data:(image\\/[a-zA-Z0-9+-]+);.*(base64),(.*)");
+    private static Pattern imageDataPattern = Pattern.compile("data:(image\\/[a-zA-Z0-9+-]+);.*(base64),(.*)");
     private static class ImageInput {
         private String mediaType;
         private String base64Data;
         private String filename;
 
         private ImageInput(String input) {
-            Matcher m = IMAGE_DATA_PATTERN.matcher(input);
+            Matcher m = imageDataPattern.matcher(input);
             if (m.find()) {
                 this.mediaType = m.group(1).trim();
                 this.base64Data = m.group(3).trim();
@@ -573,7 +584,7 @@ public abstract class Image extends Rectangle {
 
         public Image getInstance() throws IOException {
             if (filename != null) {
-                return Image.getInstance(filename);
+                return Image.getInstance(Utilities.toURL(filename));
             } else {
                 return Image.getInstance(mediaType, base64Data);
             }
