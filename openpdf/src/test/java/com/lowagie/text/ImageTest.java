@@ -15,10 +15,17 @@ class ImageTest {
 
 
     @Test
-    void shouldReturnImageForBase64Data() throws Exception {
+    void shouldReturnImageForBase64DataPNG() throws Exception {
         final Image image = Image.getInstance("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==");
         assertNotNull(image);
     }
+
+    @Test
+    void shouldReturnImageForBase64DataJPEG() throws Exception {
+        final Image image = Image.getInstance("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAZABkAAD/2wCEABQQEBkSGScXFycyJh8mMi4mJiYmLj41NTU1NT5EQUFBQUFBREREREREREREREREREREREREREREREREREREREQBFRkZIBwgJhgYJjYmICY2RDYrKzZERERCNUJERERERERERERERERERERERERERERERERERERERERERERERERERP/AABEIAAEAAQMBIgACEQEDEQH/xABMAAEBAAAAAAAAAAAAAAAAAAAABQEBAQAAAAAAAAAAAAAAAAAABQYQAQAAAAAAAAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AJQA9Yv/2Q==");
+        assertNotNull(image);
+    }
+
 
     @Test
     void shouldReturnImageWithUrlForUrl() throws Exception {
