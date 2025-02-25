@@ -94,6 +94,11 @@ public abstract class Image extends Rectangle {
     // static final membervariables
 
     /**
+     * used to detect image base64 data pattern
+     */
+    private static final Pattern imageDataPattern = Pattern.compile("data:(image\\/[a-zA-Z0-9+-]+);.*(base64),(.*)");
+
+    /**
      * this is a kind of image alignment.
      */
     public static final int DEFAULT = 0;
@@ -524,8 +529,6 @@ public abstract class Image extends Rectangle {
         }
     }
 
-
-    private static Pattern imageDataPattern = Pattern.compile("data:(image\\/[a-zA-Z0-9+-]+);.*(base64),(.*)");
 
     private static class ImageInput {
         private String mediaType;
