@@ -13,6 +13,25 @@ class ImageTest {
     // For performance testing, set this to something > 100
     private static final int PERFORMANCE_ITERATIONS = 1;
 
+
+    @Test
+    void shouldReturnImageForBase64DataPNG() throws Exception {
+        final Image image = Image.getInstance(
+                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==");
+        assertNotNull(image);
+    }
+
+    @Test
+    void shouldReturnImageForBase64DataJPEG() throws Exception {
+        final Image image = Image.getInstance(
+                "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAZABkAAD/2wCEABQQEBkSGScXFycyJh8mMi4mJiYmLj41NTU1NT5EQUFBQUFBRERE"
+                        + "REREREREREREREREREREREREREREREREREQBFRkZIBwgJhgYJjYmICY2RDYrKzZERERCNUJERERERERERERERERERERERERERERERERERE"
+                        + "RERERERERERERERP/AABEIAAEAAQMBIgACEQEDEQH/xABMAAEBAAAAAAAAAAAAAAAAAAAABQEBAQAAAAAAAAAAAAAAAAAABQYQAQAAAAAA"
+                        + "AAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AJQA9Yv/2Q==");
+        assertNotNull(image);
+    }
+
+
     @Test
     void shouldReturnImageWithUrlForUrl() throws Exception {
         final Image image = Image.getInstance(ClassLoader.getSystemResource("H.gif"));

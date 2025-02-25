@@ -79,6 +79,14 @@ public class ImageLoader {
         }
     }
 
+    public static Image getWMFImage(URL url) {
+        try {
+            return new ImgWMF(url);
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
     public static Image getGifImage(URL url) {
         try (InputStream is = url.openStream()) {
             BufferedImage bufferedImage = ImageIO.read(is);
@@ -145,6 +153,14 @@ public class ImageLoader {
             BufferedImage bufferedImage = ImageIO.read(is);
             return Image.getInstance(bufferedImage, null, false);
 
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    public static Image getWMFImage(byte[] imageData) {
+        try {
+            return new ImgWMF(imageData);
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
