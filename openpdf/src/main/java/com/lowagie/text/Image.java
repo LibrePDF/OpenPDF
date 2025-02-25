@@ -483,7 +483,7 @@ public abstract class Image extends Rectangle {
         }
     }
 
-    public static Image getInstance(String mediaType, String base64Data) throws BadElementException, IOException {
+    public static Image getInstance(String mediaType, String base64Data) throws BadElementException {
         // Decode the base64 string into a byte array
         byte[] imageBytes = Base64.getDecoder().decode(base64Data);
 
