@@ -515,7 +515,7 @@ public abstract class Image extends Rectangle {
     public static Image getInstance(URL url) throws BadElementException, IOException {
         try (InputStream is = url.openStream()) {
             int[] array = new int[8];
-            for (Integer i: IntStream.rangeClosed(0, 7).boxed().collect(Collectors.toList())) {
+            for (Integer i: IntStream.rangeClosed(0, 7).boxed().toList()) {
                 array[i] = is.read();
             }
             Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(array)).findFirst();
