@@ -488,7 +488,7 @@ public abstract class Image extends Rectangle {
         byte[] imageBytes = Base64.getDecoder().decode(base64Data);
 
         Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(mediaType)).findFirst();
-        ImageType imageType = o.orElseThrow(()->new BadElementException("media type not supported: " + mediaType));
+        ImageType imageType = o.orElseThrow(() -> new BadElementException("media type not supported: " + mediaType));
         return imageType.byteLoaderFun.apply(imageBytes);
     }
 
@@ -504,7 +504,7 @@ public abstract class Image extends Rectangle {
     public static Image getInstance(URL url) throws BadElementException,
             IOException {
         Image img = null;
-        try (InputStream is = url.openStream()){
+        try (InputStream is = url.openStream()) {
 
             int c1 = is.read();
             int c2 = is.read();
@@ -567,6 +567,7 @@ public abstract class Image extends Rectangle {
 
 
     private static Pattern imageDataPattern = Pattern.compile("data:(image\\/[a-zA-Z0-9+-]+);.*(base64),(.*)");
+
     private static class ImageInput {
         private String mediaType;
         private String base64Data;
