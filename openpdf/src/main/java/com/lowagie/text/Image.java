@@ -78,6 +78,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -465,21 +467,30 @@ public abstract class Image extends Rectangle {
     }
 
     private enum ImageType {
-        PNG(ImageLoader::getPngImage),
-        GIF(ImageLoader::getGifImage),
-        JPEG2000(ImageLoader::getJpeg2000Image),
-        JPEG(ImageLoader::getJpegImage),
-        BMP(ImageLoader::getBmpImage),
-        TIFF(ImageLoader::getTiffImage),
+        PNG(ImageLoader::getPngImage, ImageLoader::getPngImage, Image::isPng),
+        GIF(ImageLoader::getGifImage, ImageLoader::getGifImage, Image::isGif),
+        JPEG2000(ImageLoader::getJpeg2000Image, ImageLoader::getJpeg2000Image, Image::isJpeg2000),
+        JPEG(ImageLoader::getJpegImage, ImageLoader::getJpegImage, Image::isJpeg),
+        BMP(ImageLoader::getBmpImage, ImageLoader::getBmpImage, Image::isBmp),
+        TIFF(ImageLoader::getTiffImage, ImageLoader::getTiffImage, Image::isTiff),
+        WMF(ImageLoader::getWMFImage, ImageLoader::getWMFImage, Image::isWMF),
         ;
         private Function<byte[], Image> byteLoaderFun;
+        private Function<URL, Image> urlLoaderFun;
+        private Function<int[], Boolean> typeCheckerFun;
 
-        ImageType(Function<byte[], Image> loaderFun) {
+        ImageType(Function<byte[], Image> loaderFun, Function<URL, Image> urlLoaderFun, Function<int[], Boolean> typeCheckerFun) {
             this.byteLoaderFun = loaderFun;
+            this.urlLoaderFun = urlLoaderFun;
+            this.typeCheckerFun = typeCheckerFun;
         }
 
         private boolean matches(String mediaType) {
             return mediaType != null && mediaType.toUpperCase().contains(this.name());
+        }
+
+        private boolean matches(int[] imageFirstBytes) {
+            return this.typeCheckerFun.apply(imageFirstBytes);
         }
     }
 
@@ -501,68 +512,55 @@ public abstract class Image extends Rectangle {
      * @throws MalformedURLException if bad url
      * @throws IOException           if image is not recognized
      */
-    public static Image getInstance(URL url) throws BadElementException,
-            IOException {
-        Image img = null;
+    public static Image getInstance(URL url) throws BadElementException, IOException {
         try (InputStream is = url.openStream()) {
+            int[] array = new int[8];
+            for (Integer i: IntStream.rangeClosed(0, 7).boxed().collect(Collectors.toList())) {
+                array[i] = is.read();
+            }
+            Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(array)).findFirst();
+            ImageType imageType = o.orElseThrow(() -> new IOException(
+                    url + " is not a recognized image format." + (isJBIG2(array) ? "  JBIG2 support has been removed." : "")));
 
-            int c1 = is.read();
-            int c2 = is.read();
-            int c3 = is.read();
-            int c4 = is.read();
-            // jbig2
-            int c5 = is.read();
-            int c6 = is.read();
-            int c7 = is.read();
-            int c8 = is.read();
-
-            if (c1 == 'G' && c2 == 'I' && c3 == 'F') {
-                img = ImageLoader.getGifImage(url);
-                return img;
-            }
-            if (c1 == 0xFF && c2 == 0xD8) {
-                img = ImageLoader.getJpegImage(url);
-                return img;
-            }
-            if (c1 == 0x00 && c2 == 0x00 && c3 == 0x00 && c4 == 0x0c) {
-                img = ImageLoader.getJpeg2000Image(url);
-                return img;
-            }
-            if (c1 == 0xff && c2 == 0x4f && c3 == 0xff && c4 == 0x51) {
-                img = ImageLoader.getJpeg2000Image(url);
-                return img;
-            }
-            if (c1 == PNGID[0] && c2 == PNGID[1]
-                    && c3 == PNGID[2] && c4 == PNGID[3]) {
-                img = ImageLoader.getPngImage(url);
-                return img;
-            }
-            if (c1 == 0xD7 && c2 == 0xCD) {
-                img = new ImgWMF(url);
-                return img;
-            }
-            if (c1 == 'B' && c2 == 'M') {
-                img = ImageLoader.getBmpImage(url);
-                return img;
-            }
-            if ((c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42)
-                    || (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
-                img = ImageLoader.getTiffImage(url);
-                return img;
-            }
-            if (c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2' &&
-                    c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n') {
-                throw new IOException(url.toString()
-                        + " is not a recognized imageformat. JBIG2 support has been removed.");
-            }
-            throw new IOException(url.toString()
-                    + " is not a recognized imageformat.");
-        } finally {
-            if (img != null) {
-                // Make sure the URL is always set
-                img.setUrl(url);
-            }
+            Image img = imageType.urlLoaderFun.apply(url);
+            img.setUrl(url);
+            return img;
         }
+    }
+
+    private static boolean isJBIG2(int[] array) {
+        return array[0] == 0x97 && array[1] == 'J' && array[2] == 'B' && array[3] == '2' &&
+                array[4] == '\r' && array[5] == '\n' && array[6] == 0x1a && array[7] == '\n';
+    }
+
+    private static boolean isGif(int[] array) {
+        return array[0] == 'G' && array[1] == 'I' && array[2] == 'F';
+    }
+
+    private static boolean isPng(int[] array) {
+        return array[0] == PNGID[0] && array[1] == PNGID[1] && array[2] == PNGID[2] && array[3] == PNGID[3];
+    }
+
+    private static boolean isBmp(int[] array) {
+        return array[0] == 'B' && array[1] == 'M';
+    }
+
+    private static boolean isJpeg(int[] array) {
+        return array[0] == 0xFF && array[1] == 0xD8;
+    }
+
+    private static boolean isJpeg2000(int[] array) {
+        return (array[0] == 0x00 && array[1] == 0x00 && array[2] == 0x00 && array[3] == 0x0c) ||
+               (array[0] == 0xff && array[1] == 0x4f && array[2] == 0xff && array[3] == 0x51);
+    }
+
+    private static boolean isTiff(int[] array) {
+        return (array[0] == 'M' && array[1] == 'M' && array[2] == 0 && array[3] == 42) ||
+               (array[0] == 'I' && array[1] == 'I' && array[2] == 42 && array[3] == 0);
+    }
+
+    private static boolean isWMF(int[] array) {
+        return array[0] == 0xD7 && array[1] == 0xCD;
     }
 
 
