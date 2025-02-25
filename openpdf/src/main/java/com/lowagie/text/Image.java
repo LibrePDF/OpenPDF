@@ -78,7 +78,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
@@ -515,7 +514,7 @@ public abstract class Image extends Rectangle {
     public static Image getInstance(URL url) throws BadElementException, IOException {
         try (InputStream is = url.openStream()) {
             int[] array = new int[8];
-            for (Integer i: IntStream.rangeClosed(0, 7).boxed().toList()) {
+            for (Integer i : IntStream.rangeClosed(0, 7).boxed().toList()) {
                 array[i] = is.read();
             }
             Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(array)).findFirst();
