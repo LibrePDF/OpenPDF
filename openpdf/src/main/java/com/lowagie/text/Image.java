@@ -513,10 +513,7 @@ public abstract class Image extends Rectangle {
      */
     public static Image getInstance(URL url) throws BadElementException, IOException {
         try (InputStream is = url.openStream()) {
-            int[] array = new int[8];
-            for (Integer i : IntStream.rangeClosed(0, 7).boxed().toList()) {
-                array[i] = is.read();
-            }
+            int[] array = readFirst8Chars(is);
             Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(array)).findFirst();
             ImageType imageType = o.orElseThrow(() -> new IOException(
                     url + " is not a recognized image format." + (isJBIG2(array) ? "  JBIG2 support has been removed." : "")));
@@ -525,41 +522,6 @@ public abstract class Image extends Rectangle {
             img.setUrl(url);
             return img;
         }
-    }
-
-    private static boolean isJBIG2(int[] array) {
-        return array[0] == 0x97 && array[1] == 'J' && array[2] == 'B' && array[3] == '2' &&
-                array[4] == '\r' && array[5] == '\n' && array[6] == 0x1a && array[7] == '\n';
-    }
-
-    private static boolean isGif(int[] array) {
-        return array[0] == 'G' && array[1] == 'I' && array[2] == 'F';
-    }
-
-    private static boolean isPng(int[] array) {
-        return array[0] == PNGID[0] && array[1] == PNGID[1] && array[2] == PNGID[2] && array[3] == PNGID[3];
-    }
-
-    private static boolean isBmp(int[] array) {
-        return array[0] == 'B' && array[1] == 'M';
-    }
-
-    private static boolean isJpeg(int[] array) {
-        return array[0] == 0xFF && array[1] == 0xD8;
-    }
-
-    private static boolean isJpeg2000(int[] array) {
-        return (array[0] == 0x00 && array[1] == 0x00 && array[2] == 0x00 && array[3] == 0x0c) ||
-               (array[0] == 0xff && array[1] == 0x4f && array[2] == 0xff && array[3] == 0x51);
-    }
-
-    private static boolean isTiff(int[] array) {
-        return (array[0] == 'M' && array[1] == 'M' && array[2] == 0 && array[3] == 42) ||
-               (array[0] == 'I' && array[1] == 'I' && array[2] == 42 && array[3] == 0);
-    }
-
-    private static boolean isWMF(int[] array) {
-        return array[0] == 0xD7 && array[1] == 0xCD;
     }
 
 
@@ -611,8 +573,7 @@ public abstract class Image extends Rectangle {
      * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws IOException         if image is not recognized
      */
-    public static Image getInstanceFromClasspath(String filename)
-            throws BadElementException, IOException {
+    public static Image getInstanceFromClasspath(String filename) throws BadElementException, IOException {
         URL url = Image.class.getResource("/" + filename);
         return getInstance(url);
     }
@@ -625,63 +586,23 @@ public abstract class Image extends Rectangle {
      * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws IOException         if image is not recognized
      */
-    public static Image getInstance(byte[] imgb) throws BadElementException,
-            IOException {
-        InputStream is = null;
-        try {
-            is = new java.io.ByteArrayInputStream(imgb);
-            int c1 = is.read();
-            int c2 = is.read();
-            int c3 = is.read();
-            int c4 = is.read();
-            is.close();
+    public static Image getInstance(byte[] imgb) throws BadElementException, IOException {
+        try (InputStream is = new java.io.ByteArrayInputStream(imgb)) {
+            int[] array = readFirst8Chars(is);
+            Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(array)).findFirst();
+            ImageType imageType = o.orElseThrow(() -> new IOException(
+                    MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat") + (isJBIG2(array) ? "  JBIG2 support has been removed." : "")));
 
-            is = null;
-            if (c1 == 'G' && c2 == 'I' && c3 == 'F') {
-                return ImageLoader.getGifImage(imgb);
-            }
-            if (c1 == 0xFF && c2 == 0xD8) {
-                return ImageLoader.getJpegImage(imgb);
-            }
-            if (c1 == 0x00 && c2 == 0x00 && c3 == 0x00 && c4 == 0x0c) {
-                return ImageLoader.getJpeg2000Image(imgb);
-            }
-            if (c1 == 0xff && c2 == 0x4f && c3 == 0xff && c4 == 0x51) {
-                return ImageLoader.getJpeg2000Image(imgb);
-            }
-            if (c1 == PNGID[0] && c2 == PNGID[1]
-                    && c3 == PNGID[2] && c4 == PNGID[3]) {
-                return ImageLoader.getPngImage(imgb);
-            }
-            if (c1 == 0xD7 && c2 == 0xCD) {
-                return new ImgWMF(imgb);
-            }
-            if (c1 == 'B' && c2 == 'M') {
-                return ImageLoader.getBmpImage(imgb);
-            }
-            if ((c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42)
-                    || (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
-                return ImageLoader.getTiffImage(imgb);
-            }
-            if (c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2') {
-                is = new java.io.ByteArrayInputStream(imgb);
-                is.skip(4);
-                int c5 = is.read();
-                int c6 = is.read();
-                int c7 = is.read();
-                int c8 = is.read();
-                if (c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n') {
-                    throw new IOException(
-                            MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat"));
-                }
-            }
-            throw new IOException(
-                    MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat"));
-        } finally {
-            if (is != null) {
-                is.close();
-            }
+            return imageType.byteLoaderFun.apply(imgb);
         }
+    }
+
+    private static int[] readFirst8Chars(InputStream is) throws IOException {
+        int[] array = new int[8];
+        for (Integer i : IntStream.rangeClosed(0, 7).boxed().toList()) {
+            array[i] = is.read();
+        }
+        return array;
     }
 
     /**
@@ -2058,5 +1979,40 @@ public abstract class Image extends Rectangle {
         } else {
             this.compressionLevel = compressionLevel;
         }
+    }
+
+    private static boolean isJBIG2(int[] array) {
+        return array[0] == 0x97 && array[1] == 'J' && array[2] == 'B' && array[3] == '2' &&
+                array[4] == '\r' && array[5] == '\n' && array[6] == 0x1a && array[7] == '\n';
+    }
+
+    private static boolean isGif(int[] array) {
+        return array[0] == 'G' && array[1] == 'I' && array[2] == 'F';
+    }
+
+    private static boolean isPng(int[] array) {
+        return array[0] == PNGID[0] && array[1] == PNGID[1] && array[2] == PNGID[2] && array[3] == PNGID[3];
+    }
+
+    private static boolean isBmp(int[] array) {
+        return array[0] == 'B' && array[1] == 'M';
+    }
+
+    private static boolean isJpeg(int[] array) {
+        return array[0] == 0xFF && array[1] == 0xD8;
+    }
+
+    private static boolean isJpeg2000(int[] array) {
+        return (array[0] == 0x00 && array[1] == 0x00 && array[2] == 0x00 && array[3] == 0x0c) ||
+                (array[0] == 0xff && array[1] == 0x4f && array[2] == 0xff && array[3] == 0x51);
+    }
+
+    private static boolean isTiff(int[] array) {
+        return (array[0] == 'M' && array[1] == 'M' && array[2] == 0 && array[3] == 42) ||
+                (array[0] == 'I' && array[1] == 'I' && array[2] == 42 && array[3] == 0);
+    }
+
+    private static boolean isWMF(int[] array) {
+        return array[0] == 0xD7 && array[1] == 0xCD;
     }
 }
