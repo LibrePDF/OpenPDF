@@ -667,6 +667,7 @@ public class HtmlWriter extends DocWriter {
             case Element.PHRASE: {
                 Phrase phrase = (Phrase) element;
                 styleAttributes = new Properties();
+                styleAttributes.setProperty(Markup.CSS_KEY_DISPLAY, Markup.CSS_VALUE_GRID);
                 if (phrase.hasLeading()) {
                     styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, phrase.getLeading() + "pt");
                 }
@@ -691,6 +692,7 @@ public class HtmlWriter extends DocWriter {
             case Element.ANCHOR: {
                 Anchor anchor = (Anchor) element;
                 styleAttributes = new Properties();
+                styleAttributes.setProperty(Markup.CSS_KEY_DISPLAY, Markup.CSS_VALUE_GRID);
                 if (anchor.hasLeading()) {
                     styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, anchor.getLeading() + "pt");
                 }
@@ -721,9 +723,11 @@ public class HtmlWriter extends DocWriter {
             case Element.PARAGRAPH: {
                 Paragraph paragraph = (Paragraph) element;
                 styleAttributes = new Properties();
+                styleAttributes.setProperty(Markup.CSS_KEY_DISPLAY, Markup.CSS_VALUE_GRID);
                 if (paragraph.hasLeading()) {
                     styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, paragraph.getTotalLeading() + "pt");
                 }
+
                 // start tag
                 addTabs(indent);
                 writeStart(HtmlTags.DIV);
@@ -990,6 +994,7 @@ public class HtmlWriter extends DocWriter {
                 depth = 5;
             }
             Properties styleAttributes = new Properties();
+            styleAttributes.setProperty(Markup.CSS_KEY_DISPLAY, Markup.CSS_VALUE_GRID);
             if (section.getTitle().hasLeading()) {
                 styleAttributes.setProperty(Markup.CSS_KEY_LINEHEIGHT, section.getTitle().getTotalLeading() + "pt");
             }

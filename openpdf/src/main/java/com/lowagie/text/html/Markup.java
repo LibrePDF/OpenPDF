@@ -321,6 +321,11 @@ public class Markup {
     public static final String CSS_VALUE_BLOCK = "block";
 
     /**
+     * A possible value for the DISPLAY key
+     */
+    public static final String CSS_VALUE_GRID = "grid";
+
+    /**
      * a CSS value for text font weight
      */
     public static final String CSS_VALUE_BOLD = "bold";
