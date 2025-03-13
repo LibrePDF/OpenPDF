@@ -966,6 +966,10 @@ public class PdfContentStreamHandler {
                 PdfName subType = stream.getAsName(PdfName.SUBTYPE);
                 if (PdfName.FORM.equals(subType)) {
                     PdfDictionary resources2 = stream.getAsDict(PdfName.RESOURCES);
+                    if (resources2 == null)  {
+                        resources2 = resources;
+                    }
+
                     byte[] data;
                     try {
                         data = getContentBytesFromPdfObject(stream);
