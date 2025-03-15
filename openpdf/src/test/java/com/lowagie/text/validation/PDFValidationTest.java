@@ -4,6 +4,9 @@ import com.lowagie.text.Annotation;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,11 +27,35 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 public class PDFValidationTest {
 
     @Test
-    public void testValidatePDFWithVera() throws Exception {
+    public void testValidatePDFWithVera_Title() throws Exception {
+        PdfDictionary info = new PdfDictionary(PdfName.METADATA);
+        info.put(PdfName.TITLE, new PdfString("Test pdf"));
+
+        testValidatePDFWithVera(info);
+    }
+
+    @Test
+    public void testValidatePDFWithVera_Subject() throws Exception {
+        PdfDictionary info = new PdfDictionary(PdfName.METADATA);
+        info.put(PdfName.SUBJECT, new PdfString("Test subject"));
+
+        testValidatePDFWithVera(info);
+    }
+
+    @Test
+    public void testValidatePDFWithVera_Keywords() throws Exception {
+        PdfDictionary info = new PdfDictionary(PdfName.METADATA);
+        info.put(PdfName.KEYWORDS, new PdfString("k1, k2"));
+
+        testValidatePDFWithVera(info);
+    }
+
+    private void testValidatePDFWithVera(PdfDictionary info) throws Exception {
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PdfWriter pdfWriter = PdfWriter.getInstance(document, byteArrayOutputStream);
         pdfWriter.setPDFXConformance(PdfWriter.PDFA1B);
+        pdfWriter.getInfo().putAll(info);
         pdfWriter.createXmpMetadata();
 
         try {
@@ -61,7 +88,7 @@ public class PDFValidationTest {
                 Assertions.assertTrue(result.isCompliant());
             }
         } catch (ModelParsingException e) {
-            e.printStackTrace();
+            Assertions.fail(e);
         }
     }
 
