@@ -30,27 +30,24 @@ public class PDFValidationTest {
     public void testValidatePDFWithVera_Title() throws Exception {
         PdfDictionary info = new PdfDictionary(PdfName.METADATA);
         info.put(PdfName.TITLE, new PdfString("Test pdf"));
-
-        testValidatePDFWithVera(info);
+        Assertions.assertTrue(testValidatePDFWithVera(info));
     }
 
     @Test
     public void testValidatePDFWithVera_Subject() throws Exception {
         PdfDictionary info = new PdfDictionary(PdfName.METADATA);
         info.put(PdfName.SUBJECT, new PdfString("Test subject"));
-
-        testValidatePDFWithVera(info);
+        Assertions.assertTrue(testValidatePDFWithVera(info));
     }
 
     @Test
     public void testValidatePDFWithVera_Keywords() throws Exception {
         PdfDictionary info = new PdfDictionary(PdfName.METADATA);
         info.put(PdfName.KEYWORDS, new PdfString("k1, k2"));
-
-        testValidatePDFWithVera(info);
+        Assertions.assertTrue(testValidatePDFWithVera(info));
     }
 
-    private void testValidatePDFWithVera(PdfDictionary info) throws Exception {
+    private boolean testValidatePDFWithVera(PdfDictionary info) throws Exception {
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PdfWriter pdfWriter = PdfWriter.getInstance(document, byteArrayOutputStream);
@@ -85,10 +82,11 @@ public class PDFValidationTest {
                     }
 
                 }
-                Assertions.assertTrue(result.isCompliant());
+                return result.isCompliant();
             }
         } catch (ModelParsingException e) {
-            Assertions.fail(e);
+            e.printStackTrace();
+            return false;
         }
     }
 
