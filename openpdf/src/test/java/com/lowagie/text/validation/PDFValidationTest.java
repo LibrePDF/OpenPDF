@@ -27,21 +27,21 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 public class PDFValidationTest {
 
     @Test
-    public void testValidatePDFWithVera_Title() throws Exception {
+    public void testValidateDcTitleWithVera() throws Exception {
         PdfDictionary info = new PdfDictionary(PdfName.METADATA);
         info.put(PdfName.TITLE, new PdfString("Test pdf"));
         Assertions.assertTrue(testValidatePDFWithVera(info));
     }
 
     @Test
-    public void testValidatePDFWithVera_Subject() throws Exception {
+    public void testValidateDcSubjectWithVera() throws Exception {
         PdfDictionary info = new PdfDictionary(PdfName.METADATA);
         info.put(PdfName.SUBJECT, new PdfString("Test subject"));
         Assertions.assertTrue(testValidatePDFWithVera(info));
     }
 
     @Test
-    public void testValidatePDFWithVera_Keywords() throws Exception {
+    public void testValidatePdfKeywordsWithVera() throws Exception {
         PdfDictionary info = new PdfDictionary(PdfName.METADATA);
         info.put(PdfName.KEYWORDS, new PdfString("k1, k2"));
         Assertions.assertTrue(testValidatePDFWithVera(info));
