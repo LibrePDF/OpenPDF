@@ -67,7 +67,7 @@ public class PdfSchema extends XmpSchema {
     /**
      * Keywords.
      */
-    public static final String KEYWORDS = "pdf:keywords";
+    public static final String KEYWORDS = "pdf:Keywords";
     /**
      * The PDF file version (for example: 1.0, 1.3, and so on).
      */

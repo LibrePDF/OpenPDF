@@ -4,6 +4,9 @@ import com.lowagie.text.Annotation;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,11 +27,32 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 public class PDFValidationTest {
 
     @Test
-    public void testValidatePDFWithVera() throws Exception {
+    public void testValidateDcTitleWithVera() throws Exception {
+        PdfDictionary info = new PdfDictionary(PdfName.METADATA);
+        info.put(PdfName.TITLE, new PdfString("Test pdf"));
+        Assertions.assertTrue(testValidatePDFWithVera(info));
+    }
+
+    @Test
+    public void testValidateDcSubjectWithVera() throws Exception {
+        PdfDictionary info = new PdfDictionary(PdfName.METADATA);
+        info.put(PdfName.SUBJECT, new PdfString("Test subject"));
+        Assertions.assertTrue(testValidatePDFWithVera(info));
+    }
+
+    @Test
+    public void testValidatePdfKeywordsWithVera() throws Exception {
+        PdfDictionary info = new PdfDictionary(PdfName.METADATA);
+        info.put(PdfName.KEYWORDS, new PdfString("k1, k2"));
+        Assertions.assertTrue(testValidatePDFWithVera(info));
+    }
+
+    private boolean testValidatePDFWithVera(PdfDictionary info) throws Exception {
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PdfWriter pdfWriter = PdfWriter.getInstance(document, byteArrayOutputStream);
         pdfWriter.setPDFXConformance(PdfWriter.PDFA1B);
+        pdfWriter.getInfo().putAll(info);
         pdfWriter.createXmpMetadata();
 
         try {
@@ -58,10 +82,11 @@ public class PDFValidationTest {
                     }
 
                 }
-                Assertions.assertTrue(result.isCompliant());
+                return result.isCompliant();
             }
         } catch (ModelParsingException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
