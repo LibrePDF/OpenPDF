@@ -177,6 +177,23 @@ public class ImageLoader {
     }
 
     /**
+     * Creates an Image from an array of webp image bytes.
+     * https://datatracker.ietf.org/doc/rfc9649/
+     *
+     * @param imageData bytes of the webp image
+     * @return an objet of type <code>Image</code>
+     */
+    public static Image getWebpImage(byte[] imageData) {
+        try (InputStream is = new ByteArrayInputStream(imageData)) {
+            BufferedImage bufferedImage = ImageIO.read(is);
+            return Image.getInstance(bufferedImage, null, false);
+
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    /**
      * Creates an Image from a JPEG image file in a byte array.
      *
      * @param imageData bytes of the image
