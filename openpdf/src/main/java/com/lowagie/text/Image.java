@@ -482,6 +482,11 @@ public abstract class Image extends Rectangle {
             int c6 = is.read();
             int c7 = is.read();
             int c8 = is.read();
+            // webp
+            int c9 = is.read();
+            int c10 = is.read();
+            int c11 = is.read();
+            int c12 = is.read();
             is.close();
 
             is = null;
@@ -518,6 +523,15 @@ public abstract class Image extends Rectangle {
                     || (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
                 img = ImageLoader.getTiffImage(url);
                 return img;
+            }
+            if (c1 == 'R' && c2 == 'I'
+                && c3 == 'F'
+                && c4 == 'F'
+                && c9 == 'W'
+                && c10 == 'E'
+                && c11 == 'B'
+                && c12 == 'P') {
+                return ImageLoader.getWebpImage(imgb);
             }
             if (c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2' &&
                     c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n') {
@@ -612,6 +626,21 @@ public abstract class Image extends Rectangle {
                     || (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
                 return ImageLoader.getTiffImage(imgb);
             }
+            if (c1 == 'R' && c2 == 'I'
+                && c3 == 'F'
+                && c4 == 'F') {
+                is = new java.io.ByteArrayInputStream(imgb);
+                long skipped = is.skip(8);
+                if(skipped == 8) {
+                    final int c9 = is.read();
+                    final int c10 = is.read();
+                    final int c11 = is.read();
+                    final int c12 = is.read();
+                    if (c9 == 'W' && c10 == 'E' && c11 == 'B' && c12 == 'P') {
+                        return ImageLoader.getWebpImage(imgb);
+                    }
+                }
+			}
             if (c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2') {
                 is = new java.io.ByteArrayInputStream(imgb);
                 is.skip(4);
