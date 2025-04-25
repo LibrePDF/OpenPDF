@@ -157,7 +157,7 @@ public class RadioCheckField extends BaseField {
             return getAppearanceRadioCircle(on, writer, box, rotation, backgroundColor, borderWidth, borderColor,
                     textColor);
         } else if (checkType == TYPE_CROSS) {
-            return getAppearanceRadioCross(on, writer, box, rotation, backgroundColor, borderWidth, borderColor,
+            return getAppearanceRadioCross(on, writer, box, rotation, backgroundColor, borderStyle, borderWidth, borderColor,
                     textColor);
         }
 
@@ -218,21 +218,7 @@ public class RadioCheckField extends BaseField {
      */
     public static PdfAppearance getAppearanceRadioCircle(boolean on, PdfWriter writer, Rectangle box, int rotation,
             Color backgroundColor, float borderWidth, Color borderColor, Color textColor) {
-        PdfAppearance app = PdfAppearance.createAppearance(writer, box.getWidth(), box.getHeight());
-        switch (rotation) {
-            case 90:
-                app.setMatrix(0, 1, -1, 0, box.getHeight(), 0);
-                break;
-            case 180:
-                app.setMatrix(-1, 0, 0, -1, box.getWidth(), box.getHeight());
-                break;
-            case 270:
-                app.setMatrix(0, -1, 1, 0, 0, box.getWidth());
-                break;
-            case 0:
-            default:
-                break;
-        }
+        PdfAppearance app = createAppearance(writer, box, rotation);
         Rectangle boundingBox = new Rectangle(app.getBoundingBox());
         float cx = boundingBox.getWidth() / 2;
         float cy = boundingBox.getHeight() / 2;
@@ -271,45 +257,20 @@ public class RadioCheckField extends BaseField {
      * @return the appearance
      */
     public static PdfAppearance getAppearanceRadioCross(boolean on, PdfWriter writer, Rectangle box, int rotation,
-            Color backgroundColor, float borderWidth, Color borderColor, Color textColor) {
+            Color backgroundColor, int borderStyle, float borderWidth, Color borderColor, Color textColor) {
 
-        PdfAppearance app = PdfAppearance.createAppearance(writer, box.getWidth(), box.getHeight());
-        switch (rotation) {
-            case 90:
-                app.setMatrix(0, 1, -1, 0, box.getHeight(), 0);
-                break;
-            case 180:
-                app.setMatrix(-1, 0, 0, -1, box.getWidth(), box.getHeight());
-                break;
-            case 270:
-                app.setMatrix(0, -1, 1, 0, 0, box.getWidth());
-                break;
-        }
+        PdfAppearance app = createAppearance(writer, box, rotation);
 
-        //"q"
-        app.saveState();
-
-        if (backgroundColor != null) {
-            app.setColorFill(backgroundColor);
-        } else {
-            //"0 0 0 rg"
-            app.setRGBColorFillF(0, 0, 0);
-        }
-
-        if (borderWidth > 0 && borderColor != null) {
-            app.setLineWidth(borderWidth);
-            app.setColorStroke(borderColor);
-            //draw surrounding rectangle
-            //"1 1 "+(width-2)+" "+(height-2)+" re"
-            app.rectangle(1, 1, box.getWidth() - 2, box.getHeight() - 2);
-
-            //"W"
-            app.clip();
-        }
+        drawBorderAppearance(box, backgroundColor, borderStyle, borderWidth, borderColor, 0, 0, app);
 
         if (on) {
-            //"n"
-            app.newPath();
+            //"q"
+            app.saveState();
+
+            if (borderWidth > 0 && borderColor != null) {
+                app.setLineWidth(borderWidth);
+                app.setColorStroke(borderColor);
+            }
 
             //draw lines of the cross:
             //upper left corner
@@ -333,11 +294,12 @@ public class RadioCheckField extends BaseField {
 
             //"s"
             app.closePathStroke();
+
+            //"Q"
+            app.restoreState();
         } else {
             //draw nothing since it is the Off appearance
         }
-        //"Q"
-        app.restoreState();
 
         return app;
     }
