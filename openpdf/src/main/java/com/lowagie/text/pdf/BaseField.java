@@ -226,6 +226,13 @@ public abstract class BaseField {
     protected static PdfAppearance getBorderAppearance(PdfWriter writer, Rectangle box, int rotation,
             Color backgroundColor, int borderStyle, float borderWidth, Color borderColor, int options,
             int maxCharacterLength) {
+        PdfAppearance app = createAppearance(writer, box, rotation);
+        drawBorderAppearance(box, backgroundColor, borderStyle, borderWidth, borderColor, options, maxCharacterLength,
+                app);
+        return app;
+    }
+
+    protected static PdfAppearance createAppearance(PdfWriter writer, Rectangle box, int rotation) {
         PdfAppearance app = PdfAppearance.createAppearance(writer, box.getWidth(), box.getHeight());
         switch (rotation) {
             case 90:
@@ -238,6 +245,11 @@ public abstract class BaseField {
                 app.setMatrix(0, -1, 1, 0, 0, box.getWidth());
                 break;
         }
+        return app;
+    }
+
+    protected static void drawBorderAppearance(Rectangle box, Color backgroundColor, int borderStyle, float borderWidth,
+            Color borderColor, int options, int maxCharacterLength, PdfAppearance app) {
         app.saveState();
         // background
         if (backgroundColor != null) {
@@ -309,7 +321,6 @@ public abstract class BaseField {
             }
         }
         app.restoreState();
-        return app;
     }
 
     protected static List<String> getAllHardBreaks(String text) {
