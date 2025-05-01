@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class LZWDecoderTest {
 
     @Test
-    void shouldDecodeType4PSCalcFunction1() throws IOException {
+    void shouldDecodeType4PSCalcFunction1() {
         // Test verifies fix for issue #1298 where LZW decoder gets lost when encoded data does not start with Clear
         // Table (256) code, which appears to happen with the short, text-based PostScript calculator functions in
         // colorspaces.
