@@ -169,6 +169,7 @@ invalid.border.style=Ongeldige border style.
 invalid.character.in.base64.data=Ongeldig karakter in de Base64 data.
 invalid.code.encountered.while.decoding.2d.group.3.compressed.data=Ongeldige code gevonden tijdens het decoderen van 2D group 3 gecomprimeerde data.
 invalid.code.encountered.while.decoding.2d.group.4.compressed.data=Ongeldige code gevonden tijdens het decoderen van 2D group 4 gecomprimeerde data.
+invalid.code.encountered.while.decoding.lzw.compressed.data=Ongeldige code gevonden tijdens het decoderen van LZW gecomprimeerde data.
 invalid.code.encountered=Ongeldige code gevonden.
 invalid.code.type=Ongeldig code type.
 invalid.codeword.size=Ongeldige codeword lengte.

@@ -97,42 +97,39 @@ public class LZWDecoder {
         nextData = 0;
         nextBits = 0;
 
-        int code, oldCode = 0;
+        int code;
+        Integer oldCode = null;
         byte[] string;
 
         while ((code = getNextCode()) != 257) {
 
             if (code == 256) {
-
+                // Clear Table code, reset string table and previous code tracking state
                 initializeStringTable();
-                code = getNextCode();
-
-                if (code == 257) {
-                    break;
-                }
-
-                writeString(stringTable[code]);
-                oldCode = code;
-
-            } else {
-
-                if (code < tableIndex) {
-
-                    string = stringTable[code];
-
-                    writeString(string);
-                    addStringToTable(stringTable[oldCode], string[0]);
-                    oldCode = code;
-
-                } else {
-
-                    string = stringTable[oldCode];
-                    string = composeString(string, string[0]);
-                    writeString(string);
-                    addStringToTable(string);
-                    oldCode = code;
-                }
+                oldCode = null;
+                continue;
             }
+
+            if (code < tableIndex) {
+                string = stringTable[code];
+                writeString(string);
+
+                if (oldCode != null) {
+                    addStringToTable(stringTable[oldCode], string[0]);
+                }
+            } else {
+                if (oldCode == null) {
+                    throw new RuntimeException(MessageLocalization.getComposedMessage(
+                        "invalid.code.encountered.while.decoding.lzw.compressed.data"));
+                }
+
+                string = stringTable[oldCode];
+                string = composeString(string, string[0]);
+                writeString(string);
+                addStringToTable(string);
+            }
+
+            oldCode = code;
         }
     }
 
