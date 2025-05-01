@@ -1,15 +1,13 @@
 package com.lowagie.text.pdf;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
 
 class LZWDecoderTest {
 
@@ -33,6 +31,7 @@ class LZWDecoderTest {
                 "/issue1298/lzw-ps-function-2-encoded.bin",
                 "/issue1298/lzw-ps-function-2-decoded.txt"));
     }
+
     @Test
     void shouldDecodeCmapData() {
         // This sample is the much more common case where LZW data starts with the Clear Table (256) code.  LZWDecoder
