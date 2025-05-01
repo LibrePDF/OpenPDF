@@ -169,7 +169,6 @@ invalid.border.style=Invalid border style.
 invalid.character.in.base64.data=Invalid character in Base64 data.
 invalid.code.encountered.while.decoding.2d.group.3.compressed.data=Invalid code encountered while decoding 2D group 3 compressed data.
 invalid.code.encountered.while.decoding.2d.group.4.compressed.data=Invalid code encountered while decoding 2D group 4 compressed data.
-invalid.code.encountered.while.decoding.lzw.compressed.data=Invalid code encountered while decoding LZW compressed data.
 invalid.code.encountered=Invalid code encountered.
 invalid.code.type=Invalid code type.
 invalid.codeword.size=Invalid codeword size.
