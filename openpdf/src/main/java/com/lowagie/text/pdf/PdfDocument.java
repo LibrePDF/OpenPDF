@@ -302,6 +302,11 @@ public class PdfDocument extends Document {
      * This is the flag meaning whether document is creating footer.
      */
     private boolean isDoFooter = false;
+    /**
+     * This is the flag meaning whether document is rendering table cells.
+     */
+    private boolean isRenderingCells = false;
+
 
     /**
      * Constructs a new PDF document.
@@ -1306,10 +1311,11 @@ public class PdfDocument extends Document {
 
             // this is a line in the loop
             l = line1;
+            float textYPos = isRenderingCells ? cellInnerLineHeight(l) :  l.height();
 
             float moveTextX = l.indentLeft() - indentLeft() + indentation.indentLeft + indentation.listIndentLeft
                     + indentation.sectionIndentLeft;
-            text.moveText(moveTextX, -l.height());
+            text.moveText(moveTextX, -textYPos);
             // is the line preceded by a symbol?
             if (l.listSymbol() != null) {
                 ColumnText.showTextAligned(graphics, Element.ALIGN_LEFT, new Phrase(l.listSymbol()),
@@ -1321,7 +1327,7 @@ public class PdfDocument extends Document {
             writeLineToContent(l, text, graphics, currentValues, writer.getSpaceCharRatio());
 
             currentFont = (PdfFont) currentValues[0];
-            displacement += l.height();
+            displacement += textYPos;
             text.moveText(-moveTextX, 0);
 
         }
@@ -2688,7 +2694,9 @@ public class PdfDocument extends Document {
             while (iterator.hasNext()) {
                 java.util.List<PdfCell> row = iterator.next();
                 analyzeRow(rows, ctx);
+                isRenderingCells = true;
                 renderCells(ctx, row, table.hasToFitPageCells() & atLeastOneFits);
+                isRenderingCells = false;
 
                 if (!mayBeRemoved(row)) {
                     break;
@@ -3016,7 +3024,7 @@ public class PdfDocument extends Document {
                 // if there is still text to render we render it
                 if (lines != null && !lines.isEmpty()) {
                     // we write the text
-                    float cellTop = cell.getTop(ctx.pagetop - ctx.oldHeight - 5f/*adjust for decent size*/);
+                    float cellTop = cell.getTop(ctx.pagetop - ctx.oldHeight);
                     text.moveText(0, cellTop);
                     float cellDisplacement = flushLines() - cellTop;
 
@@ -3156,6 +3164,12 @@ public class PdfDocument extends Document {
         indentation.imageIndentRight = tmpImageIndentRight;
         // End added: Bonf (Marc Schneider) 2003-07-29
         // End Added by Edgar Leonardo Prieto Perilla
+    }
+
+    private float cellInnerLineHeight(PdfLine line) {
+        float[] maxSize = line.getMaxSize();
+        float lineHeight = line.getAscender() - line.getDescender();
+        return line.height() - (line.height() - Math.max(lineHeight, maxSize[1])) / 2;
     }
 
     /**
