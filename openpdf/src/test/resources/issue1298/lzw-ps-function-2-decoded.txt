@@ -1,0 +1,9 @@
+{
+1.0 3 index 0.000000 mul 1.0 exch sub mul 2 index 0.000000 mul 1.0 exch sub mul 1 index 0.000000 mul 1.0 exch sub mul 1.0 exch sub 4 1 roll
+1.0 3 index 1.000000 mul 1.0 exch sub mul 2 index 0.000000 mul 1.0 exch sub mul 1 index 1.000000 mul 1.0 exch sub mul 1.0 exch sub 4 1 roll
+1.0 3 index 0.000000 mul 1.0 exch sub mul 2 index 1.000000 mul 1.0 exch sub mul 1 index 0.000000 mul 1.0 exch sub mul 1.0 exch sub 4 1 roll
+1.0 3 index 0.000000 mul 1.0 exch sub mul 2 index 0.000000 mul 1.0 exch sub mul 1 index 0.000000 mul 1.0 exch sub mul 1.0 exch sub 4 1 roll
+pop
+pop
+pop
+}
