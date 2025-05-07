@@ -49,6 +49,7 @@
 
 package com.lowagie.text;
 
+import com.ibm.icu.impl.locale.XCldrStub.Predicate;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
@@ -72,10 +73,13 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
 
 /**
- * An <CODE>Image</CODE> is the representation of a graphic element (JPEG, PNG or GIF) that has to be inserted into the
+ * An <CODE>Image</CODE> is the representation of a graphic element
+ * (JPEG, PNG or GIF) that has to be inserted into the
  * document
  *
  * @see Element
@@ -217,6 +221,21 @@ public abstract class Image extends Rectangle {
     /**
      * The image type.
      */
+
+    private static final List<ImageFormatHandler> IMAGE_LOADERS = new ArrayList<>();
+
+    static {
+        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isGifFormat, (rawBytes,
+                url) -> rawBytes != null ? ImageLoader.getGifImage(rawBytes) : ImageLoader.getGifImage(url)));
+        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isJpegFormat, (rawBytes,
+                url) -> rawBytes != null ? ImageLoader.getJpegImage(rawBytes) : ImageLoader.getJpegImage(url)));
+        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isPngFormat, (rawBytes,
+                url) -> rawBytes != null ? ImageLoader.getPngImage(rawBytes) : ImageLoader.getPngImage(url)));
+        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isBmpFormat, (rawBytes,
+                url) -> rawBytes != null ? ImageLoader.getBmpImage(rawBytes) : ImageLoader.getBmpImage(url)));
+        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isTiffFormat, (rawBytes,
+                url) -> rawBytes != null ? ImageLoader.getTiffImage(rawBytes) : ImageLoader.getTiffImage(url)));
+    }
     protected int type;
     /**
      * The URL of the image.
@@ -365,7 +384,8 @@ public abstract class Image extends Rectangle {
 
     // implementation of the Element interface
     /**
-     * Holds value of property directReference. An image is embedded into a PDF as an Image XObject. This object is
+     * Holds value of property directReference. An image is embedded into
+a PDF as an Image XObject. This object is
      * referenced by a PdfIndirectReference object.
      */
     private PdfIndirectReference directReference;
@@ -458,83 +478,67 @@ public abstract class Image extends Rectangle {
         this.transparency = image.transparency;
     }
 
+    private static boolean isGifFormat(int[] headerBytes) {
+        return headerBytes[0] == 'G' && headerBytes[1] == 'I' && headerBytes[2] == 'F';
+    }
+
+    private static boolean isJpegFormat(int[] headerBytes) {
+        return headerBytes[0] == 0xFF && headerBytes[1] == 0xD8;
+    }
+
+    private static boolean isPngFormat(int[] headerBytes) {
+        return headerBytes[0] == 137 && headerBytes[1] == 80 && headerBytes[2] == 78 && headerBytes[3] == 71;
+    }
+
+    private static boolean isBmpFormat(int[] headerBytes) {
+        return headerBytes[0] == 'B' && headerBytes[1] == 'M';
+    }
+
+    private static boolean isTiffFormat(int[] headerBytes) {
+        return (headerBytes[0] == 'I' && headerBytes[1] == 'I' && headerBytes[2] == 42 && headerBytes[3] == 0) ||
+                (headerBytes[0] == 'M' && headerBytes[1] == 'M' && headerBytes[2] == 0 && headerBytes[3] == 42);
+    }
+
+    private static class ImageFormatHandler {
+        Predicate<int[]> predicate;
+        BiFunction<byte[], URL, Image> loader;
+
+        ImageFormatHandler(Predicate<int[]> predicate, BiFunction<byte[], URL, Image> loader) {
+            this.predicate = predicate;
+            this.loader = loader;
+        }
+
+    }
+
     /**
      * Gets an instance of an Image.
      *
      * @param url an URL
      * @return an Image
-     * @throws BadElementException   if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws BadElementException   if error in creating {@link
+ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws MalformedURLException if bad url
      * @throws IOException           if image is not recognized
      */
-    public static Image getInstance(URL url) throws BadElementException,
-            IOException {
-        InputStream is = null;
-        Image img = null;
-        try {
-            is = url.openStream();
-            int c1 = is.read();
-            int c2 = is.read();
-            int c3 = is.read();
-            int c4 = is.read();
-            // jbig2
-            int c5 = is.read();
-            int c6 = is.read();
-            int c7 = is.read();
-            int c8 = is.read();
-            is.close();
+    public static Image getInstance(URL url) throws BadElementException, IOException {
+        try (InputStream is = url.openStream()) {
+            int[] headerBytes = readHeaderBytes(is, 8);
+            Image img = loadImageFromHeader(headerBytes, null, url);
+            img.setUrl(url);
+            return img;
+        }
 
-            is = null;
-            if (c1 == 'G' && c2 == 'I' && c3 == 'F') {
-                img = ImageLoader.getGifImage(url);
-                return img;
-            }
-            if (c1 == 0xFF && c2 == 0xD8) {
-                img = ImageLoader.getJpegImage(url);
-                return img;
-            }
-            if (c1 == 0x00 && c2 == 0x00 && c3 == 0x00 && c4 == 0x0c) {
-                img = ImageLoader.getJpeg2000Image(url);
-                return img;
-            }
-            if (c1 == 0xff && c2 == 0x4f && c3 == 0xff && c4 == 0x51) {
-                img = ImageLoader.getJpeg2000Image(url);
-                return img;
-            }
-            if (c1 == PNGID[0] && c2 == PNGID[1]
-                    && c3 == PNGID[2] && c4 == PNGID[3]) {
-                img = ImageLoader.getPngImage(url);
-                return img;
-            }
-            if (c1 == 0xD7 && c2 == 0xCD) {
-                img = new ImgWMF(url);
-                return img;
-            }
-            if (c1 == 'B' && c2 == 'M') {
-                img = ImageLoader.getBmpImage(url);
-                return img;
-            }
-            if ((c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42)
-                    || (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
-                img = ImageLoader.getTiffImage(url);
-                return img;
-            }
-            if (c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2' &&
-                    c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n') {
-                throw new IOException(url.toString()
-                        + " is not a recognized imageformat. JBIG2 support has been removed.");
-            }
-            throw new IOException(url.toString()
-                    + " is not a recognized imageformat.");
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-            if (img != null) {
-                // Make sure the URL is always set
-                img.setUrl(url);
+    }
+
+    private static Image loadImageFromHeader(int[] headerBytes, byte[] rawBytes,
+            URL url)
+            throws IOException, BadElementException {
+        for (ImageFormatHandler handler : IMAGE_LOADERS) {
+            if (handler.predicate.test(headerBytes)) {
+                return handler.loader.apply(rawBytes, url);
             }
         }
+        throw new IOException("Unrecognized image format.");
     }
 
     /**
@@ -543,7 +547,8 @@ public abstract class Image extends Rectangle {
      * @param filename a filename
      * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
      * <CODE>Png</CODE>
-     * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws BadElementException if error in creating {@link
+ ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws IOException         if image is not recognized
      */
     public static Image getInstance(String filename)
@@ -556,8 +561,9 @@ public abstract class Image extends Rectangle {
      *
      * @param filename a filename
      * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
-     * <CODE>Png</CODE>
-     * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     *         <CODE>Png</CODE>
+     * @throws BadElementException if error in creating {@link
+ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws IOException         if image is not recognized
      */
     public static Image getInstanceFromClasspath(String filename)
@@ -571,66 +577,24 @@ public abstract class Image extends Rectangle {
      *
      * @param imgb raw image date
      * @return an Image object
-     * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws BadElementException if error in creating {@link
+     *                             ImgWMF#ImgWMF(byte[]) ImgWMF}
      * @throws IOException         if image is not recognized
      */
     public static Image getInstance(byte[] imgb) throws BadElementException,
             IOException {
-        InputStream is = null;
-        try {
-            is = new java.io.ByteArrayInputStream(imgb);
-            int c1 = is.read();
-            int c2 = is.read();
-            int c3 = is.read();
-            int c4 = is.read();
-            is.close();
-
-            is = null;
-            if (c1 == 'G' && c2 == 'I' && c3 == 'F') {
-                return ImageLoader.getGifImage(imgb);
-            }
-            if (c1 == 0xFF && c2 == 0xD8) {
-                return ImageLoader.getJpegImage(imgb);
-            }
-            if (c1 == 0x00 && c2 == 0x00 && c3 == 0x00 && c4 == 0x0c) {
-                return ImageLoader.getJpeg2000Image(imgb);
-            }
-            if (c1 == 0xff && c2 == 0x4f && c3 == 0xff && c4 == 0x51) {
-                return ImageLoader.getJpeg2000Image(imgb);
-            }
-            if (c1 == PNGID[0] && c2 == PNGID[1]
-                    && c3 == PNGID[2] && c4 == PNGID[3]) {
-                return ImageLoader.getPngImage(imgb);
-            }
-            if (c1 == 0xD7 && c2 == 0xCD) {
-                return new ImgWMF(imgb);
-            }
-            if (c1 == 'B' && c2 == 'M') {
-                return ImageLoader.getBmpImage(imgb);
-            }
-            if ((c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42)
-                    || (c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0)) {
-                return ImageLoader.getTiffImage(imgb);
-            }
-            if (c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2') {
-                is = new java.io.ByteArrayInputStream(imgb);
-                is.skip(4);
-                int c5 = is.read();
-                int c6 = is.read();
-                int c7 = is.read();
-                int c8 = is.read();
-                if (c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n') {
-                    throw new IOException(
-                            MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat"));
-                }
-            }
-            throw new IOException(
-                    MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat"));
-        } finally {
-            if (is != null) {
-                is.close();
-            }
+        try (InputStream is = new java.io.ByteArrayInputStream(imgb)) {
+            int[] headerBytes = readHeaderBytes(is, 8); // Extracted logic
+            return loadImageFromHeader(headerBytes, imgb, null);
         }
+    }
+
+    private static int[] readHeaderBytes(InputStream is, int length) throws IOException {
+        int[] headerBytes = new int[length];
+        for (int i = 0; i < length; i++) {
+            headerBytes[i] = is.read();
+        }
+        return headerBytes;
     }
 
     /**
@@ -665,14 +629,19 @@ public abstract class Image extends Rectangle {
     }
 
     /**
-     * Creates an Image with CCITT G3 or G4 compression. It assumes that the data bytes are already compressed.
+     * Creates an Image with CCITT G3 or G4 compression. It assumes that the data
+     * bytes are already compressed.
      *
      * @param width       the exact width of the image
      * @param height      the exact height of the image
-     * @param reverseBits reverses the bits in <code>data</code>. Bit 0 is swapped with bit 7 and so on
-     * @param typeCCITT   the type of compression in <code>data</code>. It can be CCITTG4, CCITTG31D, CCITTG32D
-     * @param parameters  parameters associated with this stream. Possible values are CCITT_BLACKIS1,
-     *                    CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and CCITT_ENDOFBLOCK or a combination of them
+     * @param reverseBits reverses the bits in <code>data</code>. Bit 0 is swapped
+     *                    with bit 7 and so on
+     * @param typeCCITT   the type of compression in <code>data</code>. It can be
+     *                    CCITTG4, CCITTG31D, CCITTG32D
+     * @param parameters  parameters associated with this stream. Possible values
+     *                    are CCITT_BLACKIS1,
+     *                    CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and
+     *                    CCITT_ENDOFBLOCK or a combination of them
      * @param data        the image data
      * @return an Image object
      * @throws BadElementException on error
@@ -685,16 +654,22 @@ public abstract class Image extends Rectangle {
     }
 
     /**
-     * Creates an Image with CCITT G3 or G4 compression. It assumes that the data bytes are already compressed.
+     * Creates an Image with CCITT G3 or G4 compression. It assumes that
+     * the data bytes are already compressed.
      *
      * @param width        the exact width of the image
      * @param height       the exact height of the image
-     * @param reverseBits  reverses the bits in <code>data</code>. Bit 0 is swapped with bit 7 and so on
-     * @param typeCCITT    the type of compression in <code>data</code>. It can be CCITTG4, CCITTG31D, CCITTG32D
-     * @param parameters   parameters associated with this stream. Possible values are CCITT_BLACKIS1,
-     *                     CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and CCITT_ENDOFBLOCK or a combination of them
+     * @param reverseBits  reverses the bits in <code>data</code>. Bit 0
+is swapped with bit 7 and so on
+     * @param typeCCITT    the type of compression in <code>data</code>.
+It can be CCITTG4, CCITTG31D, CCITTG32D
+     * @param parameters   parameters associated with this stream.
+Possible values are CCITT_BLACKIS1,
+     *                     CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and
+CCITT_ENDOFBLOCK or a combination of them
      * @param data         the image data
-     * @param transparency transparency information in the Mask format of the image dictionary
+     * @param transparency transparency information in the Mask format of the image
+     *                     dictionary
      * @return an Image object
      * @throws BadElementException on error
      */
@@ -719,7 +694,8 @@ public abstract class Image extends Rectangle {
      * @param components   1,3 or 4 for GrayScale, RGB and CMYK
      * @param data         the image data
      * @param bpc          bits per component
-     * @param transparency transparency information in the Mask format of the image dictionary
+     * @param transparency transparency information in the Mask format of
+the image dictionary
      * @return an object of type <CODE>ImgRaw</CODE>
      * @throws BadElementException on error
      */
@@ -743,7 +719,8 @@ public abstract class Image extends Rectangle {
     /**
      * gets an instance of an Image
      *
-     * @param template a PdfTemplate that has to be wrapped in an <code>Image</code> object
+     * @param template a PdfTemplate that has to be wrapped in an
+<code>Image</code> object
      * @return an Image object
      * @throws BadElementException on error
      */
@@ -756,7 +733,8 @@ public abstract class Image extends Rectangle {
      * Gets an instance of an Image from a java.awt.Image.
      *
      * @param image   the <CODE>java.awt.Image</CODE> to convert
-     * @param color   if different from <CODE>null</CODE> the transparency pixels are replaced by this color
+     * @param color   if different from <CODE>null</CODE> the
+transparency pixels are replaced by this color
      * @param forceBW if <CODE>true</CODE> the image is treated as black and white
      * @return an object of type <CODE>ImgRaw</CODE>
      * @throws BadElementException on error
@@ -935,7 +913,8 @@ public abstract class Image extends Rectangle {
      * Gets an instance of an Image from a java.awt.Image.
      *
      * @param image the <CODE>java.awt.Image</CODE> to convert
-     * @param color if different from <CODE>null</CODE> the transparency pixels are replaced by this color
+     * @param color if different from <CODE>null</CODE> the transparency 
+pixels are replaced by this color
      * @return an object of type <CODE>ImgRaw</CODE>
      * @throws BadElementException on error
      * @throws IOException         on error
@@ -946,9 +925,11 @@ public abstract class Image extends Rectangle {
     }
 
     /**
-     * Gets an instance of a Image from a java.awt.Image. The image is added as a JPEG with a user defined quality.
+     * Gets an instance of a Image from a java.awt.Image. The image is
+added as a JPEG with a user defined quality.
      *
-     * @param writer   the <CODE>PdfWriter</CODE> object to which the image will be added
+     * @param writer   the <CODE>PdfWriter</CODE> object to which the
+image will be added
      * @param awtImage the <CODE>java.awt.Image</CODE> to convert
      * @param quality  a float value between <code>0</code> and <code>1</code>
      * @return an object of type <CODE>PdfTemplate</CODE>
@@ -963,9 +944,11 @@ public abstract class Image extends Rectangle {
     // width and height
 
     /**
-     * Gets an instance of a Image from a java.awt.Image. The image is added as a JPEG with a user defined quality.
+     * Gets an instance of a Image from a java.awt.Image. The image is
+added as a JPEG with a user defined quality.
      *
-     * @param cb       the <CODE>PdfContentByte</CODE> object to which the image will be added
+     * @param cb       the <CODE>PdfContentByte</CODE> object to which
+the image will be added
      * @param awtImage the <CODE>java.awt.Image</CODE> to convert
      * @param quality  a float value between <code>0</code> and <code>1</code>
      * @return an object of type <CODE>PdfTemplate</CODE>
@@ -1110,7 +1093,8 @@ public abstract class Image extends Rectangle {
     }
 
     /**
-     * Returns <CODE>true</CODE> if the image is an <CODE>ImgTemplate</CODE> -object.
+     * Returns <CODE>true</CODE> if the image is an
+<CODE>ImgTemplate</CODE> -object.
      *
      * @return a <CODE>boolean</CODE>
      */
@@ -1495,7 +1479,8 @@ public abstract class Image extends Rectangle {
     // interpolation
 
     /**
-     * Some image formats, like TIFF may present the images rotated that have to be compensated.
+     * Some image formats, like TIFF may present the images rotated that
+have to be compensated.
      *
      * @param initialRotation New value of property initialRotation.
      */
@@ -1624,7 +1609,8 @@ public abstract class Image extends Rectangle {
     /**
      * Gets the layer this image belongs to.
      *
-     * @return the layer this image belongs to or <code>null</code> for no layer defined
+     * @return the layer this image belongs to or <code>null</code> for
+no layer defined
      */
     public PdfOCG getLayer() {
         return layer;
@@ -1649,7 +1635,8 @@ public abstract class Image extends Rectangle {
     }
 
     /**
-     * Sets the image interpolation. Image interpolation attempts to produce a smooth transition between adjacent sample
+     * Sets the image interpolation. Image interpolation attempts to
+produce a smooth transition between adjacent sample
      * values.
      *
      * @param interpolation New value of property interpolation.
@@ -1906,7 +1893,8 @@ public abstract class Image extends Rectangle {
     }
 
     /**
-     * Returns <CODE>true</CODE> if this <CODE>Image</CODE> has the requisites to be a mask.
+     * Returns <CODE>true</CODE> if this <CODE>Image</CODE> has the
+requisites to be a mask.
      *
      * @return <CODE>true</CODE> if this <CODE>Image</CODE> can be a mask
      */
@@ -1984,11 +1972,11 @@ public abstract class Image extends Rectangle {
         this.transparency = transparency;
     }
 
-
     /**
      * Returns the compression level used for images written as a compressed stream.
      *
-     * @return the compression level (0 = best speed, 9 = best compression, -1 is default)
+     * @return the compression level (0 = best speed, 9 = best
+compression, -1 is default)
      * @since 2.1.3
      */
     public int getCompressionLevel() {
@@ -1996,9 +1984,11 @@ public abstract class Image extends Rectangle {
     }
 
     /**
-     * Sets the compression level to be used if the image is written as a compressed stream.
+     * Sets the compression level to be used if the image is written as a
+compressed stream.
      *
-     * @param compressionLevel a value between 0 (best speed) and 9 (best compression)
+     * @param compressionLevel a value between 0 (best speed) and 9 (best
+compression)
      * @since 2.1.3
      */
     public void setCompressionLevel(int compressionLevel) {
