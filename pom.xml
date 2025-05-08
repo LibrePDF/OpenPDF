@@ -86,7 +86,7 @@
 
     <!-- dependencies -->
     <bouncycastle.version>1.79</bouncycastle.version>
-    <commons-io.version>2.18.0</commons-io.version>
+    <commons-io.version>2.19.0</commons-io.version>
     <dom4j.version>2.1.4</dom4j.version>
     <fop.version>2.10</fop.version>
     <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
