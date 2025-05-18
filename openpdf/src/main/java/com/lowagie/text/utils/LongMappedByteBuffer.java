@@ -52,8 +52,9 @@ package com.lowagie.text.utils;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.lang.reflect.Method;
+import java.nio.channels.FileChannel;
+
 
 /**
  * A utility class that allows random access to files larger than 2GB by internally
@@ -103,9 +104,9 @@ public class LongMappedByteBuffer {
 
     public void get(long pos, byte[] dst, int off, int len) {
 
-        if (off < 0 || len < 0 || off + len > dst.length)
+        if (off < 0 || len < 0 || off + len > dst.length) {
             throw new IndexOutOfBoundsException("Invalid offset/length");
-
+        }
         int remaining = len;
         int dstPos = off;
 
@@ -145,8 +146,9 @@ public class LongMappedByteBuffer {
     }
 
     public void put(byte[] src, int off, int len) {
-        if (off < 0 || len < 0 || off + len > src.length)
+        if (off < 0 || len < 0 || off + len > src.length) {
             throw new IndexOutOfBoundsException("Invalid offset/length");
+        }
 
         int remaining = len;
         int srcPos = off;
@@ -174,7 +176,9 @@ public class LongMappedByteBuffer {
         long pos = position();
         long limit = limit();
 
-        if (pos >= limit) return -1;
+        if (pos >= limit) {
+            return -1;
+        }
 
         int available = (int) Math.min(len, limit - pos);
 
@@ -191,8 +195,10 @@ public class LongMappedByteBuffer {
     }
 
     public LongMappedByteBuffer position(long newPosition) {
-        if (newPosition < 0 || newPosition > size)
+        if (newPosition < 0 || newPosition > size) {
             throw new IllegalArgumentException("Position out of bounds");
+        }
+
         this.position = newPosition;
         return this;
     }
@@ -245,7 +251,9 @@ public class LongMappedByteBuffer {
      * Cleans a single direct buffer using its internal cleaner.
      */
     private static boolean cleanDirectBuffer(ByteBuffer buffer) {
-        if (!buffer.isDirect()) return false;
+        if (!buffer.isDirect()) {
+            return false;
+        }
 
         try {
             Method cleanerMethod = buffer.getClass().getMethod("cleaner");

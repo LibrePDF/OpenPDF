@@ -49,7 +49,6 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.text.utils.LongMappedByteBuffer;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -195,15 +194,21 @@ public class MappedRandomAccessFile implements AutoCloseable {
         long pos = mappedByteBuffer.position();
         long limit = mappedByteBuffer.limit();
 
-        if (pos >= limit) return -1;
+        if (pos >= limit) {
+            return -1;
+        }
 
         int remaining = (int) Math.min(len, limit - pos);
-        if (remaining <= 0) return -1;
+        if (remaining <= 0) {
+            return -1;
+        }
 
         int totalRead = 0;
         while (totalRead < remaining) {
             int n = mappedByteBuffer.read(bytes, off + totalRead, remaining - totalRead);
-            if (n <= 0) break; // EOF or read failed
+            if (n <= 0) {
+                break; // EOF or read failed
+            }
             totalRead += n;
         }
 
