@@ -52,9 +52,7 @@ import com.lowagie.text.utils.LongMappedByteBuffer;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 /**
@@ -202,7 +200,6 @@ public class MappedRandomAccessFile implements AutoCloseable {
      * @see java.io.RandomAccessFile#close()
      */
     public void close() throws IOException {
-        mappedByteBuffer.
         mappedByteBuffer = null;
         if (channel != null) {
             channel.close();
