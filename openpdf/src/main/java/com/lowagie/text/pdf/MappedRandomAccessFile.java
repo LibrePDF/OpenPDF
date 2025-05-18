@@ -48,15 +48,14 @@
  */
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.utils.LongMappedByteBuffer;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 /**
@@ -66,7 +65,7 @@ import java.nio.channels.FileChannel;
  */
 public class MappedRandomAccessFile implements AutoCloseable {
 
-    private MappedByteBuffer mappedByteBuffer = null;
+    private LongMappedByteBuffer mappedByteBuffer = null;
     private FileChannel channel = null;
 
     /**
@@ -102,26 +101,41 @@ public class MappedRandomAccessFile implements AutoCloseable {
         if (buffer == null || !buffer.isDirect()) {
             return false;
         }
-        return cleanJava11(buffer);
+        return cleanJava17(buffer);
 
     }
 
-    private static boolean cleanJava11(final ByteBuffer buffer) {
-        Boolean success = Boolean.FALSE;
-        try {
-            MethodHandles.Lookup lookup = MethodHandles.lookup();
-            Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
-            MethodHandle methodHandle = lookup.findStatic(unsafeClass, "getUnsafe", MethodType.methodType(unsafeClass));
-            Object theUnsafe = methodHandle.invoke();
-            MethodHandle invokeCleanerMethod = lookup.findVirtual(unsafeClass, "invokeCleaner",
-                    MethodType.methodType(void.class, ByteBuffer.class));
-            invokeCleanerMethod.invoke(theUnsafe, buffer);
-            success = Boolean.TRUE;
-        } catch (Throwable ignore) {
-            // Ignore
+    /**
+     * Attempts to clean the direct ByteBuffer using its internal cleaner.
+     * Works on Java 17+ (HotSpot JVMs) without using Unsafe or MethodHandles.
+     *
+     * @param buffer the direct ByteBuffer to unmap
+     * @return true if successfully cleaned, false otherwise
+     */
+    private static boolean cleanJava17(final ByteBuffer buffer) {
+        if (buffer == null || !buffer.isDirect()) {
+            return false;
         }
-        return success;
+
+        try {
+            // Access DirectByteBuffer.cleaner() -> Cleaner.clean()
+            Method cleanerMethod = buffer.getClass().getMethod("cleaner");
+            cleanerMethod.setAccessible(true);
+            Object cleaner = cleanerMethod.invoke(buffer);
+
+            if (cleaner != null) {
+                Method cleanMethod = cleaner.getClass().getMethod("clean");
+                cleanMethod.setAccessible(true);
+                cleanMethod.invoke(cleaner);
+                return true;
+            }
+        } catch (Exception e) {
+            // Cleaning not available (not a HotSpot JVM or access denied)
+        }
+
+        return false;
     }
+
 
     /**
      * initializes the channel and mapped bytebuffer
@@ -133,12 +147,10 @@ public class MappedRandomAccessFile implements AutoCloseable {
     private void init(FileChannel channel, FileChannel.MapMode mapMode)
             throws IOException {
 
-        if (channel.size() > Integer.MAX_VALUE) {
-            throw new PdfException("The PDF file is too large. Max 2GB. Size: " + channel.size());
-        }
 
         this.channel = channel;
-        this.mappedByteBuffer = channel.map(mapMode, 0L, channel.size());
+        this.mappedByteBuffer = new LongMappedByteBuffer(channel, mapMode);
+
         mappedByteBuffer.load();
     }
 
@@ -173,18 +185,32 @@ public class MappedRandomAccessFile implements AutoCloseable {
      * @see java.io.RandomAccessFile#read(byte[], int, int)
      */
     public int read(byte[] bytes, int off, int len) {
-        int pos = mappedByteBuffer.position();
-        int limit = mappedByteBuffer.limit();
-        if (pos == limit) {
-            return -1; // EOF
+        if (bytes == null) {
+            throw new NullPointerException();
         }
-        int newlimit = pos + len - off;
-        if (newlimit > limit) {
-            len = limit - pos; // don't read beyond EOF
+        if (off < 0 || len < 0 || off + len > bytes.length) {
+            throw new IndexOutOfBoundsException();
         }
-        mappedByteBuffer.get(bytes, off, len);
-        return len;
+
+        long pos = mappedByteBuffer.position();
+        long limit = mappedByteBuffer.limit();
+
+        if (pos >= limit) return -1;
+
+        int remaining = (int) Math.min(len, limit - pos);
+        if (remaining <= 0) return -1;
+
+        int totalRead = 0;
+        while (totalRead < remaining) {
+            int n = mappedByteBuffer.read(bytes, off + totalRead, remaining - totalRead);
+            if (n <= 0) break; // EOF or read failed
+            totalRead += n;
+        }
+
+        return totalRead == 0 ? -1 : totalRead;
     }
+
+
 
     /**
      * @return long
@@ -199,7 +225,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
      * @see java.io.RandomAccessFile#seek(long)
      */
     public void seek(long pos) {
-        mappedByteBuffer.position((int) pos);
+        mappedByteBuffer.position(pos);
     }
 
     /**
@@ -217,24 +243,12 @@ public class MappedRandomAccessFile implements AutoCloseable {
      * @see java.io.RandomAccessFile#close()
      */
     public void close() throws IOException {
-        clean(mappedByteBuffer);
+        mappedByteBuffer.clean();
         mappedByteBuffer = null;
         if (channel != null) {
             channel.close();
         }
         channel = null;
-    }
-
-    /**
-     * invokes the close method
-     *
-     * @see java.lang.Object#finalize()
-     */
-    @Override
-    @Deprecated(since = "OpenPDF-2.0.2", forRemoval = true)
-    protected void finalize() throws Throwable {
-        close();
-        super.finalize();
     }
 
 }
