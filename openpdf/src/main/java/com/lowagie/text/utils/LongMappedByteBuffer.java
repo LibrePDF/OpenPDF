@@ -102,30 +102,30 @@ public class LongMappedByteBuffer {
 
 
     public void get(long pos, byte[] dst, int off, int len) {
-
         if (off < 0 || len < 0 || off + len > dst.length) {
             throw new IndexOutOfBoundsException("Invalid offset/length");
         }
+
+        long readPos = pos;  
         int remaining = len;
         int dstPos = off;
 
         while (remaining > 0) {
-            int chunkIndex = (int) (pos / CHUNK_SIZE);
-            int chunkOffset = (int) (pos % CHUNK_SIZE);
+            int chunkIndex = (int) (readPos / CHUNK_SIZE);
+            int chunkOffset = (int) (readPos % CHUNK_SIZE);
             int chunkRemaining = chunks[chunkIndex].limit() - chunkOffset;
             int toRead = Math.min(remaining, chunkRemaining);
-
 
             ByteBuffer dup = chunks[chunkIndex].duplicate();
             dup.position(chunkOffset);
             dup.get(dst, dstPos, toRead);
 
-            pos += toRead;
+            readPos += toRead;
             dstPos += toRead;
             remaining -= toRead;
         }
-
     }
+
 
 
     public void get(byte[] dst, int off, int len) {

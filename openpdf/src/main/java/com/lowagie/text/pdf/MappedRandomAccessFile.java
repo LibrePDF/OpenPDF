@@ -136,9 +136,6 @@ public class MappedRandomAccessFile implements AutoCloseable {
      * @see java.io.RandomAccessFile#read(byte[], int, int)
      */
     public int read(byte[] bytes, int off, int len) {
-        if (bytes == null) {
-            throw new NullPointerException();
-        }
         if (off < 0 || len < 0 || off + len > bytes.length) {
             throw new IndexOutOfBoundsException();
         }
