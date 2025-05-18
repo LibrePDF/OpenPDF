@@ -232,42 +232,4 @@ public class LongMappedByteBuffer {
             chunk.force();
         }
     }
-
-    /**
-     * Cleans all mapped chunks using Java 17+ compatible reflection.
-     * This forcibly unmaps the buffers (HotSpot-specific, may not work on all JVMs).
-     */
-    public boolean clean() {
-        boolean success = true;
-        for (MappedByteBuffer chunk : chunks) {
-            if (!cleanDirectBuffer(chunk)) {
-                success = false;
-            }
-        }
-        return success;
-    }
-
-    /**
-     * Cleans a single direct buffer using its internal cleaner.
-     */
-    private static boolean cleanDirectBuffer(ByteBuffer buffer) {
-        if (!buffer.isDirect()) {
-            return false;
-        }
-
-        try {
-            Method cleanerMethod = buffer.getClass().getMethod("cleaner");
-            cleanerMethod.setAccessible(true);
-            Object cleaner = cleanerMethod.invoke(buffer);
-            if (cleaner != null) {
-                Method clean = cleaner.getClass().getMethod("clean");
-                clean.invoke(cleaner);
-                return true;
-            }
-        } catch (Exception ignored) {
-            // Not supported on this JVM or module access blocked
-        }
-
-        return false;
-    }
 }

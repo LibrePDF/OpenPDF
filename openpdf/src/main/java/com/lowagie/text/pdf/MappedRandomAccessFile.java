@@ -91,52 +91,6 @@ public class MappedRandomAccessFile implements AutoCloseable {
     }
 
     /**
-     * invokes the clean method on the ByteBuffer's cleaner
-     *
-     * @param buffer ByteBuffer
-     * @return boolean true on success
-     */
-    public static boolean clean(final java.nio.ByteBuffer buffer) {
-        if (buffer == null || !buffer.isDirect()) {
-            return false;
-        }
-        return cleanJava17(buffer);
-
-    }
-
-    /**
-     * Attempts to clean the direct ByteBuffer using its internal cleaner.
-     * Works on Java 17+ (HotSpot JVMs) without using Unsafe or MethodHandles.
-     *
-     * @param buffer the direct ByteBuffer to unmap
-     * @return true if successfully cleaned, false otherwise
-     */
-    private static boolean cleanJava17(final ByteBuffer buffer) {
-        if (buffer == null || !buffer.isDirect()) {
-            return false;
-        }
-
-        try {
-            // Access DirectByteBuffer.cleaner() -> Cleaner.clean()
-            Method cleanerMethod = buffer.getClass().getMethod("cleaner");
-            cleanerMethod.setAccessible(true);
-            Object cleaner = cleanerMethod.invoke(buffer);
-
-            if (cleaner != null) {
-                Method cleanMethod = cleaner.getClass().getMethod("clean");
-                cleanMethod.setAccessible(true);
-                cleanMethod.invoke(cleaner);
-                return true;
-            }
-        } catch (Exception e) {
-            // Cleaning not available (not a HotSpot JVM or access denied)
-        }
-
-        return false;
-    }
-
-
-    /**
      * initializes the channel and mapped bytebuffer
      *
      * @param channel FileChannel
@@ -248,7 +202,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
      * @see java.io.RandomAccessFile#close()
      */
     public void close() throws IOException {
-        mappedByteBuffer.clean();
+        mappedByteBuffer.
         mappedByteBuffer = null;
         if (channel != null) {
             channel.close();
