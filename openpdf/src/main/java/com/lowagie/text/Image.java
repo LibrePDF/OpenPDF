@@ -2088,3 +2088,5 @@ private static boolean isTiff(int[] array) {
 private static boolean isWMF(int[] array) {
     return array[0] == 0xD7 && array[1] == 0xCD;
 }
+
+}    
