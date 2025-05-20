@@ -73,9 +73,18 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 /**
  * An <CODE>Image</CODE> is the representation of a graphic element
@@ -89,6 +98,11 @@ import java.util.function.BiFunction;
 public abstract class Image extends Rectangle {
 
     // static final membervariables
+
+    /**
+     * used to detect image base64 data pattern
+     */
+    private static final Pattern imageDataPattern = Pattern.compile("data:(image\\/[a-zA-Z0-9+-]+);.*(base64),(.*)");
 
     /**
      * this is a kind of image alignment.
@@ -480,124 +494,139 @@ a PDF as an Image XObject. This object is
         this.transparency = image.transparency;
     }
 
-    private static boolean isGifFormat(int[] headerBytes) {
-        return headerBytes[0] == 'G' && headerBytes[1] == 'I' && headerBytes[2] == 'F';
+private static boolean isGifFormat(int[] headerBytes) {
+    return headerBytes[0] == 'G' && headerBytes[1] == 'I' && headerBytes[2] == 'F';
+}
+
+private static boolean isJpegFormat(int[] headerBytes) {
+    return headerBytes[0] == 0xFF && headerBytes[1] == 0xD8;
+}
+
+private static boolean isPngFormat(int[] headerBytes) {
+    return headerBytes[0] == 137 && headerBytes[1] == 80 && headerBytes[2] == 78 && headerBytes[3] == 71;
+}
+
+private static boolean isBmpFormat(int[] headerBytes) {
+    return headerBytes[0] == 'B' && headerBytes[1] == 'M';
+}
+
+private static boolean isTiffFormat(int[] headerBytes) {
+    return (headerBytes[0] == 'I' && headerBytes[1] == 'I' && headerBytes[2] == 42 && headerBytes[3] == 0) ||
+            (headerBytes[0] == 'M' && headerBytes[1] == 'M' && headerBytes[2] == 0 && headerBytes[3] == 42);
+}
+
+private static class ImageFormatHandler {
+    Predicate<int[]> predicate;
+    BiFunction<byte[], URL, Image> loader;
+
+    ImageFormatHandler(Predicate<int[]> predicate, BiFunction<byte[], URL, Image> loader) {
+        this.predicate = predicate;
+        this.loader = loader;
+    }
+}
+
+private enum ImageType {
+    PNG(ImageLoader::getPngImage, ImageLoader::getPngImage, Image::isPng),
+    GIF(ImageLoader::getGifImage, ImageLoader::getGifImage, Image::isGif),
+    JPEG2000(ImageLoader::getJpeg2000Image, ImageLoader::getJpeg2000Image, Image::isJpeg2000),
+    JPEG(ImageLoader::getJpegImage, ImageLoader::getJpegImage, Image::isJpeg),
+    BMP(ImageLoader::getBmpImage, ImageLoader::getBmpImage, Image::isBmp),
+    TIFF(ImageLoader::getTiffImage, ImageLoader::getTiffImage, Image::isTiff),
+    WMF(ImageLoader::getWMFImage, ImageLoader::getWMFImage, Image::isWMF),
+    ;
+
+    private Function<byte[], Image> byteLoaderFun;
+    private Function<URL, Image> urlLoaderFun;
+    private Function<int[], Boolean> typeCheckerFun;
+
+    ImageType(Function<byte[], Image> loaderFun, Function<URL, Image> urlLoaderFun, Function<int[], Boolean> typeCheckerFun) {
+        this.byteLoaderFun = loaderFun;
+        this.urlLoaderFun = urlLoaderFun;
+        this.typeCheckerFun = typeCheckerFun;
     }
 
-    private static boolean isJpegFormat(int[] headerBytes) {
-        return headerBytes[0] == 0xFF && headerBytes[1] == 0xD8;
+    private boolean matches(String mediaType) {
+        return mediaType != null && mediaType.toUpperCase().contains(this.name());
     }
 
-    private static boolean isPngFormat(int[] headerBytes) {
-        return headerBytes[0] == 137 && headerBytes[1] == 80 && headerBytes[2] == 78 && headerBytes[3] == 71;
+    private boolean matches(int[] imageFirstBytes) {
+        return this.typeCheckerFun.apply(imageFirstBytes);
     }
+}
 
-    private static boolean isBmpFormat(int[] headerBytes) {
-        return headerBytes[0] == 'B' && headerBytes[1] == 'M';
+public static Image getInstance(String mediaType, String base64Data) throws BadElementException {
+    byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+    Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(mediaType)).findFirst();
+    ImageType imageType = o.orElseThrow(() -> new BadElementException("media type not supported: " + mediaType));
+    return imageType.byteLoaderFun.apply(imageBytes);
+}
+
+public static Image getInstance(URL url) throws BadElementException, IOException {
+    try (InputStream is = url.openStream()) {
+        int[] headerBytes = readHeaderBytes(is, 8);
+        Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(headerBytes)).findFirst();
+        ImageType imageType = o.orElseThrow(() -> new IOException(
+            url + " is not a recognized image format." + (isJBIG2(headerBytes) ? "  JBIG2 support has been removed." : "")));
+
+        Image img = imageType.urlLoaderFun.apply(url);
+        img.setUrl(url);
+        return img;
     }
+}
 
-    private static boolean isTiffFormat(int[] headerBytes) {
-        return (headerBytes[0] == 'I' && headerBytes[1] == 'I' && headerBytes[2] == 42 && headerBytes[3] == 0) ||
-                (headerBytes[0] == 'M' && headerBytes[1] == 'M' && headerBytes[2] == 0 && headerBytes[3] == 42);
+private static int[] readHeaderBytes(InputStream is, int length) throws IOException {
+    int[] headerBytes = new int[length];
+    for (int i = 0; i < length; i++) {
+        headerBytes[i] = is.read();
     }
+    return headerBytes;
+}
 
-    private static class ImageFormatHandler {
-        Predicate<int[]> predicate;
-        BiFunction<byte[], URL, Image> loader;
+private static class ImageInput {
+    private String mediaType;
+    private String base64Data;
+    private String filename;
 
-        ImageFormatHandler(Predicate<int[]> predicate, BiFunction<byte[], URL, Image> loader) {
-            this.predicate = predicate;
-            this.loader = loader;
-        }
-
-    }
-
-    /**
-     * Gets an instance of an Image.
-     *
-     * @param url an URL
-     * @return an Image
-     * @throws BadElementException   if error in creating {@link
-ImgWMF#ImgWMF(byte[]) ImgWMF}
-     * @throws MalformedURLException if bad url
-     * @throws IOException           if image is not recognized
-     */
-    public static Image getInstance(URL url) throws BadElementException, IOException {
-        try (InputStream is = url.openStream()) {
-            int[] headerBytes = readHeaderBytes(is, 8);
-            Image img = loadImageFromHeader(headerBytes, null, url);
-            img.setUrl(url);
-            return img;
-        }
-
-    }
-
-    private static Image loadImageFromHeader(int[] headerBytes, byte[] rawBytes,
-            URL url)
-            throws IOException, BadElementException {
-        for (ImageFormatHandler handler : IMAGE_LOADERS) {
-            if (handler.predicate.test(headerBytes)) {
-                return handler.loader.apply(rawBytes, url);
-            }
-        }
-        throw new IOException("Unrecognized image format.");
-    }
-
-    /**
-     * Gets an instance of an Image.
-     *
-     * @param filename a filename
-     * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
-     * <CODE>Png</CODE>
-     * @throws BadElementException if error in creating {@link
- ImgWMF#ImgWMF(byte[]) ImgWMF}
-     * @throws IOException         if image is not recognized
-     */
-    public static Image getInstance(String filename)
-            throws BadElementException, IOException {
-        return getInstance(Utilities.toURL(filename));
-    }
-
-    /**
-     * Gets an instance of an Image from the classpath.
-     *
-     * @param filename a filename
-     * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
-     *         <CODE>Png</CODE>
-     * @throws BadElementException if error in creating {@link
-ImgWMF#ImgWMF(byte[]) ImgWMF}
-     * @throws IOException         if image is not recognized
-     */
-    public static Image getInstanceFromClasspath(String filename)
-            throws BadElementException, IOException {
-        URL url = Image.class.getResource("/" + filename);
-        return getInstance(url);
-    }
-
-    /**
-     * gets an instance of an Image
-     *
-     * @param imgb raw image date
-     * @return an Image object
-     * @throws BadElementException if error in creating {@link
-     *                             ImgWMF#ImgWMF(byte[]) ImgWMF}
-     * @throws IOException         if image is not recognized
-     */
-    public static Image getInstance(byte[] imgb) throws BadElementException,
-            IOException {
-        try (InputStream is = new java.io.ByteArrayInputStream(imgb)) {
-            int[] headerBytes = readHeaderBytes(is, 8); // Extracted logic
-            return loadImageFromHeader(headerBytes, imgb, null);
+    private ImageInput(String input) {
+        Matcher m = imageDataPattern.matcher(input);
+        if (m.find()) {
+            this.mediaType = m.group(1).trim();
+            this.base64Data = m.group(3).trim();
+        } else {
+            this.filename = input;
         }
     }
 
-    private static int[] readHeaderBytes(InputStream is, int length) throws IOException {
-        int[] headerBytes = new int[length];
-        for (int i = 0; i < length; i++) {
-            headerBytes[i] = is.read();
+    public Image getInstance() throws IOException {
+        if (filename != null) {
+            return Image.getInstance(Utilities.toURL(filename));
+        } else {
+            return Image.getInstance(mediaType, base64Data);
         }
-        return headerBytes;
     }
+}
+
+public static Image getInstance(String filename) throws BadElementException, IOException {
+    return new ImageInput(filename).getInstance();
+}
+
+public static Image getInstanceFromClasspath(String filename) throws BadElementException, IOException {
+    URL url = Image.class.getResource("/" + filename);
+    return getInstance(url);
+}
+
+public static Image getInstance(byte[] imgb) throws BadElementException, IOException {
+    try (InputStream is = new java.io.ByteArrayInputStream(imgb)) {
+        int[] headerBytes = readHeaderBytes(is, 8);
+        Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(headerBytes)).findFirst();
+        ImageType imageType = o.orElseThrow(() -> new IOException(
+                MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat") +
+                        (isJBIG2(headerBytes) ? "  JBIG2 support has been removed." : "")));
+
+        return imageType.byteLoaderFun.apply(imgb);
+    }
+}
+
 
     /**
      * Gets an instance of an Image in raw mode.
@@ -1995,33 +2024,67 @@ compression)
     public void setCompressionLevel(int compressionLevel) {
         if (compressionLevel < PdfStream.NO_COMPRESSION || compressionLevel > PdfStream.BEST_COMPRESSION) {
             this.compressionLevel = PdfStream.DEFAULT_COMPRESSION;
-        } else {
-            this.compressionLevel = compressionLevel;
-        }
+    } else {
+        this.compressionLevel = compressionLevel;
     }
+}
 
-    public void setTemplateData(Image image, PdfTemplate template) throws BadElementException {
-        if (template == null) {
-            throw new BadElementException("Template cannot be null");
-        }
-        if (template.getType() == PdfTemplate.TYPE_PATTERN) {
-            throw new BadElementException("A pattern cannot be used as a template to create an image");
-        }
-        image.templateData = template;
-        image.scaledWidth = template.getWidth();
-        image.scaledHeight = template.getHeight();
-        image.setTop(image.scaledHeight);
-        image.setRight(image.scaledWidth);
+public void setTemplateData(Image image, PdfTemplate template) throws BadElementException {
+    if (template == null) {
+        throw new BadElementException("Template cannot be null");
     }
-
-    // Factory method to create a new Image from a template
-    public static Image createFromTemplate(PdfTemplate template) throws BadElementException {
-        // Create a new Image object
-        Image img = new Image((URL) null) {}; // Abstract class instantiation workaround
-
-        // Use the existing setTemplateData method to initialize the object
-        img.setTemplateData(img, template);
-
-        return img;
+    if (template.getType() == PdfTemplate.TYPE_PATTERN) {
+        throw new BadElementException("A pattern cannot be used as a template to create an image");
     }
+    image.templateData = template;
+    image.scaledWidth = template.getWidth();
+    image.scaledHeight = template.getHeight();
+    image.setTop(image.scaledHeight);
+    image.setRight(image.scaledWidth);
+}
+
+// Factory method to create a new Image from a template
+public static Image createFromTemplate(PdfTemplate template) throws BadElementException {
+    // Create a new Image object
+    Image img = new Image((URL) null) {}; // Abstract class instantiation workaround
+
+    // Use the existing setTemplateData method to initialize the object
+    img.setTemplateData(img, template);
+
+    return img;
+}
+
+private static boolean isJBIG2(int[] array) {
+    return array[0] == 0x97 && array[1] == 'J' && array[2] == 'B' && array[3] == '2' &&
+            array[4] == '\r' && array[5] == '\n' && array[6] == 0x1a && array[7] == '\n';
+}
+
+private static boolean isGif(int[] array) {
+    return array[0] == 'G' && array[1] == 'I' && array[2] == 'F';
+}
+
+private static boolean isPng(int[] array) {
+    return array[0] == PNGID[0] && array[1] == PNGID[1] && array[2] == PNGID[2] && array[3] == PNGID[3];
+}
+
+private static boolean isBmp(int[] array) {
+    return array[0] == 'B' && array[1] == 'M';
+}
+
+private static boolean isJpeg(int[] array) {
+    return array[0] == 0xFF && array[1] == 0xD8;
+}
+
+private static boolean isJpeg2000(int[] array) {
+    return (array[0] == 0x00 && array[1] == 0x00 && array[2] == 0x00 && array[3] == 0x0c) ||
+            (array[0] == 0xff && array[1] == 0x4f && array[2] == 0xff && array[3] == 0x51);
+}
+
+private static boolean isTiff(int[] array) {
+    return (array[0] == 'M' && array[1] == 'M' && array[2] == 0 && array[3] == 42) ||
+            (array[0] == 'I' && array[1] == 'I' && array[2] == 42 && array[3] == 0);
+}
+
+private static boolean isWMF(int[] array) {
+    return array[0] == 0xD7 && array[1] == 0xCD;
 }

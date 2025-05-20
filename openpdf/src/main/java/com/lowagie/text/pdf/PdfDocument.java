@@ -871,6 +871,7 @@ public class PdfDocument extends Document {
         lastElementType = -1;
         if (isPageEmpty()) {
             setNewPageSizeAndMargins();
+            resetText(true);
             return false;
         }
         if (!open || close) {
@@ -1124,6 +1125,16 @@ public class PdfDocument extends Document {
 
 //    [C4] Page labels
 
+    private void resetText(boolean move) {
+        text = new PdfContentByte(writer);
+        text.reset();
+        text.beginText();
+        textEmptySize = text.size();
+        if (move) {
+            text.moveText(left(), top());
+        }
+    }
+
     /**
      * Initializes a page.
      * <p>
@@ -1141,10 +1152,7 @@ public class PdfDocument extends Document {
 
         writer.resetContent();
         graphics = new PdfContentByte(writer);
-        text = new PdfContentByte(writer);
-        text.reset();
-        text.beginText();
-        textEmptySize = text.size();
+        resetText(false);
 
         markPoint = 0;
         setNewPageSizeAndMargins();

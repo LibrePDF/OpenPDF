@@ -47,6 +47,7 @@ package com.lowagie.text;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import javax.imageio.ImageIO;
@@ -73,7 +74,15 @@ public class ImageLoader {
     public static Image getPngImage(URL url) {
         try (InputStream is = url.openStream()) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            return Image.getInstance(bufferedImage, null, false);
+            return getImage(bufferedImage, Image.ORIGINAL_PNG);
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    public static Image getWMFImage(URL url) {
+        try {
+            return new ImgWMF(url);
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -82,7 +91,7 @@ public class ImageLoader {
     public static Image getGifImage(URL url) {
         try (InputStream is = url.openStream()) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            return Image.getInstance(bufferedImage, null, false);
+            return getImage(bufferedImage, Image.ORIGINAL_GIF);
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -91,7 +100,7 @@ public class ImageLoader {
     public static Image getTiffImage(URL url) {
         try (InputStream is = url.openStream()) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            return Image.getInstance(bufferedImage, null, false);
+            return getImage(bufferedImage, Image.ORIGINAL_TIFF);
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -101,7 +110,7 @@ public class ImageLoader {
     public static Image getBmpImage(URL url) {
         try (InputStream is = url.openStream()) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            return Image.getInstance(bufferedImage, null, false);
+            return getImage(bufferedImage, Image.ORIGINAL_BMP);
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -134,7 +143,7 @@ public class ImageLoader {
     public static Image getGifImage(byte[] imageData) {
         try (InputStream is = new ByteArrayInputStream(imageData)) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            return Image.getInstance(bufferedImage, null, false);
+            return getImage(bufferedImage, Image.ORIGINAL_GIF);
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -143,8 +152,15 @@ public class ImageLoader {
     public static Image getPngImage(byte[] imageData) {
         try (InputStream is = new ByteArrayInputStream(imageData)) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            return Image.getInstance(bufferedImage, null, false);
+            return getImage(bufferedImage, Image.ORIGINAL_PNG);
+        } catch (Exception e) {
+            throw new ExceptionConverter(e);
+        }
+    }
 
+    public static Image getWMFImage(byte[] imageData) {
+        try {
+            return new ImgWMF(imageData);
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -153,8 +169,7 @@ public class ImageLoader {
     public static Image getBmpImage(byte[] imageData) {
         try (InputStream is = new ByteArrayInputStream(imageData)) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            return Image.getInstance(bufferedImage, null, false);
-
+            return getImage(bufferedImage, Image.ORIGINAL_BMP);
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -169,8 +184,7 @@ public class ImageLoader {
     public static Image getTiffImage(byte[] imageData) {
         try (InputStream is = new ByteArrayInputStream(imageData)) {
             BufferedImage bufferedImage = ImageIO.read(is);
-            return Image.getInstance(bufferedImage, null, false);
-
+            return getImage(bufferedImage, Image.ORIGINAL_TIFF);
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -200,4 +214,9 @@ public class ImageLoader {
         }
     }
 
+    private static Image getImage(BufferedImage bufferedImage, int originalType) throws IOException {
+        Image image = Image.getInstance(bufferedImage, null, false);
+        image.setOriginalType(originalType);
+        return image;
+    }
 }

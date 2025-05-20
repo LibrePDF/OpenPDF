@@ -136,25 +136,45 @@ public class DublinCoreSchema extends XmpSchema {
     }
 
     /**
-     * Adds a title.
+     * Adds a title for {@link LangAlt#DEFAULT default language}.
      *
      * @param title title
      */
     public void addTitle(String title) {
-        XmpArray array = new XmpArray(XmpArray.ALTERNATIVE);
-        array.add(title);
-        setProperty(TITLE, array);
+        addTitle(LangAlt.DEFAULT, title);
     }
 
     /**
-     * Adds a description.
+     * Adds a title for specified language.
+     *
+     * @param language language
+     * @param title title
+     */
+    public void addTitle(String language, String title) {
+        LangAlt langAlt = new LangAlt();
+        langAlt.addLanguage(language, title);
+        setProperty(TITLE, langAlt);
+    }
+
+    /**
+     * Adds a description for {@link LangAlt#DEFAULT default language}.
      *
      * @param desc description
      */
     public void addDescription(String desc) {
-        XmpArray array = new XmpArray(XmpArray.ALTERNATIVE);
-        array.add(desc);
-        setProperty(DESCRIPTION, array);
+        addDescription(LangAlt.DEFAULT, desc);
+    }
+
+    /**
+     * Adds a description for specified language.
+     *
+     * @param language language
+     * @param desc description
+     */
+    public void addDescription(String language, String desc) {
+        LangAlt langAlt = new LangAlt();
+        langAlt.addLanguage(language, desc);
+        setProperty(DESCRIPTION, langAlt);
     }
 
     /**
