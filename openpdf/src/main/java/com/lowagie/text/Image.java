@@ -49,7 +49,6 @@
 
 package com.lowagie.text;
 
-import com.ibm.icu.impl.locale.XCldrStub.Predicate;
 import com.lowagie.text.error_messages.MessageLocalization;
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
@@ -73,11 +72,6 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiFunction;
-
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
@@ -86,9 +80,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
+
 /**
- * An <CODE>Image</CODE> is the representation of a graphic element
- * (JPEG, PNG or GIF) that has to be inserted into the
+ * An <CODE>Image</CODE> is the representation of a graphic element (JPEG, PNG or GIF) that has to be inserted into the
  * document
  *
  * @see Element
@@ -235,21 +229,6 @@ public abstract class Image extends Rectangle {
     /**
      * The image type.
      */
-
-    private static final List<ImageFormatHandler> IMAGE_LOADERS = new ArrayList<>();
-
-    static {
-        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isGifFormat, (rawBytes,
-                url) -> rawBytes != null ? ImageLoader.getGifImage(rawBytes) : ImageLoader.getGifImage(url)));
-        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isJpegFormat, (rawBytes,
-                url) -> rawBytes != null ? ImageLoader.getJpegImage(rawBytes) : ImageLoader.getJpegImage(url)));
-        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isPngFormat, (rawBytes,
-                url) -> rawBytes != null ? ImageLoader.getPngImage(rawBytes) : ImageLoader.getPngImage(url)));
-        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isBmpFormat, (rawBytes,
-                url) -> rawBytes != null ? ImageLoader.getBmpImage(rawBytes) : ImageLoader.getBmpImage(url)));
-        IMAGE_LOADERS.add(new ImageFormatHandler(Image::isTiffFormat, (rawBytes,
-                url) -> rawBytes != null ? ImageLoader.getTiffImage(rawBytes) : ImageLoader.getTiffImage(url)));
-    }
     protected int type;
     /**
      * The URL of the image.
@@ -396,12 +375,9 @@ public abstract class Image extends Rectangle {
      */
     protected int[] transparency;
 
-    protected PdfTemplate templateData;
-
     // implementation of the Element interface
     /**
-     * Holds value of property directReference. An image is embedded into
-a PDF as an Image XObject. This object is
+     * Holds value of property directReference. An image is embedded into a PDF as an Image XObject. This object is
      * referenced by a PdfIndirectReference object.
      */
     private PdfIndirectReference directReference;
@@ -494,139 +470,143 @@ a PDF as an Image XObject. This object is
         this.transparency = image.transparency;
     }
 
-private static boolean isGifFormat(int[] headerBytes) {
-    return headerBytes[0] == 'G' && headerBytes[1] == 'I' && headerBytes[2] == 'F';
-}
+    private enum ImageType {
+        PNG(ImageLoader::getPngImage, ImageLoader::getPngImage, Image::isPng),
+        GIF(ImageLoader::getGifImage, ImageLoader::getGifImage, Image::isGif),
+        JPEG2000(ImageLoader::getJpeg2000Image, ImageLoader::getJpeg2000Image, Image::isJpeg2000),
+        JPEG(ImageLoader::getJpegImage, ImageLoader::getJpegImage, Image::isJpeg),
+        BMP(ImageLoader::getBmpImage, ImageLoader::getBmpImage, Image::isBmp),
+        TIFF(ImageLoader::getTiffImage, ImageLoader::getTiffImage, Image::isTiff),
+        WMF(ImageLoader::getWMFImage, ImageLoader::getWMFImage, Image::isWMF),
+        ;
+        private Function<byte[], Image> byteLoaderFun;
+        private Function<URL, Image> urlLoaderFun;
+        private Function<int[], Boolean> typeCheckerFun;
 
-private static boolean isJpegFormat(int[] headerBytes) {
-    return headerBytes[0] == 0xFF && headerBytes[1] == 0xD8;
-}
+        ImageType(Function<byte[], Image> loaderFun, Function<URL, Image> urlLoaderFun, Function<int[], Boolean> typeCheckerFun) {
+            this.byteLoaderFun = loaderFun;
+            this.urlLoaderFun = urlLoaderFun;
+            this.typeCheckerFun = typeCheckerFun;
+        }
 
-private static boolean isPngFormat(int[] headerBytes) {
-    return headerBytes[0] == 137 && headerBytes[1] == 80 && headerBytes[2] == 78 && headerBytes[3] == 71;
-}
+        private boolean matches(String mediaType) {
+            return mediaType != null && mediaType.toUpperCase().contains(this.name());
+        }
 
-private static boolean isBmpFormat(int[] headerBytes) {
-    return headerBytes[0] == 'B' && headerBytes[1] == 'M';
-}
-
-private static boolean isTiffFormat(int[] headerBytes) {
-    return (headerBytes[0] == 'I' && headerBytes[1] == 'I' && headerBytes[2] == 42 && headerBytes[3] == 0) ||
-            (headerBytes[0] == 'M' && headerBytes[1] == 'M' && headerBytes[2] == 0 && headerBytes[3] == 42);
-}
-
-private static class ImageFormatHandler {
-    Predicate<int[]> predicate;
-    BiFunction<byte[], URL, Image> loader;
-
-    ImageFormatHandler(Predicate<int[]> predicate, BiFunction<byte[], URL, Image> loader) {
-        this.predicate = predicate;
-        this.loader = loader;
-    }
-}
-
-private enum ImageType {
-    PNG(ImageLoader::getPngImage, ImageLoader::getPngImage, Image::isPng),
-    GIF(ImageLoader::getGifImage, ImageLoader::getGifImage, Image::isGif),
-    JPEG2000(ImageLoader::getJpeg2000Image, ImageLoader::getJpeg2000Image, Image::isJpeg2000),
-    JPEG(ImageLoader::getJpegImage, ImageLoader::getJpegImage, Image::isJpeg),
-    BMP(ImageLoader::getBmpImage, ImageLoader::getBmpImage, Image::isBmp),
-    TIFF(ImageLoader::getTiffImage, ImageLoader::getTiffImage, Image::isTiff),
-    WMF(ImageLoader::getWMFImage, ImageLoader::getWMFImage, Image::isWMF),
-    ;
-
-    private Function<byte[], Image> byteLoaderFun;
-    private Function<URL, Image> urlLoaderFun;
-    private Function<int[], Boolean> typeCheckerFun;
-
-    ImageType(Function<byte[], Image> loaderFun, Function<URL, Image> urlLoaderFun, Function<int[], Boolean> typeCheckerFun) {
-        this.byteLoaderFun = loaderFun;
-        this.urlLoaderFun = urlLoaderFun;
-        this.typeCheckerFun = typeCheckerFun;
-    }
-
-    private boolean matches(String mediaType) {
-        return mediaType != null && mediaType.toUpperCase().contains(this.name());
-    }
-
-    private boolean matches(int[] imageFirstBytes) {
-        return this.typeCheckerFun.apply(imageFirstBytes);
-    }
-}
-
-public static Image getInstance(String mediaType, String base64Data) throws BadElementException {
-    byte[] imageBytes = Base64.getDecoder().decode(base64Data);
-    Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(mediaType)).findFirst();
-    ImageType imageType = o.orElseThrow(() -> new BadElementException("media type not supported: " + mediaType));
-    return imageType.byteLoaderFun.apply(imageBytes);
-}
-
-public static Image getInstance(URL url) throws BadElementException, IOException {
-    try (InputStream is = url.openStream()) {
-        int[] headerBytes = readHeaderBytes(is, 8);
-        Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(headerBytes)).findFirst();
-        ImageType imageType = o.orElseThrow(() -> new IOException(
-            url + " is not a recognized image format." + (isJBIG2(headerBytes) ? "  JBIG2 support has been removed." : "")));
-
-        Image img = imageType.urlLoaderFun.apply(url);
-        img.setUrl(url);
-        return img;
-    }
-}
-
-private static int[] readHeaderBytes(InputStream is, int length) throws IOException {
-    int[] headerBytes = new int[length];
-    for (int i = 0; i < length; i++) {
-        headerBytes[i] = is.read();
-    }
-    return headerBytes;
-}
-
-private static class ImageInput {
-    private String mediaType;
-    private String base64Data;
-    private String filename;
-
-    private ImageInput(String input) {
-        Matcher m = imageDataPattern.matcher(input);
-        if (m.find()) {
-            this.mediaType = m.group(1).trim();
-            this.base64Data = m.group(3).trim();
-        } else {
-            this.filename = input;
+        private boolean matches(int[] imageFirstBytes) {
+            return this.typeCheckerFun.apply(imageFirstBytes);
         }
     }
 
-    public Image getInstance() throws IOException {
-        if (filename != null) {
-            return Image.getInstance(Utilities.toURL(filename));
-        } else {
-            return Image.getInstance(mediaType, base64Data);
+    public static Image getInstance(String mediaType, String base64Data) throws BadElementException {
+        // Decode the base64 string into a byte array
+        byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+
+        Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(mediaType)).findFirst();
+        ImageType imageType = o.orElseThrow(() -> new BadElementException("media type not supported: " + mediaType));
+        return imageType.byteLoaderFun.apply(imageBytes);
+    }
+
+    /**
+     * Gets an instance of an Image.
+     *
+     * @param url an URL
+     * @return an Image
+     * @throws BadElementException   if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws MalformedURLException if bad url
+     * @throws IOException           if image is not recognized
+     */
+    public static Image getInstance(URL url) throws BadElementException, IOException {
+        try (InputStream is = url.openStream()) {
+            int[] array = readFirst8Chars(is);
+            Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(array)).findFirst();
+            ImageType imageType = o.orElseThrow(() -> new IOException(
+                    url + " is not a recognized image format." + (isJBIG2(array) ? "  JBIG2 support has been removed." : "")));
+
+            Image img = imageType.urlLoaderFun.apply(url);
+            img.setUrl(url);
+            return img;
         }
     }
-}
 
-public static Image getInstance(String filename) throws BadElementException, IOException {
-    return new ImageInput(filename).getInstance();
-}
 
-public static Image getInstanceFromClasspath(String filename) throws BadElementException, IOException {
-    URL url = Image.class.getResource("/" + filename);
-    return getInstance(url);
-}
+    private static class ImageInput {
+        private String mediaType;
+        private String base64Data;
+        private String filename;
 
-public static Image getInstance(byte[] imgb) throws BadElementException, IOException {
-    try (InputStream is = new java.io.ByteArrayInputStream(imgb)) {
-        int[] headerBytes = readHeaderBytes(is, 8);
-        Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(headerBytes)).findFirst();
-        ImageType imageType = o.orElseThrow(() -> new IOException(
-                MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat") +
-                        (isJBIG2(headerBytes) ? "  JBIG2 support has been removed." : "")));
+        private ImageInput(String input) {
+            Matcher m = imageDataPattern.matcher(input);
+            if (m.find()) {
+                this.mediaType = m.group(1).trim();
+                this.base64Data = m.group(3).trim();
+            } else {
+                this.filename = input;
+            }
+        }
 
-        return imageType.byteLoaderFun.apply(imgb);
+        public Image getInstance() throws IOException {
+            if (filename != null) {
+                return Image.getInstance(Utilities.toURL(filename));
+            } else {
+                return Image.getInstance(mediaType, base64Data);
+            }
+        }
     }
-}
 
+    /**
+     * Gets an instance of an Image.
+     *
+     * @param filename a filename
+     * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
+     * <CODE>Png</CODE>
+     * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws IOException         if image is not recognized
+     */
+    public static Image getInstance(String filename) throws BadElementException, IOException {
+        return new ImageInput(filename).getInstance();
+    }
+
+    /**
+     * Gets an instance of an Image from the classpath.
+     *
+     * @param filename a filename
+     * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
+     * <CODE>Png</CODE>
+     * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws IOException         if image is not recognized
+     */
+    public static Image getInstanceFromClasspath(String filename) throws BadElementException, IOException {
+        URL url = Image.class.getResource("/" + filename);
+        return getInstance(url);
+    }
+
+    /**
+     * gets an instance of an Image
+     *
+     * @param imgb raw image date
+     * @return an Image object
+     * @throws BadElementException if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
+     * @throws IOException         if image is not recognized
+     */
+    public static Image getInstance(byte[] imgb) throws BadElementException, IOException {
+        try (InputStream is = new java.io.ByteArrayInputStream(imgb)) {
+            int[] array = readFirst8Chars(is);
+            Optional<ImageType> o = Arrays.stream(ImageType.values()).filter(t -> t.matches(array)).findFirst();
+            ImageType imageType = o.orElseThrow(() -> new IOException(
+                    MessageLocalization.getComposedMessage("the.byte.array.is.not.a.recognized.imageformat") + (isJBIG2(array) ? "  JBIG2 support has been removed." : "")));
+
+            return imageType.byteLoaderFun.apply(imgb);
+        }
+    }
+
+    private static int[] readFirst8Chars(InputStream is) throws IOException {
+        int[] array = new int[8];
+        for (Integer i : IntStream.rangeClosed(0, 7).boxed().toList()) {
+            array[i] = is.read();
+        }
+        return array;
+    }
 
     /**
      * Gets an instance of an Image in raw mode.
@@ -660,19 +640,14 @@ public static Image getInstance(byte[] imgb) throws BadElementException, IOExcep
     }
 
     /**
-     * Creates an Image with CCITT G3 or G4 compression. It assumes that the data
-     * bytes are already compressed.
+     * Creates an Image with CCITT G3 or G4 compression. It assumes that the data bytes are already compressed.
      *
      * @param width       the exact width of the image
      * @param height      the exact height of the image
-     * @param reverseBits reverses the bits in <code>data</code>. Bit 0 is swapped
-     *                    with bit 7 and so on
-     * @param typeCCITT   the type of compression in <code>data</code>. It can be
-     *                    CCITTG4, CCITTG31D, CCITTG32D
-     * @param parameters  parameters associated with this stream. Possible values
-     *                    are CCITT_BLACKIS1,
-     *                    CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and
-     *                    CCITT_ENDOFBLOCK or a combination of them
+     * @param reverseBits reverses the bits in <code>data</code>. Bit 0 is swapped with bit 7 and so on
+     * @param typeCCITT   the type of compression in <code>data</code>. It can be CCITTG4, CCITTG31D, CCITTG32D
+     * @param parameters  parameters associated with this stream. Possible values are CCITT_BLACKIS1,
+     *                    CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and CCITT_ENDOFBLOCK or a combination of them
      * @param data        the image data
      * @return an Image object
      * @throws BadElementException on error
@@ -685,22 +660,16 @@ public static Image getInstance(byte[] imgb) throws BadElementException, IOExcep
     }
 
     /**
-     * Creates an Image with CCITT G3 or G4 compression. It assumes that
-     * the data bytes are already compressed.
+     * Creates an Image with CCITT G3 or G4 compression. It assumes that the data bytes are already compressed.
      *
      * @param width        the exact width of the image
      * @param height       the exact height of the image
-     * @param reverseBits  reverses the bits in <code>data</code>. Bit 0
-is swapped with bit 7 and so on
-     * @param typeCCITT    the type of compression in <code>data</code>.
-It can be CCITTG4, CCITTG31D, CCITTG32D
-     * @param parameters   parameters associated with this stream.
-Possible values are CCITT_BLACKIS1,
-     *                     CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and
-CCITT_ENDOFBLOCK or a combination of them
+     * @param reverseBits  reverses the bits in <code>data</code>. Bit 0 is swapped with bit 7 and so on
+     * @param typeCCITT    the type of compression in <code>data</code>. It can be CCITTG4, CCITTG31D, CCITTG32D
+     * @param parameters   parameters associated with this stream. Possible values are CCITT_BLACKIS1,
+     *                     CCITT_ENCODEDBYTEALIGN, CCITT_ENDOFLINE and CCITT_ENDOFBLOCK or a combination of them
      * @param data         the image data
-     * @param transparency transparency information in the Mask format of the image
-     *                     dictionary
+     * @param transparency transparency information in the Mask format of the image dictionary
      * @return an Image object
      * @throws BadElementException on error
      */
@@ -725,8 +694,7 @@ CCITT_ENDOFBLOCK or a combination of them
      * @param components   1,3 or 4 for GrayScale, RGB and CMYK
      * @param data         the image data
      * @param bpc          bits per component
-     * @param transparency transparency information in the Mask format of
-the image dictionary
+     * @param transparency transparency information in the Mask format of the image dictionary
      * @return an object of type <CODE>ImgRaw</CODE>
      * @throws BadElementException on error
      */
@@ -750,8 +718,7 @@ the image dictionary
     /**
      * gets an instance of an Image
      *
-     * @param template a PdfTemplate that has to be wrapped in an
-<code>Image</code> object
+     * @param template a PdfTemplate that has to be wrapped in an <code>Image</code> object
      * @return an Image object
      * @throws BadElementException on error
      */
@@ -764,8 +731,7 @@ the image dictionary
      * Gets an instance of an Image from a java.awt.Image.
      *
      * @param image   the <CODE>java.awt.Image</CODE> to convert
-     * @param color   if different from <CODE>null</CODE> the
-transparency pixels are replaced by this color
+     * @param color   if different from <CODE>null</CODE> the transparency pixels are replaced by this color
      * @param forceBW if <CODE>true</CODE> the image is treated as black and white
      * @return an object of type <CODE>ImgRaw</CODE>
      * @throws BadElementException on error
@@ -944,8 +910,7 @@ transparency pixels are replaced by this color
      * Gets an instance of an Image from a java.awt.Image.
      *
      * @param image the <CODE>java.awt.Image</CODE> to convert
-     * @param color if different from <CODE>null</CODE> the transparency 
-pixels are replaced by this color
+     * @param color if different from <CODE>null</CODE> the transparency pixels are replaced by this color
      * @return an object of type <CODE>ImgRaw</CODE>
      * @throws BadElementException on error
      * @throws IOException         on error
@@ -956,11 +921,9 @@ pixels are replaced by this color
     }
 
     /**
-     * Gets an instance of a Image from a java.awt.Image. The image is
-added as a JPEG with a user defined quality.
+     * Gets an instance of a Image from a java.awt.Image. The image is added as a JPEG with a user defined quality.
      *
-     * @param writer   the <CODE>PdfWriter</CODE> object to which the
-image will be added
+     * @param writer   the <CODE>PdfWriter</CODE> object to which the image will be added
      * @param awtImage the <CODE>java.awt.Image</CODE> to convert
      * @param quality  a float value between <code>0</code> and <code>1</code>
      * @return an object of type <CODE>PdfTemplate</CODE>
@@ -975,11 +938,9 @@ image will be added
     // width and height
 
     /**
-     * Gets an instance of a Image from a java.awt.Image. The image is
-added as a JPEG with a user defined quality.
+     * Gets an instance of a Image from a java.awt.Image. The image is added as a JPEG with a user defined quality.
      *
-     * @param cb       the <CODE>PdfContentByte</CODE> object to which
-the image will be added
+     * @param cb       the <CODE>PdfContentByte</CODE> object to which the image will be added
      * @param awtImage the <CODE>java.awt.Image</CODE> to convert
      * @param quality  a float value between <code>0</code> and <code>1</code>
      * @return an object of type <CODE>PdfTemplate</CODE>
@@ -1124,8 +1085,7 @@ the image will be added
     }
 
     /**
-     * Returns <CODE>true</CODE> if the image is an
-<CODE>ImgTemplate</CODE> -object.
+     * Returns <CODE>true</CODE> if the image is an <CODE>ImgTemplate</CODE> -object.
      *
      * @return a <CODE>boolean</CODE>
      */
@@ -1180,6 +1140,7 @@ the image will be added
     public int getBpc() {
         return bpc;
     }
+
     /**
      * Gets the template to be used as an image.
      * <p>
@@ -1509,8 +1470,7 @@ the image will be added
     // interpolation
 
     /**
-     * Some image formats, like TIFF may present the images rotated that
-have to be compensated.
+     * Some image formats, like TIFF may present the images rotated that have to be compensated.
      *
      * @param initialRotation New value of property initialRotation.
      */
@@ -1639,8 +1599,7 @@ have to be compensated.
     /**
      * Gets the layer this image belongs to.
      *
-     * @return the layer this image belongs to or <code>null</code> for
-no layer defined
+     * @return the layer this image belongs to or <code>null</code> for no layer defined
      */
     public PdfOCG getLayer() {
         return layer;
@@ -1665,8 +1624,7 @@ no layer defined
     }
 
     /**
-     * Sets the image interpolation. Image interpolation attempts to
-produce a smooth transition between adjacent sample
+     * Sets the image interpolation. Image interpolation attempts to produce a smooth transition between adjacent sample
      * values.
      *
      * @param interpolation New value of property interpolation.
@@ -1923,8 +1881,7 @@ produce a smooth transition between adjacent sample
     }
 
     /**
-     * Returns <CODE>true</CODE> if this <CODE>Image</CODE> has the
-requisites to be a mask.
+     * Returns <CODE>true</CODE> if this <CODE>Image</CODE> has the requisites to be a mask.
      *
      * @return <CODE>true</CODE> if this <CODE>Image</CODE> can be a mask
      */
@@ -2002,11 +1959,11 @@ requisites to be a mask.
         this.transparency = transparency;
     }
 
+
     /**
      * Returns the compression level used for images written as a compressed stream.
      *
-     * @return the compression level (0 = best speed, 9 = best
-compression, -1 is default)
+     * @return the compression level (0 = best speed, 9 = best compression, -1 is default)
      * @since 2.1.3
      */
     public int getCompressionLevel() {
@@ -2014,77 +1971,51 @@ compression, -1 is default)
     }
 
     /**
-     * Sets the compression level to be used if the image is written as a
-compressed stream.
+     * Sets the compression level to be used if the image is written as a compressed stream.
      *
-     * @param compressionLevel a value between 0 (best speed) and 9 (best
-compression)
+     * @param compressionLevel a value between 0 (best speed) and 9 (best compression)
      * @since 2.1.3
      */
     public void setCompressionLevel(int compressionLevel) {
         if (compressionLevel < PdfStream.NO_COMPRESSION || compressionLevel > PdfStream.BEST_COMPRESSION) {
             this.compressionLevel = PdfStream.DEFAULT_COMPRESSION;
-    } else {
-        this.compressionLevel = compressionLevel;
+        } else {
+            this.compressionLevel = compressionLevel;
+        }
     }
-}
 
-public void setTemplateData(Image image, PdfTemplate template) throws BadElementException {
-    if (template == null) {
-        throw new BadElementException("Template cannot be null");
+    private static boolean isJBIG2(int[] array) {
+        return array[0] == 0x97 && array[1] == 'J' && array[2] == 'B' && array[3] == '2' &&
+                array[4] == '\r' && array[5] == '\n' && array[6] == 0x1a && array[7] == '\n';
     }
-    if (template.getType() == PdfTemplate.TYPE_PATTERN) {
-        throw new BadElementException("A pattern cannot be used as a template to create an image");
+
+    private static boolean isGif(int[] array) {
+        return array[0] == 'G' && array[1] == 'I' && array[2] == 'F';
     }
-    image.templateData = template;
-    image.scaledWidth = template.getWidth();
-    image.scaledHeight = template.getHeight();
-    image.setTop(image.scaledHeight);
-    image.setRight(image.scaledWidth);
-}
 
-// Factory method to create a new Image from a template
-public static Image createFromTemplate(PdfTemplate template) throws BadElementException {
-    // Create a new Image object
-    Image img = new Image((URL) null) {}; // Abstract class instantiation workaround
+    private static boolean isPng(int[] array) {
+        return array[0] == PNGID[0] && array[1] == PNGID[1] && array[2] == PNGID[2] && array[3] == PNGID[3];
+    }
 
-    // Use the existing setTemplateData method to initialize the object
-    img.setTemplateData(img, template);
+    private static boolean isBmp(int[] array) {
+        return array[0] == 'B' && array[1] == 'M';
+    }
 
-    return img;
-}
+    private static boolean isJpeg(int[] array) {
+        return array[0] == 0xFF && array[1] == 0xD8;
+    }
 
-private static boolean isJBIG2(int[] array) {
-    return array[0] == 0x97 && array[1] == 'J' && array[2] == 'B' && array[3] == '2' &&
-            array[4] == '\r' && array[5] == '\n' && array[6] == 0x1a && array[7] == '\n';
-}
+    private static boolean isJpeg2000(int[] array) {
+        return (array[0] == 0x00 && array[1] == 0x00 && array[2] == 0x00 && array[3] == 0x0c) ||
+                (array[0] == 0xff && array[1] == 0x4f && array[2] == 0xff && array[3] == 0x51);
+    }
 
-private static boolean isGif(int[] array) {
-    return array[0] == 'G' && array[1] == 'I' && array[2] == 'F';
-}
+    private static boolean isTiff(int[] array) {
+        return (array[0] == 'M' && array[1] == 'M' && array[2] == 0 && array[3] == 42) ||
+                (array[0] == 'I' && array[1] == 'I' && array[2] == 42 && array[3] == 0);
+    }
 
-private static boolean isPng(int[] array) {
-    return array[0] == PNGID[0] && array[1] == PNGID[1] && array[2] == PNGID[2] && array[3] == PNGID[3];
-}
-
-private static boolean isBmp(int[] array) {
-    return array[0] == 'B' && array[1] == 'M';
-}
-
-private static boolean isJpeg(int[] array) {
-    return array[0] == 0xFF && array[1] == 0xD8;
-}
-
-private static boolean isJpeg2000(int[] array) {
-    return (array[0] == 0x00 && array[1] == 0x00 && array[2] == 0x00 && array[3] == 0x0c) ||
-            (array[0] == 0xff && array[1] == 0x4f && array[2] == 0xff && array[3] == 0x51);
-}
-
-private static boolean isTiff(int[] array) {
-    return (array[0] == 'M' && array[1] == 'M' && array[2] == 0 && array[3] == 42) ||
-            (array[0] == 'I' && array[1] == 'I' && array[2] == 42 && array[3] == 0);
-}
-
-private static boolean isWMF(int[] array) {
-    return array[0] == 0xD7 && array[1] == 0xCD;
+    private static boolean isWMF(int[] array) {
+        return array[0] == 0xD7 && array[1] == 0xCD;
+    }
 }
