@@ -14,8 +14,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * This will create a file which is > 2 GB, then attempt to read it. This will crash, because OpenPDF doesn't support
- * reading PDF files larger than 2 GB now.
+ * This will create a file which is > 2 GB, then attempt to read it.
  */
 class LargePdfTest {
 
@@ -54,7 +53,6 @@ class LargePdfTest {
 
         String canonicalPath = largeFile.getCanonicalPath();
 
-        // This will fail now.
         assertThatThrownBy(() -> new PdfReader(canonicalPath))
                 .isInstanceOf(PdfException.class);
     }
