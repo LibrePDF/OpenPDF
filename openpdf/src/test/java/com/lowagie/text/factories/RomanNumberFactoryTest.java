@@ -1,8 +1,6 @@
 package com.lowagie.text.factories;
 
 import static com.lowagie.text.factories.RomanNumberFactory.getString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -63,7 +61,7 @@ class RomanNumberFactoryTest {
     @MethodSource("numeralTestProvider")
     void shouldConvertRomanNumeralRepresentation(int input, String expected) {
         assertAll(
-                () -> assertThat(getString(input), is(expected)),
-                () -> assertThat(getString(input, false), is(expected.toUpperCase())));
+                () -> assertEquals(expected, getString(input)),
+                () -> assertEquals(expected.toUpperCase(), getString(input, false)));
     }
 }

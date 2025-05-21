@@ -1,11 +1,7 @@
 package com.lowagie.text.pdf.parser;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -26,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
@@ -68,12 +63,12 @@ class PdfTextExtractorTest {
 
     @Test
     void testPageExceeded() throws Exception {
-        assertThat(getString("HelloWorldMeta.pdf", 5), is(emptyString()));
+        assertEquals("", getString("HelloWorldMeta.pdf", 5));
     }
 
     @Test
     void testInvalidPageNumber() throws Exception {
-        assertThat(getString("HelloWorldMeta.pdf", 0), is(emptyString()));
+        assertEquals("", getString("HelloWorldMeta.pdf", 0));
     }
 
     @Test
@@ -88,7 +83,7 @@ class PdfTextExtractorTest {
         document.add(new Chunk("Greek", new Font(Font.ZAPFDINGBATS)));
         document.close();
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
-        Assertions.assertEquals("✧❒❅❅❋", pdfTextExtractor.getTextFromPage(1));
+        assertEquals("✧❒❅❅❋", pdfTextExtractor.getTextFromPage(1));
         Document.compress = true;
     }
 
@@ -105,7 +100,7 @@ class PdfTextExtractorTest {
         document.add(selector.process("ετε"));
         document.close();
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
-        Assertions.assertEquals("ετε", pdfTextExtractor.getTextFromPage(1));
+        assertEquals("ετε", pdfTextExtractor.getTextFromPage(1));
         Document.compress = true;
     }
 
@@ -129,7 +124,7 @@ class PdfTextExtractorTest {
         // when
         final String extracted = new PdfTextExtractor(new PdfReader(pdfBytes)).getTextFromPage(1);
         // then
-        assertThat(extracted, is("trunked"));
+        assertEquals("trunked", extracted);
     }
 
     @Test
@@ -142,7 +137,7 @@ class PdfTextExtractorTest {
         // when
         final String extracted = new PdfTextExtractor(new PdfReader(pdfBytes)).getTextFromPage(1);
         // then
-        assertThat(extracted, is("Phrase begin. Phrase End."));
+        assertEquals("Phrase begin. Phrase End.", extracted);
     }
 
     @Test
@@ -159,8 +154,9 @@ class PdfTextExtractorTest {
         // when
         final String extracted = new PdfTextExtractor(new PdfReader(pdfBytes)).getTextFromPage(1);
         // then
-        assertThat(extracted, equalToCompressingWhiteSpace(expected));
-        assertThat(extracted, not(containsString("  ")));
+        assertFalse(extracted.contains("  "));
+        // ignore all white spaces
+        assertEquals(expected.replaceAll("\\s+", ""), extracted.replaceAll("\\s+", ""));
     }
 
     @Test
@@ -175,7 +171,7 @@ class PdfTextExtractorTest {
         // when
         final String extracted = new PdfTextExtractor(new PdfReader(pdfBytes)).getTextFromPage(1);
         // then
-        assertThat(extracted, is("One Two Three"));
+        assertEquals("One Two Three", extracted);
     }
 
     private String getString(String fileName, int pageNumber) throws Exception {

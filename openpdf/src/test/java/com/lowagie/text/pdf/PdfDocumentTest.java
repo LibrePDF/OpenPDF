@@ -1,7 +1,6 @@
 package com.lowagie.text.pdf;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -34,21 +33,23 @@ class PdfDocumentTest {
 
         PdfPTable result = PdfDocument.createInOneCell(mainParagraph);
         return Arrays.asList(
-                DynamicTest.dynamicTest("row size should be 1", () -> assertThat(result.getRows().size(), equalTo(1))),
+                DynamicTest.dynamicTest("row size should be 1",
+                        () -> assertEquals(1, result.getRows().size())),
                 DynamicTest.dynamicTest("cell size should be 1", () -> {
                     final PdfPCell[] cells = result.getRows().get(0).getCells();
-                    assertThat(cells.length, equalTo(1));
+                    assertEquals(1, cells.length);
                 }),
                 DynamicTest.dynamicTest("elements in cell should be 5",
-                        () -> assertThat(getCellElements(result).size(), equalTo(5))),
+                        () -> assertEquals(5, getCellElements(result).size())),
                 DynamicTest.dynamicTest("element text should be '" + PARAGRAPH_TEXT_1 + "'",
-                        () -> assertThat(getCellElements(result).get(0).getChunks().toString(),
-                                equalTo(paragraph1.toString()))),
+                        () -> assertEquals(paragraph1.toString(),
+                                getCellElements(result).get(0).getChunks().toString())),
                 DynamicTest.dynamicTest("element should be table",
-                        () -> assertThat(getCellElements(result).get(2), equalTo(table))),
+                        () -> assertEquals(table, getCellElements(result).get(2))),
                 DynamicTest.dynamicTest("element text should be '" + PARAGRAPH_TEXT_2 + "'",
-                        () -> assertThat(getCellElements(result).get(3).getChunks().toString(),
-                                equalTo(paragraph2.toString()))));
+                        () -> assertEquals(paragraph2.toString(),
+                                getCellElements(result).get(3).getChunks().toString()
+                                )));
     }
 
     private List<Element> getCellElements(PdfPTable result) {
