@@ -99,7 +99,7 @@
     <checkstyle.version>10.23.1</checkstyle.version>
     <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
     <junit.version>5.12.2</junit.version>
-    <mockito5.version>5.9.0</mockito5.version>
+    <mockito5.version>5.10.0</mockito5.version>
   </properties>
 
   <dependencyManagement>
@@ -166,6 +166,12 @@
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
         <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito5.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -389,15 +395,6 @@
       <activation>
         <jdk>[17,)</jdk>
       </activation>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito5.version}</version>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
       <build>
         <plugins>
           <plugin>
