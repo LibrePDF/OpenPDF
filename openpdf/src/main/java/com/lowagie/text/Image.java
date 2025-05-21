@@ -752,9 +752,11 @@ public abstract class Image extends Rectangle {
         try {
             pg.grabPixels();
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // restore interrupted status
             throw new IOException(
-                    MessageLocalization.getComposedMessage("java.awt.image.interrupted.waiting.for.pixels"));
+                    MessageLocalization.getComposedMessage("java.awt.image.interrupted.waiting.for.pixels"), e);
         }
+
         if ((pg.getStatus() & java.awt.image.ImageObserver.ABORT) != 0) {
             throw new IOException(MessageLocalization.getComposedMessage("java.awt.image.fetch.aborted.or.errored"));
         }
@@ -954,9 +956,11 @@ public abstract class Image extends Rectangle {
         try {
             pg.grabPixels();
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // preserve interrupt status
             throw new IOException(
-                    MessageLocalization.getComposedMessage("java.awt.image.interrupted.waiting.for.pixels"));
+                    MessageLocalization.getComposedMessage("java.awt.image.interrupted.waiting.for.pixels"), e);
         }
+
         if ((pg.getStatus() & java.awt.image.ImageObserver.ABORT) != 0) {
             throw new IOException(MessageLocalization.getComposedMessage("java.awt.image.fetch.aborted.or.errored"));
         }
