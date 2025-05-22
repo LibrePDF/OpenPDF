@@ -30,3 +30,15 @@ fun main() {
         }
     }
 }
+```
+
+
+## 📝 TODO
+
+- [ ] Improve `PdfBuilder` DSL syntax and flexibility (e.g. nested tables, headers, footers)
+- [ ] Add unit tests for all Kotlin utilities
+- [ ] Add `PdfFormUtil` for working with AcroForms (fill/read fields)
+- [ ] Create `PdfMetadataUtil` for reading document properties
+- [ ] Write more Kotlin usage examples and tutorials
+- [ ] Explore multiplatform or Android compatibility
+- [ ] Set up `markdownlint` and Kotlin style linter
