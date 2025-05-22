@@ -109,8 +109,7 @@ OpenPDF ancestors in GitHub (in fork order):
 
 It is the responsibility of the application developer to ensure that all input passed into OpenPDF is trusted, sanitized, and safe.
 OpenPDF does not perform input validation or enforce sandboxing. It is the responsibility of the application developer to ensure that all input passed 
-to OpenPDF is safe and trusted. For important security guidelines and common risks, please read our [Security Policy]
-(Security.md).
+to OpenPDF is safe and trusted. For important security guidelines and common risks, please read our [Security Policy](Security.md).
 
 
 ## Projects using OpenPDF
