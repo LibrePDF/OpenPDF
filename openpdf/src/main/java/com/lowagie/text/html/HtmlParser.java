@@ -60,6 +60,16 @@ import org.xml.sax.SAXException;
 
 /**
  * This class can be used to parse some HTML files.
+ *
+ * Security consideration: This method accepts input and processes it without built-in validation,
+ * filtering, or access restrictions. It may load resources such as local files or external URLs,
+ * depending on the input. This can introduce security risks including unauthorized file access,
+ * directory traversal, or server-side request forgery (SSRF).
+ *
+ * It is the responsibility of the calling application to validate and sanitize all input
+ * before passing it to this method, especially when handling user-controlled or external data.
+ * Refer to established secure coding guidelines to ensure safe usage.
+ *
  */
 
 public class HtmlParser extends XmlParser {
@@ -67,6 +77,15 @@ public class HtmlParser extends XmlParser {
 
     /**
      * Parses a given file that validates with the iText DTD and writes the content to a document.
+     *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
      *
      * @param document the document the parser will write to
      * @param is       the InputSource with the content
@@ -79,6 +98,15 @@ public class HtmlParser extends XmlParser {
     /**
      * Parses a given file that validates with the iText DTD and writes the content to a document.
      *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
+     *
      * @param document the document the parser will write to
      * @param file     the file with the content
      */
@@ -89,6 +117,15 @@ public class HtmlParser extends XmlParser {
 
     /**
      * Parses a given file that validates with the iText DTD and writes the content to a document.
+     *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
      *
      * @param document the document the parser will write to
      * @param is       the InputStream with the content
@@ -102,6 +139,15 @@ public class HtmlParser extends XmlParser {
     /**
      * Parses a given file that validates with the iText DTD and writes the content to a document.
      *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
+     *
      * @param document the document the parser will write to
      * @param is       the Reader with the content
      */
@@ -113,6 +159,15 @@ public class HtmlParser extends XmlParser {
 
     /**
      * Parses a given file.
+     *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
      *
      * @param document the document the parser will write to
      * @param is       the InputSource with the content
@@ -129,6 +184,15 @@ public class HtmlParser extends XmlParser {
     /**
      * Parses a given file.
      *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
+     *
      * @param document the document the parser will write to
      * @param file     the file with the content
      */
@@ -144,6 +208,15 @@ public class HtmlParser extends XmlParser {
     /**
      * Parses a given file.
      *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
+     *
      * @param document the document the parser will write to
      * @param is       the InputStream with the content
      */
@@ -157,6 +230,15 @@ public class HtmlParser extends XmlParser {
 
     /**
      * Parses a given file.
+     *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
      *
      * @param document the document the parser will write to
      * @param is       the Reader with the content

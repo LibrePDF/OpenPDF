@@ -85,6 +85,21 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+
+/**
+ * This class is a simple parser for HTML.
+ *
+ * Security consideration: This method accepts input and processes it without built-in validation,
+ * filtering, or access restrictions. It may load resources such as local files or external URLs,
+ * depending on the input. This can introduce security risks including unauthorized file access,
+ * directory traversal, or server-side request forgery (SSRF).
+ *
+ * It is the responsibility of the calling application to validate and sanitize all input
+ * before passing it to this method, especially when handling user-controlled or external data.
+ * Refer to established secure coding guidelines to ensure safe usage.
+ *
+ *
+ */
 public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
     public static final String tagsSupportedString =
@@ -128,6 +143,25 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         return parseToList(reader, style, interfaceProps);
     }
 
+    /**
+     * Parses the HTML document and returns a list of elements.
+     *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
+     *
+     *
+     * @param reader
+     * @param style
+     * @param interfaceProps
+     * @return
+     * @throws IOException
+     */
     public static ArrayList<Element> parseToList(Reader reader, StyleSheet style, Map<String, Object> interfaceProps)
             throws IOException {
         HTMLWorker worker = new HTMLWorker(null);
@@ -164,6 +198,22 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
         }
     }
 
+    /**
+     * Parses the HTML document.
+     *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
+     *
+     *
+     * @param reader
+     * @throws IOException
+     */
     public void parse(Reader reader) throws IOException {
         SimpleXMLParser.parse(this, null, reader, true);
     }

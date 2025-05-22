@@ -85,6 +85,15 @@ import java.util.stream.IntStream;
  * An <CODE>Image</CODE> is the representation of a graphic element (JPEG, PNG or GIF) that has to be inserted into the
  * document
  *
+ * Security consideration: This method accepts input and processes it without built-in validation,
+ * filtering, or access restrictions. It may load resources such as local files or external URLs,
+ * depending on the input. This can introduce security risks including unauthorized file access,
+ * directory traversal, or server-side request forgery (SSRF).
+ *
+ * It is the responsibility of the calling application to validate and sanitize all input
+ * before passing it to this method, especially when handling user-controlled or external data.
+ * Refer to established secure coding guidelines to ensure safe usage.
+ *
  * @see Element
  * @see Rectangle
  */
@@ -510,6 +519,15 @@ public abstract class Image extends Rectangle {
     /**
      * Gets an instance of an Image.
      *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
+     *
      * @param url an URL
      * @return an Image
      * @throws BadElementException   if error in creating {@link ImgWMF#ImgWMF(byte[]) ImgWMF}
@@ -557,6 +575,15 @@ public abstract class Image extends Rectangle {
     /**
      * Gets an instance of an Image.
      *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
+     *
      * @param filename a filename
      * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
      * <CODE>Png</CODE>
@@ -569,6 +596,15 @@ public abstract class Image extends Rectangle {
 
     /**
      * Gets an instance of an Image from the classpath.
+     *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
      *
      * @param filename a filename
      * @return an object of type <CODE>Gif</CODE>,<CODE>Jpeg</CODE> or
@@ -599,6 +635,23 @@ public abstract class Image extends Rectangle {
             return imageType.byteLoaderFun.apply(imgb);
         }
     }
+
+    /**
+     * Reads the first 8 bytes of an InputStream and returns them as an int array.
+     *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
+     *
+     * @param is
+     * @return
+     * @throws IOException
+     */
 
     private static int[] readFirst8Chars(InputStream is) throws IOException {
         int[] array = new int[8];

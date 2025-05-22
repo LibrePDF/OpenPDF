@@ -82,6 +82,16 @@ import java.util.StringTokenizer;
 
 /**
  * This class is able to create Element objects based on a list of properties.
+ *
+ * Security consideration: This method accepts input and processes it without built-in validation,
+ * filtering, or access restrictions. It may load resources such as local files or external URLs,
+ * depending on the input. This can introduce security risks including unauthorized file access,
+ * directory traversal, or server-side request forgery (SSRF).
+ *
+ * It is the responsibility of the calling application to validate and sanitize all input
+ * before passing it to this method, especially when handling user-controlled or external data.
+ * Refer to established secure coding guidelines to ensure safe usage.
+ *
  */
 public class ElementFactory {
 
@@ -562,6 +572,15 @@ public class ElementFactory {
 
     /**
      * Creates an Image object based on a list of properties.
+     *
+     * Security consideration: This method accepts input and processes it without built-in validation,
+     * filtering, or access restrictions. It may load resources such as local files or external URLs,
+     * depending on the input. This can introduce security risks including unauthorized file access,
+     * directory traversal, or server-side request forgery (SSRF).
+     *
+     * It is the responsibility of the calling application to validate and sanitize all input
+     * before passing it to this method, especially when handling user-controlled or external data.
+     * Refer to established secure coding guidelines to ensure safe usage.
      *
      * @param attributes The properties to base the Image on
      * @return an Image
