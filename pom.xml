@@ -50,6 +50,7 @@
     <module>pdf-swing</module>
     <module>pdf-toolbox</module>
     <module>openpdf-fonts-extra</module>
+    <module>openpdf-kotlin</module>
   </modules>
   <!-- Distribution config from http://central.sonatype.org/pages/apache-maven.html#distribution-management-and-authentication -->
   <distributionManagement>
