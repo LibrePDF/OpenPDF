@@ -3,12 +3,14 @@ package com.lowagie.text.pdf;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Test for small PDF files in MappedRandomAccessFile
@@ -29,7 +31,7 @@ public class SmallPdfReadTest {
             document.close();
         }
 
-        assertTrue(pdfFile.length() < 1024, "PDF should be under 1KiB");
+        Assertions.assertTrue(pdfFile.length() < 1024, "PDF should be under 1KiB");
 
         // 2. Open with MappedRandomAccessFile and seek to EOF
         try (MappedRandomAccessFile raf = new MappedRandomAccessFile(pdfFile.getAbsolutePath(), "r")) {
@@ -40,7 +42,7 @@ public class SmallPdfReadTest {
             int result = raf.read();
 
             // BUG: This currently throws IndexOutOfBoundsException instead of returning -1
-            assertEquals(-1, result, "Expected -1 at EOF, but read returned: " + result);
+            Assertions.assertEquals(-1, result, "Expected -1 at EOF, but read returned: " + result);
         }
 
         System.gc();
