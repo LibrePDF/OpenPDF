@@ -50,6 +50,7 @@
 package com.lowagie.text.utils;
 
 import java.io.IOException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -91,14 +92,15 @@ public class LongMappedByteBuffer {
     }
 
     public byte get(long pos) {
+        if (pos >= size) {
+            throw new BufferUnderflowException(); // triggers EOF handling in MappedRandomAccessFile
+        }
         int chunkIndex = (int) (pos / CHUNK_SIZE);
         int offset = (int) (pos % CHUNK_SIZE);
         MappedByteBuffer chunk = chunks[chunkIndex];
-        if (offset >= chunk.limit()) {
-            throw new IndexOutOfBoundsException("Offset " + offset + " >= chunk limit " + chunk.limit());
-        }
         return chunk.get(offset);
     }
+
 
 
     public void get(long pos, byte[] dst, int off, int len) {
