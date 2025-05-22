@@ -52,7 +52,6 @@ import com.lowagie.text.utils.LongMappedByteBuffer;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.BufferUnderflowException;
 import java.nio.channels.FileChannel;
 
 /**
@@ -114,19 +113,23 @@ public class MappedRandomAccessFile implements AutoCloseable {
     }
 
     /**
-     * @return int next integer or -1 on EOF
+     * @return int next byte value or -1 on EOF
      * @see java.io.RandomAccessFile#read()
      */
     public int read() {
-        try {
-            byte b = mappedByteBuffer.get();
-            int n = b & 0xff;
+        long pos = mappedByteBuffer.position();
+        long limit = mappedByteBuffer.limit();
 
-            return n;
-        } catch (BufferUnderflowException e) {
+        if (pos >= limit) {
             return -1; // EOF
         }
+
+        byte b = mappedByteBuffer.get(pos);
+        mappedByteBuffer.position(pos + 1);
+        return b & 0xFF;
     }
+
+
 
     /**
      * @param bytes byte[]
