@@ -108,19 +108,7 @@ OpenPDF ancestors in GitHub (in fork order):
 ## Security Notice
 
 It is the responsibility of the application developer to ensure that all input passed into OpenPDF is trusted, sanitized, and safe.
-OpenPDF does not perform input validation or enforce sandboxing. It is the responsibility of the application developer to ensure that all input passed 
-to OpenPDF is safe and trusted. For important security guidelines and common risks, please read our [Security Policy](Security.md).
-
-
-## Projects using OpenPDF
-
-- [Spring Framework](https://github.com/spring-projects/spring-framework)
-- [flyingsaucer](https://github.com/flyingsaucerproject/flyingsaucer)
-- [Digital Signature Service](https://github.com/esig/dss)
-- Confluence PDF Export
-- OpenCMS, Nuxeo Web Framework, QR Invoice Library and many closed source commercial applications as
-  well.
-- Full list here: [Artifacts using OpenPDF](https://mvnrepository.com/artifact/com.github.librepdf/openpdf/usages)
+OpenPDF does not perform input validation or enforce sandboxing. For important security guidelines and common risks, please read our [Security Policy](Security.md).
 
 ## Android
 
