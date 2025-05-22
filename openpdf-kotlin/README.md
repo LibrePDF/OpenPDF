@@ -1,12 +1,16 @@
-# OpenPDF Kotlin (Experimental)
+# OpenPDF Kotlin
 
-**OpenPDF Kotlin** is an experimental Kotlin extension module for [OpenPDF](https://github.com/LibrePDF/OpenPDF) that provides idiomatic Kotlin APIs, utilities, and builder-style functionality for working with PDF documents.
+**OpenPDF Kotlin** is an *experimental* Kotlin extension module for  
+[OpenPDF](https://github.com/LibrePDF/OpenPDF). It provides idiomatic Kotlin APIs, utilities, and  
+builder-style functionality for working with PDF documents.
 
-This submodule is designed to make OpenPDF more convenient and expressive for Kotlin developers, using features such as:
+This submodule makes OpenPDF more convenient and expressive for Kotlin developers by offering:
 
-- Extension functions for common tasks
+- Extension functions for common PDF tasks
 - A lightweight Kotlin-style `PdfBuilder`
-- DSL-inspired document generation
+- DSL-inspired document generation syntax
+
+Kotlin pull requests are welcome!
 
 ---
 
