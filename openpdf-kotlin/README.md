@@ -11,7 +11,7 @@ Kotlin pull requests are welcome!
 
 ---
 
-## 📦 Example Usage
+## Example Usage
 
 ```kotlin
 import com.github.librepdf.kotlin.PdfBuilder
@@ -30,7 +30,7 @@ fun main() {
 ```
 
 
-## 📝 TODO
+## TODO
 
 - [ ] Improve `PdfBuilder` DSL syntax and flexibility (e.g. nested tables, headers, footers)
 - [ ] Add unit tests for all Kotlin utilities
