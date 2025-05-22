@@ -144,7 +144,7 @@ We have now different versions of OpenPDF, and they require different versions o
 - The 1.4.x Branch requires Java 11 or later.
 - The 1.3.x Branch requires Java 8 or later.
 
-The upcoming 2.1.0 version of OpenPDF will require Java 21 or later.
+The upcoming 2.1.0 version of OpenPDF will require Java 21 or later, possibly to be released in circa year 2026.
 
 ### UTF-8 Fonts
 
