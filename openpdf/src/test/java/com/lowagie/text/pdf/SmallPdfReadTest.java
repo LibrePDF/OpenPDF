@@ -49,7 +49,8 @@ public class SmallPdfReadTest {
         try {
             Thread.sleep(100); // give GC time to release mapped file
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt(); // best practice: restore interrupt flag
+            throw new IllegalStateException("Sleep was interrupted", e);
         }
     }
 }
