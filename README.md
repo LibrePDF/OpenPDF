@@ -104,6 +104,15 @@ OpenPDF ancestors in GitHub (in fork order):
 4. [@ymasory](https://github.com/ymasory) / [iText-4.2.0](https://github.com/ymasory/iText-4.2.0) -
    original parent on GitHub
 
+
+## Security Notice
+
+It is the responsibility of the application developer to ensure that all input passed into OpenPDF is trusted, sanitized, and safe.
+OpenPDF does not perform input validation or enforce sandboxing. It is the responsibility of the application developer to ensure that all input passed 
+to OpenPDF is safe and trusted. For important security guidelines and common risks, please read our [Security Policy]
+(Security.md).
+
+
 ## Projects using OpenPDF
 
 - [Spring Framework](https://github.com/spring-projects/spring-framework)
