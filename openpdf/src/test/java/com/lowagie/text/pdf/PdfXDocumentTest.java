@@ -1,6 +1,10 @@
 package com.lowagie.text.pdf;
 
-import com.lowagie.text.*;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
+import com.lowagie.text.Paragraph;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
