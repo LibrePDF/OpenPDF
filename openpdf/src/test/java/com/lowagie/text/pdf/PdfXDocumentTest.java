@@ -5,15 +5,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import com.lowagie.text.Document;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
