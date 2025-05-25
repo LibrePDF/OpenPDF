@@ -788,7 +788,7 @@ public class PdfWriter extends DocWriter implements
      * @return the <CODE>PdfDocument</CODE>
      */
 
-    PdfDocument getPdfDocument() {
+    public PdfDocument getPdfDocument() {
         return pdf;
     }
 

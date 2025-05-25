@@ -3194,7 +3194,7 @@ public class PdfDocument extends Document {
          * @param subject subject of the document
          */
 
-        PdfInfo(String author, String title, String subject) {
+        public PdfInfo(String author, String title, String subject) {
             this();
             addProducer();
             addCreationDate();
@@ -3558,4 +3558,35 @@ public class PdfDocument extends Document {
             return false;
         }
     }
+
+    /**
+     * Adds an OutputIntent dictionary to the PDF catalog.
+     * <p>
+     * This is required for PDF/X compliance, where an OutputIntent describes
+     * the intended output device color characteristics using an ICC profile.
+     * The OutputIntent will be embedded under the /OutputIntents key in the
+     * PDF catalog.
+     * </p>
+     *
+     * @param outputIntent the {@link PdfOutputIntent} object containing output profile information.
+     * @throws IllegalStateException if the {@link PdfWriter} is not yet initialized.
+     * @throws RuntimeException if there is an error writing the OutputIntent to the PDF.
+     */
+    public void addOutputIntent(PdfOutputIntent outputIntent) {
+        if (writer == null) {
+            throw new IllegalStateException("PdfWriter must be set before adding OutputIntent.");
+        }
+
+        try {
+            PdfIndirectObject outputIntentRef = writer.addToBody(outputIntent);
+            PdfArray outputIntents = new PdfArray();
+            outputIntents.add(outputIntentRef.getIndirectReference());
+
+            PdfDictionary catalog = writer.getExtraCatalog();
+            catalog.put(PdfName.OUTPUTINTENTS, outputIntents);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to add OutputIntent to catalog", e);
+        }
+    }
+
 }
