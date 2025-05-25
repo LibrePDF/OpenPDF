@@ -9,9 +9,14 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import java.awt.color.ICC_Profile;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * Unit test that creates a PDF/X-1a:2001 conforming document using OpenPDF
@@ -33,7 +38,6 @@ public class PdfXDocumentTest {
     public void testCreateAndVerifyMinimalPdfX1aMarkers() throws Exception {
         // Step 1: Load ICC profile
         InputStream iccStream = getClass().getResourceAsStream("/icc/ISOcoated_v2_300_eci.icc");
-        assertThat(iccStream).isNotNull();
         byte[] iccBytes = iccStream.readAllBytes();
         ICC_Profile icc = ICC_Profile.getInstance(iccBytes);
 
