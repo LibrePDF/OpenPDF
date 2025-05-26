@@ -18,9 +18,9 @@ and bugreports to this GitHub repository.
 
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 
-## OpenPDF version 2.0.4 released 2025-05-20
+## OpenPDF version 2.0.5 released 2025-05-26
 
-Get version 2.0.4 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.0.4
+Get version 2.0.5 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.0.5
 
 Please note: Repositories like Maven Central and others may take a few days to update.
 
@@ -53,7 +53,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>2.0.4</version>
+  <version>2.0.5</version>
 </dependency>
 ```
 
@@ -104,11 +104,12 @@ OpenPDF ancestors in GitHub (in fork order):
 4. [@ymasory](https://github.com/ymasory) / [iText-4.2.0](https://github.com/ymasory/iText-4.2.0) -
    original parent on GitHub
 
-
 ## Security Notice
 
-It is the responsibility of the application developer to ensure that all input passed into OpenPDF is trusted, sanitized, and safe.
-OpenPDF does not perform input validation or enforce sandboxing. For important security guidelines and common risks, please read our [Security Policy](Security.md).
+It is the responsibility of the application developer to ensure that all input passed into OpenPDF is trusted,
+sanitized, and safe.
+OpenPDF does not perform input validation or enforce sandboxing. For important security guidelines and common risks,
+please read our [Security Policy](Security.md).
 
 ## Android
 
