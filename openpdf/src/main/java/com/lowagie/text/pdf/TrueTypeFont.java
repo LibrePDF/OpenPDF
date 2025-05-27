@@ -287,9 +287,9 @@ class TrueTypeFont extends BaseFont {
                 .endsWith(".ttc")) {
             process(ttfAfm, forceRead);
             if (!justNames && embedded && os_2.fsType == 2) {
-                throw new DocumentException(
-                        MessageLocalization.getComposedMessage("1.cannot.be.embedded.due.to.licensing.restrictions",
-                                fileName + style));
+                // throw new DocumentException(
+                //         MessageLocalization.getComposedMessage("1.cannot.be.embedded.due.to.licensing.restrictions",
+                //                 fileName + style));
             }
         } else {
             throw new DocumentException(
