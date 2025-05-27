@@ -107,9 +107,9 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator {
                 && emb)) {
             process(ttfAfm, forceRead);
             if (os_2.fsType == 2) {
-                throw new DocumentException(
-                        MessageLocalization.getComposedMessage("1.cannot.be.embedded.due.to.licensing.restrictions",
-                                fileName + style));
+                // throw new DocumentException(
+                //         MessageLocalization.getComposedMessage("1.cannot.be.embedded.due.to.licensing.restrictions",
+                //                 fileName + style));
             }
             // Sivan
             if ((cmap31 == null && !fontSpecific) || (cmap10 == null && fontSpecific)) {
