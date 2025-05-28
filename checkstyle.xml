@@ -47,8 +47,8 @@
 
   <!-- <module name="LineLength">
     <property name="fileExtensions" value="java"/>
-    <!-- OpenPDF: Not fully possible yet due existing code -->
-    <property name="max" value="180"/> <!-- Should be slowly reduced to 120 -->
+    // OpenPDF: Not fully possible yet due existing code
+    <property name="max" value="180"/> // Should be slowly reduced to 120
     <property name="ignorePattern"
       value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
   </module> -->
