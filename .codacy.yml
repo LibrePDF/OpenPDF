@@ -1,0 +1,3 @@
+engines:
+  markdownlint:
+    enabled: false
