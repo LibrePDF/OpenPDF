@@ -76,6 +76,7 @@ import java.util.StringTokenizer;
  * @author psoares
  * @Deprecated
  */
+
 @Deprecated
 public class FactoryProperties {
 

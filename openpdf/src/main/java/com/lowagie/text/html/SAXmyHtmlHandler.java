@@ -60,8 +60,10 @@ import org.xml.sax.Attributes;
 
 /**
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
+ *
  * @Deprecated
  */
+
 @Deprecated
 public class SAXmyHtmlHandler extends SAXiTextHandler<HtmlPeer> {
 // SAXmyHandler

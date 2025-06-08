@@ -57,10 +57,12 @@ import java.util.Map;
 
 /**
  * @author psoares
+ *
  * @Deprecated
  *
  *
  */
+
 @Deprecated
 public class IncTable {
 

@@ -55,6 +55,7 @@ import java.util.HashMap;
 /**
  * @Deprecated
  */
+
 @Deprecated
 public interface ImageProvider {
 

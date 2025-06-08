@@ -108,9 +108,11 @@ import java.util.Stack;
  * OutputStreams listening to it
  * <STRONG>document.close();</STRONG>
  * </PRE></BLOCKQUOTE>
+ *
  * @Deprecated
  *
  */
+
 @Deprecated
 public class HtmlWriter extends DocWriter {
 

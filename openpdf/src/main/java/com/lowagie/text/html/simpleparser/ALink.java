@@ -51,8 +51,10 @@ import com.lowagie.text.Paragraph;
 
 /**
  * @author psoares
+ *
  * @Deprecated
  */
+
 @Deprecated
 public interface ALink {
 

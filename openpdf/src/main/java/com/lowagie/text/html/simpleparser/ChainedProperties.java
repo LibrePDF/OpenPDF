@@ -60,6 +60,7 @@ import java.util.Optional;
  * @Deprecated
  *
  */
+
 @Deprecated
 public class ChainedProperties {
 

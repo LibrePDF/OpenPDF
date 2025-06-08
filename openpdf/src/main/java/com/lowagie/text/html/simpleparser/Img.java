@@ -53,8 +53,10 @@ import java.util.HashMap;
 
 /**
  * @author psoares
+ *
  * @Deprecated
  */
+
 @Deprecated
 public interface Img {
 

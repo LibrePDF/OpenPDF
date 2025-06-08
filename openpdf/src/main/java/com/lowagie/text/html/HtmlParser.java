@@ -69,9 +69,11 @@ import org.xml.sax.SAXException;
  * It is the responsibility of the calling application to validate and sanitize all input
  * before passing it to this method, especially when handling user-controlled or external data.
  * Refer to established secure coding guidelines to ensure safe usage.
+ *
  * @Deprecated
  *
  */
+
 @Deprecated
 public class HtmlParser extends XmlParser {
 
