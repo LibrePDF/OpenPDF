@@ -74,10 +74,11 @@ import java.util.StringTokenizer;
 
 /**
  * @author psoares
- * @Deprecated
+ *
+ * @deprecated
  */
 
-@Deprecated
+@Deprecated(since = "2.1.0")
 public class FactoryProperties {
 
     public static Map<String, String> followTags = new HashMap<>();

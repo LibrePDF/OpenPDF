@@ -54,10 +54,10 @@ import java.util.HashMap;
 /**
  * @author psoares
  *
- * @Deprecated
+ * @deprecated
  */
 
-@Deprecated
+@Deprecated(since = "2.1.0")
 public interface Img {
 
     boolean process(Image img, HashMap h, ChainedProperties cprops, DocListener doc);

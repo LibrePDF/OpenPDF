@@ -70,11 +70,11 @@ import org.xml.sax.SAXException;
  * before passing it to this method, especially when handling user-controlled or external data.
  * Refer to established secure coding guidelines to ensure safe usage.
  *
- * @Deprecated
+ * @deprecated
  *
  */
 
-@Deprecated
+@Deprecated(since = "2.1.0")
 public class HtmlParser extends XmlParser {
 
 

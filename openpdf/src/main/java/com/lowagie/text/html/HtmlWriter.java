@@ -109,11 +109,11 @@ import java.util.Stack;
  * <STRONG>document.close();</STRONG>
  * </PRE></BLOCKQUOTE>
  *
- * @Deprecated
+ * @deprecated
  *
  */
 
-@Deprecated
+@Deprecated(since = "2.1.0")
 public class HtmlWriter extends DocWriter {
 
     // static membervariables (tags)

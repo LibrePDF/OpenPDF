@@ -53,10 +53,10 @@ import com.lowagie.text.Image;
 import java.util.HashMap;
 
 /**
- * @Deprecated
+ * @deprecated
  */
 
-@Deprecated
+@Deprecated(since = "2.1.0")
 public interface ImageProvider {
 
     Image getImage(String src, HashMap h, ChainedProperties cprops, DocListener doc);

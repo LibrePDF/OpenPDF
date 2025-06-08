@@ -56,10 +56,10 @@ import java.util.Map;
 
 /**
  *
- * @Deprecated
+ * @deprecated
  */
 
-@Deprecated
+@Deprecated(since = "2.1.0")
 public class StyleSheet {
 
     private final Map<String, Map<String, String>> classMap = new HashMap<>();

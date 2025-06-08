@@ -82,11 +82,11 @@ import java.awt.Color;
  *
  * @author mario.maccarini@ugent.be
  *
- * @Deprecated
+ * @deprecated
  *
  */
 
-@Deprecated
+@Deprecated(since = "2.1.0")
 public final class HtmlEncoder {
 
     // membervariables

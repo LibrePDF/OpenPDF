@@ -58,12 +58,12 @@ import java.util.Map;
 /**
  * @author psoares
  *
- * @Deprecated
+ * @deprecated
  *
  *
  */
 
-@Deprecated
+@Deprecated(since = "2.1.0")
 public class IncTable {
 
     private Map<String, String> props = new HashMap<>();

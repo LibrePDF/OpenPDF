@@ -61,11 +61,11 @@ import java.util.List;
 /**
  * @author psoares
  *
- * @Deprecated
+ * @deprecated
  *
  */
 
-@Deprecated
+@Deprecated(since = "2.1.0")
 public class IncCell implements TextElementArray {
 
     private final PdfPCell cell;
