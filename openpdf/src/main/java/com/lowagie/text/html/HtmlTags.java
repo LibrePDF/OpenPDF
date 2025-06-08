@@ -54,6 +54,8 @@ package com.lowagie.text.html;
 
 /**
  * A class that contains all the possible tagnames and their attributes.
+ *
+ * @deprecated
  */
 @Deprecated(since = "2.1.0", forRemoval = true)
 @SuppressWarnings("WeakerAccess")

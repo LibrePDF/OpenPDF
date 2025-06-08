@@ -3,6 +3,8 @@ package com.lowagie.text.html;
 /**
  * Named font sizes defined by CSS
  * <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-size">font-size</a> property
+ *
+ * @deprecated
  */
 @Deprecated(since = "2.1.0", forRemoval = true)
 public enum FontSize {

@@ -108,6 +108,9 @@ import java.util.Stack;
  * OutputStreams listening to it
  * <STRONG>document.close();</STRONG>
  * </PRE></BLOCKQUOTE>
+ *
+ * @deprecated
+ *
  */
 
 @Deprecated(since = "2.1.0", forRemoval = true)
