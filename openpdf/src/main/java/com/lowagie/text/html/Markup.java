@@ -60,7 +60,7 @@ import java.util.StringTokenizer;
 /**
  * A class that contains all the possible tagnames and their attributes.
  *
- * @deprecated Scheduled for removal.
+ * @deprecated No longer supported. Will be removed in a future version.
  *
  */
 

@@ -59,7 +59,7 @@ import java.util.HashMap;
 /**
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
  *
- * @deprecated Scheduled for removal.
+ * @deprecated No longer supported. Will be removed in a future version.
  */
 @Deprecated(since = "2.1.0", forRemoval = true)
 public class HtmlTagMap extends HashMap<String, HtmlPeer> {
