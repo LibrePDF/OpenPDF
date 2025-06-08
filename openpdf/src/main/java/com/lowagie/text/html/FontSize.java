@@ -4,6 +4,7 @@ package com.lowagie.text.html;
  * Named font sizes defined by CSS
  * <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-size">font-size</a> property
  */
+@Deprecated
 public enum FontSize {
 
     // Absolute-size keywords, based on the user's default font size (which is medium).

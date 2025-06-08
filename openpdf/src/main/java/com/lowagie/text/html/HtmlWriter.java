@@ -110,6 +110,7 @@ import java.util.Stack;
  * </PRE></BLOCKQUOTE>
  */
 
+@Deprecated
 public class HtmlWriter extends DocWriter {
 
     // static membervariables (tags)
