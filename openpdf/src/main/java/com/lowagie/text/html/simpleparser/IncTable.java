@@ -57,7 +57,11 @@ import java.util.Map;
 
 /**
  * @author psoares
+ * @Deprecated
+ *
+ *
  */
+@Deprecated
 public class IncTable {
 
     private Map<String, String> props = new HashMap<>();

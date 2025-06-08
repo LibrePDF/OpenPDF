@@ -60,7 +60,10 @@ import java.util.List;
 
 /**
  * @author psoares
+ * @Deprecated
+ *
  */
+@Deprecated
 public class IncCell implements TextElementArray {
 
     private final PdfPCell cell;

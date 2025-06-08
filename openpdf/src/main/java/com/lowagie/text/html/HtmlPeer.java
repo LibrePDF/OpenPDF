@@ -56,8 +56,10 @@ import org.xml.sax.Attributes;
 
 /**
  * This interface is implemented by the peer of all the iText objects.
+ * @Deprecated
+ *
  */
-
+@Deprecated
 public class HtmlPeer extends XmlPeer {
 
     /**

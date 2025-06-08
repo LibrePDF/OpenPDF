@@ -74,7 +74,9 @@ import java.util.StringTokenizer;
 
 /**
  * @author psoares
+ * @Deprecated
  */
+@Deprecated
 public class FactoryProperties {
 
     public static Map<String, String> followTags = new HashMap<>();

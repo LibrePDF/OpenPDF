@@ -100,6 +100,7 @@ import java.util.StringTokenizer;
  *
  *
  */
+@Deprecated
 public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
     public static final String tagsSupportedString =
