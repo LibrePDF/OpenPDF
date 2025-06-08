@@ -98,8 +98,10 @@ import java.util.StringTokenizer;
  * before passing it to this method, especially when handling user-controlled or external data.
  * Refer to established secure coding guidelines to ensure safe usage.
  *
- *
+ * @deprecated
  */
+
+@Deprecated(since = "2.1.0")
 public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
 
     public static final String tagsSupportedString =

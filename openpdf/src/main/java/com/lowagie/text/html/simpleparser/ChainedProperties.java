@@ -56,6 +56,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * @deprecated
+ *
+ */
+
+@Deprecated(since = "2.1.0")
 public class ChainedProperties {
 
     public final static int[] fontSizes = {8, 10, 12, 14, 18, 24, 36};

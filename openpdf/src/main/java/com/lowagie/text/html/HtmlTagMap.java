@@ -58,8 +58,12 @@ import java.util.HashMap;
 
 /**
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
+ *
+ * @deprecated
+ *
  */
 
+@Deprecated(since = "2.1.0")
 public class HtmlTagMap extends HashMap<String, HtmlPeer> {
 
     private static final long serialVersionUID = 5287430058473705350L;

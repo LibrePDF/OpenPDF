@@ -51,7 +51,11 @@ import com.lowagie.text.Paragraph;
 
 /**
  * @author psoares
+ *
+ * @deprecated
  */
+
+@Deprecated(since = "2.1.0")
 public interface ALink {
 
     boolean process(Paragraph current, ChainedProperties cprops);

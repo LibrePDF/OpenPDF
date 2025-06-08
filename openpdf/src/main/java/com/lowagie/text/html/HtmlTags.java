@@ -54,7 +54,11 @@ package com.lowagie.text.html;
 
 /**
  * A class that contains all the possible tagnames and their attributes.
+ *
+ * @deprecated
  */
+
+@Deprecated(since = "2.1.0")
 @SuppressWarnings("WeakerAccess")
 public class HtmlTags {
 

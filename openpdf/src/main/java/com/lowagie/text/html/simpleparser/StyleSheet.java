@@ -54,6 +54,12 @@ import com.lowagie.text.html.Markup;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ * @deprecated
+ */
+
+@Deprecated(since = "2.1.0")
 public class StyleSheet {
 
     private final Map<String, Map<String, String>> classMap = new HashMap<>();
