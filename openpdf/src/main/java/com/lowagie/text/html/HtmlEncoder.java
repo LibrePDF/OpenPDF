@@ -81,7 +81,7 @@ import java.awt.Color;
  * </p>
  *
  * @author mario.maccarini@ugent.be
- * @deprecated
+ * @deprecated Scheduled for removal.
  *
  */
 @Deprecated(since = "2.1.0", forRemoval = true)

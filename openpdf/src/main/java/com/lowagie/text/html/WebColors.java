@@ -62,7 +62,7 @@ import java.util.StringTokenizer;
  * CSS4 Implementation based on: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
  *
  * @author blowagie
- * @deprecated
+ * @deprecated Scheduled for removal.
  */
 @Deprecated(since = "2.1.0", forRemoval = true)
 public class WebColors extends HashMap<String, int[]> {

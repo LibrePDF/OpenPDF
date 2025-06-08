@@ -109,7 +109,7 @@ import java.util.Stack;
  * <STRONG>document.close();</STRONG>
  * </PRE></BLOCKQUOTE>
  *
- * @deprecated
+ * @deprecated Scheduled for removal.
  *
  */
 
