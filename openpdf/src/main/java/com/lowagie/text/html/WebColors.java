@@ -63,7 +63,7 @@ import java.util.StringTokenizer;
  *
  * @author blowagie
  */
-@Deprecated
+@Deprecated(since = "2.1.0", forRemoval = true)
 public class WebColors extends HashMap<String, int[]> {
 
     /**
