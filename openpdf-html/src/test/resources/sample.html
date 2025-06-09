@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+	<meta name="x-apple-disable-message-reformatting" />
+	<title>Sample bill</title>
+	<link rel="stylesheet" type="text/css" href="classpath:styles/sample.css" title="Style"/>
+	<style>
+		.content {
+			width: 595px;
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			float: none;
+		}
+
+		.content.last {
+			width: 595px;
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			float: none;
+		}
+
+		.content.middle {
+			width: 595px;
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			float: none;
+		}
+
+		.logo {
+			margin-top: 30px;
+			margin-left: 30px;
+			left: 0%;
+			right: 0%;
+			top: 0%;
+			bottom: 0%;
+			border-radius: 8px;
+			background-size: 64px 64px;
+			width: 64px;
+			height: 64px;
+			background-repeat: no-repeat;
+		}
+
+		.recipient {
+			width: 260px;
+			height: 64px;
+			left: 310px;
+			position: relative;
+			top: -70px;
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			font-style: normal;
+			font-size: 11px;
+			line-height: 16px;
+		}
+
+		.recipient .table .line {
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			font-style: normal;
+			font-size: 11px;
+			line-height: 16px;
+			text-align: right;
+		}
+
+		.recipient .table .title {
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			font-style: normal;
+			font-weight: bold;
+			font-size: 16px;
+			line-height: 24px;
+			text-align: right;
+		}
+
+		.billTo {
+			position: relative;
+			width: 260px;
+			min-height: 66px;
+			left: 30px;
+			top: -40px;
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			font-style: normal;
+			font-size: 11px;
+			line-height: 16px;
+		}
+
+		.billTo .table {
+			text-align: left;
+		}
+
+		.billTo .table .line {
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			font-style: normal;
+			font-size: 11px;
+			line-height: 16px;
+		}
+
+		.numberAndDate {
+			position: relative;
+			width: 215px;
+			height: 62px;
+			left: 355px;
+			top: -110px;
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+		}
+
+		.numberAndDate .line {
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			font-style: normal;
+			font-size: 11px;
+			line-height: 20px;
+			text-align: right;
+		}
+
+		.numberAndDate .line .key {
+			width: 75px;
+			height: 20px;
+			float: left;
+			text-align: left;
+			font-weight: bold;
+		}
+
+		.numberAndDate .line .value {
+			width: 140px;
+			height: 20px;
+			float: right;
+			text-align: right;
+
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+		}
+
+		.main-content {
+			position: relative;
+			width: 536px;
+			height: auto;
+			min-height: 480px;
+			left: 30px;
+			border: 1px solid #F2F2F2;
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+		}
+
+		.information {
+			position: relative;
+			width: 505px;
+			padding: 16px;
+			height: auto;
+			left: 30px;
+			background: #F2F4F9;
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			font-style: normal;
+			font-size: 11px;
+			line-height: 16px;
+			text-align: center;
+			vertical-align: middle;
+		}
+
+		.questions {
+			position: relative;
+			width: 520px;
+			height: 16px;
+			left: 38px;
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			font-style: normal;
+			font-size: 10px;
+			line-height: 16px;
+			text-align: center;
+			color: #757575;
+		}
+
+		.paging {
+			position: relative;
+			height: 16px;
+			width: 534px;
+			bottom: 0px;
+			font-family: 'SC_ProximaNova-Regular', Sans-Serif;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 10px;
+			line-height: 16px;
+			text-align: center;
+			color: #757575;
+		}
+
+		.charges {
+			width: 536px;
+			height: auto;
+		}
+
+		.charges .header {
+			width: 536px;
+			height: 32px;
+			background-color: #F2F4F9;
+			font-style: normal;
+			font-weight: bold !important;
+			font-size: 11px;
+			line-height: 12px;
+		}
+
+		.charges .header .name {
+			width: 154px;
+			height: 12px;
+			padding-left: 12px;
+			padding-top: 10px;
+			text-align: left;
+			float: left;
+		}
+
+		.charges .header .description {
+			width: 205px;
+			height: 12px;
+			padding-left: 16px;
+			padding-top: 10px;
+			text-align: left;
+			float: left;
+		}
+
+		.charges .header .quantity {
+			width: 30px;
+			height: 12px;
+			padding-left: 16px;
+			padding-top: 10px;
+			text-align: left;
+			float: left;
+		}
+
+		.charges .header .amount {
+			width: 76px;
+			height: 12px;
+			padding-left: 16px;
+			padding-top: 10px;
+			text-align: right;
+			float: left;
+		}
+
+		.charges .charge {
+			width: 536px;
+			height: auto;
+			display: table;
+			height: 32px;
+			background-color: #FFFFFF;
+			font-size: 11px;
+			line-height: 12px;
+			color: #000000;
+		}
+
+		.charges .odd-charge {
+			background: #FFFFFF;
+		}
+
+		.charges .even-charge {
+			background: #FAFAFA;
+		}
+
+		.refund {
+			color: #FF3B30 !important;
+		}
+
+		.charges .charge .line .name {
+			width: 154px;
+			padding-left: 12px;
+			padding-top: 10px;
+			padding-bottom: 5px;
+			text-align: left;
+			float: left;
+		}
+
+		.charges .charge .line .description {
+			width: 205px;
+			height: 12px;
+			padding-left: 16px;
+			padding-top: 10px;
+			padding-bottom: 5px;
+			text-align: left;
+			float: left;
+		}
+
+		.charges .charge .line .quantity {
+			width: 30px;
+			height: 12px;
+			padding-left: 16px;
+			padding-top: 10px;
+			padding-bottom: 5px;
+			text-align: left;
+			float: left;
+		}
+
+		.charges .charge .line .amount {
+			width: 76px;
+			height: 12px;
+			padding-left: 16px;
+			padding-top: 10px;
+			padding-bottom: 5px;
+			text-align: right;
+			float: left;
+		}
+
+		.charges .charge .line .discount {
+			width: 76px;
+			height: 12px;
+			padding-left: 16px;
+			padding-top: 10px;
+			padding-bottom: 5px;
+			text-align: right;
+			float: left;
+		}
+
+		.charges .charge .line .discount:before {
+			content: "-";
+		}
+
+		.negate:before {
+			content: "-";
+		}
+
+		.resumes {
+			width: 536px;
+			height: auto;
+			font-style: normal;
+			font-size: 11px;
+			line-height: 12px;
+		}
+
+		.resumes .resume {
+			width: 536px;
+			height: auto;
+			height: 30px;
+			background-color: #FFFFFF;
+			font-size: 11px;
+			line-height: 12px;
+			color: #000000;
+		}
+
+		.resumes .resume.bold .key {
+			font-weight: bold !important;
+		}
+
+		.resumes .resume.bold .value {
+			font-weight: bold !important;
+		}
+
+		.resumes .resume .key {
+			width: 408px;
+			height: 12px;
+			padding-left: 12px;
+			padding-top: 10px;
+			text-align: right;
+			float: left;
+		}
+
+		.resumes .resume .value {
+			width: 88px;
+			height: 12px;
+			padding-left: 16px;
+			padding-top: 10px;
+			text-align: right;
+			float: left;
+		}
+
+		.resumes .resume.blue {
+			background: #D4E9FF;
+			margin-left: 150px;
+			width: 387px;
+			height: 40px;
+			font-size: 11px;
+			line-height: 12px;
+			color: #000000;
+		}
+
+		.resumes .resume.balance {
+			height: 75px;
+		}
+
+		.resumes .resume.green {
+			background: #DBFFD4;
+			margin-left: 195px;
+			width: 342px;
+			height: auto;
+			height: 32px;
+			font-size: 11px;
+			line-height: 12px;
+			color: #000000;
+		}
+
+		.resumes .resume .value {
+			width: 88px;
+			height: 12px;
+			padding-left: 16px;
+			padding-top: 10px;
+			text-align: right;
+			float: left;
+		}
+
+		.resumes .resume.blue .key {
+			width: 269px;
+			height: 12px;
+			padding-left: 1px;
+			padding-top: 10px;
+			text-align: right;
+			float: left;
+		}
+
+		.resumes .resume.green .key {
+			width: 224px;
+			height: 12px;
+			padding-left: 1px;
+			padding-top: 10px;
+			text-align: right;
+			float: left;
+		}
+
+		.resumes .line {
+			width: 340px;
+			border: 1px solid #D0D0D0;
+			margin-left: 185px;
+			height: 0px;
+			margin-top: 12px;
+			margin-bottom: 12px;
+			margin-right: 10px;
+		}
+
+		.resumes .resume .auto-pay {
+			color: #007AFF;
+			padding-left: 295px;
+			font-style: normal;
+			font-size: 11px;
+			line-height: 12px;
+			letter-spacing: 0.01em;
+			padding-top: 10px;
+		}
+
+		@media print {
+			footer {
+				page-break-after: always;
+			}
+
+			body {
+				-webkit-print-color-adjust: exact;
+			}
+
+			-webkit-print-color-adjust: exact;
+		}
+	</style>
+</head>
+
+<body>
+<div class="content">
+
+	<div>
+		<header style="position:relative; top:70px">
+			<img class="logo"
+				 src="https://img.freepik.com/free-photo/fake-word-yellow-tiles_23-2148227727.jpg" onerror="this.style.display='none'" />
+			<div class="recipient">
+				<div class="table">
+					<div class="line title">
+						<label>title</label>
+					</div>
+					<div class="line">
+						<label>address</label>
+					</div>
+					<div class="line">
+						<label></label>
+						<label></label>
+					</div>
+				</div>
+			</div>
+			<div class="billTo">
+				<div class="table">
+					<div class="line">
+						<b>Bill To:</b>
+					</div>
+					<div class="line">
+						<label></label> <label>John doe</label>
+					</div>
+					<div class="line">
+						<label></label> <label></label> <label></label>
+					</div>
+					<div class="line">
+						<label>john.do@mail.com</label>
+					</div>
+				</div>
+			</div>
+			<div class="numberAndDate">
+				<div class="line">
+					<div class="key">Invoice #: </div>
+					<div class="value" title="INV-666">INV-666</div>
+				</div>
+				<div class="line">
+					<div class="key">Invoice Date: </div>
+					<div class="value">Sep 27, 2023</div>
+				</div>
+				<div class="line">
+					<div class="key">Payment Due:</div>
+					<div class="value">Sep 29, 2023</div>
+				</div>
+
+
+			</div>
+		</header>
+	</div>
+
+	<div class="main-content">
+		<div>
+			<charges>
+				<div class="charges">
+					<div class="header">
+						<div class="name"><b>Name</b></div>
+						<div class="description"><b>Description</b></div>
+						<div class="quantity"><b>Quantity</b></div>
+						<div class="amount"><b>Amount</b></div>
+						<div class="password"><b>Password</b></div>
+					</div>
+					<div class="charge odd-charge">
+
+						<div class="line charge">
+							<div class="name"><label>Charge name</label> <label>(boby bryan)</label>
+							</div>
+							<div class="description">Charge description</div>
+							<div class="quantity">1</div>
+							<div class="amount">$666.00</div>
+							<div class="password">Secret123</div>
+						</div>
+
+
+					</div>
+				</div>
+			</charges>
+		</div>
+		<div class="resumes">
+			<div class="resumes">
+				<div>
+					<div class="resume bold">
+						<div class="key">Current Invoice Total:</div>
+						<div class="value">$666.00</div>
+					</div>
+					<div class="resume bold blue">
+						<div class="key">Total Amount:</div>
+						<div class="value">$666.00</div>
+					</div>
+				</div>
+
+				<!-- AUTO PAY -->
+
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<footer style="top: 0px; position: relative;">
+			<div class="information">
+				<label>Sed ut perspiciatis unde omnis iste natus error sit voluptatem</label>
+			</div>
+
+			<div class="questions">
+				If you have any questions about this invoice, please contact
+				<a href="mailto:support@mail.com"><label>support@mail.com</label></a>.
+			</div>
+
+			<div class="paging">
+				Page <label>1</label> of <label>1</label>
+			</div>
+		</footer>
+	</div>
+</div>
+</body>
+
+</html>
