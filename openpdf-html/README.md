@@ -9,6 +9,7 @@ The goal of this project is to upgrade and maintain the HTML-to-PDF rendering en
 ## 🚀 Features
 
 - Modern HTML5 support (in progress)
+- Uses neko-htmlunit as HTML parser, which will enable HTML5 parsing: https://github.com/HtmlUnit/htmlunit-neko
 - Improved CSS3 compatibility
 - Seamless integration with OpenPDF
 - Modular architecture for easier maintenance and extension
