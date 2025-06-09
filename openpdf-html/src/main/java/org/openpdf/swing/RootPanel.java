@@ -582,18 +582,13 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
             if (!repaintRequestPending) {
                 XRLog.general(Level.FINE, "... Queueing new repaint request, el: " + el + " < " + maxRepaintRequestWaitMs);
                 repaintRequestPending = true;
-                Thread.startVirtualThread(() -> {
-                    try {
-                        Thread.sleep(Math.min(maxRepaintRequestWaitMs, Math.abs(maxRepaintRequestWaitMs - el)));
-                        EventQueue.invokeLater(() -> {
-                            XRLog.general(Level.FINE, "--> running queued repaint request");
-                            repaintRequested(doLayout);
-                            repaintRequestPending = false;
-                        });
-                    } catch (InterruptedException ignore) {
-                        Thread.currentThread().interrupt();
-                    }
-                });
+
+                int delay = (int) Math.min(maxRepaintRequestWaitMs, Math.abs(maxRepaintRequestWaitMs - el));
+                new javax.swing.Timer(delay, e -> {
+                    XRLog.general(Level.FINE, "--> running queued repaint request");
+                    repaintRequested(doLayout);
+                    repaintRequestPending = false;
+                }).start();
 
             } else {
                 pendingRepaintCount++;
@@ -601,6 +596,7 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
             }
         }
     }
+
 
     public boolean isDefaultFontFromComponent() {
         return defaultFontFromComponent;
