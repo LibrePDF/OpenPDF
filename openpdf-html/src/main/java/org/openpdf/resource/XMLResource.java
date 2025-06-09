@@ -20,6 +20,7 @@
 package org.openpdf.resource;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import javax.xml.transform.TransformerException;
 import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.openpdf.util.Configuration;
@@ -219,16 +220,24 @@ public class XMLResource extends AbstractResource {
 
         private Document transform(Source source) {
             DOMResult result = new DOMResult();
-            Transformer idTransform = transformerPool.get();
+
             try {
-                idTransform.transform(source, result);
-            } catch (Exception ex) {
+                TransformerFactory factory = TransformerFactory.newInstance();
+
+                // Disable access to external entities
+                factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+
+                Transformer transformer = factory.newTransformer();
+                transformer.transform(source, result);
+                return (Document) result.getNode();
+
+            } catch (TransformerException | IllegalArgumentException ex) {
                 throw new XRRuntimeException("Can't load the XML resource (using TrAX transformer). " + ex.getMessage(), ex);
-            } finally {
-                transformerPool.release(idTransform);
             }
-            return (Document) result.getNode();
         }
+
 
     }
 
