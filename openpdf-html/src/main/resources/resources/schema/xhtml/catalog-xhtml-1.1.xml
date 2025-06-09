@@ -1,0 +1,20 @@
+<?xml version='1.0'?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
+
+<!-- ...................................................................... -->
+<!-- XML Catalog data for HTML XML V4.01 ................................ -->
+
+<!-- This is derived from the sample catalog.xml that ships with the
+     DocBook XML v4.4 DTDs. It maps to the Flying Saucer DTD repository
+     under resources/schema/html-4.01/* -->
+
+<!-- ...................................................................... -->
+  <public publicId="-//W3C//DTD XHTML 1.1//EN"
+  uri="resources/schema/xhtml/xhtml-1.1/xhtml11.dtd" />
+
+  <public publicId="-//W3C//ENTITIES XHTML 1.1 Document Model 1.0//EN" uri="resources/schema/xhtml/xhtml-1.1/entity/xhtml11-model-1.mod" />
+
+<!-- End of catalog data for HTML XML V4.01 ............................. -->
+<!-- ...................................................................... -->
+
+</catalog>

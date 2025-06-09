@@ -1,0 +1,63 @@
+<?xml version='1.0'?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
+
+<!-- ...................................................................... -->
+<!-- XML Catalog data for HTML XML V4.01 ................................ -->
+
+<!-- This is derived from the sample catalog.xml that ships with the
+     DocBook XML v4.4 DTDs. It maps to the Flying Saucer DTD repository
+     under resources/schema/xhtmlschema/html-4.01/* -->
+
+<!-- ...................................................................... -->
+
+  <public publicId="-//W3C//ELEMENTS XHTML Inline Style 1.0//EN" uri="resources/schema/xhtml/element/xhtml-inlstyle-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Text 1.0//EN"
+  uri="resources/schema/xhtml/element/xhtml-text-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Inline Structural 1.0//EN" uri="resources/schema/xhtml/element/xhtml-inlstruct-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Inline Phrasal 1.0//EN" uri="resources/schema/xhtml/element/xhtml-inlphras-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Block Structural 1.0//EN" uri="resources/schema/xhtml/element/xhtml-blkstruct-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Block Phrasal 1.0//EN" uri="resources/schema/xhtml/element/xhtml-blkphras-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Hypertext 1.0//EN" uri="resources/schema/xhtml/element/xhtml-hypertext-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Lists 1.0//EN"
+  uri="resources/schema/xhtml/element/xhtml-list-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Editing Elements 1.0//EN" uri="resources/schema/xhtml/element/xhtml-edit-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML BIDI Override Element 1.0//EN" uri="resources/schema/xhtml/element/xhtml-bdo-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Ruby 1.0//EN" uri="resources/schema/xhtml/element/xhtml-ruby-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Presentation 1.0//EN" uri="resources/schema/xhtml/element/xhtml-pres-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Inline Presentation 1.0//EN" uri="resources/schema/xhtml/element/xhtml-inlpres-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Block Presentation 1.0//EN" uri="resources/schema/xhtml/element/xhtml-inlpres-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Link Element 1.0//EN" uri="resources/schema/xhtml/element/xhtml-link-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Metainformation 1.0//EN" uri="resources/schema/xhtml/element/xhtml-meta-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Base Element 1.0//EN" uri="resources/schema/xhtml/element/xhtml-base-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Scripting 1.0//EN" uri="resources/schema/xhtml/element/xhtml-script-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Style Sheets 1.0//EN" uri="resources/schema/xhtml/element/xhtml-style-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Images 1.0//EN" uri="resources/schema/xhtml/element/xhtml-image-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Client-side Image Maps 1.0//EN" uri="resources/schema/xhtml/element/xhtml-csismap-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Server-side Image Maps 1.0//EN" uri="resources/schema/xhtml/element/xhtml-ssismap-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Param Element 1.0//EN" uri="resources/schema/xhtml/element/xhtml-param-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Embedded Object 1.0//EN" uri="resources/schema/xhtml/element/xhtml-object-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Tables 1.0//EN" uri="resources/schema/xhtml/element/xhtml-table-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Forms 1.0//EN" uri="resources/schema/xhtml/element/xhtml-form-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Document Structure 1.0//EN" uri="resources/schema/xhtml/element/xhtml-struct-1.mod" />
+  <public publicId="-//W3C//ELEMENTS XHTML Legacy Markup 1.0//EN" uri="resources/schema/xhtml/element/xhtml-legacy-1.mod" />
+
+  <public publicId="-//W3C//ENTITIES XHTML Modular Framework 1.0//EN" uri="resources/schema/xhtml/entity/xhtml-framework-1.mod" />
+  <public publicId="-//W3C//ENTITIES XHTML Datatypes 1.0//EN" uri="resources/schema/xhtml/entity/xhtml-datatypes-1.mod" />
+  <public publicId="-//W3C//ENTITIES XHTML Qualified Names 1.0//EN" uri="resources/schema/xhtml/entity/xhtml-qname-1.mod" />
+  <public publicId="-//W3C//ENTITIES XHTML Intrinsic Events 1.0//EN" uri="resources/schema/xhtml/entity/xhtml-events-1.mod" />
+  <public publicId="-//W3C//ENTITIES XHTML Common Attributes 1.0//EN" uri="resources/schema/xhtml/entity/xhtml-attribs-1.mod" />
+  <public publicId="-//W3C//ENTITIES XHTML Character Entities 1.0//EN" uri="resources/schema/xhtml/entity/xhtml-charent-1.mod" />
+
+  <public publicId="-//W3C//NOTATIONS XHTML Notations 1.0//EN" uri="resources/schema/xhtml/notation/xhtml-notations-1.mod" />
+
+  <public publicId="-//W3C//ENTITIES Latin 1 for XHTML//EN"
+  uri="resources/schema/xhtml/entity/xhtml-lat1.ent" />
+  <public publicId="-//W3C//ENTITIES Symbols for XHTML//EN"
+  uri="resources/schema/xhtml/entity/xhtml-symbol.ent" />
+  <public publicId="-//W3C//ENTITIES Special for XHTML//EN"
+  uri="resources/schema/xhtml/entity/xhtml-special.ent" />
+
+        <!-- End of catalog data for HTML XML V4.01 ............................. -->
+<!-- ...................................................................... -->
+
+</catalog>

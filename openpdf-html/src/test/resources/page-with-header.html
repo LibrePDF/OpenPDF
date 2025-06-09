@@ -1,0 +1,32 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <style>
+        @page {
+            size: 200px 200px;
+            @top-left {
+                content: element(header);
+            }
+            @bottom-left {
+                content: element(footer);
+            }
+        }
+
+        #header {
+            position: running(header);
+        }
+
+        #footer {
+            position: running(footer);
+        }
+    </style>
+    <title></title>
+</head>
+
+<body>
+<div id="header">Header</div>
+<div id="body">Body</div>
+<div id="footer">Footer</div>
+</body>
+
+</html>

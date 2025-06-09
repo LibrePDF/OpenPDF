@@ -1,0 +1,114 @@
+<?xml version='1.0'?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
+
+<!-- ...................................................................... -->
+<!-- XML Catalog data for DocBook XML V4.4 ................................ -->
+<!-- File catalog.xml ..................................................... -->
+
+<!-- This is derived from the sample catalog.xml that ships with the
+     DocBook XML v4.4 DTDs. It maps to the Flying Saucer DTD repository
+     under resources/schema/docbook/* -->
+
+<!-- ...................................................................... -->
+<!-- DocBook driver file .................................................. -->
+
+<public publicId="-//OASIS//DTD DocBook XML V4.4//EN"
+        uri="resources/schema/docbook/docbookx.dtd"/>
+
+<system systemId="http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"
+	uri="resources/schema/docbook/docbookx.dtd"/>
+
+<system systemId="http://docbook.org/xml/4.4/docbookx.dtd"
+	uri="resources/schema/docbook/docbookx.dtd"/>
+
+<!-- ...................................................................... -->
+<!-- DocBook modules ...................................................... -->
+
+<public publicId="-//OASIS//DTD DocBook CALS Table Model V4.4//EN"
+        uri="resources/schema/docbook/calstblx.dtd"/>
+
+<public publicId="-//OASIS//ELEMENTS DocBook XML HTML Tables V4.4//EN"
+	uri="resources/schema/docbook/htmltblx.mod"/>
+
+<public publicId="-//OASIS//DTD XML Exchange Table Model 19990315//EN"
+        uri="resources/schema/docbook/soextblx.dtd"/>
+
+<public publicId="-//OASIS//ELEMENTS DocBook Information Pool V4.4//EN"
+        uri="resources/schema/docbook/dbpoolx.mod"/>
+
+<public publicId="-//OASIS//ELEMENTS DocBook Document Hierarchy V4.4//EN"
+        uri="resources/schema/docbook/dbhierx.mod"/>
+
+<public publicId="-//OASIS//ENTITIES DocBook Additional General Entities V4.4//EN"
+        uri="resources/schema/docbook/dbgenent.mod"/>
+
+<public publicId="-//OASIS//ENTITIES DocBook Notations V4.4//EN"
+        uri="resources/schema/docbook/dbnotnx.mod"/>
+
+<public publicId="-//OASIS//ENTITIES DocBook Character Entities V4.4//EN"
+        uri="resources/schema/docbook/dbcentx.mod"/>
+
+<!-- ...................................................................... -->
+<!-- ISO entity sets ...................................................... -->
+
+<public publicId="ISO 8879:1986//ENTITIES Diacritical Marks//EN//XML"
+        uri="resources/schema/docbook/ent/isodia.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Numeric and Special Graphic//EN//XML"
+        uri="resources/schema/docbook/ent/isonum.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Publishing//EN//XML"
+        uri="resources/schema/docbook/ent/isopub.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES General Technical//EN//XML"
+        uri="resources/schema/docbook/ent/isotech.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Added Latin 1//EN//XML"
+        uri="resources/schema/docbook/ent/isolat1.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Added Latin 2//EN//XML"
+        uri="resources/schema/docbook/ent/isolat2.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Greek Letters//EN//XML"
+        uri="resources/schema/docbook/ent/isogrk1.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Monotoniko Greek//EN//XML"
+        uri="resources/schema/docbook/ent/isogrk2.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Greek Symbols//EN//XML"
+        uri="resources/schema/docbook/ent/isogrk3.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Alternative Greek Symbols//EN//XML"
+        uri="resources/schema/docbook/ent/isogrk4.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Arrow Relations//EN//XML"
+        uri="resources/schema/docbook/ent/isoamsa.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Binary Operators//EN//XML"
+        uri="resources/schema/docbook/ent/isoamsb.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Delimiters//EN//XML"
+        uri="resources/schema/docbook/ent/isoamsc.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Negated Relations//EN//XML"
+        uri="resources/schema/docbook/ent/isoamsn.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Ordinary//EN//XML"
+        uri="resources/schema/docbook/ent/isoamso.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Relations//EN//XML"
+        uri="resources/schema/docbook/ent/isoamsr.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Box and Line Drawing//EN//XML"
+        uri="resources/schema/docbook/ent/isobox.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Russian Cyrillic//EN//XML"
+        uri="resources/schema/docbook/ent/isocyr1.ent"/>
+
+<public publicId="ISO 8879:1986//ENTITIES Non-Russian Cyrillic//EN//XML"
+        uri="resources/schema/docbook/ent/isocyr2.ent"/>
+
+<!-- End of catalog data for DocBook XML V4.4 ............................. -->
+<!-- ...................................................................... -->
+
+</catalog>
