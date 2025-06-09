@@ -413,7 +413,6 @@ public class CSSParser {
                     t = next();
                     if (t == Token.TK_LBRACE) {
                         skip_whitespace();
-                        LOOP:
                         while (true) {
                             t = la();
                             if (t == null) {
@@ -422,7 +421,7 @@ public class CSSParser {
                             switch (t.getType()) {
                                 case RBRACE:
                                     next();
-                                    break LOOP;
+                                    break;
                                 default:
                                     ruleset(mediaRule);
                             }
