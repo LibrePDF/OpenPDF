@@ -313,8 +313,8 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
 		float[] fractions = new float[gradient.getStopPoints().size()];
 		Color[] colors = new Color[gradient.getStopPoints().size()];
 
-		float range = gradient.getStopPoints().get(gradient.getStopPoints().size() - 1).getLength() -
-				gradient.getStopPoints().get(0).getLength();
+		float range = gradient.getStopPoints().get(gradient.getStopPoints().size() - 1).getDotsValue() -
+				gradient.getStopPoints().get(0).getDotsValue();
 
 		int i = 0;
 		for (StopValue pt : gradient.getStopPoints())
@@ -326,7 +326,7 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
 	        }
 
 	        if (range != 0)
-	        	fractions[i] = pt.getLength() / range;
+	        	fractions[i] = pt.getDotsValue() / range;
 
 	        i++;
 		}

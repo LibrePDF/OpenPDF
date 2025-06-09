@@ -582,7 +582,7 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
             if (!repaintRequestPending) {
                 XRLog.general(Level.FINE, "... Queueing new repaint request, el: " + el + " < " + maxRepaintRequestWaitMs);
                 repaintRequestPending = true;
-                new Thread(() -> {
+                Thread.startVirtualThread(() -> {
                     try {
                         Thread.sleep(Math.min(maxRepaintRequestWaitMs, Math.abs(maxRepaintRequestWaitMs - el)));
                         EventQueue.invokeLater(() -> {
@@ -593,7 +593,8 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
                     } catch (InterruptedException ignore) {
                         Thread.currentThread().interrupt();
                     }
-                }).start();
+                });
+
             } else {
                 pendingRepaintCount++;
                 XRLog.general("hmm... repaint request, but already have one");

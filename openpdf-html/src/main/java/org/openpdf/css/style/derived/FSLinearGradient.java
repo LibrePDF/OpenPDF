@@ -53,8 +53,14 @@ public class FSLinearGradient
 
         @Nullable
         public Float getLength() {
+            return this.length;
+        }
+
+        @Nullable
+        public Float getDotsValue() {
             return this.dotsValue;
         }
+
 
         @Override
         public String toString()
