@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Flying Saucer: CSS List Support</title>
+    <link rel="stylesheet" type="text/css" href="general.css" title="Style" media="screen" />
+    <link rel="stylesheet" type="text/css" href="print.css" title="Style" media="print" />
+    <style type="text/css">
+      h3 { font-weight: bold; }
+      li { font-family: sans-serif; }
+
+      #image-bullet li { list-style-image: url(bullet.gif); }
+      #posout li { list-style-position: outside; }
+      #posin  li { list-style-position: inside; }
+      #failover li { list-style-type: square;
+          list-style-image: url(invalid.gif); }
+      #shorthand li { list-style: square outside; }
+      #inherit_test { list-style: square; }
+
+      #square li { list-style-type: square; }
+      #disc li { list-style-type: disc; }
+      #circle li { list-style-type: circle; }
+      #decimal li { list-style-type: decimal; }
+      #decimal-leading-zero li { list-style-type: decimal-leading-zero; }
+      #lower-roman li { list-style-type: lower-roman; }
+      #upper-roman li { list-style-type: upper-roman; }
+      #lower-greek li { list-style-type: lower-greek; }
+      #lower-latin li { list-style-type: lower-latin; }
+      #upper-latin li { list-style-type: upper-latin; }
+      #none li { list-style-type: none; }
+    </style>
+  </head>
+  <body>
+    <p class="link left-link"><a href="demoNav:back">Previous Page</a></p>
+    <p class="link right-link"><a href="demoNav:forward">Next Page</a></p>
+
+    <p id="fslogo">Flying Saucer XML/CSS2 Renderer</p>
+    <span id="pagebyline">
+      CSS
+      <ul>
+        <li>List</li>
+        <li>Element</li>
+        <li>Support</li>
+      </ul>
+    </span>
+    <p><b>List support includes</b>: Full support for ordered and unordered lists, image bullets for lists, list style types,
+    numbered lists, and so on.</p>
+    <br />
+
+    <h3>Unordered List Items with default style</h3>
+
+    <ul>
+
+        <li>List text list text list text list text</li>
+
+        <li>more item more item more item more item</li>
+
+    </ul>
+
+    <h3>Ordered List Items with default style</h3>
+    <ol>
+        <li>List text list text list text list text</li>
+        <li>more item more item more item more item</li>
+    </ol>
+
+    <h3>List Items with image bullets</h3>
+    <ol id="image-bullet">
+        <li>first item</li>
+        <li>second item</li>
+    </ol>
+
+    <h3>Position Outside</h3>
+    <ol id="posout">
+        <li>first item</li>
+        <li>second item</li>
+    </ol>
+
+    <h3>Position Inside</h3>
+    <ol id="posin">
+        <li>first item</li>
+        <li>second item</li>
+    </ol>
+
+    <h3>Failover</h3>
+    <p>The image shouldn't load and a square should be used instead</p>
+    <ol id="failover">
+        <li>first item</li>
+        <li>second item</li>
+    </ol>
+
+    <h3>Shorthand Test</h3>
+    <p>It should have squares with outside position</p>
+    <ol id="shorthand">
+        <li>first item</li>
+        <li>second item</li>
+    </ol>
+
+    <h3>Inheritance test with squares</h3>
+    <ol id="inherit_test">
+        <li>first item</li>
+        <li>second item</li>
+    </ol>
+
+    <h3>Square Items</h3>
+    <ol id="square">
+        <li>first item</li>
+        <li>second item</li>
+    </ol>
+
+    <h3>Disc Items</h3>
+    <ol id="disc">
+        <li>first item</li>
+        <li>second item</li>
+    </ol>
+
+    <h3>Circle Items</h3>
+    <ol id="circle">
+        <li>first item</li>
+        <li>second item</li>
+    </ol>
+
+    <h3>Decimal Items</h3>
+    <ol id="decimal">
+        <li>first item</li>
+        <li>second item</li>
+        <li>third item</li>
+        <li>fourth item</li>
+        <li>fifth item</li>
+        <li>sixth item</li>
+    </ol>
+
+    <h3>Decimal Leading Zero Items</h3>
+    <p><i>Just does decimal for now</i></p>
+    <ol id="decimal-leading-zero">
+        <li>first item</li>
+        <li>second item</li>
+        <li>third item</li>
+        <li>fourth item</li>
+        <li>fifth item</li>
+        <li>sixth item</li>
+    </ol>
+
+    <h3>Lower Roman Items</h3>
+    <p><i>Roman numerals not valid past 4000</i></p>
+    <ol id="lower-roman">
+        <li>first item</li>
+        <li>second item</li>
+        <li>third item</li>
+        <li>fourth item</li>
+        <li>fifth item</li>
+        <li>sixth item</li>
+    </ol>
+
+    <h3>Upper Roman Items</h3>
+    <ol id="upper-roman">
+        <li>first item</li>
+        <li>second item</li>
+        <li>third item</li>
+        <li>fourth item</li>
+        <li>fifth item</li>
+        <li>sixth item</li>
+    </ol>
+
+    <h3>Lower Greek Items</h3>
+    <p><i>not supported yet. does decimal instead</i></p>
+    <ol id="lower-greek">
+        <li>first item</li>
+        <li>second item</li>
+        <li>third item</li>
+        <li>fourth item</li>
+        <li>fifth item</li>
+        <li>sixth item</li>
+    </ol>
+
+    <h3>Lower Latin Items</h3>
+    <p><i>not tested past Z</i></p>
+    <ol id="lower-latin">
+        <li>first item</li>
+        <li>second item</li>
+        <li>third item</li>
+        <li>fourth item</li>
+        <li>fifth item</li>
+        <li>sixth item</li>
+    </ol>
+
+    <h3>Upper Latin Items</h3>
+    <ol id="upper-latin">
+        <li>first item</li>
+        <li>second item</li>
+        <li>third item</li>
+        <li>fourth item</li>
+        <li>fifth item</li>
+        <li>sixth item</li>
+    </ol>
+
+    <h3>None Items</h3>
+    <ol id="none">
+        <li>first item</li>
+        <li>second item</li>
+    </ol>
+  </body>
+</html>

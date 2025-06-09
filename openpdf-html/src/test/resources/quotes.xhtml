@@ -1,0 +1,23 @@
+<!--
+    currently we cannot display different quotes based on depth
+-->
+<html lang="en">
+<head>
+    <style type='text/css'><![CDATA[
+      * { quotes: '"' '"' "'" "'" }
+    q:before { content: open-quote }
+    q:after { content: close-quote }
+    blockquote p:before     { content: open-quote }
+    blockquote p:after      { content: no-close-quote }
+    blockquote p.last:after { content: close-quote }
+    ]]></style>
+    <title>Page with quotes</title>
+</head>
+<body>
+<blockquote>
+    <p>This is just a test of the emergency <q>quoting</q> system.</p>
+    <p>This is only a test.</p>
+    <p class='last'>Thank you for your cooperation during this <q>test.</q></p>
+</blockquote>
+</body>
+</html>

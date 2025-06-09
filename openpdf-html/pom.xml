@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.github.librepdf</groupId>
+    <artifactId>openpdf-parent</artifactId>
+    <version>2.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>openpdf-html</artifactId>
+  <description>openpdf-html is a CSS 2.1 renderer written in Java.  This artifact contains the core rendering and layout code as well as Java2D output.</description>
+
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License (LGPL), version 2.1 or later</name>
+      <url>https://www.gnu.org/licenses/lgpl-3.0.html</url>
+    </license>
+  </licenses>
+
+  <packaging>jar</packaging>
+
+  <name>openpdf-html HTML to PDF renderer</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.htmlunit</groupId>
+      <artifactId>neko-htmlunit</artifactId>
+      <version>4.10.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.librepdf</groupId>
+      <artifactId>openpdf</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.18.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>${error_prone.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>../</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>LICENSE*</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.openpdf.flying.saucer.core</Bundle-SymbolicName>
+            <Automatic-Module-Name>flying.saucer</Automatic-Module-Name>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <!-- Dependency resolution seems not to work properly with default
+              behavior of importing the exported packages. -->
+            <Import-Package>!org.openpdf.*</Import-Package>
+            <Export-Package>org.openpdf.*</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
