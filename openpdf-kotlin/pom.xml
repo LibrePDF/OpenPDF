@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>openpdf-kotlin</artifactId>
-  <name>OpenPDF Kotlin Utilities</name>
+  <name>OpenPDF Kotlin</name>
   <description>Kotlin-friendly APIs and DSL for OpenPDF</description>
 
   <dependencies>
@@ -18,6 +18,12 @@
     <dependency>
       <groupId>com.github.librepdf</groupId>
       <artifactId>openpdf</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.librepdf</groupId>
+      <artifactId>openpdf-html</artifactId>
       <version>${project.version}</version>
     </dependency>
 
