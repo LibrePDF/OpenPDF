@@ -14,6 +14,28 @@ Kotlin pull requests are welcome!
 ## Example Usage
 
 ```kotlin
+val outputStream = FileOutputStream("output.pdf")
+
+HtmlPdfBuilder(outputStream).apply {
+    html(
+        """
+        <html>
+          <head><title>Example</title></head>
+          <body>
+            <h1>Hello from HTML</h1>
+            <p>This PDF was generated using openpdf-html and Kotlin.</p>
+          </body>
+        </html>
+        """.trimIndent()
+    )
+    scaleToFit(true)
+    pdfVersion(com.lowagie.text.pdf.PdfWriter.VERSION_1_7)
+    build()
+}
+
+```
+
+```kotlin
 import com.github.librepdf.kotlin.PdfBuilder
 import java.io.FileOutputStream
 
