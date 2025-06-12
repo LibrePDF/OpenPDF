@@ -209,8 +209,9 @@ public class FSLinearGradient
     }
 
     public static boolean looksLikeALength(String val) {
-        String RCSS_NUMBER = "(-)?((\\d){1,10}((\\.)(\\d){1,10})?)";
-        String RCSS_LENGTH = "((0$)|((" + RCSS_NUMBER + ")+" + "((em)|(ex)|(px)|(cm)|(mm)|(in)|(pt)|(pc)|(%))))";
+        String RCSS_NUMBER = "(?:-)?(?:\\d{1,10})(?:\\.\\d{1,10})?";
+        String RCSS_LENGTH = "^(?:0$)|(?:" + RCSS_NUMBER + "(em|ex|px|cm|mm|in|pt|pc|%))$";
+
         var CSS_LENGTH_PATTERN = Pattern.compile(RCSS_LENGTH);
         return CSS_LENGTH_PATTERN.matcher(val).matches();
     }

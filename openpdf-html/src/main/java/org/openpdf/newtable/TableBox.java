@@ -861,14 +861,13 @@ public class TableBox extends BlockBox {
     public int calcInlineBaseline(CssContext c) {
         int result = 0;
         boolean found = false;
-        OUTER:
         for (Box box : getChildren()) {
             TableSectionBox section = (TableSectionBox) box;
             for (Box value : section.getChildren()) {
                 TableRowBox row = (TableRowBox) value;
                 found = true;
                 result = row.getAbsY() + row.getBaseline() - getAbsY();
-                break OUTER;
+                break;
             }
         }
 
