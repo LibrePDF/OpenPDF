@@ -859,24 +859,16 @@ public class TableBox extends BlockBox {
 
     @Override
     public int calcInlineBaseline(CssContext c) {
-        int result = 0;
-        boolean found = false;
         for (Box box : getChildren()) {
             TableSectionBox section = (TableSectionBox) box;
             for (Box value : section.getChildren()) {
                 TableRowBox row = (TableRowBox) value;
-                found = true;
-                result = row.getAbsY() + row.getBaseline() - getAbsY();
-                break;
+                return row.getAbsY() + row.getBaseline() - getAbsY();
             }
         }
-
-        if (! found) {
-            result = getHeight();
-        }
-
-        return result;
+        return getHeight();
     }
+
 
     @Override
     protected int getPageClearance() {

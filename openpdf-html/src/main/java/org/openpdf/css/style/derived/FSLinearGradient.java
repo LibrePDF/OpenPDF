@@ -209,11 +209,25 @@ public class FSLinearGradient
     }
 
     public static boolean looksLikeALength(String val) {
-        String RCSS_NUMBER = "(?:-)?(?:\\d{1,10})(?:\\.\\d{1,10})?";
-        String RCSS_LENGTH = "^(?:0$)|(?:" + RCSS_NUMBER + "(em|ex|px|cm|mm|in|pt|pc|%))$";
+        if (val.isEmpty()) return false;
 
-        var CSS_LENGTH_PATTERN = Pattern.compile(RCSS_LENGTH);
-        return CSS_LENGTH_PATTERN.matcher(val).matches();
+        val = val.trim();
+        if ("0".equals(val)) return true;
+
+        String[] units = { "em", "ex", "px", "cm", "mm", "in", "pt", "pc", "%" };
+        for (String unit : units) {
+            if (val.endsWith(unit)) {
+                String numberPart = val.substring(0, val.length() - unit.length());
+                try {
+                    Double.parseDouble(numberPart);
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        }
+
+        return false;
     }
 
 
