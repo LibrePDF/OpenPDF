@@ -15,6 +15,7 @@ The goal of this project is to upgrade and maintain the HTML-to-PDF rendering en
 - Improved CSS3 compatibility
 - Seamless integration with OpenPDF
 - Modular architecture for easier maintenance and extension
+- API compatible with Flying saucer, except package names are org.openpdf instead of org.xhtmlrenderer.
 
 ## Installation
 
