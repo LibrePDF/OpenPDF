@@ -387,22 +387,22 @@ public class BorderPainter {
         outputDevice.setClip(clip);
         if (currentSide == BorderPainter.TOP) {
             outputDevice.setColor(color.topColor());
-            outputDevice.setStroke(new BasicStroke(2*(int) border.top(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, pattern, xOffset));
+            outputDevice.setStroke(new BasicStroke(2f * border.top(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, pattern, xOffset));
             outputDevice.drawBorderLine(
                     path, BorderPainter.TOP, (int)border.top(), false);
         } else if (currentSide == BorderPainter.LEFT) {
             outputDevice.setColor(color.leftColor());
-            outputDevice.setStroke(new BasicStroke(2*(int) border.left(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, pattern, 0));
+            outputDevice.setStroke(new BasicStroke(2f * border.left(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, pattern, 0));
             outputDevice.drawBorderLine(
                     path, BorderPainter.LEFT, (int)border.left(), false);
         } else if (currentSide == BorderPainter.RIGHT) {
             outputDevice.setColor(color.rightColor());
-            outputDevice.setStroke(new BasicStroke(2*(int) border.right(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, pattern, 0));
+            outputDevice.setStroke(new BasicStroke(2f * border.right(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, pattern, 0));
             outputDevice.drawBorderLine(
                     path, BorderPainter.RIGHT, (int)border.right(), false);
         } else if (currentSide == BorderPainter.BOTTOM) {
             outputDevice.setColor(color.bottomColor());
-            outputDevice.setStroke(new BasicStroke(2*(int) border.bottom(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, pattern, xOffset));
+            outputDevice.setStroke(new BasicStroke(2f * border.bottom(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, pattern, xOffset));
             outputDevice.drawBorderLine(
                     path, BorderPainter.BOTTOM, (int)border.bottom(), false);
         }
