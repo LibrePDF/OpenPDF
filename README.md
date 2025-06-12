@@ -16,8 +16,9 @@ and bugreports to this GitHub repository.
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=LibrePDF_OpenPDF&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=LibrePDF_OpenPDF)
 [![CodeFactor](https://www.codefactor.io/repository/github/librepdf/openpdf/badge)](https://www.codefactor.io/repository/github/librepdf/openpdf)
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
-![Java 17](https://img.shields.io/badge/Java-17-green?logo=java&logoColor=white)
+![Java 17](https://img.shields.io/badge/Java-17-blue?logo=java&logoColor=white)
 ![Java 21](https://img.shields.io/badge/Java-21-blue?logo=java&logoColor=white)
+![Java 24](https://img.shields.io/badge/Java-24-blue?logo=java&logoColor=yellow)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Supported-7F52FF?logo=kotlin&logoColor=white)](https://github.com/LibrePDF/OpenPDF/tree/master/openpdf-kotlin)
 
 
