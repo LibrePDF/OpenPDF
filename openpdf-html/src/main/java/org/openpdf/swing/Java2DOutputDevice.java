@@ -71,16 +71,16 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
                         font,
                         glyphVector,
                         inlineText.getSelectionStart(),
-                        iB.getAbsX() + inlineText.getX(),
-                        iB.getAbsY() + iB.getBaseline());
+                        (float) (iB.getAbsX() + inlineText.getX()),
+                        (float) (iB.getAbsY() + iB.getBaseline()));
 
                 Rectangle end = c.getTextRenderer().getGlyphBounds(
                         c.getOutputDevice(),
                         font,
                         glyphVector,
                         inlineText.getSelectionEnd() - 1,
-                        iB.getAbsX() + inlineText.getX(),
-                        iB.getAbsY() + iB.getBaseline());
+                        (float) (iB.getAbsX() + inlineText.getX()),
+                        (float) (iB.getAbsY() + iB.getBaseline()));
                 Graphics2D graphics = getGraphics();
                 double scaleX = graphics.getTransform().getScaleX();
                 boolean allSelected = (text.length() == inlineText.getSelectionEnd() - inlineText.getSelectionStart());
@@ -139,8 +139,8 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
         c.getTextRenderer().drawGlyphVector(
                 c.getOutputDevice(),
                 glyphVector,
-                iB.getAbsX() + inlineText.getX(),
-                iB.getAbsY() + iB.getBaseline());
+                (float) (iB.getAbsX() + inlineText.getX()),
+                (float) (iB.getAbsY() + iB.getBaseline()));
     }
 
     @Override
@@ -332,8 +332,9 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
 		}
 
         LinearGradientPaint paint = new LinearGradientPaint(
-                gradient.getStartX() + x, gradient.getStartY() + y,
-                gradient.getEndX() + x, gradient.getEndY() + y, fractions, colors);
+                (float)(gradient.getStartX() + x), (float)(gradient.getStartY() + y),
+                (float)(gradient.getEndX() + x), (float)(gradient.getEndY() + y),
+                fractions, colors);
 		_graphics.setPaint(paint);
 		_graphics.fillRect(x, y, width, height);
 		_graphics.setPaint(null);

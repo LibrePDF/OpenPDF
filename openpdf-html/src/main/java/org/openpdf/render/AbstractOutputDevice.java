@@ -63,25 +63,29 @@ public abstract class AbstractOutputDevice implements OutputDevice {
             setColor(iB.getStyle().getColor());
             setFont(iB.getStyle().getFSFont(c));
             setFontSpecification(iB.getStyle().getFontSpecification());
+
             if (inlineText.getParent().getStyle().isTextJustify()) {
                 JustificationInfo info = inlineText.getParent().getLineBox().getJustificationInfo();
                 if (info != null) {
                     c.getTextRenderer().drawString(
                             c.getOutputDevice(),
                             text,
-                            iB.getAbsX() + inlineText.getX(), iB.getAbsY() + iB.getBaseline(),
+                            (float) (iB.getAbsX() + inlineText.getX()),
+                            (float) (iB.getAbsY() + iB.getBaseline()),
                             info);
                 } else {
                     c.getTextRenderer().drawString(
                             c.getOutputDevice(),
                             text,
-                            iB.getAbsX() + inlineText.getX(), iB.getAbsY() + iB.getBaseline());
+                            (float) (iB.getAbsX() + inlineText.getX()),
+                            (float) (iB.getAbsY() + iB.getBaseline()));
                 }
             } else {
                 c.getTextRenderer().drawString(
                         c.getOutputDevice(),
                         text,
-                        iB.getAbsX() + inlineText.getX(), iB.getAbsY() + iB.getBaseline());
+                        (float) (iB.getAbsX() + inlineText.getX()),
+                        (float) (iB.getAbsY() + iB.getBaseline()));
             }
         }
 
@@ -89,6 +93,7 @@ public abstract class AbstractOutputDevice implements OutputDevice {
             drawFontMetrics(c, inlineText);
         }
     }
+
 
     private void drawFontMetrics(RenderingContext c, InlineText inlineText) {
         InlineLayoutBox iB = inlineText.getParent();

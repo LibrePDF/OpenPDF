@@ -332,7 +332,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
             bounds = box.getContentAreaEdge(box.getAbsX(), box.getAbsY(), c);
         }
 
-        Point2D docCorner = new Point2D.Double(bounds.x, bounds.y + bounds.height);
+        Point2D docCorner = new Point2D.Double(bounds.x, (double) bounds.y + bounds.height);
         Point2D pdfCorner = new Point2D.Double();
         _transform.transform(docCorner, pdfCorner);
         pdfCorner.setLocation(pdfCorner.getX(), normalizeY((float) pdfCorner.getY()));
@@ -351,9 +351,12 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
             Rectangle bounds = box.getContentAreaEdge(box.getAbsX(), box.getAbsY(), c);
             PageBox page = _root.getLayer().getPage(c, bounds.y);
 
-            float bottom = getDeviceLength(page.getBottom() - (bounds.y + bounds.height)
-                    + page.getMarginBorderPadding(c, Edge.BOTTOM));
-            float left = getDeviceLength(page.getMarginBorderPadding(c, Edge.LEFT) + bounds.x);
+            float bottom = getDeviceLength(
+                    (float)page.getBottom()
+                            - (float)(bounds.y + bounds.height)
+                            + (float)page.getMarginBorderPadding(c, Edge.BOTTOM));
+
+            float left = getDeviceLength((float)page.getMarginBorderPadding(c, Edge.LEFT) + bounds.x);
 
             return new com.lowagie.text.Rectangle(left, bottom, left + getDeviceLength(bounds.width), bottom
                     + getDeviceLength(bounds.height));
@@ -1317,8 +1320,9 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
             return null;
         }
 
-        float x = box.getAbsX() + page.getMarginBorderPadding(c, Edge.LEFT);
-        float y = (page.getBottom() - (box.getAbsY() + box.getHeight())) + page.getMarginBorderPadding(c, Edge.BOTTOM);
+        float x = box.getAbsX() + (float) page.getMarginBorderPadding(c, Edge.LEFT);
+        float y = (float)(page.getBottom() - (box.getAbsY() + box.getHeight())
+                + page.getMarginBorderPadding(c, Edge.BOTTOM));
 
         return new PagePosition(id, page.getPageNo(),
                 x / _dotsPerPoint, box.getEffectiveWidth() / _dotsPerPoint,
