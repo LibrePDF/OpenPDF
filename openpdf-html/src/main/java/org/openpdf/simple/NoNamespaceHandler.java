@@ -69,7 +69,7 @@ public class NoNamespaceHandler implements NamespaceHandler {
     @Override
     @CheckReturnValue
     public String getAttributeValue(Element e, @Nullable String namespaceURI, String attrName) {
-        if (namespaceURI == TreeResolver.NO_NAMESPACE) {
+        if (TreeResolver.NO_NAMESPACE.equals(namespaceURI)) {
             return e.getAttribute(attrName);
         } else if (namespaceURI == null) {
             if (e.getLocalName() == null) { // No namespaces

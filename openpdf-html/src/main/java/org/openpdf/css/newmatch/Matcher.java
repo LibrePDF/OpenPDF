@@ -82,10 +82,8 @@ public class Matcher {
     }
 
     public CascadedStyle getCascadedStyle(Element e, boolean restyle) {
-        synchronized (e) {
-            Mapper em = restyle ? matchElement(e) : getMapper(e);
-            return em.getCascadedStyle(e);
-        }
+        Mapper em = restyle ? matchElement(e) : getMapper(e);
+        return em.getCascadedStyle(e);
     }
 
     /**
@@ -94,10 +92,8 @@ public class Matcher {
      */
     @Nullable
     public CascadedStyle getPECascadedStyle(Element e, String pseudoElement) {
-        synchronized (e) {
-            Mapper em = getMapper(e);
-            return em.getPECascadedStyle(pseudoElement);
-        }
+        Mapper em = getMapper(e);
+        return em.getPECascadedStyle(pseudoElement);
     }
 
     @NonNull
@@ -126,14 +122,12 @@ public class Matcher {
     }
 
     private Mapper matchElement(Node e) {
-        synchronized (e) {
-            Node parent = _treeRes.getParentElement(e);
+        Node parent = _treeRes.getParentElement(e);
 
-            if (parent != null) {
-                return getMapper(parent).mapChild(e);
-            } else { // has to be a document or a fragment node
-                return docMapper.mapChild(e);
-            }
+        if (parent != null) {
+            return getMapper(parent).mapChild(e);
+        } else { // has to be a document or a fragment node
+            return docMapper.mapChild(e);
         }
     }
 
@@ -185,31 +179,28 @@ public class Matcher {
     }
 
     private Ruleset getElementStyle(Node e) {
-        synchronized (e) {
-            if (_attRes == null || _styleFactory == null) {
-                return null;
-            }
-
-            String style = _attRes.getElementStyling(e);
-            if (Util.isNullOrEmpty(style)) {
-                return null;
-            }
-
-            return _styleFactory.parseStyleDeclaration(AUTHOR, style);
+        if (_attRes == null || _styleFactory == null) {
+            return null;
         }
+
+        String style = _attRes.getElementStyling(e);
+        if (Util.isNullOrEmpty(style)) {
+            return null;
+        }
+
+        return _styleFactory.parseStyleDeclaration(AUTHOR, style);
     }
 
     private Ruleset getNonCssStyle(Node e) {
-        synchronized (e) {
-            if (_attRes == null || _styleFactory == null) {
-                return null;
-            }
-            String style = _attRes.getNonCssStyling(e);
-            if (Util.isNullOrEmpty(style)) {
-                return null;
-            }
-            return _styleFactory.parseStyleDeclaration(AUTHOR, style);
+        if (_attRes == null || _styleFactory == null) {
+            return null;
         }
+        String style = _attRes.getNonCssStyling(e);
+        if (Util.isNullOrEmpty(style)) {
+            return null;
+        }
+        return _styleFactory.parseStyleDeclaration(AUTHOR, style);
+
     }
 
     /**
@@ -292,24 +283,22 @@ public class Matcher {
         }
 
         CascadedStyle getCascadedStyle(Node e) {
-            synchronized (e) {
-                Ruleset elementStyling = getElementStyle(e);
-                Ruleset nonCssStyling = getNonCssStyle(e);
-                List<PropertyDeclaration> propList = new ArrayList<>();
-                //specificity 0,0,0,0
-                if (nonCssStyling != null) {
-                    propList.addAll(nonCssStyling.getPropertyDeclarations());
-                }
-                //these should have been returned in order of specificity
-                for (Selector selector : mappedSelectors) {
-                    propList.addAll(selector.getRuleset().getPropertyDeclarations());
-                }
-                //specificity 1,0,0,0
-                if (elementStyling != null) {
-                    propList.addAll(elementStyling.getPropertyDeclarations());
-                }
-                return propList.isEmpty() ? CascadedStyle.emptyCascadedStyle : new CascadedStyle(propList);
+            Ruleset elementStyling = getElementStyle(e);
+            Ruleset nonCssStyling = getNonCssStyle(e);
+            List<PropertyDeclaration> propList = new ArrayList<>();
+            //specificity 0,0,0,0
+            if (nonCssStyling != null) {
+                propList.addAll(nonCssStyling.getPropertyDeclarations());
             }
+            //these should have been returned in order of specificity
+            for (Selector selector : mappedSelectors) {
+                propList.addAll(selector.getRuleset().getPropertyDeclarations());
+            }
+            //specificity 1,0,0,0
+            if (elementStyling != null) {
+                propList.addAll(elementStyling.getPropertyDeclarations());
+            }
+            return propList.isEmpty() ? CascadedStyle.emptyCascadedStyle : new CascadedStyle(propList);
         }
 
         /**
