@@ -48,6 +48,7 @@ Some of the features of OpenPDF include:
 * Table Support: The library facilitates the creation of tables in PDF documents.
 * Encryption: You can encrypt PDF documents for security purposes.
 * Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
+* Kotlin module for easy creation of PDF files using Kotlin.
 
 ## Use OpenPDF as Maven dependency
 
