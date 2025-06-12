@@ -4,7 +4,8 @@ It provides idiomatic Kotlin APIs, utilities, and builder-style functionality fo
 This submodule makes OpenPDF more convenient and expressive for Kotlin developers by offering:
 
 - Extension functions for common PDF tasks
-- A lightweight Kotlin-style `PdfBuilder`
+- A lightweight Kotlin-style `PdfBuilder` for creating PDF files in Kotlin.
+- `HtmlPdfBuilder` for creating PDF files from HTML.
 - DSL-inspired document generation syntax
 
 Kotlin pull requests are welcome!
