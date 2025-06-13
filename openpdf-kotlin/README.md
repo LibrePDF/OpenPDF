@@ -15,6 +15,10 @@ Kotlin pull requests are welcome!
 ## Example Usage
 
 ```kotlin
+import java.io.FileOutputStream
+import com.github.librepdf.html.HtmlPdfBuilder
+import com.lowagie.text.pdf.PdfWriter
+
 val outputStream = FileOutputStream("output.pdf")
 
 HtmlPdfBuilder(outputStream).apply {
