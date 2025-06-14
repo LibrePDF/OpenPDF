@@ -25,7 +25,7 @@ and bugreports to this GitHub repository.
 
 ## OpenPDF version 2.1.0 released 2025-06-14
 
-Get version 2.0.6 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.0.6
+Get version 2.1.0 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.1.0
 
 ### Other versions
 
