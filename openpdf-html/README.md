@@ -19,12 +19,13 @@ The goal of this project is to upgrade and maintain the HTML-to-PDF rendering en
 
 ## Installation
 
-
+```
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf-html</artifactId>
   <version>2.1.0</version>
 </dependency>
+```
 
 ## Example
 
