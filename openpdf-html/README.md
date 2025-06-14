@@ -29,8 +29,7 @@ The goal of this project is to upgrade and maintain the HTML-to-PDF rendering en
 
 ## Example
 
-You can find a simple working example here:  
-[HelloWorldPdf.java on GitHub](https://github.com/LibrePDF/OpenPDF/blob/master/openpdf-html/src/test/java/org/openpdf/pdf/HelloWorldPdf.java)
+You can find a simple working example here:  [HelloWorldPdf.java](https://github.com/LibrePDF/OpenPDF/blob/master/openpdf-html/src/test/java/org/openpdf/pdf/HelloWorldPdf.java)
 
 ```java
 import org.openpdf.pdf.ITextRenderer;
