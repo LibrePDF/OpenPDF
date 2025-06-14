@@ -37,18 +37,19 @@ Get version 2.2.0 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.2.0
 
 Some of the features of OpenPDF include:
 
-* Creating PDFs: You can use OpenPDF to create new PDF documents from scratch.
+* [Openpdf](openpdf) Creating PDFs: You can use OpenPDF to create new PDF documents from scratch.
 * Manipulating Existing PDFs: OpenPDF allows you to modify existing PDF documents by adding or removing pages, modifying
   text, and more.
-* Create PDF files from HTML, using OpenPDF-html which is a fork of Flying Saucer.  
+* [Openpdf-html](openpdf-html) Create PDF files from HTML, using OpenPDF-html which is a fork of Flying Saucer.
+* [Openpdf-renderer](openpdf-renderer) Render PDF files as images using openpdf-render.
+* [Openpdf-kotlin](openpdf-kotlin) Kotlin module for easy creation of PDF files using Kotlin.
 * Text and Font Support: You can add text to PDF documents using various fonts and styles, and extract text from PDF
   files.
 * Graphics and Images: OpenPDF supports the addition of images and graphics to PDF files.
 * Table Support: The library facilitates the creation of tables in PDF documents.
 * Encryption: You can encrypt PDF documents for security purposes.
 * Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
-* Kotlin module for easy creation of PDF files using Kotlin.
-* Render PDF files as images using openpdf-render.
+
 
 ## Use OpenPDF as Maven dependency
 
