@@ -2,7 +2,7 @@
 
 OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source
 license. OpenPDF is the LGPL/MPL open source successor of iText, and is based on some forks of iText
-4 svn tag. OpenPDF-html is based on a fork of the Flying Saucer library. 
+4 svn tag. OpenPDF-html allows making PDF files from HTML. 
 We welcome contributions from other developers. Please feel free to submit pull-requests
 and bugreports to this GitHub repository.
 
