@@ -4,6 +4,12 @@ OpenPDF-renderer
 OpenPDF-renderer is a Java library for rendering PDF files.
 
 
+Examples:
+========
+* [Render PDF as image](https://github.com/LibrePDF/OpenPDF/blob/master/openpdf-renderer/src/test/myrenderer/ImageRenderer.java)
+* [Render PDF in Swing GUI](https://github.com/LibrePDF/OpenPDF/blob/master/openpdf-renderer/src/test/myrenderer/PdfRendererGui.java)
+
+
 Usage
 =====
 
