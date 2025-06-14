@@ -5,7 +5,8 @@ import java.nio.file.Paths;
 
 public class MyPdfRenderer {
 	
-	public static String fileName =  Paths.get(System.getProperty("user.dir"), "PDFrenderer\\src\\test\\myrenderer\\HelloWorldMeta.pdf").toString();
+	public static String fileName =  Paths.get(System.getProperty("user.dir"), "openpdf-renderer/src/test"
+            + "/myrenderer/HelloWorldMeta.pdf").toString();
 	public static int pageIndex = 1; // the page to be displayed
 	
 	public static void main(String[] args) {
