@@ -3,7 +3,10 @@ package test.myrenderer;
 import javax.swing.JFrame;
 import java.nio.file.Paths;
 
-public class MyPdfRenderer {
+/**
+ * Render PDF file as a Swing GUI.
+ */
+public class PdfRendererGui {
 	
 	public static String fileName =  Paths.get(System.getProperty("user.dir"), "openpdf-renderer/src/test"
             + "/myrenderer/HelloWorldMeta.pdf").toString();
