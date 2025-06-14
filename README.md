@@ -23,9 +23,9 @@ and bugreports to this GitHub repository.
 
 
 
-## OpenPDF version 2.1.0 released 2025-06-14
+## OpenPDF version 2.2.0 released 2025-06-14
 
-Get version 2.1.0 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.1.0
+Get version 2.2.0 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.2.0
 
 ### Other versions
 
@@ -48,6 +48,7 @@ Some of the features of OpenPDF include:
 * Encryption: You can encrypt PDF documents for security purposes.
 * Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
 * Kotlin module for easy creation of PDF files using Kotlin.
+* Render PDF files as images using openpdf-render.
 
 ## Use OpenPDF as Maven dependency
 
@@ -58,7 +59,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
 </dependency>
 ```
 
