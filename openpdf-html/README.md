@@ -26,6 +26,45 @@ The goal of this project is to upgrade and maintain the HTML-to-PDF rendering en
   <version>2.1.0</version>
 </dependency>
 
+## Example
+
+You can find a simple working example here:  
+[HelloWorldPdf.java on GitHub](https://github.com/LibrePDF/OpenPDF/blob/master/openpdf-html/src/test/java/org/openpdf/html/HelloWorldPdf.java)
+
+```java
+import org.openpdf.pdf.ITextRenderer;
+import java.io.FileOutputStream;
+
+public class HelloWorldPdf {
+    public static void main(String[] args) throws Exception {
+        String html = """
+            <html>
+              <head>
+                <style>
+                  body { font-family: sans-serif; }
+                  h1 { color: navy; }
+                </style>
+              </head>
+              <body>
+                <h1>Hello, World!</h1>
+                <p>This PDF was generated using openpdf-html.</p>
+              </body>
+            </html>
+            """;
+
+        try (FileOutputStream outputStream = new FileOutputStream("openpdf-html-hello.pdf")) {
+            ITextRenderer renderer = new ITextRenderer();
+            renderer.setDocumentFromString(html);
+            renderer.layout();
+            renderer.createPDF(outputStream);
+        }
+
+        System.out.println("PDF created: flying-saucer-hello.pdf");
+    }
+}
+```
+
+
 ## License
 
 This project is licensed under the **GNU Lesser General Public License (LGPL)**.
