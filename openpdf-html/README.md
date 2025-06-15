@@ -17,15 +17,6 @@ The goal of this project is to upgrade and maintain the HTML-to-PDF rendering en
 - Modular architecture for easier maintenance and extension
 - API compatible with Flying saucer, except package names are org.openpdf instead of org.xhtmlrenderer.
 
-## Installation
-
-```
-<dependency>
-  <groupId>com.github.librepdf</groupId>
-  <artifactId>openpdf-html</artifactId>
-  <version>2.1.0</version>
-</dependency>
-```
 
 ## Example
 

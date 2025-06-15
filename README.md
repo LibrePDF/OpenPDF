@@ -23,9 +23,9 @@ and bugreports to this GitHub repository.
 
 
 
-## OpenPDF version 2.2.0 released 2025-06-14
+## OpenPDF version 2.2.1 released 2025-06-15
 
-Get version 2.2.0 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.2.0
+Get version 2.2.1 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.2.1
 
 ### Other versions
 
@@ -60,7 +60,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>2.2.0</version>
+  <version>2.2.1</version>
 </dependency>
 ```
 
