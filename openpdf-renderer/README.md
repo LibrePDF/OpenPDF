@@ -1,7 +1,7 @@
 OpenPDF-renderer
 ============
 
-OpenPDF-renderer is a Java library for rendering PDF files.
+OpenPDF-renderer is a Java library for rendering PDF files as images.
 
 
 Examples:
