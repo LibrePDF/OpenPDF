@@ -22,7 +22,7 @@ public class PdfRendererGui {
         String fileName = new File(pdfUrl.getFile()).getAbsolutePath();
         System.out.println("[PdfRendererGui] Loaded PDF: " + fileName);
 
-        JFrame myFrame = new JFrame("PDFRenderer");
+        JFrame myFrame = new JFrame("Openpdf-renderer");
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // ← Important!
         PDFDisplay pdfDisplay = new PDFDisplay(fileName, pageIndex);
         myFrame.add(pdfDisplay);

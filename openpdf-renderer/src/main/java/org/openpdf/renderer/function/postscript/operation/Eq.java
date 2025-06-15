@@ -34,7 +34,10 @@ final class Eq implements PostScriptOperation {
 	 *
 	 * errors: invalidaccess, stackunderflow
 	 */
-	public void eval(Stack<Object> environment) {
-	    environment.push(environment.pop().equals(environment.pop()));
-	}
+    public void eval(Stack<Object> environment) {
+        Object b = environment.pop();
+        Object a = environment.pop();
+        environment.push(a.equals(b));
+    }
+
 }

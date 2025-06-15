@@ -19,14 +19,11 @@ final class IfElse implements PostScriptOperation {
 	 *
 	 * errors: stackunderflow, typecheck
 	 */
-	public void eval(Stack<Object> environment) {
-	    // execute expr1 if bool is true, expr2 if false
-	    if ((Boolean)environment.pop()) {
-//                        expression.push(popExpression());
-	    	environment.pop();
-	    } else {
-	    	environment.pop();
-//                        expression.push(popExpression());
-	    }
-	}
+    public void eval(Stack<Object> environment) {
+        // Pop boolean condition, discard it
+        environment.pop();
+        // Pop result of true/false expression
+        environment.pop();
+    }
+
 }

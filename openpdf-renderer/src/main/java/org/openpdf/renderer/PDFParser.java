@@ -153,8 +153,6 @@ public class PDFParser extends BaseWatchable {
                 return "EOF";
             } else if (this.type == NAME) {
                 return "NAME: " + this.name;
-            } else if (this.type == CMD) {
-                return "CMD: " + this.name;
             } else if (this.type == STR) {
                 return "STR: (" + this.name;
             } else if (this.type == ARYB) {
@@ -919,6 +917,7 @@ public class PDFParser extends BaseWatchable {
             try {
                 Thread.sleep(PDFDebugger.DRAW_DELAY);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
     }

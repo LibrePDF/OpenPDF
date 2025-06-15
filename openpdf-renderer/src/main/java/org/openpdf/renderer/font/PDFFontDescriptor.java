@@ -30,7 +30,7 @@ import org.openpdf.renderer.PDFObject;
 public class PDFFontDescriptor {
 
     /** All glyphs have the same width. */
-    public final static int FIXED_PITCH = 1 << (1-1);
+    public final static int FIXED_PITCH = 1;
     /** Glyphs have serifs. */
     public final static int SERIF = 1 << (2-1);
     /** Font contains glyphs outside the Adobe standard Latin. */

@@ -125,10 +125,6 @@ public abstract class PDFShader {
             case AXIAL_SHADING:
                 shader = new ShaderType2();
                 break;
-    
-            case RADIAL_SHADING:
-            	shader = new ShaderType3();
-            	break;
 
             case FUNCTION_SHADING:
             case FREE_FORM_SHADING:
