@@ -59,7 +59,7 @@ public class PDFColorSpace {
     private static PDFColorSpace cmykSpace = new PDFColorSpace(new CMYKColorSpace());
 
     /** the pattern space */
-    private static PDFColorSpace patternSpace = new PatternSpace();
+    private static PDFColorSpace patternSpace;
 
     /** graySpace and the gamma correction for it. */
     private static PDFColorSpace graySpace;
@@ -105,25 +105,28 @@ public class PDFColorSpace {
      */
     public static PDFColorSpace getColorSpace(int name) {
         switch (name) {
-        case COLORSPACE_GRAY:
-        case ColorSpace.CS_GRAY:
-        case ColorSpace.TYPE_GRAY:
-            return graySpace;
+            case COLORSPACE_GRAY:
+            case ColorSpace.CS_GRAY:
+            case ColorSpace.TYPE_GRAY:
+                return graySpace;
 
-        case COLORSPACE_RGB:
-            return rgbSpace;
+            case COLORSPACE_RGB:
+                return rgbSpace;
 
-        case COLORSPACE_CMYK:
-            return cmykSpace;
+            case COLORSPACE_CMYK:
+                return cmykSpace;
 
-        case COLORSPACE_PATTERN:
-            return patternSpace;
+            case COLORSPACE_PATTERN:
+                if (patternSpace == null) {
+                    patternSpace = new PatternSpace(); 
+                }
+                return patternSpace;
 
-        default:
-            throw new IllegalArgumentException("Unknown Color Space name: " +
-                name);
+            default:
+                throw new IllegalArgumentException("Unknown Color Space name: " + name);
         }
     }
+
 
     /**
      * Get a color space specified in a PDFObject
