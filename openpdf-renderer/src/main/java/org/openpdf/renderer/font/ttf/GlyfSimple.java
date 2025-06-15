@@ -50,25 +50,18 @@ public class GlyfSimple extends Glyf {
      * Set the data for this glyf.
      */
     @Override
-	public void setData(ByteBuffer data) {
-        // int pos = data.position();
-        // byte[] prdata = new byte[data.remaining()];
-        // data.get(prdata);
-        // HexDump.printData(prdata);
-        // data.position(pos);
-        
-        
+    public void setData(ByteBuffer data) {
         // read the contour end points
         short[] contourEndPts = new short[getNumContours()];
         for (int i = 0; i < contourEndPts.length; i++) {
             contourEndPts[i] = data.getShort();
         }
         setContourEndPoints(contourEndPts);
-        
+
         // the number of points in the glyf is the number of the end
         // point in the last contour
         int numPoints = getContourEndPoint(getNumContours() - 1) + 1;
-        
+
         // read the instructions
         short numInstructions = data.getShort();
         byte[] instructions = new byte[numInstructions];
@@ -76,64 +69,62 @@ public class GlyfSimple extends Glyf {
             instructions[i] = data.get();
         }
         setInstructions(instructions);
-        
+
         // read the flags
         byte[] flags = new byte[numPoints];
         for (int i = 0; i < flags.length; i++) {
             flags[i] = data.get();
-            
+
             // check for repeats
             if ((flags[i] & 0x8) != 0) {
                 byte f = flags[i];
                 int n = (data.get() & 0xff);
                 for (int c = 0; c < n; c++) {
-                    flags[++i] =  f;
+                    flags[++i] = f;
                 }
             }
         }
         setFlags(flags);
-        
+
         // read the x coordinates
         short[] xCoords = new short[numPoints];
         for (int i = 0; i < xCoords.length; i++) {
-             if (i > 0) {
-                 xCoords[i] = xCoords[i - 1];
-             }
+            if (i > 0) {
+                xCoords[i] = xCoords[i - 1];
+            }
 
-             // read this value
             if (xIsByte(i)) {
                 int val = (data.get() & 0xff);
                 if (!xIsSame(i)) {
-                    // the xIsSame bit controls the sign
                     val = -val;
                 }
-                xCoords[i] += val;
+                xCoords[i] = (short) (xCoords[i] + val);
             } else if (!xIsSame(i)) {
-                xCoords[i] += data.getShort();
+                xCoords[i] = (short) (xCoords[i] + data.getShort());
             }
         }
         setXCoords(xCoords);
-        
+
         // read the y coordinates
         short[] yCoords = new short[numPoints];
         for (int i = 0; i < yCoords.length; i++) {
             if (i > 0) {
                 yCoords[i] = yCoords[i - 1];
-            } 
-            // read this value
-            if (yIsByte(i)) {   
+            }
+
+            if (yIsByte(i)) {
                 int val = (data.get() & 0xff);
                 if (!yIsSame(i)) {
-                    // the xIsSame bit controls the sign
                     val = -val;
                 }
-                yCoords[i] += val;
+                yCoords[i] = (short) (yCoords[i] + val);
             } else if (!yIsSame(i)) {
-                yCoords[i] += data.getShort();
+                yCoords[i] = (short) (yCoords[i] + data.getShort());
             }
         }
         setYCoords(yCoords);
     }
+
     
     /**
      * Get the data in this glyf as a byte buffer.  Return the basic
@@ -197,39 +188,41 @@ public class GlyfSimple extends Glyf {
      * Get the length of this glyf. 
      */
     @Override
-	public short getLength() {
-        // start with the length of the superclass
-        short length = super.getLength();
-        
+    public short getLength() {
+        int length = super.getLength();
+
         // add the length of the end points
         length += getNumContours() * 2;
-        
+
         // add the length of the instructions
         length += 2 + getNumInstructions();
-        
+
         // add the length of the flags, avoiding repeats
         for (int i = 0; i < getNumPoints(); i++) {
-            // check for repeats
-            while (i > 0 && (getFlag(i) == getFlag(i - 1)));
+            // count this flag
             length++;
+            // skip repeated flags
+            while (i + 1 < getNumPoints() && getFlag(i + 1) == getFlag(i)) {
+                i++;
+            }
         }
-        
-        // add the length of the xCoordinates
+
+        // add the length of the x and y coordinates
         for (int i = 0; i < getNumPoints(); i++) {
             if (xIsByte(i)) {
                 length++;
             } else if (!xIsSame(i)) {
                 length += 2;
             }
-            
+
             if (yIsByte(i)) {
                 length++;
             } else if (!yIsSame(i)) {
                 length += 2;
             }
         }
-         
-        return length;
+
+        return (short) length;
     }
     
     /**

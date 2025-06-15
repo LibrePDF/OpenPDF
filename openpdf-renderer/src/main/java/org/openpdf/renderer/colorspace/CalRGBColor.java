@@ -182,7 +182,7 @@ public class CalRGBColor extends ColorSpace {
               }
               
               if (rgb[i] < 0.003928) {
-                  rgb[i] *= 12.92;
+                  rgb[i] *= 12.92f;
               } else {
                   rgb[i] = (float) ((Math.pow(rgb[i], 1.0 / 2.4) * 1.055) - 0.055);
               }

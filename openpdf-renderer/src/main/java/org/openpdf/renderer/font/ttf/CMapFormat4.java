@@ -85,27 +85,26 @@ public class CMapFormat4 extends CMap {
      * Get the length of this table
      */
     @Override
-	public short getLength() {
+    public short getLength() {
         // start with the size of the fixed header
         short size = 16;
-        
+
         // add the size of each segment header
-        size += this.segments.size() * 8;
-        
+        size = (short) (size + this.segments.size() * 8);
+
         // add the total number of mappings times the size of a mapping
         for (Iterator i = this.segments.keySet().iterator(); i.hasNext();) {
             Segment s = (Segment) i.next();
-            
-            // see if there's a map
+
             if (s.hasMap) {
-                // if there is, add its size
                 char[] map = (char[]) this.segments.get(s);
-                size += map.length * 2;
+                size = (short) (size + map.length * 2);  // explicit cast here
             }
         }
-        
+
         return size;
     }
+
     
     /** 
      * Cannot map from a byte

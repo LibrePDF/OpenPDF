@@ -45,14 +45,16 @@ public class CMapFormat6 extends CMap {
      * Get the length of this table
      */
     @Override
-	public short getLength() {
+    public short getLength() {
         // start with the size of the fixed header
         short size = 5 * 2;
 
-        // add the size of each segment header
-        size += this.entryCount * 2;
+        // add the size of each segment header (entryCount * 2)
+        size = (short) (size + this.entryCount * 2);
+
         return size;
     }
+
 
     /**
      * Cannot map from a byte
