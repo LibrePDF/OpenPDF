@@ -186,7 +186,6 @@ public class BuiltinFont extends Type1Font {
                 System.out.println("[BuiltinFont] Loaded properties from " + path);
             } catch (IOException e) {
                 System.err.println("[BuiltinFont] Failed to load properties: " + e.getMessage());
-                e.printStackTrace();
             }
         }
 

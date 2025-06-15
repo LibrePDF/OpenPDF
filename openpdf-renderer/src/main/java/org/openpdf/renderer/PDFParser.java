@@ -960,21 +960,6 @@ public class PDFParser extends BaseWatchable {
         this.tok = null;
     }
 
-    public void dumpStreamToError() {
-        if (this.errorwritten) {
-            return;
-        }
-        this.errorwritten = true;
-        try {
-            File oops = File.createTempFile("PDFError", ".err");
-            FileOutputStream fos = new FileOutputStream(oops);
-            fos.write(this.stream);
-            fos.close();
-        } catch (IOException ioe) { /* Do nothing */
-        }
-        ;
-    }
-
     // ///////////////////////////////////////////////////////////////
     // H E L P E R S
     // ///////////////////////////////////////////////////////////////

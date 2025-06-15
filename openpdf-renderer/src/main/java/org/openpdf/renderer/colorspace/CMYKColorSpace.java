@@ -68,7 +68,6 @@ public class CMYKColorSpace extends ColorSpace {
 
         } catch (IOException e) {
             System.err.println("[CMYKColorSpace] Error loading ICC profile: " + e.getMessage());
-            e.printStackTrace();
             BaseWatchable.getErrorHandler().publishException(e);
         }
     }

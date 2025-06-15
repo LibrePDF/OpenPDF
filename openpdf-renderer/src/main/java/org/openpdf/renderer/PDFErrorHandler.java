@@ -6,9 +6,12 @@ package org.openpdf.renderer;
  * @author xond
  *
  */
+@Deprecated
 public class PDFErrorHandler {
 
+    @Deprecated
     public void publishException(Throwable e){
-       e.printStackTrace(); 
+        // TODO: use a logging framework.
+        //e.printStackTrace();
     }
 }

@@ -101,26 +101,6 @@ public class PDFDebugger {
         }
     }
 
-    /**
-    * take a byte array and write a temporary file with it's data.
-    * This is intended to capture data for analysis, like after decoders.
-    *
-    * @param ary
-    * @param name
-    */
-    public static void emitDataFile(byte[] ary, String name) {
-        FileOutputStream ostr;
-        try {
-            File file = File.createTempFile("DateFile", name);
-            ostr = new FileOutputStream(file);
-            PDFDebugger.debug("Write: " + file.getPath());
-            ostr.write(ary);
-            ostr.close();
-        } catch (IOException ex) {
-            // ignore
-        }
-    }
-
     public static void dump(PDFObject obj) throws IOException {
         PDFDebugger.debug("dumping PDF object: " + obj);
         if (obj == null) {

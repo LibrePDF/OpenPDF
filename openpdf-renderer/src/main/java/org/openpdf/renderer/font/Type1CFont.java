@@ -1003,7 +1003,7 @@ public class Type1CFont extends OutlineFont {
                     this.stackptr -= 3;
                     break;
                 case 1023: // random
-                    this.stack[this.stackptr++] = (float) Math.random ();
+                    this.stack[this.stackptr++] = new java.security.SecureRandom().nextFloat();
                     break;
                 case 1024: // mul
                     x1 = this.stack[--this.stackptr];
