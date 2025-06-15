@@ -10,6 +10,10 @@ Examples:
 * [Render PDF in Swing GUI](https://github.com/LibrePDF/OpenPDF/blob/master/openpdf-renderer/src/test/myrenderer/PdfRendererGui.java)
 
 
+Note
+=====
+* Package names renamed from com.sun.pdfview to org.openpdf.renderer.
+
 Usage
 =====
 
