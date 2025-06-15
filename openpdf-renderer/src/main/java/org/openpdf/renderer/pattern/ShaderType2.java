@@ -327,8 +327,8 @@ public class ShaderType2 extends PDFShader {
         		for (int i = 0; i < w; i += 1) {
         			boolean render = true;
         			// find t for that user coordinate
-        			float xp = getXPrime(i + x, j + y, x0, y0);
-        			float t = 0;
+                    float xp = getXPrime((float)(i + x), (float)(j + y), x0, y0);
+                    float t = 0;
         			if (xp >= 0 && xp <= 1) t = getMinT() + (dt1t0 * xp);
         			else if (xp < 0 && extendStart) t = getMinT();
         			else if (xp > 1 && extendEnd) t = getMaxT();

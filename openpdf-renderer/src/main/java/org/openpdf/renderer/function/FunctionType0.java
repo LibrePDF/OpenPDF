@@ -143,7 +143,7 @@ public class FunctionType0 extends PDFFunction {
         
             // clip to size of sample table -- min(max(e<i>, 0), size<i> - 1)
             encoded[i] = Math.max(encoded[i], 0);
-            encoded[i] = Math.min(encoded[i], this.size[i] - 1);
+            encoded[i] = Math.min(encoded[i], (float)(this.size[i] - 1));
         }
         
         // do some magic

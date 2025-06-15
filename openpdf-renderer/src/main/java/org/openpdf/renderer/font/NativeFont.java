@@ -427,15 +427,12 @@ public class NativeFont extends OutlineFont {
             fourMap.addSegment (idx, idx, (short) (value - idx));
         }
 
-        // create a whole new table with just our map
-        cmap = (CmapTable) TrueTypeTable.createTable (ttf, "cmap");
-        cmap.addCMap ((short) 3, (short) 1, fourMap);
+        CmapTable newCmap = (CmapTable) TrueTypeTable.createTable(ttf, "cmap");
+        newCmap.addCMap((short) 3, (short) 1, fourMap);
 
-        // replace the table in the font
-        ttf.addTable ("cmap", cmap);
+        ttf.addTable("cmap", newCmap);
 
-        // change the stored table
-        this.cmapTable = cmap;
+        this.cmapTable = newCmap;
 
         return true;
     }

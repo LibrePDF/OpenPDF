@@ -494,19 +494,20 @@ public class Type1Font extends OutlineFont {
         while (loc < cs.length) {
             int v = (cs[loc++]) & 0xff;
             if (v == 255) {
-                this.stack[this.sloc++] = (((cs[loc]) & 0xff) << 24) +
-                        (((cs[loc + 1]) & 0xff) << 16) +
-                        (((cs[loc + 2]) & 0xff) << 8) +
-                        (((cs[loc + 3]) & 0xff));
+                this.stack[this.sloc++] = (float) (
+                        (((cs[loc]) & 0xff) << 24) +
+                                (((cs[loc + 1]) & 0xff) << 16) +
+                                (((cs[loc + 2]) & 0xff) << 8) +
+                                ((cs[loc + 3]) & 0xff));
                 loc += 4;
             } else if (v >= 251) {
-                this.stack[this.sloc++] = -((v - 251) << 8) - ((cs[loc]) & 0xff) - 108;
+                this.stack[this.sloc++] = (float) (-((v - 251) << 8) - ((cs[loc]) & 0xff) - 108);
                 loc++;
             } else if (v >= 247) {
-                this.stack[this.sloc++] = ((v - 247) << 8) + ((cs[loc]) & 0xff) + 108;
+                this.stack[this.sloc++] = (float) (((v - 247) << 8) + ((cs[loc]) & 0xff) + 108);
                 loc++;
             } else if (v >= 32) {
-                this.stack[this.sloc++] = v - 139;
+                this.stack[this.sloc++] = (float) (v - 139);
             } else {
                 switch (v) {
                     case 0:   // x
