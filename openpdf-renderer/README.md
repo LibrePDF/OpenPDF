@@ -13,6 +13,7 @@ Examples:
 Note
 =====
 * Package names renamed from com.sun.pdfview to org.openpdf.renderer.
+* PDF decryption is removed from openpdf-renderer.
 
 Usage
 =====

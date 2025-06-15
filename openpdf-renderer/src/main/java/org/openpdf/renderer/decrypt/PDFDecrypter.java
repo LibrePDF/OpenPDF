@@ -35,6 +35,7 @@ import org.openpdf.renderer.PDFStringUtil;
  * @see "PDFReference 1.7, Section 3.5 Encryption"
  * @author Luke Kirby
  */
+@Deprecated
 public interface PDFDecrypter {
 
     /**
