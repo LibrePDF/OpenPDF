@@ -43,6 +43,7 @@ import java.awt.image.Raster;
 import java.awt.image.RasterFormatException;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -55,6 +56,7 @@ import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataFormatImpl;
+import javax.imageio.stream.ImageInputStream;
 
 import org.openpdf.renderer.colorspace.AlternateColorSpace;
 import org.openpdf.renderer.colorspace.IndexedColor;
@@ -1138,60 +1140,41 @@ public class PDFImage {
 		 *             if the image couldn't be decoded due to a lack of support
 		 *             or some IO problem
 		 */
-		private BufferedImage decode() throws IOException {
+        private BufferedImage decode() throws IOException {
+            byte[] jpegBytes = jpegData.hasArray()
+                    ? Arrays.copyOfRange(jpegData.array(), jpegData.position(), jpegData.limit())
+                    : ByteBuffer.allocate(jpegData.remaining()).put(jpegData.duplicate()).array();
 
-			ImageReadParam readParam = null;
-			if (getDecode() != null) {
-				// we have to allocate our own buffered image so that we can
-				// install our colour model which will do the desired decode
-				readParam = new ImageReadParam();
-				SampleModel sm = cm.createCompatibleSampleModel(getWidth(), getHeight());
-				final WritableRaster raster = Raster.createWritableRaster(sm, new Point(0, 0));
-				readParam.setDestination(new BufferedImage(cm, raster, true, null));
-			}
+            ImageReadParam readParam = null;
+            if (getDecode() != null) {
+                readParam = new ImageReadParam();
+                SampleModel sm = cm.createCompatibleSampleModel(getWidth(), getHeight());
+                WritableRaster raster = Raster.createWritableRaster(sm, new Point(0, 0));
+                readParam.setDestination(new BufferedImage(cm, raster, true, null));
+            }
 
-			Iterator<ImageReader> jpegReaderIt = ImageIO.getImageReadersByFormatName("jpeg");
-			IIOException lastIioEx = null;
-			while (jpegReaderIt.hasNext()) {
-				try {
-					final ImageReader jpegReader = jpegReaderIt.next();
-					jpegReader.setInput(ImageIO.createImageInputStream(new ByteBufferInputStream(jpegData)), true,
-							false);
-					try {
-						return readImage(jpegReader, readParam);
-					} catch (Exception e) {
-						if (e instanceof IIOException) {
-							throw (IIOException) e;
-						}
-						// Any other exceptions here are probably due to
-						// internal
-						// problems with the image reader.
-						// A concrete example of this happening is described
-						// here:
-						// http://java.net/jira/browse/PDF_RENDERER-132 where
-						// JAI imageio extension throws an
-						// IndexOutOfBoundsException on progressive JPEGs.
-						// We'll just treat it as an IIOException for
-						// convenience
-						// and hopefully a subsequent reader can handle it
-						throw new IIOException("Internal reader error?", e);
-					} finally {
-						jpegReader.dispose();
-					}
-				} catch (IIOException e) {
-					// its most likely complaining about an unsupported image
-					// type; hopefully the next image reader will be able to
-					// understand it
-					jpegData.reset();
-					lastIioEx = e;
-				}
-			}
+            IIOException lastIioEx = null;
+            for (Iterator<ImageReader> it = ImageIO.getImageReadersByFormatName("jpeg"); it.hasNext(); ) {
+                ImageReader reader = it.next();
+                try (
+                        ByteArrayInputStream bais = new ByteArrayInputStream(jpegBytes);
+                        ImageInputStream iis = ImageIO.createImageInputStream(bais)
+                ) {
+                    reader.setInput(iis, true, false);
+                    return readImage(reader, readParam);
+                } catch (IIOException e) {
+                    lastIioEx = e; // try next reader
+                } catch (Exception e) {
+                    throw new IIOException("Internal reader error?", e);
+                } finally {
+                    reader.dispose();
+                }
+            }
 
-			throw lastIioEx;
+            throw lastIioEx != null ? lastIioEx : new IIOException("No suitable JPEG reader found.");
+        }
 
-		}
-
-		private BufferedImage readImage(ImageReader jpegReader, ImageReadParam param) throws IOException {
+        private BufferedImage readImage(ImageReader jpegReader, ImageReadParam param) throws IOException {
 			if (ycckcmykDecodeMode) {
 				// The standard Oracle Java JPEG readers can't deal with CMYK
 				// YCCK encoded images
