@@ -123,9 +123,11 @@ public abstract class BaseWatchable implements Watchable, Runnable {
                             if (!isExecutable()) {
                                 try {
                                     this.statusLock.wait(5000);
-                                } catch (InterruptedException ie) {
-                                    // ignore
+                                } catch (InterruptedException ex) {
+                                    Thread.currentThread().interrupt(); // ← Preserve the interrupt status
+                                    PDFDebugger.debug("Thread interrupted while waiting for status change.");
                                 }
+
                             }
                         }
                     }
@@ -137,7 +139,8 @@ public abstract class BaseWatchable implements Watchable, Runnable {
                 cleanup();
             }
         } catch (InterruptedException e) {
-            PDFDebugger.debug("Interrupted.");
+            Thread.currentThread().interrupt();
+            PDFDebugger.debug("Thread interrupted while waiting for status change.");
         }
         // notify that we are no longer running
         this.thread = null;
@@ -244,8 +247,10 @@ public abstract class BaseWatchable implements Watchable, Runnable {
                 try {
                     this.statusLock.wait(5000);
                 } catch (InterruptedException ex) {
-                    // ignore
+                    Thread.currentThread().interrupt(); // ← Preserve the interrupt status
+                    PDFDebugger.debug("Thread interrupted while waiting for status change.");
                 }
+
             }
         }
     }
@@ -287,11 +292,13 @@ public abstract class BaseWatchable implements Watchable, Runnable {
                 };
                 thread.setUncaughtExceptionHandler( h );
         		thread.start();
-        		try {
-        			statusLock.wait(5000);
-        		} catch (InterruptedException ex) {
-        			// ignore
-        		}
+                try {
+                    this.statusLock.wait(5000);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt(); // ← Preserve the interrupt status
+                    PDFDebugger.debug("Thread interrupted while waiting for status change.");
+                }
+
         	}
         }
     }
