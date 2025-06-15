@@ -210,7 +210,10 @@ public class Type1CFont extends OutlineFont {
                 break;
             }
         }
-        this.fnum = (float) (((neg ? -1.0 : 1.0) * (double) f) * Math.pow(10.0, eval * exp));
+        double sign = neg ? -1.0 : 1.0;
+        double base = sign * f;
+        double result = base * Math.pow(10.0, eval * exp);
+        this.fnum = (float) result;
     }
 
     /**
