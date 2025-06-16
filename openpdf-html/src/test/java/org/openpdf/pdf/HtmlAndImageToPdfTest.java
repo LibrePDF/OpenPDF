@@ -9,7 +9,7 @@ import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HtmlAndImageToPdf {
+public class HtmlAndImageToPdfTest {
 
     @Test
     void generatePdfWithImage() throws Exception {
