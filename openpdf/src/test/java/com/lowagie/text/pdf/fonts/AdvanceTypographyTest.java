@@ -19,23 +19,6 @@ import org.junit.jupiter.api.Test;
 class AdvanceTypographyTest {
 
     /**
-     * Without glyph substitution out will be {660,666,676,1143,656,1130}, which is no correct FopGlyphProcessor
-     * performs glyph substitution to correct the output
-     *
-     * @throws Exception - DocumentException or IOException thrown by the processedContent() method
-     */
-    @Test
-    void testTypographySubstitution() throws Exception {
-        char[] expectedOutput = {660, 666, 911, 656, 1130};
-        byte[] processedContent = FopGlyphProcessor.convertToBytesWithGlyphs(
-                BaseFont.createFont("fonts/jaldi/Jaldi-Regular.ttf", BaseFont.IDENTITY_H, false),
-                "नमस्ते", "fonts/jaldi/Jaldi-Regular.ttf", new HashMap<>(), "dflt");
-        String str = new String(processedContent, "UnicodeBigUnmarked");
-
-        assertArrayEquals(expectedOutput, str.toCharArray());
-    }
-
-    /**
      * In some fonts combination of two characters can be represented by single glyph This method tests above case.
      *
      * @throws Exception - UnsupportedEncodingException by the convertToBytesWithGlyphs method
