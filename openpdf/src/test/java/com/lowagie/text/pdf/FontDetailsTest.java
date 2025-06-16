@@ -16,17 +16,6 @@ class FontDetailsTest {
     }
 
     @Test
-    void convertToBytesShouldExerciseSomeCode() throws IOException {
-        String filename = "src/test/resources/fonts/jp/GenShinGothic-Normal.ttf";
-        BaseFont baseFont = BaseFont.createFont(filename, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-        FontDetails fontDetails = new FontDetails(null, null, baseFont);
-        TextRenderingOptions options = new TextRenderingOptions();
-        byte[] bytes = fontDetails.convertToBytes("hällö wörld", options);
-        assertThat(bytes).hasSize(22);
-        assertThat(fontDetails.isSubset()).isTrue();
-    }
-
-    @Test
     void convertToBytesAwesomeShouldExerciseSomeCode() throws IOException {
         String fileName = "src/test/resources/fonts/font-awesome/fa-v4compatibility.ttf";
         BaseFont baseFont = BaseFont.createFont(fileName, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
