@@ -418,13 +418,11 @@ public class CSSParser {
                             if (t == null) {
                                 break;
                             }
-                            switch (t.getType()) {
-                                case RBRACE:
-                                    next();
-                                    break;
-                                default:
-                                    ruleset(mediaRule);
+                            if (t.getType() == Token.Type.RBRACE) {
+                                next();
+                                break;
                             }
+                            ruleset(mediaRule);
                         }
                         skip_whitespace();
                     } else {
