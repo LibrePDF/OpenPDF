@@ -10,6 +10,7 @@
   </parent>
 
   <artifactId>openpdf</artifactId>
+  <name>OpenPDF</name>
 
   <properties>
     <java-module-name>com.github.librepdf.openpdf</java-module-name>

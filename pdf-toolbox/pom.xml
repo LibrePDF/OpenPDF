@@ -11,6 +11,9 @@
 
   <artifactId>pdf-toolbox</artifactId>
 
+  <name>OpenPDF Toolbox</name>
+  <description>Examples using OpenPDF</description>
+
   <properties>
     <java-module-name>com.github.librepdf.pdfToolbox</java-module-name>
   </properties>

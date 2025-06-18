@@ -10,6 +10,7 @@
   </parent>
 
   <artifactId>pdf-swing</artifactId>
+  <name>OpenPDF Swing</name>
 
   <properties>
     <java-module-name>com.github.librepdf.pdfSwing</java-module-name>
