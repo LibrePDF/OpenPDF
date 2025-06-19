@@ -47,12 +47,10 @@ public class ParserTest {
             CSSParser p = new CSSParser(errorHandler);
             Stylesheet stylesheet = p.parseStylesheet(null, USER_AGENT, new StringReader(longTest));
             long end = System.currentTimeMillis();
-            // System.out.println("Took " + (end-start) + " ms");
             total += (end-start);
 
             assertThat(stylesheet.getContents()).hasSize(count);
         }
-        System.out.println("Average " + (total/10) + " ms");
 
         total = 0;
         for (int i = 0; i < 10; i++) {
@@ -64,7 +62,7 @@ public class ParserTest {
             total += (end-start);
             assertThat(stylesheet.getContents()).hasSize(count);
         }
-        System.out.println("Average " + (total/10) + " ms");
+
 
         CSSParser p = new CSSParser(errorHandler);
 
@@ -81,7 +79,6 @@ public class ParserTest {
             // System.out.println("Took " + (end-start) + " ms");
             total += (end-start);
         }
-        System.out.println("Average " + (total/10) + " ms");
     }
 
     @Test

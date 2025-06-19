@@ -40,7 +40,7 @@
 
 
 
-package org.openpdf;
+package org.openpdf.util;
 
 
 

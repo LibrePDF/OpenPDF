@@ -77,8 +77,6 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
         super(new SharedContext(uac));
         mouseTracker = new MouseTracker(this);
         formSubmissionListener = query -> {
-            System.out.println("Form Submitted!");
-            System.out.println("Data: " + query);
 
             JOptionPane.showMessageDialog(
                     null,
@@ -304,14 +302,6 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
     public void setSize(Dimension d) {
         XRLog.layout(Level.FINEST, "set size called");
         super.setSize(d);
-        /* CLEAN: do we need this?
-        if (doc != null && body_box != null) {
-            if(body_box.width != d.width)
-            RenderQueue.getInstance().dispatchLayoutEvent(new ReflowEvent(ReflowEvent.CANVAS_RESIZED, d));
-            //don't need the below, surely
-            //else if(body_box.height != d.height)
-            //    RenderQueue.getInstance().dispatchRepaintEvent(new ReflowEvent(ReflowEvent.CANVAS_RESIZED, d));
-    } */
     }
 
     /*

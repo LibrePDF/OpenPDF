@@ -23,7 +23,6 @@ package org.openpdf.util;
 import com.google.errorprone.annotations.CheckReturnValue;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.LoggerFactory;
-import org.openpdf.DefaultCSSMarker;
 
 import java.io.BufferedInputStream;
 import java.io.File;

@@ -1271,27 +1271,6 @@ public class BarcodePDF417 {
         textCompaction(bytes, 0, bytes.length);
     }
 
-    protected void dumpList() {
-        if (segmentList.size() == 0) {
-            return;
-        }
-        for (int k = 0; k < segmentList.size(); ++k) {
-            Segment v = segmentList.get(k);
-            int len = getSegmentLength(v);
-            char[] c = new char[len];
-            for (int j = 0; j < len; ++j) {
-                c[j] = (char) (text[v.start + j] & 0xff);
-                if (c[j] == '\r') {
-                    c[j] = '\n';
-                }
-            }
-            StringBuilder sb = new StringBuilder();
-            sb.append(v.type);
-            sb.append(c);
-            System.out.println(sb.toString());
-        }
-    }
-
     protected int getMaxSquare() {
         if (codeColumns > 21) {
             codeColumns = 29;
