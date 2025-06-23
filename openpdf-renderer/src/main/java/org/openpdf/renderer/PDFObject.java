@@ -791,6 +791,7 @@ public class PDFObject {
             if (obj == null || obj.value == null) {
                 if (owner == null) {
                     PDFDebugger.debug("Bad seed (owner==null)!  Object=" + this);
+                    throw new IOException("Cannot dereference: owner is null for object " + this);
                 }
 
                 obj = owner.dereference((PDFXref)value, getDecrypter());
