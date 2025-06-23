@@ -67,8 +67,11 @@ public class FontSelector {
 
     protected ArrayList<Font> fonts = new ArrayList<>();
 
-    public FontSelector() {
+    static {
         FontFactory.register("font-fallback/LiberationSans-Regular.ttf", "sans");
+    }
+
+    public FontSelector() {
         Font font = FontFactory.getFont("sans", BaseFont.IDENTITY_H);
         fonts.add(font);
     }
