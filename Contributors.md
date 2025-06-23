@@ -18,7 +18,7 @@ quite an overhead. The GitHub contributor list is always up-to-date and can be u
 ### Previous Maintainers ###
 
 * [@andreasrosdal](https://github.com/andreasrosdal) - Andreas Røsdal - Maintainer of OpenPDF from 1.0 to 1.3.15, 1.3.32
-  to 2.0.0, 2.0.4 to 2.1.0, now possibly retired from OpenPDF development.
+  to 2.0.0, 2.0.4 to 2.2.3, now maybe retired from OpenPDF development.
 
 ## Contributors ##
 
