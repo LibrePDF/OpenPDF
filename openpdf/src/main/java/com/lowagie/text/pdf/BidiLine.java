@@ -660,6 +660,10 @@ public class BidiLine {
     }
 
     public PdfLine processLine(float leftX, float width, int alignment, int runDirection, int arabicOptions) {
+        return processLine(leftX, width, alignment, runDirection, arabicOptions, false);
+    }
+
+    public PdfLine processLine(float leftX, float width, int alignment, int runDirection, int arabicOptions, boolean strictWordWrapping) {
         this.arabicOptions = arabicOptions;
         save();
         boolean isRTL = (runDirection == PdfWriter.RUN_DIRECTION_RTL);
@@ -732,6 +736,14 @@ public class BidiLine {
         }
         if (lastValidChunk == null) {
             // not even a single char fit; must output the first char
+            if (strictWordWrapping) {
+                // Build error message with the text that doesn't fit up to 50 characters
+                String problematicText = new String(text, oldCurrentChar, Math.min(50, totalTextLength - oldCurrentChar));
+                if (totalTextLength - oldCurrentChar > 50) {
+                    problematicText += "...";
+                }
+                throw new StrictWordWrapException("Text cannot fit within column width without forced word breaking. Problematic text: '" + problematicText + "'");
+            }
             ++currentChar;
             if (surrogate) {
                 ++currentChar;
@@ -770,6 +782,14 @@ public class BidiLine {
         }
         if (lastSplit == -1 || lastSplit >= newCurrentChar) {
             // no split point or split point ahead of end
+            if (strictWordWrapping) {
+                // Build error message with the text that doesn't fit up to 50 characters
+                String problematicText = new String(text, oldCurrentChar, Math.min(50, newCurrentChar - oldCurrentChar + 1));
+                if (newCurrentChar - oldCurrentChar + 1 > 50) {
+                    problematicText += "...";
+                }
+                throw new StrictWordWrapException("Text cannot fit within column width without forced word breaking. Problematic text: '" + problematicText + "'");
+            }
             return new PdfLine(0, originalWidth, width + getWidth(newCurrentChar + 1, currentChar - 1), alignment,
                     false, createArrayOfPdfChunks(oldCurrentChar, newCurrentChar), isRTL);
         }

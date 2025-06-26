@@ -293,6 +293,12 @@ public class ColumnText {
     private boolean adjustFirstLine = true;
 
     /**
+     * Flag to enable strict word wrapping mode. When true, throws StrictWordWrapException
+     * instead of forcing line breaks when text doesn't fit within column width.
+     */
+    private boolean strictWordWrapping = false;
+
+    /**
      * Creates a <CODE>ColumnText</CODE>.
      *
      * @param canvas the place where the text will be written to. Can be a template.
@@ -502,6 +508,7 @@ public class ColumnText {
         useAscender = org.useAscender;
         filledWidth = org.filledWidth;
         adjustFirstLine = org.adjustFirstLine;
+        strictWordWrapping = org.strictWordWrapping;
     }
 
     private void addWaitingPhrase() {
@@ -1032,7 +1039,7 @@ public class ColumnText {
                     break;
                 }
                 line = bidiLine.processLine(leftX, rectangularWidth - firstIndent - rightIndent, alignment,
-                        localRunDirection, arabicOptions);
+                        localRunDirection, arabicOptions, strictWordWrapping);
                 if (line == null) {
                     status = NO_MORE_TEXT;
                     break;
@@ -1084,7 +1091,7 @@ public class ColumnText {
                     dirty = true;
                 }
                 line = bidiLine.processLine(x1, x2 - x1 - firstIndent - rightIndent, alignment, localRunDirection,
-                        arabicOptions);
+                        arabicOptions, strictWordWrapping);
                 if (line == null) {
                     status = NO_MORE_TEXT;
                     yLine = yTemp;
@@ -1737,5 +1744,24 @@ public class ColumnText {
      */
     public void setAdjustFirstLine(boolean adjustFirstLine) {
         this.adjustFirstLine = adjustFirstLine;
+    }
+
+    /**
+     * Gets the strict word wrapping flag.
+     *
+     * @return true if strict word wrapping is enabled, false otherwise
+     */
+    public boolean isStrictWordWrapping() {
+        return strictWordWrapping;
+    }
+
+    /**
+     * Sets the strict word wrapping flag. When enabled, throws StrictWordWrapException
+     * instead of forcing line breaks when text doesn't fit within column width.
+     *
+     * @param strictWordWrapping true to enable strict word wrapping, false to disable
+     */
+    public void setStrictWordWrapping(boolean strictWordWrapping) {
+        this.strictWordWrapping = strictWordWrapping;
     }
 }
