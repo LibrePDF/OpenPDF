@@ -226,8 +226,6 @@ public class PdfFormField extends PdfAnnotation {
     public static PdfFormField createSignature(PdfWriter writer) {
         PdfFormField field = new PdfFormField(writer);
         field.put(PdfName.FT, PdfName.SIG);
-        field.put(PdfName.TU, new PdfString("Digital signature field (non-interactive)", PdfObject.TEXT_UNICODE));
-        field.put(PdfName.ALT, new PdfString("Digital signature field (non-interactive)", PdfObject.TEXT_UNICODE));
         return field;
     }
 
