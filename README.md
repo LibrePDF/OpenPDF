@@ -2,7 +2,7 @@
 
 OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source
 license. OpenPDF is the LGPL/MPL open source successor of iText, and is based on some forks of iText
-4 svn tag. OpenPDF-html allows making PDF files from HTML. 
+4 svn tag. OpenPDF-html allows making PDF files from HTML.
 We welcome contributions from other developers. Please feel free to submit pull-requests
 and bugreports to this GitHub repository.
 
@@ -21,11 +21,9 @@ and bugreports to this GitHub repository.
 ![Java 24](https://img.shields.io/badge/Java-24-blue?logo=java&logoColor=yellow)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Supported-7F52FF?logo=kotlin&logoColor=white)](https://github.com/LibrePDF/OpenPDF/tree/master/openpdf-kotlin)
 
+## OpenPDF version 2.2.4 released 2025-07-01
 
-
-## OpenPDF version 2.2.3 released 2025-06-18
-
-Get version 2.2.3 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.2.3
+Get version 2.2.4 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.2.4
 
 ### Other versions
 
@@ -49,7 +47,6 @@ Some of the features of OpenPDF include:
 * Encryption: You can encrypt PDF documents for security purposes.
 * Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
 
-
 ## Use OpenPDF as Maven dependency
 
 Add this to your pom.xml file to use the latest version of OpenPDF:
@@ -59,7 +56,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>2.2.3</version>
+  <version>2.2.4</version>
 </dependency>
 ```
 
@@ -110,11 +107,12 @@ OpenPDF ancestors in GitHub (in fork order):
 4. [@ymasory](https://github.com/ymasory) / [iText-4.2.0](https://github.com/ymasory/iText-4.2.0) -
    original parent on GitHub
 
-
 ## Security Notice
 
-It is the responsibility of the application developer to ensure that all input passed into OpenPDF is trusted, sanitized, and safe.
-OpenPDF does not perform input validation or enforce sandboxing. For important security guidelines and common risks, please read our [Security Policy](Security.md).
+It is the responsibility of the application developer to ensure that all input passed into OpenPDF is trusted,
+sanitized, and safe.
+OpenPDF does not perform input validation or enforce sandboxing. For important security guidelines and common risks,
+please read our [Security Policy](Security.md).
 
 ## Android
 
