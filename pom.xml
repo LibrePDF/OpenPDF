@@ -99,7 +99,7 @@
     <assertj.version>3.27.3</assertj.version>
     <checkstyle.version>10.26.1</checkstyle.version>
     <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
-    <junit.version>5.13.2</junit.version>
+    <junit.version>5.13.3</junit.version>
     <mockito5.version>5.17.0</mockito5.version>
   </properties>
 
