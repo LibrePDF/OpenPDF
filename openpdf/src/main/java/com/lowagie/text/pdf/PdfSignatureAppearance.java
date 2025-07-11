@@ -1100,6 +1100,10 @@ public class PdfSignatureAppearance {
             PdfFormField sigField = PdfFormField.createSignature(writer);
             sigField.setFieldName(name);
             sigField.put(PdfName.V, refSig);
+
+            sigField.put(PdfName.TU, new PdfString("Digital signature", PdfObject.TEXT_UNICODE));
+            sigField.put(PdfName.ALT, new PdfString("Non-interactive Digital signature field", PdfObject.TEXT_UNICODE));
+
             sigField.setFlags(PdfAnnotation.FLAGS_PRINT | PdfAnnotation.FLAGS_LOCKED);
 
             int pagen = getPage();
