@@ -19,10 +19,10 @@
  */
 package org.openpdf.pdf;
 
-import org.openpdf.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.PdfWriter;
 import org.openpdf.util.ArrayUtil;
 
-import static org.openpdf.text.pdf.PdfWriter.STANDARD_ENCRYPTION_128;
+import static com.lowagie.text.pdf.PdfWriter.STANDARD_ENCRYPTION_128;
 
 public class PDFEncryption {
     private final byte[] _userPassword;

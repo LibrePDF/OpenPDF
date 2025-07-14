@@ -1,9 +1,9 @@
 package org.librepdf.openpdf.independent;
 
-import org.openpdf.text.Document;
-import org.openpdf.text.Paragraph;
-import org.openpdf.text.pdf.PdfReader;
-import org.openpdf.text.pdf.PdfWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.assertj.core.api.Assertions;

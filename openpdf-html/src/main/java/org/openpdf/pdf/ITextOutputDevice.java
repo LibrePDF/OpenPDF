@@ -19,27 +19,27 @@
  */
 package org.openpdf.pdf;
 
-import org.openpdf.text.DocumentException;
-import org.openpdf.text.Image;
-import org.openpdf.text.pdf.CMYKColor;
-import org.openpdf.text.pdf.PdfAction;
-import org.openpdf.text.pdf.PdfAnnotation;
-import org.openpdf.text.pdf.PdfArray;
-import org.openpdf.text.pdf.PdfBorderArray;
-import org.openpdf.text.pdf.PdfBorderDictionary;
-import org.openpdf.text.pdf.PdfContentByte;
-import org.openpdf.text.pdf.PdfDestination;
-import org.openpdf.text.pdf.PdfDictionary;
-import org.openpdf.text.pdf.PdfGState;
-import org.openpdf.text.pdf.PdfImportedPage;
-import org.openpdf.text.pdf.PdfIndirectReference;
-import org.openpdf.text.pdf.PdfName;
-import org.openpdf.text.pdf.PdfNumber;
-import org.openpdf.text.pdf.PdfOutline;
-import org.openpdf.text.pdf.PdfReader;
-import org.openpdf.text.pdf.PdfString;
-import org.openpdf.text.pdf.PdfTextArray;
-import org.openpdf.text.pdf.PdfWriter;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.CMYKColor;
+import com.lowagie.text.pdf.PdfAction;
+import com.lowagie.text.pdf.PdfAnnotation;
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfBorderArray;
+import com.lowagie.text.pdf.PdfBorderDictionary;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfDestination;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfGState;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfIndirectReference;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfNumber;
+import com.lowagie.text.pdf.PdfOutline;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfString;
+import com.lowagie.text.pdf.PdfTextArray;
+import com.lowagie.text.pdf.PdfWriter;
 import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -91,12 +91,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-import static org.openpdf.text.pdf.PdfObject.TEXT_UNICODE;
+import static com.lowagie.text.pdf.PdfObject.TEXT_UNICODE;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparingInt;
 
 /**
- * This class is largely based on {@link org.openpdf.text.pdf.PdfGraphics2D}.
+ * This class is largely based on {@link com.lowagie.text.pdf.PdfGraphics2D}.
  * See <a href="http://sourceforge.net/projects/itext/">http://sourceforge.net/
  * projects/itext/</a> for license information.
  */
@@ -221,7 +221,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         processLink(c, box);
     }
 
-    private org.openpdf.text.Rectangle calcTotalLinkArea(RenderingContext c, Box box) {
+    private com.lowagie.text.Rectangle calcTotalLinkArea(RenderingContext c, Box box) {
         Box current = box;
         while (true) {
             Box prev = current.getPreviousSibling();
@@ -232,7 +232,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
             current = prev;
         }
 
-        org.openpdf.text.Rectangle result = createLocalTargetArea(c, current, true);
+        com.lowagie.text.Rectangle result = createLocalTargetArea(c, current, true);
 
         current = current.getNextSibling();
         while (current != null && current.getElement() == box.getElement()) {
@@ -244,21 +244,21 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         return result;
     }
 
-    private org.openpdf.text.Rectangle add(org.openpdf.text.Rectangle r1, org.openpdf.text.Rectangle r2) {
+    private com.lowagie.text.Rectangle add(com.lowagie.text.Rectangle r1, com.lowagie.text.Rectangle r2) {
         float llx = Math.min(r1.getLeft(), r2.getLeft());
         float urx = Math.max(r1.getRight(), r2.getRight());
         float lly = Math.min(r1.getBottom(), r2.getBottom());
         float ury = Math.max(r1.getTop(), r2.getTop());
 
-        return new org.openpdf.text.Rectangle(llx, lly, urx, ury);
+        return new com.lowagie.text.Rectangle(llx, lly, urx, ury);
     }
 
-    private String createRectKey(org.openpdf.text.Rectangle rect) {
+    private String createRectKey(com.lowagie.text.Rectangle rect) {
         return rect.getLeft() + ":" + rect.getBottom() + ":" + rect.getRight() + ":" + rect.getTop();
     }
 
-    private Optional<org.openpdf.text.Rectangle> checkLinkArea(RenderingContext c, Box box) {
-        org.openpdf.text.Rectangle targetArea = calcTotalLinkArea(c, box);
+    private Optional<com.lowagie.text.Rectangle> checkLinkArea(RenderingContext c, Box box) {
+        com.lowagie.text.Rectangle targetArea = calcTotalLinkArea(c, box);
         String key = createRectKey(targetArea);
         if (_linkTargetAreas.contains(key)) {
             return Optional.empty();
@@ -309,7 +309,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         return action;
     }
 
-    private void addLinkAnnotation(final PdfAction action, final org.openpdf.text.Rectangle targetArea) {
+    private void addLinkAnnotation(final PdfAction action, final com.lowagie.text.Rectangle targetArea) {
         PdfAnnotation annot = new PdfAnnotation(_writer, targetArea.getLeft(), targetArea.getBottom(),
                 targetArea.getRight(), targetArea.getTop(), action);
         annot.put(PdfName.SUBTYPE, PdfName.LINK);
@@ -320,11 +320,11 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         _writer.addAnnotation(annot);
     }
 
-    public org.openpdf.text.Rectangle createLocalTargetArea(RenderingContext c, Box box) {
+    public com.lowagie.text.Rectangle createLocalTargetArea(RenderingContext c, Box box) {
         return createLocalTargetArea(c, box, false);
     }
 
-    private org.openpdf.text.Rectangle createLocalTargetArea(RenderingContext c, Box box, boolean useAggregateBounds) {
+    private com.lowagie.text.Rectangle createLocalTargetArea(RenderingContext c, Box box, boolean useAggregateBounds) {
         Rectangle bounds;
         if (useAggregateBounds && box.getPaintingInfo() != null) {
             bounds = box.getPaintingInfo().getAggregateBounds();
@@ -337,11 +337,11 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         _transform.transform(docCorner, pdfCorner);
         pdfCorner.setLocation(pdfCorner.getX(), normalizeY((float) pdfCorner.getY()));
 
-        return new org.openpdf.text.Rectangle((float) pdfCorner.getX(), (float) pdfCorner.getY(),
+        return new com.lowagie.text.Rectangle((float) pdfCorner.getX(), (float) pdfCorner.getY(),
                 (float) pdfCorner.getX() + getDeviceLength(bounds.width), (float) pdfCorner.getY() + getDeviceLength(bounds.height));
     }
 
-    public org.openpdf.text.Rectangle createTargetArea(RenderingContext c, Box box) {
+    public com.lowagie.text.Rectangle createTargetArea(RenderingContext c, Box box) {
         PageBox current = c.getPage();
         boolean inCurrentPage = box.getAbsY() > current.getTop() && box.getAbsY() < current.getBottom();
 
@@ -358,7 +358,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
 
             float left = getDeviceLength((float)page.getMarginBorderPadding(c, Edge.LEFT) + bounds.x);
 
-            return new org.openpdf.text.Rectangle(left, bottom, left + getDeviceLength(bounds.width), bottom
+            return new com.lowagie.text.Rectangle(left, bottom, left + getDeviceLength(bounds.width), bottom
                     + getDeviceLength(bounds.height));
         }
     }

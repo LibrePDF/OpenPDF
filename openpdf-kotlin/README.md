@@ -17,7 +17,7 @@ Kotlin pull requests are welcome!
 ```kotlin
 import java.io.FileOutputStream
 import com.github.librepdf.html.HtmlPdfBuilder
-import org.openpdf.text.pdf.PdfWriter
+import com.lowagie.text.pdf.PdfWriter
 
 val outputStream = FileOutputStream("output.pdf")
 
@@ -34,7 +34,7 @@ HtmlPdfBuilder(outputStream).apply {
         """.trimIndent()
     )
     scaleToFit(true)
-    pdfVersion(org.openpdf.text.pdf.PdfWriter.VERSION_1_7)
+    pdfVersion(com.lowagie.text.pdf.PdfWriter.VERSION_1_7)
     build()
 }
 

@@ -1,7 +1,7 @@
 package org.librepdf.openpdf.fonts;
 
-import org.openpdf.text.Document;
-import org.openpdf.text.Paragraph;
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
