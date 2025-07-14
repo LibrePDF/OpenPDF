@@ -154,7 +154,7 @@ More details: [Contributing](CONTRIBUTING.md)
 
 We have now different versions of OpenPDF, and they require different versions of Java:
 
-- The 3.0.x Branch requires Java 24 or later. Package name changed** from `com.lowagie` to `org.openpdf`.
+- The 3.0.x Branch requires Java 24 or later. Package name changed from `com.lowagie` to `org.openpdf`.
 - The 2.1.x Branch requires Java 21 or later.
 - The 2.0.x Branch requires Java 17 or later.
 - The 1.4.x Branch requires Java 11 or later.
