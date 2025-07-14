@@ -1,0 +1,14 @@
+{
+1.0 8 index 1.000000 mul 1.0 exch sub mul 7 index 0.000000 mul 1.0 exch sub mul 6 index 0.000000 mul 1.0 exch sub mul 5 index 0.000000 mul 1.0 exch sub mul 4 index 0.653599 mul 1.0 exch sub mul 3 index 0.128954 mul 1.0 exch sub mul 2 index 0.650645 mul 1.0 exch sub mul 1 index 0.206653 mul 1.0 exch sub mul 1.0 exch sub 9 1 roll
+1.0 8 index 0.000000 mul 1.0 exch sub mul 7 index 1.000000 mul 1.0 exch sub mul 6 index 0.000000 mul 1.0 exch sub mul 5 index 0.000000 mul 1.0 exch sub mul 4 index 0.000000 mul 1.0 exch sub mul 3 index 0.144914 mul 1.0 exch sub mul 2 index 0.703090 mul 1.0 exch sub mul 1 index 0.020706 mul 1.0 exch sub mul 1.0 exch sub 9 1 roll
+1.0 8 index 0.000000 mul 1.0 exch sub mul 7 index 0.000000 mul 1.0 exch sub mul 6 index 1.000000 mul 1.0 exch sub mul 5 index 0.000000 mul 1.0 exch sub mul 4 index 0.949854 mul 1.0 exch sub mul 3 index 0.386198 mul 1.0 exch sub mul 2 index 0.746136 mul 1.0 exch sub mul 1 index 0.051926 mul 1.0 exch sub mul 1.0 exch sub 9 1 roll
+1.0 8 index 0.000000 mul 1.0 exch sub mul 7 index 0.000000 mul 1.0 exch sub mul 6 index 0.000000 mul 1.0 exch sub mul 5 index 1.000000 mul 1.0 exch sub mul 4 index 0.000000 mul 1.0 exch sub mul 3 index 0.000000 mul 1.0 exch sub mul 2 index 0.584878 mul 1.0 exch sub mul 1 index 0.000000 mul 1.0 exch sub mul 1.0 exch sub 9 1 roll
+pop
+pop
+pop
+pop
+pop
+pop
+pop
+pop
+}
