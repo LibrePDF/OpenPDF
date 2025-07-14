@@ -137,6 +137,18 @@ More details: [Contributing](CONTRIBUTING.md)
 - Code indentation style is 4 spaces. Maximum line length is 120 characters.
 - Generally try to preserve the coding style in the file you are modifying.
 
+
+## OpenPDF 3.0.0
+
+- **Package name changed** from `com.lowagie` to `org.openpdf`. Source code that uses OpenPDF must
+  update its import statements accordingly. Usually this can be done with a simple find-and-replace
+  operation in your IDE.
+
+- This change reflects the true identity of OpenPDF as a modern, community-driven PDF library
+  independent of the original iText 2.x (`com.lowagie`). It avoids conflicts and
+  clarifies project ownership going forward.
+
+
 ## Dependencies
 
 ### Required Dependencies

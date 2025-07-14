@@ -19,9 +19,9 @@
  */
 package org.openpdf.pdf;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.PdfPageEvent;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.pdf.PdfPageEvent;
+import org.openpdf.text.pdf.PdfWriter;
 import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -83,7 +83,7 @@ public class ITextRenderer {
 
     private final float _dotsPerPoint;
 
-    private com.lowagie.text.Document _pdfDoc;
+    private org.openpdf.text.Document _pdfDoc;
     @Nullable
     private PdfWriter _writer;
 
@@ -334,8 +334,8 @@ public class ITextRenderer {
 
         RenderingContext c = newRenderingContext(initialPageNo);
         PageBox firstPage = pages.get(0);
-        com.lowagie.text.Rectangle firstPageSize =
-                new com.lowagie.text.Rectangle(0, 0, firstPage.getWidth(c) / _dotsPerPoint,
+        org.openpdf.text.Rectangle firstPageSize =
+                new org.openpdf.text.Rectangle(0, 0, firstPage.getWidth(c) / _dotsPerPoint,
                         firstPage.getHeight(c) / _dotsPerPoint);
 
         _outputDevice.setStartPageNo(_writer.getPageNumber());
@@ -370,11 +370,11 @@ public class ITextRenderer {
 
         int pageWidth = calculateWidth(c, firstPage);
 
-        com.lowagie.text.Rectangle firstPageSize =
-                new com.lowagie.text.Rectangle(0, 0, pageWidth / _dotsPerPoint,
+        org.openpdf.text.Rectangle firstPageSize =
+                new org.openpdf.text.Rectangle(0, 0, pageWidth / _dotsPerPoint,
                         firstPage.getHeight(c) / _dotsPerPoint);
 
-        com.lowagie.text.Document doc = new com.lowagie.text.Document(firstPageSize, 0, 0, 0, 0);
+        org.openpdf.text.Document doc = new org.openpdf.text.Document(firstPageSize, 0, 0, 0, 0);
         PdfWriter writer = PdfWriter.getInstance(doc, os);
         if (_pdfVersion != null) {
             writer.setPdfVersion(_pdfVersion);
@@ -424,8 +424,8 @@ public class ITextRenderer {
         }
     }
 
-    private void writePDF(List<PageBox> pages, RenderingContext c, com.lowagie.text.Rectangle firstPageSize,
-            com.lowagie.text.Document doc,
+    private void writePDF(List<PageBox> pages, RenderingContext c, org.openpdf.text.Rectangle firstPageSize,
+            org.openpdf.text.Document doc,
             PdfWriter writer) {
         _outputDevice.setRoot(_root);
 
@@ -452,8 +452,8 @@ public class ITextRenderer {
             if (i != pageCount - 1) {
                 PageBox nextPage = pages.get(i + 1);
                 int pageWidth = calculateWidth(c, nextPage);
-                com.lowagie.text.Rectangle nextPageSize =
-                        new com.lowagie.text.Rectangle(0, 0, pageWidth / _dotsPerPoint,
+                org.openpdf.text.Rectangle nextPageSize =
+                        new org.openpdf.text.Rectangle(0, 0, pageWidth / _dotsPerPoint,
                                 nextPage.getHeight(c) / _dotsPerPoint);
                 doc.setPageSize(nextPageSize);
                 doc.newPage();
@@ -465,7 +465,7 @@ public class ITextRenderer {
     }
 
     // Sets the document information dictionary values from html metadata
-    private void setDidValues(com.lowagie.text.Document doc) {
+    private void setDidValues(org.openpdf.text.Document doc) {
         String v = _outputDevice.getMetadataByName("title");
         if (v != null) {
             doc.addTitle(v);

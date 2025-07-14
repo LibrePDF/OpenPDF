@@ -1,6 +1,6 @@
 package org.openpdf.pdf;
 
-import com.lowagie.text.DocumentException;
+import org.openpdf.text.DocumentException;
 import org.w3c.dom.Document;
 import org.openpdf.resource.FSEntityResolver;
 import org.xml.sax.SAXException;
