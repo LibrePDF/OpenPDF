@@ -34,7 +34,7 @@ Get version 2.2.4 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.2.4
 
 Some of the features of OpenPDF include:
 
-* [Openpdf](openpdf) Creating PDFs: You can use OpenPDF to create new PDF documents from scratch.
+* [Openpdf](openpdf-core-modern) Creating PDFs: You can use OpenPDF to create new PDF documents from scratch.
 * Manipulating Existing PDFs: OpenPDF allows you to modify existing PDF documents by adding or removing pages, modifying
   text, and more.
 * [Openpdf-html](openpdf-html) Create PDF files from HTML, using OpenPDF-html which is a fork of Flying Saucer.
@@ -147,6 +147,14 @@ We have now different versions of OpenPDF, and they require different versions o
 - The 2.0.x Branch requires Java 17 or later.
 - The 1.4.x Branch requires Java 11 or later.
 - The 1.3.x Branch requires Java 8 or later.
+
+
+### OpenPDF Java package name change from com.lowagie to org.openpdf
+
+* [Openpdf-core-legacy](openpdf-core-legacy) - Maven artifactId: openpdf. This is the legacy OpenPDF core package, 
+  which uses the old Java package name `com.lowagie`. This will be removed in the future, so please migrate.
+* [Openpdf-core-modern](openpdf-core-modern) - Maven artifactId: openpdf-core-modern. This is the modern OpenPDF 
+  core package, which uses the new Java package name `org.openpdf`. This is the recommended package to use in new code.
 
 ### UTF-8 Fonts
 

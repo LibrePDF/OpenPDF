@@ -1,0 +1,68 @@
+%!PS-Adobe-3.0 Resource-CMap
+%%DocumentNeededResources: ProcSet (CIDInit)
+%%IncludeResource: ProcSet (CIDInit)
+%%BeginResource: CMap (Hiragana)
+%%Title: (Hiragana Adobe Japan1 0)
+%%Version: 10.001
+%%Copyright: -----------------------------------------------------------
+%%Copyright: Copyright 1990-1998 Adobe Systems Incorporated.
+%%Copyright: All Rights Reserved.
+%%Copyright:
+%%Copyright: Patents Pending
+%%Copyright:
+%%Copyright: NOTICE: All information contained herein is the property
+%%Copyright: of Adobe Systems Incorporated.
+%%Copyright:
+%%Copyright: Permission is granted for redistribution of this file
+%%Copyright: provided this copyright notice is maintained intact and
+%%Copyright: that the contents of this file are not altered in any
+%%Copyright: way from its original form.
+%%Copyright:
+%%Copyright: PostScript and Display PostScript are trademarks of
+%%Copyright: Adobe Systems Incorporated which may be registered in
+%%Copyright: certain jurisdictions.
+%%Copyright: -----------------------------------------------------------
+%%EndComments
+
+/CIDInit /ProcSet findresource begin
+
+12 dict begin
+
+begincmap
+
+/CIDSystemInfo 3 dict dup begin
+  /Registry (Adobe) def
+  /Ordering (Japan1) def
+  /Supplement 0 def
+end def
+
+/CMapName /Hiragana def
+/CMapVersion 10.001 def
+/CMapType 1 def
+
+/UIDOffset 862 def
+/XUID [1 10 25349] def
+
+/WMode 0 def
+
+1 begincodespacerange
+  <00> <FF>
+endcodespacerange
+
+8 begincidrange
+<20> <20> 515
+<21> <25> 327
+<26> <2f> 516
+<30> <30> 342
+<31> <5d> 526
+<5e> <5f> 388
+<60> <62> 571
+<66> <7e> 574
+endcidrange
+endcmap
+CMapName currentdict /CMap defineresource pop
+end
+end
+
+%%EndResource
+%%EOF
