@@ -1,0 +1,107 @@
+The *.cmap and *.properties files in this jar are necessary
+to produce PDF files with iText that use CJK fonts.
+
+Note that whatever value you pass for the 'embedded' parameter
+with the method BaseFont.createFont, the font WILL NOT BE embedded.
+To understand why, please read the following information.
+
+The fonts that are used in Acrobat Reader when viewing a PDF file
+that uses CJK fonts will be downloaded in one or more font packs.
+You can download these fontpacks yourself from this URL:
+http://www.adobe.com/products/acrobat/acrrasianfontpack.html
+
+On this page, you can find the following information:
+"If the author of an Adobe (R) Portable Document Format (PDF) file
+embeds CJK and Central European (CE) fonts in a PDF document, then
+any language version of Adobe Reader (R) software will be able to
+display the CJK and CE text on any system without additional software.
+
+If the author of the PDF document uses CJK or CE fonts but does not
+embed them in the document, then the correct fonts will need to be
+installed in order to view the Adobe PDF file on non-native systems."
+
+When you download one of the font packs, for instance the font
+pack for "Chinese Simplified", you will see that the fonts are
+licensed for use in Adobe Reader only:
+
+"Note: The font software contained in this package is being licensed
+to you solely for use with Adobe (R) Acrobat (R) Reader (R) software
+("Acrobat Reader") and is subject to the terms and conditions of
+the electronic End-User License Agreement accompanying Acrobat Reader."
+
+This explains why iText doesn't ever embed a CJK font in the PDF file.
+These fonts have to be downloaded and used in the context of Adobe
+Reader; you can not use them with iText to produce a PDF document
+that has these fonts embedded (as you would do with other fonts) so
+that they can be viewed in other readers; unless you have a license
+from Adobe to use these fonts.
+
+The *.cmap and *.properties files in this jar, do not contain
+any font program. They contain information (mappings, metrics,...)
+that is based on font information distributed on Adobe's site:
+http://partners.adobe.com/public/developer/acrobat/index_advanced.html#pci
+
+The original copyright notice of the mappings is as follows:
+"Copyright 1990-2000 Adobe Systems Incorporated.
+ All Rights Reserved.
+
+ Patents Pending
+
+ NOTICE: All information contained herein is the property
+ of Adobe Systems Incorporated.
+
+ Permission is granted for redistribution of this file
+ provided this copyright notice is maintained intact and
+ that the contents of this file are not altered in any
+ way from its original form.
+
+ PostScript and Display PostScript are trademarks of
+ Adobe Systems Incorporated which may be registered in
+ certain jurisdictions."
+
+The original files with the mappings are plain text files,
+and therefore not optimized for being read by a computer
+software program. That's why they were pre-processed to map
+directly the Unicode value with the CID value using a 64k
+char array. No data was changed in this process.
+
+Additionally, the iTextAsian.jar contains some properties files
+with font metrics. These are included for the same reason AFM
+files are needed (see also the file mustRead.html shipped with
+the iText.jar). As defined in the PDF reference: "The width
+information for each glyph is stored both in the font dictionary
+and in the font program itself. (The two sets of widths must be
+identical; storing this information in the font dictionary, although
+redundant, enables a consumer application to determine glyph
+positioning without having to look inside the font program.)"
+See PDF Reference sixth edition section 5.1.3 (p393-394).
+
+Whereas in the case of CJK fonts, the font program is subject
+to the Adobe Reader EULA, the font metrics aren't. Page 396:
+"Glyph metric information is also available separately in the
+form of Adobe font metrics (AFM) and Adobe composite font metrics
+(ACFM) files. These files are for use by application programs
+that generate PDF page descriptions and must make formatting
+decisions based on the widths and other metrics of glyphs. (...)
+Specifications for the AFM and ACFM file formats are available
+in Adobe Technical Note #5004, Adobe Font Metrics File Format
+Specification; the files can be obtained from the Adobe Solutions
+Network Web site."
+
+Unfortuntately the URL of these files has changed over time, and
+some metrics files seem to have been removed. However, you'll
+find sufficient information in the Technical Notes to build your
+own AFM and/or ACFM files if you ever need font metrics in the
+Adobe Font Metrics format.
+
+Note that the properties files in the iTextAsian.jar contain
+font metrics, but they are not stored in the AFM or ACFM format.
+For reasons of performance, the font metrics were stored as
+key-value pairs. Compare the keys in the properties files with
+the keys mentioned in Table 5.19 on p456 of the PDF Reference.
+This way, the necessary key-value pairs can be imported directly
+into a Font Dictionary that is part of a PDF file created by iText.
+
+These specific metrics files were created by Paulo Soares and
+may be used, copied, and distributed for any purpose and without
+charge, with or without modification.
