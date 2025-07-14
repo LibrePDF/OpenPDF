@@ -19,12 +19,12 @@
  */
 package org.openpdf.pdf;
 
-import com.lowagie.text.pdf.PdfAnnotation;
-import com.lowagie.text.pdf.PdfAppearance;
-import com.lowagie.text.pdf.PdfBorderDictionary;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfFormField;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.pdf.PdfAnnotation;
+import org.openpdf.text.pdf.PdfAppearance;
+import org.openpdf.text.pdf.PdfBorderDictionary;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfFormField;
+import org.openpdf.text.pdf.PdfWriter;
 import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Element;
 import org.openpdf.css.parser.FSColor;

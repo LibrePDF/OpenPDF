@@ -19,14 +19,14 @@
  */
 package org.openpdf.pdf;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfAnnotation;
-import com.lowagie.text.pdf.PdfAppearance;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfFormField;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.TextField;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.PdfAnnotation;
+import org.openpdf.text.pdf.PdfAppearance;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfFormField;
+import org.openpdf.text.pdf.PdfWriter;
+import org.openpdf.text.pdf.TextField;
 import org.w3c.dom.Element;
 import org.openpdf.css.parser.FSColor;
 import org.openpdf.layout.LayoutContext;
