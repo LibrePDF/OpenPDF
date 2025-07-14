@@ -145,7 +145,7 @@ More details: [Contributing](CONTRIBUTING.md)
   operation in your IDE. This change reflects the true identity of OpenPDF as a modern, community-driven PDF library
   independent of the original iText 2.x (`com.lowagie`). 
 - OpenPDF 3.0.x requires Java 24 or later.
-- Planned release in 2026.
+- Planned release in 2026 or 2027.
 
 
 ## Dependencies
