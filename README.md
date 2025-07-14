@@ -138,14 +138,14 @@ More details: [Contributing](CONTRIBUTING.md)
 - Generally try to preserve the coding style in the file you are modifying.
 
 
-## OpenPDF 3.0.0 - the next modern release of OpenPDF - devevelopment and tech research version.
-
+## OpenPDF 3.0.0 - development and technology research version.
+- Pasrt of modernization effort of OpenPDF. Planned release in 2026 or 2027.
 - Package name changed from `com.lowagie` to `org.openpdf`. Source code that uses OpenPDF must
   update its import statements accordingly. Usually this can be done with a simple find-and-replace
   operation in your IDE. This change reflects the true identity of OpenPDF as a modern, community-driven PDF library
   independent of the original iText 2.x (`com.lowagie`). 
 - OpenPDF 3.0.x requires Java 24 or later.
-- Planned release in 2026 or 2027.
+
 
 
 ## Dependencies
