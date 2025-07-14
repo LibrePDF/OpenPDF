@@ -139,7 +139,7 @@ More details: [Contributing](CONTRIBUTING.md)
 
 
 ## OpenPDF 3.0.0 - development and technology research version.
-- Pasrt of modernization effort of OpenPDF. Planned release in 2026 or 2027.
+- Part of modernization effort of OpenPDF. Planned release in 2026 or 2027.
 - Package name changed from `com.lowagie` to `org.openpdf`. Source code that uses OpenPDF must
   update its import statements accordingly. Usually this can be done with a simple find-and-replace
   operation in your IDE. This change reflects the true identity of OpenPDF as a modern, community-driven PDF library
