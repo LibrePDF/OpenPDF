@@ -143,8 +143,7 @@ More details: [Contributing](CONTRIBUTING.md)
 - **Package name changed** from `com.lowagie` to `org.openpdf`. Source code that uses OpenPDF must
   update its import statements accordingly. Usually this can be done with a simple find-and-replace
   operation in your IDE. This change reflects the true identity of OpenPDF as a modern, community-driven PDF library
-  independent of the original iText 2.x (`com.lowagie`). It avoids conflicts and
-  clarifies project ownership going forward.
+  independent of the original iText 2.x (`com.lowagie`). 
 - OpenPDF 3.0.x requires Java 24 or later.
 
 
