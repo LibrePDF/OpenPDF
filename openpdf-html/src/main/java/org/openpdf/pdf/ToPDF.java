@@ -19,7 +19,7 @@
  */
 package org.openpdf.pdf;
 
-import org.openpdf.text.DocumentException;
+import com.lowagie.text.DocumentException;
 
 import java.io.File;
 import java.io.IOException;

@@ -19,7 +19,7 @@
  */
 package org.openpdf.pdf;
 
-import org.openpdf.text.Image;
+import com.lowagie.text.Image;
 import org.jspecify.annotations.NonNull;
 import org.openpdf.extend.FSImage;
 

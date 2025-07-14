@@ -137,24 +137,12 @@ More details: [Contributing](CONTRIBUTING.md)
 - Code indentation style is 4 spaces. Maximum line length is 120 characters.
 - Generally try to preserve the coding style in the file you are modifying.
 
-
-## OpenPDF 3.0.0 - development and technology research version.
-- Part of modernization effort of OpenPDF. Planned release in 2026 or 2027.
-- Package name changed from `com.lowagie` to `org.openpdf`. Source code that uses OpenPDF must
-  update its import statements accordingly. Usually this can be done with a simple find-and-replace
-  operation in your IDE. This change reflects the true identity of OpenPDF as a modern, community-driven PDF library
-  independent of the original iText 2.x (`com.lowagie`). 
-- OpenPDF 3.0.x requires Java 24 or later.
-
-
-
 ## Dependencies
 
 ### Required Dependencies
 
 We have now different versions of OpenPDF, and they require different versions of Java:
 
-- The 3.0.x Branch requires Java 24 or later. Package name changed from `com.lowagie` to `org.openpdf`.
 - The 2.1.x Branch requires Java 21 or later.
 - The 2.0.x Branch requires Java 17 or later.
 - The 1.4.x Branch requires Java 11 or later.

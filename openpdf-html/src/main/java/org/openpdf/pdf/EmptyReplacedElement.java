@@ -1,7 +1,7 @@
 package org.openpdf.pdf;
 
-import org.openpdf.text.pdf.PdfAcroForm;
-import org.openpdf.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.PdfAcroForm;
+import com.lowagie.text.pdf.PdfWriter;
 import org.w3c.dom.Element;
 import org.openpdf.render.BlockBox;
 import org.openpdf.render.RenderingContext;

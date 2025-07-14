@@ -19,8 +19,8 @@
  */
 package org.openpdf.pdf;
 
-import org.openpdf.text.DocumentException;
-import org.openpdf.text.pdf.BaseFont;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
