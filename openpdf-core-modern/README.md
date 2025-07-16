@@ -1,6 +1,7 @@
 ## OpenPDF core modern
 
-Open and Free PDF library. It uses the new package name `org.openpdf`.
+OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source license.  
+*OpenPDF core modern* uses the new package name `org.openpdf`.
 
 * [Openpdf-core-legacy](openpdf-core-legacy) - Maven artifactId: openpdf. This is the legacy OpenPDF core package, 
   which uses the old Java package name `com.lowagie`. This will be removed in the future, so please migrate.
