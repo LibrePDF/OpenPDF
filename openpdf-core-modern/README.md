@@ -1,6 +1,6 @@
 ## OpenPDF core modern
 
-OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source license.  
+OpenPDF core is a Java library for creating and editing PDF files, with a LGPL and MPL open source license.  
 *OpenPDF core modern* uses the new package name `org.openpdf`.
 
 * [Openpdf-core-legacy](openpdf-core-legacy) - Maven artifactId: openpdf. This is the legacy OpenPDF core package, 
