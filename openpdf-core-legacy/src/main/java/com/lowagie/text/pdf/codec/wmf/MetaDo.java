@@ -64,6 +64,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MetaDo {
 
     public static final int META_SETBKCOLOR = 0x0201;

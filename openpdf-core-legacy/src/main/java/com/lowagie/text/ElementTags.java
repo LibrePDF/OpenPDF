@@ -58,6 +58,8 @@ import java.util.Locale;
  * A class that contains all the possible tagnames and their attributes.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ElementTags {
 
     /**

@@ -58,6 +58,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * @see PdfDictionary
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfBorderDictionary extends PdfDictionary {
 
     public static final int STYLE_SOLID = 0;

@@ -61,6 +61,8 @@ import java.util.List;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfCopyFields
         implements PdfViewerPreferences, PdfEncryptionSettings, AutoCloseable {
 

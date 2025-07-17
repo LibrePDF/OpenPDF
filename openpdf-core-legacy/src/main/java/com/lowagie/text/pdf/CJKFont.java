@@ -66,6 +66,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class CJKFont extends BaseFont {
 
     /**

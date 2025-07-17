@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class MessageLocalizationNlTest {
 
     private static Stream<String> messageKeyProvider() {

@@ -13,6 +13,8 @@ import java.util.Calendar;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class ExtractCertificatesTest {
 
     ExtractCertificatesTest() {

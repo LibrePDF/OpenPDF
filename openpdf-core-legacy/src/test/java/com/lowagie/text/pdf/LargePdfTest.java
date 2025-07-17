@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 /**
  * This will create a file which is > 2 GB, then attempt to read it.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class LargePdfTest {
 
     private File largeFile;

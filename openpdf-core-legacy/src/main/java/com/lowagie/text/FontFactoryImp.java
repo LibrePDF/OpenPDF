@@ -73,6 +73,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author Bruno Lowagie
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class FontFactoryImp implements FontProvider {
 
     private static final String[] TTFamilyOrder = {

@@ -59,6 +59,8 @@ import java.util.Iterator;
  * Writes text vertically. Note that the naming is done according to horizontal text although it refers to vertical
  * text. A line with the alignment Element.LEFT_ALIGN will actually be top aligned.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class VerticalText {
 
     /**

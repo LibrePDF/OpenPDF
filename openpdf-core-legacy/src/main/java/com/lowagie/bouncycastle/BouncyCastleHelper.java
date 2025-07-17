@@ -16,6 +16,8 @@ import org.bouncycastle.cms.Recipient;
 import org.bouncycastle.cms.RecipientInformation;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class BouncyCastleHelper {
 
     public static void checkCertificateEncodingOrThrowException(Certificate certificate) {

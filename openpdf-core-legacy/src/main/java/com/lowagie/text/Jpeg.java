@@ -63,6 +63,8 @@ import java.nio.charset.StandardCharsets;
  * @see Image
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Jpeg extends Image {
 
     // public static final membervariables

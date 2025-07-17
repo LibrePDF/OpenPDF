@@ -48,6 +48,8 @@
  */
 package com.lowagie.text.pdf.crypto;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ARCFOUREncryption {
 
     private byte[] state = new byte[256];

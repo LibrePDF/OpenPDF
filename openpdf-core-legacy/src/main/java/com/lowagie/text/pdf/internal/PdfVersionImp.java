@@ -63,6 +63,8 @@ import java.io.IOException;
  * necessary).
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfVersionImp implements PdfVersion {
 
     /**

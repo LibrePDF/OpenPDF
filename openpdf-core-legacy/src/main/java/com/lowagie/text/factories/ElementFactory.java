@@ -93,6 +93,8 @@ import java.util.StringTokenizer;
  * Refer to established secure coding guidelines to ensure safe usage.
  *
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ElementFactory {
 
     /**

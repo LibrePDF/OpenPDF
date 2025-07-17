@@ -17,6 +17,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class LayoutProcessor534Test {
 
     @BeforeAll

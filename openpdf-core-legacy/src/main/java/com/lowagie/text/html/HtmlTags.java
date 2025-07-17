@@ -60,6 +60,8 @@ package com.lowagie.text.html;
 
 @Deprecated(since = "2.1.0")
 @SuppressWarnings("WeakerAccess")
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class HtmlTags {
 
     /**

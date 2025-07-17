@@ -54,6 +54,8 @@ import com.lowagie.text.Document;
 /**
  * An implementation of an XmpSchema.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfSchema extends XmpSchema {
 
     /**

@@ -48,6 +48,8 @@ package com.lowagie.text.pdf;
 
 import java.awt.Font;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class AsianFontMapper extends DefaultFontMapper {
 
     public static final String ChineseSimplifiedFont = "STSong-Light";

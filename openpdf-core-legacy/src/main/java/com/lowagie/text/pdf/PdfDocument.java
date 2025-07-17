@@ -104,6 +104,8 @@ import java.util.TreeMap;
  * @since 2.0.8 (class was package-private before)
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfDocument extends Document {
 
     protected static final DecimalFormat SIXTEEN_DIGITS = new DecimalFormat("0000000000000000");

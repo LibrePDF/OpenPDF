@@ -54,6 +54,8 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class InputMeta {
 
     InputStream in;

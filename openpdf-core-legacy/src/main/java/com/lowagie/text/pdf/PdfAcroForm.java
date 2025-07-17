@@ -58,6 +58,8 @@ import java.util.Map;
  * Each PDF document can contain maximum 1 AcroForm.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfAcroForm extends PdfDictionary {
 
     private PdfWriter writer;

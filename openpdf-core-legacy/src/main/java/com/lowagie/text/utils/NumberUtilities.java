@@ -2,6 +2,8 @@ package com.lowagie.text.utils;
 
 import java.util.Optional;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class NumberUtilities {
 
     private NumberUtilities() {

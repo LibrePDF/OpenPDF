@@ -60,6 +60,8 @@ import java.util.List;
  * reference manual version 1.6 section 5.3.2, pages 378-379.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfTextArray {
 
     private List<Object> arrayList = new LinkedList<>();

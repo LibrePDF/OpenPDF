@@ -55,6 +55,8 @@ import java.util.Map;
 /**
  * A class to support Type3 fonts.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Type3Font extends BaseFont {
 
     private boolean[] usedSlot;

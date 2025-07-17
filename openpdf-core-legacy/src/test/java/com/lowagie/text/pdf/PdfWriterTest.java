@@ -9,6 +9,8 @@ import com.lowagie.text.Phrase;
 import java.io.ByteArrayOutputStream;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfWriterTest {
 
     // Test case to check that a PdfWriter may not be closed before the including document is closed

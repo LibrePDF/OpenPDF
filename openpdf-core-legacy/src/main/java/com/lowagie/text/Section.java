@@ -81,6 +81,8 @@ import java.util.Iterator;
  * </PRE></BLOCKQUOTE>
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Section extends ArrayList<Element> implements TextElementArray, LargeElement {
     // constant
     /**

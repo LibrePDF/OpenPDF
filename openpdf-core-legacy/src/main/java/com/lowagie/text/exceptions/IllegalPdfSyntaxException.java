@@ -54,6 +54,8 @@ package com.lowagie.text.exceptions;
  *
  * @since 2.1.6
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class IllegalPdfSyntaxException extends IllegalArgumentException {
 
     /**

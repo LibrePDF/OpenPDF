@@ -67,6 +67,8 @@ import java.util.Map;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
 
     private static final byte[] rotbits = {(byte) 0x80, (byte) 0x40, (byte) 0x20, (byte) 0x10, (byte) 0x08, (byte) 0x04,

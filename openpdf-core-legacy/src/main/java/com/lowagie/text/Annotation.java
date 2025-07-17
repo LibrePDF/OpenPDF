@@ -61,6 +61,8 @@ import java.util.Map;
  * @see Anchor
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Annotation implements Element {
 
     // membervariables

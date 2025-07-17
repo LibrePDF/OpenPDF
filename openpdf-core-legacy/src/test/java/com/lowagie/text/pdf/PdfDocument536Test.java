@@ -11,6 +11,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfDocument536Test {
 
     @Test

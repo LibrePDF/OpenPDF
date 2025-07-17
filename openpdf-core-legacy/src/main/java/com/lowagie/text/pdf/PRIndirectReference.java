@@ -52,6 +52,8 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.io.OutputStream;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PRIndirectReference extends PdfIndirectReference {
 
     protected PdfReader reader;

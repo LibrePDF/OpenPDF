@@ -65,6 +65,8 @@ import java.awt.Color;
  * @since 2.1.2
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class RectangleReadOnly extends Rectangle {
 
     // CONSTRUCTORS

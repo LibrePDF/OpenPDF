@@ -54,6 +54,8 @@ import java.util.HashMap;
 /**
  * @author psoares
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class DocumentFont extends BaseFont {
 
     private static final int[] stdEnc = {

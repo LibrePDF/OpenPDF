@@ -54,6 +54,8 @@ import java.util.ArrayList;
 /**
  * StringBuffer to construct an XMP array.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class XmpArray extends ArrayList<String> {
 
     /**

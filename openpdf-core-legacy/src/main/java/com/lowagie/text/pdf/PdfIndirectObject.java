@@ -68,6 +68,8 @@ import java.io.OutputStream;
  * @see PdfIndirectReference
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfIndirectObject {
 
     // membervariables

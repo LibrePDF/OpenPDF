@@ -152,6 +152,8 @@ import java.util.Locale;
 /**
  * Converts a PFM file into an AFM file.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class Pfm2afm {
 
     private RandomAccessFileOrArray in;

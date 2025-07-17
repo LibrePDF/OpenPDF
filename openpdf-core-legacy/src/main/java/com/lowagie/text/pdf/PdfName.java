@@ -71,6 +71,8 @@ import java.util.Map;
  * @see BadPdfFormatException
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfName extends PdfObject implements Comparable<PdfName> {
 
     // CLASS CONSTANTS (a variety of standard names used in PDF))

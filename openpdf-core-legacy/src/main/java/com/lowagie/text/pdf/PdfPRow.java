@@ -61,6 +61,8 @@ import java.awt.Color;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPRow {
 
     /**

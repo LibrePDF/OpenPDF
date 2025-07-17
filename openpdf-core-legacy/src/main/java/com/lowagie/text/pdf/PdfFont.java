@@ -67,6 +67,8 @@ import com.lowagie.text.Image;
  * @see BadPdfFormatException
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfFont implements Comparable {
 
 

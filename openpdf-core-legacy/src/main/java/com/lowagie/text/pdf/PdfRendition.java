@@ -51,6 +51,8 @@ import java.io.IOException;
 /**
  * A Rendition dictionary (pdf spec 1.5)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfRendition extends PdfDictionary {
 
     PdfRendition(String file, PdfFileSpecification fs, String mimeType) throws IOException {

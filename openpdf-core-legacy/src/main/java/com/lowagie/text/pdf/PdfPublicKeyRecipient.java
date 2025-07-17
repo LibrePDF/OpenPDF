@@ -51,6 +51,8 @@ package com.lowagie.text.pdf;
 
 import java.security.cert.Certificate;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPublicKeyRecipient {
 
     protected byte[] cms = null;

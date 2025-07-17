@@ -56,6 +56,8 @@ import java.security.cert.Certificate;
 /**
  * A signature dictionary representation for the standard filters.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public abstract class PdfSigGenericPKCS extends PdfSignature {
 
     /**

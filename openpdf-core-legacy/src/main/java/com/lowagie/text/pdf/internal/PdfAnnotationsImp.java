@@ -70,6 +70,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfAnnotationsImp {
 
     /**

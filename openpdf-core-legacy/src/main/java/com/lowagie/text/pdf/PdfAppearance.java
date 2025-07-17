@@ -55,6 +55,8 @@ import java.util.Map;
  * Implements the appearance stream to be used with form fields..
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfAppearance extends PdfTemplate {
 
     public static final Map<String, PdfName> stdFieldFontNames = new HashMap<>();

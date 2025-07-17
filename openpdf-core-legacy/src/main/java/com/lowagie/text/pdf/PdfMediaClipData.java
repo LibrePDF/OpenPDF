@@ -48,6 +48,8 @@ package com.lowagie.text.pdf;
 
 import java.io.IOException;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfMediaClipData extends PdfDictionary {
 
     PdfMediaClipData(String file, PdfFileSpecification fs, String mimeType) throws IOException {

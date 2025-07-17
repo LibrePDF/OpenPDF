@@ -49,6 +49,8 @@ import java.util.Stack;
  * @author cav@uniscope.co.jp
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class TernaryTree implements Cloneable, Serializable {
 
     protected static final int BLOCK_SIZE = 2048;    // allocation size for arrays
@@ -650,4 +652,3 @@ public class TernaryTree implements Cloneable, Serializable {
     }*/
 
 }
-

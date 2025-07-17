@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ColumnTextSeparator {
 
     public static final float[][] COLUMNS = {{36, 36, 296, 806}, {299, 36, 559, 806}};

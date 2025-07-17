@@ -12,6 +12,8 @@ import com.lowagie.text.pdf.PdfString;
 /**
  * @author blowagie
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfCollectionField extends PdfDictionary {
 
     /**

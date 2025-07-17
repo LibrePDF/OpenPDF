@@ -60,6 +60,8 @@ import java.util.List;
  * different events to this object and add the forwarder to the PdfWriter.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPTableEventForwarder implements PdfPTableEvent {
 
     /**

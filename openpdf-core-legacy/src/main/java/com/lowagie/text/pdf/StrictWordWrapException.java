@@ -4,6 +4,8 @@ package com.lowagie.text.pdf;
  * Exception thrown when strict word wrapping is enabled and text cannot fit
  * within the specified column width without being forced to break mid-word.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class StrictWordWrapException extends RuntimeException {
     
     /**

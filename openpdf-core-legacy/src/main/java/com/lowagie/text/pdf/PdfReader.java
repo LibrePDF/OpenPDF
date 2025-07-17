@@ -86,6 +86,8 @@ import java.util.zip.InflaterInputStream;
  * @author Paulo Soares (psoares@consiste.pt)
  * @author Kazuya Ujihara
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfReader implements PdfViewerPreferences, Closeable {
 
     static final PdfName[] pageInhCandidates = {PdfName.MEDIABOX,

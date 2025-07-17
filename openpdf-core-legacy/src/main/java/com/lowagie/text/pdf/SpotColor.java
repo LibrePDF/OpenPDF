@@ -54,6 +54,8 @@ import java.awt.Color;
 /**
  * @author psoares
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class SpotColor extends ExtendedColor {
 
     private static final long serialVersionUID = -6257004582113248079L;

@@ -98,6 +98,8 @@ import java.util.ArrayList;
  * @see ListItem
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class List implements TextElementArray {
 
     // constants

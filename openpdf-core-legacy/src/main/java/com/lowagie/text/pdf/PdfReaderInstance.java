@@ -60,6 +60,8 @@ import java.util.List;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfReaderInstance {
 
     static final PdfLiteral IDENTITYMATRIX = new PdfLiteral("[1 0 0 1 0 0]");

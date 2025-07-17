@@ -72,6 +72,8 @@ import java.io.IOException;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class RadioCheckField extends BaseField {
 
     /**

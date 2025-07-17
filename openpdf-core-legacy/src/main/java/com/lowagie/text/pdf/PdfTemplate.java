@@ -56,6 +56,8 @@ import java.io.IOException;
  * Implements the form XObject.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfTemplate extends PdfContentByte {
 
     public static final int TYPE_TEMPLATE = 1;

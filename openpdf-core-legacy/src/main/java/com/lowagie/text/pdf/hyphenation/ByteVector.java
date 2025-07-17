@@ -23,6 +23,8 @@ import java.io.Serializable;
  *
  * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ByteVector implements Serializable {
 
     private static final long serialVersionUID = -1096301185375029343L;

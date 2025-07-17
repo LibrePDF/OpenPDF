@@ -93,6 +93,8 @@ package com.lowagie.text;
  * @see Paragraph
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ListItem extends Paragraph {
 
     // constants

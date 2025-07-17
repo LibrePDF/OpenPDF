@@ -60,6 +60,8 @@ import java.io.PrintStream;
  * @author Mark Thompson
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfLister {
 
     /**

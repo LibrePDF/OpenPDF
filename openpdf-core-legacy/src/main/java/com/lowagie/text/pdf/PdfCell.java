@@ -77,6 +77,8 @@ import java.util.Iterator;
  * @see PdfTable
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfCell extends Rectangle {
 
     // membervariables

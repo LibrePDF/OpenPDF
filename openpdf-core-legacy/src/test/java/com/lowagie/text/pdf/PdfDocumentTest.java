@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfDocumentTest {
 
     private static final String PARAGRAPH_TEXT_1 = "Text above table";

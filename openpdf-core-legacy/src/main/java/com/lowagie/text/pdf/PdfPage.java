@@ -61,6 +61,8 @@ import java.util.HashMap;
  * @see PdfPages
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPage extends PdfDictionary {
 
     /**

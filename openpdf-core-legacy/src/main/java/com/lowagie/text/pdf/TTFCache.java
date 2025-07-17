@@ -13,6 +13,8 @@ import org.apache.fop.fonts.truetype.TTFFile;
 /**
  * @author Gajendra kumar (raaz2.gajendra@gmail.com)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class TTFCache {
 
     private static Map<String, TTFFile> ttfFileMap = new ConcurrentHashMap<>();

@@ -149,6 +149,8 @@ import java.util.Optional;
  * @see Cell
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Table extends TableRectangle implements LargeElement, WithHorizontalAlignment {
 
     // membervariables

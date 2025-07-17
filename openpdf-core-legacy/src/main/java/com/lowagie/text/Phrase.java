@@ -82,6 +82,8 @@ import java.util.Collection;
  * @see Anchor
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Phrase extends ArrayList<Element> implements TextElementArray {
 
     // constants

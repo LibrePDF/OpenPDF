@@ -57,6 +57,8 @@ package com.lowagie.text.pdf;
  * @see PdfObject
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfNull extends PdfObject {
 
     // CLASS CONSTANTS

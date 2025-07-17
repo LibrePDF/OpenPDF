@@ -51,6 +51,8 @@ package com.lowagie.text.pdf;
 import com.lowagie.text.pdf.crypto.AESCipher;
 import com.lowagie.text.pdf.crypto.ARCFOUREncryption;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class StandardDecryption {
 
     private static final int AES_128 = 4;

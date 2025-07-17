@@ -5,6 +5,8 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import java.io.ByteArrayOutputStream;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class DocumentProducerHelper {
 
     public static byte[] createHelloWorldDocumentBytes() {

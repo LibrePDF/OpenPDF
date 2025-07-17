@@ -54,6 +54,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
 /**
  * The content where Type3 glyphs are written to.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class Type3Glyph extends PdfContentByte {
 
     private PageResources pageResources;

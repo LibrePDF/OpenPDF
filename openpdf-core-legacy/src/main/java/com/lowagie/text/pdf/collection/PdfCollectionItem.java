@@ -9,6 +9,8 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfString;
 import java.util.Calendar;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfCollectionItem extends PdfDictionary {
 
     /**

@@ -55,6 +55,8 @@ import com.lowagie.text.pdf.crypto.IVGenerator;
 import java.io.IOException;
 import java.io.OutputStream;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class OutputStreamEncryption extends OutputStream {
 
     private static final int AES_128 = 4;

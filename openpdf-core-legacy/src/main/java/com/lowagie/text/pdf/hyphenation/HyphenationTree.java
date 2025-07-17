@@ -30,6 +30,8 @@ import java.util.Map;
  *
  * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class HyphenationTree extends TernaryTree
         implements PatternConsumer {
 

@@ -54,6 +54,8 @@ package com.lowagie.text.pdf;
  *
  * @author Phillip Pan (phillip@formstar.com)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class ColorDetails {
 
     /**

@@ -65,6 +65,8 @@ import java.util.Stack;
  *
  * @author Leonard Rosenthol (leonardr@pdfsages.com)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class XfdfReader implements SimpleXMLDocHandler, FieldReader {
 
     // stuff used during parsing to handle state

@@ -67,6 +67,8 @@ import java.util.ArrayList;
  * @see Cell
  * @see Table
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Row implements Element, WithHorizontalAlignment {
 
     // constants

@@ -62,6 +62,8 @@ import java.util.Map;
  * @see PdfDictionary
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfAnnotation extends PdfDictionary {
 
     /**

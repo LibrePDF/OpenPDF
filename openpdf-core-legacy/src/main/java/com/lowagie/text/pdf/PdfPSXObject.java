@@ -49,6 +49,8 @@ package com.lowagie.text.pdf;
 /**
  * Implements the PostScript XObject.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPSXObject extends PdfTemplate {
 
     /**

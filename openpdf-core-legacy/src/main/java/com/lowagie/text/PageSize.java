@@ -59,6 +59,8 @@ import java.lang.reflect.Field;
  * @see Rectangle
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PageSize {
 
     // membervariables

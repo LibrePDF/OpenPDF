@@ -43,6 +43,8 @@
  */
 package com.lowagie.text.xml;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class XMLUtil {
 
     /**

@@ -56,6 +56,8 @@ import com.lowagie.text.pdf.hyphenation.Hyphenator;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class HyphenationAuto implements HyphenationEvent {
 
     /**

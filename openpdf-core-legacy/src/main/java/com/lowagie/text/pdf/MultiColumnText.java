@@ -66,6 +66,8 @@ import java.util.List;
  *
  * @author Steve Appling
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MultiColumnText implements Element {
 
     /**

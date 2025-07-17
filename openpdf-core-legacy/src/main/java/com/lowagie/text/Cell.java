@@ -86,6 +86,8 @@ import java.util.Iterator;
  * @see Row
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Cell extends TableRectangle implements TextElementArray, WithHorizontalAlignment, WithVerticalAlignment {
 
     // membervariables

@@ -64,6 +64,8 @@ import java.awt.image.MemoryImageSource;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class BarcodePostnet extends Barcode {
 
     /**

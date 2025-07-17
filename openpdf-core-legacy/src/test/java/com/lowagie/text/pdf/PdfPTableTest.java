@@ -7,6 +7,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfPTableTest {
 
     @Test

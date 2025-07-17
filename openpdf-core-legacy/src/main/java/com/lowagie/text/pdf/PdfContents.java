@@ -62,6 +62,8 @@ import java.util.zip.DeflaterOutputStream;
  * <CODE>PdfPage</CODE>.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfContents extends PdfStream {
 
     static final byte[] SAVESTATE = DocWriter.getISOBytes("q\n");

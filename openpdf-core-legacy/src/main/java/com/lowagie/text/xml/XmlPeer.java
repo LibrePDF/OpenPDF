@@ -57,6 +57,8 @@ import org.xml.sax.Attributes;
  * This interface is implemented by the peer of all the iText objects.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class XmlPeer {
 
     /**

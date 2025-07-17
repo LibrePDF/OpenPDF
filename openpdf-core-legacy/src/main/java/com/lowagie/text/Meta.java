@@ -63,6 +63,8 @@ import java.util.ArrayList;
  * @see Header
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Meta implements Element {
 
     // membervariables

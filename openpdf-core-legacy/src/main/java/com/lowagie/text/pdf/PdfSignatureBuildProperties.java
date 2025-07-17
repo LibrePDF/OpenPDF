@@ -8,6 +8,8 @@ package com.lowagie.text.pdf;
  *
  * @author Lonzak
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfSignatureBuildProperties extends PdfDictionary {
 
     public PdfSignatureBuildProperties() {

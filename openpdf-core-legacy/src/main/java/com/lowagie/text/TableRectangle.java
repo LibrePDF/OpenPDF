@@ -1,5 +1,7 @@
 package com.lowagie.text;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class TableRectangle extends Rectangle {
 
     public TableRectangle(float llx, float lly, float urx, float ury) {

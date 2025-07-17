@@ -79,6 +79,8 @@ import java.util.Map;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfStamper
         implements PdfViewerPreferences, PdfEncryptionSettings, AutoCloseable {
 

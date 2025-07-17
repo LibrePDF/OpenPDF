@@ -52,6 +52,8 @@ import java.io.OutputStream;
 /**
  * @author psoares
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class OutputStreamCounter extends OutputStream {
 
     protected OutputStream out;

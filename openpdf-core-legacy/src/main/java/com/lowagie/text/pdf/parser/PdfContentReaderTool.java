@@ -66,6 +66,8 @@ import java.util.List;
  * @since 2.1.4
  */
 @SuppressWarnings("WeakerAccess")
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfContentReaderTool {
 
     /**

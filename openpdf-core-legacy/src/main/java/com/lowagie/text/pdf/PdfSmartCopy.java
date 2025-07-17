@@ -67,6 +67,8 @@ import java.util.Map;
  * the file size of the resulting PDF document.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfSmartCopy extends PdfCopy {
 
     /**

@@ -58,6 +58,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MetaFont extends MetaObject {
 
     static final String[] fontNames = {

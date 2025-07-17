@@ -54,6 +54,8 @@ package com.lowagie.text.pdf.parser;
  * calculations.  If it helps, just think of all PDF drawing operations as occurring in a single plane with z=1.
  */
 @SuppressWarnings("WeakerAccess")
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Vector {
 
     /**

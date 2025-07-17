@@ -9,6 +9,8 @@ import java.io.OutputStream;
  * Makes a copy of a PDF, unembedding all embedded fonts. All font headers and descriptors are preserved and only the
  * font file is removed.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class UnembedFontPdfSmartCopy extends PdfSmartCopy {
 
     public UnembedFontPdfSmartCopy(Document document, OutputStream os)

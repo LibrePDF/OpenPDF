@@ -49,6 +49,8 @@
 
 package com.lowagie.text.pdf.codec.wmf;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MetaObject {
 
     public static final int META_NOT_SUPPORTED = 0;

@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Gajendra kumar (raaz2.gajendra@gmail.com)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class AdvanceTypographyTest {
 
     /**

@@ -60,6 +60,8 @@ import java.awt.Color;
  * @author Paulo Soares
  * @since 2.1.2
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class LineSeparator extends VerticalPositionMark {
 
     /**

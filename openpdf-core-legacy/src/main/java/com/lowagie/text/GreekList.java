@@ -54,6 +54,8 @@ import com.lowagie.text.factories.GreekAlphabetFactory;
  * @see com.lowagie.text.List
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class GreekList extends List {
 
     // constructors

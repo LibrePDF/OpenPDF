@@ -55,6 +55,8 @@ import java.util.Properties;
 /**
  * Abstract superclass of the XmpSchemas supported by iText.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public abstract class XmpSchema extends Properties {
 
     private static final long serialVersionUID = -176374295948945272L;

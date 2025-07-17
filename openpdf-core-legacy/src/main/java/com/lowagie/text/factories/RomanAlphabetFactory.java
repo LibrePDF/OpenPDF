@@ -55,6 +55,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * This class can produce String combinations representing a number. "a" to "z" represent 1 to 26, "AA" represents 27,
  * "AB" represents 28, and so on; "ZZ" is followed by "AAA".
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class RomanAlphabetFactory {
 
     /**

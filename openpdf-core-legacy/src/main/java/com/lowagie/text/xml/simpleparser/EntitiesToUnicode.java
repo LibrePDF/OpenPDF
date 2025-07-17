@@ -57,6 +57,8 @@ import java.util.Map;
  */
 
 @SuppressWarnings("deprecated")
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class EntitiesToUnicode {
 
     /**

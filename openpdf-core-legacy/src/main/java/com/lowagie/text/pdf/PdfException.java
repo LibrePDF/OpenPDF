@@ -57,6 +57,8 @@ import com.lowagie.text.DocumentException;
  * @see BadPdfFormatException
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfException extends DocumentException {
 
     // constructors

@@ -74,6 +74,8 @@ import java.util.Map;
  * Translates a IANA encoding name to a Java encoding.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class IanaEncodings {
 
     /**

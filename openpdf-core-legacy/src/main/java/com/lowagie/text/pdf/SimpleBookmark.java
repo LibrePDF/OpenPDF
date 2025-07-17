@@ -105,6 +105,8 @@ import java.util.StringTokenizer;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class SimpleBookmark implements SimpleXMLDocHandler {
 
     private final Stack<Map<String, Object>> attr = new Stack<>();

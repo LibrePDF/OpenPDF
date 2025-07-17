@@ -67,6 +67,8 @@ import java.util.StringTokenizer;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class SimplePatternParser implements SimpleXMLDocHandler,
         PatternConsumer {
 

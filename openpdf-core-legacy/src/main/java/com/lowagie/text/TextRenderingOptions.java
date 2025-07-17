@@ -10,6 +10,8 @@ import com.lowagie.text.pdf.FopGlyphProcessor;
  * @see Document#setTextRenderingOptions(TextRenderingOptions)
  * @since 3.1.15
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class TextRenderingOptions {
 
     public static final String DOCUMENT_LANGUAGE_DEFAULT = "dflt";

@@ -29,6 +29,8 @@ package com.lowagie.text.pdf.fonts.cmaps;
  * @version $Revision: 3646 $
  * @since 2.1.4
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class CodespaceRange {
 
     private byte[] start;

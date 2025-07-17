@@ -67,6 +67,8 @@ import java.util.Map;
 /**
  * Class that can be used to position AcroForm fields.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class FieldPositioningEvents extends PdfPageEventHelper implements PdfPCellEvent {
 
     /**

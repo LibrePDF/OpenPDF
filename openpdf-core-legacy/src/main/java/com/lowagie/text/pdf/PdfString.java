@@ -67,6 +67,8 @@ import java.nio.charset.StandardCharsets;
  * @see PdfObject
  * @see BadPdfFormatException
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfString extends PdfObject {
 
     // CLASS VARIABLES

@@ -59,6 +59,8 @@ import java.util.Properties;
  * MarkedObject functionality.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MarkedObject implements Element {
 
     /**

@@ -72,6 +72,8 @@ import java.util.Properties;
  * @see DocListener
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public abstract class DocWriter implements DocListener {
 
     /**

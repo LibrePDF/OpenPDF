@@ -70,6 +70,8 @@ import java.io.OutputStream;
  * @see PdfStream
  * @see PdfIndirectReference
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public abstract class PdfObject {
 
     // CONSTANTS

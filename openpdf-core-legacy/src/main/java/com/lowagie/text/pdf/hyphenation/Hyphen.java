@@ -28,6 +28,8 @@ import java.io.Serializable;
  * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Hyphen implements Serializable {
 
     private static final long serialVersionUID = -7666138517324763063L;

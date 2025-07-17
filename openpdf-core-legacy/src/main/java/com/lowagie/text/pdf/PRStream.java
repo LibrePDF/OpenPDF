@@ -58,6 +58,8 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PRStream extends PdfStream {
 
     protected PdfReader reader;

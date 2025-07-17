@@ -57,6 +57,8 @@ import com.lowagie.text.pdf.PdfContentByte;
  *
  * @since 2.1.2
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class DottedLineSeparator extends LineSeparator {
 
     /**

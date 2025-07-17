@@ -53,6 +53,8 @@ package com.lowagie.text.pdf.crypto;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class IVGenerator {
 
     private static ARCFOUREncryption arcfour;

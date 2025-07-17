@@ -16,6 +16,8 @@ import org.apache.commons.io.IOUtils;
 import org.bouncycastle.crypto.prng.FixedSecureRandom;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class FontSubsetTest {
 
     /*

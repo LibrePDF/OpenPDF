@@ -60,6 +60,8 @@ import java.net.URL;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfFileSpecification extends PdfDictionary {
 
     protected PdfWriter writer;

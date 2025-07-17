@@ -64,6 +64,8 @@ import java.util.StringTokenizer;
 /**
  * @author psoares
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfCopyFieldsImp extends PdfWriter {
 
     protected static final Map<PdfName, Integer> widgetKeys = new HashMap<>();

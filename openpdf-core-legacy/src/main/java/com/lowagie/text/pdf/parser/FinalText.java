@@ -9,6 +9,8 @@ import com.lowagie.text.pdf.PdfReader;
 /**
  * @author dgd
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class FinalText implements TextAssemblyBuffer {
 
     private String content;

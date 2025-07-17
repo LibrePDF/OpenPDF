@@ -53,6 +53,8 @@ package com.lowagie.text.pdf;
  * a Literal
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfLiteral extends PdfObject {
 
     /**

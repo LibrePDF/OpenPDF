@@ -98,6 +98,8 @@ import java.util.stream.IntStream;
  * @see Rectangle
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public abstract class Image extends Rectangle {
 
     // static final membervariables

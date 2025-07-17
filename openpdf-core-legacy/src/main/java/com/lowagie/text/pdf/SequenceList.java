@@ -59,6 +59,8 @@ import java.util.ListIterator;
  * selected. The range changes are incremental, that is, numbers are added or deleted as the range appears. The start or
  * the end, but not both, can be omitted.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class SequenceList {
 
     protected static final int COMMA = 1;

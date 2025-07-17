@@ -78,6 +78,8 @@ import java.util.zip.DeflaterOutputStream;
  * @see PdfDictionary
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfStream extends PdfDictionary {
 
     // membervariables

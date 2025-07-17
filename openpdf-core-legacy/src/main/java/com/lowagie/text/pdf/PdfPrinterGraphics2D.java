@@ -56,6 +56,8 @@ import java.awt.print.PrinterJob;
  * This is an extension class for the sole purpose of implementing the
  * {@link java.awt.print.PrinterGraphics PrinterGraphics} interface.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPrinterGraphics2D extends PdfGraphics2D implements PrinterGraphics {
 
     private PrinterJob printerJob;

@@ -64,6 +64,8 @@ import java.util.Map;
  * With this class you can create an Xmp Stream that can be used for adding Metadata to a PDF Dictionary. Remark that
  * this class doesn't cover the complete XMP specification.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class XmpWriter implements AutoCloseable {
 
     /**

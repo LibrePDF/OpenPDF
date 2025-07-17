@@ -53,6 +53,8 @@ import java.io.OutputStream;
 /**
  * A class for performing LZW decoding.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class LZWDecoder {
 
     byte[][] stringTable;

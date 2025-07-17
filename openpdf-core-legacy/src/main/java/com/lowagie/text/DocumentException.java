@@ -59,6 +59,8 @@ package com.lowagie.text;
  * @see DocListener
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class DocumentException extends RuntimeException {
 
     /**

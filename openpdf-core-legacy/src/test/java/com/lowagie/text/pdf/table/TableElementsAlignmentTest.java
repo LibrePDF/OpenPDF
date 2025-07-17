@@ -22,6 +22,8 @@ import org.junit.jupiter.api.TestFactory;
  *
  * @author noavarice
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class TableElementsAlignmentTest {
 
     private static final String TEST_TITLE = "Testing alignment=";

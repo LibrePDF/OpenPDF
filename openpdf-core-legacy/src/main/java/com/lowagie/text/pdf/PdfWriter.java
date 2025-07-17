@@ -100,6 +100,8 @@ import java.util.stream.Collectors;
  * Element added to this Document will be written to the outputstream.</P>
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfWriter extends DocWriter implements
         PdfViewerPreferences,
         PdfEncryptionSettings,

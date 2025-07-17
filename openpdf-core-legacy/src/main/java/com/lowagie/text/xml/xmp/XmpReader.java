@@ -69,6 +69,8 @@ import org.xml.sax.SAXException;
  * @since 2.1.3
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class XmpReader {
 
     private Document domDocument;

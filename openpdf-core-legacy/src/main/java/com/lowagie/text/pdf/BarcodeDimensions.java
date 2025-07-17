@@ -1,5 +1,7 @@
 package com.lowagie.text.pdf;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class BarcodeDimensions {
 
     private int height;

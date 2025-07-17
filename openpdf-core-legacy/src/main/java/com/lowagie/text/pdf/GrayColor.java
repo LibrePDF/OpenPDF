@@ -52,6 +52,8 @@ package com.lowagie.text.pdf;
 /**
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class GrayColor extends ExtendedColor {
 
     public static final GrayColor GRAYBLACK = new GrayColor(0);

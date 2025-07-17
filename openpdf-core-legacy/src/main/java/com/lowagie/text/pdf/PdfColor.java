@@ -57,6 +57,8 @@ import java.awt.Color;
  * @see PdfDictionary
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfColor extends PdfArray {
 
     // constructors

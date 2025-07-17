@@ -127,6 +127,8 @@ import org.bouncycastle.asn1.x509.TBSCertificate;
 /**
  * @author Aiken Sam (aikensam@ieee.org)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPublicKeySecurityHandler {
 
     static final int SEED_LENGTH = 20;

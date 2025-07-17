@@ -55,6 +55,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class GlyphList {
 
     private static HashMap<Integer, String> unicode2names = new HashMap<>();

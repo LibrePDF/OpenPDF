@@ -14,6 +14,8 @@ import java.net.URL;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class TextExtractTest {
 
     @Test

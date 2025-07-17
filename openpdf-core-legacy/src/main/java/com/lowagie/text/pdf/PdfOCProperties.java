@@ -53,6 +53,8 @@ package com.lowagie.text.pdf;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfOCProperties extends PdfDictionary {
 
 }

@@ -52,6 +52,8 @@ package com.lowagie.text.pdf.codec.wmf;
 import java.awt.Color;
 import java.io.IOException;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MetaBrush extends MetaObject {
 
     public static final int BS_SOLID = 0;

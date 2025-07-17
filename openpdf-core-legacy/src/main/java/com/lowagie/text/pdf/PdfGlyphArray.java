@@ -47,6 +47,8 @@ import java.util.List;
 /**
  * Defines an array with displacements and sub lists of glyph codes.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfGlyphArray {
 
     private final LinkedList<Object> list = new LinkedList<>();

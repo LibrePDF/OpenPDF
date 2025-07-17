@@ -52,6 +52,8 @@ package com.lowagie.text.pdf.codec.wmf;
 import java.awt.Color;
 import java.io.IOException;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MetaPen extends MetaObject {
 
     public static final int PS_SOLID = 0;

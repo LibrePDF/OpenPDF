@@ -57,6 +57,8 @@ package com.lowagie.text.exceptions;
  *
  * @since 2.1.5
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class UnsupportedPdfException extends InvalidPdfException {
 
     /**
