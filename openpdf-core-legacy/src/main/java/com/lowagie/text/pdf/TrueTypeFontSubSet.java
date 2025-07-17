@@ -63,6 +63,8 @@ import java.util.HashMap;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class TrueTypeFontSubSet {
 
     static final String[] tableNamesSimple = {"cvt ", "fpgm", "glyf", "head",

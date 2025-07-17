@@ -71,6 +71,8 @@ import org.w3c.dom.Node;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class AcroFields {
 
     public static final int DA_FONT = 0;

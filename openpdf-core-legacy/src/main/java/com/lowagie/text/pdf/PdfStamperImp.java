@@ -71,6 +71,8 @@ import java.util.Set;
 import org.xml.sax.SAXException;
 
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfStamperImp extends PdfWriter {
 
     protected AcroFields acroFields;

@@ -55,6 +55,8 @@ import java.util.Arrays;
 /**
  * An implementation of an XmpSchema.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class DublinCoreSchema extends XmpSchema {
 
     /**

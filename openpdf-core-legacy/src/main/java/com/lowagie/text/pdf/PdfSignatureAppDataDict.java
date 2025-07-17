@@ -7,6 +7,8 @@ import java.util.ArrayList;
  *
  * @author Lonzak
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfSignatureAppDataDict extends PdfDictionary {
 
     public PdfSignatureAppDataDict() {

@@ -5,6 +5,8 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Phrase;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class TablePdfTest {
 
     @Test

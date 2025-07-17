@@ -64,6 +64,8 @@ import java.util.ArrayList;
  * @see Cell
  * @see HeaderFooter
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Rectangle implements Element {
 
     // CONSTANTS:

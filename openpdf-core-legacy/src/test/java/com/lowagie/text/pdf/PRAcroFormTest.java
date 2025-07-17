@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import java.io.InputStream;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PRAcroFormTest {
 
     @Test

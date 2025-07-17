@@ -58,6 +58,8 @@ import com.lowagie.text.SpecialSymbol;
  *
  * @since 2.0.7 (was called GreekNumberFactory in earlier versions)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class GreekAlphabetFactory {
 
     /**

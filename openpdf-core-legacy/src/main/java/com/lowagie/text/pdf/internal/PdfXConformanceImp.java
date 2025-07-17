@@ -68,6 +68,8 @@ import com.lowagie.text.pdf.SpotColor;
 import com.lowagie.text.pdf.interfaces.PdfXConformance;
 import java.awt.Color;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfXConformanceImp implements PdfXConformance {
 
     /**

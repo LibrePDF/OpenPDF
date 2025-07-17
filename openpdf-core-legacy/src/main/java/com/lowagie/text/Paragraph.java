@@ -72,6 +72,8 @@ import com.lowagie.text.pdf.PdfWriter;
  * @see ListItem
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Paragraph extends Phrase {
 
     // constants

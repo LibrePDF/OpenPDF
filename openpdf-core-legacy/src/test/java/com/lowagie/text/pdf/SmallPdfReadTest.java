@@ -15,6 +15,8 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Test for small PDF files in MappedRandomAccessFile
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class SmallPdfReadTest {
 
     @Test

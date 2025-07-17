@@ -90,6 +90,8 @@ import org.xml.sax.helpers.DefaultHandler;
  * iText translates XML to PDF.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class SAXiTextHandler<T extends XmlPeer> extends DefaultHandler {
 
     /**

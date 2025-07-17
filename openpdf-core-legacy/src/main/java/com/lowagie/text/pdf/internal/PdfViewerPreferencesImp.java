@@ -64,6 +64,8 @@ import com.lowagie.text.pdf.interfaces.PdfViewerPreferences;
  * preferences.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfViewerPreferencesImp implements PdfViewerPreferences {
 
     public static final PdfName[] VIEWER_PREFERENCES = {

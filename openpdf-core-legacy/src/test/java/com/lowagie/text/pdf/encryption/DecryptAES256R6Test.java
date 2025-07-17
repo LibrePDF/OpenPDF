@@ -21,6 +21,8 @@ import org.junit.jupiter.api.Test;
  *
  * @author mkl
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class DecryptAES256R6Test {
 
     static Field ownerPasswordUsedField;

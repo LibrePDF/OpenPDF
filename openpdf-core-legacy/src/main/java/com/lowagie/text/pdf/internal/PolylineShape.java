@@ -61,6 +61,8 @@ import java.awt.geom.Rectangle2D;
  * Class that defines a Polyline shape. This class was originally written by wil - amristar.com.au and integrated into
  * iText by Bruno.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PolylineShape implements Shape {
 
     /**
@@ -223,4 +225,3 @@ public class PolylineShape implements Shape {
     }
 
 }
-

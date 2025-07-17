@@ -58,6 +58,8 @@ import org.xml.sax.Attributes;
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class SAXmyHandler extends SAXiTextHandler<XmlPeer> {
 
     /**

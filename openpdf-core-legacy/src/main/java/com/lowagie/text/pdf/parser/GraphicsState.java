@@ -55,6 +55,8 @@ import com.lowagie.text.pdf.DocumentFont;
  * @since 2.1.4
  */
 @SuppressWarnings("WeakerAccess")
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class GraphicsState {
 
     /**

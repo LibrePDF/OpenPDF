@@ -70,6 +70,8 @@ import java.util.Map;
  * @see com.lowagie.text.Font
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfChunk {
 
     private static final char[] singleSpace = {' '};

@@ -63,6 +63,8 @@ import java.util.Map;
 /**
  * A DataMatrix 2D barcode generator.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class BarcodeDatamatrix {
 
     /**

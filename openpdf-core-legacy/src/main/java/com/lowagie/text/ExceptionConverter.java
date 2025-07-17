@@ -70,6 +70,8 @@ package com.lowagie.text;
 /**
  * The ExceptionConverter changes a checked exception into an unchecked exception.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ExceptionConverter extends RuntimeException {
 
     private static final long serialVersionUID = 8657630363395849399L;

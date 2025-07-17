@@ -41,6 +41,8 @@ import java.util.List;
  *
  * @author dgd
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MarkedUpTextAssembler implements TextAssembler {
 
     /**

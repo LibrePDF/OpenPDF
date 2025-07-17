@@ -19,6 +19,8 @@ package com.lowagie.text.pdf.hyphenation;
 /**
  * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class HyphenationException extends Exception {
 
     private static final long serialVersionUID = 4721513606846982325L;

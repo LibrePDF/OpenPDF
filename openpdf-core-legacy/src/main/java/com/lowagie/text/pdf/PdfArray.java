@@ -65,6 +65,8 @@ import java.util.ListIterator;
  *
  * @see PdfObject
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfArray extends PdfObject {
 
     // CLASS VARIABLES

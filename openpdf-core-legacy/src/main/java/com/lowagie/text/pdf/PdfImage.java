@@ -60,6 +60,8 @@ import java.io.OutputStream;
  * <CODE>PdfImage</CODE> is a <CODE>PdfStream</CODE> containing an image-<CODE>Dictionary</CODE> and -stream.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfImage extends PdfStream {
 
     static final int TRANSFERSIZE = 4096;

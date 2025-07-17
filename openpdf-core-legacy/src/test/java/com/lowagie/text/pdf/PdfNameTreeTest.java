@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfNameTreeTest {
 
     @Test

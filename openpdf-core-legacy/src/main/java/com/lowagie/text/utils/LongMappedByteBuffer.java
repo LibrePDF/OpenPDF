@@ -62,6 +62,8 @@ import java.nio.channels.FileChannel;
  *
  *  @since 2.0.4
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class LongMappedByteBuffer {
 
     private static final long CHUNK_SIZE = Integer.MAX_VALUE; // 2 GB

@@ -21,6 +21,8 @@ package com.lowagie.text.pdf.hyphenation;
  *
  * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Hyphenation {
 
     private int[] hyphenPoints;

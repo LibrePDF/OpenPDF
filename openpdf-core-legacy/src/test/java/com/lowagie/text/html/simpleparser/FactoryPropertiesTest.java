@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Serhiy Yakovyn
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class FactoryPropertiesTest {
 
     @Test

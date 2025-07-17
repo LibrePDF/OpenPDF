@@ -61,6 +61,8 @@ import java.util.Objects;
  * @see PdfObject
  * @see BadPdfFormatException
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfNumber extends PdfObject implements Comparable<PdfNumber> {
 
     // CLASS VARIABLES

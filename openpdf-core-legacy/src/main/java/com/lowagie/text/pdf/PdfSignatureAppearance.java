@@ -78,6 +78,8 @@ import java.util.Map;
 /**
  * This class takes care of the cryptographic options and appearances that form a signature.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfSignatureAppearance {
 
     /**

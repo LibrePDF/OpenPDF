@@ -3,6 +3,8 @@ package com.lowagie.text.pdf.collection;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfName;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfCollectionSchema extends PdfDictionary {
 
     /**

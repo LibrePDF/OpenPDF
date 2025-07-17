@@ -57,6 +57,8 @@ import java.io.IOException;
  *
  * @since 2.1.5
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class InvalidPdfException extends IOException {
 
     /**

@@ -52,6 +52,8 @@ package com.lowagie.text.pdf;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ShadingColor extends ExtendedColor {
 
     private static final long serialVersionUID = 4817929454941328671L;

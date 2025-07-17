@@ -53,6 +53,8 @@ package com.lowagie.text.pdf;
  * <CODE>PdfFormObject</CODE> is a type of XObject containing a template-object.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfFormXObject extends PdfStream {
 
     // public static final variables

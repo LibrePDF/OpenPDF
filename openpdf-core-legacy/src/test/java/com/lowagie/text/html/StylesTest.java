@@ -26,6 +26,8 @@ import org.junit.jupiter.api.Test;
  * Tests generating PDF from HTML with selected CCS style attributes (such as 'font-size', 'background',
  * 'background-color', 'color').
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class StylesTest {
 
     @Test

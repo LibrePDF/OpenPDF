@@ -64,6 +64,8 @@ import java.util.List;
  * A cell in a PdfPTable.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPCell extends Rectangle {
 
     /**

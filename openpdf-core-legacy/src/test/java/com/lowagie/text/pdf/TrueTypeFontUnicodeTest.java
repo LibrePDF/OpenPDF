@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.lowagie.text.DocumentException;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class TrueTypeFontUnicodeTest {
 
     // Test that an Exception will be thrown when the font is not a TTF

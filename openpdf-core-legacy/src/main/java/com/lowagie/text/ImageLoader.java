@@ -63,6 +63,8 @@ import javax.imageio.ImageIO;
  *
  * @author Andreas Rosdal
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ImageLoader {
 
     /**

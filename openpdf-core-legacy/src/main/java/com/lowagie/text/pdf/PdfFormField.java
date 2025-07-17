@@ -56,6 +56,8 @@ import java.util.List;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfFormField extends PdfAnnotation {
 
     public static final int FF_READ_ONLY = 1;

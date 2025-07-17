@@ -66,6 +66,8 @@ import java.util.Set;
  *
  * @author Paulo Soares (psoares@glintt.com)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class MessageLocalization {
 
     private static final String BASE_PATH = "com/lowagie/text/error_messages/";

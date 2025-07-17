@@ -55,6 +55,8 @@ package com.lowagie.text.pdf;
  * @see PdfArray
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfBorderArray extends PdfArray {
 
     // constructors

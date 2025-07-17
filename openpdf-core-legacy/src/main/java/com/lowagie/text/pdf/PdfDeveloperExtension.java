@@ -60,6 +60,8 @@ package com.lowagie.text.pdf;
  *
  * @since 2.1.6
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfDeveloperExtension {
 
     /**

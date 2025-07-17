@@ -56,6 +56,8 @@ import java.util.HashMap;
  * @see Element
  * @see Anchor
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Footnote extends Phrase {
 
     // membervariables

@@ -63,6 +63,8 @@ import java.util.ArrayList;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class FontSelector {
 
     protected ArrayList<Font> fonts = new ArrayList<>();

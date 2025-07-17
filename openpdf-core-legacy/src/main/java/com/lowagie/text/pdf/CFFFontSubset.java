@@ -68,6 +68,8 @@ import java.util.Objects;
  *
  * @author Oren Manor (manorore@post.tau.ac.il) and Ygal Blum (blumygal@post.tau.ac.il)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class CFFFontSubset extends CFFFont {
 
     /**

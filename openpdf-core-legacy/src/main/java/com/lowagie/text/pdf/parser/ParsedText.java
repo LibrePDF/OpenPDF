@@ -56,6 +56,8 @@ import java.util.Optional;
 /**
  * @author dgd
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ParsedText extends ParsedTextImpl {
 
     private final Matrix textToUserSpaceTransformMatrix;

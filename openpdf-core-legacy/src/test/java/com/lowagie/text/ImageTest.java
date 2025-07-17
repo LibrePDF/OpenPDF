@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class ImageTest {
 
     // For performance testing, set this to something > 100

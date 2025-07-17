@@ -25,6 +25,8 @@ import java.nio.file.Files;
 import org.junit.jupiter.api.Test;
 
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfTextExtractorTest {
 
     private static final String LOREM_IPSUM =

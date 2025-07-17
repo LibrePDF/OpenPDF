@@ -74,6 +74,8 @@ import java.util.ArrayList;
  * </PRE></BLOCKQUOTE>
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Chapter extends Section {
 
     // constant

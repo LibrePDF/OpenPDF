@@ -63,6 +63,8 @@ import java.util.Optional;
  * Rectangle that can be used for Cells. This Rectangle is padded and knows how to draw itself in a PdfPTable or
  * PdfPcellEvent.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementArray {
 
     // constants

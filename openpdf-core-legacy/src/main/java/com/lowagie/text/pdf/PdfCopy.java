@@ -65,6 +65,8 @@ import java.util.Map;
  * @author Mark Thompson
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfCopy extends PdfWriter {
 
     protected HashMap<RefKey, IndirectReferences> indirects;

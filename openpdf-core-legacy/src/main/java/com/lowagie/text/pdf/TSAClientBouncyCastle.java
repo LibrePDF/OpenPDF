@@ -77,6 +77,8 @@ import org.bouncycastle.tsp.TimeStampTokenInfo;
  *
  * @since 2.1.6
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class TSAClientBouncyCastle implements TSAClient {
 
     /**

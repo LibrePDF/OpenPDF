@@ -72,6 +72,8 @@ import java.util.Stack;
  * @author dgd
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfContentStreamHandler {
 
     private final Stack<List<TextAssemblyBuffer>> textFragmentStreams = new Stack<>();

@@ -52,6 +52,8 @@ package com.lowagie.text.pdf;
 /**
  * @author psoares
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfXConformanceException extends RuntimeException {
 
     private static final long serialVersionUID = 9199144538884293397L;

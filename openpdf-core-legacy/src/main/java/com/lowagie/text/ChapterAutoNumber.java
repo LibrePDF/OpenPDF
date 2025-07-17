@@ -54,6 +54,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
  *
  * @author Michael Niedermair
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ChapterAutoNumber extends Chapter {
 
     // constant

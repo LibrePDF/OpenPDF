@@ -59,6 +59,8 @@ import java.nio.channels.FileChannel;
  *
  * @author Joakim Sandstroem Created on 6.9.2006
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MappedRandomAccessFile implements AutoCloseable {
 
     private LongMappedByteBuffer mappedByteBuffer = null;

@@ -62,6 +62,8 @@ package com.lowagie.text;
  * @see Phrase
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class SpecialSymbol {
 
     /**

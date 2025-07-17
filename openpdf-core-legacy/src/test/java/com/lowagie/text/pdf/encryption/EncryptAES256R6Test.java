@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Test;
 /**
  * @author mkl
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class EncryptAES256R6Test {
 
     final static File RESULT_FOLDER = new File("target/test-outputs", "issue375");

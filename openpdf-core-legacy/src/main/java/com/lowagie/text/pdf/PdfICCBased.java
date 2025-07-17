@@ -57,6 +57,8 @@ import java.awt.color.ICC_Profile;
  * @see PdfStream
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfICCBased extends PdfStream {
 
     /**

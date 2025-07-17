@@ -80,6 +80,8 @@ import java.util.Map;
  * text and graphic contents of a page. It knows how to apply the proper font encoding.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfContentByte {
 
     /**

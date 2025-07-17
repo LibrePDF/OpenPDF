@@ -79,6 +79,8 @@ import java.util.Map;
  * </BLOCKQUOTE>
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Chunk implements Element {
 
     // public static membervariables

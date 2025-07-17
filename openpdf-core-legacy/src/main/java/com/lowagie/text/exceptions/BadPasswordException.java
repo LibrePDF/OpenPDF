@@ -57,6 +57,8 @@ import java.io.IOException;
  *
  * @since 2.1.5 It was written for iText 2.0.8, but moved to another package
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class BadPasswordException extends IOException {
 
     /**

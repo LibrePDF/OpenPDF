@@ -73,6 +73,8 @@ import java.util.Set;
  * @see PdfName
  * @see BadPdfFormatException
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfDictionary extends PdfObject {
 
     // CONSTANTS

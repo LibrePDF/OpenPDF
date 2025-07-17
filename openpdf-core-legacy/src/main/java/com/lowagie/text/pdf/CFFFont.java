@@ -75,6 +75,8 @@ import java.util.LinkedList;
 import java.util.Objects;
 
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class CFFFont {
 
     static final String[] operatorNames = {

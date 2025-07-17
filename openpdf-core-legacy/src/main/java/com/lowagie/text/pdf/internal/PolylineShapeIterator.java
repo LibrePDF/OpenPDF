@@ -58,6 +58,8 @@ import java.util.NoSuchElementException;
  * PathIterator for PolylineShape. This class was originally written by wil - amristar.com.au and integrated into iText
  * by Bruno.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PolylineShapeIterator implements PathIterator {
 
     /**

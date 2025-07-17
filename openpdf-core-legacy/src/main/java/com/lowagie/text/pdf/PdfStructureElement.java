@@ -56,6 +56,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfStructureElement extends PdfDictionary {
 
     /**

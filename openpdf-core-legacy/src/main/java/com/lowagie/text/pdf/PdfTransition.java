@@ -47,6 +47,8 @@
 
 package com.lowagie.text.pdf;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfTransition {
 
     /**
@@ -250,4 +252,3 @@ public class PdfTransition {
         return trans;
     }
 }
-

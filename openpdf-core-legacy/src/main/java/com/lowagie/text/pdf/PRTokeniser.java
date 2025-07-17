@@ -56,6 +56,8 @@ import java.io.IOException;
 /**
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PRTokeniser implements AutoCloseable {
 
     public static final int TK_NUMBER = 1;

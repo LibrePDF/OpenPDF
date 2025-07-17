@@ -70,6 +70,8 @@ import java.util.Locale;
  * </BLOCKQUOTE>
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Font implements Comparable {
 
     // static membervariables for the different families

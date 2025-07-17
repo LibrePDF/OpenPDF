@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
  * and there are 2 test cases
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfDocument620Test {
 
     /**

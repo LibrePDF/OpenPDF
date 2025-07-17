@@ -116,6 +116,8 @@ import javax.imageio.ImageWriter;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfGraphics2D extends Graphics2D {
 
     public static final int AFM_DIVISOR = 1000; // used to calculate coordinates

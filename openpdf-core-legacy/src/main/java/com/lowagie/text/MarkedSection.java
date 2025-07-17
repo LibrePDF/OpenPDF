@@ -58,6 +58,8 @@ import java.util.Collection;
  * functionality.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MarkedSection extends MarkedObject {
 
     /**

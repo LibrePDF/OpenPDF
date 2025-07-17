@@ -56,6 +56,8 @@ import java.awt.Color;
  * Implements the pattern.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class PdfPatternPainter extends PdfTemplate {
 
     float xstep, ystep;

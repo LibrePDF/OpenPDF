@@ -62,6 +62,8 @@ import java.util.List;
  * @author Mark Thompson
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PRAcroForm extends PdfDictionary {
 
     ArrayList<FieldInformation> fields;

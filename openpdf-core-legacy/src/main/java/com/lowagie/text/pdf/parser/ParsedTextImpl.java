@@ -35,6 +35,8 @@ package com.lowagie.text.pdf.parser;
 /**
  * @author dgd
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public abstract class ParsedTextImpl implements TextAssemblyBuffer {
 
     private final String text;

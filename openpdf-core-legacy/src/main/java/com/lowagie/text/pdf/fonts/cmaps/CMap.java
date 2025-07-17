@@ -35,6 +35,8 @@ import java.util.Map;
  * @author Ben Litchfield (ben@benlitchfield.com)
  * @since 2.1.4
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class CMap {
 
     private List<CodespaceRange> codeSpaceRanges = new ArrayList<>();

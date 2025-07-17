@@ -46,6 +46,8 @@
  */
 package com.lowagie.text.pdf;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class StampContent extends PdfContentByte {
 
     PdfStamperImp.PageStamp ps;

@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class BarcodeMacroPDF417Test {
 
     private static final Path OUTPUT_DIR = Paths.get(".", "target", "test-classes");

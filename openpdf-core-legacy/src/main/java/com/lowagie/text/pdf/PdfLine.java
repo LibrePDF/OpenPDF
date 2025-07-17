@@ -60,6 +60,8 @@ import java.util.Iterator;
  * that fit into 1 line.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfLine {
 
     // membervariables

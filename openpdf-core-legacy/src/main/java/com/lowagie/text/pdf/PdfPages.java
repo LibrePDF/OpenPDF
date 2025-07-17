@@ -65,6 +65,8 @@ import java.util.ArrayList;
  * @see PdfPage
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPages {
 
     private final ArrayList<PdfIndirectReference> pages = new ArrayList<>();

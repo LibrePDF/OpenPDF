@@ -66,6 +66,8 @@ import java.util.Locale;
  * @author Paulo Soares (psoares@consiste.pt)
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ByteBuffer extends OutputStream {
 
     public static final byte ZERO = (byte) '0';

@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class BarcodeDatamatrixTest {
 
     private static final String HELLO_WORLD = "Hello World";

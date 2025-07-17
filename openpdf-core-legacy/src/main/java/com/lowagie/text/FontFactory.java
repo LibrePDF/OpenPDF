@@ -64,6 +64,8 @@ import java.util.Set;
  * @author Bruno Lowagie
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class FontFactory {
 
     /**

@@ -57,6 +57,8 @@ package com.lowagie.text;
  * @see Table
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class BadElementException extends DocumentException {
 
     private static final long serialVersionUID = -799006030723822254L;

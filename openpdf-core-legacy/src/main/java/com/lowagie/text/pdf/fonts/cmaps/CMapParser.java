@@ -40,6 +40,8 @@ import java.util.Map;
  * @version $Revision: 4065 $
  * @since 2.1.4
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class CMapParser {
 
     private static final String BEGIN_CODESPACE_RANGE = "begincodespacerange";

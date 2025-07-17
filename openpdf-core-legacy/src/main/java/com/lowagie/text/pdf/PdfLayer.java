@@ -56,6 +56,8 @@ import java.util.ArrayList;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfLayer extends PdfDictionary implements PdfOCG {
 
     protected PdfIndirectReference ref;

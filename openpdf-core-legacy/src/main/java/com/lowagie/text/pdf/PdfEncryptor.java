@@ -57,6 +57,8 @@ import java.util.Map;
  * This class takes any PDF and returns exactly the same but encrypted. All the content, links, outlines, etc, are kept.
  * It is also possible to change the info dictionary.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class PdfEncryptor {
 
     private PdfEncryptor() {

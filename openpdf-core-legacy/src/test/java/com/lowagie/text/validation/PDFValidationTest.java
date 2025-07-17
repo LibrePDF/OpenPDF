@@ -24,6 +24,8 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 /**
  * Validate PDF files created by OpenPDF using Vera.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PDFValidationTest {
 
     @Test

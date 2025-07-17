@@ -56,6 +56,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class MetaState {
 
     public static final int TA_NOUPDATECP = 0;

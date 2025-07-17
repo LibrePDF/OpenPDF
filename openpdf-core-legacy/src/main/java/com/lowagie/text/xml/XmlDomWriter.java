@@ -29,6 +29,8 @@ import org.w3c.dom.Node;
 /**
  * @author psoares
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class XmlDomWriter {
 
     /**

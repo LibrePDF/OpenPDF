@@ -61,6 +61,8 @@ import com.lowagie.text.error_messages.MessageLocalization;
  * @see BadPdfFormatException
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfBoolean extends PdfObject {
 
     // static membervariables (possible values of a boolean object)

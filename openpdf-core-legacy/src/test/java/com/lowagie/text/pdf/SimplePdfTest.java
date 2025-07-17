@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class SimplePdfTest {
 
     @Test

@@ -7,6 +7,8 @@ import com.lowagie.text.pdf.PdfLiteral;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfEncryptionTest {
 
     @Test

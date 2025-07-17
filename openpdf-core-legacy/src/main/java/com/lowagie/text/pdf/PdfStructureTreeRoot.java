@@ -57,6 +57,8 @@ import java.util.Map;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfStructureTreeRoot extends PdfDictionary {
 
     private final Map<Integer, PdfObject> parentTree = new HashMap<>();

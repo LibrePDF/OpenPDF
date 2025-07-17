@@ -63,6 +63,8 @@ import com.lowagie.text.Rectangle;
  * @see PdfArray
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfRectangle extends PdfArray {
 
     // membervariables

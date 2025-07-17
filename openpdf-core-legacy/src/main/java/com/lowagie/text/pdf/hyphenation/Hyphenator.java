@@ -29,6 +29,8 @@ import java.util.Map;
  *
  * @author <a href="cav@uniscope.co.jp">Carlos Villegas</a>
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Hyphenator {
 
     private static final String defaultHyphLocation = "com/lowagie/text/pdf/hyphenation/hyph/";

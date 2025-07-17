@@ -61,6 +61,8 @@ import java.util.zip.DeflaterOutputStream;
  * @since 2.1.3
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfEFStream extends PdfStream {
 
     /**

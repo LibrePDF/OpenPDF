@@ -99,6 +99,8 @@ import java.util.Properties;
  * </BLOCKQUOTE>
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Document implements DocListener {
 
     // membervariables

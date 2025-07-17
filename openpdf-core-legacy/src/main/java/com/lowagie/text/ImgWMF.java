@@ -66,6 +66,8 @@ import java.net.URL;
  * @see Image
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class ImgWMF extends Image {
 
     // Constructors

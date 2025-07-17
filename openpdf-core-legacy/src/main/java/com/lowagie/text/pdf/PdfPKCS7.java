@@ -125,6 +125,8 @@ import org.bouncycastle.tsp.TimeStampTokenInfo;
  * <p>
  * It's based in code found at org.bouncycastle.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPKCS7 {
 
     private static final String ID_PKCS7_DATA = "1.2.840.113549.1.7.1";

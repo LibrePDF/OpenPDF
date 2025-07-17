@@ -64,6 +64,8 @@ import java.util.List;
  *
  * @since 2.1.5
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfCopyForms
         implements PdfViewerPreferences, PdfEncryptionSettings, AutoCloseable {
 

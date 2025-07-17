@@ -59,6 +59,8 @@ import java.util.Set;
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfLayerMembership extends PdfDictionary implements PdfOCG {
 
     /**

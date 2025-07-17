@@ -57,6 +57,8 @@ import java.util.StringTokenizer;
  * @see PdfDictionary
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfDestination extends PdfArray {
 
     // public static final member-variables

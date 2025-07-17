@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class SimpleBookmarkTest {
 
     @Test

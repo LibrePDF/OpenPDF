@@ -61,6 +61,8 @@ package com.lowagie.text;
  * @see Meta
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Header extends Meta {
 
     // membervariables

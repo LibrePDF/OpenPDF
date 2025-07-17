@@ -18,6 +18,8 @@ import org.junit.jupiter.params.provider.MethodSource;
  * This test class contains a series of smoke tests. The goal of these tests is not validate the generated document, but
  * to ensure no exception is thrown.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class HtmlParserTest {
 
 

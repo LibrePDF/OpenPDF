@@ -53,6 +53,8 @@ import com.lowagie.text.pdf.ByteBuffer;
 /**
  * Encodes data in the CCITT G4 FAX format.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class CCITTG4Encoder {
 
     private static final int LENGTH = 0; /* bit length of g3 code */

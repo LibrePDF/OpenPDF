@@ -8,6 +8,8 @@ import com.lowagie.text.html.simpleparser.HTMLWorker;
 import java.io.StringReader;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class HTMLTableTest {
 
     /**

@@ -58,6 +58,8 @@ import java.io.OutputStream;
  *
  * @since 2.1.5
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfCopyFormsImp extends PdfCopyFieldsImp {
 
     /**

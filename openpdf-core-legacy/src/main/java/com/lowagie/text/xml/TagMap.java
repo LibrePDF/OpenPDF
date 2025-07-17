@@ -66,6 +66,8 @@ import org.xml.sax.helpers.DefaultHandler;
  * The <CODE>Tags</CODE>-class maps several XHTML-tags to iText-objects.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class TagMap extends HashMap<String, XmlPeer> {
 
     private static final long serialVersionUID = -6809383366554350820L;

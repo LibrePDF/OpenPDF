@@ -65,6 +65,8 @@ import org.xml.sax.SAXException;
  * This class can be used to parse an XML file.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class XmlParser {
 
     /**

@@ -52,6 +52,8 @@ package com.lowagie.text.xml.xmp;
 /**
  * An implementation of an XmpSchema.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class XmpMMSchema extends XmpSchema {
 
     /**

@@ -64,6 +64,8 @@ import java.util.Set;
  * A collection of convenience methods that were present in many different iText classes.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Utilities {
 
     /**

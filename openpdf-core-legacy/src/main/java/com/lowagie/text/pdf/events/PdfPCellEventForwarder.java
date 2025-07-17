@@ -61,6 +61,8 @@ import java.util.List;
  * events to this object and add the forwarder to the PdfPCell.
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPCellEventForwarder implements PdfPCellEvent {
 
     /**

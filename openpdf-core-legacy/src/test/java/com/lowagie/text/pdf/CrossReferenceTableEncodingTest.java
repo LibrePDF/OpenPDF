@@ -12,6 +12,8 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class CrossReferenceTableEncodingTest {
 
     public static final String TEST_PDF = "/encodingTest.pdf";

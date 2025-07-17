@@ -68,6 +68,8 @@ import java.util.SimpleTimeZone;
  * @see java.util.GregorianCalendar
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfDate extends PdfString {
 
     private static final int[] DATE_SPACE = {Calendar.YEAR, 4, 0, Calendar.MONTH, 2, -1, Calendar.DAY_OF_MONTH, 2, 0,

@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfSignatureRangeTest {
 
     private static void checkSignature(byte[] pdf) throws IOException {

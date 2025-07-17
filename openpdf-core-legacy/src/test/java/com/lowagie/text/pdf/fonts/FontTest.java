@@ -21,6 +21,8 @@ import org.junit.jupiter.params.provider.MethodSource;
  * @author noavarice
  * @since 1.2.7
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class FontTest {
 
     private static final Map<Integer, Predicate<Font>> STYLES_TO_TEST_METHOD = new HashMap<>() {

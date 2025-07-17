@@ -19,6 +19,8 @@ package com.lowagie.text.pdf;
 /**
  * @author Douglas SIX (http://github.com/sixdouglas)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class RGBColor extends ExtendedColor {
 
     /**

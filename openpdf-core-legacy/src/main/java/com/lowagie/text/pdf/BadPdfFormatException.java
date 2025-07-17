@@ -60,6 +60,8 @@ package com.lowagie.text.pdf;
  * @see PdfDictionary
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class BadPdfFormatException extends PdfException {
 
     // constructors

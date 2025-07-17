@@ -8,6 +8,8 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class BaseFontTest {
 
     @Test

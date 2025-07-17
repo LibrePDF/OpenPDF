@@ -63,6 +63,8 @@ import java.util.TreeMap;
  *
  * @author Michael Niedermair
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class IndexEvents extends PdfPageEventHelper {
 
     /**

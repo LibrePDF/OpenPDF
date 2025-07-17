@@ -55,6 +55,8 @@ import com.lowagie.text.ExceptionConverter;
  * @see PdfStream
  */
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfPattern extends PdfStream {
 
     /**

@@ -135,6 +135,8 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
  * @author psoares
  * @since 2.1.6
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class OcspClientBouncyCastle implements OcspClient {
 
     /**

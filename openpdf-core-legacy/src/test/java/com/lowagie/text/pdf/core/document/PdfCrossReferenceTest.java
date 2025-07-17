@@ -66,6 +66,8 @@ import org.junit.jupiter.api.TestFactory;
  * @author noavarice
  * @since 1.2.8
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PdfCrossReferenceTest {
 
     private static final Predicate<String> CROSS_REFERENCE_FORMAT = Pattern

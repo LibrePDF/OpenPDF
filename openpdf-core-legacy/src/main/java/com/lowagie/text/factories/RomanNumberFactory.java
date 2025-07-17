@@ -51,6 +51,8 @@ package com.lowagie.text.factories;
 /**
  * This class can produce String combinations representing a roman number.
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class RomanNumberFactory {
 
     /**

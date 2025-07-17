@@ -72,6 +72,8 @@ import java.util.Stack;
  * <li>It maps lines ending in <code>\r\n</code> and <code>\r</code> to <code>\n</code> on input, in accordance with the XML Specification, Section 2.11
  * </ul>
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class SimpleXMLParser {
 
     /**

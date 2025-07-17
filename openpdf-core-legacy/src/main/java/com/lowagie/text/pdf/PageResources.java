@@ -50,6 +50,8 @@ package com.lowagie.text.pdf;
 
 import java.util.HashMap;
 
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 class PageResources {
 
     protected PdfDictionary fontDictionary = new PdfDictionary();

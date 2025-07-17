@@ -70,6 +70,8 @@ import javax.crypto.spec.SecretKeySpec;
  * @author Paulo Soares (psoares@consiste.pt)
  * @author Kazuya Ujihara
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class PdfEncryption {
 
     public static final int STANDARD_ENCRYPTION_40 = 2;

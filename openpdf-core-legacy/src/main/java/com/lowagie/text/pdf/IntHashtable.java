@@ -47,6 +47,8 @@ import java.util.NoSuchElementException;
  * @author Bruno Lowagie (change Objects as keys into int values)
  * @author Paulo Soares (added extra methods)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class IntHashtable implements Cloneable {
 
     /***

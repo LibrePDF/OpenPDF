@@ -66,6 +66,8 @@ import java.util.StringTokenizer;
 /**
  * @author Paulo Soares (psoares@consiste.pt)
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public final class SimpleNamedDestination implements SimpleXMLDocHandler {
 
     private HashMap<String, String> xmlNames;

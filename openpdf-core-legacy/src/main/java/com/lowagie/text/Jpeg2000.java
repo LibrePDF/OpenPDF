@@ -60,6 +60,8 @@ import java.net.URL;
  * @see Element
  * @see Image
  */
+// Deprecated: use org.openpdf package (openpdf-core-modern)
+@Deprecated
 public class Jpeg2000 extends Image {
 
     // public static final membervariables
