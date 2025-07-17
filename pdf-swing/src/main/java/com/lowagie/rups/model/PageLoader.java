@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.model;
+package org.openpdf.rups.model;
 
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
@@ -90,7 +90,7 @@ public class PageLoader extends BackgroundTask {
     }
 
     /**
-     * @see com.lowagie.rups.model.BackgroundTask#doTask()
+     * @see org.openpdf.rups.model.BackgroundTask#doTask()
      */
     @Override
     public void doTask() {

@@ -10,10 +10,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-package com.lowagie.examples.general.copystamp;
+package org.openpdf.examples.general.copystamp;
 
-import com.lowagie.text.pdf.PdfCopyFields;
-import com.lowagie.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfCopyFields;
+import org.openpdf.text.pdf.PdfReader;
 import java.io.FileOutputStream;
 
 /**

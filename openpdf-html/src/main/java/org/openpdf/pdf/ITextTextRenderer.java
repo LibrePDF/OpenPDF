@@ -19,7 +19,7 @@
  */
 package org.openpdf.pdf;
 
-import com.lowagie.text.pdf.BaseFont;
+import org.openpdf.text.pdf.BaseFont;
 import org.openpdf.extend.FSGlyphVector;
 import org.openpdf.extend.FontContext;
 import org.openpdf.extend.OutputDevice;

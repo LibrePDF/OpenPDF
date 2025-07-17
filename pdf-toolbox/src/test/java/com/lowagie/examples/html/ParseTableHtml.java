@@ -12,12 +12,12 @@
  *
  */
 
-package com.lowagie.examples.html;
+package org.openpdf.examples.html;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.html.HtmlParser;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.html.HtmlParser;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

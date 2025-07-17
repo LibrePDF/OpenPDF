@@ -18,16 +18,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view.itext;
+package org.openpdf.rups.view.itext;
 
-import com.lowagie.rups.controller.PdfReaderController;
-import com.lowagie.rups.model.ObjectLoader;
-import com.lowagie.rups.model.TreeNodeFactory;
-import com.lowagie.rups.view.icons.IconTreeCellRenderer;
-import com.lowagie.rups.view.itext.treenodes.OutlineTreeNode;
-import com.lowagie.rups.view.itext.treenodes.PdfObjectTreeNode;
-import com.lowagie.rups.view.itext.treenodes.PdfTrailerTreeNode;
-import com.lowagie.text.pdf.PdfName;
+import org.openpdf.rups.controller.PdfReaderController;
+import org.openpdf.rups.model.ObjectLoader;
+import org.openpdf.rups.model.TreeNodeFactory;
+import org.openpdf.rups.view.icons.IconTreeCellRenderer;
+import org.openpdf.rups.view.itext.treenodes.OutlineTreeNode;
+import org.openpdf.rups.view.itext.treenodes.PdfObjectTreeNode;
+import org.openpdf.rups.view.itext.treenodes.PdfTrailerTreeNode;
+import org.openpdf.text.pdf.PdfName;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JTree;

@@ -12,12 +12,12 @@
  *
  */
 
-package com.lowagie.examples.objects;
+package org.openpdf.examples.objects;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.List;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.List;
+import org.openpdf.text.ListItem;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 

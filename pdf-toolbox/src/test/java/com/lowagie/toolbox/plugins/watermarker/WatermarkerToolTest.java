@@ -1,4 +1,4 @@
-package com.lowagie.toolbox.plugins.watermarker;
+package org.openpdf.toolbox.plugins.watermarker;
 
 public class WatermarkerToolTest {
 

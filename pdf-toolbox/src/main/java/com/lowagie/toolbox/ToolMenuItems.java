@@ -32,7 +32,7 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox;
+package org.openpdf.toolbox;
 
 /**
  * Keeps all the possible menuitems.

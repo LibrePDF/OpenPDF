@@ -10,15 +10,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  */
-package com.lowagie.examples.objects.images;
+package org.openpdf.examples.objects.images;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Image;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.Image;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 class AwtImage {
 
     /**
-     * Uses a java.awt.Image object to construct a com.lowagie.text.Image object.
+     * Uses a java.awt.Image object to construct a org.openpdf.text.Image object.
      */
     @Test
     void testAwtImage() throws Exception {

@@ -12,17 +12,17 @@
  *
  */
 
-package com.lowagie.examples.objects.chunk;
+package org.openpdf.examples.objects.chunk;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.SplitCharacter;
-import com.lowagie.text.pdf.PdfChunk;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Font;
+import org.openpdf.text.FontFactory;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.SplitCharacter;
+import org.openpdf.text.pdf.PdfChunk;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -78,7 +78,7 @@ public class SplitChar implements SplitCharacter {
     }
 
     /**
-     * @see com.lowagie.text.SplitCharacter#isSplitCharacter(int, int, int, char[], com.lowagie.text.pdf.PdfChunk[])
+     * @see org.openpdf.text.SplitCharacter#isSplitCharacter(int, int, int, char[], org.openpdf.text.pdf.PdfChunk[])
      */
     public boolean isSplitCharacter(int start, int current, int end, char[] cc, PdfChunk[] ck) {
         char c;

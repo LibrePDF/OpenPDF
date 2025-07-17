@@ -12,15 +12,15 @@
  *
  */
 
-package com.lowagie.examples.fonts.styles;
+package org.openpdf.examples.fonts.styles;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.Font;
+import org.openpdf.text.FontFactory;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 import org.junit.jupiter.api.Test;
 

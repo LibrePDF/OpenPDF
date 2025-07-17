@@ -24,9 +24,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.lowagie.toolbox.swing;
+package org.openpdf.toolbox.swing;
 
-import com.lowagie.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfReader;
 import java.awt.BorderLayout;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

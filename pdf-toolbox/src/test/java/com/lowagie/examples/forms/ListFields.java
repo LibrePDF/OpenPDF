@@ -12,17 +12,17 @@
  *
  */
 
-package com.lowagie.examples.forms;
+package org.openpdf.examples.forms;
 
 
-import com.lowagie.text.pdf.PRAcroForm;
-import com.lowagie.text.pdf.PdfArray;
-import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfIndirectReference;
-import com.lowagie.text.pdf.PdfLister;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfString;
+import org.openpdf.text.pdf.PRAcroForm;
+import org.openpdf.text.pdf.PdfArray;
+import org.openpdf.text.pdf.PdfDictionary;
+import org.openpdf.text.pdf.PdfIndirectReference;
+import org.openpdf.text.pdf.PdfLister;
+import org.openpdf.text.pdf.PdfName;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfString;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;

@@ -18,17 +18,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.controller;
+package org.openpdf.rups.controller;
 
-import com.lowagie.rups.io.FileChooserAction;
-import com.lowagie.rups.io.FileCloseAction;
-import com.lowagie.rups.model.PdfFile;
-import com.lowagie.rups.view.Console;
-import com.lowagie.rups.view.PageSelectionListener;
-import com.lowagie.rups.view.RupsMenuBar;
-import com.lowagie.rups.view.itext.treenodes.PdfObjectTreeNode;
-import com.lowagie.rups.view.itext.treenodes.PdfTrailerTreeNode;
-import com.lowagie.text.DocumentException;
+import org.openpdf.rups.io.FileChooserAction;
+import org.openpdf.rups.io.FileCloseAction;
+import org.openpdf.rups.model.PdfFile;
+import org.openpdf.rups.view.Console;
+import org.openpdf.rups.view.PageSelectionListener;
+import org.openpdf.rups.view.RupsMenuBar;
+import org.openpdf.rups.view.itext.treenodes.PdfObjectTreeNode;
+import org.openpdf.rups.view.itext.treenodes.PdfTrailerTreeNode;
+import org.openpdf.text.DocumentException;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.io.File;
@@ -180,7 +180,7 @@ public class RupsController extends Observable
     // page navigation
 
     /**
-     * @see com.lowagie.rups.view.PageSelectionListener#gotoPage(int)
+     * @see org.openpdf.rups.view.PageSelectionListener#gotoPage(int)
      */
     public int gotoPage(int pageNumber) {
         readerController.gotoPage(pageNumber);

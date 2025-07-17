@@ -12,12 +12,12 @@
  *
  */
 
-package com.lowagie.examples.html;
+package org.openpdf.examples.html;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.html.simpleparser.HTMLWorker;
-import com.lowagie.text.html.simpleparser.StyleSheet;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Element;
+import org.openpdf.text.html.simpleparser.HTMLWorker;
+import org.openpdf.text.html.simpleparser.StyleSheet;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -95,8 +95,8 @@ public class ParseNestedHtmlList {
     private static void printElement(String depth, List<Element> elements) {
         for (Element element : elements) {
             System.out.println(depth + "- element.getClass() = " + element.getClass());
-            if (element instanceof com.lowagie.text.List) {
-                com.lowagie.text.List elementList = (com.lowagie.text.List) element;
+            if (element instanceof org.openpdf.text.List) {
+                org.openpdf.text.List elementList = (org.openpdf.text.List) element;
                 printElement(depth + "    ", elementList.getItems());
             } else {
                 System.out.println(depth + "  element = " + element.getChunks().get(0).toString());

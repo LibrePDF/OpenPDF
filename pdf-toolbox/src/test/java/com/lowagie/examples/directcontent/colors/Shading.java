@@ -11,15 +11,15 @@
  *
  *
  */
-package com.lowagie.examples.directcontent.colors;
+package org.openpdf.examples.directcontent.colors;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.CMYKColor;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfFunction;
-import com.lowagie.text.pdf.PdfShading;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.pdf.CMYKColor;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfFunction;
+import org.openpdf.text.pdf.PdfShading;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 
 /**

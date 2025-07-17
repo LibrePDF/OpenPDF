@@ -33,10 +33,10 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox.arguments;
+package org.openpdf.toolbox.arguments;
 
-import com.lowagie.text.PageSize;
-import com.lowagie.toolbox.AbstractTool;
+import org.openpdf.text.PageSize;
+import org.openpdf.toolbox.AbstractTool;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
 import java.util.TreeMap;
@@ -110,7 +110,7 @@ public class PageSizeArgument extends OptionArgument {
 
     /**
      * @return String
-     * @see com.lowagie.toolbox.arguments.StringArgument#getUsage()
+     * @see org.openpdf.toolbox.arguments.StringArgument#getUsage()
      */
     public String getUsage() {
         StringBuilder buf = new StringBuilder("  ");

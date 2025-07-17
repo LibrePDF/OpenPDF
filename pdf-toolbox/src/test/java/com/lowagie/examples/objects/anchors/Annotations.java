@@ -12,17 +12,17 @@
  *
  */
 
-package com.lowagie.examples.objects.anchors;
+package org.openpdf.examples.objects.anchors;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfAction;
-import com.lowagie.text.pdf.PdfAnnotation;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfDestination;
-import com.lowagie.text.pdf.PdfFileSpecification;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.PdfAction;
+import org.openpdf.text.pdf.PdfAnnotation;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfDestination;
+import org.openpdf.text.pdf.PdfFileSpecification;
+import org.openpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.FileOutputStream;
 

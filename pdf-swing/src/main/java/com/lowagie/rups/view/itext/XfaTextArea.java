@@ -1,7 +1,7 @@
-package com.lowagie.rups.view.itext;
+package org.openpdf.rups.view.itext;
 
-import com.lowagie.rups.io.OutputStreamResource;
-import com.lowagie.rups.io.TextAreaOutputStream;
+import org.openpdf.rups.io.OutputStreamResource;
+import org.openpdf.rups.io.TextAreaOutputStream;
 import java.io.IOException;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;

@@ -16,14 +16,14 @@
  *
  * @author Mark Thompson
  */
-package com.lowagie.examples.general.copystamp;
+package org.openpdf.examples.general.copystamp;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.PRAcroForm;
-import com.lowagie.text.pdf.PdfCopy;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.SimpleBookmark;
+import org.openpdf.text.Document;
+import org.openpdf.text.pdf.PRAcroForm;
+import org.openpdf.text.pdf.PdfCopy;
+import org.openpdf.text.pdf.PdfImportedPage;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.SimpleBookmark;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;

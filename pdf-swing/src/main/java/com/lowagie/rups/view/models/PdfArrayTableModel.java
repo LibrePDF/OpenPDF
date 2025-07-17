@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view.models;
+package org.openpdf.rups.view.models;
 
-import com.lowagie.text.pdf.PdfArray;
+import org.openpdf.text.pdf.PdfArray;
 import javax.swing.table.AbstractTableModel;
 
 /**

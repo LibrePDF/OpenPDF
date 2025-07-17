@@ -18,15 +18,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view.itext;
+package org.openpdf.rups.view.itext;
 
-import com.lowagie.rups.controller.PdfReaderController;
-import com.lowagie.rups.model.IndirectObjectFactory;
-import com.lowagie.rups.model.ObjectLoader;
-import com.lowagie.rups.view.models.JTableAutoModel;
-import com.lowagie.rups.view.models.JTableAutoModelInterface;
-import com.lowagie.text.pdf.PdfNull;
-import com.lowagie.text.pdf.PdfObject;
+import org.openpdf.rups.controller.PdfReaderController;
+import org.openpdf.rups.model.IndirectObjectFactory;
+import org.openpdf.rups.model.ObjectLoader;
+import org.openpdf.rups.view.models.JTableAutoModel;
+import org.openpdf.rups.view.models.JTableAutoModelInterface;
+import org.openpdf.text.pdf.PdfNull;
+import org.openpdf.text.pdf.PdfObject;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JTable;

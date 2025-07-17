@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.model;
+package org.openpdf.rups.model;
 
-import com.lowagie.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfReader;
 import java.util.Observable;
 
 /**
@@ -85,7 +85,7 @@ public class ObjectLoader extends BackgroundTask {
     }
 
     /**
-     * @see com.lowagie.rups.model.BackgroundTask#doTask()
+     * @see org.openpdf.rups.model.BackgroundTask#doTask()
      */
     @Override
     public void doTask() {

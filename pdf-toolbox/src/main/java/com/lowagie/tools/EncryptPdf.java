@@ -46,11 +46,11 @@
  * you aren't using an obsolete version:
  * https://github.com/LibrePDF/OpenPDF
  */
-package com.lowagie.tools;
+package org.openpdf.tools;
 
-import com.lowagie.text.pdf.PdfEncryptor;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.pdf.PdfEncryptor;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;

@@ -7,10 +7,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-package com.lowagie.examples.fonts;
+package org.openpdf.examples.fonts;
 
-import com.lowagie.text.pdf.LayoutProcessor;
-import com.lowagie.text.pdf.LayoutProcessor.Version;
+import org.openpdf.text.pdf.LayoutProcessor;
+import org.openpdf.text.pdf.LayoutProcessor.Version;
 
 /**
  * Calls glyph layout examples with current and deprecated version

@@ -12,12 +12,12 @@
  *
  */
 
-package com.lowagie.examples.html;
+package org.openpdf.examples.html;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.html.HtmlWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.html.HtmlWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 

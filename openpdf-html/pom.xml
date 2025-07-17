@@ -32,7 +32,7 @@
     </dependency>
     <dependency>
       <groupId>com.github.librepdf</groupId>
-      <artifactId>openpdf</artifactId>
+      <artifactId>openpdf-core-modern</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

@@ -1,6 +1,6 @@
-package com.lowagie.tools;
+package org.openpdf.tools;
 
-import com.lowagie.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfReader;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;

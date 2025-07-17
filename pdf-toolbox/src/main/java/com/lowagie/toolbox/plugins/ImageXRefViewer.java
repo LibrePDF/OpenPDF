@@ -33,18 +33,18 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox.plugins;
+package org.openpdf.toolbox.plugins;
 
-import com.lowagie.text.pdf.PRStream;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfObject;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStream;
-import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.arguments.AbstractArgument;
-import com.lowagie.toolbox.arguments.FileArgument;
-import com.lowagie.toolbox.arguments.filters.PdfFilter;
-import com.lowagie.toolbox.swing.EventDispatchingThread;
+import org.openpdf.text.pdf.PRStream;
+import org.openpdf.text.pdf.PdfName;
+import org.openpdf.text.pdf.PdfObject;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStream;
+import org.openpdf.toolbox.AbstractTool;
+import org.openpdf.toolbox.arguments.AbstractArgument;
+import org.openpdf.toolbox.arguments.FileArgument;
+import org.openpdf.toolbox.arguments.filters.PdfFilter;
+import org.openpdf.toolbox.swing.EventDispatchingThread;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Cursor;
@@ -115,14 +115,14 @@ public class ImageXRefViewer extends AbstractTool {
     /**
      * @return File
      * @throws InstantiationException on error
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
+     * @see org.openpdf.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         throw new InstantiationException("There is no file to show.");
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     * @see org.openpdf.toolbox.AbstractTool#createFrame()
      */
     protected void createFrame() {
         internalFrame = new JInternalFrame("View Image XObjects", true, false,
@@ -163,7 +163,7 @@ public class ImageXRefViewer extends AbstractTool {
 
     /**
      * @param arg StringArgument
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
+     * @see org.openpdf.toolbox.AbstractTool#valueHasChanged(org.openpdf.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         // do nothing
@@ -189,7 +189,7 @@ public class ImageXRefViewer extends AbstractTool {
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#execute()
+     * @see org.openpdf.toolbox.AbstractTool#execute()
      */
     public void execute() {
         total_number_of_pictures = 0;

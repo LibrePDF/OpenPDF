@@ -11,20 +11,20 @@
  *
  *
  */
-package com.lowagie.examples.objects.tables.pdfptable;
+package org.openpdf.examples.objects.tables.pdfptable;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfAction;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfPTableEvent;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.Element;
+import org.openpdf.text.Font;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.PdfAction;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfPTable;
+import org.openpdf.text.pdf.PdfPTableEvent;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 
 /**
@@ -100,8 +100,8 @@ public class TableEvents2 implements PdfPTableEvent {
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPTableEvent#tableLayout(com.lowagie.text.pdf.PdfPTable, float[][], float[], int,
-     * int, com.lowagie.text.pdf.PdfContentByte[])
+     * @see org.openpdf.text.pdf.PdfPTableEvent#tableLayout(org.openpdf.text.pdf.PdfPTable, float[][], float[], int,
+     * int, org.openpdf.text.pdf.PdfContentByte[])
      */
     public void tableLayout(PdfPTable table, float[][] width, float[] heights, int headerRows, int rowStart,
             PdfContentByte[] canvases) {

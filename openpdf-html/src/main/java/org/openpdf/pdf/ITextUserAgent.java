@@ -20,10 +20,10 @@
  */
 package org.openpdf.pdf;
 
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Image;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfReader;
+import org.openpdf.text.BadElementException;
+import org.openpdf.text.Image;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.PdfReader;
 import org.jspecify.annotations.Nullable;
 import org.openpdf.extend.FSImage;
 import org.openpdf.resource.ImageResource;

@@ -11,11 +11,11 @@
  *
  *
  */
-package com.lowagie.examples.general.copystamp;
+package org.openpdf.examples.general.copystamp;
 
-import com.lowagie.text.pdf.PdfEncryptor;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.pdf.PdfEncryptor;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 
 /**

@@ -11,18 +11,18 @@
  *
  *
  */
-package com.lowagie.examples.objects.tables.pdfptable;
+package org.openpdf.examples.objects.tables.pdfptable;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPCellEvent;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfPTableEvent;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfPCell;
+import org.openpdf.text.pdf.PdfPCellEvent;
+import org.openpdf.text.pdf.PdfPTable;
+import org.openpdf.text.pdf.PdfPTableEvent;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -68,8 +68,8 @@ public class FloatingBoxes implements PdfPCellEvent, PdfPTableEvent {
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPTableEvent#tableLayout(com.lowagie.text.pdf.PdfPTable, float[][], float[], int,
-     * int, com.lowagie.text.pdf.PdfContentByte[])
+     * @see org.openpdf.text.pdf.PdfPTableEvent#tableLayout(org.openpdf.text.pdf.PdfPTable, float[][], float[], int,
+     * int, org.openpdf.text.pdf.PdfContentByte[])
      */
     public void tableLayout(PdfPTable table, float[][] width, float[] height,
             int headerRows, int rowStart, PdfContentByte[] canvases) {
@@ -86,8 +86,8 @@ public class FloatingBoxes implements PdfPCellEvent, PdfPTableEvent {
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPCellEvent#cellLayout(com.lowagie.text.pdf.PdfPCell, com.lowagie.text.Rectangle,
-     * com.lowagie.text.pdf.PdfContentByte[])
+     * @see org.openpdf.text.pdf.PdfPCellEvent#cellLayout(org.openpdf.text.pdf.PdfPCell, org.openpdf.text.Rectangle,
+     * org.openpdf.text.pdf.PdfContentByte[])
      */
     public void cellLayout(PdfPCell cell, Rectangle position,
             PdfContentByte[] canvases) {

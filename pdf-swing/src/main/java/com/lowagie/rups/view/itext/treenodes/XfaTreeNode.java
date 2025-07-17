@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view.itext.treenodes;
+package org.openpdf.rups.view.itext.treenodes;
 
-import com.lowagie.rups.io.OutputStreamResource;
-import com.lowagie.text.pdf.PRStream;
-import com.lowagie.text.pdf.PdfReader;
+import org.openpdf.rups.io.OutputStreamResource;
+import org.openpdf.text.pdf.PRStream;
+import org.openpdf.text.pdf.PdfReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;

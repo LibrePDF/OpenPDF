@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.model;
+package org.openpdf.rups.model;
 
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.pdf.PdfWriter;
 
 /**
  * This class can tell you more about the permissions that are allowed on the PDF file.

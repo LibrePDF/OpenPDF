@@ -12,15 +12,15 @@
  *
  */
 
-package com.lowagie.examples.general;
+package org.openpdf.examples.general;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import com.lowagie.text.Anchor;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Anchor;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 import org.junit.jupiter.api.Test;
 

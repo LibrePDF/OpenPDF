@@ -11,12 +11,12 @@
  *
  *
  */
-package com.lowagie.examples.directcontent.graphics;
+package org.openpdf.examples.directcontent.graphics;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

@@ -18,14 +18,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view.icons;
+package org.openpdf.rups.view.icons;
 
 import java.util.HashMap;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
- * Class that fetches the icons in com.lowagie.trapeze.icons.
+ * Class that fetches the icons in org.openpdf.trapeze.icons.
  */
 public class IconFetcher {
 

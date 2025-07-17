@@ -47,15 +47,15 @@
  * https://github.com/LibrePDF/OpenPDF
  */
 
-package com.lowagie.tools;
+package org.openpdf.tools;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.PdfCopy;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStream;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.SimpleBookmark;
+import org.openpdf.text.Document;
+import org.openpdf.text.pdf.PdfCopy;
+import org.openpdf.text.pdf.PdfImportedPage;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStream;
+import org.openpdf.text.pdf.PdfWriter;
+import org.openpdf.text.pdf.SimpleBookmark;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;

@@ -12,16 +12,16 @@
  *
  */
 
-package com.lowagie.examples.objects.chunk;
+package org.openpdf.examples.objects.chunk;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPageEventHelper;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfPageEventHelper;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -88,8 +88,8 @@ public class Generic extends PdfPageEventHelper {
     /**
      * Draws an ellipse if the text was ellipse, a box if the text was box.
      *
-     * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter,
-     * com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
+     * @see org.openpdf.text.pdf.PdfPageEventHelper#onGenericTag(org.openpdf.text.pdf.PdfWriter,
+     * org.openpdf.text.Document, org.openpdf.text.Rectangle, java.lang.String)
      */
     public void onGenericTag(PdfWriter writer, Document document, Rectangle rect, String text) {
         if ("ellipse".equals(text)) {

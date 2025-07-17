@@ -1,11 +1,11 @@
-package com.lowagie.examples.html;
+package org.openpdf.examples.html;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.html.simpleparser.HTMLWorker;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.html.simpleparser.HTMLWorker;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

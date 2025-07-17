@@ -32,19 +32,19 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox.plugins;
+package org.openpdf.toolbox.plugins;
 
-import com.lowagie.text.pdf.PRIndirectReference;
-import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfObject;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.PdfString;
-import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.arguments.AbstractArgument;
-import com.lowagie.toolbox.arguments.FileArgument;
-import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import org.openpdf.text.pdf.PRIndirectReference;
+import org.openpdf.text.pdf.PdfDictionary;
+import org.openpdf.text.pdf.PdfName;
+import org.openpdf.text.pdf.PdfObject;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStamper;
+import org.openpdf.text.pdf.PdfString;
+import org.openpdf.toolbox.AbstractTool;
+import org.openpdf.toolbox.arguments.AbstractArgument;
+import org.openpdf.toolbox.arguments.FileArgument;
+import org.openpdf.toolbox.arguments.filters.PdfFilter;
 import java.io.File;
 import java.io.FileOutputStream;
 import javax.swing.JInternalFrame;
@@ -90,7 +90,7 @@ public class RemoveLaunchApplication
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     * @see org.openpdf.toolbox.AbstractTool#createFrame()
      */
     protected void createFrame() {
         internalFrame = new JInternalFrame("Remove Launch Applications", true, false, true);
@@ -100,7 +100,7 @@ public class RemoveLaunchApplication
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#execute()
+     * @see org.openpdf.toolbox.AbstractTool#execute()
      */
     public void execute() {
         try {
@@ -158,7 +158,7 @@ public class RemoveLaunchApplication
 
     /**
      * @param arg StringArgument
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
+     * @see org.openpdf.toolbox.AbstractTool#valueHasChanged(org.openpdf.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -171,7 +171,7 @@ public class RemoveLaunchApplication
     /**
      * @return File
      * @throws InstantiationException on error
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
+     * @see org.openpdf.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         return (File) getValue("destfile");

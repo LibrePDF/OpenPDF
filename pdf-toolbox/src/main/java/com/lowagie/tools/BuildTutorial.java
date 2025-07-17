@@ -46,7 +46,7 @@
  * you aren't using an obsolete version:
  * https://github.com/LibrePDF/OpenPDF
  */
-package com.lowagie.tools;
+package org.openpdf.tools;
 
 import java.io.File;
 import java.io.FileInputStream;

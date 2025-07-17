@@ -18,16 +18,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.model;
+package org.openpdf.rups.model;
 
-import com.lowagie.rups.view.itext.treenodes.PdfObjectTreeNode;
-import com.lowagie.rups.view.itext.treenodes.PdfPagesTreeNode;
-import com.lowagie.text.pdf.PdfArray;
-import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfIndirectReference;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfNull;
-import com.lowagie.text.pdf.PdfObject;
+import org.openpdf.rups.view.itext.treenodes.PdfObjectTreeNode;
+import org.openpdf.rups.view.itext.treenodes.PdfPagesTreeNode;
+import org.openpdf.text.pdf.PdfArray;
+import org.openpdf.text.pdf.PdfDictionary;
+import org.openpdf.text.pdf.PdfIndirectReference;
+import org.openpdf.text.pdf.PdfName;
+import org.openpdf.text.pdf.PdfNull;
+import org.openpdf.text.pdf.PdfObject;
 import java.util.ArrayList;
 import java.util.Enumeration;
 

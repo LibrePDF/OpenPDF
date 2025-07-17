@@ -7,16 +7,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-package com.lowagie.examples.fonts;
+package org.openpdf.examples.fonts;
 
 
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.pdf.AcroFields;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.LayoutProcessor;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
+import org.openpdf.text.Font;
+import org.openpdf.text.FontFactory;
+import org.openpdf.text.pdf.AcroFields;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.LayoutProcessor;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStamper;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Map;

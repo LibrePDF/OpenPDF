@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.io;
+package org.openpdf.rups.io;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -18,12 +18,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.model;
+package org.openpdf.rups.model;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.exceptions.BadPasswordException;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.RandomAccessFileOrArray;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.exceptions.BadPasswordException;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.RandomAccessFileOrArray;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JOptionPane;

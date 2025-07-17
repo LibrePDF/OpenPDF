@@ -8,16 +8,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-package com.lowagie.examples.objects.bookmarks;
+package org.openpdf.examples.objects.bookmarks;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.List;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfAction;
-import com.lowagie.text.pdf.PdfOutline;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.List;
+import org.openpdf.text.ListItem;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.pdf.PdfAction;
+import org.openpdf.text.pdf.PdfOutline;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import org.librepdf.openpdf.examples.content.Constants;
 

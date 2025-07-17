@@ -18,16 +18,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view.itext.treenodes;
+package org.openpdf.rups.view.itext.treenodes;
 
-import com.lowagie.rups.view.icons.IconFetcher;
-import com.lowagie.rups.view.icons.IconTreeNode;
-import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfIndirectReference;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfObject;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfString;
+import org.openpdf.rups.view.icons.IconFetcher;
+import org.openpdf.rups.view.icons.IconTreeNode;
+import org.openpdf.text.pdf.PdfDictionary;
+import org.openpdf.text.pdf.PdfIndirectReference;
+import org.openpdf.text.pdf.PdfName;
+import org.openpdf.text.pdf.PdfObject;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfString;
 
 /**
  * Every node in our tree corresponds with a PDF object. This class is the superclass of all tree nodes used.

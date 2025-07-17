@@ -31,11 +31,11 @@
  * the MPL version 1.1: http://www.mozilla.org/MPL/
  * A copy of the MPL license is bundled with the source code FYI.
  */
-package com.lowagie.toolbox.swing;
+package org.openpdf.toolbox.swing;
 
-import com.lowagie.text.pdf.PdfDate;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.RandomAccessFileOrArray;
+import org.openpdf.text.pdf.PdfDate;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.RandomAccessFileOrArray;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;

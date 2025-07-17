@@ -12,9 +12,9 @@
  *
  */
 
-package com.lowagie.examples.fonts;
+package org.openpdf.examples.fonts;
 
-import com.lowagie.text.pdf.BaseFont;
+import org.openpdf.text.pdf.BaseFont;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 

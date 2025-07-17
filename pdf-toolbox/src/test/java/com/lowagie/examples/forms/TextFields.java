@@ -12,18 +12,18 @@
  *
  */
 
-package com.lowagie.examples.forms;
+package org.openpdf.examples.forms;
 
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfBorderDictionary;
-import com.lowagie.text.pdf.PdfFormField;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.TextField;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Element;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.PdfBorderDictionary;
+import org.openpdf.text.pdf.PdfFormField;
+import org.openpdf.text.pdf.PdfWriter;
+import org.openpdf.text.pdf.TextField;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.io.IOException;
