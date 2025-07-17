@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view;
+package org.openpdf.rups.view;
 
-import com.lowagie.rups.io.FileChooserAction;
-import com.lowagie.rups.io.FileCloseAction;
-import com.lowagie.rups.io.filters.PdfFilter;
+import org.openpdf.rups.io.FileChooserAction;
+import org.openpdf.rups.io.FileCloseAction;
+import org.openpdf.rups.io.filters.PdfFilter;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Observable;

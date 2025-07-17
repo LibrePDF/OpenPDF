@@ -12,13 +12,13 @@
  *
  */
 
-package com.lowagie.examples.general.webapp;
+package org.openpdf.examples.general.webapp;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.html.HtmlWriter;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.html.HtmlWriter;
+import org.openpdf.text.pdf.PdfWriter;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,15 +1,15 @@
-package com.lowagie.toolbox.plugins.watermarker;
+package org.openpdf.toolbox.plugins.watermarker;
 
-import static com.lowagie.text.pdf.BaseFont.WINANSI;
-import static com.lowagie.text.pdf.BaseFont.createFont;
+import static org.openpdf.text.pdf.BaseFont.WINANSI;
+import static org.openpdf.text.pdf.BaseFont.createFont;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfGState;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfGState;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStamper;
 import java.awt.Color;
 import java.io.IOException;
 

@@ -12,13 +12,13 @@
  *
  */
 
-package com.lowagie.examples.objects;
+package org.openpdf.examples.objects;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Element;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.librepdf.openpdf.examples.content.Constants;

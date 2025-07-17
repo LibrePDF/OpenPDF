@@ -11,12 +11,12 @@
  *
  *
  */
-package com.lowagie.examples.forms.fill;
+package org.openpdf.examples.forms.fill;
 
-import com.lowagie.text.pdf.AcroFields;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.XfdfReader;
+import org.openpdf.text.pdf.AcroFields;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStamper;
+import org.openpdf.text.pdf.XfdfReader;
 import java.io.FileOutputStream;
 
 /**

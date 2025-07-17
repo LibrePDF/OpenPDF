@@ -33,9 +33,9 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox;
+package org.openpdf.toolbox;
 
-import com.lowagie.tools.Executable;
+import org.openpdf.tools.Executable;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -124,7 +124,7 @@ public class Toolbox extends JFrame implements ActionListener {
         desktop = new JDesktopPane();
         setJMenuBar(getMenubar());
         try {
-            setIconImage(new ImageIcon(com.lowagie.toolbox.Toolbox.class.getResource(
+            setIconImage(new ImageIcon(org.openpdf.toolbox.Toolbox.class.getResource(
                     "1t3xt.gif")).getImage());
         } catch (Exception err) {
             System.err.println("Problem loading icon image.");
@@ -162,7 +162,7 @@ public class Toolbox extends JFrame implements ActionListener {
      */
     public static void main(String[] args) {
         try {
-            Class.forName("com.lowagie.text.Document");
+            Class.forName("org.openpdf.text.Document");
         } catch (ClassNotFoundException e) {
             JOptionPane.showMessageDialog(null,
                     "You need the iText.jar in your CLASSPATH!",

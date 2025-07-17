@@ -12,15 +12,15 @@
  *
  */
 
-package com.lowagie.examples.objects.chunk;
+package org.openpdf.examples.objects.chunk;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.HyphenationAuto;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.pdf.HyphenationAuto;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 

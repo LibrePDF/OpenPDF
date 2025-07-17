@@ -11,19 +11,19 @@
  *
  *
  */
-package com.lowagie.examples.objects.tables.alternatives;
+package org.openpdf.examples.objects.tables.alternatives;
 
-import com.lowagie.text.Cell;
-import com.lowagie.text.Document;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.Table;
-import com.lowagie.text.alignment.HorizontalAlignment;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Cell;
+import org.openpdf.text.Document;
+import org.openpdf.text.Font;
+import org.openpdf.text.FontFactory;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.Table;
+import org.openpdf.text.alignment.HorizontalAlignment;
+import org.openpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.FileOutputStream;
 
@@ -108,19 +108,19 @@ public class RepeatingTable {
                 datatable.addCell("Yes");
 
             }
-            document.add(new Paragraph("com.lowagie.text.Table - Cells split"));
+            document.add(new Paragraph("org.openpdf.text.Table - Cells split"));
             document.add(datatable);
             document.newPage();
-            document.add(new Paragraph("com.lowagie.text.pdf.PdfPTable - Cells split\n\n"));
+            document.add(new Paragraph("org.openpdf.text.pdf.PdfPTable - Cells split\n\n"));
             datatable.setConvert2pdfptable(true);
             document.add(datatable);
             document.newPage();
-            document.add(new Paragraph("com.lowagie.text.Table - Cells kept together"));
+            document.add(new Paragraph("org.openpdf.text.Table - Cells kept together"));
             datatable.setConvert2pdfptable(false);
             datatable.setCellsFitPage(true);
             document.add(datatable);
             document.newPage();
-            document.add(new Paragraph("com.lowagie.text.pdf.PdfPTable - Cells kept together\n\n"));
+            document.add(new Paragraph("org.openpdf.text.pdf.PdfPTable - Cells kept together\n\n"));
             datatable.setConvert2pdfptable(true);
             document.add(datatable);
         } catch (Exception e) {

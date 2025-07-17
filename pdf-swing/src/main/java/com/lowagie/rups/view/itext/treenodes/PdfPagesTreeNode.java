@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view.itext.treenodes;
+package org.openpdf.rups.view.itext.treenodes;
 
-import com.lowagie.text.pdf.PdfDictionary;
+import org.openpdf.text.pdf.PdfDictionary;
 
 /**
  * A tree node corresponding with a Pages dictionary in a PDF file.

@@ -1,4 +1,4 @@
-package com.lowagie.rups.io.filters;
+package org.openpdf.rups.io.filters;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;

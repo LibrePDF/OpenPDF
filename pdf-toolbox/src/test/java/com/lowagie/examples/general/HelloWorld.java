@@ -12,14 +12,14 @@
  *
  */
 
-package com.lowagie.examples.general;
+package org.openpdf.examples.general;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfString;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.pdf.PdfName;
+import org.openpdf.text.pdf.PdfString;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 

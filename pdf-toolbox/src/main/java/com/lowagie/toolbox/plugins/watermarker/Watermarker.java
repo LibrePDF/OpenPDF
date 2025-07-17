@@ -1,11 +1,11 @@
-package com.lowagie.toolbox.plugins.watermarker;
+package org.openpdf.toolbox.plugins.watermarker;
 
 import static java.awt.Color.BLACK;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStamper;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

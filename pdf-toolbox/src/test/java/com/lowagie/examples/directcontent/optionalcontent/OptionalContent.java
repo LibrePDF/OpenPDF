@@ -11,26 +11,26 @@
  *
  *
  */
-package com.lowagie.examples.directcontent.optionalcontent;
+package org.openpdf.examples.directcontent.optionalcontent;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfAction;
-import com.lowagie.text.pdf.PdfBorderDictionary;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfFormField;
-import com.lowagie.text.pdf.PdfLayer;
-import com.lowagie.text.pdf.PdfLayerMembership;
-import com.lowagie.text.pdf.PdfTemplate;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.TextField;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.Element;
+import org.openpdf.text.Font;
+import org.openpdf.text.Image;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.ColumnText;
+import org.openpdf.text.pdf.PdfAction;
+import org.openpdf.text.pdf.PdfBorderDictionary;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfFormField;
+import org.openpdf.text.pdf.PdfLayer;
+import org.openpdf.text.pdf.PdfLayerMembership;
+import org.openpdf.text.pdf.PdfTemplate;
+import org.openpdf.text.pdf.PdfWriter;
+import org.openpdf.text.pdf.TextField;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.util.ArrayList;

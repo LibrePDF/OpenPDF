@@ -45,18 +45,18 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox.plugins;
+package org.openpdf.toolbox.plugins;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.arguments.AbstractArgument;
-import com.lowagie.toolbox.arguments.FileArgument;
-import com.lowagie.toolbox.arguments.filters.PdfFilter;
-import com.lowagie.toolbox.swing.PdfInformationPanel;
+import org.openpdf.text.Document;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfImportedPage;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfWriter;
+import org.openpdf.toolbox.AbstractTool;
+import org.openpdf.toolbox.arguments.AbstractArgument;
+import org.openpdf.toolbox.arguments.FileArgument;
+import org.openpdf.toolbox.arguments.filters.PdfFilter;
+import org.openpdf.toolbox.swing.PdfInformationPanel;
 import java.io.File;
 import java.io.FileOutputStream;
 import javax.swing.JInternalFrame;
@@ -96,7 +96,7 @@ public class Burst extends AbstractTool {
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     * @see org.openpdf.toolbox.AbstractTool#createFrame()
      */
     protected void createFrame() {
         internalFrame = new JInternalFrame("Burst", true, false, true);
@@ -106,7 +106,7 @@ public class Burst extends AbstractTool {
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#execute()
+     * @see org.openpdf.toolbox.AbstractTool#execute()
      */
     public void execute() {
         try {
@@ -158,7 +158,7 @@ public class Burst extends AbstractTool {
 
     /**
      * @param arg StringArgument
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
+     * @see org.openpdf.toolbox.AbstractTool#valueHasChanged(org.openpdf.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -171,7 +171,7 @@ public class Burst extends AbstractTool {
     /**
      * @return File
      * @throws InstantiationException on error
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
+     * @see org.openpdf.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         throw new InstantiationException("There is more than one destfile.");

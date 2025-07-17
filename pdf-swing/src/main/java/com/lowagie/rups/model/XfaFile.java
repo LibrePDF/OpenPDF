@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.model;
+package org.openpdf.rups.model;
 
-import com.lowagie.rups.io.OutputStreamResource;
+import org.openpdf.rups.io.OutputStreamResource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -71,7 +71,7 @@ public class XfaFile implements OutputStreamResource {
     /**
      * Writes a formatted XML file to the OutputStream.
      *
-     * @see com.lowagie.rups.io.OutputStreamResource#writeTo(java.io.OutputStream)
+     * @see org.openpdf.rups.io.OutputStreamResource#writeTo(java.io.OutputStream)
      */
     public void writeTo(OutputStream os) throws IOException {
         if (xfaDocument == null) {

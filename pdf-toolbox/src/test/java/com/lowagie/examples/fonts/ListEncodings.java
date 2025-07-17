@@ -11,10 +11,10 @@
  *
  *
  */
-package com.lowagie.examples.fonts;
+package org.openpdf.examples.fonts;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.pdf.BaseFont;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;

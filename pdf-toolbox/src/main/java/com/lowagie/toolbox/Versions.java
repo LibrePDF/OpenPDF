@@ -40,9 +40,9 @@
  * Current copyright holders are Bruno Lowagie and Carsten Hammer.
  */
 
-package com.lowagie.toolbox;
+package org.openpdf.toolbox;
 
-import com.lowagie.text.Document;
+import org.openpdf.text.Document;
 import java.awt.BorderLayout;
 import java.text.DateFormat;
 import java.text.ParseException;

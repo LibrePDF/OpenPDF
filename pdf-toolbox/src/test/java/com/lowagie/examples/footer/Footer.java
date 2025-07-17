@@ -1,12 +1,12 @@
-package com.lowagie.examples.footer;
+package org.openpdf.examples.footer;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.Element;
+import org.openpdf.text.HeaderFooter;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 

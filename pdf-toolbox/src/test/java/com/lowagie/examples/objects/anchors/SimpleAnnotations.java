@@ -12,17 +12,17 @@
  *
  */
 
-package com.lowagie.examples.objects.anchors;
+package org.openpdf.examples.objects.anchors;
 
-import com.lowagie.text.Annotation;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfAction;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Annotation;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.Image;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.pdf.PdfAction;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.net.URL;
 

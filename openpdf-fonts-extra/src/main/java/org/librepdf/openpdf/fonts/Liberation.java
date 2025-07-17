@@ -1,7 +1,7 @@
 package org.librepdf.openpdf.fonts;
 
-import com.lowagie.text.Font;
-import com.lowagie.text.pdf.BaseFont;
+import org.openpdf.text.Font;
+import org.openpdf.text.pdf.BaseFont;
 import java.io.IOException;
 
 public enum Liberation {

@@ -12,19 +12,19 @@
  *
  */
 
-package com.lowagie.examples.conformance;
+package org.openpdf.examples.conformance;
 
-import static com.lowagie.text.pdf.PdfWriter.PDFA1B;
+import static org.openpdf.text.pdf.PdfWriter.PDFA1B;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.xml.xmp.XmpWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Font;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.PdfDictionary;
+import org.openpdf.text.pdf.PdfName;
+import org.openpdf.text.pdf.PdfWriter;
+import org.openpdf.text.xml.xmp.XmpWriter;
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.io.ByteArrayOutputStream;

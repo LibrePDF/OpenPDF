@@ -12,22 +12,22 @@
  *
  */
 
-package com.lowagie.examples.forms.create;
+package org.openpdf.examples.forms.create;
 
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Image;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.Barcode;
-import com.lowagie.text.pdf.BarcodeEAN;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Element;
+import org.openpdf.text.Font;
+import org.openpdf.text.FontFactory;
+import org.openpdf.text.Image;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.Barcode;
+import org.openpdf.text.pdf.BarcodeEAN;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfPTable;
+import org.openpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.io.IOException;

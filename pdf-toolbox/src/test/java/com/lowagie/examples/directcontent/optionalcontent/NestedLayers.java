@@ -11,21 +11,21 @@
  *
  *
  */
-package com.lowagie.examples.directcontent.optionalcontent;
+package org.openpdf.examples.directcontent.optionalcontent;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfArray;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfLayer;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfOCProperties;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.Element;
+import org.openpdf.text.Font;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.pdf.ColumnText;
+import org.openpdf.text.pdf.PdfArray;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfDictionary;
+import org.openpdf.text.pdf.PdfLayer;
+import org.openpdf.text.pdf.PdfName;
+import org.openpdf.text.pdf.PdfOCProperties;
+import org.openpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.FileOutputStream;
 

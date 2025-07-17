@@ -11,13 +11,13 @@
  *
  *
  */
-package com.lowagie.examples.objects.images;
+package org.openpdf.examples.objects.images;
 
-import com.lowagie.text.Annotation;
-import com.lowagie.text.Document;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Annotation;
+import org.openpdf.text.Document;
+import org.openpdf.text.Image;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 
 /**

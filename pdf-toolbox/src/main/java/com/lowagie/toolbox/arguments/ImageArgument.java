@@ -33,17 +33,17 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox.arguments;
+package org.openpdf.toolbox.arguments;
 
-import com.lowagie.text.Image;
-import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.arguments.filters.ImageFilter;
+import org.openpdf.text.Image;
+import org.openpdf.toolbox.AbstractTool;
+import org.openpdf.toolbox.arguments.filters.ImageFilter;
 import java.awt.event.ActionEvent;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * StringArgument class if the argument is a com.lowagie.text.Image.
+ * StringArgument class if the argument is a org.openpdf.text.Image.
  *
  * @since 2.1.1 (imported from itexttoolbox project)
  */

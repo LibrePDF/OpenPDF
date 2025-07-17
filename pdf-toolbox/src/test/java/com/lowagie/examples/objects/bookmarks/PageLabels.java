@@ -12,15 +12,15 @@
  *
  */
 
-package com.lowagie.examples.objects.bookmarks;
+package org.openpdf.examples.objects.bookmarks;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfPageLabels;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.pdf.PdfPageLabels;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;

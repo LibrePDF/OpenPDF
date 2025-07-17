@@ -11,14 +11,14 @@
  *
  *
  */
-package com.lowagie.examples.directcontent.coordinates;
+package org.openpdf.examples.directcontent.coordinates;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Image;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

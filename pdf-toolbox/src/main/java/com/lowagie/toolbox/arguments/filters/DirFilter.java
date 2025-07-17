@@ -33,7 +33,7 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox.arguments.filters;
+package org.openpdf.toolbox.arguments.filters;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;

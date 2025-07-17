@@ -1,10 +1,10 @@
-package com.lowagie.toolbox.plugins.watermarker;
+package org.openpdf.toolbox.plugins.watermarker;
 
 import static java.awt.Color.RED;
 import static java.nio.file.Files.readAllBytes;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.lowagie.text.DocumentException;
+import org.openpdf.text.DocumentException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;

@@ -18,20 +18,20 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view.itext;
+package org.openpdf.rups.view.itext;
 
-import com.lowagie.rups.controller.PdfReaderController;
-import com.lowagie.rups.model.ObjectLoader;
-import com.lowagie.rups.model.TreeNodeFactory;
-import com.lowagie.rups.view.PageSelectionListener;
-import com.lowagie.rups.view.itext.treenodes.PdfObjectTreeNode;
-import com.lowagie.rups.view.itext.treenodes.PdfPageTreeNode;
-import com.lowagie.rups.view.itext.treenodes.PdfPagesTreeNode;
-import com.lowagie.rups.view.itext.treenodes.PdfTrailerTreeNode;
-import com.lowagie.rups.view.models.JTableAutoModel;
-import com.lowagie.rups.view.models.JTableAutoModelInterface;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfPageLabels;
+import org.openpdf.rups.controller.PdfReaderController;
+import org.openpdf.rups.model.ObjectLoader;
+import org.openpdf.rups.model.TreeNodeFactory;
+import org.openpdf.rups.view.PageSelectionListener;
+import org.openpdf.rups.view.itext.treenodes.PdfObjectTreeNode;
+import org.openpdf.rups.view.itext.treenodes.PdfPageTreeNode;
+import org.openpdf.rups.view.itext.treenodes.PdfPagesTreeNode;
+import org.openpdf.rups.view.itext.treenodes.PdfTrailerTreeNode;
+import org.openpdf.rups.view.models.JTableAutoModel;
+import org.openpdf.rups.view.models.JTableAutoModelInterface;
+import org.openpdf.text.pdf.PdfName;
+import org.openpdf.text.pdf.PdfPageLabels;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Observable;

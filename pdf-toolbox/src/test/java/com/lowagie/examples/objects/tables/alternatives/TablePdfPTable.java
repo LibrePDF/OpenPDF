@@ -11,15 +11,15 @@
  *
  *
  */
-package com.lowagie.examples.objects.tables.alternatives;
+package org.openpdf.examples.objects.tables.alternatives;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.SimpleCell;
-import com.lowagie.text.SimpleTable;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.Element;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.SimpleCell;
+import org.openpdf.text.SimpleTable;
+import org.openpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.FileOutputStream;
 

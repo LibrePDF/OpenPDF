@@ -11,13 +11,13 @@
  *
  *
  */
-package com.lowagie.examples.objects.tables.alternatives;
+package org.openpdf.examples.objects.tables.alternatives;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Table;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Table;
+import org.openpdf.text.pdf.PdfWriter;
 import java.awt.Point;
 import java.io.FileOutputStream;
 import java.io.IOException;

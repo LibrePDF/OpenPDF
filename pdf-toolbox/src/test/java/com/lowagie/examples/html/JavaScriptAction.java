@@ -12,14 +12,14 @@
  *
  */
 
-package com.lowagie.examples.html;
+package org.openpdf.examples.html;
 
-import com.lowagie.text.Anchor;
-import com.lowagie.text.Document;
-import com.lowagie.text.Header;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.html.HtmlTags;
-import com.lowagie.text.html.HtmlWriter;
+import org.openpdf.text.Anchor;
+import org.openpdf.text.Document;
+import org.openpdf.text.Header;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.html.HtmlTags;
+import org.openpdf.text.html.HtmlWriter;
 import java.io.FileOutputStream;
 
 /**

@@ -33,18 +33,18 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox.plugins;
+package org.openpdf.toolbox.plugins;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.PRAcroForm;
-import com.lowagie.text.pdf.PdfCopy;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.arguments.AbstractArgument;
-import com.lowagie.toolbox.arguments.FileArgument;
-import com.lowagie.toolbox.arguments.StringArgument;
-import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import org.openpdf.text.Document;
+import org.openpdf.text.pdf.PRAcroForm;
+import org.openpdf.text.pdf.PdfCopy;
+import org.openpdf.text.pdf.PdfImportedPage;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.toolbox.AbstractTool;
+import org.openpdf.toolbox.arguments.AbstractArgument;
+import org.openpdf.toolbox.arguments.FileArgument;
+import org.openpdf.toolbox.arguments.StringArgument;
+import org.openpdf.toolbox.arguments.filters.PdfFilter;
 import java.io.File;
 import java.io.FileOutputStream;
 import javax.swing.JInternalFrame;
@@ -86,7 +86,7 @@ public class SelectedPages extends AbstractTool {
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     * @see org.openpdf.toolbox.AbstractTool#createFrame()
      */
     protected void createFrame() {
         internalFrame = new JInternalFrame("SelectedPages", true, false, true);
@@ -96,7 +96,7 @@ public class SelectedPages extends AbstractTool {
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#execute()
+     * @see org.openpdf.toolbox.AbstractTool#execute()
      */
     public void execute() {
         try {
@@ -138,7 +138,7 @@ public class SelectedPages extends AbstractTool {
 
     /**
      * @param arg StringArgument
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
+     * @see org.openpdf.toolbox.AbstractTool#valueHasChanged(org.openpdf.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -151,7 +151,7 @@ public class SelectedPages extends AbstractTool {
     /**
      * @return File
      * @throws InstantiationException on error
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
+     * @see org.openpdf.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         return (File) getValue("destfile");

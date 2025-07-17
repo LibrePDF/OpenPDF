@@ -11,18 +11,18 @@
  *
  *
  */
-package com.lowagie.examples.objects.columns;
+package org.openpdf.examples.objects.columns;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Image;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfTemplate;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Element;
+import org.openpdf.text.FontFactory;
+import org.openpdf.text.Image;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.pdf.ColumnText;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfTemplate;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.librepdf.openpdf.examples.content.Constants;

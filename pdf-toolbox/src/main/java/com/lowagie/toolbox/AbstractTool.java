@@ -33,10 +33,10 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox;
+package org.openpdf.toolbox;
 
-import com.lowagie.toolbox.arguments.AbstractArgument;
-import com.lowagie.tools.Executable;
+import org.openpdf.toolbox.arguments.AbstractArgument;
+import org.openpdf.tools.Executable;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

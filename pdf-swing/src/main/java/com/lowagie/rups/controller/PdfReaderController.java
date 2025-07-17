@@ -18,24 +18,24 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.controller;
+package org.openpdf.rups.controller;
 
-import com.lowagie.rups.model.ObjectLoader;
-import com.lowagie.rups.model.PdfFile;
-import com.lowagie.rups.model.TreeNodeFactory;
-import com.lowagie.rups.view.PageSelectionListener;
-import com.lowagie.rups.view.RupsMenuBar;
-import com.lowagie.rups.view.itext.FormTree;
-import com.lowagie.rups.view.itext.OutlineTree;
-import com.lowagie.rups.view.itext.PagesTable;
-import com.lowagie.rups.view.itext.PdfObjectPanel;
-import com.lowagie.rups.view.itext.PdfTree;
-import com.lowagie.rups.view.itext.StreamTextArea;
-import com.lowagie.rups.view.itext.XRefTable;
-import com.lowagie.rups.view.itext.treenodes.PdfObjectTreeNode;
-import com.lowagie.rups.view.itext.treenodes.PdfTrailerTreeNode;
-import com.lowagie.text.pdf.PRStream;
-import com.lowagie.text.pdf.PdfObject;
+import org.openpdf.rups.model.ObjectLoader;
+import org.openpdf.rups.model.PdfFile;
+import org.openpdf.rups.model.TreeNodeFactory;
+import org.openpdf.rups.view.PageSelectionListener;
+import org.openpdf.rups.view.RupsMenuBar;
+import org.openpdf.rups.view.itext.FormTree;
+import org.openpdf.rups.view.itext.OutlineTree;
+import org.openpdf.rups.view.itext.PagesTable;
+import org.openpdf.rups.view.itext.PdfObjectPanel;
+import org.openpdf.rups.view.itext.PdfTree;
+import org.openpdf.rups.view.itext.StreamTextArea;
+import org.openpdf.rups.view.itext.XRefTable;
+import org.openpdf.rups.view.itext.treenodes.PdfObjectTreeNode;
+import org.openpdf.rups.view.itext.treenodes.PdfTrailerTreeNode;
+import org.openpdf.text.pdf.PRStream;
+import org.openpdf.text.pdf.PdfObject;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JScrollPane;

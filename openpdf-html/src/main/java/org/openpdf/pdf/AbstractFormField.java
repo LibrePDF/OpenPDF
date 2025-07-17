@@ -19,7 +19,7 @@
  */
 package org.openpdf.pdf;
 
-import com.lowagie.text.pdf.PdfTemplate;
+import org.openpdf.text.pdf.PdfTemplate;
 import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Element;
 import org.openpdf.css.parser.FSCMYKColor;

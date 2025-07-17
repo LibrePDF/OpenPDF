@@ -11,25 +11,25 @@
  *
  *
  */
-package com.lowagie.examples.directcontent.pageevents;
+package org.openpdf.examples.directcontent.pageevents;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfGState;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfPageEventHelper;
-import com.lowagie.text.pdf.PdfTemplate;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.Element;
+import org.openpdf.text.ExceptionConverter;
+import org.openpdf.text.Font;
+import org.openpdf.text.Image;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfGState;
+import org.openpdf.text.pdf.PdfPTable;
+import org.openpdf.text.pdf.PdfPageEventHelper;
+import org.openpdf.text.pdf.PdfTemplate;
+import org.openpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.FileOutputStream;
 
@@ -89,8 +89,8 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPageEventHelper#onOpenDocument(com.lowagie.text.pdf.PdfWriter,
-     * com.lowagie.text.Document)
+     * @see org.openpdf.text.pdf.PdfPageEventHelper#onOpenDocument(org.openpdf.text.pdf.PdfWriter,
+     * org.openpdf.text.Document)
      */
     public void onOpenDocument(PdfWriter writer, Document document) {
         try {
@@ -122,7 +122,7 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPageEventHelper#onEndPage(com.lowagie.text.pdf.PdfWriter, com.lowagie.text.Document)
+     * @see org.openpdf.text.pdf.PdfPageEventHelper#onEndPage(org.openpdf.text.pdf.PdfWriter, org.openpdf.text.Document)
      */
     public void onEndPage(PdfWriter writer, Document document) {
         PdfContentByte cb = writer.getDirectContent();
@@ -177,8 +177,8 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPageEventHelper#onStartPage(com.lowagie.text.pdf.PdfWriter,
-     * com.lowagie.text.Document)
+     * @see org.openpdf.text.pdf.PdfPageEventHelper#onStartPage(org.openpdf.text.pdf.PdfWriter,
+     * org.openpdf.text.Document)
      */
     public void onStartPage(PdfWriter writer, Document document) {
         if (writer.getPageNumber() < 3) {
@@ -195,8 +195,8 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
     }
 
     /**
-     * @see com.lowagie.text.pdf.PdfPageEventHelper#onCloseDocument(com.lowagie.text.pdf.PdfWriter,
-     * com.lowagie.text.Document)
+     * @see org.openpdf.text.pdf.PdfPageEventHelper#onCloseDocument(org.openpdf.text.pdf.PdfWriter,
+     * org.openpdf.text.Document)
      */
     public void onCloseDocument(PdfWriter writer, Document document) {
         tpl.beginText();

@@ -32,10 +32,10 @@
  * the MPL version 1.1: http://www.mozilla.org/MPL/
  * A copy of the MPL license is bundled with the source code FYI.
  */
-package com.lowagie.toolbox.arguments;
+package org.openpdf.toolbox.arguments;
 
-import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.swing.CustomDialog;
+import org.openpdf.toolbox.AbstractTool;
+import org.openpdf.toolbox.swing.CustomDialog;
 import java.awt.event.ActionEvent;
 
 /**

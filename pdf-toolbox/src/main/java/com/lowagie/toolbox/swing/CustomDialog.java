@@ -32,7 +32,7 @@
  * the MPL version 1.1: http://www.mozilla.org/MPL/
  * A copy of the MPL license is bundled with the source code FYI.
  */
-package com.lowagie.toolbox.swing;
+package org.openpdf.toolbox.swing;
 
 import java.awt.Toolkit;
 import javax.swing.JDialog;

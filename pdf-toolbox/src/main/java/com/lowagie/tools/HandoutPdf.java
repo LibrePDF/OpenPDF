@@ -48,17 +48,17 @@
  * https://github.com/LibrePDF/OpenPDF
  */
 
-package com.lowagie.tools;
+package org.openpdf.tools;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.error_messages.MessageLocalization;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.error_messages.MessageLocalization;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfImportedPage;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 
 /**

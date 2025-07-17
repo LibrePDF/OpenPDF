@@ -11,19 +11,19 @@
  *
  *
  */
-package com.lowagie.examples.directcontent.colors;
+package org.openpdf.examples.directcontent.colors;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Image;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.GrayColor;
-import com.lowagie.text.pdf.PatternColor;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPatternPainter;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.Font;
+import org.openpdf.text.FontFactory;
+import org.openpdf.text.Image;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.GrayColor;
+import org.openpdf.text.pdf.PatternColor;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfPatternPainter;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 
 /**

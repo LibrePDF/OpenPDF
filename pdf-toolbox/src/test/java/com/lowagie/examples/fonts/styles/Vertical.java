@@ -11,17 +11,17 @@
  *
  *
  */
-package com.lowagie.examples.fonts.styles;
+package org.openpdf.examples.fonts.styles;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.VerticalText;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.Element;
+import org.openpdf.text.Font;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfWriter;
+import org.openpdf.text.pdf.VerticalText;
 import java.awt.Color;
 import java.io.FileOutputStream;
 

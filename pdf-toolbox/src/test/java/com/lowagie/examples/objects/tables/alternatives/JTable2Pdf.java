@@ -11,12 +11,12 @@
  *
  *
  */
-package com.lowagie.examples.objects.tables.alternatives;
+package org.openpdf.examples.objects.tables.alternatives;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfWriter;
 import java.awt.BorderLayout;
 import java.awt.Graphics2D;
 import java.awt.Shape;

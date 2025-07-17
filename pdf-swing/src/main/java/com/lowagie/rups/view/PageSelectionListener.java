@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view;
+package org.openpdf.rups.view;
 
 /**
  * Interface that has to be implemented by every class that listens to page navigation features; keys that are pressed,

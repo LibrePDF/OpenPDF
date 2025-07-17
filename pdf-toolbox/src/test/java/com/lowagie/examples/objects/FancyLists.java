@@ -12,16 +12,16 @@
  *
  */
 
-package com.lowagie.examples.objects;
+package org.openpdf.examples.objects;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.GreekList;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.RomanList;
-import com.lowagie.text.ZapfDingbatsList;
-import com.lowagie.text.ZapfDingbatsNumberList;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.GreekList;
+import org.openpdf.text.ListItem;
+import org.openpdf.text.RomanList;
+import org.openpdf.text.ZapfDingbatsList;
+import org.openpdf.text.ZapfDingbatsNumberList;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 

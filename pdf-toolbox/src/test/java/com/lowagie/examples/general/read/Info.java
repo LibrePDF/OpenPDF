@@ -11,9 +11,9 @@
  *
  *
  */
-package com.lowagie.examples.general.read;
+package org.openpdf.examples.general.read;
 
-import com.lowagie.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 

@@ -18,10 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups.view.itext.treenodes;
+package org.openpdf.rups.view.itext.treenodes;
 
-import com.lowagie.rups.view.icons.IconFetcher;
-import com.lowagie.rups.view.icons.IconTreeNode;
+import org.openpdf.rups.view.icons.IconFetcher;
+import org.openpdf.rups.view.icons.IconTreeNode;
 import java.util.List;
 import org.dom4j.Attribute;
 import org.dom4j.Branch;

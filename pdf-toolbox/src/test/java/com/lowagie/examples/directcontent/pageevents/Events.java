@@ -11,25 +11,25 @@
  *
  *
  */
-package com.lowagie.examples.directcontent.pageevents;
+package org.openpdf.examples.directcontent.pageevents;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.ElementTags;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.TextElementArray;
-import com.lowagie.text.html.Markup;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPageEventHelper;
-import com.lowagie.text.pdf.PdfTemplate;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.xml.SAXmyHandler;
-import com.lowagie.text.xml.TagMap;
-import com.lowagie.text.xml.XmlPeer;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.ElementTags;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Rectangle;
+import org.openpdf.text.TextElementArray;
+import org.openpdf.text.html.Markup;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfPageEventHelper;
+import org.openpdf.text.pdf.PdfTemplate;
+import org.openpdf.text.pdf.PdfWriter;
+import org.openpdf.text.xml.SAXmyHandler;
+import org.openpdf.text.xml.TagMap;
+import org.openpdf.text.xml.XmlPeer;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -151,8 +151,8 @@ public class Events {
         /**
          * Every speaker will be tagged, so that he can be added to the list of speakers.
          *
-         * @see com.lowagie.text.pdf.PdfPageEventHelper#onGenericTag(com.lowagie.text.pdf.PdfWriter,
-         * com.lowagie.text.Document, com.lowagie.text.Rectangle, java.lang.String)
+         * @see org.openpdf.text.pdf.PdfPageEventHelper#onGenericTag(org.openpdf.text.pdf.PdfWriter,
+         * org.openpdf.text.Document, org.openpdf.text.Rectangle, java.lang.String)
          */
         public void onGenericTag(PdfWriter writer, Document document,
                 Rectangle rect, String text) {
@@ -163,8 +163,8 @@ public class Events {
          * The first thing to do when the document is opened, is to define the BaseFont, get the Direct Content object
          * and create the template that will hold the final number of pages.
          *
-         * @see com.lowagie.text.pdf.PdfPageEventHelper#onOpenDocument(com.lowagie.text.pdf.PdfWriter,
-         * com.lowagie.text.Document)
+         * @see org.openpdf.text.pdf.PdfPageEventHelper#onOpenDocument(org.openpdf.text.pdf.PdfWriter,
+         * org.openpdf.text.Document)
          */
         public void onOpenDocument(PdfWriter writer, Document document) {
             try {
@@ -179,8 +179,8 @@ public class Events {
         /**
          * Every ACT is seen as a Chapter. We get the title of the act, so that we can display it in the header.
          *
-         * @see com.lowagie.text.pdf.PdfPageEventHelper#onChapter(com.lowagie.text.pdf.PdfWriter,
-         * com.lowagie.text.Document, float, com.lowagie.text.Paragraph)
+         * @see org.openpdf.text.pdf.PdfPageEventHelper#onChapter(org.openpdf.text.pdf.PdfWriter,
+         * org.openpdf.text.Document, float, org.openpdf.text.Paragraph)
          */
         public void onChapter(PdfWriter writer, Document document,
                 float paragraphPosition, Paragraph title) {
@@ -196,8 +196,8 @@ public class Events {
          * After the content of the page is written, we put page X of Y at the bottom of the page and we add either
          * "Romeo and Juliet" of the title of the current act as a header.
          *
-         * @see com.lowagie.text.pdf.PdfPageEventHelper#onEndPage(com.lowagie.text.pdf.PdfWriter,
-         * com.lowagie.text.Document)
+         * @see org.openpdf.text.pdf.PdfPageEventHelper#onEndPage(org.openpdf.text.pdf.PdfWriter,
+         * org.openpdf.text.Document)
          */
         public void onEndPage(PdfWriter writer, Document document) {
             int pageN = writer.getPageNumber();
@@ -223,8 +223,8 @@ public class Events {
         /**
          * Just before the document is closed, we add the final number of pages to the template.
          *
-         * @see com.lowagie.text.pdf.PdfPageEventHelper#onCloseDocument(com.lowagie.text.pdf.PdfWriter,
-         * com.lowagie.text.Document)
+         * @see org.openpdf.text.pdf.PdfPageEventHelper#onCloseDocument(org.openpdf.text.pdf.PdfWriter,
+         * org.openpdf.text.Document)
          */
         public void onCloseDocument(PdfWriter writer, Document document) {
             template.beginText();

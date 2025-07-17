@@ -46,25 +46,25 @@
  * you aren't using an obsolete version:
  * https://github.com/LibrePDF/OpenPDF
  */
-package com.lowagie.toolbox.plugins;
+package org.openpdf.toolbox.plugins;
 
-import com.lowagie.text.Anchor;
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Header;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Section;
-import com.lowagie.text.html.HtmlTags;
-import com.lowagie.text.html.HtmlWriter;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.SimpleBookmark;
-import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.arguments.AbstractArgument;
-import com.lowagie.toolbox.arguments.FileArgument;
-import com.lowagie.toolbox.arguments.StringArgument;
-import com.lowagie.toolbox.arguments.filters.PdfFilter;
-import com.lowagie.tools.Executable;
+import org.openpdf.text.Anchor;
+import org.openpdf.text.Chapter;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.Header;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Section;
+import org.openpdf.text.html.HtmlTags;
+import org.openpdf.text.html.HtmlWriter;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.SimpleBookmark;
+import org.openpdf.toolbox.AbstractTool;
+import org.openpdf.toolbox.arguments.AbstractArgument;
+import org.openpdf.toolbox.arguments.FileArgument;
+import org.openpdf.toolbox.arguments.StringArgument;
+import org.openpdf.toolbox.arguments.filters.PdfFilter;
+import org.openpdf.tools.Executable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
@@ -180,7 +180,7 @@ public class HtmlBookmarks extends AbstractTool {
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#createFrame()
+     * @see org.openpdf.toolbox.AbstractTool#createFrame()
      */
     protected void createFrame() {
         internalFrame = new JInternalFrame("Html Bookmarks", true, true, true);
@@ -190,7 +190,7 @@ public class HtmlBookmarks extends AbstractTool {
     }
 
     /**
-     * @see com.lowagie.toolbox.AbstractTool#execute()
+     * @see org.openpdf.toolbox.AbstractTool#execute()
      */
     public void execute() {
         try {
@@ -271,7 +271,7 @@ public class HtmlBookmarks extends AbstractTool {
 
     /**
      * @param arg StringArgument
-     * @see com.lowagie.toolbox.AbstractTool#valueHasChanged(com.lowagie.toolbox.arguments.AbstractArgument)
+     * @see org.openpdf.toolbox.AbstractTool#valueHasChanged(org.openpdf.toolbox.arguments.AbstractArgument)
      */
     public void valueHasChanged(AbstractArgument arg) {
         if (internalFrame == null) {
@@ -284,7 +284,7 @@ public class HtmlBookmarks extends AbstractTool {
     /**
      * @return File
      * @throws InstantiationException on error
-     * @see com.lowagie.toolbox.AbstractTool#getDestPathPDF()
+     * @see org.openpdf.toolbox.AbstractTool#getDestPathPDF()
      */
     protected File getDestPathPDF() throws InstantiationException {
         throw new InstantiationException("There is no file to show.");

@@ -33,9 +33,9 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox.arguments;
+package org.openpdf.toolbox.arguments;
 
-import com.lowagie.toolbox.AbstractTool;
+import org.openpdf.toolbox.AbstractTool;
 import java.awt.event.ActionEvent;
 import java.util.TreeMap;
 import javax.swing.JComboBox;
@@ -92,7 +92,7 @@ public class OptionArgument extends AbstractArgument {
 
     /**
      * @return String
-     * @see com.lowagie.toolbox.arguments.StringArgument#getUsage()
+     * @see org.openpdf.toolbox.arguments.StringArgument#getUsage()
      */
     public String getUsage() {
         StringBuilder buf = new StringBuilder(super.getUsage());

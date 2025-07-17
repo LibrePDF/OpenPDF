@@ -32,9 +32,9 @@
  * the MPL version 1.1: http://www.mozilla.org/MPL/
  * A copy of the MPL license is bundled with the source code FYI.
  */
-package com.lowagie.toolbox.arguments;
+package org.openpdf.toolbox.arguments;
 
-import com.lowagie.toolbox.AbstractTool;
+import org.openpdf.toolbox.AbstractTool;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import javax.swing.JColorChooser;

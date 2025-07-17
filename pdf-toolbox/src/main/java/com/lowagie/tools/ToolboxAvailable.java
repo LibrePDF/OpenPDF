@@ -46,10 +46,10 @@
  * you aren't using an obsolete version:
  * https://github.com/LibrePDF/OpenPDF
  */
-package com.lowagie.tools;
+package org.openpdf.tools;
 
-import com.lowagie.text.Document;
-import com.lowagie.toolbox.Toolbox;
+import org.openpdf.text.Document;
+import org.openpdf.toolbox.Toolbox;
 import java.awt.GraphicsEnvironment;
 import javax.swing.JOptionPane;
 
@@ -68,7 +68,7 @@ public class ToolboxAvailable {
                 Toolbox.main(args);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,
-                        "You need the iText-toolbox.jar with class com.lowagie.toolbox.Toolbox to use the iText Toolbox.",
+                        "You need the iText-toolbox.jar with class org.openpdf.toolbox.Toolbox to use the iText Toolbox.",
                         Document.getVersion() + " Toolbox error",
                         JOptionPane.ERROR_MESSAGE);
             }

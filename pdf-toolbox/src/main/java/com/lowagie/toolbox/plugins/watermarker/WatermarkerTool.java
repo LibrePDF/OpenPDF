@@ -33,22 +33,22 @@
  * A copy of the MPL license is bundled with the source code FYI.
  */
 
-package com.lowagie.toolbox.plugins.watermarker;
+package org.openpdf.toolbox.plugins.watermarker;
 
 import static java.awt.Color.BLACK;
 import static java.awt.Color.decode;
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.toolbox.AbstractTool;
-import com.lowagie.toolbox.arguments.AbstractArgument;
-import com.lowagie.toolbox.arguments.FileArgument;
-import com.lowagie.toolbox.arguments.FloatArgument;
-import com.lowagie.toolbox.arguments.IntegerArgument;
-import com.lowagie.toolbox.arguments.StringArgument;
-import com.lowagie.toolbox.arguments.filters.PdfFilter;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStamper;
+import org.openpdf.toolbox.AbstractTool;
+import org.openpdf.toolbox.arguments.AbstractArgument;
+import org.openpdf.toolbox.arguments.FileArgument;
+import org.openpdf.toolbox.arguments.FloatArgument;
+import org.openpdf.toolbox.arguments.IntegerArgument;
+import org.openpdf.toolbox.arguments.StringArgument;
+import org.openpdf.toolbox.arguments.filters.PdfFilter;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -91,7 +91,7 @@ public class WatermarkerTool extends AbstractTool {
      * This methods helps you running this tool as a standalone application.
      *
      * <p>
-     * Call it like this from command line: java com.lowagie.tools.plugins.Watermarker input.pdf Draft 230 0.2
+     * Call it like this from command line: java org.openpdf.tools.plugins.Watermarker input.pdf Draft 230 0.2
      * output.pdf #FF000000
      *
      * <p>

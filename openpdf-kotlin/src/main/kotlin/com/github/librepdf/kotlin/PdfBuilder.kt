@@ -1,11 +1,11 @@
 package com.github.librepdf.kotlin
 
-import com.lowagie.text.Document
-import com.lowagie.text.Element
-import com.lowagie.text.Font
-import com.lowagie.text.Image
-import com.lowagie.text.Paragraph
-import com.lowagie.text.pdf.PdfWriter
+import org.openpdf.text.Document
+import org.openpdf.text.Element
+import org.openpdf.text.Font
+import org.openpdf.text.Image
+import org.openpdf.text.Paragraph
+import org.openpdf.text.pdf.PdfWriter
 import java.io.OutputStream
 
 /**

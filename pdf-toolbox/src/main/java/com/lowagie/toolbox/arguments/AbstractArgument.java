@@ -1,6 +1,6 @@
-package com.lowagie.toolbox.arguments;
+package org.openpdf.toolbox.arguments;
 
-import com.lowagie.toolbox.AbstractTool;
+import org.openpdf.toolbox.AbstractTool;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;

@@ -11,16 +11,16 @@
  *
  *
  */
-package com.lowagie.examples.objects.columns;
+package org.openpdf.examples.objects.columns;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.MultiColumnText;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.Element;
+import org.openpdf.text.Font;
+import org.openpdf.text.FontFactory;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.pdf.MultiColumnText;
+import org.openpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

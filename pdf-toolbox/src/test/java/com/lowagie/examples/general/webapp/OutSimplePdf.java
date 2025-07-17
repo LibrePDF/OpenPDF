@@ -12,12 +12,12 @@
  *
  */
 
-package com.lowagie.examples.general.webapp;
+package org.openpdf.examples.general.webapp;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Chunk;
+import org.openpdf.text.Document;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.pdf.PdfWriter;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

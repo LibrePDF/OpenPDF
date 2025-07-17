@@ -30,7 +30,7 @@
  * code.
  */
 
-package com.lowagie.toolbox.swing;
+package org.openpdf.toolbox.swing;
 
 import javax.swing.SwingUtilities;
 

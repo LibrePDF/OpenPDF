@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.lowagie.rups;
+package org.openpdf.rups;
 
-import com.lowagie.rups.controller.RupsController;
+import org.openpdf.rups.controller.RupsController;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JFrame;

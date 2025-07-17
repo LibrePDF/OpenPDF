@@ -47,9 +47,9 @@
  * you aren't using an obsolete version:
  * https://github.com/LibrePDF/OpenPDF
  */
-package com.lowagie.tools;
+package org.openpdf.tools;
 
-import com.lowagie.text.error_messages.MessageLocalization;
+import org.openpdf.text.error_messages.MessageLocalization;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;

@@ -11,14 +11,14 @@
  *
  *
  */
-package com.lowagie.examples.objects;
+package org.openpdf.examples.objects;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Font;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.FontSelector;
-import com.lowagie.text.pdf.PdfWriter;
+import org.openpdf.text.Document;
+import org.openpdf.text.Font;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.pdf.FontSelector;
+import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 
 /**
