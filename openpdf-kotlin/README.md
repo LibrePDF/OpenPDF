@@ -10,6 +10,10 @@ This submodule makes OpenPDF more convenient and expressive for Kotlin developer
 
 Kotlin pull requests are welcome!
 
+## Kotlin based OpenPDF projects!
+
+* https://github.com/ralfstuckert/openpdf-markdown
+
 ---
 
 ## Example Usage
