@@ -18,6 +18,8 @@ Kotlin pull requests are welcome!
 
 ## Example Usage
 
+### Make PDF file from HTML:
+
 ```kotlin
 import java.io.FileOutputStream
 import com.github.librepdf.html.HtmlPdfBuilder
@@ -44,6 +46,8 @@ HtmlPdfBuilder(outputStream).apply {
 
 ```
 
+
+### Make PDF file using Kotlin code:
 ```kotlin
 import com.github.librepdf.kotlin.PdfBuilder
 import java.io.FileOutputStream
