@@ -1,3 +1,11 @@
+# Changes made on July 28 2025 by @santiago-rius
+Following this thread: https://github.com/LibrePDF/OpenPDF/issues/199 in which the issue of blank pages is described.
+I removed the newLine(); from openpdf-core-legacy/src/main/java/com/lowagie/text/pdf/PdfDocument.java in line 698.
+
+This prevents a newLine being added after a table which in turn prevents blank pages from being added when the table is 
+near the bottom of the page.
+
+
 # OpenPDF is an open source Java library for PDF files
 
 OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source

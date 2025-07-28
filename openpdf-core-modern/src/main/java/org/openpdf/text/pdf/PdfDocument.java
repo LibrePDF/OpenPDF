@@ -693,7 +693,6 @@ public class PdfDocument extends Document {
 
                         addPTable(ptable);
                         pageEmpty = false;
-                        newLine();
                     }
 
                     break;

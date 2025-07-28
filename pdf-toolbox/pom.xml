@@ -4,9 +4,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.github.librepdf</groupId>
-    <artifactId>openpdf-parent</artifactId>
-    <version>2.4.0-SNAPSHOT</version>
+<groupId>uy.makesoftware.gano</groupId>    <artifactId>openpdf-parent</artifactId>
+    <version>2.4.0</version>
   </parent>
 
   <artifactId>pdf-toolbox</artifactId>
@@ -20,8 +19,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.github.librepdf</groupId>
-      <artifactId>openpdf-core-modern</artifactId>
+  <groupId>uy.makesoftware.gano</groupId>      <artifactId>openpdf-core-modern</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
