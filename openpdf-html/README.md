@@ -72,7 +72,7 @@ This project is licensed under the **GNU Lesser General Public License (LGPL)**.
 - Refactor architecture for better modularity
 - Add support for HTML5 tags and CSS3 properties
 - Add comprehensive tests and sample HTML templates
-- Publish Maven/Gradle artifacts for easy adoption
+- JavaScript
 
 ## Contributions
 
