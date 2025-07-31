@@ -11,7 +11,8 @@ The goal of this project is to upgrade and maintain the HTML-to-PDF rendering en
 ## Features
 
 - Modern HTML5 support (in progress)
-- Uses neko-htmlunit as HTML parser, which will enable HTML5 parsing: https://github.com/HtmlUnit/htmlunit-neko  (also considering using Jsoup for HTML parsing)
+- Uses neko-htmlunit as HTML parser, which will enable HTML5 parsing: https://github.com/HtmlUnit/htmlunit-neko
+- also considering using Jsoup for HTML parsing: https://jsoup.org/
 - Improved CSS3 compatibility
 - Seamless integration with OpenPDF
 - Modular architecture for easier maintenance and extension
@@ -64,6 +65,7 @@ This project is licensed under the **GNU Lesser General Public License (LGPL)**.
 
 - [Flying Saucer (original project)](https://github.com/flyingsaucerproject/flyingsaucer)
 - [OpenPDF](https://github.com/LibrePDF/OpenPDF)
+- [htmlunit-neko](https://github.com/HtmlUnit/htmlunit-neko)
 
 ## Roadmap
 
