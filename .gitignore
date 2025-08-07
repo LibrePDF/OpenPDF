@@ -187,5 +187,5 @@ buildNumber.properties
 !openpdf/src/test/resources/*.pdf
 !openpdf/src/test/resources/*.html
 !openpdf/src/test/resources/issue375/*.pdf
-!pdf-toolbox/src/test/resources/com/lowagie/examples/html/parseHelloWorld.html
+!pdf-toolbox/src/test/resources/*
 !pdf-toolbox/src/test/resources/*.pdf
