@@ -102,7 +102,7 @@ import java.util.Properties;
 public class Document implements DocListener {
 
     // membervariables
-    private static final String VERSION_PROPERTIES = "com/lowagie/text/version.properties";
+    private static final String VERSION_PROPERTIES = "org/openpdf/text/version.properties";
     private static final String OPENPDF = "OpenPDF";
     private static final String RELEASE;
     private static final String OPENPDF_VERSION;

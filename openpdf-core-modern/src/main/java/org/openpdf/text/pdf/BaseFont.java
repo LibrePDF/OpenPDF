@@ -309,7 +309,7 @@ public abstract class BaseFont {
     /**
      * The path to the font resources.
      */
-    public static final String RESOURCE_PATH = "com/lowagie/text/pdf/fonts/";
+    public static final String RESOURCE_PATH = "org/openpdf/text/pdf/fonts/";
     /**
      * The fake CID code that represents a newline.
      */

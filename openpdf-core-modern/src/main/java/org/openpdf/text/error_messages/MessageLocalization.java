@@ -68,7 +68,7 @@ import java.util.Set;
  */
 public final class MessageLocalization {
 
-    private static final String BASE_PATH = "com/lowagie/text/error_messages/";
+    private static final String BASE_PATH = "org/openpdf/text/error_messages/";
     private static Map<String, String> defaultLanguage = new HashMap<>();
     private static Map<String, String> currentLanguage;
 
