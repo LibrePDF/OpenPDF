@@ -155,6 +155,8 @@ We have now different versions of OpenPDF, and they require different versions o
 * [Openpdf-core-modern](openpdf-core-modern) - Maven artifactId: openpdf-core-modern. This is the modern OpenPDF 
   core package, which uses the new Java package name `org.openpdf`. This is the recommended package to use in new code.
 
+We will soon begin on the OpenPDF 3.0 version which uses only the org.openpdf package name.
+
 ### UTF-8 Fonts
 
 As of 1.3.21 the UTF-8 Liberation fonts moved to its own module, to reduce the size of the OpenPDF
