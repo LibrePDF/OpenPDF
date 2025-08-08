@@ -9,5 +9,7 @@ Open and Free PDF library. It uses the old package name `com.lowagie`.
 * [Openpdf-core-modern](/openpdf-core-modern) - Maven artifactId: openpdf-core-modern. This is the modern OpenPDF 
   core package, which uses the new Java package name `org.openpdf`. This is the recommended package to use in new code.
 
+We will soon begin on the OpenPDF 3.0 version which uses only the org.openpdf package name.
+
 ## Notes:
 - Bug-fixes only, don't add new features to this.
