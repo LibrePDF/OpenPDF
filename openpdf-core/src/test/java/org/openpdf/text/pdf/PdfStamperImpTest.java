@@ -12,7 +12,7 @@ class PdfStamperImpTest {
     void getPdfLayers_isBackwardsCompatible() throws IOException {
         // given
         PdfReader reader = new PdfReader(DocumentProducerHelper.createHelloWorldDocumentBytes());
-        PdfStamperImp testMe = new PdfStamperImp(reader, null, '\0', false);
+        PdfStamperImp testMe = new PdfStamperImp(reader, null, null, false);
         // when
         @SuppressWarnings("rawtypes")
         Map layers = testMe.getPdfLayers();
@@ -24,7 +24,7 @@ class PdfStamperImpTest {
     void getPdfLayersWithGenerics_isBackwardsCompatible() throws IOException {
         // given
         PdfReader reader = new PdfReader(DocumentProducerHelper.createHelloWorldDocumentBytes());
-        PdfStamperImp testMe = new PdfStamperImp(reader, null, '\0', false);
+        PdfStamperImp testMe = new PdfStamperImp(reader, null, null, false);
         // when
         Map<String, PdfLayer> layers = testMe.getPdfLayers();
         // then

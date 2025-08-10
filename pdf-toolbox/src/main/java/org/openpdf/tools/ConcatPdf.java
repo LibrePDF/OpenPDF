@@ -107,7 +107,7 @@ public class ConcatPdf {
 
         Document document = new Document();
         PdfCopy writer = new PdfCopy(document, new BufferedOutputStream(Files.newOutputStream(target.toPath())));
-        writer.setPdfVersion(PdfWriter.VERSION_1_7);
+        writer.setPdfVersion(PdfWriter.VERSION_2_0);
         writer.setFullCompression();
         writer.setCompressionLevel(PdfStream.BEST_COMPRESSION);
         document.open();

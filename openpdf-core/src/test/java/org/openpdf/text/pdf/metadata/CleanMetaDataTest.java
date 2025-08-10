@@ -138,7 +138,7 @@ public class CleanMetaDataTest {
     public void skipMetaDataUpdateTest() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfReader reader = new PdfReader(new File("src/test/resources/HelloWorldMeta.pdf").getAbsolutePath());
-        PdfStamper stamp = new PdfStamper(reader, baos, '\0', true);
+        PdfStamper stamp = new PdfStamper(reader, baos, null, true);
         stamp.setUpdateMetadata(false);
         stamp.cleanMetadata();
         stamp.close();
@@ -151,7 +151,7 @@ public class CleanMetaDataTest {
     public void skipMetaDataUpdateFirstRevisionTest() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfReader reader = new PdfReader(new File("src/test/resources/HelloWorldMeta.pdf").getAbsolutePath());
-        PdfStamper stamp = new PdfStamper(reader, baos, '\0', false);
+        PdfStamper stamp = new PdfStamper(reader, baos, null, false);
         stamp.setUpdateMetadata(false);
         stamp.cleanMetadata();
         stamp.close();
@@ -164,7 +164,7 @@ public class CleanMetaDataTest {
     public void skipInfoUpdateTest() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfReader reader = new PdfReader(new File("src/test/resources/HelloWorldMeta.pdf").getAbsolutePath());
-        PdfStamper stamp = new PdfStamper(reader, baos, '\0', true);
+        PdfStamper stamp = new PdfStamper(reader, baos, null, true);
 
         HashMap<String, String> moreInfo = createCleanerMoreInfo();
         moreInfo.put("Producer", Document.getVersion());
@@ -188,7 +188,7 @@ public class CleanMetaDataTest {
     public void skipInfoUpdateFirstRevisionTest() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfReader reader = new PdfReader(new File("src/test/resources/HelloWorldMeta.pdf").getAbsolutePath());
-        PdfStamper stamp = new PdfStamper(reader, baos, '\0', false);
+        PdfStamper stamp = new PdfStamper(reader, baos, null, false);
 
         HashMap<String, String> moreInfo = createCleanerMoreInfo();
         moreInfo.put("Producer", Document.getVersion());

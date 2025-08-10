@@ -10,7 +10,7 @@ class HtmlPdfBuilder(private val outputStream: OutputStream) {
   private var htmlContent: String? = null
   private var baseUrl: String? = null
   private var scaleToFit: Boolean = false
-  private var pdfVersion: Char? = null
+  private var pdfVersion: String? = null
 
   /**
    * Set the HTML content to render.
@@ -28,7 +28,7 @@ class HtmlPdfBuilder(private val outputStream: OutputStream) {
    *
    * @param version One of PdfWriter.VERSION_1_2 through VERSION_1_7
    */
-  fun pdfVersion(version: Char) {
+  fun pdfVersion(version: String) {
     this.pdfVersion = version
   }
 

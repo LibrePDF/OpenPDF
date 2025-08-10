@@ -127,13 +127,13 @@ class PdfCopyFieldsImp extends PdfWriter {
     private boolean hasSignature;
 
     PdfCopyFieldsImp(OutputStream os) throws DocumentException {
-        this(os, '\0');
+        this(os, null);
     }
 
-    PdfCopyFieldsImp(OutputStream os, char pdfVersion) throws DocumentException {
+    PdfCopyFieldsImp(OutputStream os, String pdfVersion) throws DocumentException {
         super(new PdfDocument(), os);
         pdf.addWriter(this);
-        if (pdfVersion != 0) {
+        if (pdfVersion != null) {
             super.setPdfVersion(pdfVersion);
         }
         nd = new Document();

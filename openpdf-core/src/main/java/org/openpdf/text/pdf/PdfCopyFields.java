@@ -83,7 +83,7 @@ public class PdfCopyFields
      * @param pdfVersion the pdf version the output will have
      * @throws DocumentException on error
      */
-    public PdfCopyFields(OutputStream os, char pdfVersion) throws DocumentException {
+    public PdfCopyFields(OutputStream os, String pdfVersion) throws DocumentException {
         fc = new PdfCopyFieldsImp(os, pdfVersion);
     }
 

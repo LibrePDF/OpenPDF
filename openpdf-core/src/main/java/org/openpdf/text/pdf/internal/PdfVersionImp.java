@@ -85,7 +85,7 @@ public class PdfVersionImp implements PdfVersion {
     /**
      * The version that was or will be written to the header.
      */
-    protected char header_version = PdfWriter.VERSION_1_5;
+    protected String header_version = PdfWriter.VERSION_2_0;
     /**
      * The version that will be written to the catalog.
      */
@@ -100,7 +100,7 @@ public class PdfVersionImp implements PdfVersion {
     /**
      * @see org.openpdf.text.pdf.interfaces.PdfVersion#setPdfVersion(char)
      */
-    public void setPdfVersion(char version) {
+    public void setPdfVersion(String version) {
         if (headerWasWritten || appendmode) {
             setPdfVersion(getVersionAsName(version));
         } else {
@@ -111,12 +111,24 @@ public class PdfVersionImp implements PdfVersion {
     /**
      * @see org.openpdf.text.pdf.interfaces.PdfVersion#setAtLeastPdfVersion(char)
      */
-    public void setAtLeastPdfVersion(char version) {
-        if (version > header_version) {
+    public void setAtLeastPdfVersion(String version) {
+        if (comparePdfVersions(version, header_version) > 0) {
             setPdfVersion(version);
         }
     }
 
+    public int comparePdfVersions(String v1, String v2) {
+        String[] p1 = v1.split("\\.");
+        String[] p2 = v2.split("\\.");
+        int major1 = Integer.parseInt(p1[0]);
+        int major2 = Integer.parseInt(p2[0]);
+        if (major1 != major2) {
+            return Integer.compare(major1, major2);
+        }
+        int minor1 = (p1.length > 1) ? Integer.parseInt(p1[1]) : 0;
+        int minor2 = (p2.length > 1) ? Integer.parseInt(p2[1]) : 0;
+        return Integer.compare(minor1, minor2);
+    }
     /**
      * @see org.openpdf.text.pdf.interfaces.PdfVersion#setPdfVersion(org.openpdf.text.pdf.PdfName)
      */
@@ -158,7 +170,7 @@ public class PdfVersionImp implements PdfVersion {
      * @param version the version character.
      * @return a PdfName that contains the version
      */
-    public PdfName getVersionAsName(char version) {
+    public PdfName getVersionAsName(String version) {
         switch (version) {
             case PdfWriter.VERSION_1_2:
                 return PdfWriter.PDF_VERSION_1_2;
@@ -172,8 +184,10 @@ public class PdfVersionImp implements PdfVersion {
                 return PdfWriter.PDF_VERSION_1_6;
             case PdfWriter.VERSION_1_7:
                 return PdfWriter.PDF_VERSION_1_7;
+            case PdfWriter.VERSION_2_0:
+                return PdfWriter.PDF_VERSION_2_0;
             default:
-                return PdfWriter.PDF_VERSION_1_4;
+                return PdfWriter.PDF_VERSION_2_0;
         }
     }
 
@@ -183,7 +197,7 @@ public class PdfVersionImp implements PdfVersion {
      * @param version the version character
      * @return a byte array containing the version according to the ISO-8859-1 codepage.
      */
-    public byte[] getVersionAsByteArray(char version) {
+    public byte[] getVersionAsByteArray(String version) {
         return DocWriter.getISOBytes(getVersionAsName(version).toString().substring(1));
     }
 

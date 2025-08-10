@@ -238,15 +238,26 @@ public class PRTokeniser implements AutoCloseable {
                 String.valueOf(file.getFilePointer())));
     }
 
-    public char checkPdfHeader() throws IOException {
+    public String checkPdfHeader() throws IOException {
         file.setStartOffset(0);
         String str = readString(1024);
         int idx = str.indexOf("%PDF-");
         if (idx < 0) {
-            throw new InvalidPdfException(MessageLocalization.getComposedMessage("pdf.header.not.found"));
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("pdf.header.not.found"));
         }
         file.setStartOffset(idx);
-        return str.charAt(idx + 7);
+
+        int start = idx + 5;
+        int end = start;
+        while (end < str.length()) {
+            char c = str.charAt(end);
+            if (!Character.isDigit(c) && c != '.') {
+                break;
+            }
+            end++;
+        }
+        return str.substring(start, end);
     }
 
     public void checkFdfHeader() throws IOException {
