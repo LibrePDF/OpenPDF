@@ -121,11 +121,11 @@ public class PdfWriter extends DocWriter implements
     /**
      * possible PDF version (header)
      */
-    public static final char VERSION_1_2 = '2';
+    public static final String VERSION_1_2 = "1.2";
     /**
      * possible PDF version (header)
      */
-    public static final char VERSION_1_3 = '3';
+    public static final String VERSION_1_3 = "1.3";
 
 //    ESSENTIALS
 
@@ -133,19 +133,21 @@ public class PdfWriter extends DocWriter implements
     /**
      * possible PDF version (header)
      */
-    public static final char VERSION_1_4 = '4';
+    public static final String VERSION_1_4 = "1.4";
     /**
      * possible PDF version (header)
      */
-    public static final char VERSION_1_5 = '5';
+    public static final String VERSION_1_5 = "1.5";
     /**
      * possible PDF version (header)
      */
-    public static final char VERSION_1_6 = '6';
+    public static final String VERSION_1_6 = "1.6";
     /**
      * possible PDF version (header)
      */
-    public static final char VERSION_1_7 = '7';
+    public static final String VERSION_1_7 = "1.7";
+
+    public static final String VERSION_2_0 = "2.0";
 
 //    the PdfDocument instance
     /**
@@ -183,6 +185,14 @@ public class PdfWriter extends DocWriter implements
      * possible PDF version (catalog)
      */
     public static final PdfName PDF_VERSION_1_7 = new PdfName("1.7");
+
+
+    /**
+     * possible PDF version (catalog)
+     */
+    public static final PdfName PDF_VERSION_2_0 = new PdfName("2.0");
+
+
     /**
      * A viewer preference
      */
@@ -1424,7 +1434,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see org.openpdf.text.pdf.interfaces.PdfVersion#setAtLeastPdfVersion(char)
      */
-    public void setAtLeastPdfVersion(char version) {
+    public void setAtLeastPdfVersion(String version) {
         pdf_version.setAtLeastPdfVersion(version);
     }
 
@@ -1446,7 +1456,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * @see org.openpdf.text.pdf.interfaces.PdfVersion#setPdfVersion(char)
      */
-    public void setPdfVersion(char version) {
+    public void setPdfVersion(String version) {
         pdf_version.setPdfVersion(version);
     }
 
@@ -1665,7 +1675,7 @@ public class PdfWriter extends DocWriter implements
      * @param collection a dictionary of type PdfCollection
      */
     public void setCollection(PdfCollection collection) {
-        setAtLeastPdfVersion(VERSION_1_7);
+        setAtLeastPdfVersion(VERSION_2_0);
         pdf.setCollection(collection);
     }
 

@@ -60,7 +60,7 @@ public class Signing {
             PdfReader reader = new PdfReader(baos.toByteArray());
             // A verified signature would require a private key plus a valid certificate. see the JavaDoc of this
             // method for details
-            PdfStamper stp = PdfStamper.createSignature(reader, baos, '\0', null, true);
+            PdfStamper stp = PdfStamper.createSignature(reader, baos, null, null, true);
 
             Calendar signDate = Calendar.getInstance();
             stp.setEnforcedModificationDate(signDate);

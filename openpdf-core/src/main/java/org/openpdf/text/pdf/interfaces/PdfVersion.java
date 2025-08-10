@@ -64,9 +64,9 @@ public interface PdfVersion {
      * If the PDF Header hasn't been written yet, this changes the version as it will appear in the PDF Header. If the
      * PDF header was already written to the OutputStream, this changes the version as it will appear in the Catalog.
      *
-     * @param version a character representing the PDF version
+     * @param version a String representing the PDF version
      */
-    void setPdfVersion(char version);
+    void setPdfVersion(String version);
 
     /**
      * If the PDF Header hasn't been written yet, this changes the version as it will appear in the PDF Header, but only
@@ -75,7 +75,7 @@ public interface PdfVersion {
      *
      * @param version a character representing the PDF version
      */
-    void setAtLeastPdfVersion(char version);
+    void setAtLeastPdfVersion(String version);
 
     /**
      * Sets the PDF version as it will appear in the Catalog. Note that this only has effect if you use a later version

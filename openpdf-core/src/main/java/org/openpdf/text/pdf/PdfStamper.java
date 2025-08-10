@@ -100,7 +100,7 @@ public class PdfStamper
      * @throws IOException       on error
      */
     public PdfStamper(PdfReader reader, OutputStream os) throws DocumentException, IOException {
-        stamper = new PdfStamperImp(reader, os, '\0', false);
+        stamper = new PdfStamperImp(reader, os, null, false);
     }
 
     /**
@@ -112,7 +112,7 @@ public class PdfStamper
      * @throws DocumentException on error
      * @throws IOException       on error
      */
-    public PdfStamper(PdfReader reader, OutputStream os, char pdfVersion) throws DocumentException, IOException {
+    public PdfStamper(PdfReader reader, OutputStream os, String pdfVersion) throws DocumentException, IOException {
         stamper = new PdfStamperImp(reader, os, pdfVersion, false);
     }
 
@@ -127,7 +127,7 @@ public class PdfStamper
      * @throws DocumentException on error
      * @throws IOException       on error
      */
-    public PdfStamper(PdfReader reader, OutputStream os, char pdfVersion, boolean append)
+    public PdfStamper(PdfReader reader, OutputStream os, String pdfVersion, boolean append)
             throws DocumentException, IOException {
         stamper = new PdfStamperImp(reader, os, pdfVersion, append);
     }
@@ -170,7 +170,7 @@ public class PdfStamper
      * @throws DocumentException on error
      * @throws IOException       on error
      */
-    public static PdfStamper createSignature(PdfReader reader, OutputStream os, char pdfVersion, File tempFile,
+    public static PdfStamper createSignature(PdfReader reader, OutputStream os, String pdfVersion, File tempFile,
             boolean append) throws DocumentException, IOException {
         PdfStamper stp;
         if (tempFile == null) {
@@ -233,7 +233,7 @@ public class PdfStamper
      * @throws DocumentException on error
      * @throws IOException       on error
      */
-    public static PdfStamper createSignature(PdfReader reader, OutputStream os, char pdfVersion)
+    public static PdfStamper createSignature(PdfReader reader, OutputStream os, String pdfVersion)
             throws DocumentException, IOException {
         return createSignature(reader, os, pdfVersion, null, false);
     }
@@ -273,7 +273,7 @@ public class PdfStamper
      * @throws DocumentException on error
      * @throws IOException       on error
      */
-    public static PdfStamper createSignature(PdfReader reader, OutputStream os, char pdfVersion, File tempFile)
+    public static PdfStamper createSignature(PdfReader reader, OutputStream os, String pdfVersion, File tempFile)
             throws DocumentException, IOException {
         return createSignature(reader, os, pdfVersion, tempFile, false);
     }

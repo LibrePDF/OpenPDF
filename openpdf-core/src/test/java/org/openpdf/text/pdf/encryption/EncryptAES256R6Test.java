@@ -73,7 +73,7 @@ class EncryptAES256R6Test {
         try (InputStream resource = getClass().getResourceAsStream("/issue375/pwProtectedAES256_openPDFiss375.pdf");
                 OutputStream os = new FileOutputStream(result)) {
             PdfReader pdfReader = new PdfReader(resource);
-            PdfStamper pdfStamper = new PdfStamper(pdfReader, os, (char) 0, true);
+            PdfStamper pdfStamper = new PdfStamper(pdfReader, os, null, true);
 
             Rectangle box = pdfReader.getPageSize(1);
             PdfContentByte canvas = pdfStamper.getOverContent(1);

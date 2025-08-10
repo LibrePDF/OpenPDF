@@ -40,7 +40,7 @@ public class PdfSignatureAppearanceTest {
                     PdfReader reader = new PdfReader(is)) {
                 originalDocId = reader.getDocumentId();
 
-                PdfStamper stp = PdfStamper.createSignature(reader, baos, '\0', null, true);
+                PdfStamper stp = PdfStamper.createSignature(reader, baos, null, null, true);
                 stp.setEnforcedModificationDate(signDate);
                 stp.setOverrideFileId(overrideFileId);
 
@@ -115,7 +115,7 @@ public class PdfSignatureAppearanceTest {
                     PdfReader reader = new PdfReader(is)) {
                 originalDocId = reader.getDocumentId();
 
-                PdfStamper stp = PdfStamper.createSignature(reader, baos, '\0', null, true);
+                PdfStamper stp = PdfStamper.createSignature(reader, baos, null, null, true);
                 stp.setEnforcedModificationDate(signDate);
                 stp.setOverrideFileId(overrideFileId);
 

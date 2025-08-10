@@ -115,7 +115,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     protected boolean tampered = false;
     protected int lastXref;
     protected int eofPos;
-    protected char pdfVersion;
+    protected String pdfVersion;
     protected PdfEncryption decrypt;
     protected byte[] password = null; // added by ujihara for decryption
     protected Key certificateKey = null; // added by Aiken Sam for certificate
@@ -2853,7 +2853,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      *
      * @return the PDF version
      */
-    public char getPdfVersion() {
+    public String getPdfVersion() {
         return pdfVersion;
     }
 

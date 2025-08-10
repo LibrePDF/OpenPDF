@@ -117,7 +117,7 @@ class PdfStamperImp extends PdfWriter {
      * @throws DocumentException on error
      * @throws IOException
      */
-    PdfStamperImp(PdfReader reader, OutputStream os, char pdfVersion, boolean append)
+    PdfStamperImp(PdfReader reader, OutputStream os, String pdfVersion, boolean append)
             throws DocumentException, IOException {
         super(new PdfDocument(), os);
         if (!reader.isOpenedWithFullPermissions()) {
@@ -151,7 +151,7 @@ class PdfStamperImp extends PdfWriter {
             prevxref = reader.getLastXref();
             reader.setAppendable(true);
         } else {
-            if (pdfVersion == 0) {
+            if (pdfVersion == null || pdfVersion.isEmpty()) {
                 super.setPdfVersion(reader.getPdfVersion());
             } else {
                 super.setPdfVersion(pdfVersion);

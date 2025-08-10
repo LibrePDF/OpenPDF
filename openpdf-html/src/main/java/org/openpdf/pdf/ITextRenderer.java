@@ -95,7 +95,7 @@ public class ITextRenderer {
     // check for null before calling writer.setPdfVersion()
     // use one of the values in PDFWriter.VERSION...
     @Nullable
-    private Character _pdfVersion;
+    private String _pdfVersion;
 
     @Nullable
     private PdfPageEvent pdfPageEvent;
@@ -105,13 +105,14 @@ public class ITextRenderer {
 
     private boolean scaleToFit;
 
-    private final char[] validPdfVersions = {
+    private final String[] validPdfVersions = {
             PdfWriter.VERSION_1_2,
             PdfWriter.VERSION_1_3,
             PdfWriter.VERSION_1_4,
             PdfWriter.VERSION_1_5,
             PdfWriter.VERSION_1_6,
-            PdfWriter.VERSION_1_7
+            PdfWriter.VERSION_1_7,
+            PdfWriter.VERSION_2_0
     };
 
     @Nullable
@@ -252,7 +253,7 @@ public class ITextRenderer {
         _pdfEncryption = pdfEncryption;
     }
 
-    public void setPDFVersion(char _v) {
+    public void setPDFVersion(String _v) {
         if (Arrays.binarySearch(validPdfVersions, _v) < 0) {
             throw new IllegalArgumentException("""
                     Invalid PDF version character: "%s"; use one of constants PdfWriter.VERSION_1_N.
@@ -261,8 +262,8 @@ public class ITextRenderer {
         _pdfVersion = _v;
     }
 
-    public char getPDFVersion() {
-        return _pdfVersion == null ? '0' : _pdfVersion;
+    public String getPDFVersion() {
+        return _pdfVersion == null ? null : _pdfVersion;
     }
 
     public void setPDFXConformance(int pdfXConformance) {

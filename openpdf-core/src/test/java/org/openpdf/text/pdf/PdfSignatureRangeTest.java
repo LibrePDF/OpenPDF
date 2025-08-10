@@ -22,7 +22,7 @@ public class PdfSignatureRangeTest {
 
     private static byte[] fakeSignature(byte[] pdf) throws IOException {
         try (PdfReader reader = new PdfReader(pdf); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            PdfStamper stp = PdfStamper.createSignature(reader, baos, '\0', null, true);
+            PdfStamper stp = PdfStamper.createSignature(reader, baos, null, null, true);
 
             PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
