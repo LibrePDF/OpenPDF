@@ -9,7 +9,7 @@
     <version>3.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openpdf-core-modern</artifactId>
+  <artifactId>openpdf</artifactId>
   <name>OpenPDF core modern</name>
   <description>Open and Free PDF library. It uses the new package name `org.openpdf`.</description>
 

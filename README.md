@@ -150,12 +150,8 @@ We have now different versions of OpenPDF, and they require different versions o
 
 ### OpenPDF Java package name change from com.lowagie to org.openpdf
 
-* [Openpdf-core-legacy](openpdf-core-legacy) - Maven artifactId: openpdf. This is the legacy OpenPDF core package, 
-  which uses the old Java package name `com.lowagie`. This will be removed in the future, so please migrate.
-* [Openpdf-core-modern](openpdf-core-modern) - Maven artifactId: openpdf-core-modern. This is the modern OpenPDF 
-  core package, which uses the new Java package name `org.openpdf`. This is the recommended package to use in new code.
+The OpenPDF 3.0 version uses the new org.openpdf package name. The com.lowagie is not in use in OpenPDF 3.0.
 
-We will soon begin on the OpenPDF 3.0 version which uses only the org.openpdf package name.
 
 ### UTF-8 Fonts
 

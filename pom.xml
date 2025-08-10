@@ -46,7 +46,6 @@
   </scm>
 
   <modules>
-    <module>openpdf-core-legacy</module>
     <module>openpdf-core-modern</module>
     <module>pdf-swing</module>
     <module>pdf-toolbox</module>

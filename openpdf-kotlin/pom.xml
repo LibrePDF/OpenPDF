@@ -17,7 +17,7 @@
     <!-- OpenPDF core dependency -->
     <dependency>
       <groupId>com.github.librepdf</groupId>
-      <artifactId>openpdf-core-modern</artifactId>
+      <artifactId>openpdf</artifactId>
       <version>${project.version}</version>
     </dependency>
 
