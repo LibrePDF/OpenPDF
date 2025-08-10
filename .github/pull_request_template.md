@@ -21,6 +21,3 @@ If you have a conflict of interest describe this here also.
 
 Any other details about how to test the new feature or bugfix?
 
-## openpdf-core-legacy and openpdf-core-modern
-
-Did you update both openpdf-core-legacy and openpdf-core-modern ?
