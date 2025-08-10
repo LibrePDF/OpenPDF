@@ -33,7 +33,7 @@ Get version 2.4.0 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.4.0
 
 Some of the features of OpenPDF include:
 
-* [Openpdf](openpdf-core-modern) Creating PDFs: You can use OpenPDF to create new PDF documents from scratch.
+* [Openpdf](openpdf-core) Creating PDFs: You can use OpenPDF to create new PDF documents from scratch.
 * Manipulating Existing PDFs: OpenPDF allows you to modify existing PDF documents by adding or removing pages, modifying
   text, and more.
 * [Openpdf-html](openpdf-html) Create PDF files from HTML, using OpenPDF-html which is a fork of Flying Saucer.
