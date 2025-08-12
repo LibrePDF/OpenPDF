@@ -53,6 +53,8 @@ package org.openpdf.text;
  * The RTF jar depends on the iText jar, but the iText jar may not depend on the RTF jar. This interface offers a
  * temporary solution until we find a more elegant way to solve this.
  *
+ * 2025-08-12: Consider removing this RtfElementInterface interface.
+ *
  * @since 2.1.0
  */
 @Deprecated
