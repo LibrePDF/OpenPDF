@@ -55,6 +55,7 @@ package org.openpdf.text;
  *
  * @since 2.1.0
  */
+@Deprecated
 public interface RtfElementInterface {
 
 }
