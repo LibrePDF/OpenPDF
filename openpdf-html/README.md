@@ -86,4 +86,5 @@ Contributions are welcome! Feel free to submit issues, pull requests, or ideas t
 
 ## History
 
-OpenPDF-html is a fork of [Flying Saucer](https://github.com/flyingsaucerproject/flyingsaucer)  and is used in accordance with the license https://github.com/flyingsaucerproject/flyingsaucer/blob/main/LICENSE-LGPL-2.1.txt
+OpenPDF-html is a fork of [Flying Saucer](https://github.com/flyingsaucerproject/flyingsaucer) forked in june 2025 and is used in accordance with the license https://github.com/flyingsaucerproject/flyingsaucer/blob/main/LICENSE-LGPL-2.1.txt
+
