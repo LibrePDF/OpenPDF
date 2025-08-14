@@ -9,8 +9,6 @@ This project is licensed under the **GNU Lesser General Public License (LGPL)**.
 
 [![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-2.1)
 
-OpenPDF-renderer is a fork from https://github.com/katjas/PDFrenderer and is used in accordance with the license: https://github.com/katjas/PDFrenderer/blob/master/LICENSE.txt
-
 Examples:
 ========
 * [Render PDF as image](https://github.com/LibrePDF/OpenPDF/blob/master/openpdf-renderer/src/test/java/openpdf/renderer/ImageRendererTest.java)
@@ -86,10 +84,13 @@ public class ImageRendererTest {
     }
 }
 
+## History
 
+OpenPDF-renderer is a fork from https://github.com/katjas/PDFrenderer forked in june 2025, and is used in accordance with the license: https://github.com/katjas/PDFrenderer/blob/master/LICENSE.txt
 
 
 ```
+
 
 
 
