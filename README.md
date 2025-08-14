@@ -88,6 +88,7 @@ MPL license only.
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 - [Migration from iText, TIFF support](https://github.com/LibrePDF/OpenPDF/wiki/Migrating-from-iText-2-and-4)
 
+---
 
 ### `openpdf-html` – HTML to PDF
 [Openpdf-html](openpdf-html): Generates PDFs directly from XHTML/CSS content.  
@@ -104,9 +105,6 @@ Useful for previews, thumbnails, or embedding PDFs in GUIs.
 **Maven artifact:** `com.github.librepdf:openpdf-renderer`
 
 ---
-
-💡 **Tip:** Use both modules together to generate PDFs from HTML and render previews in the same workflow.
-
 
 ## Security Notice
 
