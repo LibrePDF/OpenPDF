@@ -1,6 +1,6 @@
 # OpenPDF is an open source Java library for PDF files
 
-OpenPDF is an open-source Java library for creating, editing, rendering, and encrypting PDF documents, as well as generating PDFs from HTML. It is licensed under the LGPL and MPL
+OpenPDF is an open-source Java library for creating, editing, rendering, and encrypting PDF documents, as well as generating PDFs from HTML. It is licensed under the LGPL and MPL open source licenses. 
 We welcome contributions from other developers. Please feel free to submit pull-requests and bug reports to this GitHub repository.
 
 ## OpenPDF version 2.4.0 released 2025-08-06
