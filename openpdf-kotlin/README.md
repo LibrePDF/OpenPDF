@@ -69,7 +69,7 @@ fun main() {
 
 ## TODO
 
-- [ ] Improve `PdfBuilder` DSL syntax and flexibility (e.g. nested tables, headers, footers)
+- [ ] Allow using Openpdf-html and Openpdf-renderer in Kotlin, create Kotlin utility classes and Kotlin examples of using OpenPDF to create PDF files from HTML (Openpdf-html), and to render PDF files as images (Openpdf-renderer).
 - [ ] Add unit tests for all Kotlin utilities
 - [ ] Add `PdfFormUtil` for working with AcroForms (fill/read fields)
 - [ ] Create `PdfMetadataUtil` for reading document properties
