@@ -81,7 +81,7 @@ We want OpenPDF to consist of source code which is consistently licensed with th
 licences only. This also means that any new contributions to the project must have a dual LGPL and
 MPL license only.
 
-OpenPDF-html and OpenPDF-renderer is licensed with GNU Lesser General Public License 2.1 only.
+[Openpdf-html](openpdf-html) and [Openpdf-renderer](openpdf-renderer) is licensed with GNU Lesser General Public License 2.1 only.
 
 ## Documentation
 
