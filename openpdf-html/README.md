@@ -88,3 +88,15 @@ Contributions are welcome! Feel free to submit issues, pull requests, or ideas t
 
 OpenPDF-html is a fork of [Flying Saucer](https://github.com/flyingsaucerproject/flyingsaucer) forked in june 2025 and is used in accordance with the license https://github.com/flyingsaucerproject/flyingsaucer/blob/main/LICENSE-LGPL-2.1.txt
 
+## Flying Saucer – Origins
+
+- **Founded**: 2004  
+- **Founder**: Josh Marinacci  
+- **Where**: Launched on Java.net as an open-source project  
+- **Why**: To build a **pure-Java XHTML + CSS 2.1 renderer**—simpler than full browser engines like Gecko/WebKit.  
+- **Goal**: Standards-compliant rendering for embedding in Java apps or generating PDFs (with iText), without scripting or heavy browser features.  
+- **Notable**: Sun Microsystems once considered bundling it with F3 (early JavaFX Script), but it stayed independent.  
+- **License**: LGPL
+
+
+
