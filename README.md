@@ -1,7 +1,7 @@
 # OpenPDF is an open source Java library for PDF files
 
 OpenPDF is an open-source Java library for creating, editing, rendering, and encrypting PDF documents, as well as generating PDFs from HTML. It is licensed under the LGPL and MPL
-We welcome contributions from other developers. Please feel free to submit pull-requests and bugreports to this GitHub repository.
+We welcome contributions from other developers. Please feel free to submit pull-requests and bug reports to this GitHub repository.
 
 ## OpenPDF version 2.4.0 released 2025-08-06
 
@@ -79,7 +79,7 @@ We want OpenPDF to consist of source code which is consistently licensed with th
 licences only. This also means that any new contributions to the project must have a dual LGPL and
 MPL license only.
 
-[Openpdf-html](openpdf-html) and [Openpdf-renderer](openpdf-renderer) is licensed with GNU Lesser General Public License 2.1 only.
+[Openpdf-html](openpdf-html) and [Openpdf-renderer](openpdf-renderer) are licensed with GNU Lesser General Public License 2.1 only.
 
 ## Documentation
 
@@ -125,7 +125,7 @@ only contain code that you have written yourself. GPL or AGPL licensed code will
 
 To contribute code to the OpenPDF project, your GitHub account must contain your real name, so that
 we can verify your identity. This is to ensure the trust, security and integrity of the OpenPDF
-project, and to prevent security incidents such as the "XZ Utils backdoor". Knowning the real name
+project, and to prevent security incidents such as the "XZ Utils backdoor". Knowing the real name
 of the contributors will also identify and prevent conflict of interests.
 
 More details: [Contributing](CONTRIBUTING.md)
