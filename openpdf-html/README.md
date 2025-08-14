@@ -1,5 +1,7 @@
 # OpenPDF-html
 
+[![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-2.1)
+
 OpenPDF-html is an HTML-to-PDF rendering engine built on a modernized fork of Flying Saucer, designed to integrate seamlessly with the OpenPDF library and support HTML5 and CSS3 features.
 
 OpenPDF-html is a fork of [Flying Saucer](https://github.com/flyingsaucerproject/flyingsaucer) circa v9.12.0, focused on bringing modern HTML and CSS rendering capabilities to the [OpenPDF](https://github.com/LibrePDF/OpenPDF) library.
@@ -77,4 +79,5 @@ This project is licensed under the **GNU Lesser General Public License (LGPL)**.
 ## Contributions
 
 Contributions are welcome! Feel free to submit issues, pull requests, or ideas to help improve HTML and CSS support in OpenPDF.
+
 
