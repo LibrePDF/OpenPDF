@@ -122,9 +122,7 @@ OpenPDF can be used with Android, more info
 here: [Android-support](https://github.com/LibrePDF/OpenPDF/wiki/Android-support)
 
 ## Contributing
-
-Release the hounds!  Please send all pull requests. Make sure that your contributions can be
-released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must
+We welcome contributions from other developers. Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must
 only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
 
 To contribute code to the OpenPDF project, your GitHub account must contain your real name, so that
@@ -153,8 +151,7 @@ We have now different versions of OpenPDF, and they require different versions o
 
 ### OpenPDF Java package name change from com.lowagie to org.openpdf
 
-The OpenPDF 3.0 version uses the new org.openpdf package name. The com.lowagie is not in use in OpenPDF 3.0.
-
+The OpenPDF 3.0 version uses the new org.openpdf package name. 
 
 ### UTF-8 Fonts
 
