@@ -93,26 +93,24 @@ OpenPDF-renderer is a fork from https://github.com/katjas/PDFrenderer (forked fr
 
 - **Background – Sun Labs**  
   - Researchers at **Sun Labs** created the **all-Java PDF Renderer** to drive a lightweight PDF viewer for OpenOffice, rendering content via Java2D without needing full browser or native libraries.  
-    :contentReference[oaicite:1]{index=1}
+
 
 - **Open-Sourcing of the Project**  
   - When the internal needs waned, Sun Labs offered the project for open-source release. It was adopted and championed by **Josh Marinacci** and **Richard Bair** (of SwingLabs fame).  
   - **Tom Oke** took lead in further development, and the first open-source release appeared publicly in **December 2007**, under the **LGPL license**.  
-    :contentReference[oaicite:2]{index=2}
 
 - **Key Motivations**  
   - Java lacked a built-in way to render PDFs. This project enabled:
     - Previewing PDFs in Swing applications,
     - Rendering pages as images for printing or embedding,
     - Using pure Java (Java2D) without external dependencies.  
-    :contentReference[oaicite:3]{index=3}
 
 - **Legacy & Influence**  
   - **katjas/PDFrenderer** is a modern GitHub-hosted fork of the java.net version. Its goal: fix bugs, improve functionality, and modernize the rendering pipeline.  
   - Enhancements include:
     - Better colour space handling,
     - Support for more PDF features (annotations, fonts, JBIG2 decoding, etc.).  
-    :contentReference[oaicite:4]{index=4}
+
 
 
 
