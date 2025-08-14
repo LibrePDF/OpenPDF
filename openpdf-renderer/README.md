@@ -89,7 +89,7 @@ public class ImageRendererTest {
 
 OpenPDF-renderer is a fork from https://github.com/katjas/PDFrenderer (forked from http://java.net/projects/pdf-renderer) forked in june 2025, and is used in accordance with the license: https://github.com/katjas/PDFrenderer/blob/master/LICENSE.txt
 
-## PDFRenderer – Background & Origin
+### PDFRenderer – Background & Origin
 
 - **Background – Sun Labs**  
   - Researchers at **Sun Labs** created the **all-Java PDF Renderer** to drive a lightweight PDF viewer for OpenOffice, rendering content via Java2D without needing full browser or native libraries.  
@@ -113,5 +113,6 @@ OpenPDF-renderer is a fork from https://github.com/katjas/PDFrenderer (forked fr
     - Better colour space handling,
     - Support for more PDF features (annotations, fonts, JBIG2 decoding, etc.).  
     :contentReference[oaicite:4]{index=4}
+
 
 
