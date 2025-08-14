@@ -1,8 +1,8 @@
 # OpenPDF is an open source Java library for PDF files
 
-OpenPDF is a Java library for creating and editing PDF files with a LGPL and MPL open source
-license. OpenPDF is the LGPL/MPL open source successor of iText, and is based on some forks of iText
-4 svn tag. OpenPDF-html allows making PDF files from HTML.
+OpenPDF is an open-source Java library for creating, editing, rendering, encrypting PDF files, as well as creating PDFs from HTML.
+OpenPDF has a LGPL and MPL open source license.
+
 We welcome contributions from other developers. Please feel free to submit pull-requests
 and bugreports to this GitHub repository.
 
@@ -63,7 +63,8 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 ## License
 
 OpenPDF uses dual licensing: when using the library, you may choose either Mozilla Public License Version 2.0
-or GNU Lesser General Public License 2.1.
+or GNU Lesser General Public License 2.1.  OpenPDF is the LGPL/MPL open source successor of iText, and is based on some forks of iText
+4 svn tag.
 
 The SPDX license identifier for OpenPDF licensing is `MPL-2.0 OR LGPL-2.1+`
 
