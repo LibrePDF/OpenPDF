@@ -3,6 +3,9 @@ OpenPDF-renderer
 
 OpenPDF-renderer is a Java library for rendering PDF files as images.
 
+## License
+
+This project is licensed under the **GNU Lesser General Public License (LGPL)**.
 
 [![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-2.1)
 
@@ -85,4 +88,5 @@ public class ImageRendererTest {
 
 
 ```
+
 
