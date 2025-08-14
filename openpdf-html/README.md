@@ -11,7 +11,8 @@ The goal of this project is to upgrade and maintain the HTML-to-PDF rendering en
 
 ## License
 
-This project is licensed under the **GNU Lesser General Public License (LGPL)**.
+This project is licensed under the **GNU Lesser General Public License (LGPL)**.  
+
 [![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-2.1)
 
 
@@ -81,6 +82,7 @@ public class HelloWorldPdf {
 ## Contributions
 
 Contributions are welcome! Feel free to submit issues, pull requests, or ideas to help improve HTML and CSS support in OpenPDF.
+
 
 
 
