@@ -15,7 +15,6 @@ This project is licensed under the **GNU Lesser General Public License (LGPL)**.
 
 [![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](http://opensource.org/licenses/LGPL-2.1)
 
-OpenPDF-html is a fork of [Flying Saucer](https://github.com/flyingsaucerproject/flyingsaucer)  and is used in accordance with the license https://github.com/flyingsaucerproject/flyingsaucer/blob/main/LICENSE-LGPL-2.1.txt
 
 
 ## Features
@@ -85,7 +84,6 @@ public class HelloWorldPdf {
 
 Contributions are welcome! Feel free to submit issues, pull requests, or ideas to help improve HTML and CSS support in OpenPDF.
 
+## History
 
-
-
-
+OpenPDF-html is a fork of [Flying Saucer](https://github.com/flyingsaucerproject/flyingsaucer)  and is used in accordance with the license https://github.com/flyingsaucerproject/flyingsaucer/blob/main/LICENSE-LGPL-2.1.txt
