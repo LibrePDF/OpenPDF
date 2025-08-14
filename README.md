@@ -91,7 +91,7 @@ MPL license only.
 ---
 
 ### `openpdf-html` – HTML to PDF
-[Openpdf-html](openpdf-html): Generates PDFs directly from XHTML/CSS content.  
+[Openpdf-html](openpdf-html): Generates PDFs directly from HTML/CSS content.  
 Ideal for creating styled reports, invoices, and documents from web templates.
 
 **Maven artifact:** `com.github.librepdf:openpdf-html`
