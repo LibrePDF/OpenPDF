@@ -83,15 +83,8 @@ public class ImageRendererTest {
         }
     }
 }
+```
 
 ## History
 
 OpenPDF-renderer is a fork from https://github.com/katjas/PDFrenderer forked in june 2025, and is used in accordance with the license: https://github.com/katjas/PDFrenderer/blob/master/LICENSE.txt
-
-
-```
-
-
-
-
-
