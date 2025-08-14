@@ -99,7 +99,7 @@ Ideal for creating styled reports, invoices, and documents from web templates.
 ---
 
 ### `openpdf-renderer` – PDF Rendering
-[Openpdf-renderer](openpdf-renderer): Renders PDF pages to images or displays them in Java Swing/JavaFX applications.  
+[Openpdf-renderer](openpdf-renderer): Renders PDF pages to images or displays them in Java webapp/Swing/JavaFX applications.  
 Useful for previews, thumbnails, or embedding PDFs in GUIs.
 
 **Maven artifact:** `com.github.librepdf:openpdf-renderer`
