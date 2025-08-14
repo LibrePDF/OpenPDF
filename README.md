@@ -18,7 +18,7 @@ and bugreports to this GitHub repository.
 ![Java 17](https://img.shields.io/badge/Java-17-blue?logo=java&logoColor=white)
 ![Java 21](https://img.shields.io/badge/Java-21-blue?logo=java&logoColor=white)
 ![Java 24](https://img.shields.io/badge/Java-24-blue?logo=java&logoColor=yellow)
-[![Kotlin](https://img.shields.io/badge/Kotlin-Supported-7F52FF?logo=kotlin&logoColor=white)](https://github.com/LibrePDF/OpenPDF/tree/master/openpdf-kotlin)
+[![Kotlin](https://img.shields.io/badge/Kotlin-Supported-ADD8E6?logo=kotlin&logoColor=white)](https://github.com/LibrePDF/OpenPDF/tree/master/openpdf-kotlin)
 
 ## OpenPDF version 2.4.0 released 2025-08-06
 
