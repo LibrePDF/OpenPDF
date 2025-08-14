@@ -88,6 +88,13 @@ MPL license only.
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 - [Migration from iText, TIFF support](https://github.com/LibrePDF/OpenPDF/wiki/Migrating-from-iText-2-and-4)
 
+## Security Notice
+
+It is the responsibility of the application developer to ensure that all input passed into OpenPDF is trusted,
+sanitized, and safe.
+OpenPDF does not perform input validation or enforce sandboxing. For important security guidelines and common risks,
+please read our [Security Policy](Security.md).
+
 ## Background
 
 OpenPDF is open source software with a LGPL and MPL license. It is a fork of iText version 4, more
@@ -106,13 +113,6 @@ OpenPDF ancestors in GitHub (in fork order):
    / [iText-4.2.0](https://github.com/daviddurand/iText-4.2.0)
 4. [@ymasory](https://github.com/ymasory) / [iText-4.2.0](https://github.com/ymasory/iText-4.2.0) -
    original parent on GitHub
-
-## Security Notice
-
-It is the responsibility of the application developer to ensure that all input passed into OpenPDF is trusted,
-sanitized, and safe.
-OpenPDF does not perform input validation or enforce sandboxing. For important security guidelines and common risks,
-please read our [Security Policy](Security.md).
 
 ## Android
 
