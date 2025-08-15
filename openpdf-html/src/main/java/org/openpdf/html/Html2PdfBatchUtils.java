@@ -1,0 +1,303 @@
+/*
+ * Copyright 2025 OpenPDF
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * (the "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is 'iText, a free JAVA-PDF library'.
+ *
+ * The Initial Developer of the Original Code is Bruno Lowagie. Portions created by
+ * the Initial Developer are Copyright (C) 1999, 2000, 2001, 2002 by Bruno Lowagie.
+ * All Rights Reserved.
+ * Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer
+ * are Copyright (C) 2000, 2001, 2002 by Paulo Soares. All Rights Reserved.
+ *
+ * Contributor(s): all the names of the contributors are added in the source code
+ * where applicable.
+ *
+ * Alternatively, the contents of this file may be used under the terms of the
+ * LGPL license (the "GNU LIBRARY GENERAL PUBLIC LICENSE"), in which case the
+ * provisions of LGPL are applicable instead of those above.  If you wish to
+ * allow use of your version of this file only under the terms of the LGPL
+ * License and not to allow others to use your version of this file under
+ * the MPL, indicate your decision by deleting the provisions above and
+ * replace them with the notice and other provisions required by the LGPL.
+ * If you do not delete the provisions above, a recipient may use your version
+ * of this file under either the MPL or the GNU LIBRARY GENERAL PUBLIC LICENSE.
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the MPL as stated above or under the terms of the GNU
+ * Library General Public License as published by the Free Software Foundation;
+ * either version 2 of the License, or any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
+ * details.
+ *
+ * If you didn't download this code from the following link, you should check if
+ * you aren't using an obsolete version:
+ * https://github.com/LibrePDF/OpenPDF
+ */
+
+package org.openpdf.html;
+
+import org.openpdf.pdf.ITextRenderer;
+import org.openpdf.layout.SharedContext;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
+
+/**
+ * Batch HTML->PDF utilities for OpenPDF HTML (Flying Saucer) using Java 21 virtual threads.
+ *
+ * <p>This class provides high-level, concurrent helpers for converting HTML (string, file, URL)
+ * to PDF using {@link ITextRenderer}. All batch methods run on virtual threads for scalability.</p>
+ *
+ * <p>Notes:
+ * <ul>
+ *   <li>Set page size/margins via CSS <code>@page</code> rules in your HTML or injected CSS.</li>
+ *   <li>Use <code>baseUri</code> so relative links to CSS/images/fonts resolve correctly.</li>
+ *   <li>You can pass a <code>rendererCustomizer</code> to tweak the renderer before layout (e.g., DPI, text renderer, fonts).</li>
+ * </ul>
+ * </p>
+ */
+public final class Html2PdfBatchUtils {
+
+    private Html2PdfBatchUtils() {}
+
+    /** Generic result container for batch operations. */
+    public static final class BatchResult<T> {
+        public final List<T> successes = new ArrayList<>();
+        public final List<Throwable> failures = new ArrayList<>();
+        public boolean isAllSuccessful() { return failures.isEmpty(); }
+        public int total() { return successes.size() + failures.size(); }
+        @Override public String toString() {
+            return "BatchResult{" +
+                    "successes=" + successes.size() +
+                    ", failures=" + failures.size() +
+                    ", total=" + total() +
+                    '}';
+        }
+    }
+
+    // ------------------------- Job records -------------------------
+
+    /** Render raw HTML string to PDF. */
+    public record HtmlStringJob(String html, String baseUri, Path output,
+                                Optional<String> injectCss,
+                                Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
+
+    /** Render an HTML file (and its relative assets) to PDF. */
+    public record HtmlFileJob(Path htmlFile, Path baseDir, Path output,
+                              Optional<String> injectCss,
+                              Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
+
+    /** Render a URL to PDF. */
+    public record UrlJob(String url, Path output,
+                         Optional<String> injectCss,
+                         Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
+
+    // ------------------------- Public batch API -------------------------
+
+    public static <T> BatchResult<T> runBatch(Collection<? extends Callable<T>> tasks,
+            Consumer<T> onSuccess,
+            Consumer<Throwable> onFailure) {
+        Objects.requireNonNull(tasks, "tasks");
+        var result = new BatchResult<T>();
+        if (tasks.isEmpty()) return result;
+
+        try (ExecutorService exec = Executors.newVirtualThreadPerTaskExecutor()) {
+            List<Future<T>> futures = tasks.stream().map(exec::submit).toList();
+            for (Future<T> f : futures) {
+                try {
+                    T v = f.get();
+                    result.successes.add(v);
+                    if (onSuccess != null) onSuccess.accept(v);
+                } catch (ExecutionException ee) {
+                    Throwable cause = ee.getCause() != null ? ee.getCause() : ee;
+                    result.failures.add(cause);
+                    if (onFailure != null) onFailure.accept(cause);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    result.failures.add(ie);
+                    if (onFailure != null) onFailure.accept(ie);
+                }
+            }
+        }
+        return result;
+    }
+
+    // ------------------------- Single operations -------------------------
+
+    /** Render an HTML string. */
+    public static Path renderHtmlString(String html, String baseUri, Path output,
+            String injectCss,
+            Consumer<ITextRenderer> rendererCustomizer) throws IOException {
+        Objects.requireNonNull(html, "html");
+        Objects.requireNonNull(output, "output");
+        Files.createDirectories(output.getParent());
+
+        String finalHtml = injectCss != null && !injectCss.isEmpty()
+                ? injectCssBlock(injectCss).apply(html)
+                : html;
+
+        try (var out = new FileOutputStream(output.toFile())) {
+            ITextRenderer renderer = new ITextRenderer();
+            SharedContext sc = renderer.getSharedContext();
+            // Slightly safer resource loading if you need custom schemes:
+            //sc.setUserAgentCallback(renderer.getOutputDevice().getUserAgentCallback());
+
+            if (rendererCustomizer != null) rendererCustomizer.accept(renderer);
+
+            if (baseUri != null && !baseUri.isBlank()) {
+                renderer.setDocumentFromString(finalHtml, baseUri);
+            } else {
+                renderer.setDocumentFromString(finalHtml);
+            }
+            renderer.layout();
+            renderer.createPDF(out, true);
+        }
+        return output;
+    }
+
+    /** Render an HTML file (and relatives). */
+    public static Path renderHtmlFile(Path htmlFile, Path baseDir, Path output,
+            String injectCss,
+            Consumer<ITextRenderer> rendererCustomizer) throws IOException {
+        Objects.requireNonNull(htmlFile, "htmlFile");
+        Objects.requireNonNull(output, "output");
+        Files.createDirectories(output.getParent());
+
+        String html = Files.readString(htmlFile, StandardCharsets.UTF_8);
+        String base = (baseDir != null ? baseDir.toUri().toString() : htmlFile.getParent().toUri().toString());
+        return renderHtmlString(html, base, output, injectCss, rendererCustomizer);
+    }
+
+    /** Render a URL to PDF. */
+    public static Path renderUrl(String url, Path output,
+            String injectCss,
+            Consumer<ITextRenderer> rendererCustomizer) throws IOException {
+        Objects.requireNonNull(url, "url");
+        Objects.requireNonNull(output, "output");
+        Files.createDirectories(output.getParent());
+
+        try (var out = new FileOutputStream(output.toFile())) {
+            ITextRenderer renderer = new ITextRenderer();
+            if (rendererCustomizer != null) rendererCustomizer.accept(renderer);
+
+            if (injectCss == null || injectCss.isEmpty()) {
+                // No CSS injection: load DOM directly via user agent and set base URL
+                org.w3c.dom.Document doc = renderer.getSharedContext().getUac().getXMLResource(url).getDocument();
+                renderer.setDocument(doc, url);
+            } else {
+                // Inject CSS: fetch HTML as text, prepend <style> to <head>, and set with base URL
+                String html;
+                try (var in = java.net.URI.create(url).toURL().openStream()) {
+                    html = new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+                }
+                String finalHtml = injectCssBlock(injectCss).apply(html);
+                renderer.setDocumentFromString(finalHtml, url);
+            }
+
+            renderer.layout();
+            renderer.createPDF(out, true);
+        }
+        return output;
+    }
+
+    // ------------------------- Batch operations -------------------------
+
+    public static BatchResult<Path> batchHtmlStrings(List<HtmlStringJob> jobs,
+            Consumer<Path> onSuccess,
+            Consumer<Throwable> onFailure) {
+        return runBatch(jobs.stream().map(j -> (Callable<Path>) () ->
+                renderHtmlString(j.html, j.baseUri, j.output,
+                        j.injectCss.orElse(null),
+                        j.rendererCustomizer.orElse(null))
+        ).toList(), onSuccess, onFailure);
+    }
+
+    public static BatchResult<Path> batchHtmlFiles(List<HtmlFileJob> jobs,
+            Consumer<Path> onSuccess,
+            Consumer<Throwable> onFailure) {
+        return runBatch(jobs.stream().map(j -> (Callable<Path>) () ->
+                renderHtmlFile(j.htmlFile, j.baseDir, j.output,
+                        j.injectCss.orElse(null),
+                        j.rendererCustomizer.orElse(null))
+        ).toList(), onSuccess, onFailure);
+    }
+
+    public static BatchResult<Path> batchUrls(List<UrlJob> jobs,
+            Consumer<Path> onSuccess,
+            Consumer<Throwable> onFailure) {
+        return runBatch(jobs.stream().map(j -> (Callable<Path>) () ->
+                renderUrl(j.url, j.output, j.injectCss.orElse(null), j.rendererCustomizer.orElse(null))
+        ).toList(), onSuccess, onFailure);
+    }
+
+    // ------------------------- Helpers -------------------------
+
+    /**
+     * Wraps an HTML string with a <style> block prepended to <head>.
+     * If the HTML lacks a <head>, one is created.
+     */
+    public static UnaryOperator<String> injectCssBlock(String css) {
+        return (html) -> {
+            String style = "<style>" + css + "</style>";
+            String lower = html.toLowerCase();
+            int headIdx = lower.indexOf("<head>");
+            if (headIdx >= 0) {
+                int insertPos = headIdx + "<head>".length();
+                return html.substring(0, insertPos) + style + html.substring(insertPos);
+            }
+            // No <head>: create minimal structure
+            return "<html><head>" + style + "</head><body>" + html + "</body></html>";
+        };
+    }
+
+    /** Sample CSS for A4 portrait with 20mm margins. */
+    public static final String CSS_A4_20MM = "@page { size: A4; margin: 20mm; }";
+    /** Sample CSS for US Letter portrait with 0.5in margins. */
+    public static final String CSS_LETTER_HALF_IN = "@page { size: Letter; margin: 0.5in; }";
+
+    /** Example customizer: set DPI for images/text. */
+    public static Consumer<ITextRenderer> setDpi(int dpi) {
+        return (renderer) -> {
+            renderer.getSharedContext().setDPI(dpi);
+        };
+    }
+
+    /** Example customizer: register a font directory (TrueType/OpenType). */
+    public static Consumer<ITextRenderer> registerFontDir(Path dir) {
+        return (renderer) -> {
+            try {
+                renderer.getFontResolver().addFontDirectory(dir.toString(), true);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to register fonts from: " + dir, e);
+            }
+        };
+    }
+
+}
