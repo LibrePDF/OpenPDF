@@ -282,15 +282,5 @@ public final class PdfBatchUtils {
 
     /** Small utility for closing Closeables, ignoring exceptions. */
     private static void closeQuietly(Closeable c) { try { if (c != null) c.close(); } catch (Exception ignored) {} }
-
-    /** Simple example that shows how to use batch APIs. Remove in production. */
-    public static void main(String[] args) throws Exception {
-        // Example: watermark a bunch of PDFs using virtual threads
-        List<WatermarkJob> jobs = List.of(
-                new WatermarkJob(Path.of("in1.pdf"), Path.of("out1.pdf"), "CONFIDENTIAL", 72f, 0.12f),
-                new WatermarkJob(Path.of("in2.pdf"), Path.of("out2.pdf"), "DRAFT "+ Instant.now(), 64f, 0.10f)
-        );
-        var res = batchWatermark(jobs, p -> System.out.println("OK: " + p), e -> e.printStackTrace());
-        System.out.println(res);
-    }
+    
 }
