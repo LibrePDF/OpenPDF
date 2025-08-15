@@ -73,7 +73,7 @@ public interface PdfVersion {
      * if the parameter refers to a higher version. If the PDF header was already written to the OutputStream, this
      * changes the version as it will appear in the Catalog.
      *
-     * @param version a character representing the PDF version
+     * @param version a String representing the PDF version
      */
     void setAtLeastPdfVersion(String version);
 
