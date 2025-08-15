@@ -70,19 +70,69 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 /**
- * Batch HTML->PDF utilities for OpenPDF HTML (Flying Saucer) using Java 21 virtual threads.
+ * High-performance batch HTML-to-PDF conversion utilities for OpenPDF HTML (Flying Saucer),
+ * powered by Java 21 virtual threads for scalable concurrent execution.
  *
- * <p>This class provides high-level, concurrent helpers for converting HTML (string, file, URL)
- * to PDF using {@link ITextRenderer}. All batch methods run on virtual threads for scalability.</p>
- *
- * <p>Notes:
+ * <p>This class provides simple, high-level APIs for converting HTML sources to PDF files using
+ * {@link ITextRenderer}, with support for:</p>
  * <ul>
- *   <li>Set page size/margins via CSS <code>@page</code> rules in your HTML or injected CSS.</li>
- *   <li>Use <code>baseUri</code> so relative links to CSS/images/fonts resolve correctly.</li>
- *   <li>You can pass a <code>rendererCustomizer</code> to tweak the renderer before layout (e.g., DPI, text renderer, fonts).</li>
+ *   <li>Raw HTML strings (with optional base URI for resolving relative resources)</li>
+ *   <li>Local HTML files and their relative assets (CSS, images, fonts, etc.)</li>
+ *   <li>Remote HTML content from HTTP/HTTPS URLs</li>
+ *   <li>Optional injection of custom CSS before rendering</li>
+ *   <li>Renderer customization hooks for advanced control (e.g., DPI, fonts, user agent)</li>
  * </ul>
- * </p>
+ *
+ * <h3>Key Features</h3>
+ * <ul>
+ *   <li>Runs each rendering task on a virtual thread for massive concurrency without thread exhaustion.</li>
+ *   <li>Provides convenient {@code batch*} methods to process large collections of jobs in parallel.</li>
+ *   <li>Supports flexible output path handling (directories created automatically).</li>
+ *   <li>Encapsulates results in a {@link BatchResult} containing separate lists of successes and failures.</li>
+ * </ul>
+ *
+ * <h3>Usage Examples</h3>
+ *
+ * <h4>Convert a single HTML string to PDF</h4>
+ * <pre>{@code
+ * Path pdf = Html2PdfBatchUtils.renderHtmlString(
+ *     "<html><body>Hello World</body></html>",
+ *     "https://example.com/",
+ *     Path.of("out.pdf"),
+ *     Html2PdfBatchUtils.CSS_A4_20MM,
+ *     Html2PdfBatchUtils.setDpi(150)
+ * );
+ * }</pre>
+ *
+ * <h4>Batch convert multiple HTML files</h4>
+ * <pre>{@code
+ * List<HtmlFileJob> jobs = List.of(
+ *     new HtmlFileJob(Path.of("file1.html"), Path.of("."), Path.of("file1.pdf"),
+ *                     Optional.of(Html2PdfBatchUtils.CSS_LETTER_HALF_IN),
+ *                     Optional.empty()),
+ *     new HtmlFileJob(Path.of("file2.html"), Path.of("."), Path.of("file2.pdf"),
+ *                     Optional.empty(),
+ *                     Optional.of(Html2PdfBatchUtils.registerFontDir(Path.of("fonts"))))
+ * );
+ *
+ * BatchResult<Path> result = Html2PdfBatchUtils.batchHtmlFiles(jobs,
+ *     path -> System.out.println("Created PDF: " + path),
+ *     error -> error.printStackTrace()
+ * );
+ * }</pre>
+ *
+ * <h3>Notes & Best Practices</h3>
+ * <ul>
+ *   <li>Set page size and margins via CSS <code>@page</code> rules in your HTML or via the {@code injectCss} parameter.</li>
+ *   <li>Always provide a {@code baseUri} (or {@code baseDir}) if your HTML references relative resources.</li>
+ *   <li>Use {@code rendererCustomizer} to adjust advanced rendering settings like DPI or font loading.</li>
+ *   <li>Batch methods allow optional success and failure callbacks for real-time feedback during processing.</li>
+ * </ul>
+ *
+ * @implNote Internally uses {@link Executors#newVirtualThreadPerTaskExecutor()} for efficient parallelism.
+ * @since 3.0.0
  */
+
 public final class Html2PdfBatchUtils {
 
     private Html2PdfBatchUtils() {}
