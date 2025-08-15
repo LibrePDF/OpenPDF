@@ -147,7 +147,12 @@ public class PdfWriter extends DocWriter implements
      */
     public static final String VERSION_1_7 = "1.7";
 
+    
+    /**
+     * PDF version 2.0.
+     */
     public static final String VERSION_2_0 = "2.0";
+
 
 //    the PdfDocument instance
     /**
