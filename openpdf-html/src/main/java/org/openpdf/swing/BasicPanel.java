@@ -142,8 +142,6 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
             if (Configuration.isTrue("xr.incremental.repaint.print-timing", false)) {
                 Uu.p("repaint took ms: " + (after - start));
             }
-        } catch (ThreadDeath t) {
-            throw t;
         } catch (Error | RuntimeException t) {
             if (hasDocumentListeners()) {
                 fireOnRenderException(t);

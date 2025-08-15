@@ -351,8 +351,6 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
                     }
                 });
             }*/
-        } catch (ThreadDeath t) {
-            throw t;
         } catch (Error | RuntimeException t) {
             if (hasDocumentListeners()) {
                 fireOnLayoutException(t);
