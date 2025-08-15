@@ -13,6 +13,9 @@ import java.util.concurrent.Callable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests for PdfBatchUtils to ensure it runs batch jobs on virtual threads.
+ */
 class PdfBatchUtilsTest {
 
     private static Path tinyPdf(String prefix) throws Exception {

@@ -9,6 +9,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests for Html2PdfBatchUtils to ensure it runs batch jobs on virtual threads.
+ */
 class Html2PdfBatchUtilsTest {
 
     @Test
