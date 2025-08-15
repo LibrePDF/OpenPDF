@@ -61,6 +61,8 @@ import java.io.IOException;
 /**
  * Stores the PDF version information, knows how to write a PDF Header, and how to add the version to the catalog (if
  * necessary).
+ * 
+ * For OpenPDF 3.0 this was updated to support PDF 2.0, and specifying PDF version using String "2.0" instead of char.
  */
 
 public class PdfVersionImp implements PdfVersion {
