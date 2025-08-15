@@ -3,6 +3,7 @@ package org.openpdf.text.pdf;
 import org.junit.jupiter.api.Test;
 import org.openpdf.text.Document;
 import org.openpdf.text.Paragraph;
+import org.openpdf.text.utils.PdfBatch;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,7 +50,7 @@ class PdfBatchUtilsTest {
                 }
         );
 
-        var result = PdfBatchUtils.runBatch(tasks, v -> {}, t -> fail(t));
+        var result = PdfBatch.run(tasks, v -> {}, t -> fail(t));
         assertTrue(result.isAllSuccessful(), "All tasks should succeed");
         assertEquals(3, result.successes.size());
         assertEquals(0, result.failures.size());

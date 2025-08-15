@@ -52,6 +52,8 @@ import org.openpdf.text.DocumentException;
 import org.openpdf.text.Element;
 import org.openpdf.text.Font;
 import org.openpdf.text.Rectangle;
+import org.openpdf.text.utils.PdfBatch;
+import org.openpdf.text.utils.PdfBatch.BatchResult;
 
 import java.io.Closeable;
 import java.io.FileOutputStream;
@@ -59,14 +61,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+
 import java.util.function.Consumer;
 
 /**
@@ -77,21 +75,6 @@ import java.util.function.Consumer;
 public final class PdfBatchUtils {
 
     private PdfBatchUtils() {}
-
-    /** Generic result container for batch operations. */
-    public static final class BatchResult<T> {
-        public final List<T> successes = new ArrayList<>();
-        public final List<Throwable> failures = new ArrayList<>();
-        public boolean isAllSuccessful() { return failures.isEmpty(); }
-        public int total() { return successes.size() + failures.size(); }
-        @Override public String toString() {
-            return "BatchResult{" +
-                    "successes=" + successes.size() +
-                    ", failures=" + failures.size() +
-                    ", total=" + total() +
-                    '}';
-        }
-    }
 
     // ------------------------- Common job records -------------------------
 
@@ -109,36 +92,6 @@ public final class PdfBatchUtils {
     /** Split one PDF into per-page PDFs in the given directory (files will be named baseName_pageX.pdf). */
     public record SplitJob(Path input, Path outputDir, String baseName) {}
 
-    // ------------------------- Public batch APIs -------------------------
-
-    /** Run arbitrary tasks on virtual threads with optional progress callback. */
-    public static <T> BatchResult<T> runBatch(Collection<? extends Callable<T>> tasks,
-            Consumer<T> onSuccess,
-            Consumer<Throwable> onFailure) {
-        Objects.requireNonNull(tasks, "tasks");
-        var result = new BatchResult<T>();
-        if (tasks.isEmpty()) return result;
-
-        try (ExecutorService exec = Executors.newVirtualThreadPerTaskExecutor()) {
-            List<Future<T>> futures = tasks.stream().map(exec::submit).toList();
-            for (Future<T> f : futures) {
-                try {
-                    T v = f.get();
-                    result.successes.add(v);
-                    if (onSuccess != null) onSuccess.accept(v);
-                } catch (ExecutionException ee) {
-                    Throwable cause = ee.getCause() != null ? ee.getCause() : ee;
-                    result.failures.add(cause);
-                    if (onFailure != null) onFailure.accept(cause);
-                } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                    result.failures.add(ie);
-                    if (onFailure != null) onFailure.accept(ie);
-                }
-            }
-        }
-        return result;
-    }
 
     // ------------------------- Merge -------------------------
 
@@ -167,7 +120,8 @@ public final class PdfBatchUtils {
 
     /** Batch merge. */
     public static BatchResult<Path> batchMerge(List<MergeJob> jobs, Consumer<Path> onSuccess, Consumer<Throwable> onFailure) {
-        return runBatch(jobs.stream().map(job -> (Callable<Path>) () -> merge(job.inputs, job.output)).toList(), onSuccess, onFailure);
+        return PdfBatch.run(jobs.stream().map(job -> (Callable<Path>) () -> merge(job.inputs, job.output)).toList(),
+                onSuccess, onFailure);
     }
 
     // ------------------------- Watermark -------------------------
@@ -207,7 +161,7 @@ public final class PdfBatchUtils {
 
     /** Batch watermark. */
     public static BatchResult<Path> batchWatermark(List<WatermarkJob> jobs, Consumer<Path> onSuccess, Consumer<Throwable> onFailure) {
-        return runBatch(jobs.stream().map(j -> (Callable<Path>) () -> watermark(j.input, j.output, j.text, j.fontSize, j.opacity)).toList(), onSuccess, onFailure);
+        return PdfBatch.run(jobs.stream().map(j -> (Callable<Path>) () -> watermark(j.input, j.output, j.text, j.fontSize, j.opacity)).toList(), onSuccess, onFailure);
     }
 
     // ------------------------- Encrypt -------------------------
@@ -233,7 +187,7 @@ public final class PdfBatchUtils {
 
     /** Batch encrypt. */
     public static BatchResult<Path> batchEncrypt(List<EncryptJob> jobs, Consumer<Path> onSuccess, Consumer<Throwable> onFailure) {
-        return runBatch(jobs.stream().map(j -> (Callable<Path>) () -> encrypt(j.input, j.output, j.userPassword, j.ownerPassword, j.permissions, j.encryptionType)).toList(), onSuccess, onFailure);
+        return PdfBatch.run(jobs.stream().map(j -> (Callable<Path>) () -> encrypt(j.input, j.output, j.userPassword, j.ownerPassword, j.permissions, j.encryptionType)).toList(), onSuccess, onFailure);
     }
 
     // ------------------------- Split -------------------------
@@ -261,7 +215,7 @@ public final class PdfBatchUtils {
 
     /** Batch split. */
     public static BatchResult<List<Path>> batchSplit(List<SplitJob> jobs, Consumer<List<Path>> onSuccess, Consumer<Throwable> onFailure) {
-        return runBatch(jobs.stream().map(j -> (Callable<List<Path>>) () -> split(j.input, j.outputDir, j.baseName)).toList(), onSuccess, onFailure);
+        return PdfBatch.run(jobs.stream().map(j -> (Callable<List<Path>>) () -> split(j.input, j.outputDir, j.baseName)).toList(), onSuccess, onFailure);
     }
 
     // ------------------------- Convenience helpers -------------------------

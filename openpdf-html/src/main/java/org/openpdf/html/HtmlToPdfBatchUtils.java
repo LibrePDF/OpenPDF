@@ -49,23 +49,20 @@ package org.openpdf.html;
 
 import org.openpdf.pdf.ITextRenderer;
 import org.openpdf.layout.SharedContext;
+import org.openpdf.text.utils.PdfBatch;
+import org.openpdf.text.utils.PdfBatch.BatchResult;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -133,24 +130,11 @@ import java.util.function.UnaryOperator;
  * @since 3.0.0
  */
 
-public final class Html2PdfBatchUtils {
+public final class HtmlToPdfBatchUtils {
 
-    private Html2PdfBatchUtils() {}
+    private HtmlToPdfBatchUtils() {}
 
-    /** Generic result container for batch operations. */
-    public static final class BatchResult<T> {
-        public final List<T> successes = new ArrayList<>();
-        public final List<Throwable> failures = new ArrayList<>();
-        public boolean isAllSuccessful() { return failures.isEmpty(); }
-        public int total() { return successes.size() + failures.size(); }
-        @Override public String toString() {
-            return "BatchResult{" +
-                    "successes=" + successes.size() +
-                    ", failures=" + failures.size() +
-                    ", total=" + total() +
-                    '}';
-        }
-    }
+
 
     // ------------------------- Job records -------------------------
 
@@ -168,36 +152,6 @@ public final class Html2PdfBatchUtils {
     public record UrlJob(String url, Path output,
                          Optional<String> injectCss,
                          Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
-
-    // ------------------------- Public batch API -------------------------
-
-    public static <T> BatchResult<T> runBatch(Collection<? extends Callable<T>> tasks,
-            Consumer<T> onSuccess,
-            Consumer<Throwable> onFailure) {
-        Objects.requireNonNull(tasks, "tasks");
-        var result = new BatchResult<T>();
-        if (tasks.isEmpty()) return result;
-
-        try (ExecutorService exec = Executors.newVirtualThreadPerTaskExecutor()) {
-            List<Future<T>> futures = tasks.stream().map(exec::submit).toList();
-            for (Future<T> f : futures) {
-                try {
-                    T v = f.get();
-                    result.successes.add(v);
-                    if (onSuccess != null) onSuccess.accept(v);
-                } catch (ExecutionException ee) {
-                    Throwable cause = ee.getCause() != null ? ee.getCause() : ee;
-                    result.failures.add(cause);
-                    if (onFailure != null) onFailure.accept(cause);
-                } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                    result.failures.add(ie);
-                    if (onFailure != null) onFailure.accept(ie);
-                }
-            }
-        }
-        return result;
-    }
 
     // ------------------------- Single operations -------------------------
 
@@ -282,7 +236,7 @@ public final class Html2PdfBatchUtils {
     public static BatchResult<Path> batchHtmlStrings(List<HtmlStringJob> jobs,
             Consumer<Path> onSuccess,
             Consumer<Throwable> onFailure) {
-        return runBatch(jobs.stream().map(j -> (Callable<Path>) () ->
+        return PdfBatch.run(jobs.stream().map(j -> (Callable<Path>) () ->
                 renderHtmlString(j.html, j.baseUri, j.output,
                         j.injectCss.orElse(null),
                         j.rendererCustomizer.orElse(null))
@@ -292,7 +246,7 @@ public final class Html2PdfBatchUtils {
     public static BatchResult<Path> batchHtmlFiles(List<HtmlFileJob> jobs,
             Consumer<Path> onSuccess,
             Consumer<Throwable> onFailure) {
-        return runBatch(jobs.stream().map(j -> (Callable<Path>) () ->
+        return PdfBatch.run(jobs.stream().map(j -> (Callable<Path>) () ->
                 renderHtmlFile(j.htmlFile, j.baseDir, j.output,
                         j.injectCss.orElse(null),
                         j.rendererCustomizer.orElse(null))
@@ -302,7 +256,7 @@ public final class Html2PdfBatchUtils {
     public static BatchResult<Path> batchUrls(List<UrlJob> jobs,
             Consumer<Path> onSuccess,
             Consumer<Throwable> onFailure) {
-        return runBatch(jobs.stream().map(j -> (Callable<Path>) () ->
+        return PdfBatch.run(jobs.stream().map(j -> (Callable<Path>) () ->
                 renderUrl(j.url, j.output, j.injectCss.orElse(null), j.rendererCustomizer.orElse(null))
         ).toList(), onSuccess, onFailure);
     }
