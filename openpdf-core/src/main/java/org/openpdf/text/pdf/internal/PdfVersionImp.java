@@ -98,7 +98,7 @@ public class PdfVersionImp implements PdfVersion {
     protected PdfDictionary extensions = null;
 
     /**
-     * @see org.openpdf.text.pdf.interfaces.PdfVersion#setPdfVersion(char)
+     * @see org.openpdf.text.pdf.interfaces.PdfVersion#setPdfVersion(String)
      */
     public void setPdfVersion(String version) {
         if (headerWasWritten || appendmode) {
@@ -109,7 +109,7 @@ public class PdfVersionImp implements PdfVersion {
     }
 
     /**
-     * @see org.openpdf.text.pdf.interfaces.PdfVersion#setAtLeastPdfVersion(char)
+     * @see org.openpdf.text.pdf.interfaces.PdfVersion#setAtLeastPdfVersion(String)
      */
     public void setAtLeastPdfVersion(String version) {
         if (comparePdfVersions(version, header_version) > 0) {
@@ -167,7 +167,7 @@ public class PdfVersionImp implements PdfVersion {
     /**
      * Returns the PDF version as a name.
      *
-     * @param version the version character.
+     * @param version the version string.
      * @return a PdfName that contains the version
      */
     public PdfName getVersionAsName(String version) {
@@ -194,7 +194,7 @@ public class PdfVersionImp implements PdfVersion {
     /**
      * Returns the version as a byte[].
      *
-     * @param version the version character
+     * @param version the version string
      * @return a byte array containing the version according to the ISO-8859-1 codepage.
      */
     public byte[] getVersionAsByteArray(String version) {
