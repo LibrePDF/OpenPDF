@@ -70,7 +70,8 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
- * PDF batch utilities using Java 21 virtual threads.
+ * The PdfBatchUtils class provides high-level utilities for performing common PDF operations—such as merging, watermarking, encrypting, and splitting—in batch mode 
+ * using Java 21 virtual threads for efficient concurrent execution.
  *
  */
 public final class PdfBatchUtils {
