@@ -41,8 +41,7 @@ class StandardFontsTest {
             /* step 4:*/
             // the 14 standard fonts in PDF: do not use this Font constructor!
             // this is for demonstration purposes only, use FontFactory!
-            final List<StandardFonts> standardFonts = Arrays.stream(values())
-                    .filter(f -> !f.isDeprecated()).collect(Collectors.toList());
+            final List<StandardFonts> standardFonts = List.of(values());
             for (StandardFonts standardFont : standardFonts) {
                 // add the content
                 Font font = standardFont.create();
@@ -57,8 +56,7 @@ class StandardFontsTest {
     @Test
     void testNonDeprecatedFonts() {
         // given
-        final List<StandardFonts> standardFonts = Arrays.stream(values())
-                .filter(f -> !f.isDeprecated()).collect(Collectors.toList());
+        final List<StandardFonts> standardFonts = List.of(values());
         // then
         assertThat(standardFonts).containsExactlyInAnyOrder(
                 COURIER, COURIER_BOLD, COURIER_BOLDITALIC, COURIER_ITALIC,
@@ -72,29 +70,12 @@ class StandardFontsTest {
     @Test
     void testCreateStandardFonts() throws IOException {
         // given
-        final List<StandardFonts> standardFonts = Arrays.stream(values())
-                .filter(f -> !f.isDeprecated()).collect(Collectors.toList());
+        final List<StandardFonts> standardFonts = List.of(values());
         for (StandardFonts standardFont : standardFonts) {
             // when
             final Font font = standardFont.create();
             // then
             assertNotNull(font);
         }
-    }
-
-    @Test
-    void testCreateStandardDeprecatedFonts() {
-        // given
-        SoftAssertions softly = new SoftAssertions();
-        final List<StandardFonts> deprecatedFonts = Arrays.stream(values())
-                .filter(StandardFonts::isDeprecated).collect(Collectors.toList());
-        // when
-        for (StandardFonts deprecatedFont : deprecatedFonts) {
-            // then
-            softly.assertThatThrownBy(deprecatedFont::create)
-                    .isInstanceOf(IOException.class)
-                    .hasMessageContaining(deprecatedFont.name());
-        }
-        softly.assertAll();
     }
 }

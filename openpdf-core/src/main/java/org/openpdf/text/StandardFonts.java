@@ -44,11 +44,4 @@ public enum StandardFonts {
         return font;
     }
 
-    /**
-     * @deprecated As of OpenPDF 2.0.0. Was only in 1.3 relevant
-     */
-    @Deprecated(since = "2.0.2", forRemoval = true)
-    public boolean isDeprecated() {
-        return false;
-    }
 }
