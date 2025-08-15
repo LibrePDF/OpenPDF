@@ -167,7 +167,7 @@ public final class Html2PdfBatchUtils {
             ITextRenderer renderer = new ITextRenderer();
             SharedContext sc = renderer.getSharedContext();
             // Slightly safer resource loading if you need custom schemes:
-            //sc.setUserAgentCallback(renderer.getOutputDevice().getUserAgentCallback());
+            sc.setUserAgentCallback(renderer.getOutputDevice().getSharedContext().getUserAgentCallback());
 
             if (rendererCustomizer != null) rendererCustomizer.accept(renderer);
 
