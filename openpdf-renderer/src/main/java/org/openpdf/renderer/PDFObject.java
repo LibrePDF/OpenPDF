@@ -21,7 +21,6 @@ package org.openpdf.renderer;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -831,3 +830,4 @@ public class PDFObject {
     	return owner.getRoot();
     }
 }
+
