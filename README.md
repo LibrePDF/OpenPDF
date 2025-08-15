@@ -121,6 +121,10 @@ headers in the source code, and LGPL and MPL license documents in the svn reposi
 version 5.0 of iText, the developers have moved to the AGPL to improve their ability to sell
 commercial licenses.
 
+OpenPDF-html is a fork of Flying Saucer, forked in june 2025, project started in 2004.
+openpdf-renderer is a fork of PDFRenderer, porject started by Sun Labs in 2007.
+OpenPDF-core is a fork of iText, forked in October 2016, iText started in 2000.
+
 OpenPDF ancestors in GitHub (in fork order):
 
 1. [@rtfarte](https://github.com/rtfarte) / [OpenPDF](https://github.com/rtfarte/OpenPDF) - parent
@@ -131,6 +135,9 @@ OpenPDF ancestors in GitHub (in fork order):
    / [iText-4.2.0](https://github.com/daviddurand/iText-4.2.0)
 4. [@ymasory](https://github.com/ymasory) / [iText-4.2.0](https://github.com/ymasory/iText-4.2.0) -
    original parent on GitHub
+
+
+
 
 ## Android
 
