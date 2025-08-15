@@ -183,7 +183,6 @@ public class LengthValue extends DerivedValue {
                         "'" + ValueConstants.stringForSACPrimitiveType(primitiveType) + "' "
                         + primitiveType + "(" + stringValue + ")");
         }
-        //assert (new Float(absVal).intValue() >= 0);
 
         if (XRLog.isLoggingEnabled()) {
             if (cssName == CSSName.FONT_SIZE) {

@@ -125,7 +125,7 @@ public class CIDFontType2 extends TTFFont {
 
                             // value is width / default width
                             float value = entries[c].getIntValue();
-                            this.widths.put(key, new Float(value));
+                            this.widths.put(key, value);
                         }
                         // all done
                         entryIdx = -1;
@@ -138,7 +138,7 @@ public class CIDFontType2 extends TTFFont {
 
                     // set the range
                     for (int c = first; c <= last; c++) {
-                        this.widths.put(Character.valueOf((char) c), new Float(value));
+                        this.widths.put(Character.valueOf((char) c), Float.valueOf(value));
                     }
 
                     // all done
@@ -188,7 +188,7 @@ public class CIDFontType2 extends TTFFont {
 
                             // value is width / default width
                             float value = entries[c].getIntValue();
-                            this.widthsVertical.put(key, new Float(value));
+                            this.widthsVertical.put(key, value);
                         }
                         // all done
                         entryIdx = -1;
@@ -201,7 +201,7 @@ public class CIDFontType2 extends TTFFont {
 
                     // set the range
                     for (int c = first; c <= last; c++) {
-                        this.widthsVertical.put(Character.valueOf((char) c), new Float(value));
+                        this.widthsVertical.put(Character.valueOf((char) c), Float.valueOf(value));
                     }
 
                     // all done
