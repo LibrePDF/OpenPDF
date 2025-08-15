@@ -58,7 +58,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -282,5 +281,5 @@ public final class PdfBatchUtils {
 
     /** Small utility for closing Closeables, ignoring exceptions. */
     private static void closeQuietly(Closeable c) { try { if (c != null) c.close(); } catch (Exception ignored) {} }
-    
+
 }
