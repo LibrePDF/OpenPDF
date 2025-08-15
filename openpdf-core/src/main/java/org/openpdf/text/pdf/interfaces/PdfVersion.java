@@ -56,6 +56,8 @@ import org.openpdf.text.pdf.PdfName;
  * The PDF version is described in the PDF Reference 1.7 p92 (about the PDF Header) and page 139 (the version entry in
  * the Catalog). You'll also find info about setting the version in the book 'iText in Action' sections 2.1.3 (PDF
  * Header) and 3.3 (Version history).
+ *
+ * For OpenPDF 3.0 this was updated to support PDF 2.0, and specifying PDF version using String "2.0" instead of char.
  */
 
 public interface PdfVersion {
