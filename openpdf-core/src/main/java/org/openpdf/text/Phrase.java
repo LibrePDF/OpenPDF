@@ -399,9 +399,6 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
         if (element == null) {
             return false;
         }
-        if (element instanceof RtfElementInterface) {
-            return super.add(element);
-        }
         try {
             switch (element.type()) {
                 case Element.CHUNK:
