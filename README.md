@@ -3,11 +3,9 @@
 OpenPDF is an open-source Java library for creating, editing, rendering, and encrypting PDF documents, as well as generating PDFs from HTML. It is licensed under the LGPL and MPL open source licenses. 
 We welcome contributions from other developers. Please feel free to submit pull-requests and bug reports to this GitHub repository.
 
-## OpenPDF version 2.4.0 released 2025-08-06
+## OpenPDF version 3.0.0 released 2025-08-17
 
-Get version 2.4.0 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.4.0
-
-### Other versions
+Get version 3.0.0 here: https://github.com/LibrePDF/OpenPDF/releases/tag/3.0.0 Other versions
 
 - [OpenPDF 1.4.2 (release 2024-03-30)](https://github.com/LibrePDF/OpenPDF/releases/tag/1.4.2)
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
@@ -53,7 +51,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>2.4.0</version>
+  <version>3.0.0</version>
 </dependency>
 ```
 
@@ -83,7 +81,7 @@ MPL license only.
 
 ## Documentation
 
-- [Examples](pdf-toolbox/src/test/java/com/lowagie/examples)
+- [Examples](pdf-toolbox/src/test/java/org/openpdf/examples)
 - [JavaDoc](https://javadoc.io/doc/com.github.librepdf/openpdf/latest/index.html)
 - [Tutorial](https://github.com/LibrePDF/OpenPDF/wiki/Tutorial) (wiki, work in progress)
 - [Migration from iText, TIFF support](https://github.com/LibrePDF/OpenPDF/wiki/Migrating-from-iText-2-and-4)
