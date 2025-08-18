@@ -1437,7 +1437,7 @@ public class PdfWriter extends DocWriter implements
     }
 
     /**
-     * @see org.openpdf.text.pdf.interfaces.PdfVersion#setAtLeastPdfVersion(char)
+     * @see org.openpdf.text.pdf.interfaces.PdfVersion#setAtLeastPdfVersion(String)
      */
     public void setAtLeastPdfVersion(String version) {
         pdf_version.setAtLeastPdfVersion(version);
@@ -1459,7 +1459,7 @@ public class PdfWriter extends DocWriter implements
     }
 
     /**
-     * @see org.openpdf.text.pdf.interfaces.PdfVersion#setPdfVersion(char)
+     * @see org.openpdf.text.pdf.interfaces.PdfVersion#setPdfVersion(String)
      */
     public void setPdfVersion(String version) {
         pdf_version.setPdfVersion(version);
