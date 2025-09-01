@@ -28,7 +28,7 @@
     <dependency>
       <groupId>org.htmlunit</groupId>
       <artifactId>neko-htmlunit</artifactId>
-      <version>4.15.0</version>
+      <version>4.16.0</version>
     </dependency>
     <dependency>
       <groupId>com.github.librepdf</groupId>
