@@ -3,6 +3,7 @@ package com.lowagie.text.html;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
+import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.html.simpleparser.HTMLWorker;
 import com.lowagie.text.html.simpleparser.StyleSheet;
@@ -126,4 +127,43 @@ class StylesTest {
         Chunk chunk10 = (Chunk) paragraph.get(18);
         Assertions.assertEquals(FontSize.LARGER.getScale() * 20f, chunk10.getFont().getSize());
     }
+
+    @Test
+    void testLineHeightPercentage() throws Exception {
+        List<Element> elements = htmlToPdf("stylesTest/lineHeightPercentage.html", "target/Line Height Percentage.pdf");
+        Paragraph paragraph = (Paragraph) elements.get(0);
+        Chunk chunk = (Chunk) paragraph.get(0);
+        float fontSize;
+        if (chunk.getFont() != null) {
+            fontSize = chunk.getFont().getSize();
+        } else {
+            fontSize = Font.DEFAULTSIZE;
+        }
+        float expectedMultiplier = 1.15f; // derived from <span style="line-height:115%"> in lineHeightPercentage.html
+        float expectedTotalLeading = fontSize * expectedMultiplier;
+        float totalLeading = paragraph.getTotalLeading();
+
+        Assertions.assertEquals(expectedTotalLeading, totalLeading, 0.1f,
+                "Total leading should be ~fontSize * " + expectedMultiplier);
+    }
+
+    @Test
+    void testDefaultLineHeight() throws Exception {
+        List<Element> elements = htmlToPdf("stylesTest/lineHeightDefault.html", "target/Line Height Default.pdf");
+        Paragraph paragraph = (Paragraph) elements.get(0);
+        Chunk chunk = (Chunk) paragraph.get(0);
+        float fontSize;
+        if (chunk.getFont() != null) {
+            fontSize = chunk.getFont().getSize();
+        } else {
+            fontSize = Font.DEFAULTSIZE;
+        }
+        float expectedMultiplier = 1.5f;
+        float expectedTotalLeading = fontSize * expectedMultiplier;
+        float totalLeading = paragraph.getTotalLeading();
+
+        Assertions.assertEquals(expectedTotalLeading, totalLeading, 0.1f,
+                "Total leading should be ~fontSize * " + expectedMultiplier);
+    }
+
 }
