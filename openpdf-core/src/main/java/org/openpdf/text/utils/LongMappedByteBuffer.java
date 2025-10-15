@@ -50,6 +50,9 @@
 package org.openpdf.text.utils;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
@@ -62,7 +65,7 @@ import java.nio.channels.FileChannel;
  *
  *  @since 2.0.4
  */
-public class LongMappedByteBuffer {
+public class LongMappedByteBuffer implements AutoCloseable {
 
     private static final long CHUNK_SIZE = Integer.MAX_VALUE; // 2 GB
     private final MappedByteBuffer[] chunks;
@@ -233,4 +236,36 @@ public class LongMappedByteBuffer {
             chunk.force();
         }
     }
+
+    @Override
+    public void close() throws IOException {
+        for (int i = 0; i < chunks.length; i++) {
+            MappedByteBuffer chunk = chunks[i];
+            clean(chunk);
+            chunks[i] = null;
+        }
+    }
+
+    /**
+     * invokes the clean method on the ByteBuffer's cleaner
+     *
+     * @param buffer ByteBuffer
+     */
+    private static void clean(final ByteBuffer buffer) {
+        if (buffer == null || !buffer.isDirect()) {
+            return;
+        }
+        try {
+            Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+            MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(unsafeClass, MethodHandles.lookup());
+            MethodHandle unsafeFieldGetter = lookup.findStaticGetter(unsafeClass, "theUnsafe", unsafeClass);
+            Object theUnsafe = unsafeFieldGetter.invoke();
+            MethodHandle invokeCleanerMethod = lookup.findVirtual(unsafeClass, "invokeCleaner",
+                    MethodType.methodType(void.class, ByteBuffer.class));
+            invokeCleanerMethod.invoke(theUnsafe, buffer);
+        } catch (Throwable ignore) {
+            // Ignore
+        }
+    }
+
 }

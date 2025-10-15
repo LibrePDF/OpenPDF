@@ -199,8 +199,12 @@ public class MappedRandomAccessFile implements AutoCloseable {
      * @throws IOException on error
      * @see java.io.RandomAccessFile#close()
      */
+    @Override
     public void close() throws IOException {
-        mappedByteBuffer = null;
+        if (mappedByteBuffer != null) {
+            mappedByteBuffer.close();
+            mappedByteBuffer = null;
+        }
         if (channel != null) {
             channel.close();
         }

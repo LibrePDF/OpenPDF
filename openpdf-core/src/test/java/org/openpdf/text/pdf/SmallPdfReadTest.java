@@ -44,13 +44,5 @@ public class SmallPdfReadTest {
             // BUG: This currently throws IndexOutOfBoundsException instead of returning -1
             Assertions.assertEquals(-1, result, "Expected -1 at EOF, but read returned: " + result);
         }
-
-        System.gc();
-        try {
-            Thread.sleep(100); // give GC time to release mapped file
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // best practice: restore interrupt flag
-            throw new IllegalStateException("Sleep was interrupted", e);
-        }
     }
 }
