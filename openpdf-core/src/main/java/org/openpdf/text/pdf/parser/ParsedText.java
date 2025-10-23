@@ -67,6 +67,35 @@ public class ParsedText extends ParsedTextImpl {
      */
     private PdfString pdfText = null;
 
+    static protected ParsedText create(PdfString text, GraphicsState graphicsState, Matrix textMatrix) {
+        String decoded = "";
+        byte[] bytes;
+        if (BaseFont.IDENTITY_H.equals(graphicsState.getFont().getEncoding())) {
+            if (graphicsState.getFont().hasUnicodeCMAP()) {
+                if (graphicsState.getFont().hasTwoByteUnicodeCMAP()) {
+                    text = new PdfString(text.toString(), "IDENTITY_H2");
+                } else {
+                    text = new PdfString(text.toString(), "IDENTITY_H1");
+                }
+            } else {
+                text = new PdfString(new String(text.getBytes(), StandardCharsets.UTF_16));
+            }
+            bytes = text.toString().getBytes(StandardCharsets.UTF_16);
+        } else {
+            bytes = text.toString().getBytes();
+        }
+        decoded = graphicsState.getFont().decode(bytes, 0, bytes.length);
+        char[] chars = decoded.toCharArray();
+        float totalWidth = 0;
+        for (char c : chars) {
+            float w = graphicsState.getFont().getWidth(c) / 1000.0f;
+            float wordSpacing = Character.isSpaceChar(c) ? graphicsState.getWordSpacing() : 0f;
+            float blockWidth = (w * graphicsState.getFontSize() + graphicsState.getCharacterSpacing() + wordSpacing)
+                    * graphicsState.getHorizontalScaling();
+            totalWidth += blockWidth;
+        }
+        return new ParsedText(text, totalWidth, graphicsState, textMatrix);
+    }
 
     /**
      * This constructor should only be called when the origin for text display is at (0,0) and the graphical state
@@ -76,8 +105,10 @@ public class ParsedText extends ParsedTextImpl {
      * @param graphicsState graphical state
      * @param textMatrix    transform from text space to graphics (drawing space)
      */
-    ParsedText(PdfString text, GraphicsState graphicsState, Matrix textMatrix) {
-        this(text, new GraphicsState(graphicsState), textMatrix.multiply(graphicsState.getCtm()),
+    private ParsedText(PdfString text, float unscaledWidth, GraphicsState graphicsState,
+            Matrix textMatrix) {
+        this(text, unscaledWidth, new GraphicsState(graphicsState),
+                textMatrix.multiply(graphicsState.getCtm()),
                 getUnscaledFontSpaceWidth(graphicsState));
     }
 
@@ -85,33 +116,23 @@ public class ParsedText extends ParsedTextImpl {
      * Internal constructor for a parsed text item. The constructors that call it gather some information from the
      * graphical state first.
      *
-     * @param text          This is a PdfString containing code points for the current font, not actually characters. If
-     *                      the font has multiByte glyphs, (Identity-H encoding) we reparse the string so that the code
-     *                      points don't get split into multiple characters.
-     * @param graphicsState graphical state
-     * @param textMatrix    transform from text space to graphics (drawing space)
-     * @param unscaledWidth width of the space character in the font.
+     * @param text               This is a PdfString containing code points for the current font, not actually
+     *                           characters. If the font has multiByte glyphs, (Identity-H encoding) we reparse the
+     *                           string so that the code points don't get split into multiple characters.
+     * @param graphicsState      graphical state
+     * @param textMatrix         transform from text space to graphics (drawing space)
+     * @param unscaledSpaceWidth width of the space character in the font.
      */
-    private ParsedText(PdfString text, GraphicsState graphicsState, Matrix textMatrix, float unscaledWidth) {
+    private ParsedText(PdfString text, float unscaledWidth, GraphicsState graphicsState,
+            Matrix textMatrix,
+            float unscaledSpaceWidth) {
         super(null, pointToUserSpace(0, 0, textMatrix),
-                pointToUserSpace(getStringWidth(text.toString(), graphicsState), 0f, textMatrix),
+                pointToUserSpace(unscaledWidth, 0f, textMatrix),
                 pointToUserSpace(1.0f, 0f, textMatrix),
                 convertHeightToUser(graphicsState.getFontAscentDescriptor(), textMatrix),
                 convertHeightToUser(graphicsState.getFontDescentDescriptor(), textMatrix),
-                convertWidthToUser(unscaledWidth, textMatrix));
-        if (BaseFont.IDENTITY_H.equals(graphicsState.getFont().getEncoding())) {
-            if (graphicsState.getFont().hasUnicodeCMAP()) {
-                if (graphicsState.getFont().hasTwoByteUnicodeCMAP()) {
-                    pdfText = new PdfString(text.toString(), "IDENTITY_H2");
-                } else {
-                    pdfText = new PdfString(text.toString(), "IDENTITY_H1");
-                }
-            } else {
-                pdfText = new PdfString(new String(text.getBytes(), StandardCharsets.UTF_16));
-            }
-        } else {
-            pdfText = text;
-        }
+                convertWidthToUser(unscaledSpaceWidth, textMatrix));
+        pdfText = text;
         textToUserSpaceTransformMatrix = textMatrix;
         this.graphicsState = graphicsState;
     }
@@ -200,22 +221,6 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * Decodes a Java String containing glyph ids encoded in the font's encoding, and determine the unicode equivalent
-     *
-     * @param in the String that needs to be decoded
-     * @return the decoded String
-     */
-    // FIXME unreachable block and default encoding
-    protected String decode(String in) {
-        byte[] bytes;
-        if (BaseFont.IDENTITY_H.equals(graphicsState.getFont().getEncoding())) {
-            bytes = in.getBytes(StandardCharsets.UTF_16);
-        }
-        bytes = in.getBytes();
-        return graphicsState.getFont().decode(bytes, 0, bytes.length);
-    }
-
-    /**
      * This constructor should only be called when the origin for text display is at (0,0) and the graphical state
      * reflects all transformations of the baseline. This is in text space units.
      * <p>
@@ -258,7 +263,6 @@ public class ParsedText extends ParsedTextImpl {
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
             float w = font.getWidth(c) / 1000.0f;
-
             if (hasSpace[i]) {
                 if (wordAccum.length() > 0) {
                     result.add(createWord(wordAccum, wordStartOffset, totalWidth, getBaseline(),
@@ -337,14 +341,6 @@ public class ParsedText extends ParsedTextImpl {
                 pointToUserSpace(wordStartOffset, 0f, textToUserSpaceTransformMatrix),
                 pointToUserSpace(wordEndOffset, 0f, textToUserSpaceTransformMatrix), baseline,
                 getSingleSpaceWidth(), wordsAreComplete, currentBreakBefore);
-    }
-
-    /**
-     * @param gs graphic state including current transformation to page coordinates from text measurement
-     * @return the unscaled (i.e. in Text space) width of our text
-     */
-    public float getUnscaledTextWidth(GraphicsState gs) {
-        return getStringWidth(getFontCodes(), gs);
     }
 
     /**

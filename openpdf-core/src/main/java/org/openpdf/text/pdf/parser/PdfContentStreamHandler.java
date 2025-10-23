@@ -288,11 +288,11 @@ public class PdfContentStreamHandler {
      * @param string the text to display
      */
     void displayPdfString(PdfString string) {
-        ParsedText renderInfo = new ParsedText(string, graphicsState(), textMatrix);
+        ParsedText renderInfo = ParsedText.create(string, graphicsState(), textMatrix);
         if (contextNames.peek() != null) {
             textFragments.add(renderInfo);
         }
-        textMatrix = new Matrix(renderInfo.getUnscaledTextWidth(graphicsState()), 0)
+        textMatrix = new Matrix(renderInfo.getWidth(), 0)
                 .multiply(textMatrix);
     }
 
@@ -966,7 +966,7 @@ public class PdfContentStreamHandler {
                 PdfName subType = stream.getAsName(PdfName.SUBTYPE);
                 if (PdfName.FORM.equals(subType)) {
                     PdfDictionary resources2 = stream.getAsDict(PdfName.RESOURCES);
-                    if (resources2 == null)  {
+                    if (resources2 == null) {
                         resources2 = resources;
                     }
 
