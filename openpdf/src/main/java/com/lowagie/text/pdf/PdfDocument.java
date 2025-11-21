@@ -407,6 +407,8 @@ public class PdfDocument extends Document {
     /** The current active <CODE>PdfAction</CODE> when processing an <CODE>Anchor</CODE>. */
     protected PdfAction anchorAction = null;
 
+    // We are going to apply Refactoring Here
+
     /**
      * Signals that an <CODE>Element</CODE> was added to the <CODE>Document</CODE>.
      *
