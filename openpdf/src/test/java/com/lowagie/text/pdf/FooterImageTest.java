@@ -15,7 +15,7 @@ class FooterImageTest {
         PdfWriter.getInstance(document, new FileOutputStream("footer-only-text.pdf"));
 
         Paragraph footerParagraph = new Paragraph();
-        String test = "This is a test line.";
+        String test = "This is a smellbusters test.";
         String footerstr = "footer";
         footerParagraph.add(footerstr);
         HeaderFooter footer = new HeaderFooter(footerParagraph, false);
@@ -34,7 +34,7 @@ class FooterImageTest {
         PdfWriter.getInstance(document, new FileOutputStream("footer-image-left.pdf"));
 
         Paragraph footerParagraph = new Paragraph();
-        String test = "This is a test line.";
+        String test = "This is a smellbusters line.";
         String footerstr = "footer";
         footerParagraph.add(jpg);
         footerParagraph.add(footerstr);
@@ -61,7 +61,7 @@ class FooterImageTest {
         jpg.setAlignment(Element.ALIGN_RIGHT);
 
         Paragraph footerParagraph = new Paragraph();
-        String test = "This is a test line.";
+        String test = "This is a smellbusters line.";
         footerParagraph.add(jpg);
         HeaderFooter footer = new HeaderFooter(footerParagraph, false);
         document.setFooter(footer);
@@ -88,7 +88,7 @@ class FooterImageTest {
         PdfWriter.getInstance(document, new FileOutputStream("footer-image-center.pdf"));
 
         Paragraph footerParagraph = new Paragraph();
-        String test = "This is a test line.";
+        String test = "This is a test smellbusters.";
         footerParagraph.add(jpg);
         HeaderFooter footer = new HeaderFooter(footerParagraph, true);
         footer.setAlignment(Element.ALIGN_CENTER);
@@ -110,13 +110,13 @@ class FooterImageTest {
     @Test
     void multiplePageWithImageAndNumberTest() throws IOException {
         Document document = new Document(PageSize.A4);
-        Image jpg = Image.getInstance("src/test/resources/GitHub-Mark-32px.png");
+        Image jpg = Image.getInstance(Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
         jpg.setAlignment(Image.UNDERLYING);
 
         PdfWriter.getInstance(document, new FileOutputStream("footer-image-multiple-pages.pdf"));
 
         Paragraph footerParagraph = new Paragraph();
-        String test = "Github manual.";
+        String test = "Smellbusters manual.";
         footerParagraph.add(jpg);
         HeaderFooter footer = new HeaderFooter(footerParagraph, true);
         footer.setAlignment(Element.ALIGN_CENTER);
@@ -140,23 +140,19 @@ class FooterImageTest {
 
     public static void main(String[] args) throws IOException {
         FooterImageTest test = new FooterImageTest();
-        System.out.println("Generating PDFs...");
+
 
         test.onlyTextFooterUpperBoundTest();
-        System.out.println("✓ Generated: footer-only-text.pdf");
+
 
         test.imageLeftAlignmentPositionTest();
-        System.out.println("✓ Generated: footer-image-left.pdf");
 
         test.imageRightAlignmentPositionTest();
-        System.out.println("✓ Generated: footer-image-right.pdf");
+
 
         test.centerUnderlyingPositionTest();
-        System.out.println("✓ Generated: footer-image-center.pdf");
 
         test.multiplePageWithImageAndNumberTest();
-        System.out.println("✓ Generated: footer-image-multiple-pages.pdf");
 
-        System.out.println("\nAll PDFs generated successfully!");
     }
 }

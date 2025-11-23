@@ -39,8 +39,8 @@ public class FooterTableTest {
         document.setFooter(footer);
 
         document.open();
-        document.add(new Paragraph("This is a test line."));
-        document.add(new Paragraph("Second line"));
+        document.add(new Paragraph("This is fixed smellbusters test."));
+        document.add(new Paragraph("Jon line"));
         document.newPage();
         document.add(new Paragraph("second"));
         document.newPage();
@@ -58,6 +58,5 @@ public class FooterTableTest {
     public static void main(String[] args) throws IOException {
         FooterTableTest test = new FooterTableTest();
         test.imageLeftAlignmentPositionTest();
-        System.out.println("PDF generated: footer-table-test.pdf");
     }
 }

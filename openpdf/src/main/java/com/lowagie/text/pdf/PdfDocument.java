@@ -2568,12 +2568,12 @@ public class PdfDocument extends Document {
                     }
                     float lowerleft = footer.getTop() - image.getRelativeTop() - image.getScaledHeight() - diff;
 
-                    float[] mt = image.matrix();
-                    float startPosition = indentLeft() - mt[4];
+                    float[] matrix = image.matrix();
+                    float startPosition = indentLeft() - matrix[4];
                     if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT)
-                        startPosition = indentRight() - image.getScaledWidth() - mt[4];
+                        startPosition = indentRight() - image.getScaledWidth() - matrix[4];
                     if ((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE)
-                        startPosition = indentLeft() + ((indentRight() - indentLeft() - image.getScaledWidth()) / 2) - mt[4];
+                        startPosition = indentLeft() + ((indentRight() - indentLeft() - image.getScaledWidth()) / 2) - matrix[4];
                     if (image.hasAbsoluteX()) startPosition = image.getAbsoluteX();
 
                     if (!textwrap) {
@@ -2583,17 +2583,17 @@ public class PdfDocument extends Document {
                             startPosition += image.getIndentationLeft() - image.getIndentationRight();
                         else startPosition += image.getIndentationLeft();
                     }
-                    graphics.addImage(image, mt[0], mt[1], mt[2], mt[3], startPosition, lowerleft - mt[5]);
+                    graphics.addImage(image, matrix[0], matrix[1], matrix[2], matrix[3], startPosition, lowerleft - matrix[5]);
                     break;
                 }
                 case Element.PTABLE:
-                    PdfPTable ptable = (PdfPTable) element;
+                    PdfPTable pdfPTable = (PdfPTable) element;
 
-                    ColumnText ct = new ColumnText(writer.getDirectContent());
-                    ct.addElement(ptable);
+                    ColumnText columnText = new ColumnText(writer.getDirectContent());
+                    columnText.addElement(pdfPTable);
 
-                    ct.setSimpleColumn(indentLeft(), footer.getBottom(), indentRight(), footer.getTop());
-                    ct.go();
+                    columnText.setSimpleColumn(indentLeft(), footer.getBottom(), indentRight(), footer.getTop());
+                    columnText.go();
 
                     break;
             }
