@@ -1,6 +1,6 @@
 package com.lowagie.text;
 
-import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -14,7 +14,7 @@ public class FooterTableTest {
     @Test
     public void imageLeftAlignmentPositionTest() throws IOException {
         Document document = new Document(PageSize.A4);
-        PdfWriter.getInstance(document, new ByteArrayOutputStream());
+        PdfWriter.getInstance(document, new FileOutputStream("footer-table-test.pdf"));
 
         Image jpg = Image.getInstance(Objects.requireNonNull(getClass().getClassLoader().getResource("GitHub-Mark-32px.png")));
         jpg.setAlignment(Image.RIGHT);
@@ -32,7 +32,6 @@ public class FooterTableTest {
         table.addCell("3.3");
 
         Paragraph footerParagraph = new Paragraph();
-        ;
         footerParagraph.add(jpg);
         footerParagraph.add(table);
 
@@ -54,5 +53,11 @@ public class FooterTableTest {
         Assertions.assertEquals(48.0, tableHeight);
         Assertions.assertEquals(76.0, footerTop);
         Assertions.assertEquals(28.0, tableBottom);
+    }
+
+    public static void main(String[] args) throws IOException {
+        FooterTableTest test = new FooterTableTest();
+        test.imageLeftAlignmentPositionTest();
+        System.out.println("PDF generated: footer-table-test.pdf");
     }
 }
