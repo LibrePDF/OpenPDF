@@ -407,8 +407,6 @@ public class PdfDocument extends Document {
     /** The current active <CODE>PdfAction</CODE> when processing an <CODE>Anchor</CODE>. */
     protected PdfAction anchorAction = null;
 
-    // We are going to apply Refactoring Here
-
     /**
      * Signals that an <CODE>Element</CODE> was added to the <CODE>Document</CODE>.
      *
@@ -569,7 +567,7 @@ public class PdfDocument extends Document {
                     PdfPageEvent pageEvent = writer.getPageEvent();
 
                     boolean hasTitle = section.isNotAddedYet()
-                        && section.getTitle() != null;
+                            && section.getTitle() != null;
 
                     // if the section is a chapter, we begin a new page
                     if (section.isTriggerNewPage()) {
@@ -678,17 +676,22 @@ public class PdfDocument extends Document {
                     break;
                 }
                 case Element.PTABLE: {
-                    PdfPTable ptable = (PdfPTable)element;
+                    PdfPTable ptable = (PdfPTable) element;
                     if (ptable.size() <= ptable.getHeaderRows())
                         break; //nothing to do
 
-                    // before every table, we add a new line and flush all lines
-                    ensureNewLine();
-                    flushLines();
+                    if(isDoFooter) {
+                        delayTableAddition(ptable);
+                    } else {
+                        // before every table, we add a new line and flush all lines
+                        ensureNewLine();
+                        flushLines();
 
-                    addPTable(ptable);
-                    pageEmpty = false;
-                    newLine();
+                        addPTable(ptable);
+                        pageEmpty = false;
+                        newLine();
+                    }
+
                     break;
                 }
                 case Element.MULTI_COLUMN_TEXT: {
@@ -715,15 +718,15 @@ public class PdfDocument extends Document {
                         break;
                     } else if (element instanceof Table) {
                         try {
-                               PdfPTable ptable = ((Table)element).createPdfPTable();
-                               if (ptable.size() <= ptable.getHeaderRows())
-                                   break; //nothing to do
-                               // before every table, we add a new line and flush all lines
-                               ensureNewLine();
-                               flushLines();
-                               addPTable(ptable);
-                               pageEmpty = false;
-                               break;
+                            PdfPTable ptable = ((Table)element).createPdfPTable();
+                            if (ptable.size() <= ptable.getHeaderRows())
+                                break; //nothing to do
+                            // before every table, we add a new line and flush all lines
+                            ensureNewLine();
+                            flushLines();
+                            addPTable(ptable);
+                            pageEmpty = false;
+                            break;
                         }
                         catch(BadElementException bee) {
                             // constructing the PdfTable
@@ -747,7 +750,12 @@ public class PdfDocument extends Document {
                 case Element.IMGRAW:
                 case Element.IMGTEMPLATE: {
                     //carriageReturn(); suggestion by Marc Campforts
-                    add((Image) element);
+                    if(isDoFooter){
+                        addDelay((Image) element);
+                    }else{
+                        add((Image) element);
+                    }
+
                     break;
                 }
                 case Element.YMARK: {
@@ -779,37 +787,45 @@ public class PdfDocument extends Document {
         }
     }
 
+
+    /**
+     * Integrate a paragraph into a table, so it can be a whole.
+     * <p>Note: This is not a table with square, it's just like the paragraph, but
+     * it cannot be separated.
+     * @param paragraph the {@code Paragraph} incoming paragraphs to be consolidated
+     * @return {@code PdfPTable} the whole which will be used later
+     */
     static PdfPTable createInOneCell(Paragraph paragraph) {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(100f);
-
         PdfPCell cell = new PdfPCell();
         cell.setBorder(Table.NO_BORDER);
         cell.setPadding(0);
-
-        for (int i=0; i<paragraph.size(); ++i) {
+        for (int i = 0; i < paragraph.size(); i++) {
             if (paragraph.get(i) instanceof Chunk) {
                 Paragraph subParagraph = new Paragraph();
                 boolean hasNewLine = false;
                 do {
-                    Chunk chunk = (Chunk)paragraph.get(i);
-                    ++i;
+                    Chunk chunk = (Chunk) paragraph.get(i);
+                    i++;
                     if (chunk.getContent().equals("\n")) {
                         hasNewLine = true;
                         break;
-                    }
-                    else
+                    } else {
                         subParagraph.add(chunk);
-                } while (i<paragraph.size() && paragraph.get(i) instanceof Chunk);
-                --i;
+                    }
+                } while (i < paragraph.size() && paragraph.get(i) instanceof Chunk);
+                i--;
+                // It's important to set the leading here.
+                subParagraph.setLeading(paragraph.getLeading());
                 cell.addElement(subParagraph);
-                if (hasNewLine)
+                if (hasNewLine) {
                     cell.addElement(new Chunk("\n"));
-            }
-            else
+                }
+            } else {
                 cell.addElement(paragraph.get(i));
+            }
         }
-
         table.addCell(cell);
         return table;
     }
@@ -872,7 +888,7 @@ public class PdfDocument extends Document {
         writer.close();
     }
 
-//    [L3] DocListener interface
+    //    [L3] DocListener interface
     protected int textEmptySize;
 
     // [C9] Metadata for the page
@@ -1202,8 +1218,8 @@ public class PdfDocument extends Document {
         // backgroundcolors, etc...
         thisBoxSize = new HashMap<>(boxSize);
         if (pageSize.getBackgroundColor() != null
-        || pageSize.hasBorders()
-        || pageSize.getBorderColor() != null) {
+                || pageSize.hasBorders()
+                || pageSize.getBorderColor() != null) {
             add(pageSize);
         }
 
@@ -1303,7 +1319,7 @@ public class PdfDocument extends Document {
     public float getVerticalPosition(boolean ensureNewLine) {
         // ensuring that a new line has been started.
         if (ensureNewLine) {
-          ensureNewLine();
+            ensureNewLine();
         }
         return top() -  currentHeight - indentation.indentTop;
     }
@@ -1315,14 +1331,14 @@ public class PdfDocument extends Document {
      * Ensures that a new line has been started.
      */
     protected void ensureNewLine() {
-      try {
-        if ((lastElementType == Element.PHRASE) ||
-            (lastElementType == Element.CHUNK)) {
-          newLine();
-          flushLines();
-        }
-      } catch (DocumentException ex) {
-        throw new ExceptionConverter(ex);
+        try {
+            if ((lastElementType == Element.PHRASE) ||
+                    (lastElementType == Element.CHUNK)) {
+                newLine();
+                flushLines();
+            }
+        } catch (DocumentException ex) {
+            throw new ExceptionConverter(ex);
         }
     }
 
@@ -1403,7 +1419,7 @@ public class PdfDocument extends Document {
         int lineLen;
         boolean isJustified;
         float hangingCorrection = 0;
-        float hScale = 1;
+        float hScale;
         float lastHScale = Float.NaN;
         float baseWordSpacing = 0;
         float baseCharacterSpacing = 0;
@@ -1517,9 +1533,9 @@ public class PdfDocument extends Document {
 
                         float[] extra = (float[]) bgr[1];
                         graphics.rectangle(xMarker - extra[0],
-                            yMarker + descender - extra[1] + chunk.getTextRise(),
-                            width - subtract + extra[0] + extra[2],
-                            ascender - descender + extra[1] + extra[3]);
+                                yMarker + descender - extra[1] + chunk.getTextRise(),
+                                width - subtract + extra[0] + extra[2],
+                                ascender - descender + extra[1] + extra[3]);
                         graphics.fill();
                         graphics.setGrayFill(0);
 
@@ -1532,7 +1548,7 @@ public class PdfDocument extends Document {
                         if (nextChunk == null)
                             subtract += hangingCorrection;
                         Object[][] unders = (Object[][]) chunk.getAttribute(Chunk.UNDERLINE);
-                        Color scolor = null;
+                        Color scolor;
                         for (Object[] obj : unders) {
                             scolor = (Color) obj[0];
                             float[] ps = (float[]) obj[1];
@@ -2489,7 +2505,7 @@ public class PdfDocument extends Document {
         if (image == imageWait)
             imageWait = null;
         boolean textwrap = (image.getAlignment() & Image.TEXTWRAP) == Image.TEXTWRAP
-        && !((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE);
+                && !((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE);
         boolean underlying = (image.getAlignment() & Image.UNDERLYING) == Image.UNDERLYING;
         float diff = leading / 2;
         if (textwrap) {
@@ -2528,7 +2544,120 @@ public class PdfDocument extends Document {
         }
     }
 
-//    [M4] Adding a PdfPTable
+    /**
+     * write non-text <CODE>Element</CODE> into document
+     */
+
+    protected void flushSpecial() {
+        if(footer.getSpecialContent() == null){
+            return;
+        }
+        for (Element element : footer.getSpecialContent()) {
+            switch (element.type()) {
+                case Element.JPEG:
+                case Element.JPEG2000:
+                case Element.JBIG2:
+                case Element.IMGRAW:
+                case Element.IMGTEMPLATE: {
+                    Image image = (Image) element;
+                    boolean textwrap = (image.getAlignment() & Image.TEXTWRAP) == Image.TEXTWRAP
+                            && !((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE);
+                    float diff = leading / 2;
+                    if (textwrap) {
+                        diff += leading;
+                    }
+                    float lowerleft = footer.getTop() - image.getRelativeTop() - image.getScaledHeight() - diff;
+
+                    float[] mt = image.matrix();
+                    float startPosition = indentLeft() - mt[4];
+                    if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT)
+                        startPosition = indentRight() - image.getScaledWidth() - mt[4];
+                    if ((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE)
+                        startPosition = indentLeft() + ((indentRight() - indentLeft() - image.getScaledWidth()) / 2) - mt[4];
+                    if (image.hasAbsoluteX()) startPosition = image.getAbsoluteX();
+
+                    if (!textwrap) {
+                        if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT)
+                            startPosition -= image.getIndentationRight();
+                        else if ((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE)
+                            startPosition += image.getIndentationLeft() - image.getIndentationRight();
+                        else startPosition += image.getIndentationLeft();
+                    }
+                    graphics.addImage(image, mt[0], mt[1], mt[2], mt[3], startPosition, lowerleft - mt[5]);
+                    break;
+                }
+                case Element.PTABLE:
+                    PdfPTable ptable = (PdfPTable) element;
+
+                    ColumnText ct = new ColumnText(writer.getDirectContent());
+                    ct.addElement(ptable);
+
+                    ct.setSimpleColumn(indentLeft(), footer.getBottom(), indentRight(), footer.getTop());
+                    ct.go();
+
+                    break;
+            }
+        }
+        footer.setPadding(0);
+    }
+
+    /**
+     * Occupies space for <CODE>Image</CODE> that will be added later instead of now
+     *
+     * @param image the new <CODE>Image</CODE>
+     */
+
+    protected void addDelay(Image image) {
+        if (image.hasAbsoluteY()) {
+            System.out.println("Warning: absoluteY of image is invalid in footer");
+        }
+
+        image.setRelativeTop(currentHeight); // set the offset relative to the top
+        image.setAlignment(image.getAlignment() | footer.alignment());
+        footer.addSpecialContent(image);
+
+        // add indentation for text
+        boolean textwrap = (image.getAlignment() & Image.TEXTWRAP) == Image.TEXTWRAP
+                && !((image.getAlignment() & Image.MIDDLE) == Image.MIDDLE);
+        boolean underlying = (image.getAlignment() & Image.UNDERLYING) == Image.UNDERLYING;
+        float diff = leading / 2;
+        if (textwrap) {
+            if (imageEnd < 0 || imageEnd < currentHeight + image.getScaledHeight() + diff) {
+                imageEnd = currentHeight + image.getScaledHeight() + diff;
+            }
+            if ((image.getAlignment() & Image.RIGHT) == Image.RIGHT) {
+                // indentation suggested by Pelikan Stephan
+                indentation.imageIndentRight += image.getScaledWidth() + image.getIndentationLeft();
+            } else {
+                // indentation suggested by Pelikan Stephan
+                indentation.imageIndentLeft += image.getScaledWidth() + image.getIndentationRight();
+            }
+        }
+        // move text
+        if (!(textwrap || underlying)) {
+            currentHeight += image.getScaledHeight() + diff;
+            flushLines();
+            text.moveText(0, -(image.getScaledHeight() + diff));
+            newLine();
+        } else {
+            footer.addPadding(image.getScaledHeight() + diff);
+        }
+    }
+
+    /**
+     * Occupies space for <CODE>PdfPTable</CODE> that will be added later instead of now
+     *
+     * @param table the new <CODE>PdfPTable</CODE>
+     */
+    protected void delayTableAddition(PdfPTable table) {
+        setTableWidth(table);
+        final float footerPadding = table.getTotalHeight() - (0.75f * leading);
+
+        footer.addSpecialContent(table);
+        footer.addPadding(footerPadding);
+    }
+
+    //    [M4] Adding a PdfPTable
 
     /** Adds a <CODE>PdfPTable</CODE> to the document.
      * @param ptable the <CODE>PdfPTable</CODE> to be added to the document.
@@ -2582,14 +2711,18 @@ public class PdfDocument extends Document {
      */
 
     boolean fitsPage(PdfPTable table, float margin) {
+        setTableWidth(table);
+        // ensuring that a new line has been started.
+        ensureNewLine();
+        return table.getTotalHeight() + ((currentHeight > 0) ? table.spacingBefore() : 0f)
+                <= indentTop() - currentHeight - indentBottom() - margin;
+    }
+
+    private void setTableWidth(final PdfPTable table) {
         if (!table.isLockedWidth()) {
             float totalWidth = (indentRight() - indentLeft()) * table.getWidthPercentage() / 100;
             table.setTotalWidth(totalWidth);
         }
-        // ensuring that a new line has been started.
-        ensureNewLine();
-        return table.getTotalHeight() + ((currentHeight > 0) ? table.spacingBefore() : 0f)
-            <= indentTop() - currentHeight - indentBottom() - margin;
     }
 
 //    [M4'] Adding a Table
@@ -3074,7 +3207,7 @@ public class PdfDocument extends Document {
 
                 // we paint the borders of the cells
                 Rectangle cellRect = cell.rectangle(tableRect.getTop(), indentBottom);
-                 //cellRect.setBottom(cellRect.bottom());
+                //cellRect.setBottom(cellRect.bottom());
                 if (cellRect.getHeight() > 0) {
                     ctx.lostTableBottom = indentBottom;
                     ctx.cellGraphics.rectangle(cellRect);
@@ -3104,8 +3237,12 @@ public class PdfDocument extends Document {
     }
 
 //    [M5] header/footer
+    /** This is the flag meaning whether document is creating footer. */
+    private boolean isDoFooter = false;
+
     protected void doFooter() throws DocumentException {
         if (footer == null) return;
+        isDoFooter = true;
         // Begin added by Edgar Leonardo Prieto Perilla
         // Avoid footer indentation
         float tmpIndentLeft = indentation.indentLeft;
@@ -3131,11 +3268,12 @@ public class PdfDocument extends Document {
         text.moveText(left(), indentBottom());
         flushLines();
         text.moveText(-left(), -bottom());
-        footer.setTop(bottom(currentHeight));
+        footer.setTop(bottom(Math.max(footer.getPadding(), currentHeight)));
         footer.setBottom(bottom() - (0.75f * leading));
         footer.setLeft(left());
         footer.setRight(right());
         graphics.rectangle(footer);
+        flushSpecial();
         indentation.indentBottom = currentHeight + leading * 2;
         currentHeight = 0;
         // Begin added by Edgar Leonardo Prieto Perilla
@@ -3147,6 +3285,7 @@ public class PdfDocument extends Document {
         indentation.imageIndentRight = tmpImageIndentRight;
         // End added: Bonf (Marc Schneider) 2003-07-29
         // End added by Edgar Leonardo Prieto Perilla
+        isDoFooter = false;
     }
 
     protected void doHeader() throws DocumentException {
