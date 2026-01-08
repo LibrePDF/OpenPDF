@@ -493,8 +493,8 @@ class FontDetails {
         if (format14Metrics != null) {
             int glyphId = format14Metrics[0];
             cacheGlyphMetrics(glyphId, format14Metrics[1], baseCp, vsCp);
-            glyph[glyphIndex++] = (char) glyphId;
-            return glyphIndex;
+            glyph[glyphIndex] = (char) glyphId;
+            return glyphIndex + 1;
         }
 
         // fallback
@@ -507,7 +507,8 @@ class FontDetails {
         if (metrics != null) {
             int glyphId = metrics[0];
             cacheGlyphMetrics(glyphId, metrics[1], codePoint);
-            glyph[glyphIndex++] = (char) glyphId;
+            glyph[glyphIndex] = (char) glyphId;
+            return glyphIndex + 1;
         }
 
         return glyphIndex;
