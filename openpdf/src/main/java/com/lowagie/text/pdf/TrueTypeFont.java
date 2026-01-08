@@ -877,9 +877,8 @@ class TrueTypeFont extends BaseFont {
 
     HashMap<String, int[]> readFormat14(int format14Location) throws IOException {
         HashMap<String, int[]> result = new HashMap<>();
-        long startPosition = this.rf.getFilePointer() - 4; // 回退到读取 byteLength 之前的位置
-
-        int byteLength = this.rf.readInt();
+        int startPosition = this.rf.getFilePointer() - 4; //reopen
+        int byteLength = this.rf.readInt(); // byteLength
         int numVarSelectorRecords = this.rf.readInt();
 
         if (numVarSelectorRecords < 0 || numVarSelectorRecords > 10000) {
@@ -895,7 +894,7 @@ class TrueTypeFont extends BaseFont {
             int defaultUVSOffset = this.rf.readInt();
             int nonDefaultUVSOffset = this.rf.readInt();
 
-            if (nonDefaultUVSOffset > 0) { // 只处理非零偏移
+            if (nonDefaultUVSOffset > 0) {
                 nonDefaultOffsetMap.put(selectorUnicodeValue, nonDefaultUVSOffset);
             }
         }
@@ -924,19 +923,13 @@ class TrueTypeFont extends BaseFont {
         return result;
     }
 
-    /**
-     * 将大端序（Big-Endian）的字节数组转换为无符号整数（最多4字节）
-     * @param data 输入字节数组
-     * @param n 读取字节数（1~4）
-     * @return 对应的非负整数值
-     */
     public int byte2int(byte[] data, int n) {
         if (data == null || n <= 0 || n > 4 || data.length < n) {
             return 0;
         }
         int result = 0;
         for (int i = 0; i < n; i++) {
-            result = (result << 8) | (data[i] & 0xFF); // & 0xFF 确保无符号
+            result = (result << 8) | (data[i] & 0xFF);
         }
         return result;
     }
@@ -945,7 +938,7 @@ class TrueTypeFont extends BaseFont {
         if (this.cmap05 != null) {
             return this.cmap05.get(char1 + "_" + char2);
         }
-        return null;
+        return new int[]{-1, -1};
     }
 
     HashMap<Integer, int[]> readFormat12() throws IOException {

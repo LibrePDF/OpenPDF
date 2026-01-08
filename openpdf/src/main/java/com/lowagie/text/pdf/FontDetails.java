@@ -225,66 +225,7 @@ class FontDetails {
                     } else {
                         //ivs font handler,Simply judge whether it is IVS font or not
                         if (mayContainIVS(text)) {
-                            glyph = new char[len * 2];
-                            for (int k = 0; k < len; ) {
-                                int baseCp;
-                                int charCount;
-                                if (k < len - 1 && Character.isHighSurrogate(text.charAt(k))
-                                        && Character.isLowSurrogate(text.charAt(k + 1))) {
-                                    baseCp = Character.toCodePoint(text.charAt(k), text.charAt(k + 1));
-                                    charCount = 2;
-                                } else {
-                                    baseCp = text.charAt(k);
-                                    charCount = 1;
-                                }
-
-                                int vsCp = -1;
-                                int vsCharCount = 0;
-                                int nextIndex = k + charCount;
-
-                                if (nextIndex < len) {
-                                    int potentialVs = text.charAt(nextIndex);
-                                    if (isVariationSelector(potentialVs)) {
-                                        vsCp = potentialVs;
-                                        vsCharCount = 1;
-                                    }
-                                    else if (nextIndex < len - 1
-                                            && Character.isHighSurrogate(text.charAt(nextIndex))
-                                            && Character.isLowSurrogate(text.charAt(nextIndex + 1))) {
-                                        int potentialVsPair = Character.toCodePoint(
-                                                text.charAt(nextIndex), text.charAt(nextIndex + 1));
-                                        if (isVariationSelector(potentialVsPair)) {
-                                            vsCp = potentialVsPair;
-                                            vsCharCount = 2;
-                                        }
-                                    }
-                                }
-
-                                if (vsCp != -1) {
-                                    int[] format14Metrics = this.ttu.getFormat14MetricsTT(baseCp, vsCp);
-                                    if (format14Metrics != null) {
-                                        int gl = format14Metrics[0];
-                                        if (!this.longTag.containsKey(gl)) {
-                                            this.longTag.put(gl, new int[]{gl, format14Metrics[1], baseCp, vsCp});
-                                        }
-                                        glyph[i++] = (char) gl;
-                                        k += charCount + vsCharCount;
-                                        continue;
-                                    }
-                                }
-                                metrics = this.ttu.getMetricsTT(baseCp);
-                                if (metrics != null) {
-                                    int gl = metrics[0];
-                                    if (!this.longTag.containsKey(gl)) {
-                                        this.longTag.put(gl, new int[]{gl, metrics[1], baseCp});
-                                    }
-                                    glyph[i++] = (char) gl;
-                                }
-
-                                k += charCount;
-                            }
-                            glyph = Arrays.copyOfRange(glyph, 0, i);
-                            b = convertCharsToBytes(glyph);
+                            b = handleIvsText(text, len, i);
                             break;
                         }
                         String fileName = ((TrueTypeFontUnicode) getBaseFont()).fileName;
@@ -481,5 +422,122 @@ class FontDetails {
      */
     public void setSubset(boolean subset) {
         this.subset = subset;
+    }
+
+    /**
+     * handle ivs text
+     */
+    private byte[] handleIvsText(String text, int len, int startIndex) {
+        char[] glyph = new char[len * 2];
+        int glyphIndex = startIndex;
+        int k = 0;
+
+        while (k < len) {
+            CodePointInfo baseChar = parseCodePoint(text, k, len);
+            CodePointInfo vsChar = parseVariationSelector(text, k + baseChar.charCount, len);
+            int skipCount = baseChar.charCount;
+            if (vsChar != null) {
+                glyphIndex = addIvsGlyph(baseChar.codePoint, vsChar.codePoint, glyph, glyphIndex);
+                skipCount += vsChar.charCount;
+            } else {
+                glyphIndex = addDefaultGlyph(baseChar.codePoint, glyph, glyphIndex);
+            }
+            k += skipCount;
+        }
+
+        glyph = Arrays.copyOfRange(glyph, 0, glyphIndex);
+        return convertCharsToBytes(glyph);
+    }
+
+    private CodePointInfo parseCodePoint(String text, int index, int len) {
+        if (index < len - 1
+                && Character.isHighSurrogate(text.charAt(index))
+                && Character.isLowSurrogate(text.charAt(index + 1))) {
+            // Surrogate pair
+            int codePoint = Character.toCodePoint(text.charAt(index), text.charAt(index + 1));
+            return new CodePointInfo(codePoint, 2);
+        } else {
+            // BMP
+            return new CodePointInfo(text.charAt(index), 1);
+        }
+    }
+
+    private CodePointInfo parseVariationSelector(String text, int index, int len) {
+        if (index >= len) {
+            return null;
+        }
+
+        char currentChar = text.charAt(index);
+
+        // single char IVS
+        if (isVariationSelector(currentChar)) {
+            return new CodePointInfo(currentChar, 1);
+        }
+
+        // surrogate pair IVS
+        if (index < len - 1
+                && Character.isHighSurrogate(currentChar)
+                && Character.isLowSurrogate(text.charAt(index + 1))) {
+            int codePoint = Character.toCodePoint(currentChar, text.charAt(index + 1));
+            if (isVariationSelector(codePoint)) {
+                return new CodePointInfo(codePoint, 2);
+            }
+        }
+
+        return null;
+    }
+
+    private int addIvsGlyph(int baseCp, int vsCp, char[] glyph, int glyphIndex) {
+        int[] format14Metrics = this.ttu.getFormat14MetricsTT(baseCp, vsCp);
+
+        if (format14Metrics != null) {
+            int glyphId = format14Metrics[0];
+            cacheGlyphMetrics(glyphId, format14Metrics[1], baseCp, vsCp);
+            glyph[glyphIndex++] = (char) glyphId;
+            return glyphIndex;
+        }
+
+        // fallback
+        return addDefaultGlyph(baseCp, glyph, glyphIndex);
+    }
+
+    private int addDefaultGlyph(int codePoint, char[] glyph, int glyphIndex) {
+        int[] metrics = this.ttu.getMetricsTT(codePoint);
+
+        if (metrics != null) {
+            int glyphId = metrics[0];
+            cacheGlyphMetrics(glyphId, metrics[1], codePoint);
+            glyph[glyphIndex++] = (char) glyphId;
+        }
+
+        return glyphIndex;
+    }
+
+    /**
+     * cache IVS glyph metrics info
+     */
+    private void cacheGlyphMetrics(int glyphId, int width, int baseCp) {
+        if (!this.longTag.containsKey(glyphId)) {
+            this.longTag.put(glyphId, new int[]{glyphId, width, baseCp});
+        }
+    }
+
+    /**
+     * cache IVS glyph metrics info
+     */
+    private void cacheGlyphMetrics(int glyphId, int width, int baseCp, int vsCp) {
+        if (!this.longTag.containsKey(glyphId)) {
+            this.longTag.put(glyphId, new int[]{glyphId, width, baseCp, vsCp});
+        }
+    }
+
+    private static class CodePointInfo {
+        final int codePoint;
+        final int charCount;
+
+        CodePointInfo(int codePoint, int charCount) {
+            this.codePoint = codePoint;
+            this.charCount = charCount;
+        }
     }
 }
