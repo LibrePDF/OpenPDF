@@ -54,6 +54,7 @@ import com.lowagie.text.TextRenderingOptions;
 import com.lowagie.text.Utilities;
 import java.awt.font.GlyphVector;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -222,6 +223,70 @@ class FontDetails {
                         b = s.getBytes(CJKFont.CJK_ENCODING);
 
                     } else {
+                        //ivs font handler,Simply judge whether it is IVS font or not
+                        if (mayContainIVS(text)) {
+                            glyph = new char[len * 2];
+                            for (int k = 0; k < len; ) {
+                                int baseCp;
+                                int charCount;
+                                if (k < len - 1 && Character.isHighSurrogate(text.charAt(k))
+                                        && Character.isLowSurrogate(text.charAt(k + 1))) {
+                                    baseCp = Character.toCodePoint(text.charAt(k), text.charAt(k + 1));
+                                    charCount = 2;
+                                } else {
+                                    baseCp = text.charAt(k);
+                                    charCount = 1;
+                                }
+
+                                int vsCp = -1;
+                                int vsCharCount = 0;
+                                int nextIndex = k + charCount;
+
+                                if (nextIndex < len) {
+                                    int potentialVs = text.charAt(nextIndex);
+                                    if (isVariationSelector(potentialVs)) {
+                                        vsCp = potentialVs;
+                                        vsCharCount = 1;
+                                    }
+                                    else if (nextIndex < len - 1
+                                            && Character.isHighSurrogate(text.charAt(nextIndex))
+                                            && Character.isLowSurrogate(text.charAt(nextIndex + 1))) {
+                                        int potentialVsPair = Character.toCodePoint(
+                                                text.charAt(nextIndex), text.charAt(nextIndex + 1));
+                                        if (isVariationSelector(potentialVsPair)) {
+                                            vsCp = potentialVsPair;
+                                            vsCharCount = 2;
+                                        }
+                                    }
+                                }
+
+                                if (vsCp != -1) {
+                                    int[] format14Metrics = this.ttu.getFormat14MetricsTT(baseCp, vsCp);
+                                    if (format14Metrics != null) {
+                                        int gl = format14Metrics[0];
+                                        if (!this.longTag.containsKey(gl)) {
+                                            this.longTag.put(gl, new int[]{gl, format14Metrics[1], baseCp, vsCp});
+                                        }
+                                        glyph[i++] = (char) gl;
+                                        k += charCount + vsCharCount;
+                                        continue;
+                                    }
+                                }
+                                metrics = this.ttu.getMetricsTT(baseCp);
+                                if (metrics != null) {
+                                    int gl = metrics[0];
+                                    if (!this.longTag.containsKey(gl)) {
+                                        this.longTag.put(gl, new int[]{gl, metrics[1], baseCp});
+                                    }
+                                    glyph[i++] = (char) gl;
+                                }
+
+                                k += charCount;
+                            }
+                            glyph = Arrays.copyOfRange(glyph, 0, i);
+                            b = convertCharsToBytes(glyph);
+                            break;
+                        }
                         String fileName = ((TrueTypeFontUnicode) getBaseFont()).fileName;
                         if (options.isGlyphSubstitutionEnabled() && FopGlyphProcessor.isFopSupported()
                                 && (fileName != null && fileName.length() > 0
@@ -239,6 +304,43 @@ class FontDetails {
             }
         }
         return b;
+    }
+
+    private static boolean isVariationSelector(int codePoint) {
+        return (codePoint >= 0xFE00 && codePoint <= 0xFE0F)
+                || (codePoint >= 0xE0100 && codePoint <= 0xE01EF);
+    }
+
+    /**
+     * Quickly determine whether the text may contain IVS (to decide whether to use the IVS dedicated path)
+     * Note: This means "may contain," not "must contain"—err on the side of caution to avoid omissions
+     */
+    private static boolean mayContainIVS(String text) {
+        if (text == null) return false;
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            if (c >= '\uFE00' && c <= '\uFE0F') {
+                return true;
+            }
+
+            if (c >= '\udb40' && c <= '\udb43') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private byte[] convertCharsToBytes(char[] chars) {
+        byte[] result = new byte[chars.length * 2];
+
+        for (int i = 0; i < chars.length; ++i) {
+            result[2 * i] = (byte) (chars[i] / 256);
+            result[2 * i + 1] = (byte) (chars[i] % 256);
+        }
+
+        return result;
     }
 
     private byte[] convertToBytesWithGlyphs(String text) throws UnsupportedEncodingException {
