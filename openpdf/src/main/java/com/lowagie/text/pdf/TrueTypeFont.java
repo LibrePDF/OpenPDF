@@ -786,93 +786,191 @@ class TrueTypeFont extends BaseFont {
      * @throws IOException       the font file could not be read
      */
     void readCMaps() throws DocumentException, IOException {
-        int[] table_location = tables.get("cmap");
-        if (table_location == null) {
-            throw new DocumentException(
-                    MessageLocalization.getComposedMessage("table.1.does.not.exist.in.2", "cmap", fileName + style));
-        }
-        rf.seek(table_location[0]);
+        int[] tableLocation = getTableLocation("cmap");
+
+        // Seek to cmap table and read number of subtables
+        rf.seek(tableLocation[0]);
         rf.skipBytes(2);
-        int num_tables = rf.readUnsignedShort();
+        int numTables = rf.readUnsignedShort();
+
+        // Scan all subtables to find the mappings we need
+        CMapOffsets offsets = scanCMapTables(tableLocation[0], numTables);
+
+        // Read each cmap based on the offsets found
+        readCMap10(tableLocation[0], offsets.map10);
+        readCMap31(tableLocation[0], offsets.map31);
+        readCMap30(tableLocation[0], offsets.map30);
+        readCMapExt(tableLocation[0], offsets.mapExt);
+        readCMap05(tableLocation[0], offsets.map05);
+    }
+
+    /**
+     * Gets the location information for the specified table
+     */
+    private int[] getTableLocation(String tableName) throws DocumentException {
+        int[] location = tables.get(tableName);
+        if (location == null) {
+            throw new DocumentException(
+                    MessageLocalization.getComposedMessage("table.1.does.not.exist.in.2", tableName, fileName + style)
+            );
+        }
+        return location;
+    }
+
+    /**
+     * Scans all cmap subtables and collects the mapping offsets we need
+     */
+    private CMapOffsets scanCMapTables(int baseOffset, int numTables) throws IOException {
+        CMapOffsets offsets = new CMapOffsets();
         fontSpecific = false;
-        int map10 = 0;
-        int map31 = 0;
-        int map30 = 0;
-        int mapExt = 0;
-        int map05 = 0;
-        for (int k = 0; k < num_tables; ++k) {
-            int platId = rf.readUnsignedShort();
-            int platSpecId = rf.readUnsignedShort();
+
+        for (int i = 0; i < numTables; i++) {
+            int platformId = rf.readUnsignedShort();
+            int platformSpecificId = rf.readUnsignedShort();
             int offset = rf.readInt();
-            if (platId == 3 && platSpecId == 0) {
+
+            processTableEntry(platformId, platformSpecificId, offset, offsets);
+        }
+
+        return offsets;
+    }
+
+    /**
+     * Processes a single cmap table entry
+     */
+    private void processTableEntry(int platformId, int platformSpecificId, int offset, CMapOffsets offsets) {
+        // Platform 3 (Windows)
+        if (platformId == 3) {
+            if (platformSpecificId == 0) {
+                // Symbol font
                 fontSpecific = true;
-                map30 = offset;
-            } else if (platId == 3 && platSpecId == 1) {
-                map31 = offset;
-            } else if (platId == 3 && platSpecId == 10) {
-                mapExt = offset;
-            } else if (platId == 0 && platSpecId == 5) {
-                map05 = offset;
-            }
-            if (platId == 1 && platSpecId == 0) {
-                map10 = offset;
+                offsets.map30 = offset;
+            } else if (platformSpecificId == 1) {
+                // Unicode BMP
+                offsets.map31 = offset;
+            } else if (platformSpecificId == 10) {
+                // Unicode Full Repertoire
+                offsets.mapExt = offset;
             }
         }
-        if (map10 > 0) {
-            rf.seek(table_location[0] + map10);
-            int format = rf.readUnsignedShort();
-            switch (format) {
-                case 0:
-                    cmap10 = readFormat0();
-                    break;
-                case 4:
-                    cmap10 = readFormat4();
-                    break;
-                case 6:
-                    cmap10 = readFormat6();
-                    break;
-            }
+        // Platform 1 (Macintosh)
+        else if (platformId == 1 && platformSpecificId == 0) {
+            offsets.map10 = offset;
         }
-        if (map31 > 0) {
-            rf.seek(table_location[0] + map31);
-            int format = rf.readUnsignedShort();
-            if (format == 4) {
-                cmap31 = readFormat4();
-            }
+        // Platform 0 (Unicode)
+        else if (platformId == 0 && platformSpecificId == 5) {
+            offsets.map05 = offset;
         }
-        if (map30 > 0) {
-            rf.seek(table_location[0] + map30);
-            int format = rf.readUnsignedShort();
-            if (format == 4) {
+    }
+
+    /**
+     * Reads map 1.0 (Macintosh Roman)
+     */
+    private void readCMap10(int baseOffset, int offset) throws IOException {
+        if (offset <= 0) {
+            return;
+        }
+
+        rf.seek(baseOffset + offset);
+        int format = rf.readUnsignedShort();
+
+        switch (format) {
+            case 0:
+                cmap10 = readFormat0();
+                break;
+            case 4:
                 cmap10 = readFormat4();
-            }
+                break;
+            case 6:
+                cmap10 = readFormat6();
+                break;
         }
-        if (mapExt > 0) {
-            rf.seek(table_location[0] + mapExt);
-            int format = rf.readUnsignedShort();
-            switch (format) {
-                case 0:
-                    cmapExt = readFormat0();
-                    break;
-                case 4:
-                    cmapExt = readFormat4();
-                    break;
-                case 6:
-                    cmapExt = readFormat6();
-                    break;
-                case 12:
-                    cmapExt = readFormat12();
-                    break;
-            }
+    }
+
+    /**
+     * Reads map 3.1 (Windows Unicode BMP)
+     */
+    private void readCMap31(int baseOffset, int offset) throws IOException {
+        if (offset <= 0) {
+            return;
         }
-        if (map05 > 0) {
-            int format14Location = table_location[0] + map05;
-            this.rf.seek((long) format14Location);
-            int format = this.rf.readUnsignedShort();
-            if (format == 14) {
-                this.cmap05 = this.readFormat14(format14Location);
-            }
+
+        rf.seek(baseOffset + offset);
+        int format = rf.readUnsignedShort();
+
+        if (format == 4) {
+            cmap31 = readFormat4();
         }
+    }
+
+    /**
+     * Reads map 3.0 (Windows Symbol)
+     */
+    private void readCMap30(int baseOffset, int offset) throws IOException {
+        if (offset <= 0) {
+            return;
+        }
+
+        rf.seek(baseOffset + offset);
+        int format = rf.readUnsignedShort();
+
+        if (format == 4) {
+            cmap10 = readFormat4();
+        }
+    }
+
+    /**
+     * Reads extended map (Windows Unicode Full Repertoire)
+     */
+    private void readCMapExt(int baseOffset, int offset) throws IOException {
+        if (offset <= 0) {
+            return;
+        }
+
+        rf.seek(baseOffset + offset);
+        int format = rf.readUnsignedShort();
+
+        switch (format) {
+            case 0:
+                cmapExt = readFormat0();
+                break;
+            case 4:
+                cmapExt = readFormat4();
+                break;
+            case 6:
+                cmapExt = readFormat6();
+                break;
+            case 12:
+                cmapExt = readFormat12();
+                break;
+        }
+    }
+
+    /**
+     * Reads map 0.5 (Unicode Variation Sequences)
+     */
+    private void readCMap05(int baseOffset, int offset) throws IOException {
+        if (offset <= 0) {
+            return;
+        }
+
+        rf.seek(baseOffset + offset);
+        int format = rf.readUnsignedShort();
+
+        if (format == 14) {
+            cmap05 = readFormat14(baseOffset + offset);
+        }
+    }
+
+    /**
+     * Container class for CMap offsets
+     */
+    private static class CMapOffsets {
+        int map10 = 0;   // Macintosh Roman
+        int map31 = 0;   // Windows Unicode BMP
+        int map30 = 0;   // Windows Symbol
+        int mapExt = 0;  // Windows Unicode Full Repertoire
+        int map05 = 0;   // Unicode Variation Sequences
     }
 
     HashMap<String, int[]> readFormat14(int format14Location) throws IOException {

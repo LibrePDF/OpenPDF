@@ -195,7 +195,7 @@ class FontDetails {
                 return convertTrueTypeUnicodeFont(text, options);
 
             default:
-                return null;
+                return convertType3Font(text);
         }
     }
 
