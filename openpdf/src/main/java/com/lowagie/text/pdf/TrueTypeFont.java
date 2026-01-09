@@ -794,7 +794,7 @@ class TrueTypeFont extends BaseFont {
         int numTables = rf.readUnsignedShort();
 
         // Scan all subtables to find the mappings we need
-        CMapOffsets offsets = scanCMapTables(tableLocation[0], numTables);
+        CMapOffsets offsets = scanCMapTables(numTables);
 
         // Read each cmap based on the offsets found
         readCMap10(tableLocation[0], offsets.map10);
@@ -820,7 +820,7 @@ class TrueTypeFont extends BaseFont {
     /**
      * Scans all cmap subtables and collects the mapping offsets we need
      */
-    private CMapOffsets scanCMapTables(int baseOffset, int numTables) throws IOException {
+    private CMapOffsets scanCMapTables(int numTables) throws IOException {
         CMapOffsets offsets = new CMapOffsets();
         fontSpecific = false;
 
