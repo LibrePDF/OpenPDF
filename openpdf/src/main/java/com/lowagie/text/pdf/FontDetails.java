@@ -173,78 +173,143 @@ class FontDetails {
      * encoding and the characters used are stored.
      *
      * @param text the text to convert
+     * @param options rendering options
      * @return the conversion
      */
     byte[] convertToBytes(String text, TextRenderingOptions options) {
-        byte[] b = null;
         switch (fontType) {
             case BaseFont.FONT_TYPE_T3:
-                return baseFont.convertToBytes(text);
-            case BaseFont.FONT_TYPE_T1:
-            case BaseFont.FONT_TYPE_TT: {
-                b = baseFont.convertToBytes(text);
-                int len = b.length;
-                for (byte b1 : b) {
-                    shortTag[b1 & 0xff] = 1;
-                }
-                break;
-            }
-            case BaseFont.FONT_TYPE_CJK: {
-                int len = text.length();
-                for (int k = 0; k < len; ++k) {
-                    cjkTag.put(cjkFont.getCidCode(text.charAt(k)), 0);
-                }
-                b = baseFont.convertToBytes(text);
-                break;
-            }
-            case BaseFont.FONT_TYPE_DOCUMENT: {
-                b = baseFont.convertToBytes(text);
-                break;
-            }
-            case BaseFont.FONT_TYPE_TTUNI: {
-                try {
-                    int len = text.length();
-                    int[] metrics = null;
-                    char[] glyph = new char[len];
-                    int i = 0;
-                    if (symbolic) {
-                        b = PdfEncodings.convertToBytes(text, "symboltt");
-                        len = b.length;
-                        for (int k = 0; k < len; ++k) {
-                            metrics = ttu.getMetricsTT(b[k] & 0xff);
-                            if (metrics == null) {
-                                continue;
-                            }
-                            longTag.put(metrics[0],
-                                    new int[]{metrics[0], metrics[1], ttu.getUnicodeDifferences(b[k] & 0xff)});
-                            glyph[i++] = (char) metrics[0];
-                        }
-                        String s = new String(glyph, 0, i);
-                        b = s.getBytes(CJKFont.CJK_ENCODING);
+                return convertType3Font(text);
 
-                    } else {
-                        //ivs font handler,Simply judge whether it is IVS font or not
-                        if (mayContainIVS(text)) {
-                            b = handleIvsText(text, len, i);
-                            break;
-                        }
-                        String fileName = ((TrueTypeFontUnicode) getBaseFont()).fileName;
-                        if (options.isGlyphSubstitutionEnabled() && FopGlyphProcessor.isFopSupported()
-                                && (fileName != null && fileName.length() > 0
-                                && (fileName.contains(".ttf") || fileName.contains(".TTF")))) {
-                            return FopGlyphProcessor.convertToBytesWithGlyphs(ttu, text, fileName, longTag,
-                                    options.getDocumentLanguage());
-                        } else {
-                            return convertToBytesWithGlyphs(text);
-                        }
-                    }
-                } catch (UnsupportedEncodingException e) {
-                    throw new ExceptionConverter(e);
-                }
-                break;
-            }
+            case BaseFont.FONT_TYPE_T1:
+            case BaseFont.FONT_TYPE_TT:
+                return convertType1OrTrueTypeFont(text);
+
+            case BaseFont.FONT_TYPE_CJK:
+                return convertCjkFont(text);
+
+            case BaseFont.FONT_TYPE_DOCUMENT:
+                return convertDocumentFont(text);
+
+            case BaseFont.FONT_TYPE_TTUNI:
+                return convertTrueTypeUnicodeFont(text, options);
+
+            default:
+                return null;
         }
-        return b;
+    }
+
+    // Converts Type 3 font text to bytes
+    private byte[] convertType3Font(String text) {
+        return baseFont.convertToBytes(text);
+    }
+
+    // Converts Type 1 or TrueType font text to bytes
+    private byte[] convertType1OrTrueTypeFont(String text) {
+        byte[] bytes = baseFont.convertToBytes(text);
+        recordUsedCharacters(bytes);
+        return bytes;
+    }
+
+    // Records characters that have been used
+    private void recordUsedCharacters(byte[] bytes) {
+        for (byte b : bytes) {
+            shortTag[b & 0xff] = 1;
+        }
+    }
+
+    // Converts CJK font text to bytes
+    private byte[] convertCjkFont(String text) {
+        recordCjkCharacters(text);
+        return baseFont.convertToBytes(text);
+    }
+
+    // Records CJK characters that have been used
+    private void recordCjkCharacters(String text) {
+        for (int i = 0; i < text.length(); i++) {
+            int cidCode = cjkFont.getCidCode(text.charAt(i));
+            cjkTag.put(cidCode, 0);
+        }
+    }
+
+    // Converts document font text to bytes
+    private byte[] convertDocumentFont(String text) {
+        return baseFont.convertToBytes(text);
+    }
+
+    // Converts TrueType Unicode font text to bytes
+    private byte[] convertTrueTypeUnicodeFont(String text, TextRenderingOptions options) {
+        try {
+            if (symbolic) {
+                return convertSymbolicFont(text);
+            }
+
+            // Handle IVS (Ideographic Variation Sequence) fonts
+            if (mayContainIVS(text)) {
+                return handleIvsText(text, text.length(), 0);
+            }
+
+            // Use Fop glyph processor if applicable
+            if (shouldUseFopGlyphProcessor(options)) {
+                String fileName = ((TrueTypeFontUnicode) getBaseFont()).fileName;
+                return FopGlyphProcessor.convertToBytesWithGlyphs(
+                        ttu, text, fileName, longTag, options.getDocumentLanguage()
+                );
+            }
+
+            // Default glyph conversion
+            return convertToBytesWithGlyphs(text);
+        } catch (UnsupportedEncodingException e) {
+            throw new ExceptionConverter(e);
+        }
+    }
+
+    // Converts symbolic font text to bytes
+    private byte[] convertSymbolicFont(String text) throws UnsupportedEncodingException {
+        byte[] symbolBytes = PdfEncodings.convertToBytes(text, "symboltt");
+        char[] glyphCodes = extractGlyphCodes(symbolBytes);
+        String glyphString = new String(glyphCodes);
+        return glyphString.getBytes(CJKFont.CJK_ENCODING);
+    }
+
+    // Extracts glyph codes from symbol bytes and records metrics
+    private char[] extractGlyphCodes(byte[] symbolBytes) {
+        char[] glyphCodes = new char[symbolBytes.length];
+        int glyphCount = 0;
+
+        for (byte b : symbolBytes) {
+            int[] metrics = ttu.getMetricsTT(b & 0xff);
+            if (metrics == null) {
+                continue;
+            }
+
+            int glyphCode = metrics[0];
+            int width = metrics[1];
+            int unicodeDiff = ttu.getUnicodeDifferences(b & 0xff);
+
+            longTag.put(glyphCode, new int[]{glyphCode, width, unicodeDiff});
+            glyphCodes[glyphCount++] = (char) glyphCode;
+        }
+
+        return java.util.Arrays.copyOf(glyphCodes, glyphCount);
+    }
+
+    // Determines whether to use Fop glyph processor
+    private boolean shouldUseFopGlyphProcessor(TextRenderingOptions options) {
+        if (!options.isGlyphSubstitutionEnabled() || !FopGlyphProcessor.isFopSupported()) {
+            return false;
+        }
+
+        String fileName = ((TrueTypeFontUnicode) getBaseFont()).fileName;
+        return fileName != null
+                && !fileName.isEmpty()
+                && isTrueTypeFile(fileName);
+    }
+
+    // Checks if the file is a TrueType font file
+    private boolean isTrueTypeFile(String fileName) {
+        String lowerFileName = fileName.toLowerCase();
+        return lowerFileName.endsWith(".ttf");
     }
 
     private static boolean isVariationSelector(int codePoint) {

@@ -877,7 +877,7 @@ class TrueTypeFont extends BaseFont {
 
     HashMap<String, int[]> readFormat14(int format14Location) throws IOException {
         HashMap<String, int[]> result = new HashMap<>();
-        int startPosition = this.rf.getFilePointer() - 4; //reopen
+        this.rf.getFilePointer(); //reopen
         this.rf.readInt(); // byteLength，unused but need to read
         int numVarSelectorRecords = this.rf.readInt();
 
@@ -891,7 +891,7 @@ class TrueTypeFont extends BaseFont {
             byte[] input = new byte[3];
             this.rf.read(input);
             int selectorUnicodeValue = this.byte2int(input, 3);
-            int defaultUVSOffset = this.rf.readInt();
+            this.rf.readInt(); // defaultUVSOffset
             int nonDefaultUVSOffset = this.rf.readInt();
 
             if (nonDefaultUVSOffset > 0) {
