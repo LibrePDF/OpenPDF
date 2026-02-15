@@ -96,7 +96,7 @@
     <slf4j.version>2.0.17</slf4j.version>
 
     <!-- test-dependencies -->
-    <assertj.version>3.27.4</assertj.version>
+    <assertj.version>3.27.7</assertj.version>
     <checkstyle.version>12.1.1</checkstyle.version>
     <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
     <junit.version>5.13.4</junit.version>
