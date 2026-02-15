@@ -2,8 +2,10 @@ package org.openpdf.text.pdf;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.IntBuffer;
+import java.util.List;
 import java.util.Map;
 import org.apache.fop.complexscripts.fonts.GlyphSubstitutionTable;
+import org.apache.fop.complexscripts.util.CharAssociation;
 import org.apache.fop.complexscripts.util.CharScript;
 import org.apache.fop.complexscripts.util.GlyphSequence;
 import org.apache.fop.fonts.truetype.TTFFile;
@@ -62,13 +64,24 @@ public class FopGlyphProcessor {
         int limit = glyphSequence.getGlyphs().limit();
         int[] processedChars = glyphSequence.getGlyphs().array();
         char[] charEncodedGlyphCodes = new char[limit];
+        List<CharAssociation> associations = glyphSequence.getAssociations();
 
         for (int i = 0; i < limit; i++) {
             charEncodedGlyphCodes[i] = (char) processedChars[i];
             Integer glyphCode = processedChars[i];
             if (!longTag.containsKey(glyphCode)) {
-                longTag.put(glyphCode,
-                        new int[]{processedChars[i], ttu.getGlyphWidth(processedChars[i]), charBuffer.get(i)});
+                int sourceIdx = i;
+                if (associations != null && i < associations.size()) {
+                    sourceIdx = associations.get(i).getStart();
+                }
+
+                int originalChar = charBuffer.get(sourceIdx);
+
+                longTag.put(glyphCode, new int[]{
+                        processedChars[i],
+                        ttu.getGlyphWidth(processedChars[i]),
+                        originalChar
+                });
             }
         }
         return new String(charEncodedGlyphCodes).getBytes(CJKFont.CJK_ENCODING);
