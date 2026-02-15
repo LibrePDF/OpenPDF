@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [21, 24, '25']
+        java: [21, 24, 25, '26-ea'] 
     name: Build with Java ${{ matrix.java }}
     steps:
       - uses: actions/checkout@v5
