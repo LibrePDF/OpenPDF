@@ -78,13 +78,13 @@
     <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
     <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
     <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
     <maven.test.failure.ignore>false</maven.test.failure.ignore>
     <pitest-junit5-plugin.version>1.2.3</pitest-junit5-plugin.version>
     <pitmp-maven-plugin.version>1.3.7</pitmp-maven-plugin.version>
 
     <!-- dependencies -->
-    <bouncycastle.version>1.81</bouncycastle.version>
+    <bouncycastle.version>1.83</bouncycastle.version>
     <commons-io.version>2.20.0</commons-io.version>
     <dom4j.version>2.2.0</dom4j.version>
     <fop.version>2.11</fop.version>
@@ -96,8 +96,8 @@
     <slf4j.version>2.0.17</slf4j.version>
 
     <!-- test-dependencies -->
-    <assertj.version>3.27.4</assertj.version>
-    <checkstyle.version>11.0.0</checkstyle.version>
+    <assertj.version>3.27.7</assertj.version>
+    <checkstyle.version>12.1.1</checkstyle.version>
     <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
     <junit.version>5.13.4</junit.version>
     <mockito5.version>5.18.0</mockito5.version>
