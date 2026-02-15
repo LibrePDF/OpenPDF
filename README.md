@@ -164,7 +164,7 @@ More details: [Contributing](CONTRIBUTING.md)
 
 We have now different versions of OpenPDF, and they require different versions of Java:
 
-- The 2.4.x Branch requires Java 21 or later.
+- The 2.1.x Branch (and later) requires Java 21 or later.
 - The 2.0.x Branch requires Java 17 or later.
 - The 1.4.x Branch requires Java 11 or later.
 - The 1.3.x Branch requires Java 8 or later.
