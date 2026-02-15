@@ -380,10 +380,6 @@ public class FactoryProperties {
                         actualFontSize = Markup.DEFAULT_FONT_SIZE;
                     }
                     float v = parseLength(prop.getProperty(key), actualFontSize);
-                    if (ss.endsWith("%")) {
-                        h.put("leading", "0," + (v / 100));
-                        return;
-                    }
                     if ("normal".equalsIgnoreCase(ss)) {
                         h.put("leading", "0,1.5");
                         return;
