@@ -278,8 +278,39 @@ public class PdfXConformanceImp implements PdfXConformance {
         return pdfxConformance == PdfWriter.PDFA1A;
     }
 
+    /**
+     * Checks if the PDF has to be in conformance with PDFA2
+     *
+     * @return true if the PDF has to be in conformance with PDFA2
+     */
+    public boolean isPdfA2() {
+        return pdfxConformance == PdfWriter.PDFA2A
+                || pdfxConformance == PdfWriter.PDFA2B
+                || pdfxConformance == PdfWriter.PDFA2U;
+    }
+
+    /**
+     * Checks if the PDF has to be in conformance with PDFA3
+     *
+     * @return true if the PDF has to be in conformance with PDFA3
+     */
+    public boolean isPdfA3() {
+        return pdfxConformance == PdfWriter.PDFA3A
+                || pdfxConformance == PdfWriter.PDFA3B
+                || pdfxConformance == PdfWriter.PDFA3U;
+    }
+
+    /**
+     * Checks if the PDF has to be in conformance with any PDF/A version
+     *
+     * @return true if the PDF has to be in conformance with any PDF/A version
+     */
+    public boolean isPdfA() {
+        return isPdfA1() || isPdfA2() || isPdfA3();
+    }
+
     public void completeInfoDictionary(PdfDictionary info) {
-        if (isPdfX() && !isPdfA1()) {
+        if (isPdfX() && !isPdfA()) {
             if (info.get(PdfName.GTS_PDFXVERSION) == null) {
                 if (isPdfX1A2001()) {
                     info.put(PdfName.GTS_PDFXVERSION, new PdfString("PDF/X-1:2001"));
@@ -301,7 +332,7 @@ public class PdfXConformanceImp implements PdfXConformance {
     }
 
     public void completeExtraCatalog(PdfDictionary extraCatalog) {
-        if (isPdfX() && !isPdfA1()) {
+        if (isPdfX() && !isPdfA()) {
             if (extraCatalog.get(PdfName.OUTPUTINTENTS) == null) {
                 PdfDictionary out = new PdfDictionary(PdfName.OUTPUTINTENT);
                 out.put(PdfName.OUTPUTCONDITION, new PdfString("SWOP CGATS TR 001-1995"));

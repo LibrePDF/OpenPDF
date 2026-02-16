@@ -387,6 +387,30 @@ public class PdfWriter extends DocWriter implements
      */
     public static final int PDFA1B = 4;
     /**
+     * PDFA-2A level.
+     */
+    public static final int PDFA2A = 5;
+    /**
+     * PDFA-2B level.
+     */
+    public static final int PDFA2B = 6;
+    /**
+     * PDFA-2U level.
+     */
+    public static final int PDFA2U = 7;
+    /**
+     * PDFA-3A level.
+     */
+    public static final int PDFA3A = 8;
+    /**
+     * PDFA-3B level.
+     */
+    public static final int PDFA3B = 9;
+    /**
+     * PDFA-3U level.
+     */
+    public static final int PDFA3U = 10;
+    /**
      * No encryption
      */
     public static final int ENCRYPTION_NONE = -1;
@@ -1790,6 +1814,9 @@ public class PdfWriter extends DocWriter implements
         }
         if (pdfx == PDFA1A || pdfx == PDFA1B) {
             setPdfVersion(VERSION_1_4);
+        } else if (pdfx == PDFA2A || pdfx == PDFA2B || pdfx == PDFA2U
+                || pdfx == PDFA3A || pdfx == PDFA3B || pdfx == PDFA3U) {
+            setPdfVersion(VERSION_1_7);
         } else if (pdfx != PDFXNONE) {
             setPdfVersion(VERSION_1_3);
         }
@@ -1807,6 +1834,33 @@ public class PdfWriter extends DocWriter implements
 
     public boolean isPdfA1() {
         return pdfxConformance.isPdfA1();
+    }
+
+    /**
+     * Checks if the PDF has to be in conformance with PDFA2
+     *
+     * @return true if the PDF has to be in conformance with PDFA2
+     */
+    public boolean isPdfA2() {
+        return pdfxConformance.isPdfA2();
+    }
+
+    /**
+     * Checks if the PDF has to be in conformance with PDFA3
+     *
+     * @return true if the PDF has to be in conformance with PDFA3
+     */
+    public boolean isPdfA3() {
+        return pdfxConformance.isPdfA3();
+    }
+
+    /**
+     * Checks if the PDF has to be in conformance with any PDF/A version
+     *
+     * @return true if the PDF has to be in conformance with any PDF/A version
+     */
+    public boolean isPdfA() {
+        return pdfxConformance.isPdfA();
     }
 
     /**
@@ -1843,7 +1897,7 @@ public class PdfWriter extends DocWriter implements
         }
 
         PdfName intentSubtype;
-        if (pdfxConformance.isPdfA1() || "PDFA/1".equals(outputCondition)) {
+        if (pdfxConformance.isPdfA() || "PDFA/1".equals(outputCondition)) {
             intentSubtype = PdfName.GTS_PDFA1;
         } else {
             intentSubtype = PdfName.GTS_PDFX;

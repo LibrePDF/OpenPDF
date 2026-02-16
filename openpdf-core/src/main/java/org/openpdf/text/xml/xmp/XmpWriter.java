@@ -206,13 +206,37 @@ public class XmpWriter implements AutoCloseable {
                 addRdfDescription(basic);
             }
             if (PdfXConformance == PdfWriter.PDFA1A || PdfXConformance == PdfWriter.PDFA1B) {
-                PdfA1Schema a1 = new PdfA1Schema();
+                PdfA1Schema pdfA1Schema = new PdfA1Schema();
                 if (PdfXConformance == PdfWriter.PDFA1A) {
-                    a1.addConformance("A");
+                    pdfA1Schema.addConformance("A");
                 } else {
-                    a1.addConformance("B");
+                    pdfA1Schema.addConformance("B");
                 }
-                addRdfDescription(a1);
+                addRdfDescription(pdfA1Schema);
+            } else if (PdfXConformance == PdfWriter.PDFA2A || PdfXConformance == PdfWriter.PDFA2B
+                    || PdfXConformance == PdfWriter.PDFA2U) {
+                PdfA1Schema pdfA2Schema = new PdfA1Schema();
+                pdfA2Schema.addPart("2");
+                if (PdfXConformance == PdfWriter.PDFA2A) {
+                    pdfA2Schema.addConformance("A");
+                } else if (PdfXConformance == PdfWriter.PDFA2B) {
+                    pdfA2Schema.addConformance("B");
+                } else {
+                    pdfA2Schema.addConformance("U");
+                }
+                addRdfDescription(pdfA2Schema);
+            } else if (PdfXConformance == PdfWriter.PDFA3A || PdfXConformance == PdfWriter.PDFA3B
+                    || PdfXConformance == PdfWriter.PDFA3U) {
+                PdfA1Schema pdfA3Schema = new PdfA1Schema();
+                pdfA3Schema.addPart("3");
+                if (PdfXConformance == PdfWriter.PDFA3A) {
+                    pdfA3Schema.addConformance("A");
+                } else if (PdfXConformance == PdfWriter.PDFA3B) {
+                    pdfA3Schema.addConformance("B");
+                } else {
+                    pdfA3Schema.addConformance("U");
+                }
+                addRdfDescription(pdfA3Schema);
             }
         }
     }
