@@ -41,17 +41,23 @@
  */
 package org.openpdf.text.pdf.parser;
 
+import org.openpdf.text.ExceptionConverter;
 import org.openpdf.text.error_messages.MessageLocalization;
 import org.openpdf.text.pdf.CMapAwareDocumentFont;
+import org.openpdf.text.pdf.PdfArray;
+import org.openpdf.text.pdf.PdfContentParser;
 import org.openpdf.text.pdf.PdfDictionary;
+import org.openpdf.text.pdf.PdfIndirectReference;
 import org.openpdf.text.pdf.PdfLiteral;
+import org.openpdf.text.pdf.PdfName;
 import org.openpdf.text.pdf.PdfNumber;
 import org.openpdf.text.pdf.PdfObject;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStream;
 import org.openpdf.text.pdf.PdfString;
-import org.openpdf.text.pdf.PdfName;
-import org.openpdf.text.pdf.PdfArray;
-import org.openpdf.text.pdf.PdfIndirectReference;
 import org.openpdf.text.pdf.PRIndirectReference;
+import org.openpdf.text.pdf.PRStream;
+import org.openpdf.text.pdf.PRTokeniser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -902,15 +908,14 @@ public abstract class PdfContentStreamHandler {
      */
     protected void processContent(byte[] contentBytes, PdfDictionary resources) {
         try {
-            org.openpdf.text.pdf.PdfContentParser pdfContentParser = 
-                new org.openpdf.text.pdf.PdfContentParser(new org.openpdf.text.pdf.PRTokeniser(contentBytes));
+            PdfContentParser pdfContentParser = new PdfContentParser(new PRTokeniser(contentBytes));
             List<PdfObject> operands = new ArrayList<>();
             while (!pdfContentParser.parse(operands).isEmpty()) {
                 PdfLiteral operator = (PdfLiteral) operands.getLast();
                 invokeOperator(operator, operands, resources);
             }
         } catch (Exception e) {
-            throw new org.openpdf.text.ExceptionConverter(e);
+            throw new ExceptionConverter(e);
         }
     }
 
@@ -937,10 +942,9 @@ public abstract class PdfContentStreamHandler {
     static byte[] getContentBytesFromPdfObjectStatic(PdfObject object) throws IOException {
         switch (object.type()) {
             case PdfObject.INDIRECT:
-                return getContentBytesFromPdfObjectStatic(org.openpdf.text.pdf.PdfReader.getPdfObject(object));
+                return getContentBytesFromPdfObjectStatic(PdfReader.getPdfObject(object));
             case PdfObject.STREAM:
-                return org.openpdf.text.pdf.PdfReader.getStreamBytes(
-                    (org.openpdf.text.pdf.PRStream) org.openpdf.text.pdf.PdfReader.getPdfObject(object));
+                return PdfReader.getStreamBytes((PRStream) PdfReader.getPdfObject(object));
             case PdfObject.ARRAY:
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 for (PdfObject element : ((PdfArray) object).getElements()) {
@@ -974,7 +978,7 @@ public abstract class PdfContentStreamHandler {
                 if (dictionary == null) {
                     return;
                 }
-                org.openpdf.text.pdf.PdfStream stream = (org.openpdf.text.pdf.PdfStream) dictionary.getDirectObject(name);
+                PdfStream stream = (PdfStream) dictionary.getDirectObject(name);
                 PdfName subType = stream.getAsName(PdfName.SUBTYPE);
                 if (PdfName.FORM.equals(subType)) {
                     PdfDictionary resources2 = stream.getAsDict(PdfName.RESOURCES);
@@ -985,8 +989,8 @@ public abstract class PdfContentStreamHandler {
                     byte[] data;
                     try {
                         data = handler.getContentBytesFromPdfObject(stream);
-                    } catch (java.io.IOException ex) {
-                        throw new org.openpdf.text.ExceptionConverter(ex);
+                    } catch (IOException ex) {
+                        throw new ExceptionConverter(ex);
                     }
                     new PushGraphicsState().invoke(operands, handler, resources);
                     handler.processContent(data, resources2);
