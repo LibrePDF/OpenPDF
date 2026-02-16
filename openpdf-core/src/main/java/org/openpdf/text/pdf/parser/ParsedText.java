@@ -67,6 +67,30 @@ public class ParsedText extends ParsedTextImpl {
      */
     private PdfString pdfText = null;
 
+    static protected ParsedText create(PdfString text, GraphicsState graphicsState, Matrix textMatrix) {
+        // Calculate width using the string representation (font codes), not decoded Unicode
+        float totalWidth = getStringWidth(text.toString(), graphicsState);
+        return new ParsedText(text, totalWidth, graphicsState, textMatrix);
+    }
+    
+    /**
+     * Gets the width of a String in text space units
+     *
+     * @param string        the string that needs measuring
+     * @param graphicsState graphic state including current transformation to page coordinates from text measurement
+     * @return the width of a String in text space units
+     */
+    private static float getStringWidth(String string, GraphicsState graphicsState) {
+        char[] chars = string.toCharArray();
+        float totalWidth = 0;
+        for (char c : chars) {
+            float w = graphicsState.getFont().getWidth(c) / 1000.0f;
+            float wordSpacing = Character.isSpaceChar(c) ? graphicsState.getWordSpacing() : 0f;
+            totalWidth += (w * graphicsState.getFontSize() + graphicsState.getCharacterSpacing() + wordSpacing)
+                    * graphicsState.getHorizontalScaling();
+        }
+        return totalWidth;
+    }
 
     /**
      * This constructor should only be called when the origin for text display is at (0,0) and the graphical state
@@ -77,7 +101,23 @@ public class ParsedText extends ParsedTextImpl {
      * @param textMatrix    transform from text space to graphics (drawing space)
      */
     ParsedText(PdfString text, GraphicsState graphicsState, Matrix textMatrix) {
-        this(text, new GraphicsState(graphicsState), textMatrix.multiply(graphicsState.getCtm()),
+        this(text, getStringWidth(text.toString(), graphicsState), new GraphicsState(graphicsState), 
+                textMatrix.multiply(graphicsState.getCtm()),
+                getUnscaledFontSpaceWidth(graphicsState));
+    }
+    
+    /**
+     * This constructor should only be called when the origin for text display is at (0,0) and the graphical state
+     * reflects all transformations of the baseline. This is in text space units.
+     *
+     * @param text          string
+     * @param graphicsState graphical state
+     * @param textMatrix    transform from text space to graphics (drawing space)
+     */
+    private ParsedText(PdfString text, float unscaledWidth, GraphicsState graphicsState,
+            Matrix textMatrix) {
+        this(text, unscaledWidth, new GraphicsState(graphicsState),
+                textMatrix.multiply(graphicsState.getCtm()),
                 getUnscaledFontSpaceWidth(graphicsState));
     }
 
@@ -85,20 +125,22 @@ public class ParsedText extends ParsedTextImpl {
      * Internal constructor for a parsed text item. The constructors that call it gather some information from the
      * graphical state first.
      *
-     * @param text          This is a PdfString containing code points for the current font, not actually characters. If
-     *                      the font has multiByte glyphs, (Identity-H encoding) we reparse the string so that the code
-     *                      points don't get split into multiple characters.
-     * @param graphicsState graphical state
-     * @param textMatrix    transform from text space to graphics (drawing space)
-     * @param unscaledWidth width of the space character in the font.
+     * @param text               This is a PdfString containing code points for the current font, not actually
+     *                           characters. If the font has multiByte glyphs, (Identity-H encoding) we reparse the
+     *                           string so that the code points don't get split into multiple characters.
+     * @param graphicsState      graphical state
+     * @param textMatrix         transform from text space to graphics (drawing space)
+     * @param unscaledSpaceWidth width of the space character in the font.
      */
-    private ParsedText(PdfString text, GraphicsState graphicsState, Matrix textMatrix, float unscaledWidth) {
+    private ParsedText(PdfString text, float unscaledWidth, GraphicsState graphicsState,
+            Matrix textMatrix,
+            float unscaledSpaceWidth) {
         super(null, pointToUserSpace(0, 0, textMatrix),
-                pointToUserSpace(getStringWidth(text.toString(), graphicsState), 0f, textMatrix),
+                pointToUserSpace(unscaledWidth, 0f, textMatrix),
                 pointToUserSpace(1.0f, 0f, textMatrix),
                 convertHeightToUser(graphicsState.getFontAscentDescriptor(), textMatrix),
                 convertHeightToUser(graphicsState.getFontDescentDescriptor(), textMatrix),
-                convertWidthToUser(unscaledWidth, textMatrix));
+                convertWidthToUser(unscaledSpaceWidth, textMatrix));
         if (BaseFont.IDENTITY_H.equals(graphicsState.getFont().getEncoding())) {
             if (graphicsState.getFont().hasUnicodeCMAP()) {
                 if (graphicsState.getFont().hasTwoByteUnicodeCMAP()) {
@@ -145,26 +187,6 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * Gets the width of a String in text space units
-     *
-     * @param string        the string that needs measuring
-     * @param graphicsState graphic state including current transformation to page coordinates from text measurement
-     * @return the width of a String in text space units
-     */
-    private static float getStringWidth(String string, GraphicsState graphicsState) {
-        char[] chars = string.toCharArray();
-        float totalWidth = 0;
-        for (char c : chars) {
-            float w = graphicsState.getFont().getWidth(c) / 1000.0f;
-            float wordSpacing = Character.isSpaceChar(c) ? graphicsState.getWordSpacing() : 0f;
-            totalWidth += (w * graphicsState.getFontSize() + graphicsState.getCharacterSpacing() + wordSpacing)
-                    * graphicsState.getHorizontalScaling();
-        }
-
-        return totalWidth;
-    }
-
-    /**
      * @param width                          which should be converted to user space
      * @param textToUserSpaceTransformMatrix transform from text space to graphics (drawing space)
      * @return distance between start and end position
@@ -197,22 +219,6 @@ public class ParsedText extends ParsedTextImpl {
         Vector endPos = pointToUserSpace(0, height,
                 textToUserSpaceTransformMatrix);
         return distance(endPos, startPos);
-    }
-
-    /**
-     * Decodes a Java String containing glyph ids encoded in the font's encoding, and determine the unicode equivalent
-     *
-     * @param in the String that needs to be decoded
-     * @return the decoded String
-     */
-    // FIXME unreachable block and default encoding
-    protected String decode(String in) {
-        byte[] bytes;
-        if (BaseFont.IDENTITY_H.equals(graphicsState.getFont().getEncoding())) {
-            bytes = in.getBytes(StandardCharsets.UTF_16);
-        }
-        bytes = in.getBytes();
-        return graphicsState.getFont().decode(bytes, 0, bytes.length);
     }
 
     /**
@@ -258,7 +264,6 @@ public class ParsedText extends ParsedTextImpl {
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
             float w = font.getWidth(c) / 1000.0f;
-
             if (hasSpace[i]) {
                 if (wordAccum.length() > 0) {
                     result.add(createWord(wordAccum, wordStartOffset, totalWidth, getBaseline(),
@@ -340,14 +345,6 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
-     * @param gs graphic state including current transformation to page coordinates from text measurement
-     * @return the unscaled (i.e. in Text space) width of our text
-     */
-    public float getUnscaledTextWidth(GraphicsState gs) {
-        return getStringWidth(getFontCodes(), gs);
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @see org.openpdf.text.pdf.parser.TextAssemblyBuffer#accumulate(org.openpdf.text.pdf.parser.TextAssembler, String)
@@ -388,6 +385,14 @@ public class ParsedText extends ParsedTextImpl {
         return Optional.ofNullable(pdfText)
                 .map(PdfString::toString)
                 .orElse("");
+    }
+
+    /**
+     * @param gs graphic state including current transformation to page coordinates from text measurement
+     * @return the unscaled (i.e. in Text space) width of our text
+     */
+    public float getUnscaledTextWidth(GraphicsState gs) {
+        return getStringWidth(getFontCodes(), gs);
     }
 
     /**

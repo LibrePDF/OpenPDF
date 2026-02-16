@@ -49,6 +49,10 @@
 package org.openpdf.text.pdf.parser;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.openpdf.text.ExceptionConverter;
 import org.openpdf.text.pdf.PRIndirectReference;
 import org.openpdf.text.pdf.PRStream;
@@ -61,18 +65,14 @@ import org.openpdf.text.pdf.PdfName;
 import org.openpdf.text.pdf.PdfObject;
 import org.openpdf.text.pdf.PdfReader;
 import org.openpdf.text.pdf.RandomAccessFileOrArray;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Extracts text from a PDF file.
+ * Locates text pattern coordinates inside a PDF file.
  *
  * @since 2.1.4
  */
 @SuppressWarnings("WeakerAccess")
-public class PdfTextExtractor {
+public class PdfTextLocator {
 
     /**
      * The PdfReader that holds the PDF file.
@@ -85,11 +85,11 @@ public class PdfTextExtractor {
     private final TextAssembler renderListener;
 
     /**
-     * Creates a new Text Extractor object, using a {@link TextAssembler} as the render listener
+     * Creates a new Text Locator object, using a {@link TextAssembler} as the render listener
      *
      * @param reader the reader with the PDF
      */
-    public PdfTextExtractor(PdfReader reader) {
+    public PdfTextLocator(PdfReader reader) {
         this(reader, new MarkedUpTextAssembler(reader));
     }
 
@@ -99,18 +99,18 @@ public class PdfTextExtractor {
      * @param reader               the reader with the PDF
      * @param usePdfMarkupElements should we use higher level tags for PDF markup entities?
      */
-    public PdfTextExtractor(PdfReader reader, boolean usePdfMarkupElements) {
+    public PdfTextLocator(PdfReader reader, String pattern, boolean usePdfMarkupElements) {
         this(reader, new MarkedUpTextAssembler(reader, usePdfMarkupElements));
     }
 
     /**
-     * Creates a new Text Extractor object.
+     * Creates a new Text Locator object.
      *
      * @param reader         the reader with the PDF
      * @param renderListener the render listener that will be used to analyze renderText operations and provide
      *                       resultant text
      */
-    public PdfTextExtractor(PdfReader reader, TextAssembler renderListener) {
+    public PdfTextLocator(PdfReader reader, TextAssembler renderListener) {
         this.reader = reader;
         this.renderListener = renderListener;
     }
@@ -167,37 +167,39 @@ public class PdfTextExtractor {
     }
 
     /**
-     * Gets the text from a page.
+     * Locates text pattern inside a page
      *
-     * @param page the 1-based page number of page
-     * @return a String with the content as plain text (without PDF syntax)
+     * @param page    page number we are interested in
+     * @param pattern text to match
+     * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
      * @throws IOException on error
      */
-    public String getTextFromPage(int page) throws IOException {
-        return getTextFromPage(page, false);
+    public ArrayList<MatchedPattern> searchPage(int page, String pattern) throws IOException {
+        PdfDictionary pageDict = reader.getPageN(page);
+        if (pageDict == null) {
+            return new ArrayList<>();
+        }
+        PdfDictionary resources = pageDict.getAsDict(PdfName.RESOURCES);
+        renderListener.reset();
+        renderListener.setPage(page);
+        PdfContentTextLocator handler = new PdfContentTextLocator(renderListener, pattern, page);
+        processContent(getContentBytesForPage(page), resources, handler);
+        return handler.getMatchedPatterns();
     }
 
     /**
-     * get the text from the page
+     * Locates text pattern inside a PDF
      *
-     * @param page               page number we are interested in
-     * @param useContainerMarkup should we put tags in for PDf markup container elements (not really HTML at the
-     *                           moment).
-     * @return result of extracting the text, with tags as requested.
+     * @param pattern text to match
+     * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
      * @throws IOException on error
      */
-    public String getTextFromPage(int page, boolean useContainerMarkup) throws IOException {
-        PdfDictionary pageDict = reader.getPageN(page);
-        if (pageDict == null) {
-            return "";
+    public ArrayList<MatchedPattern> searchFile(String pattern) throws IOException {
+        ArrayList<MatchedPattern> res = new ArrayList<>();
+        for (int page = 1; page <= reader.getNumberOfPages(); page++) {
+            res.addAll(searchPage(page, pattern));
         }
-        PdfDictionary resources = pageDict.getAsDict(PdfName.RESOURCES);
-
-        renderListener.reset();
-        renderListener.setPage(page);
-        PdfContentStreamHandler handler = new PdfContentTextExtractor(renderListener);
-        processContent(getContentBytesForPage(page), resources, handler);
-        return handler.getResultantText();
+        return res;
     }
 
     /**
@@ -208,13 +210,13 @@ public class PdfTextExtractor {
      * @param handler      interprets events caused by recognition of operations in a content stream.
      */
     public void processContent(byte[] contentBytes, PdfDictionary resources,
-            PdfContentStreamHandler handler) {
+            PdfContentTextLocator handler) {
         handler.pushContext("div class='t-extracted-page'");
         try {
             PdfContentParser ps = new PdfContentParser(new PRTokeniser(contentBytes));
             List<PdfObject> operands = new ArrayList<>();
-            while (ps.parse(operands).size() > 0) {
-                PdfLiteral operator = (PdfLiteral) operands.get(operands.size() - 1);
+            while (!ps.parse(operands).isEmpty()) {
+                PdfLiteral operator = (PdfLiteral) operands.getLast();
                 handler.invokeOperator(operator, operands, resources);
             }
         } catch (Exception e) {

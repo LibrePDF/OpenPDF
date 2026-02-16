@@ -41,29 +41,15 @@
  */
 package org.openpdf.text.pdf.parser;
 
-import org.openpdf.text.ExceptionConverter;
 import org.openpdf.text.error_messages.MessageLocalization;
 import org.openpdf.text.pdf.CMapAwareDocumentFont;
-import org.openpdf.text.pdf.PRIndirectReference;
-import org.openpdf.text.pdf.PRStream;
-import org.openpdf.text.pdf.PRTokeniser;
-import org.openpdf.text.pdf.PdfArray;
-import org.openpdf.text.pdf.PdfContentParser;
 import org.openpdf.text.pdf.PdfDictionary;
-import org.openpdf.text.pdf.PdfIndirectReference;
 import org.openpdf.text.pdf.PdfLiteral;
-import org.openpdf.text.pdf.PdfName;
 import org.openpdf.text.pdf.PdfNumber;
 import org.openpdf.text.pdf.PdfObject;
-import org.openpdf.text.pdf.PdfReader;
-import org.openpdf.text.pdf.PdfStream;
 import org.openpdf.text.pdf.PdfString;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
@@ -72,14 +58,14 @@ import java.util.Stack;
  * @author dgd
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class PdfContentStreamHandler {
+public abstract class PdfContentStreamHandler {
 
-    private final Stack<List<TextAssemblyBuffer>> textFragmentStreams = new Stack<>();
-    private final Stack<String> contextNames = new Stack<>();
+    protected final Stack<List<TextAssemblyBuffer>> textFragmentStreams = new Stack<>();
+    protected final Stack<String> contextNames = new Stack<>();
     /**
      * detail parser for text within a marked section. used by TextAssembler
      */
-    private final TextAssembler renderListener;
+    protected final TextAssembler renderListener;
     /**
      * A map with all supported operators operators (PDF syntax).
      */
@@ -87,22 +73,20 @@ public class PdfContentStreamHandler {
     /**
      * Stack keeping track of the graphics state.
      */
-    private Stack<GraphicsState> gsStack;
+    protected Stack<GraphicsState> gsStack;
     /**
      * Text matrix.
      */
-    private Matrix textMatrix;
+    protected Matrix textMatrix;
     /**
      * Text line matrix.
      */
-    private Matrix textLineMatrix;
-    private List<TextAssemblyBuffer> textFragments = new ArrayList<>();
+    protected Matrix textLineMatrix;
+    protected List<TextAssemblyBuffer> textFragments = new ArrayList<>();
 
 
     public PdfContentStreamHandler(TextAssembler renderListener) {
         this.renderListener = renderListener;
-        installDefaultOperators();
-        reset();
     }
 
     private static Matrix getMatrix(List<PdfObject> operands) {
@@ -135,51 +119,7 @@ public class PdfContentStreamHandler {
     /**
      * Loads all the supported graphics and text state operators in a map.
      */
-    protected void installDefaultOperators() {
-        operators = new HashMap<>();
-
-        registerContentOperator(new PdfContentStreamHandler.PushGraphicsState());
-        registerContentOperator(new PdfContentStreamHandler.PopGraphicsState());
-        registerContentOperator(new PdfContentStreamHandler.ModifyCurrentTransformationMatrix());
-        registerContentOperator(new PdfContentStreamHandler.ProcessGraphicsStateResource());
-
-        PdfContentStreamHandler.SetTextCharacterSpacing tcOperator = new PdfContentStreamHandler.SetTextCharacterSpacing();
-        registerContentOperator(tcOperator);
-        PdfContentStreamHandler.SetTextWordSpacing twOperator = new PdfContentStreamHandler.SetTextWordSpacing();
-        registerContentOperator(twOperator);
-        registerContentOperator(new PdfContentStreamHandler.SetTextHorizontalScaling());
-        PdfContentStreamHandler.SetTextLeading tlOperator = new PdfContentStreamHandler.SetTextLeading();
-        registerContentOperator(tlOperator);
-        registerContentOperator(new PdfContentStreamHandler.SetTextFont());
-        registerContentOperator(new PdfContentStreamHandler.SetTextRenderMode());
-        registerContentOperator(new PdfContentStreamHandler.SetTextRise());
-
-        registerContentOperator(new PdfContentStreamHandler.BeginText());
-        registerContentOperator(new PdfContentStreamHandler.EndText());
-
-        PdfContentStreamHandler.TextMoveStartNextLine tdOperator = new PdfContentStreamHandler.TextMoveStartNextLine();
-        registerContentOperator(tdOperator);
-        registerContentOperator(new PdfContentStreamHandler.TextMoveStartNextLineWithLeading(tdOperator, tlOperator));
-        registerContentOperator(new PdfContentStreamHandler.TextSetTextMatrix());
-        PdfContentStreamHandler.TextMoveNextLine tstarOperator =
-                new PdfContentStreamHandler.TextMoveNextLine(tdOperator);
-        registerContentOperator(tstarOperator);
-
-        PdfContentStreamHandler.ShowText tjOperator = new PdfContentStreamHandler.ShowText();
-        registerContentOperator(new PdfContentStreamHandler.ShowText());
-        PdfContentStreamHandler.MoveNextLineAndShowText tickOperator =
-                new PdfContentStreamHandler.MoveNextLineAndShowText(tstarOperator, tjOperator);
-        registerContentOperator(tickOperator);
-        registerContentOperator(
-                new PdfContentStreamHandler.MoveNextLineAndShowTextWithSpacing(twOperator, tcOperator, tickOperator));
-        registerContentOperator(new PdfContentStreamHandler.ShowTextArray());
-        // marked sections
-        registerContentOperator(new BeginMarked());
-        registerContentOperator(new BeginMarkedDict());
-        registerContentOperator(new EndMarked());
-
-        registerContentOperator(new Do());
-    }
+    protected abstract void installDefaultOperators();
 
     /**
      * Get the operator to process a command with a given name
@@ -187,9 +127,7 @@ public class PdfContentStreamHandler {
      * @param operatorName name of the operator that we might need to call
      * @return the operator or null if none present
      */
-    public Optional<ContentOperator> lookupOperator(String operatorName) {
-        return Optional.ofNullable(operators.get(operatorName));
-    }
+    protected abstract Optional<ContentOperator> lookupOperator(String operatorName);
 
     /**
      * Invokes an operator.
@@ -198,34 +136,11 @@ public class PdfContentStreamHandler {
      * @param operands  a list with operands
      * @param resources Pdf Resources found in the file containing the stream.
      */
-    public void invokeOperator(PdfLiteral operator, List<PdfObject> operands, PdfDictionary resources) {
-        String operatorName = operator.toString();
-        lookupOperator(operatorName)
-                .ifPresent(contentOperator -> contentOperator.invoke(operands, this, resources));
-    }
+    public abstract void invokeOperator(PdfLiteral operator, List<PdfObject> operands, PdfDictionary resources);
 
-    void popContext() {
-        String contextName = contextNames.pop();
-        List<TextAssemblyBuffer> newBuffer = textFragmentStreams.pop();
-        // put together set of unparsed text fragments
-        renderListener.reset();
-        for (TextAssemblyBuffer fragment : textFragments) {
-            fragment.accumulate(renderListener, contextName);
-        }
-        FinalText contextResult = renderListener.endParsingContext(contextName);
-        Optional.ofNullable(contextResult)
-                .map(FinalText::getText)
-                .filter(text -> !text.isEmpty())
-                .ifPresent(text -> newBuffer.add(contextResult));
+    abstract void popContext();
 
-        textFragments = newBuffer;
-    }
-
-    void pushContext(String newContextName) {
-        contextNames.push(newContextName);
-        textFragmentStreams.push(textFragments);
-        textFragments = new ArrayList<>();
-    }
+    abstract void pushContext(String newContextName);
 
     /**
      * Returns the current graphics state.
@@ -236,14 +151,7 @@ public class PdfContentStreamHandler {
         return gsStack.peek();
     }
 
-    public void reset() {
-        if (gsStack == null || gsStack.isEmpty()) {
-            gsStack = new Stack<>();
-        }
-        gsStack.add(new GraphicsState());
-        textMatrix = null;
-        textLineMatrix = null;
-    }
+    public abstract void reset();
 
     /**
      * Returns the current text matrix.
@@ -287,732 +195,10 @@ public class PdfContentStreamHandler {
      *
      * @param string the text to display
      */
-    void displayPdfString(PdfString string) {
-        ParsedText renderInfo = new ParsedText(string, graphicsState(), textMatrix);
-        if (contextNames.peek() != null) {
-            textFragments.add(renderInfo);
-        }
-        textMatrix = new Matrix(renderInfo.getUnscaledTextWidth(graphicsState()), 0)
-                .multiply(textMatrix);
-    }
+    abstract void displayPdfString(PdfString string);
 
     /**
      * @return result text
      */
-    public String getResultantText() {
-        if (contextNames.size() > 0) {
-            throw new RuntimeException("can't get text with unprocessed stack items");
-        }
-        StringBuilder res = new StringBuilder();
-        for (TextAssemblyBuffer fragment : textFragments) {
-            res.append(fragment.getText());
-        }
-        return res.toString().trim();
-    }
-
-    /**
-     * A content operator implementation (TJ).
-     */
-    static class ShowTextArray implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "TJ";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfArray array = (PdfArray) operands.get(0);
-            for (PdfObject entryObj : array.getElements()) {
-                if (entryObj instanceof PdfString) {
-                    handler.displayPdfString((PdfString) entryObj);
-                } else {
-                    float tj = ((PdfNumber) entryObj).floatValue();
-                    handler.applyTextAdjust(tj);
-                }
-            }
-
-        }
-    }
-
-    /**
-     * A content operator implementation (BT).
-     */
-    static class BeginText implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "BT";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            handler.textMatrix = new Matrix();
-            handler.textLineMatrix = handler.textMatrix;
-        }
-    }
-
-    /**
-     * A content operator implementation (ET).
-     */
-    static class EndText implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "ET";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            handler.textMatrix = null;
-            handler.textLineMatrix = null;
-        }
-    }
-
-    /**
-     * A content operator implementation (cm).
-     */
-    static class ModifyCurrentTransformationMatrix implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "cm";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            Matrix matrix = getMatrix(operands);
-            GraphicsState graphicsState = handler.gsStack.peek();
-            graphicsState.multiplyCtm(matrix);
-        }
-    }
-
-    /**
-     * A content operator implementation (').
-     */
-    static class MoveNextLineAndShowText implements ContentOperator {
-
-        private final PdfContentStreamHandler.TextMoveNextLine textMoveNextLine;
-        private final PdfContentStreamHandler.ShowText showText;
-
-        public MoveNextLineAndShowText(
-                PdfContentStreamHandler.TextMoveNextLine textMoveNextLine,
-                PdfContentStreamHandler.ShowText showText) {
-            this.textMoveNextLine = textMoveNextLine;
-            this.showText = showText;
-        }
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "'";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            textMoveNextLine.invoke(new ArrayList<>(0), handler, resources);
-            showText.invoke(operands, handler, resources);
-        }
-    }
-
-    /**
-     * A content operator implementation (").
-     */
-    static class MoveNextLineAndShowTextWithSpacing implements ContentOperator {
-
-        private final PdfContentStreamHandler.SetTextWordSpacing setTextWordSpacing;
-        private final PdfContentStreamHandler.SetTextCharacterSpacing setTextCharacterSpacing;
-        private final MoveNextLineAndShowText moveNextLineAndShowText;
-
-        public MoveNextLineAndShowTextWithSpacing(
-                PdfContentStreamHandler.SetTextWordSpacing setTextWordSpacing,
-                PdfContentStreamHandler.SetTextCharacterSpacing setTextCharacterSpacing,
-                MoveNextLineAndShowText moveNextLineAndShowText) {
-            this.setTextWordSpacing = setTextWordSpacing;
-            this.setTextCharacterSpacing = setTextCharacterSpacing;
-            this.moveNextLineAndShowText = moveNextLineAndShowText;
-        }
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "\"";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfNumber aw = (PdfNumber) operands.get(0);
-            PdfNumber ac = (PdfNumber) operands.get(1);
-            PdfString string = (PdfString) operands.get(2);
-
-            List<PdfObject> twOperands = new ArrayList<>(1);
-            twOperands.add(0, aw);
-            setTextWordSpacing.invoke(twOperands, handler, resources);
-
-            List<PdfObject> tcOperands = new ArrayList<>(1);
-            tcOperands.add(0, ac);
-            setTextCharacterSpacing.invoke(tcOperands, handler, resources);
-
-            List<PdfObject> tickOperands = new ArrayList<>(1);
-            tickOperands.add(0, string);
-            moveNextLineAndShowText.invoke(tickOperands, handler, resources);
-        }
-    }
-
-    /**
-     * A content operator implementation (Q).
-     */
-    static class PopGraphicsState implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Q";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            handler.gsStack.pop();
-        }
-    }
-
-    /**
-     * A content operator implementation (gs).
-     */
-    static class ProcessGraphicsStateResource implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "gs";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfName dictionaryName = (PdfName) operands.get(0);
-            PdfDictionary extGState = resources.getAsDict(PdfName.EXTGSTATE);
-            if (extGState == null) {
-                throw new IllegalArgumentException(
-                        MessageLocalization.getComposedMessage(
-                                "resources.do.not.contain.extgstate.entry.unable.to.process.operator.1",
-                                getOperatorName()));
-            }
-            PdfDictionary gsDic = extGState.getAsDict(dictionaryName);
-            if (gsDic == null) {
-                throw new IllegalArgumentException(MessageLocalization.getComposedMessage(
-                        "1.is.an.unknown.graphics.state.dictionary", dictionaryName));
-            }
-
-            // at this point, all we care about is the FONT entry in the GS
-            // dictionary
-            PdfArray fontParameter = gsDic.getAsArray(PdfName.FONT);
-            if (fontParameter != null) {
-                PdfObject pdfObject = fontParameter.getPdfObject(0);
-                CMapAwareDocumentFont font = new CMapAwareDocumentFont((PRIndirectReference) pdfObject);
-                float size = fontParameter.getAsNumber(1).floatValue();
-
-                handler.graphicsState().setFont(font);
-                handler.graphicsState().setFontSize(size);
-            }
-        }
-    }
-
-    /**
-     * A content operator implementation (q).
-     */
-    static class PushGraphicsState implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "q";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            GraphicsState gs = handler.gsStack.peek();
-            GraphicsState copy = new GraphicsState(gs);
-            handler.gsStack.push(copy);
-        }
-    }
-
-    /**
-     * A content operator implementation (Tc).
-     */
-    static class SetTextCharacterSpacing implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Tc";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfNumber charSpace = (PdfNumber) operands.get(0);
-            handler.graphicsState().setCharacterSpacing(charSpace.floatValue());
-        }
-    }
-
-    /**
-     * A content operator implementation (Tf).
-     */
-    static class SetTextFont implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Tf";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfName fontResourceName = (PdfName) operands.get(0);
-            float size = ((PdfNumber) operands.get(1)).floatValue();
-
-            PdfDictionary fontsDictionary = resources.getAsDict(PdfName.FONT);
-            PdfObject pdfObject = fontsDictionary.get(fontResourceName);
-            CMapAwareDocumentFont font = new CMapAwareDocumentFont((PRIndirectReference) pdfObject);
-
-            handler.graphicsState().setFont(font);
-            handler.graphicsState().setFontSize(size);
-        }
-    }
-
-    /**
-     * A content operator implementation (Tm).
-     */
-    static class TextSetTextMatrix implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Tm";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            handler.textLineMatrix = getMatrix(operands);
-            handler.textMatrix = handler.textLineMatrix;
-        }
-    }
-
-    /**
-     * A content operator implementation (TD).
-     */
-    static class TextMoveStartNextLineWithLeading implements ContentOperator {
-
-        private final PdfContentStreamHandler.TextMoveStartNextLine moveStartNextLine;
-
-        private final PdfContentStreamHandler.SetTextLeading setTextLeading;
-
-        public TextMoveStartNextLineWithLeading(
-                PdfContentStreamHandler.TextMoveStartNextLine moveStartNextLine,
-                PdfContentStreamHandler.SetTextLeading setTextLeading) {
-            this.moveStartNextLine = moveStartNextLine;
-            this.setTextLeading = setTextLeading;
-        }
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "TD";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            float ty = ((PdfNumber) operands.get(1)).floatValue();
-
-            List<PdfObject> tlOperands = new ArrayList<>(1);
-            tlOperands.add(0, new PdfNumber(-ty));
-            setTextLeading.invoke(tlOperands, handler, resources);
-            moveStartNextLine.invoke(operands, handler, resources);
-        }
-    }
-
-    /**
-     * A content operator implementation (Tj).
-     */
-    static class ShowText implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Tj";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfString string = (PdfString) operands.get(0);
-            handler.displayPdfString(string);
-        }
-    }
-
-    /**
-     * A content operator implementation (T*).
-     */
-    static class TextMoveNextLine implements ContentOperator {
-
-        private final TextMoveStartNextLine moveStartNextLine;
-
-        public TextMoveNextLine(TextMoveStartNextLine moveStartNextLine) {
-            this.moveStartNextLine = moveStartNextLine;
-        }
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "T*";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            List<PdfObject> tdoperands = new ArrayList<>(2);
-            tdoperands.add(0, new PdfNumber(0));
-            tdoperands.add(1, new PdfNumber(-handler.graphicsState().getLeading()));
-            moveStartNextLine.invoke(tdoperands, handler, resources);
-        }
-    }
-
-    /**
-     * A content operator implementation (Td).
-     */
-    static class TextMoveStartNextLine implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Td";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            float tx = ((PdfNumber) operands.get(0)).floatValue();
-            float ty = ((PdfNumber) operands.get(1)).floatValue();
-
-            Matrix translationMatrix = new Matrix(tx, ty);
-            handler.textMatrix = translationMatrix.multiply(handler.textLineMatrix);
-            handler.textLineMatrix = handler.textMatrix;
-        }
-    }
-
-    /**
-     * A content operator implementation (Tr).
-     */
-    static class SetTextRenderMode implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Tr";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfNumber render = (PdfNumber) operands.get(0);
-            handler.graphicsState().setRenderMode(render.intValue());
-        }
-    }
-
-    /**
-     * A content operator implementation (Ts).
-     */
-    static class SetTextRise implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Ts";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfNumber rise = (PdfNumber) operands.get(0);
-            handler.graphicsState().setRise(rise.floatValue());
-        }
-    }
-
-    /**
-     * A content operator implementation (TL).
-     */
-    static class SetTextLeading implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "TL";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfNumber leading = (PdfNumber) operands.get(0);
-            handler.graphicsState().setLeading(leading.floatValue());
-        }
-    }
-
-    /**
-     * A content operator implementation (Tz).
-     */
-    static class SetTextHorizontalScaling implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Tz";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfNumber scale = (PdfNumber) operands.get(0);
-            handler.graphicsState().setHorizontalScaling(scale.floatValue());
-        }
-    }
-
-    /**
-     * A content operator implementation (Tw).
-     */
-    static class SetTextWordSpacing implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Tw";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfNumber wordSpace = (PdfNumber) operands.get(0);
-            handler.graphicsState().setWordSpacing(wordSpace.floatValue());
-        }
-    }
-
-    /**
-     * A content operator implementation (BMC).
-     */
-    private static class BeginMarked implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "BMC";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfName tagName = (PdfName) operands.get(0);
-            String realName = tagName.toString().substring(1).toLowerCase(Locale.ROOT);
-            if ("artifact".equals(realName) || "placedpdf".equals(realName)) {
-                handler.pushContext(null);
-            } else {
-                handler.pushContext(realName);
-            }
-        }
-
-    }
-
-    /**
-     * A content operator implementation (BDC).
-     */
-    private static class BeginMarkedDict implements ContentOperator {
-
-        /**
-         * The BDC marked-content operator which brackets a marked-content sequence of objects within the content
-         * stream.
-         *
-         * @param operands  list of operands
-         * @param resources dictionary
-         * @return PdfDictionary of type BDC marked-content
-         */
-        private static PdfDictionary getBDCDictionary(List<PdfObject> operands, PdfDictionary resources) {
-            PdfObject pdfObject = operands.get(1);
-            if (pdfObject.isName()) {
-                PdfDictionary properties = resources.getAsDict(PdfName.PROPERTIES);
-                PdfIndirectReference ir = properties.getAsIndirectObject((PdfName) pdfObject);
-                if (ir != null) {
-                    pdfObject = ir.getIndRef();
-                } else {
-                    pdfObject = properties.getAsDict((PdfName) pdfObject);
-                }
-            }
-            return (PdfDictionary) pdfObject;
-        }
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "BDC";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfObject firstOperand = operands.get(0);
-            String tagName = firstOperand.toString().substring(1).toLowerCase(Locale.ROOT);
-            if ("artifact".equals(tagName) || "placedpdf".equals(tagName)
-                    || handler.contextNames.peek() == null) {
-                tagName = null;
-            } else if ("l".equals(tagName)) {
-                tagName = "ul";
-            }
-            PdfDictionary attrs = getBDCDictionary(operands, resources);
-            if (attrs != null && tagName != null) {
-                PdfString alternateText = attrs.getAsString(PdfName.E);
-                if (alternateText != null) {
-                    handler.pushContext(tagName);
-                    handler.textFragments
-                            .add(new FinalText(alternateText.toString()));
-                    handler.popContext();
-                    // ignore rest of the content of this element
-                    handler.pushContext(null);
-                    return;
-                } else if (attrs.get(PdfName.TYPE) != null) {
-                    // ignore tag for non-tag marked content that sometimes
-                    // shows up.
-                    tagName = "";
-                }
-            }
-            handler.pushContext(tagName);
-        }
-    }
-
-    /**
-     * A content operator implementation (EMC).
-     */
-    private static class EndMarked implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "EMC";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            handler.popContext();
-        }
-    }
-
-    private class Do implements ContentOperator {
-
-        /**
-         * @see org.openpdf.text.pdf.parser.ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Do";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfObject firstOperand = operands.get(0);
-            if (firstOperand instanceof PdfName) {
-                PdfName name = (PdfName) firstOperand;
-                PdfDictionary dictionary = resources.getAsDict(PdfName.XOBJECT);
-                if (dictionary == null) {
-                    return;
-                }
-                PdfStream stream = (PdfStream) dictionary.getDirectObject(name);
-                PdfName subType = stream.getAsName(PdfName.SUBTYPE);
-                if (PdfName.FORM.equals(subType)) {
-                    PdfDictionary resources2 = stream.getAsDict(PdfName.RESOURCES);
-                    if (resources2 == null)  {
-                        resources2 = resources;
-                    }
-
-                    byte[] data;
-                    try {
-                        data = getContentBytesFromPdfObject(stream);
-                    } catch (IOException ex) {
-                        throw new ExceptionConverter(ex);
-                    }
-                    new PushGraphicsState().invoke(operands, handler, resources);
-                    processContent(data, resources2);
-                    new PopGraphicsState().invoke(operands, handler, resources);
-                }
-            }
-
-        }
-
-        private void processContent(byte[] contentBytes, PdfDictionary resources) {
-            try {
-                PdfContentParser pdfContentParser = new PdfContentParser(new PRTokeniser(contentBytes));
-                List<PdfObject> operands = new ArrayList<>();
-                while (!pdfContentParser.parse(operands).isEmpty()) {
-                    PdfLiteral operator = (PdfLiteral) operands.get(operands.size() - 1);
-                    invokeOperator(operator, operands, resources);
-                }
-            } catch (Exception e) {
-                throw new ExceptionConverter(e);
-            }
-        }
-
-
-        private byte[] getContentBytesFromPdfObject(PdfObject object) throws IOException {
-            switch (object.type()) {
-                case PdfObject.INDIRECT:
-                    return getContentBytesFromPdfObject(PdfReader.getPdfObject(object));
-                case PdfObject.STREAM:
-                    return PdfReader.getStreamBytes((PRStream) PdfReader.getPdfObject(object));
-                case PdfObject.ARRAY:
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    for (PdfObject element : ((PdfArray) object).getElements()) {
-                        baos.write(getContentBytesFromPdfObject(element));
-                    }
-                    return baos.toByteArray();
-                default:
-                    throw new IllegalStateException("Unsupported type: " + object.getClass().getCanonicalName());
-            }
-        }
-    }
+    public abstract String getResultantText();
 }
