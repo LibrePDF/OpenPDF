@@ -1338,6 +1338,24 @@ public class PdfDocument extends Document {
     }
 
     /**
+     * Finds the index of the next space character (either regular space U+0020 or non-breaking space U+00A0)
+     * starting from the specified index.
+     *
+     * @param s the string to search
+     * @param fromIndex the index to start the search from
+     * @return the index of the next space character, or -1 if no space is found
+     */
+    private static int indexOfSpace(String s, int fromIndex) {
+        for (int i = fromIndex; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == ' ' || c == '\u00A0') {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Writes a text line to the document. It takes care of all the attributes.
      * <p>
      * Before entering the line position must have been established and the
@@ -1696,7 +1714,7 @@ public class PdfDocument extends Document {
                     text.setCharacterSpacing(baseCharacterSpacing / hScale + text.getCharacterSpacing());
                 }
                 String s = chunk.toString();
-                int idx = s.indexOf(' ');
+                int idx = indexOfSpace(s, 0);
                 if (idx < 0) {
                     text.showText(s);
                 } else {
@@ -1707,7 +1725,7 @@ public class PdfDocument extends Document {
                     }
                     textArray.add(s.substring(0, idx));
                     int lastIdx = idx;
-                    while ((idx = s.indexOf(' ', lastIdx + 1)) >= 0) {
+                    while ((idx = indexOfSpace(s, lastIdx + 1)) >= 0) {
                         textArray.add(spaceCorrection);
                         textArray.add(s.substring(lastIdx, idx));
                         lastIdx = idx;
