@@ -19,7 +19,12 @@
 			<url>http://www.gnu.org/copyleft/lesser.html</url>
 		</license>
 	</licenses>
-	<description>PDF renderer implementation supporting the subset of PDF 1.4 specification.</description>
+	<description>
+		OpenPDF Renderer is a pure Java library for rendering PDF files as images using Java2D.
+		It provides a lightweight, dependency-free way to convert PDF pages into BufferedImage objects
+		suitable for display in Swing applications or saving to image files. Supports PDF 1.4 specification
+		with TrueType, Type1, Type3, and CID fonts, along with RGB, CMYK, Gray, and ICC-based color spaces.
+	</description>
 
 	<build>
 		<plugins>
@@ -44,7 +49,6 @@
         </executions>
       </plugin>
 
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -54,10 +58,50 @@
 					<target>${java.version}</target>
 				</configuration>
 			</plugin>
+
+			<!-- Javadoc generation plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.11.2</version>
+				<configuration>
+					<show>public</show>
+					<nohelp>true</nohelp>
+					<encoding>UTF-8</encoding>
+					<docencoding>UTF-8</docencoding>
+					<charset>UTF-8</charset>
+					<doclint>none</doclint>
+					<quiet>true</quiet>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Source plugin for attaching sources -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
   <dependencies>
+    <!-- Test dependencies -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -73,7 +117,6 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
 </project>

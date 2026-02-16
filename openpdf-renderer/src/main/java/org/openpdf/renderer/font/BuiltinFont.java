@@ -183,9 +183,6 @@ public class BuiltinFont extends Type1Font {
                     throw new IOException("Properties file not found in classpath: " + path);
                 }
                 props.load(in);
-                System.out.println("[BuiltinFont] Loaded properties from " + path);
-            } catch (IOException e) {
-                System.err.println("[BuiltinFont] Failed to load properties: " + e.getMessage());
             }
         }
 
