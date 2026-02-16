@@ -271,29 +271,79 @@ class FontDetails {
         return b;
     }
 
-    private byte[] convertToBytesWithGlyphs(String text) {
+    private byte[] convertToBytesWithGlyphs(String text) throws UnsupportedEncodingException {
         int len = text.length();
-        int[] metrics = null;
-        int[] glyph = new int[len];
+        int[] glyph = new int[len * 2];
         int i = 0;
-        for (int k = 0; k < len; ++k) {
-            int val;
+        int k = 0;
+
+        while (k < len) {
+            int baseCp;
+            int charCount;
+
             if (Utilities.isSurrogatePair(text, k)) {
-                val = Utilities.convertToUtf32(text, k);
-                k++;
+                baseCp = Utilities.convertToUtf32(text, k);
+                charCount = 2;
             } else {
-                val = text.charAt(k);
+                baseCp = text.charAt(k);
+                charCount = 1;
             }
-            metrics = ttu.getMetricsTT(val);
-            if (metrics == null) {
+
+            // try to process IVS
+            IVSResult ivsResult = tryProcessIVS(text, k + charCount, baseCp);
+            if (ivsResult.found) {
+                glyph[i++] = ivsResult.glyphCode;
+                k += charCount + ivsResult.vsCharCount;
                 continue;
             }
-            int m0 = metrics[0];
-            int m1 = metrics[1];
-            longTag.computeIfAbsent(m0, key -> new int[]{m0, m1, val});
-            glyph[i++] = m0;
+            // common glyph searching
+            int[] metrics = ttu.getMetricsTT(baseCp);
+            if (metrics != null) {
+                int m0 = metrics[0];
+                longTag.computeIfAbsent(m0, key -> new int[]{m0, metrics[1], baseCp});
+                glyph[i++] = m0;
+            }
+
+            k += charCount;
         }
+
         return getCJKEncodingBytes(glyph, i);
+    }
+
+    private IVSResult tryProcessIVS(String text, int vsStartIndex, int baseCp) {
+        if (vsStartIndex >= text.length()) {
+            return IVSResult.NOT_FOUND;
+        }
+
+        int vsCp;
+        int vsCharCount;
+
+        if (Utilities.isSurrogatePair(text, vsStartIndex)) {
+            vsCp = Utilities.convertToUtf32(text, vsStartIndex);
+            vsCharCount = 2;
+        } else {
+            vsCp = text.charAt(vsStartIndex);
+            vsCharCount = 1;
+        }
+
+        if (!isVariationSelector(vsCp)) {
+            return IVSResult.NOT_FOUND;
+        }
+
+        int[] format14Metrics = ttu.getFormat14MetricsTT(baseCp, vsCp);
+        if (format14Metrics == null) {
+            return IVSResult.NOT_FOUND;
+        }
+
+        int glyphCode = format14Metrics[0];
+        Integer gl = glyphCode;
+        longTag.computeIfAbsent(gl, k -> new int[]{glyphCode, format14Metrics[1], baseCp, vsCp});
+        return new IVSResult(true, glyphCode, vsCharCount);
+    }
+
+    private static boolean isVariationSelector(int codePoint) {
+        return (codePoint >= 0xFE00 && codePoint <= 0xFE0F) ||
+                (codePoint >= 0xE0100 && codePoint <= 0xE01EF);
     }
 
     private byte[] getCJKEncodingBytes(int[] glyph, int size) {
@@ -432,5 +482,19 @@ class FontDetails {
      */
     public void setSubset(boolean subset) {
         this.subset = subset;
+    }
+
+    private static class IVSResult {
+        static final IVSResult NOT_FOUND = new IVSResult(false, 0, 0);
+
+        final boolean found;
+        final int glyphCode;
+        final int vsCharCount;
+
+        IVSResult(boolean found, int glyphCode, int vsCharCount) {
+            this.found = found;
+            this.glyphCode = glyphCode;
+            this.vsCharCount = vsCharCount;
+        }
     }
 }
