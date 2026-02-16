@@ -1,5 +1,6 @@
 package org.openpdf.renderer;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,6 +15,20 @@ class ConfigurationTest {
     @BeforeEach
     void setUp() {
         config = Configuration.getInstance();
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Reset all configuration values to their defaults to ensure test isolation
+        config.setConvertGreyscaleImagesToArgb(true);
+        config.setThresholdForBandedImageRendering(0);
+        config.setAvoidColorConvertOp(false);
+        config.setUseBlurResizingForImages(true);
+        config.setPrintSignatureFields(true);
+        config.setPrintStampAnnotations(true);
+        config.setPrintWidgetAnnotations(true);
+        config.setPrintFreetextAnnotations(true);
+        config.setPrintLinkAnnotations(true);
     }
 
     @Test
@@ -39,9 +54,6 @@ class ConfigurationTest {
         
         // then
         assertThat(config.isConvertGreyscaleImagesToArgb()).isFalse();
-        
-        // cleanup - restore default
-        config.setConvertGreyscaleImagesToArgb(true);
     }
 
     @Test
@@ -57,9 +69,6 @@ class ConfigurationTest {
         
         // then
         assertThat(config.getThresholdForBandedImageRendering()).isEqualTo(1000);
-        
-        // cleanup - restore default
-        config.setThresholdForBandedImageRendering(0);
     }
 
     @Test
@@ -75,9 +84,6 @@ class ConfigurationTest {
         
         // then
         assertThat(config.isAvoidColorConvertOp()).isTrue();
-        
-        // cleanup - restore default
-        config.setAvoidColorConvertOp(false);
     }
 
     @Test
@@ -93,9 +99,6 @@ class ConfigurationTest {
         
         // then
         assertThat(config.isUseBlurResizingForImages()).isFalse();
-        
-        // cleanup - restore default
-        config.setUseBlurResizingForImages(true);
     }
 
     @Test
@@ -111,9 +114,6 @@ class ConfigurationTest {
         
         // then
         assertThat(config.isPrintSignatureFields()).isFalse();
-        
-        // cleanup - restore default
-        config.setPrintSignatureFields(true);
     }
 
     @Test
@@ -129,9 +129,6 @@ class ConfigurationTest {
         
         // then
         assertThat(config.isPrintStampAnnotations()).isFalse();
-        
-        // cleanup - restore default
-        config.setPrintStampAnnotations(true);
     }
 
     @Test
@@ -147,9 +144,6 @@ class ConfigurationTest {
         
         // then
         assertThat(config.isPrintWidgetAnnotations()).isFalse();
-        
-        // cleanup - restore default
-        config.setPrintWidgetAnnotations(true);
     }
 
     @Test
@@ -165,9 +159,6 @@ class ConfigurationTest {
         
         // then
         assertThat(config.isPrintFreetextAnnotations()).isFalse();
-        
-        // cleanup - restore default
-        config.setPrintFreetextAnnotations(true);
     }
 
     @Test
@@ -183,9 +174,6 @@ class ConfigurationTest {
         
         // then
         assertThat(config.isPrintLinkAnnotations()).isFalse();
-        
-        // cleanup - restore default
-        config.setPrintLinkAnnotations(true);
     }
 
     @Test
@@ -201,11 +189,5 @@ class ConfigurationTest {
         assertThat(config.getThresholdForBandedImageRendering()).isEqualTo(500);
         assertThat(config.isAvoidColorConvertOp()).isTrue();
         assertThat(config.isPrintSignatureFields()).isFalse();
-        
-        // cleanup - restore defaults
-        config.setConvertGreyscaleImagesToArgb(true);
-        config.setThresholdForBandedImageRendering(0);
-        config.setAvoidColorConvertOp(false);
-        config.setPrintSignatureFields(true);
     }
 }
