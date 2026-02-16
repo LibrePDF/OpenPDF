@@ -14,6 +14,7 @@ class Barcode128Test {
     @Test
     void testAI11ProductionDateLength() {
         Barcode128 barcode = new Barcode128();
+        barcode.setCodeType(Barcode128.CODE128_UCC);
         
         // Valid AI(11) with 6 digits for date (YYMMDD format)
         // Total length should be 8: 2 (AI identifier "11") + 6 (date "240315")
@@ -25,6 +26,7 @@ class Barcode128Test {
         String invalidCode = "(11)2403151"; // 7 digits instead of 6
         assertThrows(IllegalArgumentException.class, () -> {
             Barcode128 invalidBarcode = new Barcode128();
+            invalidBarcode.setCodeType(Barcode128.CODE128_UCC);
             invalidBarcode.setCode(invalidCode);
         });
     }
@@ -35,6 +37,7 @@ class Barcode128Test {
     @Test
     void testAI12DueDateLength() {
         Barcode128 barcode = new Barcode128();
+        barcode.setCodeType(Barcode128.CODE128_UCC);
         
         // Valid AI(12) with 6 digits for date (YYMMDD format)
         String validCode = "(12)240315";
