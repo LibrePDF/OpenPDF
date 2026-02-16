@@ -299,6 +299,13 @@ public class ColumnText {
     private boolean strictWordWrapping = false;
 
     /**
+     * Custom baseline Y position for the first line. When set (not NaN), this takes precedence
+     * over the normal yLine - leading calculation for positioning the first line.
+     * Subsequent lines use normal leading calculations.
+     */
+    private float customFirstLineBaselineY = Float.NaN;
+
+    /**
      * Creates a <CODE>ColumnText</CODE>.
      *
      * @param canvas the place where the text will be written to. Can be a template.
@@ -509,6 +516,7 @@ public class ColumnText {
         filledWidth = org.filledWidth;
         adjustFirstLine = org.adjustFirstLine;
         strictWordWrapping = org.strictWordWrapping;
+        customFirstLineBaselineY = org.customFirstLineBaselineY;
     }
 
     private void addWaitingPhrase() {
@@ -1050,12 +1058,27 @@ public class ColumnText {
                 } else {
                     currentLeading = Math.max(fixedLeading + maxSize[0] * multipliedLeading, maxSize[1]);
                 }
-                if (yLine > maxY || yLine - currentLeading < minY) {
-                    status = NO_MORE_COLUMN;
-                    bidiLine.restore();
-                    break;
+                
+                // Check if custom first line baseline is set and this is the first line
+                if (!Float.isNaN(customFirstLineBaselineY) && Float.isNaN(firstLineY)) {
+                    // Use custom baseline for first line
+                    yLine = customFirstLineBaselineY;
+                    // Validate that the custom baseline is within column bounds
+                    if (yLine > maxY || yLine < minY) {
+                        status = NO_MORE_COLUMN;
+                        bidiLine.restore();
+                        break;
+                    }
+                } else {
+                    // Normal behavior: subtract leading from yLine
+                    if (yLine > maxY || yLine - currentLeading < minY) {
+                        status = NO_MORE_COLUMN;
+                        bidiLine.restore();
+                        break;
+                    }
+                    yLine -= currentLeading;
                 }
-                yLine -= currentLeading;
+                
                 if (!simulate && !dirty) {
                     text.beginText();
                     dirty = true;
@@ -1763,5 +1786,36 @@ public class ColumnText {
      */
     public void setStrictWordWrapping(boolean strictWordWrapping) {
         this.strictWordWrapping = strictWordWrapping;
+    }
+
+    /**
+     * Sets a custom baseline Y position for the first line in the column.
+     * When set, this takes precedence over the normal yLine - leading calculation
+     * for positioning the first line. Subsequent lines continue with normal leading.
+     * This provides explicit control over first-line placement without requiring
+     * knowledge of internal leading/ascender adjustments.
+     * 
+     * @param baselineY the Y coordinate where the baseline of the first line should be positioned.
+     *                  Must be within the column bounds (between minY and maxY).
+     */
+    public void setFirstLineBaselineY(float baselineY) {
+        this.customFirstLineBaselineY = baselineY;
+    }
+
+    /**
+     * Gets the custom first line baseline Y position if set.
+     * 
+     * @return the custom first line baseline Y, or NaN if not set
+     */
+    public float getFirstLineBaselineY() {
+        return customFirstLineBaselineY;
+    }
+
+    /**
+     * Clears the custom first line baseline Y setting, reverting to normal
+     * yLine - leading calculation for first-line positioning.
+     */
+    public void clearFirstLineBaselineY() {
+        this.customFirstLineBaselineY = Float.NaN;
     }
 }
