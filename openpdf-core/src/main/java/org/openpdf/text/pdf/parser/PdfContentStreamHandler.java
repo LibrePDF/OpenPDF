@@ -74,6 +74,7 @@ public abstract class PdfContentStreamHandler {
     protected final TextAssembler renderListener;
     /**
      * A map with all supported operators operators (PDF syntax).
+     * Protected to allow subclasses to override installDefaultOperators() and register additional operators.
      */
     protected Map<String, ContentOperator> operators;
     /**
@@ -124,6 +125,8 @@ public abstract class PdfContentStreamHandler {
 
     /**
      * Loads all the supported graphics and text state operators in a map.
+     * Subclasses can override this method to register additional operators.
+     * When overriding, subclasses should call super.installDefaultOperators() first.
      */
     protected void installDefaultOperators() {
         operators = new HashMap<>();
