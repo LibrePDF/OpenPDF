@@ -52,6 +52,8 @@ import org.openpdf.text.pdf.PdfName;
 import org.openpdf.text.pdf.PdfArray;
 import org.openpdf.text.pdf.PdfIndirectReference;
 import org.openpdf.text.pdf.PRIndirectReference;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -889,6 +891,108 @@ public abstract class PdfContentStreamHandler {
         @Override
         public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
             handler.popContext();
+        }
+    }
+
+    /**
+     * Processes PDF content stream bytes.
+     *
+     * @param contentBytes the bytes of a content stream
+     * @param resources    the resources that come with the content stream
+     */
+    protected void processContent(byte[] contentBytes, PdfDictionary resources) {
+        try {
+            org.openpdf.text.pdf.PdfContentParser pdfContentParser = 
+                new org.openpdf.text.pdf.PdfContentParser(new org.openpdf.text.pdf.PRTokeniser(contentBytes));
+            List<PdfObject> operands = new ArrayList<>();
+            while (!pdfContentParser.parse(operands).isEmpty()) {
+                PdfLiteral operator = (PdfLiteral) operands.getLast();
+                invokeOperator(operator, operands, resources);
+            }
+        } catch (Exception e) {
+            throw new org.openpdf.text.ExceptionConverter(e);
+        }
+    }
+
+    /**
+     * Gets the content bytes from a PdfObject, which may be a reference, a stream or an array.
+     * This is a utility method that can be used by subclasses and other classes in this package.
+     *
+     * @param object the object to read bytes from
+     * @return the content bytes
+     * @throws java.io.IOException if there's an error reading the content
+     */
+    protected byte[] getContentBytesFromPdfObject(PdfObject object) throws java.io.IOException {
+        return getContentBytesFromPdfObjectStatic(object);
+    }
+
+    /**
+     * Gets the content bytes from a PdfObject, which may be a reference, a stream or an array.
+     * This is a static utility method that can be used by any class in this package.
+     *
+     * @param object the object to read bytes from
+     * @return the content bytes
+     * @throws IOException if there's an error reading the content
+     */
+    static byte[] getContentBytesFromPdfObjectStatic(PdfObject object) throws IOException {
+        switch (object.type()) {
+            case PdfObject.INDIRECT:
+                return getContentBytesFromPdfObjectStatic(org.openpdf.text.pdf.PdfReader.getPdfObject(object));
+            case PdfObject.STREAM:
+                return org.openpdf.text.pdf.PdfReader.getStreamBytes(
+                    (org.openpdf.text.pdf.PRStream) org.openpdf.text.pdf.PdfReader.getPdfObject(object));
+            case PdfObject.ARRAY:
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                for (PdfObject element : ((PdfArray) object).getElements()) {
+                    baos.write(getContentBytesFromPdfObjectStatic(element));
+                }
+                return baos.toByteArray();
+            default:
+                throw new IllegalStateException("Unsupported type: " + object.getClass().getCanonicalName());
+        }
+    }
+
+    /**
+     * A content operator implementation (Do) for handling XObject forms.
+     */
+    protected class Do implements ContentOperator {
+
+        /**
+         * @see ContentOperator#getOperatorName()
+         */
+        @Override
+        public String getOperatorName() {
+            return "Do";
+        }
+
+        @Override
+        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
+            PdfObject firstOperand = operands.getFirst();
+            if (firstOperand instanceof PdfName) {
+                PdfName name = (PdfName) firstOperand;
+                PdfDictionary dictionary = resources.getAsDict(PdfName.XOBJECT);
+                if (dictionary == null) {
+                    return;
+                }
+                org.openpdf.text.pdf.PdfStream stream = (org.openpdf.text.pdf.PdfStream) dictionary.getDirectObject(name);
+                PdfName subType = stream.getAsName(PdfName.SUBTYPE);
+                if (PdfName.FORM.equals(subType)) {
+                    PdfDictionary resources2 = stream.getAsDict(PdfName.RESOURCES);
+                    if (resources2 == null) {
+                        resources2 = resources;
+                    }
+
+                    byte[] data;
+                    try {
+                        data = handler.getContentBytesFromPdfObject(stream);
+                    } catch (java.io.IOException ex) {
+                        throw new org.openpdf.text.ExceptionConverter(ex);
+                    }
+                    new PushGraphicsState().invoke(operands, handler, resources);
+                    handler.processContent(data, resources2);
+                    new PopGraphicsState().invoke(operands, handler, resources);
+                }
+            }
         }
     }
 }
