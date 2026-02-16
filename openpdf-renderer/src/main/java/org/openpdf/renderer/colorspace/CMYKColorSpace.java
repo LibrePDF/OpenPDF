@@ -46,28 +46,20 @@ public class CMYKColorSpace extends ColorSpace {
     public CMYKColorSpace() {
         super(ColorSpace.TYPE_CMYK, 4);
 
-        System.out.println("[CMYKColorSpace] Initializing...");
-
         try {
             String resourcePath = "/ch/randelshofer/media/jpeg/Generic_CMYK_Profile.icc";
             InputStream iccStream = CMYKColorSpace.class.getResourceAsStream(resourcePath);
 
             if (iccStream == null) {
-                System.err.println("[CMYKColorSpace] Resource not found: " + resourcePath);
                 throw new IOException("ICC profile not found in classpath at " + resourcePath);
-            } else {
-                System.out.println("[CMYKColorSpace] Loaded ICC profile stream: " + resourcePath);
             }
 
             icc = ICC_Profile.getInstance(iccStream);
             icc_cs = new ICC_ColorSpace(icc);
 
-            System.out.println("[CMYKColorSpace] ICC profile loaded and color space initialized.");
-
             iccStream.close();
 
         } catch (IOException e) {
-            System.err.println("[CMYKColorSpace] Error loading ICC profile: " + e.getMessage());
             BaseWatchable.getErrorHandler().publishException(e);
         }
     }

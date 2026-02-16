@@ -403,11 +403,11 @@ public class TrueTypeFont {
 	public String toString () {
         StringBuffer buf = new StringBuffer ();
 
-        System.out.println ("Type         : " + getType ());
-        System.out.println ("NumTables    : " + getNumTables ());
-        System.out.println ("SearchRange  : " + getSearchRange ());
-        System.out.println ("EntrySelector: " + getEntrySelector ());
-        System.out.println ("RangeShift   : " + getRangeShift ());
+        buf.append("Type         : ").append(getType()).append("\n");
+        buf.append("NumTables    : ").append(getNumTables()).append("\n");
+        buf.append("SearchRange  : ").append(getSearchRange()).append("\n");
+        buf.append("EntrySelector: ").append(getEntrySelector()).append("\n");
+        buf.append("RangeShift   : ").append(getRangeShift()).append("\n");
 
         for (Iterator<Map.Entry<String, Object>> i = this.tables.entrySet ().iterator (); i.hasNext ();) {
             Map.Entry<String, Object> e = i.next ();
@@ -419,7 +419,7 @@ public class TrueTypeFont {
                 table = (TrueTypeTable) e.getValue ();
             }
 
-            System.out.println (table);
+            buf.append(table).append("\n");
         }
 
         return buf.toString ();
