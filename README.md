@@ -38,7 +38,7 @@ The features of OpenPDF include:
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
 ![Java 21](https://img.shields.io/badge/Java-21-blue?logo=java&logoColor=white)
 ![Java 24](https://img.shields.io/badge/Java-24-blue?logo=java&logoColor=yellow)
-![Java 25](https://img.shields.io/badge/Java-24-blue?logo=java&logoColor=yellow)
+![Java 25](https://img.shields.io/badge/Java-25-blue?logo=java&logoColor=blue)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Supported-ADD8E6?logo=kotlin&logoColor=white)](https://github.com/LibrePDF/OpenPDF/tree/master/openpdf-kotlin)
 
 ## Use OpenPDF as Maven dependency
