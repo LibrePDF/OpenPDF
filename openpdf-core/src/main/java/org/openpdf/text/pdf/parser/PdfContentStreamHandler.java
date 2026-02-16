@@ -53,7 +53,9 @@ import org.openpdf.text.pdf.PdfArray;
 import org.openpdf.text.pdf.PdfIndirectReference;
 import org.openpdf.text.pdf.PRIndirectReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
@@ -124,7 +126,7 @@ public abstract class PdfContentStreamHandler {
      * Loads all the supported graphics and text state operators in a map.
      */
     protected void installDefaultOperators() {
-        operators = new java.util.HashMap<>();
+        operators = new HashMap<>();
 
         registerContentOperator(new PushGraphicsState());
         registerContentOperator(new PopGraphicsState());
@@ -189,7 +191,6 @@ public abstract class PdfContentStreamHandler {
         lookupOperator(operatorName)
                 .ifPresent(contentOperator -> contentOperator.invoke(operands, this, resources));
     }
-
 
     abstract void popContext();
 
@@ -793,7 +794,7 @@ public abstract class PdfContentStreamHandler {
         @Override
         public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
             PdfName tagName = (PdfName) operands.get(0);
-            String realName = tagName.toString().substring(1).toLowerCase(java.util.Locale.ROOT);
+            String realName = tagName.toString().substring(1).toLowerCase(Locale.ROOT);
             if ("artifact".equals(realName) || "placedpdf".equals(realName)) {
                 handler.pushContext(null);
             } else {
@@ -841,7 +842,7 @@ public abstract class PdfContentStreamHandler {
         @Override
         public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
             PdfObject firstOperand = operands.get(0);
-            String tagName = firstOperand.toString().substring(1).toLowerCase(java.util.Locale.ROOT);
+            String tagName = firstOperand.toString().substring(1).toLowerCase(Locale.ROOT);
             if ("artifact".equals(tagName) || "placedpdf".equals(tagName)
                     || handler.contextNames.peek() == null) {
                 tagName = null;
