@@ -834,6 +834,20 @@ public abstract class Image extends Rectangle {
                 int mapSize = icm.getMapSize();
                 int bitsPerPixel = icm.getPixelSize();
                 
+                // Ensure bits per pixel is valid (1, 2, 4, or 8)
+                // For PDF indexed images, bpc should be the bits needed to index the palette
+                if (bitsPerPixel > 8 || bitsPerPixel == 0) {
+                    bitsPerPixel = 8;
+                } else if (bitsPerPixel > 4) {
+                    bitsPerPixel = 8;
+                } else if (bitsPerPixel > 2) {
+                    bitsPerPixel = 4;
+                } else if (bitsPerPixel > 1) {
+                    bitsPerPixel = 2;
+                } else {
+                    bitsPerPixel = 1;
+                }
+                
                 // Extract palette data
                 byte[] reds = new byte[mapSize];
                 byte[] greens = new byte[mapSize];
