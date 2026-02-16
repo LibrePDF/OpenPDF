@@ -44,4 +44,22 @@ class FontDetailsTest {
         assertThat(fontDetails.getFillerCmap()).hasSize(1);
     }
 
+    @Test
+    void testIvsTextConversion() throws IOException {
+        String filename = "src/test/resources/fonts/ivs/Hei_MSCS.ttf";
+        BaseFont baseFont = BaseFont.createFont(filename, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+        FontDetails fontDetails = new FontDetails(null, null, baseFont);
+        TextRenderingOptions options = new TextRenderingOptions();
+        options.setGlyphSubstitutionEnabled(false);
+        String text = "㛇\uDB40\uDD01㛇\uDB40\uDD02";
+        byte[] bytes = fontDetails.convertToBytes(text, options);
+
+        assertThat(bytes).isNotNull().isNotEmpty();
+        assertThat(fontDetails.longTag).isNotNull().isNotEmpty();
+        // unicode kept
+        assertThat(bytes).hasSize(4);
+        // convert to 2 glyphs
+        assertThat(fontDetails.longTag).hasSize(2);
+    }
+
 }
