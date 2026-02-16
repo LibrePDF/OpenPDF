@@ -61,12 +61,15 @@ import org.openpdf.text.pdf.PdfOCG;
 import org.openpdf.text.pdf.PdfObject;
 import org.openpdf.text.pdf.PdfReader;
 import org.openpdf.text.pdf.PdfStream;
+import org.openpdf.text.pdf.PdfString;
 import org.openpdf.text.pdf.PdfTemplate;
 import org.openpdf.text.pdf.PdfWriter;
 import org.openpdf.text.pdf.codec.CCITTG4Encoder;
 import java.awt.Graphics2D;
 import java.awt.color.ICC_Profile;
 import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -823,6 +826,57 @@ public abstract class Image extends Rectangle {
             BufferedImage bi = (BufferedImage) image;
             if (bi.getType() == BufferedImage.TYPE_BYTE_BINARY && bi.getColorModel().getNumColorComponents() <= 2) {
                 forceBW = true;
+            }
+            
+            // Handle indexed color images
+            if (bi.getColorModel() instanceof IndexColorModel && !forceBW) {
+                IndexColorModel icm = (IndexColorModel) bi.getColorModel();
+                int mapSize = icm.getMapSize();
+                int bitsPerPixel = icm.getPixelSize();
+                
+                // Extract palette data
+                byte[] reds = new byte[mapSize];
+                byte[] greens = new byte[mapSize];
+                byte[] blues = new byte[mapSize];
+                icm.getReds(reds);
+                icm.getGreens(greens);
+                icm.getBlues(blues);
+                
+                // Build palette as RGB byte array
+                byte[] palette = new byte[mapSize * 3];
+                for (int i = 0; i < mapSize; i++) {
+                    palette[i * 3] = reds[i];
+                    palette[i * 3 + 1] = greens[i];
+                    palette[i * 3 + 2] = blues[i];
+                }
+                
+                // Extract pixel indices
+                int width = bi.getWidth();
+                int height = bi.getHeight();
+                byte[] pixelData = new byte[width * height];
+                
+                WritableRaster raster = bi.getRaster();
+                for (int y = 0; y < height; y++) {
+                    for (int x = 0; x < width; x++) {
+                        pixelData[y * width + x] = (byte) raster.getSample(x, y, 0);
+                    }
+                }
+                
+                // Create indexed image with palette
+                Image img = Image.getInstance(width, height, 1, bitsPerPixel, pixelData);
+                
+                // Set up indexed colorspace: [/Indexed /DeviceRGB maxIndex palette]
+                PdfArray indexed = new PdfArray();
+                indexed.add(PdfName.INDEXED);
+                indexed.add(PdfName.DEVICERGB);
+                indexed.add(new PdfNumber(mapSize - 1));
+                indexed.add(new PdfString(palette));
+                
+                PdfDictionary additional = new PdfDictionary();
+                additional.put(PdfName.COLORSPACE, indexed);
+                img.setAdditional(additional);
+                
+                return img;
             }
         }
 
