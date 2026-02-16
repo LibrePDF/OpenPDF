@@ -207,7 +207,7 @@ class PDFRenderingTest {
     }
 
     @Test
-    void testRenderPdfToBufferedImage(@TempDir File tempDir) throws Exception {
+    void testRenderPdfToBufferedImageAndSaveToFile(@TempDir File tempDir) throws Exception {
         // given
         URL resourceUrl = getClass().getClassLoader().getResource("HelloWorldMeta.pdf");
         assertThat(resourceUrl).isNotNull();

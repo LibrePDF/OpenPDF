@@ -39,7 +39,7 @@ class PDFStringUtilTest {
     }
 
     @Test
-    void testAsTextString_WithUTF16BOM_DecodesAsUTF16BE() {
+    void testAsTextString_WithUTF16BEBOM_DecodesAsUTF16BE() {
         // given - UTF-16BE BOM (0xFE 0xFF) followed by "Hi" in UTF-16BE
         // BOM = 0xFE 0xFF, H = 0x00 0x48, i = 0x00 0x69
         // As a basic string: char(0xFE), char(0xFF), char(0x00), char(0x48), char(0x00), char(0x69)
