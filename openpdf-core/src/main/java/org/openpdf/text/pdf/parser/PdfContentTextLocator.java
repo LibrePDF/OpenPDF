@@ -83,7 +83,7 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
     @Override
     protected void installDefaultOperators() {
         super.installDefaultOperators();
-        registerContentOperator(new Do());
+        registerContentOperator(this.new Do());
     }
 
     void popContext() {
@@ -166,78 +166,5 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
      */
     public ArrayList<MatchedPattern> getMatchedPatterns() {
         return this.accumulator;
-    }
-
-    private class Do implements ContentOperator {
-
-        /**
-         * @see ContentOperator#getOperatorName()
-         */
-        @Override
-        public String getOperatorName() {
-            return "Do";
-        }
-
-        @Override
-        public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfObject firstOperand = operands.getFirst();
-            if (firstOperand instanceof PdfName) {
-                PdfName name = (PdfName) firstOperand;
-                PdfDictionary dictionary = resources.getAsDict(PdfName.XOBJECT);
-                if (dictionary == null) {
-                    return;
-                }
-                PdfStream stream = (PdfStream) dictionary.getDirectObject(name);
-                PdfName subType = stream.getAsName(PdfName.SUBTYPE);
-                if (PdfName.FORM.equals(subType)) {
-                    PdfDictionary resources2 = stream.getAsDict(PdfName.RESOURCES);
-                    if (resources2 == null) {
-                        resources2 = resources;
-                    }
-
-                    byte[] data;
-                    try {
-                        data = getContentBytesFromPdfObject(stream);
-                    } catch (IOException ex) {
-                        throw new ExceptionConverter(ex);
-                    }
-                    new PushGraphicsState().invoke(operands, handler, resources);
-                    processContent(data, resources2);
-                    new PopGraphicsState().invoke(operands, handler, resources);
-                }
-            }
-
-        }
-
-        private void processContent(byte[] contentBytes, PdfDictionary resources) {
-            try {
-                PdfContentParser pdfContentParser = new PdfContentParser(new PRTokeniser(contentBytes));
-                List<PdfObject> operands = new ArrayList<>();
-                while (!pdfContentParser.parse(operands).isEmpty()) {
-                    PdfLiteral operator = (PdfLiteral) operands.getLast();
-                    invokeOperator(operator, operands, resources);
-                }
-            } catch (Exception e) {
-                throw new ExceptionConverter(e);
-            }
-        }
-
-
-        private byte[] getContentBytesFromPdfObject(PdfObject object) throws IOException {
-            switch (object.type()) {
-                case PdfObject.INDIRECT:
-                    return getContentBytesFromPdfObject(PdfReader.getPdfObject(object));
-                case PdfObject.STREAM:
-                    return PdfReader.getStreamBytes((PRStream) PdfReader.getPdfObject(object));
-                case PdfObject.ARRAY:
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    for (PdfObject element : ((PdfArray) object).getElements()) {
-                        baos.write(getContentBytesFromPdfObject(element));
-                    }
-                    return baos.toByteArray();
-                default:
-                    throw new IllegalStateException("Unsupported type: " + object.getClass().getCanonicalName());
-            }
-        }
     }
 }

@@ -138,32 +138,7 @@ public class PdfTextLocator {
      * @throws IOException
      */
     private byte[] getContentBytesFromContentObject(PdfObject contentObject) throws IOException {
-        final byte[] result;
-        switch (contentObject.type()) {
-            case PdfObject.INDIRECT:
-                PRIndirectReference ref = (PRIndirectReference) contentObject;
-                PdfObject directObject = PdfReader.getPdfObject(ref);
-                result = getContentBytesFromContentObject(directObject);
-                break;
-            case PdfObject.STREAM:
-                PRStream stream = (PRStream) PdfReader.getPdfObject(contentObject);
-                result = PdfReader.getStreamBytes(stream);
-                break;
-            case PdfObject.ARRAY:
-                // Stitch together all content before calling processContent(),
-                // because
-                // processContent() resets state.
-                ByteArrayOutputStream allBytes = new ByteArrayOutputStream();
-                PdfArray contentArray = (PdfArray) contentObject;
-                for (PdfObject pdfObject : contentArray.getElements()) {
-                    allBytes.write(getContentBytesFromContentObject(pdfObject));
-                }
-                result = allBytes.toByteArray();
-                break;
-            default:
-                throw new IllegalStateException("Unable to handle Content of type " + contentObject.getClass());
-        }
-        return result;
+        return PdfContentStreamHandler.getContentBytesFromPdfObjectStatic(contentObject);
     }
 
     /**
