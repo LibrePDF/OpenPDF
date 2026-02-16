@@ -206,6 +206,8 @@ class TrueTypeFont extends BaseFont {
 
     protected HashMap<Integer, int[]> cmapExt;
 
+    protected HashMap<String, int[]> cmap05;
+
     /**
      * The map containing the kerning information. It represents the content of table 'kern'. The key is an
      * <CODE>Integer</CODE> where the top 16 bits are the glyph number for the first character and the lower 16 bits
@@ -797,6 +799,7 @@ class TrueTypeFont extends BaseFont {
         int map31 = 0;
         int map30 = 0;
         int mapExt = 0;
+        int map05 = 0;
         for (int k = 0; k < num_tables; ++k) {
             int platId = rf.readUnsignedShort();
             int platSpecId = rf.readUnsignedShort();
@@ -808,6 +811,8 @@ class TrueTypeFont extends BaseFont {
                 map31 = offset;
             } else if (platId == 3 && platSpecId == 10) {
                 mapExt = offset;
+            } else if (platId == 0 && platSpecId == 5) {
+                map05 = offset;
             }
             if (platId == 1 && platSpecId == 0) {
                 map10 = offset;
@@ -860,6 +865,83 @@ class TrueTypeFont extends BaseFont {
                     break;
             }
         }
+        if (map05 > 0) {
+            int format14Location = table_location[0] + map05;
+            this.rf.seek((long) format14Location);
+            int format = this.rf.readUnsignedShort();
+            if (format == 14) {
+                this.cmap05 = this.readFormat14(format14Location);
+            }
+        }
+    }
+
+    HashMap<String, int[]> readFormat14(int format14Location) throws IOException {
+        HashMap<String, int[]> result = new HashMap<>();
+        this.rf.getFilePointer(); //startPosition unused
+
+        this.rf.readInt(); // byteLength unused
+        int numVarSelectorRecords = this.rf.readInt();
+
+        if (numVarSelectorRecords < 0 || numVarSelectorRecords > 10000) {
+            throw new IOException("Invalid numVarSelectorRecords: " + numVarSelectorRecords);
+        }
+
+        Map<Integer, Integer> nonDefaultOffsetMap = new HashMap<>();
+
+        for (int i = 0; i < numVarSelectorRecords; ++i) {
+            byte[] input = new byte[3];
+            this.rf.read(input);
+            int selectorUnicodeValue = this.byte2int(input, 3);
+            this.rf.readInt(); // defaultUVSOffset unused
+            int nonDefaultUVSOffset = this.rf.readInt();
+
+            if (nonDefaultUVSOffset > 0) {
+                nonDefaultOffsetMap.put(selectorUnicodeValue, nonDefaultUVSOffset);
+            }
+        }
+
+        for (Map.Entry<Integer, Integer> entry : nonDefaultOffsetMap.entrySet()) {
+            Integer selectorUnicodeValue = entry.getKey();
+            int nonDefaultUVSOffset = entry.getValue();
+
+            this.rf.seek((long) (format14Location + nonDefaultUVSOffset));
+            int mappingNums = this.rf.readInt();
+
+            if (mappingNums < 0 || mappingNums > 10000) {
+                continue;
+            }
+
+            for (int i = 0; i < mappingNums; ++i) {
+                byte[] input = new byte[3];
+                this.rf.read(input);
+                int unicodeValue = this.byte2int(input, 3);
+                int glyphId = this.rf.readUnsignedShort();
+                result.put(unicodeValue + "_" + selectorUnicodeValue,
+                        new int[]{glyphId, this.getGlyphWidth(glyphId)});
+            }
+        }
+        return result;
+    }
+
+    /**
+     * convert（Big-Endian）byte Array to unsigned int
+     */
+    public int byte2int(byte[] data, int n) {
+        if (data == null || n <= 0 || n > 4 || data.length < n) {
+            return 0;
+        }
+        int result = 0;
+        for (int i = 0; i < n; i++) {
+            result = (result << 8) | (data[i] & 0xFF); // & 0xFF 确保无符号
+        }
+        return result;
+    }
+
+    public int[] getFormat14MetricsTT(int char1, int char2) {
+        if (this.cmap05 != null) {
+            return this.cmap05.get(char1 + "_" + char2);
+        }
+        return null;
     }
 
     HashMap<Integer, int[]> readFormat12() throws IOException {
@@ -1418,6 +1500,9 @@ class TrueTypeFont extends BaseFont {
         }
         if (cmap10 != null) {
             return cmap10.get(c);
+        }
+        if (cmap05 != null) {
+            return cmap05.get(c);
         }
         return null;
     }
