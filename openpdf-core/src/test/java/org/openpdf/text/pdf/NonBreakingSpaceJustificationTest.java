@@ -28,15 +28,15 @@ public class NonBreakingSpaceJustificationTest {
         document.open();
 
         ColumnText ct = new ColumnText(writer.getDirectContent());
-        String s = "";
-        String nbs = "\u00a0"; // non-breaking space
+        StringBuilder sb = new StringBuilder();
+        String nonBreakingSpace = "\u00a0"; // non-breaking space
         for (int i = 0; i < 30; i++) {
-            s += "text" + nbs + "text" + " ";
+            sb.append("text").append(nonBreakingSpace).append("text").append(" ");
         }
         ct.setSimpleColumn(0, 0, 300, 300);
         ct.setAlignment(3); // justified
         ct.setSpaceCharRatio(100);
-        ct.setText(new Phrase(s));
+        ct.setText(new Phrase(sb.toString()));
         ct.go();
 
         document.close();
@@ -60,16 +60,17 @@ public class NonBreakingSpaceJustificationTest {
         document.open();
 
         ColumnText ct = new ColumnText(writer.getDirectContent());
-        String s = "";
-        String nbs = "\u00a0"; // non-breaking space
+        StringBuilder sb = new StringBuilder();
+        String nonBreakingSpace = "\u00a0"; // non-breaking space
         String space = " "; // regular space
         for (int i = 0; i < 15; i++) {
-            s += "text" + nbs + "text" + space + "more" + space + "words" + nbs;
+            sb.append("text").append(nonBreakingSpace).append("text").append(space)
+                    .append("more").append(space).append("words").append(nonBreakingSpace);
         }
         ct.setSimpleColumn(0, 0, 300, 300);
         ct.setAlignment(3); // justified
         ct.setSpaceCharRatio(50);
-        ct.setText(new Phrase(s));
+        ct.setText(new Phrase(sb.toString()));
         ct.go();
 
         document.close();
@@ -93,8 +94,8 @@ public class NonBreakingSpaceJustificationTest {
         document.open();
 
         ColumnText ct = new ColumnText(writer.getDirectContent());
-        String nbs = "\u00a0"; // non-breaking space
-        String s = "word" + nbs + "word" + nbs + "word" + nbs + "word" + nbs + "word" + nbs + "word";
+        String nonBreakingSpace = "\u00a0"; // non-breaking space
+        String s = "word" + nonBreakingSpace + "word" + nonBreakingSpace + "word" + nonBreakingSpace + "word" + nonBreakingSpace + "word" + nonBreakingSpace + "word";
         ct.setSimpleColumn(0, 0, 300, 300);
         ct.setAlignment(3); // justified
         ct.setSpaceCharRatio(100);
