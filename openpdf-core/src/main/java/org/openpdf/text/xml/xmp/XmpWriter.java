@@ -206,37 +206,37 @@ public class XmpWriter implements AutoCloseable {
                 addRdfDescription(basic);
             }
             if (PdfXConformance == PdfWriter.PDFA1A || PdfXConformance == PdfWriter.PDFA1B) {
-                PdfA1Schema a1 = new PdfA1Schema();
+                PdfA1Schema pdfA1Schema = new PdfA1Schema();
                 if (PdfXConformance == PdfWriter.PDFA1A) {
-                    a1.addConformance("A");
+                    pdfA1Schema.addConformance("A");
                 } else {
-                    a1.addConformance("B");
+                    pdfA1Schema.addConformance("B");
                 }
-                addRdfDescription(a1);
+                addRdfDescription(pdfA1Schema);
             } else if (PdfXConformance == PdfWriter.PDFA2A || PdfXConformance == PdfWriter.PDFA2B
                     || PdfXConformance == PdfWriter.PDFA2U) {
-                PdfA1Schema a2 = new PdfA1Schema();
-                a2.addPart("2");
+                PdfA1Schema pdfA2Schema = new PdfA1Schema();
+                pdfA2Schema.addPart("2");
                 if (PdfXConformance == PdfWriter.PDFA2A) {
-                    a2.addConformance("A");
+                    pdfA2Schema.addConformance("A");
                 } else if (PdfXConformance == PdfWriter.PDFA2B) {
-                    a2.addConformance("B");
+                    pdfA2Schema.addConformance("B");
                 } else {
-                    a2.addConformance("U");
+                    pdfA2Schema.addConformance("U");
                 }
-                addRdfDescription(a2);
+                addRdfDescription(pdfA2Schema);
             } else if (PdfXConformance == PdfWriter.PDFA3A || PdfXConformance == PdfWriter.PDFA3B
                     || PdfXConformance == PdfWriter.PDFA3U) {
-                PdfA1Schema a3 = new PdfA1Schema();
-                a3.addPart("3");
+                PdfA1Schema pdfA3Schema = new PdfA1Schema();
+                pdfA3Schema.addPart("3");
                 if (PdfXConformance == PdfWriter.PDFA3A) {
-                    a3.addConformance("A");
+                    pdfA3Schema.addConformance("A");
                 } else if (PdfXConformance == PdfWriter.PDFA3B) {
-                    a3.addConformance("B");
+                    pdfA3Schema.addConformance("B");
                 } else {
-                    a3.addConformance("U");
+                    pdfA3Schema.addConformance("U");
                 }
-                addRdfDescription(a3);
+                addRdfDescription(pdfA3Schema);
             }
         }
     }
