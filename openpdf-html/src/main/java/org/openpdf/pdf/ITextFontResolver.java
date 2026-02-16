@@ -41,6 +41,7 @@ import org.openpdf.util.XRLog;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -148,39 +149,150 @@ public class ITextFontResolver implements FontResolver {
             return;
         }
 
-        byte[] font1 = userAgentCallback.getBinaryResource(src.asString());
-        if (font1 == null) {
-            XRLog.exception("Could not load font " + src.asString());
+        List<FontSrc> fontSources = parseFontSources(src);
+        if (fontSources.isEmpty()) {
+            XRLog.exception("No valid font sources found in src property");
             return;
         }
 
-        byte[] font2 = null;
-        FSDerivedValue metricsSrc = style.valueByName(CSSName.FS_FONT_METRIC_SRC);
-        if (metricsSrc != IdentValue.NONE) {
-            font2 = userAgentCallback.getBinaryResource(metricsSrc.asString());
-            if (font2 == null) {
-                XRLog.exception("Could not load font metric data " + src.asString());
+        // Try each font source in order until one works
+        for (FontSrc fontSrc : fontSources) {
+            String uri = fontSrc.uri;
+            String format = fontSrc.format;
+            
+            // Check if format is supported (if specified)
+            if (format != null && !isFontFormatSupported(format, uri)) {
+                continue;
+            }
+
+            byte[] font1 = userAgentCallback.getBinaryResource(uri);
+            if (font1 == null) {
+                XRLog.exception("Could not load font " + uri);
+                continue;
+            }
+
+            byte[] font2 = null;
+            FSDerivedValue metricsSrc = style.valueByName(CSSName.FS_FONT_METRIC_SRC);
+            if (metricsSrc != IdentValue.NONE) {
+                font2 = userAgentCallback.getBinaryResource(metricsSrc.asString());
+                if (font2 == null) {
+                    XRLog.exception("Could not load font metric data " + uri);
+                    continue;
+                }
+            }
+
+            if (font2 != null) {
+                byte[] t = font1;
+                font1 = font2;
+                font2 = t;
+            }
+
+            boolean embedded = style.isIdent(CSSName.FS_PDF_FONT_EMBED, IdentValue.EMBED);
+            String encoding = style.getStringProperty(CSSName.FS_PDF_FONT_ENCODING);
+            String fontFamily = rule.hasFontFamily() ? style.valueByName(CSSName.FONT_FAMILY).asString() : null;
+            IdentValue fontWeight = rule.hasFontWeight() ? style.getIdent(CSSName.FONT_WEIGHT) : null;
+            IdentValue fontStyle = rule.hasFontStyle() ? style.getIdent(CSSName.FONT_STYLE) : null;
+
+            try {
+                addFontFaceFont(fontFamily, fontWeight, fontStyle, uri, encoding, embedded, font1, font2);
+                // Successfully added font, no need to try other sources
                 return;
+            } catch (DocumentException | IOException e) {
+                XRLog.exception("Could not load font " + uri, e);
+                // Continue to try next font source
             }
         }
-
-        if (font2 != null) {
-            byte[] t = font1;
-            font1 = font2;
-            font2 = t;
+        
+        XRLog.exception("Failed to load any font from src property");
+    }
+    
+    /**
+     * Represents a font source with URI and optional format.
+     */
+    private static class FontSrc {
+        final String uri;
+        @Nullable final String format;
+        
+        FontSrc(String uri, @Nullable String format) {
+            this.uri = uri;
+            this.format = format;
         }
-
-        boolean embedded = style.isIdent(CSSName.FS_PDF_FONT_EMBED, IdentValue.EMBED);
-        String encoding = style.getStringProperty(CSSName.FS_PDF_FONT_ENCODING);
-        String fontFamily = rule.hasFontFamily() ? style.valueByName(CSSName.FONT_FAMILY).asString() : null;
-        IdentValue fontWeight = rule.hasFontWeight() ? style.getIdent(CSSName.FONT_WEIGHT) : null;
-        IdentValue fontStyle = rule.hasFontStyle() ? style.getIdent(CSSName.FONT_STYLE) : null;
-
-        try {
-            addFontFaceFont(fontFamily, fontWeight, fontStyle, src.asString(), encoding, embedded, font1, font2);
-        } catch (DocumentException | IOException e) {
-            XRLog.exception("Could not load font " + src.asString(), e);
+    }
+    
+    /**
+     * Parse font sources from the src property value.
+     * Handles both single values and comma-separated lists of url()/format() pairs.
+     */
+    private List<FontSrc> parseFontSources(FSDerivedValue src) {
+        List<FontSrc> result = new ArrayList<>();
+        
+        // Check if it's a list value (multiple sources)
+        if (src instanceof org.openpdf.css.style.derived.ListValue) {
+            org.openpdf.css.style.derived.ListValue listValue = (org.openpdf.css.style.derived.ListValue) src;
+            List<Object> values = listValue.getValues();
+            if (values != null) {
+                String currentUri = null;
+                String currentFormat = null;
+                
+                for (Object value : values) {
+                    if (value instanceof org.openpdf.css.parser.PropertyValue) {
+                        org.openpdf.css.parser.PropertyValue propValue = (org.openpdf.css.parser.PropertyValue) value;
+                        
+                        if (propValue.getPrimitiveType() == org.w3c.dom.css.CSSPrimitiveValue.CSS_URI) {
+                            // If we have a pending URI, add it before starting a new one
+                            if (currentUri != null) {
+                                result.add(new FontSrc(currentUri, currentFormat));
+                                currentFormat = null;
+                            }
+                            currentUri = propValue.getStringValue();
+                        } else if (propValue.getPropertyValueType() == org.openpdf.css.parser.PropertyValue.Type.VALUE_TYPE_FUNCTION) {
+                            org.openpdf.css.parser.FSFunction function = propValue.getFunction();
+                            if (function != null && "format".equals(function.getName())) {
+                                List<org.openpdf.css.parser.PropertyValue> params = function.getParameters();
+                                if (!params.isEmpty() && params.get(0).getStringValue() != null) {
+                                    currentFormat = params.get(0).getStringValue();
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Add the last URI if present
+                if (currentUri != null) {
+                    result.add(new FontSrc(currentUri, currentFormat));
+                }
+            }
+        } else {
+            // Single value (just a URI)
+            result.add(new FontSrc(src.asString(), null));
         }
+        
+        return result;
+    }
+    
+    /**
+     * Check if a font format is supported.
+     * Uses format hint first, falls back to file extension.
+     */
+    private boolean isFontFormatSupported(@Nullable String format, String uri) {
+        if (format != null) {
+            // Check common format strings
+            String formatLower = format.toLowerCase(ROOT);
+            if (formatLower.equals("truetype") || formatLower.equals("opentype") || 
+                formatLower.equals("woff") || formatLower.equals("woff2")) {
+                // For embedded fonts, check the actual content type
+                if (isEmbeddedBase64Font(uri)) {
+                    return SupportedEmbeddedFontTypes.isSupported(uri);
+                }
+                // For truetype and opentype, these are supported
+                return formatLower.equals("truetype") || formatLower.equals("opentype");
+            }
+            // Unknown format, not supported
+            return false;
+        }
+        
+        // No format specified, check file extension
+        return fontSupported(uri);
     }
 
     /**
