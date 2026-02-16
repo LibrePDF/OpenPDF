@@ -244,7 +244,7 @@ public class Barcode128 extends Barcode {
         ais.put(1, 16);
         ais.put(2, 16);
         ais.put(10, -1);
-        ais.put(11, 9);
+        ais.put(11, 8);
         ais.put(12, 8);
         ais.put(13, 8);
         ais.put(15, 8);
