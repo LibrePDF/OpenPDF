@@ -119,4 +119,59 @@ class ImageTest {
         return bytes;
     }
 
+    @Test
+    void shouldDetectIndexedColorGif() throws Exception {
+        // Load H.gif which is an indexed color GIF
+        String fileName = "src/test/resources/H.gif";
+        Image image = Image.getInstance(fileName);
+        
+        assertNotNull(image);
+        // colorspace should be 1 for indexed images (not 3 for RGB)
+        assertThat(image.getColorspace()).isEqualTo(1);
+        
+        // Verify that additional colorspace info is set for indexed images
+        assertThat(image.getAdditional()).isNotNull();
+        assertThat(image.getAdditional().get(org.openpdf.text.pdf.PdfName.COLORSPACE)).isNotNull();
+    }
+
+    @Test
+    void shouldDetectIndexedColorFromBufferedImage() throws Exception {
+        // Create an indexed color BufferedImage programmatically
+        int width = 10;
+        int height = 10;
+        
+        // Create a simple 4-color palette (red, green, blue, black)
+        byte[] reds = {(byte)255, 0, 0, 0};
+        byte[] greens = {0, (byte)255, 0, 0};
+        byte[] blues = {0, 0, (byte)255, 0};
+        
+        java.awt.image.IndexColorModel colorModel = new java.awt.image.IndexColorModel(
+            2, // 2 bits per pixel (4 colors)
+            4, // 4 colors in palette
+            reds, greens, blues
+        );
+        
+        java.awt.image.BufferedImage bufferedImage = new java.awt.image.BufferedImage(
+            width, height, java.awt.image.BufferedImage.TYPE_BYTE_INDEXED, colorModel
+        );
+        
+        // Fill with some pattern
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                bufferedImage.getRaster().setSample(x, y, 0, (x + y) % 4);
+            }
+        }
+        
+        // Convert to Image
+        Image image = Image.getInstance(bufferedImage, null);
+        
+        assertNotNull(image);
+        // Should be indexed (colorspace = 1), not RGB (colorspace = 3)
+        assertThat(image.getColorspace()).isEqualTo(1);
+        
+        // Verify that additional colorspace info is set
+        assertThat(image.getAdditional()).isNotNull();
+        assertThat(image.getAdditional().get(org.openpdf.text.pdf.PdfName.COLORSPACE)).isNotNull();
+    }
+
 }
