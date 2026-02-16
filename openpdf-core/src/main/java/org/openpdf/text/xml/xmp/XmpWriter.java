@@ -213,6 +213,30 @@ public class XmpWriter implements AutoCloseable {
                     a1.addConformance("B");
                 }
                 addRdfDescription(a1);
+            } else if (PdfXConformance == PdfWriter.PDFA2A || PdfXConformance == PdfWriter.PDFA2B
+                    || PdfXConformance == PdfWriter.PDFA2U) {
+                PdfA1Schema a2 = new PdfA1Schema();
+                a2.addPart("2");
+                if (PdfXConformance == PdfWriter.PDFA2A) {
+                    a2.addConformance("A");
+                } else if (PdfXConformance == PdfWriter.PDFA2B) {
+                    a2.addConformance("B");
+                } else {
+                    a2.addConformance("U");
+                }
+                addRdfDescription(a2);
+            } else if (PdfXConformance == PdfWriter.PDFA3A || PdfXConformance == PdfWriter.PDFA3B
+                    || PdfXConformance == PdfWriter.PDFA3U) {
+                PdfA1Schema a3 = new PdfA1Schema();
+                a3.addPart("3");
+                if (PdfXConformance == PdfWriter.PDFA3A) {
+                    a3.addConformance("A");
+                } else if (PdfXConformance == PdfWriter.PDFA3B) {
+                    a3.addConformance("B");
+                } else {
+                    a3.addConformance("U");
+                }
+                addRdfDescription(a3);
             }
         }
     }
