@@ -414,15 +414,15 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
             PdfString string = (PdfString) operands.get(2);
 
             List<PdfObject> twOperands = new ArrayList<>(1);
-            twOperands.addFirst(aw);
+            twOperands.add(0, aw);
             setTextWordSpacing.invoke(twOperands, handler, resources);
 
             List<PdfObject> tcOperands = new ArrayList<>(1);
-            tcOperands.addFirst(ac);
+            tcOperands.add(0, ac);
             setTextCharacterSpacing.invoke(tcOperands, handler, resources);
 
             List<PdfObject> tickOperands = new ArrayList<>(1);
-            tickOperands.addFirst(string);
+            tickOperands.add(0, string);
             moveNextLineAndShowText.invoke(tickOperands, handler, resources);
         }
     }
@@ -605,7 +605,7 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
             float ty = ((PdfNumber) operands.get(1)).floatValue();
 
             List<PdfObject> tlOperands = new ArrayList<>(1);
-            tlOperands.addFirst(new PdfNumber(-ty));
+            tlOperands.add(0, new PdfNumber(-ty));
             setTextLeading.invoke(tlOperands, handler, resources);
             moveStartNextLine.invoke(operands, handler, resources);
         }

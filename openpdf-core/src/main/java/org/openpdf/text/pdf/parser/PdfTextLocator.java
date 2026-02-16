@@ -99,7 +99,7 @@ public class PdfTextLocator {
      * @param reader               the reader with the PDF
      * @param usePdfMarkupElements should we use higher level tags for PDF markup entities?
      */
-    public PdfTextLocator(PdfReader reader, String pattern, boolean usePdfMarkupElements) {
+    public PdfTextLocator(PdfReader reader, boolean usePdfMarkupElements) {
         this(reader, new MarkedUpTextAssembler(reader, usePdfMarkupElements));
     }
 
