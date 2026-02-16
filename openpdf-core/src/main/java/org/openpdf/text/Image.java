@@ -108,32 +108,58 @@ public abstract class Image extends Rectangle {
     private static final Pattern imageDataPattern = Pattern.compile("data:(image\\/[a-zA-Z0-9+-]+);.*(base64),(.*)");
 
     /**
-     * this is a kind of image alignment.
+     * Image alignment: Default alignment (same as LEFT).
+     * The image will be placed on the left side of the page.
      */
     public static final int DEFAULT = 0;
 
     /**
-     * this is a kind of image alignment.
+     * Image alignment: Right-align the image.
+     * The image will be placed on the right side of the page.
+     * Can be combined with TEXTWRAP or UNDERLYING using bitwise OR.
+     * Example: {@code image.setAlignment(Image.RIGHT | Image.TEXTWRAP);}
      */
     public static final int RIGHT = 2;
 
     /**
-     * this is a kind of image alignment.
+     * Image alignment: Left-align the image.
+     * The image will be placed on the left side of the page.
+     * Can be combined with TEXTWRAP or UNDERLYING using bitwise OR.
+     * Example: {@code image.setAlignment(Image.LEFT | Image.TEXTWRAP);}
      */
     public static final int LEFT = 0;
 
     /**
-     * this is a kind of image alignment.
+     * Image alignment: Center the image horizontally on the page.
+     * The image will be placed in the middle of the page width.
      */
     public static final int MIDDLE = 1;
 
     /**
-     * this is a kind of image alignment.
+     * Image alignment modifier: Allow text to wrap around the image.
+     * When combined with LEFT or RIGHT, text will flow around the image on the opposite side.
+     * This is useful for creating inline images where text continues alongside the image
+     * instead of the image occupying its own line.
+     * <p>
+     * Example for an image with text wrapping on the right:
+     * {@code image.setAlignment(Image.LEFT | Image.TEXTWRAP);}
+     * <p>
+     * Example for an image with text wrapping on the left:
+     * {@code image.setAlignment(Image.RIGHT | Image.TEXTWRAP);}
      */
     public static final int TEXTWRAP = 4;
 
     /**
-     * this is a kind of image alignment.
+     * Image alignment modifier: Place the image behind (underneath) the text.
+     * When combined with other alignment flags, the image will be rendered as a background
+     * element with text overlaying it. This is useful for watermarks, seals, or stamps
+     * that should appear behind text content.
+     * <p>
+     * Example for a background image on the left:
+     * {@code image.setAlignment(Image.LEFT | Image.UNDERLYING);}
+     * <p>
+     * Example for a seal that appears behind text:
+     * {@code image.setAlignment(Image.RIGHT | Image.UNDERLYING);}
      */
     public static final int UNDERLYING = 8;
 
@@ -1221,8 +1247,17 @@ public abstract class Image extends Rectangle {
 
     /**
      * Gets the alignment for the image.
+     * <p>
+     * The returned value may be a combination of alignment flags combined using bitwise OR.
+     * Use bitwise AND (&amp;) to check for specific flags:
+     * <pre>{@code
+     * int alignment = image.getAlignment();
+     * boolean hasTextwrap = (alignment & Image.TEXTWRAP) != 0;
+     * boolean isUnderlying = (alignment & Image.UNDERLYING) != 0;
+     * }</pre>
      *
-     * @return a value
+     * @return the alignment value (possibly a combination of flags)
+     * @see #setAlignment(int)
      */
     public int getAlignment() {
         return alignment;
@@ -1230,8 +1265,36 @@ public abstract class Image extends Rectangle {
 
     /**
      * Sets the alignment for the image.
+     * <p>
+     * The alignment parameter can be one of the following base values:
+     * <ul>
+     *   <li>{@link #LEFT} or {@link #DEFAULT} - Align the image to the left</li>
+     *   <li>{@link #RIGHT} - Align the image to the right</li>
+     *   <li>{@link #MIDDLE} - Center the image horizontally</li>
+     * </ul>
+     * <p>
+     * The base alignment can be combined with modifiers using bitwise OR (|):
+     * <ul>
+     *   <li>{@link #TEXTWRAP} - Allow text to wrap around the image (useful for inline images)</li>
+     *   <li>{@link #UNDERLYING} - Place the image behind text (useful for watermarks, seals, stamps)</li>
+     * </ul>
+     * <p>
+     * Examples:
+     * <pre>{@code
+     * // Image aligned left with text wrapping around it on the right
+     * image.setAlignment(Image.LEFT | Image.TEXTWRAP);
+     * 
+     * // Image aligned right with text wrapping around it on the left
+     * image.setAlignment(Image.RIGHT | Image.TEXTWRAP);
+     * 
+     * // Seal or stamp that appears behind text on the right
+     * image.setAlignment(Image.RIGHT | Image.UNDERLYING);
+     * 
+     * // Watermark that appears behind centered text
+     * image.setAlignment(Image.MIDDLE | Image.UNDERLYING);
+     * }</pre>
      *
-     * @param alignment the alignment
+     * @param alignment the alignment value (can be a combination of flags using bitwise OR)
      */
 
     public void setAlignment(int alignment) {
