@@ -226,14 +226,24 @@ public class XMLResource extends AbstractResource {
 
                 // Disable access to external entities
                 factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-                factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-                factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+                
+                // Try to set additional security attributes if supported
+                // Some implementations (like Android's Xalan) may not support these
+                try {
+                    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+                } catch (IllegalArgumentException e) {
+                    // These attributes are not supported on this platform (e.g., Android)
+                    // Log and continue - FEATURE_SECURE_PROCESSING is already enabled
+                    XRLog.load(Level.FINE, "TransformerFactory does not support ACCESS_EXTERNAL_DTD/STYLESHEET attributes. " +
+                            "This is expected on some platforms like Android. Continuing with FEATURE_SECURE_PROCESSING enabled.");
+                }
 
                 Transformer transformer = factory.newTransformer();
                 transformer.transform(source, result);
                 return (Document) result.getNode();
 
-            } catch (TransformerException | IllegalArgumentException ex) {
+            } catch (TransformerException ex) {
                 throw new XRRuntimeException("Can't load the XML resource (using TrAX transformer). " + ex.getMessage(), ex);
             }
         }
