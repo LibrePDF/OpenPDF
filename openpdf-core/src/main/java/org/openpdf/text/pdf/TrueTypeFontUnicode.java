@@ -290,7 +290,9 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
             --size;
             int[] metric = metrics[k];
             String fromTo = toHex(metric[0]);
-            buf.append(fromTo).append(fromTo).append(toHex(metric[2])).append('\n');
+            String hexString;
+            hexString = metric.length == 4 ? toHex(metric[2], metric[3]) : toHex(metric[2]);
+            buf.append(fromTo).append(fromTo).append(hexString).append('\n');
         }
         buf.append(
                 "endbfrange\n" +
@@ -623,6 +625,39 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
             return null;
         }
         return bboxes[m[0]];
+    }
+
+    /**
+     * Converts two Unicode code points to a combined hex string in the format [<hex1hex2>]
+     *
+     * @param codePoint1 The first Unicode code point to convert
+     * @param codePoint2 The second Unicode code point to convert
+     * @return Combined hex string with specified format
+     */
+    private String toHex(int codePoint1, int codePoint2) {
+        String hexStr1 = convertCodePointToHex(codePoint1);
+        String hexStr2 = convertCodePointToHex(codePoint2);
+        return "[<" + hexStr1 + hexStr2 + ">]";
+    }
+
+    /**
+     * Converts a single Unicode code point to 4-digit hex string
+     * Handles both BMP (Basic Multilingual Plane) and supplementary plane characters
+     */
+    private String convertCodePointToHex(int codePoint) {
+        final int BMP_MAX_CODE_POINT = 65536;
+        final int SURROGATE_DIVISOR = 1024;
+        final char HIGH_SURROGATE_BASE = '\ud800';
+        final char LOW_SURROGATE_BASE = '\udc00';
+
+        if (codePoint < BMP_MAX_CODE_POINT) {
+            return toHex4(codePoint);
+        } else {
+            int adjustedCodePoint = codePoint - BMP_MAX_CODE_POINT;
+            int highSurrogate = adjustedCodePoint / SURROGATE_DIVISOR + HIGH_SURROGATE_BASE;
+            int lowSurrogate = adjustedCodePoint % SURROGATE_DIVISOR + LOW_SURROGATE_BASE;
+            return toHex4(highSurrogate) + toHex4(lowSurrogate);
+        }
     }
 
 }
