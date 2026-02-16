@@ -1559,7 +1559,36 @@ public class PrimitivePropertyBuilders {
     public static class Right extends LengthLikeWithAuto {
     }
 
-    public static class Src extends GenericURIWithNone {
+    public static class Src extends AbstractPropertyBuilder {
+        // <uri> | none | inherit
+        // Also supports: url('font.woff') format('woff'), url('font.ttf') format('truetype')
+        private static final BitSet ALLOWED = setFor(NONE);
+
+        @Override
+        public List<PropertyDeclaration> buildDeclarations(
+                CSSName cssName, List<? extends CSSPrimitiveValue> values, Origin origin, boolean important, boolean inheritAllowed) {
+            // Handle inherit case
+            if (values.size() == 1) {
+                CSSPrimitiveValue value = values.get(0);
+                checkInheritAllowed(value, inheritAllowed);
+                if (value.getCssValueType() == CSS_INHERIT) {
+                    return singletonList(new PropertyDeclaration(cssName, value, important, origin));
+                }
+                
+                // Handle single value case (none or single URL)
+                checkIdentOrURIType(cssName, value);
+                if (value.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+                    IdentValue ident = checkIdent(value);
+                    checkValidity(cssName, ALLOWED, ident);
+                }
+                return singletonList(new PropertyDeclaration(cssName, value, important, origin));
+            }
+            
+            // Handle multiple values (e.g., url() format() pairs)
+            // Wrap all values into a PropertyValue list
+            PropertyValue listValue = new PropertyValue(new ArrayList<>(values));
+            return singletonList(new PropertyDeclaration(cssName, listValue, important, origin));
+        }
     }
 
     public static class TabSize extends PlainInteger {
