@@ -229,7 +229,7 @@ public class HtmlResource extends AbstractResource {
                 parser.setFeature(HTMLScanner.SCRIPT_STRIP_COMMENT_DELIMS, true);
             }
 
-            // Strip comment delimiters from style content  
+            // Strip comment delimiters from style content
             if (config.isStyleStripCommentDelims()) {
                 parser.setFeature(HTMLScanner.STYLE_STRIP_COMMENT_DELIMS, true);
             }
