@@ -104,5 +104,6 @@ In GitHub User alphabetical order.
 * [@weiyeh](https://github.com/weiyeh) - Wei-Yeh Lee
 * [@Wugengxian](https://github.com/Wugengxian)
 * [@ymasory](https://github.com/ymasory)
+* [@wang0331](https://github.com/wang0331) Xue - Ren Wang
 
 Also, a very special thanks to the iText developers ;)
