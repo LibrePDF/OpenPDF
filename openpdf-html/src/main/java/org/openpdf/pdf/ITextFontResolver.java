@@ -24,11 +24,15 @@ import org.openpdf.text.pdf.BaseFont;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.css.CSSPrimitiveValue;
 import org.openpdf.css.constants.CSSName;
 import org.openpdf.css.constants.IdentValue;
+import org.openpdf.css.parser.FSFunction;
+import org.openpdf.css.parser.PropertyValue;
 import org.openpdf.css.sheet.FontFaceRule;
 import org.openpdf.css.style.CalculatedStyle;
 import org.openpdf.css.style.FSDerivedValue;
+import org.openpdf.css.style.derived.ListValue;
 import org.openpdf.css.value.FontSpecification;
 import org.openpdf.extend.FontResolver;
 import org.openpdf.extend.UserAgentCallback;
@@ -41,8 +45,8 @@ import org.openpdf.util.XRLog;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,6 +76,7 @@ public class ITextFontResolver implements FontResolver {
     private static final String TTC = ".ttc";
     private static final String TTC_COMMA = ".ttc,";
 
+    private final Map<String, String> _embedFontFaces = new HashMap<>();
     private final Map<String, FontFamily> _fontFamilies = new HashMap<>();
     private final Map<String, FontDescription> _fontCache = new ConcurrentHashMap<>();
 
@@ -135,6 +140,14 @@ public class ITextFontResolver implements FontResolver {
         }
     }
 
+    public void addEmbedFontFace(String fontFamily, String encoding) {
+        _embedFontFaces.put(fontFamily, encoding);
+    }
+
+    public void resetEmbedFontFace() {
+        _embedFontFaces.clear();
+    }
+
     public void importFontFaces(List<FontFaceRule> fontFaces, UserAgentCallback userAgentCallback) {
         for (FontFaceRule rule : fontFaces) {
             importFontFace(rule, userAgentCallback);
@@ -159,12 +172,11 @@ public class ITextFontResolver implements FontResolver {
         for (FontSrc fontSrc : fontSources) {
             String uri = fontSrc.uri;
             String format = fontSrc.format;
-            
-            // Check if format is supported (if specified)
-            if (format != null && !isFontFormatSupported(format, uri)) {
+
+            // Check if format is supported
+            if (!fontSupported(uri, format)) {
                 continue;
             }
-
             byte[] font1 = userAgentCallback.getBinaryResource(uri);
             if (font1 == null) {
                 XRLog.exception("Could not load font " + uri);
@@ -190,11 +202,15 @@ public class ITextFontResolver implements FontResolver {
             boolean embedded = style.isIdent(CSSName.FS_PDF_FONT_EMBED, IdentValue.EMBED);
             String encoding = style.getStringProperty(CSSName.FS_PDF_FONT_ENCODING);
             String fontFamily = rule.hasFontFamily() ? style.valueByName(CSSName.FONT_FAMILY).asString() : null;
+            if (_embedFontFaces.containsKey(fontFamily)) {
+                embedded = true;
+                encoding = _embedFontFaces.get(fontFamily);
+            }
             IdentValue fontWeight = rule.hasFontWeight() ? style.getIdent(CSSName.FONT_WEIGHT) : null;
             IdentValue fontStyle = rule.hasFontStyle() ? style.getIdent(CSSName.FONT_STYLE) : null;
 
             try {
-                addFontFaceFont(fontFamily, fontWeight, fontStyle, uri, encoding, embedded, font1, font2);
+                addFontFaceFont(fontFamily, fontWeight, fontStyle, uri, format, encoding, embedded, font1, font2);
                 // Successfully added font, no need to try other sources
                 return;
             } catch (DocumentException | IOException e) {
@@ -202,53 +218,53 @@ public class ITextFontResolver implements FontResolver {
                 // Continue to try next font source
             }
         }
-        
+
         XRLog.exception("Failed to load any font from src property");
     }
-    
+
     /**
      * Represents a font source with URI and optional format.
      */
     private static class FontSrc {
         final String uri;
         @Nullable final String format;
-        
+
         FontSrc(String uri, @Nullable String format) {
             this.uri = uri;
             this.format = format;
         }
     }
-    
+
     /**
      * Parse font sources from the src property value.
      * Handles both single values and comma-separated lists of url()/format() pairs.
      */
     private List<FontSrc> parseFontSources(FSDerivedValue src) {
         List<FontSrc> result = new ArrayList<>();
-        
+
         // Check if it's a list value (multiple sources)
-        if (src instanceof org.openpdf.css.style.derived.ListValue) {
-            org.openpdf.css.style.derived.ListValue listValue = (org.openpdf.css.style.derived.ListValue) src;
+        if (src instanceof ListValue) {
+            ListValue listValue = (ListValue) src;
             List<Object> values = listValue.getValues();
             if (values != null) {
                 String currentUri = null;
                 String currentFormat = null;
-                
+
                 for (Object value : values) {
-                    if (value instanceof org.openpdf.css.parser.PropertyValue) {
-                        org.openpdf.css.parser.PropertyValue propValue = (org.openpdf.css.parser.PropertyValue) value;
-                        
-                        if (propValue.getPrimitiveType() == org.w3c.dom.css.CSSPrimitiveValue.CSS_URI) {
+                    if (value instanceof PropertyValue) {
+                        PropertyValue propValue = (PropertyValue) value;
+
+                        if (propValue.getPrimitiveType() == CSSPrimitiveValue.CSS_URI) {
                             // If we have a pending URI, add it before starting a new one
                             if (currentUri != null) {
                                 result.add(new FontSrc(currentUri, currentFormat));
                                 currentFormat = null;
                             }
                             currentUri = propValue.getStringValue();
-                        } else if (propValue.getPropertyValueType() == org.openpdf.css.parser.PropertyValue.Type.VALUE_TYPE_FUNCTION) {
-                            org.openpdf.css.parser.FSFunction function = propValue.getFunction();
+                        } else if (propValue.getPropertyValueType() == PropertyValue.Type.VALUE_TYPE_FUNCTION) {
+                            FSFunction function = propValue.getFunction();
                             if (function != null && "format".equals(function.getName())) {
-                                List<org.openpdf.css.parser.PropertyValue> params = function.getParameters();
+                                List<PropertyValue> params = function.getParameters();
                                 if (!params.isEmpty() && params.get(0).getStringValue() != null) {
                                     currentFormat = params.get(0).getStringValue();
                                 }
@@ -256,7 +272,7 @@ public class ITextFontResolver implements FontResolver {
                         }
                     }
                 }
-                
+
                 // Add the last URI if present
                 if (currentUri != null) {
                     result.add(new FontSrc(currentUri, currentFormat));
@@ -266,33 +282,8 @@ public class ITextFontResolver implements FontResolver {
             // Single value (just a URI)
             result.add(new FontSrc(src.asString(), null));
         }
-        
+
         return result;
-    }
-    
-    /**
-     * Check if a font format is supported.
-     * Uses format hint first, falls back to file extension.
-     */
-    private boolean isFontFormatSupported(@Nullable String format, String uri) {
-        if (format != null) {
-            // Check common format strings
-            String formatLower = format.toLowerCase(ROOT);
-            if (formatLower.equals("truetype") || formatLower.equals("opentype") || 
-                formatLower.equals("woff") || formatLower.equals("woff2")) {
-                // For embedded fonts, check the actual content type
-                if (isEmbeddedBase64Font(uri)) {
-                    return SupportedEmbeddedFontTypes.isSupported(uri);
-                }
-                // For truetype and opentype, these are supported
-                return formatLower.equals("truetype") || formatLower.equals("opentype");
-            }
-            // Unknown format, not supported
-            return false;
-        }
-        
-        // No format specified, check file extension
-        return fontSupported(uri);
     }
 
     /**
@@ -390,54 +381,55 @@ public class ITextFontResolver implements FontResolver {
         }
     }
 
-    private boolean fontSupported(String uri) {
+    private boolean fontSupported(String uri, @Nullable String format) {
+        if (format != null) {
+            return format.equals("opentype") || format.equals("truetype");
+        }
         String lower = uri.toLowerCase(ROOT);
         if (isEmbeddedBase64Font(uri)) {
             return SupportedEmbeddedFontTypes.isSupported(uri);
         } else {
-            return lower.endsWith(OTF) || lower.endsWith(TTF) || lower.contains(TTC_COMMA);
+            return lower.endsWith(OTF) || lower.endsWith(TTF);
         }
+    }
+
+    private String getFontName(String uri, @Nullable String format, @Nullable String fontFamilyName) {
+        if (fontFamilyName != null) {
+            if (isEmbeddedBase64Font(uri)) {
+                return fontFamilyName + getExtension(uri);
+            } else if (format != null) {
+                String lower = uri.toLowerCase();
+                if (!lower.endsWith(OTF) && !lower.endsWith(TTF)) {
+                    String ext = "";
+                    if (format.equals("opentype")) {
+                        ext = OTF;
+                    } else if (format.equals("truetype")) {
+                        ext = TTF;
+                    }
+                    return fontFamilyName + ext;
+                }
+            }
+        }
+        return uri;
     }
 
     /**
      * @param ttfAfm the font as a byte array, possibly null
      */
     private void addFontFaceFont(@Nullable String fontFamilyNameOverride, @Nullable IdentValue fontWeightOverride,
-                                 @Nullable IdentValue fontStyleOverride, String uri, String encoding, boolean embedded,
-                                 byte[] ttfAfm, byte @Nullable [] pfb)
+                                 @Nullable IdentValue fontStyleOverride, String uri, @Nullable String format,
+                                 String encoding, boolean embedded, byte[] ttfAfm, byte @Nullable [] pfb)
             throws DocumentException, IOException {
-        String lower = uri.toLowerCase(ROOT);
-        if (fontSupported(lower)) {
-            String fontName = isEmbeddedBase64Font(uri) ? fontFamilyNameOverride + getExtension(uri) : uri;
-            BaseFont font = BaseFont.createFont(fontName, encoding, embedded, false, ttfAfm, pfb);
+        String fontName = getFontName(uri, format, fontFamilyNameOverride);
+        BaseFont font = BaseFont.createFont(fontName, encoding, embedded, false, ttfAfm, pfb);
 
-            Collection<String> fontFamilyNames = getFontFamilyNames(font, fontFamilyNameOverride);
+        Collection<String> fontFamilyNames = getFontFamilyNames(font, fontFamilyNameOverride);
 
-            for (String fontFamilyName : fontFamilyNames) {
-                FontFamily fontFamily = getFontFamily(fontFamilyName);
-                fontFamily.addFontDescription(
-                        fontDescription(fontWeightOverride, fontStyleOverride, uri, ttfAfm, font)
-                );
-            }
-        } else if (lower.endsWith(AFM) || lower.endsWith(PFM) || lower.endsWith(PFB) || lower.endsWith(PFA)) {
-            if (embedded && pfb == null) {
-                throw new IOException("When embedding a font, path to PFB/PFA file must be specified (uri: %s)".formatted(uri));
-            }
-
-            String name = uri.substring(0, uri.length() - 4) + AFM;
-            BaseFont font = BaseFont.createFont(
-                    name, encoding, embedded, false, ttfAfm, pfb);
-
-            String fontFamilyName = font.getFamilyFontName()[0][3];
+        for (String fontFamilyName : fontFamilyNames) {
             FontFamily fontFamily = getFontFamily(fontFamilyName);
-
-            FontDescription description = new FontDescription(font, true);
-            // XXX Need to set weight, underline position, etc.  This information
-            // is contained in the AFM file (and even parsed by Type1Font), but
-            // unfortunately it isn't exposed to the caller.
-            fontFamily.addFontDescription(description);
-        } else {
-            throw new IOException("Unsupported font type: %s".formatted(uri));
+            fontFamily.addFontDescription(
+                    fontDescription(fontWeightOverride, fontStyleOverride, uri, ttfAfm, font)
+            );
         }
     }
 

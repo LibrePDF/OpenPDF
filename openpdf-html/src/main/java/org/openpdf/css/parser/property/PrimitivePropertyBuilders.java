@@ -1574,7 +1574,7 @@ public class PrimitivePropertyBuilders {
                 if (value.getCssValueType() == CSS_INHERIT) {
                     return singletonList(new PropertyDeclaration(cssName, value, important, origin));
                 }
-                
+
                 // Handle single value case (none or single URL)
                 checkIdentOrURIType(cssName, value);
                 if (value.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
@@ -1583,7 +1583,7 @@ public class PrimitivePropertyBuilders {
                 }
                 return singletonList(new PropertyDeclaration(cssName, value, important, origin));
             }
-            
+
             // Handle multiple values (e.g., url() format() pairs)
             // Wrap all values into a PropertyValue list
             PropertyValue listValue = new PropertyValue(new ArrayList<>(values));
