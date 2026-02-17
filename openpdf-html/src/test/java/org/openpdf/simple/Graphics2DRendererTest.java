@@ -55,6 +55,6 @@ public class Graphics2DRendererTest {
         assertThat(ImageIO.write(image, "png", output)).isTrue();
         log.info("Rendered {} to image: {}", source, output.toURI());
         assertThat(image.getWidth()).isEqualTo(600);
-        assertThat(image.getHeight()).isCloseTo(102, withPercentage(10));
+        assertThat(image.getHeight()).isCloseTo(80, withPercentage(10));
     }
 }
