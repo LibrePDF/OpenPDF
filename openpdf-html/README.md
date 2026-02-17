@@ -20,12 +20,57 @@ This project is licensed under the **GNU Lesser General Public License (LGPL)**.
 ## Features
 
 - Modern HTML5 support (in progress)
-- Uses neko-htmlunit as HTML parser, which will enable HTML5 parsing: https://github.com/HtmlUnit/htmlunit-neko
-- also considering using Jsoup for HTML parsing: https://jsoup.org/
+- Uses [htmlunit-neko](https://github.com/HtmlUnit/htmlunit-neko) as HTML parser, enabling HTML5-compliant parsing with error tolerance
 - Improved CSS3 compatibility
 - Seamless integration with OpenPDF
 - Modular architecture for easier maintenance and extension
 - API compatible with Flying saucer, except package names are org.openpdf instead of org.xhtmlrenderer.
+
+### htmlunit-neko Parser Integration
+
+OpenPDF-html leverages the htmlunit-neko parser for HTML5-compliant parsing with the following features:
+
+- **Error Tolerant**: Handles malformed HTML gracefully by automatically fixing common mistakes
+- **HTML5 Compliant**: Supports modern HTML5 semantic elements (`header`, `footer`, `nav`, `article`, `section`, `aside`, `main`, `figure`, etc.)
+- **Data Attributes**: Full support for HTML5 `data-*` attributes
+- **Void Elements**: Proper handling of HTML5 void elements (`br`, `hr`, `img`, `input`, etc.)
+- **Configurable**: Extensive configuration options for parsing behavior
+
+#### Using HtmlResource for Direct DOM Parsing
+
+For direct HTML parsing using htmlunit-neko's DOMParser:
+
+```java
+import org.openpdf.resource.HtmlResource;
+import org.openpdf.resource.HtmlParserConfig;
+import org.w3c.dom.Document;
+
+// Parse HTML string with default settings
+HtmlResource resource = HtmlResource.load("<html><body><h1>Hello</h1></body></html>");
+Document doc = resource.getDocument();
+
+// Parse with custom configuration
+HtmlParserConfig config = HtmlParserConfig.builder()
+    .reportErrors(true)
+    .allowSelfClosingTags(true)
+    .encoding("UTF-8")
+    .build();
+HtmlResource resource = HtmlResource.load(html, config);
+```
+
+#### Available Configuration Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `reportErrors` | false | Enable detailed error reporting during parsing |
+| `allowSelfClosingTags` | false | Allow XHTML-style self-closing tags (`<div/>`) |
+| `allowSelfClosingIframe` | false | Allow self-closing iframe tags |
+| `parseNoScriptContent` | true | Parse content within `<noscript>` as HTML |
+| `scriptStripCommentDelims` | false | Strip HTML comment delimiters from scripts |
+| `styleStripCommentDelims` | false | Strip HTML comment delimiters from styles |
+| `elementNameCase` | default | Element name handling: "upper", "lower", "default" |
+| `attributeNameCase` | default | Attribute name handling: "upper", "lower", "default" |
+| `encoding` | auto | Character encoding (e.g., "UTF-8") |
 
 
 ## Example
