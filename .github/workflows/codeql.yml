@@ -38,6 +38,7 @@ jobs:
         uses: github/codeql-action/init@v4 
         with:
           languages: ${{ matrix.language }}
+          tools: nightly
 
       # Autobuild attempts to build any compiled languages.
       - name: Autobuild
