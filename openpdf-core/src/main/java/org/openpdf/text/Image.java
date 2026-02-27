@@ -867,15 +867,7 @@ public abstract class Image extends Rectangle {
                 // Extract pixel indices
                 int width = bi.getWidth();
                 int height = bi.getHeight();
-                byte[] pixelData = new byte[width * height];
-                
-                WritableRaster raster = bi.getRaster();
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++) {
-                        pixelData[y * width + x] = (byte) raster.getSample(x, y, 0);
-                    }
-                }
-                
+                byte[] pixelData = generateIndexedColorPixelData(width, bitsPerPixel, height, bi.getRaster());
                 // Create indexed image with palette
                 Image img = Image.getInstance(width, height, 1, bitsPerPixel, pixelData);
                 
@@ -1053,6 +1045,88 @@ public abstract class Image extends Rectangle {
             }
             return img;
         }
+    }
+
+    /**
+     * Generates PDF-compliant pixel data for indexed color images (IndexColorModel).
+     * <p>
+     * This method packs palette indices from a WritableRaster into a byte array that strictly adheres to
+     * PDF specification requirements for indexed color image storage:
+     * <ul>
+     *   <li>Pixel indices are packed starting from the Most Significant Bit (MSB, bit 7) of each byte (PDF mandatory rule)</li>
+     *   <li>Each row of pixel data is byte-aligned (padded with zeros to match calculated row stride)</li>
+     *   <li>Supports standard indexed color bit depths: 1, 2, 4, 8 bits per pixel</li>
+     *   <li>Normalizes palette indices to unsigned 0-255 range to prevent invalid negative values</li>
+     * </ul>
+     *
+     * @param width Width of the indexed color image (in pixels)
+     * @param bitsPerPixel Number of bits per pixel (must be 1, 2, 4, or 8 for valid indexed color)
+     * @param height Height of the indexed color image (in pixels)
+     * @param raster WritableRaster containing the indexed color pixel indices (from IndexColorModel BufferedImage)
+     * @return Byte array of pixel data packed according to PDF indexed color specifications, with row-wise byte alignment
+     * @see WritableRaster
+     * @see IndexColorModel
+     */
+    private static byte[] generateIndexedColorPixelData(int width, int bitsPerPixel, int height, WritableRaster raster) {
+        int rowStride = (width * bitsPerPixel + 7) / 8;
+        byte[] pixelData = new byte[rowStride * height];
+
+        int bytePos = 0;
+        int bitOffset;
+
+        for (int y = 0; y < height; y++) {
+            bitOffset = 7;
+            for (int x = 0; x < width; x++) {
+                int pixelIndex = raster.getSample(x, y, 0);
+                if (pixelIndex < 0) {
+                    pixelIndex = 0;
+                }
+                pixelIndex = pixelIndex & 0xFF;
+
+                bitOffset = packPixelByBitDepth(bitsPerPixel, pixelIndex, pixelData, bytePos, bitOffset);
+
+                if (bitOffset < 0) {
+                    bytePos++;
+                    bitOffset = 7;
+                }
+            }
+            int usedBytesInRow = bytePos - (y * rowStride);
+            if (usedBytesInRow < rowStride) {
+                int padBytes = rowStride - usedBytesInRow;
+                bytePos += padBytes;
+            }
+        }
+        return pixelData;
+    }
+
+    /**
+     * Packs a single pixel index into the target byte array based on specified bit depth (PDF MSB-first rule).
+     */
+    private static int packPixelByBitDepth(int bitsPerPixel, int pixelIndex, byte[] pixelData, int bytePos, int bitOffset) {
+        int currentBitOffset = bitOffset;
+
+        switch (bitsPerPixel) {
+            case 1:
+                if ((pixelIndex & 0x01) == 1) {
+                    pixelData[bytePos] |= (byte) (1 << currentBitOffset);
+                }
+                currentBitOffset--;
+                break;
+            case 2:
+                pixelData[bytePos] |= (byte) ((pixelIndex & 0x03) << (currentBitOffset - 1));
+                currentBitOffset -= 2;
+                break;
+            case 4:
+                pixelData[bytePos] |= (byte) ((pixelIndex & 0x0F) << (currentBitOffset - 3));
+                currentBitOffset -= 4;
+                break;
+            case 8:
+            default:
+                pixelData[bytePos] = (byte) pixelIndex;
+                currentBitOffset = -1;
+                break;
+        }
+        return currentBitOffset;
     }
 
     /**
