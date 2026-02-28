@@ -50,7 +50,7 @@ if [ $RC -eq 0 ]
 then
     cat << EOD
         Staging Release seems to be created. Please review it at https://central.sonatype.com/publishing
-        if everything seems fine, hit ENTER. Else break this script with Ctrl-C.
+        if everything seems fine, publish from there. Else break this script with Ctrl-C.
 EOD
     read pause
 else
@@ -59,14 +59,7 @@ else
     exit
 fi
 
-echo "#5. Deploy release."
-# Workaround for https://issues.sonatype.org/browse/OSSRH-66257
-export MAVEN_OPTS="
---add-opens=java.base/java.util=ALL-UNNAMED
---add-opens=java.base/java.lang.reflect=ALL-UNNAMED
---add-opens=java.base/java.text=ALL-UNNAMED
---add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
-mvn nexus-staging:release
+echo "#5. Deploy release. is deprecated. Should be rewritten"
 
 echo "#6. Finishing."
 echo " - set next SNAPSHOT to $NEW_VERSION"
