@@ -1,11 +1,13 @@
 # OpenPDF is an open source Java library for PDF files
 
-OpenPDF is an open-source Java library for creating, editing, rendering, and encrypting PDF documents, as well as generating PDFs from HTML. It is licensed under the LGPL and MPL open source licenses. 
-We welcome contributions from other developers. Please feel free to submit pull-requests and bug reports to this GitHub repository.
+OpenPDF is an open-source Java library for creating, editing, rendering, and encrypting PDF documents, as well as
+generating PDFs from HTML. It is licensed under the LGPL and MPL open source licenses.
+We welcome contributions from other developers. Please feel free to submit pull-requests and bug reports to this GitHub
+repository.
 
-## OpenPDF version 3.0.1 released 2026-02-18
+## OpenPDF version 3.0.2 released 2026-02-28
 
-Get version 3.0.1 here: https://github.com/LibrePDF/OpenPDF/releases/tag/3.0.1 Other versions
+Get version 3.0.2 here: https://github.com/LibrePDF/OpenPDF/releases/tag/3.0.2 Other versions
 
 - [OpenPDF 1.4.2 (release 2024-03-30)](https://github.com/LibrePDF/OpenPDF/releases/tag/1.4.2)
 - [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
@@ -57,7 +59,8 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 ## License
 
 OpenPDF uses dual licensing: when using the library, you may choose either Mozilla Public License Version 2.0
-or GNU Lesser General Public License 2.1.  OpenPDF is the LGPL/MPL open source successor of iText, and is based on some forks of iText
+or GNU Lesser General Public License 2.1. OpenPDF is the LGPL/MPL open source successor of iText, and is based on some
+forks of iText
 4 svn tag.
 
 The SPDX license identifier for OpenPDF licensing is `MPL-2.0 OR LGPL-2.1+`
@@ -76,7 +79,8 @@ We want OpenPDF to consist of source code which is consistently licensed with th
 licences only. This also means that any new contributions to the project must have a dual LGPL and
 MPL license only.
 
-[Openpdf-html](openpdf-html) and [Openpdf-renderer](openpdf-renderer) are licensed with GNU Lesser General Public License 2.1 only.
+[Openpdf-html](openpdf-html) and [Openpdf-renderer](openpdf-renderer) are licensed with GNU Lesser General Public
+License 2.1 only.
 
 ## Documentation
 
@@ -88,6 +92,7 @@ MPL license only.
 ---
 
 ### Openpdf-html – HTML to PDF
+
 [Openpdf-html](openpdf-html): Generates PDFs directly from HTML/CSS content.  
 Ideal for creating styled reports, invoices, and documents from web templates.
 
@@ -96,7 +101,9 @@ Ideal for creating styled reports, invoices, and documents from web templates.
 ---
 
 ### Openpdf-renderer – PDF Rendering
-[Openpdf-renderer](openpdf-renderer): Renders PDF pages to images or displays them in Java webapp/Swing/JavaFX applications.  
+
+[Openpdf-renderer](openpdf-renderer): Renders PDF pages to images or displays them in Java webapp/Swing/JavaFX
+applications.  
 Useful for previews, thumbnails, or embedding PDFs in GUIs.
 
 **Maven artifact:** `com.github.librepdf:openpdf-renderer`
@@ -133,16 +140,15 @@ OpenPDF ancestors in GitHub (in fork order):
 4. [@ymasory](https://github.com/ymasory) / [iText-4.2.0](https://github.com/ymasory/iText-4.2.0) -
    original parent on GitHub
 
-
-
-
 ## Android
 
 OpenPDF can be used with Android, more info
 here: [Android-support](https://github.com/LibrePDF/OpenPDF/wiki/Android-support)
 
 ## Contributing
-We welcome contributions from other developers. Make sure that your contributions can be released with a dual LGPL and MPL license. In particular, pull requests to the OpenPDF project must
+
+We welcome contributions from other developers. Make sure that your contributions can be released with a dual LGPL and
+MPL license. In particular, pull requests to the OpenPDF project must
 only contain code that you have written yourself. GPL or AGPL licensed code will not be acceptable.
 
 To contribute code to the OpenPDF project, your GitHub account must contain your real name, so that
@@ -168,10 +174,9 @@ We have now different versions of OpenPDF, and they require different versions o
 - The 1.4.x Branch requires Java 11 or later.
 - The 1.3.x Branch requires Java 8 or later.
 
-
 ### OpenPDF Java package name change from com.lowagie to org.openpdf
 
-The OpenPDF 3.0 version uses the new org.openpdf package name. 
+The OpenPDF 3.0 version uses the new org.openpdf package name.
 
 ### UTF-8 Fonts
 
