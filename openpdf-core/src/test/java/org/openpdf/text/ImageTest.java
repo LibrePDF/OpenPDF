@@ -4,9 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.io.InputStream;
 import org.junit.jupiter.api.Test;
+import org.openpdf.text.pdf.PdfName;
 
 class ImageTest {
 
@@ -117,6 +120,61 @@ class ImageTest {
             }
         }
         return bytes;
+    }
+
+    @Test
+    void shouldDetectIndexedColorGif() throws Exception {
+        // Load H.gif which is an indexed color GIF
+        String fileName = "src/test/resources/H.gif";
+        Image image = Image.getInstance(fileName);
+
+        assertNotNull(image);
+        // colorspace should be 1 for indexed images (not 3 for RGB)
+        assertThat(image.getColorspace()).isEqualTo(1);
+
+        // Verify that additional colorspace info is set for indexed images
+        assertThat(image.getAdditional()).isNotNull();
+        assertThat(image.getAdditional().get(PdfName.COLORSPACE)).isNotNull();
+    }
+
+    @Test
+    void shouldDetectIndexedColorFromBufferedImage() throws Exception {
+        // Create an indexed color BufferedImage programmatically
+        int width = 10;
+        int height = 10;
+
+        // Create a simple 4-color palette (red, green, blue, black)
+        byte[] reds = {(byte) 255, 0, 0, 0};
+        byte[] greens = {0, (byte) 255, 0, 0};
+        byte[] blues = {0, 0, (byte) 255, 0};
+
+        IndexColorModel colorModel = new IndexColorModel(
+                2, // 2 bits per pixel (4 colors)
+                4, // 4 colors in palette
+                reds, greens, blues
+        );
+
+        BufferedImage bufferedImage = new BufferedImage(
+                width, height, BufferedImage.TYPE_BYTE_INDEXED, colorModel
+        );
+
+        // Fill with some pattern
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                bufferedImage.getRaster().setSample(x, y, 0, (x + y) % 4);
+            }
+        }
+
+        // Convert to Image
+        Image image = Image.getInstance(bufferedImage, null);
+
+        assertNotNull(image);
+        // Should be indexed (colorspace = 1), not RGB (colorspace = 3)
+        assertThat(image.getColorspace()).isEqualTo(1);
+
+        // Verify that additional colorspace info is set
+        assertThat(image.getAdditional()).isNotNull();
+        assertThat(image.getAdditional().get(PdfName.COLORSPACE)).isNotNull();
     }
 
 }
