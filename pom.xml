@@ -66,7 +66,7 @@
 
     <!-- Maven Plugins versions -->
     <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
-    <maven-bundle-plugin.version>6.0.0</maven-bundle-plugin.version>
+    <maven-bundle-plugin.version>6.0.2</maven-bundle-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
