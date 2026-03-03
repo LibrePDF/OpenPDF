@@ -43,6 +43,7 @@ package org.openpdf.text.pdf.parser;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -256,7 +257,7 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
     /**
      * @return list of text strips that matches
      */
-    public ArrayList<MatchedPattern> getMatchedPatterns() {
+    public List<MatchedPattern> getMatchedPatterns() {
         return this.accumulator;
     }
 }
