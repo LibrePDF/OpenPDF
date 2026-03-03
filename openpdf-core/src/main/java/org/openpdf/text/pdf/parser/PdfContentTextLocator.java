@@ -63,16 +63,59 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
     private final ArrayList<Float> fragmentsWidths = new ArrayList<>();
 
     private final int page;
-    private final Pattern p;
+    private Pattern p;
+    private float[] coordinates;
+    private final int mode;
 
-
+    /**
+     * Construct a content PdfContetStreamHandler for regex-based text extraction pattern
+     *
+     * @param renderListener the text assembler
+     * @param pattern        the pattern to match text against
+     * @param page           PdfPage to inspect
+     */
     public PdfContentTextLocator(TextAssembler renderListener, String pattern, int page) {
         super(renderListener);
-        if(pattern == null) throw new IllegalArgumentException("Pattern cannot be null");
+        if (pattern == null) {
+            throw new IllegalArgumentException("Pattern cannot be null");
+        }
         //We check for length because we want to include whitespaces as possible patterns
-        if(pattern.isEmpty()) throw new IllegalArgumentException("Pattern sequence must be longer than 0");
+        if (pattern.isEmpty()) {
+            throw new IllegalArgumentException("Pattern sequence must be longer than 0");
+        }
         this.p = Pattern.compile(pattern);
         this.page = page;
+        this.mode = 1;
+        installDefaultOperators();
+        reset();
+    }
+
+    /**
+     * Construct a content PdfContetStreamHandler for coordinates-based text extraction pattern
+     *
+     * @param renderListener the text assembler
+     * @param coordinates    the bounding box to search text within
+     * @param page           PdfPage to inspect
+     */
+    public PdfContentTextLocator(TextAssembler renderListener, float[] coordinates, int page) {
+        super(renderListener);
+        if (coordinates.length != 4) {
+            throw new IllegalArgumentException("Coordinates bounding box must be an array of "
+                    + "four floats, "
+                    + "[x1, y1, x2, y2] {lower left point, upper right point}");
+        }
+        if (coordinates[2] < coordinates[0]) {
+            throw new IllegalArgumentException("x2 {coordinates[2]} must be greater than or equal to x1 "
+                    + "{coordinates[0]}");
+        }
+        if (coordinates[3] < coordinates[1]) {
+            throw new IllegalArgumentException("y2 {coordinates[3]} must be greater than or equal to y1 "
+                    + "{coordinates[1]}");
+        }
+        this.coordinates = coordinates;
+        //We check for length because we want to include whitespaces as possible patterns
+        this.page = page;
+        this.mode = 2;
         installDefaultOperators();
         reset();
     }
@@ -103,13 +146,12 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
     }
 
     /**
-     * Search for a pattern in a PdfString
-     * and if found, collect its bounding box
+     * Extract a PdfString content and coordinates based on the handler extraction pattern: either matches a given regex
+     * or intersects a given bounding box
      *
      * @param string the text to inspect
      */
     void displayPdfString(PdfString string) {
-
         String decoded;
         byte[] bytes;
         if (BaseFont.IDENTITY_H.equals(graphicsState().getFont().getEncoding())) {
@@ -135,20 +177,72 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
             counter++;
         }
 
-        float pdfStringWidth = startWidth + totalWidth;
         float y = new Vector(0, 0, 1f).cross(textMatrix).get(1);
-        float y1 =  y + graphicsState().getFontDescentDescriptor();
-        float y2 =  y + graphicsState().getFontAscentDescriptor();
+        float fontFloor = y + graphicsState().getFontDescentDescriptor();
+        float fontCeiling = y + graphicsState().getFontAscentDescriptor();
 
+        switch (this.mode) {
+            case 1: {
+                matchPdfString(decoded, widths, totalWidth, fontFloor, fontCeiling);
+                break;
+            }
+            case 2: {
+                locatePdfString(decoded, startWidth, totalWidth, fontFloor, fontCeiling);
+                break;
+            }
+            default: {
+                //do nothing for now
+            }
+        }
+    }
+
+    /**
+     * Search for a pattern in a PdfString and if found, collect its bounding box
+     *
+     * @param decoded     the text to inspect
+     * @param widths      array of prefix widths of each char
+     * @param totalWidth  width of the text
+     * @param fontFloor   lowest y-coordinate of the font
+     * @param fontCeiling highest y-coordinate of the font
+     */
+    private void matchPdfString(String decoded, float[] widths, float totalWidth, float fontFloor, float fontCeiling) {
         Matcher m = p.matcher(decoded);
         while (m.find()) {
             float x1 = widths[m.start()];
             float x2 = widths[m.end()];
-            MatchedPattern mp = new MatchedPattern(decoded, this.page, x1, y1, x2, y2);
+            MatchedPattern mp = new MatchedPattern(decoded, this.page, x1, fontFloor, x2, fontCeiling);
             accumulator.add(mp);
         }
-
         textMatrix = new Matrix(totalWidth, 0).multiply(textMatrix);
+    }
+
+    /**
+     * Extract text if it's coordinates intersect with the given bounding box
+     *
+     * @param decoded     the text to inspect
+     * @param startWidth  left-most x-coordinate of the text
+     * @param totalWidth  width of the text
+     * @param fontFloor   lowest y-coordinate of the font
+     * @param fontCeiling highest y-coordinate of the font
+     */
+    private void locatePdfString(String decoded, float startWidth, float totalWidth, float fontFloor,
+            float fontCeiling) {
+        float endWidth = startWidth + totalWidth;
+        textMatrix = new Matrix(totalWidth, 0).multiply(textMatrix);
+        if (startWidth < this.coordinates[0] && endWidth < this.coordinates[0]) {
+            return;
+        }
+        if (startWidth > this.coordinates[2]) {
+            return;
+        }
+        if (fontFloor < this.coordinates[1] && fontCeiling < this.coordinates[1]) {
+            return;
+        }
+        if (fontFloor > this.coordinates[3]) {
+            return;
+        }
+        MatchedPattern mp = new MatchedPattern(decoded, this.page, startWidth, fontFloor, endWidth, fontCeiling);
+        accumulator.add(mp);
     }
 
     private float convertHeightToUser(float height) {
