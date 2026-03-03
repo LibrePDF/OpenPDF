@@ -145,7 +145,7 @@ public class PdfTextLocator {
      * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
      * @throws IOException on error
      */
-    public ArrayList<MatchedPattern> searchPage(int page, String pattern) throws IOException {
+    public List<MatchedPattern> searchPage(int page, String pattern) throws IOException {
         PdfDictionary pageDict = reader.getPageN(page);
         if (pageDict == null) {
             return new ArrayList<>();
@@ -165,8 +165,8 @@ public class PdfTextLocator {
      * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
      * @throws IOException on error
      */
-    public ArrayList<MatchedPattern> searchFile(String pattern) throws IOException {
-        ArrayList<MatchedPattern> res = new ArrayList<>();
+    public List<MatchedPattern> searchFile(String pattern) throws IOException {
+        List<MatchedPattern> res = new ArrayList<>();
         for (int page = 1; page <= reader.getNumberOfPages(); page++) {
             res.addAll(searchPage(page, pattern));
         }
@@ -181,7 +181,7 @@ public class PdfTextLocator {
      * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
      * @throws IOException on error
      */
-    public ArrayList<MatchedPattern> searchPage(int page, float[] coordinates) throws IOException {
+    public List<MatchedPattern> searchPage(int page, float[] coordinates) throws IOException {
         PdfDictionary pageDict = reader.getPageN(page);
         if (pageDict == null) {
             return new ArrayList<>();
@@ -201,8 +201,8 @@ public class PdfTextLocator {
      * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
      * @throws IOException on error
      */
-    public ArrayList<MatchedPattern> searchFile(float[] coordinates) throws IOException {
-        ArrayList<MatchedPattern> res = new ArrayList<>();
+    public List<MatchedPattern> searchFile(float[] coordinates) throws IOException {
+        List<MatchedPattern> res = new ArrayList<>();
         for (int page = 1; page <= reader.getNumberOfPages(); page++) {
             res.addAll(searchPage(page, coordinates));
         }
