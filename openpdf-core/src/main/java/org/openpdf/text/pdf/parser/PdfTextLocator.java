@@ -49,15 +49,11 @@
 package org.openpdf.text.pdf.parser;
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.openpdf.text.ExceptionConverter;
-import org.openpdf.text.pdf.PRIndirectReference;
-import org.openpdf.text.pdf.PRStream;
 import org.openpdf.text.pdf.PRTokeniser;
-import org.openpdf.text.pdf.PdfArray;
 import org.openpdf.text.pdf.PdfContentParser;
 import org.openpdf.text.pdf.PdfDictionary;
 import org.openpdf.text.pdf.PdfLiteral;

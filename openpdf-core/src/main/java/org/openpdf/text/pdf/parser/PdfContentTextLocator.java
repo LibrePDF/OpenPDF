@@ -41,15 +41,13 @@
  */
 package org.openpdf.text.pdf.parser;
 
-import org.openpdf.text.ExceptionConverter;
-import org.openpdf.text.error_messages.MessageLocalization;
-import org.openpdf.text.pdf.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.PdfString;
 
 /**
  * @author dgd
