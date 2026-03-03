@@ -178,6 +178,42 @@ public class PdfTextLocator {
     }
 
     /**
+     * Locates text within a bounding box inside a page
+     *
+     * @param page        page number we are interested in
+     * @param coordinates bounding box to extract text from
+     * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
+     * @throws IOException on error
+     */
+    public ArrayList<MatchedPattern> searchPage(int page, float[] coordinates) throws IOException {
+        PdfDictionary pageDict = reader.getPageN(page);
+        if (pageDict == null) {
+            return new ArrayList<>();
+        }
+        PdfDictionary resources = pageDict.getAsDict(PdfName.RESOURCES);
+        renderListener.reset();
+        renderListener.setPage(page);
+        PdfContentTextLocator handler = new PdfContentTextLocator(renderListener, coordinates, page);
+        processContent(getContentBytesForPage(page), resources, handler);
+        return handler.getMatchedPatterns();
+    }
+
+    /**
+     * Locates text within a bounding box inside a PDF
+     *
+     * @param coordinates bounding box to extract text from
+     * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
+     * @throws IOException on error
+     */
+    public ArrayList<MatchedPattern> searchFile(float[] coordinates) throws IOException {
+        ArrayList<MatchedPattern> res = new ArrayList<>();
+        for (int page = 1; page <= reader.getNumberOfPages(); page++) {
+            res.addAll(searchPage(page, coordinates));
+        }
+        return res;
+    }
+
+    /**
      * Processes PDF syntax
      *
      * @param contentBytes the bytes of a content stream
