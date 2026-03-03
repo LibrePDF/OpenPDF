@@ -12,6 +12,7 @@ import org.openpdf.text.Font;
 import org.openpdf.text.PageSize;
 import org.openpdf.text.Paragraph;
 import org.openpdf.text.Phrase;
+import org.openpdf.text.pdf.ColumnText;
 import org.openpdf.text.pdf.FontSelector;
 import org.openpdf.text.pdf.PdfPTable;
 import org.openpdf.text.pdf.PdfReader;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 
@@ -43,6 +45,23 @@ class PdfTextExtractorTest {
         }
         document.close();
 
+        return baos.toByteArray();
+    }
+
+    static byte[] createSimpleDocumentWithPositionedStrings(String testString) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4);
+        PdfWriter wr = PdfWriter.getInstance(document, baos);
+        document.open();
+        wr.open();
+        ColumnText.showTextAligned(wr.getDirectContent(),
+                Element.ALIGN_LEFT, new Phrase(testString), 300, 780, 0);
+        ColumnText.showTextAligned(wr.getDirectContent(),
+                Element.ALIGN_LEFT, new Phrase(testString), 150, 400, 0);
+        ColumnText.showTextAligned(wr.getDirectContent(),
+                Element.ALIGN_LEFT, new Phrase(testString), 10, 10, 0);
+        document.close();
+        wr.close();
         return baos.toByteArray();
     }
 
@@ -173,27 +192,27 @@ class PdfTextExtractorTest {
         // then
         assertEquals("One Two Three", extracted);
     }
-    
+
     @Test
-    void testTextLocatorFindsTextWithCoordinates() throws Exception {
+    void testTextLocatorFindsTextWithRegex() throws Exception {
         // given: Create a simple document with known text
         final String testText = "Hello World Test";
         final Paragraph paragraph = new Paragraph(testText);
         byte[] pdfBytes = createSimpleDocumentWithElements(paragraph);
-        
+
         // when: Search for text pattern using PdfTextLocator
         final PdfReader pdfReader = new PdfReader(pdfBytes);
         java.util.List<MatchedPattern> matches = new PdfTextLocator(pdfReader).searchPage(1, "Hello");
-        
+
         // then: Verify that text was found with coordinates
         assertNotNull(matches);
         assertFalse(matches.isEmpty(), "Should find at least one match for 'Hello'");
         MatchedPattern match = matches.get(0);
         // The matched text contains "Hello" (the pattern we're searching for)
-        assertTrue(match.getText().contains("Hello"), 
+        assertTrue(match.getText().contains("Hello"),
                 "Matched text should contain 'Hello', got: " + match.getText());
         assertEquals(1, match.getPage());
-        
+
         // Verify coordinates are reasonable (not all zeros)
         float[] coords = match.getCoordinates();
         assertNotNull(coords);
@@ -202,26 +221,81 @@ class PdfTextExtractorTest {
         assertTrue(coords[0] > 0 || coords[1] > 0 || coords[2] > 0 || coords[3] > 0,
                 "Coordinates should have at least one non-zero value");
     }
-    
+
     @Test
-    void testTextLocatorFindsMultipleMatches() throws Exception {
+    void testTextLocatorFindsMultipleMatchesWithRegex() throws Exception {
         // given: Create a document with repeated text
         final String testText = "Test word. Another Test word.";
         final Paragraph paragraph = new Paragraph(testText);
         byte[] pdfBytes = createSimpleDocumentWithElements(paragraph);
-        
+
         // when: Search for pattern that appears multiple times
         final PdfReader pdfReader = new PdfReader(pdfBytes);
         java.util.List<MatchedPattern> matches = new PdfTextLocator(pdfReader).searchPage(1, "Test");
-        
+
         // then: Verify matches found (Note: implementation may return fewer matches than expected)
         assertNotNull(matches);
-        assertFalse(matches.isEmpty(), "Should find at least one match for 'Test'");
-        
+        assertFalse(matches.isEmpty(), "Should find exactly two matches for 'Test'");
+        assertEquals(2, matches.size(), "Should find exactly two matches for 'Test'");
+
         // Verify each match contains the pattern
         for (MatchedPattern match : matches) {
             assertTrue(match.getText().contains("Test"),
                     "Matched text should contain 'Test', got: " + match.getText());
+        }
+    }
+
+    @Test
+    void testTextLocatorFindsTextWithCoordinates() throws Exception {
+        // given: Create a simple document with known text
+        final String testText = "Hello World Test";
+        byte[] pdfBytes = createSimpleDocumentWithPositionedStrings(testText);
+
+        // when: Search for text pattern using PdfTextLocator
+        final PdfReader pdfReader = new PdfReader(pdfBytes);
+        float[] boundingBox = new float[]{0, 0, 20, 20};
+        List<MatchedPattern> matches = new PdfTextLocator(pdfReader).searchPage(1, boundingBox);
+
+        // then: Verify that text was found with coordinates
+        assertNotNull(matches);
+        assertFalse(matches.isEmpty(), "Should find exactly one match");
+        MatchedPattern match = matches.get(0);
+        // The matched text contains "Hello" (the pattern we're searching for)
+        assertTrue(match.getText().contains("Hello"),
+                "Matched text should contain 'Hello', got: " + match.getText());
+        assertEquals(1, match.getPage());
+        assertEquals(1, matches.size(), "Should find exactly one match");
+
+        // Verify coordinates are reasonable
+        float[] coords = match.getCoordinates();
+        assertNotNull(coords);
+        assertEquals(4, coords.length);
+    }
+
+    @Test
+    void testTextLocatorFindsMultipleMatchesWithCoordinates() throws Exception {
+        // given: Create a simple document with known text
+        final String testText = "Hello World Test";
+        byte[] pdfBytes = createSimpleDocumentWithPositionedStrings(testText);
+
+        // when: Search for text pattern using PdfTextLocator
+        final PdfReader pdfReader = new PdfReader(pdfBytes);
+        float[] boundingBox = new float[]{0, 0, 180, 450};
+        List<MatchedPattern> matches = new PdfTextLocator(pdfReader).searchPage(1, boundingBox);
+
+        // then: Verify that text was found with coordinates
+        assertNotNull(matches);
+        assertFalse(matches.isEmpty(), "Should find exactly two matches");
+        assertEquals(2, matches.size(), "Should find exactly two matches");
+        for (MatchedPattern match : matches) {
+            // The matched text contains "Hello" (the pattern we're searching for)
+            assertTrue(match.getText().contains("Hello"),
+                    "Matched text should contain 'Hello', got: " + match.getText());
+            assertEquals(1, match.getPage());
+            // Verify coordinates are reasonable
+            float[] coords = match.getCoordinates();
+            assertNotNull(coords);
+            assertEquals(4, coords.length);
         }
     }
 

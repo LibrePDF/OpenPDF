@@ -49,15 +49,11 @@
 package org.openpdf.text.pdf.parser;
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.openpdf.text.ExceptionConverter;
-import org.openpdf.text.pdf.PRIndirectReference;
-import org.openpdf.text.pdf.PRStream;
 import org.openpdf.text.pdf.PRTokeniser;
-import org.openpdf.text.pdf.PdfArray;
 import org.openpdf.text.pdf.PdfContentParser;
 import org.openpdf.text.pdf.PdfDictionary;
 import org.openpdf.text.pdf.PdfLiteral;
@@ -149,7 +145,7 @@ public class PdfTextLocator {
      * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
      * @throws IOException on error
      */
-    public ArrayList<MatchedPattern> searchPage(int page, String pattern) throws IOException {
+    public List<MatchedPattern> searchPage(int page, String pattern) throws IOException {
         PdfDictionary pageDict = reader.getPageN(page);
         if (pageDict == null) {
             return new ArrayList<>();
@@ -169,10 +165,46 @@ public class PdfTextLocator {
      * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
      * @throws IOException on error
      */
-    public ArrayList<MatchedPattern> searchFile(String pattern) throws IOException {
-        ArrayList<MatchedPattern> res = new ArrayList<>();
+    public List<MatchedPattern> searchFile(String pattern) throws IOException {
+        List<MatchedPattern> res = new ArrayList<>();
         for (int page = 1; page <= reader.getNumberOfPages(); page++) {
             res.addAll(searchPage(page, pattern));
+        }
+        return res;
+    }
+
+    /**
+     * Locates text within a bounding box inside a page
+     *
+     * @param page        page number we are interested in
+     * @param coordinates bounding box to extract text from
+     * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
+     * @throws IOException on error
+     */
+    public List<MatchedPattern> searchPage(int page, float[] coordinates) throws IOException {
+        PdfDictionary pageDict = reader.getPageN(page);
+        if (pageDict == null) {
+            return new ArrayList<>();
+        }
+        PdfDictionary resources = pageDict.getAsDict(PdfName.RESOURCES);
+        renderListener.reset();
+        renderListener.setPage(page);
+        PdfContentTextLocator handler = new PdfContentTextLocator(renderListener, coordinates, page);
+        processContent(getContentBytesForPage(page), resources, handler);
+        return handler.getMatchedPatterns();
+    }
+
+    /**
+     * Locates text within a bounding box inside a PDF
+     *
+     * @param coordinates bounding box to extract text from
+     * @return <CODE>ArrayList<MatchedPattern></CODE> List of matched text patterns with coordinates.
+     * @throws IOException on error
+     */
+    public List<MatchedPattern> searchFile(float[] coordinates) throws IOException {
+        List<MatchedPattern> res = new ArrayList<>();
+        for (int page = 1; page <= reader.getNumberOfPages(); page++) {
+            res.addAll(searchPage(page, coordinates));
         }
         return res;
     }
