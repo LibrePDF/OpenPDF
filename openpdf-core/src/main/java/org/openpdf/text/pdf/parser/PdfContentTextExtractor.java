@@ -41,31 +41,10 @@
  */
 package org.openpdf.text.pdf.parser;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
-import org.openpdf.text.ExceptionConverter;
-import org.openpdf.text.error_messages.MessageLocalization;
-import org.openpdf.text.pdf.CMapAwareDocumentFont;
-import org.openpdf.text.pdf.PRIndirectReference;
-import org.openpdf.text.pdf.PRStream;
-import org.openpdf.text.pdf.PRTokeniser;
-import org.openpdf.text.pdf.PdfArray;
-import org.openpdf.text.pdf.PdfContentParser;
-import org.openpdf.text.pdf.PdfDictionary;
-import org.openpdf.text.pdf.PdfIndirectReference;
-import org.openpdf.text.pdf.PdfLiteral;
-import org.openpdf.text.pdf.PdfName;
-import org.openpdf.text.pdf.PdfNumber;
-import org.openpdf.text.pdf.PdfObject;
-import org.openpdf.text.pdf.PdfReader;
-import org.openpdf.text.pdf.PdfStream;
 import org.openpdf.text.pdf.PdfString;
 
 /**
