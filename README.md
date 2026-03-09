@@ -21,9 +21,9 @@ and bugreports to this GitHub repository.
 ![Java 24](https://img.shields.io/badge/Java-24-blue?logo=java&logoColor=yellow)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Supported-7F52FF?logo=kotlin&logoColor=white)](https://github.com/LibrePDF/OpenPDF/tree/master/openpdf-kotlin)
 
-## OpenPDF version 2.2.4 released 2025-07-01
+## OpenPDF version 2.2.5 released 2026-03-09
 
-Get version 2.2.4 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.2.4
+Get version 2.2.5 here: https://github.com/LibrePDF/OpenPDF/releases/tag/2.2.5
 
 ### Other versions
 
@@ -56,7 +56,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>2.2.4</version>
+  <version>2.2.5</version>
 </dependency>
 ```
 
