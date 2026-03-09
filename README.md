@@ -5,13 +5,6 @@ generating PDFs from HTML. It is licensed under the LGPL and MPL open source lic
 We welcome contributions from other developers. Please feel free to submit pull-requests and bug reports to this GitHub
 repository.
 
-## OpenPDF version 3.0.2 released 2026-02-28
-
-Get version 3.0.2 here: https://github.com/LibrePDF/OpenPDF/releases/tag/3.0.2 Other versions
-
-- [OpenPDF 1.4.2 (release 2024-03-30)](https://github.com/LibrePDF/OpenPDF/releases/tag/1.4.2)
-- [Previous releases](https://github.com/LibrePDF/OpenPDF/releases)
-
 ## Features
 
 The features of OpenPDF include:
@@ -43,6 +36,12 @@ The features of OpenPDF include:
 ![Java 25](https://img.shields.io/badge/Java-25-blue?logo=java&logoColor=blue)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Supported-ADD8E6?logo=kotlin&logoColor=white)](https://github.com/LibrePDF/OpenPDF/tree/master/openpdf-kotlin)
 
+## Get OpenPDF
+
+Get the [latest version of OpenPDF](https://github.com/LibrePDF/OpenPDF/releases/).
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.librepdf/openpdf.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/com.github.librepdf/openpdf)
+
 ## Use OpenPDF as Maven dependency
 
 Add this to your pom.xml file to use the latest version of OpenPDF:
@@ -52,7 +51,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>3.0.1</version>
+  <version>3.0.3</version>
 </dependency>
 ```
 
