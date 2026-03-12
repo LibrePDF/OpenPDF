@@ -70,6 +70,7 @@
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
+    <maven.enforcer.plugin.version>3.6.2</maven.enforcer.plugin.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
@@ -248,6 +249,38 @@
             <arg>-Xlint:unchecked</arg>
           </compilerArgs>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven.enforcer.plugin.version}</version>
+                <executions>
+          <execution>
+            <id>enforce-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banDynamicVersions>
+                  <allowSnapshots>true</allowSnapshots>
+                </banDynamicVersions>
+                <banDuplicatePomDependencyVersions/>
+                <requireMavenVersion>
+                  <version>3.9.0</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>${java.version}}</version>
+                </requireJavaVersion>
+                <requireReleaseDeps>
+                  <onlyWhenRelease>true</onlyWhenRelease>
+                  <message>Do not use SNAPSHOT dependencies for release version</message>
+                </requireReleaseDeps>
+                <requireSameVersions/>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
