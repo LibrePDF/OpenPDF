@@ -33,12 +33,18 @@ public class DefaultLineBreakingStrategy implements LineBreakingStrategy {
         return new DefaultBreakPointsProvider(iterator);
     }
 
-    private record DefaultBreakPointsProvider(BreakIterator iterator) implements BreakPointsProvider {
-        @Override
-            public BreakPoint next() {
-                int next = iterator.next();
-                if (next < 0) return BreakPoint.getDonePoint();
-                return new BreakPoint(next);
-            }
+    private static final class DefaultBreakPointsProvider implements BreakPointsProvider {
+        private final BreakIterator iterator;
+
+        DefaultBreakPointsProvider(BreakIterator iterator) {
+            this.iterator = iterator;
         }
+
+        @Override
+        public BreakPoint next() {
+            int next = iterator.next();
+            if (next < 0) return BreakPoint.getDonePoint();
+            return new BreakPoint(next);
+        }
+    }
 }

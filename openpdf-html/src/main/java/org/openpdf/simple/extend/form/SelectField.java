@@ -213,7 +213,21 @@ class SelectField extends FormField {
      * The indent property was added to support indentation of items as
      * children below headings.
      */
-    private record NameValuePair(String name, String value, int indent) {
+    private static final class NameValuePair {
+        final String name;
+        final String value;
+        final int indent;
+
+        NameValuePair(String name, String value, int indent) {
+            this.name = name;
+            this.value = value;
+            this.indent = indent;
+        }
+
+        String name() { return name; }
+        String value() { return value; }
+        int indent() { return indent; }
+
         @Override
         public String toString() {
             StringBuilder txt = new StringBuilder(name);

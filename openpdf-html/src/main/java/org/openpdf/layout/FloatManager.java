@@ -420,10 +420,33 @@ public class FloatManager {
         performFloatOperation(op, getFloats(RIGHT));
     }
 
-    private record BoxOffset(BlockBox box, int x, int y) {
+    private static final class BoxOffset {
+        final BlockBox box;
+        final int x;
+        final int y;
+
+        BoxOffset(BlockBox box, int x, int y) {
+            this.box = box;
+            this.x = x;
+            this.y = y;
+        }
+
+        BlockBox box() { return box; }
+        int x() { return x; }
+        int y() { return y; }
     }
 
-    private record BoxDistance(@Nullable BlockBox box, int distance) {
+    private static final class BoxDistance {
+        final @Nullable BlockBox box;
+        final int distance;
+
+        BoxDistance(@Nullable BlockBox box, int distance) {
+            this.box = box;
+            this.distance = distance;
+        }
+
+        @Nullable BlockBox box() { return box; }
+        int distance() { return distance; }
     }
 
     public interface FloatOperation {

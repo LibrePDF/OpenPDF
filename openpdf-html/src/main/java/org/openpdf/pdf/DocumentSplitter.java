@@ -289,6 +289,16 @@ public class DocumentSplitter implements ContentHandler {
         }
     }
 
-    private record ProcessingInstruction(String target, String data) {
+    private static final class ProcessingInstruction {
+        final String target;
+        final String data;
+
+        ProcessingInstruction(String target, String data) {
+            this.target = target;
+            this.data = data;
+        }
+
+        String target() { return target; }
+        String data() { return data; }
     }
 }

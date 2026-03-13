@@ -12,7 +12,7 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
- *  Utility class for executing collections of tasks concurrently using Java 21 virtual threads.
+ *  Utility class for executing collections of tasks concurrently using a cached thread pool.
  */
 public final class PdfBatch {
     private PdfBatch() {}
@@ -35,7 +35,8 @@ public final class PdfBatch {
         var result = new BatchResult<T>();
         if (tasks.isEmpty()) return result;
 
-        try (ExecutorService exec = Executors.newVirtualThreadPerTaskExecutor()) {
+        ExecutorService exec = Executors.newCachedThreadPool();
+        try {
             List<Future<T>> futures = tasks.stream().map(exec::submit).toList();
             for (Future<T> f : futures) {
                 try {
@@ -52,6 +53,8 @@ public final class PdfBatch {
                     if (onFailure != null) onFailure.accept(ie);
                 }
             }
+        } finally {
+            exec.shutdown();
         }
         return result;
 

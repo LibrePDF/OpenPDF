@@ -800,20 +800,40 @@ public class InlineBoxing {
         }
     }
 
-    private record StaticFloatDistances(int leftFloatDistance, int rightFloatDistance) implements FloatDistances {
-        private StaticFloatDistances(LayoutContext c, LineBox current, int maxAvailableWidth) {
+    private static final class StaticFloatDistances implements FloatDistances {
+        private final int leftFloatDistance;
+        private final int rightFloatDistance;
+
+        private StaticFloatDistances(int leftFloatDistance, int rightFloatDistance) {
+            this.leftFloatDistance = leftFloatDistance;
+            this.rightFloatDistance = rightFloatDistance;
+        }
+
+        StaticFloatDistances(LayoutContext c, LineBox current, int maxAvailableWidth) {
             this(
                     c.getBlockFormattingContext().getLeftFloatDistance(c, current, maxAvailableWidth),
                     c.getBlockFormattingContext().getRightFloatDistance(c, current, maxAvailableWidth)
             );
         }
+
+        @Override
+        public int leftFloatDistance() { return leftFloatDistance; }
+
+        @Override
+        public int rightFloatDistance() { return rightFloatDistance; }
     }
 
-    private record DynamicFloatDistances(
-        LayoutContext c,
-        LineBox current,
-        int maxAvailableWidth
-    ) implements FloatDistances {
+    private static final class DynamicFloatDistances implements FloatDistances {
+        private final LayoutContext c;
+        private final LineBox current;
+        private final int maxAvailableWidth;
+
+        DynamicFloatDistances(LayoutContext c, LineBox current, int maxAvailableWidth) {
+            this.c = c;
+            this.current = current;
+            this.maxAvailableWidth = maxAvailableWidth;
+        }
+
         @Override
         public int leftFloatDistance() {
             return c.getBlockFormattingContext().getLeftFloatDistance(c, current, maxAvailableWidth);

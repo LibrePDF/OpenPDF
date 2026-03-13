@@ -45,13 +45,47 @@ public class BorderPropertySet extends RectPropertySet {
     private static final Colors NO_COLORS = new Colors(TRANSPARENT, TRANSPARENT, TRANSPARENT, TRANSPARENT);
     public static final BorderPropertySet EMPTY_BORDER = new BorderPropertySet(0.0f, 0.0f, 0.0f, 0.0f, NO_STYLES, NO_CORNERS, NO_COLORS);
 
-    private record Styles(@Nullable IdentValue top, @Nullable IdentValue right, @Nullable IdentValue bottom, @Nullable IdentValue left) {
-        private boolean hasHidden() {
+    private static final class Styles {
+        final @Nullable IdentValue top;
+        final @Nullable IdentValue right;
+        final @Nullable IdentValue bottom;
+        final @Nullable IdentValue left;
+
+        Styles(@Nullable IdentValue top, @Nullable IdentValue right, @Nullable IdentValue bottom, @Nullable IdentValue left) {
+            this.top = top;
+            this.right = right;
+            this.bottom = bottom;
+            this.left = left;
+        }
+
+        @Nullable IdentValue top() { return top; }
+        @Nullable IdentValue right() { return right; }
+        @Nullable IdentValue bottom() { return bottom; }
+        @Nullable IdentValue left() { return left; }
+
+        boolean hasHidden() {
             return top == HIDDEN || right == HIDDEN || bottom == HIDDEN || left == HIDDEN;
         }
     }
 
-    private record Colors(FSColor top, FSColor right, FSColor bottom, FSColor left) {
+    private static final class Colors {
+        final FSColor top;
+        final FSColor right;
+        final FSColor bottom;
+        final FSColor left;
+
+        Colors(FSColor top, FSColor right, FSColor bottom, FSColor left) {
+            this.top = top;
+            this.right = right;
+            this.bottom = bottom;
+            this.left = left;
+        }
+
+        FSColor top() { return top; }
+        FSColor right() { return right; }
+        FSColor bottom() { return bottom; }
+        FSColor left() { return left; }
+
         public Colors lighten() {
             return new Colors(
                     top.lightenColor(),
@@ -70,8 +104,24 @@ public class BorderPropertySet extends RectPropertySet {
         }
     }
 
-    private record Corners(BorderRadiusCorner topLeft, BorderRadiusCorner topRight,
-                           BorderRadiusCorner bottomRight, BorderRadiusCorner bottomLeft) {
+    private static final class Corners {
+        final BorderRadiusCorner topLeft;
+        final BorderRadiusCorner topRight;
+        final BorderRadiusCorner bottomRight;
+        final BorderRadiusCorner bottomLeft;
+
+        Corners(BorderRadiusCorner topLeft, BorderRadiusCorner topRight,
+                BorderRadiusCorner bottomRight, BorderRadiusCorner bottomLeft) {
+            this.topLeft = topLeft;
+            this.topRight = topRight;
+            this.bottomRight = bottomRight;
+            this.bottomLeft = bottomLeft;
+        }
+
+        BorderRadiusCorner topLeft() { return topLeft; }
+        BorderRadiusCorner topRight() { return topRight; }
+        BorderRadiusCorner bottomRight() { return bottomRight; }
+        BorderRadiusCorner bottomLeft() { return bottomLeft; }
     }
 
     private final Styles styles;
