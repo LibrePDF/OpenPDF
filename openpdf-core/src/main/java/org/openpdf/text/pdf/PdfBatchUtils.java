@@ -76,21 +76,159 @@ public final class PdfBatchUtils {
 
     private PdfBatchUtils() {}
 
-    // ------------------------- Common job records -------------------------
+    // ------------------------- Common job classes -------------------------
 
     /** Merge several PDFs into one. */
-    public record MergeJob(List<Path> inputs, Path output) {}
+    public static final class MergeJob {
+        public final List<Path> inputs;
+        public final Path output;
+
+        public MergeJob(List<Path> inputs, Path output) {
+            this.inputs = inputs;
+            this.output = output;
+        }
+
+        public List<Path> inputs() { return inputs; }
+        public Path output() { return output; }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof MergeJob that)) return false;
+            return Objects.equals(inputs, that.inputs) && Objects.equals(output, that.output);
+        }
+
+        @Override
+        public int hashCode() { return Objects.hash(inputs, output); }
+
+        @Override
+        public String toString() { return "MergeJob[inputs=" + inputs + ", output=" + output + "]"; }
+    }
 
     /** Add a semi-transparent text watermark to all pages. */
-    public record WatermarkJob(Path input, Path output, String text, float fontSize, float opacity) {}
+    public static final class WatermarkJob {
+        public final Path input;
+        public final Path output;
+        public final String text;
+        public final float fontSize;
+        public final float opacity;
+
+        public WatermarkJob(Path input, Path output, String text, float fontSize, float opacity) {
+            this.input = input;
+            this.output = output;
+            this.text = text;
+            this.fontSize = fontSize;
+            this.opacity = opacity;
+        }
+
+        public Path input() { return input; }
+        public Path output() { return output; }
+        public String text() { return text; }
+        public float fontSize() { return fontSize; }
+        public float opacity() { return opacity; }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof WatermarkJob that)) return false;
+            return Float.compare(fontSize, that.fontSize) == 0
+                    && Float.compare(opacity, that.opacity) == 0
+                    && Objects.equals(input, that.input)
+                    && Objects.equals(output, that.output)
+                    && Objects.equals(text, that.text);
+        }
+
+        @Override
+        public int hashCode() { return Objects.hash(input, output, text, fontSize, opacity); }
+
+        @Override
+        public String toString() {
+            return "WatermarkJob[input=" + input + ", output=" + output + ", text=" + text
+                    + ", fontSize=" + fontSize + ", opacity=" + opacity + "]";
+        }
+    }
 
     /** Encrypt a PDF with given passwords and permissions. */
-    public record EncryptJob(Path input, Path output,
-                             String userPassword, String ownerPassword,
-                             int permissions, int encryptionType) {}
+    public static final class EncryptJob {
+        public final Path input;
+        public final Path output;
+        public final String userPassword;
+        public final String ownerPassword;
+        public final int permissions;
+        public final int encryptionType;
+
+        public EncryptJob(Path input, Path output,
+                          String userPassword, String ownerPassword,
+                          int permissions, int encryptionType) {
+            this.input = input;
+            this.output = output;
+            this.userPassword = userPassword;
+            this.ownerPassword = ownerPassword;
+            this.permissions = permissions;
+            this.encryptionType = encryptionType;
+        }
+
+        public Path input() { return input; }
+        public Path output() { return output; }
+        public String userPassword() { return userPassword; }
+        public String ownerPassword() { return ownerPassword; }
+        public int permissions() { return permissions; }
+        public int encryptionType() { return encryptionType; }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof EncryptJob that)) return false;
+            return permissions == that.permissions && encryptionType == that.encryptionType
+                    && Objects.equals(input, that.input) && Objects.equals(output, that.output)
+                    && Objects.equals(userPassword, that.userPassword)
+                    && Objects.equals(ownerPassword, that.ownerPassword);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(input, output, userPassword, ownerPassword, permissions, encryptionType);
+        }
+
+        @Override
+        public String toString() {
+            return "EncryptJob[input=" + input + ", output=" + output + ", permissions=" + permissions
+                    + ", encryptionType=" + encryptionType + "]";
+        }
+    }
 
     /** Split one PDF into per-page PDFs in the given directory (files will be named baseName_pageX.pdf). */
-    public record SplitJob(Path input, Path outputDir, String baseName) {}
+    public static final class SplitJob {
+        public final Path input;
+        public final Path outputDir;
+        public final String baseName;
+
+        public SplitJob(Path input, Path outputDir, String baseName) {
+            this.input = input;
+            this.outputDir = outputDir;
+            this.baseName = baseName;
+        }
+
+        public Path input() { return input; }
+        public Path outputDir() { return outputDir; }
+        public String baseName() { return baseName; }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof SplitJob that)) return false;
+            return Objects.equals(input, that.input) && Objects.equals(outputDir, that.outputDir)
+                    && Objects.equals(baseName, that.baseName);
+        }
+
+        @Override
+        public int hashCode() { return Objects.hash(input, outputDir, baseName); }
+
+        @Override
+        public String toString() {
+            return "SplitJob[input=" + input + ", outputDir=" + outputDir + ", baseName=" + baseName + "]";
+        }
+    }
 
 
     // ------------------------- Merge -------------------------

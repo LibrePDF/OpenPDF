@@ -15,7 +15,18 @@ public class BorderRadiusCorner {
 
     public static final BorderRadiusCorner UNDEFINED = new BorderRadiusCorner(0, 0);
 
-    private record Length(float value, boolean percent) {}
+    private static final class Length {
+        final float value;
+        final boolean percent;
+
+        Length(float value, boolean percent) {
+            this.value = value;
+            this.percent = percent;
+        }
+
+        float value() { return value; }
+        boolean percent() { return percent; }
+    }
 
     private final Length _left;
     private final Length _right;

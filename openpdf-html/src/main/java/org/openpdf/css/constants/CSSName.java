@@ -1863,6 +1863,22 @@ public final class CSSName implements Comparable<CSSName> {
         return FS_ID;
     }
 
-    public record CSSSideProperties(CSSName top, CSSName right, CSSName bottom, CSSName left) {
+    public static final class CSSSideProperties {
+        private final CSSName top;
+        private final CSSName right;
+        private final CSSName bottom;
+        private final CSSName left;
+
+        public CSSSideProperties(CSSName top, CSSName right, CSSName bottom, CSSName left) {
+            this.top = top;
+            this.right = right;
+            this.bottom = bottom;
+            this.left = left;
+        }
+
+        public CSSName top() { return top; }
+        public CSSName right() { return right; }
+        public CSSName bottom() { return bottom; }
+        public CSSName left() { return left; }
     }
 }

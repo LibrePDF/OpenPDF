@@ -911,7 +911,7 @@ public abstract class PdfContentStreamHandler {
             PdfContentParser pdfContentParser = new PdfContentParser(new PRTokeniser(contentBytes));
             List<PdfObject> operands = new ArrayList<>();
             while (!pdfContentParser.parse(operands).isEmpty()) {
-                PdfLiteral operator = (PdfLiteral) operands.getLast();
+                PdfLiteral operator = (PdfLiteral) operands.get(operands.size() - 1);
                 invokeOperator(operator, operands, resources);
             }
         } catch (Exception e) {
@@ -971,7 +971,7 @@ public abstract class PdfContentStreamHandler {
 
         @Override
         public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
-            PdfObject firstOperand = operands.getFirst();
+            PdfObject firstOperand = operands.get(0);
             if (firstOperand instanceof PdfName) {
                 PdfName name = (PdfName) firstOperand;
                 PdfDictionary dictionary = resources.getAsDict(PdfName.XOBJECT);

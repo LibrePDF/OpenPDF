@@ -223,7 +223,7 @@ public class PdfTextLocator {
             PdfContentParser ps = new PdfContentParser(new PRTokeniser(contentBytes));
             List<PdfObject> operands = new ArrayList<>();
             while (!ps.parse(operands).isEmpty()) {
-                PdfLiteral operator = (PdfLiteral) operands.getLast();
+                PdfLiteral operator = (PdfLiteral) operands.get(operands.size() - 1);
                 handler.invokeOperator(operator, operands, resources);
             }
         } catch (Exception e) {

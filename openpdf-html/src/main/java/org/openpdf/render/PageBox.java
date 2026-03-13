@@ -433,10 +433,30 @@ public class PageBox {
         }
     }
 
-    private record PageDimensions(int width, int height) {
+    private static final class PageDimensions {
+        final int width;
+        final int height;
+
+        PageDimensions(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
+
+        int width() { return width; }
+        int height() { return height; }
     }
 
-    private record MarginAreaContainer(MarginArea area, TableBox table) {
+    private static final class MarginAreaContainer {
+        final MarginArea area;
+        final TableBox table;
+
+        MarginAreaContainer(MarginArea area, TableBox table) {
+            this.area = area;
+            this.table = table;
+        }
+
+        MarginArea area() { return area; }
+        TableBox table() { return table; }
     }
 
     private abstract static sealed class MarginArea {

@@ -1,10 +1,39 @@
 package org.openpdf.css.parser;
 
-public record HSBColor(
-        float hue,
-        float saturation,
-        float brightness
-) {
+import java.util.Objects;
+
+public final class HSBColor {
+    private final float hue;
+    private final float saturation;
+    private final float brightness;
+
+    public HSBColor(float hue, float saturation, float brightness) {
+        this.hue = hue;
+        this.saturation = saturation;
+        this.brightness = brightness;
+    }
+
+    public float hue() { return hue; }
+    public float saturation() { return saturation; }
+    public float brightness() { return brightness; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HSBColor that)) return false;
+        return Float.compare(hue, that.hue) == 0
+                && Float.compare(saturation, that.saturation) == 0
+                && Float.compare(brightness, that.brightness) == 0;
+    }
+
+    @Override
+    public int hashCode() { return Objects.hash(hue, saturation, brightness); }
+
+    @Override
+    public String toString() {
+        return "HSBColor[hue=" + hue + ", saturation=" + saturation + ", brightness=" + brightness + "]";
+    }
+
     // Taken from java.awt.Color to avoid dependency on it
     public FSRGBColor toRGB() {
         int r = 0, g = 0, b = 0;

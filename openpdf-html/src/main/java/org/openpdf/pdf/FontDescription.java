@@ -89,12 +89,26 @@ public class FontDescription {
         return String.format("Font %s:%s", _font.getPostscriptFontName(), getWeight());
     }
 
-    public record Decorations(
-            int weight,
-            float yStrikeoutSize,
-            float yStrikeoutPosition,
-            float underlinePosition,
-            float underlineThickness
-    ) {
+    public static final class Decorations {
+        private final int weight;
+        private final float yStrikeoutSize;
+        private final float yStrikeoutPosition;
+        private final float underlinePosition;
+        private final float underlineThickness;
+
+        public Decorations(int weight, float yStrikeoutSize, float yStrikeoutPosition,
+                           float underlinePosition, float underlineThickness) {
+            this.weight = weight;
+            this.yStrikeoutSize = yStrikeoutSize;
+            this.yStrikeoutPosition = yStrikeoutPosition;
+            this.underlinePosition = underlinePosition;
+            this.underlineThickness = underlineThickness;
+        }
+
+        public int weight() { return weight; }
+        public float yStrikeoutSize() { return yStrikeoutSize; }
+        public float yStrikeoutPosition() { return yStrikeoutPosition; }
+        public float underlinePosition() { return underlinePosition; }
+        public float underlineThickness() { return underlineThickness; }
     }
 }

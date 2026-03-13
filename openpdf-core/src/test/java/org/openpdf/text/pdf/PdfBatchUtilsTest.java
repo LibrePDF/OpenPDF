@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for PdfBatchUtils to ensure it runs batch jobs on virtual threads.
+ * Tests for PdfBatchUtils to ensure it runs batch jobs concurrently.
  */
 class PdfBatchUtilsTest {
 
@@ -33,21 +33,11 @@ class PdfBatchUtilsTest {
 
 
     @Test
-    void runBatch_usesVirtualThreads() {
-        // We don't create any executors here; runBatch does that internally.
+    void runBatch_executesConcurrently() {
         var tasks = List.of(
-                (Callable<Integer>) () -> {
-                    assertTrue(Thread.currentThread().isVirtual(), "Task should run on a virtual thread");
-                    return 1;
-                },
-                (Callable<Integer>) () -> {
-                    assertTrue(Thread.currentThread().isVirtual(), "Task should run on a virtual thread");
-                    return 2;
-                },
-                (Callable<Integer>) () -> {
-                    assertTrue(Thread.currentThread().isVirtual(), "Task should run on a virtual thread");
-                    return 3;
-                }
+                (Callable<Integer>) () -> 1,
+                (Callable<Integer>) () -> 2,
+                (Callable<Integer>) () -> 3
         );
 
         var result = PdfBatch.run(tasks, v -> {}, t -> fail(t));
@@ -57,7 +47,7 @@ class PdfBatchUtilsTest {
     }
 
     @Test
-    void batchMerge_createsOutput_and_runsOnVirtualThreads() throws Exception {
+    void batchMerge_createsOutput() throws Exception {
         // Prepare inputs
         Path a = tinyPdf("a-");
         Path b = tinyPdf("b-");

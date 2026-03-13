@@ -194,7 +194,27 @@ public class ImageResourceLoader {
         }
     }
 
-    private record CacheKey(String uri, int width, int height) {
+    private static final class CacheKey {
+        final String uri;
+        final int width;
+        final int height;
+
+        CacheKey(String uri, int width, int height) {
+            this.uri = uri;
+            this.width = width;
+            this.height = height;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof CacheKey that)) return false;
+            return width == that.width && height == that.height
+                    && java.util.Objects.equals(uri, that.uri);
+        }
+
+        @Override
+        public int hashCode() { return java.util.Objects.hash(uri, width, height); }
     }
 }
 

@@ -19,5 +19,33 @@
  */
 package org.openpdf.render;
 
-public record JustificationInfo(float nonSpaceAdjust, float spaceAdjust) {
+import java.util.Objects;
+
+public final class JustificationInfo {
+    private final float nonSpaceAdjust;
+    private final float spaceAdjust;
+
+    public JustificationInfo(float nonSpaceAdjust, float spaceAdjust) {
+        this.nonSpaceAdjust = nonSpaceAdjust;
+        this.spaceAdjust = spaceAdjust;
+    }
+
+    public float nonSpaceAdjust() { return nonSpaceAdjust; }
+    public float spaceAdjust() { return spaceAdjust; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof JustificationInfo that)) return false;
+        return Float.compare(nonSpaceAdjust, that.nonSpaceAdjust) == 0
+                && Float.compare(spaceAdjust, that.spaceAdjust) == 0;
+    }
+
+    @Override
+    public int hashCode() { return Objects.hash(nonSpaceAdjust, spaceAdjust); }
+
+    @Override
+    public String toString() {
+        return "JustificationInfo[nonSpaceAdjust=" + nonSpaceAdjust + ", spaceAdjust=" + spaceAdjust + "]";
+    }
 }

@@ -136,22 +136,79 @@ public final class HtmlToPdfBatchUtils {
 
 
 
-    // ------------------------- Job records -------------------------
+    // ------------------------- Job classes -------------------------
 
     /** Render raw HTML string to PDF. */
-    public record HtmlStringJob(String html, String baseUri, Path output,
-                                Optional<String> injectCss,
-                                Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
+    public static final class HtmlStringJob {
+        public final String html;
+        public final String baseUri;
+        public final Path output;
+        public final Optional<String> injectCss;
+        public final Optional<Consumer<ITextRenderer>> rendererCustomizer;
+
+        public HtmlStringJob(String html, String baseUri, Path output,
+                             Optional<String> injectCss,
+                             Optional<Consumer<ITextRenderer>> rendererCustomizer) {
+            this.html = html;
+            this.baseUri = baseUri;
+            this.output = output;
+            this.injectCss = injectCss;
+            this.rendererCustomizer = rendererCustomizer;
+        }
+
+        public String html() { return html; }
+        public String baseUri() { return baseUri; }
+        public Path output() { return output; }
+        public Optional<String> injectCss() { return injectCss; }
+        public Optional<Consumer<ITextRenderer>> rendererCustomizer() { return rendererCustomizer; }
+    }
 
     /** Render an HTML file (and its relative assets) to PDF. */
-    public record HtmlFileJob(Path htmlFile, Path baseDir, Path output,
-                              Optional<String> injectCss,
-                              Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
+    public static final class HtmlFileJob {
+        public final Path htmlFile;
+        public final Path baseDir;
+        public final Path output;
+        public final Optional<String> injectCss;
+        public final Optional<Consumer<ITextRenderer>> rendererCustomizer;
+
+        public HtmlFileJob(Path htmlFile, Path baseDir, Path output,
+                           Optional<String> injectCss,
+                           Optional<Consumer<ITextRenderer>> rendererCustomizer) {
+            this.htmlFile = htmlFile;
+            this.baseDir = baseDir;
+            this.output = output;
+            this.injectCss = injectCss;
+            this.rendererCustomizer = rendererCustomizer;
+        }
+
+        public Path htmlFile() { return htmlFile; }
+        public Path baseDir() { return baseDir; }
+        public Path output() { return output; }
+        public Optional<String> injectCss() { return injectCss; }
+        public Optional<Consumer<ITextRenderer>> rendererCustomizer() { return rendererCustomizer; }
+    }
 
     /** Render a URL to PDF. */
-    public record UrlJob(String url, Path output,
-                         Optional<String> injectCss,
-                         Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
+    public static final class UrlJob {
+        public final String url;
+        public final Path output;
+        public final Optional<String> injectCss;
+        public final Optional<Consumer<ITextRenderer>> rendererCustomizer;
+
+        public UrlJob(String url, Path output,
+                      Optional<String> injectCss,
+                      Optional<Consumer<ITextRenderer>> rendererCustomizer) {
+            this.url = url;
+            this.output = output;
+            this.injectCss = injectCss;
+            this.rendererCustomizer = rendererCustomizer;
+        }
+
+        public String url() { return url; }
+        public Path output() { return output; }
+        public Optional<String> injectCss() { return injectCss; }
+        public Optional<Consumer<ITextRenderer>> rendererCustomizer() { return rendererCustomizer; }
+    }
 
     // ------------------------- Single operations -------------------------
 

@@ -284,6 +284,28 @@ public class SwingReplacedElementFactory implements ReplacedElementFactory {
         this.formSubmissionListener = fsl;
     }
 
-    private record CacheKey(Element elem, String uri, int width, int height) {
+    private static final class CacheKey {
+        final Element elem;
+        final String uri;
+        final int width;
+        final int height;
+
+        CacheKey(Element elem, String uri, int width, int height) {
+            this.elem = elem;
+            this.uri = uri;
+            this.width = width;
+            this.height = height;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof CacheKey that)) return false;
+            return width == that.width && height == that.height
+                    && java.util.Objects.equals(elem, that.elem) && java.util.Objects.equals(uri, that.uri);
+        }
+
+        @Override
+        public int hashCode() { return java.util.Objects.hash(elem, uri, width, height); }
     }
 }

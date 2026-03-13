@@ -10,38 +10,35 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for Html2PdfBatchUtils to ensure it runs batch jobs on virtual threads.
+ * Tests for Html2PdfBatchUtils to ensure it runs batch jobs concurrently.
  */
 class HtmlToPdfBatchUtilsTest {
 
     @Test
-    void testBatchHtmlStringsRunsOnVirtualThreads() throws Exception {
+    void testBatchHtmlStrings() throws Exception {
         String html = "<html><body><h1>Hello PDF Batch test</h1></body></html>";
 
         Path out1 = Files.createTempFile("vt-batch-1-", ".pdf");
         Path out2 = Files.createTempFile("vt-batch-2-", ".pdf");
         Path out3 = Files.createTempFile("vt-batch-3-", ".pdf");
 
-        // Assert virtual-thread execution from inside each batch task.
-        var vtAssertCustomizer = HtmlToPdfBatchUtils.setDpi(96).andThen(renderer ->
-                assertTrue(Thread.currentThread().isVirtual(), "Batch task should run on a virtual thread")
-        );
+        var customizer = HtmlToPdfBatchUtils.setDpi(96);
 
         var jobs = List.of(
                 new HtmlToPdfBatchUtils.HtmlStringJob(
                         html, null, out1,
                         Optional.of(HtmlToPdfBatchUtils.CSS_A4_20MM),
-                        Optional.of(vtAssertCustomizer)
+                        Optional.of(customizer)
                 ),
                 new HtmlToPdfBatchUtils.HtmlStringJob(
                         html, null, out2,
                         Optional.of(HtmlToPdfBatchUtils.CSS_A4_20MM),
-                        Optional.of(vtAssertCustomizer)
+                        Optional.of(customizer)
                 ),
                 new HtmlToPdfBatchUtils.HtmlStringJob(
                         html, null, out3,
                         Optional.of(HtmlToPdfBatchUtils.CSS_A4_20MM),
-                        Optional.of(vtAssertCustomizer)
+                        Optional.of(customizer)
                 )
         );
 
