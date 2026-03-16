@@ -6,7 +6,6 @@ import org.openpdf.text.Document;
 import org.openpdf.text.Font;
 import org.openpdf.text.PageSize;
 import org.openpdf.text.Paragraph;
-import org.openpdf.text.pdf.BaseFont;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
