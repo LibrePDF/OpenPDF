@@ -21,10 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.openpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
 class StandardFontsTest {

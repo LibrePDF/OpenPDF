@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.openpdf.text.Document;
 import org.openpdf.text.DocumentException;
 import org.openpdf.text.PageSize;
-import org.openpdf.text.Phrase;
 import org.openpdf.text.pdf.internal.PdfXConformanceImp;
 import org.openpdf.text.xml.xmp.PdfA1Schema;
 import org.openpdf.text.xml.xmp.XmpWriter;
