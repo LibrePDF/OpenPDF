@@ -28,7 +28,11 @@ import org.openpdf.text.pdf.PdfWriter;
 public class GlyphLayoutSMP {
 
     private static final String TEXT_INTRO =
-            "Test of Letters from the Supplementary Multilingual Plane\n\n" + "Mathematical Alphanumeric Symbols\n";
+            """
+            Test of Letters from the Supplementary Multilingual Plane
+            Mathematical Alphanumeric Symbols
+
+            """;
 
     private static final int[] MATHEMATICAL_CODEPOINTS = new int[]{0x1D504, 0x1D505, 0x212D, 0x1D507, 0x1D508, 0x1D509,
             0x1D50A, 0x210C, 0x2111, 0x1D50D, 0x1D50E, 0x1D50F, 0x1D510, 0x1D511, 0x1D512, 0x1D513, 0x1D514, 0x211C,

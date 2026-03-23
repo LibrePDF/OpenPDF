@@ -68,6 +68,7 @@ public class RunGlyphLayoutExamplesMultithreading {
             this.example = example;
         }
 
+        @Override
         public void run() {
             try {
                 example.test(getName());
