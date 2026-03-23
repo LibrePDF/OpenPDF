@@ -6,8 +6,10 @@
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * Volker Kunert 2026
  */
-package org.openpdf.examples.fonts;
+package org.openpdf.examples.glyphlayout;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,27 +17,18 @@ import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
-import org.openpdf.text.FontFactory;
-import org.openpdf.text.pdf.BaseFont;
-import org.openpdf.text.pdf.LayoutProcessor;
+import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
  * Test of letters from the supplementary multilingual plane
  *
  * @see <a href="https://unicode.org/charts/PDF/U1D400.pdf">Mathematical Alphanumeric Symbols</a>
- *
- * @deprecated use GlyphLayountManager
  */
-@Deprecated
 public class GlyphLayoutSMP {
 
     private static final String TEXT_INTRO =
-            """
-                    Test of Letters from the Supplementary Multilingual Plane
-                    
-                    Mathematical Alphanumeric Symbols
-                    """;
+            "Test of Letters from the Supplementary Multilingual Plane\n\n" + "Mathematical Alphanumeric Symbols\n";
 
     private static final int[] MATHEMATICAL_CODEPOINTS = new int[]{0x1D504, 0x1D505, 0x212D, 0x1D507, 0x1D508, 0x1D509,
             0x1D50A, 0x210C, 0x2111, 0x1D50D, 0x1D50E, 0x1D50F, 0x1D510, 0x1D511, 0x1D512, 0x1D513, 0x1D514, 0x211C,
@@ -60,34 +53,13 @@ public class GlyphLayoutSMP {
             "A̋" + new String(new int[]{0x1F67C}, 0, 1) + "C̀" + new String(new int[]{0x1F67D}, 0, 1);
 
     /**
-     * Register and get font
-     *
-     * @param path     of font file
-     * @param alias    name
-     * @param fontSize size of font
-     * @return the loaded font
-     */
-    private static Font loadFont(String path, String alias, float fontSize) {
-        FontFactory.register(path, alias);
-        return FontFactory.getFont(alias, BaseFont.IDENTITY_H, fontSize);
-    }
-
-
-    /**
      * Main method
      *
      * @param args -- not used
      */
     public static void main(String[] args) throws Exception {
-
-        test("TestSMP.pdf");
-
-        // Enable the LayoutProcessor with kerning and ligatures
-        LayoutProcessor.enableKernLiga();
         test("GlyphLayoutSMP.pdf");
-        LayoutProcessor.disable();
     }
-
 
     /**
      * Run the test: Print some characters of the supplementary multilingual plane
@@ -97,15 +69,18 @@ public class GlyphLayoutSMP {
     public static void test(String fileName) throws IOException {
 
         float fontSize = 12.0f;
-
+        GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
+        // The  OpenType fonts loaded with glyphLayoutManager.loadFont() are
+        // available for glyph layout. Only these fonts can be used.
         String fontDir = "org/openpdf/examples/fonts/";
-        Font sansFont = loadFont(fontDir + "noto/NotoSans-Regular.ttf", "sans", fontSize);
-        Font sansMonoFont = loadFont(fontDir + "noto/NotoSansMono-Regular.ttf", "sans", fontSize);
+        Font sansFont = glyphLayoutManager.loadFont(fontDir + "noto/NotoSans-Regular.ttf", fontSize);
+        Font sansMonoFont = glyphLayoutManager.loadFont(fontDir + "noto/NotoSansMono-Regular.ttf", fontSize);
         String sansMonoFontName = sansMonoFont.getBaseFont().getPostscriptFontName();
-        Font mathFont = loadFont(fontDir + "noto/NotoSansMath-Regular.ttf", "math", fontSize);
+        Font mathFont = glyphLayoutManager.loadFont(fontDir + "noto/NotoSansMath-Regular.ttf", fontSize);
         String mathFontName = mathFont.getBaseFont().getPostscriptFontName();
 
-        try (Document document = new Document()) {
+        // Process the document with glyphLayoutManager
+        try (Document document = new Document().setGlyphLayoutManager(glyphLayoutManager)) {
             PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(fileName)));
             writer.setInitialLeading(16.0f);
             document.open();

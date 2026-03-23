@@ -24,7 +24,9 @@ import org.openpdf.text.pdf.PdfWriter;
 
 /**
  * Test kerning and ligatures per font
+ * @deprecated use GlyphLayountManager
  */
+@Deprecated
 public class GlyphLayoutDocumentKernLigaPerFont {
 
     public static String TEXT_INTRO =

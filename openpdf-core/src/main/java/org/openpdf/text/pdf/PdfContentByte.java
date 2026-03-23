@@ -1701,7 +1701,10 @@ public class PdfContentByte {
                     MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         }
         BaseFont baseFont = state.fontDetails.getBaseFont();
-        if (LayoutProcessor.supportsFont(baseFont)) {
+        GlyphLayoutManager glyphLayoutManager = writer.getPdfDocument().getGlyphLayoutManager();
+        if(glyphLayoutManager!=null && glyphLayoutManager.supportsFont(baseFont)) {
+            glyphLayoutManager.showText(this, baseFont, state.size, text);
+        } else if (LayoutProcessor.supportsFont(baseFont)) {
             Point2D corr = LayoutProcessor.showText(this, baseFont, state.size, text);
             if (layoutPositionCorrection == null) {
                 layoutPositionCorrection = corr;

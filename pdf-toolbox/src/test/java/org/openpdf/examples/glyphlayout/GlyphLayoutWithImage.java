@@ -6,8 +6,10 @@
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * Volker Kunert 2026
  */
-package org.openpdf.examples.fonts;
+package org.openpdf.examples.glyphlayout;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,33 +17,15 @@ import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
-import org.openpdf.text.FontFactory;
 import org.openpdf.text.Image;
-import org.openpdf.text.pdf.BaseFont;
-import org.openpdf.text.pdf.LayoutProcessor;
+import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
- * Prints characters and sequences of DIN 91379 with correct glyph layout and kerning
- * @deprecated use GlyphLayountManager
+ * Test of glyph layout of some characters and sequences of DIN 91379
+ * with an image
  */
-@Deprecated
-public class GlyphLayoutDocumentWithImage {
-
-
-    /**
-     * Register and get font
-     *
-     * @param path of font file
-     * @param alias name
-     * @param fontSize size of font
-     * @return the loaded font
-     */
-    private static Font loadFont(String path, String alias, float fontSize) {
-        FontFactory.register(path, alias);
-        return FontFactory.getFont(alias, BaseFont.IDENTITY_H, fontSize);
-    }
-
+public class GlyphLayoutWithImage {
 
     /**
      * Main method
@@ -49,29 +33,29 @@ public class GlyphLayoutDocumentWithImage {
      * @param args -- not used
      */
     public static void main(String[] args) throws Exception {
-        test("GlyphLayoutDocumentWithImage.pdf");
+        test("GlyphLayoutWithImage.pdf");
     }
 
-
     /**
-     * Run the test: Print the characters of DIN 91379 in a pdf document
+     * Test of glyph layout of some characters and sequences of DIN 91379
+     * with an image
      *
      * @param fileName Name of output file
      */
     public static void test(String fileName) throws IOException {
 
-        // Enable the LayoutProcessor with kerning and ligatures
-        LayoutProcessor.enableKernLiga();
-
         float fontSize = 16.0f;
+        float fontSizeSmall = 10.0f;
 
-        // The  OpenType fonts loaded with FontFactory.register() are
-        // available for glyph layout.
-        // Only these fonts can be used.
+        GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
+        // The  OpenType fonts loaded with glyphLayoutManager.loadFont() are
+        // available for glyph layout. Only these fonts can be used.
         String fontDir = "org/openpdf/examples/fonts/";
-        Font font = loadFont(fontDir + "noto/NotoSans-Regular.ttf", "sans", fontSize);
+        Font font = glyphLayoutManager.loadFont(fontDir + "noto/NotoSans-Regular.ttf", fontSize);
+        Font fontSmall = glyphLayoutManager.loadFont(fontDir + "noto/NotoSans-Regular.ttf", fontSizeSmall);
 
-        try (Document document = new Document()) {
+        // Process the document with glyphLayoutManager
+        try (Document document = new Document().setGlyphLayoutManager(glyphLayoutManager)) {
             PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(fileName)));
             writer.setInitialLeading(20.0f);
             document.open();
@@ -90,11 +74,10 @@ public class GlyphLayoutDocumentWithImage {
             document.add(new Chunk("C̈C̕C̣C̦C̨̆", font));
             document.add(new Chunk(".\n", font));
 
-            document.add(new Chunk("Ṣ̄ṣ̄Ṭ̄ṭ̄Ạ̈ạ̈Ọ̈ọ̈Ụ̄Ụ̈ụ̄ụ̈", font));
-            document.add(new Chunk("xyz", font));
+            document.add(new Chunk("Ṣ̄ṣ̄Ṭ̄ṭ̄Ạ̈ạ̈Ọ̈ọ̈Ụ̄Ụ̈ụ̄ụ̈", fontSmall));
+            document.add(new Chunk("xyz", fontSmall));
             document.add(new Chunk("j́S̛̄s̛̄K̛", font));
             document.add(new Chunk(".\n", font));
         }
-        LayoutProcessor.disable();
     }
 }
