@@ -761,6 +761,7 @@ public class PdfWriter extends DocWriter implements
             throws DocumentException {
         PdfDocument pdf = new PdfDocument();
         pdf.setTextRenderingOptions(document.getTextRenderingOptions());
+        pdf.setGlyphLayoutManager(document.getGlyphLayoutManager());
         document.addDocListener(pdf);
         PdfWriter writer = new PdfWriter(pdf, os);
         pdf.addWriter(writer);
@@ -781,6 +782,7 @@ public class PdfWriter extends DocWriter implements
             throws DocumentException {
         PdfDocument pdf = new PdfDocument();
         pdf.setTextRenderingOptions(document.getTextRenderingOptions());
+        pdf.setGlyphLayoutManager(document.getGlyphLayoutManager());
         pdf.addDocListener(listener);
         document.addDocListener(pdf);
         PdfWriter writer = new PdfWriter(pdf, os);
@@ -3007,6 +3009,10 @@ public class PdfWriter extends DocWriter implements
      */
     public void setRgbTransparencyBlending(boolean rgbTransparencyBlending) {
         this.rgbTransparencyBlending = rgbTransparencyBlending;
+    }
+
+    public void setGlyphLayoutManager(GlyphLayoutManager glyphLayoutManager) {
+        this.pdf.setGlyphLayoutManager(glyphLayoutManager);
     }
 
     /**

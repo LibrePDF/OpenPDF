@@ -24,7 +24,9 @@ import org.openpdf.text.pdf.PdfWriter;
 
 /**
  * Prints bidirectional text with correct glyph layout, kerning and ligatures globally enabled
+ * @deprecated use GlyphLayountManager
  */
+@Deprecated
 public class GlyphLayoutDocumentBidi {
 
     public static String INTRO_TEXT =

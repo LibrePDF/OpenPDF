@@ -23,7 +23,9 @@ import org.openpdf.text.pdf.PdfStamper;
 
 /**
  * Prints characters and sequences of DIN 91379 with correct glyph layout
+ * @deprecated use GlyphLayountManager
  */
+@Deprecated
 public class GlyphLayoutFormDin91379 {
 
     public static String TEXT_INTRO =
