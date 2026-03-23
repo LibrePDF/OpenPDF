@@ -210,6 +210,7 @@ public class Document implements DocListener {
 
     /**
      * Get the glyphLayoutManager
+     *
      * @return glyphLayoutManager or null
      */
     public GlyphLayoutManager getGlyphLayoutManager() {
@@ -219,6 +220,7 @@ public class Document implements DocListener {
     /**
      * Set the glyphLayoutManager
      * Fluent API: <code>Document document = new Document().setGlyphLayoutManager(glyphLayoutManager);</code>
+     *
      * @param glyphLayoutManager
      * @return
      */

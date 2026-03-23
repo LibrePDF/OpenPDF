@@ -22,6 +22,7 @@ import org.openpdf.text.pdf.PdfWriter;
 
 /**
  * Prints characters and sequences of DIN 91379 with correct glyph layout and kerning
+ *
  * @deprecated use GlyphLayountManager
  */
 @Deprecated
