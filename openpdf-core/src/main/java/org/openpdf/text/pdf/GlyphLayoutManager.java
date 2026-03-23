@@ -256,7 +256,7 @@ public class GlyphLayoutManager {
         if (textAttributes != null) {
             Object runDirection = textAttributes.get(TextAttribute.RUN_DIRECTION);
             if (runDirection != null) {
-                bidiFlags = runDirection == TextAttribute.RUN_DIRECTION_LTR ? java.awt.Font.LAYOUT_LEFT_TO_RIGHT :
+                bidiFlags = runDirection.equals(TextAttribute.RUN_DIRECTION_LTR) ? java.awt.Font.LAYOUT_LEFT_TO_RIGHT :
                         java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
             }
         }

@@ -48,7 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
@@ -259,15 +259,16 @@ public class GlyphLayoutFontManager {
         try {
             File file = new File(filename);
             if (!file.exists() && FontFactory.isRegistered(filename)) {
-                filename = (String) FontFactory.getFontImp().getFontPath(filename);
-                file = new File(filename);
+                String fontPath = (String) FontFactory.getFontImp().getFontPath(filename);
+                file = new File(fontPath);
             }
             if (file.canRead()) {
                 inputStream = Files.newInputStream(file.toPath());
             } else if (filename.startsWith("file:/")
                     || filename.startsWith("https://") || filename.startsWith("jar:")
                     || filename.startsWith("wsjar:")) {
-                inputStream = new URI(filename).toURL().openStream();
+                String encodedFilename = java.net.URLEncoder.encode(filename, StandardCharsets.UTF_8);
+                inputStream = new URI(encodedFilename).toURL().openStream();
             } else if ("-".equals(filename)) {
                 inputStream = System.in;
             } else {
