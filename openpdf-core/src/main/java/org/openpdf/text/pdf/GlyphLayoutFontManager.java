@@ -67,12 +67,6 @@ public class GlyphLayoutFontManager {
     private FontCaching fontCaching = FontCaching.DEFAULT;
 
     /**
-     * Creates a new GlyphLayoutFontManager
-     */
-    public GlyphLayoutFontManager() {
-    }
-
-    /**
      * Creates a bytee array from an input stream
      *
      * @param inputStream the input stream
@@ -86,8 +80,7 @@ public class GlyphLayoutFontManager {
         while ((count = inputStream.read(buffer)) > 0) {
             outputStream.write(buffer, 0, count);
         }
-        byte[] fontBytes = outputStream.toByteArray();
-        return fontBytes;
+        return outputStream.toByteArray();
     }
 
     /**
@@ -157,7 +150,7 @@ public class GlyphLayoutFontManager {
         }
         if (!(name.toLowerCase().endsWith(".ttf")
                 || name.toLowerCase().endsWith(".otf")
-                || name.toLowerCase().indexOf(".ttc,") > 0)) {
+                || name.toLowerCase().contains(".ttc,"))) {
             throw new IllegalArgumentException("Name has to end with '.ttf', 'otf', or '.ttc,[number]'. name=" + name);
         }
 
@@ -225,12 +218,11 @@ public class GlyphLayoutFontManager {
 
     protected boolean isCaching(FontOptions fontOptions) {
         // cached has to be set to 'false', to allow different text attributes for instances of one font
-        boolean caching = switch (fontCaching) {
+        return switch (fontCaching) {
             case DEFAULT -> fontOptions == null && defaultFontOptions.getTextAttributes().isEmpty();
             case ON -> true;
             case OFF -> false;
         };
-        return caching;
     }
 
     protected Map<TextAttribute, Object> getTextAttributes(FontOptions fontOptions) {
@@ -353,13 +345,6 @@ public class GlyphLayoutFontManager {
     public static class FontOptions {
 
         private final Map<TextAttribute, Object> textAttributes = new HashMap<>();
-
-        /**
-         * Creates a new instance
-         */
-        public FontOptions() {
-
-        }
 
         public Map<TextAttribute, Object> getTextAttributes() {
             // always return an unmodifiableMap, so that internal state can not be changed
