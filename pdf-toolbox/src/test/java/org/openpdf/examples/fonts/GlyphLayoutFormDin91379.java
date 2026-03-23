@@ -23,6 +23,7 @@ import org.openpdf.text.pdf.PdfStamper;
 
 /**
  * Prints characters and sequences of DIN 91379 with correct glyph layout
+ *
  * @deprecated use GlyphLayountManager
  */
 @Deprecated

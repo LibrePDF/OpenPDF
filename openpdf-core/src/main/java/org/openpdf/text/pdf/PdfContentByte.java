@@ -1702,7 +1702,7 @@ public class PdfContentByte {
         }
         BaseFont baseFont = state.fontDetails.getBaseFont();
         GlyphLayoutManager glyphLayoutManager = writer.getPdfDocument().getGlyphLayoutManager();
-        if(glyphLayoutManager!=null && glyphLayoutManager.supportsFont(baseFont)) {
+        if (glyphLayoutManager != null && glyphLayoutManager.supportsFont(baseFont)) {
             glyphLayoutManager.showText(this, baseFont, state.size, text);
         } else if (LayoutProcessor.supportsFont(baseFont)) {
             Point2D corr = LayoutProcessor.showText(this, baseFont, state.size, text);

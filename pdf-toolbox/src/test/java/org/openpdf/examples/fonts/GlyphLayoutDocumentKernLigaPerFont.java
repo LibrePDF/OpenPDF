@@ -24,6 +24,7 @@ import org.openpdf.text.pdf.PdfWriter;
 
 /**
  * Test kerning and ligatures per font
+ *
  * @deprecated use GlyphLayountManager
  */
 @Deprecated
