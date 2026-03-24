@@ -68,8 +68,8 @@ public class GlyphLayoutFontManager {
     private FontOptions defaultFontOptions = new FontOptions();
     private FontCaching fontCaching = FontCaching.DEFAULT;
 
-    public static class FontLoadingException extends IOException {
-        FontLoadingException(String s, Exception e) {
+    public static class FontLoadException extends IOException {
+        FontLoadException(String s, Exception e) {
             super(s, e);
         }
 
@@ -144,7 +144,7 @@ public class GlyphLayoutFontManager {
      * @return Loaded OpenPdf font
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize)
-            throws FontLoadingException {
+            throws FontLoadException {
         return loadFont(name, inputStream, fontSize, null);
     }
 
@@ -186,7 +186,7 @@ public class GlyphLayoutFontManager {
             baseFont = BaseFont.createFont(name, BaseFont.IDENTITY_H,
                     BaseFont.EMBEDDED, caching, fontBytes, null, false, false);
         } catch (DocumentException | IOException e) {
-            throw new FontLoadingException("Exception loading baseFont from inputStream for " + name, e);
+            throw new FontLoadException("Exception loading baseFont from inputStream for " + name, e);
         }
 
         font = new Font(baseFont, fontSize);
@@ -199,7 +199,7 @@ public class GlyphLayoutFontManager {
             try {
                 loadAwtFontFromInputStream(textAttributes, inputStream2, baseFont);
             } catch (FontFormatException e) {
-                throw new FontLoadingException("Exception loading AWT font from inputStream for " + name, e);
+                throw new FontLoadException("Exception loading AWT font from inputStream for " + name, e);
             }
         }
         return font;
@@ -212,7 +212,7 @@ public class GlyphLayoutFontManager {
      * @param fontSize font size
      * @return Loaded OpenPdf font
      */
-    public org.openpdf.text.Font loadFont(String path, float fontSize) throws FontLoadingException {
+    public org.openpdf.text.Font loadFont(String path, float fontSize) throws FontLoadException {
         return loadFont(path, fontSize, null);
 
     }
@@ -226,7 +226,7 @@ public class GlyphLayoutFontManager {
      * @return Loaded OpenPdf font
      */
     public org.openpdf.text.Font loadFont(String path, float fontSize, FontOptions fontOptions)
-            throws FontLoadingException {
+            throws FontLoadException {
         // cached has to be set to 'false', to allow different sizes and attributes for instances of one font
         Map<TextAttribute, Object> textAttributes = getTextAttributes(fontOptions);
 
@@ -271,7 +271,7 @@ public class GlyphLayoutFontManager {
         return this;
     }
 
-    protected InputStream getInputStream(String filename) throws FontLoadingException {
+    protected InputStream getInputStream(String filename) throws FontLoadException {
         // getting the inputStream is adapted from org.openpdf.text.pdf.RandomAccessFileOrArray
         InputStream inputStream = null;
         Exception exception = null;
@@ -298,7 +298,7 @@ public class GlyphLayoutFontManager {
             exception = e;
         }
         if (inputStream == null) {
-            throw new FontLoadingException(
+            throw new FontLoadException(
                     MessageLocalization.getComposedMessage("1.not.found.as.file.or.resource", filename), exception);
         }
         return inputStream;
@@ -315,7 +315,7 @@ public class GlyphLayoutFontManager {
      * @throws RuntimeException if font can not be loaded
      */
     protected void loadAwtFont(org.openpdf.text.Font font, String filename,
-            Map<TextAttribute, Object> textAttributes) throws FontLoadingException {
+            Map<TextAttribute, Object> textAttributes) throws FontLoadException {
 
         BaseFont baseFont = font.getBaseFont();
 
@@ -330,7 +330,7 @@ public class GlyphLayoutFontManager {
             try (InputStream inputStream = getInputStream(filename)){
                 loadAwtFontFromInputStream(textAttributes, inputStream, baseFont);
             } catch (IOException | FontFormatException e) {
-                throw new FontLoadingException("Exception loading AWT font from " + filename, e);
+                throw new FontLoadException("Exception loading AWT font from " + filename, e);
             }
         }
     }
@@ -341,7 +341,7 @@ public class GlyphLayoutFontManager {
      * @param textAttributes text attributes
      * @param inputStream input stream
      * @param baseFont base font
-     * @throws FontLoadingException if the font can not be loaded
+     * @throws FontLoadException if the font can not be loaded
      */
     protected void loadAwtFontFromInputStream(Map<TextAttribute, Object> textAttributes, InputStream inputStream,
             BaseFont baseFont) throws FontFormatException, IOException {

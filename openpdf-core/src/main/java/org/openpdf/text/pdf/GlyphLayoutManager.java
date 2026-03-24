@@ -41,17 +41,15 @@
 package org.openpdf.text.pdf;
 
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.Bidi;
 import java.util.Map;
-import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadingException;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
 import org.openpdf.text.pdf.GlyphLayoutFontManager.FontOptions;
 
 /**
@@ -151,7 +149,7 @@ public class GlyphLayoutManager {
      * @return the loaded OpenPdf-Font
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize)
-            throws FontLoadingException {
+            throws FontLoadException {
         return glyphLayoutFontManager.loadFont(name, inputStream, fontSize);
     }
 
@@ -164,7 +162,7 @@ public class GlyphLayoutManager {
      * @return the loaded OpenPdf font
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize,
-            FontOptions fontOptions) throws FontLoadingException {
+            FontOptions fontOptions) throws FontLoadException {
         return glyphLayoutFontManager.loadFont(name, inputStream, fontSize, fontOptions);
     }
 
@@ -175,7 +173,7 @@ public class GlyphLayoutManager {
      * @param fontSize size
      * @return the loaded OpenPdf font
      */
-    public org.openpdf.text.Font loadFont(String path, float fontSize) throws FontLoadingException {
+    public org.openpdf.text.Font loadFont(String path, float fontSize) throws FontLoadException {
         return glyphLayoutFontManager.loadFont(path, fontSize);
     }
 
@@ -188,7 +186,7 @@ public class GlyphLayoutManager {
      * @return the loaded OpenPdf font
      */
     public org.openpdf.text.Font loadFont(String path, float fontSize,
-            FontOptions fontOptions) throws FontLoadingException {
+            FontOptions fontOptions) throws FontLoadException {
         return glyphLayoutFontManager.loadFont(path, fontSize, fontOptions);
     }
 
