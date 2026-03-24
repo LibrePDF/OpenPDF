@@ -41,11 +41,13 @@
 package org.openpdf.text.pdf;
 
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.Bidi;
 import java.util.Map;
@@ -147,7 +149,8 @@ public class GlyphLayoutManager {
      * @param fontSize    Size
      * @return the loaded OpenPdf-Font
      */
-    public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize) {
+    public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize)
+            throws IOException, FontFormatException {
         return glyphLayoutFontManager.loadFont(name, inputStream, fontSize);
     }
 
@@ -160,7 +163,7 @@ public class GlyphLayoutManager {
      * @return the loaded OpenPdf font
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize,
-            FontOptions fontOptions) {
+            FontOptions fontOptions) throws IOException, FontFormatException {
         return glyphLayoutFontManager.loadFont(name, inputStream, fontSize, fontOptions);
     }
 
@@ -333,7 +336,7 @@ public class GlyphLayoutManager {
     }
 
     /**
-     * Inserts begin marked content sequence into the Pdf for ActualText for the given text
+     * Inserts begin marked content sequence into the PDF for ActualText for the given text
      *
      * @param cb   PdfContentByte
      * @param text the given text
@@ -345,7 +348,7 @@ public class GlyphLayoutManager {
     }
 
     /**
-     * Inserts end marked content sequence into the Pdf
+     * Inserts end marked content sequence into the PDF
      *
      * @param cb PdfContentByte
      */

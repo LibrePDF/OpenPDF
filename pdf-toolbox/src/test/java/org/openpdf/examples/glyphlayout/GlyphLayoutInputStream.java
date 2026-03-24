@@ -11,6 +11,7 @@
  */
 package org.openpdf.examples.glyphlayout;
 
+import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -62,7 +63,7 @@ public class GlyphLayoutInputStream {
      *
      * @param fileName   Name of output file
      */
-    public static void test(String fileName) throws IOException {
+    public static void test(String fileName) throws IOException, FontFormatException {
 
         float fontSize = 12.0f;
 
