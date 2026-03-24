@@ -153,7 +153,6 @@ public class PdfString extends PdfObject {
         if (hexWriting) {
             ByteBuffer buf = new ByteBuffer();
             buf.append('<');
-            int len = b.length;
             for (byte b1 : b) {
                 buf.appendHex(b1);
             }

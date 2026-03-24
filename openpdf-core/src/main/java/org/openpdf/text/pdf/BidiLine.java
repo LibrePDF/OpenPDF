@@ -813,7 +813,6 @@ public class BidiLine {
      */
     public float getWidth(int startIdx, int lastIdx) {
         char c = 0;
-        char uniC;
         PdfChunk ck = null;
         float width = 0;
         for (; startIdx <= lastIdx; ++startIdx) {

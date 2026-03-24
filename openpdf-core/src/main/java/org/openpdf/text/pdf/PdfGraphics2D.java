@@ -745,7 +745,6 @@ public class PdfGraphics2D extends Graphics2D {
                 cb.setLiteral("[]0 d\n");
             } else {
                 cb.setLiteral('[');
-                int lim = dash.length;
                 for (float dash1 : dash) {
                     cb.setLiteral(dash1);
                     cb.setLiteral(' ');

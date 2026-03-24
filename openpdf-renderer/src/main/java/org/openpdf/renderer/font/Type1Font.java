@@ -166,7 +166,6 @@ public class Type1Font extends OutlineFont {
         // end at "def"
         PSParser psp = new PSParser(d, i);
         String type = psp.readThing();     // read the key (i is the start of the key)
-        double val;
         type = psp.readThing();
         if (type.equals("StandardEncoding")) {
             byte[] stdenc[] = new byte[FontSupport.standardEncoding.length][];

@@ -163,13 +163,10 @@ public class Jpeg2000 extends Image {
         originalType = ORIGINAL_JPEG2000;
         inp = null;
         try {
-            String errorID;
             if (rawData == null) {
                 inp = url.openStream();
-                errorID = url.toString();
             } else {
                 inp = new java.io.ByteArrayInputStream(rawData);
-                errorID = "Byte array";
             }
             boxLength = cio_read(4);
             if (boxLength == 0x0000000c) {

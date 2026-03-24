@@ -694,7 +694,6 @@ public class PdfCell extends Rectangle {
             return 0;
         }
         float result = 0;
-        int size = lines.size();
         PdfLine line;
         for (Object line1 : lines) {
             line = (PdfLine) line1;

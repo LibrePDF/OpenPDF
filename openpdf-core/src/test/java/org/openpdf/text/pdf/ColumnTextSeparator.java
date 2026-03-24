@@ -48,14 +48,12 @@ public class ColumnTextSeparator {
         ct.setExtraParagraphSpace(6);
         ct.setLeading(0, 1.2f);
         ct.setFollowingIndent(27);
-        int linesWritten = 0;
         int column = 0;
         int status = ColumnText.START_COLUMN;
         while (ColumnText.hasMoreText(status)) {
             ct.setSimpleColumn(COLUMNS[column][0], COLUMNS[column][1], COLUMNS[column][2], COLUMNS[column][3]);
             ct.setYLine(COLUMNS[column][3]);
             status = ct.go();
-            linesWritten += ct.getLinesWritten();
             column = Math.abs(column - 1);
             if (column == 0) {
                 document.newPage();

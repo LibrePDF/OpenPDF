@@ -54,7 +54,6 @@ public class XMLUtil {
      */
     public static String escapeXML(String s, boolean onlyASCII) {
         char[] cc = s.toCharArray();
-        int len = cc.length;
         StringBuilder sb = new StringBuilder();
         for (int c : cc) {
             switch (c) {
