@@ -247,14 +247,4 @@ public final class PdfBatchUtils {
         return PdfWriter.ENCRYPTION_AES_256_V3;
     }
 
-    /** Small utility for closing Closeables, ignoring exceptions. */
-    private static void closeQuietly(Closeable c) {
-        try {
-            if (c != null) {
-                c.close();
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
 }

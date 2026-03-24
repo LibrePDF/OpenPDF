@@ -189,16 +189,6 @@ class Pdf20ExamplesConformanceTest {
         return new String(bytes, start, end - start, StandardCharsets.ISO_8859_1);
     }
 
-    private static int countAscii(byte[] bytes, String token) {
-        int count = 0, idx = 0;
-        byte[] pat = token.getBytes(StandardCharsets.ISO_8859_1);
-        while ((idx = indexOf(bytes, pat, idx)) >= 0) {
-            count++;
-            idx += pat.length;
-        }
-        return count;
-    }
-
     private static int indexOfAscii(byte[] bytes, String token) {
         return indexOf(bytes, token.getBytes(StandardCharsets.ISO_8859_1), 0);
     }

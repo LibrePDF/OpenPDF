@@ -251,10 +251,20 @@ public class PDFFile {
             if (loc < 0) {
                 return PDFObject.nullObj;
             }
-    
+
             // move to where this object is
             this.buf.position(loc);
-    
+
+            // read the object and cache the reference
+            obj= readObject(ref.getID(), ref.getGeneration(), decrypter);
+            int loc = this.objIdx[id].getFilePos();
+            if (loc < 0) {
+                return PDFObject.nullObj;
+            }
+
+            // move to where this object is
+            this.buf.position(loc);
+
             // read the object and cache the reference
             obj= readObject(ref.getID(), ref.getGeneration(), decrypter);
         }
@@ -271,7 +281,7 @@ public class PDFFile {
             if (idx >= n)
                 return PDFObject.nullObj;
             ByteBuffer strm = compObj.getStreamBuffer();
-            
+
             ByteBuffer oldBuf = this.buf;
             this.buf = strm;
             // skip other nums
@@ -285,7 +295,7 @@ public class PDFFile {
             int offset = offsetPO.getIntValue();
             if (objNum != id)
                 return PDFObject.nullObj;
-            
+
             this.buf.position(first+offset);
             obj= readObject(objNum, 0, IdentityDecrypter.getInstance());
             this.buf = oldBuf;
@@ -310,7 +320,7 @@ public class PDFFile {
     public static boolean isWhiteSpace(int c) {
         if (c == ' ' || c == NUL_CHAR || c == '\t' || c == '\n' || c == '\r' || c == FF_CHAR) return true;
         return false;
-        /*switch (c) { 
+        /*switch (c) {
             case NUL_CHAR:  // Null (NULL)
             case '\t':      // Horizontal Tab (HT)
             case '\n':      // Line Feed (LF)
@@ -483,16 +493,6 @@ public class PDFFile {
             // nothing
         }
         return c;
-    }
-
-    /**
-     * Consume all sequential whitespace from the current buffer position,
-     * leaving the buffer positioned at non-whitespace
-     * @param buf the buffer to read from
-     */
-    private void consumeWhitespace(ByteBuffer buf) {
-        nextNonWhitespaceChar(buf);
-        buf.position(buf.position() - 1);
     }
 
     /**
@@ -1216,7 +1216,7 @@ public class PDFFile {
             PDFAuthenticationFailureException,
             EncryptionUnsupportedByProductException,
             EncryptionUnsupportedByPlatformException {
-        
+
         // the table of xrefs
         // objIdx is initialized from readTrailer(), do not overwrite here data from hybrid PDFs
 //        objIdx = new PDFXref[50];
@@ -1239,12 +1239,12 @@ public class PDFFile {
             int l1 = wNums[0].getIntValue();
             int l2 = wNums[1].getIntValue();
             int l3 = wNums[2].getIntValue();
-    
+
             int size = trailerdict.get("Size").getIntValue();
 
             byte[] strmbuf = xrefObj.getStream();
             int strmPos = 0;
-            
+
             PDFObject idxNums = trailerdict.get("Index");
             int[] idxArray;
             if (idxNums == null) {
@@ -1259,34 +1259,34 @@ public class PDFFile {
             }
             int idxLen = idxArray.length;
             int idxPos = 0;
-    
-            
+
+
             while (idxPos<idxLen) {
                 int refstart = idxArray[idxPos++];
                 int reflen = idxArray[idxPos++];
-                
+
                 // extend the objIdx table, if necessary
                 if (refstart + reflen >= this.objIdx.length) {
                     PDFXref nobjIdx[] = new PDFXref[refstart + reflen];
                     System.arraycopy(this.objIdx, 0, nobjIdx, 0, this.objIdx.length);
                     this.objIdx = nobjIdx;
                 }
-    
+
                 // read reference lines
                 for (int refID = refstart; refID < refstart + reflen; refID++) {
-                    
+
                     int type = readNum(strmbuf, strmPos, l1);
                     strmPos += l1;
                     int id = readNum(strmbuf, strmPos, l2);
                     strmPos += l2;
                     int gen = readNum(strmbuf, strmPos, l3);
                     strmPos += l3;
-    
+
                     // ignore this line if the object ID is already defined
                     if (this.objIdx[refID] != null) {
                         continue;
                     }
-    
+
                     // see if it's an active object
                     if (type == 0) { // inactive
                         this.objIdx[refID] = new PDFXref(null);
@@ -1295,10 +1295,10 @@ public class PDFFile {
                     } else { // active compressed
                         this.objIdx[refID] = new PDFXref(id, gen, true);
                     }
-                    
+
                 }
             }
-    
+
             // read the root object location
             if (this.root == null) {
                 this.root = trailerdict.get("Root");
@@ -1733,7 +1733,7 @@ public class PDFFile {
                 }catch (PDFParseException e) {
                     // do nothing, annotations could not be parsed and links will not be displayed.
                 }
-            }            
+            }
         }
         
         Rectangle2D bbox = (trimbox == null ? ((cropbox == null) ? mediabox : cropbox) : trimbox);
