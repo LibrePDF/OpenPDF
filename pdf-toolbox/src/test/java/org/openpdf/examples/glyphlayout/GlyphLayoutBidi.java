@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
-import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadingException;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
@@ -47,7 +47,7 @@ public class GlyphLayoutBidi {
      *
      * @param fileName Name of output file
      */
-    public static void test(String fileName) throws FontLoadingException {
+    public static void test(String fileName) throws FontLoadException {
         float fontSize = 12.0f;
         GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
         // The  OpenType fonts loaded with glyphLayoutManager.loadFont() are
@@ -57,7 +57,7 @@ public class GlyphLayoutBidi {
             Font sans = glyphLayoutManager.loadFont(fontDir + "noto/NotoSans-Regular.ttf", fontSize);
             Font sansArabic = glyphLayoutManager.loadFont(fontDir + "noto/NotoSansArabic-Regular.ttf",
                     fontSize);
-        } catch (FontLoadingException e) {
+        } catch (FontLoadException e) {
             System.err.println(e);
         }
 

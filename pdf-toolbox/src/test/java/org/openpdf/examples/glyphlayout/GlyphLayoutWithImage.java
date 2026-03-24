@@ -11,15 +11,13 @@
  */
 package org.openpdf.examples.glyphlayout;
 
-import java.awt.FontFormatException;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
 import org.openpdf.text.Image;
-import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadingException;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
@@ -37,7 +35,7 @@ public class GlyphLayoutWithImage {
     public static void main(String[] args) {
         try {
             test("GlyphLayoutWithImage.pdf");
-        } catch (FontLoadingException e) {
+        } catch (FontLoadException e) {
             System.err.println(e.);
         }
     }
@@ -48,7 +46,7 @@ public class GlyphLayoutWithImage {
      *
      * @param fileName Name of output file
      */
-    public static void test(String fileName) throws FontLoadingException {
+    public static void test(String fileName) throws FontLoadException {
 
         float fontSize = 16.0f;
         float fontSizeSmall = 10.0f;
