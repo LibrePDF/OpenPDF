@@ -28,8 +28,11 @@ import org.openpdf.text.pdf.PdfWriter;
 public class GlyphLayoutDocumentKernLiga {
 
     public static String INTRO_TEXT =
-            "Test of text attributes for kerning and ligatures\n"
-                    + "Using LayoutProcessor for glyph layout with Java built-in routines.\n\n";
+            """
+                    Test of text attributes for kerning and ligatures
+                    Using LayoutProcessor for glyph layout with Java built-in routines.
+                    
+                    """;
 
 
     public static String TEST_TEXT =

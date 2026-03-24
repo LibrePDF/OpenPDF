@@ -265,19 +265,21 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
             return null;
         }
         StringBuilder buf = new StringBuilder(
-                "/CIDInit /ProcSet findresource begin\n" +
-                        "12 dict begin\n" +
-                        "begincmap\n" +
-                        "/CIDSystemInfo\n" +
-                        "<< /Registry (TTX+0)\n" +
-                        "/Ordering (T42UV)\n" +
-                        "/Supplement 0\n" +
-                        ">> def\n" +
-                        "/CMapName /TTX+0 def\n" +
-                        "/CMapType 2 def\n" +
-                        "1 begincodespacerange\n" +
-                        "<0000><FFFF>\n" +
-                        "endcodespacerange\n");
+                """
+                        /CIDInit /ProcSet findresource begin
+                        12 dict begin
+                        begincmap
+                        /CIDSystemInfo
+                        << /Registry (TTX+0)
+                        /Ordering (T42UV)
+                        /Supplement 0
+                        >> def
+                        /CMapName /TTX+0 def
+                        /CMapType 2 def
+                        1 begincodespacerange
+                        <0000><FFFF>
+                        endcodespacerange
+                        """);
         int size = 0;
         for (int k = 0; k < metrics.length; ++k) {
             if (size == 0) {
@@ -295,10 +297,12 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
             buf.append(fromTo).append(fromTo).append(hexString).append('\n');
         }
         buf.append(
-                "endbfrange\n" +
-                        "endcmap\n" +
-                        "CMapName currentdict /CMap defineresource pop\n" +
-                        "end end\n");
+                """
+                        endbfrange
+                        endcmap
+                        CMapName currentdict /CMap defineresource pop
+                        end end
+                        """);
         String s = buf.toString();
         PdfStream stream = new PdfStream(PdfEncodings.convertToBytes(s, null));
         stream.flateCompress(compressionLevel);

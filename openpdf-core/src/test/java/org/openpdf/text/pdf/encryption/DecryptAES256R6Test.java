@@ -492,10 +492,11 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(10, pdfReader.getNumberOfPages(),
                     "PdfReader fails to report the correct number of pages");
-            Assertions.assertEquals("Sample PDF Document\n"
-                            + " Robert Maron\n"
-                            + " Grzegorz Grudzi´ nski\n"
-                            + " February 20, 1999", new PdfTextExtractor(pdfReader).getTextFromPage(1),
+            Assertions.assertEquals("""
+                            Sample PDF Document
+                             Robert Maron
+                             Grzegorz Grudzi´ nski
+                             February 20, 1999""", new PdfTextExtractor(pdfReader).getTextFromPage(1),
                     "Wrong text extracted from page 1");
             pdfReader.close();
         }

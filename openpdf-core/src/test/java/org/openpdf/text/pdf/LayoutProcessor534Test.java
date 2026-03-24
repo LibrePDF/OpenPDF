@@ -57,13 +57,14 @@ class LayoutProcessor534Test {
         PdfTextExtractor extractor = new PdfTextExtractor(new PdfReader(pdfOut.toByteArray()));
         String textFromPage = extractor.getTextFromPage(1);
         assertThat(textFromPage)
-                .isEqualTo("owTytnewt enOεytnewt ytnewt neetenin neethgie neetneves neetxis neetfif neetruof neetriht "
-                        + "evlewt nevele net enin thgie neves xis evif ruof eerht owt eno\n"
-                        + " evlewt nevele net enin thgie neves xis evif ruof eerht owt eno ytriht eniNytnewt thgiEytnewt "
-                        + "neveSytnewt xiSytnewt eviFytnewt ruoFytnewt eerhTytnewt\n"
-                        + " neveSytnewt xiSytnewt eviFytnewt ruoFytnewt eerhTytnewt owTytnewt enOεytnewt ytnewt neetenin n"
-                        + "eethgie neetneves neetxis neetfif neetruof neetriht\n"
-                        + " ytriht eniNytnewt thgiEytnewt");
+                .isEqualTo("""
+                        owTytnewt enOεytnewt ytnewt neetenin neethgie neetneves neetxis neetfif neetruof neetriht \
+                        evlewt nevele net enin thgie neves xis evif ruof eerht owt eno
+                         evlewt nevele net enin thgie neves xis evif ruof eerht owt eno ytriht eniNytnewt thgiEytnewt \
+                        neveSytnewt xiSytnewt eviFytnewt ruoFytnewt eerhTytnewt
+                         neveSytnewt xiSytnewt eviFytnewt ruoFytnewt eerhTytnewt owTytnewt enOεytnewt ytnewt neetenin n\
+                        eethgie neetneves neetxis neetfif neetruof neetriht
+                         ytriht eniNytnewt thgiEytnewt""");
     }
 
     @Test
@@ -90,14 +91,15 @@ class LayoutProcessor534Test {
         // then
         byte[] pdfBytes = pdfOut.toByteArray();
         PdfTextExtractor extractor = new PdfTextExtractor(new PdfReader(pdfBytes));
-        String expected = ".ויה אלש םירבדה ןמ יושע ,דהדהמ ,לולח טקש היה וילאמ"
-                + " שקבתמה קלחה.םיקלח השולש תב הממד וז התיהו ,ךרדה־ןבא קדנופב הררש הממד .הליל תעש וז התיה בוש\n"
-                + " וליא .ויתס ילע תפרוג איהש יפכ ,ךרדה דרומב הממדהתא"
-                + " תפחוסו ויריצ לע הקירחב קדנופה טלש תא תלטלטמ ,םיצעה ןיב הרבועב תחנאנ התיה זאיכ ,חור התיה וליא\n"
-                + " וליא .תוכושחה הלילה תועשב,האבסמב םהל תופַצל"
-                + " םוקמ היהש ןואשבו הלומהב ,קוחצבו החישב הממדה תא םיאלממ ויה זאיכ ,םישנא ץמוק וליפא ,קדנופב להק היה\n"
-                + " .הניעב הממדה"
-                + " הרתונ ןכלו ,םש היה הלאה םירבדהמ דחא אלףא ,תמאה ןעמל .הקיסומ התיה אלש יאדו , אל לבא ...הקיסומ התיה";
+        String expected = """
+                .ויה אלש םירבדה ןמ יושע ,דהדהמ ,לולח טקש היה וילאמ\
+                 שקבתמה קלחה.םיקלח השולש תב הממד וז התיהו ,ךרדה־ןבא קדנופב הררש הממד .הליל תעש וז התיה בוש
+                 וליא .ויתס ילע תפרוג איהש יפכ ,ךרדה דרומב הממדהתא\
+                 תפחוסו ויריצ לע הקירחב קדנופה טלש תא תלטלטמ ,םיצעה ןיב הרבועב תחנאנ התיה זאיכ ,חור התיה וליא
+                 וליא .תוכושחה הלילה תועשב,האבסמב םהל תופַצל\
+                 םוקמ היהש ןואשבו הלומהב ,קוחצבו החישב הממדה תא םיאלממ ויה זאיכ ,םישנא ץמוק וליפא ,קדנופב להק היה
+                 .הניעב הממדה\
+                 הרתונ ןכלו ,םש היה הלאה םירבדהמ דחא אלףא ,תמאה ןעמל .הקיסומ התיה אלש יאדו , אל לבא ...הקיסומ התיה""";
         assertThat(extractor.getTextFromPage(1))
                 .isEqualTo(expected);
     }
