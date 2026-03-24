@@ -50,7 +50,7 @@
     <module>pdf-swing</module>
     <module>pdf-toolbox</module>
     <module>openpdf-fonts-extra</module>
-    <!-- <module>openpdf-kotlin</module> -->
+    <module>openpdf-kotlin</module>
     <module>openpdf-html</module>
     <module>openpdf-renderer</module>
   </modules>
