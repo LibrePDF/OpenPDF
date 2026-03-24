@@ -46,7 +46,6 @@ public class GlyphLayoutBidi {
      * Run the test: Show bidirectional text
      *
      * @param fileName Name of output file
-     * @throws Exception if an error occurs
      */
     public static void test(String fileName) throws FontLoadingException {
         float fontSize = 12.0f;
