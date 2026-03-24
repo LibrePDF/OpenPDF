@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
@@ -173,7 +174,7 @@ public class GlyphLayoutFontManager {
                 InputStream inputStream2 = new ByteArrayInputStream(fontBytes);
                 loadAwtFontFromInputStream(textAttributes, inputStream2, baseFont);
             }
-        } catch (Exception e) {
+        } catch (IOException | FontFormatException e) {
             throw new RuntimeException("Error loading font " + name, e);
         }
         return font;
@@ -210,7 +211,7 @@ public class GlyphLayoutFontManager {
 
         BaseFont baseFont = font.getBaseFont();
         if (!(baseFont instanceof TrueTypeFontUnicode)) {
-            throw new RuntimeException("Only OpenType/TrueTypeFonts are allowed. Path=" + path);
+            throw new IllegalArgumentException("Only OpenType/TrueTypeFonts are allowed. Path=" + path);
         }
         loadAwtFont(font, path, textAttributes);
         return font;
@@ -266,7 +267,7 @@ public class GlyphLayoutFontManager {
             } else {
                 inputStream = BaseFont.getResourceStream(filename);
             }
-        } catch (Exception e) {
+        } catch (IOException | URISyntaxException e) {
             exception = e;
         }
         if (inputStream == null) {
@@ -306,7 +307,7 @@ public class GlyphLayoutFontManager {
                 inputStream = getInputStream(filename);
                 loadAwtFontFromInputStream(textAttributes, inputStream, baseFont);
             }
-        } catch (Exception e) {
+        } catch (IOException | FontFormatException e) {
             throw new RuntimeException(String.format("Font creation failed for %s.", filename), e);
         } finally {
             if (inputStream != null) {
@@ -319,7 +320,7 @@ public class GlyphLayoutFontManager {
         }
     }
 
-    private void loadAwtFontFromInputStream(Map<TextAttribute, Object> textAttributes, InputStream inputStream,
+    protected void loadAwtFontFromInputStream(Map<TextAttribute, Object> textAttributes, InputStream inputStream,
             BaseFont baseFont)
             throws FontFormatException, IOException {
         java.awt.Font awtFont;

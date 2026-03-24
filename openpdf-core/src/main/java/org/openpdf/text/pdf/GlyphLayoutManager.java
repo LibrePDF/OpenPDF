@@ -136,7 +136,7 @@ public class GlyphLayoutManager {
      * @return this GlyphLayoutManager
      */
     public GlyphLayoutManager setDefaultFontOptions(FontOptions fontOptions) {
-        glyphLayoutFontManager.setDefaultFontOptions(fontOptions); //XXX caching???
+        glyphLayoutFontManager.setDefaultFontOptions(fontOptions);
         return this;
     }
 

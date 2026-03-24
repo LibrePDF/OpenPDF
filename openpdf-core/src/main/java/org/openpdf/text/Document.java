@@ -130,6 +130,12 @@ public class Document implements DocListener {
      * The DocListener.
      */
     private final List<DocListener> listeners = new ArrayList<>();
+
+    /**
+     * GlyphLayoutManager if set, null otherwise
+     */
+    private GlyphLayoutManager glyphLayoutManager;
+
     /**
      * Is the document open or not?
      */
@@ -229,11 +235,6 @@ public class Document implements DocListener {
         this.glyphLayoutManager = glyphLayoutManager;
         return this;
     }
-
-    /**
-     *
-     */
-    private GlyphLayoutManager glyphLayoutManager;
 
     /**
      * Constructs a new <CODE>Document</CODE> -object with the default page size as <CODE>PageSize.A4</CODE> .
