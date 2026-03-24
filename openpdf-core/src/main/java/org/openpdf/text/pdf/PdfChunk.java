@@ -514,7 +514,6 @@ public class PdfChunk {
         // or until the totalWidth is reached
         int length = value.length();
         boolean surrogate = false;
-        char character;
         while (currentPosition < length) {
             // the width of every character is added to the currentWidth
             surrogate = Utilities.isSurrogatePair(value, currentPosition);

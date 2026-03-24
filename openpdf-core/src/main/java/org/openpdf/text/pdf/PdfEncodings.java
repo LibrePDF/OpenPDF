@@ -204,7 +204,6 @@ public class PdfEncodings {
         if (encoding.equals(PdfObject.TEXT_UNICODE)) {
             // workaround for jdk 1.2.2 bug
             char[] cc = text.toCharArray();
-            int len = cc.length;
             byte[] b = new byte[cc.length * 2 + 2];
             b[0] = -2;
             b[1] = -1;

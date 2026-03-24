@@ -714,7 +714,7 @@ public class Type1CFont extends OutlineFont {
     void parseGlyph (Range r, GeneralPath gp, FlPoint pt) {
         this.pos = r.getStart ();
         int i;
-        float x1, y1, x2, y2, x3, y3, ybase;
+        float x1, y1, x2, y2, ybase;
         int hold;
         while (this.pos < r.getEnd ()) {
             int cmd = readCommand (true);

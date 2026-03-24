@@ -41,32 +41,27 @@ public class ParserTest {
         String longTest = test.repeat(count);
         assertThat(longTest.length()).as("Long enough input").isEqualTo(test.length() * count);
 
-        long total = 0;
         for (int i = 0; i < 40; i++) {
             long start = System.currentTimeMillis();
             CSSParser p = new CSSParser(errorHandler);
             Stylesheet stylesheet = p.parseStylesheet(null, USER_AGENT, new StringReader(longTest));
             long end = System.currentTimeMillis();
-            total += (end - start);
 
             assertThat(stylesheet.getContents()).hasSize(count);
         }
 
-        total = 0;
         for (int i = 0; i < 10; i++) {
             long start = System.currentTimeMillis();
             CSSParser p = new CSSParser(errorHandler);
             Stylesheet stylesheet = p.parseStylesheet(null, USER_AGENT, new StringReader(longTest));
             long end = System.currentTimeMillis();
             // System.out.println("Took " + (end-start) + " ms");
-            total += (end - start);
             assertThat(stylesheet.getContents()).hasSize(count);
         }
 
 
         CSSParser p = new CSSParser(errorHandler);
 
-        total = 0;
         for (int i = 0; i < 10; i++) {
             long start = System.currentTimeMillis();
             for (int j = 0; j < 10000; j++) {
@@ -77,7 +72,6 @@ public class ParserTest {
             }
             long end = System.currentTimeMillis();
             // System.out.println("Took " + (end-start) + " ms");
-            total += (end - start);
         }
     }
 

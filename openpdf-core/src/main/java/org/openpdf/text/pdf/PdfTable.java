@@ -206,7 +206,6 @@ public class PdfTable extends Rectangle {
         }
 
         // loop over all the cells
-        int n = newCells.size();
         for (Object newCell : newCells) {
             currentCell = (PdfCell) newCell;
             try {

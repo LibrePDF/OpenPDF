@@ -151,10 +151,7 @@ public class PatternType1 extends PDFPattern {
         // now parse the pattern contents
         PDFParser prc = new PDFParser(page, this.data, getResources());
         prc.go(true);
-        
-        int width = (int) getBBox().getWidth();
-        int height = (int) getBBox().getHeight();
-        
+
         // get actual image
         Paint paint = new Paint() {
             @Override
