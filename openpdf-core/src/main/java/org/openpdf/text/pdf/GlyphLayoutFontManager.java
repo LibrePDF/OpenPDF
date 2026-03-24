@@ -68,7 +68,7 @@ public class GlyphLayoutFontManager {
     private FontCaching fontCaching = FontCaching.DEFAULT;
 
     /**
-     * Creates a bytee array from an input stream
+     * Creates a byte array from an input stream
      *
      * @param inputStream the input stream
      * @return a byte array
@@ -114,7 +114,7 @@ public class GlyphLayoutFontManager {
     }
 
     /**
-     * Returns, the AWT-Font for the given baseFont
+     * Returns the AWT font for the given baseFont
      *
      * @param baseFont base font
      * @param fontSize size of the font
@@ -131,7 +131,8 @@ public class GlyphLayoutFontManager {
      * @param fontSize    font size
      * @return Loaded OpenPdf font
      */
-    public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize) {
+    public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize)
+            throws IOException, FontFormatException {
         return loadFont(name, inputStream, fontSize, null);
     }
 
@@ -144,7 +145,7 @@ public class GlyphLayoutFontManager {
      * @return Loaded OpenPdf font
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize,
-            FontOptions fontOptions) {
+            FontOptions fontOptions) throws IOException, FontFormatException {
 
         if (inputStream == null) {
             throw new NullPointerException("inputStream is null for " + name);
@@ -159,7 +160,7 @@ public class GlyphLayoutFontManager {
         Map<TextAttribute, Object> textAttributes = getTextAttributes(fontOptions);
         boolean caching = isCaching(fontOptions);
 
-        try {
+//        try {
             // See AdvanceTypographyTest
             // Load font from inputStream
             byte[] fontBytes = createByteArray(inputStream);
@@ -168,15 +169,15 @@ public class GlyphLayoutFontManager {
             font = new Font(baseFont, fontSize);
 
             if (!(baseFont instanceof TrueTypeFontUnicode)) {
-                throw new RuntimeException("Only OpenType/TrueTypeFonts are allowed. Font=" + font);
+                throw new IllegalArgumentException("Only OpenType/TrueTypeFonts are allowed. Font=" + font);
             }
             if (awtFontMap.get(baseFont) == null) {
                 InputStream inputStream2 = new ByteArrayInputStream(fontBytes);
                 loadAwtFontFromInputStream(textAttributes, inputStream2, baseFont);
             }
-        } catch (IOException | FontFormatException e) {
-            throw new RuntimeException("Error loading font " + name, e);
-        }
+//        } catch (IOException | FontFormatException e) {
+//            throw new RuntimeException("Error loading font " + name, e);
+//        }
         return font;
     }
 
@@ -246,6 +247,7 @@ public class GlyphLayoutFontManager {
     }
 
     protected InputStream getInputStream(String filename) throws IOException {
+        // getting the inputStream is adapted from org.openpdf.text.pdf.RandomAccessFileOrArray
         InputStream inputStream = null;
         Exception exception = null;
 
@@ -303,7 +305,6 @@ public class GlyphLayoutFontManager {
         try {
             awtFont = awtFontMap.get(baseFont);
             if (awtFont == null) {
-                // getting the inputStream is adapted from org.openpdf.text.pdf.RandomAccessFileOrArray
                 inputStream = getInputStream(filename);
                 loadAwtFontFromInputStream(textAttributes, inputStream, baseFont);
             }
