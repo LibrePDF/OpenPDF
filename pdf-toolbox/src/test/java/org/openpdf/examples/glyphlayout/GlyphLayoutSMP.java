@@ -11,12 +11,14 @@
  */
 package org.openpdf.examples.glyphlayout;
 
+import java.awt.FontFormatException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadingException;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
@@ -61,8 +63,12 @@ public class GlyphLayoutSMP {
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
-        test("GlyphLayoutSMP.pdf");
+    public static void main(String[] args) {
+        try {
+            test("GlyphLayoutSMP.pdf");
+        } catch (FontLoadingException e) {
+            System.err.println(e);
+        }
     }
 
     /**
@@ -70,7 +76,7 @@ public class GlyphLayoutSMP {
      *
      * @param fileName Name of output file
      */
-    public static void test(String fileName) throws IOException {
+    public static void test(String fileName) throws FontLoadingException {
 
         float fontSize = 12.0f;
         GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();

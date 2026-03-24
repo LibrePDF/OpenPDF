@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.Bidi;
 import java.util.Map;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadingException;
 import org.openpdf.text.pdf.GlyphLayoutFontManager.FontOptions;
 
 /**
@@ -150,7 +151,7 @@ public class GlyphLayoutManager {
      * @return the loaded OpenPdf-Font
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize)
-            throws IOException, FontFormatException {
+            throws FontLoadingException {
         return glyphLayoutFontManager.loadFont(name, inputStream, fontSize);
     }
 
@@ -163,7 +164,7 @@ public class GlyphLayoutManager {
      * @return the loaded OpenPdf font
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize,
-            FontOptions fontOptions) throws IOException, FontFormatException {
+            FontOptions fontOptions) throws FontLoadingException {
         return glyphLayoutFontManager.loadFont(name, inputStream, fontSize, fontOptions);
     }
 
@@ -174,7 +175,7 @@ public class GlyphLayoutManager {
      * @param fontSize size
      * @return the loaded OpenPdf font
      */
-    public org.openpdf.text.Font loadFont(String path, float fontSize) {
+    public org.openpdf.text.Font loadFont(String path, float fontSize) throws FontLoadingException {
         return glyphLayoutFontManager.loadFont(path, fontSize);
     }
 
@@ -187,7 +188,7 @@ public class GlyphLayoutManager {
      * @return the loaded OpenPdf font
      */
     public org.openpdf.text.Font loadFont(String path, float fontSize,
-            FontOptions fontOptions) {
+            FontOptions fontOptions) throws FontLoadingException {
         return glyphLayoutFontManager.loadFont(path, fontSize, fontOptions);
     }
 
