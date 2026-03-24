@@ -160,24 +160,20 @@ public class GlyphLayoutFontManager {
         Map<TextAttribute, Object> textAttributes = getTextAttributes(fontOptions);
         boolean caching = isCaching(fontOptions);
 
-//        try {
-            // See AdvanceTypographyTest
-            // Load font from inputStream
-            byte[] fontBytes = createByteArray(inputStream);
-            BaseFont baseFont = BaseFont.createFont(name, BaseFont.IDENTITY_H,
-                    BaseFont.EMBEDDED, caching, fontBytes, null, false, false);
-            font = new Font(baseFont, fontSize);
+        // See AdvanceTypographyTest
+        // Load font from inputStream
+        byte[] fontBytes = createByteArray(inputStream);
+        BaseFont baseFont = BaseFont.createFont(name, BaseFont.IDENTITY_H,
+                BaseFont.EMBEDDED, caching, fontBytes, null, false, false);
+        font = new Font(baseFont, fontSize);
 
-            if (!(baseFont instanceof TrueTypeFontUnicode)) {
-                throw new IllegalArgumentException("Only OpenType/TrueTypeFonts are allowed. Font=" + font);
-            }
-            if (awtFontMap.get(baseFont) == null) {
-                InputStream inputStream2 = new ByteArrayInputStream(fontBytes);
-                loadAwtFontFromInputStream(textAttributes, inputStream2, baseFont);
-            }
-//        } catch (IOException | FontFormatException e) {
-//            throw new RuntimeException("Error loading font " + name, e);
-//        }
+        if (!(baseFont instanceof TrueTypeFontUnicode)) {
+            throw new IllegalArgumentException("Only OpenType/TrueTypeFonts are allowed. Font=" + font);
+        }
+        if (awtFontMap.get(baseFont) == null) {
+            InputStream inputStream2 = new ByteArrayInputStream(fontBytes);
+            loadAwtFontFromInputStream(textAttributes, inputStream2, baseFont);
+        }
         return font;
     }
 
@@ -188,7 +184,7 @@ public class GlyphLayoutFontManager {
      * @param fontSize font size
      * @return Loaded OpenPdf font
      */
-    public org.openpdf.text.Font loadFont(String path, float fontSize) {
+    public org.openpdf.text.Font loadFont(String path, float fontSize) throws IOException, FontFormatException {
         return loadFont(path, fontSize, null);
 
     }
@@ -201,7 +197,8 @@ public class GlyphLayoutFontManager {
      * @param fontOptions Options for the AWT-font
      * @return Loaded OpenPdf font
      */
-    public org.openpdf.text.Font loadFont(String path, float fontSize, FontOptions fontOptions) {
+    public org.openpdf.text.Font loadFont(String path, float fontSize, FontOptions fontOptions)
+            throws IOException, FontFormatException {
         // cached has to be set to 'false', to allow different sizes and attributes for instances of one font
         Map<TextAttribute, Object> textAttributes = getTextAttributes(fontOptions);
 
@@ -290,7 +287,7 @@ public class GlyphLayoutFontManager {
      * @throws RuntimeException if font can not be loaded
      */
     protected void loadAwtFont(org.openpdf.text.Font font, String filename,
-            Map<TextAttribute, Object> textAttributes) {
+            Map<TextAttribute, Object> textAttributes) throws IOException, FontFormatException {
 
         BaseFont baseFont = font.getBaseFont();
 
@@ -300,30 +297,25 @@ public class GlyphLayoutFontManager {
         if (!(baseFont instanceof TrueTypeFontUnicode)) {
             return;
         }
-        java.awt.Font awtFont;
-        InputStream inputStream = null;
-        try {
-            awtFont = awtFontMap.get(baseFont);
-            if (awtFont == null) {
-                inputStream = getInputStream(filename);
+        java.awt.Font awtFont = awtFontMap.get(baseFont);
+        if (awtFont == null) {
+            try (InputStream inputStream = getInputStream(filename)){
                 loadAwtFontFromInputStream(textAttributes, inputStream, baseFont);
-            }
-        } catch (IOException | FontFormatException e) {
-            throw new RuntimeException(String.format("Font creation failed for %s.", filename), e);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (Exception e) {
-                    // ignore
-                }
             }
         }
     }
 
+    /**
+     * Creates an AWT font from an input stream
+     *
+     * @param textAttributes text attributes
+     * @param inputStream input stream
+     * @param baseFont base font
+     * @throws FontFormatException if the font format is wrong
+     * @throws IOException if an IO error occurs
+     */
     protected void loadAwtFontFromInputStream(Map<TextAttribute, Object> textAttributes, InputStream inputStream,
-            BaseFont baseFont)
-            throws FontFormatException, IOException {
+            BaseFont baseFont) throws FontFormatException, IOException {
         java.awt.Font awtFont;
         awtFont = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, inputStream);
         if (awtFont != null) {
@@ -334,7 +326,9 @@ public class GlyphLayoutFontManager {
         }
     }
 
-
+    /**
+     * Enum to control font caching
+     */
     public enum FontCaching {
         DEFAULT,
         ON,
