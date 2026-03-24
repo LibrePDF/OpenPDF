@@ -235,7 +235,7 @@ public class ShaderType2 extends PDFShader {
         
         /** create a paint context */
         @Override
-        public PaintContext createContext(ColorModel cm, 
+        public PaintContext createContext(ColorModel cm,
                                           Rectangle deviceBounds, 
                                           Rectangle2D userBounds,
                                           AffineTransform xform,
@@ -342,7 +342,7 @@ public class ShaderType2 extends PDFShader {
                         } else {
                             for (int c = 0; c < functions.length; c++) {
                                 functions[c].calculate(inputs, 0, outputs, c);
-                            } 
+                            }
                         }
                         if (functions[0].getNumOutputs() != numComponents) {
                             //CMYK
@@ -354,7 +354,7 @@ public class ShaderType2 extends PDFShader {
                         for (int c = 0; c < numComponents; c++) {
                             data[base + c] = (int) (outputRBG[c] * 255);
                         }
-                        data[base + numComponents] = 255; 
+                        data[base + numComponents] = 255;
                     }
                 }
             }
@@ -378,19 +378,6 @@ public class ShaderType2 extends PDFShader {
         
             return (float) tp;
         }
-        
-        /**
-         * t = t0 + (t1 - t0) x x'
-         */
-        private float getT(float xp) {
-            
-            if (xp < 0) {
-                return getMinT();
-            } else if (xp > 1) {
-                return getMaxT();
-            } else {
-                return getMinT() + (dt1t0 * xp);
-            }
-        }
+
     }
 }
