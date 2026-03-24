@@ -12,11 +12,13 @@
  */
 package org.openpdf.examples.glyphlayout;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadingException;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
@@ -46,15 +48,19 @@ public class GlyphLayoutBidi {
      * @param fileName Name of output file
      * @throws Exception if an error occurs
      */
-    public static void test(String fileName) throws Exception {
+    public static void test(String fileName) throws FontLoadingException {
         float fontSize = 12.0f;
         GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
         // The  OpenType fonts loaded with glyphLayoutManager.loadFont() are
         // available for glyph layout. Only these fonts can be used.
         String fontDir = "org/openpdf/examples/fonts/";
-        Font sans = glyphLayoutManager.loadFont(fontDir + "noto/NotoSans-Regular.ttf", fontSize);
-        Font sansArabic = glyphLayoutManager.loadFont(fontDir + "noto/NotoSansArabic-Regular.ttf",
-                fontSize);
+        try {
+            Font sans = glyphLayoutManager.loadFont(fontDir + "noto/NotoSans-Regular.ttf", fontSize);
+            Font sansArabic = glyphLayoutManager.loadFont(fontDir + "noto/NotoSansArabic-Regular.ttf",
+                    fontSize);
+        } catch (FontLoadingException e) {
+            System.err.println(e);
+        }
 
         // Process the document with glyphLayoutManager
         try (Document document = new Document().setGlyphLayoutManager(glyphLayoutManager)) {
@@ -66,6 +72,8 @@ public class GlyphLayoutBidi {
             document.add(new Chunk("Guten Tag ", sans));
             document.add(new Chunk("السلام عليكم", sansArabic));
             document.add(new Chunk(" Good afternoon", sans));
+        } catch (IOException e) {
+            System.err.println(e);
         }
     }
 }

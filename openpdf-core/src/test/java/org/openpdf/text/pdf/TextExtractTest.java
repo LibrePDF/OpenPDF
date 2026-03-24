@@ -7,6 +7,7 @@ import org.openpdf.text.Document;
 import org.openpdf.text.Font;
 import org.openpdf.text.FontFactory;
 import org.openpdf.text.pdf.parser.PdfTextExtractor;
+import java.awt.FontFormatException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -65,7 +66,7 @@ class TextExtractTest {
     }
 
     @Test
-    void textCreateAndExtractTest3() throws IOException {
+    void textCreateAndExtractTest3() throws IOException, FontFormatException {
         float fontSize = 12.0f;
 
         String testText = "กขน้ำตา ญูญูิ่ ก้กิ้";
