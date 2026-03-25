@@ -34,14 +34,14 @@ of the contributors will also identify and prevent conflict of interests.
   - Continuation indent: 8 spaces
   - Line length: 120 characters
 - Make sure to add tests for your changes
-- Fix any checkstyle issues before submitting your pull request (`mvn checkstyle:check`)
+- Fix any checkstyle issues before submitting your pull request (`mvnw checkstyle:check`)
 - Fix any issues found by the CI build after submitting your pull request
 
 ### Configuring your IDE
 
 1. Configure the formatter (configuration files are in the `config` directory) or
 2. Use the editorconfig plugin for your IDE
-3. Use checkstyle plugin for your IDE (configuration is `checkstyle.xml`), or run `mvn checkstyle:check`
+3. Use checkstyle plugin for your IDE (configuration is `checkstyle.xml`), or run `mvnw checkstyle:check`
 4. Use sonarlint plugin for your IDE
 
 ### Other code quality tools we use
