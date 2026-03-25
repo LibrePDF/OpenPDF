@@ -17,7 +17,10 @@ class Pdf20ExamplesConformanceTest {
 
     // Override with -Dopenpdf.pdf20.dir=/absolute/path if needed
     private static final Path DIR = Path.of(System.getProperty("openpdf.pdf20.dir", "src/test/resources/pdf-2-0"));
-    private static Path f(String name) { return DIR.resolve(name); }
+
+    private static Path f(String name) {
+        return DIR.resolve(name);
+    }
 
     // ---------- Simple PDF 2.0 file ----------
 
@@ -67,7 +70,9 @@ class Pdf20ExamplesConformanceTest {
 
             for (int i = 0; i < annots.size(); i++) {
                 PdfDictionary a = (PdfDictionary) PdfReader.getPdfObject(annots.getAsIndirectObject(i));
-                if (a == null) continue;
+                if (a == null) {
+                    continue;
+                }
                 PdfString contents = a.getAsString(PdfName.CONTENTS);
                 if (contents != null) {
                     String s = contents.toUnicodeString();
@@ -124,14 +129,21 @@ class Pdf20ExamplesConformanceTest {
     // ================= helpers =================
 
     private static class Header {
-        final int offset; final String version;
-        Header(int o, String v) { offset = o; version = v; }
+        final int offset;
+        final String version;
+
+        Header(int o, String v) {
+            offset = o;
+            version = v;
+        }
     }
 
     /** Find the first %PDF- header anywhere and parse its version. */
     private static Header firstHeader(byte[] bytes) {
         int idx = indexOfAscii(bytes, "%PDF-");
-        if (idx < 0) return null;
+        if (idx < 0) {
+            return null;
+        }
         String ver = parseHeaderVersion(bytes, idx);
         return new Header(idx, ver);
     }
@@ -139,7 +151,9 @@ class Pdf20ExamplesConformanceTest {
     /** True if the file contains a %PDF-x.y header with the given version anywhere. */
     private static boolean containsHeaderVersion(byte[] bytes, String wanted) {
         for (Header h : allHeaders(bytes)) {
-            if (wanted.equals(h.version)) return true;
+            if (wanted.equals(h.version)) {
+                return true;
+            }
         }
         return false;
     }
@@ -151,7 +165,9 @@ class Pdf20ExamplesConformanceTest {
         byte[] pat = "%PDF-".getBytes(StandardCharsets.ISO_8859_1);
         while (true) {
             int idx = indexOf(bytes, pat, from);
-            if (idx < 0) break;
+            if (idx < 0) {
+                break;
+            }
             String ver = parseHeaderVersion(bytes, idx);
             list.add(new Header(idx, ver));
             from = idx + pat.length;
@@ -165,7 +181,9 @@ class Pdf20ExamplesConformanceTest {
         int end = start;
         while (end < bytes.length) {
             char c = (char) (bytes[end] & 0xFF);
-            if (!Character.isDigit(c) && c != '.') break;
+            if (!Character.isDigit(c) && c != '.') {
+                break;
+            }
             end++;
         }
         return new String(bytes, start, end - start, StandardCharsets.ISO_8859_1);
@@ -188,7 +206,9 @@ class Pdf20ExamplesConformanceTest {
     private static int indexOf(byte[] hay, byte[] needle, int from) {
         outer: for (int i = from; i <= hay.length - needle.length; i++) {
             for (int j = 0; j < needle.length; j++) {
-                if (hay[i + j] != needle[j]) continue outer;
+                if (hay[i + j] != needle[j]) {
+                    continue outer;
+                }
             }
             return i;
         }

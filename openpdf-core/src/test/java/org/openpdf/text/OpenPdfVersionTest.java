@@ -26,7 +26,9 @@ class OpenPdfVersionTest {
 
     private static Set<String> buildSupportedVersions() {
         Set<String> s = new LinkedHashSet<>();
-        for (int i = 0; i <= 7; i++) s.add("1." + i);
+        for (int i = 0; i <= 7; i++) {
+            s.add("1." + i);
+        }
         s.add("2.0");
         return s;
     }
@@ -75,7 +77,7 @@ class OpenPdfVersionTest {
     }
 
     @ParameterizedTest(name = "Create + round-trip version {0} (memory and file)")
-    @ValueSource(strings = {"1.2","1.3","1.4","1.5","1.6","1.7","2.0"})
+    @ValueSource(strings = {"1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "2.0"})
     void createAndRoundTripSpecificVersions(String version, @TempDir Path tmp) throws Exception {
         // In-memory
         byte[] bytes = createPdfToBytes(version);
@@ -257,7 +259,9 @@ class OpenPdfVersionTest {
             // Common in OpenPDF: getPdfVersion() returns char or String
             Method m = reader.getClass().getMethod("getPdfVersion");
             Object v = m.invoke(reader);
-            if (v == null) return null;
+            if (v == null) {
+                return null;
+            }
             if (v instanceof Character) {
                 char c = (Character) v;
                 if (Character.isDigit(c)) {
@@ -274,7 +278,9 @@ class OpenPdfVersionTest {
             try {
                 Method m2 = reader.getClass().getMethod("getHeaderVersion");
                 Object v2 = m2.invoke(reader);
-                if (v2 instanceof String) return (String) v2;
+                if (v2 instanceof String) {
+                    return (String) v2;
+                }
             } catch (Exception ignored2) {
                 // no suitable method
             }
@@ -312,12 +318,16 @@ class OpenPdfVersionTest {
         int len = Math.min(pdfBytes.length, 4096);
         String header = new String(pdfBytes, 0, len, StandardCharsets.ISO_8859_1);
         int idx = header.indexOf("%PDF-");
-        if (idx < 0) throw new IllegalStateException("PDF header not found");
+        if (idx < 0) {
+            throw new IllegalStateException("PDF header not found");
+        }
         int start = idx + 5;
         int end = start;
         while (end < header.length()) {
             char c = header.charAt(end);
-            if (!Character.isDigit(c) && c != '.') break;
+            if (!Character.isDigit(c) && c != '.') {
+                break;
+            }
             end++;
         }
         return header.substring(start, end);
