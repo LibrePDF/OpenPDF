@@ -101,6 +101,7 @@ public class GlyphLayoutFontManager {
      *
      * @param baseFont BaseFont
      * @return true if the baseFont is supported
+     *
      * @throws UnsupportedOperationException if the font has not been loaded with GlyphLayoutManager.loadFont
      */
     public boolean supportsFont(BaseFont baseFont) {
@@ -183,7 +184,7 @@ public class GlyphLayoutFontManager {
         font = new Font(baseFont, fontSize);
 
         if (!(baseFont instanceof TrueTypeFontUnicode)) {
-            throw new IllegalArgumentException("Only OpenType/TrueTypeFonts are allowed. Font=" + name);
+            throw new FontLoadException("Only OpenType/TrueTypeFonts are allowed. Font=" + name);
         }
         if (awtFontMap.get(baseFont) == null) {
             InputStream inputStream2 = new ByteArrayInputStream(fontBytes);
@@ -230,7 +231,7 @@ public class GlyphLayoutFontManager {
 
         BaseFont baseFont = font.getBaseFont();
         if (!(baseFont instanceof TrueTypeFontUnicode)) {
-            throw new IllegalArgumentException("Only OpenType/TrueTypeFonts are allowed. Path=" + path);
+            throw new FontLoadException("Only OpenType/TrueTypeFonts are allowed. Path=" + path);
         }
         loadAwtFont(font, path, textAttributes);
         return font;
