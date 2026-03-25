@@ -57,11 +57,10 @@ import org.openpdf.text.pdf.GlyphLayoutFontManager.FontOptions;
  */
 public class GlyphLayoutManager {
 
+    private static final int DIRECTION_UNKNOWN = -42;
     private final GlyphLayoutFontManager glyphLayoutFontManager;
     private boolean writeActualText;
-
     private int defaultBidiDirection = Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT;
-    private final static int DIRECTION_UNKNOWN = -42;
 
     /**
      * Creates a GlyphLayoutManager
