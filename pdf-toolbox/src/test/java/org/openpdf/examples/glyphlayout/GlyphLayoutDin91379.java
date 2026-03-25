@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
@@ -26,19 +27,19 @@ import org.openpdf.text.pdf.PdfWriter;
 public class GlyphLayoutDin91379 {
 
     public static final String TEXT_INTRO =
-                    """
+            """
                     Test of formatting for letters and sequences defined in:
                     DIN 91379:2022-08: Characters and defined character sequences in Unicode for the
                     electronic processing of names and data exchange in Europe, with CD-ROM.
                     See https://github.com/String-Latin/DIN-91379-Characters-and-Sequences
                     and https://en.wikipedia.org/wiki/DIN_91379
-            
+                    
                     Using GlyphLayoutManager for glyph layout with Java built-in routines.
-
+                    
                     """;
 
     public static final String LATIN_CHARS_DIN_91379 =
-                   """
+            """
                     bll; Latin Letters (normative)
                     A B C D E F G H I J K L M N O P Q R S T U V W X Y Z \
                     a b c d e f g h i j k l m n o p q r s t u v w x y z \
@@ -88,42 +89,46 @@ public class GlyphLayoutDin91379 {
                     enl; Non-Letters E1 (extended)
                     ƒ ʰ ʳ ˆ ˜ ˢ ᵈ ᵗ ‘ ‚ “ ” „ † … ‰ ′ ″ ‹ › ⁰ ⁴ ⁵ ⁶ ⁷ ⁸ \
                     ⁹ ⁿ ₀ ₁ ₂ ₃ ₄ ₅ ₆ ₇ ₈ ₉ ™
-                    """
-            ;
+                    """;
 
     public static final String LATIN_CHARS_DIN_91379_MATH =
-                    """
+            """
                     enl; Non Letters E1 (extended) math
                     ∞ ≤ ≥
                     """;
 
     public static final String LATIN_CHARS_ADDITIONAL =
-                    """
+            """
                     Additional non-letters (not included in DIN 91379): – — •�
                     """;
 
-  /**
+    /**
      * Main method
      *
      * @param args -- not used
      */
     public static void main(String[] args) throws Exception {
-        test("GlyphLayoutDin91379.pdf");
+        try {
+            test("GlyphLayoutDin91379.pdf");
+        } catch (FontLoadException | IOException e) {
+            System.err.println(e);
+        }
+
     }
 
     /**
      * Run the test: Print the characters of DIN 91379 in a PDF document
      *
-     * @param fileName   Name of output file
+     * @param fileName Name of output file
      */
-    public static void test(String fileName) throws IOException {
+    public static void test(String fileName) throws FontLoadException, IOException {
 
         float fontSize = 12.0f;
 
         // The  OpenType fonts loaded with GlyphLayoutManager.loadFont() are
         // available for glyph layout.
         // Only these fonts can be used.
-        GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
+        GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
 
         String fontDir = "org/openpdf/examples/fonts/";
         Font sansFont = glyphLayoutManager.loadFont(fontDir + "noto/NotoSans-Regular.ttf", fontSize);

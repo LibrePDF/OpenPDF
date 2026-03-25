@@ -18,12 +18,12 @@ import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
 import org.openpdf.text.Image;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
- * Test of glyph layout of some characters and sequences of DIN 91379
- * with an image
+ * Test of glyph layout of some characters and sequences of DIN 91379 with an image
  */
 public class GlyphLayoutWithImage {
 
@@ -32,22 +32,25 @@ public class GlyphLayoutWithImage {
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
-        test("GlyphLayoutWithImage.pdf");
+    public static void main(String[] args) {
+        try {
+            test("GlyphLayoutWithImage.pdf");
+        } catch (FontLoadException | IOException e) {
+            System.err.println(e);
+        }
     }
 
     /**
-     * Test of glyph layout of some characters and sequences of DIN 91379
-     * with an image
+     * Test of glyph layout of some characters and sequences of DIN 91379 with an image
      *
      * @param fileName Name of output file
      */
-    public static void test(String fileName) throws IOException {
+    public static void test(String fileName) throws FontLoadException, IOException {
 
         float fontSize = 16.0f;
         float fontSizeSmall = 10.0f;
 
-        GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
+        GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
         // The  OpenType fonts loaded with glyphLayoutManager.loadFont() are
         // available for glyph layout. Only these fonts can be used.
         String fontDir = "org/openpdf/examples/fonts/";
@@ -64,7 +67,8 @@ public class GlyphLayoutWithImage {
             document.add(new Chunk("xt\nwith NewLine\n", font));
 
             document.add(new Chunk("Test of several Chunks on one line: A", font));
-            Image image = Image.getInstance("pdf-toolbox/src/test/resources/org/openpdf/examples/fonts/images/mushroom.png");
+            Image image = Image.getInstance(
+                    "pdf-toolbox/src/test/resources/org/openpdf/examples/fonts/images/mushroom.png");
             image.scaleToFit(80f, 50f);
             document.add(new Chunk(image, 0.0f, 0.0f));
             document.add(new Chunk("A̋", font));

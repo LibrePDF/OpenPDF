@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
@@ -26,12 +27,12 @@ import org.openpdf.text.pdf.PdfWriter;
 public class GlyphLayoutType1FontThrowsException {
 
     public static final String TEXT_INTRO =
-                    """
+            """
                     Test of GlyphLayoutManager loading the font from an input stream
                     """;
 
     public static final String LATIN_CHARS_DIN_91379_SEQUENCES =
-                   """
+            """
                     bll; Latin Letters (normative)
                     ...
                     Sequences
@@ -41,36 +42,39 @@ public class GlyphLayoutType1FontThrowsException {
                     k̂ k̄ k̇ k̕ k̛ k̦ k͟h l̂ l̥ l̥̄ l̦ m̀ m̂ m̆ m̐ n̂ n̄ n̆ n̦ p̀ p̄ p̕ p̣ r̆ r̥ r̥̄
                     s̀ s̄ s̛̄ s̱ t̀ t̄ t̕ t̛ u̇ z̀ z̄ z̆ z̈ z̧ Ç̆ Û̄ ç̆ û̄ ÿ́ Č̕ Č̣ č̕ č̣ ē̍ Ī́ ī́
                     ō̍ Ž̦ Ž̧ ž̦ ž̧ Ḳ̄ ḳ̄ Ṣ̄ ṣ̄ Ṭ̄ ṭ̄ Ạ̈ ạ̈ Ọ̈ ọ̈ Ụ̄ Ụ̈ ụ̄ ụ̈
-                    """
-            ;
+                    """;
 
 
-  /**
+    /**
      * Main method
      *
      * @param args -- not used
      */
     public static void main(String[] args) throws Exception {
-        test("GlyphLayoutInputStream.pdf");
+        try {
+            test("GlyphLayoutInputStream.pdf");
+        } catch (FontLoadException | IOException e) {
+            System.err.println(e);
+        }
     }
 
 
     /**
      * Run the test: Load the font from an input stream
      *
-     * @param fileName   Name of output file
+     * @param fileName Name of output file
      */
-    public static void test(String fileName) throws IOException {
+    public static void test(String fileName) throws FontLoadException, IOException {
 
         float fontSize = 12.0f;
-
 
         // The  OpenType fonts loaded with GlyphLayoutManager.loadFont() are
         // available for glyph layout.
         // Only these fonts can be used.
-        GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
+        GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
 
-        Font sansFont = glyphLayoutManager.loadFont("/usr/share/fonts/type1/urw-base35/NimbusSans-Regular.t1", fontSize);
+        Font sansFont = glyphLayoutManager.loadFont("/usr/share/fonts/type1/urw-base35/NimbusSans-Regular.t1",
+                fontSize);
 
         // Process the document with glyphLayoutManager
         try (Document document = new Document().setGlyphLayoutManager(glyphLayoutManager)) {

@@ -12,6 +12,9 @@
 package org.openpdf.examples.glyphlayout;
 
 
+import java.io.IOException;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
+
 /**
  * Calls all glyph layout examples using GlyphLayoutManager
  *
@@ -23,16 +26,20 @@ public class RunGlyphLayoutExamples {
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
-        GlyphLayoutBidi.test("GlyphLayoutBidi.pdf");
-        GlyphLayoutBidiPerFont.test("GlyphLayoutBidiPerFont.pdf");
-        GlyphLayoutDin91379.test("GlyphLayoutDin91379.pdf");
-        GlyphLayoutFormDin91379.test("GlyphLayoutFormDin91379.pdf");
-        GlyphLayoutInputStream.test("GlyphLayoutInputStream.pdf");
-        GlyphLayoutKernLiga.test(" GlyphLayoutKernLiga.pdf");
-        GlyphLayoutKernLigaPerFont.test("GlyphLayoutKernLigaPerFont.pdf");
-        GlyphLayoutBidiRotated.test("GlyphLayoutBidiRotated.pdf");
-        GlyphLayoutWithImage.test("GlyphLayoutWithImage.pdf");
+        try {
+            GlyphLayoutBidi.test("GlyphLayoutBidi.pdf");
+            GlyphLayoutBidiPerFont.test("GlyphLayoutBidiPerFont.pdf");
+            GlyphLayoutDin91379.test("GlyphLayoutDin91379.pdf");
+            GlyphLayoutFormDin91379.test("GlyphLayoutFormDin91379.pdf");
+            GlyphLayoutInputStream.test("GlyphLayoutInputStream.pdf");
+            GlyphLayoutKernLiga.test(" GlyphLayoutKernLiga.pdf");
+            GlyphLayoutKernLigaPerFont.test("GlyphLayoutKernLigaPerFont.pdf");
+            GlyphLayoutBidiRotated.test("GlyphLayoutBidiRotated.pdf");
+            GlyphLayoutWithImage.test("GlyphLayoutWithImage.pdf");
+        } catch (FontLoadException | IOException e) {
+            System.err.println(e);
+        }
     }
 }
