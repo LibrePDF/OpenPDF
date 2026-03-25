@@ -131,6 +131,7 @@ public class PdfVersionImp implements PdfVersion {
         int minor2 = (p2.length > 1) ? Integer.parseInt(p2[1]) : 0;
         return Integer.compare(minor1, minor2);
     }
+
     /**
      * @see org.openpdf.text.pdf.interfaces.PdfVersion#setPdfVersion(org.openpdf.text.pdf.PdfName)
      */
