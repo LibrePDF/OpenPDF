@@ -306,7 +306,8 @@ public class GlyphLayoutFontManager {
      * @param font           OpenPdf  font
      * @param filename       of the font file
      * @param textAttributes test attributes of the font
-     * @throws RuntimeException if font can not be loaded
+     *
+     * @throws FontLoadException if font can not be loaded
      */
     protected void loadAwtFont(org.openpdf.text.Font font, String filename,
             Map<TextAttribute, Object> textAttributes) throws FontLoadException {
@@ -335,7 +336,9 @@ public class GlyphLayoutFontManager {
      * @param textAttributes text attributes
      * @param inputStream    input stream
      * @param baseFont       base font
-     * @throws FontLoadException if the font can not be loaded
+     *
+     * @throws IOException if an IO error occurs
+     * @throws FontFormatException if the font format is wrong
      */
     protected void loadAwtFontFromInputStream(Map<TextAttribute, Object> textAttributes, InputStream inputStream,
             BaseFont baseFont) throws FontFormatException, IOException {
