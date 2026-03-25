@@ -61,6 +61,7 @@ public class GlyphLayoutManager {
     private boolean writeActualText;
 
     private int defaultBidiDirection = Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT;
+    private final static int DIRECTION_UNKNOWN = -42;
 
     /**
      * Creates a GlyphLayoutManager
@@ -226,8 +227,12 @@ public class GlyphLayoutManager {
         char[] chars = text.toCharArray();
         java.awt.Font awtFont = glyphLayoutFontManager.getFont(baseFont, fontSize);
         int bidiFlags = getFontRunDirection(baseFont, fontSize);
-        if (bidiFlags < 0) {
+        if (bidiFlags == DIRECTION_UNKNOWN) {
             bidiFlags = computeBidiFlags(text);
+        }
+        // Direction should be RTL or LTR now, not MIXED
+        if (bidiFlags == DIRECTION_UNKNOWN) {
+            throw new IllegalStateException("Bidi direction unknown");
         }
         return awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, bidiFlags);
     }
@@ -280,7 +285,7 @@ public class GlyphLayoutManager {
             } else if (bidi.isLeftToRight()) {
                 bidiFlags = java.awt.Font.LAYOUT_LEFT_TO_RIGHT;
             } else {
-                throw new RuntimeException("not reached");
+                bidiFlags = DIRECTION_UNKNOWN;
             }
         }
         return bidiFlags;
@@ -293,7 +298,7 @@ public class GlyphLayoutManager {
      * @return Font.LAYOUT_LEFT_TO_RIGHT or Font.LAYOUT_RIGHT_TO_LEFT if direction is set for this font or -1 otherwise
      */
     protected int getFontRunDirection(BaseFont baseFont, float fontSize) {
-        int bidiFlags = -1;
+        int bidiFlags = DIRECTION_UNKNOWN;
         java.awt.Font awtFont = glyphLayoutFontManager.getFont(baseFont, fontSize);
 
         Map<TextAttribute, ?> textAttributes = awtFont.getAttributes();
