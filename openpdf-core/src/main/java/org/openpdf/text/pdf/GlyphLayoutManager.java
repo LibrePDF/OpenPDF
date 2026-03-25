@@ -62,11 +62,18 @@ public class GlyphLayoutManager {
 
     private int defaultBidiDirection = Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT;
 
+    /**
+     * Creates a GlyphLayoutManager
+     */
     public GlyphLayoutManager() {
         this(new GlyphLayoutFontManager());
     }
 
-    @SuppressWarnings("deprecation")
+    /**
+     * Creates a GlyphLayoutManager
+     *
+     * @param glyphLayoutFontManager font manager
+     */
     public GlyphLayoutManager(GlyphLayoutFontManager glyphLayoutFontManager) {
         this.glyphLayoutFontManager = glyphLayoutFontManager;
         if (LayoutProcessor.isEnabled()) {
@@ -142,11 +149,12 @@ public class GlyphLayoutManager {
     }
 
     /**
-     * Loads an OpenPdf-Font and the corresponding AWT-Font only Truetype/OpenTyoe-Fonts are supported
+     * Loads an OpenPdf-Font and the corresponding AWT-Font Only Truetype/OpenTyoe-Fonts are supported
      *
      * @param inputStream input stream of the font*
      * @param fontSize    Size
      * @return the loaded OpenPdf-Font
+     * @throws FontLoadException if font can not be loaded
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize)
             throws FontLoadException {
@@ -154,12 +162,13 @@ public class GlyphLayoutManager {
     }
 
     /**
-     * Loads an OpenPdf-Font and the corresponding AWT font only Truetype/OpenTyoe-Fonts are supported
+     * Loads an OpenPdf-Font and the corresponding AWT font Only Truetype/OpenTyoe-Fonts are supported
      *
      * @param inputStream input stream of the font
      * @param fontSize    Size
      * @param fontOptions font options
      * @return the loaded OpenPdf font
+     * @throws FontLoadException if font can not be loaded
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize,
             FontOptions fontOptions) throws FontLoadException {
@@ -167,23 +176,25 @@ public class GlyphLayoutManager {
     }
 
     /**
-     * Loads an OpenPdf-Font and the corresponding AWT font only Truetype/OpenType-Fonts are supported
+     * Loads an OpenPdf-Font and the corresponding AWT font Only Truetype/OpenType-Fonts are supported
      *
      * @param path     of the font file
      * @param fontSize size
      * @return the loaded OpenPdf font
+     * @throws FontLoadException if font can not be loaded
      */
     public org.openpdf.text.Font loadFont(String path, float fontSize) throws FontLoadException {
         return glyphLayoutFontManager.loadFont(path, fontSize);
     }
 
     /**
-     * Loads an OpenPdf-Font and the corresponding AWT font only Truetype/OpenType-Fonts are supported
+     * Loads an OpenPdf-Font and the corresponding AWT font Only Truetype/OpenType-Fonts are supported
      *
      * @param path        of the font file
      * @param fontSize    size
      * @param fontOptions options
      * @return the loaded OpenPdf font
+     * @throws FontLoadException if font can not be loaded
      */
     public org.openpdf.text.Font loadFont(String path, float fontSize,
             FontOptions fontOptions) throws FontLoadException {
@@ -219,6 +230,37 @@ public class GlyphLayoutManager {
             bidiFlags = computeBidiFlags(text);
         }
         return awtFont.layoutGlyphVector(fontRenderContext, chars, 0, chars.length, bidiFlags);
+    }
+
+    /**
+     * Shows a text using glyph positioning (if needed)
+     *
+     * @param cb       object containing the content of the page
+     * @param baseFont base font to use
+     * @param fontSize font size to apply
+     * @param text     text to show
+     */
+    public void showText(PdfContentByte cb, BaseFont baseFont, float fontSize, String text) {
+
+        if (ifMixedThenDivideTextAndShow(cb, baseFont, fontSize, text)) {
+            return;
+        }
+        GlyphVector glyphVector = computeGlyphVector(baseFont, fontSize, text);
+        completeCmap(cb, baseFont, text, glyphVector);
+
+        if (writeActualText) {
+            beginMarkedContentSequence(cb, text);
+        }
+
+        if (hasNoAdjustments(glyphVector)) {
+            cb.showText(glyphVector);
+        } else {
+            adjustAndShowText(cb, fontSize, glyphVector);
+        }
+
+        if (writeActualText) {
+            endMarkedContentSequence(cb);
+        }
     }
 
     /**
@@ -275,36 +317,6 @@ public class GlyphLayoutManager {
         return new FontRenderContext(new AffineTransform(), false, true);
     }
 
-    /**
-     * Shows a text using glyph positioning (if needed)
-     *
-     * @param cb       object containing the content of the page
-     * @param baseFont base font to use
-     * @param fontSize font size to apply
-     * @param text     text to show
-     */
-    public void showText(PdfContentByte cb, BaseFont baseFont, float fontSize, String text) {
-
-        if (ifMixedThenDivideTextAndShow(cb, baseFont, fontSize, text)) {
-            return;
-        }
-        GlyphVector glyphVector = computeGlyphVector(baseFont, fontSize, text);
-        completeCmap(cb, baseFont, text, glyphVector);
-
-        if (writeActualText) {
-            beginMarkedContentSequence(cb, text);
-        }
-
-        if (hasNoAdjustments(glyphVector)) {
-            cb.showText(glyphVector);
-        } else {
-            adjustAndShowText(cb, fontSize, glyphVector);
-        }
-
-        if (writeActualText) {
-            endMarkedContentSequence(cb);
-        }
-    }
 
     /**
      * Check if bidi is mixed, then call showText for each part

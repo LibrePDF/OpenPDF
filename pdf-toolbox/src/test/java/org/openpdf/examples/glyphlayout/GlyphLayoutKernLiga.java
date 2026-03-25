@@ -12,11 +12,13 @@
  */
 package org.openpdf.examples.glyphlayout;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
 import org.openpdf.text.pdf.GlyphLayoutFontManager.FontOptions;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
@@ -28,10 +30,10 @@ public class GlyphLayoutKernLiga {
 
     public static String INTRO_TEXT =
             """
-                    Test of glyph layout with kerning and ligatures
-
-                    Using GlyphLayoutManager for glyph layout with Java built-in routines.
-            """;
+                            Test of glyph layout with kerning and ligatures
+                    
+                            Using GlyphLayoutManager for glyph layout with Java built-in routines.
+                    """;
 
     public static String TEST_TEXT =
             "AVATAR Vector TeX ff ffi ffl fi fl.";
@@ -42,20 +44,25 @@ public class GlyphLayoutKernLiga {
      * @param args -- not used
      */
     public static void main(String[] args) throws Exception {
-        test("GlyphLayoutKernLiga.pdf");
+        try {
+            test("GlyphLayoutKernLiga.pdf");
+        } catch (FontLoadException e) {
+            System.err.println(e);
+        }
     }
 
     /**
      * Run the test: Show kerning and ligatures
      *
      * @param fileName Name of output file
-     * @throws Exception if an error occurs
+     * @throws FontLoadException if font can not be loaded
+     * @throws IOException       if an IO error occurs
      */
-    public static void test(String fileName) throws Exception {
+    public static void test(String fileName) throws FontLoadException, IOException {
 
         float fontSize = 12.0f;
         // Switch kerning and ligatures on fpr all fonts.
-        GlyphLayoutManager glyphLayoutManager  =
+        GlyphLayoutManager glyphLayoutManager =
                 new GlyphLayoutManager().setDefaultFontOptions(new FontOptions().setKerningOn().setLigaturesOn());
         // The  OpenType fonts loaded with glyphLayoutManager.loadFont() are
         // available for glyph layout. Only these fonts can be used.

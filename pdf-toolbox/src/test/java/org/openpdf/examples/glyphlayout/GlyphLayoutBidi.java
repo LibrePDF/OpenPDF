@@ -29,17 +29,21 @@ public class GlyphLayoutBidi {
 
     public static String INTRO_TEXT =
             """
-            Test of bidirectional text
-            Using GlyphLayoutManager for glyph layout with Java built-in routines.
-            """;
+                    Test of bidirectional text
+                    Using GlyphLayoutManager for glyph layout with Java built-in routines.
+                    """;
 
     /**
      * Main method
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
-        test("GlyphLayoutBidi.pdf");
+    public static void main(String[] args) {
+        try {
+            test("GlyphLayoutBidi.pdf");
+        } catch (FontLoadException e) {
+            System.err.println(e);
+        }
     }
 
     /**
@@ -49,17 +53,13 @@ public class GlyphLayoutBidi {
      */
     public static void test(String fileName) throws FontLoadException {
         float fontSize = 12.0f;
-        GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
+        GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
         // The  OpenType fonts loaded with glyphLayoutManager.loadFont() are
         // available for glyph layout. Only these fonts can be used.
         String fontDir = "org/openpdf/examples/fonts/";
-        try {
-            Font sans = glyphLayoutManager.loadFont(fontDir + "noto/NotoSans-Regular.ttf", fontSize);
-            Font sansArabic = glyphLayoutManager.loadFont(fontDir + "noto/NotoSansArabic-Regular.ttf",
-                    fontSize);
-        } catch (FontLoadException e) {
-            System.err.println(e);
-        }
+        Font sans = glyphLayoutManager.loadFont(fontDir + "noto/NotoSans-Regular.ttf", fontSize);
+        Font sansArabic = glyphLayoutManager.loadFont(fontDir + "noto/NotoSansArabic-Regular.ttf",
+                fontSize);
 
         // Process the document with glyphLayoutManager
         try (Document document = new Document().setGlyphLayoutManager(glyphLayoutManager)) {

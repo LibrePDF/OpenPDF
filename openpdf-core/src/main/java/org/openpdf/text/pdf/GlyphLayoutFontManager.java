@@ -68,17 +68,6 @@ public class GlyphLayoutFontManager {
     private FontOptions defaultFontOptions = new FontOptions();
     private FontCaching fontCaching = FontCaching.DEFAULT;
 
-    public static class FontLoadException extends IOException {
-        FontLoadException(String s, Exception e) {
-            super(s, e);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + "Cause: " + getCause().toString();
-        }
-    }
-
     /**
      * Creates a byte array from an input stream
      *
@@ -142,6 +131,7 @@ public class GlyphLayoutFontManager {
      * @param inputStream inputStream or font
      * @param fontSize    font size
      * @return Loaded OpenPdf font
+     * @throws FontLoadException if the font can not be loaded
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize)
             throws FontLoadException {
@@ -155,9 +145,10 @@ public class GlyphLayoutFontManager {
      * @param fontSize    font size
      * @param fontOptions Options for the AWT-font
      * @return Loaded OpenPdf font
+     * @throws FontLoadException if the font can not be loaded
      */
     public org.openpdf.text.Font loadFont(String name, InputStream inputStream, float fontSize,
-            FontOptions fontOptions) throws IOException {
+            FontOptions fontOptions) throws FontLoadException {
 
         if (inputStream == null) {
             throw new NullPointerException("inputStream is null for " + name);
@@ -165,7 +156,7 @@ public class GlyphLayoutFontManager {
         if (!(name.toLowerCase().endsWith(".ttf")
                 || name.toLowerCase().endsWith(".otf")
                 || name.toLowerCase().contains(".ttc,"))) {
-            throw new IllegalArgumentException("Name has to end with '.ttf', 'otf', or '.ttc,[number]'. name=" + name);
+            throw new FontLoadException("Name has to end with '.ttf', 'otf', or '.ttc,[number]'. name=" + name);
         }
 
         Font font = null;
@@ -178,7 +169,7 @@ public class GlyphLayoutFontManager {
         try {
             fontBytes = createByteArray(inputStream);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FontLoadException("Inputstream can not be read. Name=" + name, e);
         }
 
         BaseFont baseFont = null;
@@ -198,7 +189,7 @@ public class GlyphLayoutFontManager {
             InputStream inputStream2 = new ByteArrayInputStream(fontBytes);
             try {
                 loadAwtFontFromInputStream(textAttributes, inputStream2, baseFont);
-            } catch (FontFormatException e) {
+            } catch (IOException | FontFormatException e) {
                 throw new FontLoadException("Exception loading AWT font from inputStream for " + name, e);
             }
         }
@@ -211,6 +202,7 @@ public class GlyphLayoutFontManager {
      * @param path     Path of font file
      * @param fontSize font size
      * @return Loaded OpenPdf font
+     * @throws FontLoadException if the font can not be loaded
      */
     public org.openpdf.text.Font loadFont(String path, float fontSize) throws FontLoadException {
         return loadFont(path, fontSize, null);
@@ -224,6 +216,7 @@ public class GlyphLayoutFontManager {
      * @param fontSize    font size
      * @param fontOptions Options for the AWT-font
      * @return Loaded OpenPdf font
+     * @throws FontLoadException if the font can not be loaded
      */
     public org.openpdf.text.Font loadFont(String path, float fontSize, FontOptions fontOptions)
             throws FontLoadException {
@@ -243,6 +236,17 @@ public class GlyphLayoutFontManager {
         return font;
     }
 
+    /**
+     * Set default font options for all AWT-fonts loaded by this class
+     *
+     * @param fontOptions font options
+     * @return this GlyphLayoutFontManager
+     */
+    public GlyphLayoutFontManager setDefaultFontOptions(FontOptions fontOptions) {
+        defaultFontOptions = fontOptions;
+        return this;
+    }
+
     protected boolean isCaching(FontOptions fontOptions) {
         // cached has to be set to 'false', to allow different text attributes for instances of one font
         return switch (fontCaching) {
@@ -258,17 +262,6 @@ public class GlyphLayoutFontManager {
             textAttributes.putAll(fontOptions.getTextAttributes());
         }
         return textAttributes;
-    }
-
-    /**
-     * Set default font options for all AWT-fonts loaded by this class
-     *
-     * @param fontOptions font options
-     * @return this GlyphLayoutFontManager
-     */
-    public GlyphLayoutFontManager setDefaultFontOptions(FontOptions fontOptions) {
-        defaultFontOptions = fontOptions;
-        return this;
     }
 
     protected InputStream getInputStream(String filename) throws FontLoadException {
@@ -327,7 +320,7 @@ public class GlyphLayoutFontManager {
         }
         java.awt.Font awtFont = awtFontMap.get(baseFont);
         if (awtFont == null) {
-            try (InputStream inputStream = getInputStream(filename)){
+            try (InputStream inputStream = getInputStream(filename)) {
                 loadAwtFontFromInputStream(textAttributes, inputStream, baseFont);
             } catch (IOException | FontFormatException e) {
                 throw new FontLoadException("Exception loading AWT font from " + filename, e);
@@ -339,8 +332,8 @@ public class GlyphLayoutFontManager {
      * Creates an AWT font from an input stream
      *
      * @param textAttributes text attributes
-     * @param inputStream input stream
-     * @param baseFont base font
+     * @param inputStream    input stream
+     * @param baseFont       base font
      * @throws FontLoadException if the font can not be loaded
      */
     protected void loadAwtFontFromInputStream(Map<TextAttribute, Object> textAttributes, InputStream inputStream,
@@ -362,6 +355,26 @@ public class GlyphLayoutFontManager {
         DEFAULT,
         ON,
         OFF
+    }
+
+    /**
+     * FontLoadException
+     */
+    public static class FontLoadException extends Exception {
+
+        public FontLoadException(String s, Exception e) {
+            super(s, e);
+        }
+
+        public FontLoadException(String s) {
+            super(s);
+        }
+
+
+        @Override
+        public String toString() {
+            return super.toString() + (getCause() == null ? "" : "Cause: " + getCause().toString());
+        }
     }
 
     /**

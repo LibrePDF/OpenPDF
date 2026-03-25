@@ -13,17 +13,18 @@ package org.openpdf.examples.glyphlayout;
 
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import org.openpdf.text.Font;
 import org.openpdf.text.pdf.AcroFields;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfReader;
 import org.openpdf.text.pdf.PdfStamper;
 
 /**
- * Prints characters and sequences of DIN 91379 with correct glyph layout
- * in a PDF form
+ * Prints characters and sequences of DIN 91379 with correct glyph layout in a PDF form
  */
 public class GlyphLayoutFormDin91379 {
 
@@ -38,7 +39,11 @@ public class GlyphLayoutFormDin91379 {
      * @param args -- not used
      */
     public static void main(String[] args) throws Exception {
-        test("GlyphLayoutFormDin91379.pdf");
+        try {
+            test("GlyphLayoutFormDin91379.pdf");
+        } catch (FontLoadException | IOException e) {
+            System.err.println(e);
+        }
     }
 
     /**
@@ -47,11 +52,11 @@ public class GlyphLayoutFormDin91379 {
      * @param fileName Name of output file
      * @throws Exception in case of error
      */
-    public static void test(String fileName) throws Exception {
+    public static void test(String fileName) throws FontLoadException, IOException {
         String formPath = "org/openpdf/examples/fonts/form/PdfFormGlyphLayoutManager.pdf";
         String text = TEXT_INTRO + LATIN_CHARS_DIN_91379 + LATIN_CHARS_DIN_91379_MATH + LATIN_CHARS_ADDITIONAL;
 
-        GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
+        GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
 
         try (InputStream acroFormInputStream = GlyphLayoutFormDin91379.class.getClassLoader()
                 .getResourceAsStream(formPath);

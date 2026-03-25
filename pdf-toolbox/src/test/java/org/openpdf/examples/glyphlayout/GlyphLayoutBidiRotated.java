@@ -12,12 +12,14 @@
  */
 package org.openpdf.examples.glyphlayout;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
 import org.openpdf.text.PageSize;
+import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
@@ -27,7 +29,7 @@ import org.openpdf.text.pdf.PdfWriter;
 public class GlyphLayoutBidiRotated {
 
     public static String INTRO_TEXT =
-                    """
+            """
                     Test for bidirectional text and rotated page
                     Using GlyphLayoutManager for glyph layout with Java built-in routines.
                     
@@ -45,7 +47,11 @@ public class GlyphLayoutBidiRotated {
      * @param args -- not used
      */
     public static void main(String[] args) throws Exception {
-        test("GlyphLayoutBidiRotated.pdf");
+        try {
+            test("GlyphLayoutBidiRotated.pdf");
+        } catch (FontLoadException | IOException e) {
+            System.err.println(e);
+        }
     }
 
     /**
@@ -54,10 +60,10 @@ public class GlyphLayoutBidiRotated {
      * @param fileName Name of output file
      * @throws Exception if an error occurs
      */
-    public static void test(String fileName) throws Exception {
+    public static void test(String fileName) throws FontLoadException, IOException {
 
         float fontSize = 12.0f;
-        GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
+        GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
         // The  OpenType fonts loaded with glyphLayoutManager.loadFont() are
         // available for glyph layout. Only these fonts can be used.
         String fontDir = "org/openpdf/examples/fonts/";

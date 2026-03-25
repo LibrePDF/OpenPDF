@@ -23,7 +23,7 @@ public class RunGlyphLayoutExamplesFailing {
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         try {
             // Using fonts that have not been loaded with GlyphLayoutManager will throw exception

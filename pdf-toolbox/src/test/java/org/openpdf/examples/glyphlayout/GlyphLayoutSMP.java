@@ -11,6 +11,7 @@
  */
 package org.openpdf.examples.glyphlayout;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
@@ -29,10 +30,10 @@ public class GlyphLayoutSMP {
 
     private static final String TEXT_INTRO =
             """
-            Test of Letters from the Supplementary Multilingual Plane
-            Mathematical Alphanumeric Symbols
-
-            """;
+                    Test of Letters from the Supplementary Multilingual Plane
+                    Mathematical Alphanumeric Symbols
+                    
+                    """;
 
     private static final int[] MATHEMATICAL_CODEPOINTS = new int[]{0x1D504, 0x1D505, 0x212D, 0x1D507, 0x1D508, 0x1D509,
             0x1D50A, 0x210C, 0x2111, 0x1D50D, 0x1D50E, 0x1D50F, 0x1D510, 0x1D511, 0x1D512, 0x1D513, 0x1D514, 0x211C,
@@ -64,7 +65,7 @@ public class GlyphLayoutSMP {
     public static void main(String[] args) {
         try {
             test("GlyphLayoutSMP.pdf");
-        } catch (FontLoadException e) {
+        } catch (FontLoadException | IOException e) {
             System.err.println(e);
         }
     }
@@ -74,10 +75,10 @@ public class GlyphLayoutSMP {
      *
      * @param fileName Name of output file
      */
-    public static void test(String fileName) throws FontLoadException {
+    public static void test(String fileName) throws FontLoadException, IOException {
 
         float fontSize = 12.0f;
-        GlyphLayoutManager glyphLayoutManager  = new GlyphLayoutManager();
+        GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
         // The  OpenType fonts loaded with glyphLayoutManager.loadFont() are
         // available for glyph layout. Only these fonts can be used.
         String fontDir = "org/openpdf/examples/fonts/";

@@ -57,10 +57,12 @@ public class RunGlyphLayoutExamplesMultithreading {
     }
 
     public interface Example {
+
         void test(String name) throws Exception;
     }
 
     private static class MyThread extends Thread {
+
         private final Example example;
 
         MyThread(final String name, Example example) {
