@@ -1,7 +1,6 @@
 package org.openpdf.text.pdf;
 
 import org.openpdf.text.*;
-import org.openpdf.text.pdf.BaseFont;
 
 import java.io.FileOutputStream;
 

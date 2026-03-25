@@ -112,11 +112,15 @@ class Pdf20ComplianceTest {
         int len = Math.min(pdfBytes.length, 4096);
         String header = new String(pdfBytes, 0, len, StandardCharsets.ISO_8859_1);
         int idx = header.indexOf("%PDF-");
-        if (idx < 0) throw new IllegalStateException("PDF header not found");
+        if (idx < 0) {
+            throw new IllegalStateException("PDF header not found");
+        }
         int start = idx + 5, end = start;
         while (end < header.length()) {
             char c = header.charAt(end);
-            if (!Character.isDigit(c) && c != '.') break;
+            if (!Character.isDigit(c) && c != '.') {
+                break;
+            }
             end++;
         }
         return header.substring(start, end);
@@ -127,13 +131,19 @@ class Pdf20ComplianceTest {
         try {
             Method m = reader.getClass().getMethod("getPdfVersion");
             Object v = m.invoke(reader);
-            if (v == null) return null;
+            if (v == null) {
+                return null;
+            }
             if (v instanceof Character) {
                 char c = (Character) v;
-                if (Character.isDigit(c)) return "1." + c;
+                if (Character.isDigit(c)) {
+                    return "1." + c;
+                }
                 return String.valueOf(c);
             }
-            if (v instanceof String) return (String) v;
+            if (v instanceof String) {
+                return (String) v;
+            }
         } catch (NoSuchMethodException ignored) {
             // Older/newer forks may differ; ignore gracefully.
         } catch (Exception e) {
