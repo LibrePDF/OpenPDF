@@ -260,6 +260,8 @@ public abstract class Image extends Rectangle {
 
     // member variables
     public static final int[] PNGID = {137, 80, 78, 71, 13, 10, 26, 10};
+    private static final int INDEXED_NO_TRANSPARENCY = -1;
+    private static final int INDEXED_UNSUPPORTED_TRANSPARENCY = -2;
     /**
      * a static that is used for attributing a unique id to each image.
      */
@@ -828,61 +830,68 @@ public abstract class Image extends Rectangle {
                 forceBW = true;
             }
 
-            // Handle indexed color images
-            if (bi.getColorModel() instanceof IndexColorModel && !forceBW) {
-                IndexColorModel icm = (IndexColorModel) bi.getColorModel();
-                int mapSize = icm.getMapSize();
-                int bitsPerPixel = icm.getPixelSize();
+            // Handle indexed color images when transparency can be represented directly.
+            // More complex alpha (for example semi-transparency) must fallback to the generic RGB+SMask path below
+            if (bi.getColorModel() instanceof IndexColorModel icm && !forceBW && color == null) {
+                int transparentIndex = getIndexedTransparentPaletteIndex(icm);
+                if (transparentIndex != INDEXED_UNSUPPORTED_TRANSPARENCY) {
+                    int mapSize = icm.getMapSize();
+                    int bitsPerPixel = icm.getPixelSize();
 
-                // Ensure bits per pixel is valid (1, 2, 4, or 8)
-                // For PDF indexed images, bpc should be the bits needed to index the palette
-                if (bitsPerPixel > 8 || bitsPerPixel == 0) {
-                    bitsPerPixel = 8;
-                } else if (bitsPerPixel > 4) {
-                    bitsPerPixel = 8;
-                } else if (bitsPerPixel > 2) {
-                    bitsPerPixel = 4;
-                } else if (bitsPerPixel > 1) {
-                    bitsPerPixel = 2;
-                } else {
-                    bitsPerPixel = 1;
+                    // Ensure bits per pixel is valid (1, 2, 4, or 8)
+                    // For PDF indexed images, bpc should be the bits needed to index the palette
+                    if (bitsPerPixel > 8 || bitsPerPixel == 0) {
+                        bitsPerPixel = 8;
+                    } else if (bitsPerPixel > 4) {
+                        bitsPerPixel = 8;
+                    } else if (bitsPerPixel > 2) {
+                        bitsPerPixel = 4;
+                    } else if (bitsPerPixel > 1) {
+                        bitsPerPixel = 2;
+                    } else {
+                        bitsPerPixel = 1;
+                    }
+
+                    // Extract palette data
+                    byte[] reds = new byte[mapSize];
+                    byte[] greens = new byte[mapSize];
+                    byte[] blues = new byte[mapSize];
+                    icm.getReds(reds);
+                    icm.getGreens(greens);
+                    icm.getBlues(blues);
+
+                    // Build palette as RGB byte array
+                    byte[] palette = new byte[mapSize * 3];
+                    for (int i = 0; i < mapSize; i++) {
+                        palette[i * 3] = reds[i];
+                        palette[i * 3 + 1] = greens[i];
+                        palette[i * 3 + 2] = blues[i];
+                    }
+
+                    // Extract pixel indices
+                    int width = bi.getWidth();
+                    int height = bi.getHeight();
+                    byte[] pixelData = generateIndexedColorPixelData(width, bitsPerPixel, height, bi.getRaster());
+                    // Create indexed image with palette
+                    Image img = Image.getInstance(width, height, 1, bitsPerPixel, pixelData);
+
+                    // Set up indexed colorspace: [/Indexed /DeviceRGB maxIndex palette]
+                    PdfArray indexed = new PdfArray();
+                    indexed.add(PdfName.INDEXED);
+                    indexed.add(PdfName.DEVICERGB);
+                    indexed.add(new PdfNumber(mapSize - 1));
+                    indexed.add(new PdfString(palette));
+
+                    PdfDictionary additional = new PdfDictionary();
+                    additional.put(PdfName.COLORSPACE, indexed);
+                    img.setAdditional(additional);
+                    if (transparentIndex >= 0) {
+                        img.setTransparency(new int[]{transparentIndex, transparentIndex});
+                    }
+
+                    return img;
                 }
-
-                // Extract palette data
-                byte[] reds = new byte[mapSize];
-                byte[] greens = new byte[mapSize];
-                byte[] blues = new byte[mapSize];
-                icm.getReds(reds);
-                icm.getGreens(greens);
-                icm.getBlues(blues);
-
-                // Build palette as RGB byte array
-                byte[] palette = new byte[mapSize * 3];
-                for (int i = 0; i < mapSize; i++) {
-                    palette[i * 3] = reds[i];
-                    palette[i * 3 + 1] = greens[i];
-                    palette[i * 3 + 2] = blues[i];
-                }
-
-                // Extract pixel indices
-                int width = bi.getWidth();
-                int height = bi.getHeight();
-                byte[] pixelData = generateIndexedColorPixelData(width, bitsPerPixel, height, bi.getRaster());
-                // Create indexed image with palette
-                Image img = Image.getInstance(width, height, 1, bitsPerPixel, pixelData);
-
-                // Set up indexed colorspace: [/Indexed /DeviceRGB maxIndex palette]
-                PdfArray indexed = new PdfArray();
-                indexed.add(PdfName.INDEXED);
-                indexed.add(PdfName.DEVICERGB);
-                indexed.add(new PdfNumber(mapSize - 1));
-                indexed.add(new PdfString(palette));
-
-                PdfDictionary additional = new PdfDictionary();
-                additional.put(PdfName.COLORSPACE, indexed);
-                img.setAdditional(additional);
-
-                return img;
+                // Unsupported indexed transparency falls through to the generic RGB+SMask path below.
             }
         }
 
@@ -1097,6 +1106,21 @@ public abstract class Image extends Rectangle {
             }
         }
         return pixelData;
+    }
+
+    private static int getIndexedTransparentPaletteIndex(IndexColorModel colorModel) {
+        int transparentIndex = INDEXED_NO_TRANSPARENCY;
+        for (int index = 0; index < colorModel.getMapSize(); index++) {
+            int alpha = colorModel.getAlpha(index);
+            if (alpha == 0xFF) {
+                continue;
+            }
+            if (alpha != 0x00 || transparentIndex != INDEXED_NO_TRANSPARENCY) {
+                return INDEXED_UNSUPPORTED_TRANSPARENCY;
+            }
+            transparentIndex = index;
+        }
+        return transparentIndex;
     }
 
     /**
