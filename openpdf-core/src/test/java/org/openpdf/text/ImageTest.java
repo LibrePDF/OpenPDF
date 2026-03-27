@@ -177,4 +177,39 @@ class ImageTest {
         assertThat(image.getAdditional().get(PdfName.COLORSPACE)).isNotNull();
     }
 
+    @Test
+    void shouldFallbackToRgbWhenIndexedColorHasTransparency() throws Exception {
+        int width = 10;
+        int height = 10;
+
+        byte[] reds = {(byte) 255, 0, 0, 0};
+        byte[] greens = {0, (byte) 255, 0, 0};
+        byte[] blues = {0, 0, (byte) 255, 0};
+        byte[] alphas = {0, (byte) 128, (byte) 255, (byte) 255};
+
+        IndexColorModel colorModel = new IndexColorModel(
+                2,
+                4,
+                reds, greens, blues, alphas
+        );
+
+        BufferedImage bufferedImage = new BufferedImage(
+                width, height, BufferedImage.TYPE_BYTE_INDEXED, colorModel
+        );
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                bufferedImage.getRaster().setSample(x, y, 0, (x + y) % 4);
+            }
+        }
+
+        Image image = Image.getInstance(bufferedImage, null);
+
+        assertNotNull(image);
+        assertThat(image.getColorspace()).isEqualTo(3);
+        assertThat(image.getImageMask()).isNotNull();
+        assertThat(image.getImageMask().isMask()).isTrue();
+        assertThat(image.isSmask()).isTrue();
+    }
+
 }
