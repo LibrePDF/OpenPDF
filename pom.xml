@@ -5,7 +5,7 @@
 
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf-parent</artifactId>
-  <version>3.0.3-SNAPSHOT</version> <!-- artifact.version -->
+  <version>3.0.4-SNAPSHOT</version> <!-- artifact.version -->
   <packaging>pom</packaging>
 
   <!-- please run mvn tidy:pom once in a while -->
@@ -66,7 +66,7 @@
 
     <!-- Maven Plugins versions -->
     <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
-    <maven-bundle-plugin.version>6.0.0</maven-bundle-plugin.version>
+    <maven-bundle-plugin.version>6.0.2</maven-bundle-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
@@ -92,12 +92,12 @@
     <jcommon.version>1.0.24</jcommon.version>
     <jfreechart.version>1.5.6</jfreechart.version>
     <pdf-renderer.version>1.0.5</pdf-renderer.version>
-    <error_prone.version>2.47.0</error_prone.version>
+    <error_prone.version>2.48.0</error_prone.version>
     <slf4j.version>2.0.17</slf4j.version>
 
     <!-- test-dependencies -->
     <assertj.version>3.27.7</assertj.version>
-    <checkstyle.version>13.2.0</checkstyle.version>
+    <checkstyle.version>13.3.0</checkstyle.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <junit.version>6.0.3</junit.version>
     <mockito5.version>5.18.0</mockito5.version>

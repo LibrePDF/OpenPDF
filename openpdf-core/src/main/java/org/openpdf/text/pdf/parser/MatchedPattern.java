@@ -53,16 +53,15 @@ public class MatchedPattern {
     private final float[] coordinates = new float[4];
 
     /**
-     * Constructor to pair a strip of text with its bounding box coordinates inside a page.
-     * The coordinates system has the origin (0, 0) in the lower left point of the page
-     * and uses PDF points as unit measure.
+     * Constructor to pair a strip of text with its bounding box coordinates inside a page. The coordinates system has
+     * the origin (0, 0) in the lower left point of the page and uses PDF points as unit measure.
      *
-     * @param text          string
-     * @param page          int
-     * @param llx           float lower left x coordinate
-     * @param lly           float lower left y coordinate
-     * @param urx           float upper right x coordinate
-     * @param ury           float upper right y coordinate
+     * @param text string
+     * @param page int
+     * @param llx  float lower left x coordinate
+     * @param lly  float lower left y coordinate
+     * @param urx  float upper right x coordinate
+     * @param ury  float upper right y coordinate
      */
     MatchedPattern(String text, int page, float llx, float lly, float urx, float ury) {
         this.text = text;
@@ -85,13 +84,21 @@ public class MatchedPattern {
         return coordinates;
     }
 
+    public String printCoordinates() {
+        return "[llx: " + coordinates[0] + ", lly: " + coordinates[1] + ", urx: " + coordinates[2] + ", ury: " + coordinates[3] + "]";
+    }
+
     @Override
     public String toString() {
-        String[] c = new String[4];
-        for(int i = 0; i < 4; i++) {
-            c[i] = String.valueOf(coordinates[i]);
-        }
-        return "[" + String.join(", ", c) + "]";
+        StringBuilder sb = new StringBuilder();
+        sb.append("Text: [")
+                .append(this.text)
+                .append("] - boundingBox: ")
+                .append(this.printCoordinates())
+                .append(" - page: [")
+                .append(this.page)
+                .append("]");
+        return sb.toString();
     }
 
 }
