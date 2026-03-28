@@ -102,7 +102,7 @@ public class GlyphLayoutFontManager {
      *
      * @param baseFont BaseFont
      * @return true if the baseFont is supported
-J     * @throws UnsupportedOperationException if the font has not been loaded with GlyphLayoutManager.loadFont
+     * @throws UnsupportedOperationException if the font has not been loaded with GlyphLayoutManager.loadFont
      */
     public boolean supportsFont(BaseFont baseFont) {
         boolean isSupported = awtFontMap.get(baseFont) != null;
