@@ -284,8 +284,7 @@ public class GlyphLayoutFontManager {
             } else if (filename.startsWith("file:/")
                     || filename.startsWith("https://") || filename.startsWith("jar:")
                     || filename.startsWith("wsjar:")) {
-                String encodedFilename = java.net.URLEncoder.encode(filename, StandardCharsets.UTF_8);
-                inputStream = new URI(encodedFilename).toURL().openStream();
+                inputStream = new URI(filename).toURL().openStream();
             } else if ("-".equals(filename)) {
                 inputStream = System.in;
             } else {
