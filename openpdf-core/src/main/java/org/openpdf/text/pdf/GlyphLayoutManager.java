@@ -224,7 +224,7 @@ public class GlyphLayoutManager {
         FontRenderContext fontRenderContext = createFontRenderContext();
         // specify fractional metrics to compute accurate positions
         char[] chars = text.toCharArray();
-        java.awt.Font awtFont = glyphLayoutFontManager.getFont(baseFont, fontSize);
+        Font awtFont = glyphLayoutFontManager.getAwtFont(baseFont, fontSize);
         int bidiFlags = getFontRunDirection(baseFont, fontSize);
         if (bidiFlags == DIRECTION_UNKNOWN) {
             bidiFlags = computeBidiFlags(text);
@@ -282,7 +282,7 @@ public class GlyphLayoutManager {
             if (bidi.isRightToLeft()) {
                 bidiFlags = Font.LAYOUT_RIGHT_TO_LEFT;
             } else if (bidi.isLeftToRight()) {
-                bidiFlags = java.awt.Font.LAYOUT_LEFT_TO_RIGHT;
+                bidiFlags = Font.LAYOUT_LEFT_TO_RIGHT;
             } else {
                 bidiFlags = DIRECTION_UNKNOWN;
             }
@@ -298,14 +298,14 @@ public class GlyphLayoutManager {
      */
     protected int getFontRunDirection(BaseFont baseFont, float fontSize) {
         int bidiFlags = DIRECTION_UNKNOWN;
-        java.awt.Font awtFont = glyphLayoutFontManager.getFont(baseFont, fontSize);
+        Font awtFont = glyphLayoutFontManager.getAwtFont(baseFont, fontSize);
 
         Map<TextAttribute, ?> textAttributes = awtFont.getAttributes();
         if (textAttributes != null) {
             Object runDirection = textAttributes.get(TextAttribute.RUN_DIRECTION);
             if (runDirection != null) {
-                bidiFlags = runDirection.equals(TextAttribute.RUN_DIRECTION_LTR) ? java.awt.Font.LAYOUT_LEFT_TO_RIGHT :
-                        java.awt.Font.LAYOUT_RIGHT_TO_LEFT;
+                bidiFlags = runDirection.equals(TextAttribute.RUN_DIRECTION_LTR) ? Font.LAYOUT_LEFT_TO_RIGHT :
+                        Font.LAYOUT_RIGHT_TO_LEFT;
             }
         }
         return bidiFlags;
