@@ -12,6 +12,8 @@
 package org.openpdf.examples.glyphlayout;
 
 
+import org.openpdf.text.pdf.LayoutProcessor;
+
 /**
  * Calls the glyph layout examples that are expected to fail
  *
@@ -26,18 +28,32 @@ public class RunGlyphLayoutExamplesFailing {
     public static void main(String[] args) {
 
         try {
+            // Exception while loading font
+            GlyphLayoutFontLoadException.test("GlyphLayoutFontLoadException.pdf");
+        } catch (Exception e) {
+            System.err.println("Expected Exception: "+e);
+        }
+
+        try {
             // Using fonts that have not been loaded with GlyphLayoutManager will throw exception
             GlyphLayoutFontNotLoadedThrowsException.test("GlyphLayoutFontNotLoadedThrowsException.pdf");
         } catch (Exception e) {
-            System.err.println("Expected Exception:");
-            e.printStackTrace();
+            System.err.println("Expected Exception: "+e);
         }
+
+        try {
+            // Exception while loading font
+            GlyphLayoutLayoutProcessorEnabledException.test("GlyphLayoutLayoutProcessorEnabledException.pdf");
+        } catch (Exception e) {
+            System.err.println("Expected Exception: "+e);
+            LayoutProcessor.disable();
+        }
+
         try {
             // Type1 fonts are not supported
             GlyphLayoutType1FontThrowsException.test("GlyphLayoutType1FontThrowsException.pdf");
         } catch (Exception e) {
-            System.err.println("Expected Exception:");
-            e.printStackTrace();
+            System.err.println("Expected Exception: "+e);
         }
     }
 }

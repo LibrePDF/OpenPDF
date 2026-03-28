@@ -221,14 +221,16 @@ public class GlyphLayoutFontManager {
      */
     public org.openpdf.text.Font loadFont(String path, float fontSize, FontOptions fontOptions)
             throws FontLoadException {
-        // cached has to be set to 'false', to allow different sizes and attributes for instances of one font
+        org.openpdf.text.Font font = null;
         Map<TextAttribute, Object> textAttributes = getTextAttributes(fontOptions);
-
-        FontFactory.register(path, null);
-        boolean caching = isCaching(fontOptions);
-        org.openpdf.text.Font font = FontFactory.getFont(path, BaseFont.IDENTITY_H, true, fontSize, Font.UNDEFINED,
-                null, caching);
-
+        try {
+            FontFactory.register(path, null);
+            boolean caching = isCaching(fontOptions);
+            font = FontFactory.getFont(path, BaseFont.IDENTITY_H, true, fontSize, Font.UNDEFINED,
+                    null, caching);
+        } catch (Exception e) {
+            throw new FontLoadException("Error loading OpenPdf font. Path=" + path, e);
+        }
         BaseFont baseFont = font.getBaseFont();
         if (!(baseFont instanceof TrueTypeFontUnicode)) {
             throw new FontLoadException("Only OpenType/TrueTypeFonts are allowed. Path=" + path);
@@ -377,7 +379,7 @@ public class GlyphLayoutFontManager {
 
         @Override
         public String toString() {
-            return super.toString() + (getCause() == null ? "" : "Cause: " + getCause().toString());
+            return super.toString() + (getCause() == null ? "" : "\n    Cause: " + getCause().toString());
         }
     }
 

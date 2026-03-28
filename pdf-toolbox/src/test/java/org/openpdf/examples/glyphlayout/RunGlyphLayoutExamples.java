@@ -31,12 +31,13 @@ public class RunGlyphLayoutExamples {
         try {
             GlyphLayoutBidi.test("GlyphLayoutBidi.pdf");
             GlyphLayoutBidiPerFont.test("GlyphLayoutBidiPerFont.pdf");
+            GlyphLayoutBidiRotated.test("GlyphLayoutBidiRotated.pdf");
             GlyphLayoutDin91379.test("GlyphLayoutDin91379.pdf");
             GlyphLayoutFormDin91379.test("GlyphLayoutFormDin91379.pdf");
             GlyphLayoutInputStream.test("GlyphLayoutInputStream.pdf");
             GlyphLayoutKernLiga.test(" GlyphLayoutKernLiga.pdf");
             GlyphLayoutKernLigaPerFont.test("GlyphLayoutKernLigaPerFont.pdf");
-            GlyphLayoutBidiRotated.test("GlyphLayoutBidiRotated.pdf");
+            GlyphLayoutSMP.test("GlyphLayoutSMP.pdf");
             GlyphLayoutWithImage.test("GlyphLayoutWithImage.pdf");
         } catch (FontLoadException | IOException e) {
             System.err.println(e);

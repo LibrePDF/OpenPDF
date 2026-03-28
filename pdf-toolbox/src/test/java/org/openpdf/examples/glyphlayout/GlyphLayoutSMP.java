@@ -89,7 +89,8 @@ public class GlyphLayoutSMP {
         String mathFontName = mathFont.getBaseFont().getPostscriptFontName();
 
         // Process the document with glyphLayoutManager
-        try (Document document = new Document().setGlyphLayoutManager(glyphLayoutManager)) {
+        try (Document document = new Document()) {
+            document.setGlyphLayoutManager(glyphLayoutManager);
             PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(fileName)));
             writer.setInitialLeading(16.0f);
             document.open();
