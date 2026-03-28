@@ -47,12 +47,11 @@ public class GlyphLayoutFormDin91379 {
     }
 
     /**
-     * Run the test: Print the characters of DIN 91379 in a Pdf form
+     * Run the test: Print the characters of DIN 91379 in a PDF form
      *
      * @param fileName Name of output file
-     *
-     * @throws FontLoadException,  in case of error while loading font
-     * @throws IOException if an IO-exception occurs
+     * @throws FontLoadException in case of error while loading font
+     * @throws IOException       if an IO-exception occurs
      */
     public static void test(String fileName) throws FontLoadException, IOException {
         String formPath = "org/openpdf/examples/fonts/form/PdfFormGlyphLayoutManager.pdf";
