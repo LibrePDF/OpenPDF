@@ -90,9 +90,6 @@ class TextExtractTest {
         PdfReader reader = new PdfReader(new ByteArrayInputStream(pdfOutput.toByteArray()));
         PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(reader);
 
-        // FileOutputStream test = new FileOutputStream("/tmp/output3.pdf");
-        // pdfOutput.writeTo(test);
-
         // Ignore spaces in comparison
         Assertions.assertEquals("ก ข น ํ้ า ต า ญูญูิ่ ก้กิ้".replaceAll(" ", ""),
                 pdfTextExtractor.getTextFromPage(1).replaceAll(" ", ""));
