@@ -46,7 +46,7 @@ public class GlyphLayoutBidiRotated {
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             test("GlyphLayoutBidiRotated.pdf");
         } catch (FontLoadException | IOException e) {
@@ -58,7 +58,8 @@ public class GlyphLayoutBidiRotated {
      * Run the test: Show kerning and ligatures
      *
      * @param fileName Name of output file
-     * @throws Exception if an error occurs
+     * @throws FontLoadException if font can not be loaded
+     * @throws IOException       if an IO error occurs
      */
     public static void test(String fileName) throws FontLoadException, IOException {
 

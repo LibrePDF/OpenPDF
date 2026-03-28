@@ -36,10 +36,10 @@ public class GlyphLayoutFontNotLoadedThrowsException {
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             test("GlyphLayoutFontNotLoadedThrowsException.pdf");
-        } catch (FontLoadException e) {
+        } catch (FontLoadException | IOException e) {
             System.err.println(e);
         }
     }
@@ -48,6 +48,9 @@ public class GlyphLayoutFontNotLoadedThrowsException {
      * Test (failing of) execution when a font is not loaded using GlyphLayoutManager.loadFont(...)
      *
      * @param fileName Name of output file
+     *
+     * @throws FontLoadException if font can not be loaded
+     * @throws IOException       if an IO error occurs
      */
     public static void test(String fileName) throws FontLoadException, IOException {
 

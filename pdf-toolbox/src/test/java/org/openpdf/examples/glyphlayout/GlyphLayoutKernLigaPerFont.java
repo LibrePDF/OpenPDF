@@ -44,10 +44,10 @@ public class GlyphLayoutKernLigaPerFont {
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             test("GlyphLayoutKernLigaPerFont.pdf");
-        } catch (FontLoadException e) {
+        } catch (FontLoadException | IOException e) {
             System.err.println(e);
         }
     }
@@ -56,6 +56,7 @@ public class GlyphLayoutKernLigaPerFont {
      * Run the test: Show kerning and ligatures
      *
      * @param fileName Name of output file
+     *
      * @throws FontLoadException if font can not be loaded
      * @throws IOException       if an IO error occurs
      */

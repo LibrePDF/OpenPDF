@@ -38,7 +38,7 @@ public class GlyphLayoutFormDin91379 {
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             test("GlyphLayoutFormDin91379.pdf");
         } catch (FontLoadException | IOException e) {
@@ -50,7 +50,9 @@ public class GlyphLayoutFormDin91379 {
      * Run the test: Print the characters of DIN 91379 in a Pdf form
      *
      * @param fileName Name of output file
-     * @throws Exception in case of error
+     *
+     * @throws FontLoadException,  in case of error while loading font
+     * @throws IOException if an IO-exception occurs
      */
     public static void test(String fileName) throws FontLoadException, IOException {
         String formPath = "org/openpdf/examples/fonts/form/PdfFormGlyphLayoutManager.pdf";

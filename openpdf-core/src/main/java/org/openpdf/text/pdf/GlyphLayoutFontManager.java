@@ -55,6 +55,7 @@ import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.openpdf.text.DocumentException;
 import org.openpdf.text.FontFactory;
 import org.openpdf.text.error_messages.MessageLocalization;
@@ -152,7 +153,7 @@ public class GlyphLayoutFontManager {
             FontOptions fontOptions) throws FontLoadException {
 
         if (inputStream == null) {
-            throw new NullPointerException("inputStream is null for " + name);
+            Objects.requireNonNull(inputStream, "inputStream is null for " + name);
         }
         if (!(name.toLowerCase().endsWith(".ttf")
                 || name.toLowerCase().endsWith(".otf")
