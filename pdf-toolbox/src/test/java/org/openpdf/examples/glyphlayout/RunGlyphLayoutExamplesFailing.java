@@ -42,6 +42,13 @@ public class RunGlyphLayoutExamplesFailing {
         }
 
         try {
+            // Using fonts that have not been loaded with GlyphLayoutManager will throw exception
+            GlyphLayoutInputStreamNullThrowsException.test("GlyphLayoutInputStreamNullThrowsException.pdf");
+        } catch (Exception e) {
+            System.err.println("Expected Exception: " + e);
+        }
+
+        try {
             // Exception while loading font
             GlyphLayoutLayoutProcessorEnabledException.test("GlyphLayoutLayoutProcessorEnabledException.pdf");
         } catch (Exception e) {

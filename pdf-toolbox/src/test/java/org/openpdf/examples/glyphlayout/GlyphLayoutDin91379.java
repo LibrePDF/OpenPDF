@@ -107,7 +107,7 @@ public class GlyphLayoutDin91379 {
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             test("GlyphLayoutDin91379.pdf");
         } catch (FontLoadException | IOException e) {
@@ -120,6 +120,9 @@ public class GlyphLayoutDin91379 {
      * Run the test: Print the characters of DIN 91379 in a PDF document
      *
      * @param fileName Name of output file
+     *
+     * @throws FontLoadException if font can not be loaded
+     * @throws IOException       if an IO error occurs
      */
     public static void test(String fileName) throws FontLoadException, IOException {
 

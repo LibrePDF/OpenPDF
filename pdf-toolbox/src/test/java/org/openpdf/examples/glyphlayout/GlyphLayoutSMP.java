@@ -74,6 +74,9 @@ public class GlyphLayoutSMP {
      * Run the test: Print some characters of the supplementary multilingual plane
      *
      * @param fileName Name of output file
+     *
+     * @throws FontLoadException if font can not be loaded
+     * @throws IOException       if an IO error occurs
      */
     public static void test(String fileName) throws FontLoadException, IOException {
 

@@ -43,7 +43,7 @@ public class GlyphLayoutBidiPerFont {
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             test("GlyphLayoutBidiPerFont.pdf");
         } catch (FontLoadException | IOException e) {
@@ -56,7 +56,8 @@ public class GlyphLayoutBidiPerFont {
      * GlyphLayoutBidi and GlyphLayoutBidiRotated
      *
      * @param fileName Name of output file
-     * @throws Exception if an error occurs
+     * @throws FontLoadException if font can not be loaded
+     * @throws IOException       if an IO error occurs
      */
     public static void test(String fileName) throws FontLoadException, IOException {
         float fontSize = 12.0f;
