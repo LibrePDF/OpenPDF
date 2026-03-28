@@ -54,7 +54,7 @@ public class RunGlyphLayoutExamplesMultithreading {
                     GlyphLayoutWithImage::test));
         }
         executorService.shutdown();
-        var ignore = executorService.awaitTermination(MAX, TimeUnit.SECONDS);
+        executorService.awaitTermination(MAX, TimeUnit.SECONDS);
         long endTime = System.nanoTime();
         System.out.printf("RunGlyphLayoutExamplesMultithreading ended %g seconds",
                 (endTime - startTime) * 1e-9);
