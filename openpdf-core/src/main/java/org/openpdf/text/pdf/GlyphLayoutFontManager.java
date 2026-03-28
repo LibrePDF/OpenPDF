@@ -281,16 +281,12 @@ public class GlyphLayoutFontManager {
             }
             if (file.canRead()) {
                 inputStream = Files.newInputStream(file.toPath());
-            } else if (filename.startsWith("file:/")
-                    || filename.startsWith("https://") || filename.startsWith("jar:")
-                    || filename.startsWith("wsjar:")) {
-                inputStream = new URI(filename).toURL().openStream();
             } else if ("-".equals(filename)) {
                 inputStream = System.in;
             } else {
                 inputStream = BaseFont.getResourceStream(filename);
             }
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             exception = e;
         }
         if (inputStream == null) {
