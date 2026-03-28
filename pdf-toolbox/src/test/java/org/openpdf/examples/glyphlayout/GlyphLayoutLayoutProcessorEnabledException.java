@@ -25,7 +25,7 @@ import org.openpdf.text.pdf.PdfWriter;
 
 /**
  * Processing fails if LayoutProcessor is enabled
- *
+ * <p>
  * Do not enable the deprecated LayoutProcessor
  */
 public class GlyphLayoutLayoutProcessorEnabledException {
@@ -53,7 +53,6 @@ public class GlyphLayoutLayoutProcessorEnabledException {
      * Run the test: Show bidirectional text
      *
      * @param fileName Name of output file
-     *
      * @throws FontLoadException if font can not be loaded
      */
     public static void test(String fileName) throws FontLoadException {

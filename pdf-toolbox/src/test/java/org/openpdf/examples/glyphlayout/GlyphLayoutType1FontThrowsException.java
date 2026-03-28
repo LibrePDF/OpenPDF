@@ -64,7 +64,6 @@ public class GlyphLayoutType1FontThrowsException {
      * Run the test: Load the font from an input stream
      *
      * @param fileName Name of output file
-     *
      * @throws FontLoadException if font can not be loaded
      * @throws IOException       if an IO error occurs
      */

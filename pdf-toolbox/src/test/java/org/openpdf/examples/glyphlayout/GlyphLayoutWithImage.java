@@ -44,7 +44,6 @@ public class GlyphLayoutWithImage {
      * Test of glyph layout of some characters and sequences of DIN 91379 with an image
      *
      * @param fileName Name of output file
-     *
      * @throws FontLoadException if font can not be loaded
      * @throws IOException       if an IO error occurs
      */

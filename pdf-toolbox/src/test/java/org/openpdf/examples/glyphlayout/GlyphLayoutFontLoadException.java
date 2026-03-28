@@ -49,7 +49,6 @@ public class GlyphLayoutFontLoadException {
      * Run the test
      *
      * @param fileName Name of output file
-     *
      * @throws FontLoadException if font can not be loaded
      */
     public static void test(String fileName) throws FontLoadException {

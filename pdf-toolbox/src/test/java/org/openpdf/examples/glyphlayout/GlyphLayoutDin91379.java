@@ -120,7 +120,6 @@ public class GlyphLayoutDin91379 {
      * Run the test: Print the characters of DIN 91379 in a PDF document
      *
      * @param fileName Name of output file
-     *
      * @throws FontLoadException if font can not be loaded
      * @throws IOException       if an IO error occurs
      */

@@ -56,7 +56,6 @@ public class GlyphLayoutKernLigaPerFont {
      * Run the test: Show kerning and ligatures
      *
      * @param fileName Name of output file
-     *
      * @throws FontLoadException if font can not be loaded
      * @throws IOException       if an IO error occurs
      */

@@ -48,7 +48,6 @@ public class GlyphLayoutFontNotLoadedThrowsException {
      * Test (failing of) execution when a font is not loaded using GlyphLayoutManager.loadFont(...)
      *
      * @param fileName Name of output file
-     *
      * @throws FontLoadException if font can not be loaded
      * @throws IOException       if an IO error occurs
      */
