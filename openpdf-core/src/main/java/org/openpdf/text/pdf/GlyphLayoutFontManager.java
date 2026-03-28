@@ -102,8 +102,7 @@ public class GlyphLayoutFontManager {
      *
      * @param baseFont BaseFont
      * @return true if the baseFont is supported
-     *
-     * @throws UnsupportedOperationException if the font has not been loaded with GlyphLayoutManager.loadFont
+J     * @throws UnsupportedOperationException if the font has not been loaded with GlyphLayoutManager.loadFont
      */
     public boolean supportsFont(BaseFont baseFont) {
         boolean isSupported = awtFontMap.get(baseFont) != null;
@@ -227,7 +226,8 @@ public class GlyphLayoutFontManager {
         try {
             FontFactory.register(path, null);
             boolean caching = isCaching(fontOptions);
-            openPdfFont = FontFactory.getFont(path, BaseFont.IDENTITY_H, true, fontSize, org.openpdf.text.Font.UNDEFINED,
+            openPdfFont = FontFactory.getFont(path, BaseFont.IDENTITY_H, true, fontSize,
+                    org.openpdf.text.Font.UNDEFINED,
                     null, caching);
         } catch (Exception e) {
             throw new FontLoadException("Error loading OpenPdf font. Path=" + path, e);
@@ -306,10 +306,9 @@ public class GlyphLayoutFontManager {
      * <p>
      * If baseFont is not instanceof TrueTypeFontUnicode *no* font is loaded.
      *
-     * @param openPdfFont           OpenPdf  font
+     * @param openPdfFont    OpenPdf  font
      * @param filename       of the font file
      * @param textAttributes test attributes of the font
-     *
      * @throws FontLoadException if font can not be loaded
      */
     protected void loadAwtFont(org.openpdf.text.Font openPdfFont, String filename,
@@ -339,8 +338,7 @@ public class GlyphLayoutFontManager {
      * @param textAttributes text attributes
      * @param inputStream    input stream
      * @param baseFont       base font
-     *
-     * @throws IOException if an IO error occurs
+     * @throws IOException         if an IO error occurs
      * @throws FontFormatException if the font format is wrong
      */
     protected void loadAwtFontFromInputStream(Map<TextAttribute, Object> textAttributes, InputStream inputStream,
