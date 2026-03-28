@@ -12,13 +12,11 @@
 package org.openpdf.examples.glyphlayout;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
-import org.openpdf.text.pdf.BaseFont;
 import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
 import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
@@ -51,7 +49,6 @@ public class GlyphLayoutInputStreamNullThrowsException {
      * Run the test
      *
      * @param fileName Name of output file
-     *
      * @throws FontLoadException if font can not be loaded
      * @throws IOException       if an IO error occurs
      */
