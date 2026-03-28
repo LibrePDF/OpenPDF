@@ -31,21 +31,21 @@ public class RunGlyphLayoutExamplesFailing {
             // Exception while loading font
             GlyphLayoutFontLoadException.test("GlyphLayoutFontLoadException.pdf");
         } catch (Exception e) {
-            System.err.println("Expected Exception: "+e);
+            System.err.println("Expected Exception: " + e);
         }
 
         try {
             // Using fonts that have not been loaded with GlyphLayoutManager will throw exception
             GlyphLayoutFontNotLoadedThrowsException.test("GlyphLayoutFontNotLoadedThrowsException.pdf");
         } catch (Exception e) {
-            System.err.println("Expected Exception: "+e);
+            System.err.println("Expected Exception: " + e);
         }
 
         try {
             // Exception while loading font
             GlyphLayoutLayoutProcessorEnabledException.test("GlyphLayoutLayoutProcessorEnabledException.pdf");
         } catch (Exception e) {
-            System.err.println("Expected Exception: "+e);
+            System.err.println("Expected Exception: " + e);
             LayoutProcessor.disable();
         }
 
@@ -53,7 +53,7 @@ public class RunGlyphLayoutExamplesFailing {
             // Type1 fonts are not supported
             GlyphLayoutType1FontThrowsException.test("GlyphLayoutType1FontThrowsException.pdf");
         } catch (Exception e) {
-            System.err.println("Expected Exception: "+e);
+            System.err.println("Expected Exception: " + e);
         }
     }
 }
