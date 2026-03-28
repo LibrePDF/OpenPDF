@@ -33,6 +33,7 @@ public class GlyphLayoutType1FontThrowsException {
 
     public static final String LATIN_CHARS_DIN_91379_SEQUENCES =
             """
+                    DIN 91379
                     bll; Latin Letters (normative)
                     ...
                     Sequences
