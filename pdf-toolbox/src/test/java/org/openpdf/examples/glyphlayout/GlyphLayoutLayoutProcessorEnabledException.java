@@ -19,65 +19,56 @@ import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Font;
 import org.openpdf.text.pdf.GlyphLayoutFontManager.FontLoadException;
-import org.openpdf.text.pdf.GlyphLayoutFontManager.FontOptions;
 import org.openpdf.text.pdf.GlyphLayoutManager;
+import org.openpdf.text.pdf.LayoutProcessor;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
- * Prints text with correct glyph layout, kerning and ligatures globally enabled
+ * Processing fails if LayoutProcessor is enabled
+ *
+ * Do not enable the deprecated LayoutProcessor
  */
-public class GlyphLayoutKernLiga {
+public class GlyphLayoutLayoutProcessorEnabledException {
 
     public static String INTRO_TEXT =
             """
-                    Test of glyph layout with kerning and ligatures
-                    
-                    Using GlyphLayoutManager for glyph layout with Java built-in routines.
+                    Processing fails if LayoutProcessor is enabled
+                    Do not enable the deprecated LayoutProcessor
                     """;
-
-    public static String TEST_TEXT =
-            "AVATAR Vector TeX ff ffi ffl fi fl.";
 
     /**
      * Main method
      *
      * @param args -- not used
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
-            test("GlyphLayoutKernLiga.pdf");
+            test("GlyphLayoutLayoutProcessorEnabledException.pdf");
         } catch (FontLoadException e) {
             System.err.println(e);
         }
     }
 
     /**
-     * Run the test: Show kerning and ligatures
+     * Run the test: Show bidirectional text
      *
      * @param fileName Name of output file
-     * @throws FontLoadException if font can not be loaded
-     * @throws IOException       if an IO error occurs
      */
-    public static void test(String fileName) throws FontLoadException, IOException {
-
+    public static void test(String fileName) throws FontLoadException {
         float fontSize = 12.0f;
-        // Switch kerning and ligatures on fpr all fonts.
-        GlyphLayoutManager glyphLayoutManager =
-                new GlyphLayoutManager().setDefaultFontOptions(new FontOptions().setKerningOn().setLigaturesOn());
-        // The  OpenType fonts loaded with glyphLayoutManager.loadFont() are
-        // available for glyph layout. Only these fonts can be used.
+        LayoutProcessor.enable(); // Do not enable LayoutProcessor!
+        GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
         String fontDir = "org/openpdf/examples/fonts/";
-
-        Font serif = glyphLayoutManager.loadFont(fontDir + "noto/NotoSerif-Regular.ttf",
-                fontSize);
+        Font sans = glyphLayoutManager.loadFont(fontDir + "noto/NotoSans-Regular.ttf", fontSize);
 
         // Process the document with glyphLayoutManager
         try (Document document = new Document().setGlyphLayoutManager(glyphLayoutManager)) {
             PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(fileName)));
             writer.setInitialLeading(16.0f);
             document.open();
-            document.add(new Chunk(INTRO_TEXT + "Font: Noto Serif Regular\n\n", serif));
-            document.add(new Chunk(TEST_TEXT, serif));
+            document.add(new Chunk(INTRO_TEXT, sans));
+        } catch (IOException e) {
+            System.err.println(e);
         }
     }
 }
