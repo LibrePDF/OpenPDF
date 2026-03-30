@@ -38,7 +38,7 @@ public class GlyphLayoutInputStreamNullThrowsException {
      */
     public static void main(String[] args) {
         try {
-            test("GlyphLayoutInputStream.pdf");
+            test("GlyphLayoutInputStreamNullThrowsException.pdf");
         } catch (FontLoadException | IOException e) {
             System.err.println(e);
         }
@@ -61,6 +61,7 @@ public class GlyphLayoutInputStreamNullThrowsException {
         // Only these fonts can be used.
         GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
 
+        // When loading a null stream a NullPointerException is thrown
         Font sansFont = glyphLayoutManager.loadFont("Null.ttf", null, fontSize);
 
         // Process the document with glyphLayoutManager

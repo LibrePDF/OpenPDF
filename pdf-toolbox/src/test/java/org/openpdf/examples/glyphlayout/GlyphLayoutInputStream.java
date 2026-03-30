@@ -24,7 +24,7 @@ import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
- * Prints all characters and sequences of DIN 91379 with correct glyph layout and kerning
+ * Test of GlyphLayoutManager loading the font from an input stream
  */
 public class GlyphLayoutInputStream {
 

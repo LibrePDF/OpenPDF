@@ -23,13 +23,13 @@ import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
- * Test of exception while loading font
+ * Test of exception when loading a font from a non-existing file
  */
 public class GlyphLayoutFontLoadException {
 
     public static String INTRO_TEXT =
             """
-                    Test of exception while loading font
+                    Test of exception when loading a font from a non-existing file
                     """;
 
     /**
@@ -55,7 +55,7 @@ public class GlyphLayoutFontLoadException {
         float fontSize = 12.0f;
         GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
 
-        // Testing exception while loading font
+        // Testing exception when loading a font from a non-existing file
         Font sans = glyphLayoutManager.loadFont("this-font-does-not-exist.ttf", fontSize);
 
         // Process the document with glyphLayoutManager

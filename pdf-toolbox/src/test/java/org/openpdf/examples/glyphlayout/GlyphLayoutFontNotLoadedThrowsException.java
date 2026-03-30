@@ -24,7 +24,7 @@ import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
- * All fonts must be loaded with GlyphLayoutManager.loadFont(...) Otherwise execution will fail with en Exception
+ * All fonts must be loaded with GlyphLayoutManager.loadFont(...). Otherwise execution will fail with an Exception.
  * <p>
  * This is an example how the execution will fail when fonts are not loaded using GlyphLayoutManager.loadFont(...). The
  * program will throw an exception.
