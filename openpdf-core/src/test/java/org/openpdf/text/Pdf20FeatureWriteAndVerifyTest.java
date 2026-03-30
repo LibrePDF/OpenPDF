@@ -215,7 +215,8 @@ class Pdf20FeatureWriteAndVerifyTest {
 
     /** Writes to two streams at once (memory + file). */
     private static final class TeeOutputStream extends OutputStream {
-        private final OutputStream a, b;
+        private final OutputStream a;
+        private final OutputStream b;
 
         TeeOutputStream(OutputStream a, OutputStream b) {
             this.a = a;
