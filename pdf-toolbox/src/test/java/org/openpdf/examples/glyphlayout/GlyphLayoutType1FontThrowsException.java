@@ -22,13 +22,13 @@ import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
- * Prints all characters and sequences of DIN 91379 with correct glyph layout and kerning
+ * Loading a type 1 font is not supported and throws an exception
  */
 public class GlyphLayoutType1FontThrowsException {
 
     public static final String TEXT_INTRO =
             """
-                    Test of GlyphLayoutManager loading the font from an input stream
+                    Loading a type 1 font is not supported and throws an exception
                     """;
 
     public static final String LATIN_CHARS_DIN_91379_SEQUENCES =
@@ -53,7 +53,7 @@ public class GlyphLayoutType1FontThrowsException {
      */
     public static void main(String[] args) {
         try {
-            test("GlyphLayoutInputStream.pdf");
+            test("GlyphLayoutType1FontThrowsException.pdf");
         } catch (FontLoadException | IOException e) {
             System.err.println(e);
         }
@@ -61,7 +61,7 @@ public class GlyphLayoutType1FontThrowsException {
 
 
     /**
-     * Run the test: Load the font from an input stream
+     * Run the test
      *
      * @param fileName Name of output file
      * @throws FontLoadException if font can not be loaded
@@ -76,6 +76,7 @@ public class GlyphLayoutType1FontThrowsException {
         // Only these fonts can be used.
         GlyphLayoutManager glyphLayoutManager = new GlyphLayoutManager();
 
+        // Loading a type 1 font is not supported and throws FontLoadException
         Font sansFont = glyphLayoutManager.loadFont("/usr/share/fonts/type1/urw-base35/NimbusSans-Regular.t1",
                 fontSize);
 

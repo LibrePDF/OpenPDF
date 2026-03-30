@@ -24,7 +24,7 @@ import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
- * Prints text with correct glyph layout, kerning and ligatures globally enabled
+ * Prints text with correct glyph layout, kerning and ligatures enabled per font
  */
 public class GlyphLayoutKernLigaPerFont {
 
@@ -53,7 +53,7 @@ public class GlyphLayoutKernLigaPerFont {
     }
 
     /**
-     * Run the test: Show kerning and ligatures
+     * Run the test
      *
      * @param fileName Name of output file
      * @throws FontLoadException if font can not be loaded
