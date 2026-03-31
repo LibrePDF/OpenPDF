@@ -108,7 +108,7 @@ public class HeadTable extends TrueTypeTable {
      * Parse the data before it is set
      */
     @Override
-	public void setData(ByteBuffer data) {
+    public void setData(ByteBuffer data) {
         if (data.remaining() < 54) {
             throw new IllegalArgumentException("Bad Head table size " + data.remaining());
         }
@@ -135,7 +135,7 @@ public class HeadTable extends TrueTypeTable {
      * Get the data we have stored
      */
     @Override
-	public ByteBuffer getData() {
+    public ByteBuffer getData() {
         ByteBuffer buf = ByteBuffer.allocate(getLength());
         
         buf.putInt(getVersion());
@@ -166,7 +166,7 @@ public class HeadTable extends TrueTypeTable {
      * Get the length of this table
      */
     @Override
-	public int getLength() {
+    public int getLength() {
         return 54;
     }
     
@@ -446,7 +446,7 @@ public class HeadTable extends TrueTypeTable {
      * Create a pretty string
      */
     @Override
-	public String toString() {
+    public String toString() {
         StringBuffer buf = new StringBuffer();
         String indent = "    ";
         

@@ -131,7 +131,7 @@ public class NativeFont extends OutlineFont {
      * @return the glyph outline, or null if unavailable
      */
     @Override
-	protected GeneralPath getOutline (String name, float width) {
+    protected GeneralPath getOutline (String name, float width) {
         if (this.postTable != null && this.cmapTable != null) {
             // map this character name to a glyph ID
             short glyphID = this.postTable.getGlyphNameIndex (name);
@@ -172,7 +172,7 @@ public class NativeFont extends OutlineFont {
      * @return the glyph outline
      */
     @Override
-	protected GeneralPath getOutline (char src, float width) {
+    protected GeneralPath getOutline (char src, float width) {
         // some true type fonts put characters in the undefined
         // region of Unicode instead of as normal characters.
         if (!this.f.canDisplay (src) && this.f.canDisplay ((char) (src + 0xf000))) {

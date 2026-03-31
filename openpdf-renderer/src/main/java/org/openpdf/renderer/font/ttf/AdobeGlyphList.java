@@ -77,7 +77,7 @@ public class AdobeGlyphList {
         glyphLoaderThread = new Thread(new Runnable() {
 
             @Override
-			public void run() {
+            public void run() {
                 int[] codes;
                 StringTokenizer codeTokens;
                 String glyphName;

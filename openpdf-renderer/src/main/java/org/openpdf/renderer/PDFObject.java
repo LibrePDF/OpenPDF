@@ -206,8 +206,8 @@ public class PDFObject {
      * @throws IOException
      */
     public String getDictRefAsString(String name) throws IOException {
-    	PDFObject ref = getDictRef(name);
-    	return ref == null ? null : ref.getStringValue();
+        PDFObject ref = getDictRef(name);
+        return ref == null ? null : ref.getStringValue();
     }
     
     /**
@@ -217,8 +217,8 @@ public class PDFObject {
      * @throws IOException
      */
     public Boolean getDictRefAsBoolean(String name) throws IOException {
-    	PDFObject ref = getDictRef(name);
-    	return ref == null ? null : ref.getBooleanValue();
+        PDFObject ref = getDictRef(name);
+        return ref == null ? null : ref.getBooleanValue();
     }
     
     /**
@@ -228,8 +228,8 @@ public class PDFObject {
      * @throws IOException
      */
     public Integer getDictRefAsInt(String name) throws IOException {
-    	PDFObject ref = getDictRef(name);
-    	return ref == null ? null : ref.getIntValue();
+        PDFObject ref = getDictRef(name);
+        return ref == null ? null : ref.getIntValue();
     }
         
     /**
@@ -239,16 +239,16 @@ public class PDFObject {
      * @throws IOException
      */
     public int[] getDictRefAsIntArray(String name) throws IOException {
-    	PDFObject ref = getDictRef(name);
-    	if (ref == null) {
-    		return null;
-    	}
-    	PDFObject[] values = ref.getArray();
+        PDFObject ref = getDictRef(name);
+        if (ref == null) {
+            return null;
+        }
+        PDFObject[] values = ref.getArray();
         int[] result = new int[values.length];
         for (int i = 0; i < values.length; i++) {
-        	result[i] = values[i].getIntValue();
+            result[i] = values[i].getIntValue();
         }
-    	return result;
+        return result;
     }
     
     /**
@@ -258,16 +258,16 @@ public class PDFObject {
      * @throws IOException
      */
     public float[] getDictRefAsFloatArray(String name) throws IOException {
-    	PDFObject ref = getDictRef(name);
-    	if (ref == null) {
-    		return null;
-    	}
-    	PDFObject[] values = ref.getArray();
-    	float[] result = new float[values.length];
-        for (int i = 0; i < values.length; i++) {
-        	result[i] = values[i].getFloatValue();
+        PDFObject ref = getDictRef(name);
+        if (ref == null) {
+            return null;
         }
-    	return result;
+        PDFObject[] values = ref.getArray();
+        float[] result = new float[values.length];
+        for (int i = 0; i < values.length; i++) {
+            result[i] = values[i].getFloatValue();
+        }
+        return result;
     }
     
     
@@ -278,8 +278,8 @@ public class PDFObject {
      * @throws IOException
      */
     public Float getDictRefAsFloat(String name) throws IOException {
-    	PDFObject ref = getDictRef(name);
-    	return ref == null ? null : ref.getFloatValue();
+        PDFObject ref = getDictRef(name);
+        return ref == null ? null : ref.getFloatValue();
     }
     
     /**
@@ -289,8 +289,8 @@ public class PDFObject {
      * @throws IOException
      */
     public Double getDictRefAsDouble(String name) throws IOException {
-    	PDFObject ref = getDictRef(name);
-    	return ref == null ? null : ref.getDoubleValue();
+        PDFObject ref = getDictRef(name);
+        return ref == null ? null : ref.getDoubleValue();
     }
 
     /**
@@ -522,7 +522,7 @@ public class PDFObject {
      * @throws IOException
      */
     public String getTextStringValue() throws IOException {
-	return PDFStringUtil.asTextString(getStringValue());
+    return PDFStringUtil.asTextString(getStringValue());
     }
 
     /**
@@ -822,12 +822,12 @@ public class PDFObject {
 
         return false;
     }
-	
-	    /**
+    
+        /**
      * Returns the root of this object.
      */
     public PDFObject getRoot() {
-    	return owner.getRoot();
+        return owner.getRoot();
     }
 }
 

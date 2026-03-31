@@ -38,7 +38,7 @@ public class ASCIIHexDecode {
      * initialize the decoder with an array of bytes in ASCIIHex format
      */
     private ASCIIHexDecode(ByteBuffer buf) {
-	this.buf = buf;
+    this.buf = buf;
     }
 
     /**
@@ -73,7 +73,7 @@ public class ASCIIHexDecode {
         }
         
         // end of stream reached
-	throw new PDFParseException("Short stream in ASCIIHex decode");
+    throw new PDFParseException("Short stream in ASCIIHex decode");
     }
 
     /**
@@ -118,9 +118,9 @@ public class ASCIIHexDecode {
      * @return the decoded bytes
      */
     public static ByteBuffer decode(ByteBuffer buf, PDFObject params)
-	throws PDFParseException 
+    throws PDFParseException 
     {
-	ASCIIHexDecode me = new ASCIIHexDecode(buf);
-	return me.decode();
+    ASCIIHexDecode me = new ASCIIHexDecode(buf);
+    return me.decode();
     }
 }

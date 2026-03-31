@@ -13,13 +13,13 @@ import org.openpdf.renderer.PDFObject;
  ****************************************************************************/
 public class GoToRAction extends PDFAction {
 
-	/** the destination within the remote PDF file */
+    /** the destination within the remote PDF file */
     private PDFDestination destination;
     /** the remote file this action refers to*/
     private String file;
     /** Should the remote file be opened in a new window? (optional)*/
     private boolean newWindow=false;
-	/** 
+    /** 
      * Creates a new instance of GoToRAction from an object
      * @param obj the PDFObject with the action information
      * @throws IOException - in case the action can not be parsed
@@ -33,7 +33,7 @@ public class GoToRAction extends PDFAction {
         this.file = PdfObjectParseUtil.parseStringFromDict("F", obj, true);
         
         // find the new window attribute and parse it if available
-       	this.newWindow = PdfObjectParseUtil.parseBooleanFromDict("NewWindow", obj, false);
+           this.newWindow = PdfObjectParseUtil.parseBooleanFromDict("NewWindow", obj, false);
     }    
 
     /*************************************************************************
@@ -43,33 +43,33 @@ public class GoToRAction extends PDFAction {
      * @param newWindow
      ************************************************************************/
     public GoToRAction(PDFDestination dest, String file, boolean newWindow){
-    	super("GoToR");
-    	this.file = file;
-    	this.destination = dest;
-    	this.newWindow = newWindow;
+        super("GoToR");
+        this.file = file;
+        this.destination = dest;
+        this.newWindow = newWindow;
     }
     
     /*************************************************************************
      * Get the destination this action refers to
      * @return PDFDestination
      ************************************************************************/
-	public PDFDestination getDestination() {
-		return this.destination;
-	}
+    public PDFDestination getDestination() {
+        return this.destination;
+    }
 
     /*************************************************************************
      * Get the file this action refers to
      * @return PDFDestination
      ************************************************************************/
-	public String getFile() {
-		return this.file;
-	}
+    public String getFile() {
+        return this.file;
+    }
 
-	/*************************************************************************
-	 * Should the remote file be opened in a new window?
-	 * @return boolean
-	 ************************************************************************/
-	public boolean isNewWindow() {
-		return this.newWindow;
-	}
+    /*************************************************************************
+     * Should the remote file be opened in a new window?
+     * @return boolean
+     ************************************************************************/
+    public boolean isNewWindow() {
+        return this.newWindow;
+    }
 }

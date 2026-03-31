@@ -38,7 +38,7 @@ public class Identity8BitCharsetEncoder extends CharsetEncoder {
     }
 
     @Override
-	protected CoderResult encodeLoop(CharBuffer in, ByteBuffer out) {
+    protected CoderResult encodeLoop(CharBuffer in, ByteBuffer out) {
         while (in.remaining() > 0) {
             if (out.remaining() < 1) {
                 return CoderResult.OVERFLOW;

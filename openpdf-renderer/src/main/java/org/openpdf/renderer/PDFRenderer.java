@@ -195,9 +195,9 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
      * push() was called.
      */
     public void pop() {
-    	if(this.stack.isEmpty() == false) {
+        if(this.stack.isEmpty() == false) {
             this.state = this.stack.pop();
-    	}
+        }
 
         setTransform(this.state.xform);
         setClip(this.state.cliprgn);
@@ -265,9 +265,9 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
     public Rectangle2D fill(GeneralPath s) {
         this.g.setComposite(this.state.fillAlpha);
         if (s == null) {
-        	GraphicsState gs =  stack.peek();
+            GraphicsState gs =  stack.peek();
           if (gs.cliprgn != null) {
-          	s = new GeneralPath(gs.cliprgn);
+              s = new GeneralPath(gs.cliprgn);
           }
         }
         return this.state.fillPaint.fill(this, this.g, s);
@@ -287,35 +287,35 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
             // Nothing to draw, anyway!
             return new Rectangle2D.Double();
         }
-    	
-    	// transform must use bitmap size
+        
+        // transform must use bitmap size
         AffineTransform at = new AffineTransform(1f / bi.getWidth(), 0,
                 0, -1f / bi.getHeight(),
                 0, 1);
 
         if (image.isImageMask()) {
-        	bi = getMaskedImage(bi);
+            bi = getMaskedImage(bi);
         }
 
         Rectangle r = g.getTransform().createTransformedShape(new Rectangle(0,0,1,1)).getBounds();
         boolean isBlured = false;
         
         if (Configuration.getInstance().isUseBlurResizingForImages() && 
-        		bi.getType() != BufferedImage.TYPE_CUSTOM && 
-        		bi.getWidth() >= 1.75*r.getWidth() && bi.getHeight() >= 1.75*r.getHeight()){
-        	try {
-            	return smartDrawImage(image, bi, r, at);
-        	}catch (Exception e) {
-				// do nothing, just go on with the "default" processing 
-			}
+                bi.getType() != BufferedImage.TYPE_CUSTOM && 
+                bi.getWidth() >= 1.75*r.getWidth() && bi.getHeight() >= 1.75*r.getHeight()){
+            try {
+                return smartDrawImage(image, bi, r, at);
+            }catch (Exception e) {
+                // do nothing, just go on with the "default" processing 
+            }
         }
         
         this.g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
                 
         //Image quality is better when using texturepaint instead of drawimage
         //but it is also slower :(
-		this.g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
-				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        this.g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         // banded rendering may lead to lower memory consumption for e.g. scanned PDFs with large images
         int bandSize = Configuration.getInstance().getThresholdForBandedImageRendering();
         if (bandSize > 0 && bi.getHeight() > bandSize) {
@@ -335,7 +335,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
                    PDFDebugger.debug("Image not completed!", 10);
                }
         }
-		
+        
         if (isBlured) bi.flush();
 
         // get the total transform that was executed
@@ -360,75 +360,75 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
         boolean isBlured = false;
         
         if (Configuration.getInstance().isUseBlurResizingForImages() && 
-        		bi.getType() != BufferedImage.TYPE_CUSTOM && 
-        		bi.getWidth() >= 1.75*r.getWidth() && bi.getHeight() >= 1.75*r.getHeight()){
+                bi.getType() != BufferedImage.TYPE_CUSTOM && 
+                bi.getWidth() >= 1.75*r.getWidth() && bi.getHeight() >= 1.75*r.getHeight()){
 
-        	BufferedImageOp op;
-        	// indexed colored images need to be converted for the convolveOp
-        	boolean colorConversion = (bi.getColorModel() instanceof IndexColorModel);
-        	final float maxFactor = 3.5f;
-        	final boolean RESIZE = true;
-        	if (bi.getWidth() > maxFactor*r.getWidth() && bi.getHeight() > maxFactor*r.getHeight()){
-        		//First resize, otherwise we risk that we get out of heapspace
-        		int newHeight = (int)Math.round(maxFactor*r.getHeight());
-        		int newWidth = (int)Math.round(maxFactor*r.getWidth());
-        		if (!RESIZE) {
-        			newHeight = bi.getHeight();
-        			newWidth = bi.getWidth();
-        		}
-        		BufferedImage resized = new BufferedImage(newWidth, 
-        				newHeight, colorConversion?BufferedImage.TYPE_INT_ARGB:bi.getType());
-        		Graphics2D bg = (Graphics2D) resized.getGraphics();
-        		bg.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
-        				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        		bg.drawImage(bi, 0, 0, newWidth, newHeight, null);
-        		bi = resized;
+            BufferedImageOp op;
+            // indexed colored images need to be converted for the convolveOp
+            boolean colorConversion = (bi.getColorModel() instanceof IndexColorModel);
+            final float maxFactor = 3.5f;
+            final boolean RESIZE = true;
+            if (bi.getWidth() > maxFactor*r.getWidth() && bi.getHeight() > maxFactor*r.getHeight()){
+                //First resize, otherwise we risk that we get out of heapspace
+                int newHeight = (int)Math.round(maxFactor*r.getHeight());
+                int newWidth = (int)Math.round(maxFactor*r.getWidth());
+                if (!RESIZE) {
+                    newHeight = bi.getHeight();
+                    newWidth = bi.getWidth();
+                }
+                BufferedImage resized = new BufferedImage(newWidth, 
+                        newHeight, colorConversion?BufferedImage.TYPE_INT_ARGB:bi.getType());
+                Graphics2D bg = (Graphics2D) resized.getGraphics();
+                bg.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+                        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                bg.drawImage(bi, 0, 0, newWidth, newHeight, null);
+                bi = resized;
                 at = new AffineTransform(1f / bi.getWidth(), 0,
                         0, -1f / bi.getHeight(),
                         0, 1);
                 
                 final float weight = 1.0f/16.0f;
-            	final float[] blurKernel = {
-            			weight, weight, weight, weight,
-            			weight, weight, weight, weight,
-            			weight, weight, weight, weight,
-            			weight, weight, weight, weight,
-            	};
-            	op = new ConvolveOp(new Kernel(4, 4, blurKernel), ConvolveOp.EDGE_NO_OP, null);            	
-        	}
-        	else {
-        		final float weight = 1.0f/18.0f;
-        		final float[] blurKernel = {
-        				1*weight, 2*weight, 1*weight,
-        				2*weight, 6*weight, 2*weight,
-        				1*weight, 2*weight, 1*weight
-        		};
-        		if (colorConversion) {
-            		BufferedImage colored = new BufferedImage(bi.getWidth(), 
-            				bi.getHeight(), colorConversion?BufferedImage.TYPE_INT_ARGB:bi.getType());
-            		Graphics2D bg = (Graphics2D) colored.getGraphics();
-            		bg.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
-            				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            		bg.drawImage(bi, 0, 0, bi.getWidth(), bi.getHeight(), null);
-            		bi = colored;
-        		}
-        		op = new ConvolveOp(new Kernel(3, 3, blurKernel), ConvolveOp.EDGE_NO_OP, null);
-        	}
-        	
-        	BufferedImage blured = op.createCompatibleDestImage(bi, 
-        			colorConversion?ColorModel.getRGBdefault():bi.getColorModel());
-        	
-           	op.filter(bi, blured);
-        	bi = blured;
-        	isBlured = true;
+                final float[] blurKernel = {
+                        weight, weight, weight, weight,
+                        weight, weight, weight, weight,
+                        weight, weight, weight, weight,
+                        weight, weight, weight, weight,
+                };
+                op = new ConvolveOp(new Kernel(4, 4, blurKernel), ConvolveOp.EDGE_NO_OP, null);                
+            }
+            else {
+                final float weight = 1.0f/18.0f;
+                final float[] blurKernel = {
+                        1*weight, 2*weight, 1*weight,
+                        2*weight, 6*weight, 2*weight,
+                        1*weight, 2*weight, 1*weight
+                };
+                if (colorConversion) {
+                    BufferedImage colored = new BufferedImage(bi.getWidth(), 
+                            bi.getHeight(), colorConversion?BufferedImage.TYPE_INT_ARGB:bi.getType());
+                    Graphics2D bg = (Graphics2D) colored.getGraphics();
+                    bg.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    bg.drawImage(bi, 0, 0, bi.getWidth(), bi.getHeight(), null);
+                    bi = colored;
+                }
+                op = new ConvolveOp(new Kernel(3, 3, blurKernel), ConvolveOp.EDGE_NO_OP, null);
+            }
+            
+            BufferedImage blured = op.createCompatibleDestImage(bi, 
+                    colorConversion?ColorModel.getRGBdefault():bi.getColorModel());
+            
+               op.filter(bi, blured);
+            bi = blured;
+            isBlured = true;
         }
         
         this.g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
                 
         //Image quality is better when using texturepaint instead of drawimage
         //but it is also slower :(
-		this.g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
-				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        this.g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         // banded rendering may lead to lower memory consumption for e.g. scanned PDFs with large images
         int bandSize = Configuration.getInstance().getThresholdForBandedImageRendering();
         if (bandSize > 0 && bi.getHeight() > bandSize) {
@@ -661,8 +661,8 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
      * @return a BufferedImage or null
      */
     public BufferedImage getImage() {
-    	if (this.imageRef == null) return null;
-    	return this.imageRef.get();
+        if (this.imageRef == null) return null;
+        return this.imageRef.get();
     }
     
     /**
@@ -702,7 +702,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
      *         </ul>
      */
     @Override
-	public int iterate() throws Exception {
+    public int iterate() throws Exception {
         // make sure we have a page to render
         if (this.page == null) {
             return COMPLETED;
@@ -879,60 +879,60 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
      */
     private BufferedImage getMaskedImage(BufferedImage bi) {
         
-    	// get the color of the current paint
-    	final Paint paint = state.fillPaint.getPaint();
-    	if (!(paint instanceof Color)) {
-    		// TODO - support other types of Paint
-    		return bi;
-    	}
+        // get the color of the current paint
+        final Paint paint = state.fillPaint.getPaint();
+        if (!(paint instanceof Color)) {
+            // TODO - support other types of Paint
+            return bi;
+        }
 
-    	Color col = (Color) paint;
-    	ColorModel colorModel = bi.getColorModel();
-    	if (colorModel instanceof IndexColorModel) {
-    		int mapSize = ((IndexColorModel) colorModel).getMapSize();
-    		int pixelSize = colorModel.getPixelSize();
-    		if (mapSize == 2 && pixelSize == 1) {
-    			// we have a monochrome image mask with 1 bit per pixel
-    			// swap out the standard color with the current paint color
-    			int[] rgbValues = new int[2];
-    			((IndexColorModel) colorModel).getRGBs(rgbValues);
-    			byte[] colorComponents = null;
-    			if (rgbValues[0] == 0xff000000) {
-    				// normal case color at 0
-        			colorComponents = new byte[]{
-        					(byte) col.getRed(), 
-        					(byte) col.getGreen(), 
-        					(byte) col.getBlue(), 
-        					(byte) col.getAlpha(),
-        					0, 0, 0, 0 // the background is transparent
-        					};    				
-    			}
-    			else if (rgbValues[1] == 0xff000000){
-    				// alternate case color at 1
-        			colorComponents = new byte[]{        					
-        					0, 0, 0, 0, // the background is transparent
-        					(byte) col.getRed(), 
-        					(byte) col.getGreen(), 
-        					(byte) col.getBlue(), 
-        					(byte) col.getAlpha()
-        					};    				    				
-    			}
-    			
-    			if (colorComponents != null) {
-    				// replace mapped colors
-        			int startIndex = 0;
-        			boolean hasAlpha = true;
-    				ColorModel replacementColorModel = new IndexColorModel(pixelSize, mapSize, colorComponents, startIndex, hasAlpha);				
-    				WritableRaster raster = bi.getRaster();
-        			BufferedImage adaptedImage = new BufferedImage(replacementColorModel, raster, false, null);
-       				return adaptedImage;    				
-    			}
-    			else {
-    				return bi; // no color replacement 
-    			}
-    		}
-    	}
-    	
+        Color col = (Color) paint;
+        ColorModel colorModel = bi.getColorModel();
+        if (colorModel instanceof IndexColorModel) {
+            int mapSize = ((IndexColorModel) colorModel).getMapSize();
+            int pixelSize = colorModel.getPixelSize();
+            if (mapSize == 2 && pixelSize == 1) {
+                // we have a monochrome image mask with 1 bit per pixel
+                // swap out the standard color with the current paint color
+                int[] rgbValues = new int[2];
+                ((IndexColorModel) colorModel).getRGBs(rgbValues);
+                byte[] colorComponents = null;
+                if (rgbValues[0] == 0xff000000) {
+                    // normal case color at 0
+                    colorComponents = new byte[]{
+                            (byte) col.getRed(), 
+                            (byte) col.getGreen(), 
+                            (byte) col.getBlue(), 
+                            (byte) col.getAlpha(),
+                            0, 0, 0, 0 // the background is transparent
+                            };                    
+                }
+                else if (rgbValues[1] == 0xff000000){
+                    // alternate case color at 1
+                    colorComponents = new byte[]{                            
+                            0, 0, 0, 0, // the background is transparent
+                            (byte) col.getRed(), 
+                            (byte) col.getGreen(), 
+                            (byte) col.getBlue(), 
+                            (byte) col.getAlpha()
+                            };                                        
+                }
+                
+                if (colorComponents != null) {
+                    // replace mapped colors
+                    int startIndex = 0;
+                    boolean hasAlpha = true;
+                    ColorModel replacementColorModel = new IndexColorModel(pixelSize, mapSize, colorComponents, startIndex, hasAlpha);                
+                    WritableRaster raster = bi.getRaster();
+                    BufferedImage adaptedImage = new BufferedImage(replacementColorModel, raster, false, null);
+                       return adaptedImage;                    
+                }
+                else {
+                    return bi; // no color replacement 
+                }
+            }
+        }
+        
         // format as 8 bits each of ARGB
         int paintColor = col.getAlpha() << 24;
         paintColor |= col.getRed() << 16;
@@ -1022,17 +1022,17 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
         }
     }
 
-	/*************************************************************************
-	 * @return Returns the lastTransform.
-	 ************************************************************************/
-	public AffineTransform getLastTransform() {
-		return this.lastTransform;
-	}
+    /*************************************************************************
+     * @return Returns the lastTransform.
+     ************************************************************************/
+    public AffineTransform getLastTransform() {
+        return this.lastTransform;
+    }
 
-	/*************************************************************************
-	 * Remember the current transformation
-	 ************************************************************************/
-	public void rememberTransformation() {
-		this.lastTransform = this.state.xform;
-	}
+    /*************************************************************************
+     * Remember the current transformation
+     ************************************************************************/
+    public void rememberTransformation() {
+        this.lastTransform = this.state.xform;
+    }
 }

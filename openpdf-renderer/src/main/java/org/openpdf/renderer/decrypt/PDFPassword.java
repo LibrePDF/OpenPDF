@@ -141,7 +141,7 @@ public class PDFPassword {
                     // just strip the higher 8 bits!
                     new PasswordByteGenerator() {
                         @Override
-						public byte[] generateBytes(String password) {
+                        public byte[] generateBytes(String password) {
                             return PDFStringUtil.asBytes(password);
                         }
                     },
@@ -219,7 +219,7 @@ public class PDFPassword {
 
 
         @Override
-		public byte[] generateBytes(String password) {
+        public byte[] generateBytes(String password) {
             final CharsetEncoder encoder = createCharsetEncoder();
             if (this.replacementByte != null) {
                 encoder.replaceWith(new byte[]{this.replacementByte});
@@ -254,7 +254,7 @@ public class PDFPassword {
         }
 
         @Override
-		protected CharsetEncoder createCharsetEncoder() {
+        protected CharsetEncoder createCharsetEncoder() {
             return new PDFDocCharsetEncoder();
         }
     }
@@ -271,7 +271,7 @@ public class PDFPassword {
         }
 
         @Override
-		protected CharsetEncoder createCharsetEncoder() {
+        protected CharsetEncoder createCharsetEncoder() {
             return new Identity8BitCharsetEncoder();
         }
     }

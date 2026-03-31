@@ -23,104 +23,104 @@ import org.openpdf.renderer.PDFParser;
  ****************************************************************************/
 public class MarkupAnnotation extends PDFAnnotation {
 
-	private PDFObject onAppearance;
-	private PDFObject offAppearance;
-	private List<PDFCmd> onCmd;
-	private List<PDFCmd> offCmd;
-	private boolean appearanceStateOn;
-	private AnnotationBorderStyle borderStyle; 
-	private String textLabel;
-	private PDFAnnotation popupAnnotation;
+    private PDFObject onAppearance;
+    private PDFObject offAppearance;
+    private List<PDFCmd> onCmd;
+    private List<PDFCmd> offCmd;
+    private boolean appearanceStateOn;
+    private AnnotationBorderStyle borderStyle; 
+    private String textLabel;
+    private PDFAnnotation popupAnnotation;
 
-	
-	/*************************************************************************
-	 * Constructor
-	 * @param annotObject
-	 * @throws IOException 
-	 ************************************************************************/
+    
+    /*************************************************************************
+     * Constructor
+     * @param annotObject
+     * @throws IOException 
+     ************************************************************************/
 
-	public MarkupAnnotation(PDFObject annotObject, AnnotationType type) throws IOException {
-		super(annotObject, type);
-		
-		this.textLabel = annotObject.getDictRefAsString("T");
-		// TODO more is missing here like CA, RC, ... 
-		
-		parsePopupAnnotation(annotObject.getDictRef("Popup"));
-		parseAP(annotObject.getDictRef("AP"));
-		parseBorderStyleDictionary(annotObject.getDictRef("BS"));
-	}
-	
-	/**
-	 * Parses the appearance stream into PDF commands
-	 * @param dictRef
-	 * @throws IOException
-	 */
-	protected void parseAP(PDFObject dictRef) throws IOException {
-		if(dictRef == null) {
-			return;
-		}
-		PDFObject normalAP = dictRef.getDictRef("N");
-		if(normalAP == null) {
-			return;
-		}
-		if(normalAP.getType() == PDFObject.DICTIONARY) {
-			this.onAppearance = normalAP.getDictRef("On");
-			this.offAppearance = normalAP.getDictRef("Off");
-			PDFObject as = dictRef.getDictRef("AS");			
-			this.appearanceStateOn = (as != null) && ("On".equals(as.getStringValue()));
-		}else {
-			this.onAppearance = normalAP;
-			this.offAppearance = null;
-			appearanceStateOn = true;
-		}
-		parseOnOffCommands();
-	}
+    public MarkupAnnotation(PDFObject annotObject, AnnotationType type) throws IOException {
+        super(annotObject, type);
+        
+        this.textLabel = annotObject.getDictRefAsString("T");
+        // TODO more is missing here like CA, RC, ... 
+        
+        parsePopupAnnotation(annotObject.getDictRef("Popup"));
+        parseAP(annotObject.getDictRef("AP"));
+        parseBorderStyleDictionary(annotObject.getDictRef("BS"));
+    }
+    
+    /**
+     * Parses the appearance stream into PDF commands
+     * @param dictRef
+     * @throws IOException
+     */
+    protected void parseAP(PDFObject dictRef) throws IOException {
+        if(dictRef == null) {
+            return;
+        }
+        PDFObject normalAP = dictRef.getDictRef("N");
+        if(normalAP == null) {
+            return;
+        }
+        if(normalAP.getType() == PDFObject.DICTIONARY) {
+            this.onAppearance = normalAP.getDictRef("On");
+            this.offAppearance = normalAP.getDictRef("Off");
+            PDFObject as = dictRef.getDictRef("AS");            
+            this.appearanceStateOn = (as != null) && ("On".equals(as.getStringValue()));
+        }else {
+            this.onAppearance = normalAP;
+            this.offAppearance = null;
+            appearanceStateOn = true;
+        }
+        parseOnOffCommands();
+    }
 
-	/**
-	 * Parses the mouse On or Off appearance stream
-	 * depending on which one is currently active.
-	 * @throws IOException
-	 */
-	private void parseOnOffCommands() throws IOException {
-		if(onAppearance != null) {
-			onCmd = parseIntoPdfCommands(onAppearance);
-		}
-		if(offAppearance != null) {
-			offCmd = parseIntoPdfCommands(offAppearance);
-		}
-	}
-	
-	/**
-	 * Parses the border style dictionary
-	 * @param bs
-	 * @throws IOException
-	 */
-	protected void parseBorderStyleDictionary(PDFObject bs) throws IOException {
-		if (bs != null) {
-			this.borderStyle = AnnotationBorderStyle.parseFromDictionary(bs);
-		}
-	}
-	
-	/**
-	 * @return the border style or null if not specified.
-	 */
-	public AnnotationBorderStyle getBorderStyle() {
-		return borderStyle;
-	}
-	
+    /**
+     * Parses the mouse On or Off appearance stream
+     * depending on which one is currently active.
+     * @throws IOException
+     */
+    private void parseOnOffCommands() throws IOException {
+        if(onAppearance != null) {
+            onCmd = parseIntoPdfCommands(onAppearance);
+        }
+        if(offAppearance != null) {
+            offCmd = parseIntoPdfCommands(offAppearance);
+        }
+    }
+    
+    /**
+     * Parses the border style dictionary
+     * @param bs
+     * @throws IOException
+     */
+    protected void parseBorderStyleDictionary(PDFObject bs) throws IOException {
+        if (bs != null) {
+            this.borderStyle = AnnotationBorderStyle.parseFromDictionary(bs);
+        }
+    }
+    
+    /**
+     * @return the border style or null if not specified.
+     */
+    public AnnotationBorderStyle getBorderStyle() {
+        return borderStyle;
+    }
+    
     /**
      * Parses the popup annotation
      * @param popupObj
      * @throws IOException
      */
     private void parsePopupAnnotation(PDFObject popupObj) throws IOException {
-		this.popupAnnotation = (popupObj != null)?createAnnotation(popupObj):null;
-	}
+        this.popupAnnotation = (popupObj != null)?createAnnotation(popupObj):null;
+    }
 
 
-	private List<PDFCmd> parseIntoPdfCommands(PDFObject obj) throws IOException {
-		// TODO see also WidgetAnnotation.parseCommand which seems to be copied code 
-		// We should merge these two
+    private List<PDFCmd> parseIntoPdfCommands(PDFObject obj) throws IOException {
+        // TODO see also WidgetAnnotation.parseCommand which seems to be copied code 
+        // We should merge these two
         String type = obj.getDictRef("Subtype").getStringValue();
         if (type == null) {
             type = obj.getDictRef ("S").getStringValue ();
@@ -133,17 +133,17 @@ public class MarkupAnnotation extends PDFAnnotation {
             AffineTransform rectAt = getPositionTransformation();
             result.add(PDFPage.createXFormCmd(rectAt));
             
-        	PDFImage img = PDFImage.createImage(obj, new HashMap<String, PDFObject>() , false);        	
-        	result.add(PDFPage.createImageCmd(img));
+            PDFImage img = PDFImage.createImage(obj, new HashMap<String, PDFObject>() , false);            
+            result.add(PDFPage.createImageCmd(img));
         } else if (type.equals("Form")) {
-        	
+            
             // rats.  parse it.
             PDFObject bobj = obj.getDictRef("BBox");
             float xMin = bobj.getAt(0).getFloatValue();
             float yMin = bobj.getAt(1).getFloatValue();
-			float xMax = bobj.getAt(2).getFloatValue();
-			float yMax = bobj.getAt(3).getFloatValue();
-			Float bbox = new Rectangle2D.Float(xMin,
+            float xMax = bobj.getAt(2).getFloatValue();
+            float yMax = bobj.getAt(3).getFloatValue();
+            Float bbox = new Rectangle2D.Float(xMin,
                     yMin,
                     xMax - xMin,
                     yMax - yMin);
@@ -186,72 +186,72 @@ public class MarkupAnnotation extends PDFAnnotation {
         result.add(PDFPage.createPopCmd());
         result.add(PDFPage.createPopCmd());
         return result;
-	}
+    }
 
-	/**
-	 * Transform to the position of the stamp annotation
-	 * @return
-	 */
-	private AffineTransform getPositionTransformation() {
-		Float rect2 = getRect();
-		double[] f = new double[] {1,
-				0,
-				0,
-				1,
-				rect2.getMinX(),
-				rect2.getMinY()};
-		return new AffineTransform(f);
-	}
+    /**
+     * Transform to the position of the stamp annotation
+     * @return
+     */
+    private AffineTransform getPositionTransformation() {
+        Float rect2 = getRect();
+        double[] f = new double[] {1,
+                0,
+                0,
+                1,
+                rect2.getMinX(),
+                rect2.getMinY()};
+        return new AffineTransform(f);
+    }
 
-	/**
-	 * @return the onAppearance
-	 */
-	public PDFObject getOnAppearance() {
-		return onAppearance;
-	}
+    /**
+     * @return the onAppearance
+     */
+    public PDFObject getOnAppearance() {
+        return onAppearance;
+    }
 
-	/**
-	 * @return the offAppearance
-	 */
-	public PDFObject getOffAppearance() {
-		return offAppearance;
-	}
+    /**
+     * @return the offAppearance
+     */
+    public PDFObject getOffAppearance() {
+        return offAppearance;
+    }
 
-	/**
-	 * @return the appearanceStateOn
-	 */
-	public boolean isAppearanceStateOn() {
-		return appearanceStateOn;
-	}
+    /**
+     * @return the appearanceStateOn
+     */
+    public boolean isAppearanceStateOn() {
+        return appearanceStateOn;
+    }
 
-	public void switchAppearance() {
-		this.appearanceStateOn = !this.appearanceStateOn;
-	}
+    public void switchAppearance() {
+        this.appearanceStateOn = !this.appearanceStateOn;
+    }
 
-	public PDFObject getCurrentAppearance() {
-		return appearanceStateOn?onAppearance:offAppearance;
-	}
+    public PDFObject getCurrentAppearance() {
+        return appearanceStateOn?onAppearance:offAppearance;
+    }
 
-	public List<PDFCmd> getCurrentCommand() {
-		return appearanceStateOn?onCmd:offCmd;
-	}
+    public List<PDFCmd> getCurrentCommand() {
+        return appearanceStateOn?onCmd:offCmd;
+    }
 
-	@Override
-	public List<PDFCmd> getPageCommandsForAnnotation() {
-		List<PDFCmd> pageCommandsForAnnotation = super.getPageCommandsForAnnotation();
-		pageCommandsForAnnotation.addAll(getCurrentCommand());
-		return pageCommandsForAnnotation;
-	}
-	
-	/**
-	 * @return the popupAnnotation
-	 */
-	public PDFAnnotation getPopupAnnotation() {
-		return popupAnnotation;
-	}
-	
-	public String getTextLabel() {
-		return textLabel;
-	}
+    @Override
+    public List<PDFCmd> getPageCommandsForAnnotation() {
+        List<PDFCmd> pageCommandsForAnnotation = super.getPageCommandsForAnnotation();
+        pageCommandsForAnnotation.addAll(getCurrentCommand());
+        return pageCommandsForAnnotation;
+    }
+    
+    /**
+     * @return the popupAnnotation
+     */
+    public PDFAnnotation getPopupAnnotation() {
+        return popupAnnotation;
+    }
+    
+    public String getTextLabel() {
+        return textLabel;
+    }
 
 }

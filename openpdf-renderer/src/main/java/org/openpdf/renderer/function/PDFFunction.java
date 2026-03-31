@@ -169,27 +169,27 @@ public abstract class PDFFunction {
     }
 
     /**
-	 * Perform a linear interpolation.  Given a value x, and two points,
-	 * (xmin, ymin), (xmax, ymax), where xmin <= x <= xmax, calculate a value
-	 * y on the line from (xmin, ymin) to (xmax, ymax).
-	 *
-	 * @param x the x value of the input
-	 * @param xmin the minimum x value
-	 * @param ymin the minimum y value
-	 * @param xmax the maximum x value
-	 * @param ymax the maximum y value
-	 * @return the y value interpolated from the given x
-	 */
-	public static float interpolate(float x, float xmin, float xmax,
-			float ymin, float ymax) {
-			    float value = (ymax - ymin) / (xmax - xmin);
-			    value *= x - xmin;
-			    value += ymin;
-			    
-			    return value;
-			}
+     * Perform a linear interpolation.  Given a value x, and two points,
+     * (xmin, ymin), (xmax, ymax), where xmin <= x <= xmax, calculate a value
+     * y on the line from (xmin, ymin) to (xmax, ymax).
+     *
+     * @param x the x value of the input
+     * @param xmin the minimum x value
+     * @param ymin the minimum y value
+     * @param xmax the maximum x value
+     * @param ymax the maximum y value
+     * @return the y value interpolated from the given x
+     */
+    public static float interpolate(float x, float xmin, float xmax,
+            float ymin, float ymax) {
+                float value = (ymax - ymin) / (xmax - xmin);
+                value *= x - xmin;
+                value += ymin;
+                
+                return value;
+            }
 
-	/**
+    /**
      * Get the type of this function
      *
      * @return one of the types of function (0-4)

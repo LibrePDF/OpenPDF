@@ -133,7 +133,7 @@ public class GlyfSimple extends Glyf {
      * buffer.
      */
     @Override
-	public ByteBuffer getData() {
+    public ByteBuffer getData() {
         ByteBuffer buf = super.getData();
         
         // write the contour end points

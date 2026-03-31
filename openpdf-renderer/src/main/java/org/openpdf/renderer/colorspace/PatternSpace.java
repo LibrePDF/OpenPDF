@@ -36,7 +36,7 @@ public class PatternSpace extends PDFColorSpace {
     private PDFColorSpace base;
     
     public PatternSpace() {
-	super(null);
+    super(null);
     }
     
     /**
@@ -59,7 +59,7 @@ public class PatternSpace extends PDFColorSpace {
      * Get the number of components we want
      */
     @Override public int getNumComponents() {
-	if (this.base == null) {
+    if (this.base == null) {
             return 0;
         } else {
             return this.base.getNumComponents();
