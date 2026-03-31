@@ -77,17 +77,17 @@ public class CmapTable extends TrueTypeTable {
         
         CMap cmap_3_1 = this.getCMap((short)3, (short)1);
         if (cmap_3_1 != null) {
-        	c.add(cmap_3_1);
+            c.add(cmap_3_1);
         }
         CMap cmap_1_0 = this.getCMap((short)1, (short)0);
         if (cmap_1_0 != null) {
-        	c.add(cmap_1_0);
+            c.add(cmap_1_0);
         }
 
         for (CMap cmap : this.subtables.values()) {
-        	if (!c.contains(cmap)) {
-        		c.add(cmap);
-        	}
+            if (!c.contains(cmap)) {
+                c.add(cmap);
+            }
         }
                 ;
         CMap[] maps = new CMap[c.size()];
@@ -269,7 +269,7 @@ public class CmapTable extends TrueTypeTable {
          * Sort ascending by platform ID and then specific ID
          */
         @Override
-		public int compareTo(Object obj) {
+        public int compareTo(Object obj) {
             if (!(obj instanceof CmapSubtable)) {
                 return -1;
             }

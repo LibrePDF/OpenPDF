@@ -60,7 +60,7 @@ public class CMapFormat6 extends CMap {
      * Cannot map from a byte
      */
     @Override
-	public byte map(byte src) {
+    public byte map(byte src) {
         char c = map((char) src);
         if (c < Byte.MIN_VALUE || c > Byte.MAX_VALUE) {
             // out of range
@@ -73,7 +73,7 @@ public class CMapFormat6 extends CMap {
      * Map from char
      */
     @Override
-	public char map(char src) {
+    public char map(char src) {
 
         // find first segment with endcode > src
         if (src < this.firstCode || src > (this.firstCode + this.entryCount)) {
@@ -88,7 +88,7 @@ public class CMapFormat6 extends CMap {
      * Get the src code which maps to the given glyphID
      */
     @Override
-	public char reverseMap(short glyphID) {
+    public char reverseMap(short glyphID) {
         Short result = this.glyphLookup.get(Short.valueOf(glyphID));
         if (result == null) {
             return '\000';
@@ -101,7 +101,7 @@ public class CMapFormat6 extends CMap {
      * Get the data in this map as a ByteBuffer
      */
     @Override
-	public void setData(int length, ByteBuffer data) {
+    public void setData(int length, ByteBuffer data) {
         // read the table size values
         this.firstCode = data.getShort();
         this.entryCount = data.getShort();
@@ -118,7 +118,7 @@ public class CMapFormat6 extends CMap {
      * Get the data in the map as a byte buffer
      */
     @Override
-	public ByteBuffer getData() {
+    public ByteBuffer getData() {
         ByteBuffer buf = ByteBuffer.allocate(getLength());
 
         // write the header

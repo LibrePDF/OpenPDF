@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OperationSet {
-	
+    
     /** the set of all Operations we support. These operations are defined
      * in Appendix B - Operators.*/
     private Map<String, PostScriptOperation> operationSet = null;
@@ -16,8 +16,8 @@ public class OperationSet {
      ************************************************************************/
     
     private OperationSet() {
-    	super();
-    	initOperations();
+        super();
+        initOperations();
     }
     
     /*************************************************************************
@@ -25,10 +25,10 @@ public class OperationSet {
      ************************************************************************/
     
     public static synchronized OperationSet getInstance() {
-    	if (instance == null) {
-    		instance = new OperationSet();
-    	}
-    	return instance;
+        if (instance == null) {
+            instance = new OperationSet();
+        }
+        return instance;
     }
     
     /*************************************************************************
@@ -37,12 +37,12 @@ public class OperationSet {
      ************************************************************************/
     
     public PostScriptOperation getOperation(String token) {
-    	PostScriptOperation result = this.operationSet.get(token.trim().toLowerCase());
-    	if (result == null) {
-    		result = new PushAsNumber(token);
-    	}
-    	return result;
-    	
+        PostScriptOperation result = this.operationSet.get(token.trim().toLowerCase());
+        if (result == null) {
+            result = new PushAsNumber(token);
+        }
+        return result;
+        
     }
     
     

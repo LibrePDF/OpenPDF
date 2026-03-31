@@ -48,9 +48,9 @@ public class Type0Font extends PDFFont {
         for (int i = 0; i < descendantFonts.length; i++) {
             PDFFont descFont = getFont(descendantFonts[i], null);
             if (descFont instanceof CIDFontType0) {
-            	((CIDFontType0)descFont).parseToUnicodeMap(fontObj);
+                ((CIDFontType0)descFont).parseToUnicodeMap(fontObj);
             }
-			this.fonts[i] = descFont;
+            this.fonts[i] = descFont;
         }
     }
     
@@ -65,7 +65,7 @@ public class Type0Font extends PDFFont {
      * Get a character from the first font in the descendant fonts array
      */
     @Override
-	protected PDFGlyph getGlyph(char src, String name) {
+    protected PDFGlyph getGlyph(char src, String name) {
         return (getDescendantFont(0).getGlyph(src, name));
     }
 }

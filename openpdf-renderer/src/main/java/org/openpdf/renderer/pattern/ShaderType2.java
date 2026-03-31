@@ -75,7 +75,7 @@ public class ShaderType2 extends PDFShader {
      * Parse the shader-specific data
      */
     @Override
-	public void parse(PDFObject shaderObj) throws IOException
+    public void parse(PDFObject shaderObj) throws IOException
     {
         // read the axis coordinates (required)
         PDFObject coordsObj = shaderObj.getDictRef("Coords");
@@ -124,7 +124,7 @@ public class ShaderType2 extends PDFShader {
      * Create a paint that paints this pattern
      */
     @Override
-	public PDFPaint getPaint() {
+    public PDFPaint getPaint() {
         return PDFPaint.getPaint(new Type2Paint());
     }
     
@@ -235,7 +235,7 @@ public class ShaderType2 extends PDFShader {
         
         /** create a paint context */
         @Override
-		public PaintContext createContext(ColorModel cm, 
+        public PaintContext createContext(ColorModel cm, 
                                           Rectangle deviceBounds, 
                                           Rectangle2D userBounds,
                                           AffineTransform xform,
@@ -255,7 +255,7 @@ public class ShaderType2 extends PDFShader {
         }
                 
         @Override
-		public int getTransparency() {
+        public int getTransparency() {
             return Transparency.TRANSLUCENT;
         }
     }
@@ -294,70 +294,70 @@ public class ShaderType2 extends PDFShader {
         }
         
         @Override
-		public void dispose() {
+        public void dispose() {
             this.colorModel = null;
         }
         
         @Override
-		public ColorModel getColorModel() {
+        public ColorModel getColorModel() {
             return this.colorModel;
         }
         
         @Override
         public Raster getRaster(int x, int y, int w, int h) {
-        	ColorSpace cs = getColorModel().getColorSpace();
+            ColorSpace cs = getColorModel().getColorSpace();
             PDFColorSpace shadeCSpace = getColorSpace();
 
 
-        	PDFFunction functions[] = getFunctions();
-        	int numComponents = cs.getNumComponents();
+            PDFFunction functions[] = getFunctions();
+            int numComponents = cs.getNumComponents();
 
-        	float x0 = (float) this.start.getX();
-        	float y0 = (float) this.start.getY();
+            float x0 = (float) this.start.getX();
+            float y0 = (float) this.start.getY();
 
-        	float[] inputs = new float[1];
+            float[] inputs = new float[1];
             float[] outputs = new float[shadeCSpace.getNumComponents()];
             float[] outputRBG = new float[numComponents];
 
-        	// all the data, plus alpha channel
-        	int[] data = new int[w * h * (numComponents + 1)];
+            // all the data, plus alpha channel
+            int[] data = new int[w * h * (numComponents + 1)];
 
-        	// for each device coordinate
-        	for (int j = 0; j < h; j++) {
-        		for (int i = 0; i < w; i += 1) {
-        			boolean render = true;
-        			// find t for that user coordinate
+            // for each device coordinate
+            for (int j = 0; j < h; j++) {
+                for (int i = 0; i < w; i += 1) {
+                    boolean render = true;
+                    // find t for that user coordinate
                     float xp = getXPrime((float)(i + x), (float)(j + y), x0, y0);
                     float t = 0;
-        			if (xp >= 0 && xp <= 1) t = getMinT() + (dt1t0 * xp);
-        			else if (xp < 0 && extendStart) t = getMinT();
-        			else if (xp > 1 && extendEnd) t = getMaxT();
-        			else render = false;
+                    if (xp >= 0 && xp <= 1) t = getMinT() + (dt1t0 * xp);
+                    else if (xp < 0 && extendStart) t = getMinT();
+                    else if (xp > 1 && extendEnd) t = getMaxT();
+                    else render = false;
 
-        			if (render) {
-        				// calculate the pixel values at t
-        				inputs[0] = t;
-        				if (functions.length == 1) {
-        					functions[0].calculate(inputs, 0, outputs, 0);
-        				} else {
-        					for (int c = 0; c < functions.length; c++) {
-        						functions[c].calculate(inputs, 0, outputs, c);
-        					} 
-        				}
-        				if (functions[0].getNumOutputs() != numComponents) {
-        					//CMYK
-        					outputRBG = shadeCSpace.getColorSpace().toRGB(outputs);
-        				}
-        				else outputRBG = outputs;
+                    if (render) {
+                        // calculate the pixel values at t
+                        inputs[0] = t;
+                        if (functions.length == 1) {
+                            functions[0].calculate(inputs, 0, outputs, 0);
+                        } else {
+                            for (int c = 0; c < functions.length; c++) {
+                                functions[c].calculate(inputs, 0, outputs, c);
+                            } 
+                        }
+                        if (functions[0].getNumOutputs() != numComponents) {
+                            //CMYK
+                            outputRBG = shadeCSpace.getColorSpace().toRGB(outputs);
+                        }
+                        else outputRBG = outputs;
 
-        				int base = (j * w + i) * (numComponents + 1);
-        				for (int c = 0; c < numComponents; c++) {
-        					data[base + c] = (int) (outputRBG[c] * 255);
-        				}
-        				data[base + numComponents] = 255; 
-        			}
-        		}
-        	}
+                        int base = (j * w + i) * (numComponents + 1);
+                        for (int c = 0; c < numComponents; c++) {
+                            data[base + c] = (int) (outputRBG[c] * 255);
+                        }
+                        data[base + numComponents] = 255; 
+                    }
+                }
+            }
 
             WritableRaster raster =
                 getColorModel().createCompatibleWritableRaster(w, h);
@@ -383,7 +383,7 @@ public class ShaderType2 extends PDFShader {
          * t = t0 + (t1 - t0) x x'
          */
         private float getT(float xp) {
-        	
+            
             if (xp < 0) {
                 return getMinT();
             } else if (xp > 1) {

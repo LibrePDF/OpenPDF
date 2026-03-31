@@ -115,7 +115,7 @@ public abstract class OutlineFont extends PDFFont {
      * @return a glyph for this character
      */
     @Override
-	protected PDFGlyph getGlyph(char src, String name) {
+    protected PDFGlyph getGlyph(char src, String name) {
         GeneralPath outline = null;
         float width = getWidth(src, name);
 

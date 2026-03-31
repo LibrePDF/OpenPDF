@@ -12,13 +12,13 @@ import org.openpdf.renderer.PDFObject;
  * @since 28.03.2012
  ****************************************************************************/
 public class FreetextAnnotation extends MarkupAnnotation {
-	
-	/*************************************************************************
-	 * Constructor
-	 * @param annotObject
-	 * @throws IOException 
-	 ************************************************************************/
-	public FreetextAnnotation(PDFObject annotObject) throws IOException {
-		super(annotObject, AnnotationType.FREETEXT);
-	}
+    
+    /*************************************************************************
+     * Constructor
+     * @param annotObject
+     * @throws IOException 
+     ************************************************************************/
+    public FreetextAnnotation(PDFObject annotObject) throws IOException {
+        super(annotObject, AnnotationType.FREETEXT);
+    }
 }

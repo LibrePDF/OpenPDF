@@ -19,50 +19,50 @@ import org.openpdf.renderer.font.ttf.AdobeGlyphList;
 
 public class CIDFontType0 extends BuiltinFont {
 
-	private PDFCMap glyphLookupMap;
+    private PDFCMap glyphLookupMap;
 
-	/*************************************************************************
-	 * Constructor
-	 * @param baseFont
-	 * @param fontObj
-	 * @param descriptor
-	 * @throws IOException
-	 ************************************************************************/
-	
-	public CIDFontType0(String baseFont, PDFObject fontObj,
-			PDFFontDescriptor descriptor) throws IOException {
-		super(baseFont, fontObj, descriptor);
-	}
-	
-	/*************************************************************************
-	 * @param fontObj
-	 * @throws IOException
-	 ************************************************************************/
-	
-	public void parseToUnicodeMap(PDFObject fontObj) throws IOException {
-		PDFObject toUnicode = fontObj.getDictRef("ToUnicode");
-		if (toUnicode != null) {
-			PDFCMap cmap = PDFCMap.getCMap(toUnicode);
-			this.glyphLookupMap = cmap;
-		}
-	}
-	
-	 /**
+    /*************************************************************************
+     * Constructor
+     * @param baseFont
+     * @param fontObj
+     * @param descriptor
+     * @throws IOException
+     ************************************************************************/
+    
+    public CIDFontType0(String baseFont, PDFObject fontObj,
+            PDFFontDescriptor descriptor) throws IOException {
+        super(baseFont, fontObj, descriptor);
+    }
+    
+    /*************************************************************************
+     * @param fontObj
+     * @throws IOException
+     ************************************************************************/
+    
+    public void parseToUnicodeMap(PDFObject fontObj) throws IOException {
+        PDFObject toUnicode = fontObj.getDictRef("ToUnicode");
+        if (toUnicode != null) {
+            PDFCMap cmap = PDFCMap.getCMap(toUnicode);
+            this.glyphLookupMap = cmap;
+        }
+    }
+    
+     /**
      * Get a character from the first font in the descendant fonts array
      */
     @Override
-	protected PDFGlyph getGlyph(char src, String name) {
+    protected PDFGlyph getGlyph(char src, String name) {
         //TODO BROS 03.08.2011 Hack for unsupported Type0 CID based fonts
-		// If we have a toUnicodeMap then try to use that one when mapping to our build in font.
-    	// See "9.10 Extraction of Text Content" in the PDF spec.
+        // If we have a toUnicodeMap then try to use that one when mapping to our build in font.
+        // See "9.10 Extraction of Text Content" in the PDF spec.
         if (this.glyphLookupMap != null) {
-        	src = this.glyphLookupMap.map(src);
+            src = this.glyphLookupMap.map(src);
             //The preferred method of getting the glyph should be by name. 
             if (name == null && src != 160){//unless it NBSP
-            	//so, try to find the name by the char
-            	name = AdobeGlyphList.getGlyphName(src);
+                //so, try to find the name by the char
+                name = AdobeGlyphList.getGlyphName(src);
             }
         }
-		return super.getGlyph(src, name);
+        return super.getGlyph(src, name);
     }
 }

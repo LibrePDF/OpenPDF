@@ -65,11 +65,11 @@ public class CalRGBColor extends ColorSpace {
      * an array of 9 Numbers for "Matrix".
      */
     public CalRGBColor(PDFObject obj) throws IOException {
-	// obj is a dictionary that has the following parts:
-	// WhitePoint [a b c]
-	// BlackPoint [a b c]
-	// Gamma a
-	super(CS_sRGB, 3);
+    // obj is a dictionary that has the following parts:
+    // WhitePoint [a b c]
+    // BlackPoint [a b c]
+    // Gamma a
+    super(CS_sRGB, 3);
         
         // find out what what is according to the CIE color space
         // note that this is not reflexive (i.e. passing this value
@@ -77,29 +77,29 @@ public class CalRGBColor extends ColorSpace {
         // cieWhite = cieCS.fromRGB(new float[] { 1.0f, 1.0f, 1.0f } );
       
         PDFObject ary= obj.getDictRef("WhitePoint");
-	if (ary!=null) {
-	    for(int i=0; i<3; i++) {
-		this.white[i]= ary.getAt(i).getFloatValue();
-	    }
-	}
-	ary= obj.getDictRef("BlackPoint");
-	if (ary!=null) {
-	    for(int i=0; i<3; i++) {
-		this.black[i]= ary.getAt(i).getFloatValue();
-	    }
-	}
-	ary= obj.getDictRef("Gamma");
-	if (ary!=null) {
-	    for (int i=0; i<3; i++) {
-		this.gamma[i]= ary.getAt(i).getFloatValue();
-	    }
-	}
-	ary= obj.getDictRef("Matrix");
-	if (ary!=null) {
-	    for (int i=0; i<9; i++) {
-		this.matrix[i]= ary.getAt(i).getFloatValue();
-	    }
-	}
+    if (ary!=null) {
+        for(int i=0; i<3; i++) {
+        this.white[i]= ary.getAt(i).getFloatValue();
+        }
+    }
+    ary= obj.getDictRef("BlackPoint");
+    if (ary!=null) {
+        for(int i=0; i<3; i++) {
+        this.black[i]= ary.getAt(i).getFloatValue();
+        }
+    }
+    ary= obj.getDictRef("Gamma");
+    if (ary!=null) {
+        for (int i=0; i<3; i++) {
+        this.gamma[i]= ary.getAt(i).getFloatValue();
+        }
+    }
+    ary= obj.getDictRef("Matrix");
+    if (ary!=null) {
+        for (int i=0; i<9; i++) {
+        this.matrix[i]= ary.getAt(i).getFloatValue();
+        }
+    }
         
         // create a scale matrix relative to the 50 CIE color space.
         // see http://www.brucelindbloom.com/Eqn_RGB_XYZ_Matrix.html
@@ -123,7 +123,7 @@ public class CalRGBColor extends ColorSpace {
      * get the number of components (3)
      */
     @Override public int getNumComponents() {
-	return 3;
+    return 3;
     }
 
     /**
@@ -132,19 +132,19 @@ public class CalRGBColor extends ColorSpace {
      * @return the RGB values (0-1)
      */
     @Override
-	public float[] toRGB(float comp[]) {
-	if (comp.length==3) {
+    public float[] toRGB(float comp[]) {
+    if (comp.length==3) {
             // compute r', g' and b' by raising the given values to the
             // correct gamma
-	    float a = (float)Math.pow(comp[0], this.gamma[0]);
-	    float b = (float)Math.pow(comp[1], this.gamma[1]);
-	    float c = (float)Math.pow(comp[2], this.gamma[2]);
-	    
+        float a = (float)Math.pow(comp[0], this.gamma[0]);
+        float b = (float)Math.pow(comp[1], this.gamma[1]);
+        float c = (float)Math.pow(comp[2], this.gamma[2]);
+        
             // now multiply by the matrix to get X, Y and Z values
             float[] xyz = new float[] {
-		this.matrix[0]*a + this.matrix[3]*b + this.matrix[6]*c,
-		this.matrix[1]*a + this.matrix[4]*b + this.matrix[7]*c,
-		this.matrix[2]*a + this.matrix[5]*b + this.matrix[8]*c};
+        this.matrix[0]*a + this.matrix[3]*b + this.matrix[6]*c,
+        this.matrix[1]*a + this.matrix[4]*b + this.matrix[7]*c,
+        this.matrix[2]*a + this.matrix[5]*b + this.matrix[8]*c};
                      
             // now scale the xyz values
             xyz = matrixMult(xyz, this.scale, 3);
@@ -163,9 +163,9 @@ public class CalRGBColor extends ColorSpace {
             }
             
             return rgb;
-	} else {
-	    return this.black;
-	}
+    } else {
+        return this.black;
+    }
     }
 
     /**
@@ -196,31 +196,31 @@ public class CalRGBColor extends ColorSpace {
      * convert from RGB to Calibrated RGB.  NOT IMPLEMENTED
      */
     @Override
-	public float[] fromRGB(float[] rgbvalue) {
-	return new float[3];
+    public float[] fromRGB(float[] rgbvalue) {
+    return new float[3];
     }
 
     /**
      * convert from CIEXYZ to Calibrated RGB.  NOT IMPLEMENTED
      */
     @Override
-	public float[] fromCIEXYZ(float[] colorvalue) {
-	return new float[3];
+    public float[] fromCIEXYZ(float[] colorvalue) {
+    return new float[3];
     }
 
     /**
      * get the type of this color space (TYPE_RGB)
      */
     @Override public int getType() {
-	return TYPE_RGB;
+    return TYPE_RGB;
     }
 
     /**
      * convert from Calibrated RGB to CIEXYZ.  NOT IMPLEMENTED
      */
     @Override
-	public float[] toCIEXYZ(float[] colorvalue) {
-	return new float[3];
+    public float[] toCIEXYZ(float[] colorvalue) {
+    return new float[3];
     }
     
     /**

@@ -69,7 +69,7 @@ public abstract class PDFPattern {
         } else {
             float elts[]= new float[6];
             for (int i = 0; i < elts.length; i++) {
-            	elts[i] = matrix.getAt(i).getFloatValue();
+                elts[i] = matrix.getAt(i).getFloatValue();
             }
         
             xform = new AffineTransform(elts); 
@@ -80,8 +80,8 @@ public abstract class PDFPattern {
                 pattern = new PatternType1();
                 break;
             case 2:
-            	pattern = new PatternType2();
-            	break;
+                pattern = new PatternType2();
+                break;
             default:
                 throw new PDFParseException("Unknown pattern type " + type);
         }       

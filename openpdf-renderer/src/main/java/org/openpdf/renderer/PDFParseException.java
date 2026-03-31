@@ -31,7 +31,7 @@ public class PDFParseException extends IOException {
     }
 
     public PDFParseException(String msg, Throwable cause) {
-	this(msg);
+    this(msg);
         initCause(cause);
     }
 

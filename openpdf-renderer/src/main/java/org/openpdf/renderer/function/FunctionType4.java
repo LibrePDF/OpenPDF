@@ -50,13 +50,13 @@ public class FunctionType4 extends PDFFunction {
 
     /** Read the function information from a PDF Object */
     @Override
-	protected void parse(PDFObject obj) throws IOException {
-    	ByteBuffer buf = obj.getStreamBuffer();
-    	
-    	byte[] byteA = new byte[buf.remaining()];
-    	buf.get(byteA);
-    	String scriptContent = new String(byteA, "UTF-8");
-    	this.tokens = new PostScriptParser().parse(scriptContent);
+    protected void parse(PDFObject obj) throws IOException {
+        ByteBuffer buf = obj.getStreamBuffer();
+        
+        byte[] byteA = new byte[buf.remaining()];
+        buf.get(byteA);
+        String scriptContent = new String(byteA, "UTF-8");
+        this.tokens = new PostScriptParser().parse(scriptContent);
     }
 
     /**
@@ -72,50 +72,50 @@ public class FunctionType4 extends PDFFunction {
      * @param outputOffset the offset into the output array to write to
      */
     @Override
-	protected void doFunction(float[] inputs, int inputOffset, float[] outputs, int outputOffset) {
-    	prepareInitialStack(inputs, inputOffset);
-    	for (Iterator<String> iterator = this.tokens.iterator(); iterator.hasNext(); ) {
-			String token = iterator.next();
-			PostScriptOperation op = OperationSet.getInstance().getOperation(token);
-			op.eval(this.stack);
-		}
-    	assertResultIsCorrect(outputs, outputOffset);
-    	prepareResult(outputs, outputOffset);
+    protected void doFunction(float[] inputs, int inputOffset, float[] outputs, int outputOffset) {
+        prepareInitialStack(inputs, inputOffset);
+        for (Iterator<String> iterator = this.tokens.iterator(); iterator.hasNext(); ) {
+            String token = iterator.next();
+            PostScriptOperation op = OperationSet.getInstance().getOperation(token);
+            op.eval(this.stack);
+        }
+        assertResultIsCorrect(outputs, outputOffset);
+        prepareResult(outputs, outputOffset);
     }
 
-	/*************************************************************************
-	 * @param outputs
-	 * @param outputOffset
-	 ************************************************************************/
-	private void prepareResult(float[] outputs, int outputOffset) {
-		for (int i = outputOffset; i < outputs.length; i++) {
-    		outputs[outputs.length-i-1] = ((Double)this.stack.pop()).floatValue();
-		}
-	}
+    /*************************************************************************
+     * @param outputs
+     * @param outputOffset
+     ************************************************************************/
+    private void prepareResult(float[] outputs, int outputOffset) {
+        for (int i = outputOffset; i < outputs.length; i++) {
+            outputs[outputs.length-i-1] = ((Double)this.stack.pop()).floatValue();
+        }
+    }
 
-	/*************************************************************************
-	 * Put all input values on the initial stack.
-	 * All values are pushed as Double because we calculate internally with double.
-	 * @param inputs
-	 * @param inputOffset
-	 ************************************************************************/
-	
-	private void prepareInitialStack(float[] inputs, int inputOffset) {
-		this.stack = new Stack<>();
-    	for (int i = inputOffset; i < inputs.length; i++) {
-    		this.stack.push(inputs[i]);
-		}
-	}
+    /*************************************************************************
+     * Put all input values on the initial stack.
+     * All values are pushed as Double because we calculate internally with double.
+     * @param inputs
+     * @param inputOffset
+     ************************************************************************/
+    
+    private void prepareInitialStack(float[] inputs, int inputOffset) {
+        this.stack = new Stack<>();
+        for (int i = inputOffset; i < inputs.length; i++) {
+            this.stack.push(inputs[i]);
+        }
+    }
 
-	/*************************************************************************
-	 * @param outputs
-	 * @param outputOffset
-	 ************************************************************************/
-	
-	private void assertResultIsCorrect(float[] outputs, int outputOffset) {
-		int expectedResults = outputs.length-outputOffset;
-		if (this.stack.size() != expectedResults) {
-        	throw new IllegalStateException("Output does not match result "+expectedResults+"/"+this.stack);
-    	}
-	}
+    /*************************************************************************
+     * @param outputs
+     * @param outputOffset
+     ************************************************************************/
+    
+    private void assertResultIsCorrect(float[] outputs, int outputOffset) {
+        int expectedResults = outputs.length-outputOffset;
+        if (this.stack.size() != expectedResults) {
+            throw new IllegalStateException("Output does not match result "+expectedResults+"/"+this.stack);
+        }
+    }
 }

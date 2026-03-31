@@ -64,8 +64,8 @@ public abstract class PDFCMap {
         
         if (!cache.containsKey(mapName)) {
             //throw new IOException("Unknown CMap: " + mapName);
-        	PDFDebugger.debug("Unknown CMap: '" + mapName + "' procced with 'Identity-H'");
-	       	return cache.get("Identity-H");
+            PDFDebugger.debug("Unknown CMap: '" + mapName + "' procced with 'Identity-H'");
+               return cache.get("Identity-H");
         }
             
         return cache.get(mapName);
@@ -80,7 +80,7 @@ public abstract class PDFCMap {
         // add the Identity-H map
         cache.put("Identity-H", new PDFCMap() {
             @Override
-			public char map(char src) {
+            public char map(char src) {
                 return src;
             }
         });
@@ -90,7 +90,7 @@ public abstract class PDFCMap {
      * Parse a CMap from a CMap stream
      */
     protected static PDFCMap parseCMap(PDFObject map) throws IOException {
-       	return new ToUnicodeMap(map);
+           return new ToUnicodeMap(map);
     }
     
     /**

@@ -50,7 +50,7 @@ public class AlternateColorSpace extends PDFColorSpace {
      * get the number of components expected in the getPaint command
      */
     @Override public int getNumComponents() {
-	if (this.function != null) {
+    if (this.function != null) {
             return this.function.getNumInputs();
         } else {
             return this.alternate.getNumComponents();
@@ -78,18 +78,18 @@ public class AlternateColorSpace extends PDFColorSpace {
      * get the original Java ColorSpace.
      */
     @Override public ColorSpace getColorSpace() {
-    	if (altcolorspace == null) altcolorspace = new AltColorSpace(function, alternate.getColorSpace());
-    	return altcolorspace;
-    	//return this.alternate.getColorSpace();
+        if (altcolorspace == null) altcolorspace = new AltColorSpace(function, alternate.getColorSpace());
+        return altcolorspace;
+        //return this.alternate.getColorSpace();
     }
     
-	/*************************************************************************
-	 * Get the PDF function
-	 * @return PDFFunction
-	 ************************************************************************/
-	public PDFFunction getFunktion() {
-		return this.function;		
-	}
-	
-	
+    /*************************************************************************
+     * Get the PDF function
+     * @return PDFFunction
+     ************************************************************************/
+    public PDFFunction getFunktion() {
+        return this.function;        
+    }
+    
+    
 }

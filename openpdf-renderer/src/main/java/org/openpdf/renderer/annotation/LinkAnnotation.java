@@ -27,41 +27,41 @@ import org.openpdf.renderer.action.PDFAction;
  ****************************************************************************/
 public class LinkAnnotation extends PDFAnnotation {
 
-	private PDFAction action = null;
+    private PDFAction action = null;
 
-	/*************************************************************************
-	 * Constructor
-	 * @param annotObject
-	 * @throws IOException 
-	 ************************************************************************/
-	public LinkAnnotation(PDFObject annotObject) throws IOException {
-		super(annotObject, AnnotationType.LINK);
-		// a link annotation can either have an action (GoTo or URI) or a destination (DEST)
-		PDFObject actionObj = annotObject.getDictRef("A");
-		if (actionObj != null) {
-			this.action = PDFAction.getAction(actionObj, annotObject.getRoot());
-		} else {
-			// if a destination is given, create a GoToAction from it
-			PDFObject dest = annotObject.getDictRef("Dest");
-			if(dest == null) {
-				dest = annotObject.getDictRef("DEST");
-			}
-			if (dest != null) {
-				this.action = new GoToAction(PDFDestination.getDestination(dest, annotObject.getRoot()));
-			} else {
-				throw new PDFParseException(
-					"Could not parse link annotation (no Action or Destination found): "
-						+ annotObject.toString());
-			}
-		}
-	}
-	
-	/*************************************************************************
-	 * Get the contained PDFAction
-	 * @return PDFAction - can be <code>null</code> in case the contains 
-	 * 						a destination object
-	 ************************************************************************/
-	public PDFAction getAction() {
-		return this.action;
-	}
+    /*************************************************************************
+     * Constructor
+     * @param annotObject
+     * @throws IOException 
+     ************************************************************************/
+    public LinkAnnotation(PDFObject annotObject) throws IOException {
+        super(annotObject, AnnotationType.LINK);
+        // a link annotation can either have an action (GoTo or URI) or a destination (DEST)
+        PDFObject actionObj = annotObject.getDictRef("A");
+        if (actionObj != null) {
+            this.action = PDFAction.getAction(actionObj, annotObject.getRoot());
+        } else {
+            // if a destination is given, create a GoToAction from it
+            PDFObject dest = annotObject.getDictRef("Dest");
+            if(dest == null) {
+                dest = annotObject.getDictRef("DEST");
+            }
+            if (dest != null) {
+                this.action = new GoToAction(PDFDestination.getDestination(dest, annotObject.getRoot()));
+            } else {
+                throw new PDFParseException(
+                    "Could not parse link annotation (no Action or Destination found): "
+                        + annotObject.toString());
+            }
+        }
+    }
+    
+    /*************************************************************************
+     * Get the contained PDFAction
+     * @return PDFAction - can be <code>null</code> in case the contains 
+     *                         a destination object
+     ************************************************************************/
+    public PDFAction getAction() {
+        return this.action;
+    }
 }

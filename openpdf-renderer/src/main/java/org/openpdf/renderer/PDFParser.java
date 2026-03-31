@@ -84,7 +84,7 @@ public class PDFParser extends BaseWatchable {
     private int strokeOverprintMode;
     private boolean fillOverprint;
     private int fillOverprintMode;
-	private boolean addAnnotation;
+    private boolean addAnnotation;
 
     /**
     * Don't call this constructor directly. Instead, use
@@ -211,7 +211,7 @@ public class PDFParser extends BaseWatchable {
                 }
                 // skip whitespace
                 while (this.loc < this.stream.length && PDFFile.isWhiteSpace(c)) {
-                	c = this.stream[this.loc++];
+                    c = this.stream[this.loc++];
                 }
             }
             PDFDebugger.debug("Read comment: " + comment.toString(), -1);
@@ -1222,7 +1222,7 @@ public class PDFParser extends BaseWatchable {
     private void doShader(PDFObject shaderObj) throws IOException {
         PDFShader shader = PDFShader.getShader(shaderObj, this.resources);
         if(shader == null) {
-        	return;
+            return;
         }
         this.cmds.addPush();
         Rectangle2D bbox = shader.getBBox();
@@ -1508,14 +1508,14 @@ public class PDFParser extends BaseWatchable {
     
     @Override
     protected void setStatus(int status) {
-    	if(status == COMPLETED) {
-    		if(!addAnnotation){
-    			// corresponding push in constructor PDFPage
-    			this.cmds.addPop();
-    			this.cmds.addAnnotations();
-    			addAnnotation = true;
-    		}
-    	}
-    	super.setStatus(status);
+        if(status == COMPLETED) {
+            if(!addAnnotation){
+                // corresponding push in constructor PDFPage
+                this.cmds.addPop();
+                this.cmds.addAnnotations();
+                addAnnotation = true;
+            }
+        }
+        super.setStatus(status);
     }    
 }

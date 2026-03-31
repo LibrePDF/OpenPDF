@@ -61,12 +61,12 @@ public class PDFFontEncoding {
      * the type of this encoding (encoding or CMap)
      */
     private int type;
-	private PDFObject mapName;
+    private PDFObject mapName;
     
     public PDFFontEncoding(PDFCMap cmap) {
-    	super();
-    	this.type = TYPE_CMAP;
-    	this.cmap = cmap;
+        super();
+        this.type = TYPE_CMAP;
+        this.cmap = cmap;
     }
 
     /** Creates a new instance of PDFFontEncoding */
@@ -204,7 +204,7 @@ public class PDFFontEncoding {
         } else if (encodingName.equals("WinAnsiEncoding")) {
             return FontSupport.winAnsiEncoding;
         } else if (encodingName.equals("StandardEncoding")) {
-        	return FontSupport.standardEncoding; 
+            return FontSupport.standardEncoding; 
         } else if(encodingName.equals("SymbolSetEncoding")) {
             return FontSupport.symbolSetEncoding;
         } else {
@@ -213,14 +213,14 @@ public class PDFFontEncoding {
     }
     
     public boolean isOneByteIdentity() {
-    	if(this.mapName != null) {
-    		try {
-				return "OneByteIdentityH".equals(this.mapName.getStringValue());
-			} catch (IOException e) {
-				PDFRenderer.getErrorHandler().publishException(e);
-			}
-    	}
-    	
-    	return false;
+        if(this.mapName != null) {
+            try {
+                return "OneByteIdentityH".equals(this.mapName.getStringValue());
+            } catch (IOException e) {
+                PDFRenderer.getErrorHandler().publishException(e);
+            }
+        }
+        
+        return false;
     }
 }

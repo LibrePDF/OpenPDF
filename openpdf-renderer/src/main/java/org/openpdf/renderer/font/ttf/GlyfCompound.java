@@ -36,7 +36,7 @@ public class GlyfCompound extends Glyf {
     private static final int WE_HAVE_AN_X_AND_Y_SCALE = 0x40; 
     private static final int WE_HAVE_A_TWO_BY_TWO     = 0x80;
     private static final int WE_HAVE_INSTRUCTIONS     = 0x100;
-    private static final int USE_MY_METRICS 	      = 0x200;
+    private static final int USE_MY_METRICS           = 0x200;
     private static final int OVERLAP_COMPOUND         = 0x400;
 
     /** the flags for each compound glyph */
@@ -104,7 +104,7 @@ public class GlyfCompound extends Glyf {
             }
         
             if ((cur.flags & WE_HAVE_INSTRUCTIONS) != 0) {
-  	        hasInstructions = true;
+              hasInstructions = true;
             }
 
             comps.add(cur);
@@ -181,7 +181,7 @@ public class GlyfCompound extends Glyf {
             m *= 2;
         }
 
-	float n = Math.max(Math.abs(gc.c), Math.abs(gc.d));
+    float n = Math.max(Math.abs(gc.c), Math.abs(gc.d));
         if (Math.abs(Math.abs(gc.c) - Math.abs(gc.d)) < (33 / 65536)) {
             n *= 2;
         }

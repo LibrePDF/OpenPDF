@@ -39,7 +39,7 @@ import org.openpdf.renderer.PDFParseException;
  */
 
 public class JPXDecode {
-	
+    
     /*************************************************************************
      * @param dict
      * @param buf
@@ -47,40 +47,40 @@ public class JPXDecode {
      * @return
      * @throws PDFParseException
      ************************************************************************/
-	
+    
     protected static ByteBuffer decode(PDFObject dict, ByteBuffer buf, PDFObject params) throws PDFParseException {
         BufferedImage bimg = loadImageData(buf);
         byte[] output = ImageDataDecoder.decodeImageData(bimg);
-		return ByteBuffer.wrap(output);
+        return ByteBuffer.wrap(output);
     }
 
-	/*************************************************************************
-	 * @param buf
-	 * @return
-	 * @throws PDFParseException
-	 * @throws IOException
-	 ************************************************************************/
+    /*************************************************************************
+     * @param buf
+     * @return
+     * @throws PDFParseException
+     * @throws IOException
+     ************************************************************************/
     
-	private static BufferedImage loadImageData(ByteBuffer buf) throws PDFParseException {
+    private static BufferedImage loadImageData(ByteBuffer buf) throws PDFParseException {
         ImageReader reader = null;
-		try {
-			byte[] input = new byte[buf.remaining()];
-			buf.get(input);
-			Iterator<ImageReader> readers = ImageIO.getImageReadersByMIMEType("image/jpeg2000");
-			if (readers.hasNext() == false) {
-				throw new PDFParseException("JPXDecode failed. No reader available");
-			}
-			reader = readers.next();
-			reader.setInput(new MemoryCacheImageInputStream(new ByteArrayInputStream(input)));
-			BufferedImage bimg = reader.read(0);
-			return bimg;
-		} catch (IOException e) {
+        try {
+            byte[] input = new byte[buf.remaining()];
+            buf.get(input);
+            Iterator<ImageReader> readers = ImageIO.getImageReadersByMIMEType("image/jpeg2000");
+            if (readers.hasNext() == false) {
+                throw new PDFParseException("JPXDecode failed. No reader available");
+            }
+            reader = readers.next();
+            reader.setInput(new MemoryCacheImageInputStream(new ByteArrayInputStream(input)));
+            BufferedImage bimg = reader.read(0);
+            return bimg;
+        } catch (IOException e) {
             throw new PDFParseException("JPXDecode failed", e);
         } finally {
             if (reader != null) {
                 reader.dispose();
             }
-		}
+        }
 
-	}
+    }
 }
