@@ -68,11 +68,11 @@ public class TableRowBox extends BlockBox {
 
     private TableBox getTable() {
         // row -> section -> table
-        return (TableBox)getParent().getParent();
+        return (TableBox) getParent().getParent();
     }
 
     private TableSectionBox getSection() {
-        return (TableSectionBox)getParent();
+        return (TableSectionBox) getParent();
     }
 
     @Override
@@ -180,11 +180,11 @@ public class TableRowBox extends BlockBox {
                 if (cell == null || cell == TableCellBox.SPANNING_CELL) {
                     continue;
                 }
-                if (cRow < totalRows - 1 && getSection().cellAt(cRow+1, cCol) == cell) {
+                if (cRow < totalRows - 1 && getSection().cellAt(cRow + 1, cCol) == cell) {
                     continue;
                 }
 
-                int borderAndPadding = (int)cell.getPadding(c).bottom() + (int)cell.getBorder(c).bottom();
+                int borderAndPadding = (int) cell.getPadding(c).bottom() + (int) cell.getBorder(c).bottom();
                 if (borderAndPadding > maxBorderAndPadding) {
                     maxBorderAndPadding = borderAndPadding;
                 }
@@ -222,7 +222,7 @@ public class TableRowBox extends BlockBox {
         int lowest = Integer.MIN_VALUE;
         boolean found = false;
         for (int i = 0; i < getChildCount(); i++) {
-            TableCellBox cell = (TableCellBox)getChild(i);
+            TableCellBox cell = (TableCellBox) getChild(i);
 
             if (cell.getVerticalAlign() == IdentValue.BASELINE) {
                 int baseline = cell.calcBaseline(c);
@@ -236,7 +236,7 @@ public class TableRowBox extends BlockBox {
 
         if (found) {
             for (int i = 0; i < getChildCount(); i++) {
-                TableCellBox cell = (TableCellBox)getChild(i);
+                TableCellBox cell = (TableCellBox) getChild(i);
 
                 if (cell.getVerticalAlign() == IdentValue.BASELINE) {
                     int deltaY = lowest - baselines[i];
@@ -270,7 +270,7 @@ public class TableRowBox extends BlockBox {
                 if (cell == null || cell == TableCellBox.SPANNING_CELL) {
                     continue;
                 }
-                if (cRow < totalRows - 1 && getSection().cellAt(cRow+1, cCol) == cell) {
+                if (cRow < totalRows - 1 && getSection().cellAt(cRow + 1, cCol) == cell) {
                     continue;
                 }
 
@@ -366,7 +366,7 @@ public class TableRowBox extends BlockBox {
                 if (cell == null || cell == TableCellBox.SPANNING_CELL) {
                     continue;
                 }
-                if (cRow < totalRows - 1 && getSection().cellAt(cRow+1, cCol) == cell) {
+                if (cRow < totalRows - 1 && getSection().cellAt(cRow + 1, cCol) == cell) {
                     continue;
                 }
 
@@ -384,7 +384,7 @@ public class TableRowBox extends BlockBox {
         TableBox table = getTable();
         TableSectionBox section = getSection();
         if (table.sectionBelow(section, true) == null) {
-            return section.getChild(section.getChildCount()-1) == this;
+            return section.getChild(section.getChildCount() - 1) == this;
         } else {
             return false;
         }
@@ -403,7 +403,7 @@ public class TableRowBox extends BlockBox {
                 if (cell == null || cell == TableCellBox.SPANNING_CELL) {
                     continue;
                 }
-                if (cRow < totalRows - 1 && getSection().cellAt(cRow+1, cCol) == cell) {
+                if (cRow < totalRows - 1 && getSection().cellAt(cRow + 1, cCol) == cell) {
                     continue;
                 }
 
@@ -432,7 +432,7 @@ public class TableRowBox extends BlockBox {
                 if (cell == null || cell == TableCellBox.SPANNING_CELL) {
                     continue;
                 }
-                if (cRow < totalRows - 1 && getSection().cellAt(cRow+1, cCol) == cell) {
+                if (cRow < totalRows - 1 && getSection().cellAt(cRow + 1, cCol) == cell) {
                     continue;
                 }
 
@@ -465,7 +465,7 @@ public class TableRowBox extends BlockBox {
 
         TableBox table = getTable();
         setY(parent.getHeight() + table.getStyle().getBorderVSpacing(c));
-        c.translate(0, getY()-childOffset);
+        c.translate(0, getY() - childOffset);
     }
 
     public int getBaseline() {
@@ -584,7 +584,7 @@ public class TableRowBox extends BlockBox {
         if (c.isPrint() && getStyle().isCollapseBorders()) {
             // get destination page for this row
             PageBox page = c.getRootLayer().getPage(c, getAbsY() + currentDelta);
-            if (page!=null) {
+            if (page != null) {
 
                 // calculate max spill from the collapsed top borders of each child
                 int spill = 0;
@@ -597,7 +597,7 @@ public class TableRowBox extends BlockBox {
                 }
 
                 // be sure that the current start of the row is >= the start of the page
-                int borderTop = getAbsY() + currentDelta + (int)getMargin(c).top() - spill;
+                int borderTop = getAbsY() + currentDelta + (int) getMargin(c).top() - spill;
                 int rowDelta = page.getTop() - borderTop;
                 if (rowDelta > 0) {
                     setY(getY() + rowDelta);

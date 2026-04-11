@@ -143,7 +143,7 @@ public class TableCellBox extends BlockBox {
     public TableBox getTable() {
         // cell -> row -> section -> table
         if (_table == null) {
-            _table = (TableBox)getParent().getParent().getParent();
+            _table = (TableBox) getParent().getParent().getParent();
         }
         return _table;
     }
@@ -151,7 +151,7 @@ public class TableCellBox extends BlockBox {
     @Nullable
     protected TableSectionBox getSection() {
         if (_section == null) {
-            _section = (TableSectionBox)getParent().getParent();
+            _section = (TableSectionBox) getParent().getParent();
         }
         return _section;
     }
@@ -164,10 +164,10 @@ public class TableCellBox extends BlockBox {
 
         int bordersAndPadding = 0;
         BorderPropertySet border = getBorder(c);
-        bordersAndPadding += (int)border.left() + (int)border.right();
+        bordersAndPadding += (int) border.left() + (int) border.right();
 
         RectPropertySet padding = getPadding(c);
-        bordersAndPadding += (int)padding.left() + (int)padding.right();
+        bordersAndPadding += (int) padding.left() + (int) padding.right();
 
         return new Length(result.value() + bordersAndPadding, result.type());
     }
@@ -204,7 +204,7 @@ public class TableCellBox extends BlockBox {
             return result;
         } else {
             Rectangle contentArea = getContentAreaEdge(getAbsX(), getAbsY(), c);
-            return (int)contentArea.getY();
+            return (int) contentArea.getY();
         }
     }
 
@@ -295,7 +295,7 @@ public class TableCellBox extends BlockBox {
         imageContainer.y += tableStyle.getBorderVSpacing(c);
         imageContainer.height -= tableStyle.getBorderVSpacing(c);
         imageContainer.x += tableStyle.getBorderHSpacing(c);
-        imageContainer.width -= 2*tableStyle.getBorderHSpacing(c);
+        imageContainer.width -= 2 * tableStyle.getBorderHSpacing(c);
 
         c.getOutputDevice().paintBackground(c, sectionStyle, bounds, imageContainer, sectionStyle.getBorder(c));
 
@@ -303,7 +303,7 @@ public class TableCellBox extends BlockBox {
 
         imageContainer = row.getPaintingBorderEdge(c);
         imageContainer.x += tableStyle.getBorderHSpacing(c);
-        imageContainer.width -= 2*tableStyle.getBorderHSpacing(c);
+        imageContainer.width -= 2 * tableStyle.getBorderHSpacing(c);
 
         c.getOutputDevice().paintBackground(c, rowStyle, bounds, imageContainer, rowStyle.getBorder(c));
         c.getOutputDevice().paintBackground(c, getStyle(), bounds, getPaintingBorderEdge(c), border);
@@ -337,7 +337,7 @@ public class TableCellBox extends BlockBox {
             return result;
         }
 
-        ContentLimitContainer contentLimitContainer = ((TableRowBox)getParent()).getContentLimitContainer();
+        ContentLimitContainer contentLimitContainer = ((TableRowBox) getParent()).getContentLimitContainer();
         ContentLimit limit = contentLimitContainer != null ? contentLimitContainer.getContentLimit(c.getPageNo()) : null;
 
         if (limit == null) {
@@ -352,14 +352,14 @@ public class TableCellBox extends BlockBox {
             if (c.getPageNo() == contentLimitContainer.getInitialPageNo()) {
                 top = result.y;
             } else {
-                top = limit.getTop() - ((TableRowBox)getParent()).getExtraSpaceTop() ;
+                top = limit.getTop() - ((TableRowBox) getParent()).getExtraSpaceTop();
             }
 
             int bottom;
             if (c.getPageNo() == contentLimitContainer.getLastPageNo()) {
                 bottom = result.y + result.height;
             } else {
-                bottom = limit.getBottom() + ((TableRowBox)getParent()).getExtraSpaceBottom();
+                bottom = limit.getBottom() + ((TableRowBox) getParent()).getExtraSpaceBottom();
             }
 
             result.y = top;
@@ -377,8 +377,8 @@ public class TableCellBox extends BlockBox {
             if (bounds != null) {
                 BorderPropertySet border = getBorder(c);
                 RectPropertySet padding = getPadding(c);
-                bounds.y += (int)border.top() + (int)padding.top();
-                bounds.height -= (int)border.height() + (int)padding.height();
+                bounds.y += (int) border.top() + (int) padding.top();
+                bounds.height -= (int) border.height() + (int) padding.height();
                 return bounds;
             }
         }
@@ -431,12 +431,10 @@ public class TableCellBox extends BlockBox {
         }
 
         // Rule #1 above.
-        if (border1.style() == IdentValue.HIDDEN)
-        {
+        if (border1.style() == IdentValue.HIDDEN) {
             return border1;
         }
-        if (border2.style() == IdentValue.HIDDEN)
-        {
+        if (border2.style() == IdentValue.HIDDEN) {
             return border2;
         }
 
@@ -846,14 +844,14 @@ public class TableCellBox extends BlockBox {
         if (getStyle().isAutoHeight()) {
             return -1;
         } else {
-            int result = (int)getStyle().getFloatPropertyProportionalWidth(
+            int result = (int) getStyle().getFloatPropertyProportionalWidth(
                     CSSName.HEIGHT, getContainingBlock().getContentWidth(), c);
 
             BorderPropertySet border = getBorder(c);
-            result -= (int)border.top() + (int)border.bottom();
+            result -= (int) border.top() + (int) border.bottom();
 
             RectPropertySet padding = getPadding(c);
-            result -= (int)padding.top() + (int)padding.bottom();
+            result -= (int) padding.top() + (int) padding.bottom();
 
             return result >= 0 ? result : -1;
         }
@@ -870,7 +868,7 @@ public class TableCellBox extends BlockBox {
         if (result) {
             return result;
         }
-        ContentLimitContainer contentLimitContainer = ((TableRowBox)getParent()).getContentLimitContainer();
+        ContentLimitContainer contentLimitContainer = ((TableRowBox) getParent()).getContentLimitContainer();
         if (contentLimitContainer == null) {
           return false;
         }
