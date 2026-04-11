@@ -89,7 +89,9 @@ public class IOUtil {
     @Nullable
     @CheckReturnValue
     public static InputStream getInputStream(@Nullable String uri) {
-        if (uri == null) return null;
+        if (uri == null) {
+            return null;
+        }
         try {
             return new BufferedInputStream(new URL(uri).openStream());
         } catch (MalformedURLException e) {
@@ -105,7 +107,9 @@ public class IOUtil {
     @CheckReturnValue
     public static byte @Nullable [] readBytes(String uri) {
         try (InputStream is = getInputStream(uri)) {
-            if (is == null) return null;
+            if (is == null) {
+                return null;
+            }
             return readBytes(is);
         } catch (IOException e) {
             XRLog.load(Level.WARNING, "Unable to read " + uri, e);

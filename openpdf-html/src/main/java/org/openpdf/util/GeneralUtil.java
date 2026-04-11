@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -181,7 +181,7 @@ public class GeneralUtil {
      * @param s The String which may contain characters to escape.
      * @return The string with the characters as HTML entities.
      */
-    public static String escapeHTML(@Nullable String s){
+    public static String escapeHTML(@Nullable String s) {
         if (s == null) {
             return "";
         }

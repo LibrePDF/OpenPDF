@@ -39,12 +39,12 @@ public class ScalingOptions {
     /**
      * Constructor with all options.
      *
-     * @param targetWidth  Target width in pixels of image once scaled
+     * @param targetWidth Target width in pixels of image once scaled
      * @param targetHeight Target height in pixels of image once scaled
      * @param downscalingHint   Directs downscaling quality. One of the enumerated types of
      *                          {@link org.openpdf.util.DownscaleQuality} such as
      *                          {@link DownscaleQuality#FAST}.
-     * @param hint		 Hint for interpolation to AWT image renderer, one of the Object constants from
+     * @param hint Hint for interpolation to AWT image renderer, one of the Object constants from
      *                     {@link java.awt.RenderingHints} using {@link java.awt.RenderingHints#KEY_INTERPOLATION}
      */
     public ScalingOptions(int targetWidth, int targetHeight, DownscaleQuality downscalingHint, Object hint) {

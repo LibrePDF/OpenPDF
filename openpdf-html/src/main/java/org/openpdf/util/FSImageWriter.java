@@ -53,9 +53,9 @@ import static java.nio.file.Files.newOutputStream;
  * it might look like this</p>
  * <pre>
  *      writer = new FSImageWriter("jpg");
- * 		writer.setWriteCompressionMode(ImageWriteParam.MODE_EXPLICIT);
- * 		writer.setWriteCompressionType("JPEG");
- * 		writer.setWriteCompressionQuality(.75f);
+ *      writer.setWriteCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+ *      writer.setWriteCompressionType("JPEG");
+ *      writer.setWriteCompressionQuality(.75f);
  * </pre>
  */
 public class FSImageWriter {
