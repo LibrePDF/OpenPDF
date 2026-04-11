@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -39,18 +39,18 @@ public class ITextTextRenderer implements TextRenderer {
 
     @Override
     public void drawString(OutputDevice outputDevice, String string, float x, float y) {
-        ((ITextOutputDevice)outputDevice).drawString(string, x, y, null);
+        ((ITextOutputDevice) outputDevice).drawString(string, x, y, null);
     }
 
     @Override
     public void drawString(
             OutputDevice outputDevice, String string, float x, float y, JustificationInfo info) {
-        ((ITextOutputDevice)outputDevice).drawString(string, x, y, info);
+        ((ITextOutputDevice) outputDevice).drawString(string, x, y, info);
     }
 
     @Override
     public FSFontMetrics getFSFontMetrics(FontContext context, FSFont font, String string) {
-        FontDescription description = ((ITextFSFont)font).getFontDescription();
+        FontDescription description = ((ITextFSFont) font).getFontDescription();
         BaseFont bf = description.getFont();
         float size = font.getSize2D();
         float strikethroughThickness = description.getYStrikeoutSize() != 0 ?
@@ -69,12 +69,12 @@ public class ITextTextRenderer implements TextRenderer {
 
     @Override
     public int getWidth(FontContext context, FSFont font, String string) {
-        BaseFont bf = ((ITextFSFont)font).getFontDescription().getFont();
+        BaseFont bf = ((ITextFSFont) font).getFontDescription().getFont();
         float result = bf.getWidthPoint(string, font.getSize2D());
         if (result - Math.floor(result) < TEXT_MEASURING_DELTA) {
-            return (int)result;
+            return (int) result;
         } else {
-            return (int)Math.ceil(result);
+            return (int) Math.ceil(result);
         }
     }
 

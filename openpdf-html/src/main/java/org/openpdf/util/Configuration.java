@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -530,7 +530,7 @@ public class Configuration {
             return defaultVal;
         }
 
-        if(val.length() > 1) {
+        if (val.length() > 1) {
             XRLog.exception("Property '" + key + "' was requested as a character. The value of '" +
                     val + "' is too long to be a char. Returning only the first character.");
         }
@@ -707,7 +707,7 @@ public class Configuration {
     public static Object valueFromClassConstant(String key, Object defaultValue) {
         Configuration conf = instance();
         String val = valueFor(key);
-        if ( val == null ) {
+        if (val == null) {
             return defaultValue;
         }
         int idx = val.lastIndexOf('.');

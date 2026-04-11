@@ -130,8 +130,8 @@ public class XHtmlMetaToPdfInfoAdapter extends DefaultPDFCreationListener {
      *
      * @param doc XHTML document
      */
-    public XHtmlMetaToPdfInfoAdapter( Document doc ) {
-        parseHtmlTags( doc );
+    public XHtmlMetaToPdfInfoAdapter(Document doc) {
+        parseHtmlTags(doc);
     }
 
     /**
@@ -140,79 +140,79 @@ public class XHtmlMetaToPdfInfoAdapter extends DefaultPDFCreationListener {
      * @see PDFCreationListener
      */
     @Override
-    public void onClose( ITextRenderer renderer ) {
-        XRLog.render(Level.FINEST, "handling onClose event ..." );
-        addPdfMetaValuesToPdfDocument( renderer );
+    public void onClose(ITextRenderer renderer) {
+        XRLog.render(Level.FINEST, "handling onClose event ...");
+        addPdfMetaValuesToPdfDocument(renderer);
     }
 
-    private void parseHtmlTags( Document doc ) {
-        XRLog.render(Level.FINEST, "parsing (X)HTML tags ..." );
-        parseHtmlTitleTag( doc );
-        parseHtmlMetaTags( doc );
-        if ( XRLog.isLoggingEnabled() ) {
-            XRLog.render(Level.FINEST, "PDF info map = " + pdfInfoValues );
+    private void parseHtmlTags(Document doc) {
+        XRLog.render(Level.FINEST, "parsing (X)HTML tags ...");
+        parseHtmlTitleTag(doc);
+        parseHtmlMetaTags(doc);
+        if (XRLog.isLoggingEnabled()) {
+            XRLog.render(Level.FINEST, "PDF info map = " + pdfInfoValues);
         }
     }
 
-    private void parseHtmlTitleTag( Document doc ) {
+    private void parseHtmlTitleTag(Document doc) {
 
-        NodeList headNodeList = doc.getDocumentElement().getElementsByTagName( HTML_TAG_HEAD );
-        XRLog.render(Level.FINEST, "headNodeList=" + headNodeList );
-        Element rootHeadNodeElement = (Element) headNodeList.item( 0 );
-        NodeList titleNodeList = rootHeadNodeElement.getElementsByTagName( HTML_TAG_TITLE );
-        XRLog.render(Level.FINEST, "titleNodeList=" + titleNodeList );
-        Element titleElement = (Element) titleNodeList.item( 0 );
-        if ( titleElement != null ) {
-            XRLog.render(Level.FINEST, "titleElement=" + titleElement );
-            XRLog.render(Level.FINEST, "titleElement.name=" + titleElement.getTagName() );
-            XRLog.render(Level.FINEST, "titleElement.value=" + titleElement.getNodeValue() );
-            XRLog.render(Level.FINEST, "titleElement.content=" + titleElement.getTextContent() );
+        NodeList headNodeList = doc.getDocumentElement().getElementsByTagName(HTML_TAG_HEAD);
+        XRLog.render(Level.FINEST, "headNodeList=" + headNodeList);
+        Element rootHeadNodeElement = (Element) headNodeList.item(0);
+        NodeList titleNodeList = rootHeadNodeElement.getElementsByTagName(HTML_TAG_TITLE);
+        XRLog.render(Level.FINEST, "titleNodeList=" + titleNodeList);
+        Element titleElement = (Element) titleNodeList.item(0);
+        if (titleElement != null) {
+            XRLog.render(Level.FINEST, "titleElement=" + titleElement);
+            XRLog.render(Level.FINEST, "titleElement.name=" + titleElement.getTagName());
+            XRLog.render(Level.FINEST, "titleElement.value=" + titleElement.getNodeValue());
+            XRLog.render(Level.FINEST, "titleElement.content=" + titleElement.getTextContent());
             String titleContent = titleElement.getTextContent();
             PdfName pdfName = PdfName.TITLE;
-            PdfString pdfString = new PdfString( titleContent );
-            this.pdfInfoValues.put( pdfName, pdfString );
+            PdfString pdfString = new PdfString(titleContent);
+            this.pdfInfoValues.put(pdfName, pdfString);
         }
     }
 
-    private void parseHtmlMetaTags( Document doc ) {
+    private void parseHtmlMetaTags(Document doc) {
 
-        NodeList headNodeList = doc.getDocumentElement().getElementsByTagName( HTML_TAG_HEAD );
-        XRLog.render(Level.FINEST, "headNodeList=" + headNodeList );
-        Element rootHeadNodeElement = (Element) headNodeList.item( 0 );
-        NodeList metaNodeList = rootHeadNodeElement.getElementsByTagName( HTML_TAG_META );
-        XRLog.render(Level.FINEST, "metaNodeList=" + metaNodeList );
+        NodeList headNodeList = doc.getDocumentElement().getElementsByTagName(HTML_TAG_HEAD);
+        XRLog.render(Level.FINEST, "headNodeList=" + headNodeList);
+        Element rootHeadNodeElement = (Element) headNodeList.item(0);
+        NodeList metaNodeList = rootHeadNodeElement.getElementsByTagName(HTML_TAG_META);
+        XRLog.render(Level.FINEST, "metaNodeList=" + metaNodeList);
 
         for (int inode = 0; inode < metaNodeList.getLength(); ++inode) {
-            XRLog.render(Level.FINEST, "node " + inode + " = "+ metaNodeList.item( inode ).getNodeName() );
-            Element thisNode = (Element) metaNodeList.item( inode );
-            XRLog.render(Level.FINEST, "node " + thisNode );
-            String metaName = thisNode.getAttribute( HTML_META_ATTR_NAME );
-            String metaContent = thisNode.getAttribute( HTML_META_ATTR_CONTENT );
-            XRLog.render(Level.FINEST, "metaName=" + metaName + ", metaContent=" + metaContent );
+            XRLog.render(Level.FINEST, "node " + inode + " = " + metaNodeList.item(inode).getNodeName());
+            Element thisNode = (Element) metaNodeList.item(inode);
+            XRLog.render(Level.FINEST, "node " + thisNode);
+            String metaName = thisNode.getAttribute(HTML_META_ATTR_NAME);
+            String metaContent = thisNode.getAttribute(HTML_META_ATTR_CONTENT);
+            XRLog.render(Level.FINEST, "metaName=" + metaName + ", metaContent=" + metaContent);
             if (!metaName.isEmpty() && !metaContent.isEmpty()) {
 
-                if ( HTML_META_KEY_TITLE.equalsIgnoreCase( metaName )
-                        || HTML_META_KEY_DC_TITLE.equalsIgnoreCase( metaName ) ) {
+                if (HTML_META_KEY_TITLE.equalsIgnoreCase(metaName)
+                        || HTML_META_KEY_DC_TITLE.equalsIgnoreCase(metaName)) {
                     PdfName pdfName = PdfName.TITLE;
-                    PdfString pdfString = new PdfString( metaContent, PdfObject.TEXT_UNICODE );
-                    this.pdfInfoValues.put( pdfName, pdfString );
+                    PdfString pdfString = new PdfString(metaContent, PdfObject.TEXT_UNICODE);
+                    this.pdfInfoValues.put(pdfName, pdfString);
 
-                } else if ( HTML_META_KEY_CREATOR.equalsIgnoreCase( metaName )
-                        || HTML_META_KEY_DC_CREATOR.equalsIgnoreCase( metaName ) ) {
+                } else if (HTML_META_KEY_CREATOR.equalsIgnoreCase(metaName)
+                        || HTML_META_KEY_DC_CREATOR.equalsIgnoreCase(metaName)) {
                     PdfName pdfName = PdfName.AUTHOR;
-                    PdfString pdfString = new PdfString( metaContent, PdfObject.TEXT_UNICODE );
-                    this.pdfInfoValues.put( pdfName, pdfString );
+                    PdfString pdfString = new PdfString(metaContent, PdfObject.TEXT_UNICODE);
+                    this.pdfInfoValues.put(pdfName, pdfString);
 
-                } else if ( HTML_META_KEY_SUBJECT.equalsIgnoreCase( metaName )
-                        || HTML_META_KEY_DC_SUBJECT.equalsIgnoreCase( metaName ) ) {
+                } else if (HTML_META_KEY_SUBJECT.equalsIgnoreCase(metaName)
+                        || HTML_META_KEY_DC_SUBJECT.equalsIgnoreCase(metaName)) {
                     PdfName pdfName = PdfName.SUBJECT;
-                    PdfString pdfString = new PdfString( metaContent, PdfObject.TEXT_UNICODE );
-                    this.pdfInfoValues.put( pdfName, pdfString );
+                    PdfString pdfString = new PdfString(metaContent, PdfObject.TEXT_UNICODE);
+                    this.pdfInfoValues.put(pdfName, pdfString);
 
-                } else if ( HTML_META_KEY_KEYWORDS.equalsIgnoreCase( metaName ) ) {
+                } else if (HTML_META_KEY_KEYWORDS.equalsIgnoreCase(metaName)) {
                     PdfName pdfName = PdfName.KEYWORDS;
-                    PdfString pdfString = new PdfString( metaContent, PdfObject.TEXT_UNICODE );
-                    this.pdfInfoValues.put( pdfName, pdfString );
+                    PdfString pdfString = new PdfString(metaContent, PdfObject.TEXT_UNICODE);
+                    this.pdfInfoValues.put(pdfName, pdfString);
                 }
             }
         }
@@ -221,7 +221,7 @@ public class XHtmlMetaToPdfInfoAdapter extends DefaultPDFCreationListener {
     /**
      * Add PDF meta values to the target PDF document.
      */
-    private void addPdfMetaValuesToPdfDocument( ITextRenderer renderer ) {
+    private void addPdfMetaValuesToPdfDocument(ITextRenderer renderer) {
 
         for (Map.Entry<PdfName, PdfString> entry : pdfInfoValues.entrySet()) {
             PdfName pdfName = entry.getKey();
@@ -229,8 +229,8 @@ public class XHtmlMetaToPdfInfoAdapter extends DefaultPDFCreationListener {
             XRLog.render(Level.FINEST, "pdfName=" + pdfName + ", pdfString=" + pdfString);
             renderer.getOutputDevice().getWriter().getInfo().put(pdfName, pdfString);
         }
-        if ( XRLog.isLoggingEnabled() ) {
-            XRLog.render(Level.FINEST, "added " + renderer.getOutputDevice().getWriter().getInfo().getKeys() );
+        if (XRLog.isLoggingEnabled()) {
+            XRLog.render(Level.FINEST, "added " + renderer.getOutputDevice().getWriter().getInfo().getKeys());
         }
     }
 
