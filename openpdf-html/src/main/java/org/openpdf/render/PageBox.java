@@ -155,7 +155,7 @@ public class PageBox {
 
     private int resolveAutoPageWidth(CssContext cssCtx) {
         if (isUseLetterSize()) {
-            return (int)LengthValue.calcFloatProportionalValue(
+            return (int) LengthValue.calcFloatProportionalValue(
                     getStyle(),
                     FS_PAGE_WIDTH,
                     "8.5in",
@@ -164,7 +164,7 @@ public class PageBox {
                     0,
                     cssCtx);
         } else {
-            return (int)LengthValue.calcFloatProportionalValue(
+            return (int) LengthValue.calcFloatProportionalValue(
                     getStyle(),
                     FS_PAGE_WIDTH,
                     "210mm",
@@ -177,7 +177,7 @@ public class PageBox {
 
     private int resolveAutoPageHeight(CssContext cssCtx) {
         if (isUseLetterSize()) {
-            return (int)LengthValue.calcFloatProportionalValue(
+            return (int) LengthValue.calcFloatProportionalValue(
                     getStyle(),
                     FS_PAGE_HEIGHT,
                     "11in",
@@ -186,7 +186,7 @@ public class PageBox {
                     0,
                     cssCtx);
         } else {
-            return (int)LengthValue.calcFloatProportionalValue(
+            return (int) LengthValue.calcFloatProportionalValue(
                     getStyle(),
                     FS_PAGE_HEIGHT,
                     "297mm",
@@ -247,7 +247,7 @@ public class PageBox {
     public Rectangle getScreenPaintingBounds(CssContext cssCtx, int additionalClearance) {
         return new Rectangle(
                 additionalClearance, getPaintingTop(),
-                getWidth(cssCtx), getPaintingBottom()-getPaintingTop());
+                getWidth(cssCtx), getPaintingBottom() - getPaintingTop());
     }
 
     public Rectangle getPrintPaintingBounds(CssContext cssCtx) {
@@ -385,10 +385,10 @@ public class PageBox {
             TableBox table = BoxBuilder.createMarginTable(
                     c, _pageInfo,
                     area.getMarginBoxNames(),
-                    (int)dim.getHeight(),
+                    (int) dim.getHeight(),
                     area.getDirection());
             if (table != null) {
-                table.setContainingBlock(new MarginBox(new Rectangle((int)dim.getWidth(), (int)dim.getHeight())));
+                table.setContainingBlock(new MarginBox(new Rectangle((int) dim.getWidth(), (int) dim.getHeight())));
                 try {
                     c.setNoPageBreak(1);
 
@@ -472,7 +472,7 @@ public class PageBox {
 
         @Override
         public Dimension getLayoutDimension(CssContext c, PageBox page, RectPropertySet margin) {
-            return new Dimension((int)margin.left(), (int)margin.top());
+            return new Dimension((int) margin.left(), (int) margin.top());
         }
 
         @Override
@@ -493,12 +493,12 @@ public class PageBox {
 
         @Override
         public Dimension getLayoutDimension(CssContext c, PageBox page, RectPropertySet margin) {
-            return new Dimension((int)margin.right(), (int)margin.top());
+            return new Dimension((int) margin.right(), (int) margin.top());
         }
 
         @Override
         public Point getPaintingPosition(RenderingContext c, PageBox page, int additionalClearance, PagedMode mode) {
-            int left = additionalClearance + page.getWidth(c) - (int)page.getMargin(c).right();
+            int left = additionalClearance + page.getWidth(c) - (int) page.getMargin(c).right();
             int top = switch (mode) {
                 case PAGED_MODE_SCREEN -> page.getPaintingTop();
                 case PAGED_MODE_PRINT -> 0;
@@ -514,15 +514,15 @@ public class PageBox {
 
         @Override
         public Dimension getLayoutDimension(CssContext c, PageBox page, RectPropertySet margin) {
-            return new Dimension((int)margin.right(), (int)margin.bottom());
+            return new Dimension((int) margin.right(), (int) margin.bottom());
         }
 
         @Override
         public Point getPaintingPosition(RenderingContext c, PageBox page, int additionalClearance, PagedMode mode) {
-            int left = additionalClearance + page.getWidth(c) - (int)page.getMargin(c).right();
+            int left = additionalClearance + page.getWidth(c) - (int) page.getMargin(c).right();
             int top = switch (mode) {
-                case PAGED_MODE_SCREEN -> page.getPaintingBottom() - (int)page.getMargin(c).bottom();
-                case PAGED_MODE_PRINT -> page.getHeight(c) - (int)page.getMargin(c).bottom();
+                case PAGED_MODE_SCREEN -> page.getPaintingBottom() - (int) page.getMargin(c).bottom();
+                case PAGED_MODE_PRINT -> page.getHeight(c) - (int) page.getMargin(c).bottom();
             };
             return new Point(left, top);
         }
@@ -535,14 +535,14 @@ public class PageBox {
 
         @Override
         public Dimension getLayoutDimension(CssContext c, PageBox page, RectPropertySet margin) {
-            return new Dimension((int)margin.left(), (int)margin.bottom());
+            return new Dimension((int) margin.left(), (int) margin.bottom());
         }
 
         @Override
         public Point getPaintingPosition(RenderingContext c, PageBox page, int additionalClearance, PagedMode mode) {
             int top = switch (mode) {
-                case PAGED_MODE_SCREEN -> page.getPaintingBottom() - (int)page.getMargin(c).bottom();
-                case PAGED_MODE_PRINT -> page.getHeight(c) - (int)page.getMargin(c).bottom();
+                case PAGED_MODE_SCREEN -> page.getPaintingBottom() - (int) page.getMargin(c).bottom();
+                case PAGED_MODE_PRINT -> page.getHeight(c) - (int) page.getMargin(c).bottom();
             };
             return new Point(additionalClearance, top);
         }
@@ -558,13 +558,13 @@ public class PageBox {
 
         @Override
         public Dimension getLayoutDimension(CssContext c, PageBox page, RectPropertySet margin) {
-            return new Dimension((int)margin.left(), page.getContentHeight(c));
+            return new Dimension((int) margin.left(), page.getContentHeight(c));
         }
 
         @Override
         public Point getPaintingPosition(RenderingContext c, PageBox page, int additionalClearance, PagedMode mode) {
             int top = switch (mode) {
-                case PAGED_MODE_SCREEN -> page.getPaintingTop() + (int)page.getMargin(c).top();
+                case PAGED_MODE_SCREEN -> page.getPaintingTop() + (int) page.getMargin(c).top();
                 case PAGED_MODE_PRINT -> (int) page.getMargin(c).top();
             };
             return new Point(additionalClearance, top);
@@ -586,14 +586,14 @@ public class PageBox {
 
         @Override
         public Dimension getLayoutDimension(CssContext c, PageBox page, RectPropertySet margin) {
-            return new Dimension((int)margin.left(), page.getContentHeight(c));
+            return new Dimension((int) margin.left(), page.getContentHeight(c));
         }
 
         @Override
         public Point getPaintingPosition(RenderingContext c, PageBox page, int additionalClearance, PagedMode mode) {
-            int left = additionalClearance + page.getWidth(c) - (int)page.getMargin(c).right();
+            int left = additionalClearance + page.getWidth(c) - (int) page.getMargin(c).right();
             int top = switch (mode) {
-                case PAGED_MODE_SCREEN -> page.getPaintingTop() + (int)page.getMargin(c).top();
+                case PAGED_MODE_SCREEN -> page.getPaintingTop() + (int) page.getMargin(c).top();
                 case PAGED_MODE_PRINT -> (int) page.getMargin(c).top();
             };
             return new Point(left, top);
@@ -615,12 +615,12 @@ public class PageBox {
 
         @Override
         public Dimension getLayoutDimension(CssContext c, PageBox page, RectPropertySet margin) {
-            return new Dimension(page.getContentWidth(c), (int)margin.top());
+            return new Dimension(page.getContentWidth(c), (int) margin.top());
         }
 
         @Override
         public Point getPaintingPosition(RenderingContext c, PageBox page, int additionalClearance, PagedMode mode) {
-            int left = additionalClearance + (int)page.getMargin(c).left();
+            int left = additionalClearance + (int) page.getMargin(c).left();
             int top = switch (mode) {
                 case PAGED_MODE_SCREEN -> page.getPaintingTop();
                 case PAGED_MODE_PRINT -> 0;
@@ -639,16 +639,16 @@ public class PageBox {
 
         @Override
         public Dimension getLayoutDimension(CssContext c, PageBox page, RectPropertySet margin) {
-            return new Dimension(page.getContentWidth(c), (int)margin.bottom());
+            return new Dimension(page.getContentWidth(c), (int) margin.bottom());
         }
 
         @Override
         public Point getPaintingPosition(
                 RenderingContext c, PageBox page, int additionalClearance, PagedMode mode) {
-            int left = additionalClearance + (int)page.getMargin(c).left();
+            int left = additionalClearance + (int) page.getMargin(c).left();
             int top = switch (mode) {
-                case PAGED_MODE_SCREEN -> page.getPaintingBottom() - (int)page.getMargin(c).bottom();
-                case PAGED_MODE_PRINT -> page.getHeight(c) - (int)page.getMargin(c).bottom();
+                case PAGED_MODE_SCREEN -> page.getPaintingBottom() - (int) page.getMargin(c).bottom();
+                case PAGED_MODE_PRINT -> page.getHeight(c) - (int) page.getMargin(c).bottom();
             };
             return new Point(left, top);
         }

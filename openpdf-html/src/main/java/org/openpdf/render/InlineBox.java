@@ -202,7 +202,7 @@ public class InlineBox implements Styleable {
         int last = 0;
         int current;
 
-        while ( (current = _text.indexOf(WhitespaceStripper.EOL, last)) != -1) {
+        while ((current = _text.indexOf(WhitespaceStripper.EOL, last)) != -1) {
             String target = _text.substring(last, current);
             if (trim) {
                 target = target.trim();
@@ -245,7 +245,7 @@ public class InlineBox implements Styleable {
 
     @CheckReturnValue
     public int getTrailingSpaceWidth(LayoutContext c) {
-        if (!_text.isEmpty() && _text.charAt(_text.length()-1) == ' ') {
+        if (!_text.isEmpty() && _text.charAt(_text.length() - 1) == ' ') {
             return getSpaceWidth(c);
         } else {
             return 0;
@@ -270,7 +270,7 @@ public class InlineBox implements Styleable {
         BreakPointsProvider breakIterator = Breaker.getBreakPointsProvider(text, c, getElement(), getStyle());
 
         // Breaker should be used
-        while ( (current = breakIterator.next().getPosition()) != BreakIterator.DONE) {
+        while ((current = breakIterator.next().getPosition()) != BreakIterator.DONE) {
             String currentWord = text.substring(last, current);
             int wordWidth = getTextWidth(c, currentWord);
             int minWordWidth;

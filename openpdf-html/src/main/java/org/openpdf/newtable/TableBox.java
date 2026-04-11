@@ -178,7 +178,7 @@ public class TableBox extends BlockBox {
         newColumn.setSpan(firstSpan);
         _columns.add(pos, newColumn);
 
-        ColumnData leftOver = _columns.get(pos+1);
+        ColumnData leftOver = _columns.get(pos + 1);
         leftOver.setSpan(leftOver.getSpan() - firstSpan);
 
         for (Box box : getChildren()) {
@@ -191,17 +191,17 @@ public class TableBox extends BlockBox {
         int result = 0;
         RectPropertySet margin = getMargin(c);
         if (! ignoreAutoMargins || ! getStyle().isAutoLeftMargin()) {
-            result += (int)margin.left();
+            result += (int) margin.left();
         }
         if (! ignoreAutoMargins || ! getStyle().isAutoRightMargin()) {
-            result += (int)margin.right();
+            result += (int) margin.right();
         }
         BorderPropertySet border = getBorder(c);
-        result += (int)border.left() + (int)border.right();
+        result += (int) border.left() + (int) border.right();
         if (! getStyle().isCollapseBorders()) {
             RectPropertySet padding = getPadding(c);
             int hSpacing = getStyle().getBorderHSpacing(c);
-            result += (int) (padding.left() + padding.right() + (numEffCols()+1) * hSpacing);
+            result += (int) (padding.left() + padding.right() + (numEffCols() + 1) * hSpacing);
         }
         return result;
     }
@@ -281,12 +281,12 @@ public class TableBox extends BlockBox {
             prevExtraBottom = c.getExtraSpaceBottom();
 
             c.setExtraSpaceTop(c.getExtraSpaceTop() +
-                    (int)getPadding(c).top() +
-                    (int)getBorder(c).top() +
+                    (int) getPadding(c).top() +
+                    (int) getBorder(c).top() +
                     getStyle().getBorderVSpacing(c));
             c.setExtraSpaceBottom(c.getExtraSpaceBottom() +
-                    (int)getPadding(c).bottom() +
-                    (int)getBorder(c).bottom() +
+                    (int) getPadding(c).bottom() +
+                    (int) getBorder(c).bottom() +
                     getStyle().getBorderVSpacing(c));
         }
 
@@ -331,7 +331,7 @@ public class TableBox extends BlockBox {
     private int layoutRunningHeader(LayoutContext c) {
         int result = 0;
         if (getChildCount() > 0) {
-            TableSectionBox section = (TableSectionBox)getChild(0);
+            TableSectionBox section = (TableSectionBox) getChild(0);
             if (section.isHeader()) {
                 c.setNoPageBreak(c.getNoPageBreak() + 1);
 
@@ -354,7 +354,7 @@ public class TableBox extends BlockBox {
     private int layoutRunningFooter(LayoutContext c) {
         int result = 0;
         if (getChildCount() > 0) {
-            TableSectionBox section = (TableSectionBox)getChild(getChildCount()-1);
+            TableSectionBox section = (TableSectionBox) getChild(getChildCount() - 1);
             if (section.isFooter()) {
                 c.setNoPageBreak(c.getNoPageBreak() + 1);
 
@@ -452,10 +452,10 @@ public class TableBox extends BlockBox {
             if (c.getPageNo() == _contentLimitContainer.getInitialPageNo()) {
                 top = result.y;
             } else {
-                top = limit.getTop() - (int)padding.top() -
-                    (int)border.top() - getStyle().getBorderVSpacing(c);
+                top = limit.getTop() - (int) padding.top() -
+                    (int) border.top() - getStyle().getBorderVSpacing(c);
                 if (getChildCount() > 0) {
-                    TableSectionBox section = (TableSectionBox)getChild(0);
+                    TableSectionBox section = (TableSectionBox) getChild(0);
                     if (section.isHeader()) {
                         top -= section.getHeight();
                     }
@@ -466,10 +466,10 @@ public class TableBox extends BlockBox {
             if (c.getPageNo() == _contentLimitContainer.getLastPageNo()) {
                 bottom = result.y + result.height;
             } else {
-                bottom = limit.getBottom() + (int)padding.bottom() +
-                            (int)border.bottom() + getStyle().getBorderVSpacing(c);
+                bottom = limit.getBottom() + (int) padding.bottom() +
+                            (int) border.bottom() + getStyle().getBorderVSpacing(c);
                 if (getChildCount() > 0) {
-                    TableSectionBox section = (TableSectionBox)getChild(getChildCount()-1);
+                    TableSectionBox section = (TableSectionBox) getChild(getChildCount() - 1);
                     if (section.isFooter()) {
                         bottom += section.getHeight();
                     }
@@ -496,7 +496,7 @@ public class TableBox extends BlockBox {
         if (limit.getTop() != ContentLimit.UNDEFINED ||
                 c.getPageNo() == _contentLimitContainer.getInitialPageNo()) {
             if (getChildCount() > 0) {
-                TableSectionBox section = (TableSectionBox)getChild(0);
+                TableSectionBox section = (TableSectionBox) getChild(0);
                 if (section.isHeader()) {
                     if (! section.isCapturedOriginalAbsY()) {
                         section.setOriginalAbsY(section.getAbsY());
@@ -529,7 +529,7 @@ public class TableBox extends BlockBox {
         if (limit.getBottom() != ContentLimit.UNDEFINED ||
                 c.getPageNo() == _contentLimitContainer.getLastPageNo()) {
             if (getChildCount() > 0) {
-                TableSectionBox section = (TableSectionBox)getChild(getChildCount()-1);
+                TableSectionBox section = (TableSectionBox) getChild(getChildCount() - 1);
                 if (section.isFooter()) {
                     if (! section.isCapturedOriginalAbsY()) {
                         section.setOriginalAbsY(section.getAbsY());
@@ -572,7 +572,7 @@ public class TableBox extends BlockBox {
                         }
                     }
 
-                    int borderTop = getAbsY() + (int)getMargin(c).top() - spill;
+                    int borderTop = getAbsY() + (int) getMargin(c).top() - spill;
                     int delta = page.getTop() - borderTop;
                     if (delta > 0) {
                         setY(getY() + delta);
@@ -657,14 +657,14 @@ public class TableBox extends BlockBox {
             // XHTML 1.0 specifies that a table width refers to the border
             // width.  This can be removed if/when we support the box-sizing
             // property.
-            int result = (int)getStyle().getFloatPropertyProportionalWidth(
+            int result = (int) getStyle().getFloatPropertyProportionalWidth(
                     CSSName.WIDTH, getContainingBlock().getContentWidth(), c);
 
             BorderPropertySet border = getBorder(c);
-            result -= (int)border.left() + (int)border.right();
+            result -= (int) border.left() + (int) border.right();
             if (! getStyle().isCollapseBorders()) {
                 RectPropertySet padding = getPadding(c);
-                result -= (int)padding.left() + (int)padding.right();
+                result -= (int) padding.left() + (int) padding.right();
             }
 
             return result >= 0 ? result : -1;
@@ -698,7 +698,7 @@ public class TableBox extends BlockBox {
         Rectangle result = getContentAreaEdge(getAbsX(), getAbsY(), c);
 
         result.y += vspacing;
-        result.height -= vspacing*2;
+        result.height -= vspacing * 2;
 
         result.x += _columnPos[effCol] + hspacing;
 
@@ -719,7 +719,7 @@ public class TableBox extends BlockBox {
             int cssHeight = getCSSHeight(c);
             if (cssHeight != -1) {
                 return getAbsY() + cssHeight
-                    - (int)getBorder(c).bottom() - (int)getPadding(c).bottom()
+                    - (int) getBorder(c).bottom() - (int) getPadding(c).bottom()
                     - getStyle().getBorderVSpacing(c);
             }
         }
@@ -735,7 +735,7 @@ public class TableBox extends BlockBox {
     @Nullable
     protected TableSectionBox sectionAbove(
             TableSectionBox section, boolean skipEmptySections) {
-        TableSectionBox prevSection = (TableSectionBox)section.getPreviousSibling();
+        TableSectionBox prevSection = (TableSectionBox) section.getPreviousSibling();
 
         if (prevSection == null) {
             return null;
@@ -745,7 +745,7 @@ public class TableBox extends BlockBox {
             if (prevSection.numRows() > 0 || !skipEmptySections) {
                 break;
             }
-            prevSection = (TableSectionBox)prevSection.getPreviousSibling();
+            prevSection = (TableSectionBox) prevSection.getPreviousSibling();
         }
 
         return prevSection;
@@ -754,7 +754,7 @@ public class TableBox extends BlockBox {
     @Nullable
     protected TableSectionBox sectionBelow(
             TableSectionBox section, boolean skipEmptySections) {
-        TableSectionBox nextSection = (TableSectionBox)section.getNextSibling();
+        TableSectionBox nextSection = (TableSectionBox) section.getNextSibling();
 
         if (nextSection == null) {
             return null;
@@ -764,7 +764,7 @@ public class TableBox extends BlockBox {
             if (nextSection.numRows() > 0 || !skipEmptySections) {
                 break;
             }
-            nextSection = (TableSectionBox)nextSection.getNextSibling();
+            nextSection = (TableSectionBox) nextSection.getNextSibling();
         }
 
         return nextSection;
@@ -805,8 +805,9 @@ public class TableBox extends BlockBox {
             rBelow = r + 1;
         } else {
             section = sectionBelow(cell.getSection(), true);
-            if (section != null)
+            if (section != null) {
                 rBelow = 0;
+            }
         }
 
         // Look up the cell in the section's grid, which requires effective col
@@ -903,7 +904,9 @@ public class TableBox extends BlockBox {
 
     private interface TableLayout {
         void calcMinMaxWidth(LayoutContext c);
+
         void layout(LayoutContext c);
+
         void reset();
     }
 
@@ -1087,20 +1090,20 @@ public class TableBox extends BlockBox {
             Arrays.fill(calcWidth, -1);
 
             // first assign fixed width
-            for ( int i = 0; i < nEffCols; i++ ) {
+            for (int i = 0; i < nEffCols; i++) {
                 Length l = _widths.get(i);
-                if ( l.isFixed() ) {
+                if (l.isFixed()) {
                     calcWidth[i] = l.value();
                     available -= (int) l.value();
                 }
             }
 
             // assign percent width
-            if ( available > 0 ) {
+            if (available > 0) {
                 int totalPercent = 0;
-                for ( int i = 0; i < nEffCols; i++ ) {
+                for (int i = 0; i < nEffCols; i++) {
                     Length l = _widths.get(i);
-                    if ( l.isPercent() ) {
+                    if (l.isPercent()) {
                         totalPercent += (int) l.value();
                     }
                 }
@@ -1111,9 +1114,9 @@ public class TableBox extends BlockBox {
                     base = available;
                 }
 
-                for ( int i = 0; available > 0 && i < nEffCols; i++ ) {
+                for (int i = 0; available > 0 && i < nEffCols; i++) {
                     Length l = _widths.get(i);
-                    if ( l.isPercent() ) {
+                    if (l.isPercent()) {
                         long w = base * l.value() / totalPercent;
                         available -= (int) w;
                         calcWidth[i] = w;
@@ -1122,18 +1125,18 @@ public class TableBox extends BlockBox {
             }
 
             // assign variable width
-            if ( available > 0 ) {
+            if (available > 0) {
                 int totalVariable = 0;
-                for ( int i = 0; i < nEffCols; i++ ) {
+                for (int i = 0; i < nEffCols; i++) {
                     Length l = _widths.get(i);
-                    if ( l.isVariable() ) {
+                    if (l.isVariable()) {
                         totalVariable++;
                     }
                 }
 
-                for ( int i = 0; available > 0 && i < nEffCols; i++ ) {
+                for (int i = 0; available > 0 && i < nEffCols; i++) {
                     Length l = _widths.get(i);
-                    if ( l.isVariable() ) {
+                    if (l.isVariable()) {
                         int w = available / totalVariable;
                         available -= w;
                         calcWidth[i] = w;
@@ -1142,18 +1145,18 @@ public class TableBox extends BlockBox {
                 }
             }
 
-            for ( int i = 0; i < nEffCols; i++ ) {
-                if ( calcWidth[i] < 0 ) {
+            for (int i = 0; i < nEffCols; i++) {
+                if (calcWidth[i] < 0) {
                     calcWidth[i] = 0; // IE gives min 1 px...
                 }
             }
 
             // spread extra space over columns
-            if ( available > 0 ) {
+            if (available > 0) {
                 int total = nEffCols;
                 // still have some width to spread
                 int i = nEffCols;
-                while ( i-- > 0 ) {
+                while (i-- > 0) {
                     int w = available / total;
                     available -= w;
                     total--;
@@ -1163,13 +1166,13 @@ public class TableBox extends BlockBox {
 
             int pos = 0;
             int hspacing = _table.getStyle().getBorderHSpacing(c);
-            int[] columnPos = new int[nEffCols+1];
-            for ( int i = 0; i < nEffCols; i++ ) {
+            int[] columnPos = new int[nEffCols + 1];
+            for (int i = 0; i < nEffCols; i++) {
                 columnPos[i] = pos;
                 pos += (int) (calcWidth[i] + hspacing);
             }
 
-            columnPos[columnPos.length-1] = pos;
+            columnPos[columnPos.length - 1] = pos;
 
             _table.setColumnPos(columnPos);
         }
@@ -1559,8 +1562,8 @@ public class TableBox extends BlockBox {
                 maxWidth = minWidth;
             }
 
-            table.setMaxWidth((int)Math.min(maxWidth, Length.MAX_WIDTH));
-            table.setMinWidth((int)Math.min(minWidth, Length.MAX_WIDTH));
+            table.setMaxWidth((int) Math.min(maxWidth, Length.MAX_WIDTH));
+            table.setMinWidth((int) Math.min(minWidth, Length.MAX_WIDTH));
         }
 
 
@@ -1724,8 +1727,9 @@ public class TableBox extends BlockBox {
                     int mw = 0;
                     for (int i = nEffCols - 1; i >= 0; i--) {
                         Length width = layoutStruct[i].effWidth();
-                        if (width.isVariable())
+                        if (width.isVariable()) {
                             mw += (int) (layoutStruct[i].calcWidth() - layoutStruct[i].effMinWidth());
+                        }
                     }
 
                     for (int i = nEffCols - 1; i >= 0 && mw > 0; i--) {
@@ -1737,8 +1741,9 @@ public class TableBox extends BlockBox {
                             layoutStruct[i].setCalcWidth(layoutStruct[i].calcWidth() + reduce);
                             available -= (int) reduce;
                             mw -= (int) minMaxDiff;
-                            if (available >= 0)
+                            if (available >= 0) {
                                 break;
+                            }
                         }
                     }
                 }
@@ -1747,8 +1752,9 @@ public class TableBox extends BlockBox {
                     int mw = 0;
                     for (int i = nEffCols - 1; i >= 0; i--) {
                         Length width = layoutStruct[i].effWidth();
-                        if (width.isFixed())
+                        if (width.isFixed()) {
                             mw += (int) (layoutStruct[i].calcWidth() - layoutStruct[i].effMinWidth());
+                        }
                     }
 
                     for (int i = nEffCols - 1; i >= 0 && mw > 0; i--) {
@@ -1760,8 +1766,9 @@ public class TableBox extends BlockBox {
                             layoutStruct[i].setCalcWidth(layoutStruct[i].calcWidth() + reduce);
                             available -= (int) reduce;
                             mw -= (int) minMaxDiff;
-                            if (available >= 0)
+                            if (available >= 0) {
                                 break;
+                            }
                         }
                     }
                 }
@@ -1770,8 +1777,9 @@ public class TableBox extends BlockBox {
                     int mw = 0;
                     for (int i = nEffCols - 1; i >= 0; i--) {
                         Length width = layoutStruct[i].effWidth();
-                        if (width.isPercent())
+                        if (width.isPercent()) {
                             mw += (int) (layoutStruct[i].calcWidth() - layoutStruct[i].effMinWidth());
+                        }
                     }
 
                     for (int i = nEffCols - 1; i >= 0 && mw > 0; i--) {
@@ -1783,8 +1791,9 @@ public class TableBox extends BlockBox {
                             layoutStruct[i].setCalcWidth(layoutStruct[i].calcWidth() + reduce);
                             available -= (int) reduce;
                             mw -= (int) minMaxDiff;
-                            if (available >= 0)
+                            if (available >= 0) {
                                 break;
+                            }
                         }
                     }
                 }

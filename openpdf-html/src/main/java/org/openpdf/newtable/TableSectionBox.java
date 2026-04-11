@@ -73,7 +73,7 @@ public class TableSectionBox extends BlockBox {
         _grid.clear();
         ensureChildren(c);
         for (Iterator<Box> i = getChildren().iterator(); i.hasNext(); cRow++) {
-            TableRowBox row = (TableRowBox)i.next();
+            TableRowBox row = (TableRowBox) i.next();
             row.ensureChildren(c);
             for (Box box : row.getChildren()) {
                 TableCellBox cell = (TableCellBox) box;
@@ -96,9 +96,13 @@ public class TableSectionBox extends BlockBox {
 
     @Nullable
     public TableCellBox cellAt(int row, int col) {
-        if (row >= _grid.size()) return null;
+        if (row >= _grid.size()) {
+            return null;
+        }
         RowData rowData = _grid.get(row);
-        if (col >= rowData.getRow().size()) return null;
+        if (col >= rowData.getRow().size()) {
+            return null;
+        }
         return rowData.getRow().get(col);
     }
 
@@ -119,7 +123,7 @@ public class TableSectionBox extends BlockBox {
     }
 
     private TableBox getTable() {
-        return (TableBox)getParent();
+        return (TableBox) getParent();
     }
 
     @Override
@@ -147,7 +151,7 @@ public class TableSectionBox extends BlockBox {
 
         ensureRows(cRow + rSpan);
 
-        while ( cCol < nCols && cellAt(cRow, cCol) != null) {
+        while (cCol < nCols && cellAt(cRow, cCol) != null) {
             cCol++;
         }
 
@@ -155,7 +159,7 @@ public class TableSectionBox extends BlockBox {
         TableCellBox set = cell;
         while (cSpan > 0) {
             int currentSpan;
-            while ( cCol >= getTable().getColumns().size() ) {
+            while (cCol >= getTable().getColumns().size()) {
                 getTable().appendColumn(1);
             }
             ColumnData cData = columns.get(cCol);
@@ -190,8 +194,7 @@ public class TableSectionBox extends BlockBox {
         setCapturedOriginalAbsY(false);
     }
 
-    void setCellWidths(LayoutContext c)
-    {
+    void setCellWidths(LayoutContext c) {
         int[] columnPos = getTable().getColumnPos();
 
         for (RowData row : _grid) {
@@ -245,7 +248,7 @@ public class TableSectionBox extends BlockBox {
 
     public TableRowBox getLastRow() {
         if (getChildCount() > 0) {
-            return (TableRowBox)getChild(getChildCount()-1);
+            return (TableRowBox) getChild(getChildCount() - 1);
         } else {
             return null;
         }
@@ -272,13 +275,13 @@ public class TableSectionBox extends BlockBox {
         boolean running = c.isPrint() && (isHeader() || isFooter()) && getTable().getStyle().isPaginateTable();
 
         if (running) {
-            c.setNoPageBreak(c.getNoPageBreak()+1);
+            c.setNoPageBreak(c.getNoPageBreak() + 1);
         }
 
         super.layout(c, contentStart);
 
         if (running) {
-            c.setNoPageBreak(c.getNoPageBreak()-1);
+            c.setNoPageBreak(c.getNoPageBreak() - 1);
         }
     }
 
