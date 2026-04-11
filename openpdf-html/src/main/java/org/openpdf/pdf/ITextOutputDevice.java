@@ -352,11 +352,11 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
             PageBox page = _root.getLayer().getPage(c, bounds.y);
 
             float bottom = getDeviceLength(
-                    (float)page.getBottom()
-                            - (float)(bounds.y + bounds.height)
-                            + (float)page.getMarginBorderPadding(c, Edge.BOTTOM));
+                    (float) page.getBottom()
+                            - (float) (bounds.y + bounds.height)
+                            + (float) page.getMarginBorderPadding(c, Edge.BOTTOM));
 
-            float left = getDeviceLength((float)page.getMarginBorderPadding(c, Edge.LEFT) + bounds.x);
+            float left = getDeviceLength((float) page.getMarginBorderPadding(c, Edge.LEFT) + bounds.x);
 
             return new org.openpdf.text.Rectangle(left, bottom, left + getDeviceLength(bounds.width), bottom
                     + getDeviceLength(bounds.height));
@@ -419,21 +419,21 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
 
     @Override
     public void setOpacity(float opacity) {
-    	if (opacity != _opacity) {
-    		PdfGState gs = new PdfGState();
+        if (opacity != _opacity) {
+            PdfGState gs = new PdfGState();
 
-        	gs.setBlendMode(PdfGState.BM_NORMAL);
-        	gs.setFillOpacity(opacity);
+            gs.setBlendMode(PdfGState.BM_NORMAL);
+            gs.setFillOpacity(opacity);
 
-        	_currentPage.setGState(gs);
-        	_opacity = opacity;
-    	}
-	}
+            _currentPage.setGState(gs);
+            _opacity = opacity;
+        }
+    }
 
     @Override
     public void setColor(FSColor color) {
         if (color instanceof FSRGBColor rgb) {
-            _color = new Color(rgb.getRed(), rgb.getGreen(), rgb.getBlue(), (int) (rgb.getAlpha()*255));
+            _color = new Color(rgb.getRed(), rgb.getGreen(), rgb.getBlue(), (int) (rgb.getAlpha() * 255));
         } else if (color instanceof FSCMYKColor cmyk) {
             _color = new CMYKColor(cmyk.getCyan(), cmyk.getMagenta(), cmyk.getYellow(), cmyk.getBlack());
         } else {
@@ -518,8 +518,9 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         if (Configuration.isTrue("xr.renderer.replace-missing-characters", false)) {
             s = replaceMissingCharacters(s);
         }
-        if (s.isEmpty())
+        if (s.isEmpty()) {
             return;
+        }
         PdfContentByte cb = _currentPage;
         ensureFillColor();
         AffineTransform at = (AffineTransform) getTransform().clone();
@@ -624,7 +625,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
             _currentPage.setColorFill(_fillColor);
 
             if (_fillColor.getAlpha() < 255) {
-            	setOpacity(_fillColor.getAlpha()/255.0f);
+                setOpacity(_fillColor.getAlpha() / 255.0f);
             }
         }
     }
@@ -698,23 +699,27 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         switch (drawType) {
         case FILL:
             if (traces > 0) {
-                if (points.getWindingRule() == PathIterator.WIND_EVEN_ODD)
+                if (points.getWindingRule() == PathIterator.WIND_EVEN_ODD) {
                     cb.eoFill();
-                else
+                } else {
                     cb.fill();
+                }
             }
             break;
         case STROKE:
-            if (traces > 0)
+            if (traces > 0) {
                 cb.stroke();
+            }
             break;
         default: // drawType==CLIP
-            if (traces == 0)
+            if (traces == 0) {
                 cb.rectangle(0, 0, 0, 0);
-            if (points.getWindingRule() == PathIterator.WIND_EVEN_ODD)
+            }
+            if (points.getWindingRule() == PathIterator.WIND_EVEN_ODD) {
                 cb.eoClip();
-            else
+            } else {
                 cb.clip();
+            }
             cb.newPath();
         }
     }
@@ -731,16 +736,20 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
 
     private void setStrokeDiff(Stroke newStroke, @Nullable Stroke oldStroke) {
         PdfContentByte cb = _currentPage;
-        if (newStroke == oldStroke)
+        if (newStroke == oldStroke) {
             return;
-        if (!(newStroke instanceof BasicStroke nStroke))
+        }
+        if (!(newStroke instanceof BasicStroke nStroke)) {
             return;
+        }
         boolean oldOk = (oldStroke instanceof BasicStroke);
         BasicStroke oStroke = null;
-        if (oldOk)
+        if (oldOk) {
             oStroke = (BasicStroke) oldStroke;
-        if (!oldOk || nStroke.getLineWidth() != oStroke.getLineWidth())
+        }
+        if (!oldOk || nStroke.getLineWidth() != oStroke.getLineWidth()) {
             cb.setLineWidth(nStroke.getLineWidth());
+        }
         if (!oldOk || nStroke.getEndCap() != oStroke.getEndCap()) {
             switch (nStroke.getEndCap()) {
             case BasicStroke.CAP_BUTT:
@@ -765,14 +774,15 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                 cb.setLineJoin(1);
             }
         }
-        if (!oldOk || nStroke.getMiterLimit() != oStroke.getMiterLimit())
+        if (!oldOk || nStroke.getMiterLimit() != oStroke.getMiterLimit()) {
             cb.setMiterLimit(nStroke.getMiterLimit());
+        }
         boolean makeDash = isMakeDash(oldOk, nStroke, oStroke);
         if (makeDash) {
             float[] dash = nStroke.getDashArray();
-            if (dash == null)
+            if (dash == null) {
                 cb.setLiteral("[]0 d\n");
-            else {
+            } else {
                 cb.setLiteral('[');
                 for (float v : dash) {
                     cb.setLiteral(v);
@@ -805,13 +815,15 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
     }
 
     private Stroke transformStroke(Stroke stroke) {
-        if (!(stroke instanceof BasicStroke st))
+        if (!(stroke instanceof BasicStroke st)) {
             return stroke;
+        }
         float scale = (float) Math.sqrt(Math.abs(_transform.getDeterminant()));
         float[] dash = st.getDashArray();
         if (dash != null) {
-            for (int k = 0; k < dash.length; ++k)
+            for (int k = 0; k < dash.length; ++k) {
                 dash[k] *= scale;
+            }
         }
         return new BasicStroke(st.getLineWidth() * scale, st.getEndCap(), st.getLineJoin(), st.getMiterLimit(), dash, st.getDashPhase()
                 * scale);
@@ -821,10 +833,11 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
     public void clip(Shape s) {
         if (s != null) {
             s = _transform.createTransformedShape(s);
-            if (_clip == null)
+            if (_clip == null) {
                 _clip = new Area(s);
-            else
+            } else {
                 _clip.intersect(new Area(s));
+            }
             followPath(s, CLIP);
         } else {
             throw new XRRuntimeException("Shape is null, unexpected");
@@ -846,8 +859,9 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         PdfContentByte cb = _currentPage;
         cb.restoreState();
         cb.saveState();
-        if (s != null)
+        if (s != null) {
             s = _transform.createTransformedShape(s);
+        }
         if (s == null) {
             _clip = null;
         } else {
@@ -1008,8 +1022,8 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
     }
 
     private int getPageRefY(Box box) {
-        if (box instanceof InlineLayoutBox iB) {
-            return iB.getAbsY() + iB.getBaseline();
+        if (box instanceof InlineLayoutBox ib) {
+            return ib.getAbsY() + ib.getBaseline();
         } else {
             return box.getAbsY();
         }
@@ -1321,7 +1335,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         }
 
         float x = box.getAbsX() + (float) page.getMarginBorderPadding(c, Edge.LEFT);
-        float y = (float)(page.getBottom() - (box.getAbsY() + box.getHeight())
+        float y = (float) (page.getBottom() - (box.getAbsY() + box.getHeight())
                 + page.getMarginBorderPadding(c, Edge.BOTTOM));
 
         return new PagePosition(id, page.getPageNo(),

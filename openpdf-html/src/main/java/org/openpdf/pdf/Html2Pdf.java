@@ -32,8 +32,7 @@ public class Html2Pdf {
 
             Document doc = builder.parse(html.toString());
             return renderer.createPDF(doc);
-        }
-        catch (DocumentException | IOException | SAXException | ParserConfigurationException e) {
+        } catch (DocumentException | IOException | SAXException | ParserConfigurationException e) {
             throw new IllegalArgumentException("Failed to parse XML from " + html, e);
         }
     }

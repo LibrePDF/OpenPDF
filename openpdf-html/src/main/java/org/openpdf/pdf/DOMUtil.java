@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -34,7 +34,7 @@ public class DOMUtil {
         for (int i = 0; i < children.getLength(); i++) {
             Node n = children.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE) {
-                Element elem = (Element)n;
+                Element elem = (Element) n;
                 if (elem.getTagName().equals(name)) {
                     return elem;
                 }
@@ -49,7 +49,7 @@ public class DOMUtil {
         for (int i = 0; i < children.getLength(); i++) {
             Node n = children.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE) {
-                Element elem = (Element)n;
+                Element elem = (Element) n;
                 if (elem.getTagName().equals(name)) {
                     result.add(elem);
                 }
@@ -79,7 +79,7 @@ public class DOMUtil {
         for (int i = 0; i < children.getLength(); i++) {
             Node n = children.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE) {
-                getText((Element)n, sb);
+                getText((Element) n, sb);
             } else if (n.getNodeType() == Node.TEXT_NODE) {
                 sb.append(n.getNodeValue());
             }

@@ -497,7 +497,7 @@ public class ITextRenderer {
         Rectangle content = page.getPrintClippingBounds(c);
         if (isScaleToFit()) {
             int pageWidth = calculateWidth(c, page);
-            content.setSize(pageWidth, (int) content.getSize().getHeight());//RTD - to change
+            content.setSize(pageWidth, (int) content.getSize().getHeight()); //RTD - to change
         }
         _outputDevice.clip(content);
 
@@ -617,7 +617,7 @@ public class ITextRenderer {
         if (isScaleToFit()) {
             int pageWidth = firstPage.getWidth(c);
             Rectangle pageRec = firstPage.getPrintClippingBounds(c);
-            if(_dim.getWidth() > pageRec.getWidth()) {
+            if (_dim.getWidth() > pageRec.getWidth()) {
                 RectPropertySet margin = firstPage.getMargin(c);
                 pageWidth = (int) (_dim.getWidth() + margin.left() + margin.right());
             }
