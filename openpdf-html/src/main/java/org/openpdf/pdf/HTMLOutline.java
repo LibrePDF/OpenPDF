@@ -173,7 +173,7 @@ class HTMLOutline {
         return root.bookmark.getChildren();
     }
 
-    private static void initBoxRefs(Map<Element,Bookmark> map, Box box) {
+    private static void initBoxRefs(Map<Element, Bookmark> map, Box box) {
         Bookmark bookmark = map.get(box.getElement());
         if (bookmark != null) {
             bookmark.setBox(box);

@@ -43,8 +43,7 @@ public class CheckboxFormField extends AbstractFormField {
   }
 
   @Override
-  protected String getFieldType()
-  {
+  protected String getFieldType() {
     return FIELD_TYPE;
   }
 
