@@ -24,12 +24,12 @@ import org.jspecify.annotations.Nullable;
 
 public class ArrayUtil {
     @CheckReturnValue
-    public static String[] cloneOrEmpty(String @Nullable [] source){
+    public static String[] cloneOrEmpty(String @Nullable [] source) {
         return source == null ? Constants.EMPTY_STR_ARR : source.clone();
     }
 
     @CheckReturnValue
-    public static byte[] cloneOrEmpty(byte @Nullable [] source){
+    public static byte[] cloneOrEmpty(byte @Nullable [] source) {
         return source == null ? Constants.EMPTY_BYTE_ARR : source.clone();
     }
 

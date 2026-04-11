@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -87,7 +87,7 @@ public class ScalableXHTMLPanel extends XHTMLPanel {
      * as a base URL for relative paths.
      *
      * @param stream The stream to read the Document from.
-     * @param url	The URL used to resolve relative path references.
+     * @param url The URL used to resolve relative path references.
      */
     @Override
     public void setDocument(InputStream stream, String url) {
@@ -97,7 +97,9 @@ public class ScalableXHTMLPanel extends XHTMLPanel {
     }
 
     private void resetScaleAccordingToPolicy() {
-        if (getScalePolicy() != SCALE_POLICY_NONE) scale = -1.0d;
+        if (getScalePolicy() != SCALE_POLICY_NONE) {
+            scale = -1.0d;
+        }
     }
 
     /**
@@ -124,7 +126,9 @@ public class ScalableXHTMLPanel extends XHTMLPanel {
      * @throws IllegalArgumentException If {@code newScale <= <tt>0.0d</tt>}.
      */
     public void setScale(double newScale) throws IllegalArgumentException {
-        if (newScale <= 0.0d) throw new IllegalArgumentException("Only positive scales are allowed.");
+        if (newScale <= 0.0d) {
+            throw new IllegalArgumentException("Only positive scales are allowed.");
+        }
         this.scale = newScale;
         scalePolicy = SCALE_POLICY_NONE;
         lastLayoutSize = null;
@@ -154,7 +158,7 @@ public class ScalableXHTMLPanel extends XHTMLPanel {
     /**
      * Renders according to scale factor
      *
-     * @param c	the RenderingContext to use
+     * @param c the RenderingContext to use
      * @param root The Layer to render
      */
     @Override
@@ -188,7 +192,9 @@ public class ScalableXHTMLPanel extends XHTMLPanel {
         Rectangle viewportBounds = getFixedRectangle();
         if (getScalePolicy() == SCALE_POLICY_NONE) {
             // FIXME: float comparison
-            if (scale == -1.0d) scale = 1.0d;
+            if (scale == -1.0d) {
+                scale = 1.0d;
+            }
             return;
         }
         double xScale, yScale;
@@ -202,28 +208,40 @@ public class ScalableXHTMLPanel extends XHTMLPanel {
         } else {
             yScale = 1.0d;
         }
-        if (getScalePolicy() == SCALE_POLICY_FIT_WIDTH) scale = xScale;
-        else if (getScalePolicy() == SCALE_POLICY_FIT_HEIGHT) scale = yScale;
-        else scale = Math.min(xScale, yScale);
+        if (getScalePolicy() == SCALE_POLICY_FIT_WIDTH) {
+            scale = xScale;
+        } else if (getScalePolicy() == SCALE_POLICY_FIT_HEIGHT) {
+            scale = yScale;
+        } else {
+            scale = Math.min(xScale, yScale);
+        }
     }
 
     protected Point convertToScaled(Point origin) {
-        if (scale <= 0.0d) return origin;
+        if (scale <= 0.0d) {
+            return origin;
+        }
         return new Point((int) (origin.x * scale), (int) (origin.y * scale));
     }
 
     protected Point convertFromScaled(Point origin) {
-        if (scale <= 0.0d) return origin;
+        if (scale <= 0.0d) {
+            return origin;
+        }
         return new Point((int) (origin.x / scale), (int) (origin.y / scale));
     }
 
     protected Point convertToScaled(int x, int y) {
-        if (scale <= 0.0d) return new Point(x, y);
+        if (scale <= 0.0d) {
+            return new Point(x, y);
+        }
         return new Point((int) (x * scale), (int) (y * scale));
     }
 
     protected Point convertFromScaled(int x, int y) {
-        if (scale <= 0.0d) return new Point(x, y);
+        if (scale <= 0.0d) {
+            return new Point(x, y);
+        }
         return new Point((int) (x / scale), (int) (y / scale));
     }
 

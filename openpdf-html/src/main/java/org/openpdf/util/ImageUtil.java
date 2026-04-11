@@ -70,8 +70,7 @@ public class ImageUtil {
         Graphics2D g = (Graphics2D) image.getGraphics();
         try {
             block.accept(g);
-        }
-        finally {
+        } finally {
             g.dispose();
         }
     }
@@ -80,8 +79,7 @@ public class ImageUtil {
         Graphics g = graphics.create();
         try {
             block.accept(g);
-        }
-        finally {
+        } finally {
             g.dispose();
         }
     }
@@ -449,8 +447,7 @@ public class ImageUtil {
                 try {
                     opt.applyRenderingHints(g2);
                     g2.drawImage(scaled, 0, 0, w, h, null);
-                }
-                finally {
+                } finally {
                     g2.dispose();
                 }
 

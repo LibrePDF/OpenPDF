@@ -58,22 +58,22 @@ public class ImageReplacedElement implements ReplacedElement {
             int newH = targetHeight;
 
             if (newW == -1) {
-                newW = (int)(w * ((double)newH / h));
+                newW = (int) (w * ((double) newH / h));
             }
 
             if (newH == -1) {
-                newH = (int)(h * ((double)newW / w));
+                newH = (int) (h * ((double) newW / w));
             }
 
             if (w != newW || h != newH) {
                 if (image instanceof BufferedImage) {
                     image = ImageUtil.getScaledInstance((BufferedImage) image, newW, newH);
                 } else {
-                   String scalingType = Configuration.valueFor("xr.image.scale", "HIGH").trim() ;
+                   String scalingType = Configuration.valueFor("xr.image.scale", "HIGH").trim();
 
-                   if(scalingType.equalsIgnoreCase("HIGH") || scalingType.equalsIgnoreCase("MID") ){
+                   if (scalingType.equalsIgnoreCase("HIGH") || scalingType.equalsIgnoreCase("MID")) {
                        image = image.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-                   } else{
+                   } else {
                     image = image.getScaledInstance(newW, newH, Image.SCALE_FAST);
                 }
             }

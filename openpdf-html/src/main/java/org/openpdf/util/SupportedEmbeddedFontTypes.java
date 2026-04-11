@@ -13,17 +13,19 @@ public enum SupportedEmbeddedFontTypes {
     }
 
     public static boolean isSupported(String uri) {
-        for(SupportedEmbeddedFontTypes type: SupportedEmbeddedFontTypes.values()) {
-            if(uri.contains(type.typeString))
+        for (SupportedEmbeddedFontTypes type : SupportedEmbeddedFontTypes.values()) {
+            if (uri.contains(type.typeString)) {
                 return true;
+            }
         }
         return false;
     }
 
     public static String getExtension(String uri) {
-        for(SupportedEmbeddedFontTypes type: SupportedEmbeddedFontTypes.values()) {
-            if(uri.contains(type.typeString))
+        for (SupportedEmbeddedFontTypes type : SupportedEmbeddedFontTypes.values()) {
+            if (uri.contains(type.typeString)) {
                 return type.extension;
+            }
         }
         return "";
     }

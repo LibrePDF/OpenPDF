@@ -52,11 +52,12 @@ public class DownscaleQuality {
 
     /**
      * Create and add constant instance
+     *
      * @param type Unique string for the instance
      * @return The constant for that type
      */
     private static DownscaleQuality addConstant(String type) {
-        if ( constList.containsKey(type)) {
+        if (constList.containsKey(type)) {
             throw new RuntimeException("Type strings for DownscaleQuality should be unique; " + type +
             " is declared twice");
         }

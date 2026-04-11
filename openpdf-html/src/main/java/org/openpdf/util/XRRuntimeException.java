@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -33,9 +33,9 @@ public class XRRuntimeException extends RuntimeException {
      *
      * @param msg  Reason the exception is being thrown.
      */
-    public XRRuntimeException( String msg ) {
-        super( msg );
-        log( msg );
+    public XRRuntimeException(String msg) {
+        super(msg);
+        log(msg);
     }
 
     /**
@@ -44,9 +44,9 @@ public class XRRuntimeException extends RuntimeException {
      * @param msg    Reason the exception is being thrown.
      * @param cause  Throwable that caused this exception to be thrown, e.g. IOException.
      */
-    public XRRuntimeException( String msg, Throwable cause ) {
-        super( msg, cause );
-        log( msg, cause );
+    public XRRuntimeException(String msg, Throwable cause) {
+        super(msg, cause);
+        log(msg, cause);
     }
 
     /**
@@ -54,8 +54,8 @@ public class XRRuntimeException extends RuntimeException {
      *
      * @param msg  Message for the log.
      */
-    private void log( String msg ) {
-        XRLog.exception( "Unhandled exception. " + msg );
+    private void log(String msg) {
+        XRLog.exception("Unhandled exception. " + msg);
     }
 
     /**
@@ -65,7 +65,7 @@ public class XRRuntimeException extends RuntimeException {
      * @param msg    Message for the log.
      * @param cause  Throwable that caused this exception to be thrown, e.g. IOException.
      */
-    private void log( String msg, Throwable cause ) {
-        XRLog.exception( "Unhandled exception. " + msg, cause );
+    private void log(String msg, Throwable cause) {
+        XRLog.exception("Unhandled exception. " + msg, cause);
     }
 }
