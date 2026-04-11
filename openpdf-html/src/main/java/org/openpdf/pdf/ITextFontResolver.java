@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -476,11 +476,9 @@ public class ITextFontResolver implements FontResolver {
 
         if (result.equalsIgnoreCase("serif")) {
             return "Serif";
-        }
-        else if (result.equalsIgnoreCase("sans-serif")) {
+        } else if (result.equalsIgnoreCase("sans-serif")) {
             return "SansSerif";
-        }
-        else if (result.equalsIgnoreCase("monospace")) {
+        } else if (result.equalsIgnoreCase("monospace")) {
             return "Monospaced";
         }
 
@@ -575,8 +573,7 @@ public class ITextFontResolver implements FontResolver {
     private BaseFont createFont(String name, String encoding, boolean embedded) {
         try {
             return BaseFont.createFont(name, encoding, embedded);
-        }
-        catch (DocumentException | IOException e) {
+        } catch (DocumentException | IOException e) {
             throw new RuntimeException("Failed to load font %s (encoding: %s, embedded: %s)".formatted(name, encoding, embedded), e);
         }
     }

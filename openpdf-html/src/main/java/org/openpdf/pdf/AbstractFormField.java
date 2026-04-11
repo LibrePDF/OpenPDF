@@ -178,22 +178,20 @@ public abstract class AbstractFormField implements ITextReplacedElement {
     protected void setStrokeColor(PdfTemplate template, FSColor color) {
         if (color instanceof FSRGBColor rgb) {
             template.setRGBColorStroke(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
-        }
-        else if (color instanceof FSCMYKColor cmyk) {
+        } else if (color instanceof FSCMYKColor cmyk) {
             template.setCMYKColorStroke(
-                    (int)(cmyk.getCyan()*255), (int)(cmyk.getMagenta()*255),
-                    (int)(cmyk.getYellow()*255), (int)(cmyk.getBlack()*255));
+                    (int) (cmyk.getCyan() * 255), (int) (cmyk.getMagenta() * 255),
+                    (int) (cmyk.getYellow() * 255), (int) (cmyk.getBlack() * 255));
         }
     }
 
     protected void setFillColor(PdfTemplate template, FSColor color) {
         if (color instanceof FSRGBColor rgb) {
             template.setRGBColorFill(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
-        }
-        else if (color instanceof FSCMYKColor cmyk) {
+        } else if (color instanceof FSCMYKColor cmyk) {
             template.setCMYKColorFill(
-                    (int)(cmyk.getCyan()*255), (int)(cmyk.getMagenta()*255),
-                    (int)(cmyk.getYellow()*255), (int)(cmyk.getBlack()*255));
+                    (int) (cmyk.getCyan() * 255), (int) (cmyk.getMagenta() * 255),
+                    (int) (cmyk.getYellow() * 255), (int) (cmyk.getBlack() * 255));
         }
     }
 }

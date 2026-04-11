@@ -32,12 +32,12 @@ public class ITextFSImage implements FSImage, Cloneable {
 
     @Override
     public int getWidth() {
-        return (int)_image.getPlainWidth();
+        return (int) _image.getPlainWidth();
     }
 
     @Override
     public int getHeight() {
-        return (int)_image.getPlainHeight();
+        return (int) _image.getPlainHeight();
     }
 
     @NonNull
@@ -50,11 +50,11 @@ public class ITextFSImage implements FSImage, Cloneable {
             int targetHeight = height;
 
             if (targetWidth == -1) {
-                targetWidth = (int)(currentWith * ((double)targetHeight / currentHeight));
+                targetWidth = (int) (currentWith * ((double) targetHeight / currentHeight));
             }
 
             if (targetHeight == -1) {
-                targetHeight = (int)(currentHeight * ((double)targetWidth / currentWith));
+                targetHeight = (int) (currentHeight * ((double) targetWidth / currentWith));
             }
 
             if (currentWith != targetWidth || currentHeight != targetHeight) {

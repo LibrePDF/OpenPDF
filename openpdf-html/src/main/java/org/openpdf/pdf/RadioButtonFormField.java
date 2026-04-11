@@ -193,7 +193,7 @@ public final class RadioButtonFormField extends AbstractFormField {
     }
 
     private float reduce(float value) {
-        return Math.min(value, Math.max(1.0f, 0.05f*value));
+        return Math.min(value, Math.max(1.0f, 0.05f * value));
     }
 
     @Override
