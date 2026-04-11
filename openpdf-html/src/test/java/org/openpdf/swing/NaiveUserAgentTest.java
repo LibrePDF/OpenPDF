@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NaiveUserAgentTest {
     private static String resolve(String baseUri, String uri) {
-        NaiveUserAgent userAgent=new NaiveUserAgent();
+        NaiveUserAgent userAgent = new NaiveUserAgent();
         userAgent.setBaseURL(baseUri);
         return userAgent.resolveURI(uri);
     }
