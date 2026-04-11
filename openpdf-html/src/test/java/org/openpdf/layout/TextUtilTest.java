@@ -16,10 +16,12 @@ class TextUtilTest {
     void capitalizesWords() {
         assertThat(transformText("hellO worlD!", CAPITALIZE, SHOW)).isEqualTo("HellO WorlD!");
     }
+
     @Test
     void toLowerCase() {
         assertThat(transformText("hellO worlD!", LOWERCASE, SHOW)).isEqualTo("hello world!");
     }
+
     @Test
     void toUpperCase() {
         assertThat(transformText("hellO worlD!", UPPERCASE, SHOW)).isEqualTo("HELLO WORLD!");

@@ -18,7 +18,7 @@ class CounterFunctionTest {
         assertThat(createCounterText(IdentValue.LOWER_LATIN, 26)).isEqualTo("z");
         assertThat(createCounterText(IdentValue.LOWER_LATIN, 27)).isEqualTo("aa");
         assertThat(createCounterText(IdentValue.LOWER_LATIN, 28)).isEqualTo("ab");
-        assertThat(createCounterText(IdentValue.LOWER_LATIN, 26*26 - 1)).isEqualTo("yy");
+        assertThat(createCounterText(IdentValue.LOWER_LATIN, 26 * 26 - 1)).isEqualTo("yy");
     }
 
     @Test

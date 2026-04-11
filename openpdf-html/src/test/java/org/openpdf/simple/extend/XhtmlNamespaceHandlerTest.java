@@ -81,10 +81,12 @@ class XhtmlNamespaceHandlerTest {
         private Html(String html) throws ParserConfigurationException, IOException, SAXException {
             document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(InputSources.fromString(html));
         }
+
         @NonNull
         private Node find(String tagName) {
             return find(tagName, 0);
         }
+
         @NonNull
         private Node find(String tagName, int index) {
             return Objects.requireNonNull(document.getElementsByTagName(tagName).item(index));

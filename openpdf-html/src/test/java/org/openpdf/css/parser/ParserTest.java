@@ -47,7 +47,7 @@ public class ParserTest {
             CSSParser p = new CSSParser(errorHandler);
             Stylesheet stylesheet = p.parseStylesheet(null, USER_AGENT, new StringReader(longTest));
             long end = System.currentTimeMillis();
-            total += (end-start);
+            total += (end - start);
 
             assertThat(stylesheet.getContents()).hasSize(count);
         }
@@ -59,7 +59,7 @@ public class ParserTest {
             Stylesheet stylesheet = p.parseStylesheet(null, USER_AGENT, new StringReader(longTest));
             long end = System.currentTimeMillis();
             // System.out.println("Took " + (end-start) + " ms");
-            total += (end-start);
+            total += (end - start);
             assertThat(stylesheet.getContents()).hasSize(count);
         }
 
@@ -77,7 +77,7 @@ public class ParserTest {
             }
             long end = System.currentTimeMillis();
             // System.out.println("Took " + (end-start) + " ms");
-            total += (end-start);
+            total += (end - start);
         }
     }
 
