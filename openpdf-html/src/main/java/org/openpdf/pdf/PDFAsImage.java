@@ -50,12 +50,12 @@ public class PDFAsImage implements FSImage {
 
     @Override
     public int getWidth() {
-        return (int)_width;
+        return (int) _width;
     }
 
     @Override
     public int getHeight() {
-        return (int)_height;
+        return (int) _height;
     }
 
     @NonNull

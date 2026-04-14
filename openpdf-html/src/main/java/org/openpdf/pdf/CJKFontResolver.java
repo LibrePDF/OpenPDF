@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -82,8 +82,7 @@ public class CJKFontResolver extends ITextFontResolver {
             try {
                 FontFamily fontFamily = addCJKFont(fontFamilyName, fontName, encoding);
                 fontFamilyMap.put(fontFamilyName, fontFamily);
-            }
-            catch (DocumentException | IOException e) {
+            } catch (DocumentException | IOException e) {
                 log.error("Failed to load font {} {} {}: {}", fontFamilyName, fontName, encoding, e.toString());
             }
         }
@@ -93,9 +92,9 @@ public class CJKFontResolver extends ITextFontResolver {
     private FontFamily addCJKFont(String fontFamilyName, String fontName, String encoding) throws DocumentException, IOException {
         FontFamily fontFamily = new FontFamily(fontFamilyName);
 
-        fontFamily.addFontDescription(new FontDescription(BaseFont.createFont(fontName+",BoldItalic", encoding, false), IdentValue.OBLIQUE, 700));
-        fontFamily.addFontDescription(new FontDescription(BaseFont.createFont(fontName+",Italic", encoding, false), IdentValue.OBLIQUE, 400));
-        fontFamily.addFontDescription(new FontDescription(BaseFont.createFont(fontName+",Bold", encoding, false), IdentValue.NORMAL, 700));
+        fontFamily.addFontDescription(new FontDescription(BaseFont.createFont(fontName + ",BoldItalic", encoding, false), IdentValue.OBLIQUE, 700));
+        fontFamily.addFontDescription(new FontDescription(BaseFont.createFont(fontName + ",Italic", encoding, false), IdentValue.OBLIQUE, 400));
+        fontFamily.addFontDescription(new FontDescription(BaseFont.createFont(fontName + ",Bold", encoding, false), IdentValue.NORMAL, 700));
         fontFamily.addFontDescription(new FontDescription(BaseFont.createFont(fontName, encoding, false), IdentValue.NORMAL, 400));
 
         return fontFamily;

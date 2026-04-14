@@ -60,7 +60,7 @@ public class ImageRenderer {
      * Renders the XML file at the given URL as an image file at the target location. Width must be provided,
      * height is determined automatically based on content and CSS.
      *
-     * @param url	 url for the XML file to render
+     * @param url url for the XML file to render
      * @param path path to the PDF file to create
      * @param width Width in pixels to which the document should be constrained.
      *
