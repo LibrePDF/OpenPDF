@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -399,6 +399,7 @@ public class XMLResource extends AbstractResource {
 
     private static class IdentityTransformerPool extends ObjectPool<Transformer> {
         private final TransformerFactory transformerFactory;
+
         private IdentityTransformerPool(int capacity) {
             super(capacity);
             TransformerFactory tf = TransformerFactory.newInstance();

@@ -75,7 +75,7 @@ public class ITextImageElement implements ITextReplacedElement {
         Rectangle contentBounds = box.getContentAreaEdge(box.getAbsX(), box.getAbsY(), c);
         ReplacedElement element = box.getReplacedElement();
         outputDevice.drawImage(
-            ((ITextImageElement)element).getImage(),
+            ((ITextImageElement) element).getImage(),
             contentBounds.x, contentBounds.y);
     }
 
