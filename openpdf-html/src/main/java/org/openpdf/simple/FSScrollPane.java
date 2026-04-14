@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -89,9 +89,8 @@ public class FSScrollPane extends JScrollPane {
     }
 
     @Override
-    public void setViewportView(Component view)
-    {
-        setPreferredSize(new Dimension((int)view.getSize().getWidth(), (int)view.getSize().getHeight()));
+    public void setViewportView(Component view) {
+        setPreferredSize(new Dimension((int) view.getSize().getWidth(), (int) view.getSize().getHeight()));
         if (view instanceof JComponent) {
             setDefaultInputMap((JComponent) view);
             setDefaultActionMap((JComponent) view);
@@ -102,22 +101,22 @@ public class FSScrollPane extends JScrollPane {
 
     /** Assigns the default keyboard bindings on the view for document navigation. */
     private void setDefaultInputMap(JComponent view) {
-        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), PAGE_DOWN);
-        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), PAGE_UP);
-        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), LINE_DOWN);
-        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), LINE_UP);
-        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_END, KeyEvent.CTRL_DOWN_MASK), PAGE_END);
-        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), PAGE_END);
-        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, KeyEvent.CTRL_DOWN_MASK), PAGE_START);
-        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), PAGE_START);
+        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), PAGE_DOWN);
+        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), PAGE_UP);
+        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), LINE_DOWN);
+        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), LINE_UP);
+        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_END, KeyEvent.CTRL_DOWN_MASK), PAGE_END);
+        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), PAGE_END);
+        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, KeyEvent.CTRL_DOWN_MASK), PAGE_START);
+        view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), PAGE_START);
 
     }
 
@@ -175,7 +174,7 @@ public class FSScrollPane extends JScrollPane {
 
     /** Adds a component listener on the view for resize events, to adjust the scroll increment. */
     private void addResizeListener(Component view) {
-        view.addComponentListener( new ComponentAdapter() {
+        view.addComponentListener(new ComponentAdapter() {
             /** Invoked when the component's size changes. Reset scrollable increment, because
              * page-down/up is relative to current view size.
              */
@@ -188,7 +187,7 @@ public class FSScrollPane extends JScrollPane {
 
                 // want to page down leaving the current line at the bottom be the first at the top
                 // TODO: this will only work once unit increment is set correctly; multiplier is a workaround (PWW 28-01-05)
-                int incr = (int)(getSize().getHeight() - (bar.getUnitIncrement(1) * 3));
+                int incr = (int) (getSize().getHeight() - (bar.getUnitIncrement(1) * 3));
                 getVerticalScrollBar().setBlockIncrement(incr);
             }
         });

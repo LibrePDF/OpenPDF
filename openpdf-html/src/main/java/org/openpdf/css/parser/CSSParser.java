@@ -475,8 +475,9 @@ public class CSSParser {
                     int maxLoops = 1024 * 1024; // 1M is too much, 1K is probably too...
                     int i = 0;
                     while (true) {
-                        if (++i >= maxLoops)
+                        if (++i >= maxLoops) {
                             throw new CSSParseException(t, Token.TK_RBRACE, getCurrentLine());
+                        }
                         skip_whitespace();
                         t = la();
                         if (t == Token.TK_RBRACE) {
@@ -630,6 +631,7 @@ public class CSSParser {
             throw new CSSParseException(t, Token.TK_COLON, getCurrentLine());
         }
     }
+
 //  operator
 //    : '/' S* | COMMA S* | /* empty */
 //    ;
@@ -820,7 +822,7 @@ public class CSSParser {
         Selector result = null;
         for (int i = 0; i < count - 1; i++) {
             Selector first = selectors.get(i);
-            Selector second = selectors.get(i+1);
+            Selector second = selectors.get(i + 1);
             Token combinator = combinators.get(i);
 
             if (first.getPseudoElement() != null) {
@@ -856,7 +858,7 @@ public class CSSParser {
                     result = second;
                 }
                 if (i > 0) {
-                    for (int j = i-1; j >= 0; j--) {
+                    for (int j = i - 1; j >= 0; j--) {
                         Selector selector = selectors.get(j);
                         if (selector.getChainedSelector() == first) {
                             selector.setChainedSelector(second);
@@ -1589,7 +1591,7 @@ public class CSSParser {
                 //in accordance to http://www.w3.org/TR/css3-gcpm/#cmyk-colors
                 result = new PropertyValue(createCMYKColorFromFunction(params), operatorToken);
             } else {
-                result = new PropertyValue(new FSFunction(f.substring(0, f.length()-1), params), operatorToken);
+                result = new PropertyValue(new FSFunction(f.substring(0, f.length() - 1), params), operatorToken);
             }
 
             skip_whitespace();
@@ -1611,7 +1613,7 @@ public class CSSParser {
         float[] colorComponents = new float[4];
 
         for (int i = 0; i < params.size(); i++) {
-            colorComponents[i] = parseCMYKColorComponent(params.get(i), (i+1)); //Warning on the truncation?
+            colorComponents[i] = parseCMYKColorComponent(params.get(i), (i + 1)); //Warning on the truncation?
         }
 
         return new FSCMYKColor(colorComponents[0], colorComponents[1], colorComponents[2], colorComponents[3]);
@@ -1676,7 +1678,7 @@ public class CSSParser {
         short type = value.getPrimitiveType();
         if (type != CSS_PERCENTAGE && type != CSS_NUMBER) {
             throw new CSSParseException(
-                    "Parameter " + (index +1) + " to the rgb() function is " +
+                    "Parameter " + (index + 1) + " to the rgb() function is " +
                     "not a number or percentage", getCurrentLine());
         }
 
@@ -1755,7 +1757,7 @@ public class CSSParser {
 
     private void skip_whitespace() throws IOException {
         Token t;
-        while ( (t = next()) == Token.TK_S) {
+        while ((t = next()) == Token.TK_S) {
             // skip
         }
         push(t);
@@ -1948,18 +1950,18 @@ public class CSSParser {
 
             if (c == '\\') {
                 // eat escaped newlines and handle te\st == test situations
-                if (i < end - 2 && (ch[i+1] == '\r' && ch[i+2] == '\n')) {
+                if (i < end - 2 && (ch[i + 1] == '\r' && ch[i + 2] == '\n')) {
                     i += 2;
                     continue;
                 } else {
-                    if ((i+1) < ch.length && (ch[i+1] == '\n' || ch[i+1] == '\r' || ch[i+1] == '\f')) {
+                    if ((i + 1) < ch.length && (ch[i + 1] == '\n' || ch[i + 1] == '\r' || ch[i + 1] == '\f')) {
                         i++;
                         continue;
-                    } else if ((i+1) >= ch.length) {
+                    } else if ((i + 1) >= ch.length) {
                        // process \ escaped (\\)
                        result.append(c);
                        continue;
-                    } else if (! isHexChar(ch[i+1])) {
+                    } else if (! isHexChar(ch[i + 1])) {
                         continue;
                     }
                 }
@@ -1972,17 +1974,17 @@ public class CSSParser {
 
                 int cvalue = Integer.parseInt(new String(ch, current, i - current), 16);
                 if (cvalue < 0xFFFF) {
-                    result.append((char)cvalue);
+                    result.append((char) cvalue);
                 }
 
                 i--;
 
-                if (i < end - 2 && (ch[i+1] == '\r' && ch[i+2] == '\n')) {
+                if (i < end - 2 && (ch[i + 1] == '\r' && ch[i + 2] == '\n')) {
                     i += 2;
                 } else if (i < end - 1 &&
-                        (ch[i+1] == ' ' || ch[i+1] == '\t' ||
-                                ch[i+1] == '\n' || ch[i+1] == '\r' ||
-                                ch[i+1] == '\f')) {
+                        (ch[i + 1] == ' ' || ch[i + 1] == '\t' ||
+                                ch[i + 1] == '\n' || ch[i + 1] == '\r' ||
+                                ch[i + 1] == '\f')) {
                     i++;
                 }
             } else {

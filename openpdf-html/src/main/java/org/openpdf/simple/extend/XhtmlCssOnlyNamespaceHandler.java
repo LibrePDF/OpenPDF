@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -107,6 +107,7 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
 
     /**
      * Gets the elementStyling attribute of the XhtmlNamespaceHandler object
+     *
      * @return The elementStyling value
      */
     @Override
@@ -239,7 +240,7 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
         for (int i = 0; i < children.getLength(); i++) {
             Node n = children.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equals(targetName)) {
-                return (Element)n;
+                return (Element) n;
             }
         }
 
@@ -266,7 +267,7 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
         Node current = style.getFirstChild();
         while (current != null) {
             if (current instanceof CharacterData) {
-                buf.append(((CharacterData)current).getData());
+                buf.append(((CharacterData) current).getData());
             }
             current = current.getNextSibling();
         }
@@ -279,7 +280,7 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
         String rel = link.getAttribute("rel").toLowerCase(ROOT);
         if (rel.contains("alternate")) {
             return null;
-        }//DON'T get alternate stylesheets
+        } //DON'T get alternate stylesheets
         if (!rel.contains("stylesheet")) {
             return null;
         }
@@ -304,7 +305,7 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
             Node current = head.getFirstChild();
             while (current != null) {
                 if (current.getNodeType() == Node.ELEMENT_NODE) {
-                    Element elem = (Element)current;
+                    Element elem = (Element) current;
 
                     String elemName = requireNonNullElseGet(elem.getLocalName(), () -> elem.getTagName());
 
@@ -351,10 +352,9 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
             Node current = head.getFirstChild();
             while (current != null) {
                 if (current.getNodeType() == Node.ELEMENT_NODE) {
-                    Element elem = (Element)current;
+                    Element elem = (Element) current;
                     String elemName = elem.getLocalName();
-                    if (elemName == null)
-                    {
+                    if (elemName == null) {
                         elemName = elem.getTagName();
                     }
                     if (elemName.equals("meta")) {
