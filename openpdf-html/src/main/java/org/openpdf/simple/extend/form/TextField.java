@@ -79,7 +79,7 @@ class TextField extends InputField {
     protected void applyComponentStyle(JComponent component) {
         super.applyComponentStyle(component);
 
-        TextFieldJTextField field = (TextFieldJTextField)component;
+        TextFieldJTextField field = (TextFieldJTextField) component;
 
         CalculatedStyle style = getBox().getStyle();
         BorderPropertySet border = style.getBorder(null);
@@ -105,8 +105,7 @@ class TextField extends InputField {
             field.setUI(ui);
             Border fieldBorder = BorderFactory.createEmptyBorder(top, left, bottom, right);
             field.setBorder(fieldBorder);
-        }
-        else {
+        } else {
             field.setMargin(new Insets(top, left, bottom, right));
         }
 
@@ -150,6 +149,7 @@ class TextField extends InputField {
     private static class TextFieldJTextField extends JTextField {
         //override getColumnWidth to base on 'o' instead of 'm'.  more like other browsers
         private int columnWidth = 0;
+
         @Override
         protected int getColumnWidth() {
             if (columnWidth == 0) {

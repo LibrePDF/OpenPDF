@@ -154,6 +154,7 @@ class TextAreaField extends FormField {
             super(rows, columns);
         }
         //override getColumnWidth to base on 'o' instead of 'm'.  more like other browsers
+
         @Override
         protected int getColumnWidth() {
             if (columnWidth == 0) {
@@ -167,7 +168,7 @@ class TextAreaField extends FormField {
         @Override
         public Dimension getPreferredScrollableViewportSize() {
             Dimension size = super.getPreferredScrollableViewportSize();
-            size = (size == null) ? new Dimension(400,400) : size;
+            size = (size == null) ? new Dimension(400, 400) : size;
             Insets insets = getInsets();
 
             size.width = (getColumns() == 0) ? size.width : getColumns() * getColumnWidth() + insets.left + insets.right;

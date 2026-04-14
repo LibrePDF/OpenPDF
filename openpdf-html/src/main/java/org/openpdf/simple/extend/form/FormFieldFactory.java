@@ -36,7 +36,9 @@ public class FormFieldFactory {
         Element e = requireNonNull(box.getElement());
 
         String typeKey = getTypeKey(e);
-        if (typeKey == null) return null;
+        if (typeKey == null) {
+            return null;
+        }
 
         return switch (typeKey) {
             case "submit" -> new SubmitField(e, form, context, box);

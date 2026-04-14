@@ -39,10 +39,10 @@ class ResetField extends AbstractButtonField {
         String value;
         if (hasAttribute("value")) {
             value = getAttribute("value");
-            if (value.isEmpty())
+            if (value.isEmpty()) {
                 value = " ";    //otherwise we get a very short button
-        }
-        else {
+            }
+        } else {
             value = "Reset";
         }
 

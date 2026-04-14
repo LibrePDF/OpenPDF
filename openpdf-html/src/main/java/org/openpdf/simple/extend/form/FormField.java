@@ -79,7 +79,7 @@ public abstract class FormField {
     }
 
     @CheckReturnValue
-    public Dimension getIntrinsicSize(){
+    public Dimension getIntrinsicSize() {
 
         int width = intrinsicWidth == null ? 0 : intrinsicWidth;
         int height = intrinsicHeight == null ? 0 : intrinsicHeight;
@@ -116,10 +116,12 @@ public abstract class FormField {
         _component = create();
 
         if (_component != null) {
-            if (intrinsicWidth == null)
+            if (intrinsicWidth == null) {
                 intrinsicWidth = _component.getPreferredSize().width;
-            if (intrinsicHeight == null)
+            }
+            if (intrinsicHeight == null) {
                 intrinsicHeight = _component.getPreferredSize().height;
+            }
 
             _component.setSize(getIntrinsicSize());
 
@@ -207,8 +209,7 @@ public abstract class FormField {
         }
     }
 
-    private static Color toColor(FSColor color)
-    {
+    private static Color toColor(FSColor color) {
         if (color instanceof FSRGBColor rgb) {
             return new Color(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
         }
