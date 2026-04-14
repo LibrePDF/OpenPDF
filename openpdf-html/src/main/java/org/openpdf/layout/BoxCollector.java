@@ -54,7 +54,7 @@ public class BoxCollector {
     private void collectInlineLayer(
             CssContext c, Shape clip, Layer layer,
             List<Box> blockContent, List<Box> inlineContent, BoxRangeLists rangeLists) {
-        InlineLayoutBox iB = (InlineLayoutBox)layer.getMaster();
+        InlineLayoutBox iB = (InlineLayoutBox) layer.getMaster();
         List<Box> content = iB.getElementWithContent();
 
         for (Box b : content) {
@@ -112,7 +112,7 @@ public class BoxCollector {
             if (intersectsAggregateBounds(clip, container) ||
                     (container.getPaintingInfo() == null && container.intersects(c, clip))) {
                 inlineContent.add(container);
-                ((LineBox)container).addAllChildren(inlineContent, layer);
+                ((LineBox) container).addAllChildren(inlineContent, layer);
             }
         } else {
             boolean intersectsAggregateBounds = intersectsAggregateBounds(clip, container);
@@ -122,9 +122,9 @@ public class BoxCollector {
                     blockContent.add(container);
                     if (container.getStyle().isTable() && c instanceof RenderingContext) {  // HACK
                         assert container instanceof TableBox;
-                        TableBox table = (TableBox)container;
+                        TableBox table = (TableBox) container;
                         if (table.hasContentLimitContainer()) {
-                            table.updateHeaderFooterPosition((RenderingContext)c);
+                            table.updateHeaderFooterPosition((RenderingContext) c);
                         }
                     }
                 }
@@ -151,8 +151,8 @@ public class BoxCollector {
             BoxRangeLists rangeLists, boolean isBlock, int blockStart, int inlineStart,
             int blockRangeStart, int inlineRangeStart) {
         if (isBlock && c instanceof RenderingContext) {
-            BlockBox blockBox = (BlockBox)container;
-            if (blockBox.isNeedsClipOnPaint((RenderingContext)c)) {
+            BlockBox blockBox = (BlockBox) container;
+            if (blockBox.isNeedsClipOnPaint((RenderingContext) c)) {
                 int blockEnd = blockContent.size();
                 if (blockStart != blockEnd) {
                     BoxRange range = new BoxRange(blockStart, blockEnd);

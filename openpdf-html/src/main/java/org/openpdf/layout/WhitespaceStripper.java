@@ -36,7 +36,7 @@ public class WhitespaceStripper {
     public final static String EOL = "\n";
     public final static char EOLC = '\n';
 
-    public final static Pattern linefeed_space_collapse = Pattern.compile("\\s+\\n\\s+");//Pattern is thread-safe
+    public final static Pattern linefeed_space_collapse = Pattern.compile("\\s+\\n\\s+"); //Pattern is thread-safe
     public final static Pattern linefeed_to_space = Pattern.compile("\\n");
     public final static Pattern tab_to_space = Pattern.compile("\\t");
     public final static Pattern space_collapse = Pattern.compile("(?: )+");
@@ -121,8 +121,8 @@ public class WhitespaceStripper {
             if (whitespace == IdentValue.NORMAL || whitespace == IdentValue.NOWRAP) {
                 iB.setRemovableWhitespace(true);
             } else if (whitespace == IdentValue.PRE) {
-                iB.setRemovableWhitespace(false);//actually unnecessary, is set to this by default
-            } else if (!text.contains(EOL)) {//and whitespace.equals("pre-line"), the only one left
+                iB.setRemovableWhitespace(false); //actually unnecessary, is set to this by default
+            } else if (!text.contains(EOL)) { //and whitespace.equals("pre-line"), the only one left
                 iB.setRemovableWhitespace(true);
             }
         }

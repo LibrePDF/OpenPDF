@@ -77,8 +77,12 @@ public class CollapsedBorderSide implements Comparable<CollapsedBorderSide> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CollapsedBorderSide that)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CollapsedBorderSide that)) {
+            return false;
+        }
 
         return _side == that._side && _cell.equals(that._cell);
     }

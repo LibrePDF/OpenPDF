@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -306,8 +306,7 @@ public final class SharedContext {
         idMap.remove(id);
     }
 
-    public Map<String, Box> getIdMap()
-    {
+    public Map<String, Box> getIdMap() {
         return idMap;
     }
 
@@ -519,7 +518,7 @@ public final class SharedContext {
             if (parent instanceof Document) {
                 parentCalculatedStyle = new EmptyStyle();
             } else {
-                parentCalculatedStyle = getStyle((Element)parent, false);
+                parentCalculatedStyle = getStyle((Element) parent, false);
             }
 
             result = parentCalculatedStyle.deriveStyle(getCss().getCascadedStyle(e, restyle));
