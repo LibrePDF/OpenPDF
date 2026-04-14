@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -78,7 +78,7 @@ public class NoNamespaceHandler implements NamespaceHandler {
                 NamedNodeMap attrs = e.getAttributes();
                 int l = attrs.getLength();
                 for (int i = 0; i < l; i++) {
-                    Attr attr = (Attr)attrs.item(i);
+                    Attr attr = (Attr) attrs.item(i);
                     if (attrName.equals(attr.getLocalName())) {
                         return attr.getValue();
                     }
@@ -179,7 +179,9 @@ public class NoNamespaceHandler implements NamespaceHandler {
         NodeList nl = doc.getChildNodes();
         for (int i = 0, len = nl.getLength(); i < len; i++) {
             Node node = nl.item(i);
-            if (node.getNodeType() != Node.PROCESSING_INSTRUCTION_NODE) continue;
+            if (node.getNodeType() != Node.PROCESSING_INSTRUCTION_NODE) {
+                continue;
+            }
             ProcessingInstruction piNode = (ProcessingInstruction) node;
             if (!piNode.getTarget().equals("xml-stylesheet")) {
                 continue;
@@ -191,11 +193,15 @@ public class NoNamespaceHandler implements NamespaceHandler {
                 int start = m.end();
                 String alternate = pi.substring(start + 1, pi.indexOf(pi.charAt(start), start + 1));
                 //TODO: handle alternate stylesheets
-                if (alternate.equals("yes")) continue;//DON'T get alternate stylesheets for now
+                if (alternate.equals("yes")) {
+                    continue; //DON'T get alternate stylesheets for now
+                }
             }
             String type = detectType(pi);
             //TODO: handle other stylesheet types
-            if (!Objects.equals(type, "text/css")) continue; // for now
+            if (!Objects.equals(type, "text/css")) {
+                continue; // for now
+            }
 
             StylesheetInfo info = new StylesheetInfo(AUTHOR, detectUri(pi), mediaTypes(detectMediaTypes(pi)), null);
             list.add(info);

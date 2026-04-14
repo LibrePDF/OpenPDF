@@ -37,8 +37,9 @@ class ButtonField extends AbstractButtonField {
 
         String value = getAttribute("value");
 
-        if (value == null || value.isEmpty())
+        if (value == null || value.isEmpty()) {
             value = " ";    //otherwise we get a very short button
+        }
 
         applyComponentStyle(button);
 

@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -187,7 +187,7 @@ public class XHTMLPanel extends BasicPanel {
     public void setDocument(File file) throws MalformedURLException {
         resetListeners();
         File parent = file.getAbsoluteFile().getParentFile();
-        String parentURL = ( parent == null ? "" : parent.toURI().toURL().toExternalForm());
+        String parentURL = (parent == null ? "" : parent.toURI().toURL().toExternalForm());
         setDocument(
                 loadDocument(file.toURI().toURL().toExternalForm()),
                 parentURL
@@ -247,7 +247,9 @@ public class XHTMLPanel extends BasicPanel {
     private void scaleFont(float scaleBy) {
         SharedContext rc = getSharedContext();
         float fs = rc.getTextRenderer().getFontScale() * scaleBy;
-        if (fs < minFontScale || fs > maxFontScale) return;
+        if (fs < minFontScale || fs > maxFontScale) {
+            return;
+        }
         rc.getTextRenderer().setFontScale(fs);
         setDocument(getDocument());
     }

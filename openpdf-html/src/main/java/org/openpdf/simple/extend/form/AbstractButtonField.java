@@ -44,10 +44,11 @@ public abstract class AbstractButtonField extends InputField {
                 button.setBackground(new Color(rgb.getRed(), rgb.getGreen(), rgb.getBlue()));
             }
 
-            if (disableOSBorder)
+            if (disableOSBorder) {
                 button.setBorder(new BasicBorders.MarginBorder());
-            else
+            } else {
                 button.setBorder(BasicBorders.getButtonBorder());
+            }
         }
 
         Integer paddingTop = getLengthValue(style, CSSName.PADDING_TOP);
@@ -70,11 +71,13 @@ public abstract class AbstractButtonField extends InputField {
         padding.setBottom(0);
 
         FSDerivedValue widthValue = style.valueByName(CSSName.WIDTH);
-        if (widthValue instanceof LengthValue)
+        if (widthValue instanceof LengthValue) {
             intrinsicWidth = getBox().getContentWidth();
+        }
 
         FSDerivedValue heightValue = style.valueByName(CSSName.HEIGHT);
-        if (heightValue instanceof LengthValue)
+        if (heightValue instanceof LengthValue) {
             intrinsicHeight = getBox().getHeight();
+        }
     }
 }
