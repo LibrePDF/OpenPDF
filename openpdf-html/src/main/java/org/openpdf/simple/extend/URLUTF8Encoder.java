@@ -87,40 +87,40 @@ public class URLUTF8Encoder {
      * @param s  The string to be encoded
      * @return   The encoded string
      */
-    public static String encode( String s ) {
+    public static String encode(String s) {
         StringBuilder buf = new StringBuilder();
         int len = s.length();
-        for ( int i = 0; i < len; i++ ) {
-            int ch = s.charAt( i );
-            append( buf, ch );
+        for (int i = 0; i < len; i++) {
+            int ch = s.charAt(i);
+            append(buf, ch);
         }
         return buf.toString();
     }
 
-    private static void append( StringBuilder buf, int ch ) {
-        if ( 'A' <= ch && ch <= 'Z' ) {// 'A'..'Z'
-            buf.append( (char)ch );
-        } else if ( 'a' <= ch && ch <= 'z' ) {// 'a'..'z'
-            buf.append( (char)ch );
-        } else if ( '0' <= ch && ch <= '9' ) {// '0'..'9'
-            buf.append( (char)ch );
-        } else if ( ch == ' ' ) {// space
-            buf.append( '+' );
-        } else if ( ch == '-' || ch == '_' // unreserved
+    private static void append(StringBuilder buf, int ch) {
+        if ('A' <= ch && ch <= 'Z') { // 'A'..'Z'
+            buf.append((char) ch);
+        } else if ('a' <= ch && ch <= 'z') { // 'a'..'z'
+            buf.append((char) ch);
+        } else if ('0' <= ch && ch <= '9') { // '0'..'9'
+            buf.append((char) ch);
+        } else if (ch == ' ') { // space
+            buf.append('+');
+        } else if (ch == '-' || ch == '_' // unreserved
                 || ch == '.' || ch == '!'
                 || ch == '~' || ch == '*'
                 || ch == '\'' || ch == '('
-                || ch == ')' ) {
-            buf.append( (char)ch );
-        } else if ( ch <= 0x007f ) {// other ASCII
-            buf.append( hex[ch] );
-        } else if ( ch <= 0x07FF ) {// non-ASCII <= 0x7FF
-            buf.append( hex[0xc0 | ( ch >> 6 )] );
-            buf.append( hex[0x80 | ( ch & 0x3F )] );
-        } else {// 0x7FF < ch <= 0xFFFF
-            buf.append( hex[0xe0 | ( ch >> 12 )] );
-            buf.append( hex[0x80 | ( ( ch >> 6 ) & 0x3F )] );
-            buf.append( hex[0x80 | ( ch & 0x3F )] );
+                || ch == ')') {
+            buf.append((char) ch);
+        } else if (ch <= 0x007f) { // other ASCII
+            buf.append(hex[ch]);
+        } else if (ch <= 0x07FF) { // non-ASCII <= 0x7FF
+            buf.append(hex[0xc0 | (ch >> 6)]);
+            buf.append(hex[0x80 | (ch & 0x3F)]);
+        } else { // 0x7FF < ch <= 0xFFFF
+            buf.append(hex[0xe0 | (ch >> 12)]);
+            buf.append(hex[0x80 | ((ch >> 6) & 0x3F)]);
+            buf.append(hex[0x80 | (ch & 0x3F)]);
         }
     }
 

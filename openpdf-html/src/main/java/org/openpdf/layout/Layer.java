@@ -139,8 +139,8 @@ public final class Layer {
     }
 
     public float getOpacity() {
-    	return _master.getStyle().getOpacity();
-	}
+        return _master.getStyle().getOpacity();
+    }
 
 
     @CheckReturnValue
@@ -185,7 +185,7 @@ public final class Layer {
         }
     }
 
-    enum Width {POSITIVE, ZERO, NEGATIVE, AUTO}
+    enum Width { POSITIVE, ZERO, NEGATIVE, AUTO }
 
     @CheckReturnValue
     private List<Layer> collectLayers(Width which) {
@@ -230,7 +230,7 @@ public final class Layer {
     }
 
     @CheckReturnValue
-	private List<Layer> getSortedLayers(Width which) {
+    private List<Layer> getSortedLayers(Width which) {
         List<Layer> result = collectLayers(which);
         result.sort(new ZIndexComparator());
         return result;
@@ -311,9 +311,9 @@ public final class Layer {
             getMaster().paintRootElementBackground(c);
         }
 
-        if (! isInline() && ((BlockBox)getMaster()).isReplaced()) {
+        if (! isInline() && ((BlockBox) getMaster()).isReplaced()) {
             paintLayerBackgroundAndBorder(c);
-            paintReplacedElement(c, (BlockBox)getMaster());
+            paintReplacedElement(c, (BlockBox) getMaster());
         } else {
             BoxRangeLists rangeLists = new BoxRangeLists();
 
@@ -326,7 +326,7 @@ public final class Layer {
             if (! isInline()) {
                 paintLayerBackgroundAndBorder(c);
                 if (c.debugDrawBoxes()) {
-                    ((BlockBox)getMaster()).paintDebugOutline(c);
+                    ((BlockBox) getMaster()).paintDebugOutline(c);
                 }
             }
 
@@ -403,7 +403,7 @@ public final class Layer {
     private Box find(CssContext cssCtx, int absX, int absY, List<Layer> layers, boolean findAnonymous) {
         // Work backwards since layers are painted forwards and we're looking
         // for the top-most box
-        for (int i = layers.size()-1; i >= 0; i--) {
+        for (int i = layers.size() - 1; i >= 0; i--) {
             Layer l = layers.get(i);
             Box result = l.find(cssCtx, absX, absY, findAnonymous);
             if (result != null) {
@@ -482,7 +482,7 @@ public final class Layer {
         for (int i = 0; i < blocks.size(); i++) {
             helper.popClipRegions(i);
 
-            BlockBox box = (BlockBox)blocks.get(i);
+            BlockBox box = (BlockBox) blocks.get(i);
             box.paintListMarker(c);
 
             helper.pushClipRegion(c, i);
@@ -497,7 +497,7 @@ public final class Layer {
         for (int i = 0; i < blocks.size(); i++) {
             helper.popClipRegions(i);
 
-            BlockBox box = (BlockBox)blocks.get(i);
+            BlockBox box = (BlockBox) blocks.get(i);
             if (box.isReplaced()) {
                 paintReplacedElement(c, box);
             }
@@ -519,7 +519,7 @@ public final class Layer {
         fixed.setAbsY(0);
 
         fixed.setContainingBlock(new ViewportBox(rect));
-        ((BlockBox)fixed).positionAbsolute(c, Position.BOTH);
+        ((BlockBox) fixed).positionAbsolute(c, Position.BOTH);
 
         fixed.calcPaintingInfo(c, false);
     }
@@ -583,9 +583,9 @@ public final class Layer {
 
     private void position(LayoutContext c) {
         if (getMaster().getStyle().isAbsolute() && ! c.isPrint()) {
-            ((BlockBox)getMaster()).positionAbsolute(c, Position.BOTH);
+            ((BlockBox) getMaster()).positionAbsolute(c, Position.BOTH);
         } else if (getMaster().getStyle().isRelative() &&
-                (isInline() || ((BlockBox)getMaster()).isInline())) {
+                (isInline() || ((BlockBox) getMaster()).isInline())) {
             getMaster().positionRelative(c);
             if (! isInline()) {
                 getMaster().calcCanvasLocation();
@@ -711,13 +711,13 @@ public final class Layer {
     }
 
     private void layoutAbsoluteChild(LayoutContext c, Layer child) {
-        BlockBox master = (BlockBox)child.getMaster();
+        BlockBox master = (BlockBox) child.getMaster();
         if (child.getMaster().getStyle().isBottomAuto()) {
             // Set top, left
             master.positionAbsolute(c, Position.BOTH);
             master.positionAbsoluteOnPage(c);
             c.reInit(true);
-            ((BlockBox)child.getMaster()).layout(c);
+            ((BlockBox) child.getMaster()).layout(c);
             // Set right
             master.positionAbsolute(c, Position.HORIZONTALLY);
         } else {
@@ -737,7 +737,7 @@ public final class Layer {
             master.setBoxDimensions(after);
 
             c.reInit(true);
-            ((BlockBox)child.getMaster()).layout(c);
+            ((BlockBox) child.getMaster()).layout(c);
         }
     }
 
@@ -747,7 +747,7 @@ public final class Layer {
     }
 
     public boolean isLastPage(PageBox pageBox) {
-        return _pages.get(_pages.size()-1) == pageBox;
+        return _pages.get(_pages.size() - 1) == pageBox;
     }
 
     public void addPage(CssContext c) {
@@ -789,7 +789,7 @@ public final class Layer {
         // queries page positions and since pages are created lazily, changing
         // this method to use LayoutContext is tricky
         if (c instanceof LayoutContext) {
-            pageName = ((LayoutContext)c).getPageName();
+            pageName = ((LayoutContext) c).getPageName();
         }
 
         PageInfo pageInfo = c.getCss().getPageStyle(pageName, pseudoPage);
@@ -826,14 +826,14 @@ public final class Layer {
                     return lastRequested;
                 }
             }
-            PageBox last = pages.get(pages.size()-1);
+            PageBox last = pages.get(pages.size() - 1);
             if (yOffset < last.getBottom()) {
                 // The page we're looking for is probably at the end of the
                 // document so do a linear search for the first few pages
                 // and then fall back to a binary search if that doesn't work
                 // out
                 int count = pages.size();
-                for (int i = count-1; i >= 0 && i >= count-5; i--) {
+                for (int i = count - 1; i >= 0 && i >= count - 5; i--) {
                     PageBox pageBox = pages.get(i);
                     if (yOffset >= pageBox.getTop() && yOffset < pageBox.getBottom()) {
                         setLastRequestedPage(pageBox);
@@ -842,7 +842,7 @@ public final class Layer {
                 }
 
                 int low = 0;
-                int high = count-6;
+                int high = count - 6;
 
                 while (low <= high) {
                     int mid = (low + high) >> 1;
@@ -861,7 +861,7 @@ public final class Layer {
                 }
             } else {
                 addPagesUntilPosition(c, yOffset);
-                PageBox result = pages.get(pages.size()-1);
+                PageBox result = pages.get(pages.size() - 1);
                 setLastRequestedPage(result);
                 return result;
             }
@@ -872,10 +872,10 @@ public final class Layer {
 
     private void addPagesUntilPosition(CssContext c, int position) {
         List<PageBox> pages = getPages();
-        PageBox last = pages.get(pages.size()-1);
+        PageBox last = pages.get(pages.size() - 1);
         while (position >= last.getBottom()) {
             addPage(c);
-            last = pages.get(pages.size()-1);
+            last = pages.get(pages.size() - 1);
         }
     }
 
@@ -898,7 +898,7 @@ public final class Layer {
 
     public void trimPageCount(int newPageCount) {
         while (_pages.size() > newPageCount) {
-            PageBox pageBox = _pages.remove(_pages.size()-1);
+            PageBox pageBox = _pages.remove(_pages.size() - 1);
             if (pageBox == getLastRequestedPage()) {
                 setLastRequestedPage(null);
             }
@@ -939,7 +939,7 @@ public final class Layer {
     @Nullable
     public PageBox getLastPage() {
         List<PageBox> pages = getPages();
-        return pages.isEmpty() ? null : pages.get(pages.size()-1);
+        return pages.isEmpty() ? null : pages.get(pages.size() - 1);
     }
 
     public boolean crossesPageBreak(LayoutContext c, int top, int bottom) {
@@ -1141,7 +1141,7 @@ public final class Layer {
             }
 
             if (sequenceStartIndex < sequences.size() - 1) {
-                BlockBox block = sequences.get(sequenceStartIndex+1);
+                BlockBox block = sequences.get(sequenceStartIndex + 1);
                 lastPage = getFirstPage(c, block).getPageNo();
             } else {
                 lastPage = c.getPageCount();

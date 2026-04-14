@@ -102,7 +102,7 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
     }
 
     private void drawSelectedText(RenderingContext c, InlineText inlineText, InlineLayoutBox iB, FSGlyphVector glyphVector) {
-        GlyphVector vector = ((AWTFSGlyphVector)glyphVector).getGlyphVector();
+        GlyphVector vector = ((AWTFSGlyphVector) glyphVector).getGlyphVector();
 
         // We'd like to draw only the characters that are actually selected, but
         // unfortunately vector.getGlyphPixelBounds() doesn't give us accurate
@@ -115,9 +115,9 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
         for (int i = inlineText.getSelectionEnd(); i < inlineText.getSubstring().length(); i++) {
             vector.setGlyphPosition(i, new Point2D.Float(-100000, -100000));
         }
-        if(inlineText.getParent().getStyle().isTextJustify()) {
+        if (inlineText.getParent().getStyle().isTextJustify()) {
             JustificationInfo info = inlineText.getParent().getLineBox().getJustificationInfo();
-            if(info!=null) {
+            if (info != null) {
                 String string = inlineText.getSubstring();
                 float adjust = 0.0f;
                 for (int i = inlineText.getSelectionStart(); i < inlineText.getSelectionEnd(); i++) {
@@ -178,16 +178,17 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
         ReplacedElement replaced = box.getReplacedElement();
         if (replaced instanceof SwingReplacedElement) {
             Rectangle contentBounds = box.getContentAreaEdge(box.getAbsX(), box.getAbsY(), c);
-            JComponent component = ((SwingReplacedElement)box.getReplacedElement()).getJComponent();
-            RootPanel canvas = (RootPanel)c.getCanvas();
+            JComponent component = ((SwingReplacedElement) box.getReplacedElement()).getJComponent();
+            RootPanel canvas = (RootPanel) c.getCanvas();
             CellRendererPane pane = canvas.getCellRendererPane();
-            pane.paintComponent(_graphics, component, canvas, contentBounds.x,  contentBounds.y, contentBounds.width, contentBounds.height,true);
+            pane.paintComponent(_graphics, component, canvas, contentBounds.x,  contentBounds.y, contentBounds.width,
+                    contentBounds.height, true);
         } else if (replaced instanceof ImageReplacedElement) {
-            Image image = ((ImageReplacedElement)replaced).getImage();
+            Image image = ((ImageReplacedElement) replaced).getImage();
 
             Point location = replaced.getLocation();
             _graphics.drawImage(
-                    image, (int)location.getX(), (int)location.getY(), null);
+                    image, (int) location.getX(), (int) location.getY(), null);
         }
     }
 
@@ -197,13 +198,13 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
             AlphaComposite.SrcOver :
             AlphaComposite.SrcOver.derive(opacity)
         );
-	}
+    }
 
 
     @Override
     public void setColor(FSColor color) {
         if (color instanceof FSRGBColor rgb) {
-            _graphics.setColor(new Color(rgb.getRed(), rgb.getGreen(), rgb.getBlue(),(int) (rgb.getAlpha() * 255)));
+            _graphics.setColor(new Color(rgb.getRed(), rgb.getGreen(), rgb.getBlue(), (int) (rgb.getAlpha() * 255)));
         } else {
             throw new RuntimeException("internal error: unsupported color class " + color.getClass().getName());
         }
@@ -235,7 +236,8 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
     public Shape getClip() {
         return _graphics.getClip();
     }
-@Override
+
+    @Override
     public void clip(Shape s) {
         _graphics.clip(s);
     }
@@ -273,7 +275,7 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
 
     @Override
     public void setFont(FSFont font) {
-        _graphics.setFont(((AWTFSFont)font).getAWTFont());
+        _graphics.setFont(((AWTFSFont) font).getAWTFont());
     }
 
     @Override
@@ -290,53 +292,56 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
     public void fill(Shape s) {
         _graphics.fill(s);
     }
-@Override
+
+    @Override
     public void draw(Shape s) {
         _graphics.draw(s);
     }
-@Override
+
+    @Override
     public void drawImage(FSImage image, int x, int y) {
-        _graphics.drawImage(((AWTFSImage)image).getImage(), x, y, null);
+        _graphics.drawImage(((AWTFSImage) image).getImage(), x, y, null);
     }
-@Override
+
+    @Override
     public boolean isSupportsSelection() {
         return true;
     }
-@Override
+
+    @Override
     public boolean isSupportsCMYKColors() {
         return true;
     }
 
-	@Override
-	public void drawLinearGradient(FSLinearGradient gradient, int x, int y, int width, int height)
-	{
-		float[] fractions = new float[gradient.getStopPoints().size()];
-		Color[] colors = new Color[gradient.getStopPoints().size()];
+    @Override
+    public void drawLinearGradient(FSLinearGradient gradient, int x, int y, int width, int height) {
+        float[] fractions = new float[gradient.getStopPoints().size()];
+        Color[] colors = new Color[gradient.getStopPoints().size()];
 
-		float range = gradient.getStopPoints().get(gradient.getStopPoints().size() - 1).getDotsValue() -
-				gradient.getStopPoints().get(0).getDotsValue();
+        float range = gradient.getStopPoints().get(gradient.getStopPoints().size() - 1).getDotsValue() -
+                gradient.getStopPoints().get(0).getDotsValue();
 
-		int i = 0;
-		for (StopValue pt : gradient.getStopPoints())
-		{
-	        if (pt.getColor() instanceof FSRGBColor rgb) {
+        int i = 0;
+        for (StopValue pt : gradient.getStopPoints()) {
+            if (pt.getColor() instanceof FSRGBColor rgb) {
                 colors[i] = new Color(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
-	        } else {
-	            throw new RuntimeException("internal error: unsupported color class " + pt.getColor().getClass().getName());
-	        }
+            } else {
+                throw new RuntimeException("internal error: unsupported color class " + pt.getColor().getClass().getName());
+            }
 
-	        if (range != 0)
-	        	fractions[i] = pt.getDotsValue() / range;
+            if (range != 0) {
+                fractions[i] = pt.getDotsValue() / range;
+            }
 
-	        i++;
-		}
+            i++;
+        }
 
         LinearGradientPaint paint = new LinearGradientPaint(
-                (float)(gradient.getStartX() + x), (float)(gradient.getStartY() + y),
-                (float)(gradient.getEndX() + x), (float)(gradient.getEndY() + y),
+                (float) (gradient.getStartX() + x), (float) (gradient.getStartY() + y),
+                (float) (gradient.getEndX() + x), (float) (gradient.getEndY() + y),
                 fractions, colors);
-		_graphics.setPaint(paint);
-		_graphics.fillRect(x, y, width, height);
-		_graphics.setPaint(null);
-	}
+        _graphics.setPaint(paint);
+        _graphics.fillRect(x, y, width, height);
+        _graphics.setPaint(null);
+    }
 }

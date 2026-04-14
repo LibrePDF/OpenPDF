@@ -184,7 +184,7 @@ public abstract class AbstractOutputDevice implements OutputDevice {
 
     @Nullable
     private FSImage getBackgroundImage(RenderingContext c, CalculatedStyle style) {
-    	if (! style.isIdent(CSSName.BACKGROUND_IMAGE, IdentValue.NONE)) {
+        if (! style.isIdent(CSSName.BACKGROUND_IMAGE, IdentValue.NONE)) {
             String uri = style.getStringProperty(CSSName.BACKGROUND_IMAGE);
             try {
                 return c.getUac().getImageResource(uri).getImage();
@@ -228,14 +228,11 @@ public abstract class AbstractOutputDevice implements OutputDevice {
         FSLinearGradient backgroundLinearGradient = null;
         FSImage backgroundImage = null;
 
-        if (style.isLinearGradient())
-        {
-        	// TODO: Is this the correct width to use?
-        	backgroundLinearGradient = style.getLinearGradient(c, bgImageContainer.width, bgImageContainer.height);
-        }
-        else
-        {
-        	backgroundImage = getBackgroundImage(c, style);
+        if (style.isLinearGradient()) {
+            // TODO: Is this the correct width to use?
+            backgroundLinearGradient = style.getLinearGradient(c, bgImageContainer.width, bgImageContainer.height);
+        } else {
+            backgroundImage = getBackgroundImage(c, style);
         }
 
         // If the image width or height is zero, then there's nothing to draw.
@@ -244,7 +241,7 @@ public abstract class AbstractOutputDevice implements OutputDevice {
             backgroundImage = null;
         }
 
-        if ( (backgroundColor == null || backgroundColor == FSRGBColor.TRANSPARENT) &&
+        if ((backgroundColor == null || backgroundColor == FSRGBColor.TRANSPARENT) &&
                 backgroundImage == null && backgroundLinearGradient == null) {
             return;
         }
@@ -252,7 +249,7 @@ public abstract class AbstractOutputDevice implements OutputDevice {
         Area borderBounds = new Area(BorderPainter.generateBorderBounds(backgroundBounds, border, false));
 
         Shape oldclip = getClip();
-        if(oldclip != null) {
+        if (oldclip != null) {
             // we need to respect the clip sent to us, get the intersection between the old and the new
             borderBounds.intersect(new Area(oldclip));
         }
@@ -273,22 +270,20 @@ public abstract class AbstractOutputDevice implements OutputDevice {
             int yoff = localBGImageContainer.y;
 
             if (border != null) {
-                xoff += (int)border.left();
-                yoff += (int)border.top();
+                xoff += (int) border.left();
+                yoff += (int) border.top();
             }
 
             clip(borderBounds);
 
-        	if (backgroundLinearGradient != null)
-        	{
-        		drawLinearGradient(backgroundLinearGradient,
-        		backgroundBounds.x, backgroundBounds.y, backgroundBounds.width, backgroundBounds.height);
-        		setClip(oldclip);
-        		return;
-        	}
+            if (backgroundLinearGradient != null) {
+                drawLinearGradient(backgroundLinearGradient,
+                backgroundBounds.x, backgroundBounds.y, backgroundBounds.width, backgroundBounds.height);
+                setClip(oldclip);
+                return;
+            }
 
-            if (backgroundImage != null)
-            {
+            if (backgroundImage != null) {
                 backgroundImage = scaleBackgroundImage(c, style, localBGImageContainer, backgroundImage);
             }
 
@@ -305,21 +300,20 @@ public abstract class AbstractOutputDevice implements OutputDevice {
             boolean vrepeat = style.isVerticalBackgroundRepeat();
 
             if (! hrepeat && ! vrepeat) {
-                Rectangle imageBounds = new Rectangle(xoff, yoff, (int)imageWidth, (int)imageHeight);
-                if (imageBounds.intersects(backgroundBounds))
-                {
-               		drawImage(backgroundImage, xoff, yoff);
+                Rectangle imageBounds = new Rectangle(xoff, yoff, (int) imageWidth, (int) imageHeight);
+                if (imageBounds.intersects(backgroundBounds)) {
+                   drawImage(backgroundImage, xoff, yoff);
                 }
             } else if (hrepeat && vrepeat) {
                 paintTiles(
                         backgroundImage,
-                        adjustTo(backgroundBounds.x, xoff, (int)imageWidth),
-                        adjustTo(backgroundBounds.y, yoff, (int)imageHeight),
+                        adjustTo(backgroundBounds.x, xoff, (int) imageWidth),
+                        adjustTo(backgroundBounds.y, yoff, (int) imageHeight),
                         backgroundBounds.x + backgroundBounds.width,
                         backgroundBounds.y + backgroundBounds.height);
             } else if (hrepeat) {
-                xoff = adjustTo(backgroundBounds.x, xoff, (int)imageWidth);
-                Rectangle imageBounds = new Rectangle(xoff, yoff, (int)imageWidth, (int)imageHeight);
+                xoff = adjustTo(backgroundBounds.x, xoff, (int) imageWidth);
+                Rectangle imageBounds = new Rectangle(xoff, yoff, (int) imageWidth, (int) imageHeight);
                 if (imageBounds.intersects(backgroundBounds)) {
                     paintHorizontalBand(
                             backgroundImage,
@@ -328,8 +322,8 @@ public abstract class AbstractOutputDevice implements OutputDevice {
                             backgroundBounds.x + backgroundBounds.width);
                 }
             } else if (vrepeat) {
-                yoff = adjustTo(backgroundBounds.y, yoff, (int)imageHeight);
-                Rectangle imageBounds = new Rectangle(xoff, yoff, (int)imageWidth, (int)imageHeight);
+                yoff = adjustTo(backgroundBounds.y, yoff, (int) imageHeight);
+                Rectangle imageBounds = new Rectangle(xoff, yoff, (int) imageWidth, (int) imageHeight);
                 if (imageBounds.intersects(backgroundBounds)) {
                     paintVerticalBand(
                             backgroundImage,
@@ -364,8 +358,8 @@ public abstract class AbstractOutputDevice implements OutputDevice {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        for (int x = left; x < right; x+= width) {
-            for (int y = top; y < bottom; y+= height) {
+        for (int x = left; x < right; x += width) {
+            for (int y = top; y < bottom; y += height) {
                 drawImage(image, x, y);
             }
         }
@@ -374,7 +368,7 @@ public abstract class AbstractOutputDevice implements OutputDevice {
     private void paintVerticalBand(FSImage image, int left, int top, int bottom) {
         int height = image.getHeight();
 
-        for (int y = top; y < bottom; y+= height) {
+        for (int y = top; y < bottom; y += height) {
             drawImage(image, left, y);
         }
     }
@@ -382,7 +376,7 @@ public abstract class AbstractOutputDevice implements OutputDevice {
     private void paintHorizontalBand(FSImage image, int left, int top, int right) {
         int width = image.getWidth();
 
-        for (int x = left; x < right; x+= width) {
+        for (int x = left; x < right; x += width) {
             drawImage(image, x, top);
         }
     }
@@ -390,9 +384,9 @@ public abstract class AbstractOutputDevice implements OutputDevice {
     private int calcOffset(CssContext c, CalculatedStyle style, PropertyValue value, float boundsDim, float imageDim) {
         if (value.getPrimitiveType() == CSSPrimitiveValue.CSS_PERCENTAGE) {
             float percent = value.getFloatValue() / 100.0f;
-            return Math.round(boundsDim*percent - imageDim*percent);
+            return Math.round(boundsDim * percent - imageDim * percent);
         } else { /* it's a <length> */
-            return (int)LengthValue.calcFloatProportionalValue(
+            return (int) LengthValue.calcFloatProportionalValue(
                     style,
                     CSSName.BACKGROUND_POSITION,
                     value.getCssText(),
@@ -409,7 +403,7 @@ public abstract class AbstractOutputDevice implements OutputDevice {
 
         if (! backgroundSize.isBothAuto()) {
             if (backgroundSize.isCover() || backgroundSize.isContain()) {
-                int testHeight = (int)((double)image.getHeight() * backgroundContainer.width / image.getWidth());
+                int testHeight = (int) ((double) image.getHeight() * backgroundContainer.width / image.getWidth());
                 if (backgroundSize.isContain()) {
                     if (testHeight > backgroundContainer.height) {
                         return image.scale(-1, backgroundContainer.height);
@@ -438,9 +432,9 @@ public abstract class AbstractOutputDevice implements OutputDevice {
             return -1;
         } else if (value.getPrimitiveType() == CSSPrimitiveValue.CSS_PERCENTAGE) {
             float percent = value.getFloatValue() / 100.0f;
-            return Math.round(boundsDim*percent);
+            return Math.round(boundsDim * percent);
         } else {
-            return (int)LengthValue.calcFloatProportionalValue(
+            return (int) LengthValue.calcFloatProportionalValue(
                     style,
                     CSSName.BACKGROUND_SIZE,
                     value.getCssText(),

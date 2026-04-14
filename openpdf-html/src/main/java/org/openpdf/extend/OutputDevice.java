@@ -37,19 +37,24 @@ import java.awt.*;
 
 public interface OutputDevice {
     void drawText(RenderingContext c, InlineText inlineText);
+
     void drawSelection(RenderingContext c, InlineText inlineText);
 
     void drawTextDecoration(RenderingContext c, LineBox lineBox);
+
     void drawTextDecoration(
             RenderingContext c, InlineLayoutBox iB, TextDecoration decoration);
 
     void paintBorder(RenderingContext c, Box box);
+
     void paintBorder(RenderingContext c, CalculatedStyle style,
                      Rectangle edge, int sides);
+
     void paintCollapsedBorder(
             RenderingContext c, BorderPropertySet border, Rectangle bounds, int side);
 
     void paintBackground(RenderingContext c, Box box);
+
     void paintBackground(
             RenderingContext c, CalculatedStyle style,
             Rectangle bounds, Rectangle bgImageContainer,
@@ -62,29 +67,38 @@ public interface OutputDevice {
     void setFont(FSFont font);
 
     void setColor(FSColor color);
+
     void setOpacity(float opacity);
 
     void drawRect(int x, int y, int width, int height);
+
     void drawOval(int x, int y, int width, int height);
 
     void drawBorderLine(Shape bounds, int side, int width, boolean solid);
 
     void drawImage(FSImage image, int x, int y);
+
     void drawLinearGradient(FSLinearGradient gradient, int x, int y, int width, int height);
 
     void draw(Shape s);
+
     void fill(Shape s);
+
     void fillRect(int x, int y, int width, int height);
+
     void fillOval(int x, int y, int width, int height);
 
     void clip(Shape s);
+
     @Nullable
     Shape getClip();
+
     void setClip(Shape s);
 
     void translate(double tx, double ty);
 
     void setStroke(Stroke s);
+
     Stroke getStroke();
 
     @Nullable
