@@ -135,8 +135,9 @@ class SelectField extends FormField {
 
             for (int i = 0; i < selectedValues.size(); i++) {
                 NameValuePair pair = selectedValues.get(i);
-                if (pair.value() != null)
+                if (pair.value() != null) {
                     submitValues[i] = pair.value();
+                }
             }
 
             return submitValues;
@@ -147,8 +148,9 @@ class SelectField extends FormField {
             NameValuePair selectedValue = (NameValuePair) select.getSelectedItem();
 
             if (selectedValue != null) {
-                if (selectedValue.value() != null)
+                if (selectedValue.value() != null) {
                     return new String[]{selectedValue.value()};
+                }
             }
         }
 
@@ -165,7 +167,9 @@ class SelectField extends FormField {
         NodeList children = e.getChildNodes();
 
         for (int i = 0; i < children.getLength(); i++) {
-            if (!(children.item(i) instanceof Element child)) continue;
+            if (!(children.item(i) instanceof Element child)) {
+                continue;
+            }
 
             if ("option".equals(child.getNodeName())) {
                 // option tag, add it
@@ -182,7 +186,7 @@ class SelectField extends FormField {
                 // optgroup tag, append heading and indent children
                 String titleText = child.getAttribute("label");
                 list.add(new NameValuePair(titleText, null, indent));
-                addChildren(list, child, indent+1);
+                addChildren(list, child, indent + 1);
             }
         }
     }
@@ -231,7 +235,7 @@ class SelectField extends FormField {
         @Override
         public Component getListCellRendererComponent(JList list, Object value,
                                                       int index, boolean isSelected, boolean cellHasFocus) {
-            NameValuePair pair = (NameValuePair)value;
+            NameValuePair pair = (NameValuePair) value;
 
             if (pair != null && pair.value() == null) {
                 // render as heading as such
@@ -261,11 +265,13 @@ class SelectField extends FormField {
 
         @Override
         public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() != ItemEvent.SELECTED)
+            if (e.getStateChange() != ItemEvent.SELECTED) {
                 return;
+            }
             // only for combo-boxes
-            if (! (e.getSource() instanceof JComboBox<?> combo) )
+            if (! (e.getSource() instanceof JComboBox<?> combo)) {
                 return;
+            }
 
             if (((NameValuePair) e.getItem()).value() == null) {
                 // header selected: revert to old selection
@@ -279,8 +285,9 @@ class SelectField extends FormField {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             // only for lists
-            if (! (e.getSource() instanceof JList) )
+            if (! (e.getSource() instanceof JList)) {
                 return;
+            }
 
             @SuppressWarnings("unchecked")
             JList<NameValuePair> list = (JList<NameValuePair>) e.getSource();
@@ -288,9 +295,11 @@ class SelectField extends FormField {
 
             // deselect all headings
             for (int i = e.getFirstIndex(); i <= e.getLastIndex(); i++) {
-                if (!list.isSelectedIndex(i)) continue;
+                if (!list.isSelectedIndex(i)) {
+                    continue;
+                }
                 NameValuePair pair = model.getElementAt(i);
-                if ( pair!=null && pair.value() == null) {
+                if (pair != null && pair.value() == null) {
                     // We have a heading, remove it. As this handler is called
                     // as a result of the resulting removal, and we do process
                     // the events while the value is adjusting, we don't need
@@ -298,17 +307,19 @@ class SelectField extends FormField {
                     // BUT if there'll be no selection anymore because by selecting
                     // this one the old selection was cleared, restore the old
                     // selection.
-                    if (list.getSelectedIndices().length==1)
+                    if (list.getSelectedIndices().length == 1) {
                         list.setSelectedIndices(oldSelections);
-                    else
+                    } else {
                         list.removeSelectionInterval(i, i);
+                    }
                     return;
                 }
             }
 
             // if final selection: store it
-            if (!e.getValueIsAdjusting())
+            if (!e.getValueIsAdjusting()) {
                 oldSelections = list.getSelectedIndices();
+            }
         }
     }
 }

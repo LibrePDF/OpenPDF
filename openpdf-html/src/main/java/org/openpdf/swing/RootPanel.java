@@ -128,7 +128,7 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
     public void resetScrollPosition() {
         if (enclosingScrollPane != null) {
             JScrollBar scrollBar = enclosingScrollPane.getVerticalScrollBar();
-            if(scrollBar != null) {
+            if (scrollBar != null) {
                 scrollBar.setValue(0);
             }
         }
@@ -148,7 +148,7 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
 
         if (enclosingScrollPane != null) {
             JViewport viewPort = enclosingScrollPane.getViewport();
-            if(viewPort != null) {
+            if (viewPort != null) {
                 default_scroll_mode = viewPort.getScrollMode();
             }
         }
@@ -280,7 +280,7 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
 
             long start = System.currentTimeMillis();
 
-            BlockBox root = (BlockBox)getRootBox();
+            BlockBox root = (BlockBox) getRootBox();
             if (root != null && isNeedRelayout()) {
                 root.reset(c);
             } else {
@@ -330,12 +330,11 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
 
             if (enclosingScrollPane != null) {
                 JViewport viewPort = enclosingScrollPane.getViewport();
-                if(viewPort != null) {
+                if (viewPort != null) {
                     // turn on simple scrolling mode if there's any fixed elements
                     if (root.getLayer().containsFixedContent()) {
                         viewPort.setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
-                    }
-                    else {
+                    } else {
                         viewPort.setScrollMode(default_scroll_mode);
                     }
                 }
@@ -549,7 +548,7 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
         if (rootBox == null) {
             return true;
         } else {
-            Rectangle oldExtents = ((ViewportBox)rootBox.getContainingBlock()).getExtents();
+            Rectangle oldExtents = ((ViewportBox) rootBox.getContainingBlock()).getExtents();
             return !oldExtents.equals(getScreenExtents());
         }
     }
@@ -614,8 +613,7 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
       int dif = 1;
       if (orientation == SwingConstants.VERTICAL) {
         dif = visibleRect.height;
-      }
-      else if (orientation == SwingConstants.HORIZONTAL) {
+      } else if (orientation == SwingConstants.HORIZONTAL) {
         dif = visibleRect.width;
       }
       return Math.min(35, dif);
@@ -626,8 +624,7 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
       int dif = 1;
       if (orientation == SwingConstants.VERTICAL) {
         dif = Math.max(visibleRect.height - 10, dif);
-      }
-      else if (orientation == SwingConstants.HORIZONTAL) {
+      } else if (orientation == SwingConstants.HORIZONTAL) {
         dif = Math.max(visibleRect.width, dif);
       }
       return dif;
@@ -644,7 +641,7 @@ public class RootPanel extends JPanel implements Scrollable, UserInterface, FSCa
     public boolean getScrollableTracksViewportHeight() {
         // If the last layout height of this component is <= the viewport
         // height then we make the viewport height match the component size.
-        if(enclosingScrollPane != null) {
+        if (enclosingScrollPane != null) {
             JViewport viewPort = enclosingScrollPane.getViewport();
             if (viewPort != null) {
                 return getPreferredSize().height <= viewPort.getHeight();

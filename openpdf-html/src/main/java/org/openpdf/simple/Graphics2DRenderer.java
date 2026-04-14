@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -170,7 +170,7 @@ public final class Graphics2DRenderer {
      * @param width  Width in pixels of the layout container
      * @return Returns java.awt.Image containing the rendered document.
      */
-    public static BufferedImage renderToImageAutoSize(String url, int width){
+    public static BufferedImage renderToImageAutoSize(String url, int width) {
             return renderToImageAutoSize(url, width, BufferedImage.TYPE_INT_ARGB);
         }
 

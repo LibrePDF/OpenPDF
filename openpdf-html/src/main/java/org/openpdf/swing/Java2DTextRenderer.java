@@ -69,7 +69,7 @@ public class Java2DTextRenderer implements TextRenderer {
         } else {
             antiAliasRenderingHint = aaHint;
         }
-        if("true".equals(Configuration.valueFor("xr.text.fractional-font-metrics", "false"))) {
+        if ("true".equals(Configuration.valueFor("xr.text.fractional-font-metrics", "false"))) {
             fractionalFontMetricsHint = RenderingHints.VALUE_FRACTIONALMETRICS_ON;
         } else {
             fractionalFontMetricsHint = RenderingHints.VALUE_FRACTIONALMETRICS_OFF;
@@ -84,18 +84,18 @@ public class Java2DTextRenderer implements TextRenderer {
     }
 
     @Override
-    public void drawString(OutputDevice outputDevice, String string, float x, float y ) {
+    public void drawString(OutputDevice outputDevice, String string, float x, float y) {
         Object aaHint = null;
-        Graphics2D graphics = ((Java2DOutputDevice)outputDevice).getGraphics();
-        if ( graphics.getFont().getSize() > threshold ) {
+        Graphics2D graphics = ((Java2DOutputDevice) outputDevice).getGraphics();
+        if (graphics.getFont().getSize() > threshold) {
             aaHint = graphics.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING);
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint );
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint);
         }
         Object fracHint = graphics.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fractionalFontMetricsHint);
-        graphics.drawString( string, (int)x, (int)y );
-        if ( graphics.getFont().getSize() > threshold ) {
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, aaHint );
+        graphics.drawString(string, (int) x, (int) y);
+        if (graphics.getFont().getSize() > threshold) {
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, aaHint);
         }
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fracHint);
     }
@@ -104,10 +104,10 @@ public class Java2DTextRenderer implements TextRenderer {
     public void drawString(
             OutputDevice outputDevice, String string, float x, float y, JustificationInfo info) {
         Object aaHint = null;
-        Graphics2D graphics = ((Java2DOutputDevice)outputDevice).getGraphics();
-        if ( graphics.getFont().getSize() > threshold ) {
+        Graphics2D graphics = ((Java2DOutputDevice) outputDevice).getGraphics();
+        if (graphics.getFont().getSize() > threshold) {
             aaHint = graphics.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING);
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint );
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint);
         }
         Object fracHint = graphics.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fractionalFontMetricsHint);
@@ -119,8 +119,8 @@ public class Java2DTextRenderer implements TextRenderer {
 
         graphics.drawGlyphVector(vector, x, y);
 
-        if ( graphics.getFont().getSize() > threshold ) {
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, aaHint );
+        if (graphics.getFont().getSize() > threshold) {
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, aaHint);
         }
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fracHint);
     }
@@ -144,21 +144,21 @@ public class Java2DTextRenderer implements TextRenderer {
     }
 
     @Override
-    public void drawGlyphVector(OutputDevice outputDevice, FSGlyphVector fsGlyphVector, float x, float y ) {
+    public void drawGlyphVector(OutputDevice outputDevice, FSGlyphVector fsGlyphVector, float x, float y) {
         Object aaHint = null;
-        Graphics2D graphics = ((Java2DOutputDevice)outputDevice).getGraphics();
+        Graphics2D graphics = ((Java2DOutputDevice) outputDevice).getGraphics();
 
-        if ( graphics.getFont().getSize() > threshold ) {
+        if (graphics.getFont().getSize() > threshold) {
             aaHint = graphics.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING);
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint );
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint);
         }
         Object fracHint = graphics.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fractionalFontMetricsHint);
 
-        GlyphVector vector = ((AWTFSGlyphVector)fsGlyphVector).getGlyphVector();
-        graphics.drawGlyphVector(vector, (int)x, (int)y );
-        if ( graphics.getFont().getSize() > threshold ) {
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, aaHint );
+        GlyphVector vector = ((AWTFSGlyphVector) fsGlyphVector).getGlyphVector();
+        graphics.drawGlyphVector(vector, (int) x, (int) y);
+        if (graphics.getFont().getSize() > threshold) {
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, aaHint);
         }
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fracHint);
     }
@@ -170,23 +170,23 @@ public class Java2DTextRenderer implements TextRenderer {
     }
 
     @Override
-    public void setFontScale(float scale ) {
+    public void setFontScale(float scale) {
         this.scale = scale;
     }
 
     @Override
-    public void setSmoothingThreshold(float fontsize ) {
+    public void setSmoothingThreshold(float fontsize) {
         threshold = fontsize;
     }
 
     @CheckReturnValue
     @Override
-    public FSFontMetrics getFSFontMetrics(FontContext fc, FSFont font, String string ) {
-        Graphics2D graphics = ((Java2DFontContext)fc).getGraphics();
+    public FSFontMetrics getFSFontMetrics(FontContext fc, FSFont font, String string) {
+        Graphics2D graphics = ((Java2DFontContext) fc).getGraphics();
         Object fracHint = graphics.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fractionalFontMetricsHint);
         LineMetricsAdapter adapter = new LineMetricsAdapter(
-                ((AWTFSFont)font).getAWTFont().getLineMetrics(
+                ((AWTFSFont) font).getAWTFont().getLineMetrics(
                         string, graphics.getFontRenderContext()));
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fracHint);
         return adapter;
@@ -194,16 +194,16 @@ public class Java2DTextRenderer implements TextRenderer {
 
     @Override
     public int getWidth(FontContext fc, FSFont font, String string) {
-        Graphics2D graphics = ((Java2DFontContext)fc).getGraphics();
+        Graphics2D graphics = ((Java2DFontContext) fc).getGraphics();
         Object fracHint = graphics.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fractionalFontMetricsHint);
-        Font awtFont = ((AWTFSFont)font).getAWTFont();
+        Font awtFont = ((AWTFSFont) font).getAWTFont();
         int width;
-        if(fractionalFontMetricsHint == RenderingHints.VALUE_FRACTIONALMETRICS_ON) {
-            width = (int)Math.round(
+        if (fractionalFontMetricsHint == RenderingHints.VALUE_FRACTIONALMETRICS_ON) {
+            width = (int) Math.round(
                     graphics.getFontMetrics(awtFont).getStringBounds(string, graphics).getWidth());
         } else {
-            width = (int)Math.ceil(
+            width = (int) Math.ceil(
                     graphics.getFontMetrics(awtFont).getStringBounds(string, graphics).getWidth());
         }
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fracHint);
@@ -237,12 +237,12 @@ public class Java2DTextRenderer implements TextRenderer {
 
     public float[] getGlyphPositions(OutputDevice outputDevice, FSFont font, String text) {
         Object aaHint = null;
-        Graphics2D graphics = ((Java2DOutputDevice)outputDevice).getGraphics();
-        Font awtFont = ((AWTFSFont)font).getAWTFont();
+        Graphics2D graphics = ((Java2DOutputDevice) outputDevice).getGraphics();
+        Font awtFont = ((AWTFSFont) font).getAWTFont();
 
-        if (awtFont.getSize() > threshold ) {
+        if (awtFont.getSize() > threshold) {
             aaHint = graphics.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING);
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint );
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint);
         }
         Object fracHint = graphics.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fractionalFontMetricsHint);
@@ -252,8 +252,8 @@ public class Java2DTextRenderer implements TextRenderer {
                 text);
         float[] result = vector.getGlyphPositions(0, text.length() + 1, null);
 
-        if (awtFont.getSize() > threshold ) {
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, aaHint );
+        if (awtFont.getSize() > threshold) {
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, aaHint);
         }
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fracHint);
 
@@ -263,22 +263,22 @@ public class Java2DTextRenderer implements TextRenderer {
     @Override
     public Rectangle getGlyphBounds(OutputDevice outputDevice, FSFont font, FSGlyphVector fsGlyphVector, int index, float x, float y) {
         Object aaHint = null;
-        Graphics2D graphics = ((Java2DOutputDevice)outputDevice).getGraphics();
-        Font awtFont = ((AWTFSFont)font).getAWTFont();
+        Graphics2D graphics = ((Java2DOutputDevice) outputDevice).getGraphics();
+        Font awtFont = ((AWTFSFont) font).getAWTFont();
 
-        if (awtFont.getSize() > threshold ) {
+        if (awtFont.getSize() > threshold) {
             aaHint = graphics.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING);
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint );
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint);
         }
         Object fracHint = graphics.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fractionalFontMetricsHint);
 
-        GlyphVector vector = ((AWTFSGlyphVector)fsGlyphVector).getGlyphVector();
+        GlyphVector vector = ((AWTFSGlyphVector) fsGlyphVector).getGlyphVector();
 
         Rectangle result = vector.getGlyphPixelBounds(index, graphics.getFontRenderContext(), x, y);
 
-        if (awtFont.getSize() > threshold ) {
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, aaHint );
+        if (awtFont.getSize() > threshold) {
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, aaHint);
         }
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fracHint);
 
@@ -288,22 +288,22 @@ public class Java2DTextRenderer implements TextRenderer {
     @Override
     public float[] getGlyphPositions(OutputDevice outputDevice, FSFont font, FSGlyphVector fsGlyphVector) {
         Object aaHint = null;
-        Graphics2D graphics = ((Java2DOutputDevice)outputDevice).getGraphics();
-        Font awtFont = ((AWTFSFont)font).getAWTFont();
+        Graphics2D graphics = ((Java2DOutputDevice) outputDevice).getGraphics();
+        Font awtFont = ((AWTFSFont) font).getAWTFont();
 
-        if (awtFont.getSize() > threshold ) {
+        if (awtFont.getSize() > threshold) {
             aaHint = graphics.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING);
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint );
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint);
         }
         Object fracHint = graphics.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fractionalFontMetricsHint);
 
-        GlyphVector vector = ((AWTFSGlyphVector)fsGlyphVector).getGlyphVector();
+        GlyphVector vector = ((AWTFSGlyphVector) fsGlyphVector).getGlyphVector();
 
         float[] result = vector.getGlyphPositions(0, vector.getNumGlyphs() + 1, null);
 
-        if (awtFont.getSize() > threshold ) {
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, aaHint );
+        if (awtFont.getSize() > threshold) {
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, aaHint);
         }
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fracHint);
 
@@ -313,12 +313,12 @@ public class Java2DTextRenderer implements TextRenderer {
     @Override
     public FSGlyphVector getGlyphVector(OutputDevice outputDevice, FSFont font, String text) {
         Object aaHint = null;
-        Graphics2D graphics = ((Java2DOutputDevice)outputDevice).getGraphics();
-        Font awtFont = ((AWTFSFont)font).getAWTFont();
+        Graphics2D graphics = ((Java2DOutputDevice) outputDevice).getGraphics();
+        Font awtFont = ((AWTFSFont) font).getAWTFont();
 
-        if (awtFont.getSize() > threshold ) {
+        if (awtFont.getSize() > threshold) {
             aaHint = graphics.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING);
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint );
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasRenderingHint);
         }
         Object fracHint = graphics.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fractionalFontMetricsHint);
@@ -327,8 +327,8 @@ public class Java2DTextRenderer implements TextRenderer {
                 graphics.getFontRenderContext(),
                 text);
 
-        if (awtFont.getSize() > threshold ) {
-            graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, aaHint );
+        if (awtFont.getSize() > threshold) {
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, aaHint);
         }
         graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, fracHint);
 
