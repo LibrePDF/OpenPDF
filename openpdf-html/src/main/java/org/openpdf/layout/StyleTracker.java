@@ -38,7 +38,7 @@ public class StyleTracker {
 
     public void removeLast() {
         if (!_styles.isEmpty()) {
-            _styles.remove(_styles.size()-1);
+            _styles.remove(_styles.size() - 1);
         }
     }
 

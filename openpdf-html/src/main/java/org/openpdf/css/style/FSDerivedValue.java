@@ -44,6 +44,7 @@ public interface FSDerivedValue {
     boolean isDeclaredInherit();
 
     float asFloat();
+
     FSColor asColor();
 
     float getFloatProportionalTo(
@@ -51,10 +52,16 @@ public interface FSDerivedValue {
             float baseValue,
             CssContext ctx
     );
+
     String asString();
+
     String[] asStringArray();
+
     IdentValue asIdentValue();
+
     boolean hasAbsoluteUnit();
+
     boolean isDependentOnFontSize();
+
     boolean isIdent();
 }

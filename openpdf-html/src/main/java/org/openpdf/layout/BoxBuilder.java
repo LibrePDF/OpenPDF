@@ -147,8 +147,7 @@ public class BoxBuilder {
             PageInfo pageInfo,
             MarginBoxName[] names,
             int height,
-            MarginDirection direction)
-    {
+            MarginDirection direction) {
         if (! pageInfo.hasAny(names)) {
             return null;
         }
@@ -171,12 +170,12 @@ public class BoxBuilder {
                                 true,
                                 Origin.USER)
                 ));
-        TableBox result = (TableBox)createBlockBox(source, tableStyle, info, false, true);
+        TableBox result = (TableBox) createBlockBox(source, tableStyle, info, false, true);
         result.setMarginAreaRoot(true);
         result.setChildrenContentType(ContentType.BLOCK);
 
         CalculatedStyle tableSectionStyle = pageStyle.createAnonymousStyle(IdentValue.TABLE_ROW_GROUP);
-        TableSectionBox section = (TableSectionBox)createBlockBox(source, tableSectionStyle, info, false, true);
+        TableSectionBox section = (TableSectionBox) createBlockBox(source, tableSectionStyle, info, false, true);
         section.setChildrenContentType(ContentType.BLOCK);
 
         result.addChild(section);
@@ -184,7 +183,7 @@ public class BoxBuilder {
         TableRowBox row = null;
         if (direction == HORIZONTAL) {
             CalculatedStyle tableRowStyle = pageStyle.createAnonymousStyle(IdentValue.TABLE_ROW);
-            row = (TableRowBox)createBlockBox(source, tableRowStyle, info, false, true);
+            row = (TableRowBox) createBlockBox(source, tableRowStyle, info, false, true);
             row.setChildrenContentType(ContentType.BLOCK);
 
             row.setHeightOverride(height);
@@ -222,8 +221,8 @@ public class BoxBuilder {
             }
 
             for (Iterator<Box> i = section.getChildren().iterator(); i.hasNext() && rHeight < height; ) {
-                TableRowBox r = (TableRowBox)i.next();
-                r.setHeightOverride(r.getHeightOverride()+1);
+                TableRowBox r = (TableRowBox) i.next();
+                r.setHeightOverride(r.getHeightOverride() + 1);
                 rHeight++;
             }
         }
@@ -267,7 +266,7 @@ public class BoxBuilder {
             children.addAll(createGeneratedMarginBoxContent(
                     c,
                     c.getRootLayer().getMaster().getElement(),
-                    (PropertyValue)contentDecl.getValue(),
+                    (PropertyValue) contentDecl.getValue(),
                     style,
                     info));
 
@@ -373,14 +372,14 @@ public class BoxBuilder {
     private static void rebalanceInlineContent(List<Styleable> content) {
         Map<Element, InlineBox> boxesByElement = new HashMap<>();
         for (Styleable styleable : content) {
-            if (styleable instanceof InlineBox iB) {
-                Element elem = iB.getElement();
+            if (styleable instanceof InlineBox ib) {
+                Element elem = ib.getElement();
 
                 if (!boxesByElement.containsKey(elem)) {
-                    iB.setStartsHere(true);
+                    ib.setStartsHere(true);
                 }
 
-                boxesByElement.put(elem, iB);
+                boxesByElement.put(elem, ib);
             }
         }
 
@@ -537,12 +536,12 @@ public class BoxBuilder {
 
         table.removeAllChildren();
         if (header != null) {
-            ((TableSectionBox)header).setHeader(true);
+            ((TableSectionBox) header).setHeader(true);
             table.addChild(header);
         }
         table.addAllChildren(bodies);
         if (footer != null) {
-            ((TableSectionBox)footer).setFooter(true);
+            ((TableSectionBox) footer).setFooter(true);
             table.addChild(footer);
         }
 
@@ -874,10 +873,15 @@ public class BoxBuilder {
             CalculatedStyle calculatedStyle = null;
             if (contentDecl != null || counterResetDecl != null || counterIncrDecl != null) {
                 calculatedStyle = parentStyle.deriveStyle(peStyle);
-                if (calculatedStyle.isDisplayNone()) return;
-                if (calculatedStyle.isIdent(CSSName.CONTENT, IdentValue.NONE)) return;
-                if (calculatedStyle.isIdent(CSSName.CONTENT, IdentValue.NORMAL) && (peName.equals("before") || peName.equals("after")))
+                if (calculatedStyle.isDisplayNone()) {
                     return;
+                }
+                if (calculatedStyle.isIdent(CSSName.CONTENT, IdentValue.NONE)) {
+                    return;
+                }
+                if (calculatedStyle.isIdent(CSSName.CONTENT, IdentValue.NORMAL) && (peName.equals("before") || peName.equals("after"))) {
+                    return;
+                }
 
                 if (calculatedStyle.isTable() || calculatedStyle.isTableRow() || calculatedStyle.isTableSection()) {
                     CascadedStyle newPeStyle =
@@ -947,10 +951,10 @@ public class BoxBuilder {
 
         CalculatedStyle anon = style.createAnonymousStyle(INLINE);
         for (Styleable s : result) {
-            if (s instanceof InlineBox iB) {
-                iB.setElement(null);
-                iB.setStyle(anon);
-                iB.applyTextTransform();
+            if (s instanceof InlineBox ib) {
+                ib.setElement(null);
+                ib.setStyle(anon);
+                ib.applyTextTransform();
             }
         }
 
@@ -1117,7 +1121,7 @@ public class BoxBuilder {
                     needStartText = false;
                     needEndText = false;
 
-                    Text textNode = (Text)working;
+                    Text textNode = (Text) working;
 
                     /*
                     StringBuilder text = new StringBuilder(textNode.getData());
@@ -1153,8 +1157,8 @@ public class BoxBuilder {
                         previousIB.setEndsHere(false);
                     }
                     previousIB = iB;
-                } else if(nodeType == Node.ENTITY_REFERENCE_NODE) {
-                    EntityReference entityReference = (EntityReference)working;
+                } else if (nodeType == Node.ENTITY_REFERENCE_NODE) {
+                    EntityReference entityReference = (EntityReference) working;
                     child = createInlineBox(entityReference.getTextContent(), parent, parentStyle, null);
 
                     InlineBox iB = (InlineBox) child;

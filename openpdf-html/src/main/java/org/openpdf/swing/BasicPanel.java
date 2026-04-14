@@ -122,7 +122,7 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
         try {
             // paint the normal swing background first
             // but only if we aren't printing.
-            Graphics g = ((Java2DOutputDevice)c.getOutputDevice()).getGraphics();
+            Graphics g = ((Java2DOutputDevice) c.getOutputDevice()).getGraphics();
 
             paintDefaultBackground(g);
 
@@ -174,7 +174,7 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
                 root.getLastPage().getPaintingBottom() + PAGE_PAINTING_CLEARANCE_HEIGHT));
         revalidate();
 
-        Graphics2D g = ((Java2DOutputDevice)c.getOutputDevice()).getGraphics();
+        Graphics2D g = ((Java2DOutputDevice) c.getOutputDevice()).getGraphics();
         Shape working = g.getClip();
 
         List<PageBox> pages = root.getPages();
@@ -353,8 +353,8 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
                 } else {
                     RectPropertySet margin = box.getMargin(getLayoutContext());
                     pt = new Point(
-                            box.getAbsX() + (int)margin.left(),
-                            box.getAbsY() + (int)margin.top());
+                            box.getAbsX() + (int) margin.left(),
+                            box.getAbsY() + (int) margin.top());
                 }
                 scrollTo(pt);
                 return;
@@ -461,9 +461,10 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
         StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         if (stackTrace.length > 2) {
             String callingClassName = stackTrace[2].getClassName();
-            if (BasicPanel.class.getName().equals(callingClassName))
+            if (BasicPanel.class.getName().equals(callingClassName)) {
                 throw new IllegalStateException("BasicPanel should not use its own opacity methods. Use " +
                         "super.isOpaque()/setOpaque() instead.");
+            }
         }
     }
 
@@ -483,7 +484,7 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
         JScrollPane scrollPane = getEnclosingScrollPane();
         if (scrollPane != null) {
             JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
-            if(scrollBar != null) {
+            if (scrollBar != null) {
                 scrollBar.setValue(pt.y);
             }
         }
@@ -521,12 +522,14 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
     public void setCenteredPagedView(boolean centeredPagedView) {
         this.centeredPagedView = centeredPagedView;
     }
+
     @Override
     public void submit(String url) {
         formSubmissionListener.submit(url);
     }
+
     public void setFormSubmissionListener(FormSubmissionListener fsl) {
-        formSubmissionListener =fsl;
+        formSubmissionListener = fsl;
         getSharedContext().setFormSubmissionListener(formSubmissionListener);
     }
 }

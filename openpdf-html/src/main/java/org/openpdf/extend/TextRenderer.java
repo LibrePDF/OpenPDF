@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -30,6 +30,7 @@ public interface TextRenderer {
     void setup(FontContext context);
 
     void drawString(OutputDevice outputDevice, String string, float x, float y);
+
     void drawString(
             OutputDevice outputDevice, String string, float x, float y, JustificationInfo info);
 
@@ -38,6 +39,7 @@ public interface TextRenderer {
     FSGlyphVector getGlyphVector(OutputDevice outputDevice, FSFont font, String string);
 
     float[] getGlyphPositions(OutputDevice outputDevice, FSFont font, FSGlyphVector fsGlyphVector);
+
     Rectangle getGlyphBounds(OutputDevice outputDevice, FSFont font, FSGlyphVector fsGlyphVector, int index, float x, float y);
 
     FSFontMetrics getFSFontMetrics(
