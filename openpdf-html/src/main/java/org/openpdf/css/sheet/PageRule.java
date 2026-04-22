@@ -85,9 +85,9 @@ public class PageRule implements RulesetContainer {
     public long getOrder() {
         long result = 0;
 
-        result |= (long)_specificityF << 32;
-        result |= (long)_specificityG << 24;
-        result |= (long)_specificityH << 16;
+        result |= (long) _specificityF << 32;
+        result |= (long) _specificityG << 24;
+        result |= (long) _specificityH << 16;
         result |= _pos;
 
         return result;
@@ -102,7 +102,10 @@ public class PageRule implements RulesetContainer {
             return true;
         } else if (_name != null && _name.equals(pageName) && _pseudoPage == null) {
             return true;
-        } else return _name != null && _name.equals(pageName) && _pseudoPage.equals(pseudoPage);
+        } else {
+            return _name != null && _name.equals(pageName) && _pseudoPage.equals(pseudoPage);
+        }
+
     }
 
     public int getPos() {

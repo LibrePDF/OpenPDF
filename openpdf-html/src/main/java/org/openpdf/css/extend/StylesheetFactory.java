@@ -38,10 +38,13 @@ import java.io.Reader;
 public interface StylesheetFactory {
     @CheckReturnValue
     Stylesheet parse(Reader reader, StylesheetInfo info);
+
     @CheckReturnValue
     Stylesheet parse(Reader reader, String uri, Origin origin);
+
     @CheckReturnValue
     Ruleset parseStyleDeclaration(Origin origin, String style);
+
     @CheckReturnValue
     Stylesheet getStylesheet(StylesheetInfo si);
 }

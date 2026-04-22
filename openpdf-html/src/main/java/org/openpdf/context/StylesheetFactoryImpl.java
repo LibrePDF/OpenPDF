@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -94,10 +94,14 @@ public class StylesheetFactoryImpl implements StylesheetFactory {
 
         // Whether by accident or design, InputStream will never be null
         // since the null resource stream is wrapped in a BufferedInputStream
-        InputSource inputSource=cr.getResourceInputSource();
-        if (inputSource==null) return null;
+        InputSource inputSource = cr.getResourceInputSource();
+        if (inputSource == null) {
+            return null;
+        }
         try (InputStream is = inputSource.getByteStream()) {
-            if (is == null) return null;
+            if (is == null) {
+                return null;
+            }
             String charset = Configuration.valueFor("xr.stylesheets.charset-name", "UTF-8");
             return parse(new InputStreamReader(is, charset), info);
         } catch (IOException e) {
