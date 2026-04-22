@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -135,7 +135,7 @@ public class StyleReference {
      * @return Map of CSS property names to CSSValue instance assigned to it.
      */
     public Map<String, CSSPrimitiveValue> getCascadedPropertiesMap(Element e) {
-        CascadedStyle cs = _matcher.getCascadedStyle(e, false);//this is only for debug, I think
+        CascadedStyle cs = _matcher.getCascadedStyle(e, false); //this is only for debug, I think
         Map<String, CSSPrimitiveValue> props = new LinkedHashMap<>();
         for (Iterator<PropertyDeclaration> i = cs.getCascadedPropertyDeclarations(); i.hasNext();) {
             PropertyDeclaration pd = i.next();
@@ -166,7 +166,9 @@ public class StyleReference {
      * current context to a CalculatedStyle (use getDerivedStyle)
      */
     public CascadedStyle getCascadedStyle(@Nullable Element e, boolean restyle) {
-        if (e == null) return CascadedStyle.emptyCascadedStyle;
+        if (e == null) {
+            return CascadedStyle.emptyCascadedStyle;
+        }
         return _matcher.getCascadedStyle(e, restyle);
     }
 

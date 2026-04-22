@@ -50,6 +50,7 @@ public interface FSMouseListener {
      */
 
     void onMouseOut(BasicPanel panel, Box box);
+
     /**
      * Sent when the mouse button is released while hovering over a Box in the render tree.
      *

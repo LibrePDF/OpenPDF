@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNullElseGet;
 
 /**
  * works for a w3c DOM tree
+ *
  * @author scott
  */
 public class DOMTreeResolver implements TreeResolver {
@@ -35,7 +36,9 @@ public class DOMTreeResolver implements TreeResolver {
     @Override
     public Node getParentElement(Node element) {
         Node parent = element.getParentNode();
-        if (parent.getNodeType() != Node.ELEMENT_NODE) parent = null;
+        if (parent.getNodeType() != Node.ELEMENT_NODE) {
+            parent = null;
+        }
         return parent;
     }
 
@@ -55,7 +58,9 @@ public class DOMTreeResolver implements TreeResolver {
     @Override
     public String getElementName(Node element) {
         String name = element.getLocalName();
-        if (name == null) name = element.getNodeName();
+        if (name == null) {
+            name = element.getNodeName();
+        }
         return name;
     }
 
@@ -100,7 +105,7 @@ public class DOMTreeResolver implements TreeResolver {
         int i = 0;
         while (i < nl.getLength()) {
             if (nl.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                if(nl.item(i) == element) {
+                if (nl.item(i) == element) {
                     return elt_count;
                 } else {
                     elt_count++;
