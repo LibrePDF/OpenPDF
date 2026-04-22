@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -63,6 +63,7 @@ public interface TreeResolver {
 
     /**
      * Returns the index of the position of the submitted element among its element node siblings.
+     *
      * @param element The node
      * @return -1 in case of error, 0 indexed position otherwise
      */
@@ -72,6 +73,7 @@ public interface TreeResolver {
     /**
      * Returns {@code true} if {@code element} has the local name
      * {@code name} and namespace URI {@code namespaceURI}.
+     *
      * @param element The node
      * @param namespaceURI The namespace to match, may be null to signify any
      * namespace.  Use {@link #NO_NAMESPACE} to signify that {@code name}

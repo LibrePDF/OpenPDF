@@ -93,7 +93,7 @@ public class MarginBoxName {
             return false;
         }
 
-        return FS_ID == ((MarginBoxName)o).FS_ID;
+        return FS_ID == ((MarginBoxName) o).FS_ID;
     }
 
     public IdentValue getInitialTextAlign() {
