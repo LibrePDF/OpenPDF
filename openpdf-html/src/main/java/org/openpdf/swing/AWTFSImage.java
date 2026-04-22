@@ -82,11 +82,11 @@ public abstract class AWTFSImage implements FSImage {
                 int targetHeight = height;
 
                 if (targetWidth == -1) {
-                    targetWidth = (int)(currentWith * ((double)targetHeight / currentHeight));
+                    targetWidth = (int) (currentWith * ((double) targetHeight / currentHeight));
                 }
 
                 if (targetHeight == -1) {
-                    targetHeight = (int)(currentHeight * ((double)targetWidth / currentWith));
+                    targetHeight = (int) (currentHeight * ((double) targetWidth / currentWith));
                 }
 
                 if (currentWith != targetWidth || currentHeight != targetHeight) {

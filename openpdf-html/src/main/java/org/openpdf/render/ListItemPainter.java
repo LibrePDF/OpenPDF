@@ -32,6 +32,7 @@ import static org.openpdf.css.constants.CSSName.LIST_STYLE_TYPE;
 
 /**
  * A utility class to paint list markers (all types).
+ *
  * @see MarkerData
  */
 public class ListItemPainter {
@@ -74,7 +75,7 @@ public class ListItemPainter {
         if (markerData.getReferenceLine() != null) {
             return markerData.getReferenceLine().getAbsX();
         } else {
-            return box.getAbsX() + (int)box.getMargin(c).left();
+            return box.getAbsX() + (int) box.getMargin(c).left();
         }
     }
 
