@@ -37,6 +37,7 @@ public interface ContentFunction {
     boolean isStatic();
 
     String calculate(LayoutContext c, FSFunction function);
+
     String calculate(RenderingContext c, FSFunction function, InlineText text);
 
     /**

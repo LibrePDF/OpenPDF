@@ -79,6 +79,7 @@ public class CascadedStyle {
      * Creates a {@code CascadedStyle} using the provided property
      * declarations.  It is used when a box requires a style that does not
      * correspond to anything in the parsed stylesheets.
+     *
      * @param declarations An array of PropertyDeclaration objects created with
      * {@link #createLayoutPropertyDeclaration(CSSName, IdentValue)}
      * @see #createLayoutPropertyDeclaration(CSSName, IdentValue)
@@ -95,6 +96,7 @@ public class CascadedStyle {
      * Creates a {@code CascadedStyle} using style information from
      * {@code startingPoint} and then adding the property declarations
      * from {@code decls}.
+     *
      * @param decls An array of PropertyDeclaration objects created with
      * {@link #createLayoutPropertyDeclaration(CSSName, IdentValue)}
      * @see #createLayoutPropertyDeclaration(CSSName, IdentValue)
@@ -217,7 +219,9 @@ public class CascadedStyle {
         return list.iterator();
     }
 
-    public int countAssigned() { return cascadedProperties.size(); }
+    public int countAssigned() {
+        return cascadedProperties.size();
+    }
 
     public String getFingerprint() {
         if (fingerprint == null) {

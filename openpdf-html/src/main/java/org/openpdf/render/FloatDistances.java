@@ -27,5 +27,6 @@ package org.openpdf.render;
  */
 public interface FloatDistances {
     int leftFloatDistance();
+
     int rightFloatDistance();
 }

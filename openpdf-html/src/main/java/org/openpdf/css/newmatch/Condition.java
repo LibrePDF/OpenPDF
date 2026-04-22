@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -300,7 +300,9 @@ abstract class Condition {
             // NOTE: In jQuery, for example, the attribute value first has whitespace normalized to spaces. But
             // in an XML DOM, space normalization in attributes is supposed to have happened already.
             int index = classAttribute.indexOf(className, fromIndex);
-            if (index == -1) return false;
+            if (index == -1) {
+                return false;
+            }
 
             return isWhitespace(classAttribute, index - 1)
                     && isWhitespace(classAttribute, index + classNameLength)
@@ -383,7 +385,7 @@ abstract class Condition {
         @Override
         boolean matches(Node e, AttributeResolver attRes, TreeResolver treeRes) {
             // getPositionOfElement() starts at 0, CSS spec starts at 1
-            int position = treeRes.getPositionOfElement(e)+1;
+            int position = treeRes.getPositionOfElement(e) + 1;
 
 
             //<An+B> from https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child
@@ -408,12 +410,14 @@ abstract class Condition {
 //            (p-b)/a = n
 
             //Clearly n==0 iff p==b, for any value of a
-            if ( position == b )
+            if (position == b) {
                 return true;
+            }
 
             //And if a==0 then a x n is 0 for all n, and if we didn't match position==b above then n cannot be valid (0 or +ve integer).
-            if ( a == 0 )
+            if (a == 0) {
                 return false;
+            }
 
             //return true if n is an integer and 0 or +ve
             // n is 0 or +ve
