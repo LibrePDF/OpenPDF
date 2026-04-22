@@ -337,12 +337,16 @@ public class NaiveUserAgent implements UserAgentCallback, DocumentListener {
     @Nullable
     @CheckReturnValue
     public String resolveURI(@Nullable String uri) {
-        if (uri == null) return null;
+        if (uri == null) {
+            return null;
+        }
 
-        if (_baseURL == null) {//first try to set a base URL
+        if (_baseURL == null) { //first try to set a base URL
             try {
                 URI result = new URI(uri);
-                if (result.isAbsolute()) setBaseURL(result.toString());
+                if (result.isAbsolute()) {
+                    setBaseURL(result.toString());
+                }
             } catch (URISyntaxException e) {
                 XRLog.exception("The default NaiveUserAgent could not use the URL as base url: " + uri, e);
             }
@@ -381,7 +385,7 @@ public class NaiveUserAgent implements UserAgentCallback, DocumentListener {
             }
             XRLog.load(uri + " is not a URL; may be relative. Testing using parent URL " + _baseURL);
             URI baseURI = new URI(_baseURL);
-            if(!baseURI.isOpaque()) {
+            if (!baseURI.isOpaque()) {
                 // uri.resolve(child) only works for opaque URIs.
                 // Otherwise, it would simply return child.
                 return baseURI.resolve(result).toString();
@@ -415,11 +419,17 @@ public class NaiveUserAgent implements UserAgentCallback, DocumentListener {
     }
 
     @Override
-    public void documentLoaded() { /* ignore*/ }
+    public void documentLoaded() {
+        /* ignore*/
+    }
 
     @Override
-    public void onLayoutException(Throwable t) { /* ignore*/ }
+    public void onLayoutException(Throwable t) {
+        /* ignore*/
+    }
 
     @Override
-    public void onRenderException(Throwable t) { /* ignore*/ }
+    public void onRenderException(Throwable t) {
+        /* ignore*/
+    }
 }
