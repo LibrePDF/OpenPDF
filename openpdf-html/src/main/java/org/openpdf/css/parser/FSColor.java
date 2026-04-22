@@ -24,6 +24,7 @@ import com.google.errorprone.annotations.CheckReturnValue;
 public interface FSColor {
     @CheckReturnValue
     FSColor lightenColor();
+
     @CheckReturnValue
     FSColor darkenColor();
 }
