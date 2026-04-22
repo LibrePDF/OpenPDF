@@ -60,6 +60,7 @@ public class BorderPropertySet extends RectPropertySet {
                     left.lightenColor()
             );
         }
+
         public Colors darken() {
             return new Colors(
                     top.darkenColor(),

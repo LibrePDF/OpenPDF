@@ -44,7 +44,7 @@ public abstract class DerivedValue implements FSDerivedValue {
             @Nullable String cssStringValue) {
         this._cssSacUnitType = cssSACUnitType;
 
-        if ( cssText == null ) {
+        if (cssText == null) {
             throw new XRRuntimeException(
                     "CSSValue for '" + name + "' is null after " +
                     "resolving CSS identifier for value '" + cssStringValue + "'");

@@ -61,11 +61,11 @@ public class CSSParseException extends RuntimeException {
     @Override
     public String getMessage() {
         if (_genericMessage != null) {
-            return _genericMessage + " at line " + (_line+1) + ".";
+            return _genericMessage + " at line " + (_line + 1) + ".";
         } else {
             String found = _found == null ? "end of file" : _found.getExternalName();
             return "Found " + found + " where " +
-                descr(_expected) + " was expected at line " + (_line+1) + ".";
+                descr(_expected) + " was expected at line " + (_line + 1) + ".";
         }
     }
 

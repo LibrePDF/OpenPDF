@@ -95,8 +95,12 @@ public class FSRGBColor implements FSColor {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FSRGBColor that)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FSRGBColor that)) {
+            return false;
+        }
 
         return _blue == that._blue && _green == that._green && _red == that._red && _alpha == that._alpha;
     }

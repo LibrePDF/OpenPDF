@@ -263,13 +263,13 @@ public class CalculatedStyle {
      * @return The opacity value
      */
     public float getOpacity() {
-    	float opacity = asFloat(CSSName.OPACITY);
+        float opacity = asFloat(CSSName.OPACITY);
 
         for (CalculatedStyle parentStyle = getParent(); parentStyle != null; parentStyle = parentStyle.getParent()) {
-    		opacity = opacity * parentStyle.asFloat(CSSName.OPACITY);
-    	}
+            opacity = opacity * parentStyle.asFloat(CSSName.OPACITY);
+        }
 
-    	return opacity;
+        return opacity;
     }
 
     public IdentValue getDisplay() {
@@ -321,7 +321,7 @@ public class CalculatedStyle {
                 return new BackgroundSize(true, false, false);
             }
         } else {
-            ListValue valueList = (ListValue)value;
+            ListValue valueList = (ListValue) value;
             List<PropertyValue> values = valueList.getValues();
             boolean firstAuto = values.get(0).getIdentValue() == IdentValue.AUTO;
             boolean secondAuto = values.get(1).getIdentValue() == IdentValue.AUTO;
@@ -453,7 +453,7 @@ public class CalculatedStyle {
                 // Make sure rasterized characters will (probably) fit inside
                 // the line box
                 FSFontMetrics metrics = getFSFontMetrics(ctx);
-                float lineHeight2 = (float)Math.ceil(metrics.getDescent() + metrics.getAscent());
+                float lineHeight2 = (float) Math.ceil(metrics.getDescent() + metrics.getAscent());
                 _lineHeight = Math.max(lineHeight1, lineHeight2);
             } else if (isLength(CSSName.LINE_HEIGHT)) {
                 //could be more elegant, I suppose
@@ -694,9 +694,11 @@ public class CalculatedStyle {
     public IdentValue getWordWrap() {
         return getIdent(CSSName.WORD_WRAP);
     }
-public IdentValue getWordBreak() {
+
+    public IdentValue getWordBreak() {
         return getIdent(CSSName.WORD_BREAK);
     }
+
     public IdentValue getHyphens() {
         return getIdent(CSSName.HYPHENS);
     }
@@ -867,7 +869,7 @@ public IdentValue getWordBreak() {
             return false;
         } else {
             IdentValue display = getDisplay();
-            IdentValue position = (IdentValue)value;
+            IdentValue position = (IdentValue) value;
 
             return isFloated() ||
                     position == IdentValue.ABSOLUTE || position == IdentValue.FIXED ||
@@ -903,19 +905,18 @@ public IdentValue getWordBreak() {
     public boolean isLinearGradient() {
         FSDerivedValue value = valueByName(CSSName.BACKGROUND_IMAGE);
         return value instanceof FunctionValue function &&
-        		GeneralUtil.ciEquals(function.getFunction().getName(), "linear-gradient");
+                GeneralUtil.ciEquals(function.getFunction().getName(), "linear-gradient");
     }
 
-    public FSLinearGradient getLinearGradient(final CssContext cssContext, final int w, final int h)
-    {
-        assert(isLinearGradient());
+    public FSLinearGradient getLinearGradient(final CssContext cssContext, final int w, final int h) {
+        assert (isLinearGradient());
 
         final FunctionValue value = (FunctionValue) valueByName(CSSName.BACKGROUND_IMAGE);
         return new FSLinearGradient(value.getFunction(), this, w, h, cssContext);
     }
 
     public String getRunningName() {
-        FunctionValue value = (FunctionValue)valueByName(CSSName.POSITION);
+        FunctionValue value = (FunctionValue) valueByName(CSSName.POSITION);
         FSFunction function = value.getFunction();
         PropertyValue param = function.getParameters().get(0);
         return param.getStringValue();
