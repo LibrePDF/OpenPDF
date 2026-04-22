@@ -25,6 +25,7 @@ import org.openpdf.css.parser.FSFunction;
 /**
  * A bean which contains all the information necessary to invoke a
  * {@link ContentFunction}.
+ *
  * @see ContentFunction
  */
 public class FunctionData {

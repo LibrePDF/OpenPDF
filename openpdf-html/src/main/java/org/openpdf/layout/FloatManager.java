@@ -40,7 +40,7 @@ import static org.openpdf.layout.FloatManager.Direction.RIGHT;
  * non-floated (block) boxes.
  */
 public class FloatManager {
-    enum Direction {LEFT, RIGHT}
+    enum Direction { LEFT, RIGHT }
 
     private final List<BoxOffset> _leftFloats = new ArrayList<>();
     private final List<BoxOffset> _rightFloats = new ArrayList<>();
@@ -255,7 +255,7 @@ public class FloatManager {
         // Translate from box coords to BFC coords
         Point offset = bfc.getOffset();
         Rectangle bounds = current.getBorderEdge(
-                current.getX()-offset.x, current.getY()-offset.y, cssCtx);
+                current.getX() - offset.x, current.getY() - offset.y, cssCtx);
 
         int y = findLowestY(cssCtx, floats);
 
@@ -266,7 +266,7 @@ public class FloatManager {
 
             bounds.translate(offset.x, offset.y);
 
-            current.setY(bounds.y - (int)current.getMargin(cssCtx).top());
+            current.setY(bounds.y - (int) current.getMargin(cssCtx).top());
         }
     }
 
@@ -302,7 +302,7 @@ public class FloatManager {
         // possibly, since the line doesn't know how long it should be until it's already
         // done float adjustments
         if (line.getHeight() == 0) {
-            bounds.height = (int)line.getStyle().getLineHeight(cssCtx);
+            bounds.height = (int) line.getStyle().getLineHeight(cssCtx);
         }
     }
 
@@ -376,7 +376,7 @@ public class FloatManager {
         if (direction == LEFT) {
             return new BoxDistance(farthestOverBox, farthestOver - lineBounds.x);
         } else {
-            return new BoxDistance(farthestOverBox,lineBounds.x + lineBounds.width - farthestOver);
+            return new BoxDistance(farthestOverBox, lineBounds.x + lineBounds.width - farthestOver);
         }
     }
 

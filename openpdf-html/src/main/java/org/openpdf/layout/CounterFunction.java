@@ -51,7 +51,9 @@ public class CounterFunction {
         for (Iterator<Integer> i = _counterValues.iterator(); i.hasNext();) {
             Integer value = i.next();
             sb.append(createCounterText(_listStyleType, value));
-            if (i.hasNext()) sb.append(_separator);
+            if (i.hasNext()) {
+                sb.append(_separator);
+            }
         }
         return sb.toString();
     }
