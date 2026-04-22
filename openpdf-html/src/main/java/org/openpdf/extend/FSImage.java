@@ -21,7 +21,9 @@ package org.openpdf.extend;
 
 public interface FSImage {
     int getWidth();
+
     int getHeight();
+
     FSImage scale(int width, int height);
 
     default boolean hasSize(int width, int height) {

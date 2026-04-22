@@ -173,7 +173,9 @@ public final class HtmlToPdfBatchUtils {
             // Slightly safer resource loading if you need custom schemes:
             sc.setUserAgentCallback(renderer.getOutputDevice().getSharedContext().getUserAgentCallback());
 
-            if (rendererCustomizer != null) rendererCustomizer.accept(renderer);
+            if (rendererCustomizer != null) {
+                rendererCustomizer.accept(renderer);
+            }
 
             if (baseUri != null && !baseUri.isBlank()) {
                 renderer.setDocumentFromString(finalHtml, baseUri);
@@ -209,7 +211,9 @@ public final class HtmlToPdfBatchUtils {
 
         try (var out = new FileOutputStream(output.toFile())) {
             ITextRenderer renderer = new ITextRenderer();
-            if (rendererCustomizer != null) rendererCustomizer.accept(renderer);
+            if (rendererCustomizer != null) {
+                rendererCustomizer.accept(renderer);
+            }
 
             if (injectCss == null || injectCss.isEmpty()) {
                 // No CSS injection: load DOM directly via user agent and set base URL

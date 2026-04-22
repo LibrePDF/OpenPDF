@@ -38,6 +38,7 @@ import java.text.BreakIterator;
 /**
  * A utility class that scans the text of a single inline box, looking for the
  * next break point.
+ *
  * @author Torbjoern Gannholm
  */
 public class Breaker {
@@ -61,7 +62,7 @@ public class Breaker {
         boolean letterFound = false;
         int end = text.length();
         char currentChar;
-        for ( int i = start; i < end; i++ ) {
+        for (int i = start; i < end; i++) {
             currentChar = text.charAt(i);
             if (!TextUtil.isFirstLetterSeparatorChar(currentChar)) {
                 if (letterFound) {
@@ -169,7 +170,9 @@ public class Breaker {
             int widthWithHyphen = previousWidth + currentWidth;
             previousWidth = widthWithHyphen;
             previousPosition = bp.getPosition();
-            if (widthWithHyphen > avail) break;
+            if (widthWithHyphen > avail) {
+                break;
+            }
             right = previousPosition;
             lastBreakPoint = bp;
             bp = iterator.next();

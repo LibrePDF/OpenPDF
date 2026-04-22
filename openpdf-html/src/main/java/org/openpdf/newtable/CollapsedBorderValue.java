@@ -88,24 +88,24 @@ public class CollapsedBorderValue {
     @CheckReturnValue
     public static CollapsedBorderValue borderLeft(BorderPropertySet border, int precedence) {
         return new CollapsedBorderValue(
-                border.leftStyle(), (int)border.left(), border.leftColor(), precedence);
+                border.leftStyle(), (int) border.left(), border.leftColor(), precedence);
     }
 
     @CheckReturnValue
     public static CollapsedBorderValue borderRight(BorderPropertySet border, int precedence) {
         return new CollapsedBorderValue(
-                border.rightStyle(), (int)border.right(), border.rightColor(), precedence);
+                border.rightStyle(), (int) border.right(), border.rightColor(), precedence);
     }
 
     @CheckReturnValue
     public static CollapsedBorderValue borderTop(BorderPropertySet border, int precedence) {
         return new CollapsedBorderValue(
-                border.topStyle(), (int)border.top(), border.topColor(), precedence);
+                border.topStyle(), (int) border.top(), border.topColor(), precedence);
     }
 
     @CheckReturnValue
     public static CollapsedBorderValue borderBottom(BorderPropertySet border, int precedence) {
         return new CollapsedBorderValue(
-                border.bottomStyle(), (int)border.bottom(), border.bottomColor(), precedence);
+                border.bottomStyle(), (int) border.bottom(), border.bottomColor(), precedence);
     }
 }
