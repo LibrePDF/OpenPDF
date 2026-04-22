@@ -781,14 +781,14 @@ public final class CSSName implements Comparable<CSSName> {
             );
     
     public final static CSSName OPACITY =
-    		addProperty(
-    				"opacity",
-    				PRIMITIVE,
-    				"1",
+            addProperty(
+                    "opacity",
+                    PRIMITIVE,
+                    "1",
                     NOT_INHERITED, // PR22 - INHERITS
-    				true,
-    				new PrimitivePropertyBuilders.Opacity()
-    		);
+                    true,
+                    new PrimitivePropertyBuilders.Opacity()
+            );
 
     /**
      * Unique CSSName instance for CSS2 property.
@@ -1852,8 +1852,12 @@ public final class CSSName implements Comparable<CSSName> {
     // FIXME equals, hashcode
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CSSName cssName)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CSSName cssName)) {
+            return false;
+        }
 
         return FS_ID == cssName.FS_ID;
     }

@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -57,11 +57,11 @@ public class Selector {
     private int _specificityC;
     private int _specificityD;
 
-    private int _pos;//to distinguish between selectors of same specificity
+    private int _pos; //to distinguish between selectors of same specificity
 
     private List<Condition> conditions;
 
-    public enum Axis {DESCENDANT_AXIS, CHILD_AXIS, IMMEDIATE_SIBLING_AXIS}
+    public enum Axis { DESCENDANT_AXIS, CHILD_AXIS, IMMEDIATE_SIBLING_AXIS }
 
     public static final int VISITED_PSEUDOCLASS = 2;
     public static final int HOVER_PSEUDOCLASS = 4;
@@ -392,7 +392,7 @@ public class Selector {
     String getOrder() {
         if (chainedSelector != null) {
             return chainedSelector.getOrder();
-        }//only "deepest" value is correct
+        } //only "deepest" value is correct
         String b = "000" + getSpecificityB();
         String c = "000" + getSpecificityC();
         String d = "000" + getSpecificityD();
@@ -444,7 +444,7 @@ public class Selector {
     }
 
     public String getSelectorText() {
-    	return _text + (chainedSelector != null ? (" "+chainedSelector.getSelectorText()) : "");
+        return _text + (chainedSelector != null ? (" " + chainedSelector.getSelectorText()) : "");
     }
 
     public void setPos(int pos) {
