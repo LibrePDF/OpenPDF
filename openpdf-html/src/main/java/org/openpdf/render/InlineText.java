@@ -63,7 +63,7 @@ public class InlineText {
     private final Text _textNode;
 
     public void trimTrailingSpace(LayoutContext c) {
-        if (! isEmpty() && _masterText.charAt(_end-1) == ' ') {
+        if (! isEmpty() && _masterText.charAt(_end - 1) == ' ') {
             _end--;
             setWidth(c.getTextRenderer().getWidth(c.getFontContext(),
                     getParent().getStyle().getFSFont(c),
@@ -105,7 +105,7 @@ public class InlineText {
         _start = start;
         _end = end;
 
-        if (_end > 0 && _masterText.charAt(_end-1) == WhitespaceStripper.EOLC) {
+        if (_end > 0 && _masterText.charAt(_end - 1) == WhitespaceStripper.EOLC) {
             _containedLF = true;
             _end--;
         }
@@ -206,15 +206,15 @@ public class InlineText {
         _selectionEnd = 0;
         for (int i = 0; i < positions.length - 2; i += 2) {
             Rectangle target = new Rectangle(
-                    (int)(offset + (positions[i] + positions[i+2]) / 2),
+                    (int) (offset + (positions[i] + positions[i + 2]) / 2),
                     y,
                     1,
                     getParent().getHeight());
             if (selection.intersects(target)) {
                 if (! found) {
                     found = true;
-                    _selectionStart = (short)(i / 2);
-                    _selectionEnd = (short)(i / 2 + 1);
+                    _selectionStart = (short) (i / 2);
+                    _selectionEnd = (short) (i / 2 + 1);
                 } else {
                     _selectionEnd++;
                 }
@@ -264,7 +264,7 @@ public class InlineText {
 
     public void selectAll() {
         _selectionStart = 0;
-        _selectionEnd = (short)getSubstring().length();
+        _selectionEnd = (short) getSubstring().length();
     }
 
     public String getTextExportText() {
@@ -335,16 +335,20 @@ public class InlineText {
 
         return result;
     }
-    public int getStart(){
+
+    public int getStart() {
         return _start;
     }
-    public int getEnd(){
+
+    public int getEnd() {
         return _end;
     }
-    public void setSelectionStart(short s){
+
+    public void setSelectionStart(short s) {
         _selectionStart = s;
     }
-    public void setSelectionEnd(short s){
+
+    public void setSelectionEnd(short s) {
         _selectionEnd = s;
     }
 
