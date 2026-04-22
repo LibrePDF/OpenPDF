@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -171,12 +171,12 @@ public class BlockBoxing {
             }
             if (mightNeedRelayout) {
                 int runStart = relayoutDataList.getRunStart(runEnd);
-                if ( isPageBreakBetweenChildBoxes(runStart, runEnd, c, block) ) {
+                if (isPageBreakBetweenChildBoxes(runStart, runEnd, c, block)) {
                     result.setChanged();
                     block.resetChildren(c, runStart, offset);
                     result.setChildOffset(relayoutRun(c, localChildren, block,
                             relayoutDataList, runStart, offset, true));
-                    if ( isPageBreakBetweenChildBoxes(runStart, runEnd, c, block) ) {
+                    if (isPageBreakBetweenChildBoxes(runStart, runEnd, c, block)) {
                         block.resetChildren(c, runStart, offset);
                         result.setChildOffset(relayoutRun(c, localChildren, block,
                                 relayoutDataList, runStart, offset, false));
@@ -188,15 +188,15 @@ public class BlockBoxing {
     }
 
     private static boolean isPageBreakBetweenChildBoxes(int runStart, int runEnd, LayoutContext c, BlockBox block) {
-        for ( int i = runStart; i < runEnd; i++ ) {
+        for (int i = runStart; i < runEnd; i++) {
             Box prevChild = block.getChild(i);
-            Box nextChild = block.getChild(i+1);
+            Box nextChild = block.getChild(i + 1);
             // if nextChild is made of several lines, then only the first line
             // is relevant for "page-break-before: avoid".
             Box nextLine = getFirstLine(nextChild) == null ? nextChild : getFirstLine(nextChild);
             int prevChildEnd = prevChild.getAbsY() + prevChild.getHeight();
             int nextLineEnd = nextLine.getAbsY() + nextLine.getHeight();
-            if ( c.getRootLayer().crossesPageBreak(c, prevChildEnd, nextLineEnd) ) {
+            if (c.getRootLayer().crossesPageBreak(c, prevChildEnd, nextLineEnd)) {
                 return true;
             }
         }
@@ -204,8 +204,8 @@ public class BlockBoxing {
     }
 
     private static LineBox getFirstLine(Box box) {
-        for ( Box child = box; child.getChildCount()>0; child = child.getChild(0) ) {
-            if ( child instanceof LineBox ) {
+        for (Box child = box; child.getChildCount() > 0; child = child.getChild(0)) {
+            if (child instanceof LineBox) {
                 return (LineBox) child;
             }
         }

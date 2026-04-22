@@ -58,7 +58,9 @@ public class BreakPoint implements Comparable<BreakPoint> {
     }
 
     public String getHyphen() {
-        if (hyphen == null) return "";
+        if (hyphen == null) {
+            return "";
+        }
         return hyphen;
     }
 

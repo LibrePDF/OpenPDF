@@ -135,11 +135,11 @@ public class VerticalAlignContext {
     }
 
     public InlineBoxMeasurements getParentMeasurements() {
-        return _measurements.get(_measurements.size()-1);
+        return _measurements.get(_measurements.size() - 1);
     }
 
     public void popMeasurements() {
-        _measurements.remove(_measurements.size()-1);
+        _measurements.remove(_measurements.size() - 1);
     }
 
     public int getPaintingBottom() {
@@ -210,11 +210,11 @@ public class VerticalAlignContext {
         private void moveInlineContents(Box box, int ty) {
             if (canBeMoved(box)) {
                 box.setY(box.getY() + ty);
-                if (box instanceof InlineLayoutBox iB) {
-                    for (int i = 0; i < iB.getInlineChildCount(); i++) {
-                        Object child = iB.getInlineChild(i);
+                if (box instanceof InlineLayoutBox ib) {
+                    for (int i = 0; i < ib.getInlineChildCount(); i++) {
+                        Object child = ib.getInlineChild(i);
                         if (child instanceof Box) {
-                            moveInlineContents((Box)child, ty);
+                            moveInlineContents((Box) child, ty);
                         }
                     }
                 }

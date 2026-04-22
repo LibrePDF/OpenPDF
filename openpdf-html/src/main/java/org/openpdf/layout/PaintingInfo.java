@@ -54,6 +54,6 @@ public class PaintingInfo {
     public void translate(int tx, int ty) {
         _aggregateBounds.translate(tx, ty);
         _outerMarginCorner.setSize(
-                _outerMarginCorner.getWidth()+tx, _outerMarginCorner.getHeight()+ty);
+                _outerMarginCorner.getWidth() + tx, _outerMarginCorner.getHeight() + ty);
     }
 }

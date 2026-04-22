@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -373,7 +373,9 @@ public class LayoutContext implements CssContext {
                 _counters.put("list-item", startIndex);
             }
             _parent = _counterContextMap.get(style.getParent());
-            if (_parent == null) _parent = new CounterContext();//top-level context, above root element
+            if (_parent == null) {
+                _parent = new CounterContext(); //top-level context, above root element
+            }
             //first the explicitly named counters
             List<CounterData> resets = style.getCounterReset();
             if (resets != null) {
@@ -410,13 +412,15 @@ public class LayoutContext implements CssContext {
          * @return true if a counter was found and incremented
          */
         private boolean incrementCounter(CounterData cd) {
-            if ("list-item".equals(cd.getName())) {//reserved name for list-item counter in CSS3
+            if ("list-item".equals(cd.getName())) { //reserved name for list-item counter in CSS3
                 incrementListItemCounter(cd.getValue());
                 return true;
             } else {
                 Integer currentValue = _counters.get(cd.getName());
                 if (currentValue == null) {
-                    if (_parent == null) return false;
+                    if (_parent == null) {
+                        return false;
+                    }
                     return _parent.incrementCounter(cd);
                 } else {
                     _counters.put(cd.getName(), currentValue + cd.getValue());
@@ -452,8 +456,12 @@ public class LayoutContext implements CssContext {
         @Nullable
         private Integer getCounter(String name) {
             Integer value = _counters.get(name);
-            if (value != null) return value;
-            if (_parent == null) return null;
+            if (value != null) {
+                return value;
+            }
+            if (_parent == null) {
+                return null;
+            }
             return _parent.getCounter(name);
         }
 
@@ -470,9 +478,13 @@ public class LayoutContext implements CssContext {
         }
 
         private void getCounterValues(String name, List<Integer> values) {
-            if (_parent != null) _parent.getCounterValues(name, values);
+            if (_parent != null) {
+                _parent.getCounterValues(name, values);
+            }
             Integer value = _counters.get(name);
-            if (value != null) values.add(value);
+            if (value != null) {
+                values.add(value);
+            }
         }
     }
 

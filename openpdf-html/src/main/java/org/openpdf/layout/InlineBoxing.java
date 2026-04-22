@@ -80,7 +80,7 @@ public class InlineBoxing {
         Map<InlineBox, InlineLayoutBox> iBMap = new HashMap<>();
 
         if (box instanceof AnonymousBlockBox) {
-            openInlineBoxes = ((AnonymousBlockBox)box).getOpenInlineBoxes();
+            openInlineBoxes = ((AnonymousBlockBox) box).getOpenInlineBoxes();
             if (openInlineBoxes != null) {
                 openInlineBoxes = new ArrayList<>(openInlineBoxes);
                 currentIB = addOpenInlineBoxes(
@@ -419,7 +419,7 @@ public class InlineBoxing {
         InlineLayoutBox currentIB = null;
 
         if (current instanceof InlineLayoutBox) {
-            currentIB = (InlineLayoutBox)current;
+            currentIB = (InlineLayoutBox) current;
             x += currentIB.getLeftMarginBorderPadding(c);
         }
 
@@ -450,12 +450,12 @@ public class InlineBoxing {
 
         for (int i = 0; i < current.getInlineChildCount(); i++) {
             Object child = current.getInlineChild(i);
-            if (child instanceof InlineLayoutBox iB) {
-                iB.setX(x);
-                x += positionHorizontally(c, iB, x);
-            } else if (child instanceof InlineText iT) {
-                iT.setX(x - start);
-                x += iT.getWidth();
+            if (child instanceof InlineLayoutBox ib) {
+                ib.setX(x);
+                x += positionHorizontally(c, ib, x);
+            } else if (child instanceof InlineText it) {
+                it.setX(x - start);
+                x += it.getWidth();
             } else if (child instanceof Box b) {
                 b.setX(x);
                 x += b.getWidth();
@@ -684,7 +684,7 @@ public class InlineBoxing {
                 box.setY(Math.round((float) (measurements.getBaseline() - measurements.getTextTop()) / 2
                         - (ascent + descent) / 2));
             } else if (vAlign == IdentValue.SUPER) {
-                box.setY(Math.round(measurements.getBaseline() - (3*ascent/2)));
+                box.setY(Math.round(measurements.getBaseline() - (3 * ascent / 2)));
             } else if (vAlign == IdentValue.SUB) {
                 box.setY(Math.round(measurements.getBaseline() - ascent / 2));
             } else {
@@ -717,7 +717,7 @@ public class InlineBoxing {
         for (int i = 0; i < current.getInlineChildCount(); i++) {
             Object child = current.getInlineChild(i);
             if (child instanceof Box) {
-                positionInlineContentVertically(c, vaContext, (Box)child);
+                positionInlineContentVertically(c, vaContext, (Box) child);
             }
         }
     }
@@ -732,10 +732,10 @@ public class InlineBoxing {
                 vaTarget = vaContext.createChild(child);
             }
         }
-        if (child instanceof InlineLayoutBox iB) {
-            positionInlineVertically(c, vaTarget, iB);
+        if (child instanceof InlineLayoutBox ib) {
+            positionInlineVertically(c, vaTarget, ib);
         } else { // any other Box class
-            positionInlineBlockVertically(c, vaTarget, (BlockBox)child);
+            positionInlineBlockVertically(c, vaTarget, (BlockBox) child);
         }
     }
 
