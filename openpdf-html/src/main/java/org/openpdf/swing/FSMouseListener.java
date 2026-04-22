@@ -41,12 +41,14 @@ public interface FSMouseListener {
      * @param box the box the mouse has just moved over
      */
     void onMouseOver(BasicPanel panel, Box box);
+
     /**
      * Sent when the mouse leaves a Box in the render tree after entering it.
      *
      * @param panel the panel where the box is displayed
      * @param box the box the mouse has just left
      */
+
     void onMouseOut(BasicPanel panel, Box box);
     /**
      * Sent when the mouse button is released while hovering over a Box in the render tree.
@@ -63,6 +65,7 @@ public interface FSMouseListener {
      * @param e information about the mouse position, etc.
      */
     void onMousePressed(BasicPanel panel, MouseEvent e);
+
     /**
      * Sent when the mouse button is held and the mouse is moved.
      *

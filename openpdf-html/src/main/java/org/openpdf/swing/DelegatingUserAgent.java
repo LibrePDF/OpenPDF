@@ -209,13 +209,19 @@ public class DelegatingUserAgent implements UserAgentCallback, DocumentListener 
     }
 
     @Override
-    public void documentLoaded() { /* ignore*/ }
+    public void documentLoaded() {
+        /* ignore*/
+    }
 
     @Override
-    public void onLayoutException(Throwable t) { /* ignore*/ }
+    public void onLayoutException(Throwable t) {
+        /* ignore*/
+    }
 
     @Override
-    public void onRenderException(Throwable t) { /* ignore*/ }
+    public void onRenderException(Throwable t) {
+        /* ignore*/
+    }
 
     public void setRepaintListener(RepaintListener listener) {
         //_imageResourceLoader.setRepaintListener(listener);

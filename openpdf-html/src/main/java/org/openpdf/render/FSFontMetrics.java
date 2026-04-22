@@ -27,7 +27,9 @@ public interface FSFontMetrics {
      * positive for values below the baseline.
      */
     float getDescent();
+
     float getStrikethroughOffset();
+
     float getStrikethroughThickness();
 
     /**

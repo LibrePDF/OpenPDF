@@ -46,6 +46,7 @@ public class MouseTracker extends MouseInputAdapter {
 
     /**
      * Instantiates a MouseTracker to listen to mouse events for the given panel.
+     *
      * @param panel the panel for which mouse events should be delegated.
      */
     public MouseTracker(BasicPanel panel) {
@@ -96,6 +97,7 @@ public class MouseTracker extends MouseInputAdapter {
 
     /**
      * Returns a (new) list of all listeners currently tracked for receiving events.
+     *
      * @return a (new) list of all listeners currently tracked for receiving events.
      */
     public List<FSMouseListener> getListeners() {

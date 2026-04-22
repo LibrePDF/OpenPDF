@@ -16,13 +16,15 @@ public class UriResolver {
     @Nullable
     @CheckReturnValue
     public String resolve(@Nullable final String uri) {
-        if (uri == null) return null;
+        if (uri == null) {
+            return null;
+        }
         return resolveUri(uri);
     }
 
     @CheckReturnValue
     public String resolveUri(final String uri) {
-        if (_baseUri == null) {//first try to set a base URL
+        if (_baseUri == null) { //first try to set a base URL
             try {
                 URL result = new URL(uri);
                 setBaseUri(result.toExternalForm());

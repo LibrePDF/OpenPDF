@@ -63,7 +63,7 @@ public class SwingReplacedElement implements ReplacedElement {
     @Override
     public void detach(LayoutContext c) {
         if (c.isInteractive()) {
-            ((RootPanel)c.getCanvas()).remove(getJComponent());
+            ((RootPanel) c.getCanvas()).remove(getJComponent());
         }
     }
 

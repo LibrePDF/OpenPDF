@@ -153,7 +153,7 @@ public class BackgroundPropertyBuilder extends AbstractPropertyBuilder {
                 List<PropertyValue> v = new ArrayList<>(2);
                 v.add(value);
                 if (i < values.size() - 1) {
-                    PropertyValue next = (PropertyValue)values.get(i + 1);
+                    PropertyValue next = (PropertyValue) values.get(i + 1);
                     if (isAppliesToBackgroundPosition(next)) {
                         v.add(next);
                         i++;
