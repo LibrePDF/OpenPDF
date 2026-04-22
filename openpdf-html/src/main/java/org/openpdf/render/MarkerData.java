@@ -117,6 +117,7 @@ public class MarkerData {
         public FSImage getImage() {
             return _image;
         }
+
         @CheckReturnValue
         public int getLayoutWidth() {
             return _layoutWidth;

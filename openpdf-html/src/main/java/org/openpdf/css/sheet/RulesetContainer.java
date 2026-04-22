@@ -23,5 +23,6 @@ import org.openpdf.css.sheet.StylesheetInfo.Origin;
 
 public interface RulesetContainer {
     void addContent(Ruleset ruleset);
+
     Origin getOrigin();
 }

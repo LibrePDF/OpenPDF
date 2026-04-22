@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -1845,8 +1845,10 @@ public final class CSSName implements Comparable<CSSName> {
     //Assumed to be consistent with equals because CSSName is in essence an enum
     @Override
     public int compareTo(CSSName object) {
-        if (object == null) throw new NullPointerException("Cannot compare " + this + " to null");
-        return FS_ID - object.FS_ID;//will throw ClassCastException according to Comparable if not a CSSName
+        if (object == null) {
+            throw new NullPointerException("Cannot compare " + this + " to null");
+        }
+        return FS_ID - object.FS_ID; //will throw ClassCastException according to Comparable if not a CSSName
     }
 
     // FIXME equals, hashcode

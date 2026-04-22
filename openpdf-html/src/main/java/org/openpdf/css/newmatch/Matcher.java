@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -275,7 +275,9 @@ public class Matcher {
                     }
                 }
             }
-            if (children == null) children = new HashMap<>();
+            if (children == null) {
+                children = new HashMap<>();
+            }
             Mapper childMapper = children.computeIfAbsent(key, k ->
                     new Mapper(childAxes, pseudoSelectors, mappedSelectors));
             link(e, childMapper);
@@ -312,16 +314,18 @@ public class Matcher {
                 return null;
             }
             List<Selector> pe = pseudoSelectors.get(pseudoElement);
-            if (pe == null) return null;
+            if (pe == null) {
+                return null;
+            }
 
             List<PropertyDeclaration> propList = new ArrayList<>();
             for (Selector selector : pe) {
                 propList.addAll(selector.getRuleset().getPropertyDeclarations());
             }
 
-            if (propList.isEmpty())
+            if (propList.isEmpty()) {
                 return CascadedStyle.emptyCascadedStyle; // already internalized
-            else {
+            } else {
                 return new CascadedStyle(propList);
             }
         }
