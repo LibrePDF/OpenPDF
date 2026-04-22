@@ -43,7 +43,7 @@ public abstract class CounterPropertyBuilder extends AbstractPropertyBuilder {
     public List<PropertyDeclaration> buildDeclarations(CSSName cssName, List<? extends CSSPrimitiveValue> values,
                                                        Origin origin, boolean important, boolean inheritAllowed) {
         if (values.size() == 1) {
-            PropertyValue value = (PropertyValue)values.get(0);
+            PropertyValue value = (PropertyValue) values.get(0);
 
             checkInheritAllowed(value, inheritAllowed);
 
@@ -67,18 +67,18 @@ public abstract class CounterPropertyBuilder extends AbstractPropertyBuilder {
         } else {
             List<CounterData> result = new ArrayList<>();
             for (int i = 0; i < values.size(); i++) {
-                PropertyValue value = (PropertyValue)values.get(i);
+                PropertyValue value = (PropertyValue) values.get(i);
 
                 if (value.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
                     String name = value.getStringValue();
                     int cValue = getDefaultValue();
 
                     if (i < values.size() - 1) {
-                        PropertyValue next = (PropertyValue)values.get(i+1);
+                        PropertyValue next = (PropertyValue) values.get(i + 1);
                         if (next.getPrimitiveType() == CSSPrimitiveValue.CSS_NUMBER) {
                             checkNumberIsInteger(cssName, next);
 
-                            cValue = (int)next.getFloatValue();
+                            cValue = (int) next.getFloatValue();
                         }
 
                         i++;
@@ -95,7 +95,7 @@ public abstract class CounterPropertyBuilder extends AbstractPropertyBuilder {
     }
 
     private void checkNumberIsInteger(CSSName cssName, CSSPrimitiveValue value) {
-        if ((int)value.getFloatValue(CSSPrimitiveValue.CSS_NUMBER) !=
+        if ((int) value.getFloatValue(CSSPrimitiveValue.CSS_NUMBER) !=
                     Math.round(value.getFloatValue(CSSPrimitiveValue.CSS_NUMBER))) {
             throw new CSSParseException("The value " + value.getFloatValue(CSSPrimitiveValue.CSS_NUMBER) + " in " +
                     cssName + " must be an integer", -1);

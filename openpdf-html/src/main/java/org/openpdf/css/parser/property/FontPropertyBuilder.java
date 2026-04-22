@@ -60,7 +60,7 @@ public class FontPropertyBuilder extends AbstractPropertyBuilder {
 
         ListIterator<? extends CSSPrimitiveValue> i = values.listIterator();
         while (i.hasNext()) {
-            PropertyValue value = (PropertyValue)i.next();
+            PropertyValue value = (PropertyValue) i.next();
             int type = value.getPrimitiveType();
             if (type == CSSPrimitiveValue.CSS_IDENT) {
                 // The parser will have given us ident values as they appear
@@ -115,7 +115,7 @@ public class FontPropertyBuilder extends AbstractPropertyBuilder {
 
         if (keepGoing) {
             i.previous();
-            PropertyValue value = (PropertyValue)i.next();
+            PropertyValue value = (PropertyValue) i.next();
 
             if (value.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
                 String lowerCase = value.getStringValue().toLowerCase(ROOT);
@@ -129,7 +129,7 @@ public class FontPropertyBuilder extends AbstractPropertyBuilder {
             fontSize = l.get(0);
 
             if (i.hasNext()) {
-                value = (PropertyValue)i.next();
+                value = (PropertyValue) i.next();
                 if (value.getOperator() == Token.TK_VIRGULE) {
                     PropertyBuilder lineHeightBuilder = CSSName.getPropertyBuilder(CSSName.LINE_HEIGHT);
                     l = lineHeightBuilder.buildDeclarations(
