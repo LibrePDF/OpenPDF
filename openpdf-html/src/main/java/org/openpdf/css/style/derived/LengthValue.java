@@ -136,9 +136,9 @@ public class LengthValue extends DerivedValue {
                 if (cssName == CSSName.FONT_SIZE) {
                     FontSpecification parentFont = style.getParent().getFont(ctx);
                     //font size and FontSize2D should be identical
-                    absVal = relVal * parentFont.size;//ctx.getFontSize2D(parentFont);
+                    absVal = relVal * parentFont.size; //ctx.getFontSize2D(parentFont);
                 } else {
-                    absVal = relVal * style.getFont(ctx).size;//ctx.getFontSize2D(style.getFont(ctx));
+                    absVal = relVal * style.getFont(ctx).size; //ctx.getFontSize2D(style.getFont(ctx));
                 }
 
                 break;

@@ -41,7 +41,7 @@ public class SizePropertyBuilder extends AbstractPropertyBuilder {
         assertFoundUpToValues(cssName, values, 3);
 
         if (values.size() == 1) {
-            PropertyValue value = (PropertyValue)values.get(0);
+            PropertyValue value = (PropertyValue) values.get(0);
 
             checkInheritAllowed(value, inheritAllowed);
 
@@ -96,8 +96,8 @@ public class SizePropertyBuilder extends AbstractPropertyBuilder {
                 throw new CSSParseException("Value for " + cssName + " must be a length or identifier", -1);
             }
         } else if (values.size() == 2) {
-            PropertyValue value1 = (PropertyValue)values.get(0);
-            PropertyValue value2 = (PropertyValue)values.get(1);
+            PropertyValue value1 = (PropertyValue) values.get(0);
+            PropertyValue value2 = (PropertyValue) values.get(1);
 
             checkInheritAllowed(value2, false);
 

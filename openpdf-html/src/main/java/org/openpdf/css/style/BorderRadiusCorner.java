@@ -75,14 +75,16 @@ public class BorderRadiusCorner {
     }
 
     public float getMaxLeft(float max) {
-        if (_left.percent())
+        if (_left.percent()) {
             return max * _left.value();
+        }
         return Math.min(_left.value(), max);
     }
 
     public float getMaxRight(float max) {
-        if (_right.percent())
+        if (_right.percent()) {
             return max * _right.value();
+        }
         return Math.min(_right.value(), max);
     }
 

@@ -30,6 +30,7 @@ import java.util.List;
 public abstract class OneToFourPropertyBuilders {
     private abstract static class OneToFourPropertyBuilder extends AbstractPropertyBuilder {
         protected abstract CSSName[] getProperties();
+
         protected abstract PropertyBuilder getPropertyBuilder();
 
         @Override

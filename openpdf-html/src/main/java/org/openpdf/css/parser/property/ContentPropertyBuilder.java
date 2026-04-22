@@ -42,7 +42,7 @@ public class ContentPropertyBuilder extends AbstractPropertyBuilder {
     public List<PropertyDeclaration> buildDeclarations(
             CSSName cssName, List<? extends CSSPrimitiveValue> values, Origin origin, boolean important, boolean inheritAllowed) {
         if (values.size() == 1) {
-            PropertyValue value = (PropertyValue)values.get(0);
+            PropertyValue value = (PropertyValue) values.get(0);
             if (value.getCssValueType() == CSSValue.CSS_INHERIT) {
                 return emptyList();
             } else if (value.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {

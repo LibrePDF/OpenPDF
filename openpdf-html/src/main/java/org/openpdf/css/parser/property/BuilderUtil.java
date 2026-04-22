@@ -30,8 +30,9 @@ public class BuilderUtil {
 
     public static void checkFunctionsAllowed(final FSFunction func, String... allowed) {
         for (String allow : allowed) {
-            if (allow.equals(func.getName()))
+            if (allow.equals(func.getName())) {
                 return;
+            }
         }
 
         throw new CSSParseException(String.format("Function %s not supported here", func.getName()), -1);
