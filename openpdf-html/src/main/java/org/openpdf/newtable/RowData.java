@@ -46,6 +46,6 @@ public class RowData {
 
     public void splitColumn(int pos) {
         TableCellBox current = _row.get(pos);
-        _row.add(pos+1, current == null ? null : TableCellBox.SPANNING_CELL);
+        _row.add(pos + 1, current == null ? null : TableCellBox.SPANNING_CELL);
     }
 }

@@ -41,6 +41,7 @@ public interface ReplacedElement {
 
     /**
      * Assigns the new locations where the element will be rendered.
+     *
      * @param x new horizontal position
      * @param y new vertical position
      */
