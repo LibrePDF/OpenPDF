@@ -64,7 +64,12 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
     private final int page;
     private Pattern p;
     private float[] coordinates;
-    private final int mode;
+    private final MatchingStrategy mode;
+
+    private enum MatchingStrategy {
+        PATTERN,
+        BBOX,
+    }
 
     /**
      * Construct a content PdfContetStreamHandler for regex-based text extraction pattern
@@ -84,7 +89,7 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
         }
         this.p = Pattern.compile(pattern);
         this.page = page;
-        this.mode = 1;
+        this.mode = MatchingStrategy.PATTERN;
         installDefaultOperators();
         reset();
     }
@@ -114,7 +119,7 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
         this.coordinates = coordinates;
         //We check for length because we want to include whitespaces as possible patterns
         this.page = page;
-        this.mode = 2;
+        this.mode = MatchingStrategy.BBOX;
         installDefaultOperators();
         reset();
     }
@@ -186,11 +191,11 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
         float fontCeiling = y + graphicsState().getFontAscentDescriptor();
 
         switch (this.mode) {
-            case 1: {
+            case MatchingStrategy.PATTERN: {
                 matchPdfString(decoded, widths, totalWidth, fontFloor, fontCeiling);
                 break;
             }
-            case 2: {
+            case MatchingStrategy.BBOX: {
                 locatePdfString(decoded, startWidth, totalWidth, fontFloor, fontCeiling);
                 break;
             }
