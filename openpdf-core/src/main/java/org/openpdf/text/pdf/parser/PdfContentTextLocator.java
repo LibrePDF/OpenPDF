@@ -133,6 +133,7 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
     }
 
     void pushContext(String newContextName) {
+        contextNames.push(newContextName);
     }
 
     public void reset() {
@@ -151,6 +152,9 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
      * @param string the text to inspect
      */
     void displayPdfString(PdfString string) {
+        if (contextNames.peek() == null) {
+            return;
+        }
         String decoded;
         byte[] bytes;
         if (BaseFont.IDENTITY_H.equals(graphicsState().getFont().getEncoding())) {
