@@ -129,6 +129,7 @@ public class PdfContentTextLocator extends PdfContentStreamHandler {
     }
 
     void popContext() {
+        contextNames.pop();
         renderListener.reset();
     }
 
