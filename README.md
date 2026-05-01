@@ -51,7 +51,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>3.0.3</version>
+  <version>3.0.4</version>
 </dependency>
 ```
 
