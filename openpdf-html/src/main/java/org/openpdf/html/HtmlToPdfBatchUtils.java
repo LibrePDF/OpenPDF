@@ -54,6 +54,7 @@ import org.openpdf.text.utils.PdfBatch.BatchResult;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -92,12 +93,12 @@ import java.util.function.UnaryOperator;
  *
  * <h4>Convert a single HTML string to PDF</h4>
  * <pre>{@code
- * Path pdf = Html2PdfBatchUtils.renderHtmlString(
+ * Path pdf = HtmlToPdfBatchUtils.renderHtmlString(
  *     "<html><body>Hello World</body></html>",
  *     "https://example.com/",
  *     Path.of("out.pdf"),
- *     Html2PdfBatchUtils.CSS_A4_20MM,
- *     Html2PdfBatchUtils.setDpi(150)
+ *     HtmlToPdfBatchUtils.CSS_A4_20MM,
+ *     HtmlToPdfBatchUtils.setDpi(150)
  * );
  * }</pre>
  *
@@ -105,14 +106,14 @@ import java.util.function.UnaryOperator;
  * <pre>{@code
  * List<HtmlFileJob> jobs = List.of(
  *     new HtmlFileJob(Path.of("file1.html"), Path.of("."), Path.of("file1.pdf"),
- *                     Optional.of(Html2PdfBatchUtils.CSS_LETTER_HALF_IN),
+ *                     Optional.of(HtmlToPdfBatchUtils.CSS_LETTER_HALF_IN),
  *                     Optional.empty()),
  *     new HtmlFileJob(Path.of("file2.html"), Path.of("."), Path.of("file2.pdf"),
  *                     Optional.empty(),
- *                     Optional.of(Html2PdfBatchUtils.registerFontDir(Path.of("fonts"))))
+ *                     Optional.of(HtmlToPdfBatchUtils.registerFontDir(Path.of("fonts"))))
  * );
  *
- * BatchResult<Path> result = Html2PdfBatchUtils.batchHtmlFiles(jobs,
+ * BatchResult<Path> result = HtmlToPdfBatchUtils.batchHtmlFiles(jobs,
  *     path -> System.out.println("Created PDF: " + path),
  *     error -> error.printStackTrace()
  * );
@@ -124,6 +125,9 @@ import java.util.function.UnaryOperator;
  *   <li>Always provide a {@code baseUri} (or {@code baseDir}) if your HTML references relative resources.</li>
  *   <li>Use {@code rendererCustomizer} to adjust advanced rendering settings like DPI or font loading.</li>
  *   <li>Batch methods allow optional success and failure callbacks for real-time feedback during processing.</li>
+ *   <li>When using OutputStream-based batch jobs, every job <em>must</em> use a distinct
+ *       {@code OutputStream} instance. Sharing a stream between concurrent jobs will corrupt
+ *       the output. The caller is responsible for closing streams after the batch completes.</li>
  * </ul>
  *
  * @implNote Internally uses {@link Executors#newVirtualThreadPerTaskExecutor()} for efficient parallelism.
@@ -153,6 +157,42 @@ public final class HtmlToPdfBatchUtils {
                          Optional<String> injectCss,
                          Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
 
+    /**
+     * Render raw HTML string to a pre-opened {@link OutputStream}.
+     *
+     * <p><strong>Concurrency note:</strong> Each job in a batch runs on its own virtual thread.
+     * Every job in the batch <em>must</em> use a distinct {@code OutputStream} instance —
+     * sharing a stream between jobs will corrupt the output. The caller is responsible
+     * for closing the stream after the batch completes.</p>
+     */
+    public record HtmlStringStreamJob(String html, String baseUri, OutputStream outputStream,
+                                      Optional<String> injectCss,
+                                      Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
+
+    /**
+     * Render an HTML file (and its relative assets) to a pre-opened {@link OutputStream}.
+     *
+     * <p><strong>Concurrency note:</strong> Each job in a batch runs on its own virtual thread.
+     * Every job in the batch <em>must</em> use a distinct {@code OutputStream} instance —
+     * sharing a stream between jobs will corrupt the output. The caller is responsible
+     * for closing the stream after the batch completes.</p>
+     */
+    public record HtmlFileStreamJob(Path htmlFile, Path baseDir, OutputStream outputStream,
+                                    Optional<String> injectCss,
+                                    Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
+
+    /**
+     * Render a remote URL to a pre-opened {@link OutputStream}.
+     *
+     * <p><strong>Concurrency note:</strong> Each job in a batch runs on its own virtual thread.
+     * Every job in the batch <em>must</em> use a distinct {@code OutputStream} instance —
+     * sharing a stream between jobs will corrupt the output. The caller is responsible
+     * for closing the stream after the batch completes.</p>
+     */
+    public record UrlStreamJob(String url, OutputStream outputStream,
+                               Optional<String> injectCss,
+                               Optional<Consumer<ITextRenderer>> rendererCustomizer) {}
+
     // ------------------------- Single operations -------------------------
 
     /** Render an HTML string. */
@@ -163,29 +203,39 @@ public final class HtmlToPdfBatchUtils {
         Objects.requireNonNull(output, "output");
         Files.createDirectories(output.getParent());
 
+        try (var out = new FileOutputStream(output.toFile())) {
+            renderHtmlString(html, baseUri, out, injectCss, rendererCustomizer);
+        }
+        return output;
+    }
+
+    /** Render an HTML string. */
+    public static void renderHtmlString(String html, String baseUri, OutputStream outputStream,
+            String injectCss,
+            Consumer<ITextRenderer> rendererCustomizer) {
+        Objects.requireNonNull(html, "html");
+        Objects.requireNonNull(outputStream, "output");
+
         String finalHtml = injectCss != null && !injectCss.isEmpty()
                 ? injectCssBlock(injectCss).apply(html)
                 : html;
 
-        try (var out = new FileOutputStream(output.toFile())) {
-            ITextRenderer renderer = new ITextRenderer();
-            SharedContext sc = renderer.getSharedContext();
-            // Slightly safer resource loading if you need custom schemes:
-            sc.setUserAgentCallback(renderer.getOutputDevice().getSharedContext().getUserAgentCallback());
+        ITextRenderer renderer = new ITextRenderer();
+        SharedContext sc = renderer.getSharedContext();
+        // Slightly safer resource loading if you need custom schemes:
+        sc.setUserAgentCallback(renderer.getOutputDevice().getSharedContext().getUserAgentCallback());
 
-            if (rendererCustomizer != null) {
-                rendererCustomizer.accept(renderer);
-            }
-
-            if (baseUri != null && !baseUri.isBlank()) {
-                renderer.setDocumentFromString(finalHtml, baseUri);
-            } else {
-                renderer.setDocumentFromString(finalHtml);
-            }
-            renderer.layout();
-            renderer.createPDF(out, true);
+        if (rendererCustomizer != null) {
+            rendererCustomizer.accept(renderer);
         }
-        return output;
+
+        if (baseUri != null && !baseUri.isBlank()) {
+            renderer.setDocumentFromString(finalHtml, baseUri);
+        } else {
+            renderer.setDocumentFromString(finalHtml);
+        }
+        renderer.layout();
+        renderer.createPDF(outputStream, true);
     }
 
     /** Render an HTML file (and relatives). */
@@ -201,38 +251,57 @@ public final class HtmlToPdfBatchUtils {
         return renderHtmlString(html, base, output, injectCss, rendererCustomizer);
     }
 
+    /** Render an HTML file (and relatives). */
+    public static void renderHtmlFile(Path htmlFile, Path baseDir, OutputStream outputStream,
+            String injectCss,
+            Consumer<ITextRenderer> rendererCustomizer) throws IOException {
+        Objects.requireNonNull(htmlFile, "htmlFile");
+        Objects.requireNonNull(outputStream, "output");
+
+        String html = Files.readString(htmlFile, StandardCharsets.UTF_8);
+        String base = (baseDir != null ? baseDir.toUri().toString() : htmlFile.getParent().toUri().toString());
+        renderHtmlString(html, base, outputStream, injectCss, rendererCustomizer);
+    }
+
     /** Render a URL to PDF. */
     public static Path renderUrl(String url, Path output,
             String injectCss,
             Consumer<ITextRenderer> rendererCustomizer) throws IOException {
-        Objects.requireNonNull(url, "url");
         Objects.requireNonNull(output, "output");
         Files.createDirectories(output.getParent());
 
         try (var out = new FileOutputStream(output.toFile())) {
-            ITextRenderer renderer = new ITextRenderer();
-            if (rendererCustomizer != null) {
-                rendererCustomizer.accept(renderer);
-            }
-
-            if (injectCss == null || injectCss.isEmpty()) {
-                // No CSS injection: load DOM directly via user agent and set base URL
-                org.w3c.dom.Document doc = renderer.getSharedContext().getUac().getXMLResource(url).getDocument();
-                renderer.setDocument(doc, url);
-            } else {
-                // Inject CSS: fetch HTML as text, prepend <style> to <head>, and set with base URL
-                String html;
-                try (var in = java.net.URI.create(url).toURL().openStream()) {
-                    html = new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
-                }
-                String finalHtml = injectCssBlock(injectCss).apply(html);
-                renderer.setDocumentFromString(finalHtml, url);
-            }
-
-            renderer.layout();
-            renderer.createPDF(out, true);
+            renderUrl(url, out, injectCss, rendererCustomizer);
         }
         return output;
+    }
+
+    /** Render a URL to PDF. */
+    public static void renderUrl(String url, OutputStream outputStream,
+            String injectCss,
+            Consumer<ITextRenderer> rendererCustomizer) throws IOException {
+        Objects.requireNonNull(url, "url");
+        Objects.requireNonNull(outputStream, "outputStream");
+
+        ITextRenderer renderer = new ITextRenderer();
+        if (rendererCustomizer != null) {
+            rendererCustomizer.accept(renderer);
+        }
+
+        if (injectCss == null || injectCss.isEmpty()) {
+            org.w3c.dom.Document doc = renderer.getSharedContext().getUac().getXMLResource(url).getDocument();
+            renderer.setDocument(doc, url);
+        } else {
+            String html;
+            try (var in = java.net.URI.create(url).toURL().openStream()) {
+                html = new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+            }
+            String finalHtml = injectCssBlock(injectCss).apply(html);
+            renderer.setDocumentFromString(finalHtml, url);
+        }
+
+        renderer.layout();
+        renderer.createPDF(outputStream, true);
     }
 
     // ------------------------- Batch operations -------------------------
@@ -263,6 +332,39 @@ public final class HtmlToPdfBatchUtils {
         return PdfBatch.run(jobs.stream().map(j -> (Callable<Path>) () ->
                 renderUrl(j.url, j.output, j.injectCss.orElse(null), j.rendererCustomizer.orElse(null))
         ).toList(), onSuccess, onFailure);
+    }
+
+    public static BatchResult<Void> batchHtmlStringsToStreams(List<HtmlStringStreamJob> jobs,
+            Consumer<Void> onSuccess,
+            Consumer<Throwable> onFailure) {
+        return PdfBatch.run(jobs.stream().map(j -> (Callable<Void>) () -> {
+            renderHtmlString(j.html, j.baseUri, j.outputStream,
+                    j.injectCss.orElse(null),
+                    j.rendererCustomizer.orElse(null));
+            return null;
+        }).toList(), onSuccess, onFailure);
+    }
+
+    public static BatchResult<Void> batchHtmlFilesToStreams(List<HtmlFileStreamJob> jobs,
+            Consumer<Void> onSuccess,
+            Consumer<Throwable> onFailure) {
+        return PdfBatch.run(jobs.stream().map(j -> (Callable<Void>) () -> {
+            renderHtmlFile(j.htmlFile, j.baseDir, j.outputStream,
+                    j.injectCss.orElse(null),
+                    j.rendererCustomizer.orElse(null));
+            return null;
+        }).toList(), onSuccess, onFailure);
+    }
+
+    public static BatchResult<Void> batchUrlsToStreams(List<UrlStreamJob> jobs,
+            Consumer<Void> onSuccess,
+            Consumer<Throwable> onFailure) {
+        return PdfBatch.run(jobs.stream().map(j -> (Callable<Void>) () -> {
+            renderUrl(j.url, j.outputStream,
+                    j.injectCss.orElse(null),
+                    j.rendererCustomizer.orElse(null));
+            return null;
+        }).toList(), onSuccess, onFailure);
     }
 
     // ------------------------- Helpers -------------------------
