@@ -143,7 +143,7 @@ class TrueTypeFont extends BaseFont {
      * <CODE>int[2]</CODE> where position 0 is the offset from the start of the file and position 1 is the length of
      * the table.
      */
-    protected HashMap<String, int[]> tables;
+    protected Map<String, int[]> tables;
     /**
      * The file in use.
      */
