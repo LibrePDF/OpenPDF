@@ -20,16 +20,16 @@
 
 package org.openpdf.rups.model;
 
-import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFPage;
+import org.openpdf.renderer.PDFFile;
+import org.openpdf.renderer.PDFPage;
 
 /**
- * Loads all the PDFPage objects for SUN's PDF Renderer in Background.
+ * Loads all the PDFPage objects for OpenPDF Renderer in the background.
  */
 public class PageLoader extends BackgroundTask {
 
     /**
-     * The PDFFile (SUN's PDF Renderer class)
+     * The PDFFile from OpenPDF Renderer.
      */
     protected PDFFile file;
     /**
@@ -48,7 +48,7 @@ public class PageLoader extends BackgroundTask {
     /**
      * Creates a new page loader.
      *
-     * @param file the PDFFile (SUN's PDF Renderer)
+     * @param file the PDFFile from OpenPDF Renderer
      */
     public PageLoader(PDFFile file) {
         super();

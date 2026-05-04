@@ -87,19 +87,18 @@
 
     <!-- dependencies -->
     <bouncycastle.version>1.84</bouncycastle.version>
-    <commons-io.version>2.21.0</commons-io.version>
+    <commons-io.version>2.22.0</commons-io.version>
     <dom4j.version>2.2.0</dom4j.version>
     <fop.version>2.11</fop.version>
     <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
     <jcommon.version>1.0.24</jcommon.version>
     <jfreechart.version>1.5.6</jfreechart.version>
-    <pdf-renderer.version>1.0.5</pdf-renderer.version>
     <error_prone.version>2.49.0</error_prone.version>
     <slf4j.version>2.0.17</slf4j.version>
 
     <!-- test-dependencies -->
     <assertj.version>3.27.7</assertj.version>
-    <checkstyle.version>13.4.0</checkstyle.version>
+    <checkstyle.version>13.4.2</checkstyle.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <junit.version>6.0.3</junit.version>
     <mockito5.version>5.18.0</mockito5.version>
@@ -136,11 +135,6 @@
         <groupId>org.jfree</groupId>
         <artifactId>jcommon</artifactId>
         <version>${jcommon.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.swinglabs</groupId>
-        <artifactId>pdf-renderer</artifactId>
-        <version>${pdf-renderer.version}</version>
       </dependency>
       <dependency>
         <groupId>org.dom4j</groupId>
