@@ -93,7 +93,6 @@
     <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
     <jcommon.version>1.0.24</jcommon.version>
     <jfreechart.version>1.5.6</jfreechart.version>
-    <pdf-renderer.version>1.0.5</pdf-renderer.version>
     <error_prone.version>2.49.0</error_prone.version>
     <slf4j.version>2.0.17</slf4j.version>
 
@@ -136,11 +135,6 @@
         <groupId>org.jfree</groupId>
         <artifactId>jcommon</artifactId>
         <version>${jcommon.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.swinglabs</groupId>
-        <artifactId>pdf-renderer</artifactId>
-        <version>${pdf-renderer.version}</version>
       </dependency>
       <dependency>
         <groupId>org.dom4j</groupId>
