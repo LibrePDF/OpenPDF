@@ -57,6 +57,7 @@ import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -1536,6 +1537,15 @@ public abstract class BaseFont {
      */
     public String[] getCodePagesSupported() {
         return new String[0];
+    }
+
+    /**
+     * Gets the raw TrueType/OpenType table directory for fonts that expose one.
+     *
+     * @return the table directory keyed by table tag, or an empty map when unavailable
+     */
+    public Map<String, int[]> getTables() {
+        return Map.of();
     }
 
     /**

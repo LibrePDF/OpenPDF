@@ -9,7 +9,6 @@ import org.openpdf.pdf.FontDescription.Decorations;
 import org.openpdf.util.XRRuntimeException;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,23 +66,8 @@ public class TrueTypeUtil {
         return result;
     }
 
-    // HACK No accessor
-    private static Map<String, int[]> extractTables(BaseFont font)
-            throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-        Class<?> current = font.getClass();
-
-        while (current != null) {
-            if (current.getName().endsWith(".TrueTypeFont")) {
-                Field field = current.getDeclaredField("tables");
-                field.setAccessible(AVOID_MEMORY_MAPPED_FILES);
-                //noinspection unchecked
-                return (Map<String, int[]>) field.get(font);
-            }
-
-            current = current.getSuperclass();
-        }
-
-        throw new NoSuchFieldException("Could not find tables field");
+    private static Map<String, int[]> extractTables(BaseFont font) {
+        return font.getTables();
     }
 
     private static String getTTCName(String name) {
@@ -95,13 +79,13 @@ public class TrueTypeUtil {
         try {
             Decorations decorations = readFontDecorations(path, font, fontWeightOverride);
             return new FontDescription(font, false, guessStyle(font), decorations);
-        } catch (DocumentException | IOException | NoSuchFieldException | IllegalAccessException e) {
+        } catch (DocumentException | IOException e) {
             throw new XRRuntimeException("Failed to read font description from %s".formatted(path), e);
         }
     }
 
     private static Decorations readFontDecorations(String path, BaseFont font, @Nullable IdentValue fontWeightOverride)
-            throws IOException, NoSuchFieldException, IllegalAccessException, DocumentException {
+            throws IOException, DocumentException {
 
         try (RandomAccessFileOrArray rf = new RandomAccessFileOrArray(getTTCName(path), false, AVOID_MEMORY_MAPPED_FILES)) {
             return readFontDecorations(path, font, rf, fontWeightOverride);
@@ -116,20 +100,20 @@ public class TrueTypeUtil {
             IdentValue style = requireNonNullElseGet(fontStyleOverride, () -> guessStyle(font));
             Decorations decorations = readFontDecorations(path, contents, font, fontWeightOverride);
             return new FontDescription(font, isFromFontFace, style, decorations);
-        } catch (IOException | NoSuchFieldException | IllegalAccessException e) {
+        } catch (IOException | DocumentException e) {
             throw new XRRuntimeException("Failed to read font description from %s".formatted(path), e);
         }
     }
 
     private static Decorations readFontDecorations(String path, byte[] contents, BaseFont font, @Nullable IdentValue fontWeightOverride)
-            throws IOException, NoSuchFieldException, IllegalAccessException, DocumentException {
+            throws IOException, DocumentException {
         try (RandomAccessFileOrArray rf = new RandomAccessFileOrArray(contents)) {
             return readFontDecorations(path, font, rf, fontWeightOverride);
         }
     }
 
     private static Decorations readFontDecorations(String path, BaseFont font, RandomAccessFileOrArray rf, @Nullable IdentValue fontWeightOverride)
-            throws NoSuchFieldException, IllegalAccessException, DocumentException, IOException {
+            throws DocumentException, IOException {
         Map<String, int[]> tables = extractTables(font);
 
         int[] location = tables.get("OS/2");
