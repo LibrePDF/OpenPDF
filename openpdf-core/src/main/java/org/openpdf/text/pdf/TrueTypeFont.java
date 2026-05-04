@@ -1844,7 +1844,7 @@ class TrueTypeFont extends BaseFont {
         return tables;
     }
 
-    public void setTables(HashMap<String, int[]> tables) {
+    public void setTables(Map<String, int[]> tables) {
         this.tables = tables;
     }
 }
