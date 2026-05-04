@@ -1838,4 +1838,13 @@ class TrueTypeFont extends BaseFont {
          */
         int sCapHeight;
     }
+
+    @Override
+    public Map<String, int[]> getTables() {
+        return tables;
+    }
+
+    public void setTables(HashMap<String, int[]> tables) {
+        this.tables = tables;
+    }
 }
