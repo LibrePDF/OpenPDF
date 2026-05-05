@@ -59,10 +59,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Base64;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
-import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
+import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
 import org.bouncycastle.tsp.TimeStampRequest;
 import org.bouncycastle.tsp.TimeStampRequestGenerator;
 import org.bouncycastle.tsp.TimeStampResponse;
@@ -151,15 +152,14 @@ public class TSAClientBouncyCastle implements TSAClient {
     }
 
     /**
-     * Get the MessageDigest. Default algorithm `SHA-1` used as per algorithm used without tsaClient
+     * Get the MessageDigest. Default algorithm is {@code SHA-256}; SHA-1 is no longer
+     * recommended for time-stamp imprints.
      *
-     * @return SHA-1 MessageDigest
-     * @see org.openpdf.text.pdf.PdfPKCS7#getEncodedPKCS7(byte[], java.util.Calendar, TSAClient, byte[]) (upto 1.3.11)
-     * or check status of https://github.com/LibrePDF/OpenPDF/issues/320
+     * @return SHA-256 (or configured) MessageDigest
      */
     @Override
     public MessageDigest getMessageDigest() throws GeneralSecurityException {
-        return MessageDigest.getInstance(isNotEmpty(digestName) ? digestName : "SHA-1");
+        return MessageDigest.getInstance(isNotEmpty(digestName) ? digestName : "SHA-256");
     }
 
     /**
@@ -193,8 +193,8 @@ public class TSAClientBouncyCastle implements TSAClient {
             if (isNotEmpty(policy)) {
                 tsqGenerator.setReqPolicy(new ASN1ObjectIdentifier(policy));
             }
-            BigInteger nonce = BigInteger.valueOf(System.currentTimeMillis());
-            ASN1ObjectIdentifier digestOid = X509ObjectIdentifiers.id_SHA1;
+            BigInteger nonce = new BigInteger(64, new SecureRandom());
+            ASN1ObjectIdentifier digestOid = NISTObjectIdentifiers.id_sha256;
             if (isNotEmpty(digestName)) {
                 digestOid = new ASN1ObjectIdentifier(PdfPKCS7.getDigestOid(digestName));
             }
