@@ -304,7 +304,15 @@ public class PdfPublicKeySecurityHandler {
 
         byte[] iv = new byte[16];
         new SecureRandom().nextBytes(iv);
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        // AES-256-CBC with PKCS#5/#7 padding is mandated by RFC 3565 and ISO 32000-2 §7.6.5
+        // for the CMS EnvelopedData content encryption used in PDF 2.0 public-key encryption.
+        // The ciphertext here is the file encryption seed wrapped for a certificate recipient;
+        // it is not user data and is not exposed to a padding-oracle channel — any decryption
+        // failure aborts PDF parsing without leaking padding validity. Authenticated modes
+        // (AES-GCM, ChaCha20-Poly1305) are not permitted by the PDF specification for PUBSEC.
+        // codacy-disable-next-line
+        // nosemgrep: java.lang.security.audit.crypto.use-of-aes-cbc.use-of-aes-cbc
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // NOSONAR java:S5542
         cipher.init(Cipher.ENCRYPT_MODE, secretkey, new IvParameterSpec(iv));
         byte[] encrypted = cipher.doFinal(in);
 
