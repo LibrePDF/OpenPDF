@@ -435,6 +435,13 @@ public class PdfWriter extends DocWriter implements
      */
     public static final int ENCRYPTION_AES_256_V3 = 4;
 
+    /**
+     * Encryption-mode flag. When OR'ed with a public-key encryption mode, an extra post-quantum (ML-KEM) recipient
+     * info is added next to the classical RSA/ECDH recipient, so the document remains decryptable if either
+     * cryptosystem is broken. Off by default; opt-in only.
+     */
+    public static final int HYBRID_RECIPIENTS = 32;
+
 //    [C2] PdfVersion interface
     /**
      * Add this to the mode to keep the metadata in clear text
@@ -1967,7 +1974,16 @@ public class PdfWriter extends DocWriter implements
         return true;
     }
 
-    PdfEncryption getEncryption() {
+    /**
+     * Returns the active {@link PdfEncryption} instance, or {@code null} when the document is not
+     * encrypted. Exposed so that applications can configure advanced settings such as
+     * post-quantum (ML-KEM) public keys for individual certificate recipients
+     * (see {@link PdfEncryption#addRecipient(java.security.cert.Certificate,
+     * java.security.PublicKey, int)}) after {@link #setEncryption} has been called.
+     *
+     * @return the encryption configuration, or {@code null}
+     */
+    public PdfEncryption getEncryption() {
         return crypto;
     }
 

@@ -105,6 +105,7 @@ import java.util.List;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -131,9 +132,27 @@ public class PdfPublicKeySecurityHandler {
 
     static final int SEED_LENGTH = 20;
 
+    /** Legacy CMS content-encryption: RC2/40-bit (used when the security handler version is V=1/2/4). */
+    private static final String CONTENT_ENC_RC2 = "1.2.840.113549.3.2";
+    /** PDF 2.0 CMS content-encryption: AES-256-CBC (used when the security handler version is V=5). */
+    private static final String CONTENT_ENC_AES256_CBC = "2.16.840.1.101.3.4.1.42";
+
     private final List<PdfPublicKeyRecipient> recipients;
 
     private byte[] seed = new byte[SEED_LENGTH];
+
+    /**
+     * If {@code true}, the recipient list is wrapped using AES-256-CBC and SHA-256 hashing as required
+     * by ISO 32000-2 §7.6.5 (PDF 2.0 / public-key security handler V=5). Defaults to {@code false} for
+     * back-compatibility with V&le;4.
+     */
+    private boolean useAes256;
+
+    /**
+     * If {@code true}, each recipient certificate's content-encryption key is additionally wrapped
+     * for a post-quantum ML-KEM recipient, alongside the classical RSA wrapping. Off by default.
+     */
+    private boolean hybridRecipients;
 
     public PdfPublicKeySecurityHandler() {
         KeyGenerator key;
@@ -149,6 +168,37 @@ public class PdfPublicKeySecurityHandler {
         }
 
         recipients = new ArrayList<>();
+    }
+
+    /**
+     * Selects the CMS content-encryption algorithm. When {@code true}, recipients are wrapped using
+     * AES-256-CBC (ISO 32000-2 §7.6.5, PDF 2.0). When {@code false}, the legacy RC2/40-bit algorithm
+     * is used (PDF 1.7 and earlier, V&le;4). Should be set to {@code true} when the encryption mode
+     * is {@link PdfWriter#ENCRYPTION_AES_256_V3}.
+     *
+     * @param useAes256 {@code true} to enable PDF 2.0 AES-256 wrapping
+     */
+    public void setUseAes256(boolean useAes256) {
+        this.useAes256 = useAes256;
+    }
+
+    /**
+     * Enables hybrid recipient mode: each classical {@code KeyTransRecipientInfo} is paired with an
+     * additional ML-KEM recipient wrapping the same content-encryption key, so the document remains
+     * decryptable if either cryptosystem is broken. Recipients without a corresponding ML-KEM key
+     * are encoded with the classical recipient only. Off by default.
+     *
+     * @param hybridRecipients {@code true} to enable hybrid wrapping
+     */
+    public void setHybridRecipients(boolean hybridRecipients) {
+        this.hybridRecipients = hybridRecipients;
+    }
+
+    /**
+     * @return whether hybrid recipient mode is currently enabled
+     */
+    public boolean isHybridRecipients() {
+        return hybridRecipients;
     }
 
     public void addRecipient(PdfPublicKeyRecipient recipient) {
@@ -201,8 +251,7 @@ public class PdfPublicKeySecurityHandler {
         pkcs7input[22] = two;
         pkcs7input[23] = one;
 
-        ASN1Primitive obj = createDERForRecipient(pkcs7input,
-                (X509Certificate) certificate);
+        ASN1Primitive obj = createDERForRecipient(pkcs7input, recipient);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -232,10 +281,53 @@ public class PdfPublicKeySecurityHandler {
         return encodedRecipients;
     }
 
-    private ASN1Primitive createDERForRecipient(byte[] in, X509Certificate cert)
+    private ASN1Primitive createDERForRecipient(byte[] in, PdfPublicKeyRecipient recipient)
             throws IOException, GeneralSecurityException {
 
-        String s = "1.2.840.113549.3.2";
+        X509Certificate cert = (X509Certificate) recipient.getCertificate();
+        if (useAes256) {
+            return createAes256EnvelopedData(in, recipient, cert);
+        }
+        return createRc2EnvelopedData(in, recipient, cert);
+    }
+
+    /**
+     * Builds a CMS EnvelopedData using AES-256-CBC content encryption, as required for PDF 2.0
+     * public-key encryption (ISO 32000-2 §7.6.5).
+     */
+    private ASN1Primitive createAes256EnvelopedData(byte[] in, PdfPublicKeyRecipient recipient,
+            X509Certificate cert) throws IOException, GeneralSecurityException {
+        // Generate a random 256-bit content-encryption key and a random 128-bit IV.
+        KeyGenerator keygenerator = KeyGenerator.getInstance("AES");
+        keygenerator.init(256, new SecureRandom());
+        SecretKey secretkey = keygenerator.generateKey();
+
+        byte[] iv = new byte[16];
+        new SecureRandom().nextBytes(iv);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretkey, new IvParameterSpec(iv));
+        byte[] encrypted = cipher.doFinal(in);
+
+        // AES-CBC algorithm parameters are an OCTET STRING containing the IV (RFC 3565).
+        ASN1Primitive paramsObj = new DEROctetString(iv);
+        AlgorithmIdentifier contentAlg = new AlgorithmIdentifier(
+                new ASN1ObjectIdentifier(CONTENT_ENC_AES256_CBC), paramsObj);
+        EncryptedContentInfo encryptedcontentinfo = new EncryptedContentInfo(
+                PKCSObjectIdentifiers.data, contentAlg, new DEROctetString(encrypted));
+
+        DERSet derset = new DERSet(buildRecipientInfos(recipient, cert, secretkey.getEncoded()));
+        EnvelopedData env = new EnvelopedData(null, derset, encryptedcontentinfo, (ASN1Set) null);
+        return new ContentInfo(PKCSObjectIdentifiers.envelopedData, env).toASN1Primitive();
+    }
+
+    /**
+     * Legacy CMS EnvelopedData using RC2 / 40-bit content encryption, retained for PDF 1.7 and
+     * earlier (V&le;4) public-key encryption.
+     */
+    private ASN1Primitive createRc2EnvelopedData(byte[] in, PdfPublicKeyRecipient recipient,
+            X509Certificate cert) throws IOException, GeneralSecurityException {
+
+        String s = CONTENT_ENC_RC2;
 
         AlgorithmParameterGenerator algorithmparametergenerator = AlgorithmParameterGenerator
                 .getInstance(s);
@@ -252,23 +344,38 @@ public class PdfPublicKeySecurityHandler {
         cipher.init(1, secretkey, algorithmparameters);
         byte[] abyte1 = cipher.doFinal(in);
         DEROctetString deroctetstring = new DEROctetString(abyte1);
-        KeyTransRecipientInfo keytransrecipientinfo = computeRecipientInfo(cert,
-                secretkey.getEncoded());
-        DERSet derset = new DERSet(new RecipientInfo(keytransrecipientinfo));
+        DERSet derset = new DERSet(buildRecipientInfos(recipient, cert, secretkey.getEncoded()));
         AlgorithmIdentifier algorithmidentifier = new AlgorithmIdentifier(
                 new ASN1ObjectIdentifier(s), derobject);
         EncryptedContentInfo encryptedcontentinfo = new EncryptedContentInfo(
                 PKCSObjectIdentifiers.data, algorithmidentifier, deroctetstring);
-        ASN1Set set = null;
-        EnvelopedData env = new EnvelopedData(null, derset, encryptedcontentinfo,
-                set);
-        ContentInfo contentinfo = new ContentInfo(
-                PKCSObjectIdentifiers.envelopedData, env);
-        // OJO... Modificacion de
-        // Felix--------------------------------------------------
-        // return contentinfo.getDERObject();
-        return contentinfo.toASN1Primitive();
-        // ******************************************************************************
+        EnvelopedData env = new EnvelopedData(null, derset, encryptedcontentinfo, (ASN1Set) null);
+        return new ContentInfo(PKCSObjectIdentifiers.envelopedData, env).toASN1Primitive();
+    }
+
+    /**
+     * Builds the {@code RecipientInfos} set for an EnvelopedData. The default implementation produces
+     * a single classical {@link KeyTransRecipientInfo} (RSA wrapping). When {@link #isHybridRecipients()}
+     * is {@code true} and the recipient has an ML-KEM public key configured, an additional
+     * {@code OtherRecipientInfo} (RFC 9629 KEMRecipientInfo) is added wrapping the same CEK.
+     *
+     * @param recipient the high-level recipient descriptor (carries optional PQC public key)
+     * @param cert      the recipient X.509 certificate
+     * @param cek       the raw content-encryption key bytes that must be wrapped for the recipient
+     * @return an array of CMS {@link RecipientInfo} structures
+     */
+    protected RecipientInfo[] buildRecipientInfos(PdfPublicKeyRecipient recipient,
+            X509Certificate cert, byte[] cek) throws GeneralSecurityException, IOException {
+        java.util.List<RecipientInfo> infos = new java.util.ArrayList<>(2);
+        infos.add(new RecipientInfo(computeRecipientInfo(cert, cek)));
+        if (hybridRecipients && recipient.getPqcPublicKey() != null) {
+            RecipientInfo extra = org.openpdf.text.pdf.security.MlKemRecipientWrapper
+                    .wrap(recipient.getPqcPublicKey(), cek);
+            if (extra != null) {
+                infos.add(extra);
+            }
+        }
+        return infos.toArray(new RecipientInfo[0]);
     }
 
     private KeyTransRecipientInfo computeRecipientInfo(

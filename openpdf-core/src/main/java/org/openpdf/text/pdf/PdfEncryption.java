@@ -297,6 +297,7 @@ public class PdfEncryption {
         cryptoMode = mode;
         encryptMetadata = (mode & PdfWriter.DO_NOT_ENCRYPT_METADATA) == 0;
         embeddedFilesOnly = (mode & PdfWriter.EMBEDDED_FILES_ONLY) != 0;
+        boolean hybrid = (mode & PdfWriter.HYBRID_RECIPIENTS) != 0;
         mode &= PdfWriter.ENCRYPTION_MASK;
         switch (mode) {
             case PdfWriter.STANDARD_ENCRYPTION_40:
@@ -325,6 +326,13 @@ public class PdfEncryption {
                 break;
             default:
                 throw new IllegalArgumentException(MessageLocalization.getComposedMessage("no.valid.encryption.mode"));
+        }
+
+        // Hybrid recipient mode (opt-in via PdfWriter.HYBRID_RECIPIENTS): wraps the same content
+        // encryption key for both a classical RSA recipient and a post-quantum ML-KEM recipient.
+        // Only meaningful for AES-256 (V=5) public-key encryption.
+        if (hybrid && revision == AES_256_V3) {
+            publicKeyHandler.setHybridRecipients(true);
         }
     }
 
@@ -542,6 +550,13 @@ public class PdfEncryption {
     public void setupByEncryptionKey(byte[] key, int keylength) {
         mkey = new byte[keylength / 8];
         System.arraycopy(key, 0, mkey, 0, mkey.length);
+        if (revision >= AES_256_V3) {
+            // ISO 32000-2: with AES-256 / V=5 there is no per-object key derivation; the file
+            // encryption key is used directly. setHashKey() is a no-op for this revision, so the
+            // working key must be initialised here.
+            this.key = mkey.clone();
+            this.keySize = mkey.length;
+        }
     }
 
     public void setHashKey(int number, int generation) {
@@ -571,6 +586,9 @@ public class PdfEncryption {
         PdfDictionary dic = new PdfDictionary();
 
         if (publicKeyHandler.getRecipientsSize() > 0) {
+            // PDF 2.0 (V=5) requires AES-256-CBC content encryption in the recipients' CMS blob.
+            publicKeyHandler.setUseAes256(revision == AES_256_V3);
+
             PdfArray recipients = null;
 
             dic.put(PdfName.FILTER, PdfName.PUBSEC);
@@ -591,6 +609,31 @@ public class PdfEncryption {
                 dic.put(PdfName.LENGTH, new PdfNumber(128));
                 dic.put(PdfName.SUBFILTER, PdfName.ADBE_PKCS7_S4);
                 dic.put(PdfName.RECIPIENTS, recipients);
+            } else if (revision == AES_256_V3) {
+                // PDF 2.0 / ISO 32000-2 §7.6.5: public-key security handler V=5, AES-256.
+                dic.put(PdfName.R, new PdfNumber(AES_256_V3));
+                dic.put(PdfName.V, new PdfNumber(5));
+                dic.put(PdfName.LENGTH, new PdfNumber(256));
+                dic.put(PdfName.SUBFILTER, PdfName.ADBE_PKCS7_S5);
+
+                PdfDictionary stdcf = new PdfDictionary();
+                stdcf.put(PdfName.RECIPIENTS, recipients);
+                if (!encryptMetadata) {
+                    stdcf.put(PdfName.ENCRYPTMETADATA, PdfBoolean.PDFFALSE);
+                }
+                stdcf.put(PdfName.CFM, PdfName.AESV3);
+                stdcf.put(PdfName.LENGTH, new PdfNumber(32));
+                PdfDictionary cf = new PdfDictionary();
+                cf.put(PdfName.DEFAULTCRYPTFILTER, stdcf);
+                dic.put(PdfName.CF, cf);
+                if (embeddedFilesOnly) {
+                    dic.put(PdfName.EFF, PdfName.DEFAULTCRYPTFILTER);
+                    dic.put(PdfName.STRF, PdfName.IDENTITY);
+                    dic.put(PdfName.STMF, PdfName.IDENTITY);
+                } else {
+                    dic.put(PdfName.STRF, PdfName.DEFAULTCRYPTFILTER);
+                    dic.put(PdfName.STMF, PdfName.DEFAULTCRYPTFILTER);
+                }
             } else {
                 dic.put(PdfName.R, new PdfNumber(AES_128));
                 dic.put(PdfName.V, new PdfNumber(4));
@@ -624,7 +667,8 @@ public class PdfEncryption {
             byte[] encodedRecipient = null;
 
             try {
-                md = MessageDigest.getInstance("SHA-1");
+                // ISO 32000-2 §7.6.5: SHA-256 for V=5 recipient seed; SHA-1 retained for legacy V<5.
+                md = MessageDigest.getInstance(revision == AES_256_V3 ? "SHA-256" : "SHA-1");
                 md.update(publicKeyHandler.getSeed());
                 for (int i = 0; i < publicKeyHandler.getRecipientsSize(); i++) {
                     encodedRecipient = publicKeyHandler.getEncodedRecipient(i);
@@ -640,7 +684,13 @@ public class PdfEncryption {
 
             byte[] mdResult = md.digest();
 
-            setupByEncryptionKey(mdResult, keyLength);
+            if (revision == AES_256_V3) {
+                // For V=5 the entire 32-byte SHA-256 digest is the file encryption key.
+                key = mdResult;
+                keySize = 32;
+            } else {
+                setupByEncryptionKey(mdResult, keyLength);
+            }
         } else {
             dic.put(PdfName.FILTER, PdfName.STANDARD);
             dic.put(PdfName.O, new PdfLiteral(PdfContentByte
@@ -767,6 +817,27 @@ public class PdfEncryption {
         documentID = createDocumentId();
         publicKeyHandler.addRecipient(new PdfPublicKeyRecipient(cert,
                 permission));
+    }
+
+    /**
+     * Adds a certificate recipient that may also be addressed by an ML-KEM (FIPS 203) public key.
+     * Has the same effect as {@link #addRecipient(Certificate, int)} unless
+     * {@link PdfWriter#HYBRID_RECIPIENTS} is enabled, in which case the file encryption key is
+     * additionally wrapped for the post-quantum recipient (RFC 9629 KEMRecipientInfo) so the
+     * document remains decryptable if either the classical or the post-quantum cryptosystem is
+     * broken.
+     *
+     * @param cert           the recipient X.509 certificate (RSA or ECDH key)
+     * @param pqcPublicKey   the recipient's ML-KEM public key, or {@code null} to skip PQC for
+     *                       this recipient even when hybrid mode is enabled
+     * @param permission     the PDF permission bitmask
+     * @since 3.0.5
+     */
+    public void addRecipient(Certificate cert, java.security.PublicKey pqcPublicKey, int permission) {
+        documentID = createDocumentId();
+        PdfPublicKeyRecipient recipient = new PdfPublicKeyRecipient(cert, permission);
+        recipient.setPqcPublicKey(pqcPublicKey);
+        publicKeyHandler.addRecipient(recipient);
     }
 
     public byte[] computeUserPassword(byte[] ownerPassword) {

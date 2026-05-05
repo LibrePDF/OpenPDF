@@ -20,6 +20,11 @@ The features of OpenPDF include:
 * Graphics and Images: OpenPDF supports the addition of images and graphics to PDF files.
 * Table Support: The library facilitates the creation of tables in PDF documents.
 * Encryption: You can encrypt PDF documents for security purposes.
+* PDF 2.0 (ISO 32000-2) public-key encryption with AES-256, plus opt-in hybrid recipients
+  combining classical RSA/ECDH with post-quantum ML-KEM (FIPS 203).
+* PDF 2.0 / PAdES signatures (`ETSI.CAdES.detached`, document timestamps) with support for
+  modern and post-quantum signature algorithms — Ed25519/Ed448 (RFC 8419) and
+  ML-DSA / SLH-DSA (NIST FIPS 204 / 205).
 * Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
 * PDF 2.0 support (ISO 32000-2).
 

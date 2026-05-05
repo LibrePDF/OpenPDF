@@ -49,6 +49,7 @@
 
 package org.openpdf.text.pdf;
 
+import java.security.PublicKey;
 import java.security.cert.Certificate;
 
 public class PdfPublicKeyRecipient {
@@ -56,6 +57,13 @@ public class PdfPublicKeyRecipient {
     protected byte[] cms = null;
     private Certificate certificate = null;
     private int permission = 0;
+
+    /**
+     * Optional post-quantum (ML-KEM) public key for this recipient. When set together with
+     * {@link PdfWriter#HYBRID_RECIPIENTS}, the content-encryption key is wrapped a second time
+     * using ML-KEM, in addition to the classical RSA wrapping derived from {@link #certificate}.
+     */
+    private PublicKey pqcPublicKey = null;
 
     public PdfPublicKeyRecipient(Certificate certificate, int permission) {
         this.certificate = certificate;
@@ -68,6 +76,24 @@ public class PdfPublicKeyRecipient {
 
     public int getPermission() {
         return permission;
+    }
+
+    /**
+     * @return the optional ML-KEM public key for hybrid recipient mode, or {@code null}
+     */
+    public PublicKey getPqcPublicKey() {
+        return pqcPublicKey;
+    }
+
+    /**
+     * Sets the optional ML-KEM (post-quantum KEM) public key used together with this recipient's
+     * classical certificate to produce a hybrid CMS recipient. Has no effect unless hybrid mode is
+     * also enabled on the security handler.
+     *
+     * @param pqcPublicKey the ML-KEM public key, or {@code null} to disable PQC for this recipient
+     */
+    public void setPqcPublicKey(PublicKey pqcPublicKey) {
+        this.pqcPublicKey = pqcPublicKey;
     }
 
     protected byte[] getCms() {

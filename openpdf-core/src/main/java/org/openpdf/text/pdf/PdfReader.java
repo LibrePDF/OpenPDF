@@ -1584,6 +1584,31 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
                     recipients = (PdfArray) dic.get(PdfName.RECIPIENTS);
                     break;
+                case 5:
+                    // ISO 32000-2 §7.6.5: public-key security handler V=5 (AES-256, R=6).
+                    PdfDictionary cfDic5 = (PdfDictionary) enc.get(PdfName.CF);
+                    if (cfDic5 == null) {
+                        throw new InvalidPdfException(
+                                MessageLocalization.getComposedMessage("cf.not.found.encryption"));
+                    }
+                    PdfDictionary stdCf5 = (PdfDictionary) cfDic5.get(PdfName.DEFAULTCRYPTFILTER);
+                    if (stdCf5 == null) {
+                        throw new InvalidPdfException(
+                                MessageLocalization
+                                        .getComposedMessage("defaultcryptfilter.not.found.encryption"));
+                    }
+                    if (!PdfName.AESV3.equals(stdCf5.get(PdfName.CFM))) {
+                        throw new UnsupportedPdfException(
+                                MessageLocalization.getComposedMessage("no.compatible.encryption.found"));
+                    }
+                    cryptoMode = PdfWriter.ENCRYPTION_AES_256_V3;
+                    lengthValue = 256;
+                    PdfObject em5 = stdCf5.get(PdfName.ENCRYPTMETADATA);
+                    if (em5 != null && em5.toString().equals("false")) {
+                        cryptoMode |= PdfWriter.DO_NOT_ENCRYPT_METADATA;
+                    }
+                    recipients = (PdfArray) stdCf5.get(PdfName.RECIPIENTS);
+                    break;
                 default:
                     throw new UnsupportedPdfException(
                             MessageLocalization.getComposedMessage(
@@ -1601,8 +1626,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             MessageDigest md;
 
             try {
-                md = MessageDigest.getInstance("SHA-1");
-                md.update(envelopedData, 0, 20);
+                // ISO 32000-2 §7.6.5: SHA-256 for V=5; SHA-1 for legacy V<5.
+                boolean isV5 = (cryptoMode & PdfWriter.ENCRYPTION_MASK) == PdfWriter.ENCRYPTION_AES_256_V3;
+                md = MessageDigest.getInstance(isV5 ? "SHA-256" : "SHA-1");
+                int seedLen = isV5 ? envelopedData.length : 20;
+                md.update(envelopedData, 0, Math.min(seedLen, envelopedData.length));
                 for (int i = 0; i < recipients.size(); i++) {
                     byte[] encodedRecipient = recipients.getPdfObject(i).getBytes();
                     md.update(encodedRecipient);

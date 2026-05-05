@@ -209,6 +209,12 @@ public class PdfPKCS7 {
         allowedDigests.put("RIPEMD-160", "1.3.36.3.2.1");
         allowedDigests.put("RIPEMD256", "1.3.36.3.2.3");
         allowedDigests.put("RIPEMD-256", "1.3.36.3.2.3");
+
+        // SHA-3 family (NIST FIPS 202)
+        allowedDigests.put("SHA3-224", "2.16.840.1.101.3.4.2.7");
+        allowedDigests.put("SHA3-256", "2.16.840.1.101.3.4.2.8");
+        allowedDigests.put("SHA3-384", "2.16.840.1.101.3.4.2.9");
+        allowedDigests.put("SHA3-512", "2.16.840.1.101.3.4.2.10");
     }
 
     private final List<Certificate> certs;
@@ -248,6 +254,14 @@ public class PdfPKCS7 {
     private String signName;
     private TimeStampToken timeStampToken;
     private BasicOCSPResp basicResp;
+
+    /**
+     * If {@code true}, the SignedData includes the ESS signing-certificate-v2 attribute
+     * (RFC 5035 / ETSI EN 319 122-1) which is mandatory for {@code ETSI.CAdES.detached}
+     * (PDF 2.0 / PAdES) signatures. Off by default for back-compatibility with the legacy
+     * {@code adbe.pkcs7.detached} SubFilter.
+     */
+    private boolean useCAdES;
 
     /**
      * Verifies a signature using the sub-filter adbe.x509.rsa_sha1.
@@ -516,17 +530,13 @@ public class PdfPKCS7 {
             // is.
             //
             digestEncryptionAlgorithm = privKey.getAlgorithm();
-            if (digestEncryptionAlgorithm.equals("RSA")) {
-                digestEncryptionAlgorithm = ID_RSA;
-            } else if (digestEncryptionAlgorithm.equals("DSA")) {
-                digestEncryptionAlgorithm = ID_DSA;
-            } else if (digestEncryptionAlgorithm.equals("EC") || digestEncryptionAlgorithm.equals("ECDSA")) {
-                digestEncryptionAlgorithm = ID_ECDSA;
-            } else {
+            String resolved = resolveSignatureAlgorithmOid(digestEncryptionAlgorithm);
+            if (resolved == null) {
                 throw new NoSuchAlgorithmException(
                         MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
                                 digestEncryptionAlgorithm));
             }
+            digestEncryptionAlgorithm = resolved;
         }
         if (hasRSAdata) {
             RSAdata = new byte[0];
@@ -1232,28 +1242,59 @@ public class PdfPKCS7 {
      *
      * @param digest                    the digest. This is the actual signature
      * @param RSAdata                   the extra data that goes into the data tag in PKCS#7
-     * @param digestEncryptionAlgorithm the encryption algorithm. It may must be <CODE>null</CODE> if the
-     *                                  <CODE>digest</CODE> is also <CODE>null</CODE>. If the
-     *                                  <CODE>digest</CODE> is not <CODE>null</CODE> then it may be "RSA"
-     *                                  or "DSA"
+     * @param digestEncryptionAlgorithm the encryption algorithm. May be {@code null} when
+     *                                  {@code digest} is also {@code null}. Otherwise it may be a
+     *                                  short JCA name ({@code "RSA"}, {@code "DSA"}, {@code "EC"},
+     *                                  {@code "Ed25519"}, {@code "Ed448"},
+     *                                  {@code "ML-DSA-44"}/{@code "-65"}/{@code "-87"},
+     *                                  {@code "SLH-DSA-*"}) or its OID. Unknown values raise an
+     *                                  {@link ExceptionConverter} wrapping {@link NoSuchAlgorithmException}.
      */
     public void setExternalDigest(byte[] digest, byte[] RSAdata,
             String digestEncryptionAlgorithm) {
         externalDigest = digest;
         externalRSAdata = RSAdata;
         if (digestEncryptionAlgorithm != null) {
-            if (digestEncryptionAlgorithm.equals("RSA")) {
-                this.digestEncryptionAlgorithm = ID_RSA;
-            } else if (digestEncryptionAlgorithm.equals("DSA")) {
-                this.digestEncryptionAlgorithm = ID_DSA;
-            } else if (digestEncryptionAlgorithm.equals("EC")) {
-                digestEncryptionAlgorithm = ID_ECDSA;
-            } else {
+            String oid = resolveSignatureAlgorithmOid(digestEncryptionAlgorithm);
+            if (oid == null) {
                 throw new ExceptionConverter(new NoSuchAlgorithmException(
                         MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
                                 digestEncryptionAlgorithm)));
             }
+            this.digestEncryptionAlgorithm = oid;
         }
+    }
+
+    /**
+     * Resolves a short signature-algorithm name (RSA, DSA, EC, Ed25519, ML-DSA-65, ...) or an OID
+     * to a canonical OID. Returns {@code null} when the value is not recognised.
+     */
+    private static String resolveSignatureAlgorithmOid(String nameOrOid) {
+        if (nameOrOid == null) {
+            return null;
+        }
+        // Already an OID? Accept if known.
+        if (algorithmNames.containsKey(nameOrOid)) {
+            return nameOrOid;
+        }
+        switch (nameOrOid) {
+            case "RSA":
+                return ID_RSA;
+            case "DSA":
+                return ID_DSA;
+            case "EC":
+            case "ECDSA":
+                return ID_ECDSA;
+            default:
+                break;
+        }
+        // Reverse lookup: scan algorithmNames for a matching JCA name (case-insensitive).
+        for (Map.Entry<String, String> e : algorithmNames.entrySet()) {
+            if (e.getValue().equalsIgnoreCase(nameOrOid)) {
+                return e.getKey();
+            }
+        }
+        return null;
     }
 
     /**
@@ -1363,7 +1404,14 @@ public class PdfPKCS7 {
             // Add the digestEncryptionAlgorithm
             v = new ASN1EncodableVector();
             v.add(new ASN1ObjectIdentifier(digestEncryptionAlgorithm));
-            v.add(DERNull.INSTANCE);
+            // RFC 8419 / FIPS 204 / FIPS 205: EdDSA, ML-DSA and SLH-DSA forbid algorithm
+            // parameters (the params field must be ABSENT, not DERNull). For all other
+            // signature algorithms we keep the historical NULL parameters for backward
+            // compatibility with strict CMS verifiers.
+            if (!org.openpdf.text.pdf.security.PqcAlgorithms
+                    .omitsAlgorithmParameters(digestEncryptionAlgorithm)) {
+                v.add(DERNull.INSTANCE);
+            }
             signerinfo.add(new DERSequence(v));
 
             // Add the digest
@@ -1496,6 +1544,21 @@ public class PdfPKCS7 {
             v.add(new ASN1ObjectIdentifier(ID_MESSAGE_DIGEST));
             v.add(new DERSet(new DEROctetString(secondDigest)));
             attribute.add(new DERSequence(v));
+            // PDF 2.0 / PAdES (CAdES) — RFC 5035 ESS signing-certificate-v2 attribute.
+            // The attribute is mandatory for SubFilter ETSI.CAdES.detached so verifiers can bind
+            // the signing certificate to the SignerInfo by its SHA-256 hash.
+            if (useCAdES) {
+                byte[] certHash = MessageDigest.getInstance("SHA-256").digest(signCert.getEncoded());
+                ASN1EncodableVector essCertIDv2 = new ASN1EncodableVector();
+                essCertIDv2.add(new DEROctetString(certHash));
+                ASN1EncodableVector signingCertV2 = new ASN1EncodableVector();
+                signingCertV2.add(new DERSequence(new DERSequence(essCertIDv2)));
+                v = new ASN1EncodableVector();
+                v.add(new ASN1ObjectIdentifier(
+                        org.openpdf.text.pdf.security.SecurityIDs.ID_AA_SIGNING_CERTIFICATE_V2));
+                v.add(new DERSet(new DERSequence(signingCertV2)));
+                attribute.add(new DERSequence(v));
+            }
             if (ocsp != null) {
                 v = new ASN1EncodableVector();
                 v.add(new ASN1ObjectIdentifier(ID_ADBE_REVOCATION));
@@ -1565,6 +1628,25 @@ public class PdfPKCS7 {
      */
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    /**
+     * Enables PDF 2.0 / PAdES (CAdES) compliant SignedData. When {@code true}, the SignerInfo
+     * authenticated attributes include an ESS {@code signing-certificate-v2} attribute (RFC 5035)
+     * computed over a SHA-256 digest of the signing certificate, as required by
+     * {@code SubFilter ETSI.CAdES.detached}.
+     *
+     * @param useCAdES {@code true} to emit CAdES-compliant SignerInfo
+     */
+    public void setUseCAdES(boolean useCAdES) {
+        this.useCAdES = useCAdES;
+    }
+
+    /**
+     * @return whether ESS signing-certificate-v2 is included in the authenticated attributes
+     */
+    public boolean isUseCAdES() {
+        return useCAdES;
     }
 
     /**
