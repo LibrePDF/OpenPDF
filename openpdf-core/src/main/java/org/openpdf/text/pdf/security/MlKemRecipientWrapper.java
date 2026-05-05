@@ -116,7 +116,7 @@ public final class MlKemRecipientWrapper {
 
         Cipher wrapCipher;
         try {
-            wrapCipher = Cipher.getInstance("AESWrapPad");
+            wrapCipher = Cipher.getInstance("AESWrapPad"); // NOSONAR java:S5542 — RFC 5649 AES Key Wrap with Padding is a secure key-wrapping algorithm, not a cipher mode with padding oracle exposure
         } catch (java.security.NoSuchAlgorithmException ex) {
             return null;
         }

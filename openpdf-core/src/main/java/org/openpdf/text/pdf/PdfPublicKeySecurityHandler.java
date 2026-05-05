@@ -312,7 +312,7 @@ public class PdfPublicKeySecurityHandler {
         // (AES-GCM, ChaCha20-Poly1305) are not permitted by the PDF specification for PUBSEC.
         // codacy-disable-next-line
         // nosemgrep: java.lang.security.audit.crypto.use-of-aes-cbc.use-of-aes-cbc
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // NOSONAR java:S5542
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // NOSONAR java:S5542 // lgtm[java/risky-crypto]
         cipher.init(Cipher.ENCRYPT_MODE, secretkey, new IvParameterSpec(iv));
         byte[] encrypted = cipher.doFinal(in);
 

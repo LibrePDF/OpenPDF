@@ -29,8 +29,8 @@ public final class SecurityIDs {
     public static final String ID_RSASSA_PSS = "1.2.840.113549.1.1.10";
     public static final String ID_DSA = "1.2.840.10040.4.1";
     public static final String ID_ECDSA = "1.2.840.10045.2.1";
-    public static final String ID_ED25519 = "1.3.101.112";
-    public static final String ID_ED448 = "1.3.101.113";
+    public static final String ID_ED25519 = "1.3.101.112"; // NOSONAR java:S1313 — ASN.1 OID, not an IP address
+    public static final String ID_ED448 = "1.3.101.113"; // NOSONAR java:S1313 — ASN.1 OID, not an IP address
 
     // ---- Post-quantum signature algorithms (NIST FIPS 204: ML-DSA / Dilithium) ----
     public static final String ID_ML_DSA_44 = "2.16.840.1.101.3.4.3.17";
