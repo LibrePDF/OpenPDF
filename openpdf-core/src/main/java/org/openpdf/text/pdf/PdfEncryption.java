@@ -59,6 +59,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.util.Arrays;
 import javax.crypto.Cipher;
@@ -79,6 +80,11 @@ public class PdfEncryption {
     public static final int AES_128 = 4;
 
     public static final int AES_256_V3 = 6;
+
+    /**
+     * Cryptographically strong random source used for generating document IDs and IVs.
+     */
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private static final byte[] pad = {(byte) 0x28, (byte) 0xBF, (byte) 0x4E,
             (byte) 0x5E, (byte) 0x4E, (byte) 0x75, (byte) 0x8A, (byte) 0x41,
@@ -195,16 +201,11 @@ public class PdfEncryption {
     }
 
     public static byte[] createDocumentId() {
-        MessageDigest md5;
-        try {
-            md5 = MessageDigest.getInstance("MD5");
-        } catch (Exception e) {
-            throw new ExceptionConverter(e);
-        }
-        long time = System.currentTimeMillis();
-        long mem = Runtime.getRuntime().freeMemory();
-        String s = time + "+" + mem + "+" + (seq++);
-        return md5.digest(s.getBytes());
+        // 16 bytes of cryptographically strong random data, replacing
+        // the previous MD5(time+memory+seq) construction.
+        byte[] id = new byte[16];
+        SECURE_RANDOM.nextBytes(id);
+        return id;
     }
 
     public static PdfObject createInfoId(byte[] id) {

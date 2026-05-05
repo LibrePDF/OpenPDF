@@ -158,14 +158,20 @@ public class PdfPKCS7 {
         digestNames.put("1.2.840.113549.1.1.11", "SHA256");
         digestNames.put("1.2.840.113549.1.1.12", "SHA384");
         digestNames.put("1.2.840.113549.1.1.13", "SHA512");
-        digestNames.put("1.2.840.10040.4.3", "SHA1");    // TODO: bug - duplicate key - overwrites this with DSA
-        digestNames.put("2.16.840.1.101.3.4.3.1", "SHA224");  // TODO: bug - duplicate key - overwrites this with DSA
+        digestNames.put("1.2.840.10040.4.3", "SHA1");
+        digestNames.put("2.16.840.1.101.3.4.3.1", "SHA224");
         digestNames.put("2.16.840.1.101.3.4.3.2", "SHA256");
         digestNames.put("2.16.840.1.101.3.4.3.3", "SHA384");
         digestNames.put("2.16.840.1.101.3.4.3.4", "SHA512");
         digestNames.put("1.3.36.3.3.1.3", "RIPEMD128");
         digestNames.put("1.3.36.3.3.1.2", "RIPEMD160");
         digestNames.put("1.3.36.3.3.1.4", "RIPEMD256");
+        // SHA-3 family (FIPS 202)
+        digestNames.put("2.16.840.1.101.3.4.2.8", "SHA3-256");
+        digestNames.put("2.16.840.1.101.3.4.2.10", "SHA3-512");
+        // RSASSA-PKCS1-v1_5 with SHA-3
+        digestNames.put("2.16.840.1.101.3.4.3.14", "SHA3-256");
+        digestNames.put("2.16.840.1.101.3.4.3.16", "SHA3-512");
 
         algorithmNames.put("1.2.840.113549.1.1.1", "RSA");
         algorithmNames.put("1.2.840.10040.4.1", "DSA");
@@ -189,6 +195,9 @@ public class PdfPKCS7 {
         algorithmNames.put("1.2.840.10045.4.3.3", "ECDSA");
         algorithmNames.put("1.2.840.10045.4.3.4", "ECDSA");
         algorithmNames.put("1.2.840.113549.1.1.10", "RSAandMGF1");
+        // RSASSA-PKCS1-v1_5 with SHA-3 family (FIPS 202)
+        algorithmNames.put("2.16.840.1.101.3.4.3.14", "RSA");
+        algorithmNames.put("2.16.840.1.101.3.4.3.16", "RSA");
         allowedDigests.put("MD5", "1.2.840.113549.2.5");
         allowedDigests.put("MD2", "1.2.840.113549.2.2");
         allowedDigests.put("SHA1", "1.3.14.3.2.26");
@@ -209,6 +218,9 @@ public class PdfPKCS7 {
         allowedDigests.put("RIPEMD-160", "1.3.36.3.2.1");
         allowedDigests.put("RIPEMD256", "1.3.36.3.2.3");
         allowedDigests.put("RIPEMD-256", "1.3.36.3.2.3");
+        // SHA-3 family (FIPS 202)
+        allowedDigests.put("SHA3-256", "2.16.840.1.101.3.4.2.8");
+        allowedDigests.put("SHA3-512", "2.16.840.1.101.3.4.2.10");
     }
 
     private final List<Certificate> certs;
@@ -267,8 +279,9 @@ public class PdfPKCS7 {
             signCerts = certs;
             signCert = (X509Certificate) certs.iterator().next();
             crls = new ArrayList<>();
-            ASN1InputStream in = new ASN1InputStream(new ByteArrayInputStream(contentsKey));
-            digest = ((DEROctetString) in.readObject()).getOctets();
+            try (ASN1InputStream in = new ASN1InputStream(new ByteArrayInputStream(contentsKey))) {
+                digest = ((DEROctetString) in.readObject()).getOctets();
+            }
             if (provider == null) {
                 sig = Signature.getInstance("SHA1withRSA");
             } else {
@@ -290,15 +303,11 @@ public class PdfPKCS7 {
     public PdfPKCS7(byte[] contentsKey, String provider) {
         try {
             this.provider = provider;
-            ASN1InputStream din = new ASN1InputStream(new ByteArrayInputStream(
-                    contentsKey));
-
-            //
-            // Basic checks to make sure it's a PKCS#7 SignedData Object
-            //
             ASN1Primitive pkcs;
-
-            try {
+            try (ASN1InputStream din = new ASN1InputStream(new ByteArrayInputStream(contentsKey))) {
+                //
+                // Basic checks to make sure it's a PKCS#7 SignedData Object
+                //
                 pkcs = din.readObject();
             } catch (IOException e) {
                 throw new IllegalArgumentException(
