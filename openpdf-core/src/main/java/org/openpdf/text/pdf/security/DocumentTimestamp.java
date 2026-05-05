@@ -7,6 +7,7 @@
  */
 package org.openpdf.text.pdf.security;
 
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import org.openpdf.text.pdf.PdfDate;
 import org.openpdf.text.pdf.PdfDictionary;
@@ -76,15 +77,22 @@ public final class DocumentTimestamp {
      * @param tsa  the time-stamp authority client
      * @param data the data to be timestamped (typically the digest of the byte range)
      * @return the encoded time-stamp token, or {@code null} if the TSA refused to issue one
-     * @throws Exception if the TSA request fails for any reason
+     * @throws GeneralSecurityException if the message digest cannot be computed
+     * @throws java.io.IOException if the TSA request fails
      */
-    public static byte[] timestamp(TSAClient tsa, byte[] data) throws Exception {
+    public static byte[] timestamp(TSAClient tsa, byte[] data) throws GeneralSecurityException, java.io.IOException {
         if (tsa == null || data == null) {
             return null;
         }
-        MessageDigest md = tsa.getMessageDigest();
-        byte[] imprint = md.digest(data);
-        return tsa.getTimeStampToken(null, imprint);
+        try {
+            MessageDigest md = tsa.getMessageDigest();
+            byte[] imprint = md.digest(data);
+            return tsa.getTimeStampToken(null, imprint);
+        } catch (GeneralSecurityException | java.io.IOException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new java.io.IOException("TSA request failed: " + e.getMessage(), e);
+        }
     }
 }
 

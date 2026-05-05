@@ -59,6 +59,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
+import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.util.Arrays;
 import javax.crypto.Cipher;
@@ -686,7 +687,7 @@ public class PdfEncryption {
 
             if (revision == AES_256_V3) {
                 // For V=5 the entire 32-byte SHA-256 digest is the file encryption key.
-                key = mdResult;
+                key = mdResult.clone();
                 keySize = 32;
             } else {
                 setupByEncryptionKey(mdResult, keyLength);
@@ -833,7 +834,7 @@ public class PdfEncryption {
      * @param permission     the PDF permission bitmask
      * @since 3.0.5
      */
-    public void addRecipient(Certificate cert, java.security.PublicKey pqcPublicKey, int permission) {
+    public void addRecipient(Certificate cert, PublicKey pqcPublicKey, int permission) {
         documentID = createDocumentId();
         PdfPublicKeyRecipient recipient = new PdfPublicKeyRecipient(cert, permission);
         recipient.setPqcPublicKey(pqcPublicKey);

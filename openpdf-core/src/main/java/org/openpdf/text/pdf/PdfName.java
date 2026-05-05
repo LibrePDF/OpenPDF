@@ -143,18 +143,6 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      */
     public static final PdfName ADBE_PKCS7_SHA1 = new PdfName("adbe.pkcs7.sha1");
     /**
-     * (PDF 2.0) SubFilter for CAdES detached signatures (ISO 32000-2 §12.8.3.4, ETSI EN 319 142-1).
-     */
-    public static final PdfName ETSI_CADES_DETACHED = new PdfName("ETSI.CAdES.detached");
-    /**
-     * (PDF 2.0) SubFilter for document timestamp signatures (ISO 32000-2 §12.8.5, RFC 3161).
-     */
-    public static final PdfName ETSI_RFC3161 = new PdfName("ETSI.RFC3161");
-    /**
-     * (PDF 2.0) Document timestamp signature type (ISO 32000-2 §12.8.5).
-     */
-    public static final PdfName DOC_TIME_STAMP = new PdfName("DocTimeStamp");
-    /**
      * A name
      */
     public static final PdfName ADBE_X509_RSA_SHA1 = new PdfName("adbe.x509.rsa_sha1");
@@ -857,6 +845,10 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      */
     public static final PdfName DOCOPEN = new PdfName("DocOpen");
     /**
+     * (PDF 2.0) Document timestamp signature type (ISO 32000-2 §12.8.5).
+     */
+    public static final PdfName DOC_TIME_STAMP = new PdfName("DocTimeStamp");
+    /**
      * A name.
      *
      * @since 2.1.6
@@ -988,6 +980,14 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * Extension supplied by ETSI TS 102 778-4 V1.1.2 (2009-12)
      */
     public static final PdfName ESIC = new PdfName("ESIC");
+    /**
+     * (PDF 2.0) SubFilter for CAdES detached signatures (ISO 32000-2 §12.8.3.4, ETSI EN 319 142-1).
+     */
+    public static final PdfName ETSI_CADES_DETACHED = new PdfName("ETSI.CAdES.detached");
+    /**
+     * (PDF 2.0) SubFilter for document timestamp signatures (ISO 32000-2 §12.8.5, RFC 3161).
+     */
+    public static final PdfName ETSI_RFC3161 = new PdfName("ETSI.RFC3161");
 
     /**
      * Stands for "Exclude all fields except those specified in Fields array" which is one possible value of the Action
