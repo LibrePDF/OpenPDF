@@ -132,6 +132,10 @@ public class PdfPKCS7 {
     private static final String ID_RSA = "1.2.840.113549.1.1.1";
     private static final String ID_DSA = "1.2.840.10040.4.1";
     private static final String ID_ECDSA = "1.2.840.10045.2.1";
+    // ML-DSA (NIST FIPS 204) signature algorithm OIDs. See RFC draft-ietf-lamps-dilithium-certificates.
+    private static final String ID_ML_DSA_44 = "2.16.840.1.101.3.4.3.17";
+    private static final String ID_ML_DSA_65 = "2.16.840.1.101.3.4.3.18";
+    private static final String ID_ML_DSA_87 = "2.16.840.1.101.3.4.3.19";
     private static final String ID_CONTENT_TYPE = "1.2.840.113549.1.9.3";
     private static final String ID_MESSAGE_DIGEST = "1.2.840.113549.1.9.4";
     private static final String ID_SIGNING_TIME = "1.2.840.113549.1.9.5";
@@ -198,6 +202,10 @@ public class PdfPKCS7 {
         // RSASSA-PKCS1-v1_5 with SHA-3 family (FIPS 202)
         algorithmNames.put("2.16.840.1.101.3.4.3.14", "RSA");
         algorithmNames.put("2.16.840.1.101.3.4.3.16", "RSA");
+        // ML-DSA (NIST FIPS 204) post-quantum signature algorithms
+        algorithmNames.put(ID_ML_DSA_44, "ML-DSA-44");
+        algorithmNames.put(ID_ML_DSA_65, "ML-DSA-65");
+        algorithmNames.put(ID_ML_DSA_87, "ML-DSA-87");
         allowedDigests.put("MD5", "1.2.840.113549.2.5");
         allowedDigests.put("MD2", "1.2.840.113549.2.2");
         allowedDigests.put("SHA1", "1.3.14.3.2.26");
@@ -531,6 +539,8 @@ public class PdfPKCS7 {
                 digestEncryptionAlgorithm = ID_DSA;
             } else if (digestEncryptionAlgorithm.equals("EC") || digestEncryptionAlgorithm.equals("ECDSA")) {
                 digestEncryptionAlgorithm = ID_ECDSA;
+            } else if (isMlDsaName(digestEncryptionAlgorithm)) {
+                digestEncryptionAlgorithm = mlDsaOid(digestEncryptionAlgorithm);
             } else {
                 throw new NoSuchAlgorithmException(
                         MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
@@ -590,6 +600,30 @@ public class PdfPKCS7 {
      */
     public static String getDigestOid(String digestName) {
         return digestName != null ? allowedDigests.get(digestName) : null;
+    }
+
+    /**
+     * Tests whether the given JCE key/signature algorithm name refers to an
+     * ML-DSA (NIST FIPS 204) post-quantum signature algorithm. The legacy
+     * Bouncy Castle "Dilithium" names are accepted as aliases.
+     */
+    private static boolean isMlDsaName(String name) {
+        return name != null && (name.startsWith("ML-DSA") || name.startsWith("Dilithium"));
+    }
+
+    /**
+     * Maps a JCE ML-DSA / Dilithium key or signature algorithm name to the
+     * corresponding NIST OID. Defaults to ML-DSA-65 when the parameter set is
+     * not explicitly encoded in the name.
+     */
+    private static String mlDsaOid(String name) {
+        if ("ML-DSA-44".equals(name) || "Dilithium2".equals(name)) {
+            return ID_ML_DSA_44;
+        }
+        if ("ML-DSA-87".equals(name) || "Dilithium5".equals(name)) {
+            return ID_ML_DSA_87;
+        }
+        return ID_ML_DSA_65;
     }
 
     /**
@@ -1163,6 +1197,12 @@ public class PdfPKCS7 {
         if (dea == null) {
             dea = digestEncryptionAlgorithm;
         }
+        // ML-DSA (NIST FIPS 204) is a single-shot signature scheme whose JCE
+        // service name (e.g. "ML-DSA-65") is not combined with a separate
+        // message-digest algorithm.
+        if (dea.startsWith("ML-DSA")) {
+            return dea;
+        }
 
         return getHashAlgorithm() + "with" + dea;
     }
@@ -1257,6 +1297,8 @@ public class PdfPKCS7 {
                 this.digestEncryptionAlgorithm = ID_DSA;
             } else if (digestEncryptionAlgorithm.equals("EC")) {
                 digestEncryptionAlgorithm = ID_ECDSA;
+            } else if (isMlDsaName(digestEncryptionAlgorithm)) {
+                this.digestEncryptionAlgorithm = mlDsaOid(digestEncryptionAlgorithm);
             } else {
                 throw new ExceptionConverter(new NoSuchAlgorithmException(
                         MessageLocalization.getComposedMessage("unknown.key.algorithm.1",
