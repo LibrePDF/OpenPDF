@@ -40,7 +40,7 @@ public class PNGPredictor extends Predictor {
      * Undo data based on the png algorithm
      */
     @Override
-	public ByteBuffer unpredict(ByteBuffer imageData)
+    public ByteBuffer unpredict(ByteBuffer imageData)
         throws IOException
     {
         List<byte[]> rows = new ArrayList<byte[]>();

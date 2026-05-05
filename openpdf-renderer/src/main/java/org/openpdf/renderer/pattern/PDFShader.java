@@ -132,7 +132,7 @@ public abstract class PDFShader {
             case COONS_PATCH_MESH_SHADING:
             case TENSOR_PRODUCTS_MESH_SHADING:
             default:    
-            		shader = new DummyShader(type);
+                    shader = new DummyShader(type);
         }
         
         // read the color space (required)

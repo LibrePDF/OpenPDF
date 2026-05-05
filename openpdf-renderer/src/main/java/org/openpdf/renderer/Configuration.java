@@ -9,7 +9,7 @@ package org.openpdf.renderer;
  * PDFRenderer API.
  */
 public class Configuration {
-	private static Configuration INSTANCE;
+    private static Configuration INSTANCE;
 
     /** whether grey scale images will be converted to ARGB */
     private boolean convertGreyscaleImagesToArgb = true;
@@ -31,60 +31,60 @@ public class Configuration {
     /** Print link annotations on pdf **/
     private boolean printLinkAnnotations = true;
     
-	public static synchronized Configuration getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new Configuration();
-		}
-		return INSTANCE;
-	}
+    public static synchronized Configuration getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new Configuration();
+        }
+        return INSTANCE;
+    }
 
     /**
-	 * Enables or disables the conversion of greyscale images to ARGB.
-	 * Disabling this may have a lower memory overhead with high resolution
-	 * (e.g. scanned) images. Note that this has to be called before
-	 * {@link #getImage()} is called to have an effect.
-	 *
-	 * Enabled by default.
-	 * @param aFlag whether greyscale images shall be converted to ARGB.
-	 */
-	public void setConvertGreyscaleImagesToArgb(boolean aFlag) {
-		convertGreyscaleImagesToArgb = aFlag;
-	}
+     * Enables or disables the conversion of greyscale images to ARGB.
+     * Disabling this may have a lower memory overhead with high resolution
+     * (e.g. scanned) images. Note that this has to be called before
+     * {@link #getImage()} is called to have an effect.
+     *
+     * Enabled by default.
+     * @param aFlag whether greyscale images shall be converted to ARGB.
+     */
+    public void setConvertGreyscaleImagesToArgb(boolean aFlag) {
+        convertGreyscaleImagesToArgb = aFlag;
+    }
 
-	/**
-	 * Returns <code>true</code> if greyscale images will be converted to ARGB
-	 */
-	public boolean isConvertGreyscaleImagesToArgb() {
-		return convertGreyscaleImagesToArgb;
-	}
+    /**
+     * Returns <code>true</code> if greyscale images will be converted to ARGB
+     */
+    public boolean isConvertGreyscaleImagesToArgb() {
+        return convertGreyscaleImagesToArgb;
+    }
 
-	/**
-	 * If an image is higher than the given size (in pixels) then
-	 * the image will be rendered in chunks, rather than as one big image.
-	 * This may lead to lower memory consumption for e.g. scanned PDFs with
-	 * large images.
-	 *
-	 * Set to a value <= 0 to disable banded image rendering.
-	 * Defaults to 0 (off)
-	 *
-	 * @param aSize the height threshold at which to enable banded image rendering
-	 */
-	public void setThresholdForBandedImageRendering(int aSize) {
-		thresholdForBandedImageRendering = aSize;
-	}
+    /**
+     * If an image is higher than the given size (in pixels) then
+     * the image will be rendered in chunks, rather than as one big image.
+     * This may lead to lower memory consumption for e.g. scanned PDFs with
+     * large images.
+     *
+     * Set to a value <= 0 to disable banded image rendering.
+     * Defaults to 0 (off)
+     *
+     * @param aSize the height threshold at which to enable banded image rendering
+     */
+    public void setThresholdForBandedImageRendering(int aSize) {
+        thresholdForBandedImageRendering = aSize;
+    }
 
-	/**
-	 * Returns the image height threshold at which to enable banded image rendering.
-	 * @return the threshold value, or a value <= 0 if banded rendering is disabled
-	 */
-	public int getThresholdForBandedImageRendering() {
-		return thresholdForBandedImageRendering;
-	}
+    /**
+     * Returns the image height threshold at which to enable banded image rendering.
+     * @return the threshold value, or a value <= 0 if banded rendering is disabled
+     */
+    public int getThresholdForBandedImageRendering() {
+        return thresholdForBandedImageRendering;
+    }
 
-	/**
-	 * Is the color converting op switched on or off?
-	 * @return - the usage of this color convert op 
-	 */
+    /**
+     * Is the color converting op switched on or off?
+     * @return - the usage of this color convert op 
+     */
     public boolean isAvoidColorConvertOp() {
         return avoidColorConvertOp;
     }
@@ -131,14 +131,14 @@ public class Configuration {
      * @param printSignatureField
      */
     public void setPrintSignatureFields(boolean printSignatureFields) {
-    	this.printSigantureFields = printSignatureFields;
+        this.printSigantureFields = printSignatureFields;
     }
     
     /**
      * @return <code>true</code> if signature fields will be printed on pdf
      */
     public boolean isPrintSignatureFields() {
-    	return this.printSigantureFields;
+        return this.printSigantureFields;
     }
 
     /**
@@ -147,14 +147,14 @@ public class Configuration {
      * @param printStampAnnotation
      */
     public void setPrintStampAnnotations(boolean printStampAnnotations) {
-    	this.printStampAnnotations = printStampAnnotations;
+        this.printStampAnnotations = printStampAnnotations;
     }
     
     /**
      * @return <code>true</code> if stamp annotations will be printed on pdf
      */
     public boolean isPrintStampAnnotations() {
-    	return this.printStampAnnotations;
+        return this.printStampAnnotations;
     }
     
     /**
@@ -163,15 +163,15 @@ public class Configuration {
      * @param printWidgetAnnotations
      */
     public void setPrintWidgetAnnotations(boolean printWidgetAnnotations) {
-    	this.printWidgetAnnotations = printWidgetAnnotations;
+        this.printWidgetAnnotations = printWidgetAnnotations;
     }
     
     /**
      * @return <code>true</code> if widget annotations will be printed on pdf
      */
     public boolean isPrintWidgetAnnotations() {
-		return this.printWidgetAnnotations;
-	}
+        return this.printWidgetAnnotations;
+    }
     
     /**
      * Print freetext annotations on pdf
@@ -179,14 +179,14 @@ public class Configuration {
      * @param printFreetextAnnotations
      */
     public void setPrintFreetextAnnotations(boolean printFreetextAnnotations) {
-    	this.printFreetextAnnotations = printFreetextAnnotations;
+        this.printFreetextAnnotations = printFreetextAnnotations;
     }
     
     /**
      * @return <code>true</code> if freetext annotations will be printed on pdf
      */
     public boolean isPrintFreetextAnnotations() {
-    	return this.printFreetextAnnotations;
+        return this.printFreetextAnnotations;
     }
     
     /**
@@ -195,13 +195,13 @@ public class Configuration {
      * @param printLinkAnnotations
      */
     public void setPrintLinkAnnotations(boolean printLinkAnnotations) {
-    	this.printLinkAnnotations = printLinkAnnotations;
+        this.printLinkAnnotations = printLinkAnnotations;
     }
     
     /**
      * @return <code>true</code> if link annotations will be printed on pdf
      */
     public boolean isPrintLinkAnnotations() {
-    	return this.printLinkAnnotations;
+        return this.printLinkAnnotations;
     }
 }

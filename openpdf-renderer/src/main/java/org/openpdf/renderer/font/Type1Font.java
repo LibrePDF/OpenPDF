@@ -521,14 +521,14 @@ public class Type1Font extends OutlineFont {
                         this.sloc = 0;
                         break;
                     case 4:   // y vmoveto
-                		pt.y += pop();
-                    	if (flexMode) {
-                    		flexArray[flexPt++] = pt.x;
-                    		flexArray[flexPt++] = pt.y;
-                    	}
-                    	else{
-                    		gp.moveTo(pt.x, pt.y);
-                    	}
+                        pt.y += pop();
+                        if (flexMode) {
+                            flexArray[flexPt++] = pt.x;
+                            flexArray[flexPt++] = pt.y;
+                        }
+                        else{
+                            gp.moveTo(pt.x, pt.y);
+                        }
                         this.sloc = 0;
                         break;
                     case 5:   // x y rlineto
@@ -538,13 +538,13 @@ public class Type1Font extends OutlineFont {
                         this.sloc = 0;
                         break;
                     case 6:   // x hlineto
-                    	pt.x += pop();
+                        pt.x += pop();
                         gp.lineTo(pt.x, pt.y);
                         this.sloc = 0;
                         break;
                     case 7:   // y vlineto
-                    	pt.y += pop();
-                    	gp.lineTo(pt.x, pt.y);
+                        pt.y += pop();
+                        gp.lineTo(pt.x, pt.y);
                         this.sloc = 0;
                         break;
                     case 8:   // x1 y1 x2 y2 x3 y3 rcurveto
@@ -568,36 +568,36 @@ public class Type1Font extends OutlineFont {
                     case 10:  // n callsubr
                         int n = (int) pop();
                         if (n == 1) {
-                        	flexMode = true;
-                        	flexPt = 0;
-                        	this.sloc = 0;
-                        	break;
+                            flexMode = true;
+                            flexPt = 0;
+                            this.sloc = 0;
+                            break;
                         }
                         if (n == 0) {
-                        	if (flexPt != 14) {
-                        	    PDFDebugger.debug("There must be 14 flex entries!");
-                        	}
-                        	else {
-                        		gp.curveTo(flexArray[2], flexArray[3], flexArray[4], 
-                        				flexArray[5],
-                        				flexArray[6], flexArray[7]);
-                        		gp.curveTo(flexArray[8], flexArray[9], flexArray[10], 
-                        				flexArray[11],
-                        				flexArray[12], flexArray[13]);
-                        		flexMode = false;
-                        		this.sloc = 0;
-                        		//System.out.println("End Flex " + flexPt);
-                        		break;
-                        	}
+                            if (flexPt != 14) {
+                                PDFDebugger.debug("There must be 14 flex entries!");
+                            }
+                            else {
+                                gp.curveTo(flexArray[2], flexArray[3], flexArray[4], 
+                                        flexArray[5],
+                                        flexArray[6], flexArray[7]);
+                                gp.curveTo(flexArray[8], flexArray[9], flexArray[10], 
+                                        flexArray[11],
+                                        flexArray[12], flexArray[13]);
+                                flexMode = false;
+                                this.sloc = 0;
+                                //System.out.println("End Flex " + flexPt);
+                                break;
+                            }
                         }
                         if (n == 2) {
-                        	if (flexMode == false) {
-                        	    PDFDebugger.debug("Flex mode assumed");
-                        	} 
-                        	else {
-                        		this.sloc = 0;
-                        		break;
-                        	}
+                            if (flexMode == false) {
+                                PDFDebugger.debug("Flex mode assumed");
+                            } 
+                            else {
+                                this.sloc = 0;
+                                break;
+                            }
                         }
                         if (this.subrs[n] == null) {
                             PDFDebugger.debug("No subroutine #" + n);
@@ -678,11 +678,11 @@ public class Type1Font extends OutlineFont {
                         wid.y = 0;
                         pt.x = pop();
                         pt.y = 0;
-                        //		    gp.moveTo(pt.x, pt.y);
+                        //            gp.moveTo(pt.x, pt.y);
                         this.sloc = 0;
                         break;
                     case 14:  // endchar
-                        //		    return;
+                        //            return;
                         break;
                     case 15:  // x
                     case 16:  // x
@@ -692,26 +692,26 @@ public class Type1Font extends OutlineFont {
                     case 20:  // x
                         throw new RuntimeException("Bad command (" + v + ")");
                     case 21:  // x y rmoveto
-                		pt.y += pop();
-                		pt.x += pop();
-                    	if (flexMode) {
-                    		flexArray[flexPt++] = pt.x;
-                    		flexArray[flexPt++] = pt.y;
-                    	}
-                    	else{
-                    		gp.moveTo(pt.x, pt.y);
-                    	}
-                		this.sloc = 0;
+                        pt.y += pop();
+                        pt.x += pop();
+                        if (flexMode) {
+                            flexArray[flexPt++] = pt.x;
+                            flexArray[flexPt++] = pt.y;
+                        }
+                        else{
+                            gp.moveTo(pt.x, pt.y);
+                        }
+                        this.sloc = 0;
                         break;
                     case 22:  // x hmoveto
-                		pt.x += pop();
-                    	if (flexMode) {
-                    		flexArray[flexPt++] = pt.x;
-                    		flexArray[flexPt++] = pt.y;
-                    	}
-                    	else {
-                    		gp.moveTo(pt.x, pt.y);
-                    	}
+                        pt.x += pop();
+                        if (flexMode) {
+                            flexArray[flexPt++] = pt.x;
+                            flexArray[flexPt++] = pt.y;
+                        }
+                        else {
+                            gp.moveTo(pt.x, pt.y);
+                        }
                         this.sloc = 0;
                         break;
                     case 23:  // x
@@ -853,7 +853,7 @@ public class Type1Font extends OutlineFont {
      * @return the glyph outline, or null if unavailable
      */
     @Override
-	protected GeneralPath getOutline(String name, float width) {
+    protected GeneralPath getOutline(String name, float width) {
         // make sure we have a valid name
         if (name == null || !this.name2outline.containsKey(name)) {
             name = ".notdef";
@@ -898,11 +898,11 @@ public class Type1Font extends OutlineFont {
      * @return the glyph outline
      */
     @Override
-	protected GeneralPath getOutline(char src, float width) {
+    protected GeneralPath getOutline(char src, float width) {
         return getOutline(this.chr2name[src & 0xff], width);
     }
     
     public boolean isName2OutlineFilled() {
-    	return (name2outline!=null) && !name2outline.isEmpty();
+        return (name2outline!=null) && !name2outline.isEmpty();
     }
 }

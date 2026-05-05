@@ -109,7 +109,7 @@ public class TTFFont extends OutlineFont {
      * Get the outline of a character given the character code
      */
     @Override
-	protected synchronized GeneralPath getOutline (char src, float width) {
+    protected synchronized GeneralPath getOutline (char src, float width) {
         // find the cmaps
         CmapTable cmap = (CmapTable) this.font.getTable ("cmap");
 
@@ -131,15 +131,15 @@ public class TTFFont extends OutlineFont {
         
         // windows symbol font CMap may use one of the following code ranges
         if (src >= 0 && src <= 0xFF) {
-        	int[] symbolPages = new int[]{0xF000, 0xF100, 0xF200};        	
-        	for (int codePage : symbolPages) {
+            int[] symbolPages = new int[]{0xF000, 0xF100, 0xF200};            
+            for (int codePage : symbolPages) {
                 for (int i = 0; i < maps.length; i++) {
                     int idx = maps[i].map ( (char)(src | codePage));
                     if (idx != 0) {
                         return getOutline (idx, width);
                     }
-                }        					
-			}
+                }                            
+            }
         }
 
         // not found, return the empty glyph
@@ -166,7 +166,7 @@ public class TTFFont extends OutlineFont {
         // find the (3, 1) cmap subtable (Microsoft Unicode)
         CMap map = cmap.getCMap ((short) 3, (short) 1);
         if (map == null) {
-        	return null;
+            return null;
         }
         int idx = map.map (val);
         if (idx != 0) {
@@ -180,7 +180,7 @@ public class TTFFont extends OutlineFont {
      * Get the outline of a character given the character name
      */
     @Override
-	protected synchronized GeneralPath getOutline (String name, float width) {
+    protected synchronized GeneralPath getOutline (String name, float width) {
         int idx;
         PostTable post = (PostTable) this.font.getTable ("post");
         if (post != null) {
@@ -222,11 +222,11 @@ public class TTFFont extends OutlineFont {
         // scale the glyph to match the desired advance
         float widthfactor = width / advance;
 
-		// the base transform scales the glyph to 1x1
-		AffineTransform at = AffineTransform.getScaleInstance(1 / this.unitsPerEm, 1 / this.unitsPerEm);
-		if (advance != 0) {
-			at.concatenate(AffineTransform.getScaleInstance(widthfactor, 1));
-		}
+        // the base transform scales the glyph to 1x1
+        AffineTransform at = AffineTransform.getScaleInstance(1 / this.unitsPerEm, 1 / this.unitsPerEm);
+        if (advance != 0) {
+            at.concatenate(AffineTransform.getScaleInstance(widthfactor, 1));
+        }
 
         gp.transform (at);
 

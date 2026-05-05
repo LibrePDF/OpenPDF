@@ -63,15 +63,15 @@ public class FlateDecode {
         byte[] decomp = new byte[bufSize];
         int read = 0;
 
-        try {        	
+        try {            
             while (!inf.finished()) {
                 read = inf.inflate(decomp);
                 if (read <= 0) {
-                    if (inf.needsDictionary()) {                    	
+                    if (inf.needsDictionary()) {                        
                         throw new PDFParseException("Don't know how to ask for a dictionary in FlateDecode");
                     } else {
-                       	// just return the data which is already read
-                       	break;
+                           // just return the data which is already read
+                           break;
                     }
                 }
                 baos.write(decomp, 0, read);

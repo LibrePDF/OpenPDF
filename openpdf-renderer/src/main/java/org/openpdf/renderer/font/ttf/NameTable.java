@@ -153,7 +153,7 @@ public class NameTable extends TrueTypeTable {
      * Read the table from data
      */
     @Override
-	public void setData(ByteBuffer data) {
+    public void setData(ByteBuffer data) {
         //read table header
         setFormat(data.getShort());
         int count = data.getShort();
@@ -194,7 +194,7 @@ public class NameTable extends TrueTypeTable {
      * Get the data in this table as a buffer
      */
     @Override
-	public ByteBuffer getData() {
+    public ByteBuffer getData() {
         // alocate the output buffer
         ByteBuffer buf = ByteBuffer.allocate(getLength());
         
@@ -258,7 +258,7 @@ public class NameTable extends TrueTypeTable {
      * Get the length of this table
      */
     @Override
-	public int getLength() {
+    public int getLength() {
         // start with the size of the fixed header plus the size of the
         // records
         int length = 6 + (12 * getCount());
@@ -324,7 +324,7 @@ public class NameTable extends TrueTypeTable {
     
     /** Get a pretty string */
     @Override
-	public String toString() {
+    public String toString() {
         StringBuffer buf = new StringBuffer();
         String indent = "    ";
         
@@ -346,7 +346,7 @@ public class NameTable extends TrueTypeTable {
     
     public Collection<String> getNames()
     {
-    	return Collections.unmodifiableCollection(records.values());
+        return Collections.unmodifiableCollection(records.values());
     }
     
     /**
@@ -389,7 +389,7 @@ public class NameTable extends TrueTypeTable {
          * Compare two records
          */
         @Override
-		public boolean equals(Object o) {
+        public boolean equals(Object o) {
             return (compareTo(o) == 0);
         }
         
@@ -397,7 +397,7 @@ public class NameTable extends TrueTypeTable {
          * Compare two records
          */
         @Override
-		public int compareTo(Object obj) {
+        public int compareTo(Object obj) {
             if (!(obj instanceof NameRecord)) {
                 return -1;
             }

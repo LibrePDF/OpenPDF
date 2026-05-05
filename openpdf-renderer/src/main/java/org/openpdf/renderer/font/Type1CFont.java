@@ -162,7 +162,7 @@ public class Type1CFont extends OutlineFont {
             printData ();
             throw new RuntimeException ("Got a 255 code while reading dict");
         } else { // num was 255
-        	this.fnum = (((this.data[this.pos] & 0xff) << 24) |
+            this.fnum = (((this.data[this.pos] & 0xff) << 24) |
                     ((this.data[this.pos + 1] & 0xff) << 16) |
                     ((this.data[this.pos + 2] & 0xff) << 8) |
                     ((this.data[this.pos + 3] & 0xff))) / 65536f;
@@ -314,7 +314,7 @@ public class Type1CFont extends OutlineFont {
         }
 
         @Override
-		public String toString () {
+        public String toString () {
             return "Range: start: " + this.start + ", len: " + this.len;
         }
     }
@@ -522,7 +522,7 @@ public class Type1CFont extends OutlineFont {
         this.pos = base;
         int nextra = readInt (2);
         this.names = new String[nextra];
-        //	safenames= new String[nextra];
+        //    safenames= new String[nextra];
         for (int i = 0; i < nextra; i++) {
             Range r = getIndexEntry (base, i);
             this.names[i] = new String (this.data, r.getStart (), r.getLen ());
@@ -814,7 +814,7 @@ public class Type1CFont extends OutlineFont {
                     break;
                 case 19: // hintmask
                 case 20: // cntrmask
-                	stemhints += (this.stackptr) / 2;
+                    stemhints += (this.stackptr) / 2;
                     this.pos += (stemhints - 1) / 8 + 1;
                     this.stackptr = 0;
                     break;
@@ -1144,7 +1144,7 @@ public class Type1CFont extends OutlineFont {
      * @return the glyph outline, or null if unavailable
      */
     @Override
-	protected GeneralPath getOutline (String name, float width) {
+    protected GeneralPath getOutline (String name, float width) {
         // first find the index of this name
         int index = getNameIndex (name);
 
@@ -1168,7 +1168,7 @@ public class Type1CFont extends OutlineFont {
      * @return the glyph outline
      */
     @Override
-	protected GeneralPath getOutline (char src, float width) {
+    protected GeneralPath getOutline (char src, float width) {
         // ignore high bits
         int index = (src & 0xff);
 

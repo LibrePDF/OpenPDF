@@ -68,7 +68,7 @@ public class GlyfTable extends TrueTypeTable {
   
     /** get the data in this map as a ByteBuffer */
     @Override
-	public ByteBuffer getData() {
+    public ByteBuffer getData() {
         int size = getLength();
         
         ByteBuffer buf = ByteBuffer.allocate(size);
@@ -77,7 +77,7 @@ public class GlyfTable extends TrueTypeTable {
         for (int i = 0; i < this.glyphs.length; i++) {
             Object o = this.glyphs[i];
             if (o == null) {
-		continue;
+        continue;
             }
 
             ByteBuffer glyfData = null;
@@ -100,7 +100,7 @@ public class GlyfTable extends TrueTypeTable {
     
     /** Initialize this structure from a ByteBuffer */
     @Override
-	public void setData(ByteBuffer data) {
+    public void setData(ByteBuffer data) {
         for (int i = 0; i < this.glyphs.length; i++) {
             int location = this.loca.getOffset(i);
             int length = this.loca.getSize(i);
@@ -122,7 +122,7 @@ public class GlyfTable extends TrueTypeTable {
      * Get the length of this table
      */
     @Override
-	public int getLength() {
+    public int getLength() {
         int length = 0;
         
         for (int i = 0; i < this.glyphs.length; i++) {
@@ -145,7 +145,7 @@ public class GlyfTable extends TrueTypeTable {
      * Create a pretty String
      */
     @Override
-	public String toString() {
+    public String toString() {
         StringBuffer buf = new StringBuffer();
         String indent = "    ";
      

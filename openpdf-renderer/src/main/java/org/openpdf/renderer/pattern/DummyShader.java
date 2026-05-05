@@ -8,18 +8,18 @@ import org.openpdf.renderer.PDFPaint;
 
 public class DummyShader extends PDFShader {
 
-	protected DummyShader(int type) {
-		super(type);
-	}
+    protected DummyShader(int type) {
+        super(type);
+    }
 
-	@Override
-	public void parse(PDFObject shareObj) throws IOException {
-		
-	}
+    @Override
+    public void parse(PDFObject shareObj) throws IOException {
+        
+    }
 
-	@Override
-	public PDFPaint getPaint() {
-		return PDFPaint.getPaint(Color.PINK);
-	}
-		
+    @Override
+    public PDFPaint getPaint() {
+        return PDFPaint.getPaint(Color.PINK);
+    }
+        
 }

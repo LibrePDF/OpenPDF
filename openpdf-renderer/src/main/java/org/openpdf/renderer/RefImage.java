@@ -43,7 +43,7 @@ public class RefImage extends BufferedImage {
      * return the existing graphics object.
      */
     @Override
-	public Graphics2D createGraphics() {
+    public Graphics2D createGraphics() {
         if (this.g == null) {
             this.g = super.createGraphics();
         }

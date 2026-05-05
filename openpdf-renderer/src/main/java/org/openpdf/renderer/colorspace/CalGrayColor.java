@@ -41,27 +41,27 @@ public class CalGrayColor extends ColorSpace {
      * for "WhitePoint" and "BlackPoint", and a Number for "Gamma"
      */
     public CalGrayColor(PDFObject obj) throws IOException {
-	// obj is a dictionary that has the following parts:
-	// WhitePoint [a b c]
-	// BlackPoint [a b c]
-	// Gamma a
-	super(TYPE_GRAY, 1);
-	PDFObject ary= obj.getDictRef("WhitePoint");
-	if (ary!=null) {
-	    for(int i=0; i<3; i++) {
-		this.white[i]= ary.getAt(i).getFloatValue();
-	    }
-	}
-	ary= obj.getDictRef("BlackPoint");
-	if (ary!=null) {
-	    for(int i=0; i<3; i++) {
-		this.black[i]= ary.getAt(i).getFloatValue();
-	    }
-	}
-	PDFObject g= obj.getDictRef("Gamma");
-	if (g!=null) {
-	    this.gamma= g.getFloatValue();
-	}
+    // obj is a dictionary that has the following parts:
+    // WhitePoint [a b c]
+    // BlackPoint [a b c]
+    // Gamma a
+    super(TYPE_GRAY, 1);
+    PDFObject ary= obj.getDictRef("WhitePoint");
+    if (ary!=null) {
+        for(int i=0; i<3; i++) {
+        this.white[i]= ary.getAt(i).getFloatValue();
+        }
+    }
+    ary= obj.getDictRef("BlackPoint");
+    if (ary!=null) {
+        for(int i=0; i<3; i++) {
+        this.black[i]= ary.getAt(i).getFloatValue();
+        }
+    }
+    PDFObject g= obj.getDictRef("Gamma");
+    if (g!=null) {
+        this.gamma= g.getFloatValue();
+    }
     }
 
     /**
@@ -76,7 +76,7 @@ public class CalGrayColor extends ColorSpace {
      * get the number of components (1).
      */
     @Override public int getNumComponents() {
-	return 1;
+    return 1;
     }
 
     /**
@@ -85,49 +85,49 @@ public class CalGrayColor extends ColorSpace {
      * @return the RGB values (0-1)
      */
     @Override
-	public float[] toRGB(float comp[]) {
-	if (comp.length==1) {
-	    float mul= (float)Math.pow(comp[0], this.gamma);
-	    float xyz[] = {
-		this.white[0]*mul,
-		0,
-		0};
-	    float rgb[]= cie.fromCIEXYZ(xyz);
-	    return rgb;
-	} else {
-	    return this.black;
-	}
+    public float[] toRGB(float comp[]) {
+    if (comp.length==1) {
+        float mul= (float)Math.pow(comp[0], this.gamma);
+        float xyz[] = {
+        this.white[0]*mul,
+        0,
+        0};
+        float rgb[]= cie.fromCIEXYZ(xyz);
+        return rgb;
+    } else {
+        return this.black;
+    }
     }
 
     /**
      * convert from RGB to Calibrated Gray.  NOT IMPLEMENTED
      */
     @Override
-	public float[] fromRGB(float[] rgbvalue) {
-	return new float[1];
+    public float[] fromRGB(float[] rgbvalue) {
+    return new float[1];
     }
 
     /**
      * convert from CIEXYZ to Calibrated Gray.  NOT IMPLEMENTED
      */
     @Override
-	public float[] fromCIEXYZ(float[] colorvalue) {
-	return new float[1];
+    public float[] fromCIEXYZ(float[] colorvalue) {
+    return new float[1];
     }
 
     /**
      * get the type of this ColorSpace (TYPE_GRAY)
      */
     @Override public int getType() {
-	return TYPE_GRAY;
+    return TYPE_GRAY;
     }
 
     /**
      * convert from Calibrated Gray to CIEXYZ.  NOT IMPLEMENTED
      */
     @Override
-	public float[] toCIEXYZ(float[] colorvalue) {
-	return new float[3];
+    public float[] toCIEXYZ(float[] colorvalue) {
+    return new float[3];
     }
     
 }

@@ -98,7 +98,7 @@ public class MaxpTable extends TrueTypeTable {
      * Set the values from data
      */
     @Override
-	public void setData(ByteBuffer data) {
+    public void setData(ByteBuffer data) {
         if (data.remaining() != 32) {
             throw new IllegalArgumentException("Bad size for Maxp table");
         }
@@ -124,7 +124,7 @@ public class MaxpTable extends TrueTypeTable {
      * Get a buffer from the data
      */
     @Override
-	public ByteBuffer getData() {
+    public ByteBuffer getData() {
         ByteBuffer buf = ByteBuffer.allocate(getLength());
         
         buf.putInt(getVersion());
@@ -153,7 +153,7 @@ public class MaxpTable extends TrueTypeTable {
      * Get the length of this table
      */
     @Override
-	public int getLength() {
+    public int getLength() {
         return 32;
     }
     
@@ -401,7 +401,7 @@ public class MaxpTable extends TrueTypeTable {
      * Create a pretty String
      */
     @Override
-	public String toString() {
+    public String toString() {
         StringBuffer buf = new StringBuffer();
         String indent = "    ";
         

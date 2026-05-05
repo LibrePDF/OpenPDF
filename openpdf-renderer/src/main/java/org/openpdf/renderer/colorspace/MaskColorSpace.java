@@ -41,7 +41,7 @@ public class MaskColorSpace extends ColorSpace {
     }
     
     @Override
-	public float[] fromCIEXYZ(float[] colorvalue) {
+    public float[] fromCIEXYZ(float[] colorvalue) {
         float x = colorvalue[0];
         float y = colorvalue[1];
         float z = colorvalue[2];
@@ -58,7 +58,7 @@ public class MaskColorSpace extends ColorSpace {
     }
     
     @Override
-	public float[] fromRGB(float[] rgbvalue) {
+    public float[] fromRGB(float[] rgbvalue) {
         float r = rgbvalue[0];
         float g = rgbvalue[1];
         float b = rgbvalue[2];
@@ -79,23 +79,23 @@ public class MaskColorSpace extends ColorSpace {
     float[] prev0= this.cie.fromRGB(toRGB(new float[] {0.0f}));
 
     @Override
-	public float[] toCIEXYZ(float[] colorvalue) {
-	if (colorvalue[0]==1) {
-	    return this.prev1;
-	} else if (colorvalue[0]==0) {
-	    return this.prev0;
-	} else {
-	    return this.cie.fromRGB(toRGB(colorvalue));
-	}
+    public float[] toCIEXYZ(float[] colorvalue) {
+    if (colorvalue[0]==1) {
+        return this.prev1;
+    } else if (colorvalue[0]==0) {
+        return this.prev0;
+    } else {
+        return this.cie.fromRGB(toRGB(colorvalue));
+    }
     }
     
     @Override
-	public float[] toRGB(float[] colorvalue) {
+    public float[] toRGB(float[] colorvalue) {
         return ((Color) this.paint.getPaint()).getRGBColorComponents(null);
     }
 
     @Override public int getNumComponents() {
-	return 1;
+    return 1;
     }
     
 }

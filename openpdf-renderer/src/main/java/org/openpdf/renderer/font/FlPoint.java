@@ -41,8 +41,8 @@ public class FlPoint {
     
     /** reset the values to (0,0) and closed */
     public final void reset() {
-	this.x= 0;
-	this.y= 0;
-	this.open= false;
+    this.x= 0;
+    this.y= 0;
+    this.open= false;
     }
 }

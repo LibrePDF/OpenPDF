@@ -105,7 +105,7 @@ public class FunctionType3 extends PDFFunction {
      * </li></p>
      */
     @Override
-	protected void parse(PDFObject obj) throws IOException {
+    protected void parse(PDFObject obj) throws IOException {
         // read the Functions array (required)
         PDFObject functionsObj = obj.getDictRef("Functions");
         if (functionsObj == null) {
@@ -114,7 +114,7 @@ public class FunctionType3 extends PDFFunction {
         PDFObject[] functionsAry = functionsObj.getArray();
         functions = new PDFFunction[functionsAry.length];
         for (int i = 0; i < functionsAry.length; i++) {
-        	functions[i] = PDFFunction.getFunction(functionsAry[i]);
+            functions[i] = PDFFunction.getFunction(functionsAry[i]);
         }
         
         // read the Bounds array (required)
@@ -125,7 +125,7 @@ public class FunctionType3 extends PDFFunction {
         PDFObject[] boundsAry = boundsObj.getArray();
         bounds = new float[boundsAry.length + 2];
         if (bounds.length - 2 != functions.length - 1) {
-        	throw new PDFParseException("Bounds array must be of length " + (functions.length - 1));
+            throw new PDFParseException("Bounds array must be of length " + (functions.length - 1));
         }
         
         for (int i = 0; i < boundsAry.length; i++) {
@@ -142,7 +142,7 @@ public class FunctionType3 extends PDFFunction {
         PDFObject[] encodeAry = encodeObj.getArray();
         encode = new float[encodeAry.length];
         if (encode.length != 2*functions.length) {
-        	throw new PDFParseException("Encode array must be of length " + 2*functions.length);
+            throw new PDFParseException("Encode array must be of length " + 2*functions.length);
         }
         for (int i = 0; i < encodeAry.length; i++) {
             encode[i] = encodeAry[i].getFloatValue();
@@ -156,28 +156,28 @@ public class FunctionType3 extends PDFFunction {
      *                with the output values, or null to return a new array
      */
     @Override
-	protected void doFunction(float[] inputs, int inputOffset,
-			float[] outputs, int outputOffset) {
-    	
-    	float x = inputs[inputOffset];
+    protected void doFunction(float[] inputs, int inputOffset,
+            float[] outputs, int outputOffset) {
+        
+        float x = inputs[inputOffset];
 
-    	// calculate the output values
-    	int p = bounds.length - 2;
-    	while (x < bounds[p]) p--;
-    	x = interpolate(x, bounds[p], bounds[p+1], encode[2*p], encode[2*p + 1]);
-    	float[] out = functions[p].calculate(new float[]{x});
-    	for (int i = 0; i < out.length; i++) {
-    		outputs[i + outputOffset] = out[i];
-    	}
+        // calculate the output values
+        int p = bounds.length - 2;
+        while (x < bounds[p]) p--;
+        x = interpolate(x, bounds[p], bounds[p+1], encode[2*p], encode[2*p + 1]);
+        float[] out = functions[p].calculate(new float[]{x});
+        for (int i = 0; i < out.length; i++) {
+            outputs[i + outputOffset] = out[i];
+        }
     }
     
     @Override
     public int getNumInputs() {
-    	return 1;
+        return 1;
     }
     
     @Override
     public int getNumOutputs() {
-    	return functions[0].getNumOutputs();
+        return functions[0].getNumOutputs();
     }
 }

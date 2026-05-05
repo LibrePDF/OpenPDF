@@ -84,7 +84,7 @@ public class PostTable extends TrueTypeTable {
     
     /** get the data in this map as a ByteBuffer */
     @Override
-	public ByteBuffer getData() {
+    public ByteBuffer getData() {
         int size = getLength();
         
         ByteBuffer buf = ByteBuffer.allocate(size);
@@ -112,7 +112,7 @@ public class PostTable extends TrueTypeTable {
     
     /** Initialize this structure from a ByteBuffer */
     @Override
-	public void setData(ByteBuffer data) {
+    public void setData(ByteBuffer data) {
         setFormat(data.getInt());
         setItalicAngle(data.getInt());
         setUnderlinePosition(data.getShort());
@@ -151,7 +151,7 @@ public class PostTable extends TrueTypeTable {
      * Get the length of this table
      */
     @Override
-	public int getLength() {
+    public int getLength() {
         int size = 32;
         if (this.nameMap != null) {
             size += this.nameMap.getLength();
@@ -373,7 +373,7 @@ public class PostTable extends TrueTypeTable {
         };
         
         @Override
-		/** map a name to a character index */
+        /** map a name to a character index */
         short getCharIndex(String charName) {
             for (int i = 0; i < this.stdNames.length; i++) {
                 if (charName.equals(this.stdNames[i])) {
@@ -385,25 +385,25 @@ public class PostTable extends TrueTypeTable {
         }
         
         @Override
-		/** name a character index to a name */
+        /** name a character index to a name */
         String getCharName(char charIndex) {
             return this.stdNames[charIndex];
         }
         
         @Override
-		/** get the length of the data in this map */
+        /** get the length of the data in this map */
         int getLength() {
             return 0;
         }
         
         @Override
-		/** get the data in this map as a ByteBuffer */
+        /** get the data in this map as a ByteBuffer */
         ByteBuffer getData() {
             return ByteBuffer.allocate(0);
         }
         
         @Override
-		/** set the data in this map from a ByteBuffer */
+        /** set the data in this map from a ByteBuffer */
         void setData(ByteBuffer data) {
             // do nothing
             return;
@@ -419,7 +419,7 @@ public class PostTable extends TrueTypeTable {
         String[] glyphNames;
     
         @Override
-		/** Map a character name to an index */
+        /** Map a character name to an index */
         short getCharIndex(String charName) {
             // find the index of this character name
             short idx = -1;
@@ -450,7 +450,7 @@ public class PostTable extends TrueTypeTable {
         }
         
         @Override
-		/** Map an index to a character name */
+        /** Map an index to a character name */
         String getCharName(char charIndex) {
             if (charIndex >= this.stdNames.length) {
                 return this.glyphNames[charIndex - this.stdNames.length];
@@ -460,7 +460,7 @@ public class PostTable extends TrueTypeTable {
         }
         
         @Override
-		/** get the length of this class's data */
+        /** get the length of this class's data */
         int getLength() {
             // the size of the header plus the table of mappings
             int size = 2 + (2 * this.glyphNameIndex.length);
@@ -475,7 +475,7 @@ public class PostTable extends TrueTypeTable {
         }
         
         @Override
-		/** get the data in this map as a byte array */
+        /** get the data in this map as a byte array */
         ByteBuffer getData() {
             ByteBuffer buf = ByteBuffer.allocate(getLength());
             
@@ -500,7 +500,7 @@ public class PostTable extends TrueTypeTable {
         }
         
         @Override
-		/** set the contents of this map from a ByteBuffer */
+        /** set the contents of this map from a ByteBuffer */
         void setData(ByteBuffer data) {
             short numGlyphs = data.getShort();
             this.glyphNameIndex = new short[numGlyphs];
@@ -529,7 +529,7 @@ public class PostTable extends TrueTypeTable {
             // the length is stored in the first byte, followed by
             // the data
             for (int i = 0; i < maxGlyph; i++) {
-            	if(data.hasRemaining()) {
+                if(data.hasRemaining()) {
                     // size in the first byte
                     byte size = data.get();
                             
@@ -538,7 +538,7 @@ public class PostTable extends TrueTypeTable {
                     data.get(stringData);
                             
                     this.glyphNames[i] = new String(stringData);
-            	}
+                }
             }
         }
     }

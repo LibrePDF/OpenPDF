@@ -147,7 +147,7 @@ public class LZWDecode {
                 break;
             } else if (cW == CLEARDICT) {
                 resetDict();
-            //		pW= -1;
+            //        pW= -1;
             } else if (pW == CLEARDICT) {
                 baos.write(this.dict[cW], 0, this.dict[cW].length);
             } else {
@@ -158,9 +158,9 @@ public class LZWDecode {
                     p[this.dict[pW].length] = this.dict[cW][0];
                     this.dict[this.dictlen++] = p;
                 } else {  // not in the dictionary (should==dictlen)
-                    //		    if (cW!=dictlen) {
-                    //			System.out.println("Got a bouncy code: "+cW+" (dictlen="+dictlen+")");
-                    //		    }
+                    //            if (cW!=dictlen) {
+                    //            System.out.println("Got a bouncy code: "+cW+" (dictlen="+dictlen+")");
+                    //            }
                     byte[] p = new byte[this.dict[pW].length + 1];
                     System.arraycopy(this.dict[pW], 0, p, 0, this.dict[pW].length);
                     p[this.dict[pW].length] = p[0];

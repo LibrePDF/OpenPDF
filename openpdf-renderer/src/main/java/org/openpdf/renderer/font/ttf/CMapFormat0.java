@@ -49,7 +49,7 @@ public class CMapFormat0 extends CMap {
      * Get the length of this table
      */
     @Override
-	public short getLength() {
+    public short getLength() {
         return (short) 262;
     }
     
@@ -57,7 +57,7 @@ public class CMapFormat0 extends CMap {
      * Map from a byte
      */
     @Override
-	public byte map(byte src) {
+    public byte map(byte src) {
         int i = 0xff & src;
         
         return this.glyphIndex[i];
@@ -67,7 +67,7 @@ public class CMapFormat0 extends CMap {
      * Cannot map from short
      */
     @Override
-	public char map(char src) {
+    public char map(char src) {
         if (src  < 0 || src > 255) {
             // out of range
             return (char) 0;
@@ -81,7 +81,7 @@ public class CMapFormat0 extends CMap {
      * Get the src code which maps to the given glyphID
      */
     @Override
-	public char reverseMap(short glyphID) {
+    public char reverseMap(short glyphID) {
         for (int i = 0; i < this.glyphIndex.length; i++) {
             if ((this.glyphIndex[i] & 0xff) == glyphID) {
                 return (char) i;
@@ -122,7 +122,7 @@ public class CMapFormat0 extends CMap {
      * Get the data in this map as a ByteBuffer
      */
     @Override
-	public ByteBuffer getData() {
+    public ByteBuffer getData() {
         ByteBuffer buf = ByteBuffer.allocate(262);
         
         buf.putShort(getFormat());
@@ -140,7 +140,7 @@ public class CMapFormat0 extends CMap {
      * Read the map in from a byte buffer
      */
     @Override
-	public void setData(int length, ByteBuffer data) {
+    public void setData(int length, ByteBuffer data) {
         if (length != 262) {
             throw new IllegalArgumentException("Bad length for CMap format 0");
         }

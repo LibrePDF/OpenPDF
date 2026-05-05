@@ -266,13 +266,13 @@ public class TrueTypeFont {
         // starting at byte 8 as 0x0000. This the checkSumAdjustment so
         // must be ignored here (see the TTF spec)
         if (tagString.equals ("head")) {
-        	if(!data.isReadOnly()) {
-            	data.putInt (8, 0);
-        	}
-        	sum += data.getInt();
-        	sum += data.getInt();
-        	// consume the uncounted checkSumAdjustment int
-        	data.getInt();
+            if(!data.isReadOnly()) {
+                data.putInt (8, 0);
+            }
+            sum += data.getInt();
+            sum += data.getInt();
+            // consume the uncounted checkSumAdjustment int
+            data.getInt();
         }
 
         int nlongs = (data.remaining () + 3) / 4;
@@ -400,7 +400,7 @@ public class TrueTypeFont {
      * Write the font to a pretty string
      */
     @Override
-	public String toString () {
+    public String toString () {
         StringBuffer buf = new StringBuffer ();
 
         buf.append("Type         : ").append(getType()).append("\n");

@@ -225,12 +225,12 @@ public class PDFPage {
                 renderer.addObserver(observer);
             }
             
-			if (!renderer.isFinished()) {
-				renderer.go(wait);
-				if (renderer.getStatus() == Watchable.ERROR) {
-					PDFDebugger.debug("Error during reading image!");
-				}
-			}
+            if (!renderer.isFinished()) {
+                renderer.go(wait);
+                if (renderer.getStatus() == Watchable.ERROR) {
+                    PDFDebugger.debug("Error during reading image!");
+                }
+            }
         }
         // return the image
         return image;
@@ -695,12 +695,12 @@ public class PDFPage {
     }
 
     public void addAnnotations() {
-    	if(this.annots != null) {
+        if(this.annots != null) {
             for (PDFAnnotation pdfAnnotation : this.annots) {
                 // add command to the page if needed
                 this.commands.addAll(pdfAnnotation.getPageCommandsForAnnotation());
             }
-    	}
+        }
     }
     
     public static PDFImageCmd createImageCmd(PDFImage image) {

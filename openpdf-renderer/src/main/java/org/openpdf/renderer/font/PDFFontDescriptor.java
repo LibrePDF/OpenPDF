@@ -104,8 +104,8 @@ public class PDFFontDescriptor {
         setFlags(obj.getDictRef("Flags").getIntValue());
         PDFObject fontNameObj = obj.getDictRef("FontName");
         if (fontNameObj == null){
-        	// fallback to avoid NPE try to use the BaseFont
-        	fontNameObj = obj.getDictRef("BaseFont");
+            // fallback to avoid NPE try to use the BaseFont
+            fontNameObj = obj.getDictRef("BaseFont");
         }
         setFontName(fontNameObj.getStringValue());
         setItalicAngle(obj.getDictRef("ItalicAngle").getIntValue());
@@ -114,32 +114,32 @@ public class PDFFontDescriptor {
         boolean areConditionalParametersRequired = !"Type3".equals(fontSubType)
                 && !Boolean.getBoolean("PDFRenderer.lenientFontDescriptorParsing");
         
-    	// these values are declared as Required except for Type 3 fonts
-    	// however a value might not be available for some fonts and 
-    	// therefore some predefined value is set, so that we have a fallback
+        // these values are declared as Required except for Type 3 fonts
+        // however a value might not be available for some fonts and 
+        // therefore some predefined value is set, so that we have a fallback
         if ( obj.getDictionary().containsKey("Ascent")) {
             setAscent(obj.getDictRef("Ascent").getIntValue());
         }
         else if (areConditionalParametersRequired) {
-        	setAscent(728); // value of ArialMT as used with Report Label
+            setAscent(728); // value of ArialMT as used with Report Label
         }
         if ( obj.getDictionary().containsKey("CapHeight")) {
             setCapHeight(obj.getDictRef("CapHeight").getIntValue());
         }
         else if (areConditionalParametersRequired) {
-        	setCapHeight(716); // value of ArialMT as used with Report Label
+            setCapHeight(716); // value of ArialMT as used with Report Label
         }
         if ( obj.getDictionary().containsKey("Descent")) {
             setDescent(obj.getDictRef("Descent").getIntValue());
         }
         else if (areConditionalParametersRequired) {
-        	setDescent(-210); // value of ArialMT as used with Report Label
+            setDescent(-210); // value of ArialMT as used with Report Label
         }
         if ( obj.getDictionary().containsKey("StemV")) {
             setStemV(obj.getDictRef("StemV").getIntValue());
         }
         else if (areConditionalParametersRequired) {
-        	setStemV(109); // "normal" value for vertical stem width (PDFlib)
+            setStemV(109); // "normal" value for vertical stem width (PDFlib)
         }
 
         // font bounding box (non-optional but a NPE won't help)

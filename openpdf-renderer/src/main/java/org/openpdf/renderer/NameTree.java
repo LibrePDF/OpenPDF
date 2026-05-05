@@ -110,12 +110,12 @@ public class NameTree {
             int comp = key.compareTo(posKey);
             if (comp == 0) {
                 // they match.  Return the value
-        		int tmp = (pos * 2) + 1;
-        		if(array.length>tmp){
+                int tmp = (pos * 2) + 1;
+                if(array.length>tmp){
                     return array[tmp];
-        		}else {
-        			return null;
-        		}
+                }else {
+                    return null;
+                }
             } else if (comp > 0) {
                 // too big, search the top half of the tree
                 start = pos + 1;

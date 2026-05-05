@@ -79,7 +79,7 @@ public abstract class BaseWatchable implements Watchable, Runnable {
     }
 
     @Override
-	public void run() {
+    public void run() {
         try {
             Thread.sleep(1);
             // call setup once we started
@@ -151,7 +151,7 @@ public abstract class BaseWatchable implements Watchable, Runnable {
      * @return one of the well-known statuses
      */
     @Override
-	public int getStatus() {
+    public int getStatus() {
         return this.status;
     }
 
@@ -175,12 +175,12 @@ public abstract class BaseWatchable implements Watchable, Runnable {
 
     /**
      * Stop this watchable if it is not already finished.  
-	 * Stop will cause all processing to cease,
+     * Stop will cause all processing to cease,
      * and the watchable to be destroyed.
      */
     @Override
-	public void stop() {
-    	if (!isFinished()) setStatus(Watchable.STOPPED);
+    public void stop() {
+        if (!isFinished()) setStatus(Watchable.STOPPED);
     }
 
     /**
@@ -190,7 +190,7 @@ public abstract class BaseWatchable implements Watchable, Runnable {
      * different time is called during execution.
      */
     @Override
-	public synchronized void go() {
+    public synchronized void go() {
         this.gate = null;
 
         execute(false);
@@ -216,7 +216,7 @@ public abstract class BaseWatchable implements Watchable, Runnable {
      * @param steps the number of steps to run for
      */
     @Override
-	public synchronized void go(int steps) {
+    public synchronized void go(int steps) {
         this.gate = new Gate();
         this.gate.setStopIterations(steps);
 
@@ -230,7 +230,7 @@ public abstract class BaseWatchable implements Watchable, Runnable {
      * @param millis the number of milliseconds to run for
      */
     @Override
-	public synchronized void go(long millis) {
+    public synchronized void go(long millis) {
         this.gate = new Gate();
         this.gate.setStopTime(millis);
 
@@ -277,11 +277,11 @@ public abstract class BaseWatchable implements Watchable, Runnable {
             this.thread = Thread.currentThread();
             run();
         } else {
-        	this.thread = new Thread(this);
-        	this.thread.setName(getClass().getName());
-        	//Fix for NPE: Taken from http://java.net/jira/browse/PDF_RENDERER-46
-        	synchronized (statusLock) {
-        	    Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
+            this.thread = new Thread(this);
+            this.thread.setName(getClass().getName());
+            //Fix for NPE: Taken from http://java.net/jira/browse/PDF_RENDERER-46
+            synchronized (statusLock) {
+                Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
                     @Override
                     public void uncaughtException( Thread th, Throwable ex )
                     {
@@ -289,7 +289,7 @@ public abstract class BaseWatchable implements Watchable, Runnable {
                     }
                 };
                 thread.setUncaughtExceptionHandler( h );
-        		thread.start();
+                thread.start();
                 try {
                     this.statusLock.wait(5000);
                 } catch (InterruptedException ex) {
@@ -297,7 +297,7 @@ public abstract class BaseWatchable implements Watchable, Runnable {
                     PDFDebugger.debug("Thread interrupted while waiting for status change.");
                 }
 
-        	}
+            }
         }
     }
 
@@ -334,7 +334,7 @@ public abstract class BaseWatchable implements Watchable, Runnable {
      * Set an error on this watchable
      */
     protected void setError(Exception error) {
-    	exception = error;
+        exception = error;
         if (!SuppressSetErrorStackTrace) {
             errorHandler.publishException(error);
         }
@@ -342,9 +342,9 @@ public abstract class BaseWatchable implements Watchable, Runnable {
         setStatus(Watchable.ERROR);
     }
 
-	public Exception getException() {
-		return exception;
-	}
+    public Exception getException() {
+        return exception;
+    }
 
     /** A class that lets us give it a target time or number of steps,
      * and will tell us to stop after that much time or that many steps

@@ -64,7 +64,7 @@ public class FunctionType0 extends PDFFunction {
     
     /** Read the function information from a PDF Object */
     @Override
-	protected void parse(PDFObject obj) throws IOException {
+    protected void parse(PDFObject obj) throws IOException {
         // read the size array (required)
         PDFObject sizeObj = obj.getDictRef("Size");
         if (sizeObj == null) {
@@ -127,7 +127,7 @@ public class FunctionType0 extends PDFFunction {
      *                with the output values, or null to return a new array
      */
     @Override
-	protected void doFunction(float[] inputs, int inputOffset, 
+    protected void doFunction(float[] inputs, int inputOffset, 
                               float[] outputs, int outputOffset) 
     {      
         // calculate the encoded values for each input
@@ -147,7 +147,7 @@ public class FunctionType0 extends PDFFunction {
         }
         
         // do some magic
-	for (int i = 0; i < getNumOutputs(); i++) {
+    for (int i = 0; i < getNumOutputs(); i++) {
             if (getOrder() == 1) {
                 outputs[i + outputOffset] = multilinearInterpolate(encoded, i);
             } else {
