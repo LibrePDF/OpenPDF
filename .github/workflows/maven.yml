@@ -7,10 +7,11 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        java: [21, 24, 25, '26-ea'] 
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        java: [21, 24, 25, '26-ea']
     name: Build with Java ${{ matrix.java }}
     steps:
       - uses: actions/checkout@v5
@@ -22,6 +23,7 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: Check Maven version and directory contents
+        shell: bash
         run: |
           mvn -v
           echo "** ls **"

@@ -1,5 +1,5 @@
 package org.openpdf.text.pdf.fonts;
-
+import org.junit.jupiter.api.Assumptions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -84,6 +84,7 @@ class FontTest {
     @ParameterizedTest(name = "Style {0}")
     @MethodSource("getStyles")
     void testFontStyleOfStyledFont(int style) {
+        Assumptions.assumeFalse(System.getProperty("os.name").toLowerCase().contains("mac"), "Font not available on macOS");
         final Font font = FontFactory.getFont(FONT_NAME_WITH_STYLES, DEFAULT_FONT_SIZE, style);
 
         // For the font Courier, there is no Courier-Underline or Courier-Strikethrough font available.
