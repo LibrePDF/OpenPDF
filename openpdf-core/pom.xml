@@ -39,6 +39,11 @@
       <artifactId>fop</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>com.aayushatharva.brotli4j</groupId>
+      <artifactId>brotli4j</artifactId>
+      <version>${brotli4j.version}</version>
+    </dependency>
 
     <!-- Test Deps -->
     <dependency>

@@ -612,6 +612,12 @@ public class PdfWriter extends DocWriter implements
      */
     protected int compressionLevel = PdfStream.DEFAULT_COMPRESSION;
     /**
+     * Whether streams written by this writer (notably page content streams) should be
+     * compressed using Brotli ({@code /BrotliDecode}) instead of Flate ({@code /FlateDecode}).
+     * Defaults to the value of {@link org.openpdf.text.Document#useBrotliCompression}.
+     */
+    protected boolean useBrotliCompression = Document.useBrotliCompression;
+    /**
      * The fonts of this document
      */
     protected LinkedHashMap<BaseFont, FontDetails> documentFonts = new LinkedHashMap<>();
@@ -2048,6 +2054,29 @@ public class PdfWriter extends DocWriter implements
         } else {
             this.compressionLevel = compressionLevel;
         }
+    }
+
+    /**
+     * Returns whether this writer compresses page content streams with Brotli
+     * ({@code /BrotliDecode}) instead of Flate ({@code /FlateDecode}).
+     *
+     * @return {@code true} if Brotli compression is enabled
+     */
+    public boolean isUseBrotliCompression() {
+        return useBrotliCompression;
+    }
+
+    /**
+     * Enables or disables Brotli compression for page content streams produced by this
+     * writer. When enabled, the streams use the {@code /BrotliDecode} filter — being
+     * standardised as a PDF 2.0 (ISO 32000-2) stream filter through ISO/TS 32001 —
+     * instead of {@code /FlateDecode}. Has no effect if {@link Document#compress}
+     * is {@code false}.
+     *
+     * @param useBrotliCompression {@code true} to enable Brotli, {@code false} for Flate
+     */
+    public void setUseBrotliCompression(boolean useBrotliCompression) {
+        this.useBrotliCompression = useBrotliCompression;
     }
 
     /**

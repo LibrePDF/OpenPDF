@@ -54,6 +54,7 @@ import org.openpdf.text.ExceptionConverter;
 import org.openpdf.text.PageSize;
 import org.openpdf.text.Rectangle;
 import org.openpdf.text.error_messages.MessageLocalization;
+import org.openpdf.text.pdf.codec.BrotliFilter;
 import org.openpdf.text.exceptions.BadPasswordException;
 import org.openpdf.text.exceptions.InvalidPdfException;
 import org.openpdf.text.exceptions.UnsupportedPdfException;
@@ -871,6 +872,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     break;
                 }
                 case "/Crypt":
+                    break;
+                case "/BrotliDecode":
+                    b = BrotliFilter.decode(b);
                     break;
                 default:
                     throw new UnsupportedPdfException(

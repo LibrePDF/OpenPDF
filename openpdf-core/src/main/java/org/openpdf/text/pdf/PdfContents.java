@@ -52,6 +52,7 @@ package org.openpdf.text.pdf;
 import org.openpdf.text.DocWriter;
 import org.openpdf.text.Document;
 import org.openpdf.text.Rectangle;
+import org.openpdf.text.pdf.codec.BrotliFilter;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
@@ -86,17 +87,26 @@ class PdfContents extends PdfStream {
             Rectangle page) throws BadPdfFormatException {
         super();
         try {
-            OutputStream out = null;
-            Deflater deflater = null;
+            PdfWriter writer = text.getPdfWriter();
+            boolean useBrotli = Document.compress
+                    && writer != null
+                    && writer.isUseBrotliCompression();
             streamBytes = new ByteArrayOutputStream();
-            if (Document.compress) {
+
+            OutputStream out;
+            Deflater deflater = null;
+            if (useBrotli) {
                 compressed = true;
-                compressionLevel = text.getPdfWriter().getCompressionLevel();
+                out = BrotliFilter.encoder(streamBytes);
+            } else if (Document.compress) {
+                compressed = true;
+                compressionLevel = writer.getCompressionLevel();
                 deflater = new Deflater(compressionLevel);
                 out = new DeflaterOutputStream(streamBytes, deflater);
             } else {
                 out = streamBytes;
             }
+
             int rotation = page.getRotation();
             switch (rotation) {
                 case 90:
@@ -143,12 +153,13 @@ class PdfContents extends PdfStream {
             if (deflater != null) {
                 deflater.end();
             }
+
+            put(PdfName.LENGTH, new PdfNumber(streamBytes.size()));
+            if (compressed) {
+                put(PdfName.FILTER, useBrotli ? PdfName.BROTLIDECODE : PdfName.FLATEDECODE);
+            }
         } catch (Exception e) {
             throw new BadPdfFormatException(e.getMessage());
-        }
-        put(PdfName.LENGTH, new PdfNumber(streamBytes.size()));
-        if (compressed) {
-            put(PdfName.FILTER, PdfName.FLATEDECODE);
         }
     }
 }
