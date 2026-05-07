@@ -87,6 +87,7 @@
 
     <!-- dependencies -->
     <bouncycastle.version>1.84</bouncycastle.version>
+    <brotli4j.version>1.23.0</brotli4j.version>
     <commons-io.version>2.22.0</commons-io.version>
     <dom4j.version>2.2.0</dom4j.version>
     <fop.version>2.11</fop.version>
