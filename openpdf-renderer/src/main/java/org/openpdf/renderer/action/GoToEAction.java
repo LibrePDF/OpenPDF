@@ -26,6 +26,7 @@ public class GoToEAction extends PDFAction {
 
     /** 
      * Creates a new instance of GoToEAction from an object
+     *
      * @param obj the PDFObject with the action information
      * @throws IOException - in case the action can not be parsed
      */
@@ -47,7 +48,8 @@ public class GoToEAction extends PDFAction {
     }
 
     /*************************************************************************
-     * Parse a target dictionary if available 
+     * Parse a target dictionary if available
+     *
      * @param targetObj
      * @param list - a list of all already parsed targets, for not getting in an endless loop 
      *                     (if a target is found which is already contained, the recursive calling
@@ -67,24 +69,24 @@ public class GoToEAction extends PDFAction {
             
             // find the page number and parse it
             String page = PdfObjectParseUtil.parseStringFromDict("P", targetObj, false);
-            if(page == null){
-                page = ""+PdfObjectParseUtil.parseIntegerFromDict("P", targetObj, false);
+            if (page == null) {
+                page = "" + PdfObjectParseUtil.parseIntegerFromDict("P", targetObj, false);
             }
             target.setPageNo(page);
             
             // find the annotation index and parse it
             String annot = PdfObjectParseUtil.parseStringFromDict("A", targetObj, false);
-            if(annot == null){
-                annot = ""+PdfObjectParseUtil.parseIntegerFromDict("A", targetObj, false);
+            if (annot == null) {
+                annot = "" + PdfObjectParseUtil.parseIntegerFromDict("A", targetObj, false);
             }
             target.setAnnotNo(annot);
             
             //find target dictionary and parse it
             PDFObject subTargetObj = targetObj.getDictRef("T");
-            if(subTargetObj != null){
+            if (subTargetObj != null) {
                 // call this method recursive, in case the target was not already contained in the 
                 // list (this is checked for not getting into an infinite loop)
-                if(list.contains(target) == false){
+                if (list.contains(target) == false) {
                     list.add(target);
                     GoToETarget subTargetDictionary = parseTargetDistionary(subTargetObj, list);
                     target.setTargetDictionary(subTargetDictionary);
@@ -100,6 +102,7 @@ public class GoToEAction extends PDFAction {
 
     /*************************************************************************
      * Create a new GoToEAction from the given attributes
+     *
      * @param dest
      * @param file
      * @param newWindow
@@ -113,6 +116,7 @@ public class GoToEAction extends PDFAction {
 
     /*************************************************************************
      * Get the destination this action refers to
+     *
      * @return PDFDestination
      ************************************************************************/
     public PDFDestination getDestination() {
@@ -121,6 +125,7 @@ public class GoToEAction extends PDFAction {
 
     /*************************************************************************
      * Get the file this action refers to
+     *
      * @return PDFDestination
      ************************************************************************/
     public String getFile() {
@@ -129,6 +134,7 @@ public class GoToEAction extends PDFAction {
 
     /*************************************************************************
      * Should the remote file be opened in a new window?
+     *
      * @return boolean
      ************************************************************************/
     public boolean isNewWindow() {
@@ -137,6 +143,7 @@ public class GoToEAction extends PDFAction {
     
     /*************************************************************************
      * Get the target dictionary
+     *
      * @return GoToETarget
      ************************************************************************/
     public GoToETarget getTarget() {
@@ -160,6 +167,7 @@ public class GoToEAction extends PDFAction {
 
         /*************************************************************************
          * Relation between current document and the target. Can either be "P" or "C"
+         *
          * @return String 
          ************************************************************************/
         public String getRelation() {
@@ -168,6 +176,7 @@ public class GoToEAction extends PDFAction {
 
         /*************************************************************************
          * Relation between current document and the target. Can either be "P" or "C"
+         *
          * @param relation 
          ************************************************************************/
         public void setRelation(String relation) {
@@ -176,6 +185,7 @@ public class GoToEAction extends PDFAction {
 
         /*************************************************************************
          * The file name in the embedded files tree
+         *
          * @return String
          ************************************************************************/
         public String getNameInTree() {
@@ -184,6 +194,7 @@ public class GoToEAction extends PDFAction {
 
         /*************************************************************************
          * The file name in the embedded files tree
+         *
          * @param nameInTree
          ************************************************************************/
         public void setNameInTree(String nameInTree) {
@@ -218,6 +229,7 @@ public class GoToEAction extends PDFAction {
 
         /*************************************************************************
          * The index of the according annotation in the annotations array
+         *
          * @return String
          ************************************************************************/
         public String getAnnotNo() {
@@ -226,6 +238,7 @@ public class GoToEAction extends PDFAction {
 
         /*************************************************************************
          * The index of the according annotation in the annotations array
+         *
          * @param annotNo
          ************************************************************************/
         public void setAnnotNo(String annotNo) {
@@ -235,6 +248,7 @@ public class GoToEAction extends PDFAction {
         /*************************************************************************
          * A target dictionary specifying additional target information. If missing, 
          * the current document is the target file containing the destination.
+         *
          * @return GoToETarget
          ************************************************************************/
         public GoToETarget getTargetDictionary() {
@@ -244,6 +258,7 @@ public class GoToEAction extends PDFAction {
         /*************************************************************************
          * A target dictionary specifying additional target information. If missing, 
          * the current document is the target file containing the destination.
+         *
          * @param targetDictionary
          ************************************************************************/
         public void setTargetDictionary(GoToETarget targetDictionary) {
@@ -252,13 +267,13 @@ public class GoToEAction extends PDFAction {
 
         @Override
         public boolean equals(Object obj) {
-            if((obj instanceof GoToETarget) == false){
+            if ((obj instanceof GoToETarget) == false) {
                 return false;
             }
-            if(super.equals(obj)){
+            if (super.equals(obj)) {
                 return true;
             }            
-            GoToETarget that = (GoToETarget)obj;
+            GoToETarget that = (GoToETarget) obj;
             // compare the strng values, as the attributes may also be null
             return String.valueOf(this.annotNo).equals(String.valueOf(that.annotNo))
                 && String.valueOf(this.nameInTree).equals(String.valueOf(that.nameInTree))
