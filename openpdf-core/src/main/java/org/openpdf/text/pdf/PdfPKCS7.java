@@ -140,6 +140,8 @@ public class PdfPKCS7 {
     private static final String ID_MESSAGE_DIGEST = "1.2.840.113549.1.9.4";
     private static final String ID_SIGNING_TIME = "1.2.840.113549.1.9.5";
     private static final String ID_ADBE_REVOCATION = "1.2.840.113583.1.1.8";
+    private static final String DIGEST_SHA3_256 = "SHA3-256";
+    private static final String DIGEST_SHA3_512 = "SHA3-512";
     private static final Map<String, String> digestNames = new HashMap<>();
     private static final Map<String, String> algorithmNames = new HashMap<>();
     private static final Map<String, String> allowedDigests = new HashMap<>();
@@ -171,11 +173,11 @@ public class PdfPKCS7 {
         digestNames.put("1.3.36.3.3.1.2", "RIPEMD160");
         digestNames.put("1.3.36.3.3.1.4", "RIPEMD256");
         // SHA-3 family (FIPS 202)
-        digestNames.put("2.16.840.1.101.3.4.2.8", "SHA3-256");
-        digestNames.put("2.16.840.1.101.3.4.2.10", "SHA3-512");
+        digestNames.put("2.16.840.1.101.3.4.2.8", DIGEST_SHA3_256);
+        digestNames.put("2.16.840.1.101.3.4.2.10", DIGEST_SHA3_512);
         // RSASSA-PKCS1-v1_5 with SHA-3
-        digestNames.put("2.16.840.1.101.3.4.3.14", "SHA3-256");
-        digestNames.put("2.16.840.1.101.3.4.3.16", "SHA3-512");
+        digestNames.put("2.16.840.1.101.3.4.3.14", DIGEST_SHA3_256);
+        digestNames.put("2.16.840.1.101.3.4.3.16", DIGEST_SHA3_512);
 
         algorithmNames.put("1.2.840.113549.1.1.1", "RSA");
         algorithmNames.put("1.2.840.10040.4.1", "DSA");
@@ -227,8 +229,8 @@ public class PdfPKCS7 {
         allowedDigests.put("RIPEMD256", "1.3.36.3.2.3");
         allowedDigests.put("RIPEMD-256", "1.3.36.3.2.3");
         // SHA-3 family (FIPS 202)
-        allowedDigests.put("SHA3-256", "2.16.840.1.101.3.4.2.8");
-        allowedDigests.put("SHA3-512", "2.16.840.1.101.3.4.2.10");
+        allowedDigests.put(DIGEST_SHA3_256, "2.16.840.1.101.3.4.2.8");
+        allowedDigests.put(DIGEST_SHA3_512, "2.16.840.1.101.3.4.2.10");
     }
 
     private final List<Certificate> certs;
