@@ -194,9 +194,10 @@ and use the class `org.librepdf.openpdf.fonts.Liberation`.
 </dependency>
 ```
 
-### Brotli4j 
+### Brotli4j
+
 Brotli4j is a required dependency for Brotli stream compression support.
-https://github.com/hyperxpro/Brotli4j/ 
+<https://github.com/hyperxpro/Brotli4j/>
 
 ### Supporting complex glyph substitution/ Ligature substitution
 
