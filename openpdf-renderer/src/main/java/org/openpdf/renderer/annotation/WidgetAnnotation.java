@@ -17,6 +17,7 @@ import org.openpdf.renderer.PDFParser;
 
 /**
  * PDF annotation describing a widget.
+ *
  * @since Aug 20, 2010
  */
 public class WidgetAnnotation extends PDFAnnotation {
@@ -29,6 +30,7 @@ public class WidgetAnnotation extends PDFAnnotation {
 
     /**
      * Type for PDF form elements
+     *
      * @version $Id: WidgetAnnotation.java,v 1.2 2010-09-30 10:34:44 xphc Exp $ 
      * @author  xphc
      * @since Aug 20, 2010
@@ -52,8 +54,9 @@ public class WidgetAnnotation extends PDFAnnotation {
         static FieldType getByCode(String typeCode) {
             FieldType[] values = values();
             for (FieldType value : values) {
-                if (value.typeCode.equals(typeCode))
+                if (value.typeCode.equals(typeCode)) {
                     return value;
+                }
             }
             return null;
         }
@@ -69,8 +72,7 @@ public class WidgetAnnotation extends PDFAnnotation {
         if (fieldTypeRef != null) {
             // terminal field
             this.fieldType = FieldType.getByCode(fieldTypeRef.getStringValue());
-        }
-        else {
+        } else {
             // must check parent since field type is inherited
             PDFObject parent = annotObject.getDictRef("Parent");
             while (parent != null && parent.isIndirect()) {
@@ -95,11 +97,11 @@ public class WidgetAnnotation extends PDFAnnotation {
     }
     
     private void parseAP(PDFObject dictRef) throws IOException {
-        if(dictRef == null) {
+        if (dictRef == null) {
             return;
         }
         PDFObject normalAP = dictRef.getDictRef("N");
-        if(normalAP == null) {
+        if (normalAP == null) {
             return;
         }
         cmd = parseCommand(normalAP);
@@ -115,32 +117,32 @@ public class WidgetAnnotation extends PDFAnnotation {
         // We should merge these two
         PDFObject dictRefSubType = obj.getDictRef("Subtype");
         String type = null;
-        if(dictRefSubType != null) {
+        if (dictRefSubType != null) {
             type = dictRefSubType.getStringValue();
         }
         
         if (type == null) {
             PDFObject dictRefS = obj.getDictRef("S");
-            if(dictRefS != null) {
+            if (dictRefS != null) {
                 type = dictRefS.getStringValue();
             }
         }
         
         //if type is still null, check for AcroForm, if AcroForm is available the PDF could be not compatible
         //with the PDF specification, anyway check if obj is in AcroForm, if so, proceed as for a good PDF
-        if(type == null) {
+        if (type == null) {
             PDFObject acroForm = obj.getRoot().getDictRef("AcroForm");
             PDFObject fields = acroForm.getDictRef("Fields");
             PDFObject[] arrayFields = fields.getArray();
             
             for (PDFObject pdfObject : arrayFields) {
                 PDFObject dictRefAP = pdfObject.getDictRef("AP");
-                if(dictRefAP != null) {
+                if (dictRefAP != null) {
                     PDFObject dictRefN = dictRefAP.getDictRef("N");
                 
-                    if(dictRefN.equals(obj)) {                    
+                    if (dictRefN.equals(obj)) {
                         PDFObject dictRefAS = pdfObject.getDictRef("AS");
-                        if(dictRefAS != null) {        //this is a combobox
+                        if (dictRefAS != null) {        //this is a combobox
                             PDFObject dictRef = dictRefN.getDictRef(dictRefAS.getStringValue());
                             obj = dictRef;
                         }
@@ -151,20 +153,20 @@ public class WidgetAnnotation extends PDFAnnotation {
                 }
             }
             
-            if(type == null) {    //check for radiobutton
+            if (type == null) {    //check for radiobutton
                 PDFObject dictRef = obj.getDictRef("Off");
-                if(dictRef != null) {
+                if (dictRef != null) {
                     for (PDFObject pdfObject : arrayFields) {
                         PDFObject dictRefT = pdfObject.getDictRef("T");
-                        if(dictRefT != null && dictRefT.getStringValue().contains("Group")) {
+                        if (dictRefT != null && dictRefT.getStringValue().contains("Group")) {
                             PDFObject kids = pdfObject.getDictRef("Kids");
                             PDFObject[] arrayKids = kids.getArray();
                             for (PDFObject kid : arrayKids) {
                                 PDFObject kidAP = kid.getDictRef("AP");
                                 PDFObject kidN = kidAP.getDictRef("N");
-                                if(kidN.equals(obj)) {                    
+                                if (kidN.equals(obj)) {
                                     PDFObject kidAS = kid.getDictRef("AS");
-                                    if(kidAS != null) {        
+                                    if (kidAS != null) {
                                         PDFObject kidRef = kidN.getDictRef(kidAS.getStringValue());
                                         obj = kidRef;
                                     }
@@ -186,8 +188,8 @@ public class WidgetAnnotation extends PDFAnnotation {
             // stamp annotation transformation
             AffineTransform rectAt = getPositionTransformation();
             result.add(PDFPage.createXFormCmd(rectAt));
-            
-            PDFImage img = PDFImage.createImage(obj, new HashMap<String, PDFObject>() , false);            
+
+            PDFImage img = PDFImage.createImage(obj, new HashMap<String, PDFObject>(), false);
             result.add(PDFPage.createImageCmd(img));
         } else if ("Form".equals(type)) {
             // rats.  parse it.
@@ -210,15 +212,15 @@ public class WidgetAnnotation extends PDFAnnotation {
             if (matrix == null) {
                 at = new AffineTransform();
             } else {
-                float elts[] = new float[6];
+                float[] elts = new float[6];
                 for (int i = 0; i < elts.length; i++) {
                     elts[i] = (matrix.getAt(i)).getFloatValue();
                 }
                 at = new AffineTransform(elts);
             }
             formCmds.addXform(at);
-            
-            HashMap<String,PDFObject> r = new HashMap<String,PDFObject>(new HashMap<String, PDFObject>());
+
+            HashMap<String, PDFObject> r = new HashMap<String, PDFObject>(new HashMap<String, PDFObject>());
             PDFObject rsrc = obj.getDictRef("Resources");
             if (rsrc != null) {
                 r.putAll(rsrc.getDictionary());
@@ -238,6 +240,7 @@ public class WidgetAnnotation extends PDFAnnotation {
     
     /**
      * Transform to the position of the stamp annotation
+     *
      * @return
      */
     private AffineTransform getPositionTransformation() {
@@ -253,6 +256,7 @@ public class WidgetAnnotation extends PDFAnnotation {
 
     /**
      * Returns the type of the field
+     *
      * @return Field type
      */
     public FieldType getFieldType() {
@@ -261,6 +265,7 @@ public class WidgetAnnotation extends PDFAnnotation {
     
     /**
      * The field's value as a string. Might be {@code null}.
+     *
      * @return The field value or {@code null}.
      */
     public String getFieldValue() {
@@ -280,6 +285,7 @@ public class WidgetAnnotation extends PDFAnnotation {
 
     /**
      * Name for this widget.
+     *
      * @return Widget name
      */
     public String getFieldName() {

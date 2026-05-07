@@ -35,6 +35,7 @@ public class MarkupAnnotation extends PDFAnnotation {
     
     /*************************************************************************
      * Constructor
+     *
      * @param annotObject
      * @throws IOException 
      ************************************************************************/
@@ -52,23 +53,24 @@ public class MarkupAnnotation extends PDFAnnotation {
     
     /**
      * Parses the appearance stream into PDF commands
+     *
      * @param dictRef
      * @throws IOException
      */
     protected void parseAP(PDFObject dictRef) throws IOException {
-        if(dictRef == null) {
+        if (dictRef == null) {
             return;
         }
         PDFObject normalAP = dictRef.getDictRef("N");
-        if(normalAP == null) {
+        if (normalAP == null) {
             return;
         }
-        if(normalAP.getType() == PDFObject.DICTIONARY) {
+        if (normalAP.getType() == PDFObject.DICTIONARY) {
             this.onAppearance = normalAP.getDictRef("On");
             this.offAppearance = normalAP.getDictRef("Off");
             PDFObject as = dictRef.getDictRef("AS");            
             this.appearanceStateOn = (as != null) && ("On".equals(as.getStringValue()));
-        }else {
+        } else {
             this.onAppearance = normalAP;
             this.offAppearance = null;
             appearanceStateOn = true;
@@ -79,19 +81,21 @@ public class MarkupAnnotation extends PDFAnnotation {
     /**
      * Parses the mouse On or Off appearance stream
      * depending on which one is currently active.
+     *
      * @throws IOException
      */
     private void parseOnOffCommands() throws IOException {
-        if(onAppearance != null) {
+        if (onAppearance != null) {
             onCmd = parseIntoPdfCommands(onAppearance);
         }
-        if(offAppearance != null) {
+        if (offAppearance != null) {
             offCmd = parseIntoPdfCommands(offAppearance);
         }
     }
     
     /**
      * Parses the border style dictionary
+     *
      * @param bs
      * @throws IOException
      */
@@ -110,11 +114,12 @@ public class MarkupAnnotation extends PDFAnnotation {
     
     /**
      * Parses the popup annotation
+     *
      * @param popupObj
      * @throws IOException
      */
     private void parsePopupAnnotation(PDFObject popupObj) throws IOException {
-        this.popupAnnotation = (popupObj != null)?createAnnotation(popupObj):null;
+        this.popupAnnotation = (popupObj != null) ? createAnnotation(popupObj) : null;
     }
 
 
@@ -123,7 +128,7 @@ public class MarkupAnnotation extends PDFAnnotation {
         // We should merge these two
         String type = obj.getDictRef("Subtype").getStringValue();
         if (type == null) {
-            type = obj.getDictRef ("S").getStringValue ();
+            type = obj.getDictRef("S").getStringValue();
         }
         ArrayList<PDFCmd> result = new ArrayList<PDFCmd>();
         result.add(PDFPage.createPushCmd());
@@ -132,8 +137,8 @@ public class MarkupAnnotation extends PDFAnnotation {
             // stamp annotation transformation
             AffineTransform rectAt = getPositionTransformation();
             result.add(PDFPage.createXFormCmd(rectAt));
-            
-            PDFImage img = PDFImage.createImage(obj, new HashMap<String, PDFObject>() , false);            
+
+            PDFImage img = PDFImage.createImage(obj, new HashMap<String, PDFObject>(), false);
             result.add(PDFPage.createImageCmd(img));
         } else if (type.equals("Form")) {
             
@@ -162,15 +167,15 @@ public class MarkupAnnotation extends PDFAnnotation {
             if (matrix == null) {
                 at = new AffineTransform();
             } else {
-                float elts[] = new float[6];
+                float[] elts = new float[6];
                 for (int i = 0; i < elts.length; i++) {
                     elts[i] = (matrix.getAt(i)).getFloatValue();
                 }
                 at = new AffineTransform(elts);
             }
             formCmds.addXform(at);
-            
-            HashMap<String,PDFObject> r = new HashMap<String,PDFObject>(new HashMap<String, PDFObject>());
+
+            HashMap<String, PDFObject> r = new HashMap<String, PDFObject>(new HashMap<String, PDFObject>());
             PDFObject rsrc = obj.getDictRef("Resources");
             if (rsrc != null) {
                 r.putAll(rsrc.getDictionary());
@@ -190,6 +195,7 @@ public class MarkupAnnotation extends PDFAnnotation {
 
     /**
      * Transform to the position of the stamp annotation
+     *
      * @return
      */
     private AffineTransform getPositionTransformation() {
@@ -229,11 +235,11 @@ public class MarkupAnnotation extends PDFAnnotation {
     }
 
     public PDFObject getCurrentAppearance() {
-        return appearanceStateOn?onAppearance:offAppearance;
+        return appearanceStateOn ? onAppearance : offAppearance;
     }
 
     public List<PDFCmd> getCurrentCommand() {
-        return appearanceStateOn?onCmd:offCmd;
+        return appearanceStateOn ? onCmd : offCmd;
     }
 
     @Override
