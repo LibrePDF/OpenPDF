@@ -56,6 +56,7 @@ public class CIDFontType2 extends TTFFont {
     /**
      * create a new CIDFontType2 object based on the name of a built-in font
      * and the font descriptor
+     *
      * @param baseName the name of the font, from the PDF file
      * @param fontObj a dictionary that contains the DW (defaultWidth) and
      * W (width) parameters

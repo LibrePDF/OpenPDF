@@ -16,6 +16,7 @@ public class SquareAnnotation extends MarkupAnnotation {
     
     /*************************************************************************
      * Constructor
+     *
      * @param annotObject
      * @throws IOException 
      ************************************************************************/

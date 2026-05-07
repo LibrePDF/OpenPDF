@@ -176,6 +176,7 @@ public class Glyf {
     protected void setMinY(short minY) {
         this.minY = minY;
     }
+
     /**
      * Get the maximum x in this glyf
      */

@@ -5,7 +5,8 @@ import java.io.IOException;
 import org.openpdf.renderer.PDFObject;
 
 /**
- * Annotation border style 
+ * Annotation border style
+ *
  * @author Bernd Rosstauscher
  */
 public class AnnotationBorderStyle {
@@ -51,6 +52,7 @@ public class AnnotationBorderStyle {
     
     /**
      * Parse a border style from a BS dictionary.
+     *
      * @param bs the pdf dictionary to parse.
      * @return the border style object.
      * @throws IOException

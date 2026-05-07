@@ -31,6 +31,7 @@ public class LinkAnnotation extends PDFAnnotation {
 
     /*************************************************************************
      * Constructor
+     *
      * @param annotObject
      * @throws IOException 
      ************************************************************************/
@@ -43,7 +44,7 @@ public class LinkAnnotation extends PDFAnnotation {
         } else {
             // if a destination is given, create a GoToAction from it
             PDFObject dest = annotObject.getDictRef("Dest");
-            if(dest == null) {
+            if (dest == null) {
                 dest = annotObject.getDictRef("DEST");
             }
             if (dest != null) {
@@ -58,6 +59,7 @@ public class LinkAnnotation extends PDFAnnotation {
     
     /*************************************************************************
      * Get the contained PDFAction
+     *
      * @return PDFAction - can be <code>null</code> in case the contains 
      *                         a destination object
      ************************************************************************/

@@ -101,6 +101,7 @@ public class PDFImage {
     
     /**
      * Create an instance of a PDFImage
+     *
      * @throws IOException if {@link PDFDecoder} throws one while evaluating if the image is a Jpeg
      */
     protected PDFImage(PDFObject imageObj) throws IOException {
@@ -266,7 +267,7 @@ public class PDFImage {
             return bi;
         } catch (IOException ioe) {
             // let the caller know that there was a problem parsing the image
-            throw new PDFImageParseException("Error reading image: "+ioe.getMessage(), ioe);
+            throw new PDFImageParseException("Error reading image: " + ioe.getMessage(), ioe);
         }
     }
 
@@ -280,13 +281,12 @@ public class PDFImage {
      * <p>
      * NOTE: the color convolving is extremely slow on large images. It would be
      * good to see if it could be moved out into the rendering phases, where we
-     * might be able to scale the image down first. </p
-     * 
-     * @param data
-     *            the data when already completely filtered and uncompressed
-     * @param jpegData
-     *            a byte buffer if data still requiring the DCDTecode filter is
-     *            being used
+     * might be able to scale the image down first.
+     * </p>
+     *
+     *
+     * @param data  the data when already completely filtered and uncompressed
+     * @param jpegData a byte buffer if data still requiring the DCDTecode filter is being used
      */
     protected BufferedImage parseData(byte[] data, ByteBuffer jpegData) throws IOException {
         // pick a color model, based on the number of components and
@@ -425,8 +425,9 @@ public class PDFImage {
 
                 bi = biColorToGrayscale(raster, ncc);
                 // Return when there is no SMask
-                if (getSMask() == null)
+                if (getSMask() == null) {
                     return bi;
+                }
             } else {
                 // Raster is already in a format which is supported by Java2D,
                 // such as RGB or Gray.
@@ -447,12 +448,11 @@ public class PDFImage {
             BufferedImage converted = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 
             bi = op.filter(bi, converted);
-        }
-        else if (cs.getType() == ColorSpace.TYPE_CMYK) {
+        } else if (cs.getType() == ColorSpace.TYPE_CMYK) {
             // convert to ARGB for faster drawing without ColorConvertOp
             BufferedImage converted = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = converted.createGraphics();
-            graphics.drawImage(bi,0,0,null);
+            graphics.drawImage(bi, 0, 0, null);
             graphics.dispose();
             bi = converted;
         }
@@ -471,32 +471,29 @@ public class PDFImage {
                     si = sMaskImage.getImage();
                     w = si.getWidth();
                     h = si.getHeight();
-                }
-                else if (sMaskImage.getHeight() != h && sMaskImage.getWidth() != w) {
+                } else if (sMaskImage.getHeight() != h && sMaskImage.getWidth() != w) {
                     // in case the two images do not have the same size, scale 
-                    if (sMaskImage.getHeight()*sMaskImage.getWidth() > w*h) {
+                    if (sMaskImage.getHeight() * sMaskImage.getWidth() > w * h) {
                         // upscale image
                         si = sMaskImage.getImage();
                         w = si.getWidth();
                         h = si.getHeight();
                         int hints = Image.SCALE_FAST;
-                        Image scaledInstance = bi.getScaledInstance(w, h, hints );
+                        Image scaledInstance = bi.getScaledInstance(w, h, hints);
                         bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
                         Graphics graphics = bi.createGraphics();
                         graphics.drawImage(scaledInstance, 0, 0, null);
                         graphics.dispose();
-                    }
-                    else {
+                    } else {
                         // upscale mask
                         si = scaleSMaskImage(sMaskImage);
                     }
-                } 
-                else {
+                } else {
                     si = sMaskImage.getImage();
                 }
                 PDFDebugger.debugImage(si, "smask" + this.imageObj.getObjNum());
 
-                BufferedImage outImage = new BufferedImage(w,h, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage outImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
                 PDFDebugger.debugImage(si, "outImage" + this.imageObj.getObjNum());
                 int[] srcArray = new int[w];
                 int[] maskArray = new int[w];
@@ -504,9 +501,8 @@ public class PDFImage {
                 for (int i = 0; i < h; i++) {
                     if (maskOnly) {
                         // use first pixel color from image
-                        Arrays.fill(srcArray, bi.getRGB(0,0));
-                    }
-                    else {
+                        Arrays.fill(srcArray, bi.getRGB(0, 0));
+                    } else {
                         // pixel row from image
                         bi.getRGB(0, i, w, 1, srcArray, 0, w);
                     }
@@ -717,8 +713,9 @@ public class PDFImage {
                     final byte bits = bufferO[i];
                     i++;
                     for (byte j = 7; j >= 0; j--) {
-                        if (base - j >= buffer.length)
+                        if (base - j >= buffer.length) {
                             break;
+                            }
                         buffer[base - j] = ncc[((bits >>> j) & 1)];
                     }
                     base += 8;
@@ -928,7 +925,7 @@ public class PDFImage {
             }
             ColorSpace colorSpace = cs.getColorSpace();
             int[] bits = new int[colorSpace.getNumComponents()];
-            for (int i = 0; i < bits.length; i++){
+            for (int i = 0; i < bits.length; i++) {
                 bits[i] = getBitsPerComponent();
             }
 
@@ -1244,7 +1241,7 @@ public class PDFImage {
                     BufferedImage bi = jpegReader.read(0, param);
                     try {
                         return new BufferedImage(cm, bi.getRaster(), true, null);
-                    } catch (IllegalArgumentException raster_ByteInterleavedRaster) {
+                    } catch (IllegalArgumentException rasterByteInterleavedRaster) {
                         BufferedImage bi2 = new BufferedImage(bi.getWidth(), bi.getHeight(),
                                 BufferedImage.TYPE_BYTE_INDEXED,
                                 new IndexColorModel(8, 1, new byte[] { 0 }, new byte[] { 0 }, new byte[] { 0 }, 0));

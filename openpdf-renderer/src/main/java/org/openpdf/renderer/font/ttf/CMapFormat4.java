@@ -36,13 +36,13 @@ public class CMapFormat4 extends CMap {
     /**
      * The segments and associated data can be a char[] or an Integer
      */
-    public SortedMap<Segment,Object> segments;
+    public SortedMap<Segment, Object> segments;
     
     /** Creates a new instance of CMapFormat0 */
     protected CMapFormat4(short language) {
         super((short) 4, language);
     
-        this.segments = Collections.synchronizedSortedMap(new TreeMap<Segment,Object>());
+        this.segments = Collections.synchronizedSortedMap(new TreeMap<Segment, Object>());
         
         char[] map = new char[1];
         map[0] = (char) 0;
@@ -451,7 +451,8 @@ public class CMapFormat4 extends CMap {
             if (((s.endCode >= this.startCode) && (s.endCode <= this.endCode)) ||
                 ((s.startCode >= this.startCode) && (s.startCode <= this.endCode))) {
                 return 0;
-            } if (this.endCode > s.endCode) {
+            }
+            if (this.endCode > s.endCode) {
                 return 1;
             } else if (this.endCode < s.endCode) {
                 return -1;

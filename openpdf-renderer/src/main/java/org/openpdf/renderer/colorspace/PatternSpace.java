@@ -69,6 +69,7 @@ public class PatternSpace extends PDFColorSpace {
     /**
      * get the PDFPaint representing the color described by the
      * given color components
+     *
      * @param components the color components corresponding to the given
      * colorspace
      * @return a PDFPaint object representing the closest Color to the
@@ -86,10 +87,7 @@ public class PatternSpace extends PDFColorSpace {
      * @param patternObj the pattern to render
      * @param components the components of the base paint
      */
-    public PDFPaint getPaint(PDFObject patternObj, float[] components,
-                             Map resources)
-        throws IOException
-    {
+    public PDFPaint getPaint(PDFObject patternObj, float[] components, Map resources) throws IOException {
         PDFPaint basePaint = null;
         
         if (getBase() != null) {

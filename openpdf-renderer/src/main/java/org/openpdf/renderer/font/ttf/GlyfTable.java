@@ -37,7 +37,7 @@ public class GlyfTable extends TrueTypeTable {
     
     /** Creates a new instance of HmtxTable */
     protected GlyfTable(TrueTypeFont ttf) {
-        super (TrueTypeTable.GLYF_TABLE);
+        super(TrueTypeTable.GLYF_TABLE);
     
         this.loca = (LocaTable) ttf.getTable("loca");
         

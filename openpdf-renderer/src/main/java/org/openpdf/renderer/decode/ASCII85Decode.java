@@ -42,6 +42,7 @@ public class ASCII85Decode {
 
     /**
      * get the next character from the input.
+     *
      * @return the next character, or -1 if at end of stream
      */
     private int nextChar() {
@@ -115,6 +116,7 @@ public class ASCII85Decode {
 
     /**
      * decode the bytes
+     *
      * @return the decoded bytes
      */
     private ByteBuffer decode() throws PDFParseException {
