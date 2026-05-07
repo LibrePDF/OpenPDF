@@ -33,16 +33,14 @@ import java.util.List;
 public class PNGPredictor extends Predictor {
     /** Creates a new instance of PNGPredictor */
     public PNGPredictor() {
-        super (PNG);
+        super(PNG);
     }
     
     /**
      * Undo data based on the png algorithm
      */
     @Override
-    public ByteBuffer unpredict(ByteBuffer imageData)
-        throws IOException
-    {
+    public ByteBuffer unpredict(ByteBuffer imageData) throws IOException {
         List<byte[]> rows = new ArrayList<byte[]>();
         
         byte[] curLine = null;
@@ -52,7 +50,7 @@ public class PNGPredictor extends Predictor {
         int rowSize = getColumns() * getColors() * getBitsPerComponent();
         rowSize = (int) Math.ceil(rowSize / 8.0);
         
-        while(imageData.remaining() >= rowSize + 1) {
+        while (imageData.remaining() >= rowSize + 1) {
             // the first byte determines the algorithm
             int algorithm = (imageData.get() & 0xff);
             

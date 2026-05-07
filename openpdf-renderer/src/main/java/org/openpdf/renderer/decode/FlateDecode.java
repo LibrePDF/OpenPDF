@@ -29,6 +29,7 @@ import org.openpdf.renderer.PDFParseException;
 
 /**
  * decode a deFlated byte array
+ *
  * @author Mike Wessler
  */
 public class FlateDecode {
