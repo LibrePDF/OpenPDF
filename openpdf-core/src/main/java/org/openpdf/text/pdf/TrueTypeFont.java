@@ -1501,9 +1501,6 @@ class TrueTypeFont extends BaseFont {
         if (cmap10 != null) {
             return cmap10.get(c);
         }
-        if (cmap05 != null) {
-            return cmap05.get(c);
-        }
         return null;
     }
 
