@@ -75,7 +75,7 @@ public class MaxpTable extends TrueTypeTable {
     
     /** Creates a new instance of MaxpTable */
     protected MaxpTable() {
-        super (MAXP_TABLE);
+        super(MAXP_TABLE);
         
         setVersion(0x10000);
         setNumGlyphs(0);
@@ -158,6 +158,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property version.
+     *
      * @return Value of property version.
      *
      */
@@ -166,6 +167,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property version.
+     *
      * @param version New value of property version.
      *
      */
@@ -174,6 +176,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property numGlyphs.
+     *
      * @return Value of property numGlyphs.
      *
      */
@@ -182,6 +185,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property numGlyphs.
+     *
      * @param numGlyphs New value of property numGlyphs.
      *
      */
@@ -190,6 +194,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxPoints.
+     *
      * @return Value of property maxPoints.
      *
      */
@@ -198,6 +203,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxPoints.
+     *
      * @param maxPoints New value of property maxPoints.
      *
      */
@@ -206,6 +212,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxContours.
+     *
      * @return Value of property maxContours.
      *
      */
@@ -214,6 +221,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxContours.
+     *
      * @param maxContours New value of property maxContours.
      *
      */
@@ -222,6 +230,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxComponentPoints.
+     *
      * @return Value of property maxComponentPoints.
      *
      */
@@ -230,6 +239,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxComponentPoints.
+     *
      * @param maxComponentPoints New value of property maxComponentPoints.
      *
      */
@@ -238,6 +248,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxComponentContours.
+     *
      * @return Value of property maxComponentContours.
      *
      */
@@ -246,6 +257,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxComponentContours.
+     *
      * @param maxComponentContours New value of property maxComponentContours.
      *
      */
@@ -254,6 +266,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxZones.
+     *
      * @return Value of property maxZones.
      *
      */
@@ -262,6 +275,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxZones.
+     *
      * @param maxZones New value of property maxZones.
      *
      */
@@ -270,6 +284,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxTwilightPoints.
+     *
      * @return Value of property maxTwilightPoints.
      *
      */
@@ -278,6 +293,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxTwilightPoints.
+     *
      * @param maxTwilightPoints New value of property maxTwilightPoints.
      *
      */
@@ -286,6 +302,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxStorage.
+     *
      * @return Value of property maxStorage.
      *
      */
@@ -294,6 +311,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxStorage.
+     *
      * @param maxStorage New value of property maxStorage.
      *
      */
@@ -302,6 +320,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxFunctionDefs.
+     *
      * @return Value of property maxFunctionDefs.
      *
      */
@@ -310,6 +329,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxFunctionDefs.
+     *
      * @param maxFunctionDefs New value of property maxFunctionDefs.
      *
      */
@@ -318,6 +338,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxInstructionDefs.
+     *
      * @return Value of property maxInstructionDefs.
      *
      */
@@ -326,6 +347,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxInstructionDefs.
+     *
      * @param maxInstructionDefs New value of property maxInstructionDefs.
      *
      */
@@ -334,6 +356,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxStackElements.
+     *
      * @return Value of property maxStackElements.
      *
      */
@@ -342,6 +365,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxStackElements.
+     *
      * @param maxStackElements New value of property maxStackElements.
      *
      */
@@ -350,6 +374,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxSizeOfInstructions.
+     *
      * @return Value of property maxSizeOfInstructions.
      *
      */
@@ -358,6 +383,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxSizeOfInstructions.
+     *
      * @param maxSizeOfInstructions New value of property maxSizeOfInstructions.
      *
      */
@@ -366,6 +392,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxComponentElements.
+     *
      * @return Value of property maxComponentElements.
      *
      */
@@ -374,6 +401,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxComponentElements.
+     *
      * @param maxComponentElements New value of property maxComponentElements.
      *
      */
@@ -382,6 +410,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Getter for property maxComponentDepth.
+     *
      * @return Value of property maxComponentDepth.
      *
      */
@@ -390,6 +419,7 @@ public class MaxpTable extends TrueTypeTable {
     }
     
     /** Setter for property maxComponentDepth.
+     *
      * @param maxComponentDepth New value of property maxComponentDepth.
      *
      */

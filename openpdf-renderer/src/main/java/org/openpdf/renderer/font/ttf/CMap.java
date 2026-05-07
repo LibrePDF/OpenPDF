@@ -43,7 +43,7 @@ public abstract class CMap {
     /** Creates a new instance of CMap 
      * Don't use this directly, use <code>CMap.createMap()</code>
      */
-    protected CMap (short format, short language) {
+    protected CMap(short format, short language) {
         this.format = format;
         this.language = language;
     }
@@ -68,18 +68,18 @@ public abstract class CMap {
      * <p>Reference:<br>
      * http://developer.apple.com/textfonts/TTRefMan/RM06/Chap6cmap.html </p>
      */
-    public static CMap createMap (short format, short language) {
+    public static CMap createMap(short format, short language) {
         CMap outMap = null;
 
         switch (format) {
             case 0: // CMap format 0 - single byte codes
-                outMap = new CMapFormat0 (language);
+                outMap = new CMapFormat0(language);
                 break;
             case 4: // CMap format 4 - two byte encoding
-                outMap = new CMapFormat4 (language);
+                outMap = new CMapFormat4(language);
                 break;
             case 6: // CMap format 6 - 16-bit, two byte encoding
-                outMap = new CMapFormat6 (language);
+                outMap = new CMapFormat6(language);
                 break;
 //            case 8: // CMap format 8 - Mixed 16-bit and 32-bit coverage
 //                outMap = new CMapFormat_8(language);
@@ -108,24 +108,24 @@ public abstract class CMap {
      * This method reads the format, data and length variables of
      * the map.
      */
-    public static CMap getMap (ByteBuffer data) {
-        short format = data.getShort ();
-        short lengthShort = data.getShort ();
+    public static CMap getMap(ByteBuffer data) {
+        short format = data.getShort();
+        short lengthShort = data.getShort();
         int length = 0xFFFF & lengthShort;
         PDFDebugger.debug("CMAP, length: " + length + ", short: " + lengthShort, 100);
 
         // make sure our slice of the data only contains up to the length
         // of this table
-        data.limit (Math.min (length, data.limit ()));
+        data.limit(Math.min(length, data.limit()));
 
-        short language = data.getShort ();
+        short language = data.getShort();
 
-        CMap outMap = createMap (format, language);
+        CMap outMap = createMap(format, language);
         if (outMap == null) {
             return null;
         }
 
-        outMap.setData (data.limit (), data);
+        outMap.setData(data.limit(), data);
 
         return outMap;
     }
@@ -133,53 +133,53 @@ public abstract class CMap {
     /**
      * Get the format of this map
      */
-    public short getFormat () {
+    public short getFormat() {
         return this.format;
     }
 
     /**
      * Get the language of this map
      */
-    public short getLanguage () {
+    public short getLanguage() {
         return this.language;
     }
 
     /**
      * Set the data for this map
      */
-    public abstract void setData (int length, ByteBuffer data);
+    public abstract void setData(int length, ByteBuffer data);
 
     /**
      * Get the data in this map as a byte buffer
      */
-    public abstract ByteBuffer getData ();
+    public abstract ByteBuffer getData();
 
     /**
      * Get the length of this map
      */
-    public abstract short getLength ();
+    public abstract short getLength();
 
     /**
      * Map an 8 bit value to another 8 bit value
      */
-    public abstract byte map (byte src);
+    public abstract byte map(byte src);
 
     /**
      * Map a 16 bit value to another 16 but value
      */
-    public abstract char map (char src);
+    public abstract char map(char src);
 
     /**
      * Get the src code which maps to the given glyphID
      */
-    public abstract char reverseMap (short glyphID);
+    public abstract char reverseMap(short glyphID);
 
     /** Print a pretty string */
     @Override
-    public String toString () {
+    public String toString() {
         String indent = "        ";
 
-        return indent + " format: " + getFormat () + " length: " +
-                getLength () + " language: " + getLanguage () + "\n";
+        return indent + " format: " + getFormat() + " length: " +
+                getLength() + " language: " + getLanguage() + "\n";
     }
 }

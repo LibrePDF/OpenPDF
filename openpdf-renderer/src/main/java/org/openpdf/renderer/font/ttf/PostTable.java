@@ -63,7 +63,7 @@ public class PostTable extends TrueTypeTable {
       
     /** Creates a new instance of PostTable */
     protected PostTable() {
-        super (TrueTypeTable.POST_TABLE);
+        super(TrueTypeTable.POST_TABLE);
         
         this.nameMap = new PostMap();
     }
@@ -161,6 +161,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Getter for property format.
+     *
      * @return Value of property format.
      *
      */
@@ -169,6 +170,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Setter for property format.
+     *
      * @param format New value of property format.
      *
      */
@@ -177,6 +179,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Getter for property italicAngle.
+     *
      * @return Value of property italicAngle.
      *
      */
@@ -185,6 +188,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Setter for property italicAngle.
+     *
      * @param italicAngle New value of property italicAngle.
      *
      */
@@ -193,6 +197,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Getter for property underlinePosition.
+     *
      * @return Value of property underlinePosition.
      *
      */
@@ -201,6 +206,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Setter for property underlinePosition.
+     *
      * @param underlinePosition New value of property underlinePosition.
      *
      */
@@ -209,6 +215,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Getter for property underlineThickness.
+     *
      * @return Value of property underlineThickness.
      *
      */
@@ -217,6 +224,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Setter for property underlineThickness.
+     *
      * @param underlineThickness New value of property underlineThickness.
      *
      */
@@ -225,6 +233,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Getter for property isFixedPitch.
+     *
      * @return Value of property isFixedPitch.
      *
      */
@@ -233,6 +242,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Setter for property isFixedPitch.
+     *
      * @param isFixedPitch New value of property isFixedPitch.
      *
      */
@@ -241,6 +251,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Getter for property minMemType42.
+     *
      * @return Value of property minMemType42.
      *
      */
@@ -249,6 +260,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Setter for property minMemType42.
+     *
      * @param minMemType42 New value of property minMemType42.
      *
      */
@@ -257,6 +269,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Getter for property maxMemType42.
+     *
      * @return Value of property maxMemType42.
      *
      */
@@ -265,6 +278,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Setter for property maxMemType42.
+     *
      * @param maxMemType42 New value of property maxMemType42.
      *
      */
@@ -273,6 +287,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Getter for property minMemType1.
+     *
      * @return Value of property minMemType1.
      *
      */
@@ -281,6 +296,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Setter for property minMemType1.
+     *
      * @param minMemType1 New value of property minMemType1.
      *
      */
@@ -289,6 +305,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Getter for property maxMemType1.
+     *
      * @return Value of property maxMemType1.
      *
      */
@@ -297,6 +314,7 @@ public class PostTable extends TrueTypeTable {
     }
     
     /** Setter for property maxMemType1.
+     *
      * @param maxMemType1 New value of property maxMemType1.
      *
      */
@@ -336,7 +354,7 @@ public class PostTable extends TrueTypeTable {
     /** A Format 0 post map */
     class PostMapFormat0 extends PostMap {
         /** the glyph names in standard Macintosh ordering */
-        protected final String stdNames[] = {
+        protected final String[] stdNames = {
 /* 0 */     ".notdef", ".null", "nonmarkingreturn", "space", "exclam", "quotedbl", "numbersign", "dollar",
 /* 8 */     "percent", "ampersand", "quotesingle", "parenleft", "parenright", "asterisk", "plus", "comma",
 /* 16 */    "hyphen", "period", "slash", "zero", "one", "two", "three", "four",
@@ -529,7 +547,7 @@ public class PostTable extends TrueTypeTable {
             // the length is stored in the first byte, followed by
             // the data
             for (int i = 0; i < maxGlyph; i++) {
-                if(data.hasRemaining()) {
+                if (data.hasRemaining()) {
                     // size in the first byte
                     byte size = data.get();
                             

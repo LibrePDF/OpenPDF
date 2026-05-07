@@ -20,6 +20,7 @@ package org.openpdf.renderer.font;
 
 /**
  * some constants and utility functions for font support.
+ *
  * @author Mike Wessler
  */
 public class FontSupport {
@@ -29,7 +30,7 @@ public class FontSupport {
      * of the glyphs in a font, not the mapping of character number to
      * character.
      */
-    public static final String stdNames[] = {
+    public static final String[] stdNames = {
         ".notdef", "space", "exclam", "quotedbl", "numbersign", "dollar",
         "percent", "ampersand", "quoteright", "parenleft", "parenright",
         "asterisk", "plus", "comma", "hyphen", "period", "slash", "zero",
@@ -113,7 +114,7 @@ public class FontSupport {
      * use the string if it contains 3 or fewer characters; otherwise,
      * grab the first character off the string and use that.
      */
-    static final String stdValues[] = {
+    static final String[] stdValues = {
         "", " ", "!", "\"", "#", "$",
         "%", "&", "'", "(", ")",
         "*", "+", ",", "-", ".", "/", "0",
@@ -197,7 +198,7 @@ public class FontSupport {
      * glyph order of the glyphs for the Type1C Expert character set.  These
      * are indices into the glyph name array.
      */
-    public static final int type1CExpertCharset[] = {
+    public static final int[] type1CExpertCharset = {
         1, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 13, 14, 15, 99,
         239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 27, 28, 249, 250,
         251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264,
@@ -216,7 +217,7 @@ public class FontSupport {
      * glyph order of the glyphs for the Type1C Expert Sub character set.
      * These are indices into the glyph name array.
      */
-    public static final int type1CExpertSubCharset[] = {
+    public static final int[] type1CExpertSubCharset = {
         1, 231, 232, 235, 236, 237, 238, 13, 14, 15, 99, 239, 240, 241, 242,
         243, 244, 245, 246, 247, 248, 27, 28, 249, 250, 251, 253, 254, 255,
         256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 109, 110, 267,
@@ -231,7 +232,7 @@ public class FontSupport {
      * considered to be appended to the stdNames array.  The stdValues array
      * already contains values for this set.
      */
-    public static final String macExtras[] = { // index starts at 391=NUL
+    public static final String[] macExtras = { // index starts at 391=NUL
         "NUL", "HT", "LF", "CR", "DLE", "DC1", "DC2", "DC3", "DC4", "RS",
         "US", "notequal", "DEL", "infinity", "lessequal", "greaterequal",
         "partialdiff", "summation", "product", "pi", "integral", "Omega",
@@ -242,7 +243,7 @@ public class FontSupport {
      * character mapping from values to glyphs for the Macintosh MacRoman
      * encoding
      */
-    public static final int macRomanEncoding[] = {
+    public static final int[] macRomanEncoding = {
         391, 154, 167, 140, 146, 192, 221, 197, 226, 392, 393, 157, 162, 394,
         199, 228, 395, 396, 397, 398, 399, 155, 158, 150, 163, 169, 164, 160,
         166, 168, 400, 401, 1, 2, 3, 4, 5, 6, 7, 104, 9, 10, 11, 12, 13, 14,
@@ -265,7 +266,7 @@ public class FontSupport {
     /**
      * character mapping from values to glyphs for the isoLatin1Encoding
      */
-    public static final int isoLatin1Encoding[] = {
+    public static final int[] isoLatin1Encoding = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
         166, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -288,7 +289,7 @@ public class FontSupport {
      * character mapping from values to glyphs for the Windows winAnsi
      * character encoding
      */
-    public static final int winAnsiEncoding[] = {
+    public static final int[] winAnsiEncoding = {
         124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 145,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5,
         6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -312,7 +313,7 @@ public class FontSupport {
      * character mapping from values to glyphs for Adobe's standard
      * character encoding
      */
-    public static final int standardEncoding[] = {
+    public static final int[] standardEncoding = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
         14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -334,7 +335,7 @@ public class FontSupport {
      * Character mapping from values to glyphs for the symbol set encoding
      * Definition found here: PDF specification Annex D.5 Symbol Set and Encoding
      */
-    public static final int symbolSetEncoding[] = {
+    public static final int[] symbolSetEncoding = {
         101, 102, 103, 104, 105, 110, 240, 107, 301, 111, 113, 114, 115, 116, 
         127, 117, 106, 120, 131, 302, 122, 123, 124, 121, 125, 241, 130, 132, 
         300, 141, 046, 320, 341, 361, 273, 253, 333, 337, 334, 336, 335, 257, 
@@ -355,7 +356,7 @@ public class FontSupport {
      * get the name of a glyph from its encoding value (NOT the character
      * value), using the standard encoding.
      */
-    public static String getName (int i) {
+    public static String getName(int i) {
         if (i < stdNames.length) {
             return stdNames[i];
         } else {
@@ -369,14 +370,15 @@ public class FontSupport {
 
     /**
      * get the encoding value a glyph given its name and a name table.
+     *
      * @param name the name of the glyph
      * @param table the charset as an array of names
      * @return the index of the name in the table, or -1 if the name
      * cannot be found in the table
      */
-    public static int findName (String name, String[] table) {
+    public static int findName(String name, String[] table) {
         for (int i = 0; i < table.length; i++) {
-            if (name.equals (table[i])) {
+            if (name.equals(table[i])) {
                 return i;
             }
         }
@@ -385,13 +387,14 @@ public class FontSupport {
 
     /**
      * get the encoding value of a glyph given its name and a charset.
+     *
      * @param name the name of the glyph
      * @param table the charset table
      * @return the index of the name in the charset.
      */
-    public static int findName (String name, int[] table) {
+    public static int findName(String name, int[] table) {
         for (int i = 0; i < table.length; i++) {
-            if (name.equals (getName (table[i]))) {
+            if (name.equals(getName(table[i]))) {
                 return i;
             }
         }
@@ -401,13 +404,14 @@ public class FontSupport {
     /**
      * get the encoding value of a glyph given its name, in the standard
      * charset.  This is equivalent to findName(name, FontSupport.stdNames).
+     *
      * @param name the name of the glyph
      * @return the index of the name in stdNames, or -1 if the name doesn't
      * appear in stdNames.
      */
-    public static int getStrIndex (String name) {
+    public static int getStrIndex(String name) {
         for (int i = 0; i < stdNames.length; i++) {
-            if (name.equals (stdNames[i])) {
+            if (name.equals(stdNames[i])) {
                 return i;
             }
         }

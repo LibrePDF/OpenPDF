@@ -28,21 +28,21 @@ package org.openpdf.renderer.font;
  */
 public class FlPoint {
     /** x coordinate of the point */
-    public float x= 0;
+    public float x = 0;
 
     /** y coordinate of the point */
-    public float y= 0;
+    public float y = 0;
 
     /**
      * whether the path this point is a part of is open or closed.
      * used in Type1CFont.java.
      */
-    public boolean open= false;
+    public boolean open = false;
     
     /** reset the values to (0,0) and closed */
     public final void reset() {
-    this.x= 0;
-    this.y= 0;
-    this.open= false;
+    this.x = 0;
+    this.y = 0;
+    this.open = false;
     }
 }

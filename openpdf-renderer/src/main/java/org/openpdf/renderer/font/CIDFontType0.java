@@ -23,6 +23,7 @@ public class CIDFontType0 extends BuiltinFont {
 
     /*************************************************************************
      * Constructor
+     *
      * @param baseFont
      * @param fontObj
      * @param descriptor
@@ -35,6 +36,7 @@ public class CIDFontType0 extends BuiltinFont {
     }
     
     /*************************************************************************
+     *
      * @param fontObj
      * @throws IOException
      ************************************************************************/
@@ -58,7 +60,7 @@ public class CIDFontType0 extends BuiltinFont {
         if (this.glyphLookupMap != null) {
             src = this.glyphLookupMap.map(src);
             //The preferred method of getting the glyph should be by name. 
-            if (name == null && src != 160){//unless it NBSP
+            if (name == null && src != 160) { //unless it NBSP
                 //so, try to find the name by the char
                 name = AdobeGlyphList.getGlyphName(src);
             }

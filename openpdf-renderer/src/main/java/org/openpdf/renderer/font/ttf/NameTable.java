@@ -75,14 +75,14 @@ public class NameTable extends TrueTypeTable {
     /**
      * The actual name records
      */
-    private SortedMap<NameRecord,String> records;
+    private SortedMap<NameRecord, String> records;
     
     
     /** Creates a new instance of NameTable */
     protected NameTable() {
-        super (NAME_TABLE);
-        
-        this.records = Collections.synchronizedSortedMap(new TreeMap<NameRecord,String>());
+        super(NAME_TABLE);
+
+        this.records = Collections.synchronizedSortedMap(new TreeMap<NameRecord, String>());
     }
     
     /**
@@ -344,8 +344,7 @@ public class NameTable extends TrueTypeTable {
         return buf.toString();
     }
     
-    public Collection<String> getNames()
-    {
+    public Collection<String> getNames() {
         return Collections.unmodifiableCollection(records.values());
     }
     

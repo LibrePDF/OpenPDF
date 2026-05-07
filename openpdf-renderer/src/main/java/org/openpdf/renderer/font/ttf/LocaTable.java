@@ -29,11 +29,11 @@ public class LocaTable extends TrueTypeTable {
     private boolean isLong;
     
     /** the offsets themselves */
-    private int offsets[];
+    private int[] offsets;
     
     /** Creates a new instance of HmtxTable */
     protected LocaTable(TrueTypeFont ttf) {
-        super (LOCA_TABLE);
+        super(LOCA_TABLE);
     
         MaxpTable maxp = (MaxpTable) ttf.getTable("maxp");
         int numGlyphs = maxp.getNumGlyphs();
@@ -98,7 +98,7 @@ public class LocaTable extends TrueTypeTable {
             if (isLongFormat()) {
                 this.offsets[i] = data.getInt();
             } else {
-                this.offsets[i] = 2 * ( 0xFFFF & data.getShort());
+                this.offsets[i] = 2 * (0xFFFF & data.getShort());
             }
         }
     }

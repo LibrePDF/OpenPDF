@@ -52,7 +52,7 @@ public class PDFFontEncoding {
      */
     private int[] baseEncoding;
     /** any differences from the base encoding */
-    private Map<Character,String> differences;
+    private Map<Character, String> differences;
     /**
      * a CMap for fonts encoded by CMap
      */
@@ -81,7 +81,7 @@ public class PDFFontEncoding {
             } else {
                 this.type = TYPE_ENCODING;
 
-                this.differences = new HashMap<Character,String>();
+                this.differences = new HashMap<Character, String>();
                 this.baseEncoding = this.getBaseEncoding(encoding.getStringValue());
             }
         } else {
@@ -167,7 +167,7 @@ public class PDFFontEncoding {
      * Parse a PDF encoding object for the actual encoding
      */
     public void parseEncoding(PDFObject encoding) throws IOException {
-        this.differences = new HashMap<Character,String>();
+        this.differences = new HashMap<Character, String>();
 
         // figure out the base encoding, if one exists
         PDFObject baseEncObj = encoding.getDictRef("BaseEncoding");
@@ -205,7 +205,7 @@ public class PDFFontEncoding {
             return FontSupport.winAnsiEncoding;
         } else if (encodingName.equals("StandardEncoding")) {
             return FontSupport.standardEncoding; 
-        } else if(encodingName.equals("SymbolSetEncoding")) {
+        } else if (encodingName.equals("SymbolSetEncoding")) {
             return FontSupport.symbolSetEncoding;
         } else {
             throw new IllegalArgumentException("Unknown encoding: " + encodingName);
@@ -213,7 +213,7 @@ public class PDFFontEncoding {
     }
     
     public boolean isOneByteIdentity() {
-        if(this.mapName != null) {
+        if (this.mapName != null) {
             try {
                 return "OneByteIdentityH".equals(this.mapName.getStringValue());
             } catch (IOException e) {
