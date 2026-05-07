@@ -30,15 +30,13 @@ import java.nio.ByteBuffer;
 public class TIFFPredictor extends Predictor {
 
     public TIFFPredictor() {
-        super (TIFF);
+        super(TIFF);
     }
 
     /**
      * Undo data based on the png algorithm
      */
-    public ByteBuffer unpredict(ByteBuffer imageData)
-        throws IOException
-    {
+    public ByteBuffer unpredict(ByteBuffer imageData) throws IOException {
         ByteBuffer out = ByteBuffer.allocate(imageData.limit());
 
         final int numComponents = getColors();
@@ -48,7 +46,7 @@ public class TIFFPredictor extends Predictor {
 
         final byte[] row = new byte[bytePerRow];
 
-        while(imageData.remaining() > 0) {
+        while (imageData.remaining() > 0) {
             imageData.get(row);
             if (getBitsPerComponent() == 8) {
                 for (int i = numComponents; i < row.length; i += numComponents) {
@@ -76,7 +74,7 @@ public class TIFFPredictor extends Predictor {
             } else {
                 assert getBitsPerComponent() == 1 || getBitsPerComponent() == 2 || getBitsPerComponent() == 4 : "we don't want to grab components across pixel boundaries";
                 int bitsOnRow = pixelBits * getColumns(); // may be less than bytesOnRow * 8
-                byte prev[] = new byte[numComponents];
+                byte[] prev = new byte[numComponents];
                 final int shiftWhenAligned = 8 - getBitsPerComponent();
                 final int mask = (1 << getBitsPerComponent()) - 1;
                 for (int c = 0; c < numComponents; ++c) {
@@ -103,16 +101,14 @@ public class TIFFPredictor extends Predictor {
 
     }
 
-    private static byte getbits(byte[] data, int bitIndex, int shiftWhenByteAligned, int mask)
-    {
+    private static byte getbits(byte[] data, int bitIndex, int shiftWhenByteAligned, int mask) {
         final int b = data[(bitIndex >> 3)];
         final int bitIndexInB = bitIndex & 7;
         final int shift =  shiftWhenByteAligned - bitIndexInB;
         return (byte) ((b >>> shift) & mask);
     }
 
-    private static void setbits(byte[] data, int bitIndex, int shiftWhenByteAligned, int mask, byte bits)
-    {
+    private static void setbits(byte[] data, int bitIndex, int shiftWhenByteAligned, int mask, byte bits) {
         final int b = data[(bitIndex >> 3)];
         final int bitIndexInB = bitIndex & 7;
         final int shift =  shiftWhenByteAligned - bitIndexInB;

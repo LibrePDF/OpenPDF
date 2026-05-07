@@ -55,7 +55,7 @@ public class RunLengthDecode {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         int dupAmount;
         byte[] buffer = new byte[128];
-        while ((dupAmount = this.buf.get()&0xFF) != RUN_LENGTH_EOD) {
+        while ((dupAmount = this.buf.get() & 0xFF) != RUN_LENGTH_EOD) {
             if (dupAmount >= 0 && dupAmount <= 127) {
                 int amountToCopy = dupAmount + 1;
                 this.buf.get(buffer, 0, amountToCopy);

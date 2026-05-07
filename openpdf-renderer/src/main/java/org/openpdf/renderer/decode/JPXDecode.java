@@ -41,6 +41,7 @@ import org.openpdf.renderer.PDFParseException;
 public class JPXDecode {
     
     /*************************************************************************
+     *
      * @param dict
      * @param buf
      * @param params
@@ -55,6 +56,7 @@ public class JPXDecode {
     }
 
     /*************************************************************************
+     *
      * @param buf
      * @return
      * @throws PDFParseException

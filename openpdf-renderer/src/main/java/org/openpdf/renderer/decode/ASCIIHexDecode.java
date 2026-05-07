@@ -43,6 +43,7 @@ public class ASCIIHexDecode {
 
     /**
      * get the next character from the input
+     *
      * @return a number from 0-15, or -1 for the end character
      */
     private int readHexDigit() throws PDFParseException {    
@@ -78,6 +79,7 @@ public class ASCIIHexDecode {
 
     /**
      * decode the array
+     *
      * @return the decoded bytes
      */
     private ByteBuffer decode() throws PDFParseException {
@@ -117,10 +119,8 @@ public class ASCIIHexDecode {
      * @param params parameters to the decoder (ignored)
      * @return the decoded bytes
      */
-    public static ByteBuffer decode(ByteBuffer buf, PDFObject params)
-    throws PDFParseException 
-    {
-    ASCIIHexDecode me = new ASCIIHexDecode(buf);
-    return me.decode();
+    public static ByteBuffer decode(ByteBuffer buf, PDFObject params) throws PDFParseException {
+        ASCIIHexDecode me = new ASCIIHexDecode(buf);
+        return me.decode();
     }
 }

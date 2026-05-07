@@ -110,7 +110,7 @@ public class CCITTFaxDecoder {
             -97, 95, -33, 63, -65, 127, -1, };
 
     // The main 10 bit white runs lookup table
-    static short white[] = {
+    static short[] white = {
     // 0 - 7
             6430, 6400, 6400, 6400, 3225, 3225, 3225, 3225,
             // 8 - 15
@@ -384,7 +384,7 @@ public class CCITTFaxDecoder {
     static short[] twoBitBlack = { 292, 260, 226, 226 }; // 0 - 3
 
     // Main black run table, using the last 9 bits of possible 13 bit code
-    static short black[] = {
+    static short[] black = {
     // 0 - 7
             62, 62, 30, 30, 0, 0, 0, 0,
             // 8 - 15
@@ -568,8 +568,8 @@ public class CCITTFaxDecoder {
         this.fillOrder = fillOrder;
         // Some of the decode methods assume prevChangingElms 
         // and currChaningElems are at least of length 2.
-        if(w<2) {
-           w=2;
+        if (w < 2) {
+           w = 2;
         }
 
         this.w = w;

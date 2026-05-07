@@ -66,9 +66,7 @@ public abstract class Predictor {
      *
      * @param params the filter parameters
      */
-    public static Predictor getPredictor(PDFObject params)
-        throws IOException
-    {
+    public static Predictor getPredictor(PDFObject params) throws IOException {
         // get the algorithm (required)
         PDFObject algorithmObj = params.getDictRef("Predictor");
         if (algorithmObj == null) {
