@@ -21,7 +21,7 @@ public class ColumnTextSeparator {
     private String filePath;
 
     @Test
-    public void test_columnTextSeparator() throws Exception {
+    void test_columnTextSeparator() throws Exception {
         filePath = System.getProperty("user.dir") + "/src/test/resources";
 
         File RESULT = new File(filePath + "/columnTextSeparator.pdf");
