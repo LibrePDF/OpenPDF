@@ -108,11 +108,11 @@ public class CMYKColorSpace extends ColorSpace {
          * be used and pulled out? -- At this time, it's not necessary for our
          * (Scantegrity's) uses.
          */
-        float[] l_res = {0,0,0,0};
+        float[] l_res = {0, 0, 0, 0};
         if (p_rgbvalue.length >= 3) {
-            l_res[0] = (float)1.0 - p_rgbvalue[0];
-            l_res[1] = (float)1.0 - p_rgbvalue[1];
-            l_res[2] = (float)1.0 - p_rgbvalue[2];            
+            l_res[0] = (float) 1.0 - p_rgbvalue[0];
+            l_res[1] = (float) 1.0 - p_rgbvalue[1];
+            l_res[2] = (float) 1.0 - p_rgbvalue[2];
         }
         return normalize(l_res);
     }
@@ -168,13 +168,12 @@ public class CMYKColorSpace extends ColorSpace {
         if (icc_cs != null) {
             return icc_cs.toRGB(p_colorvalue);
         }
-        float[] l_res = {0,0,0};
-        if (p_colorvalue.length >= 4)
-        {
-            float l_black = (float)1.0 - p_colorvalue[3]; 
-            l_res[0] = l_black * ((float)1.0 - p_colorvalue[0]);
-            l_res[1] = l_black * ((float)1.0 - p_colorvalue[1]);
-            l_res[2] = l_black * ((float)1.0 - p_colorvalue[2]);            
+        float[] l_res = {0, 0, 0};
+        if (p_colorvalue.length >= 4) {
+            float l_black = (float) 1.0 - p_colorvalue[3];
+            l_res[0] = l_black * ((float) 1.0 - p_colorvalue[0]);
+            l_res[1] = l_black * ((float) 1.0 - p_colorvalue[1]);
+            l_res[2] = l_black * ((float) 1.0 - p_colorvalue[2]);
         }
         return normalize(l_res);
     }
@@ -188,8 +187,11 @@ public class CMYKColorSpace extends ColorSpace {
      */
     public float[] normalize(float[] p_colors) {
         for (int l_i = 0; l_i < p_colors.length; l_i++) {
-            if (p_colors[l_i] > (float)1.0) p_colors[l_i] = (float)1.0;
-            else if (p_colors[l_i] < (float)0.0) p_colors[l_i] = (float)0.0;
+            if (p_colors[l_i] > (float) 1.0) {
+                p_colors[l_i] = (float) 1.0;
+            } else if (p_colors[l_i] < (float) 0.0) {
+                p_colors[l_i] = (float) 0.0;
+            }
         }        
         return p_colors;
     }

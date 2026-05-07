@@ -29,22 +29,19 @@ import java.awt.color.ColorSpace;
  *
  * @author Ben Day
  */
-public class YCCKColorSpace extends ColorSpace
-{
+public class YCCKColorSpace extends ColorSpace {
 
     private final ColorSpace cmykColorSpace;
 
     /**
      * create a new YCCK color space:  a ColorSpace with 4 components
      */
-    public YCCKColorSpace(ColorSpace existingCmykColorSpace)
-    {
+    public YCCKColorSpace(ColorSpace existingCmykColorSpace) {
         super(TYPE_4CLR, 4);
         cmykColorSpace = existingCmykColorSpace;
     }
 
-    public YCCKColorSpace()
-    {
+    public YCCKColorSpace() {
         this(new CMYKColorSpace());
     }
 
@@ -52,8 +49,7 @@ public class YCCKColorSpace extends ColorSpace
      * Convert from CIEXYZ to RGB.  NOT IMPLEMENTED
      */
     @Override
-    public float[] fromCIEXYZ(float[] colorvalue)
-    {
+    public float[] fromCIEXYZ(float[] colorvalue) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -64,8 +60,7 @@ public class YCCKColorSpace extends ColorSpace
      * @return the YCCK values (0-1)
      */
     @Override
-    public float[] fromRGB(float[] rgbvalue)
-    {
+    public float[] fromRGB(float[] rgbvalue) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -73,8 +68,7 @@ public class YCCKColorSpace extends ColorSpace
      * the number of components
      */
     @Override
-    public int getNumComponents()
-    {
+    public int getNumComponents() {
         return 4;
     }
 
@@ -82,8 +76,7 @@ public class YCCKColorSpace extends ColorSpace
      * the name of this color space
      */
     @Override
-    public String getName(int idx)
-    {
+    public String getName(int idx) {
         return "YCCK";
     }
 
@@ -91,8 +84,7 @@ public class YCCKColorSpace extends ColorSpace
      * the type of this color space (TYPE_4CLR)
      */
     @Override
-    public int getType()
-    {
+    public int getType() {
         return TYPE_4CLR;
     }
 
@@ -100,8 +92,7 @@ public class YCCKColorSpace extends ColorSpace
      * Convert from YCCK to CIEXYZ.  NOT IMPLEMENTED
      */
     @Override
-    public float[] toCIEXYZ(float[] colorvalue)
-    {
+    public float[] toCIEXYZ(float[] colorvalue) {
         return cmykColorSpace.toCIEXYZ(toCmyk(colorvalue));
     }
 
@@ -112,8 +103,7 @@ public class YCCKColorSpace extends ColorSpace
      * @return the RGB values (0-1)
      */
     @Override
-    public float[] toRGB(float[] colorvalue)
-    {
+    public float[] toRGB(float[] colorvalue) {
         return cmykColorSpace.toRGB(toCmyk(colorvalue));
     }
 

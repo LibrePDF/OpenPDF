@@ -35,7 +35,7 @@ public class MaskColorSpace extends ColorSpace {
     
     /** Creates a new instance of PaintColorSpace */
     public MaskColorSpace(PDFPaint paint) {
-        super (TYPE_RGB, 1);
+        super(TYPE_RGB, 1);
         
         this.paint = paint;
     }
@@ -75,18 +75,18 @@ public class MaskColorSpace extends ColorSpace {
     }
     
     ColorSpace cie = ColorSpace.getInstance(ColorSpace.CS_CIEXYZ);
-    float[] prev1= this.cie.fromRGB(toRGB(new float[] {1.0f}));
-    float[] prev0= this.cie.fromRGB(toRGB(new float[] {0.0f}));
+    float[] prev1 = this.cie.fromRGB(toRGB(new float[]{1.0f}));
+    float[] prev0 = this.cie.fromRGB(toRGB(new float[]{0.0f}));
 
     @Override
     public float[] toCIEXYZ(float[] colorvalue) {
-    if (colorvalue[0]==1) {
-        return this.prev1;
-    } else if (colorvalue[0]==0) {
-        return this.prev0;
-    } else {
-        return this.cie.fromRGB(toRGB(colorvalue));
-    }
+        if (colorvalue[0] == 1) {
+            return this.prev1;
+        } else if (colorvalue[0] == 0) {
+            return this.prev0;
+        } else {
+            return this.cie.fromRGB(toRGB(colorvalue));
+        }
     }
     
     @Override
