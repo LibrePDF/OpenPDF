@@ -55,7 +55,6 @@ import org.openpdf.text.Rectangle;
 import org.openpdf.text.utils.PdfBatch;
 import org.openpdf.text.utils.PdfBatch.BatchResult;
 
-import java.io.Closeable;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
