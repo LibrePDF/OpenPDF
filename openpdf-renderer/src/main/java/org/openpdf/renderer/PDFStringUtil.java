@@ -119,8 +119,7 @@ public class PDFStringUtil {
         // we can just grab array since we know that if charset completes
         // without error then there's the output buffer will be exactly
         // correct in size, since there's only ever 1 byte for one char.
-        return new PDFDocCharsetEncoder().encode(CharBuffer.wrap(string)).
-                array();
+        return new PDFDocCharsetEncoder().encode(CharBuffer.wrap(string)).array();
     }
 
     /**
@@ -162,6 +161,7 @@ public class PDFStringUtil {
     /**
      * Create a basic string from bytes. This is effectively the byte array
      * cast to a char array and turned into a String.
+     *
      * @param bytes the source of the bytes for the basic string
      * @param offset the offset into butes where the string starts
      * @param length the number of bytes to turn into a string
@@ -179,6 +179,7 @@ public class PDFStringUtil {
     /**
      * Create a basic string from bytes. This is effectively the byte array
      * cast to a char array and turned into a String.
+     *
      * @param bytes the bytes, all of which are used
      * @return the corresponding string
      */

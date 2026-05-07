@@ -348,7 +348,7 @@ public class PDFTextFormat implements Cloneable {
     * represent text to be added, and the Doubles represent kerning
     * amounts.
     */
-    public void doText(PDFPage cmds, Object ary[], boolean autoAdjustStroke) throws PDFParseException {
+    public void doText(PDFPage cmds, Object[] ary, boolean autoAdjustStroke) throws PDFParseException {
         for (int i = 0; i < ary.length; i++) {
             if (ary[i] instanceof String) {
                 doText(cmds, (String) ary[i], autoAdjustStroke);

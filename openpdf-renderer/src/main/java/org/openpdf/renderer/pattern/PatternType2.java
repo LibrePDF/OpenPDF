@@ -44,8 +44,7 @@ public class PatternType2 extends PDFPattern {
      * Note the resources passed in are ignored...
      */
     @Override
-    protected void parse(PDFObject patternObj, Map rsrc) throws IOException
-    {
+    protected void parse(PDFObject patternObj, Map rsrc) throws IOException {
         this.shader = PDFShader.getShader(patternObj.getDictRef("Shading"), rsrc);        
     }
     

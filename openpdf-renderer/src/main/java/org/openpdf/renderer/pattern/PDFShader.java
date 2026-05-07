@@ -105,8 +105,7 @@ public abstract class PDFShader {
      * Parse a pdf shader into a shader object
      */
     public static PDFShader getShader(PDFObject shaderObj, Map resources)
-        throws IOException
-    {
+        throws IOException {
         // first see if the shader is already cached
         PDFShader shader = (PDFShader) shaderObj.getCache();
         if (shader != null) {

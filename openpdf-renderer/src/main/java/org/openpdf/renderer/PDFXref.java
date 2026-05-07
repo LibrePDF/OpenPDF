@@ -122,6 +122,7 @@ public class PDFXref {
     /**
      * Get the object this reference refers to, or null if it hasn't been
      * set.
+     *
      * @return the object if it exists, or null if not
      */
     public PDFObject getObject() {
@@ -142,8 +143,8 @@ public class PDFXref {
     @Override
     public boolean equals(Object obj) {
         return (obj instanceof PDFXref) &&
-                ((PDFXref)obj).id == id &&
-                ((PDFXref)obj).generation == generation;
+                ((PDFXref) obj).id == id &&
+                ((PDFXref) obj).generation == generation;
     }
 
     @Override

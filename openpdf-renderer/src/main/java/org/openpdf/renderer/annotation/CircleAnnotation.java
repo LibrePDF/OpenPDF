@@ -16,6 +16,7 @@ public class CircleAnnotation extends MarkupAnnotation {
     
     /*************************************************************************
      * Constructor
+     *
      * @param annotObject
      * @throws IOException 
      ************************************************************************/
