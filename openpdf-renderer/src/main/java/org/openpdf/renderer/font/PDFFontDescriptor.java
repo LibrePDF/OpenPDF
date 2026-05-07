@@ -32,22 +32,22 @@ public class PDFFontDescriptor {
     /** All glyphs have the same width. */
     public final static int FIXED_PITCH = 1;
     /** Glyphs have serifs. */
-    public final static int SERIF = 1 << (2-1);
+    public final static int SERIF = 1 << (2 - 1);
     /** Font contains glyphs outside the Adobe standard Latin. */
-    public final static int SYMBOLIC = 1 << (3-1);
+    public final static int SYMBOLIC = 1 << (3 - 1);
     /** Glyphs resemble cursive handwriting. */
-    public final static int SCRIPT = 1 << (4-1);
+    public final static int SCRIPT = 1 << (4 - 1);
     /** Font uses the Adobe standard Latic character set. */
-    public final static int NONSYMBOLIC = 1 << (6-1);
+    public final static int NONSYMBOLIC = 1 << (6 - 1);
     /** Glyphs have dominant vertical strokes that are slanted. */
-    public final static int ITALIC = 1 << (7-1);
+    public final static int ITALIC = 1 << (7 - 1);
     /** Font contains no lowercase letters. */
-    public final static int ALLCAP = 1 << (17-1);
+    public final static int ALLCAP = 1 << (17 - 1);
     /** Font contains both uppercase and lowercase letters.. */
-    public final static int SMALLCAP = 1 << (18-1);
+    public final static int SMALLCAP = 1 << (18 - 1);
     /** Determines whether bold glyphs shall be painted with
      * extra pixels even at very small text sizes. */
-    public final static int FORCEBOLD = 1 << (19-1);
+    public final static int FORCEBOLD = 1 << (19 - 1);
     /** Holds value of property ascent. */
     private int ascent;
     /** Holds value of property capHeight. */
@@ -103,7 +103,7 @@ public class PDFFontDescriptor {
         // required parameters
         setFlags(obj.getDictRef("Flags").getIntValue());
         PDFObject fontNameObj = obj.getDictRef("FontName");
-        if (fontNameObj == null){
+        if (fontNameObj == null) {
             // fallback to avoid NPE try to use the BaseFont
             fontNameObj = obj.getDictRef("BaseFont");
         }
@@ -117,28 +117,24 @@ public class PDFFontDescriptor {
         // these values are declared as Required except for Type 3 fonts
         // however a value might not be available for some fonts and 
         // therefore some predefined value is set, so that we have a fallback
-        if ( obj.getDictionary().containsKey("Ascent")) {
+        if (obj.getDictionary().containsKey("Ascent")) {
             setAscent(obj.getDictRef("Ascent").getIntValue());
-        }
-        else if (areConditionalParametersRequired) {
+        } else if (areConditionalParametersRequired) {
             setAscent(728); // value of ArialMT as used with Report Label
         }
-        if ( obj.getDictionary().containsKey("CapHeight")) {
+        if (obj.getDictionary().containsKey("CapHeight")) {
             setCapHeight(obj.getDictRef("CapHeight").getIntValue());
-        }
-        else if (areConditionalParametersRequired) {
+        } else if (areConditionalParametersRequired) {
             setCapHeight(716); // value of ArialMT as used with Report Label
         }
-        if ( obj.getDictionary().containsKey("Descent")) {
+        if (obj.getDictionary().containsKey("Descent")) {
             setDescent(obj.getDictRef("Descent").getIntValue());
-        }
-        else if (areConditionalParametersRequired) {
+        } else if (areConditionalParametersRequired) {
             setDescent(-210); // value of ArialMT as used with Report Label
         }
-        if ( obj.getDictionary().containsKey("StemV")) {
+        if (obj.getDictionary().containsKey("StemV")) {
             setStemV(obj.getDictRef("StemV").getIntValue());
-        }
-        else if (areConditionalParametersRequired) {
+        } else if (areConditionalParametersRequired) {
             setStemV(109); // "normal" value for vertical stem width (PDFlib)
         }
 
@@ -197,6 +193,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property ascent.
+     *
      * @return Value of property ascent.
      *
      */
@@ -205,6 +202,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property ascent.
+     *
      * @param ascent New value of property ascent.
      *
      */
@@ -213,6 +211,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property capHeight.
+     *
      * @return Value of property capHeight.
      *
      */
@@ -221,6 +220,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property capHeight.
+     *
      * @param capHeight New value of property capHeight.
      *
      */
@@ -229,6 +229,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property descent.
+     *
      * @return Value of property descent.
      *
      */
@@ -237,6 +238,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property descent.
+     *
      * @param descent New value of property descent.
      *
      */
@@ -245,6 +247,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property flags.
+     *
      * @return Value of property flags.
      *
      */
@@ -253,6 +256,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property flags.
+     *
      * @param flags New value of property flags.
      *
      */
@@ -261,6 +265,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property fontFamily. Option (PDF 1.5)
+     *
      * @return Value of the property fontFamily
      */
     public String getFontFamily() {
@@ -268,6 +273,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property fontFamily.
+     *
      * @param fontFamily New value of property fontFamily.
      *
      */
@@ -276,6 +282,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property fontName.
+     *
      * @return Value of property fontName.
      *
      */
@@ -284,6 +291,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property fontName.
+     *
      * @param fontName New value of property fontName.
      *
      */
@@ -331,6 +339,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property italicAngle.
+     *
      * @return Value of property italicAngle.
      *
      */
@@ -339,6 +348,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property italicAngle.
+     *
      * @param italicAngle New value of property italicAngle.
      *
      */
@@ -347,6 +357,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property stemV.
+     *
      * @return Value of property stemV.
      *
      */
@@ -355,6 +366,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property stemV.
+     *
      * @param stemV New value of property stemV.
      *
      */
@@ -363,6 +375,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property avgWidth.
+     *
      * @return Value of property avgWidth.
      *
      */
@@ -371,6 +384,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property avgWidth.
+     *
      * @param avgWidth New value of property avgWidth.
      *
      */
@@ -379,6 +393,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property fontFile.
+     *
      * @return Value of property fontFile.
      *
      */
@@ -387,6 +402,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property fontFile.
+     *
      * @param fontFile New value of property fontFile.
      *
      */
@@ -395,6 +411,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property fontFile2.
+     *
      * @return Value of property fontFile2.
      *
      */
@@ -403,6 +420,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property fontFile2.
+     *
      * @param fontFile2 New value of property fontFile2.
      *
      */
@@ -411,6 +429,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property fontFile3.
+     *
      * @return Value of property fontFile3.
      *
      */
@@ -419,6 +438,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property fontFile3.
+     *
      * @param fontFile3 New value of property fontFile3.
      *
      */
@@ -427,6 +447,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property leading.
+     *
      * @return Value of property leading.
      *
      */
@@ -435,6 +456,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property leading.
+     *
      * @param leading New value of property leading.
      *
      */
@@ -443,6 +465,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property maxWidth.
+     *
      * @return Value of property maxWidth.
      *
      */
@@ -451,6 +474,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property maxWidth.
+     *
      * @param maxWidth New value of property maxWidth.
      *
      */
@@ -459,6 +483,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property misingWidth.
+     *
      * @return Value of property misingWidth.
      *
      */
@@ -467,6 +492,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property misingWidth.
+     *
      * @param missingWidth New value of property misingWidth.
      */
     public void setMissingWidth(int missingWidth) {
@@ -474,6 +500,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property stemH.
+     *
      * @return Value of property stemH.
      *
      */
@@ -482,6 +509,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property stemH.
+     *
      * @param stemH New value of property stemH.
      *
      */
@@ -490,6 +518,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property xHeight.
+     *
      * @return Value of property xHeight.
      *
      */
@@ -498,6 +527,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property xHeight.
+     *
      * @param xHeight New value of property xHeight.
      *
      */
@@ -506,6 +536,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property charSet.
+     *
      * @return Value of property charSet.
      *
      */
@@ -514,6 +545,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property charSet.
+     *
      * @param charSet New value of property charSet.
      *
      */
@@ -522,6 +554,7 @@ public class PDFFontDescriptor {
     }
 
     /** Getter for property fontBBox.
+     *
      * @return Value of property fontBBox.
      *
      */
@@ -530,6 +563,7 @@ public class PDFFontDescriptor {
     }
 
     /** Setter for property fontBBox.
+     *
      * @param fontBBox New value of property fontBBox.
      *
      */
