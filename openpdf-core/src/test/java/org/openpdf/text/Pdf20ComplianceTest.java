@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.openpdf.text.pdf.*;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
