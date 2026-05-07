@@ -1143,6 +1143,11 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      */
     public static final PdfName FLATEDECODE = new PdfName("FlateDecode");
     /**
+     * The {@code /BrotliDecode} filter — being standardised as a PDF 2.0 stream filter
+     * through ISO/TS 32001.
+     */
+    public static final PdfName BROTLIDECODE = new PdfName("BrotliDecode");
+    /**
      * A name
      */
     public static final PdfName FO = new PdfName("Fo");
