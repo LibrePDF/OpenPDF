@@ -257,16 +257,6 @@ public class PDFFile {
 
             // read the object and cache the reference
             obj= readObject(ref.getID(), ref.getGeneration(), decrypter);
-            int loc = this.objIdx[id].getFilePos();
-            if (loc < 0) {
-                return PDFObject.nullObj;
-            }
-
-            // move to where this object is
-            this.buf.position(loc);
-
-            // read the object and cache the reference
-            obj= readObject(ref.getID(), ref.getGeneration(), decrypter);
         }
         else { // compressed
             int compId = this.objIdx[id].getID();
