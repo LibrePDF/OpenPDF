@@ -616,7 +616,7 @@ public class PdfWriter extends DocWriter implements
      * compressed using Brotli ({@code /BrotliDecode}) instead of Flate ({@code /FlateDecode}).
      * Defaults to the value of {@link org.openpdf.text.Document#useBrotliCompression}.
      */
-    protected boolean useBrotliCompression = org.openpdf.text.Document.useBrotliCompression;
+    protected boolean useBrotliCompression = Document.useBrotliCompression;
     /**
      * The fonts of this document
      */
