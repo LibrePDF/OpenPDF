@@ -23,6 +23,7 @@ public class TextMarkupAnnotation extends MarkupAnnotation {
     
     /*************************************************************************
      * Constructor
+     *
      * @param annotObject
      * @throws IOException 
      ************************************************************************/
@@ -52,8 +53,9 @@ public class TextMarkupAnnotation extends MarkupAnnotation {
         // We should also set the correct colors and such.
         
         // Draw a box
-        for (int i = 0; i < quadPoints.length; i+=4) {
-            GeneralPath gp = new GeneralPath(new Rectangle(quadPoints[i], quadPoints[i+1], quadPoints[i+2], quadPoints[i+3]));
+        for (int i = 0; i < quadPoints.length; i += 4) {
+            GeneralPath gp = new GeneralPath(new Rectangle(quadPoints[i], quadPoints[i + 1], quadPoints[i + 2],
+                    quadPoints[i + 3]));
             highlightCommands.add(new PDFShapeCmd(gp, PDFShapeCmd.FILL, true));
         }
         highlightCommands.add(PDFPage.createPopCmd());
