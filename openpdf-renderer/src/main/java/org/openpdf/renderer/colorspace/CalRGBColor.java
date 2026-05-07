@@ -29,6 +29,7 @@ import org.openpdf.renderer.function.FunctionType0;
 
 /**
  * A ColorSpace for calibrated RGB
+ *
  * @author Mike Wessler
  */
 public class CalRGBColor extends ColorSpace {
@@ -49,17 +50,18 @@ public class CalRGBColor extends ColorSpace {
     float[] scale;
     float[] max;
     
-    float white[]= {1f, 1f, 1f};
-    float black[]= {0, 0, 0};
-    float matrix[]= {1f, 0, 0, 0, 1f, 0, 0, 0, 1f};
-    float gamma[]= {1f, 1f, 1f};
+    float[] white = {1f, 1f, 1f};
+    float[] black = {0, 0, 0};
+    float[] matrix = {1f, 0, 0, 0, 1f, 0, 0, 0, 1f};
+    float[] gamma = {1f, 1f, 1f};
 
-    static ColorSpace rgbCS= ColorSpace.getInstance(ColorSpace.CS_sRGB);
-    static ColorSpace cieCS= ColorSpace.getInstance(ColorSpace.CS_CIEXYZ);
+    static ColorSpace rgbCS = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+    static ColorSpace cieCS = ColorSpace.getInstance(ColorSpace.CS_CIEXYZ);
     
     /**
      * Create a new Calibrated RGB color space object, given the
      * description in a PDF dictionary.
+     *
      * @param obj a dictionary that contains an array of 3 Numbers
      * for "WhitePoint" and "BlackPoint", a Number for "Gamma", and
      * an array of 9 Numbers for "Matrix".
@@ -76,28 +78,28 @@ public class CalRGBColor extends ColorSpace {
         // into toRGB does not get you (1.0, 1.0, 1.0) back)
         // cieWhite = cieCS.fromRGB(new float[] { 1.0f, 1.0f, 1.0f } );
       
-        PDFObject ary= obj.getDictRef("WhitePoint");
-    if (ary!=null) {
-        for(int i=0; i<3; i++) {
-        this.white[i]= ary.getAt(i).getFloatValue();
+        PDFObject ary = obj.getDictRef("WhitePoint");
+    if (ary != null) {
+        for (int i = 0; i < 3; i++) {
+        this.white[i] = ary.getAt(i).getFloatValue();
         }
     }
-    ary= obj.getDictRef("BlackPoint");
-    if (ary!=null) {
-        for(int i=0; i<3; i++) {
-        this.black[i]= ary.getAt(i).getFloatValue();
+    ary = obj.getDictRef("BlackPoint");
+    if (ary != null) {
+        for (int i = 0; i < 3; i++) {
+        this.black[i] = ary.getAt(i).getFloatValue();
         }
     }
-    ary= obj.getDictRef("Gamma");
-    if (ary!=null) {
-        for (int i=0; i<3; i++) {
-        this.gamma[i]= ary.getAt(i).getFloatValue();
+    ary = obj.getDictRef("Gamma");
+    if (ary != null) {
+        for (int i = 0; i < 3; i++) {
+        this.gamma[i] = ary.getAt(i).getFloatValue();
         }
     }
-    ary= obj.getDictRef("Matrix");
-    if (ary!=null) {
-        for (int i=0; i<9; i++) {
-        this.matrix[i]= ary.getAt(i).getFloatValue();
+    ary = obj.getDictRef("Matrix");
+    if (ary != null) {
+        for (int i = 0; i < 9; i++) {
+        this.matrix[i] = ary.getAt(i).getFloatValue();
         }
     }
         
@@ -123,28 +125,29 @@ public class CalRGBColor extends ColorSpace {
      * get the number of components (3)
      */
     @Override public int getNumComponents() {
-    return 3;
+        return 3;
     }
 
     /**
      * convert from Calibrated RGB to standard RGB
+     *
      * @param comp the Calibrated RGB values (0-1)
      * @return the RGB values (0-1)
      */
     @Override
-    public float[] toRGB(float comp[]) {
-    if (comp.length==3) {
+    public float[] toRGB(float[] comp) {
+    if (comp.length == 3) {
             // compute r', g' and b' by raising the given values to the
             // correct gamma
-        float a = (float)Math.pow(comp[0], this.gamma[0]);
-        float b = (float)Math.pow(comp[1], this.gamma[1]);
-        float c = (float)Math.pow(comp[2], this.gamma[2]);
+        float a = (float) Math.pow(comp[0], this.gamma[0]);
+        float b = (float) Math.pow(comp[1], this.gamma[1]);
+        float c = (float) Math.pow(comp[2], this.gamma[2]);
         
             // now multiply by the matrix to get X, Y and Z values
             float[] xyz = new float[] {
-        this.matrix[0]*a + this.matrix[3]*b + this.matrix[6]*c,
-        this.matrix[1]*a + this.matrix[4]*b + this.matrix[7]*c,
-        this.matrix[2]*a + this.matrix[5]*b + this.matrix[8]*c};
+        this.matrix[0] * a + this.matrix[3] * b + this.matrix[6] * c,
+        this.matrix[1] * a + this.matrix[4] * b + this.matrix[7] * c,
+        this.matrix[2] * a + this.matrix[5] * b + this.matrix[8] * c};
                      
             // now scale the xyz values
             xyz = matrixMult(xyz, this.scale, 3);

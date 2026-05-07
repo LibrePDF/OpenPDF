@@ -26,42 +26,44 @@ import org.openpdf.renderer.PDFObject;
 
 /**
  * A ColorSpace for calibrated gray
+ *
  * @author Mike Wessler
  */
 public class CalGrayColor extends ColorSpace {
-    float white[]= {1f, 1f, 1f};
-    float black[]= {0, 0, 0};
-    float gamma= 1;
-    static ColorSpace cie= ColorSpace.getInstance(ColorSpace.CS_sRGB);
+    float[] white = {1f, 1f, 1f};
+    float[] black = {0, 0, 0};
+    float gamma = 1;
+    static ColorSpace cie = ColorSpace.getInstance(ColorSpace.CS_sRGB);
 
     /**
      * Create a new Calibrated Gray color space object, given
      * the description in a PDF dictionary.
+     *
      * @param obj a dictionary that contains an Array of 3 Numbers
      * for "WhitePoint" and "BlackPoint", and a Number for "Gamma"
      */
     public CalGrayColor(PDFObject obj) throws IOException {
-    // obj is a dictionary that has the following parts:
-    // WhitePoint [a b c]
-    // BlackPoint [a b c]
-    // Gamma a
-    super(TYPE_GRAY, 1);
-    PDFObject ary= obj.getDictRef("WhitePoint");
-    if (ary!=null) {
-        for(int i=0; i<3; i++) {
-        this.white[i]= ary.getAt(i).getFloatValue();
+        // obj is a dictionary that has the following parts:
+        // WhitePoint [a b c]
+        // BlackPoint [a b c]
+        // Gamma a
+        super(TYPE_GRAY, 1);
+        PDFObject ary = obj.getDictRef("WhitePoint");
+        if (ary != null) {
+            for (int i = 0; i < 3; i++) {
+                this.white[i] = ary.getAt(i).getFloatValue();
+            }
         }
-    }
-    ary= obj.getDictRef("BlackPoint");
-    if (ary!=null) {
-        for(int i=0; i<3; i++) {
-        this.black[i]= ary.getAt(i).getFloatValue();
+        ary = obj.getDictRef("BlackPoint");
+        if (ary != null) {
+            for (int i = 0; i < 3; i++) {
+                this.black[i] = ary.getAt(i).getFloatValue();
+            }
         }
-    }
-    PDFObject g= obj.getDictRef("Gamma");
-    if (g!=null) {
-        this.gamma= g.getFloatValue();
-    }
+        PDFObject g = obj.getDictRef("Gamma");
+        if (g != null) {
+            this.gamma = g.getFloatValue();
+        }
     }
 
     /**
@@ -75,24 +77,26 @@ public class CalGrayColor extends ColorSpace {
     /**
      * get the number of components (1).
      */
-    @Override public int getNumComponents() {
-    return 1;
+    @Override
+    public int getNumComponents() {
+        return 1;
     }
 
     /**
      * convert from Calibrated Gray to RGB.
+     *
      * @param comp the gray value (0-1)
      * @return the RGB values (0-1)
      */
     @Override
-    public float[] toRGB(float comp[]) {
-    if (comp.length==1) {
-        float mul= (float)Math.pow(comp[0], this.gamma);
-        float xyz[] = {
-        this.white[0]*mul,
+    public float[] toRGB(float[] comp) {
+    if (comp.length == 1) {
+        float mul = (float) Math.pow(comp[0], this.gamma);
+        float[] xyz = {
+        this.white[0] * mul,
         0,
         0};
-        float rgb[]= cie.fromCIEXYZ(xyz);
+        float[] rgb = cie.fromCIEXYZ(xyz);
         return rgb;
     } else {
         return this.black;

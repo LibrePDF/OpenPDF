@@ -60,6 +60,7 @@ public class AlternateColorSpace extends PDFColorSpace {
     /**
      * get the PDFPaint representing the color described by the
      * given color components
+     *
      * @param components the color components corresponding to the given
      * colorspace
      * @return a PDFPaint object representing the closest Color to the
@@ -77,14 +78,18 @@ public class AlternateColorSpace extends PDFColorSpace {
     /**
      * get the original Java ColorSpace.
      */
-    @Override public ColorSpace getColorSpace() {
-        if (altcolorspace == null) altcolorspace = new AltColorSpace(function, alternate.getColorSpace());
+    @Override
+    public ColorSpace getColorSpace() {
+        if (altcolorspace == null) {
+            altcolorspace = new AltColorSpace(function, alternate.getColorSpace());
+        }
         return altcolorspace;
         //return this.alternate.getColorSpace();
     }
     
     /*************************************************************************
      * Get the PDF function
+     *
      * @return PDFFunction
      ************************************************************************/
     public PDFFunction getFunktion() {

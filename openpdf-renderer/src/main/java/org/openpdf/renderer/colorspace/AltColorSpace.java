@@ -15,6 +15,7 @@ public class AltColorSpace extends ColorSpace {
 
     private PDFFunction fkt;
     private ColorSpace origCs;
+
     /**
      * Create a new CMYKColorSpace Instance.
      */
@@ -50,7 +51,8 @@ public class AltColorSpace extends ColorSpace {
     }
 
     /** 
-     * Converts to CIEXYZ. 
+     * Converts to CIEXYZ.
+     *
      * @see java.awt.color.ColorSpace#toCIEXYZ(float[])
      */
     @Override

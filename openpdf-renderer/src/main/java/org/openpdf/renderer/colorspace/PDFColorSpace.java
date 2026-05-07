@@ -36,6 +36,7 @@ import org.openpdf.renderer.function.PDFFunction;
 /**
  * A color space that can convert a set of color components into
  * PDFPaint.
+ *
  * @author Mike Wessler
  */
 public class PDFColorSpace {
@@ -92,6 +93,7 @@ public class PDFColorSpace {
 
     /**
      * create a PDFColorSpace based on a Java ColorSpace
+     *
      * @param cs the Java ColorSpace
      */
     public PDFColorSpace(ColorSpace cs) {
@@ -209,7 +211,7 @@ public class PDFColorSpace {
             int count = ary[2].getIntValue();
             try {
                 value = new IndexedColor(refspace, count, ary[3]);
-            }catch(Exception e) {
+            } catch (Exception e) {
                 // there might be problems in reading the colorspace from stream, 
                 // in that case use the reference colorspace
                 value = refspace;
@@ -223,9 +225,9 @@ public class PDFColorSpace {
             PDFColorSpace base = getColorSpace(ary[1], resources);
 
             return new PatternSpace(base);
-        } else if(name.equals("DeviceRGB")) {
+        } else if (name.equals("DeviceRGB")) {
             return getColorSpace(COLORSPACE_RGB);
-        } else if(name.equals("DeviceCMYK")) {
+        } else if (name.equals("DeviceCMYK")) {
             return getColorSpace(COLORSPACE_CMYK);
         } else {            
             // removed access to ary[1] dur to index out of bounds exceptions
@@ -247,6 +249,7 @@ public class PDFColorSpace {
     /**
      * get the PDFPaint representing the color described by the
      * given color components
+     *
      * @param components the color components corresponding to the given
      * colorspace
      * @return a PDFPaint object representing the closest Color to the
