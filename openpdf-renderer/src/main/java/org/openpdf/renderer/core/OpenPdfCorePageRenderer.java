@@ -23,6 +23,8 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.openpdf.text.pdf.CMapAwareDocumentFont;
 import org.openpdf.text.pdf.PRIndirectReference;
@@ -75,6 +77,8 @@ import org.openpdf.text.pdf.PdfString;
  */
 final class OpenPdfCorePageRenderer {
 
+    private static final Logger LOG = Logger.getLogger(OpenPdfCorePageRenderer.class.getName());
+
     /** Default user-space resolution of a PDF, in DPI. */
     private static final float PDF_USER_SPACE_DPI = 72f;
 
@@ -83,6 +87,7 @@ final class OpenPdfCorePageRenderer {
     private final Map<String, CMapAwareDocumentFont> fontCache = new HashMap<>();
 
     private final Deque<GState> stateStack = new ArrayDeque<>();
+    private final Deque<AffineTransform> ctmStack = new ArrayDeque<>();
     private GState state;
 
     private Path2D.Float currentPath = new Path2D.Float();
@@ -185,8 +190,10 @@ final class OpenPdfCorePageRenderer {
             PdfLiteral op = (PdfLiteral) operands.get(operands.size() - 1);
             try {
                 dispatch(op.toString(), operands);
-            } catch (RuntimeException ignored) {
-                // Robustness: a malformed individual operator must not abort the whole page.
+            } catch (RuntimeException e) {
+                // A malformed operator must not abort the whole page; log for diagnostics.
+                LOG.log(Level.FINE, "Skipping operator ''{0}'' due to: {1}",
+                        new Object[]{op, e});
             }
         }
     }
@@ -197,11 +204,13 @@ final class OpenPdfCorePageRenderer {
             // --- Graphics state ---
             case "q":
                 stateStack.push(state);
+                ctmStack.push(g2.getTransform());
                 state = new GState(state);
                 break;
             case "Q":
                 if (!stateStack.isEmpty()) {
                     state = stateStack.pop();
+                    g2.setTransform(ctmStack.pop());
                 }
                 break;
             case "cm":
@@ -485,9 +494,10 @@ final class OpenPdfCorePageRenderer {
     private String decodeString(PdfString raw) {
         if (state.font != null) {
             try {
-                return state.font.decode(raw.getBytes(), 0, raw.getBytes().length);
+                byte[] bytes = raw.getBytes();
+                return state.font.decode(bytes, 0, bytes.length);
             } catch (RuntimeException ignored) {
-                // Fall through.
+                // Fall through to unicode fallback.
             }
         }
         return raw.toUnicodeString();
