@@ -469,10 +469,10 @@ final class OpenPdfCorePageRenderer {
             g2.setTransform(saved);
         }
 
-        // Advance text matrix by the displayed width so following Tj's continue inline.
-        float displayed = estimateTextAdvance(text);
+        // Advance text matrix using actual PDF font widths + char/word spacing.
+        float advance = computeTextAdvance(text);
         AffineTransform adv = new AffineTransform(textMatrix);
-        adv.translate(displayed, 0);
+        adv.translate(advance, 0);
         textMatrix = adv;
     }
 
@@ -503,10 +503,24 @@ final class OpenPdfCorePageRenderer {
         return raw.toUnicodeString();
     }
 
-    private float estimateTextAdvance(String text) {
-        // We don't have access to per-glyph widths from CMapAwareDocumentFont in a
-        // package-public way, so fall back to a Java2D measurement at the current font.
-        return (float) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+    private float computeTextAdvance(String text) {
+        float fontAdvance;
+        if (state.font != null) {
+            // Use the PDF font's own width table so inter-character spacing is accurate.
+            fontAdvance = state.font.getWidthPoint(text, state.fontSize);
+        } else {
+            // No PDF font info: fall back to Java2D measurement (less accurate).
+            return (float) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+        }
+        int spaces = 0;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == ' ') {
+                spaces++;
+            }
+        }
+        // PDF spec: tx = (fontWidth + Tc * n + Tw * spaces) * Th
+        return (fontAdvance + state.charSpacing * text.length() + state.wordSpacing * spaces)
+                * state.horizontalScaling;
     }
 
     private Font mapFont(CMapAwareDocumentFont docFont, float size) {
@@ -612,6 +626,4 @@ final class OpenPdfCorePageRenderer {
         }
     }
 }
-
-
 
