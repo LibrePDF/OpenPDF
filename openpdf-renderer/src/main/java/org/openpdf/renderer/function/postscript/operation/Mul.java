@@ -16,6 +16,6 @@ final class Mul implements PostScriptOperation {
      * errors: stackunderflow, typecheck, undefinedresult
      */
     public void eval(Stack<Object> environment) {
-        environment.push((Double)environment.pop() * (Double)environment.pop());
+        environment.push((Double) environment.pop() * (Double) environment.pop());
     }
 }

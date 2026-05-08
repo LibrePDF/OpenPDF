@@ -16,6 +16,6 @@ final class Round implements PostScriptOperation {
      * errors: stackunderflow, typecheck
      */
     public void eval(Stack<Object> environment) {
-        environment.push(Math.round((Double)environment.pop()));
+        environment.push(Math.round((Double) environment.pop()));
     }
 }

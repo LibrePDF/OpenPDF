@@ -39,6 +39,7 @@ public class PDFDocCharsetEncoder extends CharsetEncoder {
     /**
      * Identify whether a particular character preserves the same byte value
      * upon encoding in PDFDocEncoding
+     *
      * @param ch the character
      * @return whether the character is identity encoded
      */
@@ -59,10 +60,10 @@ public class PDFDocCharsetEncoder extends CharsetEncoder {
      * coded character is absent from this map, that character is unmappable
      * in the PDFDocEncoding.
      */
-    final static Map<Character,Byte> EXTENDED_TO_PDF_DOC_ENCODING_MAP =
-            new HashMap<Character,Byte>();
-    static
-    {
+    final static Map<Character, Byte> EXTENDED_TO_PDF_DOC_ENCODING_MAP =
+            new HashMap<Character, Byte>();
+
+    static {
         for (byte i = 0; i < PDFStringUtil.PDF_DOC_ENCODING_MAP.length; ++i) {
             final char c = PDFStringUtil.PDF_DOC_ENCODING_MAP[i];
             final boolean identical = (c == i);

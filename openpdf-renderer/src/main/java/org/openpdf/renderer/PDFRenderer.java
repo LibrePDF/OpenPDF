@@ -98,6 +98,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
 
     /**
      * create a new PDFGraphics state
+     *
      * @param page the current page
      * @param imageinfo the paramters of the image to render
      */
@@ -116,6 +117,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
      * create a new PDFGraphics state, given a Graphics2D. This version
      * will <b>not</b> create an image, and you will get a NullPointerException
      * if you attempt to call getImage().
+     *
      * @param page the current page
      * @param g the Graphics2D object to use for drawing
      * @param imgbounds the bounds of the image into which to fit the page
@@ -195,7 +197,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
      * push() was called.
      */
     public void pop() {
-        if(this.stack.isEmpty() == false) {
+        if (this.stack.isEmpty() == false) {
             this.state = this.stack.pop();
         }
 
@@ -205,6 +207,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
 
     /**
      * draw an outline using the current stroke and draw paint
+     *
      * @param s the path to stroke
      * @return a Rectangle2D to which the current region being
      * drawn will be added.  May also be null, in which case no dirty
@@ -239,7 +242,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
                 width = 1.0f / (float) bt.getScaleX();
             } else {
                 // prevent division by a really small number
-                width = stroke.getLineWidth()<1f?1.0f:stroke.getLineWidth();
+                width = stroke.getLineWidth() < 1f ? 1.0f : stroke.getLineWidth();
             }
             stroke = new BasicStroke(width, bs.getEndCap(), bs.getLineJoin(), bs.getMiterLimit(), bs.getDashArray(), bs.getDashPhase());
         }
@@ -248,6 +251,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
 
     /**
      * draw an outline.
+     *
      * @param p the path to draw
      * @param bs the stroke with which to draw the path
      */
@@ -260,6 +264,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
 
     /**
      * fill an outline using the current fill paint
+     *
      * @param s the path to fill
      */
     public Rectangle2D fill(GeneralPath s) {
@@ -275,6 +280,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
 
     /**
      * draw an image.
+     *
      * @param image the image to draw
      */
     public Rectangle2D drawImage(PDFImage image) {
@@ -282,7 +288,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
         BufferedImage bi;
         try {
             bi = image.getImage();
-        }catch (PDFImageParseException e) {
+        } catch (PDFImageParseException e) {
             // maybe it was an unsupported format, or something.
             // Nothing to draw, anyway!
             return new Rectangle2D.Double();
@@ -297,15 +303,15 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
             bi = getMaskedImage(bi);
         }
 
-        Rectangle r = g.getTransform().createTransformedShape(new Rectangle(0,0,1,1)).getBounds();
+        Rectangle r = g.getTransform().createTransformedShape(new Rectangle(0, 0, 1, 1)).getBounds();
         boolean isBlured = false;
         
         if (Configuration.getInstance().isUseBlurResizingForImages() && 
                 bi.getType() != BufferedImage.TYPE_CUSTOM && 
-                bi.getWidth() >= 1.75*r.getWidth() && bi.getHeight() >= 1.75*r.getHeight()){
+                bi.getWidth() >= 1.75 * r.getWidth() && bi.getHeight() >= 1.75 * r.getHeight()) {
             try {
                 return smartDrawImage(image, bi, r, at);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 // do nothing, just go on with the "default" processing 
             }
         }
@@ -321,12 +327,12 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
         if (bandSize > 0 && bi.getHeight() > bandSize) {
            // draw in bands
            int tempMax = bi.getHeight();
-           for (int offset=0; offset<tempMax; offset += bandSize) {
+           for (int offset = 0; offset < tempMax; offset += bandSize) {
                int h = Math.min(tempMax - offset, bandSize);
-               AffineTransform translated = AffineTransform.getTranslateInstance(0, -(double)offset/tempMax);
+               AffineTransform translated = AffineTransform.getTranslateInstance(0, - (double) offset / tempMax);
                translated.concatenate(at);
 
-               if (!g.drawImage(bi.getSubimage(0,offset,bi.getWidth(),h), translated, null)) {
+               if (!g.drawImage(bi.getSubimage(0, offset, bi.getWidth(), h), translated, null)) {
                    PDFDebugger.debug("Image part not completed!", 10);
                }
            }
@@ -336,7 +342,9 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
                }
         }
         
-        if (isBlured) bi.flush();
+        if (isBlured) {
+            bi.flush();
+        }
 
         // get the total transform that was executed
         AffineTransform bt = new AffineTransform(this.g.getTransform());
@@ -361,23 +369,23 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
         
         if (Configuration.getInstance().isUseBlurResizingForImages() && 
                 bi.getType() != BufferedImage.TYPE_CUSTOM && 
-                bi.getWidth() >= 1.75*r.getWidth() && bi.getHeight() >= 1.75*r.getHeight()){
+                bi.getWidth() >= 1.75 * r.getWidth() && bi.getHeight() >= 1.75 * r.getHeight()) {
 
             BufferedImageOp op;
             // indexed colored images need to be converted for the convolveOp
             boolean colorConversion = (bi.getColorModel() instanceof IndexColorModel);
             final float maxFactor = 3.5f;
             final boolean RESIZE = true;
-            if (bi.getWidth() > maxFactor*r.getWidth() && bi.getHeight() > maxFactor*r.getHeight()){
+            if (bi.getWidth() > maxFactor * r.getWidth() && bi.getHeight() > maxFactor * r.getHeight()) {
                 //First resize, otherwise we risk that we get out of heapspace
-                int newHeight = (int)Math.round(maxFactor*r.getHeight());
-                int newWidth = (int)Math.round(maxFactor*r.getWidth());
+                int newHeight = (int) Math.round(maxFactor * r.getHeight());
+                int newWidth = (int) Math.round(maxFactor * r.getWidth());
                 if (!RESIZE) {
                     newHeight = bi.getHeight();
                     newWidth = bi.getWidth();
                 }
                 BufferedImage resized = new BufferedImage(newWidth, 
-                        newHeight, colorConversion?BufferedImage.TYPE_INT_ARGB:bi.getType());
+                        newHeight, colorConversion ? BufferedImage.TYPE_INT_ARGB : bi.getType());
                 Graphics2D bg = (Graphics2D) resized.getGraphics();
                 bg.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
                         RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -387,7 +395,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
                         0, -1f / bi.getHeight(),
                         0, 1);
                 
-                final float weight = 1.0f/16.0f;
+                final float weight = 1.0f / 16.0f;
                 final float[] blurKernel = {
                         weight, weight, weight, weight,
                         weight, weight, weight, weight,
@@ -395,17 +403,16 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
                         weight, weight, weight, weight,
                 };
                 op = new ConvolveOp(new Kernel(4, 4, blurKernel), ConvolveOp.EDGE_NO_OP, null);                
-            }
-            else {
-                final float weight = 1.0f/18.0f;
+            } else {
+                final float weight = 1.0f / 18.0f;
                 final float[] blurKernel = {
-                        1*weight, 2*weight, 1*weight,
-                        2*weight, 6*weight, 2*weight,
-                        1*weight, 2*weight, 1*weight
+                        1 * weight, 2 * weight, 1 * weight,
+                        2 * weight, 6 * weight, 2 * weight,
+                        1 * weight, 2 * weight, 1 * weight
                 };
                 if (colorConversion) {
                     BufferedImage colored = new BufferedImage(bi.getWidth(), 
-                            bi.getHeight(), colorConversion?BufferedImage.TYPE_INT_ARGB:bi.getType());
+                            bi.getHeight(), colorConversion ? BufferedImage.TYPE_INT_ARGB : bi.getType());
                     Graphics2D bg = (Graphics2D) colored.getGraphics();
                     bg.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
                             RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -416,7 +423,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
             }
             
             BufferedImage blured = op.createCompatibleDestImage(bi, 
-                    colorConversion?ColorModel.getRGBdefault():bi.getColorModel());
+                    colorConversion ? ColorModel.getRGBdefault() : bi.getColorModel());
             
                op.filter(bi, blured);
             bi = blured;
@@ -434,12 +441,12 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
         if (bandSize > 0 && bi.getHeight() > bandSize) {
            // draw in bands
            int tempMax = bi.getHeight();
-           for (int offset=0; offset<tempMax; offset += bandSize) {
+           for (int offset = 0; offset < tempMax; offset += bandSize) {
                int h = Math.min(tempMax - offset, bandSize);
-               AffineTransform translated = AffineTransform.getTranslateInstance(0, -(double)offset/tempMax);
+               AffineTransform translated = AffineTransform.getTranslateInstance(0, - (double) offset / tempMax);
                translated.concatenate(at);
 
-               if (!g.drawImage(bi.getSubimage(0,offset,bi.getWidth(),h), translated, null)) {
+               if (!g.drawImage(bi.getSubimage(0, offset, bi.getWidth(), h), translated, null)) {
                    PDFDebugger.debug("Image part not completed!", 10);
                }
            }
@@ -449,7 +456,9 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
                }
         }
 
-        if (isBlured) bi.flush();
+        if (isBlured) {
+            bi.flush();
+        }
 
         // get the total transform that was executed
         AffineTransform bt = new AffineTransform(this.g.getTransform());
@@ -520,6 +529,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
 
     /**
      * Set some or all aspects of the current stroke.
+     *
      * @param w the width of the stroke, or NOWIDTH to leave it unchanged
      * @param cap the end cap style, or NOCAP to leave it unchanged
      * @param join the join style, or NOJOIN to leave it unchanged
@@ -658,10 +668,13 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
 
     /**
      * If exists, returns the image which is used by the renderer.
+     *
      * @return a BufferedImage or null
      */
     public BufferedImage getImage() {
-        if (this.imageRef == null) return null;
+        if (this.imageRef == null) {
+            return null;
+        }
         return this.imageRef.get();
     }
     
@@ -906,16 +919,15 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
                             (byte) col.getAlpha(),
                             0, 0, 0, 0 // the background is transparent
                             };                    
-                }
-                else if (rgbValues[1] == 0xff000000){
+                } else if (rgbValues[1] == 0xff000000) {
                     // alternate case color at 1
-                    colorComponents = new byte[]{                            
+                    colorComponents = new byte[] {
                             0, 0, 0, 0, // the background is transparent
                             (byte) col.getRed(), 
                             (byte) col.getGreen(), 
                             (byte) col.getBlue(), 
                             (byte) col.getAlpha()
-                            };                                        
+                            };
                 }
                 
                 if (colorComponents != null) {
@@ -925,9 +937,8 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
                     ColorModel replacementColorModel = new IndexColorModel(pixelSize, mapSize, colorComponents, startIndex, hasAlpha);                
                     WritableRaster raster = bi.getRaster();
                     BufferedImage adaptedImage = new BufferedImage(replacementColorModel, raster, false, null);
-                       return adaptedImage;                    
-                }
-                else {
+                       return adaptedImage;
+                } else {
                     return bi; // no color replacement 
                 }
             }
@@ -1023,6 +1034,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
     }
 
     /*************************************************************************
+     *
      * @return Returns the lastTransform.
      ************************************************************************/
     public AffineTransform getLastTransform() {

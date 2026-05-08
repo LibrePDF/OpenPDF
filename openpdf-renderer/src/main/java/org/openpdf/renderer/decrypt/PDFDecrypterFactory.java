@@ -67,8 +67,7 @@ public class PDFDecrypterFactory {
      * @throws PDFAuthenticationFailureException if the supplied password
      *  was not able to 
      */
-    public static PDFDecrypter createDecryptor
-            (PDFObject encryptDict, PDFObject documentId, PDFPassword password)
+    public static PDFDecrypter createDecryptor(PDFObject encryptDict, PDFObject documentId, PDFPassword password)
             throws
             IOException,
             EncryptionUnsupportedByPlatformException,

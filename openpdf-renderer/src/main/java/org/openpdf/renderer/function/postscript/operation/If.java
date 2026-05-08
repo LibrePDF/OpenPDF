@@ -19,7 +19,7 @@ final class If implements PostScriptOperation {
      * errors: stackunderflow, typecheck
      */
     public void eval(Stack<Object> environment) {
-        if ((Boolean)environment.pop()) {
+        if ((Boolean) environment.pop()) {
             environment.push(environment.pop());
         } else {
             environment.pop();

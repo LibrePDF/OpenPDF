@@ -20,8 +20,8 @@ final class Lt implements PostScriptOperation {
      * errors: invalidaccess, stackunderflow, typecheck
      */
     public void eval(Stack<Object> environment) {
-        double num2 = (Double)environment.pop();
-        double num1 = (Double)environment.pop();
+        double num2 = (Double) environment.pop();
+        double num1 = (Double) environment.pop();
         environment.push(num1 < num2);
     }
 }

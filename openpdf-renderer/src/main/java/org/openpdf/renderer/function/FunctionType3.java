@@ -97,10 +97,10 @@ public class FunctionType3 extends PDFFunction {
      * in combination with <b>Domain</b>, define the intervals to which each
      * function from the <b>Functions</b> array applies. <b>Bounds</b> elements
      * must be in order of increasing value, and each value must be within
-     * the domain defined by >b>Domain</b>.</li><li>
+     * the domain defined by <b>Domain</b>.</li><li>
      *
      * <b>Encode</b> <i>array</i> (Required) An array of 2 * k numbers that,
-     * taken in pairs, map each subset of the domain defined by <bDomain</b>
+     * taken in pairs, map each subset of the domain defined by <b>Domain</b>
      * and the <b>Bounds</b> array to the domain of the corresponding function.
      * </li></p>
      */
@@ -129,10 +129,10 @@ public class FunctionType3 extends PDFFunction {
         }
         
         for (int i = 0; i < boundsAry.length; i++) {
-            bounds[i+1] = boundsAry[i].getFloatValue();
+            bounds[i + 1] = boundsAry[i].getFloatValue();
         }
         bounds[0] = getDomain(0);
-        bounds[bounds.length-1] = getDomain(1);
+        bounds[bounds.length - 1] = getDomain(1);
 
         // read the encode array (required)
         PDFObject encodeObj = obj.getDictRef("Encode");
@@ -141,8 +141,8 @@ public class FunctionType3 extends PDFFunction {
         }
         PDFObject[] encodeAry = encodeObj.getArray();
         encode = new float[encodeAry.length];
-        if (encode.length != 2*functions.length) {
-            throw new PDFParseException("Encode array must be of length " + 2*functions.length);
+        if (encode.length != 2 * functions.length) {
+            throw new PDFParseException("Encode array must be of length " + 2 * functions.length);
         }
         for (int i = 0; i < encodeAry.length; i++) {
             encode[i] = encodeAry[i].getFloatValue();
@@ -163,8 +163,10 @@ public class FunctionType3 extends PDFFunction {
 
         // calculate the output values
         int p = bounds.length - 2;
-        while (x < bounds[p]) p--;
-        x = interpolate(x, bounds[p], bounds[p+1], encode[2*p], encode[2*p + 1]);
+        while (x < bounds[p]) {
+            p--;
+        }
+        x = interpolate(x, bounds[p], bounds[p + 1], encode[2 * p], encode[2 * p + 1]);
         float[] out = functions[p].calculate(new float[]{x});
         for (int i = 0; i < out.length; i++) {
             outputs[i + outputOffset] = out[i];

@@ -40,6 +40,7 @@ public interface PDFDecrypter {
 
     /**
      * Decrypt a buffer of data
+     *
      * @param cryptFilterName the name of the crypt filter, if V4
      *  encryption is being used, where individual crypt filters may
      *  be specified for individual streams. If encryption is not using
@@ -68,6 +69,7 @@ public interface PDFDecrypter {
 
     /**
      * Decrypt a {@link PDFStringUtil basic string}.
+     *
      * @param objNum the object number of the containing object
      * @param objGen the generation number of the containing object
      * @param inputBasicString the string to be decrypted
@@ -84,6 +86,7 @@ public interface PDFDecrypter {
      * the user is the owner of the document. Can be used, in conjunction
      * with {@link #isEncryptionPresent()} to determine whether any
      * permissions apply.
+     *
      * @return whether owner authentication is being used to decrypt the
      *  document
      */
@@ -92,12 +95,14 @@ public interface PDFDecrypter {
     /**
      * Determine whether this actually applies a decryption other than
      * identity decryption.
+     *
      * @return whether encryption is present
      */
     public boolean isEncryptionPresent();
 
     /**
      * Determines whether decryption applies for a given crypt filter name
+     *
      * @param cryptFilterName the crypt filter name
      * @return whether the given crypt filter decrypts or not
      */

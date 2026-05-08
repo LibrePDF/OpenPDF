@@ -503,7 +503,7 @@ public class PDFParser extends BaseWatchable {
             } else if (cmd.equals("gs")) {
                 // set graphics state to values in a named dictionary
                 String popString = popString();
-                PDFDebugger.debug("Set GS state "+popString, 10);
+                PDFDebugger.debug("Set GS state " + popString, 10);
                 setGSState(popString);
             } else if (cmd.equals("m")) {
                 // path move to
@@ -519,18 +519,18 @@ public class PDFParser extends BaseWatchable {
                 PDFDebugger.logPath(path, "1 line to " + x + ", " + y);
             } else if (cmd.equals("c")) {
                 // path curve to
-                float a[] = popFloat(6);
+                float[] a = popFloat(6);
                 this.path.curveTo(a[0], a[1], a[2], a[3], a[4], a[5]);
                 PDFDebugger.logPath(path, "1 curve to " + Arrays.toString(a));
             } else if (cmd.equals("v")) {
                 // path curve; first control point= start
-                float a[] = popFloat(4);
+                float[] a = popFloat(4);
                 Point2D cp = this.path.getCurrentPoint();
                 this.path.curveTo((float) cp.getX(), (float) cp.getY(), a[0], a[1], a[2], a[3]);
                 PDFDebugger.logPath(path, "2 curve to " + Arrays.toString(a) + ", " + cp.getX() + "," + cp.getY());
             } else if (cmd.equals("y")) {
                 // path curve; last control point= end
-                float a[] = popFloat(4);
+                float[] a = popFloat(4);
                 this.path.curveTo(a[0], a[1], a[2], a[3], a[2], a[3]);
                 PDFDebugger.logPath(path, "3 curve to " + Arrays.toString(a));
             } else if (cmd.equals("h")) {
@@ -538,7 +538,7 @@ public class PDFParser extends BaseWatchable {
                 PDFDebugger.logPath(path, "closed");
             } else if (cmd.equals("re")) {
                 // path add rectangle
-                float a[] = popFloat(4);
+                float[] a = popFloat(4);
                 this.path.moveTo(a[0], a[1]);
                 PDFDebugger.logPath(path, "1 moved to " + a[0] + "," + a[1]);
                 this.path.lineTo(a[0] + a[2], a[1]);
@@ -552,7 +552,7 @@ public class PDFParser extends BaseWatchable {
             } else if (cmd.equals("S")) {
                 // stroke the path
                 if (!PDFDebugger.DISABLE_PATH_STROKE || (!PDFDebugger.DISABLE_CLIP && this.clip == PDFShapeCmd.CLIP)) {
-                    if(autoAdjustStroke || strokeOverprint || fillOverprint) {
+                    if (autoAdjustStroke || strokeOverprint || fillOverprint) {
                         path.closePath();
                         PDFDebugger.logPath(path, "closed");
                     }
@@ -835,16 +835,16 @@ public class PDFParser extends BaseWatchable {
             } else if (cmd.equals("d1")) {
                 // character width in type3 fonts
                 popFloat(6);
-            } else if (cmd.equals("QBT")) {// 'Q' & 'BT' mushed together!
+            } else if (cmd.equals("QBT")) { // 'Q' & 'BT' mushed together!
                 processQCmd();
                 processBTCmd();
-            } else if (cmd.equals("Qq")) {// 'Q' & 'q' mushed together!
+            } else if (cmd.equals("Qq")) { // 'Q' & 'q' mushed together!
                 processQCmd();
                 // push the parser state
                 this.parserStates.push((ParserState) this.state.clone());
                 // push graphics state
                 this.cmds.addPush();
-            } else if (cmd.equals("qBT")) {// 'q' & 'BT' mushed together!
+            } else if (cmd.equals("qBT")) { // 'q' & 'BT' mushed together!
             // push the parser state
                 this.parserStates.push((ParserState) this.state.clone());
                 // push graphics state
@@ -882,7 +882,7 @@ public class PDFParser extends BaseWatchable {
         try {
             this.path.closePath();
             PDFDebugger.logPath(path, "closed");
-        }catch(java.awt.geom.IllegalPathStateException e) {
+        } catch (java.awt.geom.IllegalPathStateException e) {
             PDFDebugger.debug("Failed to close path", 1000);
         }
     }
@@ -1046,7 +1046,7 @@ public class PDFParser extends BaseWatchable {
             if (matrix == null) {
                 at = new AffineTransform();
             } else {
-                float elts[] = new float[6];
+                float[] elts = new float[6];
                 for (int i = 0; i < elts.length; i++) {
                     elts[i] = (matrix.getAt(i)).getFloatValue();
                 }
@@ -1154,7 +1154,7 @@ public class PDFParser extends BaseWatchable {
             }
             // it should be a name;
             String name = t.name;
-            if(PDFDebugger.DEBUG_IMAGES) {
+            if (PDFDebugger.DEBUG_IMAGES) {
                 PDFDebugger.debug("ParseInlineImage, token: " + name);
             }
             if (name.equals("BPC")) {
@@ -1219,7 +1219,7 @@ public class PDFParser extends BaseWatchable {
     */
     private void doShader(PDFObject shaderObj) throws IOException {
         PDFShader shader = PDFShader.getShader(shaderObj, this.resources);
-        if(shader == null) {
+        if (shader == null) {
             return;
         }
         this.cmds.addPush();
@@ -1284,8 +1284,8 @@ public class PDFParser extends BaseWatchable {
             handled = true;
         }
         if ((d = gsobj.getDictRef("D")) != null) {
-            PDFObject pdash[] = d.getAt(0).getArray();
-            float dash[] = new float[pdash.length];
+            PDFObject[] pdash = d.getAt(0).getArray();
+            float[] dash = new float[pdash.length];
             for (int i = 0; i < pdash.length; i++) {
                 dash[i] = pdash[i].getFloatValue();
             }
@@ -1302,28 +1302,28 @@ public class PDFParser extends BaseWatchable {
             this.cmds.addFillAlpha(d.getFloatValue());
             handled = true;
         }
-        if((d = gsobj.getDictRef("SA")) != null) {
+        if ((d = gsobj.getDictRef("SA")) != null) {
             // automatic stroke adjustment
             this.autoAdjustStroke  = d.getBooleanValue();
             handled = true;
         }
-        if((d = gsobj.getDictRef("OP")) != null) {
+        if ((d = gsobj.getDictRef("OP")) != null) {
             this.strokeOverprint = d.getBooleanValue();
             PDFObject x = gsobj.getDictRef("OPM");
-            if(x!= null) {
+            if (x != null) {
                 this.strokeOverprintMode = x.getIntValue();
             }
             handled = true;
         }
-        if((d = gsobj.getDictRef("op")) != null) {
+        if ((d = gsobj.getDictRef("op")) != null) {
             this.fillOverprint = d.getBooleanValue();
             PDFObject x = gsobj.getDictRef("OPM");
-            if(x!= null) {
+            if (x != null) {
                 this.fillOverprintMode = x.getIntValue();
             }
             handled = true;
         }
-        if(!handled) {
+        if (!handled) {
             PDFDebugger.debug("graphic state command unknown!", 10);
         }
     }
@@ -1506,8 +1506,8 @@ public class PDFParser extends BaseWatchable {
     
     @Override
     protected void setStatus(int status) {
-        if(status == COMPLETED) {
-            if(!addAnnotation){
+        if (status == COMPLETED) {
+            if (!addAnnotation) {
                 // corresponding push in constructor PDFPage
                 this.cmds.addPop();
                 this.cmds.addAnnotations();

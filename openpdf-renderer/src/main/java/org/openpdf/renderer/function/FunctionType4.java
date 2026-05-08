@@ -84,18 +84,20 @@ public class FunctionType4 extends PDFFunction {
     }
 
     /*************************************************************************
+     *
      * @param outputs
      * @param outputOffset
      ************************************************************************/
     private void prepareResult(float[] outputs, int outputOffset) {
         for (int i = outputOffset; i < outputs.length; i++) {
-            outputs[outputs.length-i-1] = ((Double)this.stack.pop()).floatValue();
+            outputs[outputs.length - i - 1] = ((Double) this.stack.pop()).floatValue();
         }
     }
 
     /*************************************************************************
      * Put all input values on the initial stack.
      * All values are pushed as Double because we calculate internally with double.
+     *
      * @param inputs
      * @param inputOffset
      ************************************************************************/
@@ -108,14 +110,15 @@ public class FunctionType4 extends PDFFunction {
     }
 
     /*************************************************************************
+     *
      * @param outputs
      * @param outputOffset
      ************************************************************************/
     
     private void assertResultIsCorrect(float[] outputs, int outputOffset) {
-        int expectedResults = outputs.length-outputOffset;
+        int expectedResults = outputs.length - outputOffset;
         if (this.stack.size() != expectedResults) {
-            throw new IllegalStateException("Output does not match result "+expectedResults+"/"+this.stack);
+            throw new IllegalStateException("Output does not match result " + expectedResults + "/" + this.stack);
         }
     }
 }
