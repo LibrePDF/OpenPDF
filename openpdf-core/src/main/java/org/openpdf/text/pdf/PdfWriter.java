@@ -60,6 +60,7 @@ import org.openpdf.text.ImgWMF;
 import org.openpdf.text.Rectangle;
 import org.openpdf.text.Table;
 import org.openpdf.text.error_messages.MessageLocalization;
+import org.openpdf.text.pdf.codec.BrotliFilter;
 import org.openpdf.text.pdf.collection.PdfCollection;
 import org.openpdf.text.pdf.events.PdfPageEventForwarder;
 import org.openpdf.text.pdf.interfaces.PdfAnnotations;
@@ -2072,10 +2073,25 @@ public class PdfWriter extends DocWriter implements
      * standardised as a PDF 2.0 (ISO 32000-2) stream filter through ISO/TS 32001 —
      * instead of {@code /FlateDecode}. Has no effect if {@link Document#compress}
      * is {@code false}.
+     * <p>
+     * This performs a fail-fast availability check via
+     * {@link BrotliFilter#ensureAvailable()} when enabling Brotli. If the brotli4j
+     * native library cannot be loaded, a warning is written to {@code System.err}
+     * and Brotli compression is left disabled.
      *
      * @param useBrotliCompression {@code true} to enable Brotli, {@code false} for Flate
      */
     public void setUseBrotliCompression(boolean useBrotliCompression) {
+        if (useBrotliCompression) {
+            try {
+                BrotliFilter.ensureAvailable();
+            } catch (IOException e) {
+                System.err.println("OpenPDF: Brotli compression requested but unavailable: "
+                        + e.getMessage() + " - falling back to Flate compression.");
+                this.useBrotliCompression = false;
+                return;
+            }
+        }
         this.useBrotliCompression = useBrotliCompression;
     }
 
