@@ -1,6 +1,9 @@
 # OpenPDF-renderer
 
-OpenPDF-renderer is a pure Java library for rendering PDF files as images using Java2D. It provides a lightweight way to convert PDF pages into BufferedImage objects suitable for display in Swing applications or saving to image files. Since 3.0.5 it uses `openpdf-core` (`com.github.librepdf:openpdf`) as its PDF parser.
+OpenPDF-renderer is a pure Java library for rendering PDF files as images using Java2D.
+It provides a lightweight way to convert PDF pages into BufferedImage objects suitable for
+display in Swing applications or saving to image files.
+Since 3.0.5 it uses `openpdf-core` (`com.github.librepdf:openpdf`) as its PDF parser.
 
 ## Features
 
