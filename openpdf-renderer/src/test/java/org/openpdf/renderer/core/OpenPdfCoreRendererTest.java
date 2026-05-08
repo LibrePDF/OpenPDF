@@ -41,14 +41,14 @@ class OpenPdfCoreRendererTest {
     }
 
     @Test
-    void opensFromByteArray_andReportsPageCount() throws IOException {
+    void opensFromByteArrayAndReportsPageCount() throws IOException {
         try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdfBytes)) {
             assertThat(r.getNumPages()).isGreaterThanOrEqualTo(1);
         }
     }
 
     @Test
-    void opensFromFile_andReturnsPageGeometry() throws IOException {
+    void opensFromFileAndReturnsPageGeometry() throws IOException {
         try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdfPath.toFile())) {
             Rectangle2D size = r.getPageSize(1);
             assertThat(size.getX()).isEqualTo(0d);
@@ -60,7 +60,7 @@ class OpenPdfCoreRendererTest {
     }
 
     @Test
-    void opensFromPath_sameAsFile() throws IOException {
+    void opensFromPathSameAsFile() throws IOException {
         try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdfPath)) {
             assertThat(r.getNumPages()).isGreaterThanOrEqualTo(1);
         }
@@ -189,7 +189,7 @@ class OpenPdfCoreRendererTest {
     }
 
     @Test
-    void closeIsIdempotent_andBlocksFurtherRendering() throws IOException {
+    void closeIsIdempotentAndBlocksFurtherRendering() throws IOException {
         OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdfBytes);
         r.close();
         r.close(); // second close must be a no-op

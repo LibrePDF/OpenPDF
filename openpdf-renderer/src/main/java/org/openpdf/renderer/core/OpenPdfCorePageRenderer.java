@@ -86,12 +86,19 @@ final class OpenPdfCorePageRenderer {
     private GState state;
 
     private Path2D.Float currentPath = new Path2D.Float();
+    // These fields maintain path state across consecutive dispatch() calls and cannot be local.
+    @SuppressWarnings("PMD.SingularField")
     private float pathStartX;
+    @SuppressWarnings("PMD.SingularField")
     private float pathStartY;
+    @SuppressWarnings("PMD.SingularField")
     private float pathCurX;
+    @SuppressWarnings("PMD.SingularField")
     private float pathCurY;
 
-    /** Text object state (between {@code BT} and {@code ET}). */
+    /**
+     * Text object state (between {@code BT} and {@code ET}).
+     */
     private boolean inTextObject;
     private AffineTransform textMatrix;
     private AffineTransform textLineMatrix;

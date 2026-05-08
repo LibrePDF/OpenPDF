@@ -1,5 +1,4 @@
-OpenPDF-renderer
-============
+# OpenPDF-renderer
 
 OpenPDF-renderer is a pure Java library for rendering PDF files as images using Java2D. It provides a lightweight, dependency-free way to convert PDF pages into BufferedImage objects suitable for display in Swing applications or saving to image files.
 
@@ -148,7 +147,8 @@ try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.p
     var metadata      = renderer.getMetadata();      // unmodifiable Map<String,String>
     String title      = renderer.getMetadata("Title");
     String pageText   = renderer.getTextFromPage(1); // openpdf-core text extraction
-    var operators     = renderer.getContentOperators(1); // List<String>, e.g. [q, BT, Tf, Td, Tj, ET, Q]
+    // List<String>, e.g. [q, BT, Tf, Td, Tj, ET, Q]
+    var operators     = renderer.getContentOperators(1);
 }
 ```
 
@@ -315,7 +315,9 @@ mvn javadoc:javadoc
 - **Encryption**: PDF decryption features have been removed from this module
 - **Page Indexing**: Page numbers are 1-based (first page is index 1, not 0)
 - **Thread Safety**: PDFFile and PDFPage objects are not thread-safe; synchronize access if needed
-- **Deprecated APIs**: `PDFFile`, `PDFPage`, `PDFParser`, and `org.openpdf.renderer.decode.PDFDecoder` are deprecated in favor of `org.openpdf.renderer.core.OpenPdfCoreRenderer`. Existing code continues to work for now &mdash; see the "Migration to openpdf-core parser" section above.
+- **Deprecated APIs**: `PDFFile`, `PDFPage`, `PDFParser`, and `org.openpdf.renderer.decode.PDFDecoder`
+  are deprecated in favor of `org.openpdf.renderer.core.OpenPdfCoreRenderer`.
+  Existing code continues to work for now &mdash; see the "Migration to openpdf-core parser" section above.
 
 ## Supported PDF Features
 
