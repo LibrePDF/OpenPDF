@@ -27,7 +27,14 @@ public final class BrotliFilter {
     private BrotliFilter() {
     }
 
-    private static void ensureAvailable() throws IOException {
+    /**
+     * Ensures that the Brotli native library is available. Call this for a fail-fast
+     * check before relying on {@link #encode(byte[])} / {@link #decode(byte[])} or
+     * before enabling Brotli compression on a {@code PdfWriter}.
+     *
+     * @throws IOException if the brotli4j native library cannot be loaded
+     */
+    public static void ensureAvailable() throws IOException {
         try {
             Brotli4jLoader.ensureAvailability();
         } catch (Exception e) {
