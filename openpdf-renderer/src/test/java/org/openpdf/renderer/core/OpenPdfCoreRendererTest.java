@@ -210,7 +210,3 @@ class OpenPdfCoreRendererTest {
 
 
 
-
-
-
-

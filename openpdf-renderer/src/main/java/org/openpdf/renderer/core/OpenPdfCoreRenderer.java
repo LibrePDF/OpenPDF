@@ -127,6 +127,7 @@ public class OpenPdfCoreRenderer implements Closeable {
      * @return the number of pages in the document
      */
     public int getNumPages() {
+        ensureOpen();
         return reader.getNumberOfPages();
     }
 
@@ -140,6 +141,7 @@ public class OpenPdfCoreRenderer implements Closeable {
      * @return the page size as a {@link Rectangle2D}
      */
     public Rectangle2D getPageSize(int pageNumber) {
+        ensureOpen();
         org.openpdf.text.Rectangle r = reader.getPageSizeWithRotation(pageNumber);
         return new Rectangle2D.Float(0f, 0f, r.getWidth(), r.getHeight());
     }
@@ -149,6 +151,7 @@ public class OpenPdfCoreRenderer implements Closeable {
      * @return the page rotation in degrees, normalized to [0, 360)
      */
     public int getPageRotation(int pageNumber) {
+        ensureOpen();
         return reader.getPageRotation(pageNumber);
     }
 
@@ -161,6 +164,7 @@ public class OpenPdfCoreRenderer implements Closeable {
      * @since 3.0.5
      */
     public Map<String, String> getMetadata() {
+        ensureOpen();
         Map<String, String> info = reader.getInfo();
         return info == null ? Collections.emptyMap() : Collections.unmodifiableMap(info);
     }
@@ -186,6 +190,7 @@ public class OpenPdfCoreRenderer implements Closeable {
      * @since 3.0.5
      */
     public String getTextFromPage(int pageNumber) throws IOException {
+        ensureOpen();
         return new PdfTextExtractor(reader).getTextFromPage(pageNumber);
     }
 
@@ -200,6 +205,7 @@ public class OpenPdfCoreRenderer implements Closeable {
      * @since 3.0.5
      */
     public byte[] getPageContent(int pageNumber) throws IOException {
+        ensureOpen();
         return reader.getPageContent(pageNumber);
     }
 
@@ -217,6 +223,7 @@ public class OpenPdfCoreRenderer implements Closeable {
      * @since 3.0.5
      */
     public List<String> getContentOperators(int pageNumber) throws IOException {
+        ensureOpen();
         byte[] content = getPageContent(pageNumber);
         List<String> operators = new ArrayList<>();
         PdfContentParser parser = new PdfContentParser(new PRTokeniser(content));
@@ -248,14 +255,15 @@ public class OpenPdfCoreRenderer implements Closeable {
      * @throws IllegalStateException if this renderer has been closed
      */
     public BufferedImage renderPage(int pageNumber, float dpi) throws IOException {
+        ensureOpen();
         if (dpi <= 0f) {
             throw new IllegalArgumentException("dpi must be > 0, was " + dpi);
         }
-        if (pageNumber < 1 || pageNumber > getNumPages()) {
+        int numPages = getNumPages();
+        if (pageNumber < 1 || pageNumber > numPages) {
             throw new IllegalArgumentException(
-                    "pageNumber " + pageNumber + " out of range [1, " + getNumPages() + "]");
+                    "pageNumber " + pageNumber + " out of range [1, " + numPages + "]");
         }
-        ensureOpen();
 
         Rectangle2D size = getPageSize(pageNumber);
         float scale = dpi / PDF_USER_SPACE_DPI;
@@ -278,6 +286,7 @@ public class OpenPdfCoreRenderer implements Closeable {
      *         (page dictionaries, content streams, info dictionary, etc.)
      */
     public PdfReader getReader() {
+        ensureOpen();
         return reader;
     }
 
