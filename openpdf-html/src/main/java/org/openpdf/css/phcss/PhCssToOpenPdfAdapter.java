@@ -12,7 +12,6 @@ import com.helger.css.decl.CSSImportRule;
 import com.helger.css.decl.CSSMediaQuery;
 import com.helger.css.decl.CSSMediaRule;
 import com.helger.css.decl.CSSPageRule;
-import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ICSSPageRuleMember;
@@ -23,6 +22,7 @@ import org.openpdf.css.parser.CSSParser;
 import org.openpdf.css.sheet.FontFaceRule;
 import org.openpdf.css.sheet.MediaRule;
 import org.openpdf.css.sheet.PageRule;
+import org.openpdf.css.sheet.PropertyDeclaration;
 import org.openpdf.css.sheet.Ruleset;
 import org.openpdf.css.sheet.Stylesheet;
 import org.openpdf.css.sheet.StylesheetInfo;
@@ -50,6 +50,7 @@ import java.util.stream.Collectors;
 public class PhCssToOpenPdfAdapter {
 
     private static final CSSWriterSettings COMPACT = new CSSWriterSettings(true);
+    private static final String STRING_READER_IO_MSG = "StringReader should not throw IOException";
 
     /**
      * Convert a ph-css stylesheet into an openpdf-html {@link Stylesheet}.
@@ -92,7 +93,7 @@ public class PhCssToOpenPdfAdapter {
                 }
             }
         } catch (IOException e) {
-            throw new IllegalStateException("StringReader should not throw IOException", e);
+            throw new IllegalStateException(STRING_READER_IO_MSG, e);
         }
     }
 
@@ -115,7 +116,7 @@ public class PhCssToOpenPdfAdapter {
                         }
                     }
                 } catch (IOException e) {
-                    throw new IllegalStateException("StringReader should not throw IOException", e);
+                    throw new IllegalStateException(STRING_READER_IO_MSG, e);
                 }
             }
         }
@@ -152,7 +153,7 @@ public class PhCssToOpenPdfAdapter {
             }
         }
         Ruleset ruleset = parser.parseDeclaration(origin, declarationBlock(decls));
-        Map<MarginBoxName, List<org.openpdf.css.sheet.PropertyDeclaration>> empty = Collections.emptyMap();
+        Map<MarginBoxName, List<PropertyDeclaration>> empty = Collections.emptyMap();
         return new PageRule(origin, pageName, pseudoPage, empty, ruleset);
     }
 

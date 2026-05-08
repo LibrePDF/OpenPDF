@@ -29,7 +29,7 @@ public class PhCssParser {
 
     /** Parse a stylesheet from a {@link Reader}. The {@code uri} is not yet used; reserved for future diagnostics. */
     @Nullable
-    public CascadingStyleSheet parseStylesheet(@Nullable String uri, Reader reader) {
+    public CascadingStyleSheet parseStylesheet(@Nullable String ignoredUri, Reader reader) {
         try {
             return PhCssStylesheetFactory.parse(reader);
         } catch (IOException e) {
@@ -39,7 +39,7 @@ public class PhCssParser {
 
     /** Parse a stylesheet from a CSS string. The {@code uri} is not yet used; reserved for future diagnostics. */
     @Nullable
-    public CascadingStyleSheet parseStylesheet(@Nullable String uri, String css) {
+    public CascadingStyleSheet parseStylesheet(@Nullable String ignoredUri, String css) {
         return PhCssStylesheetFactory.parse(css);
     }
 }
