@@ -27,7 +27,10 @@ import java.io.UncheckedIOException;
  */
 public class PhCssParser {
 
-    /** Parse a stylesheet from a {@link Reader}. The {@code uri} is not yet used; reserved for future diagnostics. */
+    /**
+     * Parse a stylesheet from a {@link Reader}.
+     * The {@code uri} is not yet used; reserved for future diagnostics.
+     */
     @Nullable
     public CascadingStyleSheet parseStylesheet(@Nullable String ignoredUri, Reader reader) {
         try {
@@ -37,7 +40,10 @@ public class PhCssParser {
         }
     }
 
-    /** Parse a stylesheet from a CSS string. The {@code uri} is not yet used; reserved for future diagnostics. */
+    /**
+     * Parse a stylesheet from a CSS string.
+     * The {@code uri} is not yet used; reserved for future diagnostics.
+     */
     @Nullable
     public CascadingStyleSheet parseStylesheet(@Nullable String ignoredUri, String css) {
         return PhCssStylesheetFactory.parse(css);

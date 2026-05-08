@@ -55,7 +55,9 @@ public final class PhCssStylesheetFactory {
         return parse(new InputStreamReader(in, cs));
     }
 
-    /** Parse CSS from a {@link Reader} by reading its full contents first. */
+    /**
+     * Parse CSS from a {@link Reader} by reading its full contents first.
+     */
     @Nullable
     public static CascadingStyleSheet parse(Reader reader) throws IOException {
         return parse(readFully(reader));
