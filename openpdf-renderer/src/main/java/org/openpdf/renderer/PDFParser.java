@@ -46,7 +46,15 @@ import org.openpdf.renderer.colorspace.PatternSpace;
 * its own thread.
 *
 * @author Mike Wessler
+*
+* @deprecated since 3.0.5. The in-tree PDF parser is being replaced by
+* {@code openpdf-core} ({@link org.openpdf.text.pdf.PdfReader} and
+* {@code org.openpdf.text.pdf.parser.PdfContentStreamHandler}). Use
+* {@link org.openpdf.renderer.core.OpenPdfCoreRenderer} instead. This class
+* will remain for at least one release to ease migration; it is not yet
+* scheduled for removal.
 */
+@Deprecated
 public class PDFParser extends BaseWatchable {
     private int mDebugCommandIndex;
     // ---- parsing variables

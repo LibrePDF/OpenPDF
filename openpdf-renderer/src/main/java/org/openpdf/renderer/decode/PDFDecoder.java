@@ -34,7 +34,15 @@ import org.openpdf.renderer.PDFParseException;
  * <p>
  * You should use the decodeStream() method of this object rather than using
  * any of the decoders directly.
+ *
+ * @deprecated since 3.0.5. Stream-filter decoding is being replaced by the
+ * {@code openpdf-core} parser ({@link org.openpdf.text.pdf.PdfReader#decodeBytes}
+ * and the built-in filter pipeline). Use
+ * {@link org.openpdf.renderer.core.OpenPdfCoreRenderer} instead. This class
+ * will remain for at least one release to ease migration; it is not yet
+ * scheduled for removal.
  */
+@Deprecated
 public class PDFDecoder {
 
     public final static Set<String> DCT_FILTERS = new HashSet<String>(Arrays.asList("DCT", "DCTDecode"));

@@ -50,7 +50,14 @@ import org.openpdf.renderer.decrypt.UnsupportedEncryptionException;
  * request one or more PDFPages.
  *
  * @author Mike Wessler
+ *
+ * @deprecated since 3.0.5. The in-tree PDF parser is being replaced by
+ * {@code openpdf-core} ({@link org.openpdf.text.pdf.PdfReader}). Use
+ * {@link org.openpdf.renderer.core.OpenPdfCoreRenderer} instead. This class
+ * will remain for at least one release to ease migration; it is not yet
+ * scheduled for removal.
  */
+@Deprecated
 public class PDFFile {
 
     public final static int             NUL_CHAR = 0;
