@@ -33,6 +33,12 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public class BackgroundPropertyBuilder extends AbstractPropertyBuilder {
     // [<'background-color'> || <'background-image'> || <'background-repeat'> ||
     // <'background-attachment'> || <'background-position'>] | inherit

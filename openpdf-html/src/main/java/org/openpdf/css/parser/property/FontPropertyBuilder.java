@@ -35,6 +35,12 @@ import java.util.ListIterator;
 
 import static java.util.Locale.ROOT;
 
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public class FontPropertyBuilder extends AbstractPropertyBuilder {
     // [ [ <'font-style'> || <'font-variant'> || <'font-weight'> ]? <'font-size'> [ / <'line-height'> ]? <'font-family'> ]
     private static final CSSName[] ALL = {

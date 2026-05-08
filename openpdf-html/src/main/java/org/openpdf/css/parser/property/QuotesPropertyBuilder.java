@@ -37,6 +37,12 @@ import static java.util.stream.Collectors.toList;
 import static org.openpdf.css.constants.CSSName.QUOTES;
 import static org.openpdf.css.parser.PropertyValue.Type.VALUE_TYPE_FUNCTION;
 
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public class QuotesPropertyBuilder extends AbstractPropertyBuilder {
 
     @Override

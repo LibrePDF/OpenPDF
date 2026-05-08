@@ -1,5 +1,11 @@
 package org.openpdf.css.parser;
 
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public record HSBColor(
         float hue,
         float saturation,

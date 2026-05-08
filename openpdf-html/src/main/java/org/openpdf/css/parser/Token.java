@@ -76,7 +76,12 @@ import static org.openpdf.css.parser.Token.Type.URI;
 import static org.openpdf.css.parser.Token.Type.VERTICAL_BAR;
 import static org.openpdf.css.parser.Token.Type.VIRGULE;
 
-@SuppressWarnings("SpellCheckingInspection")
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings({"SpellCheckingInspection", "deprecation"})
+@Deprecated(since = "3.0.5")
 public class Token {
     public enum Type {
         S,

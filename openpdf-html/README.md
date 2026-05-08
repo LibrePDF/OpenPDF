@@ -117,6 +117,55 @@ public class HelloWorldPdf {
 - [Flying Saucer (original project)](https://github.com/flyingsaucerproject/flyingsaucer)
 - [OpenPDF](https://github.com/LibrePDF/OpenPDF)
 - [htmlunit-neko](https://github.com/HtmlUnit/htmlunit-neko)
+- [ph-css](https://github.com/phax/ph-css) – modern CSS 3/4 parser used by the
+  upcoming CSS engine
+
+## CSS Engine Migration (in progress)
+
+openpdf-html historically uses a hand-written, JFlex-based CSS 2.1 parser
+located in [`org.openpdf.css.parser`](src/main/java/org/openpdf/css/parser).
+That parser is being replaced with a modern engine built on
+[ph-css](https://github.com/phax/ph-css) (`com.helger:ph-css`).
+
+### Why
+
+- **Compliance** – full support for CSS 3/4 selectors and inheritance.
+- **Stability** – robust handling of malformed or complex stylesheets.
+- **Maintenance** – leverages a mature, dedicated CSS engine instead of a
+  hand-written lexer/parser.
+- **Consistency** – output that matches modern browser rendering more closely.
+
+### Status
+
+Phase 1 – scaffolding (3.0.5):
+
+- Added `com.helger:ph-css` as a Maven dependency.
+- Introduced [`org.openpdf.css.phcss`](src/main/java/org/openpdf/css/phcss) with:
+  - `PhCssStylesheetFactory` – static `parse(String / Reader / InputStream)`
+    entry points backed by ph-css.
+  - `PhCssParser` – instance wrapper mirroring the legacy `CSSParser` surface.
+  - `PhCssToOpenPdfAdapter` – maps a ph-css `CascadingStyleSheet` onto
+    openpdf-html's `Stylesheet` / `Ruleset` / `PropertyDeclaration` model,
+    covering `@media`, `@font-face`, `@page`, and `@import` rules.
+    Selector and value parsing delegates to the legacy `CSSParser` during
+    the transition.
+- Marked `org.openpdf.css.parser`, `org.openpdf.css.parser.property`, and
+  `org.openpdf.css.constants.CSSName` as `@Deprecated(since = "3.0.5")`.
+  The legacy parser remains the **default** and is fully functional – nothing
+  is removed yet.
+
+### Roadmap
+
+1. ~~Implement `PhCssToOpenPdfAdapter`~~ ✓ done in 3.0.5
+2. Wire `StylesheetFactory` to use `PhCssParser` + `PhCssToOpenPdfAdapter`
+   behind a feature flag, then make it the default once parity is verified.
+3. Migrate selector and value parsing to native ph-css (remove legacy
+   `CSSParser` delegation inside the adapter).
+4. Remove `org.openpdf.css.parser`, `Lexer.flex`, and the deprecated
+   `CSSName` once no internal callers remain.
+
+Contributions to any phase above are very welcome – see the package-level
+javadoc in `org.openpdf.css.phcss` for the detailed plan.
 
 ## Roadmap
 

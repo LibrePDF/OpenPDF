@@ -8,7 +8,12 @@ import java.util.Set;
 
 /**
  * Static utility functions to check types, etc for builders to use.
+ *
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
  */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public class BuilderUtil {
     private static final Set<Short> LENGTH_VALUES = Set.of(
             CSSPrimitiveValue.CSS_EMS,

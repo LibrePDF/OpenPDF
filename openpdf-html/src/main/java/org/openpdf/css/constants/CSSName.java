@@ -56,7 +56,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * the final public int FS_ID (e.g. CSSName.COLOR.FS_ID).
  *
  * @author Patrick Wright
+ * @deprecated Will be replaced when the ph-css based parser becomes the default
+ *             in a future release. See {@link org.openpdf.css.phcss} for the
+ *             migration plan. The constants themselves continue to be valid
+ *             during the transition.
  */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public final class CSSName implements Comparable<CSSName> {
     /**
      * marker var, used for initialization

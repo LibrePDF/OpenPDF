@@ -34,6 +34,12 @@ import java.util.List;
 
 import static org.w3c.dom.css.CSSValue.CSS_INHERIT;
 
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public class BorderPropertyBuilders {
     private abstract static class BorderSidePropertyBuilder extends AbstractPropertyBuilder {
         protected abstract CSSName[][] getProperties();

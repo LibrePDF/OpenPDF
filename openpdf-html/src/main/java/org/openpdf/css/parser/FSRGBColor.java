@@ -23,6 +23,12 @@ import com.google.errorprone.annotations.CheckReturnValue;
 
 import java.util.Objects;
 
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public class FSRGBColor implements FSColor {
     public static final FSRGBColor TRANSPARENT = new FSRGBColor(0, 0, 0);
     public static final FSRGBColor RED = new FSRGBColor(255, 0, 0);

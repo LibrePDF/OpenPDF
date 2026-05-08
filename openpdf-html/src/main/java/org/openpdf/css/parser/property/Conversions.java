@@ -29,6 +29,12 @@ import org.openpdf.css.parser.PropertyValue;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public class Conversions {
     private static final Map<String, FSRGBColor> COLORS = new HashMap<>();
     private static final Map<Float, IdentValue> NUMERIC_FONT_WEIGHTS = new HashMap<>();

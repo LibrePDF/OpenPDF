@@ -30,6 +30,16 @@
       <artifactId>neko-htmlunit</artifactId>
       <version>4.21.0</version>
     </dependency>
+    <!--
+      ph-css: modern CSS3/CSS4 parser. Introduced in 3.0.5 as the planned
+      replacement for the legacy JFlex-based parser in org.openpdf.css.parser.
+      See org.openpdf.css.phcss for the new entry points.
+    -->
+    <dependency>
+      <groupId>com.helger</groupId>
+      <artifactId>ph-css</artifactId>
+      <version>8.2.0</version>
+    </dependency>
     <dependency>
       <groupId>com.github.librepdf</groupId>
       <artifactId>openpdf</artifactId>

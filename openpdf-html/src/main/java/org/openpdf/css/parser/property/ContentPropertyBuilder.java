@@ -36,6 +36,12 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.openpdf.css.parser.PropertyValue.Type.VALUE_TYPE_FUNCTION;
 
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public class ContentPropertyBuilder extends AbstractPropertyBuilder {
 
     @Override

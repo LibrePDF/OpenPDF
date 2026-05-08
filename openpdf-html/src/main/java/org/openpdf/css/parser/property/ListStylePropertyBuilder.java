@@ -30,6 +30,12 @@ import org.openpdf.css.sheet.StylesheetInfo.Origin;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0.5")
 public class ListStylePropertyBuilder extends AbstractPropertyBuilder {
     private static final CSSName[] ALL = {
         CSSName.LIST_STYLE_TYPE, CSSName.LIST_STYLE_POSITION, CSSName.LIST_STYLE_IMAGE };

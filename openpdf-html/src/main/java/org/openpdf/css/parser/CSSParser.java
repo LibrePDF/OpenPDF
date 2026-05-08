@@ -63,7 +63,12 @@ import static org.openpdf.css.newmatch.Selector.HOVER_PSEUDOCLASS;
 import static org.openpdf.css.newmatch.Selector.VISITED_PSEUDOCLASS;
 import static org.openpdf.css.parser.Token.Type.AT_RULE;
 
-@SuppressWarnings("MissingCasesInEnumSwitch")
+/**
+ * @deprecated Will be replaced by a ph-css based parser in a future release.
+ *             See {@link org.openpdf.css.phcss} for the migration plan.
+ */
+@SuppressWarnings({"MissingCasesInEnumSwitch", "deprecation"})
+@Deprecated(since = "3.0.5")
 public class CSSParser {
 
     @Nullable
