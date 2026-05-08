@@ -14,6 +14,6 @@ final class Sqrt implements PostScriptOperation {
      * errors: rangecheck, stackunderflow, typecheck
      */
     public void eval(Stack<Object> environment) {
-        environment.push(Math.sqrt((Double)environment.pop()));
+        environment.push(Math.sqrt((Double) environment.pop()));
     }
 }

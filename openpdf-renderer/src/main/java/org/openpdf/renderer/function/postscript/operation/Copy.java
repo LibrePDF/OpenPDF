@@ -1,6 +1,7 @@
 package org.openpdf.renderer.function.postscript.operation;
 
 import java.util.Stack;
+
     final class Copy implements PostScriptOperation {
         @Override
         /**
@@ -54,10 +55,10 @@ import java.util.Stack;
                 buffer[i] = environment.pop();
             }
             for (int i = 0; i < buffer.length; i++) {
-                environment.push(buffer[buffer.length-i-1]);
+                environment.push(buffer[buffer.length - i - 1]);
             }
             for (int i = 0; i < buffer.length; i++) {
-                environment.push(buffer[buffer.length-i-1]);
+                environment.push(buffer[buffer.length - i - 1]);
             }
         }
     }

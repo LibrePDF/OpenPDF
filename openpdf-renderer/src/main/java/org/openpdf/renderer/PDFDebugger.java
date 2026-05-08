@@ -39,7 +39,7 @@ public class PDFDebugger {
 
     public static void debugImage(BufferedImage image, String name) {
         if (PDFDebugger.DEBUG_IMAGES) {
-            if(image == null) {
+            if (image == null) {
                 return;
             }
             try {
@@ -86,17 +86,19 @@ public class PDFDebugger {
     }
 
     public static void logPath(GeneralPath path, String operation) {
-        if (PDFDebugger.DEBUG_PATH){
+        if (PDFDebugger.DEBUG_PATH) {
             if (operation != null) {
                 System.out.println("Operation: " + operation + "; ");
             }
             System.out.println("Current path: ");
             Rectangle b = path.getBounds();
-            if (b != null)
+            if (b != null) {
                 System.out.println("        Bounds [x=" + b.x + ",y=" + b.y + ",width=" + b.width + ",height=" + b.height + "]");
+            }
             Point2D p = path.getCurrentPoint();
-            if (p != null)
+            if (p != null) {
                 System.out.println("        Point  [x=" + p.getX() + ",y=" + p.getY() + "]");
+            }
         }
     }
 

@@ -111,9 +111,9 @@ public class NameTree {
             if (comp == 0) {
                 // they match.  Return the value
                 int tmp = (pos * 2) + 1;
-                if(array.length>tmp){
+                if (array.length > tmp) {
                     return array[tmp];
-                }else {
+                } else {
                     return null;
                 }
             } else if (comp > 0) {

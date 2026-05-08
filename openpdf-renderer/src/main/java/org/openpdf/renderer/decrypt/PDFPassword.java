@@ -60,6 +60,7 @@ public class PDFPassword {
     /**
      * Ensure a non-null PDFPassword by substituting the empty password
      * for a null password
+     *
      * @param password the password, may be null
      * @return a non-null password
      */
@@ -74,6 +75,7 @@ public class PDFPassword {
 
     /**
      * Construct a byte-based password
+     *
      * @param passwordBytes the password bytes
      */
     public PDFPassword(byte[] passwordBytes) {
@@ -83,6 +85,7 @@ public class PDFPassword {
 
     /**
      * Construct a string-based password
+     *
      * @param passwordString the password
      */
     public PDFPassword(String passwordString) {

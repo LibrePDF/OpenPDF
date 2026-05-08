@@ -15,8 +15,8 @@ final class Idiv implements PostScriptOperation {
      * stackunderflow, typecheck, undefinedresult
      */
     public void eval(Stack<Object> environment) {
-        long int2 = (Long)environment.pop();
-        long int1 = (Long)environment.pop();
+        long int2 = (Long) environment.pop();
+        long int1 = (Long) environment.pop();
         environment.push(int1 / int2);
     }
 }

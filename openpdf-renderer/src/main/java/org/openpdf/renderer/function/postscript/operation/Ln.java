@@ -14,6 +14,6 @@ final class Ln implements PostScriptOperation {
      * errors: rangecheck, stackunderflow, typecheck
      */
     public void eval(Stack<Object> environment) {
-        environment.push(Math.log((Double)environment.pop()));
+        environment.push(Math.log((Double) environment.pop()));
     }
 }

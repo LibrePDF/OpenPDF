@@ -45,6 +45,7 @@ public class Configuration {
      * {@link #getImage()} is called to have an effect.
      *
      * Enabled by default.
+     *
      * @param aFlag whether greyscale images shall be converted to ARGB.
      */
     public void setConvertGreyscaleImagesToArgb(boolean aFlag) {
@@ -75,6 +76,7 @@ public class Configuration {
 
     /**
      * Returns the image height threshold at which to enable banded image rendering.
+     *
      * @return the threshold value, or a value <= 0 if banded rendering is disabled
      */
     public int getThresholdForBandedImageRendering() {
@@ -83,6 +85,7 @@ public class Configuration {
 
     /**
      * Is the color converting op switched on or off?
+     *
      * @return - the usage of this color convert op 
      */
     public boolean isAvoidColorConvertOp() {
@@ -102,6 +105,7 @@ public class Configuration {
      * though it's still not exactly fast. If we don't run this op
      * now, it's performed at some later stage, but without using
      * the native code
+     *
      * @param avoidColorConvertOp
      */
     public void setAvoidColorConvertOp(boolean avoidColorConvertOp) {
@@ -110,6 +114,7 @@ public class Configuration {
 
     /**
      * Use blur before image resize to enhance the result (Antialias)?
+     *
      * @return the useBlurResizingForImages
      */
     public boolean isUseBlurResizingForImages() {
@@ -128,7 +133,7 @@ public class Configuration {
     /**
      * Print signature fields on pdf
      * 
-     * @param printSignatureField
+     * @param printSignatureFields
      */
     public void setPrintSignatureFields(boolean printSignatureFields) {
         this.printSigantureFields = printSignatureFields;
@@ -144,7 +149,7 @@ public class Configuration {
     /**
      * Print stamp annotations on pdf
      * 
-     * @param printStampAnnotation
+     * @param printStampAnnotations
      */
     public void setPrintStampAnnotations(boolean printStampAnnotations) {
         this.printStampAnnotations = printStampAnnotations;

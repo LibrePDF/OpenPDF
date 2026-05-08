@@ -48,8 +48,7 @@ public class FunctionType2 extends PDFFunction {
      * Read the zeros, ones and exponent
      */
     @Override
-    protected void parse(PDFObject obj) throws IOException 
-    {
+    protected void parse(PDFObject obj) throws IOException {
         // read the exponent (required)
         PDFObject nObj = obj.getDictRef("N");
         if (nObj == null) {
@@ -86,9 +85,7 @@ public class FunctionType2 extends PDFFunction {
      * C0(j) + x^N * (C1(j) - C0(j))
      */
     @Override
-    protected void doFunction(float[] inputs, int inputOffset, 
-                              float[] outputs, int outputOffset)
-    {
+    protected void doFunction(float[] inputs, int inputOffset, float[] outputs, int outputOffset) {
         // read the input value
         float input = inputs[inputOffset];
         
@@ -100,8 +97,7 @@ public class FunctionType2 extends PDFFunction {
     }
     
     @Override
-    public int getNumOutputs()
-    {
+    public int getNumOutputs() {
         // For Type 2 functions, the number of outputs is determined by the size of C0 (or C1).
         return c0.length;
     }

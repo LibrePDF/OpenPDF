@@ -34,8 +34,7 @@ import java.awt.image.SampleModel;
  *
  * @author Luke Kirby, Pirion Systems
  */
-public class PdfSubByteSampleModel extends SampleModel
-{
+public class PdfSubByteSampleModel extends SampleModel {
     private final int transferBytesPerPixel;
     private final int storageBitsPerPixel;
     private final int bitsPerLine;
@@ -44,8 +43,7 @@ public class PdfSubByteSampleModel extends SampleModel
     private final int[] sampleSize;
     private final int ignoredBitsPerComponentPerByte;
 
-    public PdfSubByteSampleModel(int w, int h, int numComponents, int bitsPerComponent)
-    {
+    public PdfSubByteSampleModel(int w, int h, int numComponents, int bitsPerComponent) {
         super(DataBuffer.TYPE_BYTE, w, h, numComponents);
         assert bitsPerComponent < 8 : "This is designed just for use with per-component sizes of less than 8 bits; " +
                 "you should probably use PixelInterleavedSampleModel";
@@ -66,15 +64,13 @@ public class PdfSubByteSampleModel extends SampleModel
     }
 
     @Override
-    public int getNumDataElements()
-    {
+    public int getNumDataElements() {
         return transferBytesPerPixel;
     }
 
     @Override
-    public Object getDataElements(int x, int y, Object obj, DataBuffer data)
-    {
-        byte[] elements = obj != null ? (byte[])obj : new byte[numBands];
+    public Object getDataElements(int x, int y, Object obj, DataBuffer data) {
+        byte[] elements = obj != null ? (byte[]) obj : new byte[numBands];
         int bitIndex = y * bitsPerLine + storageBitsPerPixel * x;
         for (int i = 0; i < elements.length; ++i) {
             elements[i] = (byte) getComponent(data, bitIndex);
@@ -83,8 +79,7 @@ public class PdfSubByteSampleModel extends SampleModel
         return elements;
     }
 
-    private int getComponent(DataBuffer data, int aBitIndex)
-    {
+    private int getComponent(DataBuffer data, int aBitIndex) {
         final int boffset = aBitIndex >> 3; // == aBitIndex / 8
         final int b = data.getElem(boffset);
         final int bitIndexInB = aBitIndex & 7;
@@ -93,51 +88,42 @@ public class PdfSubByteSampleModel extends SampleModel
     }
 
     @Override
-    public void setDataElements(int x, int y, Object obj, DataBuffer data)
-    {
+    public void setDataElements(int x, int y, Object obj, DataBuffer data) {
         throw new UnsupportedOperationException("read only");
     }
 
     @Override
-    public int getSample(int x, int y, int b, DataBuffer data)
-    {
+    public int getSample(int x, int y, int b, DataBuffer data) {
         return getComponent(data, y * bitsPerLine + storageBitsPerPixel * x + bitsPerBand * b);
     }
 
     @Override
-    public void setSample(int x, int y, int b, int s, DataBuffer data)
-    {
+    public void setSample(int x, int y, int b, int s, DataBuffer data) {
         throw new UnsupportedOperationException("read only");
-
     }
 
     @Override
-    public SampleModel createCompatibleSampleModel(int w, int h)
-    {
+    public SampleModel createCompatibleSampleModel(int w, int h) {
         throw new UnsupportedOperationException("Not required");
     }
 
     @Override
-    public SampleModel createSubsetSampleModel(int[] bands)
-    {
+    public SampleModel createSubsetSampleModel(int[] bands) {
         throw new UnsupportedOperationException("Not required");
     }
 
     @Override
-    public DataBuffer createDataBuffer()
-    {
+    public DataBuffer createDataBuffer() {
         throw new UnsupportedOperationException("Not required");
     }
 
     @Override
-    public int[] getSampleSize()
-    {
+    public int[] getSampleSize() {
         return sampleSize;
     }
 
     @Override
-    public int getSampleSize(int band)
-    {
+    public int getSampleSize(int band) {
         return bitsPerBand;
     }
 }

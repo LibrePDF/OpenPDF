@@ -32,14 +32,14 @@ public class PDFDisplay extends JComponent {
     }
 
     private void readFile() {
-        try(BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(fileName));){
+        try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(fileName));) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             int b;
             while ((b = inputStream.read()) != -1) {
                 outputStream.write(b);
             }
             this.bytes = outputStream.toByteArray();    
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -52,27 +52,26 @@ public class PDFDisplay extends JComponent {
             Paper paper = new Paper();
             int formatOrientation = page.getAspectRatio() > 1 ? PageFormat.LANDSCAPE
                                 : PageFormat.PORTRAIT;
-            if(formatOrientation == PageFormat.LANDSCAPE) {
+            if (formatOrientation == PageFormat.LANDSCAPE) {
                 paper.setSize(page.getHeight(), page.getWidth());
-            }else {
+            } else {
                 paper.setSize(page.getWidth(), page.getHeight());
             }                
             PageFormat pageFormat = new PageFormat();
             pageFormat.setPaper(paper);
             pageFormat.setOrientation(formatOrientation);
 
-            Graphics2D g2d = (Graphics2D)g.create();
-            Rectangle imgbounds = new Rectangle(0, 0, (int)pageFormat.getWidth(),
-                            (int)pageFormat.getHeight());
+            Graphics2D g2d = (Graphics2D) g.create();
+            Rectangle imgbounds = new Rectangle(0, 0, (int) pageFormat.getWidth(),
+                            (int) pageFormat.getHeight());
             PDFRenderer renderer = new PDFRenderer(page, g2d, imgbounds, null, Color.WHITE);
             try {
                 page.waitForFinish();
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 // some exception handling
             }
             renderer.run();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         

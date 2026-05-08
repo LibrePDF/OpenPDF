@@ -180,7 +180,9 @@ public abstract class BaseWatchable implements Watchable, Runnable {
      */
     @Override
     public void stop() {
-        if (!isFinished()) setStatus(Watchable.STOPPED);
+        if (!isFinished()) {
+            setStatus(Watchable.STOPPED);
+        }
     }
 
     /**
@@ -283,12 +285,11 @@ public abstract class BaseWatchable implements Watchable, Runnable {
             synchronized (statusLock) {
                 Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
                     @Override
-                    public void uncaughtException( Thread th, Throwable ex )
-                    {
-                        PDFDebugger.debug( "Uncaught exception: " + ex );
+                    public void uncaughtException(Thread th, Throwable ex) {
+                        PDFDebugger.debug("Uncaught exception: " + ex);
                     }
                 };
-                thread.setUncaughtExceptionHandler( h );
+                thread.setUncaughtExceptionHandler(h);
                 thread.start();
                 try {
                     this.statusLock.wait(5000);
@@ -317,7 +318,7 @@ public abstract class BaseWatchable implements Watchable, Runnable {
      * 
      * @return  boolean
      */
-    public static boolean isSuppressSetErrorStackTrace () {
+    public static boolean isSuppressSetErrorStackTrace() {
         return SuppressSetErrorStackTrace;
     }
 
@@ -394,8 +395,8 @@ public abstract class BaseWatchable implements Watchable, Runnable {
         errorHandler = e;
     }
     
-    public static PDFErrorHandler getErrorHandler(){
-        if(errorHandler == null) {
+    public static PDFErrorHandler getErrorHandler() {
+        if (errorHandler == null) {
             errorHandler = new PDFErrorHandler();
         }
         return errorHandler;

@@ -62,7 +62,7 @@ public class PatternType1 extends PDFPattern {
     public static final int TILE_FASTER = 3;
     
     /** the resources used by the image we will tile */
-    private HashMap<String,PDFObject> resources;
+    private HashMap<String, PDFObject> resources;
     
     /** the paint type (colored or uncolored) */
     private int paintType;
@@ -93,8 +93,7 @@ public class PatternType1 extends PDFPattern {
      * Note the resources passed in are ignored...
      */
     @Override
-    protected void parse(PDFObject patternObj, Map rsrc) throws IOException
-    {
+    protected void parse(PDFObject patternObj, Map rsrc) throws IOException {
         this.data = patternObj.getStream();
         
         this.resources = patternObj.getDictRef("Resources").getDictionary();
@@ -102,7 +101,7 @@ public class PatternType1 extends PDFPattern {
         this.tilingType = patternObj.getDictRef("TilingType").getIntValue();
         
         PDFObject bboxObj = patternObj.getDictRef("BBox");
-    this.bbox= new Rectangle2D.Float(bboxObj.getAt(0).getFloatValue(),
+        this.bbox = new Rectangle2D.Float(bboxObj.getAt(0).getFloatValue(),
                                     bboxObj.getAt(1).getFloatValue(),
                                     bboxObj.getAt(2).getFloatValue(),
                                     bboxObj.getAt(3).getFloatValue());
@@ -159,8 +158,7 @@ public class PatternType1 extends PDFPattern {
                                               Rectangle deviceBounds, 
                                               Rectangle2D userBounds,
                                               AffineTransform xform,
-                                              RenderingHints hints) 
-            {
+                                              RenderingHints hints) {
                 ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
                 ColorModel model = new ComponentColorModel(cs, 
                                                            true, 
@@ -198,7 +196,7 @@ public class PatternType1 extends PDFPattern {
     }
     
     /** get the associated resources */
-    public HashMap<String,PDFObject> getResources() {
+    public HashMap<String, PDFObject> getResources() {
         return this.resources;
     }
     
@@ -236,13 +234,14 @@ public class PatternType1 extends PDFPattern {
         
         /** Create a tiling pattern paint */
         public TilingPatternPaint(Paint paint, PatternType1 pattern) {
-            super (paint);
+            super(paint);
             
             this.pattern = pattern;
         }
         
         /**
          * fill a path with the paint, and record the dirty area.
+         *
          * @param state the current graphics state
          * @param g the graphics into which to draw
          * @param s the path to fill
@@ -309,8 +308,7 @@ public class PatternType1 extends PDFPattern {
          * Create a paint context
          */
         Type1PaintContext(ColorModel colorModel, Rectangle2D bbox,
-                          float xstep, float ystep, Raster data) 
-        {
+                          float xstep, float ystep, Raster data) {
             this.colorModel = colorModel;
             this.bbox = bbox;
             this.xstep = xstep;
@@ -349,24 +347,22 @@ public class PatternType1 extends PDFPattern {
        
             // for each device coordinate
             for (int j = 0; j < h; j++) {
-                for (int i = 0; i < w; i ++) {
+                for (int i = 0; i < w; i++) {
                     // figure out what pixel we are at relative to the image
                     int xloc = (x + i) - (int) Math.ceil(this.bbox.getX());
                     int yloc = (y + j) - (int) Math.ceil(this.bbox.getY());
                     
                      //if useXStep is 0, we would divide through 0 so instead xloc is set to 0
-                    if(useXStep == 0) {
+                    if (useXStep == 0) {
                         xloc = 0;
-                    }
-                    else {
+                    } else {
                         xloc %= useXStep;
                     }
                     
                     //if useYStep is 0, we would divide through 0 so instead yloc is set to 0
-                    if(useYStep == 0) {
+                    if (useYStep == 0) {
                         yloc = 0;
-                    }
-                    else {
+                    } else {
                         yloc %= useYStep;
                     }
                     

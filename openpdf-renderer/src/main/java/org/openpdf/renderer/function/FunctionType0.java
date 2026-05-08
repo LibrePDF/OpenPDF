@@ -59,7 +59,7 @@ public class FunctionType0 extends PDFFunction {
     
     /** Creates a new instance of FunctionType0 */
     protected FunctionType0() {
-        super (TYPE_0);
+        super(TYPE_0);
     }
     
     /** Read the function information from a PDF Object */
@@ -128,8 +128,7 @@ public class FunctionType0 extends PDFFunction {
      */
     @Override
     protected void doFunction(float[] inputs, int inputOffset, 
-                              float[] outputs, int outputOffset) 
-    {      
+                              float[] outputs, int outputOffset) {
         // calculate the encoded values for each input
         float[] encoded = new float[getNumInputs()];
         for (int i = 0; i < getNumInputs(); i++) {
@@ -143,7 +142,7 @@ public class FunctionType0 extends PDFFunction {
         
             // clip to size of sample table -- min(max(e<i>, 0), size<i> - 1)
             encoded[i] = Math.max(encoded[i], 0);
-            encoded[i] = Math.min(encoded[i], (float)(this.size[i] - 1));
+            encoded[i] = Math.min(encoded[i], (float) (this.size[i] - 1));
         }
         
         // do some magic

@@ -23,6 +23,7 @@ import org.openpdf.renderer.PDFParseException;
 /**
  * Identifies that the supplied password was incorrect or non-existent
  * and required.
+ *
  * @author Luke Kirby
  */
 // TODO - consider having this not extend PDFParseException so that

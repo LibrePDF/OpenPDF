@@ -19,8 +19,8 @@ final class Atan implements PostScriptOperation {
      * errors: stackunderflow, typecheck, undefinedresult
      */
     public void eval(Stack<Object> environment) {
-        double den = (Double)environment.pop();
-        double num = (Double)environment.pop();
+        double den = (Double) environment.pop();
+        double num = (Double) environment.pop();
         if (den == 0.0) {
             environment.push(90.0);
         } else {
