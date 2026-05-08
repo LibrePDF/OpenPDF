@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.helger</groupId>
       <artifactId>ph-css</artifactId>
-      <version>8.2.0</version>
+      <version>${ph-css.version}</version>
     </dependency>
     <dependency>
       <groupId>com.github.librepdf</groupId>
