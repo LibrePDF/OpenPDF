@@ -129,10 +129,10 @@ public class Configuration {
     public void setUseBlurResizingForImages(boolean useBlurResizingForImages) {
         this.useBlurResizingForImages = useBlurResizingForImages;
     }
-    
+
     /**
      * Print signature fields on pdf
-     * 
+     *
      * @param printSignatureFields
      */
     public void setPrintSignatureFields(boolean printSignatureFields) {
@@ -148,7 +148,7 @@ public class Configuration {
 
     /**
      * Print stamp annotations on pdf
-     * 
+     *
      * @param printStampAnnotations
      */
     public void setPrintStampAnnotations(boolean printStampAnnotations) {
