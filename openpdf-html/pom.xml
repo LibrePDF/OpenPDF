@@ -11,7 +11,9 @@
   </parent>
 
   <artifactId>openpdf-html</artifactId>
-  <description>openpdf-html is a CSS 2.1 renderer written in Java.  This artifact contains the core rendering and layout code as well as Java2D output.</description>
+  <description>openpdf-html is a CSS 2.1 renderer written in Java. This artifact contains the core rendering and layout
+    code as well as Java2D output.
+  </description>
 
   <licenses>
     <license>
