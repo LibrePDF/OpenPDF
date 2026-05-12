@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>com.github.librepdf</groupId>
@@ -10,24 +10,24 @@
 
   <artifactId>openpdf-renderer</artifactId>
 
-	<packaging>jar</packaging>
-	<name>OpenPDF Renderer</name>
+  <packaging>jar</packaging>
+  <name>OpenPDF Renderer</name>
 
-	<licenses>
-		<license>
-			<name>Lesser General Public License (LGPL)</name>
-			<url>http://www.gnu.org/copyleft/lesser.html</url>
-		</license>
-	</licenses>
-	<description>
-		OpenPDF Renderer is a pure Java library for rendering PDF files as images using Java2D.
-		It provides a lightweight, dependency-free way to convert PDF pages into BufferedImage objects
-		suitable for display in Swing applications or saving to image files. Supports PDF 1.4 specification
-		with TrueType, Type1, Type3, and CID fonts, along with RGB, CMYK, Gray, and ICC-based color spaces.
-	</description>
+  <licenses>
+    <license>
+      <name>Lesser General Public License (LGPL)</name>
+      <url>http://www.gnu.org/copyleft/lesser.html</url>
+    </license>
+  </licenses>
+  <description>
+    OpenPDF Renderer is a pure Java library for rendering PDF files as images using Java2D.
+    It provides a lightweight, dependency-free way to convert PDF pages into BufferedImage objects
+    suitable for display in Swing applications or saving to image files. Supports PDF 1.4 specification
+    with TrueType, Type1, Type3, and CID fonts, along with RGB, CMYK, Gray, and ICC-based color spaces.
+  </description>
 
-	<build>
-		<plugins>
+  <build>
+    <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -49,56 +49,56 @@
         </executions>
       </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.15.0</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
-			</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.15.0</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
 
-			<!-- Javadoc generation plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.12.0</version>
-				<configuration>
-					<show>public</show>
-					<nohelp>true</nohelp>
-					<encoding>UTF-8</encoding>
-					<docencoding>UTF-8</docencoding>
-					<charset>UTF-8</charset>
-					<doclint>none</doclint>
-					<quiet>true</quiet>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+      <!-- Javadoc generation plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.12.0</version>
+        <configuration>
+          <show>public</show>
+          <nohelp>true</nohelp>
+          <encoding>UTF-8</encoding>
+          <docencoding>UTF-8</docencoding>
+          <charset>UTF-8</charset>
+          <doclint>none</doclint>
+          <quiet>true</quiet>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
-			<!-- Source plugin for attaching sources -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.4.0</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+      <!-- Source plugin for attaching sources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.4.0</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <!-- Test dependencies -->
