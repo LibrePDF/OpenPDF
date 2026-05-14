@@ -604,8 +604,8 @@ public class ITextRenderer {
         return _outputDevice.findPagePositionsByID(newLayoutContext(), pattern);
     }
 
-    public void setGlyphLayoutManager(GlyphLayoutManager _glyphLayoutManager) {
-        this.glyphLayoutManager = _glyphLayoutManager;
+    public void setGlyphLayoutManager(GlyphLayoutManager glyphLayoutManager) {
+        this.glyphLayoutManager = glyphLayoutManager;
     }
 
 
