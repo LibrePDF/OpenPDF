@@ -4,9 +4,9 @@ import org.openpdf.text.pdf.GlyphLayoutManager;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.FileOutputStream;
 
-public class GlyphLayoutTest {
+public class GlyphLayoutHtmlTest {
     public static void main(String[] args) {
-        var glyphLayoutTest = new GlyphLayoutTest();
+        var glyphLayoutTest = new GlyphLayoutHtmlTest();
         try {
             glyphLayoutTest.test();
         } catch (Exception e) {
@@ -15,7 +15,7 @@ public class GlyphLayoutTest {
     }
 
     public void test() throws Exception {
-        var html_filename = "din91379-letters.html";
+        var html_filename = "GlyphLayoutHtmlTest.html";
         var inputStream = this.getClass().getResourceAsStream(html_filename);
         var documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         var document = documentBuilder.parse(inputStream);
@@ -26,10 +26,11 @@ public class GlyphLayoutTest {
         var fontResolver = new ITextFontResolver();
         fontResolver.addFont(font.getBaseFont(), fontUrl.getFile(), null);
 
-        var pdf_filename = "din91379-letters.pdf";
+        var pdf_filename = "GlyphLayoutHtmlTest.pdf";
         try (var outputStream = new FileOutputStream(pdf_filename)) {
             var renderer = new ITextRenderer(fontResolver);
             renderer.setDocument(document);
+            renderer.setGlyphLayoutManager(glyphLayoutManager);
             renderer.layout();
             renderer.createPDF(outputStream);
         }
