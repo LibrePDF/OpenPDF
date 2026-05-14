@@ -133,7 +133,7 @@ public class ITextRenderer {
         this(DEFAULT_DOTS_PER_POINT, DEFAULT_DOTS_PER_PIXEL);
     }
 
-    public ITextRenderer(ITextFontResolver fontResolver) {
+    public ITextRenderer(FontResolver fontResolver) {
         this(DEFAULT_DOTS_PER_POINT, DEFAULT_DOTS_PER_PIXEL, fontResolver);
     }
 
