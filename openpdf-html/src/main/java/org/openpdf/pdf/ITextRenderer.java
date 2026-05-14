@@ -121,7 +121,9 @@ public class ITextRenderer {
 
     @Nullable
     private PDFCreationListener _listener;
-    private GlyphLayoutManager _glyphLayoutManager;
+
+    @Nullable
+    private GlyphLayoutManager glyphLayoutManager;
 
     public ITextRenderer(File file) throws IOException {
         this();
@@ -396,8 +398,8 @@ public class ITextRenderer {
                     _pdfEncryption.getAllowedPrivileges(), _pdfEncryption.getEncryptionType());
         }
 
-        if (_glyphLayoutManager != null) {
-            writer.setGlyphLayoutManager(_glyphLayoutManager);
+        if (glyphLayoutManager != null) {
+            writer.setGlyphLayoutManager(glyphLayoutManager);
         }
 
         _pdfDoc = doc;
@@ -603,7 +605,7 @@ public class ITextRenderer {
     }
 
     public void setGlyphLayoutManager(GlyphLayoutManager _glyphLayoutManager) {
-        this._glyphLayoutManager = _glyphLayoutManager;
+        this.glyphLayoutManager = _glyphLayoutManager;
     }
 
 

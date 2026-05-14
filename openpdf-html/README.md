@@ -25,8 +25,7 @@ This project is licensed under the **GNU Lesser General Public License (LGPL)**.
 - Seamless integration with OpenPDF
 - Modular architecture for easier maintenance and extension
 - API compatible with Flying saucer, except package names are org.openpdf instead of org.xhtmlrenderer.
-- Support of glyph layout for [DIN 91379](https://en.wikipedia.org/wiki/DIN_91379) and complex scripts, 
-  see [Wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Latin-scripts).
+- Support of glyph layout for [DIN 91379](https://en.wikipedia.org/wiki/DIN_91379) and complex scripts, see [Wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Latin-scripts).
 
 ### htmlunit-neko Parser Integration
 
