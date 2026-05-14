@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Volker Kunert 2026
  */
 package org.openpdf.pdf;
 
@@ -24,9 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
-public class GlyphLayoutHtmlTest {
+public class GlyphLayoutHtmlExample {
     public static void main(String[] args) {
-        var glyphLayoutTest = new GlyphLayoutHtmlTest();
+        var glyphLayoutTest = new GlyphLayoutHtmlExample();
         try {
             glyphLayoutTest.test();
         } catch (Exception e) {
@@ -35,7 +37,7 @@ public class GlyphLayoutHtmlTest {
     }
 
     public void test() throws Exception {
-        var html_filename = "GlyphLayoutHtmlTest.html";
+        var html_filename = "GlyphLayoutHtmlExample.html";
         var inputStream = this.getClass().getResourceAsStream(html_filename);
         var documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         var document = documentBuilder.parse(inputStream);
@@ -46,7 +48,7 @@ public class GlyphLayoutHtmlTest {
         loadFont(glyphLayoutManager, fontResolver, "Arimo-Regular.ttf", "fonts/arimo/Arimo-Regular.ttf");
         loadFont(glyphLayoutManager, fontResolver, "Arimo-Bold.ttf", "fonts/arimo/Arimo-Bold.ttf");
 
-        var pdf_filename = "GlyphLayoutHtmlTest.pdf";
+        var pdf_filename = "GlyphLayoutHtmlExample.pdf";
         try (var outputStream = new FileOutputStream(pdf_filename)) {
             var renderer = new ITextRenderer(fontResolver);
             renderer.setDocument(document);
