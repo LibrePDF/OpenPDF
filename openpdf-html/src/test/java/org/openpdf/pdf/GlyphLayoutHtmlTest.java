@@ -22,7 +22,9 @@ public class GlyphLayoutHtmlTest {
 
         var glyphLayoutManager = new GlyphLayoutManager();
         var fontUrl = this.getClass().getResource("fonts/Arimo-Regular.ttf");
-        var font = glyphLayoutManager.loadFont("Arimo-Regular.ttf", fontUrl.openStream(), 12.0f);
+        var fontStream = fontUrl.openStream();
+        var font = glyphLayoutManager.loadFont("Arimo-Regular.ttf", fontStream, 12.0f);
+        fontStream.close();
         var fontResolver = new ITextFontResolver();
         fontResolver.addFont(font.getBaseFont(), fontUrl.getFile(), null);
 
