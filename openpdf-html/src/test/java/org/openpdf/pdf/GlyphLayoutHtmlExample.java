@@ -37,8 +37,8 @@ public class GlyphLayoutHtmlExample {
     }
 
     public void test() throws Exception {
-        var html_filename = "GlyphLayoutHtmlExample.html";
-        var inputStream = this.getClass().getResourceAsStream(html_filename);
+        var htmlFilename = "GlyphLayoutHtmlExample.html";
+        var inputStream = this.getClass().getResourceAsStream(htmlFilename);
         var documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         var document = documentBuilder.parse(inputStream);
 
@@ -48,15 +48,15 @@ public class GlyphLayoutHtmlExample {
         loadFont(glyphLayoutManager, fontResolver, "Arimo-Regular.ttf", "fonts/arimo/Arimo-Regular.ttf");
         loadFont(glyphLayoutManager, fontResolver, "Arimo-Bold.ttf", "fonts/arimo/Arimo-Bold.ttf");
 
-        var pdf_filename = "GlyphLayoutHtmlExample.pdf";
-        try (var outputStream = new FileOutputStream(pdf_filename)) {
+        var pdfFilename = "GlyphLayoutHtmlExample.pdf";
+        try (var outputStream = new FileOutputStream(pdfFilename)) {
             var renderer = new ITextRenderer(fontResolver);
             renderer.setDocument(document);
             renderer.setGlyphLayoutManager(glyphLayoutManager);
             renderer.layout();
             renderer.createPDF(outputStream);
         }
-        System.out.println("PDF created: " + pdf_filename);
+        System.out.println("PDF created: " + pdfFilename);
     }
 
     private void loadFont(GlyphLayoutManager glyphLayoutManager, ITextFontResolver fontResolver,
