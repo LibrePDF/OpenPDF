@@ -110,14 +110,19 @@ public class PDFObject {
      */
     private SoftReference cache;
 
-    /** @see #getObjNum() */
+    /**
+     * @see #getObjNum()
+     */
     private int objNum = OBJ_NUM_EMBEDDED;
 
-    /** @see #getObjGen() */
+    /**
+     * @see #getObjGen()
+     */
     private int objGen = OBJ_NUM_EMBEDDED;
 
     /**
      * create a new simple PDFObject with a type and a value
+     *
      * @param owner the PDFFile in which this object resides, used
      * for dereferencing.  This may be null.
      * @param type the type of object
@@ -190,6 +195,7 @@ public class PDFObject {
 
     /**
      * create a new PDFObject based on a PDFXref
+     *
      * @param owner the PDFFile from which the PDFXref was drawn
      * @param xref the PDFXref to turn into a PDFObject
      */
@@ -201,6 +207,7 @@ public class PDFObject {
     
     /**
      * Convenient method to get a dictionary value as String
+     *
      * @param name of the dictionary value
      * @return the value or null if no entry exists with that name
      * @throws IOException
@@ -212,6 +219,7 @@ public class PDFObject {
     
     /**
      * Convenient method to get a dictionary value as String
+     *
      * @param name of the dictionary value
      * @return the value or null if no entry exists with that name
      * @throws IOException
@@ -223,6 +231,7 @@ public class PDFObject {
     
     /**
      * Convenient method to get a dictionary value as Integer
+     *
      * @param name of the dictionary value
      * @return the value or null if no entry exists with that name
      * @throws IOException
@@ -234,6 +243,7 @@ public class PDFObject {
         
     /**
      * Convenient method to get a dictionary value as int[]
+     *
      * @param name of the dictionary value
      * @return the value or null if no entry exists with that name
      * @throws IOException
@@ -253,6 +263,7 @@ public class PDFObject {
     
     /**
      * Convenient method to get a dictionary value as float[]
+     *
      * @param name of the dictionary value
      * @return the value or null if no entry exists with that name
      * @throws IOException
@@ -273,6 +284,7 @@ public class PDFObject {
     
     /**
      * Convenient method to get a dictionary value as Float
+     *
      * @param name of the dictionary value
      * @return the value or null if no entry exists with that name
      * @throws IOException
@@ -284,8 +296,10 @@ public class PDFObject {
     
     /**
      * Convenient method to get a dictionary value as Double
+     *
      * @param name of the dictionary value
      * @return the value or null if no entry exists with that name
+     *
      * @throws IOException
      */
     public Double getDictRefAsDouble(String name) throws IOException {
@@ -296,6 +310,7 @@ public class PDFObject {
     /**
      * get the type of this object.  The object will be
      * dereferenced, so INDIRECT will never be returned.
+     *
      * @return the type of the object
      */
     public int getType() throws IOException {
@@ -309,6 +324,7 @@ public class PDFObject {
     /**
      * set the stream of this object.  It should have been
      * a DICTIONARY before the call.
+     *
      * @param data the data, as a ByteBuffer.
      */
     public void setStream(ByteBuffer data) {
@@ -318,6 +334,7 @@ public class PDFObject {
 
     /**
      * get the value in the cache.  May become null at any time.
+     *
      * @return the cached value, or null if the value has been
      * garbage collected.
      */
@@ -334,6 +351,7 @@ public class PDFObject {
     /**
      * set the cached value.  The object may be garbage collected
      * if no other reference exists to it.
+     *
      * @param obj the object to be cached
      */
     public void setCache(Object obj) throws IOException {
@@ -344,8 +362,7 @@ public class PDFObject {
         }
     }
 
-    public byte[] getStream(Set<String> filterLimits) throws IOException
-    {
+    public byte[] getStream(Set<String> filterLimits) throws IOException {
         if (type == INDIRECT) {
             return dereference().getStream(filterLimits);
         } else if (type == STREAM && stream != null) {
@@ -386,6 +403,7 @@ public class PDFObject {
     /**
      * get the stream from this object.  Will return null if this
      * object isn't a STREAM.
+     *
      * @return the stream, or null, if this isn't a STREAM.
      */
     public byte[] getStream() throws IOException {
@@ -395,6 +413,7 @@ public class PDFObject {
     /**
      * get the stream from this object as a byte buffer.  Will return null if
      * this object isn't a STREAM.
+     *
      * @return the buffer, or null, if this isn't a STREAM.
      */
     public ByteBuffer getStreamBuffer() throws IOException {
@@ -404,6 +423,7 @@ public class PDFObject {
     /**
      * get the stream from this object as a byte buffer.  Will return null if 
      * this object isn't a STREAM.
+     *
      * @return the buffer, or null, if this isn't a STREAM.
      */
     public ByteBuffer getStreamBuffer(Set<String> filterLimits) throws IOException {
@@ -518,6 +538,7 @@ public class PDFObject {
      * Get the value as a text string; i.e., a string encoded in UTF-16BE
      * or PDFDocEncoding. Simple latin alphanumeric characters are preserved in
      * both these encodings.
+     *
      * @return the text string value
      * @throws IOException
      */
@@ -594,11 +615,11 @@ public class PDFObject {
      * get the dictionary as a HashMap.  If this isn't a DICTIONARY
      * or a STREAM, returns null
      */
-    public HashMap<String,PDFObject> getDictionary() throws IOException {
+    public HashMap<String, PDFObject> getDictionary() throws IOException {
         if (type == INDIRECT) {
             return dereference().getDictionary();
         } else if (type == DICTIONARY || type == STREAM) {
-            return (HashMap<String,PDFObject>) value;
+            return (HashMap<String, PDFObject>) value;
         }
 
         // wrong type
@@ -627,6 +648,7 @@ public class PDFObject {
      * returns true only if this object is a DICTIONARY or a
      * STREAM, and the "Type" entry in the dictionary matches a
      * given value.
+     *
      * @param match the expected value for the "Type" key in the
      * dictionary
      * @return whether the dictionary is of the expected type
@@ -657,6 +679,7 @@ public class PDFObject {
 
      /**
      * Set the object identifiers
+      *
      * @param objNum the object number
      * @param objGen the object generation number
      */
@@ -673,6 +696,7 @@ public class PDFObject {
      * is {@link #OBJ_NUM_EMBEDDED}, it is because it's embedded within
      * another object. If the value is {@link #OBJ_NUM_TRAILER}, it's because
      * it's an object from the trailer.
+     *
      * @return the object number, if positive
      */
     public int getObjNum() {
@@ -685,6 +709,7 @@ public class PDFObject {
      * object: if the value is {@link #OBJ_NUM_EMBEDDED}, it is because it's
      * embedded within another object. If the value is {@link
      * #OBJ_NUM_TRAILER}, it's because it's an object from the trailer.
+     *
      * @return the object generation number, if positive
      */
     public int getObjGen() {
@@ -700,7 +725,7 @@ public class PDFObject {
     public String toString() {
         try {
             if (type == INDIRECT) {
-                StringBuffer str = new StringBuffer ();
+                StringBuffer str = new StringBuffer();
                 str.append("Indirect to #" + ((PDFXref) value).getID());
                 try {
                     str.append("\n" + dereference().toString());
@@ -778,7 +803,7 @@ public class PDFObject {
                     throw new IOException("Cannot dereference: owner is null for object " + this);
                 }
 
-                obj = owner.dereference((PDFXref)value, getDecrypter());
+                obj = owner.dereference((PDFXref) value, getDecrypter());
 
                 cache = new SoftReference<>(obj);
             }
@@ -792,6 +817,7 @@ public class PDFObject {
 
     /**
      * Identify whether the object is currently an indirect/cross-reference
+     *
      * @return whether currently indirect
      */
     public boolean isIndirect() {

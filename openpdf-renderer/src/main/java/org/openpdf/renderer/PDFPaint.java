@@ -28,6 +28,7 @@ import java.awt.geom.Rectangle2D;
  * PDFPaint is some kind of shader that knows how to fill a path.
  * At the moment, only a solid color is implemented, but gradients
  * and textures should be possible, too.
+ *
  * @author Mike Wessler
  */
 public class PDFPaint {
@@ -57,6 +58,7 @@ public class PDFPaint {
 
     /**
      * fill a path with the paint, and record the dirty area.
+     *
      * @param state the current graphics state
      * @param g the graphics into which to draw
      * @param s the path to fill

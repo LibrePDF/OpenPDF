@@ -171,6 +171,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property version.
+     *
      * @return Value of property version.
      *
      */
@@ -179,6 +180,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property fontRevision.
+     *
      * @return Value of property fontRevision.
      *
      */
@@ -187,6 +189,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property checksumAdjustment.
+     *
      * @return Value of property checksumAdjustment.
      *
      */
@@ -195,6 +198,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property magicNumber.
+     *
      * @return Value of property magicNumber.
      *
      */
@@ -203,6 +207,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property flags.
+     *
      * @return Value of property flags.
      *
      */
@@ -211,6 +216,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property unitsPerEm.
+     *
      * @return Value of property unitsPerEm.
      *
      */
@@ -219,6 +225,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property created.
+     *
      * @return Value of property created.
      *
      */
@@ -227,6 +234,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property modified.
+     *
      * @return Value of property modified.
      *
      */
@@ -235,6 +243,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property xMin.
+     *
      * @return Value of property xMin.
      *
      */
@@ -243,6 +252,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property yMin.
+     *
      * @return Value of property yMin.
      *
      */
@@ -251,6 +261,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property xMax.
+     *
      * @return Value of property xMax.
      *
      */
@@ -259,6 +270,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property yMax.
+     *
      * @return Value of property yMax.
      *
      */
@@ -267,6 +279,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property macStyle.
+     *
      * @return Value of property macStyle.
      *
      */
@@ -275,6 +288,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property lowestRecPPem.
+     *
      * @return Value of property lowestRecPPem.
      *
      */
@@ -283,6 +297,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property fontDirectionHint.
+     *
      * @return Value of property fontDirectionHint.
      *
      */
@@ -291,6 +306,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property indexToLocFormat.
+     *
      * @return Value of property indexToLocFormat.
      *
      */
@@ -299,6 +315,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Getter for property glyphDataFormat.
+     *
      * @return Value of property glyphDataFormat.
      *
      */
@@ -307,6 +324,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property XMax.
+     *
      * @param xMax New value of property XMax.
      *
      */
@@ -315,6 +333,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property XMin.
+     *
      * @param xMin New value of property XMin.
      *
      */
@@ -323,6 +342,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property YMax.
+     *
      * @param yMax New value of property YMax.
      *
      */
@@ -331,6 +351,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property YMin.
+     *
      * @param yMin New value of property YMin.
      *
      */
@@ -339,6 +360,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property checksumAdjustment.
+     *
      * @param checksumAdjustment New value of property checksumAdjustment.
      *
      */
@@ -347,6 +369,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property created.
+     *
      * @param created New value of property created.
      *
      */
@@ -355,6 +378,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property flags.
+     *
      * @param flags New value of property flags.
      *
      */
@@ -363,6 +387,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property fontDirectionHint.
+     *
      * @param fontDirectionHint New value of property fontDirectionHint.
      *
      */
@@ -371,6 +396,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property fontRevision.
+     *
      * @param fontRevision New value of property fontRevision.
      *
      */
@@ -379,6 +405,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property glyphDataFormat.
+     *
      * @param glyphDataFormat New value of property glyphDataFormat.
      *
      */
@@ -387,6 +414,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property indexToLocFormat.
+     *
      * @param indexToLocFormat New value of property indexToLocFormat.
      *
      */
@@ -395,6 +423,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property lowestRecPPem.
+     *
      * @param lowestRecPPem New value of property lowestRecPPem.
      *
      */
@@ -403,6 +432,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property macStyle.
+     *
      * @param macStyle New value of property macStyle.
      *
      */
@@ -411,6 +441,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property magicNumber.
+     *
      * @param magicNumber New value of property magicNumber.
      *
      */
@@ -419,6 +450,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property modified.
+     *
      * @param modified New value of property modified.
      *
      */
@@ -427,6 +459,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property unitsPerEm.
+     *
      * @param unitsPerEm New value of property unitsPerEm.
      *
      */
@@ -435,6 +468,7 @@ public class HeadTable extends TrueTypeTable {
     }
     
     /** Setter for property version.
+     *
      * @param version New value of property version.
      *
      */

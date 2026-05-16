@@ -19,6 +19,7 @@ public class StampAnnotation extends MarkupAnnotation {
     
     /*************************************************************************
      * Constructor
+     *
      * @param annotObject
      * @throws IOException 
      ************************************************************************/

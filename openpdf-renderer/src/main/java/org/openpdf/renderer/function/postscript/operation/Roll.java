@@ -32,8 +32,9 @@ final class Roll implements PostScriptOperation {
             j %= n;
         } else {
             j = -j % n;
-            if (j != 0)
+            if (j != 0) {
                 j = n - j;
+            }
         }
         for (int i = 0; i < n; ++i) {
             temp[i] = environment.pop();

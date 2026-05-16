@@ -15,6 +15,6 @@ final class Or implements PostScriptOperation {
      * errors: stackunderflow, typecheck
      */
     public void eval(Stack<Object> environment) {
-        environment.push((Long)environment.pop() | (Long)environment.pop());
+        environment.push((Long) environment.pop() | (Long) environment.pop());
     }
 }

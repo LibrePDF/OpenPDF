@@ -10,6 +10,7 @@ final class PushAsNumber implements PostScriptOperation {
     
     /*************************************************************************
      * Constructor
+     *
      * @param numberToken
      ************************************************************************/
     
@@ -20,6 +21,7 @@ final class PushAsNumber implements PostScriptOperation {
     
     /*************************************************************************
      * eval
+     *
      * @see PostScriptOperation#eval(java.util.Stack)
      ************************************************************************/
     @Override
@@ -28,8 +30,9 @@ final class PushAsNumber implements PostScriptOperation {
             double number = Double.parseDouble(this.token);
             environment.push(number);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("PS token is not supported "+this.token); 
-        }    }
+            throw new IllegalArgumentException("PS token is not supported " + this.token);
+        }
+    }
 
 }
 

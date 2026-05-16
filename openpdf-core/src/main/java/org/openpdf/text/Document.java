@@ -112,6 +112,14 @@ public class Document implements DocListener {
      */
     public static boolean compress = true;
     /**
+     * When {@code true}, page content streams written by OpenPDF are compressed with the
+     * Brotli algorithm and tagged with the {@code /BrotliDecode} filter instead of the
+     * default {@code /FlateDecode}. Brotli is being standardised as a PDF 2.0
+     * (ISO 32000-2) stream filter through ISO/TS 32001. This requires {@link #compress}
+     * to also be {@code true}. Default is {@code false}.
+     */
+    public static boolean useBrotliCompression = false;
+    /**
      * When true the file access is not done through a memory mapped file. Use it if the file is too big to be mapped in
      * your address space.
      */

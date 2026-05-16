@@ -16,8 +16,8 @@ final class Sub implements PostScriptOperation {
      * errors: stackunderflow, typecheck, undefinedresult
      */
     public void eval(Stack<Object> environment) {
-        double num2 = (Double)environment.pop();
-        double num1 = (Double)environment.pop();
+        double num2 = (Double) environment.pop();
+        double num1 = (Double) environment.pop();
         environment.push(num1 - num2);
     }
 }

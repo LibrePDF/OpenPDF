@@ -56,15 +56,15 @@ public class CCITTFaxDecode {
             } else if (k < 0) {
                 decoder.decodeT6(destination, source, 0, rows);
             }
-        }catch (Exception e) {
-            PDFDebugger.debug("Error decoding CCITTFax image k: "+ k);
+        } catch (Exception e) {
+            PDFDebugger.debug("Error decoding CCITTFax image k: " + k);
             // some PDf producer don't correctly assign a k value for the deocde,
             // as  result we can try one more time using the T6.
             //first, reset buffer
             destination = new byte[size];
             try {
                 decoder.decodeT6(destination, source, 0, rows);
-            }catch (Exception e1) {
+            } catch (Exception e1) {
                 // do nothing
                 PDFDebugger.debug("Error decoding CCITTFax image");
             }

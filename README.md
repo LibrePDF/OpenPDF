@@ -22,6 +22,8 @@ The features of OpenPDF include:
 * Encryption: You can encrypt PDF documents for security purposes.
 * Page Layout: OpenPDF allows you to set the page size, orientation, and other layout properties.
 * PDF 2.0 support (ISO 32000-2).
+* Brotli stream compression (`/BrotliDecode`) for creating and reading PDF streams compressed with
+  [Brotli](https://github.com/google/brotli) – see [Brotli compression](#brotli-compression).
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.librepdf/openpdf.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/com.github.librepdf/openpdf)
 ![CI](https://github.com/LibrePDF/OpenPDF/actions/workflows/maven.yml/badge.svg)
@@ -192,6 +194,11 @@ and use the class `org.librepdf.openpdf.fonts.Liberation`.
 </dependency>
 ```
 
+### Brotli4j
+
+Brotli4j is a required dependency for Brotli stream compression support.
+<https://github.com/hyperxpro/Brotli4j/>
+
 ### Supporting complex glyph substitution/ Ligature substitution
 
 OpenPDF supports glyph substitution which is required for correct rendering of fonts ligature substitution requirements.
@@ -203,6 +210,38 @@ details: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Multi-byte-character-la
 OpenPDF supports OpenType layout, glyph positioning, reordering and substitution which is e.g. required for correct
 positioning of accents, the rendering of non-Latin and right-to-left scripts. OpenPDF supports DIN 91379.
 See: [wiki](https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Latin-scripts)
+
+### Brotli compression
+
+OpenPDF can read and write PDF streams compressed with
+[Brotli](https://github.com/google/brotli) — exposed in the PDF as the
+`/BrotliDecode` filter, which is being standardised for PDF 2.0 (ISO 32000-2)
+through [ISO/TS 32001](https://www.iso.org/standard/45874.html). The codec is
+backed by [brotli4j](https://github.com/hyperxpro/Brotli4j) (a required
+dependency, with native binaries shipped for Linux / macOS / Windows on x86_64
+and aarch64).
+
+Enable Brotli for the page content streams produced by a writer:
+
+```java
+PdfWriter writer = PdfWriter.getInstance(document, out);
+writer.setUseBrotliCompression(true);    // /BrotliDecode instead of /FlateDecode
+```
+
+…or globally for every subsequently-created `PdfWriter`:
+
+```java
+Document.useBrotliCompression = true;
+```
+
+Reading is fully transparent: `PdfReader.getStreamBytes(...)` and
+`PdfReader.getPageContent(...)` decode `/BrotliDecode` automatically, so OpenPDF
+opens Brotli-compressed PDFs (e.g. those produced by AutoCAD's
+`pdfplot11.hdi`) without any extra configuration. The raw codec is available as
+`org.openpdf.text.pdf.codec.BrotliFilter` (`encode` / `decode`).
+
+Default compression remains `/FlateDecode` for compatibility with older
+PDF readers that do not yet implement ISO/TS 32001.
 
 ### Optional
 

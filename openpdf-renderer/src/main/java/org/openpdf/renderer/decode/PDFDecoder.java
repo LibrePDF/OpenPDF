@@ -34,7 +34,15 @@ import org.openpdf.renderer.PDFParseException;
  * <p>
  * You should use the decodeStream() method of this object rather than using
  * any of the decoders directly.
+ *
+ * @deprecated since 3.0.5. Stream-filter decoding is being replaced by the
+ * {@code openpdf-core} parser ({@link org.openpdf.text.pdf.PdfReader#decodeBytes}
+ * and the built-in filter pipeline). Use
+ * {@link org.openpdf.renderer.core.OpenPdfCoreRenderer} instead. This class
+ * will remain for at least one release to ease migration; it is not yet
+ * scheduled for removal.
  */
+@Deprecated
 public class PDFDecoder {
 
     public final static Set<String> DCT_FILTERS = new HashSet<String>(Arrays.asList("DCT", "DCTDecode"));
@@ -59,10 +67,9 @@ public class PDFDecoder {
      * Utility class for reading and storing the specification of
      * Filters on a stream
      */
-    private static class FilterSpec
-    {
-        PDFObject ary[];
-        PDFObject params[];
+    private static class FilterSpec {
+        PDFObject[] ary;
+        PDFObject[] params;
 
         private FilterSpec(PDFObject dict, PDFObject filter) throws IOException {
             if (filter.getType() == PDFObject.NAME) {
@@ -86,6 +93,7 @@ public class PDFDecoder {
     /**
      * decode a byte[] stream using the filters specified in the object's
      * dictionary (passed as argument 1).
+     *
      * @param dict the dictionary associated with the stream
      * @param streamBuf the data in the stream, as a byte buffer
      */
@@ -119,6 +127,7 @@ public class PDFDecoder {
                         break;
                     }
                     if (enctype == null) {
+                        ;
                     } else if (enctype.equals("FlateDecode") || enctype.equals("Fl")) {
                         streamBuf = FlateDecode.decode(dict, streamBuf, spec.params[i]);
                     } else if (enctype.equals("LZWDecode") || enctype.equals("LZW")) {
@@ -145,8 +154,8 @@ public class PDFDecoder {
                     } else {
                         throw new PDFParseException("Unknown coding method:" + spec.ary[i].getStringValue());
                     }
-                }catch(Exception e) {
-                    throw new PDFParseException("Problem decoding "+enctype+" encoded stream!", e);
+                } catch (Exception e) {
+                    throw new PDFParseException("Problem decoding " + enctype + " encoded stream!", e);
                 }
 
             }
@@ -157,6 +166,7 @@ public class PDFDecoder {
 
     /**
      * The name of the Crypt filter to apply
+     *
      * @param param the parameters to the Crypt filter
      * @return the name of the crypt filter to apply
      * @throws IOException if there's a problem reading the objects
@@ -175,6 +185,7 @@ public class PDFDecoder {
     /**
      * Determines whether a stream is encrypted or not; note that encodings
      * (e.g., Flate, LZW) are not considered encryptions.
+     *
      * @param dict the stream dictionary
      * @return whether the stream is encrypted
      * @throws IOException if the stream dictionary can't be read

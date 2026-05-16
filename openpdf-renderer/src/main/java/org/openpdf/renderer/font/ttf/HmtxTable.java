@@ -28,14 +28,14 @@ import java.util.Arrays;
  */
 public class HmtxTable extends TrueTypeTable {
     /** advance widths for any glyphs that have one */
-    short advanceWidths[];
+    short[] advanceWidths;
     
     /** left side bearings for each glyph */
-    short leftSideBearings[];
+    short[] leftSideBearings;
     
     /** Creates a new instance of HmtxTable */
     protected HmtxTable(TrueTypeFont ttf) {
-        super (HMTX_TABLE);
+        super(HMTX_TABLE);
 
         // the number of glyphs stored in the maxp table may be incorrect
         // in the case of subsetted fonts produced by some pdf generators
@@ -105,10 +105,10 @@ public class HmtxTable extends TrueTypeTable {
         }
         // initialise the remaining advanceWidths and leftSideBearings to 0
         if (i < this.advanceWidths.length) {
-            Arrays.fill(this.advanceWidths, i, this.advanceWidths.length-1, (short) 0);
+            Arrays.fill(this.advanceWidths, i, this.advanceWidths.length - 1, (short) 0);
         }
         if (i < this.leftSideBearings.length) {
-            Arrays.fill(this.leftSideBearings, i, this.leftSideBearings.length-1, (short) 0);
+            Arrays.fill(this.leftSideBearings, i, this.leftSideBearings.length - 1, (short) 0);
         }
     }
     

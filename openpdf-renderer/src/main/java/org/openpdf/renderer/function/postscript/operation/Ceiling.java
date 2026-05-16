@@ -14,6 +14,6 @@ final class Ceiling implements PostScriptOperation {
      * errors: stackunderflow, typecheck
      */
     public void eval(Stack<Object> environment) {
-        environment.push(Math.ceil((Double)environment.pop()));
+        environment.push(Math.ceil((Double) environment.pop()));
     }
 }

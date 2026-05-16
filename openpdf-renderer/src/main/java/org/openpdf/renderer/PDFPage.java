@@ -49,7 +49,14 @@ import org.openpdf.renderer.annotation.PDFAnnotation;
 * classes.
 *
 * @author Mike Wessler
+*
+* @deprecated since 3.0.5. The in-tree PDF parser is being replaced by
+* {@code openpdf-core} ({@link org.openpdf.text.pdf.PdfReader}). Use
+* {@link org.openpdf.renderer.core.OpenPdfCoreRenderer} instead. This class
+* will remain for at least one release to ease migration; it is not yet
+* scheduled for removal.
 */
+@Deprecated
 public class PDFPage {
     /**
     * the array of commands. The length of this array will always
@@ -695,7 +702,7 @@ public class PDFPage {
     }
 
     public void addAnnotations() {
-        if(this.annots != null) {
+        if (this.annots != null) {
             for (PDFAnnotation pdfAnnotation : this.annots) {
                 // add command to the page if needed
                 this.commands.addAll(pdfAnnotation.getPageCommandsForAnnotation());

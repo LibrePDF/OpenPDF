@@ -41,7 +41,7 @@ public class CmapTable extends TrueTypeTable {
     /**
      * Holds the CMap subtables, sorted properly
      */
-    private final SortedMap<CmapSubtable,CMap> subtables;
+    private final SortedMap<CmapSubtable, CMap> subtables;
     
     /** Creates a new instance of CmapTable */
     protected CmapTable() {
@@ -49,7 +49,7 @@ public class CmapTable extends TrueTypeTable {
         
         setVersion((short) 0x0);
     
-        this.subtables = Collections.synchronizedSortedMap(new TreeMap<CmapSubtable,CMap>());
+        this.subtables = Collections.synchronizedSortedMap(new TreeMap<CmapSubtable, CMap>());
     }
     
       /**
@@ -75,11 +75,11 @@ public class CmapTable extends TrueTypeTable {
     public CMap[] getCMaps() {
         Collection<CMap> c = new ArrayList<CMap>();
         
-        CMap cmap_3_1 = this.getCMap((short)3, (short)1);
+        CMap cmap_3_1 = this.getCMap((short) 3, (short) 1);
         if (cmap_3_1 != null) {
             c.add(cmap_3_1);
         }
-        CMap cmap_1_0 = this.getCMap((short)1, (short)0);
+        CMap cmap_1_0 = this.getCMap((short) 1, (short) 0);
         if (cmap_1_0 != null) {
             c.add(cmap_1_0);
         }
@@ -195,6 +195,7 @@ public class CmapTable extends TrueTypeTable {
     
     
     /** Getter for property version.
+     *
      * @return Value of property version.
      *
      */
@@ -203,6 +204,7 @@ public class CmapTable extends TrueTypeTable {
     }
     
     /** Setter for property version.
+     *
      * @param version New value of property version.
      *
      */

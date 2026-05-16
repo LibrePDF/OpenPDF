@@ -21,6 +21,7 @@ public class OperationSet {
     }
     
     /*************************************************************************
+     *
      * @return
      ************************************************************************/
     
@@ -32,6 +33,7 @@ public class OperationSet {
     }
     
     /*************************************************************************
+     *
      * @param token
      * @return
      ************************************************************************/
@@ -89,7 +91,7 @@ public class OperationSet {
             this.operationSet.put("eq", new Eq());
             this.operationSet.put("false", new False());
             this.operationSet.put("ge", new Ge());
-            this.operationSet.put("gt",new Gt());
+            this.operationSet.put("gt", new Gt());
             this.operationSet.put("le", new Le());
             this.operationSet.put("lt", new Lt());
             this.operationSet.put("ne", new Ne());

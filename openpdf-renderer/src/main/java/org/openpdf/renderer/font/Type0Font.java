@@ -39,7 +39,7 @@ public class Type0Font extends PDFFont {
     /** Creates a new instance of Type0Font */
     public Type0Font(String baseFont, PDFObject fontObj,
                      PDFFontDescriptor descriptor) throws IOException {
-        super (baseFont, descriptor);
+        super(baseFont, descriptor);
                          
         PDFObject[] descendantFonts = fontObj.getDictRef("DescendantFonts").getArray();
         
@@ -48,7 +48,7 @@ public class Type0Font extends PDFFont {
         for (int i = 0; i < descendantFonts.length; i++) {
             PDFFont descFont = getFont(descendantFonts[i], null);
             if (descFont instanceof CIDFontType0) {
-                ((CIDFontType0)descFont).parseToUnicodeMap(fontObj);
+                ((CIDFontType0) descFont).parseToUnicodeMap(fontObj);
             }
             this.fonts[i] = descFont;
         }

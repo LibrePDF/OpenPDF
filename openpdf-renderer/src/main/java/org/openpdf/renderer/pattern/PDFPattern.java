@@ -41,8 +41,7 @@ public abstract class PDFPattern {
     private AffineTransform xform;
  
     /** Creates a new instance of PDFPattern */
-    protected PDFPattern(int type) 
-    {
+    protected PDFPattern(int type) {
         this.type = type;
     }
  
@@ -50,8 +49,7 @@ public abstract class PDFPattern {
      * Read a pattern from the given pattern stream
      */
     public static PDFPattern getPattern(PDFObject patternObj, Map resources)
-        throws IOException
-    {
+        throws IOException {
         // see if the pattern is already cached
         PDFPattern pattern = (PDFPattern) patternObj.getCache();
         if (pattern != null) {
@@ -67,7 +65,7 @@ public abstract class PDFPattern {
         if (matrix == null) {
             xform = new AffineTransform();
         } else {
-            float elts[]= new float[6];
+            float[] elts = new float[6];
             for (int i = 0; i < elts.length; i++) {
                 elts[i] = matrix.getAt(i).getFloatValue();
             }

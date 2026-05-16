@@ -17,7 +17,7 @@ public class UriAction extends PDFAction {
     
     /*************************************************************************
      * Constructor, reading the URL from the given action object
-     * @param type
+     *
      * @throws IOException - in case the action can not be parsed
      ************************************************************************/
     public UriAction(PDFObject obj, PDFObject root) throws IOException {
@@ -27,8 +27,8 @@ public class UriAction extends PDFAction {
     
     /*************************************************************************
      * Constructor
-     * @param type
-     * @throws IOException 
+     *
+     * @throws IOException
      ************************************************************************/
     public UriAction(String uri) throws IOException {
         super("URI");
@@ -37,6 +37,7 @@ public class UriAction extends PDFAction {
 
     /*************************************************************************
      * Get the URI this action directs to
+     *
      * @return String
      ************************************************************************/
     public String getUri() {

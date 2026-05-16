@@ -80,7 +80,7 @@ public class GlyfCompound extends Glyf {
                         ((cur.flags & ARGS_ARE_XY_VALUES) != 0)) {
                 cur.e = data.get();
                 cur.f = data.get();
-            } else if ( ((cur.flags & ARG_1_AND_2_ARE_WORDS) != 0) &&
+            } else if (((cur.flags & ARG_1_AND_2_ARE_WORDS) != 0) &&
                        !((cur.flags & ARGS_ARE_XY_VALUES) != 0)) {
                 cur.compoundPoint = data.getShort();
                 cur.componentPoint = data.getShort();

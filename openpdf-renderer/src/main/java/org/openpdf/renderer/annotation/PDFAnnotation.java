@@ -22,7 +22,7 @@ import org.openpdf.renderer.PDFParseException;
  * @author  Katja Sondermann
  * @since 03.07.2009
  ****************************************************************************/
-public class PDFAnnotation{
+public class PDFAnnotation {
     
     /** Definition of some annotation sub-types*/
     public static final String GOTO = "GoTo";
@@ -58,19 +58,21 @@ public class PDFAnnotation{
 
     /*************************************************************************
      * Constructor
+     *
      * @param annotObject - the PDFObject which contains the annotation description
      * @throws IOException 
      ************************************************************************/
-    public PDFAnnotation(PDFObject annotObject) throws IOException{
+    public PDFAnnotation(PDFObject annotObject) throws IOException {
         this(annotObject, AnnotationType.UNKNOWN);
     }
 
     /*************************************************************************
      * Constructor
+     *
      * @param annotObject - the PDFObject which contains the annotation description
      * @throws IOException 
      ************************************************************************/
-    public PDFAnnotation(PDFObject annotObject, AnnotationType type) throws IOException{
+    public PDFAnnotation(PDFObject annotObject, AnnotationType type) throws IOException {
         this.pdfObj = annotObject;
         // in case a general "PdfAnnotation" is created the type is unknown
         this.type = type;
@@ -97,35 +99,35 @@ public class PDFAnnotation{
      * @return PDFAnnotation
      * @throws IOException 
      ************************************************************************/
-    public static PDFAnnotation createAnnotation(PDFObject parent) throws IOException{
+    public static PDFAnnotation createAnnotation(PDFObject parent) throws IOException {
         PDFObject subtypeValue = parent.getDictRef("Subtype");
-        if(subtypeValue == null) {
+        if (subtypeValue == null) {
             return null;
         }
         String subtypeS = subtypeValue.getStringValue();
         AnnotationType annotationType = AnnotationType.getByDefinition(subtypeS);
         
         //if Subtype is Widget than check if it is also a Signature
-        if(annotationType == AnnotationType.WIDGET) {
+        if (annotationType == AnnotationType.WIDGET) {
             PDFObject sigType = parent.getDictRef("FT");
-            if(sigType != null) {
+            if (sigType != null) {
                 String sigTypeS = sigType.getStringValue();
-                if(AnnotationType.getByDefinition(sigTypeS) == AnnotationType.SIGNATURE) {
+                if (AnnotationType.getByDefinition(sigTypeS) == AnnotationType.SIGNATURE) {
                     annotationType = AnnotationType.getByDefinition(sigTypeS);
                 }
             }
         }
         
-        if(annotationType.displayAnnotation()) {
+        if (annotationType.displayAnnotation()) {
             Class<?> className = annotationType.getClassName();
             
             try {
                 if (className.equals(MarkupAnnotation.class) || className.equals(TextMarkupAnnotation.class)) {
                     Constructor<?> constructor = className.getConstructor(PDFObject.class, AnnotationType.class);
-                    return (PDFAnnotation)constructor.newInstance(parent, annotationType);
+                    return (PDFAnnotation) constructor.newInstance(parent, annotationType);
                 } else {
                     Constructor<?> constructor = className.getConstructor(PDFObject.class);
-                    return (PDFAnnotation)constructor.newInstance(parent);
+                    return (PDFAnnotation) constructor.newInstance(parent);
                 }
             } catch (Exception e) {
                 throw new PDFParseException("Could not parse annotation!", e);
@@ -138,12 +140,13 @@ public class PDFAnnotation{
     /**
      * Get a Rectangle2D.Float representation for a PDFObject that is an
      * array of four Numbers.
+     *
      * @param obj a PDFObject that represents an Array of exactly four
      * Numbers.
      */
     public Rectangle2D.Float parseRect(PDFObject obj) throws IOException {
         if (obj.getType() == PDFObject.ARRAY) {
-            PDFObject bounds[] = obj.getArray();
+            PDFObject[] bounds = obj.getArray();
             if (bounds.length == 4) {
                 return new Rectangle2D.Float(bounds[0].getFloatValue(),
                         bounds[1].getFloatValue(),
@@ -159,6 +162,7 @@ public class PDFAnnotation{
 
     /*************************************************************************
      * Get the PDF Object which contains the annotation values
+     *
      * @return PDFObject
      ************************************************************************/
     public PDFObject getPdfObj() {
@@ -167,6 +171,7 @@ public class PDFAnnotation{
 
     /*************************************************************************
      * Get the annotation type
+     *
      * @return int
      ************************************************************************/
     public AnnotationType getType() {
@@ -175,6 +180,7 @@ public class PDFAnnotation{
 
     /*************************************************************************
      * Get the rectangle on which the annotation should be applied to
+     *
      * @return Rectangle2D.Float    
      ************************************************************************/
     public Float getRect() {
@@ -217,6 +223,7 @@ public class PDFAnnotation{
     
     /**
      * Get list of pdf commands for this annotation
+     *
      * @return 
      */
     public List<PDFCmd> getPageCommandsForAnnotation() {
@@ -226,8 +233,8 @@ public class PDFAnnotation{
 
     protected AffineTransform getScalingTransformation(Float bbox) {
         AffineTransform at = new AffineTransform();        
-        double scaleHeight = getRect().getHeight()/bbox.getHeight();
-        double scaleWidth = getRect().getWidth()/bbox.getWidth();
+        double scaleHeight = getRect().getHeight() / bbox.getHeight();
+        double scaleWidth = getRect().getWidth() / bbox.getWidth();
         at.scale(scaleWidth, scaleHeight);
         return at;
     }

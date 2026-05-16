@@ -18,9 +18,11 @@ public class GoToRAction extends PDFAction {
     /** the remote file this action refers to*/
     private String file;
     /** Should the remote file be opened in a new window? (optional)*/
-    private boolean newWindow=false;
-    /** 
+    private boolean newWindow = false;
+
+    /**
      * Creates a new instance of GoToRAction from an object
+     *
      * @param obj the PDFObject with the action information
      * @throws IOException - in case the action can not be parsed
      */
@@ -38,11 +40,12 @@ public class GoToRAction extends PDFAction {
 
     /*************************************************************************
      * Create a new GoToRAction from the given attributes
+     *
      * @param dest
      * @param file
      * @param newWindow
      ************************************************************************/
-    public GoToRAction(PDFDestination dest, String file, boolean newWindow){
+    public GoToRAction(PDFDestination dest, String file, boolean newWindow) {
         super("GoToR");
         this.file = file;
         this.destination = dest;
@@ -51,6 +54,7 @@ public class GoToRAction extends PDFAction {
     
     /*************************************************************************
      * Get the destination this action refers to
+     *
      * @return PDFDestination
      ************************************************************************/
     public PDFDestination getDestination() {
@@ -59,6 +63,7 @@ public class GoToRAction extends PDFAction {
 
     /*************************************************************************
      * Get the file this action refers to
+     *
      * @return PDFDestination
      ************************************************************************/
     public String getFile() {
@@ -67,6 +72,7 @@ public class GoToRAction extends PDFAction {
 
     /*************************************************************************
      * Should the remote file be opened in a new window?
+     *
      * @return boolean
      ************************************************************************/
     public boolean isNewWindow() {

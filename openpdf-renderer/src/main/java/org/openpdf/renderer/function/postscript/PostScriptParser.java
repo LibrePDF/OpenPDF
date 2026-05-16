@@ -23,6 +23,7 @@ public class PostScriptParser {
     
     /*************************************************************************
      * Parses the given script and returns a list of tokens.
+     *
      * @param scriptContent to parse.
      * @return the list of tokens.
      ************************************************************************/
@@ -42,17 +43,19 @@ public class PostScriptParser {
     }
 
     /*************************************************************************
+     *
      * @param t
      * @return
      ************************************************************************/
     private String filterBlockEnd(String t) {
         if (t.endsWith("}")) {
-            t = t.substring(0, t.length()-1);
+            t = t.substring(0, t.length() - 1);
         }
         return t;
     }
 
     /*************************************************************************
+     *
      * @param t
      * @return
      ************************************************************************/

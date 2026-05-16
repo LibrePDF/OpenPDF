@@ -14,6 +14,6 @@ final class Floor implements PostScriptOperation {
      * errors: stackunderflow, typecheck
      */
     public void eval(Stack<Object> environment) {
-        environment.push(Math.floor((Double)environment.pop()));
+        environment.push(Math.floor((Double) environment.pop()));
     }
 }

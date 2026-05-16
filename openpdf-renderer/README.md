@@ -1,7 +1,9 @@
-OpenPDF-renderer
-============
+# OpenPDF-renderer
 
-OpenPDF-renderer is a pure Java library for rendering PDF files as images using Java2D. It provides a lightweight, dependency-free way to convert PDF pages into BufferedImage objects suitable for display in Swing applications or saving to image files.
+OpenPDF-renderer is a pure Java library for rendering PDF files as images using Java2D.
+It provides a lightweight way to convert PDF pages into BufferedImage objects suitable for
+display in Swing applications or saving to image files.
+Since 3.0.5 it uses `openpdf-core` (`com.github.librepdf:openpdf`) as its PDF parser.
 
 ## Features
 
@@ -26,9 +28,154 @@ Add OpenPDF Renderer to your project:
 </dependency>
 ```
 
+## Migration to openpdf-core parser
+
+Starting in **3.0.5**, `openpdf-renderer` depends on `openpdf-core`
+(`com.github.librepdf:openpdf`) and exposes a new bridge entry point,
+[`org.openpdf.renderer.core.OpenPdfCoreRenderer`](src/main/java/org/openpdf/renderer/core/OpenPdfCoreRenderer.java),
+which uses `org.openpdf.text.pdf.PdfReader` to parse PDF documents.
+
+The legacy in-tree parser is now `@Deprecated`:
+
+- `org.openpdf.renderer.PDFFile`
+- `org.openpdf.renderer.PDFPage`
+- `org.openpdf.renderer.PDFParser`
+- `org.openpdf.renderer.decode.PDFDecoder`
+
+These classes will remain for at least one release to ease migration and are
+not yet scheduled for removal.
+
+### Why?
+
+- **Consistency** &mdash; identical PDF interpretation between the core library
+  and the renderer.
+- **Maintenance** &mdash; one parser to fix bugs and apply security patches in.
+- **Reliability** &mdash; leverages the battle-tested parsing engine in
+  `openpdf-core`.
+- **Focus** &mdash; rendering development can concentrate on the Java2D / Swing
+  integration rather than re-implementing PDF parsing.
+
+### Recommended new usage
+
+```java
+import org.openpdf.renderer.core.OpenPdfCoreRenderer;
+import javax.imageio.ImageIO;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.Map;
+
+try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.pdf"))) {
+    int pages          = renderer.getNumPages();
+    Rectangle2D size   = renderer.getPageSize(1);     // 1-based
+    int rotation       = renderer.getPageRotation(1);
+    Map<String,String> metadata = renderer.getMetadata();
+    String title       = renderer.getMetadata("Title");
+    String pageText    = renderer.getTextFromPage(1);  // openpdf-core text extraction
+
+    BufferedImage img  = renderer.renderPage(1, 150f); // 150 DPI, ARGB
+    ImageIO.write(img, "png", new File("page1.png"));
+}
+```
+
+### Status
+
+`openpdf-renderer` now uses `openpdf-core` for **all** PDF parsing, including
+the per-operator content-stream walking that drives Java2D rasterization. The
+in-tree legacy parser (`PDFFile`, `PDFPage`, `PDFParser`,
+`decode.PDFDecoder`) is no longer used by `OpenPdfCoreRenderer`.
+
+| Capability | Backend |
+|---|---|
+| Open file / `Path` / `InputStream` / `byte[]` | `openpdf-core` (`PdfReader`) |
+| Page count, page size, rotation | `openpdf-core` (`PdfReader`) |
+| Document metadata (`getMetadata`) | `openpdf-core` (`PdfReader#getInfo`) |
+| Page text extraction (`getTextFromPage`) | `openpdf-core` (`PdfTextExtractor`) |
+| Decoded page content stream (`getPageContent`) | `openpdf-core` (`PdfReader#getPageContent`) |
+| Content-stream operator listing (`getContentOperators`) | `openpdf-core` (`PdfContentParser`) |
+| Page rasterization (`renderPage`) | `openpdf-core` (`PdfContentParser`) → Java2D via `OpenPdfCorePageRenderer` |
+
+The Java2D rasterizer (`OpenPdfCorePageRenderer`) supports the standard subset
+of PDF operators needed for typical text + simple-vector PDFs: graphics state
+(`q`/`Q`/`cm`), path construction (`m`/`l`/`c`/`v`/`y`/`re`/`h`), path
+painting (`S`/`s`/`f`/`f*`/`B`/`B*`/`b`/`b*`/`n`), line width (`w`),
+DeviceGray/DeviceRGB colors (`g`/`G`/`rg`/`RG`), and the full text-object
+machinery (`BT`/`ET`/`Tf`/`Tc`/`Tw`/`TL`/`Tz`/`Td`/`TD`/`Tm`/`T*`/`Tj`/`TJ`/`'`/`"`).
+Operators outside this subset (extended graphics state `gs`, CMYK / pattern /
+shading colors, XObject `Do`, inline images, marked content, clipping
+`W`/`W*`, ...) are parsed but currently ignored — pages that rely heavily on
+them may render with missing content. Adding more operators is a localized
+change in `OpenPdfCorePageRenderer`.
+
+For pages that exercise features outside the supported subset and need
+pixel-perfect output today, the deprecated `PDFFile` / `PDFPage.getImage(...)`
+API still works.
+
 ## Quick Start
 
 ### Basic PDF to Image Conversion
+
+`org.openpdf.renderer.core.OpenPdfCoreRenderer` is the recommended entry point.
+It uses `openpdf-core` (`PdfReader`) for parsing and the existing Java2D engine
+for rasterization.
+
+```java
+import org.openpdf.renderer.core.OpenPdfCoreRenderer;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+public class PdfToImageExample {
+
+    public static void main(String[] args) throws IOException {
+        try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.pdf"))) {
+            // Render the first page (1-based) at 150 DPI as TYPE_INT_ARGB.
+            BufferedImage page = renderer.renderPage(1, 150f);
+            ImageIO.write(page, "png", new File("output.png"));
+            System.out.println("PDF page rendered successfully!");
+        }
+    }
+}
+```
+
+### Document inspection
+
+```java
+try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.pdf"))) {
+    int pages         = renderer.getNumPages();
+    var size          = renderer.getPageSize(1);     // 1-based
+    int rotation      = renderer.getPageRotation(1);
+    var metadata      = renderer.getMetadata();      // unmodifiable Map<String,String>
+    String title      = renderer.getMetadata("Title");
+    String pageText   = renderer.getTextFromPage(1); // openpdf-core text extraction
+    // List<String>, e.g. [q, BT, Tf, Td, Tj, ET, Q]
+    var operators     = renderer.getContentOperators(1);
+}
+```
+
+## Using the legacy `PDFFile` / `PDFPage` API (deprecated)
+
+The pre-3.0.5 entry point still works but is now `@Deprecated`. New code should
+prefer `OpenPdfCoreRenderer` (see above). The legacy API is kept for one or
+more releases to ease migration, and may still be useful for pages that
+exercise PDF features outside the supported subset of the new
+`OpenPdfCorePageRenderer` (extended graphics state `gs`, CMYK / pattern /
+shading colors, XObject `Do`, inline images, marked content, clipping, ...),
+since the legacy renderer has broader operator coverage.
+
+The legacy classes live in `org.openpdf.renderer`:
+
+- `org.openpdf.renderer.PDFFile`
+- `org.openpdf.renderer.PDFPage`
+- `org.openpdf.renderer.PDFParser`
+- `org.openpdf.renderer.decode.PDFDecoder`
+
+> ⚠️ Expect deprecation warnings at compile time. These classes are scheduled
+> to be removed in a future major release.
+
+### Legacy: Basic PDF to Image Conversion
 
 ```java
 import org.openpdf.renderer.PDFFile;
@@ -43,25 +190,25 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-public class PdfToImageExample {
-    
+public class LegacyPdfToImageExample {
+
     public static void main(String[] args) throws IOException {
         // Load PDF file
         File pdfFile = new File("document.pdf");
         try (RandomAccessFile raf = new RandomAccessFile(pdfFile, "r");
              FileChannel channel = raf.getChannel()) {
-            
+
             ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
             PDFFile pdf = new PDFFile(buf);
-            
+
             // Get first page (1-based index)
             PDFPage page = pdf.getPage(1);
-            
+
             // Create image from page
             Rectangle rect = new Rectangle(0, 0,
                     (int) page.getBBox().getWidth(),
                     (int) page.getBBox().getHeight());
-            
+
             Image img = page.getImage(
                     rect.width, rect.height,  // image size
                     rect,                      // clip rectangle
@@ -69,21 +216,75 @@ public class PdfToImageExample {
                     true,                      // fill background
                     true                       // block until done
             );
-            
+
             // Convert to BufferedImage and save
             BufferedImage bufferedImage = new BufferedImage(
-                    rect.width, rect.height, 
+                    rect.width, rect.height,
                     BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = bufferedImage.createGraphics();
             g2.drawImage(img, 0, 0, null);
             g2.dispose();
-            
+
             ImageIO.write(bufferedImage, "png", new File("output.png"));
             System.out.println("PDF page rendered successfully!");
         }
     }
 }
 ```
+
+### Legacy: Rendering with Custom Resolution
+
+```java
+import org.openpdf.renderer.PDFFile;
+import org.openpdf.renderer.PDFPage;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+public class LegacyHighResolutionRenderingExample {
+
+    public static BufferedImage renderPageAtDPI(PDFFile pdf, int pageNum, int dpi)
+            throws IOException {
+        PDFPage page = pdf.getPage(pageNum);
+
+        // Calculate dimensions at desired DPI (default is 72 DPI)
+        double scale = dpi / 72.0;
+        int width = (int) (page.getBBox().getWidth() * scale);
+        int height = (int) (page.getBBox().getHeight() * scale);
+
+        Rectangle rect = new Rectangle(0, 0, width, height);
+        Image img = page.getImage(width, height, rect, null, true, true);
+
+        // Convert to BufferedImage
+        BufferedImage bufferedImage = new BufferedImage(
+                width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = bufferedImage.createGraphics();
+
+        // Enable antialiasing for better quality
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                            RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        g2.drawImage(img, 0, 0, null);
+        g2.dispose();
+
+        return bufferedImage;
+    }
+}
+```
+
+### Legacy: Migration tips
+
+| Legacy API | Replacement on `OpenPdfCoreRenderer` |
+|---|---|
+| `new PDFFile(ByteBuffer)` | `new OpenPdfCoreRenderer(File \| Path \| InputStream \| byte[])` |
+| `pdf.getNumPages()` | `renderer.getNumPages()` |
+| `pdf.getPage(n).getBBox()` | `renderer.getPageSize(n)` |
+| `page.getImage(w, h, rect, ...)` | `renderer.renderPage(n, dpi)` |
+| Manual DPI scaling via `getBBox()` | Pass `dpi` directly to `renderPage` |
+| (no equivalent) | `renderer.getMetadata()`, `getTextFromPage(n)`, `getContentOperators(n)` |
 
 ## Examples
 
@@ -117,6 +318,9 @@ mvn javadoc:javadoc
 - **Encryption**: PDF decryption features have been removed from this module
 - **Page Indexing**: Page numbers are 1-based (first page is index 1, not 0)
 - **Thread Safety**: PDFFile and PDFPage objects are not thread-safe; synchronize access if needed
+- **Deprecated APIs**: `PDFFile`, `PDFPage`, `PDFParser`, and `org.openpdf.renderer.decode.PDFDecoder`
+  are deprecated in favor of `org.openpdf.renderer.core.OpenPdfCoreRenderer`.
+  Existing code continues to work for now &mdash; see the "Migration to openpdf-core parser" section above.
 
 ## Supported PDF Features
 
@@ -166,49 +370,23 @@ Solution: Increase JVM heap size with -Xmx flag (e.g., -Xmx2g)
 ### Advanced: Rendering with Custom Resolution
 
 ```java
-import org.openpdf.renderer.PDFFile;
-import org.openpdf.renderer.PDFPage;
+import org.openpdf.renderer.core.OpenPdfCoreRenderer;
 
-import java.awt.*;
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 
-public class HighResolutionRenderingExample {
-    
-    public static BufferedImage renderPageAtDPI(PDFFile pdf, int pageNum, int dpi) 
-            throws IOException {
-        PDFPage page = pdf.getPage(pageNum);
-        
-        // Calculate dimensions at desired DPI (default is 72 DPI)
-        double scale = dpi / 72.0;
-        int width = (int) (page.getBBox().getWidth() * scale);
-        int height = (int) (page.getBBox().getHeight() * scale);
-        
-        Rectangle rect = new Rectangle(0, 0, width, height);
-        Image img = page.getImage(width, height, rect, null, true, true);
-        
-        // Convert to BufferedImage
-        BufferedImage bufferedImage = new BufferedImage(
-                width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2 = bufferedImage.createGraphics();
-        
-        // Enable antialiasing for better quality
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-                            RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, 
-                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        
-        g2.drawImage(img, 0, 0, null);
-        g2.dispose();
-        
-        return bufferedImage;
+try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.pdf"))) {
+    for (int i = 1; i <= renderer.getNumPages(); i++) {
+        BufferedImage img = renderer.renderPage(i, 300f); // 300 DPI
+        ImageIO.write(img, "png", new File("page-" + i + ".png"));
     }
 }
 ```
+
+The returned image is a `BufferedImage` of type `TYPE_INT_ARGB` whose dimensions
+are the page size (in PDF user space units, i.e. 1/72 inch) scaled by
+`dpi / 72`. Antialiasing for shapes and text is enabled by default.
 
 ## License
 

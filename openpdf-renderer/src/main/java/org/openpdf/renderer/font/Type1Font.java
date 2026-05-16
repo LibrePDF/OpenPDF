@@ -33,28 +33,30 @@ import org.openpdf.renderer.PDFObject;
 
 /**
  * A representation, with parser, of an Adobe Type 1 font.
+ *
  * @author Mike Wessler
  */
 public class Type1Font extends OutlineFont {
 
-    String chr2name[];
+    String[] chr2name;
     int password;
-    byte[] subrs[];
+    byte[][] subrs;
     int lenIV;
-    Map<String,Object> name2outline;
-    Map<String,FlPoint> name2width;
+    Map<String, Object> name2outline;
+    Map<String, FlPoint> name2width;
     AffineTransform at;
     /** the Type1 stack of command values */
-    float stack[] = new float[100];
+    float[] stack = new float[100];
     /** the current position in the Type1 stack */
     int sloc = 0;
     /** the stack of postscript commands (used by callothersubr) */
-    float psStack[] = new float[3];
+    float[] psStack = new float[3];
     /** the current position in the postscript stack */
     int psLoc = 0;
 
     /**
      * create a new Type1Font based on a font data stream and an encoding.
+     *
      * @param baseName the postscript name of this font
      * @param src the Font object as a stream with a dictionary
      * @param descriptor the descriptor for this font
@@ -67,7 +69,7 @@ public class Type1Font extends OutlineFont {
             // parse that file, filling name2outline and chr2name
             int start = descriptor.getFontFile().getDictRef("Length1").getIntValue();
             int len = descriptor.getFontFile().getDictRef("Length2").getIntValue();
-            byte font[] = descriptor.getFontFile().getStream();
+            byte[] font = descriptor.getFontFile().getStream();
 
             parseFont(font, start, len);
         }
@@ -75,9 +77,9 @@ public class Type1Font extends OutlineFont {
 
     /** Read a font from it's data, start position and length */
     protected void parseFont(byte[] font, int start, int len) {
-        this.name2width = new HashMap<String,FlPoint>();
+        this.name2width = new HashMap<String, FlPoint>();
 
-        byte data[] = null;
+        byte[] data = null;
 
         if (isASCII(font, start)) {
             byte[] bData = readASCII(font, start, start + len);
@@ -104,23 +106,24 @@ public class Type1Font extends OutlineFont {
         } else {
             PSParser psp2 = new PSParser(font, matrixloc + 11);
             // read [num num num num num num]
-            float xf[] = psp2.readArray(6);
+            float[] xf = psp2.readArray(6);
             this.at = new AffineTransform(xf);
         }
 
         this.subrs = readSubrs(data);
-        this.name2outline = new TreeMap<String,Object>(readChars(data));
+        this.name2outline = new TreeMap<String, Object>(readChars(data));
     // at this point, name2outline holds name -> byte[].
     }
 
     /**
      * parse the encoding portion of the font definition
+     *
      * @param d the font definition stream
      * @return an array of the glyphs corresponding to each byte
      */
     private String[] readEncoding(byte[] d) {
         byte[][] ary = readArray(d, "Encoding", "def");
-        String res[] = new String[256];
+        String[] res = new String[256];
         for (int i = 0; i < ary.length; i++) {
             if (ary[i] != null) {
                 if (ary[i][0] == '/') {
@@ -137,6 +140,7 @@ public class Type1Font extends OutlineFont {
 
     /**
      * read the subroutines out of the font definition
+     *
      * @param d the font definition stream
      * @return an array of the subroutines, each as a byte array.
      */
@@ -151,6 +155,7 @@ public class Type1Font extends OutlineFont {
      * definition without doing any postscript.  It's actually looking
      * for things that look like "dup <i>id</i> <i>elt</i> put", and
      * placing the <i>elt</i> at the <i>i</i>th position in the array.
+     *
      * @param d the font definition stream
      * @param key the name of the array
      * @param end a string that appears at the end of the array
@@ -168,14 +173,14 @@ public class Type1Font extends OutlineFont {
         String type = psp.readThing();     // read the key (i is the start of the key)
         type = psp.readThing();
         if (type.equals("StandardEncoding")) {
-            byte[] stdenc[] = new byte[FontSupport.standardEncoding.length][];
+            byte[][] stdenc = new byte[FontSupport.standardEncoding.length][];
             for (i = 0; i < stdenc.length; i++) {
                 stdenc[i] = FontSupport.getName(FontSupport.standardEncoding[i]).getBytes();
             }
             return stdenc;
         }
         int len = Integer.parseInt(type);
-        byte[] out[] = new byte[len][];
+        byte[][] out = new byte[len][];
         byte[] line;
         while (true) {
             String s = psp.readThing();
@@ -207,6 +212,7 @@ public class Type1Font extends OutlineFont {
 
     /**
      * decrypt an array using the Adobe Type 1 Font decryption algorithm.
+     *
      * @param d the input array of bytes
      * @param start where in the array to start decoding
      * @param end where in the array to stop decoding
@@ -315,6 +321,7 @@ public class Type1Font extends OutlineFont {
         /**
          * create a PostScript reader given some data and an initial offset
          * into that data.
+         *
          * @param data the bytes of the postscript information
          * @param start an initial offset into the data
          */
@@ -350,6 +357,7 @@ public class Type1Font extends OutlineFont {
          * read a set of numbers from the input.  This method doesn't
          * pay any attention to "[" or "]" delimiters, and reads any
          * non-numeric items as the number 0.
+         *
          * @param count the number of items to read
          * @return an array of count floats
          */
@@ -388,6 +396,7 @@ public class Type1Font extends OutlineFont {
         /**
          * treat the next n bytes of the input stream as encoded
          * information to be decrypted.
+         *
          * @param n the number of bytes to decrypt
          * @param key the decryption key
          * @param skip the number of bytes to skip at the beginning of the
@@ -404,6 +413,7 @@ public class Type1Font extends OutlineFont {
 
     /**
      * get the index into the byte array of a slashed name, like "/name".
+     *
      * @param d the search array
      * @param name the name to look for, without the initial /
      * @return the index of the first occurance of /name in the array.
@@ -430,13 +440,14 @@ public class Type1Font extends OutlineFont {
 
     /**
      * get the character definitions of the font.
+     *
      * @param d the font data
      * @return a HashMap that maps string glyph names to byte arrays of
      * decoded font data.
      */
-    private HashMap<String,byte[]> readChars(byte[] d) {
+    private HashMap<String, byte[]> readChars(byte[] d) {
         // skip thru data until we find "/"+key
-        HashMap<String,byte[]> hm = new HashMap<String,byte[]>();
+        HashMap<String, byte[]> hm = new HashMap<String, byte[]>();
         int i = findSlashName(d, "CharStrings");
         if (i < 0) {
             // not found
@@ -473,12 +484,14 @@ public class Type1Font extends OutlineFont {
         }
         return val;
     }
+
     int callcount = 0;
 
     /**
      * parse glyph data into a GeneralPath, and return the advance width.
      * The working point is passed in as a parameter in order to allow
      * recursion.
+     *
      * @param cs the decrypted glyph data
      * @param gp a GeneralPath into which the glyph shape will be stored
      * @param pt a FlPoint object that will be used to generate the path
@@ -524,8 +537,7 @@ public class Type1Font extends OutlineFont {
                         if (flexMode) {
                             flexArray[flexPt++] = pt.x;
                             flexArray[flexPt++] = pt.y;
-                        }
-                        else{
+                        } else {
                             gp.moveTo(pt.x, pt.y);
                         }
                         this.sloc = 0;
@@ -575,8 +587,7 @@ public class Type1Font extends OutlineFont {
                         if (n == 0) {
                             if (flexPt != 14) {
                                 PDFDebugger.debug("There must be 14 flex entries!");
-                            }
-                            else {
+                            } else {
                                 gp.curveTo(flexArray[2], flexArray[3], flexArray[4], 
                                         flexArray[5],
                                         flexArray[6], flexArray[7]);
@@ -592,8 +603,7 @@ public class Type1Font extends OutlineFont {
                         if (n == 2) {
                             if (flexMode == false) {
                                 PDFDebugger.debug("Flex mode assumed");
-                            } 
-                            else {
+                            } else {
                                 this.sloc = 0;
                                 break;
                             }
@@ -696,8 +706,7 @@ public class Type1Font extends OutlineFont {
                         if (flexMode) {
                             flexArray[flexPt++] = pt.x;
                             flexArray[flexPt++] = pt.y;
-                        }
-                        else{
+                        } else {
                             gp.moveTo(pt.x, pt.y);
                         }
                         this.sloc = 0;
@@ -707,8 +716,7 @@ public class Type1Font extends OutlineFont {
                         if (flexMode) {
                             flexArray[flexPt++] = pt.x;
                             flexArray[flexPt++] = pt.y;
-                        }
-                        else {
+                        } else {
                             gp.moveTo(pt.x, pt.y);
                         }
                         this.sloc = 0;
@@ -754,6 +762,7 @@ public class Type1Font extends OutlineFont {
 
     /**
      * build an accented character out of two pre-defined glyphs.
+     *
      * @param x the x offset of the accent relativ to the sidebearing of the base char
      * @param y the y offset of the accent relativ to the sidebearing of the base char
      * @param a the index of the accent glyph
@@ -902,6 +911,6 @@ public class Type1Font extends OutlineFont {
     }
     
     public boolean isName2OutlineFilled() {
-        return (name2outline!=null) && !name2outline.isEmpty();
+        return (name2outline != null) && !name2outline.isEmpty();
     }
 }

@@ -53,11 +53,12 @@ import org.openpdf.renderer.PDFParseException;
  * <p>
  * The function interface contains a single method, <i>calculate</i> which
  * takes an array of <i>m</i> floats an interprets them into an array of
- * </i>n</i> floats.
- * <p> 
+ * <i>n</i> floats.
+ * </p>
+ * <p>
  * PDFFunctions do not have accessible constructors.  Instead, use the
  * static <i>getFunction()</i> method to read a functions from a PDF Object.
- *
+ * </p>
  */
 public abstract class PDFFunction {
 
@@ -85,14 +86,14 @@ public abstract class PDFFunction {
     private float[] range;
 
     /** Creates a new instance of PDFFunction */
-    protected PDFFunction (int type) {
+    protected PDFFunction(int type) {
         this.type = type;
     }
 
     /**
      * Get a PDFFunction from a PDFObject
      */
-    public static PDFFunction getFunction (PDFObject obj)
+    public static PDFFunction getFunction(PDFObject obj)
             throws IOException {
         PDFFunction function;
         int type;
@@ -100,32 +101,32 @@ public abstract class PDFFunction {
         float[] range = null;
 
         // read the function type (required)
-        PDFObject typeObj = obj.getDictRef ("FunctionType");
+        PDFObject typeObj = obj.getDictRef("FunctionType");
         if (typeObj == null) {
-            throw new PDFParseException (
+            throw new PDFParseException(
                     "No FunctionType specified in function!");
         }
-        type = typeObj.getIntValue ();
+        type = typeObj.getIntValue();
 
         // read the function's domain (required)
-        PDFObject domainObj = obj.getDictRef ("Domain");
+        PDFObject domainObj = obj.getDictRef("Domain");
         if (domainObj == null) {
-            throw new PDFParseException ("No Domain specified in function!");
+            throw new PDFParseException("No Domain specified in function!");
         }
 
-        PDFObject[] domainAry = domainObj.getArray ();
+        PDFObject[] domainAry = domainObj.getArray();
         domain = new float[domainAry.length];
         for (int i = 0; i < domainAry.length; i++) {
-            domain[i] = domainAry[i].getFloatValue ();
+            domain[i] = domainAry[i].getFloatValue();
         }
 
         // read the function's range (optional)
-        PDFObject rangeObj = obj.getDictRef ("Range");
+        PDFObject rangeObj = obj.getDictRef("Range");
         if (rangeObj != null) {
-            PDFObject[] rangeAry = rangeObj.getArray ();
+            PDFObject[] rangeAry = rangeObj.getArray();
             range = new float[rangeAry.length];
             for (int i = 0; i < rangeAry.length; i++) {
-                range[i] = rangeAry[i].getFloatValue ();
+                range[i] = rangeAry[i].getFloatValue();
             }
         }
 
@@ -133,37 +134,34 @@ public abstract class PDFFunction {
         switch (type) {
             case TYPE_0:
                 if (rangeObj == null) {
-                    throw new PDFParseException (
-                            "No Range specified in Type 0 Function!");
+                    throw new PDFParseException("No Range specified in Type 0 Function!");
                 }
-                function = new FunctionType0 ();
+                function = new FunctionType0();
                 break;
             case TYPE_2:
-                function = new FunctionType2 ();
+                function = new FunctionType2();
                 break;
             case TYPE_3:
-                function = new FunctionType3 ();
+                function = new FunctionType3();
                 break;
             case TYPE_4:
                 if (rangeObj == null) {
-                    throw new PDFParseException (
-                            "No Range specified in Type 4 Function!");
+                    throw new PDFParseException("No Range specified in Type 4 Function!");
                 }
-                function = new FunctionType4 ();
+                function = new FunctionType4();
                 break;
             default:
-                throw new PDFParseException (
-                        "Unsupported function type: " + type);
+                throw new PDFParseException("Unsupported function type: " + type);
         }
 
         // fill in the domain and optionally the range
-        function.setDomain (domain);
+        function.setDomain(domain);
         if (range != null) {
-            function.setRange (range);
+            function.setRange(range);
         }
 
         // now initialize the function
-        function.parse (obj);
+        function.parse(obj);
 
         return function;
     }
@@ -194,7 +192,7 @@ public abstract class PDFFunction {
      *
      * @return one of the types of function (0-4)
      */
-    public int getType () {
+    public int getType() {
         return this.type;
     }
 
@@ -203,7 +201,7 @@ public abstract class PDFFunction {
      *
      * @return the number of input values expected by this function
      */
-    public int getNumInputs () {
+    public int getNumInputs() {
         return (this.domain.length / 2);
     }
 
@@ -212,7 +210,7 @@ public abstract class PDFFunction {
      *
      * @return the number of output values this function will return
      */
-    public int getNumOutputs () {
+    public int getNumOutputs() {
         if (this.range == null) {
             return 0;
         }
@@ -227,14 +225,14 @@ public abstract class PDFFunction {
      *           2<i>i</i> + 1
      * @return the <i>i</i>th entry in the domain array 
      */
-    protected float getDomain (int i) {
+    protected float getDomain(int i) {
         return this.domain[i];
     }
 
     /**
      *  Set the domain of this function
      */
-    protected void setDomain (float[] domain) {
+    protected void setDomain(float[] domain) {
         this.domain = domain;
     }
 
@@ -246,7 +244,7 @@ public abstract class PDFFunction {
      *           2<i>i</i> + 1
      * @return the <i>i</i>th entry in the range array 
      */
-    protected float getRange (int i) {
+    protected float getRange(int i) {
         if (this.range == null) {
             if ((i % 2) == 0) {
                 return Float.MIN_VALUE;
@@ -260,7 +258,7 @@ public abstract class PDFFunction {
     /**
      * Set the range of this function
      */
-    protected void setRange (float[] range) {
+    protected void setRange(float[] range) {
         this.range = range;
     }
 
@@ -273,9 +271,9 @@ public abstract class PDFFunction {
      * @param inputs an array of >= <i>m</i> input values
      * @return the array of <i>n</i> output values
      */
-    public float[] calculate (float[] inputs) {
-        float[] outputs = new float[getNumOutputs ()];
-        calculate (inputs, 0, outputs, 0);
+    public float[] calculate(float[] inputs) {
+        float[] outputs = new float[getNumOutputs()];
+        calculate(inputs, 0, outputs, 0);
         return outputs;
     }
 
@@ -292,35 +290,33 @@ public abstract class PDFFunction {
      * @param outputOffset the offset into the output array to write to
      * @return the array of <i>n</i> output values
      */
-    public float[] calculate (float[] inputs, int inputOffset,
-                              float[] outputs, int outputOffset) {
+    public float[] calculate(float[] inputs, int inputOffset,
+                             float[] outputs, int outputOffset) {
         // check the inputs
-        if (inputs.length - inputOffset < getNumInputs ()) {
-            throw new IllegalArgumentException (
-                    "Wrong number of inputs to function!");
+        if (inputs.length - inputOffset < getNumInputs()) {
+            throw new IllegalArgumentException("Wrong number of inputs to function!");
         }
 
         // check the outputs
-        if (this.range != null && outputs.length - outputOffset < getNumOutputs ()) {
-            throw new IllegalArgumentException (
-                    "Wrong number of outputs for function!");
+        if (this.range != null && outputs.length - outputOffset < getNumOutputs()) {
+            throw new IllegalArgumentException("Wrong number of outputs for function!");
         }
 
         // clip the inputs to domain
         for (int i = 0; i < inputs.length; i++) {
             // clip to the domain -- min(max(x<i>, domain<2i>), domain<2i+1>)
-            inputs[i] = Math.max (inputs[i], getDomain (2 * i));
-            inputs[i] = Math.min (inputs[i], getDomain ((2 * i) + 1));
+            inputs[i] = Math.max(inputs[i], getDomain(2 * i));
+            inputs[i] = Math.min(inputs[i], getDomain((2 * i) + 1));
         }
 
         // do the actual calculation
-        doFunction (inputs, inputOffset, outputs, outputOffset);
+        doFunction(inputs, inputOffset, outputs, outputOffset);
 
         // clip the outputs to range
         for (int i = 0; this.range != null && i < outputs.length; i++) {
             // clip to range -- min(max(r<i>, range<2i>), range<2i + 1>)
-            outputs[i] = Math.max (outputs[i], getRange (2 * i));
-            outputs[i] = Math.min (outputs[i], getRange ((2 * i) + 1));
+            outputs[i] = Math.max(outputs[i], getRange(2 * i));
+            outputs[i] = Math.min(outputs[i], getRange((2 * i) + 1));
         }
 
         return outputs;
@@ -339,9 +335,9 @@ public abstract class PDFFunction {
      *        <code>getNumOutputs()</code>, but not yet clipped to domain
      * @param outputOffset the offset into the output array to write to
      */
-    protected abstract void doFunction (float[] inputs, int inputOffset,
-                                        float[] outputs, int outputOffset);
+    protected abstract void doFunction(float[] inputs, int inputOffset,
+                                       float[] outputs, int outputOffset);
 
     /** Read the function information from a PDF Object */
-    protected abstract void parse (PDFObject obj) throws IOException;
+    protected abstract void parse(PDFObject obj) throws IOException;
 }

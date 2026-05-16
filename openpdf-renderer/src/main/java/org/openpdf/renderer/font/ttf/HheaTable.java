@@ -148,6 +148,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property version.
+     *
      * @return Value of property version.
      *
      */
@@ -156,6 +157,7 @@ public class HheaTable extends TrueTypeTable {
     }
    
     /** Setter for property version.
+     *
      * @param version New value of property version.
      *
      */
@@ -188,6 +190,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property ascent.
+     *
      * @return Value of property ascent.
      *
      */
@@ -196,6 +199,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property ascent.
+     *
      * @param ascent New value of property ascent.
      *
      */
@@ -204,6 +208,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property descent.
+     *
      * @return Value of property descent.
      *
      */
@@ -212,6 +217,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property descent.
+     *
      * @param descent New value of property descent.
      *
      */
@@ -220,6 +226,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property lineGap.
+     *
      * @return Value of property lineGap.
      *
      */
@@ -228,6 +235,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property lineGap.
+     *
      * @param lineGap New value of property lineGap.
      *
      */
@@ -236,6 +244,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property advanceWidthMax.
+     *
      * @return Value of property advanceWidthMax.
      *
      */
@@ -244,6 +253,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property advanceWidthMax.
+     *
      * @param advanceWidthMax New value of property advanceWidthMax.
      *
      */
@@ -252,6 +262,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property minLeftSideBearing.
+     *
      * @return Value of property minLeftSideBearing.
      *
      */
@@ -260,6 +271,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property minLeftSideBearing.
+     *
      * @param minLeftSideBearing New value of property minLeftSideBearing.
      *
      */
@@ -268,6 +280,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property minRIghtSideBearing.
+     *
      * @return Value of property minRIghtSideBearing.
      *
      */
@@ -276,6 +289,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property minRIghtSideBearing.
+     *
      * @param minRightSideBearing New value of property minRIghtSideBearing.
      *
      */
@@ -284,6 +298,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property xMaxExtent.
+     *
      * @return Value of property xMaxExtent.
      *
      */
@@ -292,6 +307,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property xMaxExtent.
+     *
      * @param xMaxExtent New value of property xMaxExtent.
      *
      */
@@ -300,6 +316,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property caretSlopeRise.
+     *
      * @return Value of property caretSlopeRise.
      *
      */
@@ -308,6 +325,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property caretSlopeRise.
+     *
      * @param caretSlopeRise New value of property caretSlopeRise.
      *
      */
@@ -316,6 +334,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property caretSlopeRun.
+     *
      * @return Value of property caretSlopeRun.
      *
      */
@@ -324,6 +343,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property caretSlopeRun.
+     *
      * @param caretSlopeRun New value of property caretSlopeRun.
      *
      */
@@ -332,6 +352,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property caretOffset.
+     *
      * @return Value of property caretOffset.
      *
      */
@@ -340,6 +361,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property caretOffset.
+     *
      * @param caretOffset New value of property caretOffset.
      *
      */
@@ -348,6 +370,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property metricDataFormat.
+     *
      * @return Value of property metricDataFormat.
      *
      */
@@ -356,6 +379,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property metricDataFormat.
+     *
      * @param metricDataFormat New value of property metricDataFormat.
      *
      */
@@ -364,6 +388,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Getter for property numOfLongHorMetrics.
+     *
      * @return Value of property numOfLongHorMetrics.
      *
      */
@@ -372,6 +397,7 @@ public class HheaTable extends TrueTypeTable {
     }
     
     /** Setter for property numOfLongHorMetrics.
+     *
      * @param numOfLongHorMetrics New value of property numOfLongHorMetrics.
      *
      */

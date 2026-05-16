@@ -18,8 +18,8 @@ final class Bitshift implements PostScriptOperation {
      * errors: stackunderflow, typecheck
      */
     public void eval(Stack<Object> environment) {
-        long shift = (Long)environment.pop();
-        long int1 = (Long)environment.pop();
+        long shift = (Long) environment.pop();
+        long int1 = (Long) environment.pop();
         environment.push(int1 << shift);
     }
 }

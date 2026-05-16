@@ -103,8 +103,8 @@ public class PDFShapeCmd extends PDFCmd {
     */
     private GeneralPath checkOverlap(PDFRenderer state) {
         if (this.style == FILL && this.gp != null && state.getLastShape() != null) {
-            float mypoints[] = new float[16];
-            float prevpoints[] = new float[16];
+            float[] mypoints = new float[16];
+            float[] prevpoints = new float[16];
             int mycount = getPoints(this.gp, mypoints, state.getTransform());
             int prevcount = getPoints(state.getLastShape(), prevpoints, state.getLastTransform());
             // now check mypoints against prevpoints for opposite pairs:
@@ -115,7 +115,7 @@ public class PDFShapeCmd extends PDFCmd {
                                 .abs(mypoints[j + 1] - prevpoints[i + 3]) < 0.01)) {
                             // it seems that need to use the original points location (without the Affine Transform)
                             mypoints = new float[16];
-                            getPoints(this.gp, mypoints, null);// without AffineTransform
+                            getPoints(this.gp, mypoints, null); // without AffineTransform
 
                             GeneralPath strokeagain = new GeneralPath();
                             strokeagain.moveTo(mypoints[j], mypoints[j + 1]);

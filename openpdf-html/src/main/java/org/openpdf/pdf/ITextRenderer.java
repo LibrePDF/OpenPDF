@@ -20,6 +20,7 @@
 package org.openpdf.pdf;
 
 import org.openpdf.text.DocumentException;
+import org.openpdf.text.pdf.GlyphLayoutManager;
 import org.openpdf.text.pdf.PdfPageEvent;
 import org.openpdf.text.pdf.PdfWriter;
 import org.jspecify.annotations.Nullable;
@@ -120,6 +121,9 @@ public class ITextRenderer {
 
     @Nullable
     private PDFCreationListener _listener;
+
+    @Nullable
+    private GlyphLayoutManager glyphLayoutManager;
 
     public ITextRenderer(File file) throws IOException {
         this();
@@ -393,6 +397,11 @@ public class ITextRenderer {
             writer.setEncryption(_pdfEncryption.getUserPassword(), _pdfEncryption.getOwnerPassword(),
                     _pdfEncryption.getAllowedPrivileges(), _pdfEncryption.getEncryptionType());
         }
+
+        if (glyphLayoutManager != null) {
+            writer.setGlyphLayoutManager(glyphLayoutManager);
+        }
+
         _pdfDoc = doc;
         _writer = writer;
 
@@ -593,6 +602,10 @@ public class ITextRenderer {
 
     public List<PagePosition> findPagePositionsByID(Pattern pattern) {
         return _outputDevice.findPagePositionsByID(newLayoutContext(), pattern);
+    }
+
+    public void setGlyphLayoutManager(GlyphLayoutManager glyphLayoutManager) {
+        this.glyphLayoutManager = glyphLayoutManager;
     }
 
 

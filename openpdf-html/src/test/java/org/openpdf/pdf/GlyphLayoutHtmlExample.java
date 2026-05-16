@@ -1,0 +1,74 @@
+/*
+ * This file is part of the OpenPDF HTML module.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Volker Kunert 2026
+ */
+package org.openpdf.pdf;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Objects;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.openpdf.text.pdf.GlyphLayoutFontManager;
+import org.openpdf.text.pdf.GlyphLayoutManager;
+
+public class GlyphLayoutHtmlExample {
+
+    public static void main(String[] args) {
+        var glyphLayoutHtmlExample = new GlyphLayoutHtmlExample();
+        try {
+            glyphLayoutHtmlExample.test();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void test() throws Exception {
+        var htmlFilename = "GlyphLayoutHtmlExample.html";
+        var inputStream = this.getClass().getResourceAsStream(htmlFilename);
+        var documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        var document = documentBuilder.parse(inputStream);
+
+        var glyphLayoutManager = new GlyphLayoutManager();
+        var fontResolver = new ITextFontResolver();
+
+        loadFont(glyphLayoutManager, fontResolver, "Arimo-Regular.ttf", 12.0f,
+                "fonts/arimo/Arimo-Regular.ttf");
+        loadFont(glyphLayoutManager, fontResolver, "Arimo-Bold.ttf", 12.0f,
+                "fonts/arimo/Arimo-Bold.ttf");
+
+        var pdfFilename = "GlyphLayoutHtmlExample.pdf";
+        try (var outputStream = new FileOutputStream(pdfFilename)) {
+            var renderer = new ITextRenderer(fontResolver);
+            renderer.setDocument(document);
+            renderer.setGlyphLayoutManager(glyphLayoutManager);
+            renderer.layout();
+            renderer.createPDF(outputStream);
+        }
+        System.out.println("PDF created: " + pdfFilename);
+    }
+
+    private void loadFont(GlyphLayoutManager glyphLayoutManager, ITextFontResolver fontResolver, String fontName,
+            float fontSize, String fontResourcePath) throws IOException, GlyphLayoutFontManager.FontLoadException {
+        var fontUrl = this.getClass().getResource(fontResourcePath);
+        Objects.requireNonNull(fontUrl, "Font not found: " + fontResourcePath);
+        try (var fontStream = fontUrl.openStream()) {
+            var font = glyphLayoutManager.loadFont(fontName, fontStream, fontSize);
+            fontResolver.addFont(font.getBaseFont(), fontUrl.getFile(), null);
+        }
+    }
+}

@@ -69,6 +69,7 @@ public class LaunchAction extends PDFAction {
 
     /*************************************************************************
      * Parse the file specification object
+     *
      * @param fileObj
      * @return FileSpec - might be <code>null</code> in case the passed object is null 
      * @throws IOException 
@@ -78,7 +79,7 @@ public class LaunchAction extends PDFAction {
         FileSpec file = null;
         if (fileObj != null) {
             file = new FileSpec(); 
-            if(fileObj.getType() == PDFObject.DICTIONARY){
+            if (fileObj.getType() == PDFObject.DICTIONARY) {
                 file.setFileSystem(PdfObjectParseUtil.parseStringFromDict("FS", fileObj, false));
                 file.setFileName(PdfObjectParseUtil.parseStringFromDict("F", fileObj, false));
                 file.setUnicode(PdfObjectParseUtil.parseStringFromDict("UF", fileObj, false));
@@ -91,9 +92,9 @@ public class LaunchAction extends PDFAction {
                 file.setEmbeddedFile(fileObj.getDictRef("EF"));
                 file.setRelatedFile(fileObj.getDictRef("RF"));
                 file.setCollectionItem(fileObj.getDictRef("CI"));
-            }else if(fileObj.getType() == PDFObject.STRING){
+            } else if (fileObj.getType() == PDFObject.STRING) {
                 file.setFileName(fileObj.getStringValue());
-            }else{
+            } else {
                 throw new PDFParseException("File specification could not be parsed " +
                     "(should be of type 'Dictionary' or 'String'): " + fileObj.toString());
             }
@@ -103,7 +104,8 @@ public class LaunchAction extends PDFAction {
     
 
     /*************************************************************************
-     * Parse the windows specific launch parameters 
+     * Parse the windows specific launch parameters
+     *
      * @param winDict
      * @throws IOException - in case of a problem during parsing content 
      ************************************************************************/
@@ -130,6 +132,7 @@ public class LaunchAction extends PDFAction {
 
     /*************************************************************************
      * The file / application to be opened
+     *
      * @return FileSpec
      ************************************************************************/
     public FileSpec getFileSpecification() {
@@ -138,6 +141,7 @@ public class LaunchAction extends PDFAction {
 
     /*************************************************************************
      * Should a new window be opened for the file/application?
+     *
      * @return boolean
      ************************************************************************/
     public boolean isNewWindow() {
@@ -148,6 +152,7 @@ public class LaunchAction extends PDFAction {
      * Get the unix specific launch parameters.
      * Note: The dictionary is not specified yet in the PDF spec., so the PdfObject 
      *         which is returned here is not parsed.
+     *
      * @return PDFObject
      ************************************************************************/
     public PDFObject getUnixParam() {
@@ -158,6 +163,7 @@ public class LaunchAction extends PDFAction {
      * Get the mac specific launch parameters.
      * Note: The dictionary is not specified yet in the PDF spec., so the PdfObject 
      *         which is returned here is not parsed.
+     *
      * @return PDFObject
      ************************************************************************/
     public PDFObject getMacParam() {
@@ -166,6 +172,7 @@ public class LaunchAction extends PDFAction {
 
     /*************************************************************************
      * Get the windows specific launch parameters.
+     *
      * @return WinLaunchParam
      ************************************************************************/
     public WinLaunchParam getWinParam() {
@@ -187,6 +194,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * The file/application name to be opened
+         *
          * @return String
          ************************************************************************/
         public String getFileName() {
@@ -195,6 +203,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * The file/application name to be opened
+         *
          * @param fileName
          ************************************************************************/
         public void setFileName(String fileName) {
@@ -203,6 +212,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * The directory in standard DOS syntax
+         *
          * @return String
          ************************************************************************/
         public String getDirectory() {
@@ -211,6 +221,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * The directory in standard DOS syntax
+         *
          * @param directory
          ************************************************************************/
         public void setDirectory(String directory) {
@@ -221,6 +232,7 @@ public class LaunchAction extends PDFAction {
          * The operation to be performed (open or print). Ignored
          * in case the "F" parameter describes a file to be opened.
          * Default is "open".
+         *
          * @return String
          ************************************************************************/
         public String getOperation() {
@@ -231,6 +243,7 @@ public class LaunchAction extends PDFAction {
          * The operation to be performed ("open" or "print").Ignored
          * in case the "F" parameter describes a file to be opened.
          * Default is "open".
+         *
          * @param operation
          ************************************************************************/
         public void setOperation(String operation) {
@@ -240,6 +253,7 @@ public class LaunchAction extends PDFAction {
         /*************************************************************************
          * A parameter which shall be passed to the application. Ignored
          * in case the "F" parameter describes a file to be opened.
+         *
          * @return String
          ************************************************************************/
         public String getParameter() {
@@ -249,6 +263,7 @@ public class LaunchAction extends PDFAction {
         /*************************************************************************
          * A parameter which shall be passed to the application. Ignored
          * in case the "F" parameter describes a file to be opened.
+         *
          * @param parameter
          ************************************************************************/
         public void setParameter(String parameter) {
@@ -263,7 +278,7 @@ public class LaunchAction extends PDFAction {
      * @author  xond
      * @since 08.07.2009
      ****************************************************************************/
-    public static class FileSpec{
+    public static class FileSpec {
         private String fileSystem;
         private String fileName;
         private String dosFileName;
@@ -279,6 +294,7 @@ public class LaunchAction extends PDFAction {
         
         /*************************************************************************
          * The name of the file system that should be used to interpret this entry.
+         *
          * @return String 
          ************************************************************************/
         public String getFileSystem() {
@@ -287,6 +303,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * The name of the file system that should be used to interpret this entry.
+         *
          * @param fileSystem 
          ************************************************************************/
         public void setFileSystem(String fileSystem) {
@@ -297,20 +314,21 @@ public class LaunchAction extends PDFAction {
          * Get the filename:
          * first try to get the file name for the used OS, if it's not available
          * return the common file name.
+         *
          * @return String 
          ************************************************************************/
         public String getFileName() {
             String system = System.getProperty("os.name");
-            if(system.startsWith("Windows")){
-                if(this.dosFileName != null){
+            if (system.startsWith("Windows")) {
+                if (this.dosFileName != null) {
                     return this.dosFileName;
                 }
-            }else if(system.startsWith("mac os x")){
-                if(this.macFileName != null){
+            } else if (system.startsWith("mac os x")) {
+                if (this.macFileName != null) {
                     return this.macFileName;
                 }
-            }else {
-                if(this.unixFileName != null){
+            } else {
+                if (this.unixFileName != null) {
                     return this.unixFileName;
                 }
             }
@@ -319,6 +337,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * The file name.
+         *
          * @param fileName 
          ************************************************************************/
         public void setFileName(String fileName) {
@@ -327,6 +346,7 @@ public class LaunchAction extends PDFAction {
         
         /*************************************************************************
          * A file specification string representing a DOS file name.
+         *
          * @return String
          ************************************************************************/
         public String getDosFileName() {
@@ -335,6 +355,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * A file specification string representing a DOS file name.
+         *
          * @param dosFileName
          ************************************************************************/
         public void setDosFileName(String dosFileName) {
@@ -343,6 +364,7 @@ public class LaunchAction extends PDFAction {
         
         /*************************************************************************
          * A file specification string representing a unix file name.
+         *
          * @return String
          ************************************************************************/
         public String getUnixFileName() {
@@ -351,6 +373,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * A file specification string representing a unix file name.
+         *
          * @param unixFileName
          ************************************************************************/
         public void setUnixFileName(String unixFileName) {
@@ -359,6 +382,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * A file specification string representing a mac file name.
+         *
          * @return String
          ************************************************************************/
         public String getMacFileName() {
@@ -367,6 +391,7 @@ public class LaunchAction extends PDFAction {
         
         /*************************************************************************
          * A file specification string representing a mac file name.
+         *
          * @param macFileName
          ************************************************************************/
         public void setMacFileName(String macFileName) {
@@ -375,6 +400,7 @@ public class LaunchAction extends PDFAction {
         
         /*************************************************************************
          * Unicode file name
+         *
          * @return String
          ************************************************************************/
         public String getUnicode() {
@@ -383,6 +409,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * Unicode file name
+         *
          * @param unicode
          ************************************************************************/
         public void setUnicode(String unicode) {
@@ -411,6 +438,7 @@ public class LaunchAction extends PDFAction {
         
         /*************************************************************************
          * Is the file volatile?
+         *
          * @return boolean
          ************************************************************************/
         public boolean isVolatileFile() {
@@ -419,6 +447,7 @@ public class LaunchAction extends PDFAction {
         
         /*************************************************************************
          * Is the file volatile?
+         *
          * @param volatileFile
          ************************************************************************/
         public void setVolatileFile(boolean volatileFile) {
@@ -427,6 +456,7 @@ public class LaunchAction extends PDFAction {
         
         /*************************************************************************
          * Dictionary of embedded file streams
+         *
          * @return PDFObject
          ************************************************************************/
         public PDFObject getEmbeddedFile() {
@@ -435,6 +465,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * Dictionary of embedded file streams
+         *
          * @param embeddedFile
          ************************************************************************/
         public void setEmbeddedFile(PDFObject embeddedFile) {
@@ -442,7 +473,8 @@ public class LaunchAction extends PDFAction {
         }
         
         /*************************************************************************
-         * Dictionary of related files. 
+         * Dictionary of related files.
+         *
          * @return PDFObject
          ************************************************************************/
         public PDFObject getRelatedFile() {
@@ -450,7 +482,8 @@ public class LaunchAction extends PDFAction {
         }
 
         /*************************************************************************
-         * Dictionary of related files. 
+         * Dictionary of related files.
+         *
          * @param relatedFile
          ************************************************************************/
         public void setRelatedFile(PDFObject relatedFile) {
@@ -459,6 +492,7 @@ public class LaunchAction extends PDFAction {
         
         /*************************************************************************
          * File specification description
+         *
          * @return String
          ************************************************************************/
         public String getDescription() {
@@ -467,6 +501,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * File specification description
+         *
          * @param description
          ************************************************************************/
         public void setDescription(String description) {
@@ -475,6 +510,7 @@ public class LaunchAction extends PDFAction {
         
         /*************************************************************************
          * Collection item dictionary
+         *
          * @return PDFObject
          ************************************************************************/
         public PDFObject getCollectionItem() {
@@ -483,6 +519,7 @@ public class LaunchAction extends PDFAction {
 
         /*************************************************************************
          * Collection item dictionary
+         *
          * @param collectionItem
          ************************************************************************/
         public void setCollectionItem(PDFObject collectionItem) {

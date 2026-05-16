@@ -91,7 +91,7 @@ public abstract class OutlineFont extends PDFFont {
         if (idx < 0 || this.widths == null || idx >= this.widths.length) {
             // try to get the missing width from the font descriptor
             if (getDescriptor() != null) {
-                return getDescriptor().getMissingWidth() / (float)getDefaultWidth();
+                return getDescriptor().getMissingWidth() / (float) getDefaultWidth();
             } else {
                 return 0;
             }

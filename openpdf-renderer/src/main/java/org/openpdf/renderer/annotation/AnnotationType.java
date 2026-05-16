@@ -6,7 +6,7 @@ import org.openpdf.renderer.Configuration;
  * @author Bernd Rosstauscher
  *
  */
-public enum AnnotationType{
+public enum AnnotationType {
     UNKNOWN("-", 0, PDFAnnotation.class),
     LINK("Link", 1, LinkAnnotation.class),
     WIDGET("Widget", 2, WidgetAnnotation.class),
@@ -45,7 +45,7 @@ public enum AnnotationType{
      * @return true if this annotation type should be displayed else false.
      */
     boolean displayAnnotation() {
-            switch(this) {
+            switch (this) {
                 case STAMP: return Configuration.getInstance().isPrintStampAnnotations();
                 case WIDGET: return Configuration.getInstance().isPrintWidgetAnnotations();
                 case FREETEXT: return Configuration.getInstance().isPrintFreetextAnnotations();
@@ -76,6 +76,7 @@ public enum AnnotationType{
     public String getDefinition() {
         return definition;
     }
+
     /**
      * @return the internalId
      */
@@ -91,13 +92,14 @@ public enum AnnotationType{
     }
     
     /**
-     * Get annotation type by it's type 
+     * Get annotation type by it's type
+     *
      * @param definition
      * @return
      */
     public static AnnotationType getByDefinition(String definition) {
         for (AnnotationType type : values()) {
-            if(type.definition.equals(definition)) {
+            if (type.definition.equals(definition)) {
                 return type;
             }
         }

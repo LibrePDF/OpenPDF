@@ -38,6 +38,7 @@ import org.openpdf.renderer.font.ttf.TrueTypeFont;
 
 /**
  * a Font definition for PDF files
+ *
  * @author Mike Wessler
  */
 public abstract class PDFFont {
@@ -49,7 +50,7 @@ public abstract class PDFFont {
         }
     };
 
-    private static Map<String,File> namedFontsToLocalTtfFiles = null;
+    private static Map<String, File> namedFontsToLocalTtfFiles = null;
 
     /** the font SubType of this font */
     private String subtype;
@@ -62,7 +63,7 @@ public abstract class PDFFont {
     /** the CMap that maps this font to unicode values */
     private PDFCMap unicodeMap;
     /** a cache of glyphs indexed by character */
-    private Map<Character,PDFGlyph> charCache;
+    private Map<Character, PDFGlyph> charCache;
 
 
 
@@ -88,7 +89,7 @@ public abstract class PDFFont {
      * Resources = (dictionary)
      */
     public synchronized static PDFFont getFont(PDFObject obj,
-            HashMap<String,PDFObject> resources)
+            HashMap<String, PDFObject> resources)
             throws IOException {
         // the obj is actually a dictionary containing:
         //    Type (=Font)
@@ -164,7 +165,7 @@ public abstract class PDFFont {
             if (descriptor.getFontFile() != null) {
                 // it's a Type1 font, included.
                 font = new Type1Font(baseFont, obj, descriptor);
-                if(!((Type1Font)font).isName2OutlineFilled()){
+                if (!((Type1Font) font).isName2OutlineFilled()) {
                     PDFDebugger.debug("Type1Font can't be parsed completelly, character mapping missing. Use a basefont instead.");
                     font = new BuiltinFont(baseFont, obj, descriptor);
                 }
@@ -180,7 +181,7 @@ public abstract class PDFFont {
                 // load a TrueType font
                 try {
                     font = new TTFFont(baseFont, obj, descriptor);
-                }catch (Exception e) {
+                } catch (Exception e) {
 //                    PDFRenderer.getErrorHandler().publishException(e);
                     PDFDebugger.debug("Error parsing font : " + baseFont);
                     // fake it with a built-in font
@@ -191,7 +192,7 @@ public abstract class PDFFont {
                 if (extFontFile != null) {
                     try {
                         font = new TTFFont(baseFont, obj, descriptor, extFontFile);
-                    }catch (Exception e) {
+                    } catch (Exception e) {
 //                        PDFRenderer.getErrorHandler().publishException(e);
                         PDFDebugger.debug("Error parsing font : " + baseFont);
                         // fake it with a built-in font
@@ -206,17 +207,17 @@ public abstract class PDFFont {
             // load a type 3 font
             font = new Type3Font(baseFont, obj, resources, descriptor);
         } else if (subType.equals("CIDFontType2")) {
-            if(descriptor.getFontFile2() != null) {
+            if (descriptor.getFontFile2() != null) {
                 font = new CIDFontType2(baseFont, obj, descriptor);
-            }else {
+            } else {
                 // fake it with a built-in font
                //but it prefer to use the CIDFontType0 that have the extra handling of ToUnicode, if found in the fontObj
                     font = new CIDFontType0(baseFont, obj, descriptor);
             }
         } else if (subType.equals("CIDFontType0")) {
-            if(descriptor.getFontFile2() !=null){
+            if (descriptor.getFontFile2() != null) {
                 font = new CIDFontType2(baseFont, obj, descriptor);
-            }else {
+            } else {
                 font = new CIDFontType0(baseFont, obj, descriptor);
             }
         } else if (subType.equals("MMType1")) {
@@ -257,8 +258,8 @@ public abstract class PDFFont {
                                 byte[] fontBytes;
                                 RandomAccessFile fontRa = null;
                                 try {
-                                    fontRa = new RandomAccessFile (ttfFile, "r");
-                                    int size = (int) fontRa.length ();
+                                    fontRa = new RandomAccessFile(ttfFile, "r");
+                                    int size = (int) fontRa.length();
                                     fontBytes = new byte[size];
                                     fontRa.readFully(fontBytes);
                                 } finally {
@@ -298,8 +299,7 @@ public abstract class PDFFont {
     }
 
 
-    private static String[] getDefaultFontSearchPath()
-    {
+    private static String[] getDefaultFontSearchPath() {
         String osName = null;
         try {
             osName = System.getProperty("os.name");
@@ -347,6 +347,7 @@ public abstract class PDFFont {
 
     /**
      * Get the subtype of this font.
+     *
      * @return the subtype, one of: Type0, Type1, TrueType or Type3
      */
     public String getSubtype() {
@@ -362,6 +363,7 @@ public abstract class PDFFont {
 
     /**
      * Get the postscript name of this font
+     *
      * @return the postscript name of this font
      */
     public String getBaseFont() {
@@ -370,6 +372,7 @@ public abstract class PDFFont {
 
     /**
      * Set the postscript name of this font
+     *
      * @param baseFont the postscript name of the font
      */
     public void setBaseFont(String baseFont) {
@@ -378,6 +381,7 @@ public abstract class PDFFont {
 
     /**
      * Get the encoding for this font
+     *
      * @return the encoding which maps from this font to actual characters
      */
     public PDFFontEncoding getEncoding() {
@@ -393,6 +397,7 @@ public abstract class PDFFont {
 
     /**
      * Get the descriptor for this font
+     *
      * @return the font descriptor
      */
     public PDFFontDescriptor getDescriptor() {
@@ -457,7 +462,7 @@ public abstract class PDFFont {
      */
     public PDFGlyph getCachedGlyph(char src, String name) {
         if (this.charCache == null) {
-            this.charCache = new HashMap<Character,PDFGlyph>();
+            this.charCache = new HashMap<Character, PDFGlyph>();
         }
 
         // try the cache
@@ -474,6 +479,7 @@ public abstract class PDFFont {
 
     /**
      * Create a PDFFont given the base font name and the font descriptor
+     *
      * @param baseFont the postscript name of this font
      * @param descriptor the descriptor for the font
      */

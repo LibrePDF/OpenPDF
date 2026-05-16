@@ -1,6 +1,7 @@
 package org.openpdf.renderer.function.postscript.operation;
 
 import java.util.Stack;
+
 final class Cvi implements PostScriptOperation {
     @Override
     /**

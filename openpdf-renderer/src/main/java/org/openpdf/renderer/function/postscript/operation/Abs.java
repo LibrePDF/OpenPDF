@@ -14,6 +14,6 @@ final class Abs implements PostScriptOperation {
      * errors: stackunderflow, typecheck
      */
     public void eval(Stack<Object> environment) {
-        environment.push(Math.abs((Double)environment.pop()));
+        environment.push(Math.abs((Double) environment.pop()));
     }
 }

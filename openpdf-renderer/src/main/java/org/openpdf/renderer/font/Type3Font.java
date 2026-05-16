@@ -42,7 +42,7 @@ import org.openpdf.renderer.PDFParser;
 public class Type3Font extends PDFFont {
 
     /** resources for the character definitions */
-    HashMap<String,PDFObject> rsrc;
+    HashMap<String, PDFObject> rsrc;
     /** the character processes, mapped by name */
     Map charProcs;
     /** bounding box for the font characters */
@@ -58,6 +58,7 @@ public class Type3Font extends PDFFont {
 
     /**
      * Generate a Type 3 font.
+     *
      * @param baseFont the postscript name of this font
      * @param fontObj a dictionary containing references to the character
      * definitions and font information
@@ -65,10 +66,10 @@ public class Type3Font extends PDFFont {
      * @param descriptor the descriptor for this font
      */
     public Type3Font(String baseFont, PDFObject fontObj,
-            HashMap<String,PDFObject> resources, PDFFontDescriptor descriptor) throws IOException {
+            HashMap<String, PDFObject> resources, PDFFontDescriptor descriptor) throws IOException {
         super(baseFont, descriptor);
 
-        this.rsrc = new HashMap<String,PDFObject>();
+        this.rsrc = new HashMap<String, PDFObject>();
 
         if (resources != null) {
             this.rsrc.putAll(resources);
@@ -76,7 +77,7 @@ public class Type3Font extends PDFFont {
 
         // get the transform matrix
         PDFObject matrix = fontObj.getDictRef("FontMatrix");
-        float matrixAry[] = new float[6];
+        float[] matrixAry = new float[6];
         for (int i = 0; i < 6; i++) {
             matrixAry[i] = matrix.getAt(i).getFloatValue();
         }

@@ -70,7 +70,7 @@ public class LZWDecode {
     ByteBuffer buf;
     int bytepos;
     int bitpos;
-    byte[] dict[] = new byte[4096][];
+    byte[][] dict = new byte[4096][];
     int dictlen = 0;
     int bitspercode = 9;
     static int STOP = 257;
@@ -78,6 +78,7 @@ public class LZWDecode {
 
     /**
      * initialize this decoder with an array of encoded bytes
+     *
      * @param buf the buffer of bytes
      */
     private LZWDecode(ByteBuffer buf) throws PDFParseException {
@@ -129,6 +130,7 @@ public class LZWDecode {
 
     /**
      * decode the array.
+     *
      * @return the uncompressed byte array
      */
     private ByteBuffer decode() throws PDFParseException {
