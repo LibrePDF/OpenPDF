@@ -19,14 +19,15 @@
  */
 package org.openpdf.pdf;
 
-import org.openpdf.text.pdf.GlyphLayoutFontManager;
-import org.openpdf.text.pdf.GlyphLayoutManager;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.openpdf.text.pdf.GlyphLayoutFontManager;
+import org.openpdf.text.pdf.GlyphLayoutManager;
 
 public class GlyphLayoutHtmlExample {
+
     public static void main(String[] args) {
         var glyphLayoutHtmlExample = new GlyphLayoutHtmlExample();
         try {
@@ -45,8 +46,10 @@ public class GlyphLayoutHtmlExample {
         var glyphLayoutManager = new GlyphLayoutManager();
         var fontResolver = new ITextFontResolver();
 
-        loadFont(glyphLayoutManager, fontResolver, "Arimo-Regular.ttf", "fonts/arimo/Arimo-Regular.ttf");
-        loadFont(glyphLayoutManager, fontResolver, "Arimo-Bold.ttf", "fonts/arimo/Arimo-Bold.ttf");
+        loadFont(glyphLayoutManager, fontResolver, "Arimo-Regular.ttf", 12.0f,
+                "fonts/arimo/Arimo-Regular.ttf");
+        loadFont(glyphLayoutManager, fontResolver, "Arimo-Bold.ttf", 12.0f,
+                "fonts/arimo/Arimo-Bold.ttf");
 
         var pdfFilename = "GlyphLayoutHtmlExample.pdf";
         try (var outputStream = new FileOutputStream(pdfFilename)) {
@@ -59,13 +62,12 @@ public class GlyphLayoutHtmlExample {
         System.out.println("PDF created: " + pdfFilename);
     }
 
-    private void loadFont(GlyphLayoutManager glyphLayoutManager, ITextFontResolver fontResolver,
-            String fontName, String fontResourcePath)
-            throws IOException, GlyphLayoutFontManager.FontLoadException {
+    private void loadFont(GlyphLayoutManager glyphLayoutManager, ITextFontResolver fontResolver, String fontName,
+            float fontSize, String fontResourcePath) throws IOException, GlyphLayoutFontManager.FontLoadException {
         var fontUrl = this.getClass().getResource(fontResourcePath);
         Objects.requireNonNull(fontUrl, "Font not found: " + fontResourcePath);
         try (var fontStream = fontUrl.openStream()) {
-            var font = glyphLayoutManager.loadFont(fontName, fontStream, 12.0f);
+            var font = glyphLayoutManager.loadFont(fontName, fontStream, fontSize);
             fontResolver.addFont(font.getBaseFont(), fontUrl.getFile(), null);
         }
     }
