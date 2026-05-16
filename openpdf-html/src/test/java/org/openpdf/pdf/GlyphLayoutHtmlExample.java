@@ -28,9 +28,9 @@ import java.util.Objects;
 
 public class GlyphLayoutHtmlExample {
     public static void main(String[] args) {
-        var glyphLayoutTest = new GlyphLayoutHtmlExample();
+        var glyphLayoutHtmlExample = new GlyphLayoutHtmlExample();
         try {
-            glyphLayoutTest.test();
+            glyphLayoutHtmlExample.test();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,9 +64,9 @@ public class GlyphLayoutHtmlExample {
             throws IOException, GlyphLayoutFontManager.FontLoadException {
         var fontUrl = this.getClass().getResource(fontResourcePath);
         Objects.requireNonNull(fontUrl, "Font not found: " + fontResourcePath);
-        var fontStream = fontUrl.openStream();
-        var font = glyphLayoutManager.loadFont(fontName, fontStream, 12.0f);
-        fontStream.close();
-        fontResolver.addFont(font.getBaseFont(), fontUrl.getFile(), null);
+        try (var fontStream = fontUrl.openStream()) {
+            var font = glyphLayoutManager.loadFont(fontName, fontStream, 12.0f);
+            fontResolver.addFont(font.getBaseFont(), fontUrl.getFile(), null);
+        }
     }
 }
