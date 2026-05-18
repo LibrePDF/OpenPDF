@@ -112,6 +112,19 @@ final class OpenPdfCorePageRenderer {
     private static final PdfName EXTGS_LC = new PdfName("LC");
     private static final PdfName EXTGS_LJ = new PdfName("LJ");
 
+    // Color-space identifiers used by imageComponents().
+    private static final PdfName CS_ICC_BASED = new PdfName("ICCBased");
+    private static final PdfName CS_CAL_GRAY = new PdfName("CalGray");
+    private static final PdfName CS_CAL_RGB = new PdfName("CalRGB");
+    private static final PdfName CS_LAB = new PdfName("Lab");
+    private static final PdfName CS_N = new PdfName("N");
+    private static final java.util.Set<PdfName> DEVICE_GRAY_NAMES = java.util.Set.of(
+            PdfName.DEVICEGRAY, new PdfName("G"), CS_CAL_GRAY);
+    private static final java.util.Set<PdfName> DEVICE_RGB_NAMES = java.util.Set.of(
+            PdfName.DEVICERGB, new PdfName("RGB"), CS_CAL_RGB);
+    private static final java.util.Set<PdfName> DEVICE_CMYK_NAMES = java.util.Set.of(
+            PdfName.DEVICECMYK, new PdfName("CMYK"));
+
     private final Graphics2D g2;
     private final PdfDictionary resources;
     private final Map<String, CMapAwareDocumentFont> fontCache = new HashMap<>();
@@ -676,26 +689,28 @@ final class OpenPdfCorePageRenderer {
     }
 
     private void applyExtGState(String name) {
-        if (resources == null) {
-            return;
-        }
-        PdfDictionary gsResources = resources.getAsDict(PdfName.EXTGSTATE);
-        if (gsResources == null) {
-            return;
-        }
-        PdfObject obj = gsResources.get(new PdfName(name));
-        PdfDictionary dict;
-        if (obj instanceof PdfDictionary d) {
-            dict = d;
-        } else if (obj instanceof PRIndirectReference ref) {
-            PdfObject resolved = PdfReader.getPdfObject(ref);
-            dict = resolved instanceof PdfDictionary ? (PdfDictionary) resolved : null;
-        } else {
-            dict = null;
-        }
+        PdfDictionary dict = resolveExtGStateDict(name);
         if (dict == null) {
             return;
         }
+        applyExtGStateAlpha(dict);
+        applyExtGStateLineStyle(dict);
+    }
+
+    private PdfDictionary resolveExtGStateDict(String name) {
+        if (resources == null) {
+            return null;
+        }
+        PdfDictionary gsResources = resources.getAsDict(PdfName.EXTGSTATE);
+        if (gsResources == null) {
+            return null;
+        }
+        PdfObject obj = gsResources.get(new PdfName(name));
+        PdfObject direct = obj instanceof PRIndirectReference ref ? PdfReader.getPdfObject(ref) : obj;
+        return direct instanceof PdfDictionary d ? d : null;
+    }
+
+    private void applyExtGStateAlpha(PdfDictionary dict) {
         PdfNumber ca = dict.getAsNumber(PdfName.ca);
         if (ca != null) {
             state.fillAlpha = clamp01(ca.floatValue());
@@ -706,6 +721,9 @@ final class OpenPdfCorePageRenderer {
             state.strokeAlpha = clamp01(upperCA.floatValue());
             state.strokeColor = applyAlpha(state.strokeColor, state.strokeAlpha);
         }
+    }
+
+    private void applyExtGStateLineStyle(PdfDictionary dict) {
         PdfNumber lw = dict.getAsNumber(EXTGS_LW);
         if (lw != null) {
             state.lineWidth = lw.floatValue();
@@ -934,41 +952,56 @@ final class OpenPdfCorePageRenderer {
      * Returns the number of color components for a {@code /ColorSpace} entry, or 0 if unsupported.
      */
     private static int imageComponents(PdfObject csObj) {
-        if (csObj instanceof PRIndirectReference ind) {
-            csObj = PdfReader.getPdfObject(ind);
+        PdfObject direct = csObj instanceof PRIndirectReference ind ? PdfReader.getPdfObject(ind) : csObj;
+        if (direct instanceof PdfName n) {
+            return componentsForNamedColorSpace(n);
         }
-        if (csObj instanceof PdfName n) {
-            if (PdfName.DEVICEGRAY.equals(n) || new PdfName("G").equals(n) || new PdfName("CalGray").equals(n)) {
-                return 1;
-            }
-            if (PdfName.DEVICERGB.equals(n) || new PdfName("RGB").equals(n) || new PdfName("CalRGB").equals(n)) {
-                return 3;
-            }
-            if (PdfName.DEVICECMYK.equals(n) || new PdfName("CMYK").equals(n)) {
-                return 4;
-            }
-        }
-        if (csObj instanceof PdfArray arr && arr.size() >= 1) {
-            PdfObject head = arr.getDirectObject(0);
-            // ICCBased: [/ICCBased <<.../N n>>]
-            if (new PdfName("ICCBased").equals(head) && arr.size() >= 2) {
-                PdfObject paramsObj = arr.getDirectObject(1);
-                if (paramsObj instanceof PdfDictionary params) {
-                    PdfNumber n = params.getAsNumber(new PdfName("N"));
-                    if (n != null) {
-                        return n.intValue();
-                    }
-                }
-            }
-            // CalGray / CalRGB / Lab
-            if (new PdfName("CalGray").equals(head)) {
-                return 1;
-            }
-            if (new PdfName("CalRGB").equals(head) || new PdfName("Lab").equals(head)) {
-                return 3;
-            }
+        if (direct instanceof PdfArray arr) {
+            return componentsForArrayColorSpace(arr);
         }
         return 0;
+    }
+
+    private static int componentsForNamedColorSpace(PdfName name) {
+        if (DEVICE_GRAY_NAMES.contains(name)) {
+            return 1;
+        }
+        if (DEVICE_RGB_NAMES.contains(name)) {
+            return 3;
+        }
+        if (DEVICE_CMYK_NAMES.contains(name)) {
+            return 4;
+        }
+        return 0;
+    }
+
+    private static int componentsForArrayColorSpace(PdfArray arr) {
+        if (arr.size() < 1) {
+            return 0;
+        }
+        PdfObject head = arr.getDirectObject(0);
+        if (CS_ICC_BASED.equals(head)) {
+            return iccBasedComponents(arr);
+        }
+        if (CS_CAL_GRAY.equals(head)) {
+            return 1;
+        }
+        if (CS_CAL_RGB.equals(head) || CS_LAB.equals(head)) {
+            return 3;
+        }
+        return 0;
+    }
+
+    private static int iccBasedComponents(PdfArray arr) {
+        if (arr.size() < 2) {
+            return 0;
+        }
+        PdfObject paramsObj = arr.getDirectObject(1);
+        if (!(paramsObj instanceof PdfDictionary params)) {
+            return 0;
+        }
+        PdfNumber n = params.getAsNumber(CS_N);
+        return n == null ? 0 : n.intValue();
     }
 
     private static BufferedImage buildGrayImage(byte[] data, int width, int height) {

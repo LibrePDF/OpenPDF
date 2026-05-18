@@ -108,7 +108,15 @@ PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
 | Colors (DeviceGray / DeviceRGB / DeviceCMYK) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
 | Text state | `BT`, `ET`, `Tf`, `Tc`, `Tw`, `TL`, `Tz`, `Td`, `TD`, `Tm`, `T*`, `Ts` |
 | Text showing | `Tj`, `TJ`, `'`, `"` |
-| XObjects | `Do` (Form XObjects recursively; Image XObjects: JPEG/`DCTDecode`, JPEG2000/`JPXDecode` where `ImageIO` supports it, and uncompressed / Flate-decoded 8-bit DeviceGray / DeviceRGB / DeviceCMYK) |
+| XObjects | `Do` (see below) |
+
+XObject coverage:
+- Form XObjects render recursively, applying their own `/Matrix` and `/BBox`
+  under the current CTM with full state save/restore.
+- Image XObjects decode via `ImageIO` for JPEG (`DCTDecode`) and JPEG 2000
+  (`JPXDecode`, where the runtime supports it), and via a manual raster
+  builder for uncompressed / Flate-decoded 8-bit DeviceGray, DeviceRGB and
+  DeviceCMYK streams (CMYK approximated to sRGB on the fly).
 | Marked content / compatibility (no-op) | `BMC`, `BDC`, `EMC`, `MP`, `DP`, `BX`, `EX` |
 
 Inline images (`BI`/`ID`/`EI`) are stripped from the content stream before
