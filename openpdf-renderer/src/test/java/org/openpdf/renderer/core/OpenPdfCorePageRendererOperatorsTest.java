@@ -549,4 +549,173 @@ class OpenPdfCorePageRendererOperatorsTest {
                     .isGreaterThan(20);
         }
     }
+
+    /**
+     * Exercises the harder slice of "text inside a table cell": multi-line wrapped
+     * text in a wide cell, a {@code Phrase} composed of multiple {@link
+     * org.openpdf.text.Chunk}s with different fonts and colors, varied horizontal
+     * alignments (left / center / right), and a larger header font. The renderer
+     * has to handle the resulting {@code Tj} stream &mdash; one short showText per
+     * line, with {@code Td}/{@code Tm} moves between lines &mdash; while sitting
+     * under the {@code q ... re W n} clipping that {@code PdfPTable} wraps every
+     * cell in.
+     */
+    @Test
+    void rendersTableWithRichCellText() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (Document doc = new Document(new Rectangle(PageSize.A5))) {
+            PdfWriter.getInstance(doc, baos);
+            doc.open();
+
+            org.openpdf.text.pdf.PdfPTable table = new org.openpdf.text.pdf.PdfPTable(3);
+            table.setTotalWidth(360f);
+            table.setLockedWidth(true);
+            table.setWidths(new float[]{1f, 2f, 1f});
+
+            // Larger, bold header row.
+            org.openpdf.text.Font headerFont = new org.openpdf.text.Font(
+                    org.openpdf.text.Font.HELVETICA, 14f, org.openpdf.text.Font.BOLD, Color.WHITE);
+            for (String header : new String[]{"#", "Description", "Qty"}) {
+                org.openpdf.text.pdf.PdfPCell hc = new org.openpdf.text.pdf.PdfPCell(
+                        new org.openpdf.text.Phrase(header, headerFont));
+                hc.setBackgroundColor(new Color(40, 40, 120));
+                hc.setHorizontalAlignment(org.openpdf.text.Element.ALIGN_CENTER);
+                hc.setPadding(6f);
+                table.addCell(hc);
+            }
+
+            // Row 1: left-aligned number, multi-line wrapped description, right-aligned qty.
+            table.addCell(numberCell("1", org.openpdf.text.Element.ALIGN_LEFT));
+            table.addCell(new org.openpdf.text.pdf.PdfPCell(new org.openpdf.text.Phrase(
+                    "First line of a long description that should wrap onto a second "
+                            + "and probably a third line inside its table cell.",
+                    new org.openpdf.text.Font(org.openpdf.text.Font.HELVETICA, 10f))));
+            table.addCell(numberCell("12", org.openpdf.text.Element.ALIGN_RIGHT));
+
+            // Row 2: a cell with mixed Chunks (regular, bold, italic, colored).
+            table.addCell(numberCell("2", org.openpdf.text.Element.ALIGN_LEFT));
+            org.openpdf.text.Phrase mixed = new org.openpdf.text.Phrase();
+            mixed.add(new org.openpdf.text.Chunk("Regular ",
+                    new org.openpdf.text.Font(org.openpdf.text.Font.HELVETICA, 11f)));
+            mixed.add(new org.openpdf.text.Chunk("bold ",
+                    new org.openpdf.text.Font(org.openpdf.text.Font.HELVETICA, 11f,
+                            org.openpdf.text.Font.BOLD)));
+            mixed.add(new org.openpdf.text.Chunk("italic ",
+                    new org.openpdf.text.Font(org.openpdf.text.Font.HELVETICA, 11f,
+                            org.openpdf.text.Font.ITALIC)));
+            mixed.add(new org.openpdf.text.Chunk("RED",
+                    new org.openpdf.text.Font(org.openpdf.text.Font.HELVETICA, 11f,
+                            org.openpdf.text.Font.BOLD, Color.RED)));
+            table.addCell(new org.openpdf.text.pdf.PdfPCell(mixed));
+            table.addCell(numberCell("345", org.openpdf.text.Element.ALIGN_RIGHT));
+
+            // Row 3: a centered, vertically centered cell spanning two columns.
+            org.openpdf.text.pdf.PdfPCell spanCell = new org.openpdf.text.pdf.PdfPCell(
+                    new org.openpdf.text.Phrase("Centered span",
+                            new org.openpdf.text.Font(org.openpdf.text.Font.HELVETICA, 12f,
+                                    org.openpdf.text.Font.NORMAL, Color.BLUE)));
+            spanCell.setColspan(2);
+            spanCell.setHorizontalAlignment(org.openpdf.text.Element.ALIGN_CENTER);
+            spanCell.setVerticalAlignment(org.openpdf.text.Element.ALIGN_MIDDLE);
+            spanCell.setFixedHeight(40f);
+            table.addCell(spanCell);
+            table.addCell(numberCell("6789", org.openpdf.text.Element.ALIGN_RIGHT));
+
+            doc.add(table);
+        }
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(baos.toByteArray())) {
+            BufferedImage img = r.renderPage(1, 200f);
+            saveForInspection(img, "pdfptable-rich-text.png");
+
+            // (1) White header glyphs land on the dark-blue header background.
+            int whiteOnBlueHeader = countWhiteOnBlueHeaderPixels(img);
+            assertThat(whiteOnBlueHeader)
+                    .as("header row must show white glyphs on a dark-blue background")
+                    .isGreaterThan(20);
+
+            // (2) Red glyph chunk renders inside its row.
+            int red = countPixelsMatching(img, (rch, gch, bch) ->
+                    rch > 180 && gch < 80 && bch < 80);
+            assertThat(red)
+                    .as("Chunk with explicit red font color must produce red text pixels")
+                    .isGreaterThan(20);
+
+            // (3) Blue span-cell text renders.
+            int blue = countPixelsMatching(img, (rch, gch, bch) ->
+                    bch > 180 && rch < 80 && gch < 80);
+            assertThat(blue)
+                    .as("colspan cell with blue Phrase font must produce blue text pixels")
+                    .isGreaterThan(20);
+
+            // (4) The long wrapped description produces several distinct lines of glyphs.
+            int textRowsWithGlyphs = countDarkGlyphTextRows(img);
+            assertThat(textRowsWithGlyphs)
+                    .as("wrapped multi-line cell text must produce multiple rows of glyphs")
+                    .isGreaterThanOrEqualTo(3);
+        }
+    }
+
+    private static org.openpdf.text.pdf.PdfPCell numberCell(String text, int alignment) {
+        org.openpdf.text.pdf.PdfPCell c = new org.openpdf.text.pdf.PdfPCell(
+                new org.openpdf.text.Phrase(text,
+                        new org.openpdf.text.Font(org.openpdf.text.Font.HELVETICA, 11f)));
+        c.setHorizontalAlignment(alignment);
+        c.setPadding(6f);
+        return c;
+    }
+
+    private static int countWhiteOnBlueHeaderPixels(BufferedImage img) {
+        int matches = 0;
+        for (int y = 0; y < img.getHeight() / 4; y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                int argb = img.getRGB(x, y);
+                int r = (argb >> 16) & 0xFF;
+                int g = (argb >> 8) & 0xFF;
+                int b = argb & 0xFF;
+                if (r > 220 && g > 220 && b > 220) {
+                    int neighborX = Math.min(img.getWidth() - 1, x + 4);
+                    int neighbor = img.getRGB(neighborX, y);
+                    int nr = (neighbor >> 16) & 0xFF;
+                    int ng = (neighbor >> 8) & 0xFF;
+                    int nb = neighbor & 0xFF;
+                    if (nb > 60 && nr < 100 && ng < 100) {
+                        matches++;
+                    }
+                }
+            }
+        }
+        return matches;
+    }
+
+    /**
+     * Counts how many horizontal scanlines contain a non-trivial number of dark
+     * glyph-like pixels. A cell with three lines of text should produce ~three
+     * such bands; a cell with one line should produce ~one.
+     */
+    private static int countDarkGlyphTextRows(BufferedImage img) {
+        int rows = 0;
+        boolean inRow = false;
+        for (int y = 0; y < img.getHeight(); y++) {
+            int dark = 0;
+            for (int x = 0; x < img.getWidth(); x++) {
+                int argb = img.getRGB(x, y);
+                int r = (argb >> 16) & 0xFF;
+                int g = (argb >> 8) & 0xFF;
+                int b = argb & 0xFF;
+                if (r < 80 && g < 80 && b < 80) {
+                    dark++;
+                }
+            }
+            // 6 = a few glyph strokes; below that is just border-line bleed.
+            boolean isGlyphRow = dark > 6 && dark < img.getWidth() / 2;
+            if (isGlyphRow && !inRow) {
+                rows++;
+                inRow = true;
+            } else if (!isGlyphRow) {
+                inRow = false;
+            }
+        }
+        return rows;
+    }
 }
