@@ -1233,44 +1233,66 @@ final class OpenPdfCorePageRenderer {
      */
     private BufferedImage decodeIndexedImage(PRStream stream, int width, int height, PdfArray indexedCs) {
         try {
-            PdfNumber bpcN = stream.getAsNumber(PdfName.BITSPERCOMPONENT);
-            int bpc = bpcN == null ? 8 : bpcN.intValue();
-            if (bpc != 8) {
-                // Bit-packed indices (1/2/4-bit) are legal but rare; not yet supported.
-                return null;
-            }
-            int baseComponents = imageComponents(indexedCs.getDirectObject(1));
-            if (baseComponents == 0) {
-                return null;
-            }
-            byte[] lookup = readIndexedLookup(indexedCs.getDirectObject(3));
-            if (lookup == null || lookup.length == 0) {
-                return null;
-            }
-            byte[] indices = PdfReader.getStreamBytes(stream);
-            int pixels = width * height;
-            if (indices.length < pixels) {
-                return null;
-            }
-            byte[] expanded = new byte[pixels * baseComponents];
-            int maxLookupIdx = lookup.length - baseComponents;
-            for (int p = 0; p < pixels; p++) {
-                int paletteOffset = Math.min((indices[p] & 0xFF) * baseComponents, Math.max(maxLookupIdx, 0));
-                System.arraycopy(lookup, paletteOffset, expanded, p * baseComponents, baseComponents);
-            }
-            switch (baseComponents) {
-                case 1:
-                    return buildGrayImage(expanded, width, height);
-                case 3:
-                    return buildRgbImage(expanded, width, height);
-                case 4:
-                    return buildCmykImage(expanded, width, height);
-                default:
-                    return null;
-            }
+            return decodeIndexedImageOrThrow(stream, width, height, indexedCs);
         } catch (IOException | RuntimeException e) {
             LOG.log(Level.FINE, "Skipping indexed image due to: {0}", e);
             return null;
+        }
+    }
+
+    private BufferedImage decodeIndexedImageOrThrow(PRStream stream, int width, int height,
+            PdfArray indexedCs) throws IOException {
+        // Bit-packed indices (1/2/4-bit) are legal but rare; not yet supported.
+        int bpc = readBitsPerComponent(stream);
+        if (bpc != 8) {
+            return null;
+        }
+        int baseComponents = imageComponents(indexedCs.getDirectObject(1));
+        byte[] lookup = readIndexedLookup(indexedCs.getDirectObject(3));
+        if (baseComponents == 0 || lookup == null || lookup.length == 0) {
+            return null;
+        }
+        byte[] indices = PdfReader.getStreamBytes(stream);
+        int pixels = width * height;
+        if (indices.length < pixels) {
+            return null;
+        }
+        byte[] expanded = expandIndexedPalette(indices, lookup, pixels, baseComponents);
+        return buildImageForBaseComponents(expanded, width, height, baseComponents);
+    }
+
+    private static int readBitsPerComponent(PRStream stream) {
+        PdfNumber bpcN = stream.getAsNumber(PdfName.BITSPERCOMPONENT);
+        return bpcN == null ? 8 : bpcN.intValue();
+    }
+
+    /**
+     * Expands one index per pixel into {@code baseComponents} palette bytes per pixel by
+     * looking up each index in {@code lookup}. Indices whose palette entry would extend
+     * past the end of the lookup table are clamped to the last valid entry rather than
+     * throwing &mdash; malformed PDFs do happen.
+     */
+    private static byte[] expandIndexedPalette(byte[] indices, byte[] lookup, int pixels, int baseComponents) {
+        byte[] expanded = new byte[pixels * baseComponents];
+        int maxLookupIdx = Math.max(lookup.length - baseComponents, 0);
+        for (int p = 0; p < pixels; p++) {
+            int paletteOffset = Math.min((indices[p] & 0xFF) * baseComponents, maxLookupIdx);
+            System.arraycopy(lookup, paletteOffset, expanded, p * baseComponents, baseComponents);
+        }
+        return expanded;
+    }
+
+    private static BufferedImage buildImageForBaseComponents(byte[] data, int width, int height,
+            int baseComponents) {
+        switch (baseComponents) {
+            case 1:
+                return buildGrayImage(data, width, height);
+            case 3:
+                return buildRgbImage(data, width, height);
+            case 4:
+                return buildCmykImage(data, width, height);
+            default:
+                return null;
         }
     }
 
