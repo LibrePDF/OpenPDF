@@ -110,6 +110,8 @@ PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
 | Text showing | `Tj`, `TJ`, `'`, `"` |
 | XObjects | `Do` (see below) |
 
+| Marked content / compatibility (no-op) | `BMC`, `BDC`, `EMC`, `MP`, `DP`, `BX`, `EX` |
+
 XObject coverage:
 - Form XObjects render recursively, applying their own `/Matrix` and `/BBox`
   under the current CTM with full state save/restore.
@@ -117,7 +119,15 @@ XObject coverage:
   (`JPXDecode`, where the runtime supports it), and via a manual raster
   builder for uncompressed / Flate-decoded 8-bit DeviceGray, DeviceRGB and
   DeviceCMYK streams (CMYK approximated to sRGB on the fly).
-| Marked content / compatibility (no-op) | `BMC`, `BDC`, `EMC`, `MP`, `DP`, `BX`, `EX` |
+
+Text rendering: for each `Tf`-selected font, the renderer pulls the
+embedded font program (`FontFile2`/`FontFile3`/`FontFile`) out of the
+FontDescriptor and loads it via `java.awt.Font.createFont`. Embedded
+TrueType fonts therefore render with their own glyph shapes. When a
+font isn't embedded (or the embedded program can't be loaded), the
+renderer falls back to a generic Java2D family picked by PostScript-name
+heuristics &mdash; glyph widths from the PDF font are still respected,
+but shapes are only approximate.
 
 Inline images (`BI`/`ID`/`EI`) are stripped from the content stream before
 parsing &mdash; they aren't rendered, but they don't derail the rest of the
@@ -129,6 +139,38 @@ in `OpenPdfCorePageRenderer`.
 For pages that need features outside this supported subset and you want
 pixel-perfect output today, the deprecated `PDFFile` / `PDFPage.getImage(...)`
 API still works.
+
+### Honest limitations &amp; roadmap
+
+`OpenPdfCoreRenderer` is intentionally a focused, lightweight renderer.
+The legacy in-tree parser still wins on real-world PDFs that exercise:
+
+- **Embedded Type 1 / CFF / OpenType-CFF fonts.** `Font.createFont` only
+  loads TrueType reliably; `FontFile3` (CFF/OpenType) is attempted but
+  often falls back to the name-heuristic path. Subsetted TrueType fonts
+  with non-Unicode CMaps draw `.notdef` for codes their `cmap` table
+  doesn't list. Real fix: drive glyph dispatch from the PDF's encoding /
+  CMap to glyph IDs and render via `Font#createGlyphVector(int[])`.
+- **Type 3 fonts.** Glyph operators (`d0`, `d1` + nested content streams)
+  are ignored.
+- **Color management.** CMYK uses the textbook `(1-c)(1-k)` approximation;
+  no ICC profile, no UCR/BG. Anything color-managed will look noticeably
+  wrong. Real fix: respect the ICCBased profile via `java.awt.color.ICC_Profile`.
+- **Pattern and shading paint** (`pattern`, `sh`). Ignored.
+- **Inline images.** Currently dropped; the parser-level strip keeps the
+  rest of the page rendering. Re-implementing them on the existing raster
+  helpers is straightforward.
+- **Soft masks (`SMask`) and transparency groups.** Ignored; image alpha
+  honors `ca` only, not per-pixel masks.
+- **Indexed / Separation / DeviceN color spaces** for images and paths.
+  Ignored; falls back to filling with the color-space default.
+- **Encrypted PDFs.** Out of scope for this module (see "Encryption: removed"
+  below).
+
+These gaps are why the legacy `PDFFile` / `PDFPage` path remains the
+production renderer for the time being. Each item above is a fairly
+localized addition to `OpenPdfCorePageRenderer`; the order above is
+roughly highest-impact first.
 
 ## Quick Start
 

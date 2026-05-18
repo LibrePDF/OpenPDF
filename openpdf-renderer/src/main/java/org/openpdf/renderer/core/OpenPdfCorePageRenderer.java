@@ -13,6 +13,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -90,6 +91,17 @@ import org.openpdf.text.pdf.PdfString;
  * colors and type 3 font glyph operators are silently ignored. Pages that
  * rely heavily on those features may render with missing content.</p>
  *
+ * <h2>Text rendering</h2>
+ * <p>For each {@code Tf}-selected font, the renderer pulls the embedded font
+ * program ({@code FontFile2}, {@code FontFile3} or {@code FontFile} on the
+ * FontDescriptor) out via {@code openpdf-core}'s {@code PdfReader} and hands
+ * the bytes to {@link java.awt.Font#createFont}. The resulting AWT font is
+ * cached and used to draw glyphs, so subsetted / embedded TrueType fonts
+ * render with their own glyph shapes. When no font program is embedded (or
+ * loading it fails), the renderer falls back to a generic Java2D family
+ * picked by PostScript-name heuristics &mdash; correct shape only by
+ * accident, but the glyph widths from the PDF font are still respected.</p>
+ *
  * <h2>Coordinates</h2>
  * <p>The PDF user space has its origin at the bottom-left and Y growing up;
  * the {@link Graphics2D} target has its origin at the top-left and Y growing
@@ -112,6 +124,13 @@ final class OpenPdfCorePageRenderer {
     private static final PdfName EXTGS_LC = new PdfName("LC");
     private static final PdfName EXTGS_LJ = new PdfName("LJ");
 
+    // FontDescriptor entries that may hold an embedded font program, in preference order:
+    // FontFile2 (TrueType) is by far the most common in modern PDFs; FontFile3 holds CFF /
+    // OpenType subsets which TYPE-1-flagged AWT Font.createFont also accepts in many cases;
+    // FontFile is legacy Type 1 (rarely loadable as TRUETYPE_FONT but worth trying).
+    private static final java.util.List<PdfName> EMBEDDED_FONT_KEYS = java.util.List.of(
+            PdfName.FONTFILE2, PdfName.FONTFILE3, PdfName.FONTFILE);
+
     // Color-space identifiers used by imageComponents().
     private static final PdfName CS_ICC_BASED = new PdfName("ICCBased");
     private static final PdfName CS_CAL_GRAY = new PdfName("CalGray");
@@ -128,6 +147,12 @@ final class OpenPdfCorePageRenderer {
     private final Graphics2D g2;
     private final PdfDictionary resources;
     private final Map<String, CMapAwareDocumentFont> fontCache = new HashMap<>();
+    /**
+     * Embedded-font program cache keyed by the FontDescriptor's identity. Re-parsing a
+     * TrueType program for every {@code Tj} call would be wasteful; a single page can
+     * reference the same font hundreds of times.
+     */
+    private final Map<PdfDictionary, Font> awtFontCache = new HashMap<>();
 
     private final Deque<GState> stateStack = new ArrayDeque<>();
     private final Deque<AffineTransform> ctmStack = new ArrayDeque<>();
@@ -1140,6 +1165,67 @@ final class OpenPdfCorePageRenderer {
     }
 
     private Font mapFont(CMapAwareDocumentFont docFont, float size) {
+        float pointSize = Math.max(size, 0.1f);
+        Font embedded = embeddedFontFor(docFont);
+        if (embedded != null) {
+            return embedded.deriveFont(pointSize);
+        }
+        return mapFontByName(docFont).deriveFont(pointSize);
+    }
+
+    /**
+     * Tries to load the font program embedded in the PDF and turn it into a Java AWT
+     * {@link Font}. Returns {@code null} for fonts that don't embed a TrueType / OpenType
+     * program, or for which the program fails to parse &mdash; callers should fall back
+     * to {@link #mapFontByName(CMapAwareDocumentFont)}.
+     */
+    private Font embeddedFontFor(CMapAwareDocumentFont docFont) {
+        if (docFont == null) {
+            return null;
+        }
+        PdfDictionary descriptor = docFont.getFontDescriptor();
+        if (descriptor == null) {
+            return null;
+        }
+        if (awtFontCache.containsKey(descriptor)) {
+            return awtFontCache.get(descriptor); // may be null = previously failed to load
+        }
+        // Try TrueType first (FontFile2), then OpenType / CFF (FontFile3), then Type1 (FontFile).
+        PRStream program = fontProgramStream(descriptor);
+        if (program == null) {
+            awtFontCache.put(descriptor, null);
+            return null;
+        }
+        try {
+            byte[] bytes = PdfReader.getStreamBytes(program);
+            Font font = Font.createFont(Font.TRUETYPE_FONT, new ByteArrayInputStream(bytes));
+            awtFontCache.put(descriptor, font);
+            return font;
+        } catch (FontFormatException | IOException | RuntimeException e) {
+            LOG.log(Level.FINE, "Falling back from embedded font program due to: {0}", e);
+            awtFontCache.put(descriptor, null);
+            return null;
+        }
+    }
+
+    private static PRStream fontProgramStream(PdfDictionary descriptor) {
+        for (PdfName key : EMBEDDED_FONT_KEYS) {
+            PdfObject raw = descriptor.get(key);
+            PdfObject direct = raw instanceof PRIndirectReference ref
+                    ? PdfReader.getPdfObject(ref) : raw;
+            if (direct instanceof PRStream stream) {
+                return stream;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Maps a PDF font to a generic Java2D font family using the PostScript font name as
+     * a hint. This is the last-resort path used when the PDF doesn't embed a font program
+     * or the program can't be loaded.
+     */
+    private static Font mapFontByName(CMapAwareDocumentFont docFont) {
         String family = Font.SERIF;
         int style = Font.PLAIN;
         if (docFont != null) {
@@ -1160,7 +1246,7 @@ final class OpenPdfCorePageRenderer {
                 }
             }
         }
-        return new Font(family, style, 1).deriveFont(Math.max(size, 0.1f));
+        return new Font(family, style, 1);
     }
 
     private CMapAwareDocumentFont lookupFont(String name) {

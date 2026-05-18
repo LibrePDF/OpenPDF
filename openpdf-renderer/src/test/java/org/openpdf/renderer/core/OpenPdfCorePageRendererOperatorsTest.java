@@ -286,6 +286,41 @@ class OpenPdfCorePageRendererOperatorsTest {
     }
 
     @Test
+    void rendersTextUsingEmbeddedTrueTypeFont() throws Exception {
+        // Build a PDF that embeds a real TrueType font and writes a glyph that's
+        // not the .notdef of any built-in AWT fallback. The renderer must extract
+        // the FontFile2 byte stream and use Font.createFont under the hood; we can
+        // detect this by checking that the rendered text region contains dark pixels
+        // (i.e. the glyph was drawn) while the renderer was forced to load an
+        // embedded program (no name-based AWT family would match this font).
+        java.net.URL ttf = OpenPdfCorePageRendererOperatorsTest.class.getClassLoader()
+                .getResource("font-fallback/LiberationSans-Regular.ttf");
+        assertThat(ttf).as("LiberationSans-Regular.ttf must be on the classpath via openpdf-core").isNotNull();
+
+        byte[] pdf = buildPdf(cb -> {
+            org.openpdf.text.pdf.BaseFont bf = org.openpdf.text.pdf.BaseFont
+                    .createFont(ttf.toString(), org.openpdf.text.pdf.BaseFont.WINANSI,
+                            org.openpdf.text.pdf.BaseFont.EMBEDDED);
+            cb.beginText();
+            cb.setFontAndSize(bf, 32f);
+            cb.setTextMatrix(40f, 200f);
+            cb.showText("Hello PDF");
+            cb.endText();
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "embedded-truetype.png");
+
+            int darkPixels = countPixelsMatching(img, (red, green, blue) ->
+                    red < 80 && green < 80 && blue < 80);
+            assertThat(darkPixels)
+                    .as("text drawn with an embedded TrueType font must produce glyph pixels")
+                    .isGreaterThan(200);
+        }
+    }
+
+    @Test
     void rendersTextRiseAsVerticalOffset() throws Exception {
         // Two glyphs at the same Td, one with Ts=10 (raised). They must render
         // at different rows. We don't need a font setup: PdfContentByte with a
