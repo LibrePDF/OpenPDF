@@ -113,6 +113,7 @@ PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
 | Marked content / compatibility (no-op) | `BMC`, `BDC`, `EMC`, `MP`, `DP`, `BX`, `EX` |
 
 XObject coverage:
+
 - Form XObjects render recursively, applying their own `/Matrix` and `/BBox`
   under the current CTM with full state save/restore.
 - Image XObjects decode via `ImageIO` for JPEG (`DCTDecode`) and JPEG 2000
