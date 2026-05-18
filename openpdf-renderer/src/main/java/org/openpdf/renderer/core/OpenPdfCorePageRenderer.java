@@ -19,18 +19,23 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -85,11 +90,13 @@ import org.openpdf.text.pdf.PdfString;
  *       8-bit DeviceGray / DeviceRGB / DeviceCMYK images).</li>
  * </ul>
  *
- * <p>Inline images ({@code BI}/{@code ID}/{@code EI}) are stripped from the
- * content stream before parsing &mdash; they're not rendered, but they don't
- * derail the rest of the page either. Shading {@code sh}, pattern / shading
- * colors and type 3 font glyph operators are silently ignored. Pages that
- * rely heavily on those features may render with missing content.</p>
+ * <p>Inline images ({@code BI}/{@code ID}/{@code EI}) are promoted out of the
+ * content stream into synthetic Image XObjects during a preprocess pass, then
+ * rendered via the same code path as regular Image XObjects. Uncompressed,
+ * Flate-decoded and JPEG inline images all work. Shading {@code sh},
+ * pattern / shading colors and type 3 font glyph operators are silently
+ * ignored. Pages that rely heavily on those features may render with missing
+ * content.</p>
  *
  * <h2>Text rendering</h2>
  * <p>For each {@code Tf}-selected font, the renderer pulls the embedded font
@@ -128,7 +135,7 @@ final class OpenPdfCorePageRenderer {
     // FontFile2 (TrueType) is by far the most common in modern PDFs; FontFile3 holds CFF /
     // OpenType subsets which TYPE-1-flagged AWT Font.createFont also accepts in many cases;
     // FontFile is legacy Type 1 (rarely loadable as TRUETYPE_FONT but worth trying).
-    private static final java.util.List<PdfName> EMBEDDED_FONT_KEYS = java.util.List.of(
+    private static final List<PdfName> EMBEDDED_FONT_KEYS = List.of(
             PdfName.FONTFILE2, PdfName.FONTFILE3, PdfName.FONTFILE);
 
     // Color-space identifiers used by imageComponents().
@@ -137,12 +144,19 @@ final class OpenPdfCorePageRenderer {
     private static final PdfName CS_CAL_RGB = new PdfName("CalRGB");
     private static final PdfName CS_LAB = new PdfName("Lab");
     private static final PdfName CS_N = new PdfName("N");
-    private static final java.util.Set<PdfName> DEVICE_GRAY_NAMES = java.util.Set.of(
+    private static final Set<PdfName> DEVICE_GRAY_NAMES = Set.of(
             PdfName.DEVICEGRAY, new PdfName("G"), CS_CAL_GRAY);
-    private static final java.util.Set<PdfName> DEVICE_RGB_NAMES = java.util.Set.of(
+    private static final Set<PdfName> DEVICE_RGB_NAMES = Set.of(
             PdfName.DEVICERGB, new PdfName("RGB"), CS_CAL_RGB);
-    private static final java.util.Set<PdfName> DEVICE_CMYK_NAMES = java.util.Set.of(
+    private static final Set<PdfName> DEVICE_CMYK_NAMES = Set.of(
             PdfName.DEVICECMYK, new PdfName("CMYK"));
+
+    /**
+     * Synthetic XObject-name prefix used for inline images that have been promoted out
+     * of the content stream into {@link #inlineImages}. Keeping a clearly distinctive
+     * prefix avoids collisions with real {@code /XObject} resource names.
+     */
+    private static final String INLINE_IMAGE_PREFIX = "__inline_image__";
 
     private final Graphics2D g2;
     private final PdfDictionary resources;
@@ -153,6 +167,11 @@ final class OpenPdfCorePageRenderer {
      * reference the same font hundreds of times.
      */
     private final Map<PdfDictionary, Font> awtFontCache = new HashMap<>();
+    /**
+     * Decoded inline images, keyed by the synthetic XObject name we substitute into
+     * the content stream in place of the original {@code BI...EI} block.
+     */
+    private final Map<String, BufferedImage> inlineImages = new HashMap<>();
 
     private final Deque<GState> stateStack = new ArrayDeque<>();
     private final Deque<AffineTransform> ctmStack = new ArrayDeque<>();
@@ -254,7 +273,7 @@ final class OpenPdfCorePageRenderer {
     }
 
     private void processContent(byte[] contentBytes) throws IOException {
-        byte[] sanitized = stripInlineImages(contentBytes);
+        byte[] sanitized = preprocessInlineImages(contentBytes);
         PdfContentParser parser = new PdfContentParser(new PRTokeniser(sanitized));
         List<PdfObject> operands = new ArrayList<>();
         while (true) {
@@ -282,18 +301,21 @@ final class OpenPdfCorePageRenderer {
     }
 
     /**
-     * Returns a copy of {@code content} with every inline-image block
-     * ({@code BI ... ID ... EI}) removed. {@code PdfContentParser} has no
-     * special handling for inline images, so the raw image bytes between
-     * {@code ID} and {@code EI} would derail tokenization. Removing the
-     * block keeps the rest of the page parseable; the inline image itself
-     * isn't rendered.
+     * Walks {@code content} looking for inline-image blocks ({@code BI ... ID ... EI})
+     * and rewrites each one into a synthetic {@code /name Do} invocation, with the decoded
+     * pixel data stashed in {@link #inlineImages}. Blocks that can't be decoded are
+     * dropped from the stream so the rest of the page still parses.
+     *
+     * <p>{@code PdfContentParser} has no native inline-image handling: the raw image
+     * bytes between {@code ID} and {@code EI} would derail tokenization. Promoting them
+     * to synthetic XObjects keeps the parser on a well-defined token grammar and lets
+     * the rest of the renderer treat them exactly like any other image XObject.</p>
      */
-    private static byte[] stripInlineImages(byte[] content) {
+    private byte[] preprocessInlineImages(byte[] content) {
         if (content == null || content.length == 0) {
             return content;
         }
-        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream(content.length);
+        ByteArrayOutputStream out = new ByteArrayOutputStream(content.length);
         int i = 0;
         while (i < content.length) {
             int biStart = findToken(content, i, 'B', 'I');
@@ -302,15 +324,235 @@ final class OpenPdfCorePageRenderer {
                 break;
             }
             out.write(content, i, biStart - i);
-            // Find the matching EI (preceded by whitespace, followed by whitespace or EOF).
-            int eiEnd = findEndInlineImage(content, biStart + 2);
-            if (eiEnd < 0) {
-                // No EI found: bail out, drop the rest of the stream.
+            int idStart = findToken(content, biStart + 2, 'I', 'D');
+            if (idStart < 0) {
                 break;
+            }
+            // Dictionary tokens sit between "BI" (exclusive) and "ID" (exclusive).
+            byte[] header = Arrays.copyOfRange(content, biStart + 2, idStart);
+            int dataStart = idStart + 3; // skip "ID" + one whitespace byte
+            int dataEnd = locateInlineImageDataEnd(content, dataStart, header);
+            int eiEnd;
+            if (dataEnd < 0) {
+                // Couldn't locate a valid data end (e.g. malformed JPEG). Drop the
+                // rest of the stream rather than risk a runaway parser.
+                break;
+            }
+            // dataEnd points at the whitespace byte before "EI"; advance past "EI".
+            eiEnd = dataEnd + 3;
+            byte[] data = dataEnd > dataStart
+                    ? Arrays.copyOfRange(content, dataStart, dataEnd)
+                    : new byte[0];
+            String synthName = registerInlineImage(header, data);
+            if (synthName != null) {
+                String invocation = " /" + synthName + " Do ";
+                byte[] subst = invocation.getBytes(StandardCharsets.ISO_8859_1);
+                out.write(subst, 0, subst.length);
             }
             i = eiEnd;
         }
         return out.toByteArray();
+    }
+
+    /**
+     * Parses an inline-image header and decodes the image data, registering the result in
+     * {@link #inlineImages}. Returns the synthetic XObject name to substitute into the
+     * content stream, or {@code null} if the image couldn't be decoded.
+     */
+    private String registerInlineImage(byte[] header, byte[] data) {
+        try {
+            InlineImageHeader hdr = InlineImageHeader.parse(header);
+            if (hdr.width <= 0 || hdr.height <= 0) {
+                return null;
+            }
+            // For non-JPEG paths we need a known component count to size the raster;
+            // JPEG decode goes through ImageIO which figures it out from the stream.
+            if (!hdr.isJpeg() && hdr.components <= 0) {
+                return null;
+            }
+            byte[] decoded = decodeInlineImageData(data, hdr);
+            if (decoded == null) {
+                return null;
+            }
+            BufferedImage img = buildImageForComponents(decoded, hdr.width, hdr.height, hdr.components);
+            if (img == null) {
+                return null;
+            }
+            String name = INLINE_IMAGE_PREFIX + inlineImages.size();
+            inlineImages.put(name, img);
+            return name;
+        } catch (IOException | RuntimeException e) {
+            LOG.log(Level.FINE, "Skipping inline image: {0}", e);
+            return null;
+        }
+    }
+
+    private static byte[] decodeInlineImageData(byte[] data, InlineImageHeader hdr) throws IOException {
+        if (hdr.isJpeg()) {
+            // ImageIO consumes the JPEG end-to-end; let the caller route via buildJpegInline.
+            return data;
+        }
+        if (hdr.isFlate()) {
+            return PdfReader.FlateDecode(data);
+        }
+        if (hdr.filter == null) {
+            return data;
+        }
+        return null; // Unsupported filter (CCITT, LZW, ...) -- skip.
+    }
+
+    private BufferedImage buildImageForComponents(byte[] decoded, int width, int height, int components)
+            throws IOException {
+        // Synthetic JPEG path: hdr told us to defer to ImageIO.
+        if (components == 0) {
+            return ImageIO.read(new ByteArrayInputStream(decoded));
+        }
+        int rowBytes = width * components;
+        if (decoded.length < rowBytes * height) {
+            return null;
+        }
+        switch (components) {
+            case 1:
+                return buildGrayImage(decoded, width, height);
+            case 3:
+                return buildRgbImage(decoded, width, height);
+            case 4:
+                return buildCmykImage(decoded, width, height);
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Parsed form of an inline-image header dictionary. Only the entries the renderer
+     * needs are extracted; everything else is ignored.
+     */
+    private static final class InlineImageHeader {
+        int width;
+        int height;
+        int bitsPerComponent = 8;
+        int components;
+        String filter; // null = no filter
+        boolean jpeg;
+
+        boolean isJpeg() {
+            return jpeg;
+        }
+
+        boolean isFlate() {
+            return "FlateDecode".equals(filter) || "Fl".equals(filter);
+        }
+
+        static InlineImageHeader parse(byte[] header) {
+            InlineImageHeader h = new InlineImageHeader();
+            List<String> tokens = tokenizeHeader(header);
+            for (int i = 0; i + 1 < tokens.size(); i += 2) {
+                String key = tokens.get(i);
+                String value = tokens.get(i + 1);
+                if (!key.startsWith("/")) {
+                    return h;
+                }
+                applyHeaderEntry(h, key.substring(1), value);
+            }
+            return h;
+        }
+
+        private static void applyHeaderEntry(InlineImageHeader h, String key, String value) {
+            switch (key) {
+                case "W":
+                case "Width":
+                    h.width = parseIntSafe(value);
+                    break;
+                case "H":
+                case "Height":
+                    h.height = parseIntSafe(value);
+                    break;
+                case "BPC":
+                case "BitsPerComponent":
+                    h.bitsPerComponent = parseIntSafe(value);
+                    break;
+                case "CS":
+                case "ColorSpace":
+                    h.components = componentsForAbbreviatedColorSpace(value);
+                    break;
+                case "F":
+                case "Filter":
+                    h.filter = stripLeadingSlash(value);
+                    if ("DCT".equals(h.filter) || "DCTDecode".equals(h.filter)
+                            || "JPXDecode".equals(h.filter)) {
+                        h.jpeg = true;
+                        h.components = 0; // signals "let ImageIO decide"
+                    }
+                    break;
+                default:
+                    // Ignored: Decode, Mask, ImageMask, Interpolate, DecodeParms, ...
+                    break;
+            }
+        }
+
+        private static int parseIntSafe(String s) {
+            try {
+                return Integer.parseInt(s);
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
+
+        private static String stripLeadingSlash(String s) {
+            return s.startsWith("/") ? s.substring(1) : s;
+        }
+
+        private static int componentsForAbbreviatedColorSpace(String value) {
+            String name = stripLeadingSlash(value);
+            switch (name) {
+                case "G":
+                case "DeviceGray":
+                case "CalGray":
+                    return 1;
+                case "RGB":
+                case "DeviceRGB":
+                case "CalRGB":
+                    return 3;
+                case "CMYK":
+                case "DeviceCMYK":
+                    return 4;
+                default:
+                    return 0;
+            }
+        }
+    }
+
+    /**
+     * Splits an inline-image header dictionary into whitespace-separated tokens.
+     * Arrays in the source (rare but legal) are kept as single bracketed tokens so the
+     * key/value pairing stays consistent.
+     */
+    private static List<String> tokenizeHeader(byte[] header) {
+        List<String> tokens = new ArrayList<>();
+        int i = 0;
+        while (i < header.length) {
+            while (i < header.length && isPdfWhitespace(header[i])) {
+                i++;
+            }
+            if (i >= header.length) {
+                break;
+            }
+            int start = i;
+            if (header[i] == '[') {
+                while (i < header.length && header[i] != ']') {
+                    i++;
+                }
+                if (i < header.length) {
+                    i++;
+                }
+            } else {
+                while (i < header.length && !isPdfWhitespace(header[i])) {
+                    i++;
+                }
+            }
+            tokens.add(new String(header, start, i - start, StandardCharsets.ISO_8859_1));
+        }
+        return tokens;
     }
 
     /**
@@ -324,6 +566,58 @@ final class OpenPdfCorePageRenderer {
             boolean leftOk = i == 0 || isPdfWhitespace(buf[i - 1]);
             boolean rightOk = i + 2 >= buf.length || isPdfWhitespace(buf[i + 2]);
             if (leftOk && rightOk) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Returns the index of the whitespace byte preceding the closing {@code EI} for the
+     * inline image whose data starts at {@code dataStart}, using filter-aware framing.
+     * For JPEG inline images (Filter = DCT / DCTDecode) we scan for the JPEG end-of-image
+     * marker {@code FFD9} rather than a whitespace-bounded {@code EI}, since the JPEG
+     * payload routinely contains byte sequences that look like {@code EI} by accident.
+     * For everything else we fall back to whitespace-bounded {@code EI} search.
+     * Returns -1 when no usable end can be found.
+     */
+    private static int locateInlineImageDataEnd(byte[] buf, int dataStart, byte[] header) {
+        if (isJpegInlineHeader(header)) {
+            int eoi = findJpegEndOfImage(buf, dataStart);
+            if (eoi >= 0) {
+                // After FFD9 there should be a single whitespace byte and then "EI".
+                int p = eoi + 2;
+                while (p < buf.length && isPdfWhitespace(buf[p])) {
+                    p++;
+                }
+                if (p + 1 < buf.length && buf[p] == 'E' && buf[p + 1] == 'I') {
+                    return eoi + 2;
+                }
+                // EI marker not found right after EOI; still treat EOI as end of data.
+                return eoi + 2;
+            }
+        }
+        int eiEnd = findEndInlineImage(buf, dataStart);
+        return eiEnd < 0 ? -1 : eiEnd - 3;
+    }
+
+    /**
+     * Cheaply inspects an already-extracted inline-image header for a DCT filter entry
+     * without going through the full token parser. Used by the framing detector before
+     * we commit to a decode strategy.
+     */
+    private static boolean isJpegInlineHeader(byte[] header) {
+        String s = new String(header, StandardCharsets.ISO_8859_1);
+        return s.contains("/DCT") || s.contains("/DCTDecode") || s.contains("/JPXDecode");
+    }
+
+    /**
+     * Returns the index of the {@code FF} byte of the JPEG end-of-image marker
+     * ({@code FFD9}) at or after {@code from}, or -1 if not found.
+     */
+    private static int findJpegEndOfImage(byte[] buf, int from) {
+        for (int i = from; i < buf.length - 1; i++) {
+            if (buf[i] == (byte) 0xFF && buf[i + 1] == (byte) 0xD9) {
                 return i;
             }
         }
@@ -779,6 +1073,11 @@ final class OpenPdfCorePageRenderer {
      * sub-renderer (Form or Image). Unknown subtypes are silently ignored.
      */
     private void doXObject(String name) {
+        BufferedImage inline = inlineImages.get(name);
+        if (inline != null) {
+            drawUnitSquareImage(inline);
+            return;
+        }
         if (resources == null) {
             return;
         }
@@ -828,7 +1127,7 @@ final class OpenPdfCorePageRenderer {
                 float w = floatAt(bbox, 2) - x;
                 float h = floatAt(bbox, 3) - y;
                 if (w > 0 && h > 0) {
-                    g2.clip(new java.awt.geom.Rectangle2D.Float(x, y, w, h));
+                    g2.clip(new Rectangle2D.Float(x, y, w, h));
                 }
             }
             PdfDictionary formResources = form.getAsDict(PdfName.RESOURCES);
@@ -856,6 +1155,15 @@ final class OpenPdfCorePageRenderer {
         if (img == null) {
             return;
         }
+        drawUnitSquareImage(img);
+    }
+
+    /**
+     * Draws a decoded image into the standard PDF image area: the (0,0)-(1,1) unit
+     * square in user space, with the CTM supplying placement/size. Honors the current
+     * fill alpha; saves and restores the {@link Graphics2D} transform.
+     */
+    private void drawUnitSquareImage(BufferedImage img) {
         AffineTransform saved = g2.getTransform();
         try {
             // PDF images map (0,0)-(1,1) in user space to the full image, with Y running up.

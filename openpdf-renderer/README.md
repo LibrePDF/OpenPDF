@@ -130,12 +130,15 @@ renderer falls back to a generic Java2D family picked by PostScript-name
 heuristics &mdash; glyph widths from the PDF font are still respected,
 but shapes are only approximate.
 
-Inline images (`BI`/`ID`/`EI`) are stripped from the content stream before
-parsing &mdash; they aren't rendered, but they don't derail the rest of the
-page either. Shading (`sh`), pattern / shading colors and type 3 font glyph
-operators are silently ignored. Pages that rely heavily on those features
-may render with missing content. Adding more operators is a localized change
-in `OpenPdfCorePageRenderer`.
+Inline images (`BI`/`ID`/`EI`) are now rendered: a preprocess pass promotes
+each inline image into a synthetic Image XObject (with JPEG framing detected
+by the JPEG `FFD9` end-of-image marker when the filter is `DCTDecode` to
+sidestep the ambiguous whitespace-bounded `EI` heuristic), then the rest of
+the renderer treats it like any other XObject. Uncompressed, Flate-decoded
+and JPEG inline images are supported. Shading (`sh`), pattern / shading
+colors and type 3 font glyph operators are silently ignored. Pages that
+rely heavily on those features may render with missing content. Adding more
+operators is a localized change in `OpenPdfCorePageRenderer`.
 
 For pages that need features outside this supported subset and you want
 pixel-perfect output today, the deprecated `PDFFile` / `PDFPage.getImage(...)`
@@ -158,9 +161,6 @@ The legacy in-tree parser still wins on real-world PDFs that exercise:
   no ICC profile, no UCR/BG. Anything color-managed will look noticeably
   wrong. Real fix: respect the ICCBased profile via `java.awt.color.ICC_Profile`.
 - **Pattern and shading paint** (`pattern`, `sh`). Ignored.
-- **Inline images.** Currently dropped; the parser-level strip keeps the
-  rest of the page rendering. Re-implementing them on the existing raster
-  helpers is straightforward.
 - **Soft masks (`SMask`) and transparency groups.** Ignored; image alpha
   honors `ca` only, not per-pixel masks.
 - **Indexed / Separation / DeviceN color spaces** for images and paths.

@@ -254,34 +254,73 @@ class OpenPdfCorePageRendererOperatorsTest {
     }
 
     @Test
-    void inlineImagesDoNotBreakPageRendering() throws Exception {
-        // Build a content stream by hand that contains a tiny inline image
-        // followed by a normal vector draw. The inline image isn't expected
-        // to render, but the rest of the page must still parse and draw.
+    void inlineImageRendersAtCtmLocation() throws Exception {
+        // Build a content stream by hand: a 2x2 DeviceGray inline image whose pixels are
+        // [black, white; white, black], scaled and positioned by a cm before BI so that
+        // it covers a recognizable area of the page. The renderer must promote the inline
+        // image to a synthetic XObject and actually draw it under the CTM.
         byte[] pdf = buildPdf(cb -> {
-            // BI/ID/EI inline image: 2x2, 8bpc, DeviceGray, 4 raw bytes.
             String inline = "q\n"
+                    + "120 0 0 120 60 60 cm\n"
                     + "BI /W 2 /H 2 /CS /G /BPC 8 ID\n"
-                    + new String(new byte[]{(byte) 0xFF, 0x00, 0x00, (byte) 0xFF},
+                    + new String(new byte[]{0x00, (byte) 0xFF, (byte) 0xFF, 0x00},
                             java.nio.charset.StandardCharsets.ISO_8859_1)
                     + "\nEI\n"
                     + "Q\n"
+                    // Trailing red rect proves the rest of the page also still renders.
                     + "1 0 0 rg\n"
-                    + "50 50 80 80 re f\n";
+                    + "200 200 30 30 re f\n";
             cb.setLiteral(inline);
         });
 
         try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
-            // Even though BI/ID/EI is in the stream, getContentOperators sees the
-            // BI block as raw tokens — but renderer must not crash and the trailing
-            // red rectangle must still be drawn.
             BufferedImage img = r.renderPage(1, 150f);
-            saveForInspection(img, "inline-image-stripped.png");
+            saveForInspection(img, "inline-image.png");
+
+            int dark = countPixelsMatching(img, (red, green, blue) ->
+                    red < 60 && green < 60 && blue < 60);
+            assertThat(dark)
+                    .as("inline image must paint its black checker squares onto the page")
+                    .isGreaterThan(100);
+
             int redish = countPixelsMatching(img, (red, green, blue) ->
                     red > 200 && green < 80 && blue < 80);
             assertThat(redish)
-                    .as("after stripping inline image, the trailing red rectangle must still render")
-                    .isGreaterThan(50);
+                    .as("content after the inline image must still render")
+                    .isGreaterThan(10);
+        }
+    }
+
+    @Test
+    void jpegInlineImageDecodes() throws Exception {
+        // Same as the previous test but the inline image is a JPEG written via the
+        // PdfContentByte.addImage(image, true) helper, which produces a properly
+        // framed BI/ID/EI block (binary-safe length tracking, abbreviated filter name).
+        BufferedImage src = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
+        java.awt.Graphics2D gs = src.createGraphics();
+        try {
+            gs.setColor(new Color(0, 200, 0));
+            gs.fillRect(0, 0, 16, 16);
+        } finally {
+            gs.dispose();
+        }
+        ByteArrayOutputStream jpegOut = new ByteArrayOutputStream();
+        ImageIO.write(src, "jpg", jpegOut);
+        org.openpdf.text.Image pdfImage = org.openpdf.text.Image.getInstance(jpegOut.toByteArray());
+
+        byte[] pdf = buildPdf(cb -> {
+            cb.addImage(pdfImage, 120f, 0f, 0f, 120f, 60f, 60f, /* inline */ true);
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "inline-image-jpeg.png");
+
+            int greenish = countPixelsMatching(img, (red, green, blue) ->
+                    green > 150 && red < 100 && blue < 100);
+            assertThat(greenish)
+                    .as("JPEG inline image must decode and paint its green region")
+                    .isGreaterThan(100);
         }
     }
 
