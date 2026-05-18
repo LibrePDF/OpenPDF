@@ -11,12 +11,17 @@ package org.openpdf.renderer.core;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -28,8 +33,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
+
 import org.openpdf.text.pdf.CMapAwareDocumentFont;
 import org.openpdf.text.pdf.PRIndirectReference;
+import org.openpdf.text.pdf.PRStream;
 import org.openpdf.text.pdf.PRTokeniser;
 import org.openpdf.text.pdf.PdfArray;
 import org.openpdf.text.pdf.PdfContentParser;
@@ -69,14 +77,18 @@ import org.openpdf.text.pdf.PdfString;
  *   <li>Text showing: {@code Tj}, {@code TJ}, {@code '}, {@code "}</li>
  *   <li>Marked content / compatibility (no-op): {@code BMC}, {@code BDC},
  *       {@code EMC}, {@code MP}, {@code DP}, {@code BX}, {@code EX}</li>
+ *   <li>XObjects ({@code Do}): Form XObjects (recursive content streams with
+ *       their own {@code BBox} / {@code Matrix}) and Image XObjects
+ *       (JPEG via {@code DCTDecode}, JPEG2000 via {@code JPXDecode} when
+ *       supported by {@code ImageIO}, and uncompressed / Flate-decoded
+ *       8-bit DeviceGray / DeviceRGB / DeviceCMYK images).</li>
  * </ul>
  *
- * <p>Operators outside this subset (XObject {@code Do} for forms and images,
- * inline images {@code BI}/{@code ID}/{@code EI}, shading {@code sh},
- * pattern / shading colors, type 3 font glyph operators) are silently ignored.
- * Pages that rely heavily on those features may render with missing content;
- * this renderer is intentionally a focused subset that handles typical text +
- * simple-vector PDFs correctly.</p>
+ * <p>Inline images ({@code BI}/{@code ID}/{@code EI}) are stripped from the
+ * content stream before parsing &mdash; they're not rendered, but they don't
+ * derail the rest of the page either. Shading {@code sh}, pattern / shading
+ * colors and type 3 font glyph operators are silently ignored. Pages that
+ * rely heavily on those features may render with missing content.</p>
  *
  * <h2>Coordinates</h2>
  * <p>The PDF user space has its origin at the bottom-left and Y growing up;
@@ -202,18 +214,97 @@ final class OpenPdfCorePageRenderer {
     }
 
     private void processContent(byte[] contentBytes) throws IOException {
-        PdfContentParser parser = new PdfContentParser(new PRTokeniser(contentBytes));
+        byte[] sanitized = stripInlineImages(contentBytes);
+        PdfContentParser parser = new PdfContentParser(new PRTokeniser(sanitized));
         List<PdfObject> operands = new ArrayList<>();
-        while (!parser.parse(operands).isEmpty()) {
-            PdfLiteral op = (PdfLiteral) operands.get(operands.size() - 1);
+        while (true) {
+            List<PdfObject> parsed;
             try {
-                dispatch(op.toString(), operands);
+                parsed = parser.parse(operands);
+            } catch (IOException | RuntimeException e) {
+                // Malformed token sequence (e.g. unbalanced dict, unknown construct).
+                // Stop processing rather than abort the whole page rendering.
+                LOG.log(Level.FINE, "Aborting content stream early due to: {0}", e);
+                return;
+            }
+            if (parsed.isEmpty()) {
+                return;
+            }
+            PdfLiteral op = (PdfLiteral) parsed.get(parsed.size() - 1);
+            try {
+                dispatch(op.toString(), parsed);
             } catch (RuntimeException e) {
                 // A malformed operator must not abort the whole page; log for diagnostics.
                 LOG.log(Level.FINE, "Skipping operator ''{0}'' due to: {1}",
                         new Object[]{op, e});
             }
         }
+    }
+
+    /**
+     * Returns a copy of {@code content} with every inline-image block
+     * ({@code BI ... ID ... EI}) removed. {@code PdfContentParser} has no
+     * special handling for inline images, so the raw image bytes between
+     * {@code ID} and {@code EI} would derail tokenization. Removing the
+     * block keeps the rest of the page parseable; the inline image itself
+     * isn't rendered.
+     */
+    private static byte[] stripInlineImages(byte[] content) {
+        if (content == null || content.length == 0) {
+            return content;
+        }
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream(content.length);
+        int i = 0;
+        while (i < content.length) {
+            int biStart = findToken(content, i, 'B', 'I');
+            if (biStart < 0) {
+                out.write(content, i, content.length - i);
+                break;
+            }
+            out.write(content, i, biStart - i);
+            // Find the matching EI (preceded by whitespace, followed by whitespace or EOF).
+            int eiEnd = findEndInlineImage(content, biStart + 2);
+            if (eiEnd < 0) {
+                // No EI found: bail out, drop the rest of the stream.
+                break;
+            }
+            i = eiEnd;
+        }
+        return out.toByteArray();
+    }
+
+    /** Finds the offset of a two-byte token (e.g. {@code "BI"}) bounded by whitespace. */
+    private static int findToken(byte[] buf, int from, char c1, char c2) {
+        for (int i = from; i < buf.length - 1; i++) {
+            if (buf[i] != c1 || buf[i + 1] != c2) {
+                continue;
+            }
+            boolean leftOk = i == 0 || isPdfWhitespace(buf[i - 1]);
+            boolean rightOk = i + 2 >= buf.length || isPdfWhitespace(buf[i + 2]);
+            if (leftOk && rightOk) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /** Returns the index just past the closing {@code EI} of an inline image starting after {@code BI}. */
+    private static int findEndInlineImage(byte[] buf, int from) {
+        for (int i = from; i < buf.length - 1; i++) {
+            if (buf[i] != 'E' || buf[i + 1] != 'I') {
+                continue;
+            }
+            boolean leftOk = i > 0 && isPdfWhitespace(buf[i - 1]);
+            boolean rightOk = i + 2 >= buf.length || isPdfWhitespace(buf[i + 2]);
+            if (leftOk && rightOk) {
+                return i + 2;
+            }
+        }
+        return -1;
+    }
+
+    private static boolean isPdfWhitespace(byte b) {
+        return b == ' ' || b == '\t' || b == '\n' || b == '\r' || b == '\f' || b == 0;
     }
 
     /** Dispatches one operator. Operands include the trailing operator literal at index size-1. */
@@ -496,6 +587,13 @@ final class OpenPdfCorePageRenderer {
                 showText(decodeString((PdfString) operands.get(2)));
                 break;
 
+            // --- XObject invocation ---
+            case "Do":
+                if (operands.get(0) instanceof PdfName xobjName) {
+                    doXObject(xobjName.toString().substring(1));
+                }
+                break;
+
             // --- Marked content / compatibility (parsed, no rendering effect) ---
             case "BMC":
             case "BDC":
@@ -621,6 +719,290 @@ final class OpenPdfCorePageRenderer {
     private void concatCtm(float a, float b, float c, float d, float e, float f) {
         AffineTransform m = new AffineTransform(a, b, c, d, e, f);
         g2.transform(m);
+    }
+
+    // ---------- XObject helpers ----------
+
+    /**
+     * Resolves an XObject by its resource name and dispatches to the right
+     * sub-renderer (Form or Image). Unknown subtypes are silently ignored.
+     */
+    private void doXObject(String name) {
+        if (resources == null) {
+            return;
+        }
+        PdfDictionary xobjects = resources.getAsDict(PdfName.XOBJECT);
+        if (xobjects == null) {
+            return;
+        }
+        PdfObject ref = xobjects.get(new PdfName(name));
+        PdfObject resolved = ref instanceof PRIndirectReference ind
+                ? PdfReader.getPdfObject(ind) : ref;
+        if (!(resolved instanceof PRStream stream)) {
+            return;
+        }
+        PdfName subtype = stream.getAsName(PdfName.SUBTYPE);
+        if (PdfName.FORM.equals(subtype)) {
+            renderForm(stream);
+        } else if (PdfName.IMAGE.equals(subtype)) {
+            renderImage(stream);
+        }
+    }
+
+    /**
+     * Renders a Form XObject by parsing its content stream recursively, with
+     * the form's own resources (falling back to the parent page's) and any
+     * {@code /Matrix} entry applied on top of the current CTM. The current
+     * graphics state and CTM are saved and restored around the call so the
+     * form's content can't leak out.
+     */
+    private void renderForm(PRStream form) {
+        AffineTransform savedTx = g2.getTransform();
+        Shape savedClip = g2.getClip();
+        GState savedState = state;
+        try {
+            state = new GState(state);
+            PdfArray matrix = form.getAsArray(PdfName.MATRIX);
+            if (matrix != null && matrix.size() >= 6) {
+                AffineTransform m = new AffineTransform(
+                        floatAt(matrix, 0), floatAt(matrix, 1),
+                        floatAt(matrix, 2), floatAt(matrix, 3),
+                        floatAt(matrix, 4), floatAt(matrix, 5));
+                g2.transform(m);
+            }
+            PdfArray bbox = form.getAsArray(PdfName.BBOX);
+            if (bbox != null && bbox.size() >= 4) {
+                float x = floatAt(bbox, 0);
+                float y = floatAt(bbox, 1);
+                float w = floatAt(bbox, 2) - x;
+                float h = floatAt(bbox, 3) - y;
+                if (w > 0 && h > 0) {
+                    g2.clip(new java.awt.geom.Rectangle2D.Float(x, y, w, h));
+                }
+            }
+            PdfDictionary formResources = form.getAsDict(PdfName.RESOURCES);
+            PdfDictionary effective = formResources != null ? formResources : resources;
+            OpenPdfCorePageRenderer nested = new OpenPdfCorePageRenderer(g2, effective);
+            nested.state = state;
+            byte[] body = PdfReader.getStreamBytes(form);
+            nested.processContent(body);
+        } catch (IOException | RuntimeException e) {
+            LOG.log(Level.FINE, "Skipping Form XObject due to: {0}", e);
+        } finally {
+            state = savedState;
+            g2.setTransform(savedTx);
+            g2.setClip(savedClip);
+        }
+    }
+
+    /**
+     * Renders an Image XObject under the current CTM. The image occupies the
+     * unit square (0,0)-(1,1) in user space, per the PDF spec, with the CTM
+     * supplying the actual placement/size.
+     */
+    private void renderImage(PRStream image) {
+        BufferedImage img = decodeImage(image);
+        if (img == null) {
+            return;
+        }
+        AffineTransform saved = g2.getTransform();
+        try {
+            // PDF images map (0,0)-(1,1) in user space to the full image, with Y running up.
+            // Java2D draws top-to-bottom, so we translate up by 1 and flip Y back.
+            g2.translate(0, 1);
+            g2.scale(1.0 / img.getWidth(), -1.0 / img.getHeight());
+            Composite saveComposite = null;
+            if (state.fillAlpha < 1f) {
+                saveComposite = g2.getComposite();
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, state.fillAlpha));
+            }
+            try {
+                g2.drawImage(img, 0, 0, null);
+            } finally {
+                if (saveComposite != null) {
+                    g2.setComposite(saveComposite);
+                }
+            }
+        } finally {
+            g2.setTransform(saved);
+        }
+    }
+
+    private BufferedImage decodeImage(PRStream stream) {
+        PdfNumber widthN = stream.getAsNumber(PdfName.WIDTH);
+        PdfNumber heightN = stream.getAsNumber(PdfName.HEIGHT);
+        if (widthN == null || heightN == null) {
+            return null;
+        }
+        int width = widthN.intValue();
+        int height = heightN.intValue();
+        if (width <= 0 || height <= 0) {
+            return null;
+        }
+        PdfObject filterObj = stream.get(PdfName.FILTER);
+        if (hasFilter(filterObj, PdfName.DCTDECODE) || hasFilter(filterObj, PdfName.JPXDECODE)) {
+            return decodeViaImageIO(stream);
+        }
+        return decodeRawRaster(stream, width, height);
+    }
+
+    private static boolean hasFilter(PdfObject filterObj, PdfName name) {
+        if (filterObj == null) {
+            return false;
+        }
+        if (filterObj instanceof PdfName n) {
+            return n.equals(name);
+        }
+        if (filterObj instanceof PdfArray arr) {
+            for (PdfObject e : arr.getElements()) {
+                PdfObject direct = e instanceof PRIndirectReference ref
+                        ? PdfReader.getPdfObject(ref) : e;
+                if (name.equals(direct)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** Decodes DCT/JPX-encoded image streams via the JRE's {@link ImageIO}. */
+    private BufferedImage decodeViaImageIO(PRStream stream) {
+        try {
+            byte[] raw = PdfReader.getStreamBytesRaw(stream);
+            BufferedImage img = ImageIO.read(new ByteArrayInputStream(raw));
+            if (img != null) {
+                return img;
+            }
+            // Some PDFs apply additional filters before DCTDecode; fall back to fully decoded bytes.
+            byte[] decoded = PdfReader.getStreamBytes(stream);
+            return ImageIO.read(new ByteArrayInputStream(decoded));
+        } catch (IOException | RuntimeException e) {
+            LOG.log(Level.FINE, "Skipping JPEG/JPX image XObject due to: {0}", e);
+            return null;
+        }
+    }
+
+    /**
+     * Decodes an uncompressed / Flate-decoded image XObject into a {@link BufferedImage}.
+     * Supports 8-bit DeviceGray, DeviceRGB and DeviceCMYK; bit depths and color spaces
+     * outside that set yield {@code null}.
+     */
+    private BufferedImage decodeRawRaster(PRStream stream, int width, int height) {
+        try {
+            PdfNumber bpcN = stream.getAsNumber(PdfName.BITSPERCOMPONENT);
+            int bpc = bpcN == null ? 8 : bpcN.intValue();
+            if (bpc != 8) {
+                return null;
+            }
+            int components = imageComponents(stream.get(PdfName.COLORSPACE));
+            if (components <= 0) {
+                return null;
+            }
+            byte[] decoded = PdfReader.getStreamBytes(stream);
+            int rowBytes = width * components;
+            int expected = rowBytes * height;
+            if (decoded.length < expected) {
+                return null;
+            }
+            switch (components) {
+                case 1:
+                    return buildGrayImage(decoded, width, height);
+                case 3:
+                    return buildRgbImage(decoded, width, height);
+                case 4:
+                    return buildCmykImage(decoded, width, height);
+                default:
+                    return null;
+            }
+        } catch (IOException | RuntimeException e) {
+            LOG.log(Level.FINE, "Skipping raw image XObject due to: {0}", e);
+            return null;
+        }
+    }
+
+    /** Returns the number of color components for a {@code /ColorSpace} entry, or 0 if unsupported. */
+    private static int imageComponents(PdfObject csObj) {
+        if (csObj instanceof PRIndirectReference ind) {
+            csObj = PdfReader.getPdfObject(ind);
+        }
+        if (csObj instanceof PdfName n) {
+            if (PdfName.DEVICEGRAY.equals(n) || new PdfName("G").equals(n) || new PdfName("CalGray").equals(n)) {
+                return 1;
+            }
+            if (PdfName.DEVICERGB.equals(n) || new PdfName("RGB").equals(n) || new PdfName("CalRGB").equals(n)) {
+                return 3;
+            }
+            if (PdfName.DEVICECMYK.equals(n) || new PdfName("CMYK").equals(n)) {
+                return 4;
+            }
+        }
+        if (csObj instanceof PdfArray arr && arr.size() >= 1) {
+            PdfObject head = arr.getDirectObject(0);
+            // ICCBased: [/ICCBased <<.../N n>>]
+            if (new PdfName("ICCBased").equals(head) && arr.size() >= 2) {
+                PdfObject paramsObj = arr.getDirectObject(1);
+                if (paramsObj instanceof PdfDictionary params) {
+                    PdfNumber n = params.getAsNumber(new PdfName("N"));
+                    if (n != null) {
+                        return n.intValue();
+                    }
+                }
+            }
+            // CalGray / CalRGB / Lab
+            if (new PdfName("CalGray").equals(head)) {
+                return 1;
+            }
+            if (new PdfName("CalRGB").equals(head) || new PdfName("Lab").equals(head)) {
+                return 3;
+            }
+        }
+        return 0;
+    }
+
+    private static BufferedImage buildGrayImage(byte[] data, int width, int height) {
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+        byte[] target = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+        System.arraycopy(data, 0, target, 0, Math.min(target.length, data.length));
+        return img;
+    }
+
+    private static BufferedImage buildRgbImage(byte[] data, int width, int height) {
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+        // PDF DeviceRGB stores R,G,B; BufferedImage.TYPE_3BYTE_BGR stores B,G,R.
+        // Swap on the fly while copying so the image displays with correct colors.
+        WritableRaster raster = img.getRaster();
+        byte[] dst = ((DataBufferByte) raster.getDataBuffer()).getData();
+        int pixels = width * height;
+        for (int p = 0, di = 0, si = 0; p < pixels; p++, di += 3, si += 3) {
+            dst[di] = data[si + 2];     // B
+            dst[di + 1] = data[si + 1]; // G
+            dst[di + 2] = data[si];     // R
+        }
+        return img;
+    }
+
+    private static BufferedImage buildCmykImage(byte[] data, int width, int height) {
+        // Build an sRGB BufferedImage and approximate CMYK -> RGB per pixel,
+        // since Java2D can't natively draw a 4-component CMYK raster.
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+        byte[] dst = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+        int pixels = width * height;
+        for (int p = 0, di = 0, si = 0; p < pixels; p++, di += 3, si += 4) {
+            float c = (data[si] & 0xFF) / 255f;
+            float m = (data[si + 1] & 0xFF) / 255f;
+            float y = (data[si + 2] & 0xFF) / 255f;
+            float k = (data[si + 3] & 0xFF) / 255f;
+            float oneMinusK = 1f - k;
+            dst[di] = (byte) Math.round((1f - y) * oneMinusK * 255f); // B
+            dst[di + 1] = (byte) Math.round((1f - m) * oneMinusK * 255f); // G
+            dst[di + 2] = (byte) Math.round((1f - c) * oneMinusK * 255f); // R
+        }
+        return img;
+    }
+
+    private static float floatAt(PdfArray arr, int idx) {
+        PdfObject obj = arr.getPdfObject(idx);
+        return obj instanceof PdfNumber n ? n.floatValue() : 0f;
     }
 
     // ---------- Text helpers ----------

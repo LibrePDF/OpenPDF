@@ -195,6 +195,97 @@ class OpenPdfCorePageRendererOperatorsTest {
     }
 
     @Test
+    void rendersJpegImageXObject() throws Exception {
+        // Generate a 32x16 solid-red JPEG, embed it as an Image XObject in a PDF,
+        // then verify the rendered page contains red pixels (the image was drawn).
+        BufferedImage jpegSource = new BufferedImage(32, 16, BufferedImage.TYPE_INT_RGB);
+        java.awt.Graphics2D gs = jpegSource.createGraphics();
+        try {
+            gs.setColor(Color.RED);
+            gs.fillRect(0, 0, 32, 16);
+        } finally {
+            gs.dispose();
+        }
+        ByteArrayOutputStream jpegOut = new ByteArrayOutputStream();
+        ImageIO.write(jpegSource, "jpg", jpegOut);
+        org.openpdf.text.Image pdfImage = org.openpdf.text.Image.getInstance(jpegOut.toByteArray());
+
+        byte[] pdf = buildPdf(cb -> {
+            // Scale the image up so it covers a recognizable area of the page.
+            cb.addImage(pdfImage, 160f, 0f, 0f, 80f, 30f, 100f);
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            List<String> ops = r.getContentOperators(1);
+            assertThat(ops).contains("Do");
+
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "image-xobject.png");
+            int redish = countPixelsMatching(img, (red, green, blue) ->
+                    red > 180 && green < 100 && blue < 100);
+            assertThat(redish)
+                    .as("JPEG Image XObject must produce red pixels on the page")
+                    .isGreaterThan(200);
+        }
+    }
+
+    @Test
+    void rendersFormXObjectViaNestedContentStream() throws Exception {
+        // Form XObjects embed their own content stream. Wrap a colored rectangle
+        // in a PdfTemplate and stamp it onto the page; the renderer must recurse
+        // into the form's content and draw the rectangle.
+        byte[] pdf = buildPdf(cb -> {
+            org.openpdf.text.pdf.PdfTemplate tpl = cb.createTemplate(100f, 60f);
+            tpl.setRGBColorFillF(1f, 0.5f, 0f); // orange
+            tpl.rectangle(0f, 0f, 100f, 60f);
+            tpl.fill();
+            cb.addTemplate(tpl, 40f, 120f);
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "form-xobject.png");
+            int orangeish = countPixelsMatching(img, (red, green, blue) ->
+                    red > 200 && green > 80 && green < 200 && blue < 80);
+            assertThat(orangeish)
+                    .as("Form XObject content must be rendered onto the page")
+                    .isGreaterThan(100);
+        }
+    }
+
+    @Test
+    void inlineImagesDoNotBreakPageRendering() throws Exception {
+        // Build a content stream by hand that contains a tiny inline image
+        // followed by a normal vector draw. The inline image isn't expected
+        // to render, but the rest of the page must still parse and draw.
+        byte[] pdf = buildPdf(cb -> {
+            // BI/ID/EI inline image: 2x2, 8bpc, DeviceGray, 4 raw bytes.
+            String inline = "q\n"
+                    + "BI /W 2 /H 2 /CS /G /BPC 8 ID\n"
+                    + new String(new byte[]{(byte) 0xFF, 0x00, 0x00, (byte) 0xFF},
+                            java.nio.charset.StandardCharsets.ISO_8859_1)
+                    + "\nEI\n"
+                    + "Q\n"
+                    + "1 0 0 rg\n"
+                    + "50 50 80 80 re f\n";
+            cb.setLiteral(inline);
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            // Even though BI/ID/EI is in the stream, getContentOperators sees the
+            // BI block as raw tokens — but renderer must not crash and the trailing
+            // red rectangle must still be drawn.
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "inline-image-stripped.png");
+            int redish = countPixelsMatching(img, (red, green, blue) ->
+                    red > 200 && green < 80 && blue < 80);
+            assertThat(redish)
+                    .as("after stripping inline image, the trailing red rectangle must still render")
+                    .isGreaterThan(50);
+        }
+    }
+
+    @Test
     void rendersTextRiseAsVerticalOffset() throws Exception {
         // Two glyphs at the same Td, one with Ts=10 (raised). They must render
         // at different rows. We don't need a font setup: PdfContentByte with a

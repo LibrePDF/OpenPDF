@@ -108,15 +108,17 @@ PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
 | Colors (DeviceGray / DeviceRGB / DeviceCMYK) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
 | Text state | `BT`, `ET`, `Tf`, `Tc`, `Tw`, `TL`, `Tz`, `Td`, `TD`, `Tm`, `T*`, `Ts` |
 | Text showing | `Tj`, `TJ`, `'`, `"` |
+| XObjects | `Do` (Form XObjects recursively; Image XObjects: JPEG/`DCTDecode`, JPEG2000/`JPXDecode` where `ImageIO` supports it, and uncompressed / Flate-decoded 8-bit DeviceGray / DeviceRGB / DeviceCMYK) |
 | Marked content / compatibility (no-op) | `BMC`, `BDC`, `EMC`, `MP`, `DP`, `BX`, `EX` |
 
-Operators outside this subset (XObject `Do` for forms and images, inline
-images `BI`/`ID`/`EI`, shading `sh`, pattern / shading colors, type 3 font
-glyph operators) are parsed but currently ignored &mdash; pages that rely
-heavily on them may render with missing content. Adding more operators is a
-localized change in `OpenPdfCorePageRenderer`.
+Inline images (`BI`/`ID`/`EI`) are stripped from the content stream before
+parsing &mdash; they aren't rendered, but they don't derail the rest of the
+page either. Shading (`sh`), pattern / shading colors and type 3 font glyph
+operators are silently ignored. Pages that rely heavily on those features
+may render with missing content. Adding more operators is a localized change
+in `OpenPdfCorePageRenderer`.
 
-For pages that exercise features outside the supported subset and need
+For pages that need features outside this supported subset and you want
 pixel-perfect output today, the deprecated `PDFFile` / `PDFPage.getImage(...)`
 API still works.
 
