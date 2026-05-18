@@ -86,8 +86,9 @@ import org.openpdf.text.pdf.PdfString;
  *   <li>XObjects ({@code Do}): Form XObjects (recursive content streams with
  *       their own {@code BBox} / {@code Matrix}) and Image XObjects
  *       (JPEG via {@code DCTDecode}, JPEG2000 via {@code JPXDecode} when
- *       supported by {@code ImageIO}, and uncompressed / Flate-decoded
- *       8-bit DeviceGray / DeviceRGB / DeviceCMYK images).</li>
+ *       supported by {@code ImageIO}, uncompressed / Flate-decoded 8-bit
+ *       DeviceGray / DeviceRGB / DeviceCMYK images, and 8-bit Indexed
+ *       images expanded through the palette into their base color space).</li>
  * </ul>
  *
  * <p>Inline images ({@code BI}/{@code ID}/{@code EI}) are promoted out of the
@@ -143,6 +144,7 @@ final class OpenPdfCorePageRenderer {
     private static final PdfName CS_CAL_GRAY = new PdfName("CalGray");
     private static final PdfName CS_CAL_RGB = new PdfName("CalRGB");
     private static final PdfName CS_LAB = new PdfName("Lab");
+    private static final PdfName CS_INDEXED = new PdfName("Indexed");
     private static final PdfName CS_N = new PdfName("N");
     private static final Set<PdfName> DEVICE_GRAY_NAMES = Set.of(
             PdfName.DEVICEGRAY, new PdfName("G"), CS_CAL_GRAY);
@@ -1202,7 +1204,89 @@ final class OpenPdfCorePageRenderer {
         if (hasFilter(filterObj, PdfName.DCTDECODE) || hasFilter(filterObj, PdfName.JPXDECODE)) {
             return decodeViaImageIO(stream);
         }
+        PdfArray indexedCs = asIndexedColorSpace(stream.get(PdfName.COLORSPACE));
+        if (indexedCs != null) {
+            return decodeIndexedImage(stream, width, height, indexedCs);
+        }
         return decodeRawRaster(stream, width, height);
+    }
+
+    /**
+     * Returns the {@code [/Indexed base hival lookup]} array if {@code csObj} (possibly
+     * indirect) is an indexed color space; {@code null} otherwise.
+     */
+    private static PdfArray asIndexedColorSpace(PdfObject csObj) {
+        PdfObject direct = csObj instanceof PRIndirectReference ind
+                ? PdfReader.getPdfObject(ind) : csObj;
+        if (!(direct instanceof PdfArray arr) || arr.size() < 4) {
+            return null;
+        }
+        PdfObject head = arr.getDirectObject(0);
+        return CS_INDEXED.equals(head) ? arr : null;
+    }
+
+    /**
+     * Decodes an Indexed image XObject: each pixel is a 1-byte palette index, expanded
+     * via the lookup table into pixel values in the base color space. Supports 8-bit
+     * indices and DeviceGray / DeviceRGB / DeviceCMYK base color spaces (the overwhelming
+     * majority of indexed images produced by PNG-to-PDF conversion).
+     */
+    private BufferedImage decodeIndexedImage(PRStream stream, int width, int height, PdfArray indexedCs) {
+        try {
+            PdfNumber bpcN = stream.getAsNumber(PdfName.BITSPERCOMPONENT);
+            int bpc = bpcN == null ? 8 : bpcN.intValue();
+            if (bpc != 8) {
+                // Bit-packed indices (1/2/4-bit) are legal but rare; not yet supported.
+                return null;
+            }
+            int baseComponents = imageComponents(indexedCs.getDirectObject(1));
+            if (baseComponents == 0) {
+                return null;
+            }
+            byte[] lookup = readIndexedLookup(indexedCs.getDirectObject(3));
+            if (lookup == null || lookup.length == 0) {
+                return null;
+            }
+            byte[] indices = PdfReader.getStreamBytes(stream);
+            int pixels = width * height;
+            if (indices.length < pixels) {
+                return null;
+            }
+            byte[] expanded = new byte[pixels * baseComponents];
+            int maxLookupIdx = lookup.length - baseComponents;
+            for (int p = 0; p < pixels; p++) {
+                int paletteOffset = Math.min((indices[p] & 0xFF) * baseComponents, Math.max(maxLookupIdx, 0));
+                System.arraycopy(lookup, paletteOffset, expanded, p * baseComponents, baseComponents);
+            }
+            switch (baseComponents) {
+                case 1:
+                    return buildGrayImage(expanded, width, height);
+                case 3:
+                    return buildRgbImage(expanded, width, height);
+                case 4:
+                    return buildCmykImage(expanded, width, height);
+                default:
+                    return null;
+            }
+        } catch (IOException | RuntimeException e) {
+            LOG.log(Level.FINE, "Skipping indexed image due to: {0}", e);
+            return null;
+        }
+    }
+
+    /**
+     * Reads the lookup table of an Indexed color space, which may appear as either a
+     * {@code PdfString} (containing the raw palette bytes) or a {@code PRStream} (whose
+     * decoded content is the palette).
+     */
+    private static byte[] readIndexedLookup(PdfObject lookupObj) throws IOException {
+        if (lookupObj instanceof PdfString s) {
+            return s.getBytes();
+        }
+        if (lookupObj instanceof PRStream stream) {
+            return PdfReader.getStreamBytes(stream);
+        }
+        return null;
     }
 
     private static boolean hasFilter(PdfObject filterObj, PdfName name) {

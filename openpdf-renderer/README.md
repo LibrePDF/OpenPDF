@@ -119,7 +119,9 @@ XObject coverage:
 - Image XObjects decode via `ImageIO` for JPEG (`DCTDecode`) and JPEG 2000
   (`JPXDecode`, where the runtime supports it), and via a manual raster
   builder for uncompressed / Flate-decoded 8-bit DeviceGray, DeviceRGB and
-  DeviceCMYK streams (CMYK approximated to sRGB on the fly).
+  DeviceCMYK streams (CMYK approximated to sRGB on the fly). 8-bit Indexed
+  color images are expanded through their palette into the base color space
+  (DeviceGray / DeviceRGB / DeviceCMYK).
 
 Text rendering: for each `Tf`-selected font, the renderer pulls the
 embedded font program (`FontFile2`/`FontFile3`/`FontFile`) out of the
@@ -163,8 +165,11 @@ The legacy in-tree parser still wins on real-world PDFs that exercise:
 - **Pattern and shading paint** (`pattern`, `sh`). Ignored.
 - **Soft masks (`SMask`) and transparency groups.** Ignored; image alpha
   honors `ca` only, not per-pixel masks.
-- **Indexed / Separation / DeviceN color spaces** for images and paths.
-  Ignored; falls back to filling with the color-space default.
+- **Separation / DeviceN color spaces** for images and paths. Ignored; falls
+  back to filling with the color-space default. (Indexed images are now
+  supported.)
+- **Sub-byte bit depths** (1/2/4-bit indexed images, 1-bit image masks).
+  Currently only 8-bit indices are decoded.
 - **Encrypted PDFs.** Out of scope for this module (see "Encryption: removed"
   below).
 

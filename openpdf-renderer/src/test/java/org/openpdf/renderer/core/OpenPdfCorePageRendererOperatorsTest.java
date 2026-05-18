@@ -195,6 +195,51 @@ class OpenPdfCorePageRendererOperatorsTest {
     }
 
     @Test
+    void rendersIndexedColorImageXObject() throws Exception {
+        // Build an IndexColorModel-backed BufferedImage and embed it via
+        // Image.getInstance(BufferedImage). openpdf-core preserves the palette and
+        // writes the image as `[/Indexed /DeviceRGB hival <palette>]`, exercising
+        // the Indexed-color-space decode path in OpenPdfCorePageRenderer.
+        java.awt.image.IndexColorModel icm = new java.awt.image.IndexColorModel(
+                8, 2,
+                new byte[]{(byte) 0xFF, 0x00},          // R
+                new byte[]{0x00, (byte) 0xFF},          // G
+                new byte[]{(byte) 0xFF, (byte) 0xFF}); // B  -> palette: index 0 = magenta, 1 = cyan
+        BufferedImage indexed = new BufferedImage(32, 32, BufferedImage.TYPE_BYTE_INDEXED, icm);
+        java.awt.image.WritableRaster raster = indexed.getRaster();
+        for (int y = 0; y < 32; y++) {
+            for (int x = 0; x < 32; x++) {
+                // Top half = magenta (index 0), bottom half = cyan (index 1).
+                raster.setSample(x, y, 0, y < 16 ? 0 : 1);
+            }
+        }
+        org.openpdf.text.Image pdfImage = org.openpdf.text.Image.getInstance(indexed, null);
+
+        byte[] pdf = buildPdf(cb -> {
+            cb.addImage(pdfImage, 160f, 0f, 0f, 160f, 30f, 80f);
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "indexed-image.png");
+
+            // Top half of the image region should contain magenta-ish pixels;
+            // bottom half cyan-ish. We just need at least some of each to prove
+            // the palette was decoded and the indices were looked up correctly.
+            int magenta = countPixelsMatching(img, (red, green, blue) ->
+                    red > 200 && green < 80 && blue > 200);
+            int cyan = countPixelsMatching(img, (red, green, blue) ->
+                    red < 80 && green > 200 && blue > 200);
+            assertThat(magenta)
+                    .as("indexed image must produce magenta pixels for palette index 0")
+                    .isGreaterThan(100);
+            assertThat(cyan)
+                    .as("indexed image must produce cyan pixels for palette index 1")
+                    .isGreaterThan(100);
+        }
+    }
+
+    @Test
     void rendersJpegImageXObject() throws Exception {
         // Generate a 32x16 solid-red JPEG, embed it as an Image XObject in a PDF,
         // then verify the rendered page contains red pixels (the image was drawn).
