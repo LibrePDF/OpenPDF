@@ -437,4 +437,116 @@ class OpenPdfCorePageRendererOperatorsTest {
             assertThat(darkPixels).isGreaterThan(20);
         }
     }
+
+    /**
+     * Renders a full {@code PdfPTable} (background fills, colored borders, header row,
+     * cell text) and checks that the renderer produces all three of: cell-background
+     * fills, border strokes in their declared color, and cell text. This is a
+     * regression guard for table rendering as a whole — many small operators
+     * (re/f/S/m/l/Tj plus q/Q/cm/w nesting) have to cooperate to get a usable table.
+     */
+    @Test
+    void rendersPdfPTableWithBordersFillsAndText() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (Document doc = new Document(new Rectangle(PageSize.A6))) {
+            PdfWriter.getInstance(doc, baos);
+            doc.open();
+            org.openpdf.text.pdf.PdfPTable table = new org.openpdf.text.pdf.PdfPTable(3);
+            table.setTotalWidth(240f);
+            table.setLockedWidth(true);
+
+            // Header row: blue background, white text, thicker red border.
+            for (String header : new String[]{"Col A", "Col B", "Col C"}) {
+                org.openpdf.text.pdf.PdfPCell hc = new org.openpdf.text.pdf.PdfPCell(
+                        new org.openpdf.text.Phrase(header,
+                                new org.openpdf.text.Font(org.openpdf.text.Font.HELVETICA, 10f,
+                                        org.openpdf.text.Font.BOLD, Color.WHITE)));
+                hc.setBackgroundColor(new Color(0, 0, 200));
+                hc.setBorderColor(Color.RED);
+                hc.setBorderWidth(2f);
+                hc.setPadding(4f);
+                table.addCell(hc);
+            }
+            // Body rows: default thin black borders, body text.
+            for (int row = 0; row < 2; row++) {
+                for (int col = 0; col < 3; col++) {
+                    org.openpdf.text.pdf.PdfPCell bc = new org.openpdf.text.pdf.PdfPCell(
+                            new org.openpdf.text.Phrase("r" + row + "c" + col));
+                    bc.setPadding(4f);
+                    table.addCell(bc);
+                }
+            }
+            doc.add(table);
+        }
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(baos.toByteArray())) {
+            BufferedImage img = r.renderPage(1, 200f);
+            saveForInspection(img, "pdfptable.png");
+
+            int blueHeaderFill = countPixelsMatching(img, (red, green, blue) ->
+                    blue > 150 && red < 80 && green < 80);
+            assertThat(blueHeaderFill)
+                    .as("header-row blue background fill must be visible")
+                    .isGreaterThan(200);
+
+            int redBorder = countPixelsMatching(img, (red, green, blue) ->
+                    red > 180 && green < 80 && blue < 80);
+            assertThat(redBorder)
+                    .as("header-row red 2pt border strokes must be visible")
+                    .isGreaterThan(20);
+
+            // Body cells sit just below the header. Look for dark glyph pixels in the
+            // band of the image that contains the two body rows (header row pixels
+            // are white-on-blue, so the dark pixels there are body text + borders).
+            // We deliberately skip the header band to verify body-row text rendered.
+            int bandTop = (int) (img.getHeight() * 0.10);
+            int bandBottom = (int) (img.getHeight() * 0.30);
+            int bodyDark = 0;
+            for (int y = bandTop; y < bandBottom; y += 2) {
+                for (int x = 0; x < img.getWidth(); x += 2) {
+                    int argb = img.getRGB(x, y);
+                    int rch = (argb >> 16) & 0xFF;
+                    int gch = (argb >> 8) & 0xFF;
+                    int bch = argb & 0xFF;
+                    if (rch < 80 && gch < 80 && bch < 80) {
+                        bodyDark++;
+                    }
+                }
+            }
+            assertThat(bodyDark)
+                    .as("body-row text must produce dark glyph pixels in the body band")
+                    .isGreaterThan(20);
+        }
+    }
+
+    /**
+     * PDF §8.4.3.2: a stroke width of 0 means "the thinnest line the device can
+     * render", i.e. one device pixel. Naively passing the user-space width to
+     * {@link java.awt.BasicStroke} would collapse to nothing once the page CTM
+     * scales it. This test draws a {@code 0 w} line and verifies the stroke is
+     * actually visible — which is the common case for PDFs that draw table grids
+     * with hairlines.
+     */
+    @Test
+    void rendersZeroWidthStrokeAsDevicePixelHairline() throws Exception {
+        byte[] pdf = buildPdf(cb -> {
+            cb.setRGBColorStrokeF(0f, 0f, 0f);
+            cb.setLineWidth(0f); // hairline
+            for (int i = 0; i < 5; i++) {
+                cb.moveTo(20f, 40f + 15f * i);
+                cb.lineTo(220f, 40f + 15f * i);
+            }
+            cb.stroke();
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 200f);
+            saveForInspection(img, "hairline-stroke.png");
+            int dark = countPixelsMatching(img, (red, green, blue) ->
+                    red < 100 && green < 100 && blue < 100);
+            assertThat(dark)
+                    .as("PDF zero-width strokes must render as visible hairlines, not vanish")
+                    .isGreaterThan(20);
+        }
+    }
 }

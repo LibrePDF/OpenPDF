@@ -66,9 +66,12 @@ import org.openpdf.text.pdf.PdfString;
  * <h2>Supported operator subset</h2>
  * <ul>
  *   <li>Graphics state: {@code q}, {@code Q}, {@code cm},
- *       {@code gs} (alpha {@code CA}/{@code ca} only)</li>
- *   <li>Line style: {@code w}, {@code J}, {@code j}, {@code M}, {@code d},
- *       {@code i} (flatness, no-op)</li>
+ *       {@code gs} (alpha {@code CA}/{@code ca}, line styling
+ *       {@code LW}/{@code ML}/{@code LC}/{@code LJ}/{@code D}, stroke-adjust
+ *       {@code SA})</li>
+ *   <li>Line style: {@code w} (zero-width strokes follow the PDF §8.4.3.2
+ *       "one device pixel" hairline rule), {@code J}, {@code j}, {@code M},
+ *       {@code d}, {@code i} (flatness, no-op)</li>
  *   <li>Path construction: {@code m}, {@code l}, {@code c}, {@code v}, {@code y},
  *       {@code re}, {@code h}</li>
  *   <li>Path painting: {@code S}, {@code s}, {@code f}, {@code F}, {@code f*},
@@ -131,6 +134,8 @@ final class OpenPdfCorePageRenderer {
     private static final PdfName EXTGS_ML = new PdfName("ML");
     private static final PdfName EXTGS_LC = new PdfName("LC");
     private static final PdfName EXTGS_LJ = new PdfName("LJ");
+    private static final PdfName EXTGS_D = new PdfName("D");
+    private static final PdfName EXTGS_SA = new PdfName("SA");
 
     // FontDescriptor entries that may hold an embedded font program, in preference order:
     // FontFile2 (TrueType) is by far the most common in modern PDFs; FontFile3 holds CFF /
@@ -232,6 +237,12 @@ final class OpenPdfCorePageRenderer {
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
                 RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        // Snap path coordinates to integer device pixels before stroking. Critical for
+        // crisp table borders and other thin axis-aligned hairlines: without it, a
+        // 0.5pt border landing at a fractional pixel boundary smears across two rows
+        // of antialiased pixels and looks fuzzy / grey.
+        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+                RenderingHints.VALUE_STROKE_NORMALIZE);
 
         // Map PDF user space (origin bottom-left, Y up) to image pixels (origin top-left, Y down),
         // applying page rotation and DPI scaling.
@@ -957,10 +968,40 @@ final class OpenPdfCorePageRenderer {
     private void strokePath() {
         g2.setColor(state.strokeColor);
         g2.setStroke(new BasicStroke(
-                Math.max(state.lineWidth, 0.001f),
+                effectiveLineWidth(),
                 state.lineCap, state.lineJoin, state.miterLimit,
                 state.dashPattern, state.dashPhase));
         g2.draw(currentPath);
+    }
+
+    /**
+     * Resolves the stroke width to feed to {@link BasicStroke}, honoring the PDF
+     * spec rule that {@code w 0} means "one device pixel wide" (§8.4.3.2). A
+     * literal {@code 0f} fed to {@code BasicStroke} would draw nothing useful
+     * once the CTM scales it up, and very thin user-space widths similarly
+     * collapse to nothing after the inverse pixel transform.
+     *
+     * <p>The minimum width is computed from the current CTM so that the
+     * resulting stroke is approximately one device pixel regardless of the
+     * page DPI &mdash; without this, table borders rendered with {@code 0 w}
+     * would disappear at any reasonable rendering resolution.</p>
+     */
+    private float effectiveLineWidth() {
+        if (state.lineWidth > 0f) {
+            return state.lineWidth;
+        }
+        AffineTransform ctm = g2.getTransform();
+        // Use the larger of the X/Y scale factors so that a 1-device-pixel width
+        // is preserved under non-uniform scaling. The scaling we care about is
+        // |det|^(1/2) for general transforms, but for the common rectilinear
+        // case the max of the diagonal magnitudes is the cheap, correct answer.
+        double sx = Math.hypot(ctm.getScaleX(), ctm.getShearY());
+        double sy = Math.hypot(ctm.getShearX(), ctm.getScaleY());
+        double scale = Math.max(sx, sy);
+        if (scale <= 0 || Double.isNaN(scale) || Double.isInfinite(scale)) {
+            return 1f;
+        }
+        return (float) (1.0 / scale);
     }
 
     private void fillPath(int windingRule) {
@@ -1060,6 +1101,24 @@ final class OpenPdfCorePageRenderer {
         PdfNumber lj = dict.getAsNumber(EXTGS_LJ);
         if (lj != null) {
             state.lineJoin = lj.intValue();
+        }
+        // /D in an ExtGState dictionary is a two-element array: [dashArray dashPhase].
+        // Mirrors the inline `d` operator path.
+        PdfArray dashEntry = dict.getAsArray(EXTGS_D);
+        if (dashEntry != null && dashEntry.size() == 2) {
+            PdfObject pattern = dashEntry.getPdfObject(0);
+            PdfObject phase = dashEntry.getPdfObject(1);
+            if (pattern instanceof PdfArray patternArray && phase instanceof PdfNumber phaseNum) {
+                applyDashPattern(patternArray, phaseNum.floatValue());
+            }
+        }
+        // /SA is the stroke-adjustment flag (PDF spec §8.4.3.4). We don't act on it
+        // beyond recording it: Java2D's KEY_STROKE_CONTROL = VALUE_STROKE_NORMALIZE
+        // hint is set globally for the page, which is what stroke adjustment does in
+        // practice (snap thin axis-aligned strokes to integer device pixels).
+        PdfObject sa = dict.get(EXTGS_SA);
+        if (sa != null) {
+            state.strokeAdjust = sa.toString().equalsIgnoreCase("true");
         }
     }
 
@@ -1822,6 +1881,10 @@ final class OpenPdfCorePageRenderer {
         float miterLimit = 10.0f;
         float[] dashPattern;
         float dashPhase;
+        // PDF §8.4.3.4 stroke-adjustment flag from ExtGState /SA. Tracked for fidelity
+        // through q/Q nesting; the actual pixel-snap behavior is provided globally via
+        // KEY_STROKE_CONTROL = VALUE_STROKE_NORMALIZE.
+        boolean strokeAdjust;
 
         boolean hasPendingClip;
         int pendingClipRule = Path2D.WIND_NON_ZERO;
@@ -1850,6 +1913,7 @@ final class OpenPdfCorePageRenderer {
             this.miterLimit = other.miterLimit;
             this.dashPattern = other.dashPattern == null ? null : other.dashPattern.clone();
             this.dashPhase = other.dashPhase;
+            this.strokeAdjust = other.strokeAdjust;
             this.font = other.font;
             this.fontSize = other.fontSize;
             this.charSpacing = other.charSpacing;

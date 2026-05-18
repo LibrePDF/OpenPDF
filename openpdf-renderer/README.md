@@ -100,8 +100,8 @@ PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
 
 | Category | Operators |
 |---|---|
-| Graphics state | `q`, `Q`, `cm`, `gs` (alpha `CA`/`ca`, line styling) |
-| Line style | `w`, `J`, `j`, `M`, `d`, `i` |
+| Graphics state | `q`, `Q`, `cm`, `gs` (alpha `CA`/`ca`, line styling `LW`/`ML`/`LC`/`LJ`/`D`, stroke-adjust `SA`) |
+| Line style | `w` (including the PDF §8.4.3.2 zero-width hairline rule), `J`, `j`, `M`, `d`, `i` |
 | Path construction | `m`, `l`, `c`, `v`, `y`, `re`, `h` |
 | Path painting | `S`, `s`, `f`, `F`, `f*`, `B`, `B*`, `b`, `b*`, `n` |
 | Clipping | `W`, `W*` |
@@ -131,6 +131,15 @@ font isn't embedded (or the embedded program can't be loaded), the
 renderer falls back to a generic Java2D family picked by PostScript-name
 heuristics &mdash; glyph widths from the PDF font are still respected,
 but shapes are only approximate.
+
+Tables: `OpenPdfCorePageRenderer` honors the PDF §8.4.3.2 zero-width hairline
+rule (`w 0` strokes are rendered as one device pixel rather than collapsing to
+nothing under the page CTM), reads dash patterns and the stroke-adjust flag
+from ExtGState (`D`, `SA`), and enables Java2D `KEY_STROKE_CONTROL =
+VALUE_STROKE_NORMALIZE` so that 0.5pt table borders snap to integer device
+pixels instead of smearing across two rows of antialiased pixels. Full
+`PdfPTable` output (cell-background fills, colored borders, header rows and
+cell text) is exercised by the renderer's test suite.
 
 Inline images (`BI`/`ID`/`EI`) are now rendered: a preprocess pass promotes
 each inline image into a synthetic Image XObject (with JPEG framing detected
