@@ -3,6 +3,7 @@ package org.openpdf.renderer.core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -202,6 +203,75 @@ class OpenPdfCoreRendererTest {
         try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdfBytes)) {
             assertThat(r.getReader()).isNotNull();
             assertThat(r.getReader().getNumberOfPages()).isEqualTo(r.getNumPages());
+        }
+    }
+
+    @Test
+    void renderAllPagesReturnsOneImagePerPage() throws IOException {
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdfBytes)) {
+            List<BufferedImage> images = r.renderAllPages(72f);
+            assertThat(images).hasSize(r.getNumPages());
+            assertThat(images).allSatisfy(img -> {
+                assertThat(img.getWidth()).isPositive();
+                assertThat(img.getHeight()).isPositive();
+            });
+        }
+    }
+
+    @Test
+    void renderPageOntoGraphics2DDrawsContentAndRestoresState() throws IOException {
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdfBytes)) {
+            int w = 200;
+            int h = 260;
+            BufferedImage target = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = target.createGraphics();
+            try {
+                java.awt.geom.AffineTransform before = g2.getTransform();
+                java.awt.Shape beforeClip = g2.getClip();
+                r.renderPage(1, g2, w, h);
+                // Caller-supplied Graphics2D state must be unchanged after rendering.
+                assertThat(g2.getTransform()).isEqualTo(before);
+                assertThat(g2.getClip()).isEqualTo(beforeClip);
+            } finally {
+                g2.dispose();
+            }
+            // Something must have been drawn on the target surface.
+            int nonBackground = 0;
+            for (int y = 0; y < h; y += 4) {
+                for (int x = 0; x < w; x += 4) {
+                    int argb = target.getRGB(x, y);
+                    int a = (argb >>> 24) & 0xFF;
+                    int rch = (argb >> 16) & 0xFF;
+                    int gch = (argb >> 8) & 0xFF;
+                    int bch = argb & 0xFF;
+                    if (!(a == 0xFF && rch == 0xFF && gch == 0xFF && bch == 0xFF)) {
+                        nonBackground++;
+                    }
+                }
+            }
+            assertThat(nonBackground).isPositive();
+        }
+    }
+
+    @Test
+    void renderPageOntoGraphics2DRejectsBadArguments() throws IOException {
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdfBytes)) {
+            BufferedImage target = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = target.createGraphics();
+            try {
+                assertThatThrownBy(() -> r.renderPage(1, null, 10, 10))
+                        .isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(() -> r.renderPage(1, g2, 0, 10))
+                        .isInstanceOf(IllegalArgumentException.class);
+                assertThatThrownBy(() -> r.renderPage(1, g2, 10, -1))
+                        .isInstanceOf(IllegalArgumentException.class);
+                assertThatThrownBy(() -> r.renderPage(0, g2, 10, 10))
+                        .isInstanceOf(IllegalArgumentException.class);
+                assertThatThrownBy(() -> r.renderPage(r.getNumPages() + 1, g2, 10, 10))
+                        .isInstanceOf(IllegalArgumentException.class);
+            } finally {
+                g2.dispose();
+            }
         }
     }
 }

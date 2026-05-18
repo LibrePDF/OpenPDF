@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -49,24 +51,32 @@ import org.openpdf.text.pdf.PdfString;
  *
  * <h2>Supported operator subset</h2>
  * <ul>
- *   <li>Graphics state: {@code q}, {@code Q}, {@code cm}</li>
+ *   <li>Graphics state: {@code q}, {@code Q}, {@code cm},
+ *       {@code gs} (alpha {@code CA}/{@code ca} only)</li>
+ *   <li>Line style: {@code w}, {@code J}, {@code j}, {@code M}, {@code d},
+ *       {@code i} (flatness, no-op)</li>
  *   <li>Path construction: {@code m}, {@code l}, {@code c}, {@code v}, {@code y},
  *       {@code re}, {@code h}</li>
  *   <li>Path painting: {@code S}, {@code s}, {@code f}, {@code F}, {@code f*},
  *       {@code B}, {@code B*}, {@code b}, {@code b*}, {@code n}</li>
- *   <li>Line width: {@code w}</li>
- *   <li>Colors (DeviceGray and DeviceRGB): {@code g}, {@code G}, {@code rg}, {@code RG}</li>
+ *   <li>Clipping: {@code W}, {@code W*}</li>
+ *   <li>Colors (DeviceGray / DeviceRGB / DeviceCMYK): {@code g}, {@code G},
+ *       {@code rg}, {@code RG}, {@code k}, {@code K}, plus color-space-aware
+ *       {@code cs}, {@code CS}, {@code sc}, {@code SC}, {@code scn}, {@code SCN}</li>
  *   <li>Text state: {@code BT}, {@code ET}, {@code Tf}, {@code Tc}, {@code Tw},
- *       {@code TL}, {@code Tz}, {@code Td}, {@code TD}, {@code Tm}, {@code T*}</li>
+ *       {@code TL}, {@code Tz}, {@code Td}, {@code TD}, {@code Tm}, {@code T*},
+ *       {@code Ts} (text rise)</li>
  *   <li>Text showing: {@code Tj}, {@code TJ}, {@code '}, {@code "}</li>
+ *   <li>Marked content / compatibility (no-op): {@code BMC}, {@code BDC},
+ *       {@code EMC}, {@code MP}, {@code DP}, {@code BX}, {@code EX}</li>
  * </ul>
  *
- * <p>Other operators (extended graphics state {@code gs}, CMYK colors,
- * {@code cs}/{@code CS}/{@code scn}/{@code SCN}, clipping {@code W}/{@code W*},
- * XObject {@code Do}, inline images, shading patterns, marked content, ...)
- * are silently ignored. Pages that rely heavily on those features may render
- * with missing content; this renderer is intentionally a focused subset that
- * handles typical text + simple-vector PDFs correctly.</p>
+ * <p>Operators outside this subset (XObject {@code Do} for forms and images,
+ * inline images {@code BI}/{@code ID}/{@code EI}, shading {@code sh},
+ * pattern / shading colors, type 3 font glyph operators) are silently ignored.
+ * Pages that rely heavily on those features may render with missing content;
+ * this renderer is intentionally a focused subset that handles typical text +
+ * simple-vector PDFs correctly.</p>
  *
  * <h2>Coordinates</h2>
  * <p>The PDF user space has its origin at the bottom-left and Y growing up;
@@ -82,12 +92,20 @@ final class OpenPdfCorePageRenderer {
     /** Default user-space resolution of a PDF, in DPI. */
     private static final float PDF_USER_SPACE_DPI = 72f;
 
+    // ExtGState dictionary keys not pre-defined as PdfName constants in openpdf-core.
+    private static final PdfName EXTGS_LW = new PdfName("LW");
+    private static final PdfName EXTGS_ML = new PdfName("ML");
+    private static final PdfName EXTGS_LC = new PdfName("LC");
+    private static final PdfName EXTGS_LJ = new PdfName("LJ");
+
     private final Graphics2D g2;
     private final PdfDictionary resources;
     private final Map<String, CMapAwareDocumentFont> fontCache = new HashMap<>();
 
     private final Deque<GState> stateStack = new ArrayDeque<>();
     private final Deque<AffineTransform> ctmStack = new ArrayDeque<>();
+    // LinkedList because the PDF clip may be null (no clip), which ArrayDeque rejects.
+    private final Deque<Shape> clipStack = new LinkedList<>();
     private GState state;
 
     private Path2D.Float currentPath = new Path2D.Float();
@@ -205,12 +223,14 @@ final class OpenPdfCorePageRenderer {
             case "q":
                 stateStack.push(state);
                 ctmStack.push(g2.getTransform());
+                clipStack.push(g2.getClip());
                 state = new GState(state);
                 break;
             case "Q":
                 if (!stateStack.isEmpty()) {
                     state = stateStack.pop();
                     g2.setTransform(ctmStack.pop());
+                    g2.setClip(clipStack.pop());
                 }
                 break;
             case "cm":
@@ -218,23 +238,79 @@ final class OpenPdfCorePageRenderer {
                         num(operands, 3), num(operands, 4), num(operands, 5));
                 break;
 
-            // --- Line width ---
+            // --- Line style ---
             case "w":
                 state.lineWidth = num(operands, 0);
+                break;
+            case "J":
+                state.lineCap = (int) num(operands, 0);
+                break;
+            case "j":
+                state.lineJoin = (int) num(operands, 0);
+                break;
+            case "M":
+                state.miterLimit = Math.max(num(operands, 0), 1f);
+                break;
+            case "d":
+                applyDashPattern((PdfArray) operands.get(0), num(operands, 1));
+                break;
+            case "i":
+                // Flatness tolerance: Java2D handles flattening internally.
+                break;
+
+            // --- Extended graphics state ---
+            case "gs":
+                if (operands.get(0) instanceof PdfName extName) {
+                    applyExtGState(extName.toString().substring(1));
+                }
                 break;
 
             // --- Colors ---
             case "g":
-                state.fillColor = gray(num(operands, 0));
+                state.fillColorSpace = ColorSpaceKind.GRAY;
+                state.fillColor = applyAlpha(gray(num(operands, 0)), state.fillAlpha);
                 break;
             case "G":
-                state.strokeColor = gray(num(operands, 0));
+                state.strokeColorSpace = ColorSpaceKind.GRAY;
+                state.strokeColor = applyAlpha(gray(num(operands, 0)), state.strokeAlpha);
                 break;
             case "rg":
-                state.fillColor = rgb(num(operands, 0), num(operands, 1), num(operands, 2));
+                state.fillColorSpace = ColorSpaceKind.RGB;
+                state.fillColor = applyAlpha(
+                        rgb(num(operands, 0), num(operands, 1), num(operands, 2)), state.fillAlpha);
                 break;
             case "RG":
-                state.strokeColor = rgb(num(operands, 0), num(operands, 1), num(operands, 2));
+                state.strokeColorSpace = ColorSpaceKind.RGB;
+                state.strokeColor = applyAlpha(
+                        rgb(num(operands, 0), num(operands, 1), num(operands, 2)), state.strokeAlpha);
+                break;
+            case "k":
+                state.fillColorSpace = ColorSpaceKind.CMYK;
+                state.fillColor = applyAlpha(
+                        cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3)),
+                        state.fillAlpha);
+                break;
+            case "K":
+                state.strokeColorSpace = ColorSpaceKind.CMYK;
+                state.strokeColor = applyAlpha(
+                        cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3)),
+                        state.strokeAlpha);
+                break;
+            case "cs":
+                state.fillColorSpace = colorSpaceFromName(operands.get(0));
+                state.fillColor = applyAlpha(defaultColorFor(state.fillColorSpace), state.fillAlpha);
+                break;
+            case "CS":
+                state.strokeColorSpace = colorSpaceFromName(operands.get(0));
+                state.strokeColor = applyAlpha(defaultColorFor(state.strokeColorSpace), state.strokeAlpha);
+                break;
+            case "sc":
+            case "scn":
+                state.fillColor = applyAlpha(colorFromOperands(state.fillColorSpace, operands), state.fillAlpha);
+                break;
+            case "SC":
+            case "SCN":
+                state.strokeColor = applyAlpha(colorFromOperands(state.strokeColorSpace, operands), state.strokeAlpha);
                 break;
 
             // --- Path construction ---
@@ -338,6 +414,16 @@ final class OpenPdfCorePageRenderer {
                 resetPath();
                 break;
 
+            // --- Clipping ---
+            case "W":
+                state.pendingClipRule = Path2D.WIND_NON_ZERO;
+                state.hasPendingClip = true;
+                break;
+            case "W*":
+                state.pendingClipRule = Path2D.WIND_EVEN_ODD;
+                state.hasPendingClip = true;
+                break;
+
             // --- Text state ---
             case "BT":
                 inTextObject = true;
@@ -369,6 +455,9 @@ final class OpenPdfCorePageRenderer {
                 break;
             case "Tz":
                 state.horizontalScaling = num(operands, 0) / 100f;
+                break;
+            case "Ts":
+                state.textRise = num(operands, 0);
                 break;
             case "Td":
                 textMoveTo(num(operands, 0), num(operands, 1));
@@ -407,6 +496,16 @@ final class OpenPdfCorePageRenderer {
                 showText(decodeString((PdfString) operands.get(2)));
                 break;
 
+            // --- Marked content / compatibility (parsed, no rendering effect) ---
+            case "BMC":
+            case "BDC":
+            case "EMC":
+            case "MP":
+            case "DP":
+            case "BX":
+            case "EX":
+                break;
+
             default:
                 // Unsupported operator: ignore quietly so partial pages still render.
                 break;
@@ -417,7 +516,10 @@ final class OpenPdfCorePageRenderer {
 
     private void strokePath() {
         g2.setColor(state.strokeColor);
-        g2.setStroke(new BasicStroke(Math.max(state.lineWidth, 0.001f)));
+        g2.setStroke(new BasicStroke(
+                Math.max(state.lineWidth, 0.001f),
+                state.lineCap, state.lineJoin, state.miterLimit,
+                state.dashPattern, state.dashPhase));
         g2.draw(currentPath);
     }
 
@@ -429,7 +531,91 @@ final class OpenPdfCorePageRenderer {
     }
 
     private void resetPath() {
+        if (state.hasPendingClip) {
+            Path2D.Float clip = (Path2D.Float) currentPath.clone();
+            clip.setWindingRule(state.pendingClipRule);
+            Shape existing = g2.getClip();
+            if (existing == null) {
+                g2.setClip(clip);
+            } else {
+                g2.clip(clip);
+            }
+            state.hasPendingClip = false;
+        }
         currentPath = new Path2D.Float();
+    }
+
+    private void applyDashPattern(PdfArray array, float phase) {
+        if (array == null || array.size() == 0) {
+            state.dashPattern = null;
+            state.dashPhase = 0f;
+            return;
+        }
+        float[] dash = new float[array.size()];
+        boolean allZero = true;
+        for (int i = 0; i < array.size(); i++) {
+            PdfObject e = array.getPdfObject(i);
+            dash[i] = e instanceof PdfNumber n ? Math.max(n.floatValue(), 0f) : 0f;
+            if (dash[i] > 0f) {
+                allZero = false;
+            }
+        }
+        if (allZero) {
+            state.dashPattern = null;
+            state.dashPhase = 0f;
+        } else {
+            state.dashPattern = dash;
+            state.dashPhase = phase;
+        }
+    }
+
+    private void applyExtGState(String name) {
+        if (resources == null) {
+            return;
+        }
+        PdfDictionary gsResources = resources.getAsDict(PdfName.EXTGSTATE);
+        if (gsResources == null) {
+            return;
+        }
+        PdfObject obj = gsResources.get(new PdfName(name));
+        PdfDictionary dict;
+        if (obj instanceof PdfDictionary d) {
+            dict = d;
+        } else if (obj instanceof PRIndirectReference ref) {
+            PdfObject resolved = PdfReader.getPdfObject(ref);
+            dict = resolved instanceof PdfDictionary ? (PdfDictionary) resolved : null;
+        } else {
+            dict = null;
+        }
+        if (dict == null) {
+            return;
+        }
+        PdfNumber ca = dict.getAsNumber(PdfName.ca);
+        if (ca != null) {
+            state.fillAlpha = clamp01(ca.floatValue());
+            state.fillColor = applyAlpha(state.fillColor, state.fillAlpha);
+        }
+        PdfNumber upperCA = dict.getAsNumber(PdfName.CA);
+        if (upperCA != null) {
+            state.strokeAlpha = clamp01(upperCA.floatValue());
+            state.strokeColor = applyAlpha(state.strokeColor, state.strokeAlpha);
+        }
+        PdfNumber lw = dict.getAsNumber(EXTGS_LW);
+        if (lw != null) {
+            state.lineWidth = lw.floatValue();
+        }
+        PdfNumber ml = dict.getAsNumber(EXTGS_ML);
+        if (ml != null) {
+            state.miterLimit = Math.max(ml.floatValue(), 1f);
+        }
+        PdfNumber lc = dict.getAsNumber(EXTGS_LC);
+        if (lc != null) {
+            state.lineCap = lc.intValue();
+        }
+        PdfNumber lj = dict.getAsNumber(EXTGS_LJ);
+        if (lj != null) {
+            state.lineJoin = lj.intValue();
+        }
     }
 
     private void concatCtm(float a, float b, float c, float d, float e, float f) {
@@ -463,6 +649,9 @@ final class OpenPdfCorePageRenderer {
             // because Graphics2D's font baseline is drawn in image-Y orientation.
             g2.transform(textMatrix);
             g2.scale(state.horizontalScaling, 1.0);
+            if (state.textRise != 0f) {
+                g2.translate(0, state.textRise);
+            }
             g2.scale(1, -1);
             g2.drawString(text, 0f, 0f);
         } finally {
@@ -587,6 +776,92 @@ final class OpenPdfCorePageRenderer {
         return new Color(clamp01(r), clamp01(g), clamp01(b));
     }
 
+    /** Naive CMYK to sRGB approximation: r = (1-c)(1-k), g = (1-m)(1-k), b = (1-y)(1-k). */
+    private static Color cmyk(float c, float m, float y, float k) {
+        float cc = clamp01(c);
+        float mm = clamp01(m);
+        float yy = clamp01(y);
+        float kk = clamp01(k);
+        float r = (1f - cc) * (1f - kk);
+        float gg = (1f - mm) * (1f - kk);
+        float b = (1f - yy) * (1f - kk);
+        return new Color(r, gg, b);
+    }
+
+    private static Color applyAlpha(Color color, float alpha) {
+        int a = Math.round(clamp01(alpha) * 255f);
+        if (a == color.getAlpha()) {
+            return color;
+        }
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), a);
+    }
+
+    private static ColorSpaceKind colorSpaceFromName(PdfObject operand) {
+        if (!(operand instanceof PdfName name)) {
+            return ColorSpaceKind.UNKNOWN;
+        }
+        String n = name.toString();
+        switch (n) {
+            case "/DeviceGray":
+            case "/G":
+            case "/CalGray":
+                return ColorSpaceKind.GRAY;
+            case "/DeviceRGB":
+            case "/RGB":
+            case "/CalRGB":
+                return ColorSpaceKind.RGB;
+            case "/DeviceCMYK":
+            case "/CMYK":
+                return ColorSpaceKind.CMYK;
+            default:
+                return ColorSpaceKind.UNKNOWN;
+        }
+    }
+
+    private static Color defaultColorFor(ColorSpaceKind kind) {
+        return kind == ColorSpaceKind.CMYK ? cmyk(0, 0, 0, 1f) : Color.BLACK;
+    }
+
+    /** Picks numeric operands matching the active color space; non-numeric operands (e.g. pattern names) yield default. */
+    private static Color colorFromOperands(ColorSpaceKind kind, List<PdfObject> operands) {
+        int numericCount = 0;
+        for (int i = 0; i < operands.size() - 1; i++) {
+            if (operands.get(i) instanceof PdfNumber) {
+                numericCount++;
+            }
+        }
+        switch (kind) {
+            case GRAY:
+                if (numericCount >= 1) {
+                    return gray(num(operands, 0));
+                }
+                break;
+            case RGB:
+                if (numericCount >= 3) {
+                    return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
+                }
+                break;
+            case CMYK:
+                if (numericCount >= 4) {
+                    return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
+                }
+                break;
+            default:
+                // Fall through: infer from operand count when color space is unknown / unsupported.
+                if (numericCount >= 4) {
+                    return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
+                }
+                if (numericCount == 3) {
+                    return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
+                }
+                if (numericCount == 1) {
+                    return gray(num(operands, 0));
+                }
+                break;
+        }
+        return defaultColorFor(kind);
+    }
+
     private static float clamp01(float v) {
         if (v < 0f) {
             return 0f;
@@ -597,11 +872,26 @@ final class OpenPdfCorePageRenderer {
         return v;
     }
 
+    private enum ColorSpaceKind { GRAY, RGB, CMYK, UNKNOWN }
+
     /** Mutable per-graphics-state snapshot. Not thread-safe. */
     private static final class GState {
         Color fillColor = Color.BLACK;
         Color strokeColor = Color.BLACK;
+        ColorSpaceKind fillColorSpace = ColorSpaceKind.GRAY;
+        ColorSpaceKind strokeColorSpace = ColorSpaceKind.GRAY;
+        float fillAlpha = 1.0f;
+        float strokeAlpha = 1.0f;
+
         float lineWidth = 1.0f;
+        int lineCap = BasicStroke.CAP_BUTT;
+        int lineJoin = BasicStroke.JOIN_MITER;
+        float miterLimit = 10.0f;
+        float[] dashPattern;
+        float dashPhase;
+
+        boolean hasPendingClip;
+        int pendingClipRule = Path2D.WIND_NON_ZERO;
 
         CMapAwareDocumentFont font;
         float fontSize;
@@ -609,6 +899,7 @@ final class OpenPdfCorePageRenderer {
         float wordSpacing;
         float leading;
         float horizontalScaling = 1.0f;
+        float textRise;
 
         GState() {
         }
@@ -616,13 +907,25 @@ final class OpenPdfCorePageRenderer {
         GState(GState other) {
             this.fillColor = other.fillColor;
             this.strokeColor = other.strokeColor;
+            this.fillColorSpace = other.fillColorSpace;
+            this.strokeColorSpace = other.strokeColorSpace;
+            this.fillAlpha = other.fillAlpha;
+            this.strokeAlpha = other.strokeAlpha;
             this.lineWidth = other.lineWidth;
+            this.lineCap = other.lineCap;
+            this.lineJoin = other.lineJoin;
+            this.miterLimit = other.miterLimit;
+            this.dashPattern = other.dashPattern == null ? null : other.dashPattern.clone();
+            this.dashPhase = other.dashPhase;
             this.font = other.font;
             this.fontSize = other.fontSize;
             this.charSpacing = other.charSpacing;
             this.wordSpacing = other.wordSpacing;
             this.leading = other.leading;
             this.horizontalScaling = other.horizontalScaling;
+            this.textRise = other.textRise;
+            // hasPendingClip / pendingClipRule are intentionally not copied:
+            // the W / W* operators apply to the current path before any q/Q boundary.
         }
     }
 }

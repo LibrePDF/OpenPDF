@@ -95,17 +95,26 @@ in-tree legacy parser (`PDFFile`, `PDFPage`, `PDFParser`,
 | Content-stream operator listing (`getContentOperators`) | `openpdf-core` (`PdfContentParser`) |
 | Page rasterization (`renderPage`) | `openpdf-core` (`PdfContentParser`) → Java2D via `OpenPdfCorePageRenderer` |
 
-The Java2D rasterizer (`OpenPdfCorePageRenderer`) supports the standard subset
-of PDF operators needed for typical text + simple-vector PDFs: graphics state
-(`q`/`Q`/`cm`), path construction (`m`/`l`/`c`/`v`/`y`/`re`/`h`), path
-painting (`S`/`s`/`f`/`f*`/`B`/`B*`/`b`/`b*`/`n`), line width (`w`),
-DeviceGray/DeviceRGB colors (`g`/`G`/`rg`/`RG`), and the full text-object
-machinery (`BT`/`ET`/`Tf`/`Tc`/`Tw`/`TL`/`Tz`/`Td`/`TD`/`Tm`/`T*`/`Tj`/`TJ`/`'`/`"`).
-Operators outside this subset (extended graphics state `gs`, CMYK / pattern /
-shading colors, XObject `Do`, inline images, marked content, clipping
-`W`/`W*`, ...) are parsed but currently ignored — pages that rely heavily on
-them may render with missing content. Adding more operators is a localized
-change in `OpenPdfCorePageRenderer`.
+The Java2D rasterizer (`OpenPdfCorePageRenderer`) supports a broad subset of
+PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
+
+| Category | Operators |
+|---|---|
+| Graphics state | `q`, `Q`, `cm`, `gs` (alpha `CA`/`ca`, line styling) |
+| Line style | `w`, `J`, `j`, `M`, `d`, `i` |
+| Path construction | `m`, `l`, `c`, `v`, `y`, `re`, `h` |
+| Path painting | `S`, `s`, `f`, `F`, `f*`, `B`, `B*`, `b`, `b*`, `n` |
+| Clipping | `W`, `W*` |
+| Colors (DeviceGray / DeviceRGB / DeviceCMYK) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
+| Text state | `BT`, `ET`, `Tf`, `Tc`, `Tw`, `TL`, `Tz`, `Td`, `TD`, `Tm`, `T*`, `Ts` |
+| Text showing | `Tj`, `TJ`, `'`, `"` |
+| Marked content / compatibility (no-op) | `BMC`, `BDC`, `EMC`, `MP`, `DP`, `BX`, `EX` |
+
+Operators outside this subset (XObject `Do` for forms and images, inline
+images `BI`/`ID`/`EI`, shading `sh`, pattern / shading colors, type 3 font
+glyph operators) are parsed but currently ignored &mdash; pages that rely
+heavily on them may render with missing content. Adding more operators is a
+localized change in `OpenPdfCorePageRenderer`.
 
 For pages that exercise features outside the supported subset and need
 pixel-perfect output today, the deprecated `PDFFile` / `PDFPage.getImage(...)`
@@ -152,6 +161,34 @@ try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.p
     String pageText   = renderer.getTextFromPage(1); // openpdf-core text extraction
     // List<String>, e.g. [q, BT, Tf, Td, Tj, ET, Q]
     var operators     = renderer.getContentOperators(1);
+}
+```
+
+### Rendering directly to a `Graphics2D`
+
+Avoid the intermediate `BufferedImage` when the caller already has a target
+surface (Swing component, printer, SVG-backed graphics, ...):
+
+```java
+try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.pdf"))) {
+    BufferedImage out = new BufferedImage(800, 1000, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g2 = out.createGraphics();
+    try {
+        renderer.renderPage(1, g2, 800, 1000); // fit page to the box, preserve aspect
+    } finally {
+        g2.dispose();
+    }
+}
+```
+
+### Batch rendering
+
+```java
+try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.pdf"))) {
+    List<BufferedImage> pages = renderer.renderAllPages(150f);
+    for (int i = 0; i < pages.size(); i++) {
+        ImageIO.write(pages.get(i), "png", new File("page-" + (i + 1) + ".png"));
+    }
 }
 ```
 
