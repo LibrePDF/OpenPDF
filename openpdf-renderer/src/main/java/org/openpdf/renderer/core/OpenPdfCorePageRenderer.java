@@ -101,7 +101,9 @@ final class OpenPdfCorePageRenderer {
 
     private static final Logger LOG = Logger.getLogger(OpenPdfCorePageRenderer.class.getName());
 
-    /** Default user-space resolution of a PDF, in DPI. */
+    /**
+     * Default user-space resolution of a PDF, in DPI.
+     */
     private static final float PDF_USER_SPACE_DPI = 72f;
 
     // ExtGState dictionary keys not pre-defined as PdfName constants in openpdf-core.
@@ -273,7 +275,9 @@ final class OpenPdfCorePageRenderer {
         return out.toByteArray();
     }
 
-    /** Finds the offset of a two-byte token (e.g. {@code "BI"}) bounded by whitespace. */
+    /**
+     * Finds the offset of a two-byte token (e.g. {@code "BI"}) bounded by whitespace.
+     */
     private static int findToken(byte[] buf, int from, char c1, char c2) {
         for (int i = from; i < buf.length - 1; i++) {
             if (buf[i] != c1 || buf[i + 1] != c2) {
@@ -288,7 +292,9 @@ final class OpenPdfCorePageRenderer {
         return -1;
     }
 
-    /** Returns the index just past the closing {@code EI} of an inline image starting after {@code BI}. */
+    /**
+     * Returns the index just past the closing {@code EI} of an inline image starting after {@code BI}.
+     */
     private static int findEndInlineImage(byte[] buf, int from) {
         for (int i = from; i < buf.length - 1; i++) {
             if (buf[i] != 'E' || buf[i + 1] != 'I') {
@@ -307,7 +313,9 @@ final class OpenPdfCorePageRenderer {
         return b == ' ' || b == '\t' || b == '\n' || b == '\r' || b == '\f' || b == 0;
     }
 
-    /** Dispatches one operator. Operands include the trailing operator literal at index size-1. */
+    /**
+     * Dispatches one operator. Operands include the trailing operator literal at index size-1.
+     */
     private void dispatch(String op, List<PdfObject> operands) throws IOException {
         switch (op) {
             // --- Graphics state ---
@@ -865,7 +873,9 @@ final class OpenPdfCorePageRenderer {
         return false;
     }
 
-    /** Decodes DCT/JPX-encoded image streams via the JRE's {@link ImageIO}. */
+    /**
+     * Decodes DCT/JPX-encoded image streams via the JRE's {@link ImageIO}.
+     */
     private BufferedImage decodeViaImageIO(PRStream stream) {
         try {
             byte[] raw = PdfReader.getStreamBytesRaw(stream);
@@ -920,7 +930,9 @@ final class OpenPdfCorePageRenderer {
         }
     }
 
-    /** Returns the number of color components for a {@code /ColorSpace} entry, or 0 if unsupported. */
+    /**
+     * Returns the number of color components for a {@code /ColorSpace} entry, or 0 if unsupported.
+     */
     private static int imageComponents(PdfObject csObj) {
         if (csObj instanceof PRIndirectReference ind) {
             csObj = PdfReader.getPdfObject(ind);
@@ -1158,7 +1170,9 @@ final class OpenPdfCorePageRenderer {
         return new Color(clamp01(r), clamp01(g), clamp01(b));
     }
 
-    /** Naive CMYK to sRGB approximation: r = (1-c)(1-k), g = (1-m)(1-k), b = (1-y)(1-k). */
+    /**
+     * Naive CMYK to sRGB approximation: r = (1-c)(1-k), g = (1-m)(1-k), b = (1-y)(1-k).
+     */
     private static Color cmyk(float c, float m, float y, float k) {
         float cc = clamp01(c);
         float mm = clamp01(m);
@@ -1204,7 +1218,9 @@ final class OpenPdfCorePageRenderer {
         return kind == ColorSpaceKind.CMYK ? cmyk(0, 0, 0, 1f) : Color.BLACK;
     }
 
-    /** Picks numeric operands matching the active color space; non-numeric operands (e.g. pattern names) yield default. */
+    /**
+     * Picks numeric operands matching the active color space; non-numeric operands (e.g. pattern names) yield default.
+     */
     private static Color colorFromOperands(ColorSpaceKind kind, List<PdfObject> operands) {
         int numericCount = 0;
         for (int i = 0; i < operands.size() - 1; i++) {
@@ -1256,7 +1272,9 @@ final class OpenPdfCorePageRenderer {
 
     private enum ColorSpaceKind { GRAY, RGB, CMYK, UNKNOWN }
 
-    /** Mutable per-graphics-state snapshot. Not thread-safe. */
+    /**
+     * Mutable per-graphics-state snapshot. Not thread-safe.
+     */
     private static final class GState {
         Color fillColor = Color.BLACK;
         Color strokeColor = Color.BLACK;

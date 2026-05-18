@@ -74,7 +74,9 @@ import org.openpdf.text.pdf.parser.PdfTextExtractor;
  */
 public class OpenPdfCoreRenderer implements Closeable {
 
-    /** Default user-space resolution of a PDF, in DPI. */
+    /**
+     * Default user-space resolution of a PDF, in DPI.
+     */
     private static final float PDF_USER_SPACE_DPI = 72f;
 
     private final PdfReader reader;
