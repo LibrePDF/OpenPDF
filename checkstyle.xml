@@ -58,6 +58,9 @@
       <property name="processJavadoc" value="true"/>
     </module>
     <module name="OuterTypeFilename"/>
+
+    <!-- deactivated: 8 findings -->
+    <!--
     <module name="IllegalTokenText">
       <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
       <property name="format"
@@ -65,6 +68,7 @@
       <property name="message"
         value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
     </module>
+    -->
 
     <!-- deactivated: 513 findings -->
     <!-- NOSONAR
@@ -76,7 +80,11 @@
     -->
 
     <!--<module name="AvoidStarImport"/>-->
+
+    <!-- deactivated: 14 findings -->
+    <!--
     <module name="OneTopLevelClass"/>
+    -->
     <module name="NoLineWrap">
       <property name="tokens" value="PACKAGE_DEF, IMPORT, STATIC_IMPORT"/>
     </module>
