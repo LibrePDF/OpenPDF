@@ -262,10 +262,10 @@
                 </banDynamicVersions>
                 <banDuplicatePomDependencyVersions/>
                 <requireMavenVersion>
-                  <version>3.9.0</version>
+                  <version>[3.9,)</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>${java.version}}</version>
+                  <version>[${java.version},)</version>
                 </requireJavaVersion>
                 <requireReleaseDeps>
                   <onlyWhenRelease>true</onlyWhenRelease>
