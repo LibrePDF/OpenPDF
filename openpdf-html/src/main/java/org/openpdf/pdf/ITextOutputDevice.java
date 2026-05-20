@@ -739,7 +739,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         if (newStroke == oldStroke) {
             return;
         }
-        if (!(newStroke instanceof BasicStroke nStroke)) {
+        if (!(newStroke instanceof BasicStroke bs)) {
             return;
         }
         boolean oldOk = (oldStroke instanceof BasicStroke);
@@ -747,11 +747,11 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         if (oldOk) {
             oStroke = (BasicStroke) oldStroke;
         }
-        if (!oldOk || nStroke.getLineWidth() != oStroke.getLineWidth()) {
-            cb.setLineWidth(nStroke.getLineWidth());
+        if (!oldOk || bs.getLineWidth() != oStroke.getLineWidth()) {
+            cb.setLineWidth(bs.getLineWidth());
         }
-        if (!oldOk || nStroke.getEndCap() != oStroke.getEndCap()) {
-            switch (nStroke.getEndCap()) {
+        if (!oldOk || bs.getEndCap() != oStroke.getEndCap()) {
+            switch (bs.getEndCap()) {
             case BasicStroke.CAP_BUTT:
                 cb.setLineCap(0);
                 break;
@@ -762,8 +762,8 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                 cb.setLineCap(1);
             }
         }
-        if (!oldOk || nStroke.getLineJoin() != oStroke.getLineJoin()) {
-            switch (nStroke.getLineJoin()) {
+        if (!oldOk || bs.getLineJoin() != oStroke.getLineJoin()) {
+            switch (bs.getLineJoin()) {
             case BasicStroke.JOIN_MITER:
                 cb.setLineJoin(0);
                 break;
@@ -774,12 +774,12 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                 cb.setLineJoin(1);
             }
         }
-        if (!oldOk || nStroke.getMiterLimit() != oStroke.getMiterLimit()) {
-            cb.setMiterLimit(nStroke.getMiterLimit());
+        if (!oldOk || bs.getMiterLimit() != oStroke.getMiterLimit()) {
+            cb.setMiterLimit(bs.getMiterLimit());
         }
-        boolean makeDash = isMakeDash(oldOk, nStroke, oStroke);
+        boolean makeDash = isMakeDash(oldOk, bs, oStroke);
         if (makeDash) {
-            float[] dash = nStroke.getDashArray();
+            float[] dash = bs.getDashArray();
             if (dash == null) {
                 cb.setLiteral("[]0 d\n");
             } else {
@@ -789,7 +789,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                     cb.setLiteral(' ');
                 }
                 cb.setLiteral(']');
-                cb.setLiteral(nStroke.getDashPhase());
+                cb.setLiteral(bs.getDashPhase());
                 cb.setLiteral(" d\n");
             }
         }

@@ -29,9 +29,9 @@ public class BorderRadiusCorner {
 
     public BorderRadiusCorner(CSSName fromVal, CalculatedStyle style, CssContext ctx) {
         FSDerivedValue value = style.valueByName(fromVal);
-        if (value instanceof ListValue lValues) {
-            PropertyValue first = (PropertyValue) lValues.getValues().get(0);
-            PropertyValue second = lValues.getValues().size() > 1 ? (PropertyValue) lValues.getValues().get(1) : first;
+        if (value instanceof ListValue lv) {
+            PropertyValue first = (PropertyValue) lv.getValues().get(0);
+            PropertyValue second = lv.getValues().size() > 1 ? (PropertyValue) lv.getValues().get(1) : first;
 
             if (fromVal.equals(BORDER_TOP_LEFT_RADIUS) || fromVal.equals(BORDER_BOTTOM_RIGHT_RADIUS)) {
                 _right = calculate(fromVal, style, first, ctx);
