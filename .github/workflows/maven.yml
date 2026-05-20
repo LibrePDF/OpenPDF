@@ -12,7 +12,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         java: [21, 24, 25, 26, '27-ea'] 
-    name: Build with Java ${{ matrix.java }}
+    name: Build with Java ${{ matrix.java }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
 
