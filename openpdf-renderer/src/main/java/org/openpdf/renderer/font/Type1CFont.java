@@ -938,6 +938,7 @@ public class Type1CFont extends OutlineFont {
                     break;
                 case 30: // vhcurveto
                     hold = 4;
+                    //fallthru
                 case 31: // hvcurveto
                     for (i = 0; i < this.stackptr;) {
                         boolean hv = (((i + hold) & 4) == 0);
