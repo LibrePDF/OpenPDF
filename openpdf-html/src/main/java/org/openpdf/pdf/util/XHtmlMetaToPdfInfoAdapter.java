@@ -98,9 +98,9 @@ import java.util.logging.Level;
  * <h1>Notes</h1>
  * This class was derived from a sample PDF creation listener
  * at "http://markmail.org/message/46t3bw7q6mbhvra2"
- * by Jesse Keller <jesse.keller@roche.com>.
+ * by * <a href="mailto:jesse.keller@roche.com">Jesse Keller</a>
  *
- * @author Tim Telcik <tim.telcik@permeance.com.au>
+ * @author <a href="mailto:tim.telcik@permeance.com.au">Tim Telcik</a>
  * @see DefaultPDFCreationListener
  * @see PDFCreationListener
  * @see ITextRenderer
