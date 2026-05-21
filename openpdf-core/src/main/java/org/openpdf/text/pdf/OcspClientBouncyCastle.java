@@ -85,7 +85,7 @@ package org.openpdf.text.pdf;
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MPL as stated above or under the terms of the GNU
- * Library General Public License as published by the Free Software Foundation;
+ * Library General Public License as published by the Free Software Foundation,
  * either version 2 of the License, or any later version.
  *
  * This library is distributed in the hope that it will be useful, but WITHOUT
@@ -111,6 +111,7 @@ import java.net.Proxy;
 import java.net.URI;
 import java.net.URL;
 import java.security.Provider;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
@@ -154,7 +155,7 @@ public class OcspClientBouncyCastle implements OcspClient {
      * HTTP proxy used to access the OCSP URL
      */
     private Proxy proxy;
-    private static final Random RANDOM_INSTANCE = new Random();
+    private static final Random RANDOM_INSTANCE = new SecureRandom();
 
     /**
      * Creates an instance of an OcspClient that will be using BouncyCastle.
