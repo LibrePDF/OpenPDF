@@ -108,6 +108,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
+import java.net.URI;
 import java.net.URL;
 import java.security.Provider;
 import java.security.Security;
@@ -153,6 +154,7 @@ public class OcspClientBouncyCastle implements OcspClient {
      * HTTP proxy used to access the OCSP URL
      */
     private Proxy proxy;
+    private static final Random RANDOM_INSTANCE = new Random();
 
     /**
      * Creates an instance of an OcspClient that will be using BouncyCastle.
@@ -185,10 +187,6 @@ public class OcspClientBouncyCastle implements OcspClient {
         Security.addProvider(prov);
 
         // Generate the id for the certificate we are looking for
-        // OJO... Modificacion de
-        // Felix--------------------------------------------------
-        // CertificateID id = new CertificateID(CertificateID.HASH_SHA1, issuerCert,
-        // serialNumber);
         // Example from
         // http://grepcode.com/file/repo1.maven.org/maven2/org.bouncycastle/bcmail-jdk16/1.46/org/bouncycastle/cert/ocsp/test/OCSPTest.java
         DigestCalculatorProvider digCalcProv = new JcaDigestCalculatorProviderBuilder()
@@ -203,19 +201,10 @@ public class OcspClientBouncyCastle implements OcspClient {
 
         gen.addRequest(id);
 
-        // create details for nonce extension
-        // Vector oids = new Vector();
-        // Vector values = new Vector();
-        // oids.add(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
-        // values.add(new X509Extension(false, new DEROctetString(new
-        // DEROctetString(PdfEncryption.createDocumentId()).getEncoded())));
-        // gen.setRequestExtensions(new X509Extensions(oids, values));
-
         // Add nonce extension
         ExtensionsGenerator extGen = new ExtensionsGenerator();
         byte[] nonce = new byte[16];
-        Random rand = new Random();
-        rand.nextBytes(nonce);
+        RANDOM_INSTANCE.nextBytes(nonce);
 
         extGen.addExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false,
                 new DEROctetString(nonce));
@@ -236,7 +225,7 @@ public class OcspClientBouncyCastle implements OcspClient {
             OCSPReq request = generateOCSPRequest(rootCert,
                     checkCert.getSerialNumber());
             byte[] array = request.getEncoded();
-            URL urlt = new URL(url);
+            URL urlt = new URI(url).toURL();
             Proxy tmpProxy = proxy == null ? Proxy.NO_PROXY : proxy;
             HttpURLConnection con = (HttpURLConnection) urlt.openConnection(tmpProxy);
             con.setRequestProperty("Content-Type", "application/ocsp-request");
