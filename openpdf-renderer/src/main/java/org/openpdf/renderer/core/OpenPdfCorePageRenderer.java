@@ -40,9 +40,8 @@ import org.openpdf.text.pdf.PdfReader;
 import org.openpdf.text.pdf.PdfString;
 
 /**
- * Renders a single PDF page to a {@link Graphics2D} surface, parsing the page's
- * content stream with {@code openpdf-core}'s {@link PdfContentParser} and
- * dispatching the resulting operators to Java2D drawing calls.
+ * Renders a single PDF page to a {@link Graphics2D} surface, parsing the page's content stream with
+ * {@code openpdf-core}'s {@link PdfContentParser} and dispatching the resulting operators to Java2D drawing calls.
  *
  * <p>This is the {@code openpdf-core}-driven Java2D rasterizer that backs
  * {@link OpenPdfCoreRenderer#renderPage(int, float)}.</p>
@@ -79,7 +78,9 @@ final class OpenPdfCorePageRenderer {
 
     private static final Logger LOG = Logger.getLogger(OpenPdfCorePageRenderer.class.getName());
 
-    /** Default user-space resolution of a PDF, in DPI. */
+    /**
+     * Default user-space resolution of a PDF, in DPI.
+     */
     private static final float PDF_USER_SPACE_DPI = 72f;
 
     private final Graphics2D g2;
@@ -115,8 +116,7 @@ final class OpenPdfCorePageRenderer {
     }
 
     /**
-     * Renders the given page to {@code g2}, sized to {@code targetWidth x targetHeight}
-     * pixels at the requested DPI.
+     * Renders the given page to {@code g2}, sized to {@code targetWidth x targetHeight} pixels at the requested DPI.
      *
      * @param reader       the open PDF
      * @param pageNumber   1-based page number
@@ -198,8 +198,10 @@ final class OpenPdfCorePageRenderer {
         }
     }
 
-    /** Dispatches one operator. Operands include the trailing operator literal at index size-1. */
-    private void dispatch(String op, List<PdfObject> operands) throws IOException {
+    /**
+     * Dispatches one operator. Operands include the trailing operator literal at index size-1.
+     */
+    private void dispatch(String op, List<PdfObject> operands) {
         switch (op) {
             // --- Graphics state ---
             case "q":
@@ -303,8 +305,7 @@ final class OpenPdfCorePageRenderer {
                 strokePath();
                 resetPath();
                 break;
-            case "f":
-            case "F":
+            case "f", "F":
                 fillPath(Path2D.WIND_NON_ZERO);
                 resetPath();
                 break;
@@ -530,21 +531,31 @@ final class OpenPdfCorePageRenderer {
             String name = docFont.getPostscriptFontName();
             if (name != null) {
                 String lower = name.toLowerCase();
-                if (lower.contains("mono") || lower.contains("courier")) {
-                    family = Font.MONOSPACED;
-                } else if (lower.contains("sans") || lower.contains("helvetica")
-                        || lower.contains("arial")) {
-                    family = Font.SANS_SERIF;
-                }
-                if (lower.contains("bold")) {
-                    style |= Font.BOLD;
-                }
-                if (lower.contains("italic") || lower.contains("oblique")) {
-                    style |= Font.ITALIC;
-                }
+                family = detectFontFamily(lower, family);
+                style = detectStyles(lower, style);
             }
         }
         return new Font(family, style, 1).deriveFont(Math.max(size, 0.1f));
+    }
+
+    private static int detectStyles(String lower, int style) {
+        if (lower.contains("bold")) {
+            style |= Font.BOLD;
+        }
+        if (lower.contains("italic") || lower.contains("oblique")) {
+            style |= Font.ITALIC;
+        }
+        return style;
+    }
+
+    private static String detectFontFamily(String lower, String family) {
+        if (lower.contains("mono") || lower.contains("courier")) {
+            family = Font.MONOSPACED;
+        } else if (lower.contains("sans") || lower.contains("helvetica")
+                || lower.contains("arial")) {
+            family = Font.SANS_SERIF;
+        }
+        return family;
     }
 
     private CMapAwareDocumentFont lookupFont(String name) {
@@ -597,8 +608,11 @@ final class OpenPdfCorePageRenderer {
         return v;
     }
 
-    /** Mutable per-graphics-state snapshot. Not thread-safe. */
+    /**
+     * Mutable per-graphics-state snapshot. Not thread-safe.
+     */
     private static final class GState {
+
         Color fillColor = Color.BLACK;
         Color strokeColor = Color.BLACK;
         float lineWidth = 1.0f;
