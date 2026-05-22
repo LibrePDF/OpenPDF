@@ -95,19 +95,63 @@ in-tree legacy parser (`PDFFile`, `PDFPage`, `PDFParser`,
 | Content-stream operator listing (`getContentOperators`) | `openpdf-core` (`PdfContentParser`) |
 | Page rasterization (`renderPage`) | `openpdf-core` (`PdfContentParser`) → Java2D via `OpenPdfCorePageRenderer` |
 
-The Java2D rasterizer (`OpenPdfCorePageRenderer`) supports the standard subset
-of PDF operators needed for typical text + simple-vector PDFs: graphics state
-(`q`/`Q`/`cm`), path construction (`m`/`l`/`c`/`v`/`y`/`re`/`h`), path
-painting (`S`/`s`/`f`/`f*`/`B`/`B*`/`b`/`b*`/`n`), line width (`w`),
-DeviceGray/DeviceRGB colors (`g`/`G`/`rg`/`RG`), and the full text-object
-machinery (`BT`/`ET`/`Tf`/`Tc`/`Tw`/`TL`/`Tz`/`Td`/`TD`/`Tm`/`T*`/`Tj`/`TJ`/`'`/`"`).
-Operators outside this subset (extended graphics state `gs`, CMYK / pattern /
-shading colors, XObject `Do`, inline images, marked content, clipping
-`W`/`W*`, ...) are parsed but currently ignored — pages that rely heavily on
-them may render with missing content. Adding more operators is a localized
-change in `OpenPdfCorePageRenderer`.
+The Java2D rasterizer (`OpenPdfCorePageRenderer`) supports a broad subset of
+PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
 
-For pages that exercise features outside the supported subset and need
+| Category | Operators |
+|---|---|
+| Graphics state | `q`, `Q`, `cm`, `gs` (alpha `CA`/`ca`, line styling `LW`/`ML`/`LC`/`LJ`/`D`, stroke-adjust `SA`) |
+| Line style | `w` (including the PDF §8.4.3.2 zero-width hairline rule), `J`, `j`, `M`, `d`, `i` |
+| Path construction | `m`, `l`, `c`, `v`, `y`, `re`, `h` |
+| Path painting | `S`, `s`, `f`, `F`, `f*`, `B`, `B*`, `b`, `b*`, `n` |
+| Clipping | `W`, `W*` |
+| Colors (DeviceGray / DeviceRGB / DeviceCMYK) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
+| Text state | `BT`, `ET`, `Tf`, `Tc`, `Tw`, `TL`, `Tz`, `Td`, `TD`, `Tm`, `T*`, `Ts` |
+| Text showing | `Tj`, `TJ`, `'`, `"` |
+| XObjects | `Do` (see below) |
+
+| Marked content / compatibility (no-op) | `BMC`, `BDC`, `EMC`, `MP`, `DP`, `BX`, `EX` |
+
+XObject coverage:
+
+- Form XObjects render recursively, applying their own `/Matrix` and `/BBox`
+  under the current CTM with full state save/restore.
+- Image XObjects decode via `ImageIO` for JPEG (`DCTDecode`) and JPEG 2000
+  (`JPXDecode`, where the runtime supports it), and via a manual raster
+  builder for uncompressed / Flate-decoded 8-bit DeviceGray, DeviceRGB and
+  DeviceCMYK streams (CMYK approximated to sRGB on the fly). 8-bit Indexed
+  color images are expanded through their palette into the base color space
+  (DeviceGray / DeviceRGB / DeviceCMYK).
+
+Text rendering: for each `Tf`-selected font, the renderer pulls the
+embedded font program (`FontFile2`/`FontFile3`/`FontFile`) out of the
+FontDescriptor and loads it via `java.awt.Font.createFont`. Embedded
+TrueType fonts therefore render with their own glyph shapes. When a
+font isn't embedded (or the embedded program can't be loaded), the
+renderer falls back to a generic Java2D family picked by PostScript-name
+heuristics &mdash; glyph widths from the PDF font are still respected,
+but shapes are only approximate.
+
+Tables: `OpenPdfCorePageRenderer` honors the PDF §8.4.3.2 zero-width hairline
+rule (`w 0` strokes are rendered as one device pixel rather than collapsing to
+nothing under the page CTM), reads dash patterns and the stroke-adjust flag
+from ExtGState (`D`, `SA`), and enables Java2D `KEY_STROKE_CONTROL =
+VALUE_STROKE_NORMALIZE` so that 0.5pt table borders snap to integer device
+pixels instead of smearing across two rows of antialiased pixels. Full
+`PdfPTable` output (cell-background fills, colored borders, header rows and
+cell text) is exercised by the renderer's test suite.
+
+Inline images (`BI`/`ID`/`EI`) are now rendered: a preprocess pass promotes
+each inline image into a synthetic Image XObject (with JPEG framing detected
+by the JPEG `FFD9` end-of-image marker when the filter is `DCTDecode` to
+sidestep the ambiguous whitespace-bounded `EI` heuristic), then the rest of
+the renderer treats it like any other XObject. Uncompressed, Flate-decoded
+and JPEG inline images are supported. Shading (`sh`), pattern / shading
+colors and type 3 font glyph operators are silently ignored. Pages that
+rely heavily on those features may render with missing content. Adding more
+operators is a localized change in `OpenPdfCorePageRenderer`.
+
+For pages that need features outside this supported subset and you want
 pixel-perfect output today, the deprecated `PDFFile` / `PDFPage.getImage(...)`
 API still works.
 
@@ -152,6 +196,34 @@ try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.p
     String pageText   = renderer.getTextFromPage(1); // openpdf-core text extraction
     // List<String>, e.g. [q, BT, Tf, Td, Tj, ET, Q]
     var operators     = renderer.getContentOperators(1);
+}
+```
+
+### Rendering directly to a `Graphics2D`
+
+Avoid the intermediate `BufferedImage` when the caller already has a target
+surface (Swing component, printer, SVG-backed graphics, ...):
+
+```java
+try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.pdf"))) {
+    BufferedImage out = new BufferedImage(800, 1000, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g2 = out.createGraphics();
+    try {
+        renderer.renderPage(1, g2, 800, 1000); // fit page to the box, preserve aspect
+    } finally {
+        g2.dispose();
+    }
+}
+```
+
+### Batch rendering
+
+```java
+try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.pdf"))) {
+    List<BufferedImage> pages = renderer.renderAllPages(150f);
+    for (int i = 0; i < pages.size(); i++) {
+        ImageIO.write(pages.get(i), "png", new File("page-" + (i + 1) + ".png"));
+    }
 }
 ```
 

@@ -74,7 +74,9 @@ import org.openpdf.text.pdf.parser.PdfTextExtractor;
  */
 public class OpenPdfCoreRenderer implements Closeable {
 
-    /** Default user-space resolution of a PDF, in DPI. */
+    /**
+     * Default user-space resolution of a PDF, in DPI.
+     */
     private static final float PDF_USER_SPACE_DPI = 72f;
 
     private final PdfReader reader;
@@ -278,6 +280,81 @@ public class OpenPdfCoreRenderer implements Closeable {
             g2.dispose();
         }
         return out;
+    }
+
+    /**
+     * Renders the requested page directly onto the supplied {@link Graphics2D},
+     * scaled to fit a target box of {@code targetWidth x targetHeight} pixels.
+     *
+     * <p>Unlike {@link #renderPage(int, float)} this does <em>not</em> allocate
+     * a {@link BufferedImage} &mdash; callers in charge of their own target
+     * surface (e.g. a Swing component's paint method, an SVG-backed graphics,
+     * a printer graphics) can use this overload to avoid the intermediate
+     * raster.</p>
+     *
+     * <p>The DPI is derived from the target size and the page size, picking
+     * the smaller of the horizontal / vertical scales so the page fits without
+     * distortion. The {@link Graphics2D} is left in the state it was in on
+     * entry (current transform and clip are saved and restored).</p>
+     *
+     * @param pageNumber   1-based page number
+     * @param g2           the destination graphics
+     * @param targetWidth  target width in pixels
+     * @param targetHeight target height in pixels
+     * @throws IOException if reading the page fails
+     * @throws IllegalArgumentException if {@code targetWidth} or {@code targetHeight}
+     *         is non-positive, or {@code pageNumber} is out of range
+     * @throws IllegalStateException if this renderer has been closed
+     * @since 3.0.5
+     */
+    public void renderPage(int pageNumber, Graphics2D g2, int targetWidth, int targetHeight)
+            throws IOException {
+        ensureOpen();
+        Objects.requireNonNull(g2, "g2");
+        if (targetWidth <= 0 || targetHeight <= 0) {
+            throw new IllegalArgumentException(
+                    "target size must be > 0, was " + targetWidth + "x" + targetHeight);
+        }
+        int numPages = getNumPages();
+        if (pageNumber < 1 || pageNumber > numPages) {
+            throw new IllegalArgumentException(
+                    "pageNumber " + pageNumber + " out of range [1, " + numPages + "]");
+        }
+        Rectangle2D size = getPageSize(pageNumber);
+        float scaleX = targetWidth / (float) size.getWidth();
+        float scaleY = targetHeight / (float) size.getHeight();
+        float scale = Math.min(scaleX, scaleY);
+        float dpi = scale * PDF_USER_SPACE_DPI;
+
+        java.awt.geom.AffineTransform savedTx = g2.getTransform();
+        java.awt.Shape savedClip = g2.getClip();
+        try {
+            OpenPdfCorePageRenderer.render(reader, pageNumber, g2, targetWidth, targetHeight, dpi);
+        } finally {
+            g2.setTransform(savedTx);
+            g2.setClip(savedClip);
+        }
+    }
+
+    /**
+     * Renders all pages of the document to a list of {@link BufferedImage}s at
+     * the given DPI. Convenience for batch use cases; for large documents,
+     * prefer streaming page-by-page via {@link #renderPage(int, float)} to
+     * avoid holding every page rasterization in memory at once.
+     *
+     * @param dpi target resolution in dots per inch
+     * @return one image per page, in document order
+     * @throws IOException if any page fails to render
+     * @since 3.0.5
+     */
+    public List<BufferedImage> renderAllPages(float dpi) throws IOException {
+        ensureOpen();
+        int pages = getNumPages();
+        List<BufferedImage> images = new ArrayList<>(pages);
+        for (int i = 1; i <= pages; i++) {
+            images.add(renderPage(i, dpi));
+        }
+        return images;
     }
 
     /**
