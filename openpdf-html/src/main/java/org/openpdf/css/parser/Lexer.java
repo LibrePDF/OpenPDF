@@ -1993,9 +1993,7 @@ class Lexer {
             return Token.TK_VERTICAL_BAR;
           }
         case 83: break;
-        case 45: {
-            /* ignore comments */
-          }
+        case 45: //fallthru
         case 84: break;
         case 9: {
             return Token.TK_PERIOD;
