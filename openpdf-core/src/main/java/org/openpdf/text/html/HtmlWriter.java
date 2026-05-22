@@ -329,7 +329,7 @@ public class HtmlWriter extends DocWriter {
         super.open();
         try {
             writeComment(Document.getVersion());
-            writeComment("CreationDate: " + new Date().toString());
+            writeComment("CreationDate: " + new Date());
             addTabs(1);
             writeEnd(HtmlTags.HEAD);
             addTabs(1);
@@ -467,7 +467,7 @@ public class HtmlWriter extends DocWriter {
         addTabs(2);
         writeStart(HtmlTags.SCRIPT);
         write(HtmlTags.LANGUAGE, HtmlTags.JAVASCRIPT);
-        if (markup.size() > 0) {
+        if (!markup.isEmpty()) {
             /* JavaScript reference example:
              *
              * <script language="JavaScript" src="/myPath/MyFunctions.js"/>
@@ -629,7 +629,7 @@ public class HtmlWriter extends DocWriter {
                 if (attributes != null && attributes.get(Chunk.NEWPAGE) != null) {
                     return;
                 }
-                boolean tag = isOtherFont(chunk.getFont()) || markup.size() > 0;
+                boolean tag = isOtherFont(chunk.getFont()) || !markup.isEmpty();
                 if (tag) {
                     // start span tag
                     addTabs(indent);

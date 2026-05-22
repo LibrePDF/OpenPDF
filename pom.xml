@@ -5,7 +5,7 @@
 
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf-parent</artifactId>
-  <version>3.0.5-SNAPSHOT</version> <!-- artifact.version -->
+  <version>3.0.6-SNAPSHOT</version> <!-- artifact.version -->
   <packaging>pom</packaging>
 
   <!-- please run mvn tidy:pom once in a while -->
@@ -70,7 +70,7 @@
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
-    <maven.enforcer.plugin.version>3.6.2</maven.enforcer.plugin.version>
+    <maven.enforcer.plugin.version>3.6.3</maven.enforcer.plugin.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
@@ -101,7 +101,7 @@
     <assertj.version>3.27.7</assertj.version>
     <checkstyle.version>13.4.2</checkstyle.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
-    <junit.version>6.0.3</junit.version>
+    <junit.version>6.1.0</junit.version>
     <mockito5.version>5.18.0</mockito5.version>
   </properties>
 
@@ -262,10 +262,10 @@
                 </banDynamicVersions>
                 <banDuplicatePomDependencyVersions/>
                 <requireMavenVersion>
-                  <version>3.9.0</version>
+                  <version>[3.9,)</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>${java.version}}</version>
+                  <version>[${java.version},)</version>
                 </requireJavaVersion>
                 <requireReleaseDeps>
                   <onlyWhenRelease>true</onlyWhenRelease>
