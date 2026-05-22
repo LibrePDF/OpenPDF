@@ -92,9 +92,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     static final PdfName[] pageInhCandidates = {PdfName.MEDIABOX,
             PdfName.ROTATE, PdfName.RESOURCES, PdfName.CROPBOX};
 
-    private static final byte[] endstream = PdfEncodings
-            .convertToBytes("endstream", null);
+    private static final String ENDSTREAM = "endstream";
+    private static final byte[] endstreamBytes = PdfEncodings
+            .convertToBytes(ENDSTREAM, null);
     private static final byte[] endobj = PdfEncodings.convertToBytes("endobj", null);
+    private static final String FALSE = "false";
+    private static final String ILLEGAL_LENGTH_VALUE = "illegal.length.value";
+    public static final String BAD_USER_PASSWORD = "bad.user.password";
     private final PdfViewerPreferencesImp viewerPreferences = new PdfViewerPreferencesImp();
     protected PRTokeniser tokens;
     // Each xref pair is a position
@@ -1482,12 +1486,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     o = enc.get(PdfName.LENGTH);
                     if (!o.isNumber()) {
                         throw new InvalidPdfException(
-                                MessageLocalization.getComposedMessage("illegal.length.value"));
+                                MessageLocalization.getComposedMessage(ILLEGAL_LENGTH_VALUE));
                     }
                     lengthValue = ((PdfNumber) o).intValue();
                     if (lengthValue > 128 || lengthValue < 40 || lengthValue % 8 != 0) {
                         throw new InvalidPdfException(
-                                MessageLocalization.getComposedMessage("illegal.length.value"));
+                                MessageLocalization.getComposedMessage(ILLEGAL_LENGTH_VALUE));
                     }
                     cryptoMode = PdfWriter.STANDARD_ENCRYPTION_128;
                     break;
@@ -1513,14 +1517,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                                         .getComposedMessage("no.compatible.encryption.found"));
                     }
                     PdfObject em = enc.get(PdfName.ENCRYPTMETADATA);
-                    if (em != null && em.toString().equals("false")) {
+                    if (em != null && em.toString().equals(FALSE)) {
                         cryptoMode |= PdfWriter.DO_NOT_ENCRYPT_METADATA;
                     }
                     break;
                 case 6:
                     cryptoMode = PdfWriter.ENCRYPTION_AES_256_V3;
                     em = enc.get(PdfName.ENCRYPTMETADATA);
-                    if (em != null && em.toString().equals("false")) {
+                    if (em != null && em.toString().equals(FALSE)) {
                         cryptoMode |= PdfWriter.DO_NOT_ENCRYPT_METADATA;
                     }
                     break;
@@ -1548,12 +1552,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     o = enc.get(PdfName.LENGTH);
                     if (!o.isNumber()) {
                         throw new InvalidPdfException(
-                                MessageLocalization.getComposedMessage("illegal.length.value"));
+                                MessageLocalization.getComposedMessage(ILLEGAL_LENGTH_VALUE));
                     }
                     lengthValue = ((PdfNumber) o).intValue();
                     if (lengthValue > 128 || lengthValue < 40 || lengthValue % 8 != 0) {
                         throw new InvalidPdfException(
-                                MessageLocalization.getComposedMessage("illegal.length.value"));
+                                MessageLocalization.getComposedMessage(ILLEGAL_LENGTH_VALUE));
                     }
                     cryptoMode = PdfWriter.STANDARD_ENCRYPTION_128;
                     recipients = (PdfArray) enc.get(PdfName.RECIPIENTS);
@@ -1582,7 +1586,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                                         .getComposedMessage("no.compatible.encryption.found"));
                     }
                     PdfObject em = dic.get(PdfName.ENCRYPTMETADATA);
-                    if (em != null && em.toString().equals("false")) {
+                    if (em != null && em.toString().equals(FALSE)) {
                         cryptoMode |= PdfWriter.DO_NOT_ENCRYPT_METADATA;
                     }
 
@@ -1634,7 +1638,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     if (!equalsArray(uValue, decrypt.userKey,
                             (rValue == 3 || rValue == 4) ? 16 : 32)) {
                         throw new BadPasswordException(
-                                MessageLocalization.getComposedMessage("bad.user.password"));
+                                MessageLocalization.getComposedMessage(BAD_USER_PASSWORD));
                     }
                 } else {
                     ownerPasswordUsed = true;
@@ -1684,13 +1688,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                         // analog of step c of Algorithm 2.A for user password
                         hashAlg2B = decrypt.hashAlg2B(password, Arrays.copyOfRange(uValue, 32, 40), null);
                         if (!equalsArray(hashAlg2B, uValue, 32)) {
-                            throw new BadPasswordException(MessageLocalization.getComposedMessage("bad.user.password"));
+                            throw new BadPasswordException(MessageLocalization.getComposedMessage(BAD_USER_PASSWORD));
                         }
                         // step e of Algorithm 2.A
                         decrypt.setupByUserPassword(documentID, password, uValue, ueValue, oValue, oeValue, pValue);
                         // step f of Algorithm 2.A
                         if (!decrypt.decryptAndCheckPerms(permsValue)) {
-                            throw new BadPasswordException(MessageLocalization.getComposedMessage("bad.user.password"));
+                            throw new BadPasswordException(MessageLocalization.getComposedMessage(BAD_USER_PASSWORD));
                         }
                     }
                     pValue = decrypt.permissions;
@@ -1981,7 +1985,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 String line = tokens.readString(20);
                 if (!line.startsWith("\nendstream")
                         && !line.startsWith("\r\nendstream")
-                        && !line.startsWith("\rendstream") && !line.startsWith("endstream")) {
+                        && !line.startsWith("\rendstream") && !line.startsWith(ENDSTREAM)) {
                     calc = true;
                 }
             }
@@ -1996,14 +2000,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 if (!tokens.readLineSegment(tline)) {
                     break;
                 }
-                if (equalsn(tline, endstream)) {
+                if (equalsn(tline, endstreamBytes)) {
                     streamLength = pos - start;
                     break;
                 }
                 if (equalsn(tline, endobj)) {
                     tokens.seek(pos - 16);
                     String s = tokens.readString(16);
-                    int index = s.indexOf("endstream");
+                    int index = s.indexOf(ENDSTREAM);
                     if (index >= 0) {
                         pos = pos - 16 + index;
                     }
@@ -2523,7 +2527,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                         return new PdfBoolean(true);
                     } // else
                     return PdfBoolean.PDFTRUE;
-                } else if ("false".equals(sv)) {
+                } else if (FALSE.equals(sv)) {
                     if (readDepth == 0) {
                         return new PdfBoolean(false);
                     } // else
@@ -2985,6 +2989,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      *
      * @return the subset prefix
      */
+    @SuppressWarnings("java:S2245") // weak random is here ok
     private String createRandomSubsetPrefix() {
         String s = "";
         for (int k = 0; k < 6; ++k) {

@@ -10,8 +10,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        java: [21, 24, 25, 26, '27-ea'] 
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        java: [21, 25, '27-ea'] # Only LTS and latest
     name: Build with Java ${{ matrix.java }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5

@@ -59,6 +59,7 @@ import org.openpdf.text.error_messages.MessageLocalization;
  */
 public class Executable {
 
+    public static final String OS_NAME = "os.name";
     /**
      * The path to Acrobat Reader.
      */
@@ -77,7 +78,7 @@ public class Executable {
     private static Process action(final String fileName,
             String parameters, boolean waitForTermination) throws IOException {
         Process process = null;
-        if (parameters.trim().length() > 0) {
+        if (!parameters.trim().isEmpty()) {
             parameters = " " + parameters.trim();
         } else {
             parameters = "";
@@ -94,7 +95,7 @@ public class Executable {
                         "cmd /c start acrord32", parameters, " \"", fileName, "\""));
             }
         } else if (isMac()) {
-            if (parameters.trim().length() == 0) {
+            if (parameters.trim().isEmpty()) {
                 process = Runtime.getRuntime().exec(
                         new String[]{"/usr/bin/open", fileName});
             } else {
@@ -271,6 +272,7 @@ public class Executable {
      * @param url the URL you want to open in the browser
      * @throws IOException on error
      */
+    @SuppressWarnings("java:S4036") // PATH is under user-control
     public static void launchBrowser(String url) throws IOException {
         try {
             if (isMac()) {
@@ -305,7 +307,7 @@ public class Executable {
      * @return true if the current os is Windows
      */
     public static boolean isWindows() {
-        String os = System.getProperty("os.name").toLowerCase();
+        String os = System.getProperty(OS_NAME).toLowerCase();
         return os.contains("windows") || os.contains("nt");
     }
 
@@ -315,7 +317,7 @@ public class Executable {
      * @return true if the current os is Windows
      */
     public static boolean isWindows9X() {
-        String os = System.getProperty("os.name").toLowerCase();
+        String os = System.getProperty(OS_NAME).toLowerCase();
         return os.equals("windows 95") || os.equals("windows 98");
     }
 
@@ -325,7 +327,7 @@ public class Executable {
      * @return true if the current os is Apple
      */
     public static boolean isMac() {
-        String os = System.getProperty("os.name").toLowerCase();
+        String os = System.getProperty(OS_NAME).toLowerCase();
         return os.contains("mac");
     }
 
@@ -335,7 +337,7 @@ public class Executable {
      * @return true if the current os is Linux
      */
     public static boolean isLinux() {
-        String os = System.getProperty("os.name").toLowerCase();
+        String os = System.getProperty(OS_NAME).toLowerCase();
         return os.contains("linux");
     }
 }
