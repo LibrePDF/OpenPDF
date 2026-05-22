@@ -5,7 +5,7 @@
 
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf-parent</artifactId>
-  <version>3.0.5-SNAPSHOT</version> <!-- artifact.version -->
+  <version>3.0.6-SNAPSHOT</version> <!-- artifact.version -->
   <packaging>pom</packaging>
 
   <!-- please run mvn tidy:pom once in a while -->
@@ -262,10 +262,10 @@
                 </banDynamicVersions>
                 <banDuplicatePomDependencyVersions/>
                 <requireMavenVersion>
-                  <version>3.9.0</version>
+                  <version>[3.9,)</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>${java.version}}</version>
+                  <version>[${java.version},)</version>
                 </requireJavaVersion>
                 <requireReleaseDeps>
                   <onlyWhenRelease>true</onlyWhenRelease>
