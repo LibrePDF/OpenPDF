@@ -1429,7 +1429,17 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         encryptionError = true;
         byte[] encryptionKey = null;
         encrypted = true;
-        PdfDictionary enc = (PdfDictionary) getPdfObject(encDic);
+        PdfObject encObj = getPdfObject(encDic);
+        if (!(encObj instanceof PdfDictionary)) {
+            // The trailer /Encrypt entry is a dangling indirect reference (no xref entry for the
+            // referenced object) or not a dictionary at all. Other readers (poppler, qpdf) ignore
+            // such an entry and open the document as unencrypted; do the same instead of failing
+            // with a NullPointerException (issue #1588).
+            encrypted = false;
+            encryptionError = false;
+            return;
+        }
+        PdfDictionary enc = (PdfDictionary) encObj;
 
         String s;
         PdfObject o;
