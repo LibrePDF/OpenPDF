@@ -37,9 +37,12 @@ public final class BrotliFilter {
     public static void ensureAvailable() throws IOException {
         try {
             Brotli4jLoader.ensureAvailability();
-        } catch (Exception e) {
-            throw new IOException("Brotli native library could not be loaded. "
-                    + "Add a brotli4j native dependency for your platform.", e);
+        } catch (Exception | LinkageError e) {
+            // LinkageError covers NoClassDefFoundError when the optional brotli4j
+            // dependency is not on the classpath at all.
+            throw new IOException("Brotli support is not available. Add the optional "
+                    + "com.aayushatharva.brotli4j:brotli4j dependency (including the native "
+                    + "library for your platform) to use the /BrotliDecode filter.", e);
         }
     }
 
