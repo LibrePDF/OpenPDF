@@ -256,14 +256,14 @@ PDF readers that do not yet implement ISO/TS 32001.
 
 ### Optional
 
-- [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
+* [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
   dependency)
-  - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
+  * Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
     on which algorithm you are using)
-  - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
-- Apache FOP (`org.apache.xmlgraphics:fop`)
+  * PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
+* Apache FOP (`org.apache.xmlgraphics:fop`)
 * Brotli4j (`com.aayushatharva.brotli4j:brotli4j`) for Brotli stream compression (`/BrotliDecode`)
-- Please refer to our [pom.xml](pom.xml) to see what version is needed.
+* Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
 ## Credits
 
