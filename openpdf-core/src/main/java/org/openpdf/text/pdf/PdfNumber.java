@@ -135,11 +135,17 @@ public class PdfNumber extends PdfObject implements Comparable<PdfNumber> {
 
     /**
      * Returns the primitive <CODE>int</CODE> value of this object.
+     * <p>
+     * The conversion goes through <CODE>long</CODE> to preserve two's complement semantics for
+     * values written as unsigned 32-bit integers. Some PDF producers (e.g. mPDF) store the
+     * <CODE>/P</CODE> permissions entry as an unsigned value such as 4294963412 instead of the
+     * signed -3884 required by ISO 32000; a direct double-to-int cast would clamp such values to
+     * <CODE>Integer.MAX_VALUE</CODE> (JLS 5.1.3) and break the encryption key derivation.
      *
      * @return The value as <CODE>int</CODE>
      */
     public int intValue() {
-        return (int) value;
+        return (int) (long) value;
     }
 
     /**
