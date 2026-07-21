@@ -404,7 +404,8 @@ public class CFFFont {
 
     int getPosition() {
         try {
-            return buf.getFilePointer();
+            // CFF font data is always well below 2 GB, so the narrowing cast is safe
+            return (int) buf.getFilePointer();
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }

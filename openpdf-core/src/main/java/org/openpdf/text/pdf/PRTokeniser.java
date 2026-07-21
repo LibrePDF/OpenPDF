@@ -170,11 +170,11 @@ public class PRTokeniser implements AutoCloseable {
         return null;
     }
 
-    public void seek(int pos) throws IOException {
+    public void seek(long pos) throws IOException {
         file.seek(pos);
     }
 
-    public int getFilePointer() throws IOException {
+    public long getFilePointer() throws IOException {
         return file.getFilePointer();
     }
 
@@ -182,7 +182,7 @@ public class PRTokeniser implements AutoCloseable {
         file.close();
     }
 
-    public int length() throws IOException {
+    public long length() throws IOException {
         return file.length();
     }
 
@@ -270,10 +270,10 @@ public class PRTokeniser implements AutoCloseable {
         file.setStartOffset(idx);
     }
 
-    public int getStartxref() throws IOException {
+    public long getStartxref() throws IOException {
         int step = 1024; // packet size to read the file from the end
         int delta = 8; // delta to provide packets overlapping in case 'startxref' appears split between two packets
-        int pos = file.length() - delta;
+        long pos = file.length() - delta;
         int idx;
         do {
             pos = Math.max(0, pos - step);
@@ -291,7 +291,7 @@ public class PRTokeniser implements AutoCloseable {
         int level = 0;
         String n1 = null;
         String n2 = null;
-        int ptr = 0;
+        long ptr = 0;
         while (nextToken() || level == 2) {
             if (type == TK_COMMENT) {
                 continue;
@@ -574,6 +574,15 @@ public class PRTokeniser implements AutoCloseable {
         return Integer.parseInt(stringValue);
     }
 
+    /**
+     * Returns the current token as a long. Needed for file offsets in PDF documents larger than 2 GB.
+     *
+     * @return the current token parsed as a long
+     */
+    public long longValue() {
+        return Long.parseLong(stringValue);
+    }
+
     public boolean readLineSegment(byte[] input) throws IOException {
         int c = -1;
         boolean eol = false;
@@ -595,7 +604,7 @@ public class PRTokeniser implements AutoCloseable {
                     break;
                 case '\r':
                     eol = true;
-                    int cur = getFilePointer();
+                    long cur = getFilePointer();
                     if ((read()) != '\n') {
                         seek(cur);
                     }
@@ -622,7 +631,7 @@ public class PRTokeniser implements AutoCloseable {
                         break;
                     case '\r':
                         eol = true;
-                        int cur = getFilePointer();
+                        long cur = getFilePointer();
                         if ((read()) != '\n') {
                             seek(cur);
                         }
