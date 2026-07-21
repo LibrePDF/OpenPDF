@@ -41,18 +41,22 @@ class PdfContentStreamHandlerFontCacheTest {
             PdfContentStreamHandler handler = new PdfContentStreamHandler(new MarkedUpTextAssembler(reader)) {
                 @Override
                 void popContext() {
+                    // not needed for the font cache test
                 }
 
                 @Override
                 void pushContext(String newContextName) {
+                    // not needed for the font cache test
                 }
 
                 @Override
                 public void reset() {
+                    // not needed for the font cache test
                 }
 
                 @Override
                 void displayPdfString(PdfString string) {
+                    // not needed for the font cache test
                 }
 
                 @Override
