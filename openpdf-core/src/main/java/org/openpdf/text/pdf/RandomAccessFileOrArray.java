@@ -186,8 +186,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
             return back & 0xff;
         }
         if (arrayIn == null) {
-            insureOpen();
-            return plainRandomAccess ? trf.read() : rf.read();
+            return plainRandomAccess ? openPlainFile().read() : openMappedFile().read();
         } else {
             if (arrayInPtr >= arrayIn.length) {
                 return -1;
@@ -213,8 +212,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
             }
         }
         if (arrayIn == null) {
-            insureOpen();
-            return (plainRandomAccess ? trf.read(b, off, len) : rf.read(b, off, len)) + n;
+            return (plainRandomAccess ? openPlainFile().read(b, off, len) : openMappedFile().read(b, off, len)) + n;
         } else {
             if (arrayInPtr >= arrayIn.length) {
                 return -1;
@@ -298,6 +296,36 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         }
     }
 
+    /**
+     * Returns the open plain {@link RandomAccessFile} backing this object, reopening it if
+     * needed. Never returns {@code null}.
+     *
+     * @throws IOException if there is no backing file or it cannot be reopened
+     */
+    private RandomAccessFile openPlainFile() throws IOException {
+        insureOpen();
+        RandomAccessFile file = trf;
+        if (file == null) {
+            throw new IOException("RandomAccessFileOrArray: the backing file is not open");
+        }
+        return file;
+    }
+
+    /**
+     * Returns the open {@link MappedRandomAccessFile} backing this object, reopening it if
+     * needed. Never returns {@code null}.
+     *
+     * @throws IOException if there is no backing file or it cannot be reopened
+     */
+    private MappedRandomAccessFile openMappedFile() throws IOException {
+        insureOpen();
+        MappedRandomAccessFile file = rf;
+        if (file == null) {
+            throw new IOException("RandomAccessFileOrArray: the backing file is not open");
+        }
+        return file;
+    }
+
     public boolean isOpen() {
         return (filename == null || rf != null || trf != null);
     }
@@ -319,8 +347,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
 
     public long length() throws IOException {
         if (arrayIn == null) {
-            insureOpen();
-            return (plainRandomAccess ? trf.length() : rf.length()) - startOffset;
+            return (plainRandomAccess ? openPlainFile().length() : openMappedFile().length()) - startOffset;
         } else {
             return arrayIn.length - startOffset;
         }
@@ -334,11 +361,10 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         pos += startOffset;
         isBack = false;
         if (arrayIn == null) {
-            insureOpen();
             if (plainRandomAccess) {
-                trf.seek(pos);
+                openPlainFile().seek(pos);
             } else {
-                rf.seek(pos);
+                openMappedFile().seek(pos);
             }
         } else {
             arrayInPtr = (int) pos;
@@ -346,10 +372,10 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
     }
 
     public long getFilePointer() throws IOException {
-        insureOpen();
         int n = isBack ? 1 : 0;
         if (arrayIn == null) {
-            return (plainRandomAccess ? trf.getFilePointer() : rf.getFilePointer()) - n - startOffset;
+            return (plainRandomAccess ? openPlainFile().getFilePointer() : openMappedFile().getFilePointer())
+                    - n - startOffset;
         } else {
             return arrayInPtr - n - startOffset;
         }
@@ -643,12 +669,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
      */
     public java.nio.ByteBuffer getNioByteBuffer() throws IOException {
         if (filename != null) {
-            FileChannel channel;
-            if (plainRandomAccess) {
-                channel = trf.getChannel();
-            } else {
-                channel = rf.getChannel();
-            }
+            FileChannel channel = plainRandomAccess ? openPlainFile().getChannel() : openMappedFile().getChannel();
             return channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
         }
         return java.nio.ByteBuffer.wrap(arrayIn);

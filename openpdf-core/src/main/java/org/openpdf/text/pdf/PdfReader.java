@@ -2208,31 +2208,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     protected boolean readXRefStream(long ptr) throws IOException {
-        tokens.seek(ptr);
-        int thisStream;
-        if (!tokens.nextToken()) {
+        PRStream stm = readXRefStreamObject(ptr);
+        if (stm == null) {
             return false;
         }
-        if (tokens.getTokenType() != PRTokeniser.TK_NUMBER) {
-            return false;
-        }
-        thisStream = tokens.intValue();
-        if (!tokens.nextToken() || tokens.getTokenType() != PRTokeniser.TK_NUMBER) {
-            return false;
-        }
-        if (!tokens.nextToken() || !tokens.getStringValue().equals("obj")) {
-            return false;
-        }
-        PdfObject object = readPRObject();
-        PRStream stm;
-        if (object.isStream()) {
-            stm = (PRStream) object;
-            if (!PdfName.XREF.equals(stm.get(PdfName.TYPE))) {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        int thisStream = stm.getObjNum();
         if (trailer == null) {
             trailer = new PdfDictionary();
             trailer.putAll(stm);
@@ -2288,6 +2268,34 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             return true;
         }
         return readXRefStream(prev);
+    }
+
+    /**
+     * Parses the indirect object at {@code ptr} and returns it if it is a cross-reference stream.
+     *
+     * @param ptr the file offset of the object
+     * @return the xref stream with its object number set, or {@code null} if the object at
+     *         {@code ptr} is not a valid cross-reference stream
+     */
+    private PRStream readXRefStreamObject(long ptr) throws IOException {
+        tokens.seek(ptr);
+        if (!tokens.nextToken() || tokens.getTokenType() != PRTokeniser.TK_NUMBER) {
+            return null;
+        }
+        int streamObjNum = tokens.intValue();
+        if (!tokens.nextToken() || tokens.getTokenType() != PRTokeniser.TK_NUMBER) {
+            return null;
+        }
+        if (!tokens.nextToken() || !tokens.getStringValue().equals("obj")) {
+            return null;
+        }
+        PdfObject object = readPRObject();
+        if (!object.isStream() || !PdfName.XREF.equals(((PRStream) object).get(PdfName.TYPE))) {
+            return null;
+        }
+        PRStream stm = (PRStream) object;
+        stm.setObjNum(streamObjNum, 0);
+        return stm;
     }
 
     /**
