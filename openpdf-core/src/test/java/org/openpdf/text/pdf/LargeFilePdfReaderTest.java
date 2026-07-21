@@ -69,9 +69,9 @@ class LargeFilePdfReaderTest {
         long xrefPos = off3 + obj3.length();
         String xref = "xref\n0 4\n"
                 + "0000000000 65535 f \n"
-                + String.format("%010d 00000 n \n", off1)
-                + String.format("%010d 00000 n \n", off2)
-                + String.format("%010d 00000 n \n", off3)
+                + xrefEntry(off1)
+                + xrefEntry(off2)
+                + xrefEntry(off3)
                 + "trailer\n<< /Size 4 /Root 1 0 R >>\nstartxref\n" + xrefPos + "\n%%EOF";
 
         try (SeekableByteChannel ch = open(file)) {
@@ -90,6 +90,15 @@ class LargeFilePdfReaderTest {
         } finally {
             reader.close();
         }
+    }
+
+    /**
+     * Builds a 20-byte cross-reference table entry. The xref format mandates a single LF (or CR LF)
+     * ending the 20-byte record, so the line ending is deliberately not platform-specific.
+     */
+    private static String xrefEntry(long offset) {
+        String digits = Long.toString(offset);
+        return "0".repeat(10 - digits.length()) + digits + " 00000 n \n";
     }
 
     private static SeekableByteChannel open(Path file) throws IOException {

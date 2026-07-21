@@ -186,6 +186,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
             return back & 0xff;
         }
         if (arrayIn == null) {
+            insureOpen();
             return plainRandomAccess ? trf.read() : rf.read();
         } else {
             if (arrayInPtr >= arrayIn.length) {
@@ -212,6 +213,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
             }
         }
         if (arrayIn == null) {
+            insureOpen();
             return (plainRandomAccess ? trf.read(b, off, len) : rf.read(b, off, len)) + n;
         } else {
             if (arrayInPtr >= arrayIn.length) {

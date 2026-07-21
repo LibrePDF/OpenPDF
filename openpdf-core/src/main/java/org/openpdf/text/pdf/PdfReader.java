@@ -1970,14 +1970,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     private void checkPRStreamLength(PRStream stream) throws IOException {
-        long fileLength = tokens.length();
+        long tokensLength = tokens.length();
         long start = stream.getOffset();
         boolean calc = false;
         int streamLength = 0;
         PdfObject obj = getPdfObjectRelease(stream.get(PdfName.LENGTH));
         if (obj != null && obj.type() == PdfObject.NUMBER) {
             streamLength = ((PdfNumber) obj).intValue();
-            if (streamLength + start > fileLength - 20) {
+            if (streamLength + start > tokensLength - 20) {
                 calc = true;
             } else {
                 tokens.seek(start + streamLength);
@@ -2275,49 +2275,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             int length = index.getAsNumber(idx + 1).intValue();
             ensureXrefSize((start + length) * 2);
             while (length-- > 0) {
-                int type = 1;
-                if (wc[0] > 0) {
-                    type = 0;
-                    for (int k = 0; k < wc[0]; ++k) {
-                        type = (type << 8) + (b[bptr++] & 0xff);
-                    }
-                }
-                long field2 = 0;
-                for (int k = 0; k < wc[1]; ++k) {
-                    field2 = (field2 << 8) + (b[bptr++] & 0xff);
-                }
-                int field3 = 0;
-                for (int k = 0; k < wc[2]; ++k) {
-                    field3 = (field3 << 8) + (b[bptr++] & 0xff);
-                }
-                int base = start * 2;
-                if (xref[base] == 0 && xref[base + 1] == 0) {
-                    switch (type) {
-                        case 0:
-                            xref[base] = -1;
-                            break;
-                        case 1:
-                            xref[base] = field2;
-                            break;
-                        case 2:
-                            xref[base] = field3;
-                            xref[base + 1] = field2;
-                            if (partial) {
-                                objStmToOffset.put((int) field2, 0L);
-                            } else {
-                                Integer on = (int) field2;
-                                IntHashtable seq = objStmMark.get(on);
-                                if (seq == null) {
-                                    seq = new IntHashtable();
-                                    seq.put(field3, 1);
-                                    objStmMark.put(on, seq);
-                                } else {
-                                    seq.put(field3, 1);
-                                }
-                            }
-                            break;
-                    }
-                }
+                bptr = readXRefStreamEntry(b, bptr, wc, start);
                 ++start;
             }
         }
@@ -2330,6 +2288,67 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             return true;
         }
         return readXRefStream(prev);
+    }
+
+    /**
+     * Decodes one cross-reference stream entry starting at {@code bptr} and stores it in the xref
+     * table, unless the object already has an entry from a newer section.
+     *
+     * @param b      the decoded bytes of the xref stream
+     * @param bptr   the position of this entry within {@code b}
+     * @param wc     the /W field widths of the three entry fields
+     * @param objNum the object number this entry describes
+     * @return the position within {@code b} right after this entry
+     */
+    private int readXRefStreamEntry(byte[] b, int bptr, int[] wc, int objNum) {
+        int type = 1;
+        if (wc[0] > 0) {
+            type = 0;
+            for (int k = 0; k < wc[0]; ++k) {
+                type = (type << 8) + (b[bptr++] & 0xff);
+            }
+        }
+        long field2 = 0;
+        for (int k = 0; k < wc[1]; ++k) {
+            field2 = (field2 << 8) + (b[bptr++] & 0xff);
+        }
+        int field3 = 0;
+        for (int k = 0; k < wc[2]; ++k) {
+            field3 = (field3 << 8) + (b[bptr++] & 0xff);
+        }
+        int base = objNum * 2;
+        if (xref[base] == 0 && xref[base + 1] == 0) {
+            switch (type) {
+                case 0:
+                    xref[base] = -1;
+                    break;
+                case 1:
+                    xref[base] = field2;
+                    break;
+                case 2:
+                    xref[base] = field3;
+                    xref[base + 1] = field2;
+                    markObjStmEntry((int) field2, field3);
+                    break;
+                default:
+                    // Per ISO 32000, unknown types shall be treated as references to the null object
+                    break;
+            }
+        }
+        return bptr;
+    }
+
+    /**
+     * Records that object stream {@code objStmNum} holds an object at index {@code idx}, in the
+     * bookkeeping structure matching the current (partial or full) read mode.
+     */
+    private void markObjStmEntry(int objStmNum, int idx) {
+        if (partial) {
+            objStmToOffset.put(objStmNum, 0L);
+        } else {
+            IntHashtable seq = objStmMark.computeIfAbsent(objStmNum, k -> new IntHashtable());
+            seq.put(idx, 1);
+        }
     }
 
     protected void rebuildXref() throws IOException {
