@@ -262,7 +262,7 @@ PDF readers that do not yet implement ISO/TS 32001.
     on which algorithm you are using)
   - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
 - Apache FOP (`org.apache.xmlgraphics:fop`)
-- Brotli4j (`com.aayushatharva.brotli4j:brotli4j`) for Brotli stream compression (`/BrotliDecode`)
+* Brotli4j (`com.aayushatharva.brotli4j:brotli4j`) for Brotli stream compression (`/BrotliDecode`)
 - Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
 ## Credits
