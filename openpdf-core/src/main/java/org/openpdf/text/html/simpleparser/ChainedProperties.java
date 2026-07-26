@@ -64,7 +64,7 @@ import java.util.Optional;
 @Deprecated(since = "2.1.0")
 public class ChainedProperties {
 
-    public final static int[] fontSizes = {8, 10, 12, 14, 18, 24, 36};
+    public static final int[] fontSizes = {8, 10, 12, 14, 18, 24, 36};
 
     /**
      * Will be replaced with types alternative

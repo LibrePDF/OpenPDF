@@ -426,7 +426,7 @@ public class XMLResource extends AbstractResource {
     }
 
 
-    private static abstract class ObjectPool<T> {
+    private abstract static class ObjectPool<T> {
         private final Queue<Reference<T>> pool;
 
         private ObjectPool(int capacity) {

@@ -36,7 +36,7 @@ public class ColumnObjects {
     /**
      * Some data we want to output.
      */
-    static public String[] headings = {
+    public static String[] headings = {
             "Book/Product Model:",
             "Sales Handle:",
             "Why We Published this Book/Product Model:",
@@ -51,7 +51,7 @@ public class ColumnObjects {
     /**
      * Some text we want to output.
      */
-    static public String[] texts = {
+    public static String[] texts = {
             "Ideally, choose one title (2-3 if absolutely necessary) that this book should perform like. Include full "
                     + "title, ISBN, author, and any sell through numbers if possible.",
             "One line description about the sales.",

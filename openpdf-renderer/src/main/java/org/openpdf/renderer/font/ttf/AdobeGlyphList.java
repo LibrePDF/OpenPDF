@@ -54,9 +54,9 @@ import java.util.*;
 public class AdobeGlyphList {
 
     /** provide a translation from a glyph name to the possible unicode values. */
-    static private HashMap<String, int[]> glyphToUnicodes;
+    private static HashMap<String, int[]> glyphToUnicodes;
     /** provide a translation from a unicode value to a glyph name. */
-    static private HashMap<Integer, String> unicodeToGlyph;
+    private static HashMap<Integer, String> unicodeToGlyph;
     /** the loader thread we are reading through. */
     static Thread glyphLoaderThread = null;
 

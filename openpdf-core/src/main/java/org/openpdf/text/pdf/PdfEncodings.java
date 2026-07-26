@@ -572,7 +572,7 @@ public class PdfEncodings {
 
     private static class WingdingsConversion implements ExtraEncoding {
 
-        private final static byte[] table = {0, 35, 34, 0, 0, 0, 41, 62, 81,
+        private static final byte[] table = {0, 35, 34, 0, 0, 0, 41, 62, 81,
                 42, 0, 0, 65, 63, 0, 0, 0, 0, 0, -4, 0, 0, 0, -5, 0, 0, 0, 0,
                 0, 0, 86, 0, 88, 89, 0, 0, 0, 0, 0, 0, 0, 0, -75, 0, 0, 0, 0,
                 0, -74, 0, 0, 0, -83, -81, -84, 0, 0, 0, 0, 0, 0, 0, 0, 124,
@@ -631,7 +631,7 @@ public class PdfEncodings {
 
     private static class Cp437Conversion implements ExtraEncoding {
 
-        private final static char[] table = {'\u00C7', '\u00FC', '\u00E9',
+        private static final char[] table = {'\u00C7', '\u00FC', '\u00E9',
                 '\u00E2', '\u00E4', '\u00E0', '\u00E5', '\u00E7', '\u00EA',
                 '\u00EB', '\u00E8', '\u00EF', '\u00EE', '\u00EC', '\u00C4',
                 '\u00C5', '\u00C9', '\u00E6', '\u00C6', '\u00F4', '\u00F6',
@@ -724,7 +724,7 @@ public class PdfEncodings {
 
         private static final IntHashtable t1 = new IntHashtable();
         private static final IntHashtable t2 = new IntHashtable();
-        private final static char[] table1 = {' ', '!', '\u2200', '#',
+        private static final char[] table1 = {' ', '!', '\u2200', '#',
                 '\u2203', '%', '&', '\u220b', '(', ')', '*', '+', ',', '-',
                 '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                 ':', ';', '<', '=', '>', '?', '\u2245', '\u0391', '\u0392',
@@ -757,7 +757,7 @@ public class PdfEncodings {
                 '\0', '\u232a', '\u222b', '\u2320', '\u23ae', '\u2321',
                 '\u239e', '\u239f', '\u23a0', '\u23a4', '\u23a5', '\u23a6',
                 '\u23ab', '\u23ac', '\u23ad', '\0'};
-        private final static char[] table2 = {'\u0020', '\u2701', '\u2702',
+        private static final char[] table2 = {'\u0020', '\u2701', '\u2702',
                 '\u2703', '\u2704', '\u260e', '\u2706', '\u2707', '\u2708',
                 '\u2709', '\u261b', '\u261e', '\u270C', '\u270D', '\u270E',
                 '\u270F', '\u2710', '\u2711', '\u2712', '\u2713', '\u2714',

@@ -29,7 +29,7 @@ import org.openpdf.text.pdf.PdfWriter;
  */
 public class EncodingFont {
 
-    final static char[] SYMBOL_TABLE = {
+    static final char[] SYMBOL_TABLE = {
             ' ', '!', '\u2200', '#', '\u2203', '%', '&', '\u220b', '(', ')', '*', '+', ',', '-', '.', '/',
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
             '\u2245', '\u0391', '\u0392', '\u03a7', '\u0394', '\u0395', '\u03a6', '\u0393', '\u0397', '\u0399',
@@ -55,7 +55,7 @@ public class EncodingFont {
             '\0', '\u232a', '\u222b', '\u2320', '\u23ae', '\u2321', '\u239e', '\u239f', '\u23a0', '\u23a4', '\u23a5',
             '\u23a6', '\u23ab', '\u23ac', '\u23ad', '\0'
     };
-    final static char[] DINGBATS_TABLE = {
+    static final char[] DINGBATS_TABLE = {
             '\u0020', '\u2701', '\u2702', '\u2703', '\u2704', '\u260e', '\u2706', '\u2707', '\u2708', '\u2709',
             '\u261b', '\u261e', '\u270C', '\u270D', '\u270E', '\u270F',
             '\u2710', '\u2711', '\u2712', '\u2713', '\u2714', '\u2715', '\u2716', '\u2717', '\u2718', '\u2719',

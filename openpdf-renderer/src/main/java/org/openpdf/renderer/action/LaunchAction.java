@@ -13,7 +13,7 @@ import org.openpdf.renderer.PDFParseException;
  ****************************************************************************/
 public class LaunchAction extends PDFAction {
     // file separator according to PDF spec
-    public final static String SOLIDUS = "/";
+    public static final String SOLIDUS = "/";
 
     /** the file/application to be opened (optional)*/
     private FileSpec file;

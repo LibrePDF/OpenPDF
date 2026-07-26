@@ -57,7 +57,7 @@ import org.openpdf.toolbox.arguments.filters.PdfFilter;
  */
 public class Encrypt extends AbstractTool {
 
-    private final static int[] PERMISSIONS = {
+    private static final int[] PERMISSIONS = {
             PdfWriter.ALLOW_PRINTING,
             PdfWriter.ALLOW_MODIFY_CONTENTS,
             PdfWriter.ALLOW_COPY,
@@ -66,7 +66,7 @@ public class Encrypt extends AbstractTool {
             PdfWriter.ALLOW_SCREENREADERS,
             PdfWriter.ALLOW_ASSEMBLY,
             PdfWriter.ALLOW_DEGRADED_PRINTING};
-    private final static String[] PERMISSION_OPTIONS = {
+    private static final String[] PERMISSION_OPTIONS = {
             "AllowPrinting",
             "AllowModifyContents",
             "AllowCopy",

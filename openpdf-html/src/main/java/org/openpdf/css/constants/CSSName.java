@@ -780,7 +780,7 @@ public final class CSSName implements Comparable<CSSName> {
                     new PrimitivePropertyBuilders.Orphans()
             );
     
-    public final static CSSName OPACITY =
+    public static final CSSName OPACITY =
             addProperty(
                     "opacity",
                     PRIMITIVE,

@@ -52,7 +52,7 @@ public class PDFDocCharsetEncoder extends CharsetEncoder {
      * For each character that exists in PDFDocEncoding, identifies whether
      * the byte value in UTF-16BE is the same as it is in PDFDocEncoding
      */
-    final static boolean[] IDENT_PDF_DOC_ENCODING_MAP = new boolean[256];
+    static final boolean[] IDENT_PDF_DOC_ENCODING_MAP = new boolean[256];
 
     /**
      * For non-identity encoded characters, maps from the character to
@@ -60,7 +60,7 @@ public class PDFDocCharsetEncoder extends CharsetEncoder {
      * coded character is absent from this map, that character is unmappable
      * in the PDFDocEncoding.
      */
-    final static Map<Character, Byte> EXTENDED_TO_PDF_DOC_ENCODING_MAP =
+    static final Map<Character, Byte> EXTENDED_TO_PDF_DOC_ENCODING_MAP =
             new HashMap<Character, Byte>();
 
     static {

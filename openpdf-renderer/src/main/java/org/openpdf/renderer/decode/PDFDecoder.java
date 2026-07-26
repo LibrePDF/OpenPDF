@@ -45,7 +45,7 @@ import org.openpdf.renderer.PDFParseException;
 @Deprecated
 public class PDFDecoder {
 
-    public final static Set<String> DCT_FILTERS = new HashSet<String>(Arrays.asList("DCT", "DCTDecode"));
+    public static final Set<String> DCT_FILTERS = new HashSet<String>(Arrays.asList("DCT", "DCTDecode"));
 
     /** Creates a new instance of PDFDecoder */
     private PDFDecoder() {

@@ -887,7 +887,7 @@ public class CFFFont {
     /**
      * List items for the linked list that builds the new CID font.
      */
-    protected static abstract class Item {
+    protected abstract static class Item {
 
         protected int myOffset = -1;
 
@@ -915,7 +915,7 @@ public class CFFFont {
         }
     }
 
-    protected static abstract class OffsetItem extends Item {
+    protected abstract static class OffsetItem extends Item {
 
         public int value;
 
@@ -969,7 +969,7 @@ public class CFFFont {
      * need a specific size in bytes (for offset arrays) and a negative value means that this is a dict item that uses a
      * variable-size representation.
      */
-    static protected final class IndexOffsetItem extends OffsetItem {
+    protected static final class IndexOffsetItem extends OffsetItem {
 
         public final int size;
 
@@ -1016,13 +1016,13 @@ public class CFFFont {
         }
     }
 
-    static protected final class IndexBaseItem extends Item {
+    protected static final class IndexBaseItem extends Item {
 
         public IndexBaseItem() {
         }
     }
 
-    static protected final class IndexMarkerItem extends Item {
+    protected static final class IndexMarkerItem extends Item {
 
         private final OffsetItem offItem;
         private final IndexBaseItem indexBase;
@@ -1042,7 +1042,7 @@ public class CFFFont {
      * TODO To change the template for this generated type comment go to Window - Preferences - Java - Code Generation -
      * Code and Comments
      */
-    static protected final class SubrMarkerItem extends Item {
+    protected static final class SubrMarkerItem extends Item {
 
         private final OffsetItem offItem;
         private final IndexBaseItem indexBase;
@@ -1061,7 +1061,7 @@ public class CFFFont {
     /**
      * an unknown offset in a dictionary for the list. We will fix up the offset later; for now, assume it's large.
      */
-    static protected final class DictOffsetItem extends OffsetItem {
+    protected static final class DictOffsetItem extends OffsetItem {
 
         public final int size;
 
@@ -1090,7 +1090,7 @@ public class CFFFont {
      * Card24 item.
      */
 
-    static protected final class UInt24Item extends Item {
+    protected static final class UInt24Item extends Item {
 
         public int value;
 
@@ -1115,7 +1115,7 @@ public class CFFFont {
      * Card32 item.
      */
 
-    static protected final class UInt32Item extends Item {
+    protected static final class UInt32Item extends Item {
 
         public int value;
 
@@ -1141,7 +1141,7 @@ public class CFFFont {
      * A SID or Card16 item.
      */
 
-    static protected final class UInt16Item extends Item {
+    protected static final class UInt16Item extends Item {
 
         public char value;
 
@@ -1165,7 +1165,7 @@ public class CFFFont {
      * A Card8 item.
      */
 
-    static protected final class UInt8Item extends Item {
+    protected static final class UInt8Item extends Item {
 
         public char value;
 
@@ -1184,7 +1184,7 @@ public class CFFFont {
         }
     }
 
-    static protected final class StringItem extends Item {
+    protected static final class StringItem extends Item {
 
         public String s;
 
@@ -1209,7 +1209,7 @@ public class CFFFont {
      * representation.
      */
 
-    static protected final class DictNumberItem extends Item {
+    protected static final class DictNumberItem extends Item {
 
         public final int value;
         public int size = 5;
@@ -1239,7 +1239,7 @@ public class CFFFont {
      * An offset-marker item for the list. It is used to mark an offset and to set the offset list item.
      */
 
-    static protected final class MarkerItem extends Item {
+    protected static final class MarkerItem extends Item {
 
         OffsetItem p;
 

@@ -63,14 +63,14 @@ import org.openpdf.text.pdf.PdfWriter;
  */
 public class EncryptPdf {
 
-    private final static int INPUT_FILE = 0;
-    private final static int OUTPUT_FILE = 1;
-    private final static int USER_PASSWORD = 2;
-    private final static int OWNER_PASSWORD = 3;
-    private final static int PERMISSIONS = 4;
-    private final static int STRENGTH = 5;
-    private final static int MOREINFO = 6;
-    private final static int[] permit = {
+    private static final int INPUT_FILE = 0;
+    private static final int OUTPUT_FILE = 1;
+    private static final int USER_PASSWORD = 2;
+    private static final int OWNER_PASSWORD = 3;
+    private static final int PERMISSIONS = 4;
+    private static final int STRENGTH = 5;
+    private static final int MOREINFO = 6;
+    private static final int[] permit = {
             PdfWriter.ALLOW_PRINTING,
             PdfWriter.ALLOW_MODIFY_CONTENTS,
             PdfWriter.ALLOW_COPY,

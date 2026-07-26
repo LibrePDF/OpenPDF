@@ -120,7 +120,7 @@ public class PDFPassword {
      * possible strategies that an encrypting application might take to convert
      * a string to an array of bytes
      */
-    private final static PasswordByteGenerator[] PASSWORD_BYTE_GENERATORS =
+    private static final PasswordByteGenerator[] PASSWORD_BYTE_GENERATORS =
             new PasswordByteGenerator[]{
 
                     // The best option, and that recommended by the spec, is
@@ -204,7 +204,7 @@ public class PDFPassword {
      * configurable mechanism to replace or ignore characters that are
      * unrepresentable according to the encoder.
      */
-    private static abstract class CharsetEncoderGenerator
+    private abstract static class CharsetEncoderGenerator
             implements PasswordByteGenerator {
 
         private Byte replacementByte;
