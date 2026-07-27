@@ -1962,6 +1962,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 Map.Entry entry = (Map.Entry) o;
                 int n = (Integer) entry.getKey();
                 IntHashtable h = (IntHashtable) entry.getValue();
+                // A corrupt xref stream can reference an object stream number that is out of
+                // range, or that does not actually point at a stream object. Skip such entries
+                // instead of letting an IndexOutOfBoundsException/ClassCastException escape.
+                if (n < 0 || n >= xrefObj.size() || !(xrefObj.get(n) instanceof PRStream)) {
+                    continue;
+                }
                 readObjStm((PRStream) xrefObj.get(n), h);
                 xrefObj.set(n, null);
             }
