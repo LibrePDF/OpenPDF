@@ -151,19 +151,6 @@ colors and type 3 font glyph operators are silently ignored. Pages that
 rely heavily on those features may render with missing content. Adding more
 operators is a localized change in `OpenPdfCorePageRenderer`.
 
-Annotations: after the page content stream, each entry in `/Annots` has its
-normal appearance stream (`/AP /N` &mdash; directly a stream, or a
-sub-dictionary of named states selected by `/AS`, e.g. a checkbox's
-`/Yes`/`/Off`) rendered at its `/Rect`, per the PDF §12.5.5 placement
-algorithm (the appearance's `/BBox` is mapped through its own `/Matrix`,
-then fitted to `/Rect` by independent X/Y scale + translate). This covers
-stamps, highlights, free text callouts, square/circle markup, and filled-in
-form field appearances &mdash; anything a PDF producer already baked into an
-appearance stream. Annotations flagged Hidden or NoView (`/F` bits 2/6),
-Popup annotations, and annotations with no usable `/AP` (or an `/AS` that
-doesn't resolve to a state) are skipped; the renderer doesn't synthesize an
-appearance (e.g. a Link's default invisible border) when one isn't present.
-
 For pages that need features outside this supported subset and you want
 pixel-perfect output today, the deprecated `PDFFile` / `PDFPage.getImage(...)`
 API still works.
@@ -421,7 +408,7 @@ mvn javadoc:javadoc
 | ICC Profiles | ✅ Full |
 | Images (JPEG, PNG) | ✅ Full |
 | Transparency | ✅ Partial |
-| Annotations | ⚠️ Appearance streams only (no synthesized default appearances) |
+| Annotations | ⚠️ Basic |
 | Forms | ⚠️ Limited |
 | Encryption | ❌ Removed |
 
