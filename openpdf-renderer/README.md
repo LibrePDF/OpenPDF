@@ -106,7 +106,7 @@ PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
 | Path painting | `S`, `s`, `f`, `F`, `f*`, `B`, `B*`, `b`, `b*`, `n` |
 | Clipping | `W`, `W*` |
 | Colors (DeviceGray / DeviceRGB / DeviceCMYK) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
-| Text state | `BT`, `ET`, `Tf`, `Tc`, `Tw`, `TL`, `Tz`, `Td`, `TD`, `Tm`, `T*`, `Ts` |
+| Text state | `BT`, `ET`, `Tf`, `Tc`, `Tw`, `TL`, `Tz`, `Td`, `TD`, `Tm`, `T*`, `Ts`, `Tr` |
 | Text showing | `Tj`, `TJ`, `'`, `"` |
 | XObjects | `Do` (see below) |
 
@@ -131,6 +131,15 @@ font isn't embedded (or the embedded program can't be loaded), the
 renderer falls back to a generic Java2D family picked by PostScript-name
 heuristics &mdash; glyph widths from the PDF font are still respected,
 but shapes are only approximate.
+
+The text rendering mode (`Tr`, PDF §9.3.3) is honored: mode 0 fills glyphs
+(the default), mode 1 strokes their outlines in the current stroke color/line
+style, mode 2 fills then strokes, and modes 3 and 7 are invisible &mdash; the
+glyphs are not painted at all, which is exactly what scanned-PDF / OCR
+workflows rely on to lay an invisible, searchable text layer over a page-image
+XObject. Modes 4-6 (which additionally add the glyphs to the clipping path)
+render using their 0-2 fill/stroke behavior but do not affect the clip, since
+text-based clipping paths are not implemented.
 
 Tables: `OpenPdfCorePageRenderer` honors the PDF §8.4.3.2 zero-width hairline
 rule (`w 0` strokes are rendered as one device pixel rather than collapsing to
