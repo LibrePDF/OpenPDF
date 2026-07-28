@@ -122,13 +122,6 @@ XObject coverage:
   DeviceCMYK streams (CMYK approximated to sRGB on the fly). 8-bit Indexed
   color images are expanded through their palette into the base color space
   (DeviceGray / DeviceRGB / DeviceCMYK).
-- An image's `/SMask` (soft mask, PDF §11.6.5.3) is decoded as an 8-bit
-  DeviceGray alpha channel and composited onto it &mdash; the mechanism behind
-  transparent-background PNGs (logos, product photos, ...) embedded in a PDF.
-  The soft mask may be JPEG/JPX, Flate-decoded or uncompressed, and its own
-  `/Width`/`/Height` need not match the base image (resampled with nearest-
-  neighbor when they differ). `/Mask` (stencil / color-key masking) is not
-  yet supported.
 
 Text rendering: for each `Tf`-selected font, the renderer pulls the
 embedded font program (`FontFile2`/`FontFile3`/`FontFile`) out of the
