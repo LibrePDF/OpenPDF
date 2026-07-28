@@ -1819,7 +1819,7 @@ final class OpenPdfCorePageRenderer {
         }
         ColorSpaceKind literal = literalDeviceColorSpace(name);
         if (literal != ColorSpaceKind.UNKNOWN) {
-            return new ColorSpaceInfo(literal, null);
+            return new ColorSpaceInfo(literal, NO_LAB_WHITE_POINT);
         }
         return classifyColorSpaceDefinition(resolveColorSpaceResource(name));
     }
@@ -1856,20 +1856,20 @@ final class OpenPdfCorePageRenderer {
 
     private static ColorSpaceInfo classifyColorSpaceDefinition(PdfObject direct) {
         if (direct instanceof PdfName name) {
-            return new ColorSpaceInfo(literalDeviceColorSpace(name), null);
+            return new ColorSpaceInfo(literalDeviceColorSpace(name), NO_LAB_WHITE_POINT);
         }
         if (!(direct instanceof PdfArray arr) || arr.size() < 1) {
             return ColorSpaceInfo.UNKNOWN;
         }
         PdfObject head = arr.getDirectObject(0);
         if (CS_ICC_BASED.equals(head)) {
-            return new ColorSpaceInfo(kindForComponentCount(iccBasedComponents(arr)), null);
+            return new ColorSpaceInfo(kindForComponentCount(iccBasedComponents(arr)), NO_LAB_WHITE_POINT);
         }
         if (CS_CAL_GRAY.equals(head)) {
-            return new ColorSpaceInfo(ColorSpaceKind.GRAY, null);
+            return new ColorSpaceInfo(ColorSpaceKind.GRAY, NO_LAB_WHITE_POINT);
         }
         if (CS_CAL_RGB.equals(head)) {
-            return new ColorSpaceInfo(ColorSpaceKind.RGB, null);
+            return new ColorSpaceInfo(ColorSpaceKind.RGB, NO_LAB_WHITE_POINT);
         }
         if (CS_LAB.equals(head)) {
             return new ColorSpaceInfo(ColorSpaceKind.LAB, labWhitePointFrom(arr));
@@ -1890,17 +1890,22 @@ final class OpenPdfCorePageRenderer {
         }
     }
 
+    // Sentinel for "no explicit Lab /WhitePoint" -- callers fall back to a default D50 white
+    // point. Using an empty array rather than null avoids null-array returns/fields.
+    private static final float[] NO_LAB_WHITE_POINT = new float[0];
+
     /**
-     * Reads the {@code /WhitePoint} of a {@code [/Lab dict]} color-space array, or {@code null}
-     * if absent/malformed (callers fall back to a default D50 white point).
+     * Reads the {@code /WhitePoint} of a {@code [/Lab dict]} color-space array, or
+     * {@link #NO_LAB_WHITE_POINT} if absent/malformed (callers fall back to a default D50 white
+     * point).
      */
     private static float[] labWhitePointFrom(PdfArray labArray) {
         if (labArray.size() < 2 || !(labArray.getDirectObject(1) instanceof PdfDictionary dict)) {
-            return null;
+            return NO_LAB_WHITE_POINT;
         }
         PdfArray wp = dict.getAsArray(PdfName.WHITEPOINT);
         if (wp == null || wp.size() < 3) {
-            return null;
+            return NO_LAB_WHITE_POINT;
         }
         return new float[]{floatAt(wp, 0), floatAt(wp, 1), floatAt(wp, 2)};
     }
@@ -1913,47 +1918,48 @@ final class OpenPdfCorePageRenderer {
      * Picks numeric operands matching the active color space; non-numeric operands (e.g. pattern names) yield default.
      */
     private static Color colorFromOperands(ColorSpaceKind kind, float[] labWhitePoint, List<PdfObject> operands) {
+        int numericCount = countNumericOperands(operands);
+        switch (kind) {
+            case GRAY:
+                return numericCount >= 1 ? gray(num(operands, 0)) : defaultColorFor(kind);
+            case RGB:
+                return numericCount >= 3
+                        ? rgb(num(operands, 0), num(operands, 1), num(operands, 2)) : defaultColorFor(kind);
+            case CMYK:
+                return numericCount >= 4
+                        ? cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3))
+                        : defaultColorFor(kind);
+            case LAB:
+                return numericCount >= 3
+                        ? labToRgb(labWhitePoint, num(operands, 0), num(operands, 1), num(operands, 2))
+                        : defaultColorFor(kind);
+            default:
+                // Color space is unknown / unsupported: infer from operand count instead.
+                return colorFromOperandCountOnly(numericCount, operands);
+        }
+    }
+
+    private static int countNumericOperands(List<PdfObject> operands) {
         int numericCount = 0;
         for (int i = 0; i < operands.size() - 1; i++) {
             if (operands.get(i) instanceof PdfNumber) {
                 numericCount++;
             }
         }
-        switch (kind) {
-            case GRAY:
-                if (numericCount >= 1) {
-                    return gray(num(operands, 0));
-                }
-                break;
-            case RGB:
-                if (numericCount >= 3) {
-                    return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
-                }
-                break;
-            case CMYK:
-                if (numericCount >= 4) {
-                    return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
-                }
-                break;
-            case LAB:
-                if (numericCount >= 3) {
-                    return labToRgb(labWhitePoint, num(operands, 0), num(operands, 1), num(operands, 2));
-                }
-                break;
-            default:
-                // Fall through: infer from operand count when color space is unknown / unsupported.
-                if (numericCount >= 4) {
-                    return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
-                }
-                if (numericCount == 3) {
-                    return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
-                }
-                if (numericCount == 1) {
-                    return gray(num(operands, 0));
-                }
-                break;
+        return numericCount;
+    }
+
+    private static Color colorFromOperandCountOnly(int numericCount, List<PdfObject> operands) {
+        if (numericCount >= 4) {
+            return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
         }
-        return defaultColorFor(kind);
+        if (numericCount == 3) {
+            return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
+        }
+        if (numericCount == 1) {
+            return gray(num(operands, 0));
+        }
+        return defaultColorFor(ColorSpaceKind.UNKNOWN);
     }
 
     // D50, the reference white point PDF's Lab color space conventionally assumes when a
@@ -1964,13 +1970,13 @@ final class OpenPdfCorePageRenderer {
 
     /**
      * Converts a CIE L*a*b* color (PDF §8.6.5.4) to sRGB via CIEXYZ, using {@code whitePoint}
-     * ({@code null} defaults to D50). Lab components are not directly comparable to RGB/gray
-     * (L is 0-100, a and b are roughly -100..100), so treating them as raw RGB &mdash; the
-     * previous fallback behavior for an unrecognized color space &mdash; produced wrong colors;
-     * this does the standard inverse Lab transform instead.
+     * (fewer than 3 elements, e.g. {@link #NO_LAB_WHITE_POINT}, defaults to D50). Lab components
+     * are not directly comparable to RGB/gray (L is 0-100, a and b are roughly -100..100), so
+     * treating them as raw RGB &mdash; the previous fallback behavior for an unrecognized color
+     * space &mdash; produced wrong colors; this does the standard inverse Lab transform instead.
      */
     private static Color labToRgb(float[] whitePoint, float lStar, float aStar, float bStar) {
-        float[] white = whitePoint != null ? whitePoint : DEFAULT_LAB_WHITE_POINT;
+        float[] white = whitePoint.length >= 3 ? whitePoint : DEFAULT_LAB_WHITE_POINT;
         float fy = (lStar + 16f) / 116f;
         float fx = fy + aStar / 500f;
         float fz = fy - bStar / 200f;
@@ -2001,11 +2007,35 @@ final class OpenPdfCorePageRenderer {
 
     /**
      * Result of resolving a {@code cs}/{@code CS} operand: the classified {@link ColorSpaceKind}
-     * plus, for {@link ColorSpaceKind#LAB}, the color space's {@code /WhitePoint} (or
-     * {@code null} to use the default) needed to later convert {@code sc}/{@code scn} operands.
+     * plus, for {@link ColorSpaceKind#LAB}, the color space's {@code /WhitePoint} (or an empty
+     * array to use the default) needed to later convert {@code sc}/{@code scn} operands.
      */
     private record ColorSpaceInfo(ColorSpaceKind kind, float[] labWhitePoint) {
-        static final ColorSpaceInfo UNKNOWN = new ColorSpaceInfo(ColorSpaceKind.UNKNOWN, null);
+        static final ColorSpaceInfo UNKNOWN = new ColorSpaceInfo(ColorSpaceKind.UNKNOWN, NO_LAB_WHITE_POINT);
+
+        // Records generate equals()/hashCode()/toString() from component identity by default,
+        // which for an array component compares references rather than content; override
+        // explicitly so two infos with equal white points compare equal.
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof ColorSpaceInfo other)) {
+                return false;
+            }
+            return kind == other.kind && Arrays.equals(labWhitePoint, other.labWhitePoint);
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * kind.hashCode() + Arrays.hashCode(labWhitePoint);
+        }
+
+        @Override
+        public String toString() {
+            return "ColorSpaceInfo[kind=" + kind + ", labWhitePoint=" + Arrays.toString(labWhitePoint) + "]";
+        }
     }
 
     /**
@@ -2018,10 +2048,10 @@ final class OpenPdfCorePageRenderer {
         ColorSpaceKind fillColorSpace = ColorSpaceKind.GRAY;
         ColorSpaceKind strokeColorSpace = ColorSpaceKind.GRAY;
         // Set alongside fillColorSpace/strokeColorSpace whenever a `cs`/`CS` resolves to a Lab
-        // color space; null (default D50) otherwise. Only meaningful when the paired
-        // ColorSpaceKind is LAB.
-        float[] fillLabWhitePoint;
-        float[] strokeLabWhitePoint;
+        // color space; NO_LAB_WHITE_POINT (default D50) otherwise. Only meaningful when the
+        // paired ColorSpaceKind is LAB.
+        float[] fillLabWhitePoint = NO_LAB_WHITE_POINT;
+        float[] strokeLabWhitePoint = NO_LAB_WHITE_POINT;
         float fillAlpha = 1.0f;
         float strokeAlpha = 1.0f;
 
