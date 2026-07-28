@@ -299,30 +299,40 @@ class OpenPdfCorePageRendererOperatorsTest {
     }
 
     /**
-     * PDF §12.5.5: an annotation's visible content is its {@code /AP /N} appearance stream,
-     * positioned in the page by mapping the stream's {@code /BBox} (through its {@code /Matrix})
-     * onto the annotation's {@code /Rect}. Before this support, {@code OpenPdfCorePageRenderer}
-     * only walked the page content stream and never looked at {@code /Annots} at all, so stamps,
-     * highlights, and form-field appearances were invisible no matter what. This builds an
-     * annotation whose appearance is an orange-filled template and checks it actually paints at
-     * its {@code /Rect} location.
+     * Builds a single-page PDF with a Square annotation whose {@code /AP /N} appearance is an
+     * orange-filled template at Rect {@code [40, 120, 140, 180]}, optionally Hidden-flagged.
+     * Shared by {@link #rendersAnnotationNormalAppearanceStream()} and
+     * {@link #skipsHiddenAnnotationAppearance()}.
      */
-    @Test
-    void rendersAnnotationNormalAppearanceStream() throws Exception {
-        byte[] pdf = buildPdf(cb -> {
+    private static byte[] buildAnnotatedPdf(boolean hidden) throws Exception {
+        return buildPdf(cb -> {
             org.openpdf.text.pdf.PdfTemplate appearance = cb.createTemplate(100f, 60f);
             appearance.setRGBColorFillF(1f, 0.5f, 0f); // orange
             appearance.rectangle(0f, 0f, 100f, 60f);
             appearance.fill();
 
-            org.openpdf.text.pdf.PdfWriter writer = cb.getPdfWriter();
+            PdfWriter writer = cb.getPdfWriter();
             org.openpdf.text.pdf.PdfAnnotation annotation =
-                    new org.openpdf.text.pdf.PdfAnnotation(writer,
-                            new org.openpdf.text.Rectangle(40f, 120f, 140f, 180f));
+                    new org.openpdf.text.pdf.PdfAnnotation(writer, new Rectangle(40f, 120f, 140f, 180f));
             annotation.put(org.openpdf.text.pdf.PdfName.SUBTYPE, org.openpdf.text.pdf.PdfName.SQUARE);
             annotation.setAppearance(org.openpdf.text.pdf.PdfAnnotation.APPEARANCE_NORMAL, appearance);
+            if (hidden) {
+                annotation.setFlags(org.openpdf.text.pdf.PdfAnnotation.FLAGS_HIDDEN);
+            }
             writer.addAnnotation(annotation);
         });
+    }
+
+    /**
+     * PDF §12.5.5: an annotation's visible content is its {@code /AP /N} appearance stream,
+     * positioned in the page by mapping the stream's {@code /BBox} (through its {@code /Matrix})
+     * onto the annotation's {@code /Rect}. Before this support, {@code OpenPdfCorePageRenderer}
+     * only walked the page content stream and never looked at {@code /Annots} at all, so stamps,
+     * highlights, and form-field appearances were invisible no matter what.
+     */
+    @Test
+    void rendersAnnotationNormalAppearanceStream() throws Exception {
+        byte[] pdf = buildAnnotatedPdf(false);
 
         try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
             BufferedImage img = r.renderPage(1, 150f);
@@ -342,21 +352,7 @@ class OpenPdfCorePageRendererOperatorsTest {
      */
     @Test
     void skipsHiddenAnnotationAppearance() throws Exception {
-        byte[] pdf = buildPdf(cb -> {
-            org.openpdf.text.pdf.PdfTemplate appearance = cb.createTemplate(100f, 60f);
-            appearance.setRGBColorFillF(1f, 0.5f, 0f); // orange
-            appearance.rectangle(0f, 0f, 100f, 60f);
-            appearance.fill();
-
-            org.openpdf.text.pdf.PdfWriter writer = cb.getPdfWriter();
-            org.openpdf.text.pdf.PdfAnnotation annotation =
-                    new org.openpdf.text.pdf.PdfAnnotation(writer,
-                            new org.openpdf.text.Rectangle(40f, 120f, 140f, 180f));
-            annotation.put(org.openpdf.text.pdf.PdfName.SUBTYPE, org.openpdf.text.pdf.PdfName.SQUARE);
-            annotation.setAppearance(org.openpdf.text.pdf.PdfAnnotation.APPEARANCE_NORMAL, appearance);
-            annotation.setFlags(org.openpdf.text.pdf.PdfAnnotation.FLAGS_HIDDEN);
-            writer.addAnnotation(annotation);
-        });
+        byte[] pdf = buildAnnotatedPdf(true);
 
         try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
             BufferedImage img = r.renderPage(1, 150f);

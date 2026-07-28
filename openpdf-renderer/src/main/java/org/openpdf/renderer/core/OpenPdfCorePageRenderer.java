@@ -165,6 +165,9 @@ final class OpenPdfCorePageRenderer {
     private static final Set<PdfName> DEVICE_CMYK_NAMES = Set.of(
             PdfName.DEVICECMYK, new PdfName("CMYK"));
 
+    private static final int ANNOTATION_FLAG_HIDDEN = 1 << 1; // PDF §12.5.3, bit position 2
+    private static final int ANNOTATION_FLAG_NOVIEW = 1 << 5; // PDF §12.5.3, bit position 6
+
     /**
      * Synthetic XObject-name prefix used for inline images that have been promoted out
      * of the content stream into {@link #inlineImages}. Keeping a clearly distinctive
@@ -1228,9 +1231,6 @@ final class OpenPdfCorePageRenderer {
     }
 
     // ---------- Annotation appearance streams ----------
-
-    private static final int ANNOTATION_FLAG_HIDDEN = 1 << 1; // PDF §12.5.3, bit position 2
-    private static final int ANNOTATION_FLAG_NOVIEW = 1 << 5; // PDF §12.5.3, bit position 6
 
     /**
      * Renders each page annotation's normal appearance stream ({@code /AP /N}), positioned per
