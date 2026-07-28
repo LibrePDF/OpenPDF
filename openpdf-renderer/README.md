@@ -105,7 +105,7 @@ PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
 | Path construction | `m`, `l`, `c`, `v`, `y`, `re`, `h` |
 | Path painting | `S`, `s`, `f`, `F`, `f*`, `B`, `B*`, `b`, `b*`, `n` |
 | Clipping | `W`, `W*` |
-| Colors (DeviceGray / DeviceRGB / DeviceCMYK) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
+| Colors (DeviceGray / DeviceRGB / DeviceCMYK / named ICCBased / CalGray / CalRGB / Lab) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
 | Text state | `BT`, `ET`, `Tf`, `Tc`, `Tw`, `TL`, `Tz`, `Td`, `TD`, `Tm`, `T*`, `Ts` |
 | Text showing | `Tj`, `TJ`, `'`, `"` |
 | XObjects | `Do` (see below) |
@@ -122,6 +122,18 @@ XObject coverage:
   DeviceCMYK streams (CMYK approximated to sRGB on the fly). 8-bit Indexed
   color images are expanded through their palette into the base color space
   (DeviceGray / DeviceRGB / DeviceCMYK).
+
+Color spaces: `cs`/`CS` resolve literal device names (`/DeviceGray`,
+`/DeviceRGB`, `/DeviceCMYK`) directly, and also resolve any other name
+through the page's `/ColorSpace` resource dictionary (PDF §8.6.3) &mdash;
+the common case being a named `ICCBased` color space (classified by its
+stream's `/N` component count into gray/RGB/CMYK), `CalGray`, `CalRGB`,
+or `Lab` (converted via the standard CIE L\*a\*b\* &rarr; XYZ &rarr; sRGB
+transform, using the color space's own `/WhitePoint` when present, D50
+otherwise). Color spaces this renderer doesn't specifically understand
+(Separation, DeviceN, Indexed, Pattern, ...) fall back to inferring
+gray/RGB/CMYK from the `sc`/`scn` operand count, which is usually right
+for those color spaces' most common shapes but not guaranteed.
 
 Text rendering: for each `Tf`-selected font, the renderer pulls the
 embedded font program (`FontFile2`/`FontFile3`/`FontFile`) out of the
