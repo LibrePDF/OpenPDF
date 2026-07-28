@@ -159,6 +159,15 @@ final class OpenPdfCorePageRenderer {
     private static final Set<PdfName> DEVICE_CMYK_NAMES = Set.of(
             PdfName.DEVICECMYK, new PdfName("CMYK"));
 
+    // Sentinel for "no explicit Lab /WhitePoint" -- callers fall back to a default D50 white
+    // point. Using an empty array rather than null avoids null-array returns/fields.
+    private static final float[] NO_LAB_WHITE_POINT = new float[0];
+    // D50, the reference white point PDF's Lab color space conventionally assumes when a
+    // /Lab color space definition omits /WhitePoint (which is technically required, but not
+    // every PDF producer bothers to include it).
+    private static final float[] DEFAULT_LAB_WHITE_POINT = {0.9642f, 1.0f, 0.8249f};
+    private static final ColorSpace CIE_SRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+
     /**
      * Synthetic XObject-name prefix used for inline images that have been promoted out
      * of the content stream into {@link #inlineImages}. Keeping a clearly distinctive
@@ -1890,10 +1899,6 @@ final class OpenPdfCorePageRenderer {
         }
     }
 
-    // Sentinel for "no explicit Lab /WhitePoint" -- callers fall back to a default D50 white
-    // point. Using an empty array rather than null avoids null-array returns/fields.
-    private static final float[] NO_LAB_WHITE_POINT = new float[0];
-
     /**
      * Reads the {@code /WhitePoint} of a {@code [/Lab dict]} color-space array, or
      * {@link #NO_LAB_WHITE_POINT} if absent/malformed (callers fall back to a default D50 white
@@ -1961,12 +1966,6 @@ final class OpenPdfCorePageRenderer {
         }
         return defaultColorFor(ColorSpaceKind.UNKNOWN);
     }
-
-    // D50, the reference white point PDF's Lab color space conventionally assumes when a
-    // /Lab color space definition omits /WhitePoint (which is technically required, but not
-    // every PDF producer bothers to include it).
-    private static final float[] DEFAULT_LAB_WHITE_POINT = {0.9642f, 1.0f, 0.8249f};
-    private static final ColorSpace CIE_SRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
 
     /**
      * Converts a CIE L*a*b* color (PDF §8.6.5.4) to sRGB via CIEXYZ, using {@code whitePoint}

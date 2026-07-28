@@ -105,7 +105,7 @@ PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
 | Path construction | `m`, `l`, `c`, `v`, `y`, `re`, `h` |
 | Path painting | `S`, `s`, `f`, `F`, `f*`, `B`, `B*`, `b`, `b*`, `n` |
 | Clipping | `W`, `W*` |
-| Colors (DeviceGray / DeviceRGB / DeviceCMYK / named ICCBased / CalGray / CalRGB / Lab) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
+| Colors (Device + ICCBased/CalGray/CalRGB/Lab) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
 | Text state | `BT`, `ET`, `Tf`, `Tc`, `Tw`, `TL`, `Tz`, `Td`, `TD`, `Tm`, `T*`, `Ts` |
 | Text showing | `Tj`, `TJ`, `'`, `"` |
 | XObjects | `Do` (see below) |
