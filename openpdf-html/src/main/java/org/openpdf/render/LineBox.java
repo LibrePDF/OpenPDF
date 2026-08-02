@@ -201,8 +201,8 @@ public class LineBox extends Box implements InlinePaintable {
             int leftFloatDistance = getFloatDistances().leftFloatDistance();
             int rightFloatDistance = getFloatDistances().rightFloatDistance();
 
-            int midpoint = leftFloatDistance +
-                (getParent().getContentWidth() - leftFloatDistance - rightFloatDistance) / 2;
+            int midpoint = leftFloatDistance
+                    + (getParent().getContentWidth() - leftFloatDistance - rightFloatDistance) / 2;
 
             calcX = midpoint - (getContentWidth() + getContentStart()) / 2;
         } else if (align == IdentValue.RIGHT) {
@@ -222,16 +222,16 @@ public class LineBox extends Box implements InlinePaintable {
             int leftFloatDistance = getFloatDistances().leftFloatDistance();
             int rightFloatDistance = getFloatDistances().rightFloatDistance();
 
-            int available = getParent().getContentWidth() -
-                leftFloatDistance - rightFloatDistance - getContentStart();
+            int available = getParent().getContentWidth()
+                    - leftFloatDistance - rightFloatDistance - getContentStart();
 
             if (available > getContentWidth()) {
                 int toAdd = available - getContentWidth();
 
                 CharCounts counts = countJustifiableChars();
 
-                JustificationInfo info = !getParent().getStyle().isIdent(LETTER_SPACING, NORMAL) ?
-                        new JustificationInfo(0.0f, (float) toAdd / counts.getSpaceCount()) :
+                JustificationInfo info = !getParent().getStyle().isIdent(LETTER_SPACING, NORMAL)
+                        ? new JustificationInfo(0.0f, (float) toAdd / counts.getSpaceCount()) :
                         justificationInfo(counts, toAdd);
 
                 adjustChildren(info);
@@ -241,12 +241,12 @@ public class LineBox extends Box implements InlinePaintable {
     }
 
     private static JustificationInfo justificationInfo(CharCounts counts, int toAdd) {
-        float nonSpaceAdjust = counts.getNonSpaceCount() > 1 ?
-                toAdd * JUSTIFY_NON_SPACE_SHARE / (counts.getNonSpaceCount() - 1) :
+        float nonSpaceAdjust = counts.getNonSpaceCount() > 1
+                ? toAdd * JUSTIFY_NON_SPACE_SHARE / (counts.getNonSpaceCount() - 1) :
                 0.0f;
 
-        float spaceAdjust = counts.getSpaceCount() > 0 ?
-                toAdd * JUSTIFY_SPACE_SHARE / counts.getSpaceCount() :
+        float spaceAdjust = counts.getSpaceCount() > 0
+                ? toAdd * JUSTIFY_SPACE_SHARE / counts.getSpaceCount() :
                 0.0f;
 
         return new JustificationInfo(nonSpaceAdjust, spaceAdjust);
@@ -309,8 +309,8 @@ public class LineBox extends Box implements InlinePaintable {
 
     @Override
     public boolean intersects(CssContext cssCtx, Shape clip) {
-        return clip == null || (intersectsLine(cssCtx, clip) ||
-            (isContainsBlockLevelContent() && intersectsInlineBlocks(cssCtx, clip)));
+        return clip == null || (intersectsLine(cssCtx, clip)
+                || (isContainsBlockLevelContent() && intersectsInlineBlocks(cssCtx, clip)));
     }
 
     private boolean intersectsLine(CssContext cssCtx, Shape clip) {
@@ -322,8 +322,8 @@ public class LineBox extends Box implements InlinePaintable {
     public Rectangle getPaintingClipEdge(CssContext cssCtx) {
         Box parent = getParent();
         if (parent.getStyle().isIdent(
-                CSSName.FS_TEXT_DECORATION_EXTENT, IdentValue.BLOCK) ||
-                    getJustificationInfo() != null) {
+                CSSName.FS_TEXT_DECORATION_EXTENT, IdentValue.BLOCK)
+                || getJustificationInfo() != null) {
             return new Rectangle(
                     getAbsX(), getAbsY() + _paintingTop,
                     parent.getAbsX() + parent.getTx() + parent.getContentWidth() - getAbsX(),

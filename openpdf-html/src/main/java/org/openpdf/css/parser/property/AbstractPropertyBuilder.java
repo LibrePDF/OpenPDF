@@ -71,19 +71,17 @@ public abstract class AbstractPropertyBuilder implements PropertyBuilder {
 
     protected void checkIdentOrIntegerType(CSSName cssName, CSSPrimitiveValue value) {
         int type = value.getPrimitiveType();
-        if ((type != CSSPrimitiveValue.CSS_IDENT &&
-                type != CSS_NUMBER) ||
-            (type == CSS_NUMBER &&
-                    (int) value.getFloatValue(CSS_NUMBER) !=
-                        Math.round(value.getFloatValue(CSS_NUMBER)))) {
+        if ((type != CSSPrimitiveValue.CSS_IDENT && type != CSS_NUMBER)
+                || (type == CSS_NUMBER && (int) value.getFloatValue(CSS_NUMBER)
+                != Math.round(value.getFloatValue(CSS_NUMBER)))) {
             throw new CSSParseException("Value for " + cssName + " must be an identifier or an integer", -1);
         }
     }
 
     protected void checkInteger(CSSName cssName, CSSPrimitiveValue value) {
         int type = value.getPrimitiveType();
-        if (type != CSS_NUMBER ||
-                (int) value.getFloatValue(CSS_NUMBER) != Math.round(value.getFloatValue(CSS_NUMBER))) {
+        if (type != CSS_NUMBER || (int) value.getFloatValue(CSS_NUMBER) != Math.round(
+                value.getFloatValue(CSS_NUMBER))) {
             throw new CSSParseException("Value for " + cssName + " must be an integer", -1);
         }
     }
@@ -137,10 +135,8 @@ public abstract class AbstractPropertyBuilder implements PropertyBuilder {
 
     protected void checkIdentLengthNumberOrPercentType(CSSName cssName, CSSPrimitiveValue value) {
         int type = value.getPrimitiveType();
-        if (type != CSSPrimitiveValue.CSS_IDENT &&
-                ! isLength(value) &&
-                type != CSSPrimitiveValue.CSS_PERCENTAGE &&
-                type != CSS_NUMBER) {
+        if (type != CSSPrimitiveValue.CSS_IDENT && ! isLength(value) && type != CSSPrimitiveValue.CSS_PERCENTAGE
+                && type != CSS_NUMBER) {
             throw new CSSParseException("Value for " + cssName + " must be an identifier, length, or percentage", -1);
         }
     }

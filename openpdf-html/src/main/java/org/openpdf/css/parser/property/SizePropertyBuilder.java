@@ -118,10 +118,9 @@ public class SizePropertyBuilder extends AbstractPropertyBuilder {
                         CSSName.FS_PAGE_HEIGHT, value2, important, origin));
 
                 return result;
-            } else if (value1.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT &&
-                            value2.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
-                if (value2.getStringValue().equals("landscape") ||
-                        value2.getStringValue().equals("portrait")) {
+            } else if (value1.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT
+                    && value2.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+                if (value2.getStringValue().equals("landscape") || value2.getStringValue().equals("portrait")) {
                     PropertyValue temp = value1;
                     value1 = value2;
                     value2 = temp;

@@ -117,8 +117,8 @@ class OpenPdfVersionTest {
     @DisplayName("Read existing PDFs: log header & reader versions; open when possible")
     void readExistingPdfsAndVerifyVersion() throws IOException {
         assertTrue(Files.isDirectory(SAMPLE_DIR),
-                "Sample directory not found: " + SAMPLE_DIR.toAbsolutePath() +
-                        " (override with -Dopenpdf.test.pdfdir=/path/to/dir)");
+                "Sample directory not found: " + SAMPLE_DIR.toAbsolutePath()
+                        + " (override with -Dopenpdf.test.pdfdir=/path/to/dir)");
 
         for (String name : SAMPLE_FILES) {
             Path p = SAMPLE_DIR.resolve(name);
@@ -131,8 +131,8 @@ class OpenPdfVersionTest {
             assertTrue(headerVersion.matches("\\d+\\.\\d+"),
                     () -> name + ": header version not x.y: " + headerVersion);
             assertTrue(SUPPORTED_VERSIONS.contains(headerVersion),
-                    () -> name + ": unexpected header version " + headerVersion +
-                            " (allowed: " + SUPPORTED_VERSIONS + ")");
+                    () -> name + ": unexpected header version " + headerVersion
+                            + " (allowed: " + SUPPORTED_VERSIONS + ")");
 
             // Try to open and get reader version (normalize if needed)
             try (PdfReader reader = new PdfReader(new ByteArrayInputStream(bytes))) {
@@ -153,8 +153,8 @@ class OpenPdfVersionTest {
                 // Likely encrypted/signed. Acceptable as long as header is OK.
                 String msg = String.valueOf(openEx.getMessage()).toLowerCase();
                 boolean looksEncrypted = msg.contains("password") || msg.contains("encrypted");
-                boolean namedProtected = name.toLowerCase().contains("protected") ||
-                        name.toLowerCase().contains("signed");
+                boolean namedProtected = name.toLowerCase().contains("protected")
+                        || name.toLowerCase().contains("signed");
                 System.out.printf("PDF %-35s | header=%-4s | reader=(failed to open: %s)%n",
                         name, headerVersion, openEx.getClass().getSimpleName());
                 assertTrue(looksEncrypted || namedProtected,

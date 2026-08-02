@@ -100,11 +100,11 @@ public class ASCII85Decode {
         }
 
         int value =
-                five[0] * 85 * 85 * 85 * 85 +
-                five[1] * 85 * 85 * 85 +
-                five[2] * 85 * 85 +
-                five[3] * 85 +
-                five[4];
+                five[0] * 85 * 85 * 85 * 85
+                + five[1] * 85 * 85 * 85
+                + five[2] * 85 * 85
+                + five[3] * 85
+                + five[4];
 
         for (int j = 0; j < i; j++) {
             int shift = 8 * (3 - j);

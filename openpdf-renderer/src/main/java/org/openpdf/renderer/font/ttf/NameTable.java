@@ -140,8 +140,7 @@ public class NameTable extends TrueTypeTable {
         for (Iterator i = this.records.keySet().iterator(); i.hasNext(); ) {
             NameRecord rec = (NameRecord) i.next();
             
-            if (rec.platformID == platformID && 
-                    rec.platformSpecificID == platformSpecificID) {
+            if (rec.platformID == platformID && rec.platformSpecificID == platformSpecificID) {
                 return true;
             }
         }

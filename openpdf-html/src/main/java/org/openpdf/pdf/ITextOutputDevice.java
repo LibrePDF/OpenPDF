@@ -280,8 +280,8 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                         PdfDestination dest = createDestination(c, target);
 
                         if (dest != null) {
-                            PdfAction action = handler.getAttributeValue(elem, "onclick").isEmpty() ?
-                                    gotoDestination(dest) :
+                            PdfAction action = handler.getAttributeValue(elem, "onclick").isEmpty()
+                                    ? gotoDestination(dest) :
                                     PdfAction.javaScript(handler.getAttributeValue(elem, "onclick"), _writer);
 
                             checkLinkArea(c, box).ifPresent(targetArea -> {

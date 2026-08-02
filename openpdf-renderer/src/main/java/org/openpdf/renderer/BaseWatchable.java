@@ -161,16 +161,15 @@ public abstract class BaseWatchable implements Watchable, Runnable {
      */
     public boolean isFinished() {
         int s = getStatus();
-        return (s == Watchable.COMPLETED ||
-                s == Watchable.ERROR);
+        return (s == Watchable.COMPLETED || s == Watchable.ERROR);
     }
 
     /**
      * return true if this watchable is ready to be executed
      */
     public boolean isExecutable() {
-        return ((this.status == Watchable.PAUSED || this.status == Watchable.RUNNING) &&
-                (this.gate == null || !this.gate.stop()));
+        return ((this.status == Watchable.PAUSED || this.status == Watchable.RUNNING)
+                && (this.gate == null || !this.gate.stop()));
     }
 
     /**

@@ -80,8 +80,8 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
 
             JOptionPane.showMessageDialog(
                     null,
-                    "Form submit called; check console to see the query string" +
-                    " that would have been submitted.",
+                    "Form submit called; check console to see the query string"
+                    + " that would have been submitted.",
                     "Form Submission",
                     JOptionPane.INFORMATION_MESSAGE
             );
@@ -163,8 +163,8 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
             return;
         }
 
-        final int pagePaintingClearanceWidth = isCenteredPagedView() ?
-                calcCenteredPageLeftOffset(root.getMaxPageWidth(c, 0)) :
+        final int pagePaintingClearanceWidth = isCenteredPagedView()
+                ? calcCenteredPageLeftOffset(root.getMaxPageWidth(c, 0)) :
                 PAGE_PAINTING_CLEARANCE_WIDTH;
         root.assignPagePaintingPositions(
                 c, PAGED_MODE_SCREEN, PAGE_PAINTING_CLEARANCE_HEIGHT);
@@ -208,8 +208,8 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
                 Rectangle content = page.getPagedViewClippingBounds(c, pagePaintingClearanceWidth);
                 g.clip(content);
 
-                int left = pagePaintingClearanceWidth +
-                    page.getMarginBorderPadding(c, Edge.LEFT);
+                int left = pagePaintingClearanceWidth
+                    + page.getMarginBorderPadding(c, Edge.LEFT);
                 int top = page.getPaintingTop()
                     + page.getMarginBorderPadding(c, Edge.TOP)
                     - page.getTop();
@@ -237,8 +237,8 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
         }
 
         if (pageNo < 0 || pageNo >= root.getPages().size()) {
-            throw new IllegalArgumentException("Page " + pageNo + " is not between 0 " +
-                    "and " + root.getPages().size());
+            throw new IllegalArgumentException("Page " + pageNo + " is not between 0 "
+                    + "and " + root.getPages().size());
         }
 
         RenderingContext c = newRenderingContext(g);
@@ -256,8 +256,7 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
         Rectangle content = page.getPrintClippingBounds(c);
         g.clip(content);
 
-        int top = -page.getPaintingTop() +
-            page.getMarginBorderPadding(c, Edge.TOP);
+        int top = -page.getPaintingTop() + page.getMarginBorderPadding(c, Edge.TOP);
 
         int left = page.getMarginBorderPadding(c, Edge.LEFT);
 
@@ -462,8 +461,8 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
         if (stackTrace.length > 2) {
             String callingClassName = stackTrace[2].getClassName();
             if (BasicPanel.class.getName().equals(callingClassName)) {
-                throw new IllegalStateException("BasicPanel should not use its own opacity methods. Use " +
-                        "super.isOpaque()/setOpaque() instead.");
+                throw new IllegalStateException("BasicPanel should not use its own opacity methods. Use "
+                        + "super.isOpaque()/setOpaque() instead.");
             }
         }
     }

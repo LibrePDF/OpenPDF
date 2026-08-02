@@ -1306,8 +1306,8 @@ public class PdfWriter extends DocWriter implements
                 // ITextRenderer is not thread safe. So if you get this problem here, create a new
                 // instance, rather than re-using it.
                 // See: https://github.com/LibrePDF/OpenPDF/issues/164
-                throw new RuntimeException("The page " + pageReferences.size() +
-                        " was requested but the document has only " + (currentPageNumber - 1) + " pages.");
+                throw new RuntimeException("The page " + pageReferences.size()
+                        + " was requested but the document has only " + (currentPageNumber - 1) + " pages.");
             }
 
             try {
@@ -1696,11 +1696,11 @@ public class PdfWriter extends DocWriter implements
      * org.openpdf.text.pdf.PdfAction)
      */
     public void setAdditionalAction(PdfName actionType, PdfAction action) throws DocumentException {
-        if (!(actionType.equals(DOCUMENT_CLOSE) ||
-                actionType.equals(WILL_SAVE) ||
-                actionType.equals(DID_SAVE) ||
-                actionType.equals(WILL_PRINT) ||
-                actionType.equals(DID_PRINT))) {
+        if (!(actionType.equals(DOCUMENT_CLOSE)
+                || actionType.equals(WILL_SAVE)
+                || actionType.equals(DID_SAVE)
+                || actionType.equals(WILL_PRINT)
+                || actionType.equals(DID_PRINT))) {
             throw new DocumentException(
                     MessageLocalization.getComposedMessage("invalid.additional.action.type.1", actionType.toString()));
         }

@@ -361,12 +361,12 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
                     chunk.setHyphenation(hyphenation);
                 }
                 super.add(index, chunk);
-            } else if (element.type() == Element.PHRASE ||
-                    element.type() == Element.ANCHOR ||
-                    element.type() == Element.ANNOTATION ||
-                    element.type() == Element.TABLE || // line added by David Freels
-                    element.type() == Element.YMARK ||
-                    element.type() == Element.MARKED) {
+            } else if (element.type() == Element.PHRASE
+                    || element.type() == Element.ANCHOR
+                    || element.type() == Element.ANNOTATION
+                    || element.type() == Element.TABLE // line added by David Freels
+                    || element.type() == Element.YMARK
+                    || element.type() == Element.MARKED) {
                 super.add(index, element);
             } else {
                 throw new ClassCastException(String.valueOf(element.type()));

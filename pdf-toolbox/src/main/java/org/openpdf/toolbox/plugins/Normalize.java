@@ -132,8 +132,7 @@ public class Normalize
                 case Ausrichtung.A3Portrait:
                     ausr.rotate();
                     page.put(PdfName.ROTATE, new PdfNumber(ausr.getRotation()));
-                    System.out.println("rotate page:" + (pagecount + 1) + " targetformat: " +
-                            ausr);
+                    System.out.println("rotate page:" + (pagecount + 1) + " targetformat: " + ausr);
                     this.pagecountrotatedpages++;
 
                     break;
@@ -143,8 +142,7 @@ public class Normalize
             curheight = ausr.getM6();
 
             if (((pagecount + 1) % 2) == 0) {
-                if ((Math.abs(curwidth - width) > tolerancex) ||
-                        (Math.abs(curheight - height) > tolerancey)) {
+                if ((Math.abs(curwidth - width) > tolerancex) || (Math.abs(curheight - height) > tolerancey)) {
                     Seitehinzufuegen(page, count_in_leaf, writer, arr);
                     this.pagecountinsertedpages++;
                 }
@@ -197,10 +195,10 @@ public class Normalize
             parent = parent.getAsDict(PdfName.PARENT);
         }
 
-        System.out.println("page:" + (pagecount + 1) + " nr in leaf:" +
-                count_in_leaf + " arl x:" +
-                array.getPdfObject(0) + " y:" + array.getPdfObject(1) + " width:" + array.getPdfObject(2) +
-                " height:" + array.getPdfObject(3));
+        System.out.println("page:" + (pagecount + 1) + " nr in leaf:"
+                + count_in_leaf + " arl x:"
+                + array.getPdfObject(0) + " y:" + array.getPdfObject(1) + " width:" + array.getPdfObject(2)
+                + " height:" + array.getPdfObject(3));
     }
 
     /**
@@ -237,11 +235,9 @@ public class Normalize
             }
 
             stp.close();
-            System.out.println("In " + dest.getAbsolutePath() + " pages= " +
-                    pagecount +
-                    " inserted pages=" + this.getPagecountinsertedpages() +
-                    " rotated pages=" +
-                    this.getPagecountrotatedpages());
+            System.out.println("In " + dest.getAbsolutePath() + " pages= " + pagecount
+                    + " inserted pages=" + this.getPagecountinsertedpages()
+                    + " rotated pages=" +  this.getPagecountrotatedpages());
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
@@ -341,17 +337,13 @@ public class Normalize
         }
 
         private void klassifiziere() {
-            if (Math.abs(rect.getWidth() - 595) < tolerance &&
-                    Math.abs(rect.getHeight() - 842) < tolerance) {
+            if (Math.abs(rect.getWidth() - 595) < tolerance && Math.abs(rect.getHeight() - 842) < tolerance) {
                 this.type = A4Portrait;
-            } else if (Math.abs(rect.getWidth() - 842) < tolerance &&
-                    Math.abs(rect.getHeight() - 595) < tolerance) {
+            } else if (Math.abs(rect.getWidth() - 842) < tolerance && Math.abs(rect.getHeight() - 595) < tolerance) {
                 this.type = A4Landscape;
-            } else if (Math.abs(rect.getWidth() - 1190) < tolerance &&
-                    Math.abs(rect.getHeight() - 842) < tolerance) {
+            } else if (Math.abs(rect.getWidth() - 1190) < tolerance && Math.abs(rect.getHeight() - 842) < tolerance) {
                 this.type = A3Landscape;
-            } else if (Math.abs(rect.getWidth() - 842) < tolerance &&
-                    Math.abs(rect.getHeight() - 1190) < tolerance) {
+            } else if (Math.abs(rect.getWidth() - 842) < tolerance && Math.abs(rect.getHeight() - 1190) < tolerance) {
                 this.type = A3Portrait;
             } else {
                 type = UNKNOWN;

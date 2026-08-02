@@ -243,8 +243,8 @@ public class Matrix {
      */
     @Override
     public String toString() {
-        return vals[I11] + "\t" + vals[I12] + "\t" + vals[I13] + "\n" +
-                vals[I21] + "\t" + vals[I22] + "\t" + vals[I13] + "\n" +
-                vals[I31] + "\t" + vals[I32] + "\t" + vals[I33];
+        return vals[I11] + "\t" + vals[I12] + "\t" + vals[I13] + "\n"
+                + vals[I21] + "\t" + vals[I22] + "\t" + vals[I13] + "\n"
+                + vals[I31] + "\t" + vals[I32] + "\t" + vals[I33];
     }
 }
