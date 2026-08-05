@@ -154,6 +154,7 @@ incomplete.palette=incomplete palette
 inconsistent.mapping=Inconsistent mapping.
 inconsistent.writers.are.you.mixing.two.documents=Inconsistent writers. Are you mixing two documents?
 incorrect.segment.type.in.1=Incorrect segment type in {1}
+infinite.table.loop=Could not add the table to the document: a table row does not fit on a page. Check for rows or cells whose (fixed) height is larger than the available page height.
 insertion.of.illegal.element.1=Insertion of illegal Element: {1}
 inserttable.point.has.null.value=insertTable - point has null-value
 inserttable.table.has.null.value=insertTable - table has null-value
